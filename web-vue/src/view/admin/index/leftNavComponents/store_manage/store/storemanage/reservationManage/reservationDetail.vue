@@ -71,10 +71,14 @@
               prop="serviceName"
             >
               <template slot-scope="{ row }">
-                <el-tooltip>
-                  <span><img :src="row.serviceImg" style="cursor: pointer" alt=""> </span>
-                    <span>{{row.serviceName}} </span>
-                </el-tooltip>
+                <el-row :gutter=15>
+                  <el-col :span="5" v-if="row.serviceImg">
+                    <img :src="row.serviceImg" style="width: 48px; height: 48px">
+                  </el-col>
+                  <el-col :span="10">
+                    <label style="font-size: 14px;">{{row.serviceName}}</label>
+                  </el-col>
+                </el-row>
               </template>
             </el-table-column>
             <el-table-column
@@ -92,7 +96,7 @@
               <el-button
                 type="primary"
                 size="small"
-                @click="confirmDone"
+                @click="showMess2(detailData.orderId, detailData.orderSn, detailData.userId)"
                 v-if="detailData.orderStatus === 1"
               >{{$t('reservationManage.confirmDone')}}</el-button>
             </el-col>
@@ -132,11 +136,97 @@
           </el-table>
         </div>
       </div>
+    <!-- 核销/确认完成弹窗 -->
+    <el-dialog
+      :title="$t('reservationManage.charge')"
+      :visible.sync="showCharge"
+      :close-on-click-modal='false'
+      width=40%
+    >
+      <div class="table_list">
+        <div>
+          {{$t('reservationManage.chargeCode')}}：
+          <el-input
+            style="width: 40%"
+            :placeholder="$t('reservationManage.chargeCode')"
+            v-model="chargeParam.verifyCode">
+          </el-input>
+        </div>
+        <br>
+        <div style="margin-top: 20px">
+          <el-row>
+            <el-col>{{$t('reservationManage.chargeType')}}：</el-col>
+          </el-row>
+          <template>
+            <el-radio-group v-model="chargeParam.verifyPay">
+              <div style="margin-top: 20px">
+                <el-radio :label="0">{{$t('reservationManage.storeBuy')}}</el-radio>
+              </div>
+              <div style="margin-top: 20px">
+                <el-radio :label="1">{{$t('reservationManage.memberCard')}}</el-radio>
+                <template v-if="chargeParam.verifyPay === 1">
+                  <el-select v-model="chargeParam.cardId" clearable :placeholder="$t('reservationManage.memberCard')">
+                    <el-option
+                      v-for="item in availableCard"
+                      :key="item.cardId"
+                      :label="item.cardName"
+                      :value="item.cardId">
+                    </el-option>
+                  </el-select>
+                </template>
+                <el-input
+                  v-if="chargeParam.verifyPay === 1"
+                  style="width: 20%"
+                  :placeholder="$t('reservationManage.reduceOrLimit')"
+                  v-model="chargeParam.reduce">
+                </el-input>
+                <el-input
+                  v-if="chargeParam.verifyPay === 1"
+                  style="width: 20%"
+                  :placeholder="$t('reservationManage.season')"
+                  v-model="chargeParam.reason">
+                </el-input>
+              </div>
+              <div style="margin-top: 20px">
+                <el-radio :label="2">{{$t('reservationManage.balance')}}</el-radio>
+                <el-input
+                  v-if="chargeParam.verifyPay === 2"
+                  style="width: 30%"
+                  placeholder="99999999999999"
+                  v-model.number="chargeParam.balance">
+                </el-input>
+                <el-input
+                  v-if="chargeParam.verifyPay === 2"
+                  style="width: 30%"
+                  :placeholder="$t('reservationManage.season')"
+                  v-model="chargeParam.reason">
+                </el-input>
+              </div>
+            </el-radio-group>
+          </template>
+        </div>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="charge"
+        >{{$t('tradeConfiguration.save')}}</el-button>
+        <el-button
+          size="small"
+          @click="closeWin2"
+        >{{$t('tradeConfiguration.cancel')}}</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { detail } from '@/api/admin/storeManage/storemanage/reservationManage'
+import { detail, availableCard, charge } from '@/api/admin/storeManage/storemanage/reservationManage'
+
 export default {
   data () {
     return {
@@ -144,7 +234,28 @@ export default {
       tableData: [],
       detailData: {},
       stepActive: 0,
-      imgs: []
+      imgs: [],
+      // 确认完成
+      showCharge: false,
+      // 核销支付方式 0门店买单 1会员卡 2余额
+      verifyPay: '',
+      // 核销入参
+      chargeParam: {
+        orderSn: '',
+        orderId: 0,
+        userId: 0,
+        verifyCode: '',
+        verifyPay: 0,
+        cardId: null,
+        cardNo: null,
+        reduce: '',
+        balance: null,
+        reason: '',
+        account: null,
+        countDis: null
+      },
+      // 可用会员卡下拉
+      availableCard: []
     }
   },
   created () {
@@ -153,12 +264,74 @@ export default {
     this.getDetail()
   },
   methods: {
+    // 预约详情页跳转/核销完成后刷新本页面
+    click2Detail (orderSn) {
+      this.$router.push({
+        name: 'store_storemanage_reservation_detail',
+        params: {
+          orderSn: orderSn,
+          flag: true
+        }
+      })
+    },
+    // 核销弹窗-点击触发弹窗
+    showMess2 (orderId, orderSn, userId) {
+      this.chargeParam.orderId = orderId
+      this.chargeParam.orderSn = orderSn
+      this.chargeParam.userId = parseInt(userId)
+      this.userId = parseInt(userId)
+      this.getMemberCardList()
+      this.showCharge = true
+    },
+    // 可用会员卡下拉
+    getMemberCardList () {
+      let obj = {
+        userId: this.userId,
+        storeId: this.storeId
+      }
+      availableCard(obj).then(res => {
+        if (res.error === 0) {
+          this.availableCard = res.content
+        }
+      })
+    },
+    // 关闭核销弹窗
+    closeWin2 () {
+      this.showCharge = false
+    },
+    // 核销
+    charge () {
+      switch (this.chargeParam.verifyPay) {
+        case 0:
+          break
+        case 1:
+          if (this.availableCard === null) {
+            this.$message.error('无可用会员卡')
+            break
+          }
+          this.chargeParam.cardNo = this.availableCard.find((item) => {
+            return item.cardId === this.chargeParam.cardId
+          }).cardNo
+          break
+        case 2:
+          break
+      }
+      charge(this.chargeParam).then(res => {
+        if (res.error === 0) {
+          this.$message.success('核销成功')
+          this.showCharge = false
+          this.click2Detail(this.chargeParam.orderStatus)
+        }
+        this.$message.error('核销失败')
+        this.showCharge = false
+      })
+    },
     getDetail () {
       detail(this.orderSn).then(res => {
         if (res.error === 0) {
           this.detailData = res.content
-          this.imgs = JSON.parse(res.content.serviceImg)
-          this.detailData.serviceImg = this.imgs[0]
+          // this.imgs = JSON.parse(res.content.serviceImg)
+          this.detailData.serviceImg = res.content.serviceImg
           switch (this.detailData.verifyPay) {
             case 0:
               this.detailData.verifyPay = this.$t('reservationManage.storeBuy')
@@ -187,9 +360,6 @@ export default {
           }
         }
       })
-    },
-    confirmDone () {
-
     }
   }
 }

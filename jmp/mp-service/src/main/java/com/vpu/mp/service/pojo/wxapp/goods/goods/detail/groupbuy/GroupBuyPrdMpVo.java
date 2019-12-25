@@ -18,4 +18,6 @@ public class GroupBuyPrdMpVo {
     private BigDecimal groupPrice;
     /** 团长价格 */
     private BigDecimal grouperPrice;
+    /** 规格原价 */
+    private BigDecimal prdPrice;
 }

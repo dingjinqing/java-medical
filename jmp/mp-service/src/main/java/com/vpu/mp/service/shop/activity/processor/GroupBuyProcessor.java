@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
@@ -31,14 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_CHEAP_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
 
 /**
  * 商品列表,下单
@@ -96,15 +91,45 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
         }
         log.debug("小程序-商品详情-拼团信息获取开始");
         GroupBuyMpVo groupBuyInfo = groupBuyProcessorDao.getGroupBuyInfo(param.getUserId(), param.getActivityId());
+
+        if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(groupBuyInfo.getActState())) {
+            capsule.setActivity(groupBuyInfo);
+            log.debug("小程序-商品详情-拼团信息获取失败-拼团活动不存在[{}]-详情处理退出",param.getActivityId());
+            return ;
+        }
+
+
+        log.debug("小程序-商品详情-拼团规格信息获取开始");
         List<GroupBuyPrdMpVo> groupBuyPrdInfos = groupBuyProcessorDao.getGroupBuyPrdInfo(param.getActivityId());
         groupBuyInfo.setGroupBuyPrdMpVos(groupBuyPrdInfos);
 
+        Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, x -> x));
+
         int goodsNum = 0;
         for (int i = 0; i < groupBuyPrdInfos.size(); i++) {
+            // 商品拼团规格
             GroupBuyPrdMpVo vo = groupBuyPrdInfos.get(i);
+            //商品原规格
+            GoodsPrdMpVo goodsPrdMpVo = prdMap.get(vo.getProductId());
+
+            // 避免admin拼团存在逻辑bug而导致此处产生空指针
+            if (goodsPrdMpVo != null) {
+                // 设置拼团规格对应的原价，便于前端使用
+                vo.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
+                // 处理商品数量不足情况
+                if (goodsPrdMpVo.getPrdNumber() < vo.getStock()) {
+                    vo.setStock(goodsPrdMpVo.getPrdNumber());
+                }
+            }
+
             goodsNum+=vo.getStock();
         }
         capsule.setGoodsNumber(goodsNum);
+        if (goodsNum == 0&& BaseConstant.needToConsiderNotHasNum(groupBuyInfo.getActState())) {
+            log.debug("小程序-商品详情-拼团商品数量已用完");
+            groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+
         capsule.setActivity(groupBuyInfo);
     }
 

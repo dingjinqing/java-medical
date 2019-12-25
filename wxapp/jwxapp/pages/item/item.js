@@ -58,23 +58,46 @@ global.wxPage({
       activityId,
       activityType
     });
-    this.requestGoodsInfo().then(res => {
-      this.requestPledge(res);
-    });
+    this.requestGoodsInfo()
   },
   // 商品详情请求
-  requestGoodsInfo() {
-    return new Promise((resolve, reject) => {
+  async requestGoodsInfo() {
+    let result = new Promise((resolve, reject) => {
       util.api(
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
-            this.getActivity(res.content)
-            this.getMediaInfo(res.content);
-            this.getGoodsInfo(res.content);
-            this.getCouponInfo(res.content);
-            this.getGoodsDescInfo(res.content);
-            this.getComment(res.content)
+            let {comment,goodsImgs,goodsVideo,goodsVideoImg,coupons,goodsDesc = null,isPageUp = 0,goodsPageId = null,deliverPlace, defaultPrd,activity,goodsNumber,goodsSaleNum,labels,goodsAd,isCollected,products,goodsName,deliverPrice}= res.content
+            this.setData({
+              comment,//评价
+              deliverPlace, //发货地
+              defaultPrd,//是否单规格
+              goodsMediaInfo:{
+                goodsImgs,//商品图片
+                goodsVideo,//商品视频
+                goodsVideoImg//视频封面
+              },
+              couponList:coupons,//优惠券
+              goodsDescInfo:{
+                goodsDesc,//商品描述
+                isPageUp,//描述上下位置
+                goodsPageId //页面模板ID
+              },
+              goodsInfo:{
+                activity,
+                defaultPrd,
+                goodsNumber,
+                goodsSaleNum,
+                labels,
+                goodsAd,
+                isCollected,
+                products,
+                goodsName,
+                deliverPrice
+              }
+            })
+            // this.getGoodsInfo(res.content);
+            // this.getActivity(res.content)
             resolve(res.content);
           }
         }, {
@@ -87,28 +110,7 @@ global.wxPage({
         }
       );
     });
-  },
-  // 商品详情-自定义内容
-  getGoodsDescInfo({
-    goodsDesc = null,
-    isPageUp = 0,
-    goodsPageId = null
-  }) {
-    this.setData({
-      goodsDescInfo: {
-        goodsDesc,
-        isPageUp,
-        goodsPageId
-      }
-    })
-  },
-  // 商品评价信息
-  getComment({
-    comment
-  }) {
-    this.setData({
-      comment
-    })
+    this.requestPledge(await result)
   },
   // 服务承诺请求
   requestPledge({
@@ -123,6 +125,7 @@ global.wxPage({
           this.setData({
             pledgeInfo: res.content
           });
+          console.log(this.data.pledgeInfo)
         }
       }, {
         goodsId: goodsId,
@@ -149,24 +152,8 @@ global.wxPage({
   },
   // 获取选中规格详情
   getProductInfo(data) {
-    console.log(data)
     this.setData({
       productInfo: data.detail
-    });
-    console.log(this.data.productInfo);
-  },
-  // 获取商品轮播图/视频
-  getMediaInfo({
-    goodsImgs,
-    goodsVideo,
-    goodsVideoImg
-  }) {
-    this.setData({
-      goodsMediaInfo: {
-        goodsImgs,
-        goodsVideo,
-        goodsVideoImg
-      }
     });
   },
   // 获取商品基本信息
@@ -183,7 +170,6 @@ global.wxPage({
     limitBuyNum,
     limitMaxNum,
     deliverPlace,
-    deliverPrice,
     isCollected
   }) {
     let info = {
@@ -206,15 +192,6 @@ global.wxPage({
       goodsInfo: info
     });
   },
-  // 获取商品优惠券信息
-  getCouponInfo(goodsInfo) {
-    let {
-      coupons
-    } = goodsInfo;
-    this.setData({
-      couponList: coupons
-    });
-  },
   // 打开规格弹窗
   showSpecDialog(trigger) {
     console.log(trigger)
@@ -235,7 +212,6 @@ global.wxPage({
     activity
   }) {
     if (!activity) return
-    this.getCountDown(activity)
     this.setData({
       activity,
       'actBarInfo.actName': this.getActName(activity),
@@ -253,6 +229,7 @@ global.wxPage({
         return prdLinePrice
       }))
     })
+    this.getCountDown(activity)
   },
   // 获取actBar活动名称
   getActName({
@@ -276,7 +253,7 @@ global.wxPage({
     startTime
   }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
-    let total_micro_second = Math.round((new Date(actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime).getTime() - new Date().getTime()) / 1000)
+    let total_micro_second = Math.round((actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime) / 1000)
     console.log(total_micro_second, actState, activityType)
     this.countdown(total_micro_second, actState, activityType)
   },
@@ -286,7 +263,6 @@ global.wxPage({
   },
   // 倒计时
   countdown(total_micro_second, actState, activityType) {
-    this.getActCanBuy(total_micro_second,actState,activityType)
     let clock =
       total_micro_second <= 0 ?
       "已经截至" :
@@ -294,6 +270,7 @@ global.wxPage({
     this.setData({
       'actBarInfo.clock': clock
     });
+    this.getActCanBuy(total_micro_second,actState,activityType)
     if (total_micro_second <= 0) return;
     this.setData({
       actBartime: setTimeout(() => {

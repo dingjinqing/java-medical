@@ -62,15 +62,16 @@
           </div>
         </div>
         <div class="page-right">
-          <div class="right-top">
-            <header>{{$t('openScreenAdd.activeConf')}}</header>
-            <el-form
-              ref="openScreenForm"
-              size="small"
-              label-width="110px"
-              :model="form"
-              :rules="rules"
-            >
+          <el-form
+            ref="openScreenForm"
+            size="small"
+            label-width="110px"
+            :model="form"
+            :rules="rules"
+          >
+            <div class="right-top">
+              <header>{{$t('openScreenAdd.activeConf')}}</header>
+
               <el-form-item
                 :label="$t('openScreenAdd.evenName')"
                 prop="name"
@@ -107,11 +108,12 @@
                   >{{$t('openScreenAdd.fixedTime')}}</el-radio>
                   <el-date-picker
                     v-model="dateInterval"
-                    type="daterange"
-                    style="width:240px;"
+                    type="datetimerange"
+                    style="width:340px;"
                     :range-separator="$t('openScreenAdd.to')"
                     :start-placeholder="$t('openScreenAdd.effectiveTime')"
                     :end-placeholder="$t('openScreenAdd.expireDate')"
+                    :default-time="['00:00:00','23:59:59']"
                   ></el-date-picker>
                 </div>
                 <div>
@@ -150,16 +152,9 @@
                 </el-radio-group>
                 <p class="tips">{{$t('openScreenAdd.forNew')}}</p>
               </el-form-item>
-            </el-form>
-          </div>
-          <div class="right-bottom">
-            <header>{{$t('openScreenAdd.openReward')}}</header>
-            <el-form
-              label-width="110px"
-              size="small"
-              :model="form"
-              :rules="rules"
-            >
+            </div>
+            <div class="right-bottom">
+              <header>{{$t('openScreenAdd.openReward')}}</header>
               <el-form-item
                 :label="$t('openScreenAdd.payReward')"
                 prop="activityAction"
@@ -330,7 +325,7 @@
               </el-form-item>
               <el-form-item
                 v-show="form.activityAction == 3"
-                label="$t('openScreenAdd.eventPictures2')"
+                :label="$t('openScreenAdd.eventPictures2')"
                 prop="customizeImgPath"
               >
                 <div
@@ -387,8 +382,9 @@
                 <span class="span-tip">{{$t('openScreenAdd.unlimited0')}}</span>
                 <p class="tips">{{$t('openScreenAdd.issuers')}}</p>
               </el-form-item>
-            </el-form>
-          </div>
+
+            </div>
+          </el-form>
         </div>
       </div>
     </div>

@@ -231,6 +231,19 @@ public class JsonResultMessage {
     public static final String BARGAIN_CONFLICTING_ACT_TIME="bargain.conflicting.act.time";
 
 
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL = "pay.award.activity.message.multiple.conditional";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_UNCONDITIONAL = "pay.award.activity.message.multiple.finally.unconditional";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL = "pay.award.activity.message.multiple.finally.conditional";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_ONCE_UNCONDITIONAL = "pay.award.activity.message.once.unconditional";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_ONCE_CONDITIONAL = "pay.award.activity.message.once.conditional";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS = "pay.award.activity.message.designated.goods";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL = "pay.award.activity.message.conditional";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS = "pay.award.activity.message.amount.goods";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_BALANCE = "pay.award.activity.message.amount.balance";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_SCORE = "pay.award.activity.message.amount.score";
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_CUSTOM = "pay.award.activity.message.amount.custom";
+
     /**
      * 文章_分类
      */
@@ -410,6 +423,7 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_GOTOLOOK  = "member.card.receive.gotolook";
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
+	public static final String CODE_CARD_NO = "code.card.no";
 	/**
 	 * 概览
 	 */
@@ -706,6 +720,6 @@ public class JsonResultMessage {
      *  微信支付
      */
     public static final String MSG_WX_PAY_PREPAY_ID_IS_NULL ="wx_pay_prepay_id_is_null";
-	
+
 
 }

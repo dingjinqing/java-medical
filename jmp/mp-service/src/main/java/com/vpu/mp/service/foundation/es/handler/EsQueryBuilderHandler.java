@@ -1,6 +1,7 @@
 package com.vpu.mp.service.foundation.es.handler;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import org.elasticsearch.index.query.*;
@@ -35,7 +36,15 @@ public class EsQueryBuilderHandler {
                 resultQueryBuilder.filter(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
                 continue;
             }
-
+            //关键字查询单独处理
+            if(EsSearchName.KEY_WORDS.equals(x.getSearchName())){
+                resultQueryBuilder.should(QueryBuilders.matchQuery(EsSearchName.GOODS_NAME,x.getValue()));
+                resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.BRAND_NAME,x.getValue()));
+                resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.SORT_NAME,x.getValue()));
+                resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.CAT_NAME,x.getValue()));
+                resultQueryBuilder.minimumShouldMatch(1);
+                continue;
+            }
             if( x.getOperator().equals(Operator.EQ) ){
                 if ( x.isUseFullQuery() ){
                     termsQueryBuilders.add(QueryBuilders.termsQuery(x.getSearchName(),(List<?>)x.getValue()));

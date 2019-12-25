@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -38,8 +39,8 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         //1.商品名称（模糊查询）
         //2.商品品牌（精确查询）
         if( StringUtils.isNotBlank(param.getKeyWords()) ){
-            propertyList.add(new FieldProperty(EsSearchName.GOODS_NAME,param.getKeyWords(), Operator.SIM));
-            propertyList.add(new FieldProperty(EsSearchName.BRAND_NAME,param.getKeyWords()));
+            propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getKeyWords()));
+//            propertyList.add(new FieldProperty(EsSearchName.BRAND_NAME,param.getKeyWords()));
         }
         if( null != param.getMinPrice() ){
             propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMinPrice(),Operator.GTE));
@@ -50,13 +51,13 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         if( null != param.getSortId() ){
             propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getSortId()));
         }
-        if( null != param.getBrandIds() ){
+        if( !CollectionUtils.isEmpty(param.getBrandIds()) ){
             propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getBrandIds()));
         }
-        if( null != param.getActivityTypes() ){
+        if( !CollectionUtils.isEmpty(param.getActivityTypes()) ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getActivityTypes()));
         }
-        if( null != param.getGoodsIds() ){
+        if( !CollectionUtils.isEmpty( param.getGoodsIds()) ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsIds()));
         }
         if( !propertyList.isEmpty() ){

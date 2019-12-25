@@ -53,7 +53,7 @@ public class GoodsListMpParam extends BasePageParam{
     private String category;
 
 
-    public static final String ALL_AREA ="all";
+    public static final String ALL_AREA ="";
     public static final String SORT_AREA = "sort";
     public static final String CAT_AREA = "cat";
     public static final String BRAND_AREA = "brand";
@@ -70,7 +70,7 @@ public class GoodsListMpParam extends BasePageParam{
     private List<Integer> goodsAreaData;
 
     /**
-     *  商品活动类型默认0，1拼团，2 会员专享，3砍价，5秒杀，6限时降价
+     *  商品活动过滤条件 0不限制，1拼团，2 会员专享，3砍价，5秒杀，6限时降价
      */
     public static final Byte GOODS_TYPE_IS_CARD_EXCLUSIVE = 2 ;
     @JsonProperty("goods_type")

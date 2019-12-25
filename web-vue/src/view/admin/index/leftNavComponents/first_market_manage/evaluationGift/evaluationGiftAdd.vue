@@ -82,8 +82,8 @@
                   :start-placeholder="$t('evaluationGiftAdd.effectiveTime')"
                   :range-separator="$t('evaluationGiftAdd.to')"
                   :end-placeholder="$t('evaluationGiftAdd.expireTime')"
-                  style="width: 320px;"
-                  format="yyyy-MM-dd hh:mm"
+                  :default-time="['00:00:00','23:59:59']"
+                  style="width: 340px;"
                 ></el-date-picker>
               </div>
               <div>

@@ -30,12 +30,12 @@ public class WxAppGroupBuyController extends WxAppBaseController {
     @PostMapping("/api/wxapp/groupbuy/info")
     public JsonResult getGroupBuyInfo(@RequestBody @Valid GroupBuyInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        GroupBuyListRecord groupBuyList = shop().groupBuyList.getGroupBuyListByGroupId(param.getGroupId());
-        if (Objects.isNull(groupBuyList)){
+        GroupBuyListRecord grouperInfo = shop().groupBuyList.getGrouperByGroupId(param.getGroupId());
+        if (Objects.isNull(grouperInfo)){
             logger().debug("拼团不存在或已经删除,[groupId:{}]",param.getGroupId());
             return fail(JsonResultCode.GROUP_BUY_GROUPID_DOES_NOT_EXIST);
         }
-        GroupBuyInfoVo groupBuyInfo = shop().groupBuy.getGroupBuyInfo(user.getUserId(),groupBuyList.getCreateTime(), param.getGroupId(),groupBuyList.getActivityId(),getLang());
+        GroupBuyInfoVo groupBuyInfo = shop().groupBuy.getGroupBuyInfo(user.getUserId(),grouperInfo.getCreateTime(), param.getGroupId(),grouperInfo.getActivityId(),getLang());
         return success(groupBuyInfo);
     }
 
@@ -46,6 +46,16 @@ public class WxAppGroupBuyController extends WxAppBaseController {
     @PostMapping("/api/wxapp/groupbuy/share/image")
     public JsonResult getShareImage(@RequestBody @Valid GroupBuyInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        return success(shop().groupBuy.getGroupBuyShareBase64Image(user.getUserId(),param.getGroupId()));
+        return success(shop().groupBuy.getGroupBuyShareImage(user.getUserId(),param.getGroupId()));
+    }
+
+    /**
+     * 下载海报
+     * @return
+     */
+    @PostMapping("/api/wxapp/groupbuy/pictorial")
+    public JsonResult sharaToWx(@RequestBody @Valid GroupBuyInfoParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        return success(shop().groupBuy.getGroupBuyShareBase64Pictorial(user.getUserId(),param.getGroupId()));
     }
 }

@@ -4,8 +4,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
-
 /**
  * @author 李晓冰
  * @date 2019年12月23日
@@ -20,9 +18,9 @@ public class GoodsActivityDetailMp extends GoodsActivityBaseMp {
      */
     private Byte actState;
 
-    /** 活动结束时间 */
-    private Timestamp endTime;
-
     /** 活动距开始时间或结束时间剩余时间 */
-    private Long remainTime;
+    private Long startTime;
+
+    /** 活动距结束时间或结束时间剩余时间 */
+    private Long endTime;
 }

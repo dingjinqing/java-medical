@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.payment;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
@@ -10,7 +11,10 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.shop.activity.processor.PayAwardProcessor;
 import com.vpu.mp.service.shop.order.action.PayService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import org.jooq.Result;
@@ -19,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
@@ -39,6 +45,10 @@ public class PaymentService extends ShopBaseService {
 
     @Autowired
     public PayService pay;
+    @Autowired
+    private PayAwardProcessor payAwardProcessor;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
 
     /**
      * The Service order service.门店服务订单
@@ -188,6 +198,8 @@ public class PaymentService extends ShopBaseService {
             pay.toWaitDeliver(orderInfo, paymentRecord);
 		}
 
+		// 支付有礼
+		payAwardActivity(param, orderInfo);
 		/**
 		 * TODO:POS推送订单
 		 */
@@ -199,5 +211,28 @@ public class PaymentService extends ShopBaseService {
 		/**
 		 * TODO: 分销订单发送返利模板消息
 		 */
+	}
+
+	/**
+	 *  支付有礼活
+	 * @param param
+	 * @param orderInfo
+	 * @throws MpException
+	 */
+	private void payAwardActivity(PaymentRecordParam param, OrderInfoRecord orderInfo) throws MpException {
+		if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
+			return;
+		}
+		OrderBeforeParam orderBeforeParam =new OrderBeforeParam();
+		orderBeforeParam.setDate(param.getCreated());
+		orderBeforeParam.setGoods(Collections.emptyList());
+		List<GoodsRecord> orderGoods = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
+		orderGoods.forEach(orderGood->{
+			OrderBeforeParam.Goods goods = new OrderBeforeParam.Goods();
+			goods.setGoodsId(orderGood.getGoodsId());
+			goods.setGoodsInfo(orderGood);
+			orderBeforeParam.getGoods().add(goods);
+		});
+		payAwardProcessor.processSaveOrderInfo(orderBeforeParam,orderInfo);
 	}
 }

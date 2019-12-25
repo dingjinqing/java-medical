@@ -25,6 +25,8 @@ import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +70,8 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     EsGoodsSearchMpService esGoodsSearchMpService;
     @Autowired
+    EsGoodsLabelSearchService esGoodsLabelSearchService;
+    @Autowired
     private EsUtilSearchService esUtilSearchService;
     @Autowired
     protected UpYunConfig upYunConfig;
@@ -93,6 +97,13 @@ public class GoodsMpService extends ShopBaseService {
 
         if (esUtilSearchService.esState()) {
             try {
+                /*如果商品范围选择的是商品标签，先查询商品标签的es，获得商品标签对应的goodsIds*/
+                if( StringUtils.isNotBlank(param.getGoodsArea()) &&
+                    param.getGoodsArea().equals(GoodsListMpParam.LABEL_AREA) ){
+                    List<Integer> goodIds = esGoodsLabelSearchService.
+                        getGoodsIdsByLabelIds(param.getGoodsAreaData(), EsGoodsConstant.GENERAL_PAGE);
+                    param.setGoodsItems(goodIds);
+                }
                 // 从es获取
                 log.debug("小程序-es-搜索商品列表");
                 goodsListCapsules = getPageIndexGoodsListFromEs(param);
