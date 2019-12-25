@@ -4813,7 +4813,7 @@ CREATE TABLE `b2c_coopen_activity_records`
     `id`                int(11)      NOT NULL AUTO_INCREMENT,
     `activity_id`       int(11)      NOT NULL COMMENT '活动id',
     `user_id`           int(11)      NOT NULL,
-    `activity_action`   tinyint(1)                                                    DEFAULT '1' COMMENT '活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂',
+    `activity_action`   tinyint(1)                                                    DEFAULT '1' COMMENT '活动类型：0无奖励 1：普通优惠卷 2：分裂优惠卷 3：幸运大抽奖 4: 余额 5:奖品  6:积分 7：自定义',
     `comment`           varchar(200) not null                                         DEFAULT '' comment '说明',
     `receive_time`      timestamp    NOT NULL COMMENT '领取时间',
     `mrking_voucher_id` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '已领取的优惠券',
