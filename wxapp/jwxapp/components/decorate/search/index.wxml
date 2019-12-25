@@ -1,13 +1,14 @@
-<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
-<view id='{{m.cur_idx}}' style="min-height:{{m.fix_height}}rpx;z-index:10">
-<view  style="margin-bottom:{{m.margin_bot}}rpx;background:{{m.box_color}};{{m.fixed ? ('top:'+m.top+'px;position:fixed;z-index:9;width:750rpx;'):''}}" class='all_info' bindtap='bindSearchConfirm'>
-  <view class="search" style='background:{{m.back_color}};border-radius:{{m.search_style == 0?"14rpx;":"90rpx;"}};height:{{m.height}};width:{{m.search_sort == 1 ? "84%" : "94%"}}'>
-    <icon type="search" class="search-img" size="13"></icon>
-    <input type="text" placeholder="{{i18n.$t(localePack,'components.decorate.searchPlaceholder')}}" disabled='true' />
-    <view class='search_sort' wx:if='{{m.search_sort == 1}}' catchtap='toSort'>
-      <view class="iconfont iconfenlei" style="color:{{m.sort_bg_color}};font-size:56rpx;"></view>
-      <text style="color:{{m.sort_bg_color}}">{{i18n.$t(localePack,'components.decorate.searchText')}}</text>
-    </view>
-  </view>
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n" />
+<view id='{{m.cur_idx}}' style="min-height:{{m.fix_height}}px;z-index:10">
+	<view style="margin-bottom:{{m.margin_bot}}rpx;background:{{m.box_color}};{{m.fixed ? ('top:'+m.top+'px;position:fixed;z-index:9;width:750rpx;'):''}}" class='all_info' bindtap='bindSearchConfirm'>
+		<view class="search" style='background:{{m.back_color}};border-radius:{{m.search_style == 0?"14rpx;":"90rpx;"}};height:{{m.height}};width:{{m.search_sort == 1 ? "84%" : "94%"}}'>
+			<icon type="search" class="search-img" size="13" />
+			<input type="text" placeholder="{{i18n.$t(localePack,'components.decorate.searchPlaceholder')}}" disabled='true' />
+			<view class='search_sort' wx:if='{{m.search_sort == 1}}' catchtap='toSort'>
+				<view class="iconfont iconfenlei" style="color:{{m.sort_bg_color}};font-size:56rpx;" />
+				<text style="color:{{m.sort_bg_color}}">{{i18n.$t(localePack,'components.decorate.searchText')}}</text>
+			</view>
+		</view>
+	</view>
 </view>
-</view>
+

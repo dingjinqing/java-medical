@@ -50,7 +50,7 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="$emit('update:dialogVisible', false)">取 消</el-button>
+          <el-button @click="handleToCansole()">取 消</el-button>
           <el-button
             type="primary"
             @click="handleSure()"
@@ -284,8 +284,10 @@ export default {
         }
       }
       return buckets[0].children
+    },
+    handleToCansole () {
+      this.busClassDialogVisible = false
     }
-
   }
 }
 </script>
