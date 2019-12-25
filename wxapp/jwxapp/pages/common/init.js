@@ -94,7 +94,7 @@ var init = {
     }
     var data = {
       bottom: this.bottom,
-      imageUrl: util.getImageUrl(),
+      imageUrl: util.getCache("imageHost") || util.getImageUrl(),
       isIpx: util.isIPhoneX() ? 1 : 0,
       shop_flag: this.bottom.setting.shop_flag,
       hid_bottom: this.bottom.setting.hid_bottom,

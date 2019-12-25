@@ -1,7 +1,27 @@
 var util = require("../../utils/util.js");
 const actBaseInfo = {
   1: {
-    actName: '拼团'
+    actName: '拼团',
+    actStatus:{},
+    prdListName:'groupBuyPrdMpVos',
+    actStatus: {
+      0: '距结束仅剩',
+      1: '活动不存在',
+      2: '活动已停用',
+      3: '据开始仅剩',
+      4: '活动已结束',
+      5: '商品已抢光',
+      6: '超购买上限'
+    },
+    prdPriceName: {
+      prdRealPrice: 'groupPrice',
+      prdLinePrice: 'prdPrice'
+    },
+    countDownInfo: {
+      canCountDown: [0, 3],
+      3: 'startTime',
+      0: 'endTime'
+    }
   },
   3: {
     actName: '砍价'
@@ -17,6 +37,7 @@ const actBaseInfo = {
       5: '商品已抢光',
       6: '超购买上限'
     },
+    prdListName:'actProducts',
     prdPriceName: {
       prdRealPrice: 'secKillPrice',
       prdLinePrice: 'prdPrice'
@@ -33,14 +54,6 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    goodsId: null,
-    goodsMediaInfo: null,
-    goodsInfo: null,
-    couponList: null,
-    pledgeInfo: null,
-    limitInfo: null,
-    productInfo: null,
-    canBuy: true,
     actBarInfo: {}
   },
   /**
@@ -67,37 +80,54 @@ global.wxPage({
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
-            let {comment,goodsImgs,goodsVideo,goodsVideoImg,coupons,goodsDesc = null,isPageUp = 0,goodsPageId = null,deliverPlace, defaultPrd,activity,goodsNumber,goodsSaleNum,labels,goodsAd,isCollected,products,goodsName,deliverPrice}= res.content
-            this.setData({
-              comment,//评价
-              deliverPlace, //发货地
-              defaultPrd,//是否单规格
-              goodsMediaInfo:{
+            let {comment,goodsImgs,goodsVideo,goodsVideoImg,coupons,goodsDesc = null,isPageUp = 0,goodsPageId = null,deliverPlace, defaultPrd,activity,goodsNumber,goodsSaleNum,labels,goodsAd,isCollected,products,goodsName,deliverPrice,limitBuyNum,
+              limitMaxNum,goodsId}= res.content
+              let goodsMediaInfo = {
                 goodsImgs,//商品图片
                 goodsVideo,//商品视频
                 goodsVideoImg//视频封面
-              },
-              couponList:coupons,//优惠券
-              goodsDescInfo:{
+              }
+              let goodsDescInfo = {
                 goodsDesc,//商品描述
                 isPageUp,//描述上下位置
                 goodsPageId //页面模板ID
-              },
-              goodsInfo:{
-                activity,
-                defaultPrd,
+              }
+              let specParams = {
+                goodsId,
                 goodsNumber,
+                defaultPrd,
+                activity,
+                products,
+                limitBuyNum,
+                limitMaxNum,
+                goodsImgs
+              }
+              
+              let goodsInfo = {
                 goodsSaleNum,
                 labels,
                 goodsAd,
                 isCollected,
-                products,
                 goodsName,
-                deliverPrice
+                deliverPrice,
+                ...specParams
               }
+            this.setData({
+              comment,//评价
+              deliverPlace, //发货地
+              defaultPrd,//是否单规格
+              goodsMediaInfo,
+              couponList:coupons,//优惠券
+              goodsDescInfo
+            })
+            this.setData({
+              specParams
+            })
+            this.setData({
+              goodsInfo
             })
             // this.getGoodsInfo(res.content);
-            // this.getActivity(res.content)
+            this.getActivity(res.content)
             resolve(res.content);
           }
         }, {
@@ -156,42 +186,6 @@ global.wxPage({
       productInfo: data.detail
     });
   },
-  // 获取商品基本信息
-  getGoodsInfo({
-    goodsId,
-    goodsName,
-    goodsSaleNum,
-    labels,
-    goodsAd,
-    defaultPrd,
-    products,
-    goodsNumber,
-    goodsImgs,
-    limitBuyNum,
-    limitMaxNum,
-    deliverPlace,
-    isCollected
-  }) {
-    let info = {
-      goodsId,
-      goodsName,
-      goodsAd,
-      goodsSaleNum,
-      labels,
-      defaultPrd,
-      products,
-      goodsNumber,
-      goodsImgs,
-      limitBuyNum,
-      limitMaxNum,
-      deliverPlace,
-      deliverPrice,
-      isCollected
-    };
-    this.setData({
-      goodsInfo: info
-    });
-  },
   // 打开规格弹窗
   showSpecDialog(trigger) {
     console.log(trigger)
@@ -213,16 +207,15 @@ global.wxPage({
   }) {
     if (!activity) return
     this.setData({
-      activity,
       'actBarInfo.actName': this.getActName(activity),
       'actBarInfo.actStatusName': this.getActStatusName(activity),
-      'actBarInfo.prdRealPrice': this.getMin(activity.actProducts.map(item => {
+      'actBarInfo.prdRealPrice': this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
         let {
           [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice
         } = item;
         return prdRealPrice
       })),
-      'actBarInfo.prdLinePrice': this.getMin(activity.actProducts.map(item => {
+      'actBarInfo.prdLinePrice': this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
         let {
           [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice
         } = item;
@@ -290,10 +283,9 @@ global.wxPage({
         let actState = Object.keys(actBaseInfo[activityType]['actStatus']).find((k)=>{return actBaseInfo[activityType]['actStatus'][k] === '活动已结束'})
         this.setData({
           'dealtAct.canBuy': false,
-          'activity.actState': actState,
-          'actBarInfo.actStatusName': this.getActStatusName({...this.data.activity,actState}),
+          'actBarInfo.actStatusName': this.getActStatusName({activityType,actState}),
         })
-        this.getCountDown(this.data.activity)
+        this.getCountDown({activityType,actState,endTime:this.specParams.activity.endTime,startTime:this.specParams.activity.endTime})
       }],
       [{actState:"startTime",second:true},()=>{
         this.setData({
@@ -304,10 +296,9 @@ global.wxPage({
         let actState = Object.keys(actBaseInfo[activityType]['actStatus']).find((k)=>{return actBaseInfo[activityType]['actStatus'][k] === '距结束仅剩'})
         this.setData({
           'dealtAct.canBuy': true,
-          'activity.actState': actState,
-          'actBarInfo.actStatusName': this.getActStatusName({...this.data.activity,actState}),
+          'actBarInfo.actStatusName': this.getActStatusName({activityType,actState}),
         })
-        this.getCountDown(this.data.activity)
+        this.getCountDown({activityType,actState,endTime:this.specParams.activity.endTime,startTime:this.specParams.activity.endTime})
       }]
     ])
     ;[...state].find(([key])=>{return key.actState === actBaseInfo[activityType]['countDownInfo'][actState] && key.second === total_micro_second > 0})[1].call(this)

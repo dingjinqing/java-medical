@@ -162,6 +162,10 @@ public class BargainService extends ShopBaseService  {
 			record.setShareConfig(Util.toJson(param.getShareConfig()));
 		}
 		db().executeInsert(record);
+        if(param.getStartTime().before(DateUtil.getLocalDateTime()) && param.getEndTime().after(DateUtil.getLocalDateTime())){
+            //活动已生效
+            saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
+        }
 	}
 	
 	/**

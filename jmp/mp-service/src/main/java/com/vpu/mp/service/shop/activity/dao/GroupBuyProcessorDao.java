@@ -55,7 +55,8 @@ public class GroupBuyProcessorDao extends GroupBuyService {
 
     /**
      * 商品详情-获取拼团信息
-     * @param userId 用户id
+     *
+     * @param userId     用户id
      * @param activityId 拼团活动id
      * @return 拼团活动信息
      */
@@ -78,7 +79,6 @@ public class GroupBuyProcessorDao extends GroupBuyService {
         // 活动未开始
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(aByte)) {
             vo.setStartTime(groupBuyDefineRecord.getStartTime().getTime() - now.getTime());
-            vo.setEndTime(groupBuyDefineRecord.getEndTime().getTime() - now.getTime());
         }
         vo.setEndTime(groupBuyDefineRecord.getEndTime().getTime() - now.getTime());
 
@@ -91,8 +91,8 @@ public class GroupBuyProcessorDao extends GroupBuyService {
         vo.setLimitBuyNum(groupBuyDefineRecord.getLimitBuyNum());
         vo.setLimitMaxNum(groupBuyDefineRecord.getLimitMaxNum());
 
-        /** 活动运费 1 免运费 2 按照商品原运费模板*/
-        vo.setShippingType(groupBuyDefineRecord.getShippingType());
+        /** 拼团表中 shippingType 活动运费 1 免运费 2 按照商品原运费模板*/
+        vo.setFreeShip((byte) (groupBuyDefineRecord.getShippingType() == 1 ? 0 : 1));
 
         /**已成功拼团数量*/
         logger().debug("小程序-商品详情-拼团信息-已成团数量");
@@ -108,10 +108,11 @@ public class GroupBuyProcessorDao extends GroupBuyService {
 
     /**
      * 商品详情-获取拼团规格信息
+     *
      * @param activityId 拼团活动id
      * @return {@link GroupBuyPrdMpVo} 拼团规格信息
      */
-    public List<GroupBuyPrdMpVo> getGroupBuyPrdInfo(Integer activityId){
+    public List<GroupBuyPrdMpVo> getGroupBuyPrdInfo(Integer activityId) {
         return db().select(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID, GROUP_BUY_PRODUCT_DEFINE.STOCK, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE, GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE)
             .from(GROUP_BUY_PRODUCT_DEFINE)
             .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId))
@@ -168,18 +169,20 @@ public class GroupBuyProcessorDao extends GroupBuyService {
 
     /**
      * 获取拼团成功数量
+     *
      * @param activityId 拼团活动id
      * @return 已成团数量
      */
     private Integer getGroupBuySucessCount(Integer activityId) {
-       return db().fetchCount(GROUP_BUY_LIST,GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId).and(GROUP_BUY_LIST.STATUS.eq(GroupBuyConstant.STATUS_SUCCESS)).and(GROUP_BUY_LIST.IS_GROUPER.eq(GroupBuyConstant.IS_GROUPER_Y)));
+        return db().fetchCount(GROUP_BUY_LIST, GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId).and(GROUP_BUY_LIST.STATUS.eq(GroupBuyConstant.STATUS_SUCCESS)).and(GROUP_BUY_LIST.IS_GROUPER.eq(GroupBuyConstant.IS_GROUPER_Y)));
     }
 
     /**
      * 获取正在进行拼团-列表信息信息
-     * @param activityId 活动id
+     *
+     * @param activityId  活动id
      * @param limitAmount 活动成团人数
-     * @param now 当前时间
+     * @param now         当前时间
      * @return {@link GroupBuyListMpVo} 列表信息
      */
     private List<GroupBuyListMpVo> getGroupBuyListInfo(Integer activityId, Short limitAmount, Timestamp now) {

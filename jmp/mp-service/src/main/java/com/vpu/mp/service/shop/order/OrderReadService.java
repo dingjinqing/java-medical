@@ -757,9 +757,7 @@ public class OrderReadService extends ShopBaseService {
             ReturnOrderListMp returnOrderListMp = rOrder.into(ReturnOrderListMp.class);
             //买家；商家（包含定时任务）
                 ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(rOrder.getRetId());
-                //List<OperatorRecord> operatorRecord = returnStatusChange.getOperatorRecord(rOrder.getRetId());
                 returnOrderListMp.setRole(OrderConstant.IS_MP_Y == lastOperator.getType() ? OrderConstant.IS_MP_Y : OrderConstant.IS_MP_ADMIN);
-                //returnOrderListMp.setOperatorRecord(operatorRecord);
                 returnOrderListMp.setFinishTime(lastOperator.getCreateTime());
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });
