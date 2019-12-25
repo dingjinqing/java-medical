@@ -1415,6 +1415,9 @@ ADD COLUMN `remark_id` varchar(100) NOT NULL COMMENT '备注模板id' AFTER `des
 ALTER TABLE `b2c_user_score`
 ADD COLUMN `remark_data` varchar(200) DEFAULT '' COMMENT '备注模板数据' AFTER `remark_id`;
 
+
+ALTER TABLE `b2c_mp_user_portrait`
+ADD COLUMN `start_time` TIMESTAMP NOT NULL COMMENT '开始时间，ref_date前8个字符' ;
 -- 修改字段
 ALTER TABLE `b2c_coopen_activity`
 DROP COLUMN  `bg_action`,
