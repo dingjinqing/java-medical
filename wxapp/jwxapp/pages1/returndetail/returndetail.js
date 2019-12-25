@@ -23,6 +23,8 @@ global.wxPage({
     voucherImages: [], // 提交物流时凭证图
     returnGoods: [], // 售后商品
     applicationTime: '', // 申请时间
+    activityName: '', //商品活动名称
+    goodsType: '', // 活动类型
     return: ['仅退款', '退货退款', '仅退运费', '手动退款', '换货'], // 售后类型
     reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'], // 退货退款原因
     reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
@@ -77,6 +79,30 @@ global.wxPage({
         // 申请时凭证图
         let goodsImages = JSON.parse(orderInfo.goodsImages) || []
         let voucherImages = JSON.parse(orderInfo.voucherImages) || []
+        // 活动类型
+        // 商品活动
+        let activityName = '', goodsType = '';
+        if (orderInfo.orderInfo && orderInfo.orderInfo.goodsType) {
+          let goodsTypes = orderInfo.orderInfo.goodsType.split(',')
+          for (let i = 0; i < goodsTypes.length; i++) {
+            let type = goodsTypes[i]
+            goodsType = type
+            switch (type) {
+              case 1:
+                activityName = '拼团'
+                break
+              case 3:
+                activityName = '砍价'
+                break
+              case 5:
+                activityName = '秒杀'
+                break
+              default:
+                activityName = ''
+                break
+            }
+          }
+        }
         that.setData({
           orderInfo: orderInfo,
           orderSn: orderInfo.orderSn,
@@ -86,7 +112,9 @@ global.wxPage({
           goodsImages: goodsImages,
           voucherImages: voucherImages,
           returnGoods: orderInfo.returnGoods,
-          applicationTime: applicationTime
+          applicationTime: applicationTime,
+          activityName: activityName,
+          goodsType: goodsType
         })
         that.countdown()
       }
