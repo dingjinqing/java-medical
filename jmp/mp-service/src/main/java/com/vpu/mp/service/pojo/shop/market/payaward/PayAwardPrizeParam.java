@@ -22,7 +22,6 @@ public class PayAwardPrizeParam {
     /**
      * id
      */
-    @NotNull(groups = UpdateGroup.class)
     private Integer id;
     /**
      * 奖励类型
