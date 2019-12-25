@@ -168,7 +168,6 @@ public class PaymentService extends ShopBaseService {
 				if (orderInfo.getOrderPayWay() == OrderConstant.PAY_WAY_DEPOSIT) {
 					// 定金尾款支付方式时，先标记定金已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FRONT);
-
 				} else {
 					// 全款支付方式时，则直接标记为尾款已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);

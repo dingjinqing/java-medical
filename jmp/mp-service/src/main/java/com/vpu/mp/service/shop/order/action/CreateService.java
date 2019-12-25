@@ -231,7 +231,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //保存营销活动信息
                 processorFactory.processSaveOrderInfo(param,order);
                 //TODO 订单类型拼接(支付有礼)
-                //订单入库
+                //订单入库,以上只有orderSn，无法获取orderId
                 order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
                 order.store();
                 orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
@@ -477,7 +477,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //处理配送方式及门店信息;设置门店列表
         processExpressList(storeLists, vo);
         //计算金额相关、vo赋值
-        processOrderBeforeVo( param, vo, vo.getOrderGoods());
+        processOrderBeforeVo(param, vo, vo.getOrderGoods());
         //服务条款
         setServiceTerms(vo);
         // 积分使用规则
