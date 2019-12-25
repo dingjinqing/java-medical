@@ -110,6 +110,11 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
             goodsNum+=vo.getStock();
         }
         capsule.setGoodsNumber(goodsNum);
+        if (goodsNum == 0) {
+            log.debug("小程序-商品详情-拼团商品数量已用完");
+            groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+
         capsule.setActivity(groupBuyInfo);
     }
 

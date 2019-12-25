@@ -91,6 +91,9 @@ public class GroupBuyProcessorDao extends GroupBuyService {
         vo.setLimitBuyNum(groupBuyDefineRecord.getLimitBuyNum());
         vo.setLimitMaxNum(groupBuyDefineRecord.getLimitMaxNum());
 
+        /** 活动运费 1 免运费 2 按照商品原运费模板*/
+        vo.setShippingType(groupBuyDefineRecord.getShippingType());
+
         /**已成功拼团数量*/
         logger().debug("小程序-商品详情-拼团信息-已成团数量");
         vo.setGroupBuySuccessCount(getGroupBuySucessCount(activityId));
