@@ -22,6 +22,7 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.shop.image.ImageService;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 
@@ -44,6 +45,9 @@ public class WxAppAuth {
 
 	@Autowired
 	protected JedisManager jedis;
+	
+	@Autowired
+	protected ImageService imageService;
 
 	public static final String TOKEN = "V-Token";
 
@@ -148,6 +152,7 @@ public class WxAppAuth {
 		sessionUser.setUsername(userDetail == null ? null : userDetail.getUsername());
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
 		jedis.set(token, Util.toJson(sessionUser));
+		sessionUser.setImageHost(imageService.getImageHost()+"/");
 		return sessionUser;
 	}
 
