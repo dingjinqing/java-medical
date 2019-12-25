@@ -125,7 +125,7 @@ export default {
       },
       disCountData: {
         powerDiscount: true,
-        discount: '',
+        discount: undefined,
         discountGoodsType: '1',
         choosedGoodsId: [],
         choosedStoreId: [],

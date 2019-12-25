@@ -93,15 +93,4 @@ public class AdminOverviewSearchAnalysisController extends AdminBaseController{
         return success();
     }
 
-    /**
-     * 获取用户最近一次搜索的热词
-     * @param param 用户id
-     * @return 最近搜索热词
-     */
-    @PostMapping("/lastSearch")
-    public JsonResult getUserLastSearch(@RequestBody UserId param) {
-        HotWords result = shop().overview.hotWordsService.getUserLastSearch(param);
-
-        return success(result);
-    }
 }

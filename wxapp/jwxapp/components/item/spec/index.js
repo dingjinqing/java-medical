@@ -27,10 +27,6 @@ global.wxComponent({
         console.log(val)
       }
     },
-    activity:{
-      type:Object,
-      value:null,
-    },
     dealtAct:{
       type:Object,
       value:null

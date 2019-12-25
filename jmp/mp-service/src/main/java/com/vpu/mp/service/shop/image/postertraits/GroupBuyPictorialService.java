@@ -41,19 +41,19 @@ public class GroupBuyPictorialService  extends ShopBaseService {
     @Autowired
     private DomainConfig domainConfig;
     /**
-     * 获取小程序分享图片
+     * 拼团海报
      * @return
      */
-    public String getGroupBuyShareBase64Image(Integer userId, Integer groupId){
+    public String getGroupBuyShareBase64Pictorial(Integer userId, Integer groupId){
         UserInfo userInfo = userService.getUserInfo(userId);
-        logger().debug("获取拼团分享图片");
+        logger().debug("拼团海报");
         //活动
-        GroupBuyListRecord groupBuyList = groupBuyListService.getGroupBuyListByGroupId(groupId);
+        GroupBuyListRecord groupBuyList = groupBuyListService.getGrouperByGroupId(groupId);
         GroupBuyDefineRecord groupBuyRecord = groupBuyService.getGroupBuyRecord(groupBuyList.getActivityId());
         //商品
         GoodsRecord goods = goodsService.getGoodsById(groupBuyRecord.getGoodsId()).get();
         //图片排版
-        BufferedImage backgroundImage = groupBuyImageComposing( goods);
+        BufferedImage backgroundImage = groupBuyImageComposing(goods);
         return ImageUtil.toBase64(backgroundImage);
     }
 
@@ -73,12 +73,24 @@ public class GroupBuyPictorialService  extends ShopBaseService {
             BufferedImage goodsImage = ImageIO.read(new URL(domainConfig.imageUrl(goods.getGoodsImg())));
             BufferedImage bufferedImage = ImageUtil.resizeImage(200, 200, goodsImage);
             ImageUtil.addTwoImage(backgroundImage, bufferedImage, 100, 260);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
         return backgroundImage;
     }
 
+
+    private String groupBuyShareImage(Integer userId, Integer groupId){
+        UserInfo userInfo = userService.getUserInfo(userId);
+        logger().debug("拼团海报");
+        //活动
+        GroupBuyListRecord groupBuyList = groupBuyListService.getGrouperByGroupId(groupId);
+        GroupBuyDefineRecord groupBuyRecord = groupBuyService.getGroupBuyRecord(groupBuyList.getActivityId());
+        //商品
+        GoodsRecord goods = goodsService.getGoodsById(groupBuyRecord.getGoodsId()).get();
+        //图片排版
+        BufferedImage backgroundImage = groupBuyImageComposing(goods);
+        return null;
+    }
 
 }
