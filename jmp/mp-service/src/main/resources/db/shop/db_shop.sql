@@ -1994,7 +1994,6 @@ create table `b2c_form_submit_details`
 
 -- -- 用户画像
 -- drop table if exists `b2c_mp_user_portrait`;
-create table `b2c_mp_user_portrait`
 CREATE TABLE `b2c_mp_user_portrait` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_date` char(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '时间： 如： "20180313"',
