@@ -99,9 +99,18 @@ global.wxPage({
       }
       Object.keys(options).forEach(item=>{
         if(Object.keys(this.data.filterData).includes(item)){
-          target['filterData'][item] = JSON.parse(options[item])
+          try {
+            target['filterData'][item] = JSON.parse(options[item])
+          } catch (error) {
+            target['filterData'][item] = options[item]
+          }
         } else {
-          target['data'][item] = JSON.parse(options[item])
+          try {
+            target['data'][item] = JSON.parse(options[item])
+          } catch (error) {
+            target['data'][item] = options[item]
+          }
+          
         }
       })
       this.setData({
