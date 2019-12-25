@@ -11,6 +11,7 @@ import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 import static com.vpu.mp.db.shop.tables.MpWeeklyRetain.MP_WEEKLY_RETAIN;
 import static com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -204,6 +205,10 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.setType(type);
+            String refDate = info.getRefDate();
+            String date = refDate.substring(0,8);
+            Timestamp startTime = DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_BEGIN, date);
+            record.setStartTime(startTime);
             int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
             if(execute>0) {
             	record.update();

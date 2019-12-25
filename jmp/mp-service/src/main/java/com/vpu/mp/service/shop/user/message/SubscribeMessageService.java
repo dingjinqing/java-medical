@@ -3,13 +3,13 @@ package com.vpu.mp.service.shop.user.message;
 import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -487,6 +487,10 @@ public class SubscribeMessageService extends ShopBaseService {
             record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.setType(type);
+            String refDate = info.getRefDate();
+            String date = refDate.substring(0,8);
+            Timestamp startTime = DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_BEGIN, date);
+            record.setStartTime(startTime);
             int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
             if(execute>0) {
             	logger().info("更新");

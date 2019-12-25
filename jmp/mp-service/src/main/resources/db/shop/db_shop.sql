@@ -1995,15 +1995,18 @@ create table `b2c_form_submit_details`
 -- -- 用户画像
 -- drop table if exists `b2c_mp_user_portrait`;
 create table `b2c_mp_user_portrait`
-(
-    `ref_date`     char(30)   not null comment '时间： 如： "20180313"',
-    `visit_uv_new` longtext comment '新用户',
-    `visit_uv`     longtext comment '活跃用户',
-    `type`         tinyint(4) not null default '0' comment '0:昨天，1：最近7天，2:30天',
-    `create_time`  timestamp           default current_timestamp,
-    `update_time`  timestamp           default current_timestamp on update current_timestamp comment '最后修改时间',
-    key `type` (`type`) using btree,
-    key `ref_date` (`ref_date`) using btree
+CREATE TABLE `b2c_mp_user_portrait` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ref_date` char(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '时间： 如： "20180313"',
+  `visit_uv_new` longtext COLLATE utf8mb4_unicode_ci COMMENT '新用户',
+  `visit_uv` longtext COLLATE utf8mb4_unicode_ci COMMENT '活跃用户',
+  `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0:昨天，1：最近7天，2:30天',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间，ref_date前8个字符',
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`) USING BTREE,
+  KEY `ref_date` (`ref_date`) USING BTREE
 );
 
 -- --  消息模板配置表
