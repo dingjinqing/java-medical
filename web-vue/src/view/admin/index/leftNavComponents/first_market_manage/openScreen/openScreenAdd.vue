@@ -174,7 +174,7 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item
-                v-show="form.activityAction == 4"
+                v-if="form.activityAction == 4"
                 :label="$t('openScreenAdd.integral') + '：'"
                 prop="giveScore"
               >
@@ -185,7 +185,7 @@
                 ></el-input>
               </el-form-item>
               <el-form-item
-                v-show="form.activityAction == 1"
+                v-if="form.activityAction == 1"
                 :label="$t('openScreenAdd.coupon2')"
                 prop="mrkingVoucherId"
               >
@@ -242,14 +242,14 @@
                 </div>
               </el-form-item>
               <el-form-item
-                v-show="form.activityAction == 2"
+                v-if="form.activityAction == 2"
                 :label="$t('openScreenAdd.luckyDraw')+'：'"
                 prop="lotteryId"
               >
                 <selectPayRewardAct v-model="form.lotteryId"></selectPayRewardAct>
               </el-form-item>
               <el-form-item
-                v-show="form.activityAction == 5"
+                v-if="form.activityAction == 5"
                 :label="$t('openScreenAdd.balance')+'：'"
                 prop="giveAccount"
               >
@@ -260,7 +260,7 @@
                 ></el-input>
               </el-form-item>
               <el-form-item
-                v-show="form.activityAction == 6"
+                v-if="form.activityAction == 6"
                 :label="$t('openScreenAdd.splitCoupon')+'：'"
                 prop="mrkingVoucherId"
               >
@@ -324,7 +324,7 @@
                 </div>
               </el-form-item>
               <el-form-item
-                v-show="form.activityAction == 3"
+                v-if="form.activityAction == 3"
                 :label="$t('openScreenAdd.eventPictures2')"
                 prop="customizeImgPath"
               >
@@ -354,9 +354,9 @@
                 <span class="upload-tip">{{$t('openScreenAdd.recommendedSize')}}560px * 700px</span>
               </el-form-item>
               <el-form-item
-                v-show="form.activityAction == 3"
+                v-if="form.activityAction == 3"
                 :label="$t('openScreenAdd.setLink')"
-                required
+                prop="customizeUrl"
               >
                 <el-input
                   v-model="form.customizeUrl"
@@ -371,7 +371,6 @@
               <el-form-item
                 :label="$t('openScreenAdd.numPrizes')"
                 prop="awardNum"
-                required
               >
                 <el-input-number
                   v-model="form.awardNum"
@@ -490,6 +489,9 @@ export default {
         giveAccount: [
           { required: true, message: this.$t('openScreenAdd.piAmount'), trigger: 'blur' },
           { type: 'number', message: this.$t('openScreenAdd.amountNum') }
+        ],
+        customizeUrl: [
+          { required: true, message: this.$t('openScreenAdd.pselectLink'), trigger: 'blur' }
         ]
       },
 

@@ -72,7 +72,7 @@
                 <text>￥{{item.shippingFee}}</text>
               </view>
             </block>
-            <view wx:if="{{item.refundRefuseReason != ''}}">
+            <view wx:if="{{item.refundRefuseReason != '' && item.refundRefuseReason != null}}">
               <text class="order-item-title">售后说明：</text>
               <text>{{item.refundRefuseReason}}</text>
             </view>

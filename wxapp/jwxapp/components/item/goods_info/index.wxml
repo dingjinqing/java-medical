@@ -6,10 +6,10 @@
     </view>
     <view class="goods_operate">
       <view class="goods_share" bindtap="share">
-        <text class="iconfont iconfenxiang"></text>
+        <text class="iconfont iconfenxiang" style="color:{{main_setting.comColor}}"></text>
       </view>
       <view class="goods_collect" bindtap="toogleCollect">
-        <text class="iconfont {{isCollected ? 'iconshoucang' : 'iconshoucang1'}}" style="color:{{isCollected && main_setting.comColor}}"></text>
+        <text class="iconfont {{isCollected ? 'iconshoucang' : 'iconshoucang1'}}" style="color:{{main_setting.comColor}}"></text>
       </view>
     </view>
   </view>
@@ -24,12 +24,12 @@
     <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">{{item}}</text>
   </view>
   <view class="flex-wrap">
-    <view class="flex-item" wx:if="{{activity.activityType === 5}}">剩余可秒杀数量：{{activity.stock}}个</view>
+    <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">剩余可秒杀数量：{{goodsInfo.activity.stock}}个</view>
     <view class="flex-item" wx:else>库存：{{goodsInfo.goodsNumber}}个</view>
-    <view class="flex-item" wx:if="{{activity.activityType !== 5}}">销量：{{goodsInfo.goodsSaleNum}}</view>
+    <view class="flex-item" wx:if="{{goodsInfo.activity.activityType !== 5}}">销量：{{goodsInfo.goodsSaleNum}}</view>
     <view class="flex-item">运费：{{goodsInfo.deliverPrice}}</view>
   </view>
-  <view class="flex-wrap" wx:if="{{activity.activityType !== 5}}">
+  <view class="flex-wrap" wx:if="{{goodsInfo.activity.activityType !== 5}}">
     <view class="flex-item">配送：快递</view>
     <view class="flex-item">门店自提 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
     <view class="flex-item">同城配送 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>

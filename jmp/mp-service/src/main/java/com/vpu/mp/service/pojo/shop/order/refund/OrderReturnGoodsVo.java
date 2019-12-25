@@ -19,4 +19,5 @@ public class OrderReturnGoodsVo extends OrderGoodsVo{
 	private Byte success;
 	@JsonIgnore
 	private BigDecimal returnMoney;
+	private Integer isGift;
 }

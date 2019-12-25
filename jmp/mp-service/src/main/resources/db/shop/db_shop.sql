@@ -1994,16 +1994,18 @@ create table `b2c_form_submit_details`
 
 -- -- 用户画像
 -- drop table if exists `b2c_mp_user_portrait`;
-create table `b2c_mp_user_portrait`
-(
-    `ref_date`     char(30)   not null comment '时间： 如： "20180313"',
-    `visit_uv_new` longtext comment '新用户',
-    `visit_uv`     longtext comment '活跃用户',
-    `type`         tinyint(4) not null default '0' comment '0:昨天，1：最近7天，2:30天',
-    `create_time`  timestamp           default current_timestamp,
-    `update_time`  timestamp           default current_timestamp on update current_timestamp comment '最后修改时间',
-    key `type` (`type`) using btree,
-    key `ref_date` (`ref_date`) using btree
+CREATE TABLE `b2c_mp_user_portrait` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ref_date` char(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '时间： 如： "20180313"',
+  `visit_uv_new` longtext COLLATE utf8mb4_unicode_ci COMMENT '新用户',
+  `visit_uv` longtext COLLATE utf8mb4_unicode_ci COMMENT '活跃用户',
+  `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0:昨天，1：最近7天，2:30天',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间，ref_date前8个字符',
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`) USING BTREE,
+  KEY `ref_date` (`ref_date`) USING BTREE
 );
 
 -- --  消息模板配置表
@@ -4784,7 +4786,7 @@ CREATE TABLE `b2c_coopen_activity`
     `action`             tinyint(1)                              NOT NULL DEFAULT '1' COMMENT '针对用户群体： 1: 初次访问新用户 2: 全部用户 3:未支付的用户',
     `name`               varchar(50) COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '活动名称',
     `title`              varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '宣传语',
-    `bg_action`          tinyint(4)                              NOT NULL DEFAULT '1' COMMENT '背景图',
+    `bg_imgs` VARCHAR (255)   NOT NULL DEFAULT '[]' COMMENT '背景图',
     `is_forever`         int(11)                                 NOT NULL DEFAULT '0' COMMENT '是否永久有效 0:无效 1:有效',
     `start_date`         datetime                                NOT NULL COMMENT '有效期-起始',
     `end_date`           datetime                                NOT NULL COMMENT '有效期-结束',
@@ -4811,11 +4813,11 @@ CREATE TABLE `b2c_coopen_activity_records`
     `id`                int(11)      NOT NULL AUTO_INCREMENT,
     `activity_id`       int(11)      NOT NULL COMMENT '活动id',
     `user_id`           int(11)      NOT NULL,
-    `activity_action`   tinyint(1)                                                    DEFAULT '1' COMMENT '活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂',
+    `activity_action`   tinyint(1)                                                    DEFAULT '1' COMMENT '活动类型：0无奖励 1：普通优惠卷 2：分裂优惠卷 3：幸运大抽奖 4: 余额 5:奖品  6:积分 7：自定义',
     `comment`           varchar(200) not null                                         DEFAULT '' comment '说明',
     `receive_time`      timestamp    NOT NULL COMMENT '领取时间',
     `mrking_voucher_id` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '已领取的优惠券',
-    `lottery_id`        int(11) unsigned                                              DEFAULT NULL COMMENT '抽奖id',
+    `lottery_id`        int(11)                                              DEFAULT NULL COMMENT '抽奖id',
     `give_num`          decimal(10, 2)                                                DEFAULT '0.00' COMMENT '积分或者余额数量',
     `create_time`       timestamp    NOT NULL                                         DEFAULT CURRENT_TIMESTAMP,
     `update_time`       timestamp    NOT NULL                                         DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',

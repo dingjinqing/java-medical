@@ -25,7 +25,8 @@
           </el-radio>
         </div>
         <div class="active-tip">
-          {{ $t('memberCard.chooseUserInfo') }}
+          <span>{{ $t('memberCard.chooseUserInfo') }}</span>
+          <span v-if="activeError" class="active-error">请选择激活配置信息</span>
         </div>
         <div
           v-if="ruleForm.activation==='1'"
@@ -67,11 +68,16 @@ export default {
       type: Object,
       default: () => {
         return {
-          activation: '1',
+          activation: '0',
           activationCfgBox: [],
           examine: '0'
         }
       }
+    }
+  },
+  data () {
+    return {
+      activeError: false
     }
   },
   computed: {
@@ -80,9 +86,36 @@ export default {
         return this.val
       },
       set () {
+        this.activeError = false
         this.$emit('input', this.ruleForm)
       }
     }
+  },
+  watch: {
+    'ruleForm': {
+      handler (newName, oldName) {
+        this.val = newName
+        this.ruleForm = this.val
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.$on('checkRule', () => {
+      if (this.ruleForm.activation === '1') {
+        if (this.ruleForm.activationCfgBox.length > 1) {
+          this.ruleForm.valid = true
+          this.activeError = false
+        } else {
+          this.ruleForm.valid = false
+          this.activeError = true
+          this.$message.warning('请选择激活配置信息')
+        }
+      } else {
+        this.ruleForm.valid = true
+        this.activeError = false
+      }
+    })
   }
 }
 </script>
@@ -97,6 +130,11 @@ export default {
       color: #9d9d9d;
       font-size: 13px;
       padding-left: 50px;
+      .active-error{
+        color: #F56C6C;
+        font-size: 12px;
+        padding-left: 10px;
+      }
     }
     .active-choose {
       padding-left: 50px;

@@ -9,7 +9,7 @@ module.exports = {
     name: String, // 组件名称
     imageUrl: {
       type: String,
-      value: nav.getImageUrl("")
+      value: cache.getCache("imageHost") || nav.getImageUrl("")
     },
     baseUrl: {
       type: String,

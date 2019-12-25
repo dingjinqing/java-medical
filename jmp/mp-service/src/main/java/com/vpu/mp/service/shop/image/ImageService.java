@@ -392,4 +392,8 @@ public class ImageService extends ShopBaseService implements ImageDefault {
           return imageUrl(imgPath);
       }
   }
+  
+  public String getImageHost() {
+	  return domainConfig.getImageHost();
+  }
 }

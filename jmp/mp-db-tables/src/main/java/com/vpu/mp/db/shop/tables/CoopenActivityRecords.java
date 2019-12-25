@@ -8,19 +8,9 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.CoopenActivityRecordsRecord;
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 import javax.annotation.Generated;
 import java.math.BigDecimal;
@@ -42,10 +32,10 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CoopenActivityRecords extends TableImpl<CoopenActivityRecordsRecord> {
 
-    private static final long serialVersionUID = -719853645;
+    private static final long serialVersionUID = 490903525;
 
     /**
-     * The reference instance of <code>mini_shop_4748160.b2c_coopen_activity_records</code>
+     * The reference instance of <code>mini_shop_471752.b2c_coopen_activity_records</code>
      */
     public static final CoopenActivityRecords COOPEN_ACTIVITY_RECORDS = new CoopenActivityRecords();
 
@@ -58,76 +48,76 @@ public class CoopenActivityRecords extends TableImpl<CoopenActivityRecordsRecord
     }
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.id</code>.
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.id</code>.
      */
     public final TableField<CoopenActivityRecordsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.activity_id</code>. 活动id
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.activity_id</code>. 活动id
      */
     public final TableField<CoopenActivityRecordsRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "活动id");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.user_id</code>.
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.user_id</code>.
      */
     public final TableField<CoopenActivityRecordsRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.activity_action</code>. 活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.activity_action</code>. 活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂
      */
-    public final TableField<CoopenActivityRecordsRecord, Byte> ACTIVITY_ACTION = createField("activity_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂");
+    public final TableField<CoopenActivityRecordsRecord, Byte> ACTIVITY_ACTION = createField("activity_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.comment</code>. 说明
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.comment</code>. 说明
      */
-    public final TableField<CoopenActivityRecordsRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "说明");
+    public final TableField<CoopenActivityRecordsRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "说明");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.receive_time</code>. 领取时间
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.receive_time</code>. 领取时间
      */
-    public final TableField<CoopenActivityRecordsRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "领取时间");
+    public final TableField<CoopenActivityRecordsRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "领取时间");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.mrking_voucher_id</code>. 已领取的优惠券
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.mrking_voucher_id</code>. 已领取的优惠券
      */
     public final TableField<CoopenActivityRecordsRecord, String> MRKING_VOUCHER_ID = createField("mrking_voucher_id", org.jooq.impl.SQLDataType.VARCHAR(500), this, "已领取的优惠券");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.lottery_id</code>. 抽奖id
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.lottery_id</code>. 抽奖id
      */
-    public final TableField<CoopenActivityRecordsRecord, UInteger> LOTTERY_ID = createField("lottery_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED, this, "抽奖id");
+    public final TableField<CoopenActivityRecordsRecord, Integer> LOTTERY_ID = createField("lottery_id", org.jooq.impl.SQLDataType.INTEGER, this, "抽奖id");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.give_num</code>. 积分或者余额数量
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.give_num</code>. 积分或者余额数量
      */
-    public final TableField<CoopenActivityRecordsRecord, BigDecimal> GIVE_NUM = createField("give_num", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "积分或者余额数量");
+    public final TableField<CoopenActivityRecordsRecord, BigDecimal> GIVE_NUM = createField("give_num", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "积分或者余额数量");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.create_time</code>.
      */
-    public final TableField<CoopenActivityRecordsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CoopenActivityRecordsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_coopen_activity_records.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_coopen_activity_records.update_time</code>. 最后修改时间
      */
-    public final TableField<CoopenActivityRecordsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<CoopenActivityRecordsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_4748160.b2c_coopen_activity_records</code> table reference
+     * Create a <code>mini_shop_471752.b2c_coopen_activity_records</code> table reference
      */
     public CoopenActivityRecords() {
         this(DSL.name("b2c_coopen_activity_records"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_4748160.b2c_coopen_activity_records</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_coopen_activity_records</code> table reference
      */
     public CoopenActivityRecords(String alias) {
         this(DSL.name(alias), COOPEN_ACTIVITY_RECORDS);
     }
 
     /**
-     * Create an aliased <code>mini_shop_4748160.b2c_coopen_activity_records</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_coopen_activity_records</code> table reference
      */
     public CoopenActivityRecords(Name alias) {
         this(alias, COOPEN_ACTIVITY_RECORDS);

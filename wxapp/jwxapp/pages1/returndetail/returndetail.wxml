@@ -7,7 +7,12 @@
       <!-- 买家仅退款，退货退款，填写物流[查看订单]申请后，等待商家审核[撤销申请，查看订单] -->
       <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
         <view class="order-header-h">等待商家处理售后申请</view>
-        <view class="order-header-p">如果商家同意：退款将在3日内返还您的支付账户</view>
+        <view class="order-header-p" wx:if="{{orderInfo.returnType != 4}}">
+          如果商家同意：退款将在3日内返还您的支付账户
+        </view>
+        <view class="order-header-p" wx:if="{{refundStatus === 4 && orderInfo.returnType == 4}}">
+          如果商家同意："商家确认收货后将尽快为您处理换货
+        </view>
         <view class="order-header-p">如果商家拒绝：您可以重新创建售后申请</view>
       </view>
     </block>
@@ -27,6 +32,13 @@
         <view class="order-header-p">拒绝理由：{{orderInfo.applyNotPassReason}}</view>
       </view>
     </block>
+    <block wx:elif="{{refundStatus === 5}}">
+      <!-- 商家同意退款申请完成退款[查看订单] -->
+      <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+        <view class="order-header-h">商家售后完成</view>
+        <view class="order-header-p">售后完成时间：{{orderInfo.refundSuccessTime}}</view>
+      </view>
+    </block>
     <block wx:elif="{{refundStatus === 6}}">
       <!-- 买家提交物流后，卖家拒绝申请[创建售后申请，查看订单] -->
       <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
@@ -37,16 +49,11 @@
     <block wx:elif="{{refundStatus === 7}}">
       <!-- 买家撤销申请[查看订单] -->
       <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
-        <view class="order-header-h">买家撤销售后申请</view>
+        <view class="order-header-h" wx:if="{{orderInfo.operator != 2}}">买家撤销售后申请</view>
+        <view class="order-header-h" wx:else>系统撤销售后申请</view>
         <view class="order-header-p">撤销售后申请时间：{{orderInfo.refundCancelTime}}</view>
-        <view class="order-header-p">买家主动撤销售后申请</view>
-      </view>
-    </block>
-    <block wx:elif="{{refundStatus === 5}}">
-      <!-- 商家同意退款申请完成退款[查看订单] -->
-      <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
-        <view class="order-header-h">商家售后完成</view>
-        <view class="order-header-p">售后完成时间：{{orderInfo.refundSuccessTime}}</view>
+        <view class="order-header-p" wx:if="{{orderInfo.operator != 2}}">买家主动撤销售后申请</view>
+        <view class="order-header-p" wx:else>您未在商家审核售后申请之后7日内提交退货物流(或商家未确认收货),售后申请已自动撤销。</view>
       </view>
     </block>
     <view class="order-header-detail">
@@ -66,7 +73,7 @@
     <view class="order-header-btns">
       <text class="order-header-btn" bindtap="viewOrder">查看订单</text>
       <text class="order-header-btn" wx:if="{{refundStatus === 2}}" bindtap="submitPhysics" style="color:{{comColor}};border-color:{{comColor}}">提交物流</text>
-      <text class="order-header-btn" wx:if="{{!(refundStatus === 4 && returnType === 1)}}" bindtap="cancelApplication">撤销申请</text>
+      <text class="order-header-btn" wx:if="{{refundStatus === 1 || refundStatus === 4 || refundStatus === 2}}" bindtap="cancelApplication">撤销申请</text>
       <text class="order-header-btn" wx:if="{{refundStatus === 6}}" bindtap="createReturnOrder">创建售后申请</text>
     </view>
     <view class="order-block" wx:if="{{refundStatus === 4 && returnType === 1}}">
@@ -161,7 +168,7 @@
       <view class="order-block-title">订单信息</view>
       <view class="order-block-content">
         <view class="order-block-detail-item">
-          <text class="activity-type-mark fl">拼团</text>
+          <text class="activity-type-mark fl" wx:if="{{activityName}}">{{activityName}}</text>
           <text class="details-item-title">订单编号：</text>
           <text>{{orderInfo.orderSn}}</text>
         </view>

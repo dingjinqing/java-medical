@@ -17,8 +17,17 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyEditParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyAnalysisVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyShareConfigVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
@@ -26,7 +35,11 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.*;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyDefineInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyGoodsInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoVo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyStatusInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -35,7 +48,11 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.image.postertraits.GroupBuyPictorialService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -48,10 +65,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 
 /**
  * @author 孔德成
@@ -454,16 +472,17 @@ public class GroupBuyService extends ShopBaseService {
      * 活动详情
      *
      * @param userId
+     * @param isGrouper
      * @param createTime
      * @param groupId
      * @param activityId
      * @param lang
      * @return
      */
-    public GroupBuyInfoVo getGroupBuyInfo(Integer userId, Timestamp createTime, Integer groupId, Integer activityId, String lang) {
+    public GroupBuyInfoVo getGroupBuyInfo(Integer userId, Byte isGrouper, Timestamp createTime, Integer groupId, Integer activityId, String lang) {
         Timestamp date = DateUtil.getLocalDateTime();
         // 拼团状态
-        ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(userId, date, activityId, groupId, IS_GROUPER_N);
+        ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(userId, date, activityId, groupId, isGrouper);
         //拼团活动
         GroupBuyDefineInfo groupBuy = getGroupBuyRecord(activityId).into(GroupBuyDefineInfo.class);
         Result<Record3<Integer, BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE, GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
@@ -515,8 +534,8 @@ public class GroupBuyService extends ShopBaseService {
         return groupBuyInfo;
     }
 
-    public String getGroupBuyShareBase64Image(Integer userId, Integer groupId) {
-        return groupBuyPictorialService.getGroupBuyShareBase64Image(userId, groupId);
+    public String getGroupBuyShareBase64Pictorial(Integer userId, Integer groupId) {
+        return groupBuyPictorialService.getGroupBuyShareBase64Pictorial(userId, groupId);
     }
 
     /**
@@ -543,18 +562,12 @@ public class GroupBuyService extends ShopBaseService {
         }
 
         if (groupBuyDefineRecord == null) {
-            logger().debug("小程序-商品详情-拼团信息-是否可以参与活动判断-获取拼团详情");
-            groupBuyDefineRecord = db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GROUP_BUY_DEFINE.ID.eq(activityId)))
-                .fetchAny();
-        }
-
-        if (groupBuyDefineRecord == null) {
             logger().debug("小程序-商品详情-拼团信息-活动不存在或已删除[activityId:{}]",activityId);
             return BaseConstant.ACTIVITY_STATUS_NOT_HAS;
         }
 
-        if (groupBuyDefineRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)) {
-            logger().debug("该活动未启用[activityId:{}]",activityId);
+        if (BaseConstant.ACTIVITY_STATUS_DISABLE.equals(groupBuyDefineRecord.getStatus())) {
+            logger().debug("小程序-商品详情-拼团信息-该活动未启用[activityId:{}]",activityId);
             return BaseConstant.ACTIVITY_STATUS_STOP;
         }
 
@@ -576,5 +589,10 @@ public class GroupBuyService extends ShopBaseService {
         }
 
         return BaseConstant.ACTIVITY_STATUS_CAN_USE;
+    }
+
+    public Object getGroupBuyShareImage(Integer userId, Integer groupId) {
+
+        return null;
     }
 }

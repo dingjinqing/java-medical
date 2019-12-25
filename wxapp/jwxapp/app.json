@@ -4,6 +4,7 @@
     "pages/account/account",
     "pages/index/index",
     "pages/userinfo/userinfo",
+    "pages/bargaininfo/bargaininfo",
     "pages/webview/webview",
     "pages/widthdraw/widthdraw",
     "pages/widthdrawrecord/widthdrawrecord",
@@ -21,7 +22,6 @@
     "pages/cart/cart",
     "pages/cardlist/cardlist",
     "pages/cardinfo/cardinfo",
-    "pages/cardrecord/cardrecord",
     "pages/userqrcode/userqrcode",
     "pages/bargainlist/bargainlist",
     "pages/lotterygift/lotterygift",
@@ -29,9 +29,9 @@
     "pages/storeinfo/storeinfo",
     "pages/checkout/checkout",
     "pages/servicecomment/servicecomment",
-    "pages/bargaininfo/bargaininfo",
     "components/decorate/shop_announce/index",
-    "components/decorate/bargain/index"
+    "components/decorate/bargain/index",
+    "pages/cardrecord/cardrecord"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -75,7 +75,8 @@
         "payment/payment",
         "returnlogistics/returnlogistics",
         "returnrecord/returnrecord",
-        "shoporderinfo/shoporderinfo"
+        "shoporderinfo/shoporderinfo",
+        "usercardrecord/usercardrecord"
       ]
     }
   ],

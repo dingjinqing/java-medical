@@ -4,21 +4,21 @@
     <view class="goods-image">
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
-    <v-goods-info goods-info="{{goodsInfo}}" activity="{{activity}}" bindshareMoments="onShareAppMessage">
+    <v-goods-info goods-info="{{goodsInfo}}"  bindshareMoments="onShareAppMessage">
       <!--轮播图下方，商品信息上方插槽 -->
       <v-act-content act-bar-info="{{actBarInfo}}"/>
     </v-goods-info>
     <!-- 发货地 -->
-    <view class="flex_outside_box" wx:if="{{goodsInfo.deliverPlace}}">
+    <view class="flex_outside_box" wx:if="{{deliverPlace}}">
       <view class="flex_box">
         <view class="item_left">发货地</view>
-        <view class="item_middle">{{goodsInfo.deliverPlace}}</view>
+        <view class="item_middle">{{deliverPlace}}</view>
       </view>
     </view>
     <!-- 优惠券&促销信息-->
     <v-coupon-promotion coupon-list="{{couponList}}"/>
     <!--  选择规格（包含无规格情况）  -->
-    <v-sel-spec products-info="{{goodsInfo}}" can-buy="{{canBuy}}" activity="{{activity}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
+    <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
       <!--  服务信息  -->
       <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">
@@ -37,7 +37,7 @@
       <view class="item_line" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}"></view>
     </v-sel-spec>
     <!-- 拼团提示 -->
-    <block wx:if="{{activity.activityType === 1}}">
+    <block wx:if="{{specParams.activity.activityType === 1}}">
       <view class="flex_outside_box" >
         <view class="flex_box">
           <view class="item_left"><text style="color:{{comColor}}">4个</text>小伙伴正在开团，可直接参与</view>
@@ -103,6 +103,6 @@
     <!-- 商品详情 -->
     <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/>
   </view>
-  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" dealt-act="{{dealtAct}}" activity="{{activity}}" isDefaultPrd="{{goodsInfo.defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
+  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" dealt-act="{{dealtAct}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
   <include src="../common/footer.wxml" />
 </view>

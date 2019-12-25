@@ -770,7 +770,7 @@ export default {
       let newArr = JSON.parse(JSON.stringify(this.showModulesList))
       this.oldElement = newArr[oldIndex]
       this.oldIndex = oldIndex
-      console.log(newArr.length, oldIndex)
+      console.log(this.oldElement, oldIndex, newArr)
       // let arrLength = newArr.length - 1
       // newArr.splice(oldIndex, 1)
       newArr[oldIndex] = -1
@@ -788,18 +788,15 @@ export default {
     // 中间区域元素停止拖动是处理函数
     handleToEnd (e) {
       // let this_ = this
-      console.log(this.oldIndex, this.newIndex, this.oldElement)
-
       let newArr = JSON.parse(JSON.stringify(this.showModulesList))
+      console.log(this.oldIndex, this.newIndex, this.oldElement, newArr)
       let insertIndex = this.newIndex + 1
       if (this.topAreaFlag) {
         newArr.unshift(this.oldElement)
       } else {
         newArr.splice(insertIndex, 0, this.oldElement)
       }
-      if (this.oldIndex < this.newIndex) {
-        insertIndex--
-      }
+
       console.log(newArr)
       let newArrMiddle = JSON.parse(JSON.stringify(newArr))
 
@@ -809,8 +806,12 @@ export default {
         }
       })
       this.showModulesList = newArrMiddle
+      console.log(this.modulesData)
       this.isDragging = false
-      console.log(insertIndex)
+      if (this.oldIndex < this.newIndex) {
+        insertIndex--
+      }
+      console.log(newArrMiddle)
       // let hightMoudleIndex = this_.insertModulesId + 1
       let length = newArrMiddle.length
       console.log(insertIndex, length, this.topAreaFlag)
@@ -982,16 +983,20 @@ export default {
         this.modulesData.splice(this.nowRightShowIndex, 0, obj)
         console.log(this.modulesData)
       } else if (this.showModulesList.length === this.modulesData.length) {
-        console.log(this.oldIndex, this.modulesData, this.topAreaFlag)
+        console.log(this.oldIndex, this.newIndex, this.modulesData, this.topAreaFlag, this.nowRightShowIndex)
         if (this.oldIndex === -1) return
         let temp = this.modulesData[this.oldIndex]
-        console.log(this.topAreaFlag, temp)
+        console.log(temp, this.modulesData[this.nowRightShowIndex])
         if (this.topAreaFlag) {
           this.modulesData.splice(this.oldIndex, 1)
           this.modulesData.unshift(temp)
         } else {
-          this.modulesData[this.oldIndex] = this.modulesData[this.nowRightShowIndex]
-          this.modulesData[this.nowRightShowIndex] = temp
+          console.log()
+          this.modulesData.splice(this.oldIndex, 1)
+          console.log(this.modulesData)
+          this.modulesData.splice(this.nowRightShowIndex, 0, temp)
+          // this.modulesData[this.oldIndex] = this.modulesData[this.nowRightShowIndex]
+          // this.modulesData[this.nowRightShowIndex] = temp
         }
         this.oldIndex = -1
       }

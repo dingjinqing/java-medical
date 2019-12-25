@@ -39,8 +39,8 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         //1.商品名称（模糊查询）
         //2.商品品牌（精确查询）
         if( StringUtils.isNotBlank(param.getKeyWords()) ){
-            propertyList.add(new FieldProperty(EsSearchName.GOODS_NAME,param.getKeyWords(), Operator.SIM));
-            propertyList.add(new FieldProperty(EsSearchName.BRAND_NAME,param.getKeyWords()));
+            propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getKeyWords()));
+//            propertyList.add(new FieldProperty(EsSearchName.BRAND_NAME,param.getKeyWords()));
         }
         if( null != param.getMinPrice() ){
             propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMinPrice(),Operator.GTE));

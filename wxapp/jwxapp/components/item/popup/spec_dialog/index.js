@@ -1,6 +1,7 @@
 const base = require("../../../popup/base/base.js");
 const actPrdType = {
-  5:{prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice'}
+  1:{prdListName:"groupBuyPrdMpVos",prdRealPrice:'groupPrice',prdLinePrice:'prdPrice'},
+  5:{prdListName:"actProducts",prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice'}
 }
 global.wxComponent({
   mixins: [base],
@@ -15,9 +16,9 @@ global.wxComponent({
         if (val.defaultPrd === true){
           // 活动规格限制
           let actLimit = {}
-          if(this.data.activity){
-            actLimit.limitMaxNum = this.data.activity.limitAmount
-            actLimit.prdNumber = this.data.activity.actProducts[0].stock
+          if(val.activity){
+            actLimit.limitMaxNum = val.activity.limitAmount
+            actLimit.prdNumber = val.activity[actPrdType[val.activity.activityType]['prdListName']][0].stock
           }
           this.triggerEvent("productData", {
             goodsId: val.goodsId,
@@ -27,22 +28,15 @@ global.wxComponent({
             ...actLimit
           });
         } else {
+          if(val.activity){
+            let activityPrds = val.activity[actPrdType[val.activity.activityType]['prdListName']].map(({productId:prdId,stock:prdNumber,[actPrdType[val.activity.activityType].prdRealPrice]:prdRealPrice,[actPrdType[val.activity.activityType].prdLinePrice]:prdLinePrice }) => {
+              return {prdId,prdNumber,prdRealPrice,prdLinePrice}
+            })
+            this.setData({
+              activityPrds
+            })
+          }
           this.formatSpec(val.products);
-        }
-      }
-    },
-    activity:{
-      type:Object,
-      value:null,
-      observer(newVal,oldVal){
-        if(newVal!==oldVal){
-          console.log(newVal.actProducts)
-          let activityPrds = newVal.actProducts.map(({productId:prdId,stock:prdNumber,[actPrdType[newVal.activityType].prdRealPrice]:prdRealPrice,[actPrdType[newVal.activityType].prdLinePrice]:prdLinePrice }) => {
-            return {prdId,prdNumber,prdRealPrice,prdLinePrice}
-          })
-          this.setData({
-            activityPrds
-          })
         }
       }
     }
@@ -82,7 +76,7 @@ global.wxComponent({
       this.setData({
         specList: specList
       });
-      this.getCheckedProduct(this.data.specList);
+      this.getCheckedProduct(specList);
     },
     // 切换规格按钮
     tapSpec(e) {
@@ -116,11 +110,10 @@ global.wxComponent({
       let { limitBuyNum, limitMaxNum } = this.data.productsInfo;
       let actLimit = {}
       // 活动规格的限购数量
-      if(this.data.activity){
-        actLimit.limitMaxNum = this.data.activity.limitAmount
+      if(this.data.productsInfo.activity){
+        actLimit.limitMaxNum = this.data.productsInfo.activity.limitAmount
         actLimit.prdNumber = this.data.activityPrds.find(item=>item.prdId === productTarget.prdId).prdNumber
       }
-      console.log(productTarget)
       this.triggerEvent("productData", {
         goodsId: this.data.productsInfo.goodsId,
         ...productTarget,

@@ -42,7 +42,7 @@ global.wxComponent({
         module['main_setting'] = page_content.main_setting;
         module['is_first_touch'] = 1;
         // 当前图片域名
-        module['imageUrl'] = 'http://jmpdevimg.weipubao.cn'
+        module['imageUrl'] = util.getCache("imageHost")
         console.log(pageInfo)
         // 模块间距字段  
         module['margin_bot'] = pageInfo.page_cfg && pageInfo.page_cfg.show_margin == 1 ? pageInfo.page_cfg.margin_val : 0;

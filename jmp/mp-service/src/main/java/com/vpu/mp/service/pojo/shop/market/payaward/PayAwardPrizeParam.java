@@ -1,13 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
-import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -22,7 +20,6 @@ public class PayAwardPrizeParam {
     /**
      * id
      */
-    @NotNull(groups = UpdateGroup.class)
     private Integer id;
     /**
      * 奖励类型

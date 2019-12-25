@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
 import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 import com.vpu.mp.db.shop.tables.records.GiftRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -25,6 +26,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -55,11 +57,12 @@ import static org.springframework.util.StringUtils.isEmpty;
  * @author 郑保乐
  */
 @Service
+@Primary
 public class GiftService extends ShopBaseService {
 
-    private static final Gift TABLE = Gift.GIFT;
-    private static final GiftProduct SUB_TABLE = GiftProduct.GIFT_PRODUCT;
-    private static final GoodsSpecProduct PRODUCT = GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+    public static final Gift TABLE = Gift.GIFT;
+    public static final GiftProduct SUB_TABLE = GiftProduct.GIFT_PRODUCT;
+    public static final GoodsSpecProduct PRODUCT = GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 
     private static final int MAX_RULE_SIZE = 3;
 
@@ -158,6 +161,7 @@ public class GiftService extends ShopBaseService {
      * 删除活动
      */
     public void deleteGift(Integer id) {
+
         db().update(TABLE).set(TABLE.STATUS, (byte) 0).set(TABLE.DEL_FLAG, (byte) 1).set(TABLE.DEL_TIME,
             Util.currentTimeStamp()).where(TABLE.ID.eq(id)).execute();
     }
@@ -203,7 +207,7 @@ public class GiftService extends ShopBaseService {
             .fetchInto(ProductVo.class);
     }
 
-    /**
+   /**
      * 获取商品规格
      */
     public ProductVo getProductDetail(Integer giftId, Integer productId) {
@@ -361,7 +365,7 @@ public class GiftService extends ShopBaseService {
             .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1)
                 .and(ORDER_GOODS.ACTIVITY_ID.eq(TABLE.ID)
                     .and(ORDER_GOODS.ACTIVITY_TYPE.eq(OrderConstant.GOODS_TYPE_GIFT))))
-            .where(TABLE.DEL_FLAG.eq((byte) 0));
+            .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
     }
 
     /**

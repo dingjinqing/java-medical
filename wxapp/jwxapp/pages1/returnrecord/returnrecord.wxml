@@ -2,8 +2,8 @@
 <include src="/pages/common/header.wxml" />
 <view class='main-container'>
   <view class='order_goods'>
-    <view class='order_num' style='margin-bottom:20rpx;'>
-      <text class='ps_type' wx:if='{{orderInfo.type_icon != ""}}'>{{orderInfo.type_icon}}</text>
+    <view class='order_num' style='margin-bottom:20rpx;' wx:if="{{activityName}}">
+      <text class='ps_type' wx:if='{{activityName != ""}}'>{{activityName}}</text>
       订单编号：{{orderInfo.orderSn}}
     </view>
     <view class='returnr_num'>售后编号：{{orderInfo.returnOrderSn}}</view>

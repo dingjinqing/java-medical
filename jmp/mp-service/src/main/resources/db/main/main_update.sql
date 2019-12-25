@@ -128,3 +128,8 @@ CREATE TABLE `b2c_cron_record` (
   UNIQUE KEY `unique_id` (`cron_id`)
 ) COMMENT='定时任务执行结果记录表';
 
+
+alter table b2c_mp_user_portrait
+    add id int auto_increment primary key first;
+ALTER TABLE `b2c_mp_user_portrait`
+ADD COLUMN `start_time` TIMESTAMP NOT NULL COMMENT '开始时间，ref_date前8个字符' ;

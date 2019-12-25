@@ -4,7 +4,7 @@
       :model="ruleForm"
       status-icon
       :rules="rules"
-      ref="ruleForm"
+      ref="ruleFormScore"
       label-width="100px"
     >
       <div class="sendScoreTop">
@@ -28,94 +28,103 @@
           </div>
         </el-form-item>
       </div>
+      <el-form
+        :model="ruleForm"
+        status-icon
+        :rules="rules"
+        :inline-message="true"
+        ref="ruleForm"
+        label-width="100px"
+      >
       <div class="sendScoreMiddle">
-        <el-form-item>
-          <div class="scoreReceiveSubItem">
-            <el-radio
-              v-model="ruleForm.offSet"
-              label='0'
-            >
-              {{ $t('memberCard.shopFull') }}
-            </el-radio>
-            <el-input
-              v-model='ruleForm.shopingInputLeft'
-              size="small"
-              type="number"
-            >
-            </el-input>
-            <span class="sendInfo">
-              {{ $t('memberCard.send') }}
-            </span>
-            <el-input
-              size="small"
-              type="number"
-              v-model="ruleForm.shopingInputRight"
-            >
-            </el-input>
-            <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
-            <img
-              style="cursor:pointer"
-              :src="$imageHost +'/image/admin/sign_jia.png' "
-              @click="handleToAddIntegral()"
-            >
+          <el-form-item prop="scoreSendFullFix" class="scoreReceiveSubItem" >
+            <!-- <div class="scoreReceiveSubItem"> -->
+              <el-radio
+                v-model="ruleForm.offSet"
+                label='0'
+              >
+                {{ $t('memberCard.shopFull') }}
+              </el-radio>
+              <el-input
+                v-model='ruleForm.shopingInputLeft'
+                size="small"
+                type="number"
+              >
+              </el-input>
+              <span class="sendInfo">
+                {{ $t('memberCard.send') }}
+              </span>
+              <el-input
+                size="small"
+                type="number"
+                v-model="ruleForm.shopingInputRight"
+              >
+              </el-input>
+              <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
+              <img
+                style="cursor:pointer"
+                :src="$imageHost +'/image/admin/sign_jia.png' "
+                @click="handleToAddIntegral()"
+              >
+            <!-- </div> -->
+          </el-form-item>
+          <div v-if="ruleForm.offSet==='0'">
+            <el-form-item  v-for="(item,index) in ruleForm.addIntegralArr"
+              :key="index"
+              :prop="'addIntegralArr.'+index+'.leftInput'"
+              :rules="rules.scoreSendEach"
+              class="scoreReceiveAddSubItem">
+
+                <span class="shopFullInfo">{{ $t('memberCard.shopFull') }}</span>
+                  <el-input
+                    size="small"
+                    type="number"
+                    v-model="ruleForm.addIntegralArr[index].leftInput"
+                  ></el-input>
+                  <span class="sendInfo">{{ $t('memberCard.send') }}</span>
+                  <el-input
+                    size="small"
+                    type="number"
+                    v-model="ruleForm.addIntegralArr[index].rightInput"
+                  >
+                  </el-input>
+                  <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
+                  <img
+                    style="cursor:pointer"
+                    :src="$imageHost +'/image/admin/sign_del.png' "
+                    @click="handleToDelIntegral(index)"
+                  >
+            </el-form-item>
+
           </div>
-        </el-form-item>
-        <el-form-item v-if="ruleForm.offSet==='0'">
-          <div
-            v-for="(item,index) in ruleForm.addIntegralArr"
-            :key="index"
-            class="scoreReceiveAddSubItem"
-          >
-            <span class="shopFullInfo">{{ $t('memberCard.shopFull') }}</span>
-            <el-input
-              size="small"
-              type="number"
-              v-model="ruleForm.addIntegralArr[index].leftInput"
-            ></el-input>
-            <span class="sendInfo">{{ $t('memberCard.send') }}</span>
-            <el-input
-              size="small"
-              type="number"
-              v-model="ruleForm.addIntegralArr[index].rightInput"
-            >
-            </el-input>
-            <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
-            <img
-              style="cursor:pointer"
-              :src="$imageHost +'/image/admin/sign_del.png' "
-              @click="handleToDelIntegral(index)"
-            >
-          </div>
-        </el-form-item>
+          <el-form-item prop="scoreSendEachFix" class="scoreReceiveSubItem" >
+
+              <el-radio
+                v-model="ruleForm.offSet"
+                label='1'
+              >
+                {{ $t('memberCard.shopEachFull') }}
+              </el-radio>
+              <el-input
+                v-model='ruleForm.shopingInputLeftM'
+                size="small"
+                type="number"
+              >
+              </el-input>
+              <span class="sendInfo">
+                {{ $t('memberCard.send') }}
+              </span>
+              <el-input
+                size="small"
+                type="number"
+                v-model="ruleForm.shopingInputRightM"
+              >
+              </el-input>
+              <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
+          </el-form-item>
       </div>
-      <div class="sendScoreBottom">
-        <el-form-item>
-          <div class="scoreReceiveSubItem">
-            <el-radio
-              v-model="ruleForm.offSet"
-              label='1'
-            >
-              {{ $t('memberCard.shopEachFull') }}
-            </el-radio>
-            <el-input
-              size="small"
-              type="number"
-              v-model="ruleForm.shopingInputLeftM"
-            >
-            </el-input>
-            <span class="sendInfo">
-              {{ $t('memberCard.send') }}
-            </span>
-            <el-input
-              size="small"
-              type="number"
-              v-model="ruleForm.shopingInputRightM"
-            >
-            </el-input>
-            <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
-          </div>
-        </el-form-item>
-      </div>
+      </el-form>
+      <div class="sendScoreBottom"></div>
     </el-form>
   </div>
 </template>
@@ -154,6 +163,11 @@ export default {
     },
     'ruleForm.offSet': {
       handler (newName, oldName) {
+        if (oldName === '0') {
+          this.$refs.ruleForm.validateField('scoreSendFullFix')
+        } else if (oldName === '1') {
+          this.$refs.ruleForm.validateField('scoreSendEachFix')
+        }
         this.val.offSet = newName
         this.ruleForm = this.val
       },
@@ -197,12 +211,19 @@ export default {
   },
   mounted () {
     this.$on('checkRule', () => {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleFormScore.validate((valid) => {
         if (!valid) {
           this.ruleForm.valid = false
           this.$message.warning('请输入赠送积分')
         } else {
-          this.ruleForm.valid = true
+          this.$refs.ruleForm.validate((valid) => {
+            if (!valid) {
+              this.ruleForm.valid = false
+              this.$message.warning('请输入积分')
+            } else {
+              this.ruleForm.valid = true
+            }
+          })
         }
       })
     })
@@ -216,10 +237,57 @@ export default {
       }
       callback()
     }
+    let validateScoreSendFullFix = (rule, value, callback) => {
+      if (this.ruleForm.offSet === '0') {
+        if (this.checkScoreSendFull()) {
+          callback(new Error('请输入积分'))
+          this.sendFullErrorFix = true
+        } else {
+          this.sendFullErrorFix = false
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
+
+    let validateScoreSendEachFix = (rule, value, callback) => {
+      if (this.ruleForm.offSet === '1') {
+        if (this.checkScoreSendEach()) {
+          callback(new Error('请输入积分'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
+
+    let validateScoreSendEach = (rule, value, callback) => {
+      // 校验动态数组
+      let index = Number(rule.fullField.split('.')[1])
+      if (value && this.ruleForm.addIntegralArr[index].rightInput) {
+        callback()
+      } else {
+        callback(new Error('请输入积分'))
+      }
+    }
+
     return {
+      sendFullErrorFix: false,
+      sendEachError: [],
       rules: {
         score: [
           { validator: validateScore, trigger: 'blur' }
+        ],
+        scoreSendFullFix: [
+          { validator: validateScoreSendFullFix, trigger: 'blur' }
+        ],
+        scoreSendEach: [
+          { validator: validateScoreSendEach, trigger: 'blur' }
+        ],
+        scoreSendEachFix: [
+          { validator: validateScoreSendEachFix, trigger: 'blur' }
         ]
       }
     }
@@ -229,16 +297,29 @@ export default {
       if (val === 0) {
         return false
       }
+      console.log(val, this.isBlank(val))
       return this.isBlank(val)
     },
     isBlank (val) {
       return (!val || /^\s*$/.test(val))
     },
+    checkScoreSendFull () {
+      if (this.ruleForm.shopingInputLeft && this.ruleForm.shopingInputRight) {
+        return false
+      }
+      return true
+    },
+    checkScoreSendEach () {
+      if (this.ruleForm.shopingInputLeftM && this.ruleForm.shopingInputRightM) {
+        return false
+      }
+      return true
+    },
     handleToAddIntegral () {
       console.log('添加积分')
       this.ruleForm.addIntegralArr.push({
-        leftInput: 0,
-        rightInput: 0
+        leftInput: undefined,
+        rightInput: undefined
       })
     },
     handleToDelIntegral (index) {
@@ -253,10 +334,12 @@ export default {
     color: black;
   }
   .sendScoreTop {
-    /deep/ .el-form-item__error {
-      padding-left: 200px;
+    /deep/ .el-form-item{
+      margin-bottom: 20px;
     }
-
+    /deep/ .el-form-item__error{
+      margin-left: 100px;
+    }
     .scoreReceiveItem {
       padding-left: 100px;
       display: flex;
@@ -279,14 +362,28 @@ export default {
     }
   }
   .sendScoreMiddle {
+
     /deep/ .el-form-item {
       margin-bottom: 2px;
     }
     .scoreReceiveSubItem {
+      /deep/ .el-input {
+        width: 20%;
+        .el-input__inner {
+          text-align: center;
+          width: 100%;
+        }
+      }
       padding-left: 170px;
       margin-right: 32px;
       display: flex;
       align-items: center;
+      .send-full-error{
+        margin-left: -83px;
+        margin-right: 15px;
+        color: #F56C6C;
+        font-size: 12px;
+      }
       /deep/ .el-radio {
         margin-right: 32px;
       }
@@ -327,15 +424,16 @@ export default {
     }
   }
   .sendScoreBottom {
+    margin-bottom: 20px;
     .scoreReceiveSubItem {
       padding-left: 170px;
       display: flex;
       align-items: center;
       /deep/ .el-radio {
-        margin-right: 16px;
+        margin-right: 23px;
       }
       /deep/ .el-input {
-        width: 19.3%;
+        width: 14%;
         .el-input__inner {
           text-align: center;
           width: 100%;

@@ -215,7 +215,7 @@
         <!-- 收起、展开更多配置 -->
         <div
           @click="handleToChangeArror"
-          style="padding: 0 0 30px 30px"
+          style="padding: 0 0 30px 30px; width: 20%;"
         >
           <div
             v-if="arrorFlag"
@@ -232,7 +232,10 @@
         </div>
         <div v-if="!arrorFlag">
           <!-- 会员专享 -->
-          <el-form-item :label="this.$t('seckill.cardTitle') + '：'">
+          <el-form-item
+            :label="this.$t('seckill.cardTitle') + '：'"
+            prop="cardId"
+          >
             <el-checkbox
               :label="this.$t('seckill.cardSelect')"
               v-model="showMember"
@@ -246,6 +249,7 @@
                 v-model="form.cardId"
                 multiple
                 size="small"
+                @blur="cardIdBlur"
               >
                 <el-option
                   v-for="item in cardList"
@@ -272,7 +276,7 @@
           </el-form-item>
           <!-- 活动分享 -->
           <el-form-item
-            prop="shareConfig"
+            prop="shareConfig.share_action"
             label="活动分享："
           >
             <div class="shareContent">
@@ -410,6 +414,30 @@ export default {
   },
   props: ['isEdite', 'editId'],
   data () {
+    // 会员专享
+    var validateCard = (rule, value, callback) => {
+      if (this.showMember && value.length === 0) {
+        callback(new Error('请选择会员卡'))
+      } else {
+        callback()
+      }
+    }
+    // 活动专享
+    var validateShare = (rule, value, callback) => {
+      if (value === 2) {
+        if (this.form.shareConfig.share_doc === '') {
+          callback(new Error('请填写活动文案'))
+        } else if (this.form.shareConfig.share_img_action === 2) {
+          if (this.form.shareConfig.share_img === '') {
+            callback(new Error('请选择活动图片'))
+          } else {
+            callback()
+          }
+        }
+      } else {
+        callback()
+      }
+    }
     return {
       activeIndex: 0, // 批量设置
       // 表单
@@ -424,7 +452,7 @@ export default {
         secKillProduct: [], // 秒杀价格表格数据
         freeFreight: 0, // 运费设置
         stock: 0, // 活动总库存
-        cardId: '', // 会员卡id
+        cardId: [], // 会员卡id
         shareConfig: {
           share_action: 1,
           share_doc: '',
@@ -451,6 +479,12 @@ export default {
         ],
         freeFreight: [
           { required: true, message: '请填写运费设置', trigger: 'change' }
+        ],
+        cardId: [
+          { validator: validateCard, trigger: 'change' }
+        ],
+        'shareConfig.share_action': [
+          { validator: validateShare, trigger: 'change' }
         ]
       },
       disabledFlag: true, // 是否可编辑
@@ -560,43 +594,43 @@ export default {
 
     // 保存秒杀活动
     saveClickHandler () {
-      this.submitStatus = true
-
-      this.form.goodsId = Number(this.form.goodsId)
-      // 有效期
-      this.form.startTime = this.form.validity[0]
-      this.form.endTime = this.form.validity[1]
-      // 会员卡专享
-      if (this.form.cardId !== undefined && this.form.cardId.length > 0) {
-        this.form.cardId = this.form.cardId.toString()
-      } else {
-        this.form.cardId = ''
-      }
-      // 活动分享
-      if (this.form.shareConfig.share_action === 1) {
-        this.form.shareConfig.share_doc = ''
-        this.form.shareConfig.share_img_action = 1
-        this.form.shareConfig.share_img = ''
-      }
-      // 总库存
-      this.form.stock = 0
-      this.form.secKillProduct.forEach((item, index) => {
-        item.productId = item.prdId
-        item.secKillPrice = Number(item.secKillPrice)
-        item.stock = Number(item.stock)
-        this.form.stock += item.stock
-      })
-
-      console.log(this.form)
-
-      if (this.form.goodsId === '') {
-        this.$message.warning({ message: '请选择商品!' })
-        this.submitStatus = false
-        return
-      }
-
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          this.submitStatus = true
+
+          this.form.goodsId = Number(this.form.goodsId)
+          // 有效期
+          this.form.startTime = this.form.validity[0]
+          this.form.endTime = this.form.validity[1]
+          // 会员卡专享
+          if (this.form.cardId !== undefined && this.form.cardId.length > 0) {
+            this.form.cardId = this.form.cardId.toString()
+          } else {
+            this.form.cardId = ''
+          }
+          // 活动分享
+          if (this.form.shareConfig.share_action === 1) {
+            this.form.shareConfig.share_doc = ''
+            this.form.shareConfig.share_img_action = 1
+            this.form.shareConfig.share_img = ''
+          }
+          // 总库存
+          this.form.stock = 0
+          this.form.secKillProduct.forEach((item, index) => {
+            item.productId = item.prdId
+            item.secKillPrice = Number(item.secKillPrice)
+            item.stock = Number(item.stock)
+            this.form.stock += item.stock
+          })
+
+          console.log(this.form)
+
+          if (this.form.goodsId === '') {
+            this.$message.warning({ message: '请选择商品!' })
+            this.submitStatus = false
+            return
+          }
+
           if (this.isEdite === false) {
             // 添加秒杀
             addSeckillList(this.form).then((res) => {
@@ -733,6 +767,10 @@ export default {
           break
       }
       this.form.secKillProduct = price
+    },
+
+    cardIdBlur (e) {
+      this.$refs['form'].validateField('cardId')
     }
 
   }

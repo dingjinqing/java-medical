@@ -218,6 +218,7 @@ public class JsonResultMessage {
 	public static final String GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX="group.buy.activity.group.open.limit.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
     /**
      * 营销-秒杀
      */
@@ -423,6 +424,7 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_GOTOLOOK  = "member.card.receive.gotolook";
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
+	public static final String CODE_CARD_NO = "code.card.no";
 	/**
 	 * 概览
 	 */
