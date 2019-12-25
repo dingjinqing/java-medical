@@ -515,8 +515,8 @@ public class GroupBuyService extends ShopBaseService {
         return groupBuyInfo;
     }
 
-    public String getGroupBuyShareBase64Image(Integer userId, Integer groupId) {
-        return groupBuyPictorialService.getGroupBuyShareBase64Image(userId, groupId);
+    public String getGroupBuyShareBase64Pictorial(Integer userId, Integer groupId) {
+        return groupBuyPictorialService.getGroupBuyShareBase64Pictorial(userId, groupId);
     }
 
     /**
@@ -576,5 +576,10 @@ public class GroupBuyService extends ShopBaseService {
         }
 
         return BaseConstant.ACTIVITY_STATUS_CAN_USE;
+    }
+
+    public Object getGroupBuyShareImage(Integer userId, Integer groupId) {
+
+        return null;
     }
 }

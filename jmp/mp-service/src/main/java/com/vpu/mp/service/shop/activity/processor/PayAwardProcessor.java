@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
@@ -20,6 +21,7 @@ import com.vpu.mp.service.shop.market.payaward.PayAwardRecordService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +73,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     private AccountService accountService;
     @Autowired
     private ScoreService scoreService;
+    @Autowired
+    private OrderInfoService orderInfoService;
 
     @Override
     public Byte getPriority() {
@@ -114,21 +118,21 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             return;
         }
         logger().info("校验支付金额是否合格");
-        if (order.getOrderAmount().compareTo(payAward.getMinPayMoney()) < 0) {
+        if (orderInfoService.getOrderFinalAmount(order.into(OrderListInfoVo.class),false).compareTo(payAward.getMinPayMoney()) < 0) {
             logger().info("支付金额不满足活动要求");
+            return;
         }
         //活动商品
         if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION.intValue())) {
             boolean payAwardFlag = false;
             for (OrderBeforeParam.Goods goods : param.getGoods()) {
-                boolean hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsId().toString());
+                boolean hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
                 boolean hasCatId = Arrays.asList(payAward.getGoodsCatIds().split(",")).contains(goods.getGoodsInfo().getCatId().toString());
                 boolean hasSortId = Arrays.stream(payAward.getGoodsSortIds().split(",")).anyMatch(goods.getGoodsInfo().getSortId().toString()::equals);
                 if (hasGoodsId || hasCatId || hasSortId) {
                     GoodsActivityInfo activityInfo = new GoodsActivityInfo();
                     activityInfo.setActivityType(ACTIVITY_TYPE_PAY_AWARD);
                     activityInfo.setActivityId(payAward.getId());
-                    param.getOrderCartProductBo();
                     payAwardFlag = true;
                 }
             }
@@ -143,8 +147,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             logger().info("支付有礼没有配置奖品");
             return;
         }
-        Integer joinAwardCount = payAwardRecordService.getJoinAwardCount(param.getWxUserInfo().getUserId(), payAward.getId());
-        logger().info("用户:{},参与次数:{}", param.getWxUserInfo().getUserId(), joinAwardCount);
+        Integer joinAwardCount = payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId());
+        logger().info("用户:{},参与次数:{}",order.getUserId(), joinAwardCount);
         int circleTimes = joinAwardCount / payAwardSize;
         logger().info("循环次数:{}", circleTimes);
         if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes() <= circleTimes) {
@@ -167,7 +171,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
         PayAwardRecordRecord payAwardRecordRecord = db().newRecord(PAY_AWARD_RECORD);
         payAwardRecordRecord.setAwardId(payAward.getId());
         payAwardRecordRecord.setAwardTimes(currentAward);
-        payAwardRecordRecord.setUserId(param.getWxUserInfo().getUserId());
+        payAwardRecordRecord.setUserId(order.getUserId());
         payAwardRecordRecord.setOrderSn(order.getOrderSn());
         payAwardRecordRecord.setAwardPrizeId(payAwardContentBo.getId());
         payAwardRecordRecord.setGiftType(payAwardContentBo.getGiftType());
@@ -201,7 +205,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                     couponArray = integers.stream().map(Object::toString).toArray(String[]::new);
                 }
                 CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
-                couponGive.setUserIds(Collections.singletonList(param.getWxUserInfo().getUserId()));
+                couponGive.setUserIds(Collections.singletonList(order.getUserId()));
                 couponGive.setCouponArray(couponArray);
                 couponGive.setActId(payAward.getId());
                 couponGive.setAccessMode((byte) 0);
@@ -222,7 +226,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             case GIVE_TYPE_BALANCE:
                 logger().info("余额");
                 AccountParam accountParam = new AccountParam() {{
-                    setUserId(param.getWxUserInfo().getUserId());
+                    setUserId(order.getUserId());
                     setAmount(payAwardContentBo.getAccountNumber());
                     setOrderSn(order.getOrderSn());
                     setPayment(PAY_CODE_BALANCE_PAY);
@@ -249,7 +253,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 logger().info("积分");
                 ScoreParam scoreParam = new ScoreParam();
                 scoreParam.setScore(payAwardContentBo.getScoreNumber());
-                scoreParam.setUserId(new Integer[]{param.getWxUserInfo().getUserId()});
+                scoreParam.setUserId(new Integer[]{order.getUserId()});
                 scoreParam.setOrderSn(order.getOrderSn());
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
                 scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());

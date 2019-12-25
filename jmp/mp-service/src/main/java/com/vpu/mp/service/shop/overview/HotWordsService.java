@@ -160,17 +160,18 @@ public class HotWordsService extends ShopBaseService {
 
     /**
      * 获取用户最近一次搜索的热词
-     * @param param 用户id
+     * @param userId 用户id
      * @return 最近搜索热词
      */
-    public HotWords getUserLastSearch(UserId param){
-        HotWords hotWords = db().select(SEARCH_HISTORY.HOT_WORDS)
+    public String getUserLastSearch(Integer userId){
+        String hotWords = db().select(SEARCH_HISTORY.HOT_WORDS)
             .from(SEARCH_HISTORY)
-            .where(SEARCH_HISTORY.USER_ID.eq(param.getUserId()))
+            .where(SEARCH_HISTORY.USER_ID.eq(userId))
             .and(SEARCH_HISTORY.DEL_FLAG.eq(NOT_DELETE))
             .orderBy(SEARCH_HISTORY.UPDATE_TIME.desc())
             .limit(LIMIT_ONE_NUM)
-            .fetchOneInto(HotWords.class);
+            .fetchOptionalInto(String.class)
+            .orElse(null);
         return hotWords;
     }
 }
