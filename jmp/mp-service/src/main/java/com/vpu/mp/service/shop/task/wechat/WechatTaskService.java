@@ -2,10 +2,16 @@ package com.vpu.mp.service.shop.task.wechat;
 
 import cn.binarywang.wx.miniapp.api.WxMaAnalysisService;
 import cn.binarywang.wx.miniapp.bean.analysis.*;
+
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
+import com.vpu.mp.service.wechat.api.WxGetWeAnalysService;
+import com.vpu.mp.service.wechat.api.WxOpenAccountService;
+
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -52,10 +58,15 @@ public class WechatTaskService extends ShopBaseService {
     private WxMaAnalysisService getServiceByShopId(Integer shopId) {
         return saas().shop.mp.getMaServiceByShopId(shopId).getAnalysisService();
     }
+    
+    private String getAppId(Integer shopId) {
+    	return saas().shop.mp.getAppIdByShopId(shopId);
+    }
 
     public void beginDailyTask(){
         Date date = java.sql.Date.valueOf(LocalDate.now().minusDays(1));
         WxMaAnalysisService service = getServiceByShopId(getShopId());
+        WxGetWeAnalysService maService=open().getMaExtService();
 
         this.getDailyRetainInfo(service,date);
 
@@ -67,7 +78,7 @@ public class WechatTaskService extends ShopBaseService {
 
         this.getVisitPage(service,date);
 
-        this.getUserPortrait(service,date);
+        this.getUserPortrait(maService,date);
     }
 
     public void beginWeeklyTask(){
@@ -150,9 +161,9 @@ public class WechatTaskService extends ShopBaseService {
      * @param service
      * @param date
      */
-    private void getUserPortrait(WxMaAnalysisService service,Date date){
+    private void getUserPortrait(WxGetWeAnalysService service,Date date){
         try {
-            WxMaUserPortrait info = service.getUserPortrait(date,date);
+            MaPortraitResult info = service.getUserPortrait(getAppId(getShopId()),date,date);
             if(validationData(info, MP_USER_PORTRAIT)){
                 return ;
             }

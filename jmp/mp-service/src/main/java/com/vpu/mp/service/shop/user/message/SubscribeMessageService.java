@@ -2,7 +2,12 @@ package com.vpu.mp.service.shop.user.message;
 
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +20,9 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.RegexUtil;
+import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
@@ -23,6 +30,7 @@ import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
 import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessageData;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.wechat.OpenPlatform;
+import com.vpu.mp.service.wechat.api.WxGetWeAnalysService;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
@@ -443,5 +451,22 @@ public class SubscribeMessageService extends ShopBaseService {
 			return false;
 		}
 		return true;
+	}
+	
+	public MaPortraitResult getUserPortrait(Integer num) throws WxErrorException {
+		WxGetWeAnalysService maService = open().getMaExtService();
+		String appId = saas().shop.mp.getAppIdByShopId(getShopId());
+		Date endDate = extracted(-1);
+		Date beginDate = extracted(num);
+		MaPortraitResult userPortrait = maService.getUserPortrait(appId, beginDate, endDate);
+		return userPortrait;
+	}
+	
+	private Date extracted(Integer num) {
+		LocalDateTime localDateTime =LocalDateTime.now().plus(num,ChronoUnit.DAYS);
+		ZoneId zone = ZoneId.systemDefault();
+		Instant instant = localDateTime.atZone(zone).toInstant();
+		Date from = Date.from(instant);
+		return from;
 	}
 }

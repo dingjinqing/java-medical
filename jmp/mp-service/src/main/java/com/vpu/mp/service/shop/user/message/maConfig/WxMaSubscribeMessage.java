@@ -5,11 +5,9 @@ import java.util.List;
 
 import com.vpu.mp.service.shop.user.message.jsonBuilder.WxMaSubscribeGsonBuilder;
 
-import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 
 @Data
 @NoArgsConstructor

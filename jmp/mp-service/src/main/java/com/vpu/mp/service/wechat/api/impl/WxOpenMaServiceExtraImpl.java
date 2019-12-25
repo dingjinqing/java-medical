@@ -1,5 +1,6 @@
 package com.vpu.mp.service.wechat.api.impl;
 
+import com.vpu.mp.service.wechat.api.WxGetWeAnalysService;
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.api.WxOpenMaLogisticsService;
 import com.vpu.mp.service.wechat.api.WxOpenMaMallService;
@@ -17,7 +18,7 @@ import me.chanjar.weixin.open.api.impl.WxOpenMaServiceImpl;
  * @author lixinguo
  *
  */
-public class WxOpenMaServiceExtraImpl implements  WxOpenAccountService, WxOpenMaLogisticsService,WxOpenMaMallService ,WxOpenMaSubscribeService {
+public class WxOpenMaServiceExtraImpl implements  WxOpenAccountService, WxOpenMaLogisticsService,WxOpenMaMallService ,WxOpenMaSubscribeService,WxGetWeAnalysService {
 
 	protected WxOpenService openService;
 
