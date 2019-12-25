@@ -3,13 +3,15 @@ package com.vpu.mp.service.shop.user.message;
 import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -487,6 +489,10 @@ public class SubscribeMessageService extends ShopBaseService {
             record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.setType(type);
+            String refDate = info.getRefDate();
+            String date = refDate.substring(0,8);
+            Timestamp startTime = extracted(date);
+            record.setStartTime(startTime);
             int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
             if(execute>0) {
             	logger().info("更新");
@@ -498,6 +504,15 @@ public class SubscribeMessageService extends ShopBaseService {
         } catch (WxErrorException e) {
             
         }
+	}
+	
+	private Timestamp extracted(String date) {
+		LocalDate ld=LocalDate.now();
+		DateTimeFormatter  dtf2=DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate date2=ld.parse(date,dtf2);
+		LocalDateTime localDateTime=LocalDateTime.of(date2, java.time.LocalTime.MIN);
+		Timestamp startTime = Timestamp.valueOf(localDateTime);
+		return startTime;
 	}
 	private Date extractedDate(Integer num) {
 		LocalDateTime localDateTime =LocalDateTime.now().plus(num,ChronoUnit.DAYS);

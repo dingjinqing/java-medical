@@ -4,18 +4,29 @@
 package com.vpu.mp.db.shop.tables;
 
 
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
+
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
-
-import javax.annotation.Generated;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -31,10 +42,10 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpUserPortrait extends TableImpl<MpUserPortraitRecord> {
 
-    private static final long serialVersionUID = -1176324235;
+    private static final long serialVersionUID = 958509610;
 
     /**
-     * The reference instance of <code>jmini_shop_4748160.b2c_mp_user_portrait</code>
+     * The reference instance of <code>mini_shop_8984736.b2c_mp_user_portrait</code>
      */
     public static final MpUserPortrait MP_USER_PORTRAIT = new MpUserPortrait();
 
@@ -47,56 +58,61 @@ public class MpUserPortrait extends TableImpl<MpUserPortraitRecord> {
     }
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_mp_user_portrait.id</code>.
+     * The column <code>mini_shop_8984736.b2c_mp_user_portrait.id</code>.
      */
     public final TableField<MpUserPortraitRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_mp_user_portrait.ref_date</code>. 时间： 如： "20180313"
+     * The column <code>mini_shop_8984736.b2c_mp_user_portrait.ref_date</code>. 时间： 如： "20180313"
      */
     public final TableField<MpUserPortraitRecord, String> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.CHAR(30).nullable(false), this, "时间： 如： \"20180313\"");
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_mp_user_portrait.visit_uv_new</code>. 新用户
+     * The column <code>mini_shop_8984736.b2c_mp_user_portrait.visit_uv_new</code>. 新用户
      */
     public final TableField<MpUserPortraitRecord, String> VISIT_UV_NEW = createField("visit_uv_new", org.jooq.impl.SQLDataType.CLOB, this, "新用户");
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_mp_user_portrait.visit_uv</code>. 活跃用户
+     * The column <code>mini_shop_8984736.b2c_mp_user_portrait.visit_uv</code>. 活跃用户
      */
     public final TableField<MpUserPortraitRecord, String> VISIT_UV = createField("visit_uv", org.jooq.impl.SQLDataType.CLOB, this, "活跃用户");
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_mp_user_portrait.type</code>. 0:昨天，1：最近7天，2:30天
+     * The column <code>mini_shop_8984736.b2c_mp_user_portrait.type</code>. 0:昨天，1：最近7天，2:30天
      */
-    public final TableField<MpUserPortraitRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:昨天，1：最近7天，2:30天");
+    public final TableField<MpUserPortraitRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:昨天，1：最近7天，2:30天");
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_mp_user_portrait.create_time</code>.
+     * The column <code>mini_shop_8984736.b2c_mp_user_portrait.create_time</code>.
      */
-    public final TableField<MpUserPortraitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MpUserPortraitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_mp_user_portrait.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_8984736.b2c_mp_user_portrait.update_time</code>. 最后修改时间
      */
-    public final TableField<MpUserPortraitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MpUserPortraitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>jmini_shop_4748160.b2c_mp_user_portrait</code> table reference
+     * The column <code>mini_shop_8984736.b2c_mp_user_portrait.start_time</code>. 开始时间，ref_date前8个字符
+     */
+    public final TableField<MpUserPortraitRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间，ref_date前8个字符");
+
+    /**
+     * Create a <code>mini_shop_8984736.b2c_mp_user_portrait</code> table reference
      */
     public MpUserPortrait() {
         this(DSL.name("b2c_mp_user_portrait"), null);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_4748160.b2c_mp_user_portrait</code> table reference
+     * Create an aliased <code>mini_shop_8984736.b2c_mp_user_portrait</code> table reference
      */
     public MpUserPortrait(String alias) {
         this(DSL.name(alias), MP_USER_PORTRAIT);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_4748160.b2c_mp_user_portrait</code> table reference
+     * Create an aliased <code>mini_shop_8984736.b2c_mp_user_portrait</code> table reference
      */
     public MpUserPortrait(Name alias) {
         this(alias, MP_USER_PORTRAIT);
