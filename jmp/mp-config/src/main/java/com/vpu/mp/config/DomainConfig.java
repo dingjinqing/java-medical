@@ -91,6 +91,6 @@ public class DomainConfig {
 	 * @return
 	 */
 	public String getImageHost() {
-		return getImageDomain();
+		return String.format("%s://%s/%s", "http", getImageDomain(), "");
 	}
 }

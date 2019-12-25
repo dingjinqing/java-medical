@@ -152,7 +152,7 @@ public class WxAppAuth {
 		sessionUser.setUsername(userDetail == null ? null : userDetail.getUsername());
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
 		jedis.set(token, Util.toJson(sessionUser));
-		sessionUser.setImageHost(imageService.getImageHost()+"/");
+		sessionUser.setImageHost(imageService.getImageHost());
 		return sessionUser;
 	}
 
