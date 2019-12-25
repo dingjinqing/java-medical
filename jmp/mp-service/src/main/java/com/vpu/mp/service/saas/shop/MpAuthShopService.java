@@ -1661,4 +1661,17 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return into;
 	}
+	
+	
+	/**
+	 * 获取小程序AppId
+	 *
+	 * @param shopId
+	 * @return
+	 */
+	public String getAppIdByShopId(Integer shopId) {
+		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
+		assert (mp != null && mp.getIsAuthOk().equals(AUTH_OK));
+		return mp.getAppId();
+	}
 }
