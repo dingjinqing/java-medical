@@ -192,9 +192,9 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
             groupBuyProductList.setIsGrouper(param.getIsGrouper());
             groupBuyProductList.setStartTime(param.getDate());
             if (order.getOrderStatus()>= OrderConstant.ORDER_WAIT_DELIVERY){
-                groupBuyProductList.setStatus(STATUS_WAIT_PAY);
-            }else {
                 groupBuyProductList.setStatus(STATUS_ONGOING);
+            }else {
+                groupBuyProductList.setStatus(STATUS_WAIT_PAY);
             }
             int save = groupBuyProductList.insert();
             if (save!=1){

@@ -366,7 +366,9 @@ public class OrderReadService extends ShopBaseService {
 		//退款商品
 		if(rOrder.getReturnType() != OrderConstant.RT_ONLY_SHIPPING_FEE) {
 			List<OrderReturnGoodsVo> goods = returnOrderGoods.getReturnGoods(rOrder.getOrderSn(),rOrder.getRetId()).into(OrderReturnGoodsVo.class);
-			vo.setReturnGoods(goods);
+            Map<Integer, OrderGoodsMpVo> keyMapByIds = orderGoods.getKeyMapByIds(order.getOrderId());
+            goods.forEach(x->x.setIsGift(keyMapByIds.get(x.getRecId()).getIsGift()));
+            vo.setReturnGoods(goods);
 		}
 		//快递code
 		vo.setShippingCode(returnOrder.getShippingCode(rOrder));
@@ -381,6 +383,9 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//设置自动处理时间
 		setReturnCfg(vo, rOrder);
+		//设置订单类型
+        vo.setOrderType(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        //
 		return vo;
 	}
 
