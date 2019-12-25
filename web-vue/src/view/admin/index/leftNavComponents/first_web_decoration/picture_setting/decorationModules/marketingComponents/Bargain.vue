@@ -397,6 +397,7 @@ export default {
         }
         .bargain_info_name {
           min-height: 38px;
+          line-height: 19px;
           margin: 5px 0;
           width: 100%;
           overflow: hidden;

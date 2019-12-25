@@ -28,6 +28,9 @@ public class GroupBuyMpVo extends GoodsActivityDetailMp {
     /** 已成功拼团数量 */
     private Integer groupBuySuccessCount;
 
+    /**活动运费 1 免运费 2 按照商品原运费模板*/
+    private Byte shippingType;
+
     /** 正在进行中拼团列表信息 */
     private List<GroupBuyListMpVo> groupBuyListMpVos;
 

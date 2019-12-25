@@ -56,7 +56,7 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select, GoodsLinkVo param) {
-        select.where(GOODS.DEL_FLAG.eq((byte)1));
+        select.where(GOODS.DEL_FLAG.eq((byte)0));
 		if(param.getKeyWords() != null) {
 			select.where(GOODS.GOODS_NAME.contains(param.getKeyWords()).or(GOODS.GOODS_SN.contains(param.getKeyWords())));
 		}

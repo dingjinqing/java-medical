@@ -1,5 +1,8 @@
 const util = require("../../../utils/util.js");
-const priceName = {5:{prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice'}}
+const priceName = {
+  1:{prdListName:"groupBuyPrdMpVos",prdRealPrice:'groupPrice',prdLinePrice:'prdPrice'},
+  5:{prdListName:"actProducts",prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice'}
+}
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -9,22 +12,21 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(data) {
-        if(!this.data.activity) this.getPrice(data);
+        console.log(data)
+        if(!data.activity){
+          this.getPrice(data);
+        } else {
+            let defaultPrd = data.defaultPrd
+            console.log(defaultPrd)
+            let products = data.activity[priceName[data.activity.activityType].prdListName].map(item => {
+              let {productId:prdId,[priceName[data.activity.activityType].prdRealPrice]:prdRealPrice,[priceName[data.activity.activityType].prdLinePrice]:prdLinePrice} = item
+              return {prdId,prdRealPrice,prdLinePrice}
+            })
+            this.getPrice({defaultPrd,products})
+        }
         this.setData({
           isCollected:data.isCollected
         })
-      }
-    },
-    activity:{
-      type:Object,
-      value:null,
-      observer(data){
-        let defaultPrd = this.data.goodsInfo.defaultPrd
-        let products = data.actProducts.map(item => {
-          let {productId:prdId,[priceName[data.activityType].prdRealPrice]:prdRealPrice,[priceName[data.activityType].prdLinePrice]:prdLinePrice} = item
-          return {prdId,prdRealPrice,prdLinePrice}
-        })
-        this.getPrice({defaultPrd,products})
       }
     }
   },
