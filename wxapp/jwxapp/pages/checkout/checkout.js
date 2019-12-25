@@ -330,7 +330,7 @@ global.wxPage({
   },
   // 提交订单
   confirmOrder(){
-    let { orderGoods: goods, orderAmount, paymentList } = this.data.orderInfo || {}
+    let { orderGoods: goods, orderAmount, paymentList,activityType,activityId } = this.data.orderInfo || {}
     let { useBalance: balance, useCardBalance:cardBalance, useScore: scoreDiscount} = this.data.usePayInfo
     let addressId = this.data.orderInfo.address && this.data.orderInfo.address.addressId || null
     let couponSn = this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn || null
@@ -353,7 +353,9 @@ global.wxPage({
       deliverType: this.data.params.deliverType,
       orderPayWay:this.data.choosePayTypeIndex,
       couponSn,
-      memberCardNo
+      memberCardNo,
+      activityType,
+      activityId
     }
     util.api('/api/wxapp/order/submit',res=>{
       if(res.error === 0){
