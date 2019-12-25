@@ -5,9 +5,12 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
-import com.vpu.mp.service.shop.market.bargain.BargainService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +22,9 @@ import java.util.stream.Collectors;
  * @author 李晓冰
  * @date 2019年11月01日
  */
+@Slf4j
 @Service
-public class BargainProcessor implements Processor,ActivityGoodsListProcessor {
+public class BargainProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     BargainProcessorDao bargainProcessorDao;
     /*****处理器优先级*****/
@@ -32,6 +36,32 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor {
     @Override
     public Byte getActivityType() {
         return BaseConstant.ACTIVITY_TYPE_BARGAIN;
+    }
+
+    /*****************商品详情处理*******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(param.getActivityType())) {
+            return;
+        }
+
+        BargainMpVo bargainInfo = bargainProcessorDao.getBargainInfo(param.getUserId(), param.getActivityId());
+
+        if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(bargainInfo.getActState())) {
+            capsule.setActivity(bargainInfo);
+            log.debug("小程序-商品详情-拼团信息获取失败-砍价活动不存在[{}]-详情处理退出",param.getActivityId());
+            return;
+        }
+        // 设置最终库存
+        int stock = capsule.getGoodsNumber()<bargainInfo.getStock()?capsule.getGoodsNumber():bargainInfo.getStock();
+        bargainInfo.setStock(stock);
+        capsule.setGoodsNumber(stock);
+
+        if (stock == 0 && BaseConstant.needToConsiderNotHasNum(bargainInfo.getActState())) {
+            log.debug("小程序-商品详情-砍价商品数量已用完");
+            bargainInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+        capsule.setActivity(bargainInfo);
     }
 
     /*****装修商品列表*****/
@@ -46,7 +76,7 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor {
                 return;
             }
             BargainRecord bargainRecord = goodsBargainInfo.get(capsule.getGoodsId());
-            capsule.setRealPrice(BargainService.BARGAIN_TYPE_FIXED == bargainRecord.getBargainType()?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
+            capsule.setRealPrice(GoodsConstant.BARGAIN_TYPE_FIXED.equals(bargainRecord.getBargainType())?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
 
             activity.setActivityId(bargainRecord.getId());
