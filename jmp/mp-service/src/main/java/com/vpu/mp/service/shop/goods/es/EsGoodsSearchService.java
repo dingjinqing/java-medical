@@ -48,11 +48,11 @@ public class EsGoodsSearchService extends EsBaseSearchService{
         PageResult<GoodsPageListVo> result = new PageResult<>();
         result.setPage(esPage.getPage());
         List<EsGoods> esGoodsList = esPage.getDataList();
+        List<GoodsPageListVo> voList = new ArrayList<>(esGoodsList.size());
         if( !esGoodsList.isEmpty() ){
             Map<Integer,List<EsGoodsLabel>> labelMap = getGoodsLabel(
                 esGoodsList.stream().map(EsGoods::getGoodsId).collect(Collectors.toList())
             );
-            List<GoodsPageListVo> voList = new ArrayList<>(esGoodsList.size());
             esGoodsList.forEach(x-> {
                 GoodsPageListVo vo = CONVERT.convert(x);
                 if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
@@ -62,9 +62,9 @@ public class EsGoodsSearchService extends EsBaseSearchService{
                 }
                 voList.add(vo);
             });
-            result.setDataList(voList);
-        }
 
+        }
+        result.setDataList(voList);
         return result;
     }
 
