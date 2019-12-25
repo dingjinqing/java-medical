@@ -22,7 +22,6 @@
     "pages/cart/cart",
     "pages/cardlist/cardlist",
     "pages/cardinfo/cardinfo",
-    "pages/cardrecord/cardrecord",
     "pages/userqrcode/userqrcode",
     "pages/bargainlist/bargainlist",
     "pages/lotterygift/lotterygift",
@@ -31,7 +30,8 @@
     "pages/checkout/checkout",
     "pages/servicecomment/servicecomment",
     "components/decorate/shop_announce/index",
-    "components/decorate/bargain/index"
+    "components/decorate/bargain/index",
+    "pages/cardrecord/cardrecord"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -75,7 +75,8 @@
         "payment/payment",
         "returnlogistics/returnlogistics",
         "returnrecord/returnrecord",
-        "shoporderinfo/shoporderinfo"
+        "shoporderinfo/shoporderinfo",
+        "usercardrecord/usercardrecord"
       ]
     }
   ],

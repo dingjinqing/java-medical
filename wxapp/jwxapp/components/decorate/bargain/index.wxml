@@ -24,7 +24,7 @@
 		 style="{{m.list_style==1?'width:100%;display:flex;height:auto':''}}"
 		>
 			<view class='each_img' style="{{m.list_style==1?'width:260rpx;height:260rpx;margin-right:30rpx':''}}">
-				<image class="sell_out" wx:if='{{item.bargain_num == 0}}' src="{{m.imageUrl}}/image/wxapp/goods_sell_out.png" />
+				<image class="sell_out" wx:if='{{item.bargain_num == 0}}' src="{{m.imageUrl}}image/wxapp/goods_sell_out.png" />
 				<image wx:if="{{item.isShowImg}}" src="{{item.goods_img}}" style="{{m.list_style?'width:260rpx;height:260rpx':''}}" />
 				<view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>商品已删除</view>
 				<view class='daojishi' wx:elif='{{item.goods_is_delete == 1 && item.is_on_sale == 0}}'>商品已下架</view>

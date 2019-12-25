@@ -41,9 +41,9 @@
       </view>
       <view class="card_bottom" style='text-align:left;padding-left:390rpx;'>{{i18n.$t(localePack,'components.decorate.moreEquity')}}</view>
       <view class='card_out'>
-        <image src="{{m.imageUrl}}/image/wxapp/card_stop.png?v=1" mode='widthFix' wx:if="{{m.status==3}}" />
-        <image src="{{m.imageUrl}}/image/wxapp/card_out_time.png?v=1" mode='widthFix' wx:if="{{m.status==2}}" />
-        <image src="{{m.imageUrl}}/image/wxapp/card_have.png?v=1" mode='widthFix' wx:if="{{m.status==1}}" />
+        <image src="{{m.imageUrl}}image/wxapp/card_stop.png?v=1" mode='widthFix' wx:if="{{m.status==3}}" />
+        <image src="{{m.imageUrl}}image/wxapp/card_out_time.png?v=1" mode='widthFix' wx:if="{{m.status==2}}" />
+        <image src="{{m.imageUrl}}image/wxapp/card_have.png?v=1" mode='widthFix' wx:if="{{m.status==1}}" />
       </view>
     </view>
   </view>

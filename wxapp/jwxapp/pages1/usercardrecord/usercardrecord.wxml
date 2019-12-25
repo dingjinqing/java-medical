@@ -1,0 +1,60 @@
+<!--pages/usercardrecord/usercardrecord.wxml-->
+<include src="../../pages/common/header.wxml" />
+<view class='main-container'>
+	<view class='card_record_top' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor}})'>
+		<view wx:if="{{title2}}">
+			<view>
+				<text class='top_title'>{{ title2 }}</text>
+			</view>
+			<view>
+				<text class='top_show_number'>{{ show_number2 ? show_number2 : 0}}</text>
+			</view>
+		</view>
+		<view wx:if="{{title}}">
+			<view>
+				<text class='top_title'>{{ title }}</text>
+			</view>
+			<view>
+				<text class='top_show_number'>{{ show_number ? show_number : 0}}</text>
+			</view>
+		</view>
+	</view>
+	<view class='show_type_choose'>
+		<view class='{{show_type? "chooseed" : ""}}' style='border-bottom-color:{{show_type ? comColor:""}};color:{{show_type ? comColor:""}}' catchtap='useDetail'>使用明细</view>
+		<view class='{{show_type ? "" : "chooseed"}}' style='border-bottom-color:{{show_type ? "":comColor}};color:{{show_type  ? "":comColor}}' catchtap='chargeDetail'>充值明细</view>
+	</view>
+	<view class='card_record_content'>
+		<block wx:for="{{ record_list }}" wx:key="key">
+			<view class='record_item' wx:if="{{show_type == 1}}">
+				<view class='clearfix'>
+					<view class='fl'>{{ item.reason }}</view>
+					<view class='fr' wx:if="{{ item.type == 0 }}" style='color:{{comColor}}'>+{{ item.charge }}</view>
+					<view class='fr' wx:if="{{ item.type == 1 }}" style='color:{{comColor}}'>+
+						<block wx:if="{{item.count > 0}}">{{ item.count }}</block>
+						<block wx:elif="{{item.exchang_count > 0}}">{{ item.exchang_count }}</block>
+					</view>
+				</view>
+				<text class='add_time'>{{ item.add_time }}</text>
+			</view>
+			<view class='record_item' wx:if="{{show_type == -1}}">
+				<view class='clearfix'>
+					<view class='fl'>{{ item.reason }}</view>
+					<view class='fr' wx:if="{{ item.type == 0 }}" style='color:{{comColor}}'>{{ item.money }}</view>
+					<view class='fr' wx:if="{{ item.type == 1 }}" style='color:{{comColor}}'>
+						<block wx:if="{{item.count < 0}}">{{ item.count }}</block>
+						<block wx:elif="{{item.exchang_count < 0}}">{{ item.exchang_count }}</block>
+					</view>
+				</view>
+				<text>{{ item.add_time }}</text>
+			</view>
+		</block>
+		<block wx:if="{{record_list.length <= 0}}">
+			<view class="no_detail">
+				<image src='{{imageUrl}}image/wxapp/no_detail.png' mode='widthFix' />
+				<text>暂无明细</text>
+			</view>
+		</block>
+	</view>
+</view>
+<include src="../../pages/common/footer.wxml" />
+
