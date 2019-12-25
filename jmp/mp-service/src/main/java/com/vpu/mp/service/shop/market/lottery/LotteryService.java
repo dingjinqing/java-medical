@@ -9,11 +9,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListVo;
-import com.vpu.mp.service.pojo.shop.market.lottery.LotteryParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.*;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
@@ -28,15 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.LOTTERY;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * @author 孔德成
@@ -188,6 +185,23 @@ public class LotteryService extends ShopBaseService {
         return db().selectFrom(LOTTERY).where(LOTTERY.ID.eq(id)).fetchOne();
     }
 
+    /**
+     * Fetch available lottery lottery record.获取可用抽奖活动
+     *
+     * @param id the id
+     * @return the lottery record
+     */
+    public LotteryRecord fetchAvailableLottery(Integer id) {
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        return db().selectFrom(LOTTERY)
+            .where(LOTTERY.ID.eq(id))
+            .and(LOTTERY.DEL_FLAG.eq(BYTE_ZERO))
+            .and(LOTTERY.STATUS.eq(BYTE_ONE))
+            .and(LOTTERY.END_TIME.greaterThan(now))
+            .and(LOTTERY.START_TIME.lessThan(now))
+            .fetchOne();
+    }
+
 
     public Result<LotteryPrizeRecord> getLotteryPrizeById(Integer id) {
         return lotteryPrize.getPrizeByLotteryId(id);
@@ -250,7 +264,7 @@ public class LotteryService extends ShopBaseService {
      * @param param 入参
      * @return JoinLottery
      */
-    private JoinLottery validJoinLottery(JoinLotteryParam param) {
+    public JoinLottery validJoinLottery(JoinLotteryParam param) {
         Integer userId = param.getUserId();
         Integer lotteryId = param.getLotteryId();
 
