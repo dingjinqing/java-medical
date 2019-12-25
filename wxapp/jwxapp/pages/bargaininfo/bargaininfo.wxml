@@ -1,5 +1,230 @@
-<!-- 砍价详情：pages/bargaininfo/bargaininfo.wxml -->
+<!--pages/bargaininfo/bargaininfo.wxml-->
 <include src="../common/header.wxml" />
-<view class="main-container">
+
+<view class='main-container'>
+  <block wx:if="{{show_poster.flag == 1}}">
+    <block wx:if="{{getsq == true || click_num == true}}">
+      <view class='share_img_btn' wx:if='{{is_share == 0 && !(bargain_info.record_status.status == 1 || bargain_info.record_status.status == 2 || bargain_info.record_status.status == 4 || bargain_info.record_status.status == 6) }}' bindtap='go_share'>
+        <view>{{show_poster.text_1}}</view>
+        <view>{{show_poster.text_2}}</view>
+      </view>
+    </block>
+    <block wx:else>
+      <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+        <view>{{show_poster.text_1}}</view>
+        <view>{{show_poster.text_2}}</view>
+      </button>
+    </block>
+  </block>
+
+  <view class='all'>
+    <view class='info_top'>
+      <image class='user_icon' src='{{bargain_info.record_info.user_avatar}}'></image>
+      <view class='top_content'>
+        <image class='success_icon' wx:if='{{bargain_info.record_info.status == 1 }}' src='{{imageUrl}}image/wxapp/kanjia_success.png'></image>
+        <view class='own_names'>{{bargain_info.record_info.username}}</view>
+        <view class='advertise'>{{bargain_info.record_info.bargain_type == 1 ? bargain_info.record_info.floor_price : bargain_info.record_info.expectation_price}}元拿好货，快来一起砍价吧！</view>
+        <view class='goods_info clearfix'>
+          <view class='gf_left' bindtap='toItem'>
+            <image src='{{bargain_info.record_info.goods_img}}'></image>
+          </view>
+          <view class='gf_right'>
+            <view class='goods_name' bindtap='toItem'>{{bargain_info.record_info.goods_name}}</view>
+            <view class='goods_spec' wx:if='{{bargain_info.record_info.prd_desc}}'>
+              {{bargain_info.record_info.prd_desc}}
+            </view>
+            <view class='goods_price'>
+              <text class='zero'><text>{{bargain_info.record_info.bargain_type == 1 ? bargain_info.record_info.floor_price : bargain_info.record_info.expectation_price}}元</text>砍走</text>
+              <text class='shop_pricess'> 原价￥{{bargain_info.record_info.prd_price}}</text>
+            </view>
+            <view class='time_ggon clearfix'>
+              <view class='daojishi' wx:if="{{bargain_info.record_info.remaining_time > 0}}">仅剩{{clock}}结束</view>
+              <view class='daojishi' wx:if="{{bargain_info.record_info.remaining_time <= 0}}">活动已结束</view>
+              <view class='go_buy' bindtap='to_buy'>直接购买>></view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class='bargain_rule clearfix' bindtap='toRule'>
+        <image src='{{imageUrl}}image/wxapp/icon_disnotice.png' mode='widthFix'></image>
+        <text>砍价规则</text>
+      </view>
+      <image src='{{imageUrl}}image/wxapp/kanjia_info_bg.png' class='top_bg' mode='widthFix'></image>
+    </view>
+    <view class='get_persent'>
+      <block wx:if = "{{bargain_info.record_info.bargain_type == 1}}">
+        <block wx:if='{{bargain_info.record_info.not_freee_monet > 0}}'>
+          <view class='tips_price'>已砍{{bargain_info.record_info.bargain_money}}元，砍到{{bargain_info.record_info.expectation_price}}元，即可下单</view>
+        </block>
+        <block wx:else>
+          <view class='tips_price' wx:if='{{bargain_info.record_info.min_bargain_money > bargain_info.record_info.bargain_money}}'>
+            已砍{{bargain_info.record_info.bargain_money}}元，可“继续砍价”或“立即下单”
+          </view>
+          <view class='tips_price' wx:else>已砍{{bargain_info.record_info.bargain_money}}元，砍价成功，可“立即下单”</view>
+        </block>
+      </block>
+      <block wx:else>
+        <view class='tips_price' wx:if='{{bargain_info.record_info.not_freee_monet > 0}}'>已砍{{bargain_info.record_info.bargain_money}}元，砍到{{bargain_info.record_info.expectation_price}}元，即可下单</view>
+        <view class='tips_price' wx:else>已砍{{bargain_info.record_info.bargain_money}}元，砍价成功，可“立即下单”</view>
+      </block>
+      <block wx:if='{{bargain_info.record_info.bargain_type == 0}}'>
+        <progress class='progress' style='border-radius:1000rpx;overflow:hidden' percent="{{bargain_info.record_info.progress_present}}" activeColor="#ff6666" stroke-width='13'></progress>
+        <view class='price_show clearfix'>
+          <view class='money_total'>￥{{bargain_info.record_info.goods_price}}</view>
+          <view class='money_0'>￥{{bargain_info.record_info.expectation_price}}</view>
+        </view>
+      </block>
+      <block wx:if='{{bargain_info.record_info.bargain_type == 1}}'>
+        <progress class='progress' style='border-radius:1000rpx;overflow:hidden' percent="{{bargain_info.record_info.progress_present}}" activeColor="#ff6666" stroke-width='13'></progress>
+        <view class='price_show clearfix'>
+          <view class='money_total'>￥{{bargain_info.record_info.goods_price}}</view>
+          <view class='money_0'>￥{{bargain_info.record_info.floor_price}}</view>
+          <view class='money_now' style='left:{{left_value}}rpx;top:-39rpx' wx:if='{{bargain_info.record_info.expectation_price != 0}}'></view>
+        </view>
+      </block>
+    </view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.record_status.status == 0}}' style='position:relative;height:70rpx;padding:0'>
+      <form report-submit='true' bindsubmit='toKnajia'>
+       <block wx:if="{{getsq == true || click_num == true}}">
+        <button formType="submit">{{bargain_info.record_status.msg}}</button>
+       </block>
+        <block wx:else>
+        <button open-type="getUserInfo" bindgetuserinfo="getUserInfo">{{bargain_info.record_status.msg}}</button>
+       </block>
+      </form>
+
+    </view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.record_status.status == 1}}' bindtap='toIndex'>{{bargain_info.record_status.msg}}，随便逛逛</view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.record_status.status == 2}}' bindtap='toIndex'>{{bargain_info.record_status.msg}}，随便逛逛</view>
+    <view class='btn_kanjia' bindtap='toIndex' wx:if='{{bargain_info.record_status.status == 3 || bargain_info.record_status.status == 4 || bargain_info.record_status.status == 6}}'>{{bargain_info.record_status.msg}}，随便逛逛</view>
+    <form report-submit='true' bindsubmit='toCheckout'>
+      <button class='btn_kanjia' formType="submit" wx:if='{{bargain_info.record_status.status == 5}}'>砍价成功，立即完善订单</button>
+    </form>
+    <block wx:if="{{ getsq == true || click_num == true}}">
+    <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 7}}'>
+      <button open-type='share'></button>
+      {{bargain_info.record_status.msg}}
+    </view>
+    <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 8}}'>
+      <button open-type='share'></button>
+      {{bargain_info.record_status.msg}}
+    </view>
+    <view class='have_two_btn clearfix' wx:if='{{bargain_info.record_status.status == 11}}'>
+      <view class='btn_half has_btn'>
+        <button open-type='share'></button>
+        {{bargain_info.record_status.msg}}
+      </view>
+      <form report-submit='true' bindsubmit='toCheckout'>
+        <button class='btn_half btn_to_pay' formType="submit">
+          立即下单
+        </button>
+      </form>
+    </view>
+    </block>
+    <block wx:else>
+      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 7}}'>
+      <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
+      {{bargain_info.record_status.msg}}
+    </view>
+    <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 8}}'>
+      <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
+      {{bargain_info.record_status.msg}}
+    </view>
+
+    </block>
+    <view class='btn_kanjia' bindtap='toWhere' wx:if='{{bargain_info.record_status.status == 9}}'>{{bargain_info.record_status.msg}}</view>
+    <view class='btn_kanjia' bindtap='toOrder' data-order_sn="{{bargain_info.record_status.order_sn}}" wx:if='{{bargain_info.record_status.status == 10}}'>{{bargain_info.record_status.msg}},点击查看详情</view>
+    <view class='kanjia_person' wx:if='{{bargain_info.record_user_list.length>0}}'>
+      <view class='list_title'>
+        <view class='neirong'>砍价记录</view>
+        <view class='btn_more' bindtap='go_list' wx:if='{{bargain_info.record_user_list.length>=20}}'>
+          查看更多
+          <image src='{{imageUrl}}image/wxapp/backward_right.png' mode='widthFix'></image>
+        </view>
+      </view>
+      <view class='each_onne clearfix' wx:for="{{bargain_info.record_user_list}}" wx:key='key'>
+        <view class='person_icom'>
+          <image src='{{item.user_avatar}}'></image>
+        </view>
+        <view class='person_name'>
+          <view>{{item.username}}</view>
+          <view>{{item.show_time}}</view>
+        </view>
+        <view class='person_price'>
+          <image class='kanjiade_icon' src='{{imageUrl}}image/wxapp/kanjia_info_icon.png'></image>砍掉{{item.bargain_money}}元</view>
+      </view>
+    </view>
+
+
+    <!-- 推荐商品 start-->
+    <v-goods-recommend page-name="bargainitem"></v-goods-recommend>
+
+    <!-- 砍价成功的弹框 -->
+    <view class='splitMode' style='display:{{is_success == 1?"block":"none"}}' wx:if='{{bargain_info.record_status.status == 8}}'>
+      <view class='coupon_content'>
+        <view class='kanjia_info'>
+          <image src='{{imageUrl}}image/wxapp/kanjia_bg1.png'></image>
+          <view class='sentence1'>砍了
+            <text>{{bargain_info.record_status.bargain_money}}</text>元，</view>
+          <view class='sentence2'>快邀请小伙伴帮忙砍价吧</view>
+          <view class='but_invite has_btn'>
+            <block wx:if="{{ getsq == true || click_num == true}}">
+              <button open-type='share'></button>
+              {{bargain_info.record_status.msg}}
+            </block>
+            <block wx:else>
+              <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" ></button>
+              {{bargain_info.record_status.msg}}
+            </block>
+          </view>
+        </view>
+        <view class='btn_close' bindtap='guan'>
+          <image src='{{imageUrl}}image/wxapp/kanjia_close.png' mode='widthFix' />
+        </view>
+      </view>
+    </view>
+
+    <!-- 帮他砍一刀的弹框 -->
+    <view class='splitMode' style='display:{{is_help == 1?"block":"none"}}'>
+      <view class='coupon_content'>
+        <view class='kanjia_info'>
+          <image src='{{imageUrl}}image/wxapp/kanjia_bg1.png'></image>
+          <view class='sentence1'>帮他砍了
+            <text>{{cut_money}}</text>元，</view>
+          <view class='sentence2'>一起来{{bargain_info.record_info.bargain_type == 1 ? bargain_info.record_info.floor_price : bargain_info.record_info.expectation_price}}元得好物吧~</view>
+          <block wx:if="{{ getsq == true || click_num ==true }}">
+          <view class='but_invite has_btn' bindtap='toWhere' wx:if='{{bargain_info.record_status.status != 6}}'>
+            我也要{{bargain_info.record_info.bargain_type == 1 ? bargain_info.record_info.floor_price : bargain_info.record_info.expectation_price}}元得好物
+          </view>
+          </block>
+          <block wx:else>
+             <button class='but_invite has_btn' data-kj="{{1}}"  open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if='{{bargain_info.record_status.status != 6}}'>
+            我也要{{bargain_info.record_info.bargain_type == 1 ? bargain_info.record_info.floor_price : bargain_info.record_info.expectation_price}}元得好物
+          </button>
+          </block>
+
+          <view class='but_invite has_btn' bindtap='toIndex' wx:if='{{bargain_info.record_status.status == 6}}'>
+            {{bargain_info.record_status.msg}}，随便逛逛
+          </view>
+        </view>
+        <view class='btn_close' bindtap='guan1'>
+          <image src='{{imageUrl}}image/wxapp/kanjia_close.png' mode='widthFix' />
+        </view>
+      </view>
+    </view>
+
+    <!--fenxiang弹框  -->
+    <view class='share_bg' style='display:{{is_share == 1?"block":"none"}};margin-top:{{margin_top_nav + 8}}px;'>
+      <view class='zhezhao' catchtap='not_show_share'></view>
+      <view class='share_content'>
+        <image src='{{pictorial}}'></image>
+        <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>保存图片</view>
+        <view class='save_tips'>保存图片到本地相册</view>
+      </view>
+    </view>
+    <!-- 绑定手机号弹窗 -->
+    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以帮TA砍价哦！" />
+  </view>
 </view>
+
 <include src="../common/footer.wxml" />

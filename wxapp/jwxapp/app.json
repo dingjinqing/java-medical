@@ -4,6 +4,7 @@
     "pages/account/account",
     "pages/index/index",
     "pages/userinfo/userinfo",
+    "pages/bargaininfo/bargaininfo",
     "pages/webview/webview",
     "pages/widthdraw/widthdraw",
     "pages/widthdrawrecord/widthdrawrecord",
@@ -29,7 +30,6 @@
     "pages/storeinfo/storeinfo",
     "pages/checkout/checkout",
     "pages/servicecomment/servicecomment",
-    "pages/bargaininfo/bargaininfo",
     "components/decorate/shop_announce/index",
     "components/decorate/bargain/index"
   ],
