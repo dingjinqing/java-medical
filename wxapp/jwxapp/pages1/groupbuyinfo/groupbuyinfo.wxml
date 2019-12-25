@@ -77,7 +77,7 @@
         <view class='btn_to_group' bindtap='toJoin' wx:if="{{groupbuyInfo.statusInfo.status == 0}}">
           我要参团
         </view>
-        <button class='btn_to_group buttins' open-type="share" wx:if="{{groupbuyInfo.statusInfo.status == 3}}">
+        <button class='btn_to_group buttins' open-type="share" wx:if="{{groupbuyInfo.statusInfo.status == 1430011}}">
           立即分享
         </button>
       </block>
@@ -85,13 +85,13 @@
         <button class='btn_to_group' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.statusInfo.status == 0}}" data-ct="{{0}}">
           我要参团
         </button>
-        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.statusInfo.status == 3}}">
+        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.statusInfo.status == 1430011}}">
           立即分享
         </button>
       </block>
-      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 1}}">本次团购已结束</view>
-      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 2}}">该团人数已满</view>
-      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 4}}">
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 143006}}">本次团购已结束</view>
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 143010}}">该团人数已满</view>
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 143009}}">
         该活动您的参团个数已达上限
       </view>
     </view>
