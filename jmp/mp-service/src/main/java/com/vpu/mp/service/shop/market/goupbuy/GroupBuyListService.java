@@ -48,6 +48,7 @@ import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STAT
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 
 /**
  * @author 孔德成
@@ -282,6 +283,12 @@ public class GroupBuyListService extends ShopBaseService {
                 logger().debug("该活动参团个数已经达到上限[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
             }
+        }
+        Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
+                .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_WAIT_PAY, STATUS_SUCCESS)).fetchOneInto(Integer.class);
+        if (joinFlag>0){
+            logger().debug("你已参加过该团[activityId:{}]",activityId);
+            return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
         }
         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_SUCCESS).flag(true).build();
     }
