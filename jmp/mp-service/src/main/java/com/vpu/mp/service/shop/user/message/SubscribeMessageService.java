@@ -484,28 +484,47 @@ public class SubscribeMessageService extends ShopBaseService {
 		try {
 			String appId = saas().shop.mp.getAppIdByShopId(getShopId());
             info = service.getUserPortrait(appId,beginDate,endDate);
-            MpUserPortraitRecord record = db().newRecord(MP_USER_PORTRAIT);
-            record.setRefDate(info.getRefDate());
-            record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
-            record.setVisitUv(Util.toJson(info.getVisitUv()));
-            record.setType(type);
-            String refDate = info.getRefDate();
-            String date = refDate.substring(0,8);
-            Timestamp startTime = extracted(date);
-            record.setStartTime(startTime);
-            int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
-            if(execute>0) {
+            MpUserPortraitRecord record = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).fetchAny();
+            
+            if(record!=null) {
             	logger().info("更新");
+            	record=assignment(type, info, record);
             	record.update();
             }else {
             	logger().info("插入");
+            	record = db().newRecord(MP_USER_PORTRAIT);
+            	record = assignment(type, info, record);
             	record.insert();            	
             }
         } catch (WxErrorException e) {
             
         }
 	}
+
+	/**
+	 * 赋值
+	 * @param type
+	 * @param info
+	 * @param record
+	 * @return
+	 */
+	private MpUserPortraitRecord assignment(Byte type, MaPortraitResult info, MpUserPortraitRecord record) {
+		record.setRefDate(info.getRefDate());
+		record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
+		record.setVisitUv(Util.toJson(info.getVisitUv()));
+		record.setType(type);
+		String refDate = info.getRefDate();
+		String date = refDate.substring(0,8);
+		Timestamp startTime = extracted(date);
+		record.setStartTime(startTime);
+		return  record;
+	}
 	
+	/**
+	 * startTime日期处理
+	 * @param date
+	 * @return
+	 */
 	private Timestamp extracted(String date) {
 		LocalDate ld=LocalDate.now();
 		DateTimeFormatter  dtf2=DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -514,6 +533,11 @@ public class SubscribeMessageService extends ShopBaseService {
 		Timestamp startTime = Timestamp.valueOf(localDateTime);
 		return startTime;
 	}
+	/**
+	 * 日期的移动
+	 * @param num
+	 * @return
+	 */
 	private Date extractedDate(Integer num) {
 		LocalDateTime localDateTime =LocalDateTime.now().plus(num,ChronoUnit.DAYS);
 		ZoneId zone = ZoneId.systemDefault();
