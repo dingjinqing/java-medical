@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="overflow-y:auto;height:100%">
     <div class="content">
       <div class="top_container">
         <div class="top_left">
