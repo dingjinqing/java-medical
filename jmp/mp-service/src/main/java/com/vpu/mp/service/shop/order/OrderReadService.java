@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.member.InviteSourceConstant;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.order.*;
@@ -572,7 +573,8 @@ public class OrderReadService extends ShopBaseService {
 
 		//TODO 拼团
 		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
-
+			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
+			groupBuyList.getPinUserList(groupOrder.getGroupId());
 		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
 
 		}
@@ -755,9 +757,7 @@ public class OrderReadService extends ShopBaseService {
             ReturnOrderListMp returnOrderListMp = rOrder.into(ReturnOrderListMp.class);
             //买家；商家（包含定时任务）
                 ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(rOrder.getRetId());
-                //List<OperatorRecord> operatorRecord = returnStatusChange.getOperatorRecord(rOrder.getRetId());
                 returnOrderListMp.setRole(OrderConstant.IS_MP_Y == lastOperator.getType() ? OrderConstant.IS_MP_Y : OrderConstant.IS_MP_ADMIN);
-                //returnOrderListMp.setOperatorRecord(operatorRecord);
                 returnOrderListMp.setFinishTime(lastOperator.getCreateTime());
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });

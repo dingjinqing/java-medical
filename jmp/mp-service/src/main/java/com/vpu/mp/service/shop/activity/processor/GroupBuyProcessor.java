@@ -91,6 +91,14 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
         }
         log.debug("小程序-商品详情-拼团信息获取开始");
         GroupBuyMpVo groupBuyInfo = groupBuyProcessorDao.getGroupBuyInfo(param.getUserId(), param.getActivityId());
+
+        if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(groupBuyInfo.getActState())) {
+            capsule.setActivity(groupBuyInfo);
+            log.debug("小程序-商品详情-拼团信息获取失败-拼团活动不存在[{}]-详情处理退出",param.getActivityId());
+            return ;
+        }
+
+
         log.debug("小程序-商品详情-拼团规格信息获取开始");
         List<GroupBuyPrdMpVo> groupBuyPrdInfos = groupBuyProcessorDao.getGroupBuyPrdInfo(param.getActivityId());
         groupBuyInfo.setGroupBuyPrdMpVos(groupBuyPrdInfos);
@@ -99,17 +107,29 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
 
         int goodsNum = 0;
         for (int i = 0; i < groupBuyPrdInfos.size(); i++) {
+            // 商品拼团规格
             GroupBuyPrdMpVo vo = groupBuyPrdInfos.get(i);
-
+            //商品原规格
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(vo.getProductId());
+
             // 避免admin拼团存在逻辑bug而导致此处产生空指针
             if (goodsPrdMpVo != null) {
+                // 设置拼团规格对应的原价，便于前端使用
                 vo.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
+                // 处理商品数量不足情况
+                if (goodsPrdMpVo.getPrdNumber() < vo.getStock()) {
+                    vo.setStock(goodsPrdMpVo.getPrdNumber());
+                }
             }
 
             goodsNum+=vo.getStock();
         }
         capsule.setGoodsNumber(goodsNum);
+        if (goodsNum == 0&& BaseConstant.needToConsiderNotHasNum(groupBuyInfo.getActState())) {
+            log.debug("小程序-商品详情-拼团商品数量已用完");
+            groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+
         capsule.setActivity(groupBuyInfo);
     }
 

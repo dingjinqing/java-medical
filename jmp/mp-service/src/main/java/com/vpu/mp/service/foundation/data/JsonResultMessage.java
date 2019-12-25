@@ -423,6 +423,7 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_GOTOLOOK  = "member.card.receive.gotolook";
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
+	public static final String CODE_CARD_NO = "code.card.no";
 	/**
 	 * 概览
 	 */

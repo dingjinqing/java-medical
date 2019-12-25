@@ -1,25 +1,5 @@
 package com.vpu.mp.service.shop.task.wechat;
 
-import cn.binarywang.wx.miniapp.api.WxMaAnalysisService;
-import cn.binarywang.wx.miniapp.bean.analysis.*;
-import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
-import me.chanjar.weixin.common.error.WxErrorException;
-import org.jooq.Field;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 import static com.vpu.mp.db.shop.tables.MpDailyRetain.MP_DAILY_RETAIN;
 import static com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
 import static com.vpu.mp.db.shop.tables.MpDistributionVisit.MP_DISTRIBUTION_VISIT;
@@ -30,6 +10,47 @@ import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
 import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 import static com.vpu.mp.db.shop.tables.MpWeeklyRetain.MP_WEEKLY_RETAIN;
 import static com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.jooq.Field;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.MpDailyRetainRecord;
+import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
+import com.vpu.mp.db.shop.tables.records.MpDistributionVisitRecord;
+import com.vpu.mp.db.shop.tables.records.MpMonthlyRetainRecord;
+import com.vpu.mp.db.shop.tables.records.MpMonthlyVisitRecord;
+import com.vpu.mp.db.shop.tables.records.MpSummaryTrendRecord;
+import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
+import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
+import com.vpu.mp.db.shop.tables.records.MpWeeklyRetainRecord;
+import com.vpu.mp.db.shop.tables.records.MpWeeklyVisitRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
+import com.vpu.mp.service.wechat.api.WxGetWeAnalysService;
+
+import cn.binarywang.wx.miniapp.api.WxMaAnalysisService;
+import cn.binarywang.wx.miniapp.bean.analysis.WxMaRetainInfo;
+import cn.binarywang.wx.miniapp.bean.analysis.WxMaSummaryTrend;
+import cn.binarywang.wx.miniapp.bean.analysis.WxMaVisitDistribution;
+import cn.binarywang.wx.miniapp.bean.analysis.WxMaVisitPage;
+import cn.binarywang.wx.miniapp.bean.analysis.WxMaVisitTrend;
+import me.chanjar.weixin.common.error.WxErrorException;
 
 
 /**
@@ -42,6 +63,9 @@ import static com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 public class WechatTaskService extends ShopBaseService {
 
     Logger logger= LoggerFactory.getLogger(WechatTaskService.class);
+	private static final byte ZERO = 0;
+	private static final byte ONE = 1;
+	private static final byte TWO = 2;
     private static final String CONTENT = "wechat-context";
     private static final ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
         LocalDate date = LocalDate.now().minusDays(1);
@@ -52,10 +76,15 @@ public class WechatTaskService extends ShopBaseService {
     private WxMaAnalysisService getServiceByShopId(Integer shopId) {
         return saas().shop.mp.getMaServiceByShopId(shopId).getAnalysisService();
     }
+    
+    private String getAppId(Integer shopId) {
+    	return saas().shop.mp.getAppIdByShopId(shopId);
+    }
 
     public void beginDailyTask(){
         Date date = java.sql.Date.valueOf(LocalDate.now().minusDays(1));
         WxMaAnalysisService service = getServiceByShopId(getShopId());
+        WxGetWeAnalysService maService=open().getMaExtService();
 
         this.getDailyRetainInfo(service,date);
 
@@ -67,7 +96,7 @@ public class WechatTaskService extends ShopBaseService {
 
         this.getVisitPage(service,date);
 
-        this.getUserPortrait(service,date);
+        this.getUserPortrait(maService);
     }
 
     public void beginWeeklyTask(){
@@ -150,21 +179,41 @@ public class WechatTaskService extends ShopBaseService {
      * @param service
      * @param date
      */
-    private void getUserPortrait(WxMaAnalysisService service,Date date){
-        try {
-            WxMaUserPortrait info = service.getUserPortrait(date,date);
-            if(validationData(info, MP_USER_PORTRAIT)){
-                return ;
-            }
+    private void getUserPortrait(WxGetWeAnalysService service){
+    	//昨天日期
+    	Date endDate = extractedDate(-1);
+    	//昨天
+    	logger().info("昨天");
+    	Date beginDate = extractedDate(-1);
+    	recordManage(service, beginDate, endDate,ZERO);
+    	//7天前
+    	logger().info("7天");
+    	beginDate = extractedDate(-7);
+    	recordManage(service, beginDate, endDate,ONE);
+    	//30天前
+    	logger().info("30天");
+    	beginDate = extractedDate(-30);
+    	recordManage(service, beginDate, endDate,TWO);
+    }
+
+	private void recordManage(WxGetWeAnalysService service, Date beginDate, Date endDate,Byte type) {
+		try {
+            MaPortraitResult info = service.getUserPortrait(getAppId(getShopId()),beginDate,endDate);
             MpUserPortraitRecord record = db().newRecord(MP_USER_PORTRAIT);
             record.setRefDate(info.getRefDate());
             record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
             record.setVisitUv(Util.toJson(info.getVisitUv()));
-            record.insert();
+            record.setType(type);
+            int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
+            if(execute>0) {
+            	record.update();
+            }else {
+            	record.insert();            	
+            }
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
-    }
+	}
 
     /**
      * 查取日访问趋势
@@ -313,4 +362,17 @@ public class WechatTaskService extends ShopBaseService {
         int count =db().selectCount().from(table).where(table.field("ref_date",String.class).eq(date)).fetchOneInto(Integer.class);
         return count > 0;
     }
+    
+    /**
+     * 获取对应的日期
+     * @param num
+     * @return
+     */
+	private Date extractedDate(Integer num) {
+		LocalDateTime localDateTime =LocalDateTime.now().plus(num,ChronoUnit.DAYS);
+		ZoneId zone = ZoneId.systemDefault();
+		Instant instant = localDateTime.atZone(zone).toInstant();
+		Date from = Date.from(instant);
+		return from;
+	}
 }

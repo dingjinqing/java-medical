@@ -112,7 +112,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	public ExecuteResult execute(RefundParam param) {
         logger.info("退款退货执行start(ReturnService)");
         //校验
-        if(!Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_REVOKE).equals(param.getReturnOperate()) && !Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_SUBMIT_SHIPPING).equals(param.getReturnOperate())){
+        if(!Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_REVOKE).equals(param.getReturnOperate()) &&
+            !Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_SUBMIT_SHIPPING).equals(param.getReturnOperate()) &&
+            !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE).equals(param.getReturnOperate()) &&
+            !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY).equals(param.getReturnOperate())){
            //非提交物流、非撤销校验
             if(param.getReturnMoney() == null){
                 ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY);
@@ -541,7 +544,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		//返利金额重新计算
 		// 发送退款成功模板消息
 		// 自动同步订单微信购物单
-		//添加记录-----不用都放到这里
+		//TODO
+        returnStatusChange.addRecord(returnOrderRecord, param.getIsMp(), "当前退款订单正常结束："+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
         logger.info("退款完成变更相关信息end");
 	}
 	

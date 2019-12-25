@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.payment;
 
-import java.sql.Timestamp;
-
 import lombok.Builder;
 import lombok.Data;
+
+import java.sql.Timestamp;
 
 @Builder
 @Data

@@ -1,8 +1,10 @@
 <view class="bargain-container">
 	<view class='all_zero_bargain clearfix'>
+  <!-- data-link="pages/item/item?activityId={{item.act_id}}&&activityType=3&&goodsId={{item.goods_id}}" -->
+  <!-- data-link="pages/bargaininfo/bargaininfo?bargain_id={{item.act_id}}" -->
 		<view
 		 class='each_bargain'
-		 data-link="pages/item/item?activityId={{item.act_id}}&&activityType=3&&goodsId={{item.goods_id}}"
+     data-link="pages/bargaininfo/bargaininfo?record_id={{item.act_id}}"
 		 catchtap="handleToBargain"
 		 data-is_prd='{{item.is_prd}}'
 		 data-idx="{{m.cur_idx}}"

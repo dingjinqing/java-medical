@@ -6,10 +6,13 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * GoodsListMpConverter
@@ -32,7 +35,7 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
         }
     }
 
-    private EsSearchParam assemblyEsSearchParam(GoodsListMpParam param,Integer shopId){
+    private EsSearchParam assemblyEsSearchParam(GoodsListMpParam param,@NotNull Integer shopId){
         List<FieldProperty> propertyList = new ArrayList<>();
         EsSearchParam searchParam = new EsSearchParam();
         if( null != param.getPageRows() ){
@@ -41,23 +44,59 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
         if( null != param.getCurrentPage() ){
             searchParam.setCurrentPage(param.getCurrentPage());
         }
-        if(!CollectionUtils.isEmpty(param.getGoodsItems())){
-            searchParam.setQueryByPage(false);
-            propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsItems()));
-        }else{
-            searchParam.setPageRows(param.getGoodsNum());
-            searchParam.setQueryByPage(true);
-        }
         if( null != shopId ){
             propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,shopId));
         }
-        /**
-         * Whether the show has been sold out of goods
-         */
-        if( !param.getSoldOutGoodsShow() ){
-            propertyList.add(new FieldProperty(EsSearchName.IS_ON_SALE,1));
-            propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER,0, Operator.GT));
+
+        if( param.getRecommendType().equals((byte)1) ){
+            //手动推荐
+            searchParam.setQueryByPage(false);
+            propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsItems()));
+        }else if(param.getRecommendType().equals((byte)0)){
+            //自动推荐
+            searchParam.setPageRows(param.getGoodsNum());
+            searchParam.setQueryByPage(true);
+            /* 是否已售罄*/
+            if( !param.getSoldOutGoodsShow() ){
+                propertyList.add(new FieldProperty(EsSearchName.IS_ON_SALE,1));
+                propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER,0, Operator.GT));
+            }
+            /* 活动商品*/
+            if( param.getGoodsType() != null && param.getGoodsType() != 0){
+                propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getGoodsType()));
+            }
+            /* 关键词*/
+            if( StringUtils.isNotBlank(param.getKeywords())){
+                propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getKeywords()));
+            }
+            /* 商品最高价 */
+            if( param.getMaxPrice() != null ){
+                propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getMaxPrice(),Operator.LTE));
+            }
+            /* 商品最低价 */
+            if( param.getMinPrice() != null ){
+                propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getMinPrice(),Operator.GTE));
+            }
+            /* 商品范围*/
+            if( StringUtils.isNotBlank(param.getGoodsArea()) ){
+                String goodsArea = param.getGoodsArea();
+                if( !CollectionUtils.isEmpty(param.getGoodsAreaData()) ){
+                    if ( (GoodsListMpParam.BRAND_AREA).equals(goodsArea) ){
+                        propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getGoodsAreaData()));
+                    }else if( (GoodsListMpParam.CAT_AREA).equals(goodsArea) ){
+                        propertyList.add(new FieldProperty(EsSearchName.FULL_CAT_ID,param.getGoodsAreaData()));
+                    }else if( (GoodsListMpParam.LABEL_AREA).equals(goodsArea) ){
+                        /*商品标签查goodsId*/
+                        propertyList.add(new FieldProperty(EsSearchName.GOODS_LABEL,param.getGoodsItems()));
+                    }else if( (GoodsListMpParam.SORT_AREA).equals(goodsArea) ){
+                        propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getGoodsAreaData()));
+                    }
+                }
+            }
         }
+
+
+
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);
         }
