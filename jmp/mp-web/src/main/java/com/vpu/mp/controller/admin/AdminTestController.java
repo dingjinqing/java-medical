@@ -158,10 +158,4 @@ public class AdminTestController extends AdminBaseController {
 		return success();
 		
 	}
-	
-	@RequestMapping(value = "/api/admin/test/getUserPortrait/{id}")
-	public JsonResult getUserPortrait(@PathVariable Integer id) throws WxErrorException {
-		MaPortraitResult userPortrait = subservice.getUserPortrait(id);
-		return success(userPortrait);
-	}
 }

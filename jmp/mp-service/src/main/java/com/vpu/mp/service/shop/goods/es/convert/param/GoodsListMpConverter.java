@@ -66,8 +66,16 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
                 propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getGoodsType()));
             }
             /* 关键词*/
-            if( param.getGoodsType() != null && param.getGoodsType() != 0){
-                propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getGoodsType()));
+            if( StringUtils.isNotBlank(param.getKeywords())){
+                propertyList.add(new FieldProperty(EsSearchName.KEY_WORDS,param.getKeywords()));
+            }
+            /* 商品最高价 */
+            if( param.getMaxPrice() != null ){
+                propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMaxPrice(),Operator.LTE));
+            }
+            /* 商品最低价 */
+            if( param.getMinPrice() != null ){
+                propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMinPrice(),Operator.GTE));
             }
             /* 商品范围*/
             if( StringUtils.isNotBlank(param.getGoodsArea()) ){
@@ -78,7 +86,8 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
                     }else if( (GoodsListMpParam.CAT_AREA).equals(goodsArea) ){
                         propertyList.add(new FieldProperty(EsSearchName.FULL_CAT_ID,param.getGoodsAreaData()));
                     }else if( (GoodsListMpParam.LABEL_AREA).equals(goodsArea) ){
-                        propertyList.add(new FieldProperty(EsSearchName.GOODS_LABEL,param.getGoodsAreaData()));
+                        /*商品标签查goodsId*/
+                        propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsItems()));
                     }else if( (GoodsListMpParam.SORT_AREA).equals(goodsArea) ){
                         propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getGoodsAreaData()));
                     }

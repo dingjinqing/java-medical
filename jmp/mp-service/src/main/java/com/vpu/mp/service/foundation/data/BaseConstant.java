@@ -234,4 +234,12 @@ public final  class  BaseConstant {
     /** 9有待支付对应订单 */
     public final static Byte ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY = 8;
 
+    public static boolean needToConsiderNotHasNum(Byte actState){
+        if (ACTIVITY_STATUS_CAN_USE.equals(actState) || ACTIVITY_STATUS_NOT_START.equals(actState)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

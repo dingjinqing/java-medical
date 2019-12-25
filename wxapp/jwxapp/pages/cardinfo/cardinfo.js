@@ -489,8 +489,9 @@ global.wxPage({
   },
   // 点击使用记录
   toCardRecord (e) {
+    console.log(e)
     util.navigateTo({
-      url: '/pages/usercardrecord/usercardrecord?card_no=' + e.currentTarget.dataset.card_no,
+      url: '/pages1/usercardrecord/usercardrecord?cardNo=' + e.currentTarget.dataset.cardno,
     })
   }
 })

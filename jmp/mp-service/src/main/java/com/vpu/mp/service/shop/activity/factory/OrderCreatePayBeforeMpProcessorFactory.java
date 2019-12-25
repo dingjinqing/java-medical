@@ -38,7 +38,8 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      * 全局的活动  支付有礼
      */
     private final static List<Byte> globaActivity = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_PAY_AWARD
+            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+            BaseConstant.ACTIVITY_TYPE_GIFT
     );
 
     /**

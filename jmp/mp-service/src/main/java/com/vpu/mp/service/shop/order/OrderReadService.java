@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.member.InviteSourceConstant;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.order.*;
@@ -365,7 +366,9 @@ public class OrderReadService extends ShopBaseService {
 		//退款商品
 		if(rOrder.getReturnType() != OrderConstant.RT_ONLY_SHIPPING_FEE) {
 			List<OrderReturnGoodsVo> goods = returnOrderGoods.getReturnGoods(rOrder.getOrderSn(),rOrder.getRetId()).into(OrderReturnGoodsVo.class);
-			vo.setReturnGoods(goods);
+            Map<Integer, OrderGoodsMpVo> keyMapByIds = orderGoods.getKeyMapByIds(order.getOrderId());
+            goods.forEach(x->x.setIsGift(keyMapByIds.get(x.getRecId()).getIsGift()));
+            vo.setReturnGoods(goods);
 		}
 		//快递code
 		vo.setShippingCode(returnOrder.getShippingCode(rOrder));
@@ -380,6 +383,9 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//设置自动处理时间
 		setReturnCfg(vo, rOrder);
+		//设置订单类型
+        vo.setOrderType(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        //
 		return vo;
 	}
 
@@ -572,7 +578,8 @@ public class OrderReadService extends ShopBaseService {
 
 		//TODO 拼团
 		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
-
+			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
+			groupBuyList.getPinUserList(groupOrder.getGroupId());
 		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
 
 		}
@@ -755,9 +762,7 @@ public class OrderReadService extends ShopBaseService {
             ReturnOrderListMp returnOrderListMp = rOrder.into(ReturnOrderListMp.class);
             //买家；商家（包含定时任务）
                 ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(rOrder.getRetId());
-                //List<OperatorRecord> operatorRecord = returnStatusChange.getOperatorRecord(rOrder.getRetId());
                 returnOrderListMp.setRole(OrderConstant.IS_MP_Y == lastOperator.getType() ? OrderConstant.IS_MP_Y : OrderConstant.IS_MP_ADMIN);
-                //returnOrderListMp.setOperatorRecord(operatorRecord);
                 returnOrderListMp.setFinishTime(lastOperator.getCreateTime());
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });

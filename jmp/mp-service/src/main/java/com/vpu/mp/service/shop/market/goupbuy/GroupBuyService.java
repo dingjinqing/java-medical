@@ -515,8 +515,8 @@ public class GroupBuyService extends ShopBaseService {
         return groupBuyInfo;
     }
 
-    public String getGroupBuyShareBase64Image(Integer userId, Integer groupId) {
-        return groupBuyPictorialService.getGroupBuyShareBase64Image(userId, groupId);
+    public String getGroupBuyShareBase64Pictorial(Integer userId, Integer groupId) {
+        return groupBuyPictorialService.getGroupBuyShareBase64Pictorial(userId, groupId);
     }
 
     /**
@@ -543,18 +543,12 @@ public class GroupBuyService extends ShopBaseService {
         }
 
         if (groupBuyDefineRecord == null) {
-            logger().debug("小程序-商品详情-拼团信息-是否可以参与活动判断-获取拼团详情");
-            groupBuyDefineRecord = db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GROUP_BUY_DEFINE.ID.eq(activityId)))
-                .fetchAny();
-        }
-
-        if (groupBuyDefineRecord == null) {
             logger().debug("小程序-商品详情-拼团信息-活动不存在或已删除[activityId:{}]",activityId);
             return BaseConstant.ACTIVITY_STATUS_NOT_HAS;
         }
 
-        if (groupBuyDefineRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)) {
-            logger().debug("该活动未启用[activityId:{}]",activityId);
+        if (BaseConstant.ACTIVITY_STATUS_DISABLE.equals(groupBuyDefineRecord.getStatus())) {
+            logger().debug("小程序-商品详情-拼团信息-该活动未启用[activityId:{}]",activityId);
             return BaseConstant.ACTIVITY_STATUS_STOP;
         }
 
@@ -576,5 +570,10 @@ public class GroupBuyService extends ShopBaseService {
         }
 
         return BaseConstant.ACTIVITY_STATUS_CAN_USE;
+    }
+
+    public Object getGroupBuyShareImage(Integer userId, Integer groupId) {
+
+        return null;
     }
 }

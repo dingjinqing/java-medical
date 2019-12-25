@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardGetParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
@@ -141,7 +143,10 @@ public class WxAppCardController extends WxAppBaseController {
 	@PostMapping(value="/api/wxapp/card/use")
 	public JsonResult cardConsume(@RequestBody @Validated CardUseListParam param) {
 		logger().info("会员卡使用记录");
-		PageResult<ChargeVo> useList = shop().user.wxUserCardService.getUseList(param);
+		UserCardMaParam useList = shop().user.wxUserCardService.getUseList(param);
+		if(useList==null) {
+			return fail(JsonResultCode.CODE_CARD_NO);
+		}
 		return success(useList);
 	}
 

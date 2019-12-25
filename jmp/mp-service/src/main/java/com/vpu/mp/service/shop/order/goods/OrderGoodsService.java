@@ -1,8 +1,35 @@
 package com.vpu.mp.service.shop.order.goods;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record3;
+import org.jooq.Record6;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -18,31 +45,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.OrderGoods;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
  * Table:ORDER_GOODS
@@ -226,6 +231,16 @@ public class OrderGoodsService extends ShopBaseService{
 		return record6s;
 	}
 
+	/**
+	 * 查询商品信息
+	 * @return
+	 */
+	public List<GoodsRecord> getGoodsInfoRecordByOrderSn(String orderSn){
+		return db().select(GOODS.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID)
+				.from(TABLE)
+				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
+				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsRecord.class);
+	}
 	/**
 	 * 根据订单号查询商品
 	 * @param orderSn

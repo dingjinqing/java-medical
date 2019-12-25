@@ -50,8 +50,6 @@ public class ShopPledgeService extends ShopBaseService {
             .orderBy(PLEDGE.CREATE_TIME.asc())
             .fetch()
             .into(PledgeInfo.class);
-    rabbitmqSendService.sendMessage("hrllo", "MMP");
-
     return list;
   }
 
