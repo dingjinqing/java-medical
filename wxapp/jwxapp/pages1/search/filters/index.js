@@ -9,7 +9,20 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    
+    filterData:{
+      type:Object,
+      observer(val){
+        let {minPrice,maxPrice,sortId:selectedSort,brandIds:selectedBrands,labelIds:selectedLabels,activityTypes:selectedActTypes} = val
+        this.setData({
+          minPrice,
+          maxPrice,
+          selectedSort,
+          selectedBrands,
+          selectedActTypes,
+          selectedLabels
+        })
+      }
+    }
   },
   lifetimes:{
     attached(){
@@ -32,13 +45,7 @@ global.wxComponent({
    */
   data: {
     showSortDialog:false,
-    showBrandDialog:false,
-    minPrice:null,
-    maxPrice:null,
-    selectedSort: null,
-    selectedBrands: [],
-    selectedLabels:[],
-    selectedActTypes:[]
+    showBrandDialog:false
   },
 
   /**

@@ -137,9 +137,9 @@ public class PayAwardService extends ShopBaseService {
             if (awardBo.getAwardNumber() != null) {
                 payAwardPrizeRecord.setAwardNumber(Optional.ofNullable(awardBo.getAwardNumber()).orElse(0));
             }
-            if (addFlag) {
+            if (addFlag||awardBo.getId()==null) {
                 payAwardPrizeRecord.setId(null);
-                payAwardPrizeRecord.insert();
+                payAwardPrizeRecord.store();
             } else {
                 payAwardPrizeRecord.setId(awardBo.getId());
                 payAwardPrizeRecord.update();
@@ -184,7 +184,7 @@ public class PayAwardService extends ShopBaseService {
             List<Integer> payAwardPrizeIds = savePayAwardPrize(param, payAward, false);
             payAward.setAwardList(null);
             payAward.update();
-            db().delete(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.ID.notIn(payAwardPrizeIds)).and(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAward.getId()));
+            db().delete(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.ID.notIn(payAwardPrizeIds)).and(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAward.getId())).execute();
             return true;
         }
         return false;

@@ -4,3 +4,7 @@
     <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />
     <include src="../common/footer.wxml" />
 </view>
+<!-- 收藏小程序提示按钮 -->
+<view class="collect_gifts" bindtap='bindShowCollectMp' wx:if="{{collect_gift}}">
+  <image src='{{pageContent.shop_collect.collect_logo == 0 ? imageUrl+"image/wxapp/collect_gifts.png" : pageContent.shop_collect.collect_logo_src}}'></image>
+</view>

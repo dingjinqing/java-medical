@@ -24,6 +24,7 @@
           <cardScoreCfg
             :val="cardScoreCfgData"
             @input="initCardScoreCfgData"
+            ref="cardScoreCfgData"
           ></cardScoreCfg>
           <ownGoods
             :val="ownGoodsData"
@@ -99,14 +100,15 @@ export default {
     let cardTypeTmp = 0
     let cardScoreCfgDataTmp = {
       powerScore: true,
-      score: 100,
+      score: undefined,
       offSet: '0',
       shopingInputLeft: 100,
       shopingInputRight: 100,
       shopingInputLeftM: 100,
       shopingInputRightM: 100,
       addIntegralArr: [
-      ]
+      ],
+      valid: false
     }
     let cardUsageCfgDataTmp = {
       desc: '',
@@ -309,6 +311,7 @@ export default {
       this.$refs.disCountData.$emit('checkRule')
       this.$refs.cardGradeCfgData.$emit('checkRule')
       this.$refs.cardActiveCfgData.$emit('checkRule')
+      this.$refs.cardScoreCfgData.$emit('checkRule')
       // 权益判断
       if (this.cardScoreCfgData.powerScore || this.ownGoodsData.powerOwnGoods || this.disCountData.powerDiscount) {
 
@@ -316,7 +319,7 @@ export default {
         this.$message.warning('至少选择一项会员权益')
       }
 
-      if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid && this.cardActiveCfgData.valid) {
+      if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid && this.cardActiveCfgData.valid && this.cardScoreCfgData.valid) {
         // 保存数据
         this.prepareCardData()
       }

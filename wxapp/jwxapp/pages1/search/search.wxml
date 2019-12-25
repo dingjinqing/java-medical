@@ -1,6 +1,6 @@
 <view class="body">
   <include src="/pages/common/header.wxml"/>
-  <view class="main-container" wx:if="{{dataList}}">
+  <view class="main-container" wx:if="{{pageParams}}">
     <view class="filter">
       <view class="input_box">
         <view>
@@ -32,6 +32,6 @@
       </block>
     </view>
   </view>
-  <v-filter show="{{showFilterDialog}}" bindconfirm="getSelectedData" nav-height="{{margin_top_nav + 8}}"/>
+  <v-filter show="{{showFilterDialog}}" filter-data="{{filterData}}" bindconfirm="getSelectedData" nav-height="{{margin_top_nav + 8}}"/>
   <include src="/pages/common/footer.wxml"/>
 </view>

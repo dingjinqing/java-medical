@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -22,7 +23,7 @@ import java.util.List;
 @Setter
 public class PayAwardParam {
 
-
+    @NotNull(groups = UpdateGroup.class)
     private Integer    id;
     @Length(max = 10)
     private String     activityNames;

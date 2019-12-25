@@ -54,7 +54,7 @@ export const cn = {
   order: '订单号',
 
   // 添加支付有礼活动
-  actSetting: '活动陪置',
+  actSetting: '活动配置',
   maxWords: '最多支持10个字',
   fixedTime: '固定时间',
   effectTime: '生效时间',
@@ -62,7 +62,7 @@ export const cn = {
   foreverTime: '永久有效',
   levelTips: '用于区分不同支付有礼活动的优先级，请填写正整数，数值越大优先级越高',
   relationship: '以下条件为"且"的关系',
-  goodsCondition: '商品条件',
+  goodsCondition: '商品条件：',
   selectedClassfication: '已选择分类：',
   selectedNumber: '个分类',
   payCondition: '支付条件：',
@@ -99,7 +99,7 @@ export const cn = {
   inputIntegral: '请输入积分',
   actImg: '活动图片',
   imgSize: '建议尺寸：560px * 700px',
-  settingLink: '设置链接：',
+  settingLink: '设置链接',
   chooseLink: '选择链接',
   giftNumber: '奖品份数',
   giftTips1: '份(已发0份)',

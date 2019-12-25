@@ -11,9 +11,11 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad (options) {
     console.log(options);
     // this._options = options;
+    this._options = options;
+    this._options.first_onload = 1;
     this.requestDecoratePageData(
       this._options.page,
       this._options.scene,
@@ -22,45 +24,50 @@ global.wxPage({
     );
   },
   //  渲染装修模块
-  renderData(pageContent) {
+  renderData (pageContent) {
     console.log(pageContent);
 
     this.setData({
       pageContent: pageContent
     });
+    // 初始化收藏有礼
+    this.renderCollectData()
+  },
+  onShow () {
+    console.log(this._options, +'111111111111' + this.data.pageContent)
+  },
+  // 收藏有礼
+  renderCollectData () {
+    console.log(this.data.pageContent)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function() {},
+  onReady: function () {
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {},
-
+  },
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {},
+  onHide: function () { },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {},
+  onUnload: function () { },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {},
+  onPullDownRefresh: function () { },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function() {},
+  onReachBottom: function () { },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {}
+  onShareAppMessage: function () { }
 });
