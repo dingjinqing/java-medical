@@ -81,12 +81,12 @@ public class WxUserCardService extends ShopBaseService {
 		if(showType.equals(ONE)) {
 			logger().info("showType为1");
 			PageResult<ChargeVo> chargeList = userCardService.cardDao.getChargeList(param2);
-			into.setChargeList(chargeList.dataList);
+			into.setChargeList(chargeList);
 		}
 		if(showType.equals(NEONE)) {
 			logger().info("showType为-1");
 			PageResult<ChargeVo> consumeList = userCardService.cardDao.getConsumeList(param2);
-			into.setChargeList(consumeList.dataList);
+			into.setChargeList(consumeList);
 		}
 		return into;
 	}
