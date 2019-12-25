@@ -74,7 +74,8 @@
         "returnorderlist/returnorderlist",
         "payment/payment",
         "returnlogistics/returnlogistics",
-        "returnrecord/returnrecord"
+        "returnrecord/returnrecord",
+        "shoporderinfo/shoporderinfo"
       ]
     }
   ],

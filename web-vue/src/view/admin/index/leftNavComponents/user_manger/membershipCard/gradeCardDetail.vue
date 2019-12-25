@@ -48,6 +48,7 @@
           <cardActiveCfg
             :val="cardActiveCfgData"
             @input="initCardActiveCfgData"
+            ref="cardActiveCfgData"
           ></cardActiveCfg>
         </div>
       </div>
@@ -108,8 +109,8 @@ export default {
       ]
     }
     let cardUsageCfgDataTmp = {
-      desc: '12',
-      mobile: '12'
+      desc: '',
+      mobile: ''
     }
     let flagTmp = '2'
     return {
@@ -156,9 +157,10 @@ export default {
         valid: false
       },
       cardActiveCfgData: {
-        activation: '1',
+        activation: '0',
         activationCfgBox: [],
-        examine: '0'
+        examine: '0',
+        valid: false
       },
       sampleCardData: {
         cardType: cardTypeTmp,
@@ -306,7 +308,7 @@ export default {
       console.log(this.cardNameAndBg)
       this.$refs.disCountData.$emit('checkRule')
       this.$refs.cardGradeCfgData.$emit('checkRule')
-
+      this.$refs.cardActiveCfgData.$emit('checkRule')
       // 权益判断
       if (this.cardScoreCfgData.powerScore || this.ownGoodsData.powerOwnGoods || this.disCountData.powerDiscount) {
 
@@ -314,7 +316,7 @@ export default {
         this.$message.warning('至少选择一项会员权益')
       }
 
-      if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid) {
+      if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid && this.cardActiveCfgData.valid) {
         // 保存数据
         this.prepareCardData()
       }

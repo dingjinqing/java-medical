@@ -1,0 +1,111 @@
+/* pages1/shoporderinfo/shoporderinfo.wxss */
+@import "/css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+}
+view,text{
+  box-sizing: border-box;
+  font-size: 26rpx;
+  color: #333;
+}
+.header{
+  padding: 60rpx 0 50rpx;
+  background: #fff1f0;
+  text-align: center
+}
+.header view{
+  color: #f66;
+  font-size: 24rpx;
+}
+.header view:first-child{
+  font-size: 56rpx;
+  margin-bottom: 20rpx;
+}
+.pay_check{
+  width: 30rpx;
+  margin-right: 15rpx;
+  position: relative;
+  top: 4rpx;
+}
+.header2{
+  padding: 0 25rpx 30rpx;
+  background: white;
+}
+.header2>view{
+  padding-top: 20rpx;
+}
+.header2 .clearfix view{
+  float: left;
+}
+.shop_addr{
+  max-width: 60%;
+}
+.header2 .clearfix .look_map{
+  float: right;
+  width: 140rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+.fr{
+  float: right;
+}
+.block{
+  background: white;
+  margin-top: 20rpx;
+}
+.money{
+  padding: 0 25rpx 25rpx;
+}
+.money>view{
+  padding-top: 20rpx;
+}
+.real_money{
+  text-align: right;
+  border-top: 1px solid #eee;
+  padding: 25rpx;
+}
+.real_money text{
+  color: #f66;
+}
+.order{
+  padding-left: 25rpx;
+  background: white;
+  margin-top: 20rpx;
+}
+.order>view:first-child{
+  height: 88rpx;
+  line-height: 88rpx;
+}
+.order .money{
+  border-top: 1px solid #eee;
+  padding-left: 0;
+}
+.order .money view{
+  color: #888;
+}
+.footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 200;
+  height: 90rpx;
+  text-align: center;
+}
+.footer .to_index{
+  width: 280rpx;
+  color: #f66;
+  border: 1px solid #f66;
+  font-size: 30rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  margin-top: 15rpx;
+  border-radius: 5px;
+  display: inline-block;
+}
+.footer-text view{
+  color: #ccc;
+}
