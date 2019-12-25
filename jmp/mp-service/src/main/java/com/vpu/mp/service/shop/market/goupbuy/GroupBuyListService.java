@@ -23,7 +23,11 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.shop.goods.GoodsSpecService;
 import com.vpu.mp.service.shop.member.MemberService;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +36,18 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.JOIN_LIMIT_N;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.OPEN_LIMIT_N;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_DEFAULT_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
 
 /**
  * @author 孔德成
@@ -199,18 +213,19 @@ public class GroupBuyListService extends ShopBaseService {
     }
 
     /**
-     * 根据拼团
+     * 根据拼团获取团长
      *
      * @param groupId
      * @return
      */
-    public GroupBuyListRecord getGroupBuyListByGroupId(Integer groupId) {
+    public GroupBuyListRecord getGrouperByGroupId(Integer groupId) {
         return db().selectFrom(GROUP_BUY_LIST)
                 .where(GROUP_BUY_LIST.STATUS.ge(STATUS_ONGOING))
                 .and(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
                 .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchOne();
 
     }
+
 
     /**
      * 判断是否能创建拼团订单
@@ -301,5 +316,14 @@ public class GroupBuyListService extends ShopBaseService {
                 .orderBy(GROUP_BUY_LIST.IS_GROUPER.desc(), GROUP_BUY_LIST.CREATE_TIME.desc())
                 .fetchInto(GroupBuyUserInfo.class);
         return groupBuyUserInfos;
+    }
+
+
+    /**
+     * 订单详情
+     */
+    public List<GroupBuyUserInfo>  getGroupBuyDetails(String orderSn){
+        GroupOrderVo groupOrder = getByOrder(orderSn);
+        return getPinUserList(groupOrder.getGroupId());
     }
 }

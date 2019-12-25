@@ -2,8 +2,10 @@ package com.vpu.mp.service.pojo.wxapp.order.goods;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -14,8 +16,10 @@ import java.math.BigDecimal;
  */
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderGoodsBo {
-    @JsonIgnore
+	@JsonIgnore
 	private Integer orderId;
     @JsonIgnore
 	private String orderSn;

@@ -1,19 +1,19 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
-
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
+
 /**
- * 
+ *
  * @author 王帅
  *
  */
@@ -31,7 +31,14 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	private String verifierMobile;
 	/**昵称*/
 	private String username;
-	
+	/**
+	 * 拼团用户信息
+	 */
+	private List<GroupBuyUserInfo> groupBuyUserInfos;
+	/**
+	 * 团id
+	 */
+	private Integer groupId;
 	/***/
 	@JsonIgnore
 	private String mainOrderSn;
