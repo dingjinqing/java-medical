@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class GiftProcessor implements Processor{
     @Override
     public Byte getPriority() {
-        return null;
+        return 0;
     }
 
     @Override
