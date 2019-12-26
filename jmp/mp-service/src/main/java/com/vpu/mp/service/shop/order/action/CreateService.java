@@ -29,6 +29,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
+import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -135,6 +136,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private CartService cart;
+
+    @Autowired
+    private GiftProcessor giftProcessor;
 
     /**
      * 营销活动processorFactory (拼团)
@@ -859,7 +863,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(beforeVo.getDefaultCoupon() != null) {
             coupon.use(beforeVo.getDefaultCoupon().getId(), order.getOrderSn());
         }
-        //TODO 送赠品
+        //TODO 送赠品(处理门店)
+        giftProcessor.getGifts(order.getUserId(), beforeVo.getOrderGoods(), orderBo.getOrderType());
     }
 
     /**

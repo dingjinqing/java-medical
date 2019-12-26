@@ -386,7 +386,6 @@ public class OrderReadService extends ShopBaseService {
 		setReturnCfg(vo, rOrder);
 		//设置订单类型
         vo.setOrderType(OrderInfoService.orderTypeToArray(order.getGoodsType()));
-        //
 		return vo;
 	}
 
