@@ -78,5 +78,6 @@ public class OrderListMpVo{
 	/**删除*/
 	private Byte isDelete;
 	private List<OrderGoodsMpVo> goods;
+	private GroupOrderVo groupBuyInfo;
 	private List<String> orderType;
 }
