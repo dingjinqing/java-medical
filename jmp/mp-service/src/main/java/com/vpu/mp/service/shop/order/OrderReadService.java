@@ -41,6 +41,7 @@ import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
@@ -579,7 +580,8 @@ public class OrderReadService extends ShopBaseService {
 		//TODO 拼团
 		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
-			groupBuyList.getPinUserList(groupOrder.getGroupId());
+			List<GroupBuyUserInfo> pinUserList = groupBuyList.getPinUserList(groupOrder.getGroupId());
+			order.setGroupBuyUserInfos(pinUserList);
 		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
 
 		}
