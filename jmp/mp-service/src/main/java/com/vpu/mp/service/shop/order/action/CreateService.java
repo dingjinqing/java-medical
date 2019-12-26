@@ -29,6 +29,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
+import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -135,6 +136,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private CartService cart;
+
+    @Autowired
+    private GiftProcessor giftProcessor;
 
     /**
      * 营销活动processorFactory (拼团)
@@ -420,6 +424,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //初始化订单商品
             vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId()));
         }
+
+        //TODO 送赠品(处理门店)
+        giftProcessor.getGifts(param.getWxUserInfo().getUserId(), vo.getOrderGoods(), vo.getOrderType());
         //据处理过的param和其他信息填充下单确认页返回信息
         processBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
     }
@@ -859,7 +866,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(beforeVo.getDefaultCoupon() != null) {
             coupon.use(beforeVo.getDefaultCoupon().getId(), order.getOrderSn());
         }
-        //TODO 送赠品
+        //TODO 送赠品(处理门店)
+        giftProcessor.getGifts(order.getUserId(), beforeVo.getOrderGoods(), orderBo.getOrderType());
     }
 
     /**
