@@ -2,7 +2,7 @@ var util = require("../../utils/util.js");
 const actBaseInfo = {
   1: {
     actName: '拼团',
-    actStatus:{},
+    multiSkuAct:true,
     prdListName:'groupBuyPrdMpVos',
     actStatus: {
       0: '距结束仅剩',
@@ -24,10 +24,27 @@ const actBaseInfo = {
     }
   },
   3: {
-    actName: '砍价'
+    actName: '砍价',
+    multiSkuAct:false,
+    prdRealPrice:'bargainPrice',
+    actStatus: {
+      0: '距结束仅剩',
+      1: '活动不存在',
+      2: '活动已停用',
+      3: '据开始仅剩',
+      4: '活动已结束',
+      5: '商品已抢光',
+      6: '超购买上限'
+    },
+    countDownInfo: {
+      canCountDown: [0, 3],
+      3: 'startTime',
+      0: 'endTime'
+    }
   },
   5: {
     actName: '秒杀',
+    multiSkuAct:true,
     actStatus: {
       0: '距结束仅剩',
       1: '活动不存在',
@@ -209,18 +226,8 @@ global.wxPage({
     this.setData({
       'actBarInfo.actName': this.getActName(activity),
       'actBarInfo.actStatusName': this.getActStatusName(activity),
-      'actBarInfo.prdRealPrice': this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
-        let {
-          [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice
-        } = item;
-        return prdRealPrice
-      })),
-      'actBarInfo.prdLinePrice': this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
-        let {
-          [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice
-        } = item;
-        return prdLinePrice
-      }))
+      'actBarInfo.prdRealPrice': this.getActBarPrice(activity,'prdRealPrice'),
+      'actBarInfo.prdLinePrice': this.getActBarPrice(activity,'prdLinePrice')
     })
     this.getCountDown(activity)
   },
@@ -238,6 +245,20 @@ global.wxPage({
   }) {
     return actBaseInfo[activityType]['actStatus'][actState] || null
   },
+  // 获取actBar价格
+  getActBarPrice(activity,getPrice){
+    if(actBaseInfo[activity.activityType].multiSkuAct) {
+      return this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
+        console.log(actBaseInfo[activity.activityType]['prdPriceName'][getPrice])
+        let { [actBaseInfo[activity.activityType]['prdPriceName'][getPrice]]:price } = item;
+        return price
+      }))
+    } else if(getPrice === 'prdRealPrice') {
+      return activity[actBaseInfo[activity.activityType][getPrice]]
+    } else if(getPrice === 'prdLinePrice') {
+      return this.getMin(this.data.specParams.products.map(item=>item.prdRealPrice))
+    }
+  },
   // 获取actBar活动倒计时
   getCountDown({
     activityType,
@@ -246,7 +267,7 @@ global.wxPage({
     startTime
   }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
-    let total_micro_second = Math.round((actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime) / 1000)
+    let total_micro_second = actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime
     console.log(total_micro_second, actState, activityType)
     this.countdown(total_micro_second, actState, activityType)
   },
