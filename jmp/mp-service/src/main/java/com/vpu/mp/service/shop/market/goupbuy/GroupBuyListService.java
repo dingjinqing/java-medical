@@ -260,7 +260,7 @@ public class GroupBuyListService extends ShopBaseService {
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_WAIT_PAY, STATUS_SUCCESS)).fetchOneInto(Integer.class);
             if (joinFlag>0){
                 logger().debug("你已参加过该团[activityId:{}]",activityId);
-                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
             }
             Integer count = db().selectCount().from(GROUP_BUY_LIST)
                     .where(GROUP_BUY_LIST.USER_ID.eq(userId))
@@ -293,7 +293,7 @@ public class GroupBuyListService extends ShopBaseService {
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_WAIT_PAY, STATUS_SUCCESS)).fetchOneInto(Integer.class);
             if (joinFlag>0){
                 logger().debug("你已参加过该团[activityId:{}]",activityId);
-                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
             }
         }
         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_SUCCESS).flag(true).build();
