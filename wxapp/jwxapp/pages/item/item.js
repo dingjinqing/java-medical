@@ -155,7 +155,6 @@ global.wxPage({
           this.setData({
             pledgeInfo: res.content
           });
-          console.log(this.data.pledgeInfo)
         }
       }, {
         goodsId: goodsId,
@@ -188,7 +187,6 @@ global.wxPage({
   },
   // 打开规格弹窗
   showSpecDialog(trigger) {
-    console.log(trigger)
     this.setData({
       showSpec: true,
       triggerButton: trigger.detail
@@ -223,6 +221,9 @@ global.wxPage({
       }))
     })
     this.getCountDown(activity)
+    if(activity.activityType === 1 && activity.groupBuyListMpVos.length > 0){
+      this.setListCountDown(activity.groupBuyListMpVos,'groupBuyListMpVos')
+    }
   },
   // 获取actBar活动名称
   getActName({
@@ -246,8 +247,7 @@ global.wxPage({
     startTime
   }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
-    let total_micro_second = Math.round((actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime) / 1000)
-    console.log(total_micro_second, actState, activityType)
+    let total_micro_second = actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime
     this.countdown(total_micro_second, actState, activityType)
   },
   // 获取最小值
@@ -303,6 +303,38 @@ global.wxPage({
     ])
     ;[...state].find(([key])=>{return key.actState === actBaseInfo[activityType]['countDownInfo'][actState] && key.second === total_micro_second > 0})[1].call(this)
   },
+  // 设置列表倒计时
+  setListCountDown(listData,target){
+    this.setData({
+      listCountDown:setInterval(()=>{
+        listData = listData.map((v, i) =>{
+          if (v.remainTime <= 0) {
+              v.remainTime = 0;
+          }
+          v.remainTime -= 1;
+          v.countDown = this.dateformats(v.remainTime);
+          return v;
+        })
+        this.setData({
+          [target]: listData
+        });
+      },1000)
+    })
+  },
+  dateformats: function (micro_second) {
+    // 秒数
+    var second = Math.floor(micro_second);
+    // 小时位
+    var hr = Math.floor((second) / 3600);
+    // 分钟位
+    var min = Math.floor((second - hr * 60 * 60) / 60);
+    // 秒位
+    var sec = second % 60;
+    return `${String(hr).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+  },
+  goGroup(e){
+    util.jumpLink(`pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`,'navigateTo')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -323,6 +355,7 @@ global.wxPage({
    */
   onUnload: function () {
     clearTimeout(this.data.actBartime)
+    clearTimeout(this.data.listCountDown)
   },
 
   /**
