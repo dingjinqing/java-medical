@@ -42,6 +42,7 @@
           <cardActiveCfg
             :val="cardActiveCfgData"
             @input="initCardActiveCfgData"
+            ref="cardActiveCfgData"
           ></cardActiveCfg>
         </div>
       </div>
@@ -147,10 +148,10 @@ export default {
       useTime: '0',
       count: undefined,
       choosedStore: [
-        {
-          storeId: 10,
-          storeName: '小猴店1'
-        }
+        // {
+        //   storeId: 10,
+        //   storeName: '小猴店1'
+        // }
       ],
       valid: false
     }
@@ -217,7 +218,8 @@ export default {
       cardActiveCfgData: {
         activation: '0',
         activationCfgBox: [],
-        examine: '0'
+        examine: '0',
+        valid: false
       },
       sampleCardData: {
         cardName: '',
@@ -227,8 +229,8 @@ export default {
         powerDiscount: true,
         discount: '',
         discountGoodsType: '0',
-        cardScoreCfgData: cardScoreCfgDataTmp,
-        cardChargeCfgData: cardChargeCfgDataTmp,
+        cardScoreCfgData: null,
+        cardChargeCfgData: null,
         cardEffectTime: cardEffectTimeTmp,
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
@@ -389,8 +391,9 @@ export default {
       this.$refs.cardEffectTime.$emit('checkRule')
       this.$refs.cardStoreCfgData.$emit('checkRule')
       this.$refs.cardReceiveCfgData.$emit('checkRule')
-
-      if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid && this.cardReceiveCfgData.valid) {
+      this.$refs.cardActiveCfgData.$emit('checkRule')
+      if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid &&
+           this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
         this.prepareCardData()
       } else {
         this.$message.error('保存失败')
