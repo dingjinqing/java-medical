@@ -164,7 +164,7 @@ public class GroupBuyListService extends ShopBaseService {
      * @return
      */
     public PageResult<GroupBuyDetailListVo> detailGroupBuyList(GroupBuyDetailParam param) {
-        SelectConditionStep<Record3<Integer, String, String>> table = db().select(GROUP_BUY_LIST.GOODS_ID, USER.MOBILE, USER.USERNAME).from(GROUP_BUY_LIST).leftJoin(USER).on(USER.USER_ID.eq(GROUP_BUY_LIST.USER_ID))
+        SelectConditionStep<Record3<Integer, String, String>> table = db().select(GROUP_BUY_LIST.GROUP_ID, USER.MOBILE, USER.USERNAME).from(GROUP_BUY_LIST).leftJoin(USER).on(USER.USER_ID.eq(GROUP_BUY_LIST.USER_ID))
                 .where(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y));
         SelectConditionStep<? extends Record> select = db().select(
                 GROUP_BUY_LIST.STATUS,
@@ -173,6 +173,7 @@ public class GroupBuyListService extends ShopBaseService {
                 GROUP_BUY_LIST.END_TIME,
                 table.field(USER.MOBILE).as(GroupBuyDetailListVo.COMMANDER_MOBILE),
                 table.field(USER.USERNAME).as(GroupBuyDetailListVo.COMMANDER_NAME),
+                table.field(GROUP_BUY_LIST.GROUP_ID).as(GroupBuyDetailListVo.COMMANDER_GROUP_ID),
                 USER.USERNAME,
                 USER.MOBILE,
                 GROUP_BUY_DEFINE.NAME,
@@ -180,12 +181,12 @@ public class GroupBuyListService extends ShopBaseService {
                 GROUP_BUY_DEFINE.DEL_FLAG)
                 .from(GROUP_BUY_LIST)
                 .leftJoin(USER).on(GROUP_BUY_LIST.USER_ID.eq(USER.USER_ID))
-                .leftJoin(table).on(table.field(GROUP_BUY_LIST.GOODS_ID).eq(GROUP_BUY_LIST.GOODS_ID))
+                .leftJoin(table).on(table.field(GROUP_BUY_LIST.GROUP_ID).eq(GROUP_BUY_LIST.GROUP_ID))
                 .leftJoin(GROUP_BUY_DEFINE).on(GROUP_BUY_LIST.ACTIVITY_ID.eq(GROUP_BUY_DEFINE.ID))
                 .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         builderQuery(select, param);
 
-        select.orderBy(GROUP_BUY_LIST.GOODS_ID.desc(), GROUP_BUY_LIST.IS_GROUPER.desc(), GROUP_BUY_LIST.ID.desc());
+        select.orderBy(GROUP_BUY_LIST.GROUP_ID.desc(), GROUP_BUY_LIST.IS_GROUPER.desc(), GROUP_BUY_LIST.ID.desc());
 
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GroupBuyDetailListVo.class);
     }
@@ -256,6 +257,12 @@ public class GroupBuyListService extends ShopBaseService {
                 logger().debug("活动已经结束[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_STATUS_END).build();
             }
+            Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
+                    .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_WAIT_PAY, STATUS_SUCCESS)).fetchOneInto(Integer.class);
+            if (joinFlag>0){
+                logger().debug("你已参加过该团[activityId:{}]",activityId);
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
+            }
             Integer count = db().selectCount().from(GROUP_BUY_LIST)
                     .where(GROUP_BUY_LIST.USER_ID.eq(userId))
                     .and(GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId))
@@ -283,12 +290,12 @@ public class GroupBuyListService extends ShopBaseService {
                 logger().debug("该活动参团个数已经达到上限[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
             }
-        }
-        Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
-                .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_WAIT_PAY, STATUS_SUCCESS)).fetchOneInto(Integer.class);
-        if (joinFlag>0){
-            logger().debug("你已参加过该团[activityId:{}]",activityId);
-            return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
+            Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
+                    .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_WAIT_PAY, STATUS_SUCCESS)).fetchOneInto(Integer.class);
+            if (joinFlag>0){
+                logger().debug("你已参加过该团[activityId:{}]",activityId);
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
+            }
         }
         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_SUCCESS).flag(true).build();
     }

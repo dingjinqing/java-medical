@@ -961,4 +961,8 @@ public class UserService extends ShopBaseService {
 		return null;
 		
 	}
+	
+	public UserRecord getUserByUnionId(String wxUnionId) {
+		return db().fetchAny(USER, USER.WX_UNION_ID.eq(wxUnionId));
+	}
 }

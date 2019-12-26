@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import java.sql.Timestamp;
-
 import lombok.Data;
+
+import java.sql.Timestamp;
 
 /**
  * @author 孔德成
@@ -13,6 +13,7 @@ public class GroupBuyDetailListVo {
 
     public final static String COMMANDER_MOBILE="commanderMobile";
     public final static String COMMANDER_NAME="commanderName";
+    public final static String COMMANDER_GROUP_ID="groupId";
 
     /**
      * 活动名称
@@ -30,6 +31,7 @@ public class GroupBuyDetailListVo {
     //团长信息
     private String commanderMobile;
     private String commanderName;
+    private Integer groupId;
 
     private Short count;
 

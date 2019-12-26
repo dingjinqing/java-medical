@@ -1,13 +1,13 @@
 package com.vpu.mp.service.pojo.shop.order.store;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * 买单订单展示订单信息
- * 
+ *
  * @author wangshuai
  */
 @Getter
@@ -38,5 +38,16 @@ public class StoreOrderInfoVo extends StoreOrderListInfoVo {
 	private String taxNumber;
 	/**公司地址*/
 	private String companyAddress;
-	
+
+    /**
+     * 门店地址信息
+     */
+    private String provinceCode;
+    private String cityCode;
+    private String districtCode;
+    private String address;
+    private String latitude;
+    private String longitude;
+
+
 }
