@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
@@ -44,6 +45,7 @@ import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConst
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.*;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
+import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ONE;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -91,6 +93,9 @@ public class EnterPolitelyService extends ShopBaseService {
     @Autowired
     private ScoreService scoreService;
 
+    @Autowired
+    private JedisManager jedisManager;
+
     /**
      * Enter politely.
      *
@@ -108,9 +113,11 @@ public class EnterPolitelyService extends ShopBaseService {
             CoopenActivityRecord record = getProcessingActivity().stream().findFirst().orElseThrow(() -> new BusinessException(JsonResultCode.CODE_FAIL));
             int activityId = record.getId();
             noAward.setActivityId(activityId);
-
-            // 先查缓存，key = send_coupon_activityId_shopId_userId
-
+            // 先查缓存，key = enter_politely_shopId_activityId_userId
+            String cacheKey = "enter_politely_" + getShopId() + "_" + activityId + "_" + userRecord.getUserId();
+            if (StringUtils.isNotEmpty(jedisManager.get(cacheKey))) {
+                return noAward;
+            }
             // 用户是否已领取/奖品是否已发放完
             CoopenActivityRecordsRecord receiveRecord = getReceiveRecords(userId, activityId);
             if (Objects.nonNull(receiveRecord) || activityReceiveNum(activityId) >= record.getAwardNum()) {
@@ -150,6 +157,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 default:
                     return noAward;
             }
+            jedisManager.set(cacheKey, STRING_ONE, INTEGER_ONE);
         } catch (Throwable e) {
             logger().error("开屏有礼异常：{}", ExceptionUtils.getStackTrace(e));
             return noAward;
