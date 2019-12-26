@@ -30,60 +30,30 @@
           </div>
         </el-form-item>
       </div>
+      <el-form :model="ruleForm" :rules="rules" :inline-message="true" label-width="100px">
       <div class="card-charge-middle">
-        <el-form-item class='only-charge'>
-          <div class="charge-sub-item">
-            <el-radio
-              v-model="ruleForm.offset"
-              label="2"
-            >
-              {{ $t('memberCard.justCharge') }}
-            </el-radio>
-          </div>
-        </el-form-item>
-        <el-form-item class='charge-full'>
-          <div class="charge-sub-item">
-            <el-radio
-              v-model="ruleForm.offset"
-              label="0"
-            >
-              {{ $t('memberCard.chargeFull') }}
-            </el-radio>
-            <el-input-number
-              v-model="ruleForm.chargeInputLeft"
-              size="small"
-              :precision="2"
-              :controls="false"
-              :min="0"
-              :max="999999999"
-            >
-            </el-input-number>
-            <span class='send-info'>{{ $t('memberCard.send') }}</span>
-            <el-input-number
-              v-model="ruleForm.chargeInputRight"
-              size="small"
-              :precision="2"
-              :controls="false"
-              :min="0"
-              :max="999999999"
-            >
-            </el-input-number>
-            <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
-            <img
-              style="cursor:pointer"
-              :src="$imageHost +'/image/admin/sign_jia.png' "
-              @click="handleToAddChargeArr()"
-            >
-          </div>
-          <div v-if="ruleForm.offset==='0'">
-            <div
-              v-for="(item,index) in ruleForm.addChargeArr"
-              :key="index"
-              class="charge-add-sub-item"
-            >
-              <span class="charge-full">{{ $t('memberCard.chargeFull') }}</span>
+
+          <el-form-item class='only-charge'>
+            <div class="charge-sub-item">
+              <el-radio
+                v-model="ruleForm.offset"
+                label="2"
+              >
+                {{ $t('memberCard.justCharge') }}
+              </el-radio>
+            </div>
+          </el-form-item>
+
+            <div class="charge-sub-item">
+              <el-form-item class='charge-full' prop="chargeFull">
+              <el-radio
+                v-model="ruleForm.offset"
+                label="0"
+              >
+                {{ $t('memberCard.chargeFull') }}
+              </el-radio>
               <el-input-number
-                v-model="ruleForm.addChargeArr[index].leftInput"
+                v-model="ruleForm.chargeInputLeft"
                 size="small"
                 :precision="2"
                 :controls="false"
@@ -93,7 +63,7 @@
               </el-input-number>
               <span class='send-info'>{{ $t('memberCard.send') }}</span>
               <el-input-number
-                v-model="ruleForm.addChargeArr[index].rightInput"
+                v-model="ruleForm.chargeInputRight"
                 size="small"
                 :precision="2"
                 :controls="false"
@@ -104,43 +74,80 @@
               <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
               <img
                 style="cursor:pointer"
-                :src="$imageHost +'/image/admin/sign_del.png' "
-                @click="handleToDelChargeArr(index)"
+                :src="$imageHost +'/image/admin/sign_jia.png' "
+                @click="handleToAddChargeArr()"
               >
+              </el-form-item>
             </div>
-          </div>
-        </el-form-item>
-        <el-form-item class="charge-full-each">
-          <div class="charge-sub-item">
-            <el-radio
-              v-model="ruleForm.offset"
-              label="1"
-            >
-              {{ $t('memberCard.chargeEachFull') }}
-            </el-radio>
-            <el-input-number
-              v-model="ruleForm.chargeInputLeftM"
-              size="small"
-              :precision="2"
-              :controls="false"
-              :min="0"
-              :max="999999999"
-            >
-            </el-input-number>
-            <span class='send-info'>{{ $t('memberCard.send') }}</span>
-            <el-input-number
-              v-model="ruleForm.chargeInputRightM"
-              size="small"
-              :precision="2"
-              :controls="false"
-              :min="0"
-              :max="999999999"
-            >
-            </el-input-number>
-            <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
-          </div>
-        </el-form-item>
+            <div v-if="ruleForm.offset==='0'">
+
+              <el-form-item
+                v-for="(item,index) in ruleForm.addChargeArr"
+                :key="index"
+                :prop="'addChargeArr.'+index+'.leftInput'"
+                :rules="rules.chargeEach"
+                class="charge-add-sub-item"
+              >
+                <span class="charge-full">{{ $t('memberCard.chargeFull') }}</span>
+                <el-input-number
+                  v-model="ruleForm.addChargeArr[index].leftInput"
+                  size="small"
+                  :precision="2"
+                  :controls="false"
+                  :min="0"
+                  :max="999999999"
+                >
+                </el-input-number>
+                <span class='send-info'>{{ $t('memberCard.send') }}</span>
+                <el-input-number
+                  v-model="ruleForm.addChargeArr[index].rightInput"
+                  size="small"
+                  :precision="2"
+                  :controls="false"
+                  :min="0"
+                  :max="999999999"
+                >
+                </el-input-number>
+                <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
+                <img
+                  style="cursor:pointer"
+                  :src="$imageHost +'/image/admin/sign_del.png' "
+                  @click="handleToDelChargeArr(index)"
+                >
+              </el-form-item>
+            </div>
+          <el-form-item class="charge-full-each">
+            <div class="charge-sub-item">
+              <el-radio
+                v-model="ruleForm.offset"
+                label="1"
+              >
+                {{ $t('memberCard.chargeEachFull') }}
+              </el-radio>
+              <el-input-number
+                v-model="ruleForm.chargeInputLeftM"
+                size="small"
+                :precision="2"
+                :controls="false"
+                :min="0"
+                :max="999999999"
+              >
+              </el-input-number>
+              <span class='send-info'>{{ $t('memberCard.send') }}</span>
+              <el-input-number
+                v-model="ruleForm.chargeInputRightM"
+                size="small"
+                :precision="2"
+                :controls="false"
+                :min="0"
+                :max="999999999"
+              >
+              </el-input-number>
+              <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
+            </div>
+          </el-form-item>
       </div>
+    </el-form>
     </el-form>
   </div>
 </template>
@@ -243,10 +250,33 @@ export default {
       }
       callback()
     }
+
+    let validateChargeEach = (rule, value, callback) => {
+      let index = Number(rule.fullField.split('.')[1])
+      if (value && this.ruleForm.addChargeArr[index].rightInput) {
+        callback()
+      } else {
+        callback(new Error('请输入金额'))
+      }
+    }
+
+    let validateChargeFull = (rule, value, callback) => {
+      if (this.ruleForm.chargeInputLeft && this.ruleForm.chargeInputRight) {
+        callback()
+      } else {
+        callback(new Error('请输入金额'))
+      }
+    }
     return {
       rules: {
         sendMoney: [
           { validator: validateSendMoney, trigger: 'blur' }
+        ],
+        chargeFull: [
+          { validator: validateChargeFull, trigger: 'blur' }
+        ],
+        chargeEach: [
+          { validator: validateChargeEach, trigger: 'blur' }
         ]
       }
     }
@@ -263,8 +293,8 @@ export default {
     },
     handleToAddChargeArr () {
       this.ruleForm.addChargeArr.push({
-        leftInput: '',
-        rightInput: ''
+        leftInput: undefined,
+        rightInput: undefined
       })
     },
     handleToDelChargeArr (index) {
@@ -280,13 +310,14 @@ export default {
     //   padding-left: 200px;
     // }
     /deep/ .el-form-item__error {
-      padding-left: 200px;
+      padding-left: 100px;
     }
     .charge-item {
       padding-left: 100px;
       display: flex;
       align-items: center;
       .send-info {
+        margin-left: 30px;
         margin-right: 20px;
       }
       .yuan-info {
@@ -304,29 +335,12 @@ export default {
         margin-right: 32px;
       }
     }
-    .charge-full {
-      .charge-sub-item {
+    .charge-sub-item {
+      .charge-full {
         padding-left: 170px;
         margin-right: 32px;
         display: flex;
         align-items: center;
-        /deep/ .el-input-number {
-          width: 120px;
-        }
-        .send-info {
-          margin: 0 10px;
-        }
-        .yuan-info {
-          margin: 0 5px 0 20px;
-        }
-      }
-      .charge-add-sub-item {
-        padding-left: 198px;
-        display: flex;
-        align-items: center;
-        .charge-full {
-          margin-right: 31px;
-        }
         /deep/ .el-input-number {
           width: 120px;
         }
@@ -338,6 +352,25 @@ export default {
         }
       }
     }
+
+    .charge-add-sub-item {
+      padding-left: 198px;
+      display: flex;
+      align-items: center;
+      .charge-full {
+        margin-right: 31px;
+      }
+      /deep/ .el-input-number {
+        width: 120px;
+      }
+      .send-info {
+        margin: 0 10px;
+      }
+      .yuan-info {
+        margin: 0 5px 0 20px;
+      }
+    }
+
     .charge-full-each {
       .charge-sub-item {
         padding-left: 170px;
@@ -345,13 +378,13 @@ export default {
         display: flex;
         align-items: center;
         /deep/ .el-radio {
-          margin-right: 17px;
+          margin-right: 19px;
         }
         /deep/ .el-input-number {
           width: 120px;
         }
         .send-info {
-          margin: 0 10px;
+          margin: 0 15px;
         }
         .yuan-info {
           margin: 0 5px 0 20px;

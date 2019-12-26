@@ -45,28 +45,31 @@
               >
                 {{ $t('memberCard.shopFull') }}
               </el-radio>
-              <el-input
+              <el-input-number
                 v-model='ruleForm.shopingInputLeft'
                 size="small"
-                type="number"
+                :controls="false"
+                :min="0"
+                :max="999999999"
               >
-              </el-input>
+              </el-input-number>
               <span class="sendInfo">
                 {{ $t('memberCard.send') }}
               </span>
-              <el-input
+              <el-input-number
                 size="small"
-                type="number"
+                :controls="false"
+                :min="0"
+                :max="999999999"
                 v-model="ruleForm.shopingInputRight"
               >
-              </el-input>
+              </el-input-number>
               <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
               <img
                 style="cursor:pointer"
                 :src="$imageHost +'/image/admin/sign_jia.png' "
                 @click="handleToAddIntegral()"
               >
-            <!-- </div> -->
           </el-form-item>
           <div v-if="ruleForm.offSet==='0'">
             <el-form-item  v-for="(item,index) in ruleForm.addIntegralArr"
@@ -76,11 +79,12 @@
               class="scoreReceiveAddSubItem">
 
                 <span class="shopFullInfo">{{ $t('memberCard.shopFull') }}</span>
-                  <el-input
-                    size="small"
-                    type="number"
+                  <el-input-number
+                    :controls="false"
+                    :min="0"
+                    :max="999999999"
                     v-model="ruleForm.addIntegralArr[index].leftInput"
-                  ></el-input>
+                  ></el-input-number>
                   <span class="sendInfo">{{ $t('memberCard.send') }}</span>
                   <el-input
                     size="small"
@@ -97,7 +101,7 @@
             </el-form-item>
 
           </div>
-          <el-form-item prop="scoreSendEachFix" class="scoreReceiveSubItem" >
+          <el-form-item prop="scoreSendEachFix" class="scoreReceiveSubItemBottom" >
 
               <el-radio
                 v-model="ruleForm.offSet"
@@ -368,7 +372,7 @@ export default {
     }
     .scoreReceiveSubItem {
       /deep/ .el-input {
-        width: 20%;
+        width: 100% !important;
         .el-input__inner {
           text-align: center;
           width: 100%;
@@ -422,6 +426,29 @@ export default {
         margin: 0 5px 0 20px;
       }
     }
+
+    .scoreReceiveSubItemBottom {
+        padding-left: 170px;
+        display: flex;
+        align-items: center;
+        /deep/ .el-radio {
+          margin-right: 18px;
+        }
+        /deep/ .el-input {
+          width: 21%;
+          .el-input__inner {
+            text-align: center;
+            width: 100%;
+          }
+        }
+        .scoreInfo {
+          margin-left: 20px;
+        }
+        .sendInfo {
+          margin: 0 10px;
+        }
+
+    }
   }
   .sendScoreBottom {
     margin-bottom: 20px;
@@ -441,6 +468,7 @@ export default {
       }
       .scoreInfo {
         margin-left: 20px;
+        color: red;
       }
       .sendInfo {
         margin: 0 10px;

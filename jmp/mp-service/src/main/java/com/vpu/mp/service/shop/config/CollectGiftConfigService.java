@@ -1,8 +1,25 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
+import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
+import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.coupon.MpCouponService;
+import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.ScoreCfgService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *	收藏有礼开关配置
@@ -12,6 +29,17 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class CollectGiftConfigService extends BaseShopConfigService{
+    @Autowired
+    public MemberService member;
+
+    @Autowired
+    public ScoreCfgService score;
+
+    @Autowired
+    public MpCouponService mpCoupon;
+
+    @Autowired
+    public CouponService coupon;
 	/**	收藏有礼K值 */
 	private static final String K_COLLECT_GIFT = "collect_gift";
 	
@@ -56,4 +84,69 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 	public void updateCollectGiftConfig(CollectGiftParam param) {
 		this.setJsonObject(K_COLLECT_GIFT, param);
 	}
+
+	public String setRewards(Integer userId){
+	    //收藏有礼对应活动规则
+        CollectGiftParam info = this.collectGiftConfig();
+        //发放积分
+        if(info.getScore() > 0){
+            /** -交易明细类型 */
+            Byte tradeType = 4;
+            /** -资金流向 */
+            Byte tradeFlow = 1;
+            ScoreParam scoreParam = new ScoreParam();
+            scoreParam.setScore(info.getScore());
+            scoreParam.setScoreStatus(ScoreStatusConstant.USED_SCORE_STATUS);
+            scoreParam.setDesc("score");
+            scoreParam.setRemark("收藏有礼");
+            Integer subAccountId = 0;
+            try {
+                member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
+            } catch (MpException e) {
+                logger().info("积分更新失败");
+            }
+        }
+        //发放优惠券
+        if(info.getCouponIds() != ""){
+            List<Integer> ids = Util.splitValueToList(info.getCouponIds());
+            for(Integer id : ids){
+                Timestamp nowDate = new Timestamp(System.currentTimeMillis());
+                //判断领取限制
+                mpGetCouponParam param = new mpGetCouponParam();
+                param.setCouponId(id);
+                CouponListVo couponData = mpCoupon.getCouponData(param);
+                System.out.println(1111123);
+                //通过alias_code查看优惠券是否存在
+                if (StringUtils.isEmpty(couponData)) {
+                    return "领取失败";
+                }
+                //是否过期
+                if (couponData.getValidity() <= 0 && couponData.getValidityHour() <= 0 && couponData.getValidityMinute() <= 0 && couponData.getEndTime().before(nowDate)) {
+                    return "优惠券已过期";
+                }
+                //是否停用
+                if (couponData.getEnabled() == 0) {
+                    return "优惠券已停用";
+                }
+                //库存判断
+                if (couponData.getLimitSurplusFlag() == 0 && couponData.getSurplus() <= 0) {
+                    return "优惠券库存不足";
+                }
+                System.out.println(11111233);
+                CouponGiveQueueParam couponParam = new CouponGiveQueueParam();
+                List<Integer> userIds = new ArrayList();
+                String[] couponArray = {couponData.getId().toString()};
+                userIds.add(userId);
+                couponParam.setUserIds(userIds);
+                couponParam.setActId(0);
+                couponParam.setCouponArray(couponArray);
+                couponParam.setAccessMode((byte) 1);
+                couponParam.setGetSource((byte) 5);
+                coupon.couponGiveService.handlerCouponGive(couponParam);
+            }
+            return "123";
+        }else{
+            return "234";
+        }
+    }
 }
