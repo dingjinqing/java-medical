@@ -248,6 +248,8 @@ export default {
         this.delivery.contentParam.feeConditionParam[0].area_list = this.delivery.contentParam.feeConditionParam[0].area_list.join(',')
         this.delivery.contentParam.feeConditionParam[0].area_text = this.delivery.contentParam.feeConditionParam[0].area_text.join(',')
       }
+
+      console.log(this.delivery)
     },
     // 添加运费模板
     addDeliveryTemplate () {

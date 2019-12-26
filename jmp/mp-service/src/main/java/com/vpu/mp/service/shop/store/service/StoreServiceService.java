@@ -310,4 +310,16 @@ public class StoreServiceService extends ShopBaseService {
     public <T> void updateSingleField(Integer serviceId, Field<T> field, Field<T> value) {
         db().update(STORE_SERVICE).set(field, value).where(STORE_SERVICE.ID.eq(serviceId)).execute();
     }
+
+    /**
+     * Gets single field.
+     *
+     * @param <T>       the type parameter
+     * @param serviceId the service id
+     * @param field     the field
+     * @return the single field
+     */
+    public <T> T getSingleField(Integer serviceId, Field<T> field) {
+        return db().select(field).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(serviceId)).fetchOne(field);
+    }
 }

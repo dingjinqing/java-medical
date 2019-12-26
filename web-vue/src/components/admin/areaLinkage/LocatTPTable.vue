@@ -251,6 +251,7 @@ export default {
   watch: {
     editLocation: {
       handler (newVal, oldVal) {
+        console.log(newVal)
         this.affecta()
       },
       immediate: true
@@ -322,8 +323,8 @@ export default {
         // 调用组件，更新this.locationList，innerObjJ，checkListT
         this.showTableData = this.editLocation.map(item => {
           return {
-            ...item,
-            area_list: JSON.stringify(item.area_list)
+            ...item
+            // area_list: JSON.stringify(item.area_list)
           }
         })
 
@@ -603,9 +604,11 @@ export default {
     },
     // 筛选出checkList
     selectCheckList(editLocation) {
+
       const checkList = []
       editLocation.forEach(item => {
-        checkList.push(...JSON.parse(item.area_list))
+        // checkList.push(...JSON.parse(item.area_list))
+        checkList.push(item.area_list)
       })
       return this.getIdList(checkList)
     },

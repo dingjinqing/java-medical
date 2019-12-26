@@ -155,6 +155,7 @@ export const en = {
   nickname: 'nickname',
   grouponState: 'groupon status',
   commanderName: 'commander name',
+  groupId: 'groupId',
   commanderMobile: 'commander mobile',
   username: 'user name',
   mobile: 'user  mobile',

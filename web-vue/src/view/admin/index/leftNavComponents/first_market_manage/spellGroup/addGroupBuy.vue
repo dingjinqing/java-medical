@@ -382,7 +382,7 @@
                     <div class="coupon_center_number">剩余{{item.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
-                      style="font-size: 12px"
+                      :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
                     >
                       <span v-if="item.scoreNumber === 0">领取</span>
                       <div v-if="item.scoreNumber !== 0">
@@ -496,12 +496,12 @@
                     <div>
                       <img
                         v-if="form.share.shareImg === '' || form.share.shareImg === null"
-                        src="http://jmpdevimg.weipubao.cn/image/admin/btn_add.png"
+                        :src="$imageHost + '/image/admin/btn_add.png'"
                         alt=""
                       >
                       <img
                         v-if="form.share.shareImg !== ''"
-                        :src="form.share.shareImg"
+                        :src="$imageHost + '/' + form.share.shareImg"
                         alt=""
                         class="shareImg"
                       >
@@ -938,7 +938,7 @@ export default {
     // 图片点击回调函数
     handleSelectImg (res) {
       if (res != null) {
-        this.form.share.shareImg = res.imgUrl
+        this.form.share.shareImg = res.imgPath
       }
     }
   }
@@ -1037,7 +1037,8 @@ export default {
   border-bottom-right-radius: 8px;
   color: #fff;
   background: #f66;
-  background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+  font-size: 12px;
+  /* background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png"); */
   background-repeat: repeat-x;
 }
 

@@ -131,11 +131,10 @@ global.wxPage({
     util.api('/api/wxapp/groupbuy/share/image', function (res) {
       if (res.error === 0) {
         that.setData({
-          shareImg: String(res.content),
-          posterImg: [String(res.content)]
+          shareImg: String(res.content)
         })
       }
-    }, { groupId: 4 })
+    }, { groupId: that.data.groupId })
   },
 
   // 倒计时
@@ -171,7 +170,7 @@ global.wxPage({
   // 去参团
   toJoin (e) {
     let that = this
-    var activityType = this.data.groupbuyInfo.groupBuyDefineInfo.activityType
+    var activityType = this.data.groupbuyInfo.groupBuyDefineInfo.activityType // 新老用户
     let newUser = this.data.groupbuyInfo.newUser
     if (activityType == 2 && !newUser) {
       util.showModal('提示', '您是老用户啦,“老带新团”只有新用户可以参团哦！可以去开个新团享受更多优惠。', function () {
@@ -243,17 +242,15 @@ global.wxPage({
     } else {
       let goodsList = [{
         goodsId: groupbuyInfo.goodsInfo.goodsId,
-        group_id: this.data.groupId,
-        pin_group_id: this.data.pinGroupId,
         prdRealPrice: specInfo.prdId ? specInfo.prdRealPrice : groupbuyInfo.goodsInfo.minGroupBuyPrice,
         goodsPrice: specInfo.prdLinePrice ? specInfo.prdLinePrice : groupbuyInfo.goodsInfo.shopPrice,
         goodsNum: specInfo.goodsNum ? specInfo.goodsNum : 1,
-        prdId: specInfo.prdId ? specInfo.prdId : groupbuyInfo.goodsInfo.goodsId,
-        productId: specInfo.prdId ? specInfo.prdId : groupbuyInfo.goodsInfo.goodsId
+        prdId: specInfo.prdId,
+        productId: specInfo.prdId
       }]
       console.log(goodsList)
       util.navigateTo({
-        url: "/pages/checkout/checkout?activityType=1&activityId=" + this.data.groupId + "&goodsList=" + JSON.stringify(goodsList)
+        url: "/pages/checkout/checkout?activityType=1&activityId=" + Number(this.data.groupbuyInfo.groupBuyDefineInfo.id) + "&groupid=" + Number(this.data.groupId) + "&goodsList=" + JSON.stringify(goodsList)
       })
     }
   },
@@ -319,10 +316,17 @@ global.wxPage({
     wx.showLoading({
       title: '生成中'
     })
-    this.setData({
-      showPoster: true
-    })
-    wx.hideLoading();
+    util.api('/api/wxapp/groupbuy/share/image', function (res) {
+      if (res.error === 0 && res.content != '') {
+        that.setData({
+          posterImg: String(res.content),
+          showPoster: true
+        })
+      } else {
+        util.toast_fail('获取海报失败')
+      }
+      wx.hideLoading();
+    }, { groupId: that.data.groupId })
   },
 
   // 拼团规则
@@ -338,7 +342,7 @@ global.wxPage({
   },
 
   getProductData (data) {
-    data = Object.assign({}, this.data.specInfo, data)
+    data = Object.assign({}, this.data.specInfo, data.detail)
     this.setData({
       specInfo: data
     })
@@ -448,7 +452,7 @@ global.wxPage({
     let path = '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
     return {
       title: title,
-      imageUrl: imageUrl + 'image/wxapp/backward_right.png',
+      imageUrl: imageUrl + shareImg,
       path: path
     }
   }

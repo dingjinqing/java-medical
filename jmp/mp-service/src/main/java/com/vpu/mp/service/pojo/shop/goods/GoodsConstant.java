@@ -71,6 +71,11 @@ public class GoodsConstant {
     public static final Byte BARGAIN_TYPE_FIXED = 0;
 
     /**
+     * 拼团活动-开团后-最大等待成团时间 秒
+     */
+    public static final long GROUP_BUY_LIMIT_TIME = 24*60*60;
+
+    /**
      * 商品默认品牌id值
      */
     public static final Integer GOODS_DEFAULT_BRAND_ID=0;

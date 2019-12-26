@@ -209,6 +209,10 @@ global.wxComponent({
     onGetCardSuccess (card) {
 
     },
+    // 上层调用
+    onPageScroll (e) {
+      this.detectLoadingMore();
+    },
     //  模块名称汇总
     _convertComponentName (tmplateName) {
       let modules = {
