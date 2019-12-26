@@ -137,15 +137,15 @@ export default {
     let cardEffectTimeTmp = {
       expiredType: '0',
       fixedDate: null,
-      receiveDay: '',
+      receiveDay: undefined,
       dateType: '0',
       valid: false
     }
     let cardStoreCfgDataTmp = {
       cardType: 1,
       storeListType: '0',
-      useTime: '1',
-      count: 0,
+      useTime: '0',
+      count: undefined,
       choosedStore: [
         {
           storeId: 10,
@@ -204,11 +204,11 @@ export default {
         cardType: 1,
         isPay: '0',
         payType: '0',
-        payMoney: '',
-        payScore: '',
+        payMoney: undefined,
+        payScore: undefined,
         receiveAction: '1',
-        stock: 0,
-        limits: 0,
+        stock: undefined,
+        limits: undefined,
         hasSend: 0,
         codeAddDivArr: [{ batchName: null, batchId: null }],
         codeAddDivArrBottom: [{ pwdName: null, pwdId: null }],
@@ -519,7 +519,7 @@ export default {
     background: #f5f5f5;
   }
   .rightContainer {
-    width: 60%;
+    width: 70%;
     font-size: 13px;
     margin-bottom: 10px;
     .rightContainerTop {

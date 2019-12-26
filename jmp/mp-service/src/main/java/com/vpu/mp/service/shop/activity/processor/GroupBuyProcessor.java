@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,12 +38,13 @@ import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
 
 /**
  * 商品列表,下单
+ *
  * @author 李晓冰
  * @date 2019年10月29日
  */
 @Slf4j
 @Service
-public class GroupBuyProcessor extends ShopBaseService implements Processor,GoodsDetailProcessor,ActivityGoodsListProcessor ,CreateOrderProcessor{
+public class GroupBuyProcessor extends ShopBaseService implements Processor, GoodsDetailProcessor, ActivityGoodsListProcessor, CreateOrderProcessor {
 
     @Autowired
     GroupBuyProcessorDao groupBuyProcessorDao;
@@ -67,7 +69,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
         List<Integer> goodsIds = availableBos.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(goodsIds, DateUtil.getLocalDateTime());
 
-        availableBos.forEach(bo->{
+        availableBos.forEach(bo -> {
             if (goodsGroupBuyListInfo.get(bo.getGoodsId()) == null) {
                 return;
             }
@@ -94,17 +96,17 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
 
         if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(groupBuyInfo.getActState())) {
             capsule.setActivity(groupBuyInfo);
-            log.debug("小程序-商品详情-拼团信息获取失败-拼团活动不存在[{}]-详情处理退出",param.getActivityId());
-            return ;
+            log.debug("小程序-商品详情-拼团信息获取失败-拼团活动不存在[{}]-详情处理退出", param.getActivityId());
+            return;
         }
-
-
-        log.debug("小程序-商品详情-拼团规格信息获取开始");
-        List<GroupBuyPrdMpVo> groupBuyPrdInfos = groupBuyProcessorDao.getGroupBuyPrdInfo(param.getActivityId());
-        groupBuyInfo.setGroupBuyPrdMpVos(groupBuyPrdInfos);
 
         Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, x -> x));
 
+        log.debug("小程序-商品详情-拼团规格信息获取开始");
+        List<GroupBuyPrdMpVo> groupBuyPrdInfos = groupBuyProcessorDao.getGroupBuyPrdInfo(param.getActivityId(),prdMap.keySet());
+        groupBuyInfo.setGroupBuyPrdMpVos(groupBuyPrdInfos);
+
+        List<GoodsPrdMpVo> newPrdList = new ArrayList<>();
         int goodsNum = 0;
         for (int i = 0; i < groupBuyPrdInfos.size(); i++) {
             // 商品拼团规格
@@ -112,7 +114,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
             //商品原规格
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(vo.getProductId());
 
-            // 避免admin拼团存在逻辑bug而导致此处产生空指针
+            // 商家新增的规格，在拼团规格中并未有
             if (goodsPrdMpVo != null) {
                 // 设置拼团规格对应的原价，便于前端使用
                 vo.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
@@ -120,12 +122,15 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
                 if (goodsPrdMpVo.getPrdNumber() < vo.getStock()) {
                     vo.setStock(goodsPrdMpVo.getPrdNumber());
                 }
-            }
+                goodsNum += vo.getStock();
 
-            goodsNum+=vo.getStock();
+                newPrdList.add(goodsPrdMpVo);
+            }
         }
+        // 重新设置有效规格
+        capsule.setProducts(newPrdList);
         capsule.setGoodsNumber(goodsNum);
-        if (goodsNum == 0&& BaseConstant.needToConsiderNotHasNum(groupBuyInfo.getActState())) {
+        if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(groupBuyInfo.getActState())) {
             log.debug("小程序-商品详情-拼团商品数量已用完");
             groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
@@ -135,8 +140,10 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
 
 
     //*********** 下单 *****************
+
     /**
-     *  下单 初始化参数 校验
+     * 下单 初始化参数 校验
+     *
      * @param param OrderBeforeParam
      */
     @Override
@@ -145,29 +152,29 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
         param.setMemberCardNo(null);
         param.setCouponSn(null);
         //团长,团id
-        Byte isGrouper =param.getGroupId()==null?IS_GROUPER_Y:IS_GROUPER_N;
+        Byte isGrouper = param.getGroupId() == null ? IS_GROUPER_Y : IS_GROUPER_N;
         log.debug("拼团订单");
-        if (isGrouper.equals(IS_GROUPER_Y)){
+        if (isGrouper.equals(IS_GROUPER_Y)) {
             param.setIsGrouper(IS_GROUPER_Y);
-        }else {
+        } else {
             param.setIsGrouper(IS_GROUPER_N);
         }
-        log.info("团长-IsGrouper:{}-groupId:{}",param.getIsGrouper(),param.getGroupId());
+        log.info("团长-IsGrouper:{}-groupId:{}", param.getIsGrouper(), param.getGroupId());
         //校验活动
         ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(param.getWxUserInfo().getUserId(), param.getDate(), param.getActivityId(), param.getGroupId(), isGrouper);
         if (!resultMessage.getFlag()) {
             throw new MpException(resultMessage.getJsonResultCode(), null, resultMessage.getMessages().toArray(new String[0]));
         }
         GroupBuyDefineRecord groupBuyRecord = groupBuyProcessorDao.getGroupBuyRecord(param.getActivityId());
-        for (OrderBeforeParam.Goods goods :param.getGoods()){
+        for (OrderBeforeParam.Goods goods : param.getGoods()) {
             //拼团规格库存校验
             GroupBuyProductDefineRecord groupBuyProduct = groupBuyProcessorDao.getGroupBuyProduct(param.getActivityId(), goods.getProductId());
-            if (goods.getGoodsNumber()>groupBuyProduct.getStock()){
+            if (goods.getGoodsNumber() > groupBuyProduct.getStock()) {
                 throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
             }
-            if (isGrouper.equals(IS_GROUPER_Y)&&groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y)){
+            if (isGrouper.equals(IS_GROUPER_Y) && groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y)) {
                 goods.setProductPrice(groupBuyProduct.getGrouperPrice());
-            }else {
+            } else {
                 goods.setProductPrice(groupBuyProduct.getGroupPrice());
             }
             goods.setGoodsPriceAction(param.getActivityType());
@@ -176,33 +183,34 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
 
     /**
      * 保存订单
+     *
      * @param param OrderBeforeParam
      * @param order OrderInfoRecord
      * @throws MpException
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        for (OrderBeforeParam.Goods goods :param.getGoods()){
+        for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GroupBuyListRecord groupBuyProductList = db().newRecord(GROUP_BUY_LIST);
             groupBuyProductList.setActivityId(param.getActivityId());
             groupBuyProductList.setGoodsId(goods.getGoodsId());
-            groupBuyProductList.setGroupId(param.getGroupId()==null?0:param.getGroupId());
+            groupBuyProductList.setGroupId(param.getGroupId() == null ? 0 : param.getGroupId());
             groupBuyProductList.setOrderSn(order.getOrderSn());
             groupBuyProductList.setUserId(param.getWxUserInfo().getUserId());
             groupBuyProductList.setIsGrouper(param.getIsGrouper());
             groupBuyProductList.setStartTime(param.getDate());
-            if (order.getOrderStatus()>= OrderConstant.ORDER_WAIT_DELIVERY){
+            if (order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY) {
                 groupBuyProductList.setStatus(STATUS_ONGOING);
-            }else {
+            } else {
                 groupBuyProductList.setStatus(STATUS_WAIT_PAY);
             }
             int save = groupBuyProductList.insert();
-            if (save!=1){
+            if (save != 1) {
                 throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
             }
             groupBuyProductList.refresh();
-            log.debug("开团成功,团长useri:d{},团groupId:{}",groupBuyProductList.getUserId(),groupBuyProductList.getId());
-            if (groupBuyProductList.getIsGrouper().equals(IS_GROUPER_Y)){
+            log.debug("开团成功,团长useri:d{},团groupId:{}", groupBuyProductList.getUserId(), groupBuyProductList.getId());
+            if (groupBuyProductList.getIsGrouper().equals(IS_GROUPER_Y)) {
                 groupBuyProductList.setGroupId(groupBuyProductList.getId());
                 groupBuyProductList.update();
             }
@@ -212,14 +220,15 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
 
     /**
      * 改库存
+     *
      * @param param CreateParams
      * @throws MpException
      */
     @Override
     public void processStockAndSales(OrderBeforeParam param) throws MpException {
-        for (OrderBeforeParam.Goods goods :param.getGoods()){
+        for (OrderBeforeParam.Goods goods : param.getGoods()) {
             boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
-            if (!b){
+            if (!b) {
                 throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
             }
         }

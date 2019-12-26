@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -111,12 +112,13 @@ public class GroupBuyProcessorDao extends GroupBuyService {
      * 商品详情-获取拼团规格信息
      *
      * @param activityId 拼团活动id
+     * @param prdIds 活动对应商品的规格ID集合，避免商家在设置平台活动后又删除了对应的规格
      * @return {@link GroupBuyPrdMpVo} 拼团规格信息
      */
-    public List<GroupBuyPrdMpVo> getGroupBuyPrdInfo(Integer activityId) {
+    public List<GroupBuyPrdMpVo> getGroupBuyPrdInfo(Integer activityId, Collection<Integer> prdIds) {
         return db().select(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID, GROUP_BUY_PRODUCT_DEFINE.STOCK, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE, GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE)
             .from(GROUP_BUY_PRODUCT_DEFINE)
-            .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId))
+            .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId).and(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID.in(prdIds)))
             .fetchInto(GroupBuyPrdMpVo.class);
     }
 
