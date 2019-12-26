@@ -33,13 +33,14 @@
               :parentLimitation="true"
               v-for="(item,index) in hotAreaData"
               :key="index"
+              :z="item.z"
             >
               <div class="hotArea">
                 <div
                   class="top"
                   @click="handleToCallLink()"
                 >
-                  设置关联链接
+                  {{item.link_text?item.link_text:'设置关联链接'}}
                 </div>
                 <div class="footer">
                   <div @click="handleToCallLink()">
@@ -47,7 +48,10 @@
                   </div>
 
                 </div>
-                <div class="del">
+                <div
+                  class="del"
+                  @click="handleToDel(index)"
+                >
                   <img :src="$imageHost+'/image/admin/hot-close.png'">
                 </div>
               </div>
@@ -58,7 +62,7 @@
       </div>
       <SelectLinks
         :tuneUpSelectLink="tuneUpSelectLink"
-        @selectLinkPath="selectLinkPath"
+        @handleToGetData="handleToGetData"
       />
       <span
         slot="footer"
@@ -119,11 +123,13 @@ export default {
           w: 115,
           h: 115,
           link_url: '',
-          link_text: ''
+          link_text: '',
+          z: 1
         }
       ],
       tuneUpSelectLink: false,
-      modelFlag: false
+      modelFlag: false,
+      nowClickIndex: null
     }
   },
   methods: {
@@ -136,17 +142,29 @@ export default {
         w: 115,
         h: 115,
         link_url: '',
-        link_text: ''
+        link_text: '',
+        z: 1
       }
       this.hotAreaData.push(obj)
     },
     // 保存
     handleToSave () {
+      let flag = true
+      this.hotAreaData.forEach((item, index) => {
+        if (!item.link_url) {
+          item.z = 99
+          flag = false
+        } else {
+          item.z = 1
+        }
+      })
+      if (!flag) return
       this.$emit('handleToGetHotData', this.hotAreaData)
       this.$emit('update:hotDialogVisible', false)
     },
     resize (newRect, index) {
       console.log(newRect, index)
+      this.nowClickIndex = index
       this.hotAreaData[index].w = newRect.width
       this.hotAreaData[index].h = newRect.height
       this.hotAreaData[index].y = newRect.top
@@ -157,8 +175,13 @@ export default {
       this.tuneUpSelectLink = !this.tuneUpSelectLink
     },
     // 选择链接弹窗数据回传
-    selectLinkPath (res) {
-      console.log(res)
+    handleToGetData ({ title, path }) {
+      this.hotAreaData[this.nowClickIndex].link_text = title
+      this.hotAreaData[this.nowClickIndex].link_url = path
+    },
+    // 删除热区
+    handleToDel (index) {
+      this.hotAreaData.splice(index, 1)
     }
   }
 }

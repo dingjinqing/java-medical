@@ -94,6 +94,7 @@ export default {
     handleClick (index) {
       this.clickIindex = index
       this.choisePagePath(this.trList[index].path)
+      this.$emit('handleToGetDetailData', this.trList[index])
     },
     // 鼠标移入
     handleOver (index) {

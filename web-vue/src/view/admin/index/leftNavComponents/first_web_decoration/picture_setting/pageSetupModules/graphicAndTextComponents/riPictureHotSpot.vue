@@ -39,7 +39,7 @@
 
         <!--底部-->
         <div class="operation-area">
-          <div class="hot-number">热区数量：<span class="hot-number-span">{{hotAreaNum}}个</span></div>
+          <div class="hot-number">热区数量：<span class="hot-number-span">{{modulesSaveData.data.rectangles.length}}个</span></div>
 
           <el-button
             @click="handleToSetHotArea()"
@@ -78,10 +78,14 @@ export default {
     return {
       imageTuneUp: false, // 图片弹窗调起
       hotDialogVisible: false, //  热区弹窗调起
-      hotAreaNum: 0,
       modulesSaveData: {
         data: {
-          bg_img_url: ''
+          'bg_img_url': '',
+          'rectangles': [
+
+          ],
+          'bg_img_width': '',
+          'bg_img_height': ''
         }
       }
 
@@ -126,6 +130,7 @@ export default {
     // 热区弹窗数据回传
     handleToGetHotData (res) {
       console.log(res)
+      this.modulesSaveData.data.rectangles = res
     }
   }
 }
