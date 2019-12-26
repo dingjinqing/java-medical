@@ -6,7 +6,7 @@
       :visible.sync="dialogVisible"
       width="70%"
       :fullscreen='true'
-      :modal-append-to-body='false'
+      :modal-append-to-body="false"
     >
       <div class="body">
         <div class="left_box">
@@ -181,6 +181,7 @@ export default {
       console.log(this.suerPath)
       // 把选中的链接回传
       this.$emit('selectLinkPath', this.suerPath)
+      // 回传路径加页面名称
     },
     handleClose (done) {
       this.dialogVisible = false
