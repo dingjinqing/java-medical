@@ -86,7 +86,7 @@ export default {
         return this.val
       },
       set () {
-        if (this.ruleForm.activationCfgBox.length > 0) {
+        if (this.ruleForm.activationCfgBox.length > 0 || this.ruleForm.activation === '0') {
           this.activeError = false
         }
         this.$emit('input', this.ruleForm)
@@ -105,8 +105,6 @@ export default {
   mounted () {
     this.$on('checkRule', () => {
       if (this.ruleForm.activation === '1') {
-        debugger
-        console.log(this.ruleForm.activationCfgBox)
         if (this.ruleForm.activationCfgBox.length > 0) {
           this.ruleForm.valid = true
           this.activeError = false
