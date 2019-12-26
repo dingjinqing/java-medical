@@ -60,6 +60,7 @@
           <cardActiveCfg
             :val="cardActiveCfgData"
             @input="initCardActiveCfgData"
+            ref="cardActiveCfgData"
           ></cardActiveCfg>
         </div>
       </div>
@@ -121,7 +122,7 @@ export default {
   data () {
     let cardScoreCfgDataTmp = {
       powerScore: true,
-      score: 100,
+      score: undefined,
       offSet: '0',
       shopingInputLeft: 100,
       shopingInputRight: 100,
@@ -147,7 +148,7 @@ export default {
     let cardEffectTimeTmp = {
       expiredType: '0',
       fixedDate: null,
-      receiveDay: '',
+      receiveDay: undefined,
       dateType: '0',
       valid: false
     }
@@ -176,7 +177,7 @@ export default {
       },
       disCountData: {
         powerDiscount: true,
-        discount: '',
+        discount: undefined,
         discountGoodsType: '1',
         choosedGoodsId: [],
         choosedStoreId: [],
@@ -194,7 +195,7 @@ export default {
       cardScoreCfgData: cardScoreCfgDataTmp,
       cardChargeCfgData: cardChargeCfgDataTmp,
       cardCouponCfgData: {
-        powerCoupon: true,
+        powerCoupon: false,
         couponType: '1',
         couponIdList: [],
         couponList: [],
@@ -229,9 +230,10 @@ export default {
         valid: false
       },
       cardActiveCfgData: {
-        activation: '1',
+        activation: '0',
         activationCfgBox: [],
-        examine: '0'
+        examine: '0',
+        valid: false
       },
       sampleCardData: {
         cardName: '',
@@ -469,12 +471,14 @@ export default {
       this.$refs.cardCouponCfgData.$emit('checkRule')
       this.$refs.cardEffectTime.$emit('checkRule')
       this.$refs.cardReceiveCfgData.$emit('checkRule')
+      this.$refs.cardActiveCfgData.$emit('checkRule')
       // 至少选择一项会员权益
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
         this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
         // 检验都通过
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
-          this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid && this.cardReceiveCfgData.valid) {
+          this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid &&
+          this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
           // this.$message.success('成功')
           // 保存数据
           this.prepareCardData()
