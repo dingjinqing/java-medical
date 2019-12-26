@@ -40,7 +40,7 @@
               class="coupon-list"
             >
               <div
-                v-for="(item,index) in couponList"
+                v-for="(item,index) in ruleForm.couponList"
                 :key="index"
                 class="coupon-list-item"
               >
@@ -82,7 +82,7 @@
               <div
                 class="card-add-clickDiv"
                 @click="handleToCallDialog()"
-                v-if="couponList.length<5"
+                v-if="ruleForm.couponList.length<5"
               >
                 <div class="card-add-click">
                   <img :src="$imageHost +'/image/admin/shop_beautify/add_decorete.png'">
@@ -164,8 +164,7 @@ export default {
     return {
       couponDialogVisable: false,
       couponError: false,
-      couponBack: [],
-      couponList: []
+      couponBack: []
     }
   },
   methods: {
@@ -176,14 +175,16 @@ export default {
     },
     handleCouponList (val) {
       console.log('添加优惠券')
-      this.couponList = val
+      // this.couponList = val
+      this.ruleForm.couponList = val
       let res = val.map(({ id }) => id)
       this.ruleForm.couponIdList = res
+
       this.couponError = false
     },
     handlToDelCouList (index) {
       console.log('删除优惠券', index)
-      this.couponList.splice(index, 1)
+      this.ruleForm.couponList.splice(index, 1)
       this.ruleForm.couponIdList = this.couponList.map(({ id }) => id)
     }
   }

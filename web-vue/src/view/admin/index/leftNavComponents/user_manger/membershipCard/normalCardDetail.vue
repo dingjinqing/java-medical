@@ -128,17 +128,13 @@ export default {
       shopingInputLeftM: 100,
       shopingInputRightM: 100,
       addIntegralArr: [
-        {
-          leftInput: 10,
-          rightInput: 20
-        }
       ],
       valid: false
     }
     let cardChargeCfgDataTmp = {
       powerCard: true,
-      sendMoney: '',
-      offset: '0',
+      sendMoney: undefined,
+      offset: '2',
       chargeInputLeft: 100,
       chargeInputRight: 100,
       chargeInputLeftM: 100,
@@ -201,6 +197,7 @@ export default {
         powerCoupon: true,
         couponType: '1',
         couponIdList: [],
+        couponList: [],
         valid: false
       },
       cardEffectTime: cardEffectTimeTmp,
@@ -304,7 +301,8 @@ export default {
       // 积分
       this.cardScoreCfgData.powerScore = data.powerScore ? data.powerScore === 1 : true
       this.cardScoreCfgData.score = data.score
-      this.cardScoreCfgData.offset = data.scoreJson ? String(data.scoreJson.offset) : '0'
+      this.cardScoreCfgData.offSet = data.scoreJson ? String(data.scoreJson.offset) : '0'
+      // 购物满
       if (data.scoreJson.goodsMoney.length > 0) {
         this.cardScoreCfgData.shopingInputLeft = data.scoreJson.goodsMoney[0]
         this.cardScoreCfgData.shopingInputRight = data.scoreJson.getScores[0]
@@ -317,11 +315,15 @@ export default {
           })
         }
       }
-
+      // 购物每满
+      this.cardScoreCfgData.shopingInputLeftM = data.scoreJson.perGoodsMoney
+      this.cardScoreCfgData.shopingInputRightM = data.scoreJson.perGetScores
+      debugger
+      console.log(this.cardScoreCfgData)
       // 充值
       this.cardChargeCfgData.powerCard = data.powerCard ? data.powerCard === 1 : true
       this.cardChargeCfgData.sendMoney = data.sendMoney
-      this.cardChargeCfgData.offset = data.powerCardJson ? String(data.powerCardJson.offsetMoney) : '2'
+      this.cardChargeCfgData.offSet = data.powerCardJson ? String(data.powerCardJson.offsetMoney) : '2'
       this.cardChargeCfgData.chargeInputLeftM = data.powerCardJson ? data.powerCardJson.perMoney : 100
       this.cardChargeCfgData.chargeInputRightM = data.powerCardJson ? data.powerCardJson.perGetMoney : 100
       if (data.powerCardJson && data.powerCardJson.money && data.powerCardJson.money.length > 0) {
@@ -340,7 +342,9 @@ export default {
       // 优惠券
       this.cardCouponCfgData.powerCoupon = data.sendCouponSwitch === 1
       this.cardCouponCfgData.couponType = String(data.sendCouponType + 1)
-      this.cardCouponCfgData.couponIdList = data.couponList ? data.couponList : []
+      this.cardCouponCfgData.couponIdList = data.couponIds ? data.couponIds : []
+      this.cardCouponCfgData.couponList = data.couponList ? data.couponList : []
+
       // 门店
       this.cardStoreCfgData.storeListType = String(data.storeListType)
       let storeListTmp = []
@@ -433,7 +437,9 @@ export default {
       this.cardEffectTime = val
     },
     initCardCouponCfgData (val) {
+      debugger
       this.cardCouponCfgData = val
+      console.log(this.cardCouponCfgData)
     },
     initCardStoreCfgData (val) {
       this.cardStoreCfgData = val
@@ -485,6 +491,8 @@ export default {
     },
     prepareCardData () {
       this.dealWithDynamicArrayData()
+      debugger
+      console.log(this.cardScoreCfgData)
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -544,6 +552,9 @@ export default {
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine
       }
+      debugger
+      console.log(this.cardCouponCfgData)
+      console.log(this.cardCouponCfgData.couponIdList)
       console.log(obj)
       console.log(this.cardId)
       if (this.cardId) {
@@ -558,6 +569,7 @@ export default {
     },
     dealWithDynamicArrayData () {
       // 积分
+      debugger
       let goodsMoney = []
       let getScores = []
       if (this.cardScoreCfgData.offSet === '0') {
@@ -567,9 +579,10 @@ export default {
           goodsMoney.push(item.leftInput)
           getScores.push(item.rightInput)
         }
-        this.cardScoreCfgData.goodsMoney = goodsMoney
-        this.cardScoreCfgData.getScores = getScores
       }
+      this.cardScoreCfgData.goodsMoney = goodsMoney
+      this.cardScoreCfgData.getScores = getScores
+      console.log(this.cardScoreCfgData)
 
       // 充值
       let money = []

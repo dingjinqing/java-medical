@@ -55,6 +55,7 @@
     <ImageDalog
       pageIndex='userCardAdd'
       :tuneUp="imgDisable"
+      :imageSize="[540, 300]"
       @handleSelectImg='handleSelectImg'
     />
   </div>
