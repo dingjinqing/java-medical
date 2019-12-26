@@ -40,6 +40,7 @@ public class GiftProcessorDao extends GiftService {
      * @param goodsBo
      */
     public void getGifts(Integer userId, List<OrderGoodsBo> goodsBo, List<Byte> orderType){
+        logger().info("下单获取赠品start");
         //googsBo转map,聚合相同规格(k->prdId;v->数量)
         Map<Integer, Integer> goodsMapCount = goodsBo.stream().collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber, (ov, nv) -> ov + nv));
         //商品未参与赠品记录
@@ -74,7 +75,7 @@ public class GiftProcessorDao extends GiftService {
                 }
             }
         });
-
+        logger().info("下单获取赠品end");
     }
 
 

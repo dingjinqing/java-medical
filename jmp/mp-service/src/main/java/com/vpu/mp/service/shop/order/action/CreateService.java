@@ -424,6 +424,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //初始化订单商品
             vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId()));
         }
+
+        //TODO 送赠品(处理门店)
+        giftProcessor.getGifts(param.getWxUserInfo().getUserId(), vo.getOrderGoods(), vo.getOrderType());
         //据处理过的param和其他信息填充下单确认页返回信息
         processBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
     }
