@@ -3,6 +3,8 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * @author 王兵兵
@@ -60,6 +63,15 @@ public class WxAppStoreController extends WxAppBaseController{
         param.setClientIp(RequestUtil.getIp(request));
         log.debug("客户端ip地址为：{}", param.getClientIp());
         return this.success(shop().store.wxService.storePay(param));
+    }
+
+    /**
+     * 门店买单支付订单详情-小程序端
+     */
+    @PostMapping("/pay/orderDetail")
+    public JsonResult payOrderDetail(@RequestBody @Valid OrderParam order) {
+        StoreOrderInfoVo result = shop().readOrder.getStoreOrder(order.getOrderSn());
+        return success(result);
     }
 
     /**

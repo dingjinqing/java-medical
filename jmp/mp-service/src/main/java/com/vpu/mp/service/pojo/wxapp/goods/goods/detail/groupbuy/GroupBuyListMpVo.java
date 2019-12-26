@@ -9,6 +9,8 @@ import lombok.Data;
  */
 @Data
 public class GroupBuyListMpVo {
+    /**开启的拼团项id*/
+    private Integer groupId;
     /**团长名称*/
     private String userName;
     /**团长头像*/

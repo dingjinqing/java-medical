@@ -170,8 +170,11 @@
               <span style="color: #999">{{$t('payReward.maxPayTimes')}}</span>
               <div
                 class="addReward"
+                style="display:flex"
                 @click="addPayRewardItem()"
-              > +{{$t('payReward.addReward')}}</div>
+              >
+                <div style="margin-top:-1px">+</div>{{$t('payReward.addReward')}}
+              </div>
             </div>
           </div>
           <el-form

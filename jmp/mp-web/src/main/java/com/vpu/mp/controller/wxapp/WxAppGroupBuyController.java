@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Objects;
 
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+
 /**
  * 多人拼团接口
  * @author 孔德成
@@ -35,7 +38,13 @@ public class WxAppGroupBuyController extends WxAppBaseController {
             logger().debug("拼团不存在或已经删除,[groupId:{}]",param.getGroupId());
             return fail(JsonResultCode.GROUP_BUY_GROUPID_DOES_NOT_EXIST);
         }
-        GroupBuyInfoVo groupBuyInfo = shop().groupBuy.getGroupBuyInfo(user.getUserId(),grouperInfo.getIsGrouper(),grouperInfo.getCreateTime(), param.getGroupId(),grouperInfo.getActivityId(),getLang());
+        Byte isGroup;
+        if (user.getUserId().equals(grouperInfo.getUserId())){
+            isGroup=IS_GROUPER_Y;
+        }else {
+            isGroup =IS_GROUPER_N;
+        }
+        GroupBuyInfoVo groupBuyInfo = shop().groupBuy.getGroupBuyInfo(user.getUserId(),isGroup,grouperInfo.getCreateTime(), param.getGroupId(),grouperInfo.getActivityId(),getLang());
         return success(groupBuyInfo);
     }
 

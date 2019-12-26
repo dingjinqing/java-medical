@@ -114,7 +114,7 @@ export default {
     },
     'ruleForm.choosedPlatformId': {
       handler (newName, oldName) {
-        this.val.choosedStoreId = newName
+        this.val.choosedPlatformId = newName
         this.ruleForm = this.val
       },
       immediate: true
