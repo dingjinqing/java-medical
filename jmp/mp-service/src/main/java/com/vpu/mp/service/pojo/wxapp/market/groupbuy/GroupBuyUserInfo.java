@@ -17,4 +17,8 @@ public class GroupBuyUserInfo {
      * 头像
      */
     private String userAvatar;
+    /**
+     * 拼团状态
+     */
+    private Byte status;
 }
