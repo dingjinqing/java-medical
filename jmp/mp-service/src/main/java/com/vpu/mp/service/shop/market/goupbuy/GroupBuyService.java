@@ -118,7 +118,7 @@ public class GroupBuyService extends ShopBaseService {
             Integer stock = groupBuy.getProduct().stream().mapToInt(GroupBuyProductParam::getStock).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, groupBuy);
-            groupBuyDefineRecord.setStatus(status == true ? ACTIVITY_STATUS_NORMAL : ACTIVITY_STATUS_DISABLE);
+            groupBuyDefineRecord.setStatus(status ? ACTIVITY_STATUS_NORMAL : ACTIVITY_STATUS_DISABLE);
             groupBuyDefineRecord.setStock(stock.shortValue());
             groupBuyDefineRecord.insert();
             //拼团商品规格价格信息
@@ -138,6 +138,16 @@ public class GroupBuyService extends ShopBaseService {
      */
     public GroupBuyDefineRecord getGroupBuyRecord(Integer id) {
         return db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne();
+    }
+
+    /**
+     * 根据id 获取活动record
+     *
+     * @param id
+     * @return
+     */
+    public Integer getGroupBuyLimitAmout(Integer id) {
+        return db().select(GROUP_BUY_DEFINE.LIMIT_AMOUNT).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOneInto(Integer.class);
     }
 
     /**
@@ -175,7 +185,7 @@ public class GroupBuyService extends ShopBaseService {
             //分享配置转json
             param.setShareConfig(Util.toJson(param.getShare()));
             //订单总库存
-            Integer stock = param.getProduct().stream().mapToInt(group -> group.getStock()).sum();
+            Integer stock = param.getProduct().stream().mapToInt(GroupBuyProductParam::getStock).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, param);
             groupBuyDefineRecord.setStock(stock.shortValue());

@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyMpVo;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -110,12 +112,13 @@ public class GroupBuyProcessorDao extends GroupBuyService {
      * 商品详情-获取拼团规格信息
      *
      * @param activityId 拼团活动id
+     * @param prdIds 活动对应商品的规格ID集合，避免商家在设置平台活动后又删除了对应的规格
      * @return {@link GroupBuyPrdMpVo} 拼团规格信息
      */
-    public List<GroupBuyPrdMpVo> getGroupBuyPrdInfo(Integer activityId) {
+    public List<GroupBuyPrdMpVo> getGroupBuyPrdInfo(Integer activityId, Collection<Integer> prdIds) {
         return db().select(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID, GROUP_BUY_PRODUCT_DEFINE.STOCK, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE, GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE)
             .from(GROUP_BUY_PRODUCT_DEFINE)
-            .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId))
+            .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId).and(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID.in(prdIds)))
             .fetchInto(GroupBuyPrdMpVo.class);
     }
 
@@ -154,7 +157,8 @@ public class GroupBuyProcessorDao extends GroupBuyService {
             vo.setUserName(record5.get(USER_DETAIL.USERNAME));
             vo.setUserAvatar(imageService.getImgFullUrl(record5.get(USER_DETAIL.USER_AVATAR)));
             vo.setRemainNum(limitAmount - values.size());
-            vo.setRemainTime(now.getTime() - record5.get(GROUP_BUY_LIST.START_TIME).getTime());
+            long passedTime = (now.getTime() - record5.get(GROUP_BUY_LIST.START_TIME).getTime())/1000;
+            vo.setRemainTime(GoodsConstant.GROUP_BUY_LIMIT_TIME - passedTime);
             groupBuyListMpVos.add(vo);
         });
         return groupBuyListMpVos;
