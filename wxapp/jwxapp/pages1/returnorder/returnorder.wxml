@@ -1,12 +1,13 @@
 <!-- 退货退款中心：pages1/returnorder/returnorder.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <!-- 提交申请 -->
   <block>
     <view class="order-header">
       <text class="activity-type-mark" wx:if="{{activityName != ''}}" style='color:{{comColor}};border-color:{{comColor}}'>{{activityName}}</text>
-      <text>订单编号：{{orderSn}}</text>
-      <button class="copy-button" bindtap="copyOrder">复制</button>
+      <text>{{i18n.$t(localePack,"pages1.afterSale.orderNo")}}：{{orderSn}}</text>
+      <button class="copy-button" bindtap="copyOrder">{{i18n.$t(localePack,"pages1.afterSale.copy")}}</button>
     </view>
     <view class="order-info" style="padding-bottom:0;">
       <view>
@@ -28,7 +29,10 @@
             <image class="goods-img" src="{{imageUrl + item.goodsImg}}" mode="widthFix"></image>
           </view>
           <view class="goods-wrap">
-            <view class="goods-name"><text class="activity-type-mark" wx:if="{{!item.isGift}}" style='color:{{comColor}};border-color:{{comColor}}'>赠品</text>{{item.goodsName}}</view>
+            <view class="goods-name">
+              <text class="activity-type-mark" wx:if="{{!item.isGift}}" style='color:{{comColor}};border-color:{{comColor}}'>赠品</text>
+              {{item.goodsName}}
+            </view>
             <view class="goods-spec" style="opacity:{{item.goodsAttr?1:0}}">
               {{item.goodsAttr}}
             </view>

@@ -1,3 +1,24 @@
 module.exports = {
-
+  orderNo: "订单编号",
+  copy: "复制",
+  afterMarketType: "售后类型",
+  integral: "积分",
+  price: "价格",
+  returnableNum: "可退货商品数量",
+  reasonApplication: "申请原因",
+  refundPoints: "退还积分",
+  refundAmount: "退款金额",
+  applyInstruct: "申请说明",
+  notFill: "可不填",
+  applyDesc: "请输入0-200字的申请说明",
+  uploadCertificate: "上传凭证",
+  submitApplication: "提交申请",
+  reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'],
+  reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'],
+  return: ['仅退款', '退货退款', '仅退运费', '手动退款', '换货'],
+  activityName: ["拼团", "砍价", "秒杀"],
+  contentCopied: "内容已复制",
+  prompt: "提示",
+  sProduct: "请选择商品",
+  successApply: "申请成功"
 }
