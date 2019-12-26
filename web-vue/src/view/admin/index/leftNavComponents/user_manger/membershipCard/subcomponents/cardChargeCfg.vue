@@ -274,7 +274,6 @@ export default {
     }
 
     let validateChargeFull = (rule, value, callback) => {
-      debugger
       if (this.ruleForm.offset === '0') {
         if (this.ruleForm.chargeInputLeft && this.ruleForm.chargeInputRight) {
           callback()
@@ -287,7 +286,6 @@ export default {
     }
 
     let validateChargeBottom = (rule, value, callback) => {
-      debugger
       if (this.ruleForm.offset === '1') {
         if (this.ruleForm.chargeInputLeftM && this.ruleForm.chargeInputRightM) {
           callback()
