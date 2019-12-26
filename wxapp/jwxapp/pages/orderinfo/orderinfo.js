@@ -21,6 +21,7 @@ global.wxPage({
   },
   // 请求订单详情
   requestOrderInfo (orderSn) {
+    let that = this
     util.api(
       "/api/wxapp/order/get",
       res => {
@@ -35,12 +36,12 @@ global.wxPage({
             orderInfo.activityName = ""
             orderInfo.orderType.forEach(item => {
               if (item == 1) {
-                orderInfo.activityName = '拼团'
+                orderInfo.activityName = that.$t('pages.order.fight')
                 orderInfo.isFightGroup = 1;
               } else if (item == 3) {
-                orderInfo.activityName = '砍价'
+                orderInfo.activityName = that.$t('pages.order.bargain')
               } else if (item == 5) {
-                orderInfo.activityName = '秒杀'
+                orderInfo.activityName = that.$t('pages.order.seckill')
               }
             })
           }
@@ -94,7 +95,7 @@ global.wxPage({
         url: '/pages1/groupbuyinfo/groupbuyinfo?group_id=' + this.data.orderInfo.groupId
       })
     } else {
-      util.toast_fail('获取拼团详情失败')
+      util.toast_fail(this.$t('pages.order.seckill'))
     }
   },
   /**
