@@ -116,8 +116,8 @@
                 >
               </el-form-item>
             </div>
-          <el-form-item class="charge-full-each">
-            <div class="charge-sub-item">
+          <div class="charge-full-each" >
+            <el-form-item class="charge-sub-item" prop="chargeBottom">
               <el-radio
                 v-model="ruleForm.offset"
                 label="1"
@@ -144,8 +144,8 @@
               >
               </el-input-number>
               <span class='yuan-info'>{{ $t('memberCard.yuan') }}</span>
-            </div>
-          </el-form-item>
+            </el-form-item>
+          </div>
       </div>
     </el-form>
     </el-form>
@@ -252,19 +252,33 @@ export default {
     }
 
     let validateChargeEach = (rule, value, callback) => {
-      let index = Number(rule.fullField.split('.')[1])
-      if (value && this.ruleForm.addChargeArr[index].rightInput) {
-        callback()
-      } else {
-        callback(new Error('请输入金额'))
+      if (this.ruleForm.offset === '0') {
+        let index = Number(rule.fullField.split('.')[1])
+        if (value && this.ruleForm.addChargeArr[index].rightInput) {
+          callback()
+        } else {
+          callback(new Error('请输入金额'))
+        }
       }
     }
 
     let validateChargeFull = (rule, value, callback) => {
-      if (this.ruleForm.chargeInputLeft && this.ruleForm.chargeInputRight) {
-        callback()
-      } else {
-        callback(new Error('请输入金额'))
+      if (this.ruleForm.offset === '0') {
+        if (this.ruleForm.chargeInputLeft && this.ruleForm.chargeInputRight) {
+          callback()
+        } else {
+          callback(new Error('请输入金额'))
+        }
+      }
+    }
+
+    let validateChargeBottom = (rule, value, callback) => {
+      if (this.ruleForm.offset === '1') {
+        if (this.ruleForm.chargeInputLeftM && this.ruleForm.chargeInputRightM) {
+          callback()
+        } else {
+          callback(new Error('请输入金额'))
+        }
       }
     }
     return {
@@ -277,6 +291,9 @@ export default {
         ],
         chargeEach: [
           { validator: validateChargeEach, trigger: 'blur' }
+        ],
+        chargeBottom: [
+          { validator: validateChargeBottom, trigger: 'blur' }
         ]
       }
     }
@@ -372,6 +389,7 @@ export default {
     }
 
     .charge-full-each {
+      margin-bottom: 20px;
       .charge-sub-item {
         padding-left: 170px;
         margin-right: 32px;
