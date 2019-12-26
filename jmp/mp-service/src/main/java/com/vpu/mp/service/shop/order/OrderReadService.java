@@ -582,7 +582,7 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//好物圈
 
-		//TODO 拼团
+		// 拼团
 		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
 			//未退款
@@ -591,7 +591,10 @@ public class OrderReadService extends ShopBaseService {
                 List<GroupBuyUserInfo> pinUserList = groupBuyList.getPinUserList(groupOrder.getGroupId());
                 order.setGroupBuyUserInfos(pinUserList);
                 order.setGroupId(groupOrder.getGroupId());
-                order.setGroupBuyLimitAmout(groupBuyLimitAmout);
+				GroupOrderVo groupOrderVo =new GroupOrderVo();
+				groupOrderVo.setStatus(groupOrder.getStatus());
+				groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
+                order.setGroupBuyInfo(groupOrderVo);
             }
 		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
 

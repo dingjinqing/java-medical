@@ -1,11 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import java.sql.Timestamp;
-
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
- * 
+ *
  * @author 王帅
  *
  */
@@ -13,6 +13,10 @@ import lombok.Data;
 public class GroupOrderVo {
 
 	private Integer id;
+	/**
+	 * 拼团成团人数
+	 */
+	private Integer groupBuyLimitAmout;
 	private Integer activityId;
 	private Integer goodsId;
 	private Integer groupId;

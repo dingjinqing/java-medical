@@ -85,7 +85,7 @@
             >至少选择一项使用时间</span>
           </div>
           <div class="use-num">
-            <span>允许适用</span>
+            <span>允许使用</span>
             <el-input-number
               v-model="ruleForm.count"
               size="small"
