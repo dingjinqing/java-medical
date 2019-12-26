@@ -3,6 +3,7 @@
     <el-form
       :model="ruleForm"
       status-icon
+      :rules="rules"
       ref="ruleForm"
       label-width="100px"
       :hide-required-asterisk="false"
@@ -16,7 +17,7 @@
           {{$t('memberCard.gradeTip')}}
         </span>
         <div class="grade-condition">
-          <div class="grade-score">
+          <el-form-item class="grade-score">
             <span>{{$t('memberCard.gradeScore')}}</span>
             <el-input-number
               v-model="ruleForm.gradeScore"
@@ -27,9 +28,9 @@
             >
             </el-input-number>
             <span>{{$t('memberCard.unitM')}}</span>
-          </div>
+          </el-form-item>
           <div>{{$t('memberCard.or')}}</div>
-          <div class="grade-amount">
+          <el-form-item class="grade-amount">
             <span>{{$t('memberCard.gradeAmountCon')}}</span>
             <el-input-number
               v-model="ruleForm.gradeCrash"
@@ -43,7 +44,7 @@
             <span class="amount-tip">
               {{$t('memberCard.amountTip')}}
             </span>
-          </div>
+          </el-form-item>
         </div>
 
       </el-form-item>
@@ -158,7 +159,10 @@ export default {
         { label: 'v7', value: 'v7', disabled: false },
         { label: 'v8', value: 'v8', disabled: false },
         { label: 'v9', value: 'v9', disabled: false }
-      ]
+      ],
+      rules: {
+
+      }
     }
   },
   methods: {

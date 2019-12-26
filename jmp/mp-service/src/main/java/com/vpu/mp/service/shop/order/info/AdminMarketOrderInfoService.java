@@ -56,7 +56,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .groupBy(ORDER_INFO.USER_ID)
             .fetch(ORDER_INFO.USER_ID);
         //查新用户活动前下过订单——老用户
-        List<Integer> oldUserIdList= db().select(ORDER_INFO.USER_ID)
+        List<Integer> oldUserIdList= db().selectDistinct(ORDER_INFO.USER_ID)
             .from(ORDER_INFO)
             .where(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
             .and(ORDER_INFO.CREATE_TIME.lt(startTime))
