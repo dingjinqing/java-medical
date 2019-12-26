@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.user.message;
 
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.RegexUtil;
@@ -185,8 +185,8 @@ public class WechatMessageTemplateService extends ShopBaseService {
     	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
     	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE) ) {
     		for(Integer userId:userIdList) {
-    			MpOfficialAccountUserRecord accountUserListByRecord =
-    					accountUserService.getAccountUserListByRecid(userId);
+				MpOfficialAccountUserRecord accountUserListByRecord = saas.getShopApp(shopId).officialAccountUser
+						.getAccountUserByUserId(userId);
     			//通过shopId得到小程序信息
     			MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
     			WxUserInfo info=WxUserInfo.builder()
@@ -203,7 +203,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
             Map<Integer,UserRecord> userMap = userList.stream()
                 .collect(Collectors.toMap(UserRecord::getUserId, x->x));
             List<MpOfficialAccountUserRecord> accountUserList =
-                accountUserService.getAccountUserListByUnionIds(
+            		saas.getShopApp(shopId).officialAccountUser.getAccountUserListByUnionIds(
                     userList.stream()
                         .map(x->x.get(USER.WX_UNION_ID))
                         .collect(Collectors.toList())
