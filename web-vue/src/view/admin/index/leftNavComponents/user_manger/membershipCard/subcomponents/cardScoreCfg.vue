@@ -20,6 +20,7 @@
               v-model="ruleForm.score"
               size="small"
               :controls="false"
+              :precision="0"
               :min="0"
               :max="999999999"
             >
@@ -38,7 +39,6 @@
       >
       <div class="sendScoreMiddle">
           <el-form-item prop="scoreSendFullFix" class="scoreReceiveSubItem" >
-            <!-- <div class="scoreReceiveSubItem"> -->
               <el-radio
                 v-model="ruleForm.offSet"
                 label='0'
@@ -49,6 +49,7 @@
                 v-model='ruleForm.shopingInputLeft'
                 size="small"
                 :controls="false"
+                :precision="0"
                 :min="0"
                 :max="999999999"
               >
@@ -59,6 +60,7 @@
               <el-input-number
                 size="small"
                 :controls="false"
+                :precision="0"
                 :min="0"
                 :max="999999999"
                 v-model="ruleForm.shopingInputRight"
@@ -80,18 +82,23 @@
 
                 <span class="shopFullInfo">{{ $t('memberCard.shopFull') }}</span>
                   <el-input-number
+                    size="small"
                     :controls="false"
+                    :precision="0"
                     :min="0"
                     :max="999999999"
                     v-model="ruleForm.addIntegralArr[index].leftInput"
                   ></el-input-number>
                   <span class="sendInfo">{{ $t('memberCard.send') }}</span>
-                  <el-input
+                  <el-input-number
                     size="small"
-                    type="number"
+                    :precision="0"
+                    :controls="false"
+                    :min="0"
+                    :max="999999999"
                     v-model="ruleForm.addIntegralArr[index].rightInput"
                   >
-                  </el-input>
+                  </el-input-number>
                   <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
                   <img
                     style="cursor:pointer"
@@ -109,21 +116,27 @@
               >
                 {{ $t('memberCard.shopEachFull') }}
               </el-radio>
-              <el-input
+              <el-input-number
                 v-model='ruleForm.shopingInputLeftM'
                 size="small"
-                type="number"
+                :precision="0"
+                :controls="false"
+                :min="0"
+                :max="999999999"
               >
-              </el-input>
+              </el-input-number>
               <span class="sendInfo">
                 {{ $t('memberCard.send') }}
               </span>
-              <el-input
+              <el-input-number
                 size="small"
-                type="number"
                 v-model="ruleForm.shopingInputRightM"
+                :controls="false"
+                :precision="0"
+                :min="0"
+                :max="999999999"
               >
-              </el-input>
+              </el-input-number>
               <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
           </el-form-item>
       </div>
@@ -413,7 +426,7 @@ export default {
         margin-right: 31px;
       }
       /deep/ .el-input {
-        width: 20%;
+        width: 100% !important;
         .el-input__inner {
           text-align: center;
           width: 100%;
@@ -435,7 +448,7 @@ export default {
           margin-right: 18px;
         }
         /deep/ .el-input {
-          width: 21%;
+          width: 100% !important;
           .el-input__inner {
             text-align: center;
             width: 100%;
