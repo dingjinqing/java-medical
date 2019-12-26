@@ -69,6 +69,10 @@
         style="width: 100%"
       >
         <el-table-column
+          prop="groupId"
+          :label="$t('groupBuy.commanderName')"
+          align="center"
+        ></el-table-column>       <el-table-column
           prop="commanderName"
           :label="$t('groupBuy.commanderName')"
           align="center"
