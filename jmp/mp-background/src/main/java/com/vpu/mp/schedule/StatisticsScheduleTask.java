@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * 概况模块-统计信息定时任务
  */
 @Component
-@ConditionalOnProperty(prefix = "schedule", name = "switch", havingValue = "off")
+@ConditionalOnProperty(prefix = "schedule", name = "switch", havingValue = "on")
 public class StatisticsScheduleTask implements CronRunnable {
 
     @Autowired

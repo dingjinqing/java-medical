@@ -170,6 +170,7 @@ export const cn = {
   nickname: '昵称',
   grouponState: '成团状态',
   commanderName: '团长名称',
+  groupId: '团id',
   commanderMobile: '团长手机号',
   username: '参团用户名称',
   mobile: '参团用户手机号',

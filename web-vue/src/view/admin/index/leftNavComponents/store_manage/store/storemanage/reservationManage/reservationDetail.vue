@@ -91,17 +91,38 @@
               prop="orderStatusName"
             ></el-table-column>
           </el-table>
-          <el-row style="margin-top: 10px; text-align: right">
-            <el-col>{{$t('reservationManage.moneyPaid')}}： <span style="color: #cc0000"> ￥ {{this.detailData.moneyPaid}}</span>
-              <el-button
-                type="primary"
-                size="small"
-                @click="showMess2(detailData.orderId, detailData.orderSn, detailData.userId)"
-                v-if="detailData.orderStatus === 1"
-              >{{$t('reservationManage.confirmDone')}}</el-button>
-            </el-col>
+          <el-row style="margin-top: 10px;">
+            <!--支付金额明细-->
+            <div class="pay_detail">
+              <div class="pd_title">
+                <span>{{$t('order.payInfo')}}</span>
+                <span class="refund"><el-button
+                  type="primary"
+                  size="small"
+                  @click="showMess2(detailData.orderId, detailData.orderSn, detailData.userId)"
+                  v-if="detailData.orderStatus === 1"
+                >{{$t('reservationManage.confirmDone')}}</el-button></span>
+              </div>
+              <div class="list_item">
+                <span>{{$t('order.discountInfo')}}：</span>
+                <div class="preference_list">
+                  <div><span>券抵扣金额</span> - {{this.detailData.discount.toFixed(2)}} 元</div>
+                  <div><span>{{$t('order.memberCardDiscount')}}</span> - {{this.detailData.memberCardBalance.toFixed(2)}} 元</div>
+                  <div><span class="w2">{{$t('order.balance')}}</span> - {{this.detailData.useAccount.toFixed(2)}} 元</div>
+                </div>
+              </div>
+              <div class="list_item">
+                <span>{{$t('order.totalPrice')}}：</span>
+                <div>{{this.detailData.orderAmount.toFixed(2)}} 元</div>
+              </div>
+              <div class="list_item">
+                <span>{{$t('order.amountSum')}}：</span>
+                <div class="m_color">{{this.detailData.moneyPaid.toFixed(2)}} 元</div>
+              </div>
+            </div>
           </el-row>
         </div>
+        <!--核销表格信息-->
         <div class="table_box">
           <el-table
             ref="technicianTable"
@@ -379,9 +400,47 @@ export default {
       color: #666;
     }
   }
+  .m_color {
+    color: #ff1c1a;
+  }
   .col_style {
     font-size: 14px;
     color: #666;
+  }
+  .pay_detail {
+    display: flex;
+    flex-direction: column;
+    color: #333;
+    .pd_title {
+      display: flex;
+      justify-content: space-between;
+      line-height: 40px;
+      background: #f9f9f9;
+      padding: 0 10px;
+      .refund {
+        cursor: pointer;
+      }
+    }
+    .list_item {
+      display: flex;
+      line-height: 40px;
+      padding-left: 10px;
+      > span {
+        width: 100px;
+        text-align: right;
+      }
+      > div {
+        flex: 1;
+        &.preference_list {
+          display: flex;
+          flex-direction: column;
+          .w2 {
+            letter-spacing: 43px;
+            margin-right: -43px;
+          }
+        }
+      }
+    }
   }
   .main {
     padding: 10px;
