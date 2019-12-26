@@ -228,6 +228,7 @@ export default {
       return this.$imageHost + '/image/admin/icon_jia.png'
     },
     handleToAddGoods (type) {
+      debugger
       console.log(type, typeof type)
       switch (type) {
         case this.goodsType:

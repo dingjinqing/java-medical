@@ -333,11 +333,12 @@ export default {
       return true
     },
     handleToAddIntegral () {
-      console.log('添加积分')
-      this.ruleForm.addIntegralArr.push({
-        leftInput: undefined,
-        rightInput: undefined
-      })
+      if (this.ruleForm.offSet === '0') {
+        this.ruleForm.addIntegralArr.push({
+          leftInput: undefined,
+          rightInput: undefined
+        })
+      }
     },
     handleToDelIntegral (index) {
       this.ruleForm.addIntegralArr.splice(index, 1)
