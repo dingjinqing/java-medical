@@ -54,6 +54,23 @@
       </el-tabs>
     </div>
 
+    <div class="giftCondition">
+      <span>赠品叠加：当买家满足多个活动的赠品条件时，</span>
+      <el-radio
+        v-model="cfg"
+        :label=1
+      >只赠送其中优先级最高的活动赠品</el-radio>
+      <el-radio
+        v-model="cfg"
+        :label=0
+      >赠送满足赠品条件的所有赠品</el-radio>
+      <el-button
+        type="primary"
+        size="small"
+        @click="setGiftConfig"
+      >保存设置</el-button>
+    </div>
+
     <!-- 表格 -->
     <div class="table_list">
       <el-table
@@ -179,7 +196,7 @@
 // 引入组件
 import inputEdit from '@/components/admin/inputEdit'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import { giftList, deleteGift, disableGift, enableGift, updateGiftLevel } from '@/api/admin/marketManage/gift'
+import { giftList, deleteGift, disableGift, enableGift, updateGiftLevel, queryGiftConfig, giftConfig } from '@/api/admin/marketManage/gift'
 
 export default {
 
@@ -194,7 +211,8 @@ export default {
       activityName: '', // 活动名称
       tableData: [], // 表格数据
       pageParams: {}, // 分页
-      requestParams: {}
+      requestParams: {},
+      cfg: ''
     }
   },
   watch: {
@@ -224,6 +242,13 @@ export default {
           })
         }
       })
+      queryGiftConfig().then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.cfg = res.content
+          console.log(this.cfg, 'cfg--')
+        }
+      }).catch(err => console.log(err))
     },
 
     // 修改活动优先级
@@ -298,6 +323,17 @@ export default {
     // 跳转赠送明细页
     gotoGiftDetail (id) {
       this.$router.push(`/admin/home/main/gift/giftDetail/${id}`)
+    },
+
+    setGiftConfig () {
+      giftConfig(this.cfg).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success('设置成功')
+        } else {
+          this.$message.warning('设置失败')
+        }
+      }).catch(err => console.log(err))
     }
   }
 }
@@ -326,6 +362,11 @@ export default {
   font-weight: bold;
   color: #000;
   padding: 8px 10px;
+}
+.giftCondition {
+  padding: 15px 20px;
+  margin: 10px 0;
+  background: #fff;
 }
 .table_list {
   position: relative;

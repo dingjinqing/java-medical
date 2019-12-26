@@ -21,7 +21,7 @@ public class GroupBuyDefineInfo {
     /**
      * 拼团id
      */
-    private Integer groupBuyId;
+    private Integer id;
     /**
      * 成团限制
      */

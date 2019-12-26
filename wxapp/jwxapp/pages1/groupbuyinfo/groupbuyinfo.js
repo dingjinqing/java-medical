@@ -90,11 +90,13 @@ global.wxPage({
           limitMaxNum: groupbuyInfo.groupBuyDefineInfo.limitMaxNum, // 最多购买
           products: groupbuyInfo.prdSpecsList
         }
+        that.data.specInfo.goodsNum = productsInfo.limitBuyNum
 
         that.setData({
           has_spec: !defaultPrd,
           groupbuyInfo: groupbuyInfo,
-          productsInfo: productsInfo
+          productsInfo: productsInfo,
+          specInfo: that.data.specInfo
         })
       } else {
         util.showModal('提示', '该活动已失效', function () {
@@ -251,7 +253,7 @@ global.wxPage({
       }]
       console.log(goodsList)
       util.navigateTo({
-        url: "/pages/checkout/checkout?order_type=pin_group&goodsList=" + JSON.stringify(goodsList) + "&group_id=" + this.data.groupId
+        url: "/pages/checkout/checkout?activityType=1&activityId=" + this.data.groupId + "&goodsList=" + JSON.stringify(goodsList)
       })
     }
   },

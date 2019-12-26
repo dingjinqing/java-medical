@@ -81,3 +81,18 @@ export const getProductDetail = (giftId, productId) => service({
   url: `/api/admin/market/gift/product/${giftId || 0}/${productId}`,
   method: 'post'
 })
+
+export function giftConfig (data) {
+  return service({
+    url: `/api/admin/market/gift/cfg/set?cfg=${data}`,
+    method: 'post'
+  })
+}
+
+export function queryGiftConfig (data) {
+  return service({
+    url: '/api/admin/market/gift/cfg/get',
+    method: 'post',
+    data: data
+  })
+}

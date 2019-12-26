@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -39,7 +40,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayAwardPrize extends TableImpl<PayAwardPrizeRecord> {
 
-    private static final long serialVersionUID = -192474229;
+    private static final long serialVersionUID = 396623369;
 
     /**
      * The reference instance of <code>mini_shop_4748160.b2c_pay_award_prize</code>
@@ -115,9 +116,9 @@ public class PayAwardPrize extends TableImpl<PayAwardPrizeRecord> {
     public final TableField<PayAwardPrizeRecord, Integer> AWARD_NUMBER = createField("award_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "奖品数量");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_pay_award_prize.send_num</code>.
+     * The column <code>mini_shop_4748160.b2c_pay_award_prize.send_num</code>. 已经发送数量
      */
-    public final TableField<PayAwardPrizeRecord, Integer> SEND_NUM = createField("send_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PayAwardPrizeRecord, Integer> SEND_NUM = createField("send_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "已经发送数量");
 
     /**
      * Create a <code>mini_shop_4748160.b2c_pay_award_prize</code> table reference
@@ -166,6 +167,14 @@ public class PayAwardPrize extends TableImpl<PayAwardPrizeRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.PAY_AWARD_PRIZE_PRIMARY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<PayAwardPrizeRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_PAY_AWARD_PRIZE;
     }
 
     /**
