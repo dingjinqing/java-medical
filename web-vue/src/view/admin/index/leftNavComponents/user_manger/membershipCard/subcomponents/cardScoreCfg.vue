@@ -97,7 +97,7 @@
             </el-form-item>
 
           </div>
-          <el-form-item prop="scoreSendEachFix" class="scoreReceiveSubItem" >
+          <el-form-item prop="scoreSendEachFix" class="scoreReceiveSubItemBottom" >
 
               <el-radio
                 v-model="ruleForm.offSet"
@@ -422,6 +422,29 @@ export default {
         margin: 0 5px 0 20px;
       }
     }
+
+    .scoreReceiveSubItemBottom {
+        padding-left: 170px;
+        display: flex;
+        align-items: center;
+        /deep/ .el-radio {
+          margin-right: 18px;
+        }
+        /deep/ .el-input {
+          width: 21%;
+          .el-input__inner {
+            text-align: center;
+            width: 100%;
+          }
+        }
+        .scoreInfo {
+          margin-left: 20px;
+        }
+        .sendInfo {
+          margin: 0 10px;
+        }
+
+    }
   }
   .sendScoreBottom {
     margin-bottom: 20px;
@@ -441,6 +464,7 @@ export default {
       }
       .scoreInfo {
         margin-left: 20px;
+        color: red;
       }
       .sendInfo {
         margin: 0 10px;
