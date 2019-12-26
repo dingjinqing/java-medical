@@ -70,7 +70,6 @@
                 :src="$imageHost +'/image/admin/sign_jia.png' "
                 @click="handleToAddIntegral()"
               >
-            <!-- </div> -->
           </el-form-item>
           <div v-if="ruleForm.offSet==='0'">
             <el-form-item  v-for="(item,index) in ruleForm.addIntegralArr"
