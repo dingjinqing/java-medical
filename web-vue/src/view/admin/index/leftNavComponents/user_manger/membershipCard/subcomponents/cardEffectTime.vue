@@ -51,6 +51,7 @@
           <el-input-number
             size="small"
             :controls="false"
+            :min="0"
             :max="999999999"
             v-model="ruleForm.receiveDay"
           >

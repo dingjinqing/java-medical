@@ -318,8 +318,6 @@ export default {
       // 购物每满
       this.cardScoreCfgData.shopingInputLeftM = data.scoreJson.perGoodsMoney
       this.cardScoreCfgData.shopingInputRightM = data.scoreJson.perGetScores
-      debugger
-      console.log(this.cardScoreCfgData)
       // 充值
       this.cardChargeCfgData.powerCard = data.powerCard ? data.powerCard === 1 : true
       this.cardChargeCfgData.sendMoney = data.sendMoney
@@ -437,9 +435,7 @@ export default {
       this.cardEffectTime = val
     },
     initCardCouponCfgData (val) {
-      debugger
       this.cardCouponCfgData = val
-      console.log(this.cardCouponCfgData)
     },
     initCardStoreCfgData (val) {
       this.cardStoreCfgData = val
@@ -491,8 +487,6 @@ export default {
     },
     prepareCardData () {
       this.dealWithDynamicArrayData()
-      debugger
-      console.log(this.cardScoreCfgData)
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -552,11 +546,6 @@ export default {
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine
       }
-      debugger
-      console.log(this.cardCouponCfgData)
-      console.log(this.cardCouponCfgData.couponIdList)
-      console.log(obj)
-      console.log(this.cardId)
       if (this.cardId) {
         // 更新会员卡
         console.log('更新会员卡')
@@ -569,7 +558,6 @@ export default {
     },
     dealWithDynamicArrayData () {
       // 积分
-      debugger
       let goodsMoney = []
       let getScores = []
       if (this.cardScoreCfgData.offSet === '0') {
