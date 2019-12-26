@@ -156,6 +156,7 @@ export default {
       this.clickIindex = index
       let path = `pages/index/index?page=${this.trList[index].pageId}`
       this.choisePagePath(path)
+      this.$emit('handleToGetDetailData', this.trList[index])
     },
     // 搜索
     handleSearch () {

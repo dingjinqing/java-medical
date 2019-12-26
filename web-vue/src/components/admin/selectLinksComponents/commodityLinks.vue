@@ -142,6 +142,7 @@ export default {
       console.log('选中', item)
       let path = `pages/item/item?goodsId=${this.trList[index].goodsId}`
       this.choisePagePath(path)
+      this.$emit('handleToGetDetailData', item)
     },
     // 搜索
     handleSearch () {

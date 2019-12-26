@@ -153,8 +153,8 @@ export default {
         flag: flagTmp
       },
       cardGradeCfgData: {
-        gradeScore: null,
-        gradeCrash: null,
+        gradeScore: undefined,
+        gradeCrash: undefined,
         gradeValue: null,
         valid: false
       },
