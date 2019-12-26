@@ -17,7 +17,7 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 @Service
 public class MpCouponService extends ShopBaseService {
     /**
-     * 查询优惠券金基本信息
+     * 查询优惠券基本信息
      * @param param
      * @return
      */
