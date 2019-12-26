@@ -37,15 +37,15 @@
         </view>
       </view>
     </view>
-    <view class="fight_info" wx:if="{{orderInfo.isFightGroup}}">
+    <view class="fight_info" wx:if="{{orderInfo.isFightGroup && orderInfo.groupBuyInfo}}">
       <view class="fight-header" bindtap="goGroupBuyingDetail">
         <view class="fight-h-left">
           <image class="fight-h-icon" src="{{imageUrl + 'image/wxapp/icon_group3.png'}}" style="width:35rpx;margin-right: 10rpx;" mode="widthFix"></image>
-          <text wx:if="{{orderInfo.groupBuyInfo.status == 0}}">拼团中</text>
-          <text wx:if="{{orderInfo.groupBuyInfo.status == 1||orderInfo.groupBuyInfo.status == 2}}">拼团完成</text>
+          <text wx:if="{{orderInfo.groupBuyInfo.status == 0}}">{{i18n.$t(localePack,"pages.order.inFight")}}</text>
+          <text wx:if="{{orderInfo.groupBuyInfo.status == 1||orderInfo.groupBuyInfo.status == 2}}">{{i18n.$t(localePack,"pages.order.completeFight")}}</text>
         </view>
         <view class="fight-h-right">
-          拼团详情
+          {{i18n.$t(localePack,"pages.order.spellDetails")}}
           <image class="fight-h-icon" src="{{imageUrl + 'image/wxapp/backward_right.png'}}" style="width:15rpx;margin-left:10rpx;" mode="widthFix"></image>
         </view>
       </view>

@@ -482,6 +482,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processExpressList(storeLists, vo);
         //计算金额相关、vo赋值
         processOrderBeforeVo(param, vo, vo.getOrderGoods());
+        //TODO 送赠品(处理门店)
+        giftProcessor.getGifts(param.getWxUserInfo().getUserId(), vo.getOrderGoods(), vo.getOrderType());
         //服务条款
         setServiceTerms(vo);
         // 积分使用规则

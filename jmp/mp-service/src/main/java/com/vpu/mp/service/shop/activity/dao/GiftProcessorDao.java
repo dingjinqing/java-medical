@@ -40,6 +40,7 @@ public class GiftProcessorDao extends GiftService {
      * @param goodsBo
      */
     public void getGifts(Integer userId, List<OrderGoodsBo> goodsBo, List<Byte> orderType){
+        logger().info("下单获取赠品start");
         //googsBo转map,聚合相同规格(k->prdId;v->数量)
         Map<Integer, Integer> goodsMapCount = goodsBo.stream().collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber, (ov, nv) -> ov + nv));
         //商品未参与赠品记录
@@ -60,7 +61,7 @@ public class GiftProcessorDao extends GiftService {
             //转化
             transformVo(activity);
             goodsBo.forEach(goods->{
-                if(CollectionUtils.isEmpty(activity.getGoodsIds())|| activity.getGoodsIds().contains(goods.getGoodsId())){
+                if(CollectionUtils.isEmpty(activity.getGoodsIds()) || activity.getGoodsIds().contains(goods.getGoodsId())){
                     number[0] = number[0] + goods.getGoodsNumber();
                     price[0] = price[0].add(goods.getDiscountedTotalPrice());
                     joinRecord.add(goods.getGoodsId());
@@ -74,7 +75,7 @@ public class GiftProcessorDao extends GiftService {
                 }
             }
         });
-
+        logger().info("下单获取赠品end");
     }
 
 
@@ -113,7 +114,7 @@ public class GiftProcessorDao extends GiftService {
         }
         if(rules.getFullNumber() != null && rules.getFullNumber() <= number){
             logger().info("赠品：满件数满足,活动id:{}", giftVo.getId());
-            packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
+            return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
         }
         return Collections.EMPTY_LIST;
     }

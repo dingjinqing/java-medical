@@ -388,7 +388,7 @@
         <div>
           <el-row :gutter="15" class="row_style">
             <el-col :span="5">
-          <span class="span_asterisk">*</span> {{$t('reservationManage.technician')}}：
+          <span class="span_asterisk"></span> {{$t('reservationManage.technician')}}：
             </el-col>
             <el-col :span="10">
             <template>
@@ -487,10 +487,7 @@ export default {
         serviceName: '服务2'
       }],
       // 门店技师下拉
-      reservationTech: [{
-        technicianId: 3,
-        technicianName: '服务'
-      }],
+      reservationTech: [],
       // 可用会员卡下拉
       availableCard: [],
       // 备注
@@ -681,23 +678,37 @@ export default {
     },
     // 添加预约
     add () {
-      this.reservation.technicianName = this.reservationTech.find((item) => {
-        return item.id === this.reservation.technicianId
-      }).technicianName
-      this.reservation.serviceDate = this.dateTime.split(' ')[0]
-      this.reservation.servicePeriod = this.dateTime.split(' ')[1]
-      this.reservation.subscriber = this.userRowData.userName
-      this.reservation.userId = this.userRowData.userId
-      this.reservation.storeId = this.storeId
-      add(this.reservation).then(res => {
-        if (res.error === 0) {
-          this.$message.success('添加成功')
-          this.initDataList()
-          this.showReservation = false
+      // 必填项校验
+      if (this.userRowData === {}) {
+        this.$message.info('必填项不可为空！')
+      } else if (this.mobile === '') {
+        this.$message.info('必填项不可为空！')
+      } else if (this.dateTime === '') {
+        this.$message.info('必填项不可为空！')
+      } else if (this.reservation.serviceId === 0) {
+        this.$message.info('必填项不可为空！')
+      } else {
+        console.log('技师列表：' + this.reservationTech)
+        if (!this.reservationTech) {
+          this.reservation.technicianName = this.reservationTech.find((item) => {
+            return item.id === this.reservation.technicianId
+          }).technicianName
         }
-        this.$message.error('添加失败')
-        this.showReservation = false
-      })
+        this.reservation.serviceDate = this.dateTime.split(' ')[0]
+        this.reservation.servicePeriod = this.dateTime.split(' ')[1]
+        this.reservation.subscriber = this.userRowData.userName
+        this.reservation.userId = this.userRowData.userId
+        this.reservation.storeId = this.storeId
+        add(this.reservation).then(res => {
+          if (res.error === 0) {
+            this.$message.success('添加成功')
+            this.initDataList()
+            this.showReservation = false
+          }
+          this.$message.error('添加失败')
+          this.showReservation = false
+        })
+      }
     },
     // 添加留言弹窗-点击触发弹窗
     showMess (orderSn) {
