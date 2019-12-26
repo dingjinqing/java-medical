@@ -31,8 +31,17 @@ public class ServiceOrderDetailVo {
     private String     servicePeriod;
     private String     addMessage;
     private String     adminMessage;
+    // 订单总金额
     private BigDecimal orderAmount;
+    // 订单应付金额
     private BigDecimal moneyPaid;
+    // 券抵扣金额
+    private BigDecimal discount;
+    // 用户余额抵扣金额
+    private BigDecimal useAccount;
+    // 会员卡余额抵扣金额
+    private BigDecimal memberCardBalance;
+
     private Timestamp  finishedTime;
     private Byte       verifyType;
     private String     verifyCode;
