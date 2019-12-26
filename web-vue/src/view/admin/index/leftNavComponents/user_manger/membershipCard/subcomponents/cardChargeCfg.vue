@@ -30,7 +30,7 @@
           </div>
         </el-form-item>
       </div>
-      <el-form :model="ruleForm" :rules="rules" :inline-message="true" label-width="100px">
+      <el-form :model="ruleForm" :rules="rules"  ref="ruleFormCharge"  :inline-message="true" label-width="100px">
       <div class="card-charge-middle">
 
           <el-form-item class='only-charge'>
@@ -229,14 +229,23 @@ export default {
   },
   mounted () {
     this.$on('checkRule', () => {
-      this.$refs.ruleForm.validate(valid => {
-        if (!valid) {
-          this.$message.warning('请输入赠送金额')
-          this.ruleForm.valid = false
-        } else {
-          this.ruleForm.valid = true
-        }
-      })
+      if (this.ruleForm.powerCard) {
+        this.$refs.ruleForm.validate((valid) => {
+          if (!valid) {
+            this.$message.warning('请输入赠送金额')
+            this.ruleForm.valid = false
+          } else {
+            this.$refs.ruleFormCharge.validate((valid) => {
+              if (!valid) {
+                this.$message.warning('请输入金额')
+                this.ruleForm.valid = false
+              } else {
+                this.ruleForm.valid = true
+              }
+            })
+          }
+        })
+      }
     })
   },
   data () {
@@ -259,26 +268,34 @@ export default {
         } else {
           callback(new Error('请输入金额'))
         }
+      } else {
+        callback()
       }
     }
 
     let validateChargeFull = (rule, value, callback) => {
+      debugger
       if (this.ruleForm.offset === '0') {
         if (this.ruleForm.chargeInputLeft && this.ruleForm.chargeInputRight) {
           callback()
         } else {
           callback(new Error('请输入金额'))
         }
+      } else {
+        callback()
       }
     }
 
     let validateChargeBottom = (rule, value, callback) => {
+      debugger
       if (this.ruleForm.offset === '1') {
         if (this.ruleForm.chargeInputLeftM && this.ruleForm.chargeInputRightM) {
           callback()
         } else {
           callback(new Error('请输入金额'))
         }
+      } else {
+        callback()
       }
     }
     return {
