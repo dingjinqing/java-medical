@@ -12,14 +12,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ *
  * @author 王帅
  *
  */
 @Getter
 @Setter
 public class OrderListMpVo{
-	
+
 	private Integer orderId;
 	private String orderSn;
 	private Byte orderStatus;
@@ -48,7 +48,7 @@ public class OrderListMpVo{
 	private Timestamp extendReceiveTime;
 	@JsonIgnore
     private Integer storeId;
-	
+
 	/**预售、定金支付区间*/
 	private Timestamp[] preSaleTimeInterval;
 	/**支付按钮是否显示*/
@@ -78,6 +78,5 @@ public class OrderListMpVo{
 	/**删除*/
 	private Byte isDelete;
 	private List<OrderGoodsMpVo> goods;
-	private GroupOrderVo groupBuyInfo;
 	private List<String> orderType;
 }
