@@ -171,7 +171,10 @@
               <div
                 class="addReward"
                 @click="addPayRewardItem()"
-              > +{{$t('payReward.addReward')}}</div>
+                style="display: flex"
+              >
+                <div style="margin-top:-1px">+</div>{{$t('payReward.addReward')}}
+              </div>
             </div>
           </div>
           <el-form
