@@ -106,83 +106,90 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        logger().info("支付有礼活动校验");
-        if (!order.getOrderStatus().equals(ORDER_WAIT_DELIVERY)||order.getPayCode().equals(PAY_CODE_COD)) {
-            logger().info("不参与支付有礼活动");
-            return;
-        }
-        //获取进行中的活动
-        PayAwardVo payAward = payAwardService.getGoingPayAward(param.getDate());
-        if (payAward == null) {
-            logger().info("支付有礼活动为空!");
-            return;
-        }
-        logger().info("校验支付金额是否合格");
-        if (orderInfoService.getOrderFinalAmount(order.into(OrderListInfoVo.class),false).compareTo(payAward.getMinPayMoney()) < 0) {
-            logger().info("支付金额不满足活动要求");
-            return;
-        }
-        //活动商品
-        if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION.intValue())) {
-            boolean payAwardFlag = false;
-            for (OrderBeforeParam.Goods goods : param.getGoods()) {
-                boolean hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
-                boolean hasCatId = Arrays.asList(payAward.getGoodsCatIds().split(",")).contains(goods.getGoodsInfo().getCatId().toString());
-                boolean hasSortId = Arrays.stream(payAward.getGoodsSortIds().split(",")).anyMatch(goods.getGoodsInfo().getSortId().toString()::equals);
-                if (hasGoodsId || hasCatId || hasSortId) {
-                    GoodsActivityInfo activityInfo = new GoodsActivityInfo();
-                    activityInfo.setActivityType(ACTIVITY_TYPE_PAY_AWARD);
-                    activityInfo.setActivityId(payAward.getId());
-                    payAwardFlag = true;
-                }
-            }
-            if (!payAwardFlag) {
-                logger().info("支付有礼没有商品查找");
+        try {
+            logger().info("支付有礼活动校验");
+            if (!order.getOrderStatus().equals(ORDER_WAIT_DELIVERY) || order.getPayCode().equals(PAY_CODE_COD)) {
+                logger().info("不参与支付有礼活动");
                 return;
             }
+            //获取进行中的活动
+            PayAwardVo payAward = payAwardService.getGoingPayAward(param.getDate());
+            if (payAward == null) {
+                logger().info("支付有礼活动为空!");
+                return;
+            }
+            logger().info("校验支付金额是否合格");
+            if (orderInfoService.getOrderFinalAmount(order.into(OrderListInfoVo.class), false).compareTo(payAward.getMinPayMoney()) < 0) {
+                logger().info("支付金额不满足活动要求");
+                return;
+            }
+            //活动商品
+            if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION.intValue())) {
+                boolean payAwardFlag = false;
+                for (OrderBeforeParam.Goods goods : param.getGoods()) {
+                    boolean hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
+                    boolean hasCatId = Arrays.asList(payAward.getGoodsCatIds().split(",")).contains(goods.getGoodsInfo().getCatId().toString());
+                    boolean hasSortId = Arrays.stream(payAward.getGoodsSortIds().split(",")).anyMatch(goods.getGoodsInfo().getSortId().toString()::equals);
+                    if (hasGoodsId || hasCatId || hasSortId) {
+                        GoodsActivityInfo activityInfo = new GoodsActivityInfo();
+                        activityInfo.setActivityType(ACTIVITY_TYPE_PAY_AWARD);
+                        activityInfo.setActivityId(payAward.getId());
+                        payAwardFlag = true;
+                    }
+                }
+                if (!payAwardFlag) {
+                    logger().info("支付有礼没有商品查找");
+                    return;
+                }
+            }
+            logger().info("校验奖品配置");
+            int payAwardSize = payAward.getAwardContentList().size();
+            if (payAwardSize == 0) {
+                logger().info("支付有礼没有配置奖品");
+                return;
+            }
+            Integer joinAwardCount = payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId());
+            logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
+            int circleTimes = joinAwardCount / payAwardSize;
+            logger().info("循环次数:{}", circleTimes);
+            if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes() <= circleTimes) {
+                logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
+                return;
+            }
+            int currentAward = joinAwardCount % payAwardSize;
+            logger().info("当前的奖励层级:{}", currentAward);
+            PayAwardContentBo payAwardContentBo = payAward.getAwardContentList().get(currentAward);
+            logger().info("当前奖励:" + payAwardContentBo.toString());
+            if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_NO_PRIZE)) {
+                logger().info("当前奖励无奖品");
+                return;
+            }
+            logger().info("礼物数量校验");
+            Boolean canSendAwardFlag = payAwardRecordService.canSendAward(payAward.getId(), payAwardContentBo.getId());
+            if (!canSendAwardFlag) {
+                logger().info("礼物发放数量超过上限");
+            }
+            PayAwardRecordRecord payAwardRecordRecord = db().newRecord(PAY_AWARD_RECORD);
+            payAwardRecordRecord.setAwardId(payAward.getId());
+            payAwardRecordRecord.setAwardTimes(currentAward);
+            payAwardRecordRecord.setUserId(order.getUserId());
+            payAwardRecordRecord.setOrderSn(order.getOrderSn());
+            payAwardRecordRecord.setAwardPrizeId(payAwardContentBo.getId());
+            payAwardRecordRecord.setGiftType(payAwardContentBo.getGiftType());
+            // 定点杆添加支付有礼id
+            order.setPayAwardId(payAward.getId());
+            sendAward(param, order, payAward, payAwardContentBo, payAwardRecordRecord);
+            payAwardRecordRecord.insert();
+        } catch (Exception e) {
+            logger().error("支付有礼活动异常");
+            e.printStackTrace();
+
         }
-        logger().info("校验奖品配置");
-        int payAwardSize = payAward.getAwardContentList().size();
-        if (payAwardSize == 0) {
-            logger().info("支付有礼没有配置奖品");
-            return;
-        }
-        Integer joinAwardCount = payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId());
-        logger().info("用户:{},参与次数:{}",order.getUserId(), joinAwardCount);
-        int circleTimes = joinAwardCount / payAwardSize;
-        logger().info("循环次数:{}", circleTimes);
-        if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes() <= circleTimes) {
-            logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
-            return;
-        }
-        int currentAward = joinAwardCount % payAwardSize;
-        logger().info("当前的奖励层级:{}", currentAward);
-        PayAwardContentBo payAwardContentBo = payAward.getAwardContentList().get(currentAward);
-        logger().info("当前奖励:" + payAwardContentBo.toString());
-        if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_NO_PRIZE)) {
-            logger().info("当前奖励无奖品");
-            return;
-        }
-        logger().info("礼物数量校验");
-        Boolean canSendAwardFlag = payAwardRecordService.canSendAward(payAward.getId(), payAwardContentBo.getId());
-        if (!canSendAwardFlag) {
-            logger().info("礼物发放数量超过上限");
-        }
-        PayAwardRecordRecord payAwardRecordRecord = db().newRecord(PAY_AWARD_RECORD);
-        payAwardRecordRecord.setAwardId(payAward.getId());
-        payAwardRecordRecord.setAwardTimes(currentAward);
-        payAwardRecordRecord.setUserId(order.getUserId());
-        payAwardRecordRecord.setOrderSn(order.getOrderSn());
-        payAwardRecordRecord.setAwardPrizeId(payAwardContentBo.getId());
-        payAwardRecordRecord.setGiftType(payAwardContentBo.getGiftType());
-        // 定点杆添加支付有礼id
-        order.setPayAwardId(payAward.getId());
-        sendAward(param, order, payAward, payAwardContentBo, payAwardRecordRecord);
-        payAwardRecordRecord.insert();
     }
 
     /**
      * 发送奖品
+     *
      * @param param
      * @param order
      * @param payAward
