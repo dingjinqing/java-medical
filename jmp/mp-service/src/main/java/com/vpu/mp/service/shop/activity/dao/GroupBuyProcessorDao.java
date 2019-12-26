@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyMpVo;
@@ -154,7 +155,8 @@ public class GroupBuyProcessorDao extends GroupBuyService {
             vo.setUserName(record5.get(USER_DETAIL.USERNAME));
             vo.setUserAvatar(imageService.getImgFullUrl(record5.get(USER_DETAIL.USER_AVATAR)));
             vo.setRemainNum(limitAmount - values.size());
-            vo.setRemainTime(now.getTime() - record5.get(GROUP_BUY_LIST.START_TIME).getTime());
+            long passedTime = (now.getTime() - record5.get(GROUP_BUY_LIST.START_TIME).getTime())/1000;
+            vo.setRemainTime(GoodsConstant.GROUP_BUY_LIMIT_TIME - passedTime);
             groupBuyListMpVos.add(vo);
         });
         return groupBuyListMpVos;

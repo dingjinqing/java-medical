@@ -70,7 +70,7 @@
       >
         <el-table-column
           prop="groupId"
-          :label="$t('groupBuy.commanderName')"
+          :label="$t('groupBuy.groupId')"
           align="center"
         ></el-table-column>       <el-table-column
           prop="commanderName"
