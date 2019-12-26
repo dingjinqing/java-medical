@@ -427,7 +427,6 @@ export default {
       if (value === 2) {
         if (this.form.shareConfig.share_doc === '') {
           callback(new Error('请填写活动文案'))
-          console.log('秒杀校验')
         } else if (this.form.shareConfig.share_img_action === 2) {
           if (this.form.shareConfig.share_img === '') {
             callback(new Error('请选择活动图片'))
