@@ -46,6 +46,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.account.UserSysVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
@@ -888,9 +889,10 @@ public class UserService extends ShopBaseService {
 	/**
 	 * 店铺库的user同步到主库
 	 * @param shopRecord
+	 * @return 
 	 */
-	public void syncMainUser(UserRecord shopRecord) {
-		saas().wxUserService.syncMainUser(getShopId(),shopRecord.getUserId(),shopRecord);
+	public int[] syncMainUser(UserRecord shopRecord) {
+		return  saas().wxUserService.syncMainUser(getShopId(),shopRecord.getUserId(),shopRecord);
 	}
 
 
@@ -898,9 +900,10 @@ public class UserService extends ShopBaseService {
 	 * 店铺库的userdetail同步到主库
 	 * @param shopRecords
 	 * @param type
+	 * @return 
 	 */
-	public void syncMainUserDetail(UserDetailRecord shopRecord) {
-		saas().wxUserService.syncMainUserDetail(getShopId(),shopRecord.getUserId(),shopRecord);
+	public int[] syncMainUserDetail(UserDetailRecord shopRecord) {
+		return	saas().wxUserService.syncMainUserDetail(getShopId(),shopRecord.getUserId(),shopRecord);
 	}
 
     /**
@@ -964,5 +967,67 @@ public class UserService extends ShopBaseService {
 	
 	public UserRecord getUserByUnionId(String wxUnionId) {
 		return db().fetchAny(USER, USER.WX_UNION_ID.eq(wxUnionId));
+	}
+	
+	public Result<UserRecord> getAllUser() {
+		return db().fetch(USER);
+	}
+	public Result<UserDetailRecord> getAllUserDetail() {
+		return db().fetch(USER_DETAIL);
+	}
+	/**
+	 * 同步用户信息
+	 * @return 
+	 */
+	public UserSysVo synchronizeUser() {
+		Result<UserRecord> allUser = getAllUser();
+		logger().info(getShopId()+"用户数量"+allUser.size());
+		int updateSuccess=0;
+		int insertSuccess=0;
+		int updateFail=0;
+		int insertFail=0;
+		for (UserRecord userRecord : allUser) {
+			int[] syncMainUser = syncMainUser(userRecord);
+			if (syncMainUser[0] == 1) {
+				updateSuccess = updateSuccess + syncMainUser[0];
+			}
+			if (syncMainUser[0] == 0) {
+				updateFail = updateFail + syncMainUser[0];
+			}
+			if (syncMainUser[1] == 1) {
+				insertSuccess = insertSuccess + syncMainUser[1];
+			}
+			if (syncMainUser[1] == 0) {
+				insertFail = insertFail + syncMainUser[1];
+			}
+		}
+		UserSysVo vo=new UserSysVo(allUser.size(), updateSuccess, insertSuccess, updateFail, insertFail);
+		return vo;
+	}
+	
+	public UserSysVo synchronizeUserDetail() {
+		Result<UserDetailRecord> allUserDetail = getAllUserDetail();
+		logger().info(getShopId()+"用户详情数量"+allUserDetail.size());
+		int updateSuccess=0;
+		int insertSuccess=0;
+		int updateFail=0;
+		int insertFail=0;
+		for (UserDetailRecord userDetailRecord : allUserDetail) {
+			int[] syncMainUserDetail = syncMainUserDetail(userDetailRecord);
+			if (syncMainUserDetail[0] == 1) {
+				updateSuccess = updateSuccess + syncMainUserDetail[0];
+			}
+			if (syncMainUserDetail[0] == 0) {
+				updateFail = updateFail + syncMainUserDetail[0];
+			}
+			if (syncMainUserDetail[1] == 1) {
+				insertSuccess = insertSuccess + syncMainUserDetail[1];
+			}
+			if (syncMainUserDetail[1] == 0) {
+				insertFail = insertFail + syncMainUserDetail[1];
+			}
+		}
+		UserSysVo vo=new UserSysVo(allUserDetail.size(), updateSuccess, insertSuccess, updateFail, insertFail);
+		return vo;
 	}
 }
