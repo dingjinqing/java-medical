@@ -13,7 +13,14 @@
         class="pictureHotSpot"
         :style="'backgroundColor:'+data.box_color"
       >
-        图片热区占位
+        <div
+          v-if="!data.data.bg_img_url"
+          class="hot-middle"
+        >点击编辑【图片热区】</div>
+        <img
+          :src="data.data.bg_img_url"
+          v-if="data.data.bg_img_url"
+        >
       </div>
       <!--模块编辑区结束-->
       <div
@@ -68,12 +75,7 @@ export default {
       hoverTips: 'hoverTips', // 英文适配  模块公共
       // 模块私有
       data: {
-        search_style: '1',
-        search_font: '1',
-        box_color: '',
-        sort_bg_color: '',
-        back_color: '',
-        search_sort: ''
+
       }
     }
   },
@@ -168,6 +170,16 @@ export default {
 .pictureHotSpot {
   background: rgb(238, 238, 238);
   padding: 5px 0px;
-  height: 80px; // 占位
+  .hot-middle {
+    text-align: center;
+    padding: 55px 0 0 0;
+    color: #5a8bff;
+    font-size: 14px;
+    background-color: #eaf0ff;
+    height: 130px;
+  }
+  img {
+    width: 100%;
+  }
 }
 </style>

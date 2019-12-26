@@ -212,7 +212,6 @@ public class GroupBuyListService extends ShopBaseService {
         return db().select(GROUP_BUY_LIST.ID, GROUP_BUY_LIST.ACTIVITY_ID, GROUP_BUY_LIST.GOODS_ID, GROUP_BUY_LIST.GROUP_ID, GROUP_BUY_LIST.USER_ID, GROUP_BUY_LIST.IS_GROUPER, GROUP_BUY_LIST.ORDER_SN, GROUP_BUY_LIST.STATUS, GROUP_BUY_LIST.START_TIME, GROUP_BUY_LIST.END_TIME).
                 from(GROUP_BUY_LIST).
                 where(GROUP_BUY_LIST.ORDER_SN.eq(orderSn)).
-                and(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y)).
                 fetchOneInto(GroupOrderVo.class);
     }
 

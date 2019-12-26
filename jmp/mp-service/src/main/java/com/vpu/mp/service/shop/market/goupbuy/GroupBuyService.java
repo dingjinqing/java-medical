@@ -395,6 +395,8 @@ public class GroupBuyService extends ShopBaseService {
             analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
             startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
+        BigDecimal divide = analysisVo.getTotalMarketPrice().divide(analysisVo.getTotalPrice(), 4);
+        analysisVo.setTotalRatio(divide);
         return analysisVo;
     }
 

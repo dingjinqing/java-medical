@@ -242,12 +242,13 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	}
 
 	@Override
-	public Object query(OrderOperateQueryParam param) throws MpException  {
+	public Object query(OrderOperateQueryParam param) throws MpException {
 		logger.info("获取可退款、退货信息参数为:" + param.toString());
 		Byte isMp = param.getIsMp();
 		RefundVo vo = new RefundVo();
 		//获取当前订单
 		OrderListInfoVo currentOrder = orderInfo.getByOrderId(param.getOrderId(),OrderListInfoVo.class);
+        vo.setOrderType(OrderInfoService.orderTypeToArray(currentOrder.getGoodsType()));
 		if(currentOrder == null) {
 			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}

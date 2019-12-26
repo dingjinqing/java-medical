@@ -391,7 +391,6 @@ public class OrderReadService extends ShopBaseService {
 		setReturnCfg(vo, rOrder);
 		//设置订单类型
         vo.setOrderType(OrderInfoService.orderTypeToArray(order.getGoodsType()));
-        //
 		return vo;
 	}
 
@@ -582,7 +581,7 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//好物圈
 
-		//TODO 拼团
+		// 拼团
 		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
 			//未退款

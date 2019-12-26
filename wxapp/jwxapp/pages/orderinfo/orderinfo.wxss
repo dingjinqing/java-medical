@@ -166,3 +166,46 @@
   line-height: 46rpx;
   color: #888;
 }
+/* 拼团活动样式 */
+.fight_info {
+  width: 100%;
+  background: #fff;
+  margin-bottom: 20rpx;
+  margin-top: 20rpx;
+  padding-left: 38rpx;
+  font-size: 26rpx;
+}
+.fight-header {
+  overflow: hidden;
+  width: 680rpx;
+  border-bottom: 1px solid #eee;
+}
+.fight-h-left {
+  float: left;
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+}
+.fight-h-right {
+  float: right;
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+}
+.fight-content {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 0;
+}
+.fight-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 30rpx;
+  border-radius: 50%;
+}
+.activity_icon {
+  padding: 0 10rpx;
+  border: 1px solid #eb8e40;
+  color: #eb8e40;
+  margin-right: 10rpx;
+}
