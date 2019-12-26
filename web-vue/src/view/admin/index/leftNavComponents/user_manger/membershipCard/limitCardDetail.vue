@@ -271,7 +271,7 @@ export default {
       if (data.startTime === null) { this.cardEffectTime.fixedDate = '' }
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
-      this.cardEffectTime.dateType = data.dateType ? data.dateType : '0'
+      this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
       // 适用商品
       this.cardSuiteGoodsCfgData.exchangCount = data.exchangCount
       this.cardSuiteGoodsCfgData.isExchange = String(data.isExchange)
