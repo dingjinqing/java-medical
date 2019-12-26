@@ -49,6 +49,7 @@ import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -1465,9 +1466,10 @@ public class MpAuthShopService extends MainBaseService {
 						String content="点击进入小程序";
 						//ShopApplication shopApp = saas.getShopApp(authShopRecord.getShopId());
 						//WxUserInfo info=WxUserInfo.builder().mpAppId(appId).mpOpenId(userInfo.getOpenId()).maAppId(authShopRecord.getAppId()).build();
-						MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
+						//MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
+						UserRecord user = saas.getShopApp(authShopRecord.getShopId()).user.getUserByOpenId(userInfo.getOpenId());
 						List<Integer> userIdList = new ArrayList<Integer>();
-						userIdList.add(user.getRecId());
+						userIdList.add(user.getUserId());
 						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
 						RabbitMessageParam param = RabbitMessageParam.builder()
 								.mpTemplateData(
