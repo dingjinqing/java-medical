@@ -39,10 +39,6 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	 * 团id
 	 */
 	private Integer groupId;
-	/**
-	 * 拼团成团人数
-	 */
-	private Integer groupBuyLimitAmout;
 	/***/
 	@JsonIgnore
 	private String mainOrderSn;

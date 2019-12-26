@@ -591,7 +591,10 @@ public class OrderReadService extends ShopBaseService {
                 List<GroupBuyUserInfo> pinUserList = groupBuyList.getPinUserList(groupOrder.getGroupId());
                 order.setGroupBuyUserInfos(pinUserList);
                 order.setGroupId(groupOrder.getGroupId());
-                order.setGroupBuyLimitAmout(groupBuyLimitAmout);
+				GroupOrderVo groupOrderVo =new GroupOrderVo();
+				groupOrderVo.setStatus(groupOrder.getStatus());
+				groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
+                order.setGroupBuyInfo(groupOrderVo);
             }
 		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
 
