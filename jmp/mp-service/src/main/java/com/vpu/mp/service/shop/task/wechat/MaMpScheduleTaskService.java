@@ -110,11 +110,11 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		for (CouponWxVo couponWxVo : list) {
 			String couponName = couponWxVo.getActName();
 			List<Integer> userIdList = new ArrayList<Integer>();
-			MpOfficialAccountUserRecord wxUserInfo = checkMp(couponWxVo.getWxUnionId(), officeAppId);
+			UserRecord wxUserInfo = checkMp(couponWxVo.getWxUnionId(), officeAppId);
 			if(null==wxUserInfo) {
 				continue;
 			}
-			userIdList.add(wxUserInfo.getRecId());
+			userIdList.add(wxUserInfo.getUserId());
 			logger().info("userIdList" + userIdList);
 			String[][] data = new String[][] { { keyword1 + couponName + keyword11, "#173177" }, { "", "#173177" },
 					{ couponName, "#173177" },
@@ -137,19 +137,19 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 	 * @param officeAppId
 	 * @return
 	 */
-	private MpOfficialAccountUserRecord checkMp(String WxUnionId,String officeAppId) {
+	private UserRecord checkMp(String WxUnionId,String officeAppId) {
 		
 		if (StringUtils.isEmpty(WxUnionId)) {
 			logger().info("用户" + WxUnionId + "没有关注公众号");
 			return null;
 		}
-		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionIdAndAppId(WxUnionId, officeAppId);
-		if (wxUserInfo == null) {
+		UserRecord user = userService.getUserByUnionId(WxUnionId);
+		if (user == null) {
 			logger().info("表中没有数据" + WxUnionId);
 			return null;
 	
 		}
-		return wxUserInfo;
+		return user;
 		
 	}
 	
@@ -166,11 +166,11 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		String remake = "感谢您的使用";
 		for (StoreAppointmentRemindVo serviceOrderRecord : serviceOrderList) {
 			List<Integer> userIdList = new ArrayList<Integer>();
-			MpOfficialAccountUserRecord wxUserInfo = checkMp(serviceOrderRecord.getWxUnionId(), officeAppId);
+			UserRecord wxUserInfo = checkMp(serviceOrderRecord.getWxUnionId(), officeAppId);
 			if(null==wxUserInfo) {
 				continue;
 			}
-			userIdList.add(wxUserInfo.getRecId());
+			userIdList.add(wxUserInfo.getUserId());
 			String page = "pages/appointinfo/appointinfo?order_sn=" + serviceOrderRecord.getOrderSn();
 			String orderSn = serviceOrderRecord.getOrderSn();
 			String serviceDate = serviceOrderRecord.getServiceDate();
@@ -227,11 +227,11 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			for (OrderInfoRecord orderInfoRecord : orderList) {
 				UserRecord user = userService.getUserByUserId(orderInfoRecord.getUserId());
 				List<Integer> userIdList = new ArrayList<Integer>();
-				MpOfficialAccountUserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
+				UserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
 				if (null == wxUserInfo) {
 					continue;
 				}
-				userIdList.add(wxUserInfo.getRecId());
+				userIdList.add(wxUserInfo.getUserId());
 				String first = "";
 				String remake = "";
 				if (type.equals(ZERO)) {
@@ -363,12 +363,12 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		
 		List<Integer> userIdList = new ArrayList<Integer>();
 		UserRecord user = userService.getUserByUserId(vo.getUserId());
-		MpOfficialAccountUserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
-		if (null == wxUserInfo) {
+		UserRecord userRecord = checkMp(user.getWxUnionId(), officeAppId);
+		if (null == userRecord) {
 			log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
 			return null;
 		}
-		userIdList.add(wxUserInfo.getRecId());
+		userIdList.add(user.getUserId());
 		String title="恭喜您中奖了";
 		String remark="将尽快为您发货";
 		String[][] data = new String[][] { { title, "#173177" }, {goodsName, "#173177" },
@@ -432,12 +432,12 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 				//ACTIVITY_CONFIG
 				List<Integer> userIdList = new ArrayList<Integer>();
 				UserRecord user = userService.getUserByUserId(vo.getUserId());
-				MpOfficialAccountUserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
+				UserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
 				if (null == wxUserInfo) {
 					log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
 					return null;
 				}
-				userIdList.add(wxUserInfo.getRecId());
+				userIdList.add(user.getUserId());
 				String[][] data = new String[][] { { title, "#173177" }, {name2, "#173177" },
 					{ vo.getActName(), "#173177" }, { content, "#173177" }, { date, "#173177" },{"","#173177"}};
 					//发的公众号
@@ -474,12 +474,12 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			String page="pages1/promoteinfo/promoteinfo?actCode="+userLaunchInfo.getActCode()+"&launch_id="+String.valueOf(vo.getId());
 			List<Integer> userIdList = new ArrayList<Integer>();
 			UserRecord user = userService.getUserByUserId(vo.getUserId());
-			MpOfficialAccountUserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
+			UserRecord wxUserInfo = checkMp(user.getWxUnionId(), officeAppId);
 			if (null == wxUserInfo) {
 				log.info("店铺："+getShopId()+"用户userId："+vo.getUserId()+"活动Id："+vo.getId()+"用户没有关注公众号");
 				return null;
 			}
-			userIdList.add(wxUserInfo.getRecId());
+			userIdList.add(vo.getUserId());
 			String remake="点击查看详情";
 			String[][] data = new String[][] { { "", "#173177" }, {title, "#173177" },
 				{ vo.getActName(), "#173177" }, { content, "#173177" }, { DateUtil.getLocalDateFormat(), "#173177" },{remake,"#173177"}};

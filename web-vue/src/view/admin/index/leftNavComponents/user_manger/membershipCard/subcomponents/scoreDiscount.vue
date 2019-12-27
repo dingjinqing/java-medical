@@ -112,6 +112,8 @@ export default {
         return this.val
       },
       set (val) {
+        this.$refs.ruleForm.validate((valid) => {
+        })
         this.$emit('input', this.ruleForm)
       }
     }

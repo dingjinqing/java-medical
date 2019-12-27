@@ -118,7 +118,7 @@ public class GroupBuyService extends ShopBaseService {
             Integer stock = groupBuy.getProduct().stream().mapToInt(GroupBuyProductParam::getStock).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, groupBuy);
-            groupBuyDefineRecord.setStatus(status == true ? ACTIVITY_STATUS_NORMAL : ACTIVITY_STATUS_DISABLE);
+            groupBuyDefineRecord.setStatus(status ? ACTIVITY_STATUS_NORMAL : ACTIVITY_STATUS_DISABLE);
             groupBuyDefineRecord.setStock(stock.shortValue());
             groupBuyDefineRecord.insert();
             //拼团商品规格价格信息
@@ -138,6 +138,16 @@ public class GroupBuyService extends ShopBaseService {
      */
     public GroupBuyDefineRecord getGroupBuyRecord(Integer id) {
         return db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne();
+    }
+
+    /**
+     * 根据id 获取活动record
+     *
+     * @param id
+     * @return
+     */
+    public Integer getGroupBuyLimitAmout(Integer id) {
+        return db().select(GROUP_BUY_DEFINE.LIMIT_AMOUNT).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOneInto(Integer.class);
     }
 
     /**
@@ -175,7 +185,7 @@ public class GroupBuyService extends ShopBaseService {
             //分享配置转json
             param.setShareConfig(Util.toJson(param.getShare()));
             //订单总库存
-            Integer stock = param.getProduct().stream().mapToInt(group -> group.getStock()).sum();
+            Integer stock = param.getProduct().stream().mapToInt(GroupBuyProductParam::getStock).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, param);
             groupBuyDefineRecord.setStock(stock.shortValue());
@@ -350,6 +360,7 @@ public class GroupBuyService extends ShopBaseService {
         ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(OrderConstant.GOODS_TYPE_PIN_GROUP, param.getId(), startDate, endDate);
 
         while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+            String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate);
             //活动实付金额
             ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
             if (discountMoney == null) {
@@ -367,24 +378,26 @@ public class GroupBuyService extends ShopBaseService {
                     marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
             }
             //新用户数
-            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), startDate);
+            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), dateFormat);
             if (newUser == null) {
                 analysisVo.getNewUserList().add(0);
             } else {
                 analysisVo.getNewUserList().add(newUser.getNum());
-                analysisVo.setTotalNewUser(analysisVo.getTotalNewUser() + newUser.getNum());
             }
             //老用户数
-            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), startDate);
+            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), dateFormat);
             if (oldUser == null) {
                 analysisVo.getOldUserList().add(0);
             } else {
                 analysisVo.getOldUserList().add(oldUser.getNum());
-                analysisVo.setTotalOldUser(analysisVo.getTotalOldUser() + oldUser.getNum());
             }
-            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
+            analysisVo.getDateList().add(dateFormat);
             startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
+        analysisVo.setTotalNewUser(activeOrderList.getNewUser());
+        analysisVo.setTotalOldUser(activeOrderList.getOldUser());
+        BigDecimal divide = analysisVo.getTotalMarketPrice().divide(analysisVo.getTotalPrice(), 4);
+        analysisVo.setTotalRatio(divide);
         return analysisVo;
     }
 
@@ -456,12 +469,12 @@ public class GroupBuyService extends ShopBaseService {
      * 活动用户数量
      *
      * @param list
-     * @param timestamp
+     * @param dateFormat
      * @return
      */
-    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
+    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, String dateFormat) {
         for (OrderActivityUserNum activityUserNum : list) {
-            if (activityUserNum != null && timestamp.equals(activityUserNum.getDate())) {
+            if (activityUserNum != null && dateFormat.equals(activityUserNum.getDate())) {
                 return activityUserNum;
             }
         }
@@ -510,9 +523,9 @@ public class GroupBuyService extends ShopBaseService {
         BigDecimal maxPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().max(BigDecimal::compareTo).get();
         BigDecimal minPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().min(BigDecimal::compareTo).get();
         long dateDiff = date.getTime() - createTime.getTime();
-        long hour = 24 - (dateDiff / (60 * 60 * 1000));
-        long min = 60 - dateDiff % (60 * 60 * 1000) / (60 * 1000);
-        long s = 60 - dateDiff % (60 * 60 * 1000) % (60 * 1000) / 1000;
+        long hour = 23 - (dateDiff / (60 * 60 * 1000));
+        long min = 59 - (dateDiff % (60 * 60 * 1000)) / (60 * 1000);
+        long s = 59 - ((dateDiff % (60 * 60 * 1000)) % (60 * 1000)) / 1000;
 
         GroupBuyInfoVo groupBuyInfo = new GroupBuyInfoVo();
         goodsRecord.setGroupBuygoodsNum(groupBuyStock);

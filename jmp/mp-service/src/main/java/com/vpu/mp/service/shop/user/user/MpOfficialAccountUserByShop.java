@@ -59,5 +59,33 @@ public class MpOfficialAccountUserByShop extends ShopBaseService{
             .and(USER.USER_ID.in(userIds))
             .fetch();
     }
-
+	
+    public MpOfficialAccountUserRecord getUserByUnionIdAndAppId(String unionId,String appId) {
+    	return db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId).and(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId))).fetchAny();
+    }
+    
+    public MpOfficialAccountUserRecord getAccountUserListByRecid(Integer recId) {
+        return db().select(MP_OFFICIAL_ACCOUNT_USER.OPENID,MP_OFFICIAL_ACCOUNT_USER.UNIONID,MP_OFFICIAL_ACCOUNT_USER.APP_ID)
+            .from(MP_OFFICIAL_ACCOUNT_USER)
+            .where(MP_OFFICIAL_ACCOUNT_USER.REC_ID.eq(recId))
+            .and(MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.eq((byte)1))
+            .fetchAnyInto(MP_OFFICIAL_ACCOUNT_USER);
+    }
+    
+    public MpOfficialAccountUserRecord getAccountUserByUserId(Integer userId) {
+		return db().select(MP_OFFICIAL_ACCOUNT_USER.asterisk()).from(MP_OFFICIAL_ACCOUNT_USER, USER)
+				.where(USER.WX_UNION_ID.eq(MP_OFFICIAL_ACCOUNT_USER.UNIONID).and(USER.USER_ID.eq(userId)))
+				.fetchAnyInto(MP_OFFICIAL_ACCOUNT_USER);
+    }
+    public List<MpOfficialAccountUserRecord> getAccountUserListByUnionIds(List<String> unionIds) {
+        return db().select(MP_OFFICIAL_ACCOUNT_USER.OPENID,MP_OFFICIAL_ACCOUNT_USER.UNIONID,MP_OFFICIAL_ACCOUNT_USER.APP_ID)
+            .from(MP_OFFICIAL_ACCOUNT_USER)
+            .where(MP_OFFICIAL_ACCOUNT_USER.UNIONID.in(unionIds))
+            .and(MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.eq((byte)1))
+            .fetchInto(MP_OFFICIAL_ACCOUNT_USER);
+    }
+    
+    public MpOfficialAccountUserRecord getUser(String appId,String openId) {
+    	return db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId))).fetchAny();
+    }
 }

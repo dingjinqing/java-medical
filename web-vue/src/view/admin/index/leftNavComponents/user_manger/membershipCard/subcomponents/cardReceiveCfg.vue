@@ -3,7 +3,9 @@
     <el-form
       :model="ruleForm"
       ref="ruleForm"
+      :rules="rules"
       label-width="100px"
+      :inline-message="true"
     >
 
       <el-form-item
@@ -27,7 +29,7 @@
             label="2"
           >{{ $t('memberCard.needReceiveCode') }}</el-radio>
         </div>
-        <div class="receive-bottom"  v-if="ruleForm.isPay!=='0'">
+        <div class="receive-bottom"  v-if="ruleForm.isPay!=='0'|| ruleForm.cardType===1">
           <div
             v-if="ruleForm.isPay==='1'"
             class="receive-buy"
@@ -156,12 +158,13 @@
             v-if="ruleForm.cardType===1"
             class="limit-card-send"
           >
+          <!-- 分割线 -->
             <div
               v-if="ruleForm.isPay !== '0'"
               class="split-line"
             ></div>
             <div class="send-limit">
-              <div class="send-num">
+              <el-form-item class="send-num" prop="stockValid">
                 <span>发送总量：</span>
                 <el-input-number
                   v-model="ruleForm.stock"
@@ -169,14 +172,13 @@
                   :min="0"
                   :max="999999999"
                   size="small"
-                  @blur="changeCheckStock"
                 >
                 </el-input-number>
                 <span>张</span>
                 <span class="send-tip">填0时为不限制</span>
                 <span>当前已领取： {{ruleForm.hasSend}}张</span>
-              </div>
-              <div class="person-receive-num">
+              </el-form-item>
+              <el-form-item class="person-receive-num" prop="limitValid">
                 <span>领取限制：每人限领</span>
                 <el-input-number
                   v-model="ruleForm.limits"
@@ -184,12 +186,11 @@
                   :min="0"
                   :max="999999999"
                   size="small"
-                  @blur="changeCheckLimits"
                 >
                 </el-input-number>
                 <span>张</span>
                 <span class="send-tip">填0时为不限制</span>
-              </div>
+              </el-form-item>
             </div>
           </div>
         </div>
@@ -254,6 +255,20 @@ export default {
   },
   mounted () {
     this.$on('checkRule', () => {
+      let flag = false
+      if (this.ruleForm.cardType === 1) {
+        this.$refs.ruleForm.validate((valid) => {
+          if (!valid) {
+            this.$message.warning('请输入信息')
+            this.ruleForm.valid = false
+          } else {
+            flag = true
+          }
+        })
+      } else {
+        flag = true
+      }
+
       if (this.ruleForm.isPay === '1') {
         // check crash
         if (this.ruleForm.payType === '0') {
@@ -271,7 +286,8 @@ export default {
         } else {
           this.payMoneyError = false
           this.payScoreError = false
-          this.ruleForm.valid = true
+
+          this.ruleForm.valid = flag
         }
         // check score
       } else if (this.ruleForm.isPay === '2') {
@@ -279,7 +295,7 @@ export default {
         if (Number(this.ruleForm.receiveAction) === this.codeReceiveAction) {
           // 领取码
           if (this.ruleForm.codeAddDivArr[0].batchId) {
-            this.ruleForm.valid = true
+            this.ruleForm.valid = flag
             this.receiveCodeError = false
           } else {
             this.$message.warning('至少生成一项领取码')
@@ -289,7 +305,7 @@ export default {
         } else if (Number(this.ruleForm.receiveAction) === this.pwdReceiveAction) {
           // 卡号+密码
           if (this.ruleForm.codeAddDivArrBottom[0].pwdId) {
-            this.ruleForm.valid = true
+            this.ruleForm.valid = flag
             this.receiveCodeError = false
           } else {
             this.$message.warning('至少生成一项领取码')
@@ -298,7 +314,7 @@ export default {
           }
         }
       } else {
-        this.ruleForm.valid = true
+        this.ruleForm.valid = flag
       }
     })
   },
@@ -323,6 +339,27 @@ export default {
         }
       }
     }
+    let validateStock = (rule, value, callback) => {
+      if (this.ruleForm.stock === 0) {
+        callback()
+      } else if (this.ruleForm.stock) {
+        callback()
+      } else {
+        this.ruleForm.stock = undefined
+        callback(new Error('请填写发送总量'))
+      }
+    }
+
+    let validateLimit = (rule, value, callback) => {
+      if (this.ruleForm.limits === 0) {
+        callback()
+      } else if (this.ruleForm.limits) {
+        callback()
+      } else {
+        this.ruleForm.limits = undefined
+        callback(new Error('请填写领取限制'))
+      }
+    }
     return {
       receiveCodeDialogVisible: false,
       codeReceiveAction: 1,
@@ -341,6 +378,12 @@ export default {
         ],
         payMoney: [
           { validator: validatePayMoney, trigger: 'blur' }
+        ],
+        stockValid: [
+          { validator: validateStock, trigger: 'blur' }
+        ],
+        limitValid: [
+          { validator: validateLimit, trigger: 'blur' }
         ]
       }
     }
@@ -464,18 +507,6 @@ export default {
         this.ruleForm.codeAddDivArr.splice(index, 1)
       }
     },
-    changeCheckStock () {
-      if (typeof this.ruleForm.stock === 'undefined') {
-        this.val.stock = 0
-        this.ruleForm = this.val
-      }
-    },
-    changeCheckLimits () {
-      if (typeof this.ruleForm.limits === 'undefined') {
-        this.val.limits = 0
-        this.ruleForm = this.val
-      }
-    },
     dealWithReceiveCodeId (id) {
       console.log(id)
       if (this.currentReceiveAction === this.pwdReceiveAction) {
@@ -537,7 +568,7 @@ export default {
           }
           span {
             display: inline-block;
-            margin-right: 10px;
+            margin-right: 8px;
             &:nth-of-type(3),
             &:nth-of-type(4),
             &:nth-of-type(5),

@@ -39,10 +39,12 @@
   font-size: 26rpx;
 }
 .countdown > .count {
+  display: inline-block;
   background: #fff;
-  padding: 0 4rpx;
+  width: 33rpx;
   margin: 0 6rpx;
   border-radius: 6rpx;
+  text-align: center;
 }
 .countdown > text:first-child {
   margin-left: 0;

@@ -294,6 +294,7 @@ export default {
           break
       }
       this.choisePagePath(path)
+      this.$emit('handleToGetDetailData', item)
     },
     // 搜索
     handleSearch () {

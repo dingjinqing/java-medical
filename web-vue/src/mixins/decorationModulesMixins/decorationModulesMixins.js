@@ -232,6 +232,27 @@ export default {
             isAllCheckFull: true // 布局是否填充完毕
           }
           break
+        case 15: // 图片热区
+          obj = {
+            'module_name': 'm_hot_area',
+            'data': {
+              'bg_img_url': '',
+              'rectangles': [
+                // {
+                //   'hot_idx': 1,
+                //   'x': 0,
+                //   'y': 0,
+                //   'w': 115,
+                //   'h': 115,
+                //   'link_url': 'pages/searchs/search?is_from=integral',
+                //   'link_text': '积分商品列表'
+                // }
+              ],
+              'bg_img_width': '',
+              'bg_img_height': ''
+            }
+          }
+          break
         case 16: // 左图右文
           obj = {
             'module_name': 'm_text_image', // 模块名称

@@ -50,7 +50,9 @@
                       <span v-else-if="item.expireType === 1">
                         <!-- 自领取多少内有效 -->
 
-                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}{{$t('memberCard.endDate')}}
+                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}
+                        {{ item.dateType===0 ? $t('memberCard.endDayDate'):
+                            item.dateType===1 ? $t('memberCard.endWeekDate'): $t('memberCard.endMonthDate')}}
                       </span>
                       <span v-else-if="item.expireType === 2">
                         <!-- 永久有效 -->
@@ -168,7 +170,9 @@
                       <span v-else-if="item.expireType === 1">
                         <!-- 自领取多少内有效 -->
 
-                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}{{$t('memberCard.endDate')}}
+                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}
+                        {{ item.dateType===0 ? $t('memberCard.endDayDate'):
+                            item.dateType===1 ? $t('memberCard.endWeekDate'): $t('memberCard.endMonthDate')}}
                       </span>
                       <span v-else-if="item.expireType === 2">
                         <!-- 永久有效 -->
@@ -281,7 +285,9 @@
                       <span v-else-if="item.expireType === 1">
                         <!-- 自领取多少内有效 -->
 
-                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}{{$t('memberCard.endDate')}}
+                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}
+                        {{ item.dateType===0 ? $t('memberCard.endDayDate'):
+                            item.dateType===1 ? $t('memberCard.endWeekDate'): $t('memberCard.endMonthDate')}}
                       </span>
                       <span v-else-if="item.expireType === 2">
                         <!-- 永久有效 -->

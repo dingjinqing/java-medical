@@ -320,10 +320,11 @@ export default {
       // (用于展示)的请求报文的goodsDeliverTemplateFeeConditionParam数组数据
       showTableData: [],
 
-      areaData: [{
-        checkListT: [],
-        innerObjJ: {}
-      }],
+      // areaData: [{
+      //   checkListT: [],
+      //   innerObjJ: {}
+      // }],
+      areaData: [],
 
       submitStatus: false
 
@@ -390,9 +391,95 @@ export default {
                 }
               })
             })
+
+            // 弹框数据回显
+            this.updateData(item.area)
+            this.areaData.push({
+              checkListT: this.checkListT,
+              innerObjJ: this.innerObjJ
+            })
+            console.log(this.areaData)
           })
         }
       })
+    },
+
+    updateData (ruleList) {
+      // this.locationList，innerObjJ，checkListT
+      // 通过this.locationList 和 editLocation 获取到真正的checkListT,innerObjJ 然后显示
+      // 选取出 选中的 id
+      const checkListT = this.selectCheckList(ruleList)
+      if (checkListT.length === 3647) {
+        // this.locationList[0].state = true
+        // 全部省市区选中
+        checkListT.push(1)
+      }
+      this.checkListT = checkListT
+    },
+
+    // 筛选出checkList
+    selectCheckList (ruleList) {
+      const checkList = []
+      ruleList.forEach((item, index) => {
+        checkList.push(item)
+      })
+
+      return this.getIdList(checkList)
+    },
+
+    // 通过this.locationList拉取id , 选中this.locationList,以及...
+    getIdList (checkList) {
+      const idList = [] // 存储id
+      const strIdList = checkList.toString() // 获取选中的list
+      const innerObj = {} // 存储id对象
+      this.locationList.forEach(item => {
+        if (strIdList.includes(item.provinceId) && item.provinceId !== 1) {
+          // 完全相等,表示自身和以下的省，区都遍历进idList
+          idList.push(item.provinceId)
+          // item.state = true
+          item.areaCity &&
+            item.areaCity.forEach(city => {
+              this.addCheckData(innerObj, city, idList)
+            })
+        } else if (item.areaCity) {
+          // 当和省级不想等的情况下
+          item.areaCity.forEach(city => {
+            if (strIdList.includes(city.cityId)) {
+              this.addCheckData(innerObj, city, idList)
+            } else if (city.areaDistrict) {
+              // 当和市不想等的情况下
+              city.areaDistrict.forEach(district => {
+                innerObj[city.cityId] = 0
+                if (strIdList.includes(district.districtId)) {
+                  idList.push(district.districtId)
+                  innerObj[city.cityId]++
+                  // district.state = true
+                }
+              })
+            }
+          })
+        }
+      })
+      this.innerObjJ = innerObj
+      // this.areaData.push({
+      //   checkListT: checkList,
+      //   innerObjJ: this.innerObjJ
+      // })
+      // console.log(this.areaData)
+      return idList
+    },
+
+    // 添加选中的各种
+    addCheckData (innerObj, city, idList) {
+      innerObj[city.cityId] = 0
+      // city.state = true
+      idList.push(city.cityId)
+      city.areaDistrict &&
+        city.areaDistrict.forEach(district => {
+          // district.state = true
+          innerObj[city.cityId]++
+          idList.push(district.districtId)
+        })
     },
 
     // 保存秒杀活动

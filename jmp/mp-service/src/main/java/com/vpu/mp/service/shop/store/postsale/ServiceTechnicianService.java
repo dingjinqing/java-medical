@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.technician.*;
 import com.vpu.mp.service.shop.store.schedule.TechnicianScheduleService;
+import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
@@ -20,10 +21,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.DATE_TIME_FORMATTER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -42,6 +45,8 @@ public class ServiceTechnicianService extends ShopBaseService {
 
 	@Autowired public ServiceTechnicianGroupService groupService;
 	@Autowired public TechnicianScheduleService scheduleService;
+    @Autowired
+    public StoreServiceService storeService;
 
 	/**
 	 * 根据ID查数据库一条记录
@@ -269,6 +274,10 @@ public class ServiceTechnicianService extends ShopBaseService {
      * @return the tech by store service
      */
     public List<TechnicianInfo> getTechByStoreService(TechnicianParam param) {
+        // 该服务类型为无技师直接返回空列表
+        if (BYTE_ZERO.equals(storeService.getSingleField(param.getServiceId(), STORE_SERVICE.SERVICE_TYPE))) {
+            return Collections.emptyList();
+        }
         List<TechnicianInfo> list = db().selectFrom(SERVICE_TECHNICIAN)
             .where(SERVICE_TECHNICIAN.STORE_ID.eq(param.getStoreId()))
             .and(SERVICE_TECHNICIAN.DEL_FLAG.eq(BYTE_ZERO))
