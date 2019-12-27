@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.gift;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.Gift;
 import com.vpu.mp.db.shop.tables.GiftProduct;
 import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
@@ -24,9 +25,11 @@ import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -60,6 +63,8 @@ import static org.springframework.util.StringUtils.isEmpty;
 @Service
 @Primary
 public class GiftService extends ShopBaseService {
+    @Autowired
+    private DomainConfig domainConfig;
 
     public static final Gift TABLE = Gift.GIFT;
     public static final GiftProduct SUB_TABLE = GiftProduct.GIFT_PRODUCT;
@@ -243,6 +248,11 @@ public class GiftService extends ShopBaseService {
             .fetchOneInto(ProductVo.class);
         if (vo!=null){
             vo.setOfferNumber(getGiftOrderedNumber(productId, giftId));
+        }
+        if(StringUtils.isNotEmpty(vo.getPrdImg())){
+            vo.setPrdImg(domainConfig.imageUrl(vo.getPrdImg()));
+        }else if(StringUtils.isNotEmpty(vo.getGoodsImg())){
+            vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
         }
         return vo;
     }

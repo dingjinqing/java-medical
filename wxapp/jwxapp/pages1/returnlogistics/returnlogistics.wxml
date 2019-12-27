@@ -1,4 +1,5 @@
 <!-- pages1/returnlogistics/returnlogistics.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <!-- 填写退货物流 -->
@@ -6,29 +7,29 @@
     <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
       <view class="order-header-h">
         <text class="order-place2">*</text>
-        请退货给商家
+        {{i18n.$t(localePack,"page1.afterSale.pReturn")}}
       </view>
     </view>
     <view class="order-info">
       <view class="order-block-detail-item">
         <text class="order-place2">*</text>
-        退货地址：{{orderInfo.returnAddress}}
+        {{i18n.$t(localePack,"page1.afterSale.returnAddress")}}：{{orderInfo.returnAddress}}
       </view>
       <view class="order-block-detail-item">
         <text class="order-place2">*</text>
-        邮政编码：{{orderInfo.zipCode}}
+        {{i18n.$t(localePack,"page1.afterSale.zipCode")}}：{{orderInfo.zipCode}}
       </view>
       <view class="order-block-detail-item">
         <text class="order-place2">*</text>
-        收件人：{{orderInfo.consignee}}
+        {{i18n.$t(localePack,"page1.afterSale.recipient")}}：{{orderInfo.consignee}}
       </view>
       <view>
         <text class="order-place2">*</text>
-        联系电话：{{orderInfo.merchantTelephone}}
+        {{i18n.$t(localePack,"page1.afterSale.contactNumber")}}：{{orderInfo.merchantTelephone}}
       </view>
     </view>
     <view class="order-info order-flex">
-      <text><text class="order-required">*</text>物流公司：</text>
+      <text><text class="order-required">*</text>{{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：</text>
       <!-- 选择快递公司 -->
       <picker mode="selector" bindchange="bindCourierChange" value="{{courierIndex}}" range="{{couriers}}" range-key="shippingName">
         <view>
@@ -38,15 +39,15 @@
       </picker>
     </view>
     <view class="order-info order-flex">
-      <text><text class="order-required">*</text>运单号码：</text>
-      <input class="order-flex-1" placeholder="请填写运单号码" bindblur="shippingNoBlur" value="{{shippingNo}}" maxlength="15"></input>
+      <text><text class="order-required">*</text>{{i18n.$t(localePack,"page1.afterSale.waybillNumber")}}：</text>
+      <input class="order-flex-1" placeholder='{{i18n.$t(localePack,"page1.afterSale.pfillWaybillNum")}}' bindblur="shippingNoBlur" value="{{shippingNo}}" maxlength="15"></input>
     </view>
     <view class="order-info order-flex">
-      <text><text class="order-required">*</text>联系电话：</text>
-      <input class="order-flex-1" placeholder="请填写电话" value="{{phone}}" bindblur="phoneBlur" maxlength="11"></input>
+      <text><text class="order-required">*</text>{{i18n.$t(localePack,"page1.afterSale.contactNumber")}}：</text>
+      <input class="order-flex-1" placeholder="{{i18n.$t(localePack,'page1.afterSale.pfillPhone')}}" value="{{phone}}" bindblur="phoneBlur" maxlength="11"></input>
     </view>
     <view class="order-info">
-      <text class="order-left"><text class="order-place2">*</text>上传凭证：</text>
+      <text class="order-left"><text class="order-place2">*</text>{{i18n.$t(localePack,"page1.afterSale.uploadCertificate")}}：</text>
       <view class="order-upload order-left" wx:for="{{uploadedImg}}" wx:key="index">
         <image class="order-upload-img" src="{{imageUrl + item.imgPath}}" mode="cover" />
         <image src='{{dele_service}}' class="order-upload-delete" bindtap='delImage' data-idx="{{index}}"></image>
@@ -56,7 +57,7 @@
       </view>
     </view>
     <view class="order-footer">
-      <button class='footer-btn' bindtap="submitReturnLogistics" style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>提交退货物流信息</button>
+      <button class='footer-btn' bindtap="submitReturnLogistics" style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>{{i18n.$t(localePack,"page1.afterSale.submitReturnLogisticsInfo")}}</button>
     </view>
   </block>
 </view>
