@@ -11,7 +11,7 @@ package com.vpu.mp.service.pojo.shop.operation;
  * 依次类推)
  * 
  */
-public enum RemarkScoreTemplate {
+public enum RemarkTemplate {
 	/** 用户输入 */
 	USER_INPUT_MSG(0,null),
 	
@@ -23,7 +23,7 @@ public enum RemarkScoreTemplate {
 	 * 会员卡
 	 */
 	/** 开卡赠送 */
-	CARD_OPEN_SEND(3001,RemarkScoreMessage.MSG_CARD_OPEN_SEND),
+	CARD_OPEN_SEND(3001,RemarkMessage.MSG_CARD_OPEN_SEND),
 	
 	
 	/**
@@ -36,8 +36,8 @@ public enum RemarkScoreTemplate {
 	 * 管理员
 	 */
 	/** 管理员操作 */
-	ADMIN_OPERATION(6001,RemarkScoreMessage.MSG_ADMIN_OPERATION),
-	ADMIN_OPERATION_TEST(6002,RemarkScoreMessage.MSG_ADMIN_OPERATION_TEST);
+	ADMIN_OPERATION(6001,RemarkMessage.MSG_ADMIN_OPERATION),
+	ADMIN_OPERATION_TEST(6002,RemarkMessage.MSG_ADMIN_OPERATION_TEST);
 	
 	
 	/** 返回码 */
@@ -45,13 +45,13 @@ public enum RemarkScoreTemplate {
 	/** 返回信息 */
 	private String message;
 	
-	private RemarkScoreTemplate(int code,String message) {
+	private RemarkTemplate(int code,String message) {
 		this.code = code;
 		this.message = message;
 	}
 	
 	public static String getMessageByCode(Integer code) {
-		for(RemarkScoreTemplate item: RemarkScoreTemplate.values()) {
+		for(RemarkTemplate item: RemarkTemplate.values()) {
 			if(code.equals(item.code)) {
 				return item.message;
 			}

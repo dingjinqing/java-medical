@@ -2,7 +2,7 @@ package com.vpu.mp.service.foundation.util;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.vpu.mp.service.pojo.shop.operation.RemarkScoreTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 
 /**
  * 备注国际化工具
@@ -22,7 +22,7 @@ public class RemarkUtil {
 	public static String remarkI18N(String language,Integer tmpId,String tmpData) {
 		// remark i18n
 		String remark;
-		String msgTmp = RemarkScoreTemplate.getMessageByCode(tmpId);
+		String msgTmp = RemarkTemplate.getMessageByCode(tmpId);
 		if(!StringUtils.isBlank(msgTmp)) {
 			// 系统定义信息
 			if(StringUtils.isBlank(tmpData)) {

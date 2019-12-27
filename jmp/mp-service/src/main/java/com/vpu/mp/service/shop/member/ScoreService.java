@@ -56,7 +56,7 @@ import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.operation.RemarkScoreTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
@@ -133,10 +133,10 @@ public class ScoreService extends ShopBaseService {
 		if (param.getRemarkId() == null) {
 			if(param.getRemarkData()==null || param.getRemarkData().size()==0 ) {
 				// 默认管理员操作
-				param.setRemarkId(RemarkScoreTemplate.ADMIN_OPERATION.code);
+				param.setRemarkId(RemarkTemplate.ADMIN_OPERATION.code);
 			}else {
 				// 用户输入
-				param.setRemarkId(RemarkScoreTemplate.USER_INPUT_MSG.code);
+				param.setRemarkId(RemarkTemplate.USER_INPUT_MSG.code);
 			}
 		}
 		

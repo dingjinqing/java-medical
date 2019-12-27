@@ -4,12 +4,10 @@ package com.vpu.mp.service.pojo.shop.operation;
  * @author 黄壮壮
  * 积分备注内容消息
  */
-public class RemarkScoreMessage {
+public class RemarkMessage {
 	/**
 	 * 订单
 	 */
-	
-	
 	
 	
 	/**
