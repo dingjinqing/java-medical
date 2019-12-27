@@ -1,5 +1,6 @@
 // pages1/returedetail/returndetail.js
 var util = require('../../utils/util.js');
+var i18n = require("../../utils/i18n/i18n.js")
 var app = getApp();
 var imageUrl = app.globalData.imageUrl;
 var totalMicroSecond = 0; // 倒计时总秒数
@@ -24,9 +25,9 @@ global.wxPage({
     returnGoods: [], // 售后商品
     applicationTime: '', // 申请时间
     activityName: '', //商品活动名称
-    return: ['仅退款', '退货退款', '仅退运费', '手动退款', '换货'], // 售后类型
-    reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'], // 退货退款原因
-    reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
+    return: i18n.trans("page1.afterSale.return"), // 售后类型
+    reasone: i18n.trans("page1.afterSale.reasone"), // 退货退款原因
+    reasone_huan: i18n.trans("page1.afterSale.reasone_huan"), // 换货原因
   },
 
   /**
@@ -87,13 +88,13 @@ global.wxPage({
             let type = goodsTypes[i]
             switch (type) {
               case 1:
-                activityName = '拼团'
+                activityName = that.$t('page1.afterSale.activityName[0]')
                 break
               case 3:
-                activityName = '砍价'
+                activityName = that.$t('page1.afterSale.activityName[1]')
                 break
               case 5:
-                activityName = '秒杀'
+                activityName = that.$t('page1.afterSale.activityName[2]')
                 break
               default:
                 activityName = ''
@@ -127,7 +128,7 @@ global.wxPage({
     })
     if (totalMicroSecond <= 0) {
       that.setData({
-        clock: '已经截止'
+        clock: that.$t('page1.afterSale.hasEnded')
       })
       if (timer) {
         clearTimeout(timer)
@@ -142,6 +143,7 @@ global.wxPage({
 
   // 时间格式化输出，如3:25:19 86。每10ms都会调用一次
   dateFormat: function (micro_second) {
+    let that = this
     // 秒数
     var second = Math.floor(micro_second);
     //天数位
@@ -161,7 +163,7 @@ global.wxPage({
     if (sec < 10) {
       sec = "0" + sec;
     }
-    return date + "天" + hr + '时' + min + "分" + sec + "秒";
+    return date + that.$t('page1.afterSale.day') + hr + that.$t('page1.afterSale.hour') + min + that.$t('page1.afterSale.minute') + sec + that.$t('page1.afterSale.second');
   },
 
   // 提交物流
@@ -191,16 +193,16 @@ global.wxPage({
       action: 1,
       returnoperate: 1
     }
-    util.showModal('提示', '您确定要撤销该申请吗？', function () {
+    util.showModal(that.$t('page1.afterSale.prompt'), that.$t('page1.afterSale.isCancelApplication'), function () {
       util.api('/api/wxapp/order/refund', function (res) {
         if (res.error === 0) {
           console.log(res.content)
-          util.toast_success('撤销成功')
+          util.toast_success(that.$t('page1.afterSale.successfulRevocation'))
         } else {
-          util.toast_fail('撤销失败')
+          util.toast_fail(that.$t('page1.afterSale.undoFailed'))
         }
       }, params)
-    }, true, '取消', '确定')
+    }, true, that.$t('page1.afterSale.cancel'), that.$t('page1.afterSale.determine'))
   },
 
   // 创建售后申请
