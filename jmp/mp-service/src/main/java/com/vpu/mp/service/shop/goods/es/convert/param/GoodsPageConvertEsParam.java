@@ -43,7 +43,7 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         if( null != shopId ){
             propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,shopId));
         }
-        if( param.getIsSaleOut() ){
+        if( param.getIsSaleOut() != null && param.getIsSaleOut() ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER,0, Operator.EQ));
         }else{
             propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER,0, Operator.GT));
