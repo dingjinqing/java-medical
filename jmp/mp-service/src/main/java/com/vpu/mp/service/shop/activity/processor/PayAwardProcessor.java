@@ -284,7 +284,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
      * @throws MpException
      */
     @Override
-    public void processStockAndSales(OrderBeforeParam param) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 
     }
 }

@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.JoinGroupListInfo;
 import com.vpu.mp.service.shop.goods.GoodsSpecService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
@@ -49,7 +50,6 @@ import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STAT
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 
 /**
  * @author 孔德成
@@ -259,7 +259,7 @@ public class GroupBuyListService extends ShopBaseService {
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_STATUS_END).build();
             }
             Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
-                    .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_WAIT_PAY, STATUS_SUCCESS)).fetchOneInto(Integer.class);
+                    .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_SUCCESS)).fetchOneInto(Integer.class);
             if (joinFlag>0){
                 logger().debug("你已参加过该团[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
@@ -293,7 +293,7 @@ public class GroupBuyListService extends ShopBaseService {
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
             }
             Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
-                    .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_WAIT_PAY, STATUS_SUCCESS)).fetchOneInto(Integer.class);
+                    .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_SUCCESS)).fetchOneInto(Integer.class);
             if (joinFlag>0){
                 logger().debug("你已参加过该团[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
@@ -322,7 +322,7 @@ public class GroupBuyListService extends ShopBaseService {
      * @param groupId 拼团id
      * @return
      */
-    public List<GroupBuyUserInfo> getPinUserList(Integer groupId){
+    public List<GroupBuyUserInfo> getGroupUserList(Integer groupId){
 
         List<GroupBuyUserInfo> groupBuyUserInfos = db().select(GROUP_BUY_LIST.STATUS,GROUP_BUY_LIST.USER_ID, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
                 .from(GROUP_BUY_LIST)
@@ -333,13 +333,18 @@ public class GroupBuyListService extends ShopBaseService {
                 .fetchInto(GroupBuyUserInfo.class);
         return groupBuyUserInfos;
     }
-
-
     /**
-     * 订单详情
+     * 拼团用户信息
+     * @param groupId 拼团id
+     * @return
      */
-    public List<GroupBuyUserInfo>  getGroupBuyDetails(String orderSn){
-        GroupOrderVo groupOrder = getByOrder(orderSn);
-        return getPinUserList(groupOrder.getGroupId());
+    public List<JoinGroupListInfo> getGroupList(Integer groupId){
+        return db().select(GROUP_BUY_LIST.ORDER_SN,GROUP_BUY_LIST.STATUS,GROUP_BUY_LIST.USER_ID, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
+                .from(GROUP_BUY_LIST)
+                .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(GROUP_BUY_LIST.USER_ID))
+                .where(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS, STATUS_DEFAULT_SUCCESS, STATUS_ONGOING))
+                .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
+                .orderBy(GROUP_BUY_LIST.IS_GROUPER.desc(), GROUP_BUY_LIST.CREATE_TIME.desc())
+                .fetchInto(JoinGroupListInfo.class);
     }
 }

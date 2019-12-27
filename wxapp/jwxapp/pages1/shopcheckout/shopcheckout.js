@@ -393,7 +393,7 @@ global.wxPage({
 
   // 支付
   toConfirm: function (e) {
-    let _this = this
+    let that = this
     if (this.data.orderInfo.shopBusinessState == 0) {
       util.showModal('提示', '该店铺未营业，随便逛逛', function () {
         util.reLaunch({
@@ -439,31 +439,31 @@ global.wxPage({
               'success': function (res) {
                 util.toast_success('支付成功');
                 util.redirectTo({
-                  url: '/pages/shoppayInfo/shoppayInfo?order_sn=' + order_sn,
+                  url: '/pages1/shoporderinfo/shoporderinfo?order_sn=' + order_sn,
                 })
               },
               'fail': function (res) {
                 let discount_block = 0;
-                _this.setData({
+                that.setData({
                   discount_block: discount_block
                 })
                 util.toast_fail('支付失败');
-                _this.initOrderInfo()
+                that.initOrderInfo()
               }
             });
           } else {
             let discount_block = 0;
-            _this.setData({
+            that.setData({
               discount_block: discount_block
             })
             util.toast_fail('支付失败');
-            _this.initOrderInfo()
+            that.initOrderInfo()
           }
         } else {
           var order_sn = res.content.orderSn;
           util.toast_success('支付成功');
           util.redirectTo({
-            url: '/pages/shoppayInfo/shoppayInfo?order_sn=' + order_sn,
+            url: '/pages1/shoporderinfo/shoporderinfo?order_sn=' + order_sn,
           })
         }
       } else {
