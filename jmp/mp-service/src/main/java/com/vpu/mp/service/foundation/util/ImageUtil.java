@@ -147,7 +147,6 @@ public final class ImageUtil {
 					os.close();
 				} catch (IOException e) {
 					log.error(e.getMessage(), e);
-					return null;
 				}
 			}
 		}

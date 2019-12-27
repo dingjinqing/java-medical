@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoParam;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoVo;
+import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,11 +53,11 @@ public class WxAppGroupBuyController extends WxAppBaseController {
      * 获取分享图片
      * @return
      */
-    @PostMapping("/api/wxapp/groupbuy/share/image")
-    public JsonResult getShareImage(@RequestBody @Valid GroupBuyInfoParam param){
+    @PostMapping("/api/wxapp/groupbuy/share/info")
+    public JsonResult getShareImage(@RequestBody GroupBuyShareInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        //TODO:
-        return success();
+        param.setUserId(user.getUserId());
+        return success(shop().pictorialService.getGroupBuyShareInfo(param));
     }
 
     /**

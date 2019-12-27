@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.DEFAULT_LANGUAGE;
+
 /**
  * @author 王兵兵
  *
@@ -71,6 +73,12 @@ public class WxAppStoreController extends WxAppBaseController{
     @PostMapping("/pay/orderDetail")
     public JsonResult payOrderDetail(@RequestBody @Valid OrderParam order) {
         StoreOrderInfoVo result = shop().readOrder.getStoreOrder(order.getOrderSn());
+        String language = getLang();
+        if (!DEFAULT_LANGUAGE.equals(language)) {
+            result.setProvinceCode(saas.region.province.getProvincePinYinByCode(result.getProvinceCode()));
+            result.setCityCode(saas.region.province.getCityPinYinByCode(result.getCityCode()));
+            result.setDistrictCode(saas.region.province.getDistrictPinYinByCode(result.getDistrictCode()));
+        }
         return success(result);
     }
 

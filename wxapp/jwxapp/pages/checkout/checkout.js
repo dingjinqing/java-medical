@@ -348,6 +348,9 @@ global.wxPage({
       })
       return
     }
+    goods = goods.filter((item) => {
+     return item.isGift !== 1
+    })
     let params = {
       goods,
       action: 10,

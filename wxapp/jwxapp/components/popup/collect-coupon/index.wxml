@@ -1,0 +1,40 @@
+<v-popup show="{{show}}" bind:close="bindClose">
+  <!-- 收藏有礼优惠券 -->
+  <block wx:if="{{(collect_score != '' && collect_score > 0) || (collect_coupons.length > 0 && collect_coupons != null)}}">
+  <view class='collect_coupon'>
+    <view class='collect_coupon_detail' style='background:#fc726a url({{imageUrl}}image/wxapp/two_bg.png) no-repeat;background-size:100%;'>
+      <view class="collect_tip">收藏成功</view>
+      <view wx:if="{{collect_score != '' && collect_score > 0}}">
+        <view class='collect_score_tip'>积分奖励</view>
+        <view class='collect_score_info'>{{collect_score}}积分</view>
+      </view>
+      <view wx:if="{{collect_coupons.length > 0 && collect_coupons != null}}">
+        <view class='collect_score_tip'>优惠券奖励</view>
+        <view class='price_cou2 clearfix' style="{{collect_coupons.length > 2 ? 'max-height:420rpx;' : ''}}overflow-y:auto;">
+          <view class='each_tow' wx:for="{{collect_coupons}}" wx:key="index">
+            <view class='et_left' wx:if='{{item.actCode == "voucher"}}' style='font-size:{{item.fontsize2}}rpx'>￥
+              <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>
+            </view>
+            <view class='et_left' wx:if='{{item.actCode == "discount"}}' style='font-size:{{item.fontsize2}}rpx'>
+              <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折
+            </view>
+            <!-- <view class='et_right'>{{item.rule}}</view> -->
+            <view class='et_right' wx:if='{{item.useConsumeRestrict == 0}}'>无门槛</view>
+            <view class='et_right' wx:if='{{item.useConsumeRestrict != 0}}'>满{{item.leastConsume}}可用</view>
+          </view>
+        </view>
+      </view>
+      <view class='collect_score_tip' wx:if="{{(collect_coupons.length > 0 && collect_coupons != null) || (collect_score != '' && collect_score > 0) }}">奖励已放入个人中心</view>
+      <view class="collect_coupon_button" bindtap='bindClose'>知道了</view>
+    </view>
+  </view>
+  </block>
+  <block wx:else>
+    <view class="no_gift">
+      <image src='{{imageUrl}}/image/wxapp/promote_icon6.png' mode='widthFix'></image>
+      <view>奖励送光啦!</view>
+      <view>感谢您对本店铺的关注</view>
+      <view class="no_gift_button" bindtap='bindClose'>知道了</view>
+    </view>
+  </block>
+</v-popup>

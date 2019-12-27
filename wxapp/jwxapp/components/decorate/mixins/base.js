@@ -8,7 +8,7 @@ var base = {
     module: {
       type: Object,
       value: {},
-      observer(newVal, oldVal, changedPath) {
+      observer (newVal, oldVal, changedPath) {
         if (typeof this.onPropChange == 'function') {
           if (newVal) this.onPropChange(newVal, oldVal, changedPath);
         }
@@ -31,7 +31,7 @@ var base = {
 
   },
   methods: {
-    $set(data, cb) {
+    $set (data, cb) {
       if (data) {
         data.m = data.m || this.data.m;
         this.setData(data, cb)
@@ -42,7 +42,7 @@ var base = {
       }
     },
     // 处理商品活动
-    handleToGoodsActivities(goodsData) {
+    handleToGoodsActivities (goodsData) {
       console.log(goodsData)
       // 处理商品图片底部出现的活动条
       goodsData.forEach((item, index) => {
@@ -64,7 +64,9 @@ var base = {
               break
             case 1:
               item.assemble = true
+              item.groupDiscount = itemC.discountPrice
           }
+
           // 处理价格上方显示的label条
           this.handleToActivitiesLabel(item, itemC, arr)
         })
@@ -87,7 +89,7 @@ var base = {
       console.log(goodsData)
     },
     // 处理价格上方显示的label条
-    handleToActivitiesLabel(item, itemC, arr) {
+    handleToActivitiesLabel (item, itemC, arr) {
       let obj = {}
       switch (itemC.activityType) {
         case 1:

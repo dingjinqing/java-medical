@@ -1,7 +1,7 @@
 <slot></slot>
 <view class="goods-info">
   <view class="goods-info_top">
-    <view class="goods_name">
+    <view class="goods_name" data-typs="give_gift" bindtap="getNeedTemplateId">
     {{goodsInfo.goodsName}}
     </view>
     <view class="goods_operate">
