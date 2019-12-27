@@ -522,9 +522,9 @@ public class GroupBuyService extends ShopBaseService {
         BigDecimal maxPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().max(BigDecimal::compareTo).get();
         BigDecimal minPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().min(BigDecimal::compareTo).get();
         long dateDiff = date.getTime() - createTime.getTime();
-        long hour = 24 - (dateDiff / (60 * 60 * 1000));
-        long min = 60 - dateDiff % (60 * 60 * 1000) / (60 * 1000);
-        long s = 60 - dateDiff % (60 * 60 * 1000) % (60 * 1000) / 1000;
+        long hour = 23 - (dateDiff / (60 * 60 * 1000));
+        long min = 59 - (dateDiff % (60 * 60 * 1000)) / (60 * 1000);
+        long s = 59 - ((dateDiff % (60 * 60 * 1000)) % (60 * 1000)) / 1000;
 
         GroupBuyInfoVo groupBuyInfo = new GroupBuyInfoVo();
         goodsRecord.setGroupBuygoodsNum(groupBuyStock);
