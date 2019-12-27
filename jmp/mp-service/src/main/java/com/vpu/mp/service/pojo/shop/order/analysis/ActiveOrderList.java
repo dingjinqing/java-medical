@@ -15,4 +15,6 @@ public class ActiveOrderList {
 
     List<OrderActivityUserNum> oldUserNum;
     List<OrderActivityUserNum> newUserNum;
+    private Integer oldUser;
+    private Integer newUser;
 }

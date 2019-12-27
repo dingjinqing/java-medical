@@ -360,6 +360,7 @@ public class GroupBuyService extends ShopBaseService {
         ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(OrderConstant.GOODS_TYPE_PIN_GROUP, param.getId(), startDate, endDate);
 
         while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+            String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate);
             //活动实付金额
             ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
             if (discountMoney == null) {
@@ -377,24 +378,24 @@ public class GroupBuyService extends ShopBaseService {
                     marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
             }
             //新用户数
-            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), startDate);
+            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), dateFormat);
             if (newUser == null) {
                 analysisVo.getNewUserList().add(0);
             } else {
                 analysisVo.getNewUserList().add(newUser.getNum());
-                analysisVo.setTotalNewUser(analysisVo.getTotalNewUser() + newUser.getNum());
             }
             //老用户数
-            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), startDate);
+            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), dateFormat);
             if (oldUser == null) {
                 analysisVo.getOldUserList().add(0);
             } else {
                 analysisVo.getOldUserList().add(oldUser.getNum());
-                analysisVo.setTotalOldUser(analysisVo.getTotalOldUser() + oldUser.getNum());
             }
-            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
+            analysisVo.getDateList().add(dateFormat);
             startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
+        analysisVo.setTotalNewUser(activeOrderList.getNewUser());
+        analysisVo.setTotalOldUser(activeOrderList.getOldUser());
         BigDecimal divide = analysisVo.getTotalMarketPrice().divide(analysisVo.getTotalPrice(), 4);
         analysisVo.setTotalRatio(divide);
         return analysisVo;
@@ -468,12 +469,12 @@ public class GroupBuyService extends ShopBaseService {
      * 活动用户数量
      *
      * @param list
-     * @param timestamp
+     * @param dateFormat
      * @return
      */
-    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
+    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, String dateFormat) {
         for (OrderActivityUserNum activityUserNum : list) {
-            if (activityUserNum != null && timestamp.equals(activityUserNum.getDate())) {
+            if (activityUserNum != null && dateFormat.equals(activityUserNum.getDate())) {
                 return activityUserNum;
             }
         }
