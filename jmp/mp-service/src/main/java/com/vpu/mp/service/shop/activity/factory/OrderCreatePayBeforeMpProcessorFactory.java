@@ -120,18 +120,18 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      * @param param
      * @throws MpException
      */
-    public void processStockAndSales(OrderBeforeParam param) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
         if (param.getActivityId()!=null){
             //单一营销
-            processorMap.get(param.getActivityType()).processStockAndSales(param);
+            processorMap.get(param.getActivityType()).processStockAndSales(param, order);
         }else {
             for (CreateOrderProcessor processor : processorGeneralList) {
-                processor.processStockAndSales(param);
+                processor.processStockAndSales(param, order);
             }
         }
         for (CreateOrderProcessor processor : processorGlobalList) {
             //全局活动
-            processor.processStockAndSales(param);
+            processor.processStockAndSales(param, order);
         }
     }
 }
