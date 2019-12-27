@@ -17,17 +17,8 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyEditParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyAnalysisVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyShareConfigVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
@@ -35,24 +26,15 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyDefineInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyGoodsInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoVo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyStatusInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.image.postertraits.GroupBuyPictorialService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record3;
-import org.jooq.Result;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -65,9 +47,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 
@@ -101,8 +81,6 @@ public class GroupBuyService extends ShopBaseService {
     private GoodsSpecProductService goodsSpecProductService;
     @Autowired
     private QrCodeService qrCode;
-    @Autowired
-    private GroupBuyPictorialService groupBuyPictorialService;
 
     /**
      * 添加拼团活动
@@ -547,10 +525,6 @@ public class GroupBuyService extends ShopBaseService {
         return groupBuyInfo;
     }
 
-    public String getGroupBuyShareBase64Pictorial(Integer userId, Integer groupId) {
-        return groupBuyPictorialService.getGroupBuyShareBase64Pictorial(userId, groupId);
-    }
-
     /**
      * 根据拼团id获取拼团活动详情
      * @param activityId 拼团活动id
@@ -602,10 +576,5 @@ public class GroupBuyService extends ShopBaseService {
         }
 
         return BaseConstant.ACTIVITY_STATUS_CAN_USE;
-    }
-
-    public Object getGroupBuyShareImage(Integer userId, Integer groupId) {
-
-        return null;
     }
 }
