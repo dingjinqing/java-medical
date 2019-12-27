@@ -16,9 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,7 +51,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 	 *	返回开关配置状态，默认为关
 	 * @return param 收藏有礼配置信息(object)
 	 */
-	public CollectGiftParam collectGiftConfig() {
+	public CollectGiftParam collectGiftConfig(){
 		CollectGiftParam param = this.getJsonObject(K_COLLECT_GIFT,CollectGiftParam.class);
 		if (param == null) {
 			param = new CollectGiftParam();
@@ -56,7 +59,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 		}
 		return param;
 	}
-	
+
 	/**
 	 *	开关控制
 	 */
@@ -84,6 +87,31 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 	public void updateCollectGiftConfig(CollectGiftParam param) {
 		this.setJsonObject(K_COLLECT_GIFT, param);
 	}
+
+    /**
+     *小程序端收藏有礼是否有效
+     * @param userId
+     * @return
+     */
+    public CollectGiftParam collectGiftConfig(Integer userId) {
+        //收藏有礼开关是否开启
+        CollectGiftParam param = this.getJsonObject(K_COLLECT_GIFT,CollectGiftParam.class);
+        if (param == null) {
+            param = new CollectGiftParam();
+            this.setJsonObject(K_COLLECT_GIFT, param);
+        }
+        //判断活动是否生效
+        Timestamp nowDate = new Timestamp(System.currentTimeMillis());
+        if(!(param.getStartTime().before(nowDate) && nowDate.before(param.getEndTime()))){
+            param.setOnOff(0);
+        }
+        //判断当前用户是否第一次参与收藏有礼活动
+        Integer into = db().select(USER.GET_COLLECT_GIFT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
+        if(into == 1){//已参与，不展示支付有礼图标
+            param.setOnOff(0);
+        }
+        return param;
+    }
 
 	public String setRewards(Integer userId){
 	    //收藏有礼对应活动规则
@@ -115,7 +143,6 @@ public class CollectGiftConfigService extends BaseShopConfigService{
                 mpGetCouponParam param = new mpGetCouponParam();
                 param.setCouponId(id);
                 CouponListVo couponData = mpCoupon.getCouponData(param);
-                System.out.println(1111123);
                 //通过alias_code查看优惠券是否存在
                 if (StringUtils.isEmpty(couponData)) {
                     return "领取失败";
@@ -132,7 +159,6 @@ public class CollectGiftConfigService extends BaseShopConfigService{
                 if (couponData.getLimitSurplusFlag() == 0 && couponData.getSurplus() <= 0) {
                     return "优惠券库存不足";
                 }
-                System.out.println(11111233);
                 CouponGiveQueueParam couponParam = new CouponGiveQueueParam();
                 List<Integer> userIds = new ArrayList();
                 String[] couponArray = {couponData.getId().toString()};
@@ -144,9 +170,8 @@ public class CollectGiftConfigService extends BaseShopConfigService{
                 couponParam.setGetSource((byte) 5);
                 coupon.couponGiveService.handlerCouponGive(couponParam);
             }
-            return "123";
-        }else{
-            return "234";
+            db().update(USER).set(USER.GET_COLLECT_GIFT,(byte)1).where(USER.USER_ID.eq(userId)).execute();
         }
+        return "成功";
     }
 }

@@ -465,6 +465,9 @@ export default {
         isOnSale: 1,
         isSaleOut: false
       }
+      this.$refs['catTree'].clearData()
+      this.$refs['sortTree'].clearData()
+      this.selectGoodsData()
     },
     // 取消
     cancleBtnHandle () {

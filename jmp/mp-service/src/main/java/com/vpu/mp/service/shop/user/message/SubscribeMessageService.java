@@ -40,6 +40,12 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
  */
 @Service
 public class SubscribeMessageService extends ShopBaseService {
+	private static final byte ZERO = 0;
+	private static final byte ONE = 1;
+	private static final byte TWO = 2;
+	private static final byte THREE = 3;
+	private static final byte FOUR = 4;
+	private static final byte FIVE = 5;
 
 	@Autowired
 	protected OpenPlatform open;
@@ -288,7 +294,7 @@ public class SubscribeMessageService extends ShopBaseService {
 					UserRecord user = userService.getUserByUserId(userId);
 					insertRecord.setWxOpenid(user.getWxOpenid());
 					insertRecord.setTemplateId(success.getTemplateId());
-					insertRecord.setTemplateNo(String.valueOf(success.getId()));
+					insertRecord.setTemplateNo(String.valueOf(successConfig.getTid()));
 					insertRecord.setCanUseNum(1);
 					int insert = insertRecord.insert();
 					logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);		
@@ -310,7 +316,18 @@ public class SubscribeMessageService extends ShopBaseService {
 								.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(rejectConfig.getTid()))))
 						.fetchAny();
 				if(rejrecord!=null) {
-					rejrecord.setStatus((byte)1);
+					if(rejrecord.getStatus().equals(ONE)) {
+						Integer canUseNum = rejrecord.getCanUseNum();
+						logger().info("可用数量"+canUseNum);
+						if(canUseNum>0) {
+							canUseNum=canUseNum-1;
+							rejrecord.setCanUseNum(canUseNum);
+							if(canUseNum==0) {
+								logger().info("可用次数为0，状态变更为取消");
+								rejrecord.setStatus((byte)0);								
+							}
+						}
+					}
 					int update = rejrecord.update();
 					logger().info("拒绝的templateId："+reject.getTemplateId()+"更新结果"+update);	
 				}

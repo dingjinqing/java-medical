@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods.es;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParamBuilder;
 import com.vpu.mp.service.foundation.jedis.data.SortDataHelper;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.aggregations.Aggregation;
@@ -151,17 +153,22 @@ public class EsFactSearchService extends EsBaseSearchService{
         Map<Integer,Integer> sortMap = assemblySortFactDataToMap(aggregations);
         List<Integer> sortIds = new ArrayList<>(sortMap.keySet());
         //TODO 暂时先走数据库,后期做改造走缓存
-        List<GoodsSortCacheInfo> result = sortDataHelper.get(sortIds);
-        List<GoodsSortSelectTreeVo> retList = new ArrayList<>(result.size());
-        result.forEach(x->{
-            GoodsSortSelectTreeVo vo =new GoodsSortSelectTreeVo();
-            vo.setSortId(x.getSortId());
-            vo.setSortName(x.getSortName());
-            vo.setParentId(x.getParentId());
-            vo.setLevel(x.getLevel().byteValue());
-            vo.setHasChild(x.getParentId().equals(0)?(byte)1:(byte)0);
-            vo.setGoodsSumNum(sortMap.get(x.getSortId()));
-        });
+        Map<Short,List<GoodsSortCacheInfo>> resultMap = sortDataHelper.getAndGroup(sortIds);
+        List<GoodsSortSelectTreeVo> retList = Lists.newArrayList();
+        for(Map.Entry<Short,List<GoodsSortCacheInfo>> entry: resultMap.entrySet()){
+            if(CollectionUtils.isEmpty(entry.getValue())){
+                entry.getValue().forEach(x->{
+                    GoodsSortSelectTreeVo vo =new GoodsSortSelectTreeVo();
+                    vo.setSortId(x.getSortId());
+                    vo.setSortName(x.getSortName());
+                    vo.setParentId(x.getParentId());
+                    vo.setLevel(x.getLevel().byteValue());
+                    vo.setHasChild(x.getParentId().equals(0)?(byte)1:(byte)0);
+                    vo.setGoodsSumNum(sortMap.getOrDefault(x.getSortId(),0));
+                    retList.add(vo);
+                });
+            }
+        }
         return retList;
     }
     private EsSearchParam getFactSearchParamByAdminGoodsListInit(GoodsPageListParam param, Integer shopId){

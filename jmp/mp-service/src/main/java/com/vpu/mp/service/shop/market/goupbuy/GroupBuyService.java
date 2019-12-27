@@ -17,17 +17,8 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyEditParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyAnalysisVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyShareConfigVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
@@ -35,24 +26,15 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyDefineInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyGoodsInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoVo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyStatusInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.image.postertraits.GroupBuyPictorialService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record3;
-import org.jooq.Result;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -65,9 +47,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 
@@ -101,8 +81,6 @@ public class GroupBuyService extends ShopBaseService {
     private GoodsSpecProductService goodsSpecProductService;
     @Autowired
     private QrCodeService qrCode;
-    @Autowired
-    private GroupBuyPictorialService groupBuyPictorialService;
 
     /**
      * 添加拼团活动
@@ -360,6 +338,7 @@ public class GroupBuyService extends ShopBaseService {
         ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(OrderConstant.GOODS_TYPE_PIN_GROUP, param.getId(), startDate, endDate);
 
         while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+            String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate);
             //活动实付金额
             ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
             if (discountMoney == null) {
@@ -377,24 +356,24 @@ public class GroupBuyService extends ShopBaseService {
                     marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
             }
             //新用户数
-            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), startDate);
+            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), dateFormat);
             if (newUser == null) {
                 analysisVo.getNewUserList().add(0);
             } else {
                 analysisVo.getNewUserList().add(newUser.getNum());
-                analysisVo.setTotalNewUser(analysisVo.getTotalNewUser() + newUser.getNum());
             }
             //老用户数
-            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), startDate);
+            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), dateFormat);
             if (oldUser == null) {
                 analysisVo.getOldUserList().add(0);
             } else {
                 analysisVo.getOldUserList().add(oldUser.getNum());
-                analysisVo.setTotalOldUser(analysisVo.getTotalOldUser() + oldUser.getNum());
             }
-            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
+            analysisVo.getDateList().add(dateFormat);
             startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
+        analysisVo.setTotalNewUser(activeOrderList.getNewUser());
+        analysisVo.setTotalOldUser(activeOrderList.getOldUser());
         BigDecimal divide = analysisVo.getTotalMarketPrice().divide(analysisVo.getTotalPrice(), 4);
         analysisVo.setTotalRatio(divide);
         return analysisVo;
@@ -468,12 +447,12 @@ public class GroupBuyService extends ShopBaseService {
      * 活动用户数量
      *
      * @param list
-     * @param timestamp
+     * @param dateFormat
      * @return
      */
-    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
+    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, String dateFormat) {
         for (OrderActivityUserNum activityUserNum : list) {
-            if (activityUserNum != null && timestamp.equals(activityUserNum.getDate())) {
+            if (activityUserNum != null && dateFormat.equals(activityUserNum.getDate())) {
                 return activityUserNum;
             }
         }
@@ -522,9 +501,9 @@ public class GroupBuyService extends ShopBaseService {
         BigDecimal maxPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().max(BigDecimal::compareTo).get();
         BigDecimal minPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().min(BigDecimal::compareTo).get();
         long dateDiff = date.getTime() - createTime.getTime();
-        long hour = 24 - (dateDiff / (60 * 60 * 1000));
-        long min = 60 - dateDiff % (60 * 60 * 1000) / (60 * 1000);
-        long s = 60 - dateDiff % (60 * 60 * 1000) % (60 * 1000) / 1000;
+        long hour = 23 - (dateDiff / (60 * 60 * 1000));
+        long min = 59 - (dateDiff % (60 * 60 * 1000)) / (60 * 1000);
+        long s = 59 - ((dateDiff % (60 * 60 * 1000)) % (60 * 1000)) / 1000;
 
         GroupBuyInfoVo groupBuyInfo = new GroupBuyInfoVo();
         goodsRecord.setGroupBuygoodsNum(groupBuyStock);
@@ -544,10 +523,6 @@ public class GroupBuyService extends ShopBaseService {
         groupBuyInfo.setBindMobile(bindMobile);
         groupBuyInfo.setNewUser(newUser);
         return groupBuyInfo;
-    }
-
-    public String getGroupBuyShareBase64Pictorial(Integer userId, Integer groupId) {
-        return groupBuyPictorialService.getGroupBuyShareBase64Pictorial(userId, groupId);
     }
 
     /**
@@ -601,10 +576,5 @@ public class GroupBuyService extends ShopBaseService {
         }
 
         return BaseConstant.ACTIVITY_STATUS_CAN_USE;
-    }
-
-    public Object getGroupBuyShareImage(Integer userId, Integer groupId) {
-
-        return null;
     }
 }
