@@ -47,7 +47,8 @@ export default {
     },
     toolbar: {
       type: [String, Array],
-      default: ' forecolor | fontsizeselect |　undo redo　| bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image media table | removeformat'
+      // eslint-disable-next-line no-useless-escape
+      default: ' forecolor | fontsizeselect |　undo redo　| bold italic | alignleft aligncenter alignright alignjustify | \ bullist numlist outdent indent | lists image media table | removeformat'
     },
     height: {
       type: Number,
@@ -71,6 +72,7 @@ export default {
         toolbar: this.toolbar,
         branding: false,
         menubar: false,
+        toolbar_drawer: false,
         // 此处为图片上传处理函数，这个直接用了base64的图片形式上传图片，
         // 如需ajax上传可参考https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_handler
         images_upload_handler: (blobInfo, success, failure) => {
