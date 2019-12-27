@@ -20,7 +20,8 @@ public class WxAppCollectGiftConfigController extends WxAppBaseController {
      */
     @GetMapping("/api/wxapp/collectGift/switch")
     public JsonResult getSwitchStatus(){
-        CollectGiftParam res = shop().config.collectGiftConfigService.collectGiftConfig();
+        Integer userId = wxAppAuth.user().getUserId();
+        CollectGiftParam res = shop().config.collectGiftConfigService.collectGiftConfig(userId);
         return this.success(res);
     }
 
