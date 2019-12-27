@@ -119,6 +119,16 @@ public class GroupBuyService extends ShopBaseService {
     }
 
     /**
+     * 根据活动Id获取活动定义信息
+     * @param activityId 活动id
+     * @return 活动信息，可以为null
+     */
+    public GroupBuyDefineRecord getGroupBuyRecordNullable(Integer activityId) {
+        return db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(activityId).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
+            .fetchAny();
+    }
+
+    /**
      * 根据id 获取活动record
      *
      * @param id
