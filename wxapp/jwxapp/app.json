@@ -29,8 +29,6 @@
     "pages/storeinfo/storeinfo",
     "pages/checkout/checkout",
     "pages/servicecomment/servicecomment",
-    "components/decorate/shop_announce/index",
-    "components/decorate/bargain/index",
     "pages/cardrecord/cardrecord"
   ],
   "window": {
