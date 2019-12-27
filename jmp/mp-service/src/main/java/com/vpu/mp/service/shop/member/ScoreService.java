@@ -44,6 +44,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RemarkUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -82,8 +83,6 @@ public class ScoreService extends ShopBaseService {
 	public ScoreCfgService scoreCfgService;
 	@Autowired
 	public MemberService member;	
-	
-	final static String LANGUAGE_TYPE="remark";
 	/**
 	 *   创建用户积分表,增加，消耗用户积分
 	 * @param param 积分变动相关数据
@@ -417,7 +416,7 @@ public class ScoreService extends ShopBaseService {
 		for(ScorePageInfo scoreItem: resultBefore.dataList) {
 			ScorePageListVo scoreVo = new ScorePageListVo();
 			BeanUtils.copyProperties(scoreItem, scoreVo);
-			String remark = remarkI18N(language, scoreItem.getRemarkId(),scoreItem.getRemarkData());
+			String remark = RemarkUtil.remarkI18N(language, scoreItem.getRemarkId(),scoreItem.getRemarkData());
 			scoreVo.setRemark(remark);
 			dataList.add(scoreVo);
 		}
@@ -426,32 +425,7 @@ public class ScoreService extends ShopBaseService {
 		return resultAfter;
 	}
 	
-	/**
-	 * 处理备注国际化
-	 * @param language 语言
-	 * @param tmpId	模板Id
-	 * @param tmpData 模板数据
-	 * @return String remark 国际化的备注
-	 */
-	public String remarkI18N(String language,Integer tmpId,String tmpData) {
-		// remark i18n
-		String remark;
-		String msgTmp = RemarkScoreTemplate.getMessageByCode(tmpId);
-		if(!StringUtils.isBlank(msgTmp)) {
-			// 系统定义信息
-			if(StringUtils.isBlank(tmpData)) {
-				// 直接翻译
-				remark = Util.translateMessage(language, msgTmp, LANGUAGE_TYPE);
-			}else {
-				// 需要数据进行翻译
-				remark = Util.translateMessage(language, msgTmp, LANGUAGE_TYPE, (Object[])tmpData.split(","));
-			}
-		}else {
-			// 来自用户输入的数据，不进行翻译
-			remark = tmpData;
-		}
-		return remark;
-	}
+	
 
 
 	/**
