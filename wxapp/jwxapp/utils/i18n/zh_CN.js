@@ -2,6 +2,8 @@ var navigation = require("./components/navigation.js")
 var order = require("./pages/order.js")
 var checkout = require("./pages/checkout.js")
 var comment = require('./page1/commentCn.js')
+var afterSale = require('./page1/afterSale.js') // 售后中心
+var fight = require('./page1/fight.js')
 var decorate = require('./components/decorate/decorate.js')
 var zh_CN = {
   "common": {
@@ -82,7 +84,9 @@ var zh_CN = {
     "checkout": checkout
   },
   "page1": {
-    "comment": comment
+    "comment": comment,
+    "afterSale": afterSale,
+    "fight": fight
   },
   "page2": {
 

@@ -13,6 +13,8 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.SelectHavingStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -27,7 +29,11 @@ import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
+import static org.jooq.impl.DSL.min;
+import static org.jooq.impl.DSL.sum;
+import static org.jooq.impl.DSL.when;
 
 /**
  * @author: 王兵兵
@@ -56,13 +62,16 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .groupBy(ORDER_INFO.USER_ID)
             .fetch(ORDER_INFO.USER_ID);
         //查新用户活动前下过订单——老用户
-        List<Integer> oldUserIdList= db().select(ORDER_INFO.USER_ID)
-            .from(ORDER_INFO)
-            .where(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
-            .and(ORDER_INFO.CREATE_TIME.lt(startTime))
-            .and(ORDER_INFO.USER_ID.in(userIdList))
-            .orderBy(ORDER_INFO.CREATE_TIME.asc())
-            .fetch(ORDER_INFO.USER_ID);
+        SelectHavingStep<Record2<Integer, Timestamp>> record2s = db().select(ORDER_INFO.USER_ID, min(ORDER_INFO.CREATE_TIME).as("time"))
+                .from(ORDER_INFO)
+                .where(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
+                .and(ORDER_INFO.USER_ID.in(userIdList))
+                .and(ORDER_INFO.ACTIVITY_ID.eq(activityId))
+                .groupBy(ORDER_INFO.USER_ID);
+        List<Integer> oldUserIdList  = db().selectDistinct(ORDER_INFO.USER_ID).from(ORDER_INFO)
+                .leftJoin(record2s).on(record2s.field(ORDER_INFO.USER_ID).eq(ORDER_INFO.USER_ID))
+                .where(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
+                .and(ORDER_INFO.CREATE_TIME.lt(record2s.field("time",Timestamp.class))).fetchInto(Integer.class);
         // 老用户订单数据
         List<OrderActivityUserNum> oldList= db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME).as("date"),count(ORDER_INFO.CREATE_TIME))
             .from(ORDER_INFO)

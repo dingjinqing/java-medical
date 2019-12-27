@@ -21,8 +21,6 @@
               size="small"
               :controls="false"
               :precision="0"
-              :min="0"
-              :max="999999999"
             >
             </el-input-number>
             <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
@@ -146,6 +144,7 @@
   </div>
 </template>
 <script>
+import { isSixNumberWithTwoDecimal } from '@/util/typeUtil'
 export default {
   props: {
     val: {
@@ -166,6 +165,8 @@ export default {
   watch: {
     'ruleForm.powerScore': {
       handler (newName, oldName) {
+        this.$refs.ruleFormScore.validate((valid) => {})
+        this.$refs.ruleForm.validate((valid) => {})
         this.val.powerScore = newName
         this.ruleForm = this.val
       },
@@ -251,11 +252,14 @@ export default {
         if (this.checkScoreError(value)) {
           callback(new Error('请输入赠送积分'))
         }
+        if (!isSixNumberWithTwoDecimal(value)) {
+          callback(new Error('请输入0-999999999范围的数字'))
+        }
       }
       callback()
     }
     let validateScoreSendFullFix = (rule, value, callback) => {
-      if (this.ruleForm.offSet === '0') {
+      if (this.ruleForm.offSet === '0' && this.ruleForm.powerScore) {
         if (this.checkScoreSendFull()) {
           callback(new Error('请输入积分'))
           this.sendFullErrorFix = true
@@ -269,7 +273,7 @@ export default {
     }
 
     let validateScoreSendEachFix = (rule, value, callback) => {
-      if (this.ruleForm.offSet === '1') {
+      if (this.ruleForm.offSet === '1' && this.ruleForm.powerScore) {
         if (this.checkScoreSendEach()) {
           callback(new Error('请输入积分'))
         } else {
@@ -283,7 +287,7 @@ export default {
     let validateScoreSendEach = (rule, value, callback) => {
       // 校验动态数组
       let index = Number(rule.fullField.split('.')[1])
-      if (value && this.ruleForm.addIntegralArr[index].rightInput) {
+      if (value && this.ruleForm.addIntegralArr[index].rightInput && this.ruleForm.powerScore) {
         callback()
       } else {
         callback(new Error('请输入积分'))
@@ -314,7 +318,6 @@ export default {
       if (val === 0) {
         return false
       }
-      console.log(val, this.isBlank(val))
       return this.isBlank(val)
     },
     isBlank (val) {

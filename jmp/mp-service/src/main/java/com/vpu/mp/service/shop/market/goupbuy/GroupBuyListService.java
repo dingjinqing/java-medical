@@ -26,6 +26,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Record3;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
@@ -273,13 +274,14 @@ public class GroupBuyListService extends ShopBaseService {
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX).build();
             }
         }else {
-            GroupBuyListRecord groupBuyListRecord = db().selectFrom(GROUP_BUY_LIST).where(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
-                    .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchOne();
-            if (groupBuyListRecord.getStatus().equals(STATUS_FAILED)){
+            Result<GroupBuyListRecord> groupBuyList = db().selectFrom(GROUP_BUY_LIST).where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetch();
+            GroupBuyListRecord groupBuyListRecord = groupBuyList.stream().filter(group -> group.getIsGrouper().equals(IS_GROUPER_Y)).findFirst().get();
+            if (STATUS_FAILED.equals(groupBuyListRecord.getStatus())){
                 logger().debug("该团已经取消");
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_STATUS_CANCEL).build();
             }
-            if (groupBuyListRecord.getStatus().equals(STATUS_SUCCESS)){
+            long count1 = groupBuyList.stream().filter(group -> STATUS_SUCCESS.equals(group.getStatus()) || STATUS_DEFAULT_SUCCESS.equals(group.getStatus()) || STATUS_ONGOING.equals(group.getStatus())).count();
+            if (groupBuyRecord.getLimitAmount()<=count1){
                 logger().debug("该团人数已经满了");
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX).build();
             }
@@ -322,7 +324,7 @@ public class GroupBuyListService extends ShopBaseService {
      */
     public List<GroupBuyUserInfo> getPinUserList(Integer groupId){
 
-        List<GroupBuyUserInfo> groupBuyUserInfos = db().select(GROUP_BUY_LIST.USER_ID, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
+        List<GroupBuyUserInfo> groupBuyUserInfos = db().select(GROUP_BUY_LIST.STATUS,GROUP_BUY_LIST.USER_ID, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
                 .from(GROUP_BUY_LIST)
                 .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(GROUP_BUY_LIST.USER_ID))
                 .where(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS, STATUS_DEFAULT_SUCCESS, STATUS_ONGOING))

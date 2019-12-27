@@ -112,6 +112,8 @@ export default {
         return this.val
       },
       set (val) {
+        this.$refs.ruleForm.validate((valid) => {
+        })
         this.$emit('input', this.ruleForm)
       }
     }
@@ -228,7 +230,6 @@ export default {
       return this.$imageHost + '/image/admin/icon_jia.png'
     },
     handleToAddGoods (type) {
-      debugger
       console.log(type, typeof type)
       switch (type) {
         case this.goodsType:

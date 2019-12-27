@@ -6,7 +6,7 @@
       :visible.sync="dialogVisible"
       width="70%"
       :fullscreen='true'
-      :modal-append-to-body='false'
+      :modal-append-to-body="false"
     >
       <div class="body">
         <div class="left_box">
@@ -85,7 +85,10 @@
           <!-- <router-view></router-view> -->
           <!-- 动态组价 -->
           <!-- 组件会在 currentComponent 改变时改变 -->
-          <component v-bind:is="currentComponent"></component>
+          <component
+            @handleToGetDetailData="handleToGetDetailData"
+            v-bind:is="currentComponent"
+          ></component>
         </div>
       </div>
       <span
@@ -146,7 +149,8 @@ export default {
       level_two_show_flag: false,
       threeTofour_flag_1: '',
       threeTofour_flag_2: '',
-      suerPath: ''
+      suerPath: '',
+      linkTitle: ''
     }
   },
   computed: {
@@ -181,6 +185,17 @@ export default {
       console.log(this.suerPath)
       // 把选中的链接回传
       this.$emit('selectLinkPath', this.suerPath)
+      let obj = {
+        title: this.linkTitle,
+        path: this.suerPath
+      }
+      this.$emit('handleToGetData', obj)
+      // 回传路径加页面名称
+    },
+    // 获取详细信息
+    handleToGetDetailData (res) {
+      console.log(res)
+      this.linkTitle = res.title
     },
     handleClose (done) {
       this.dialogVisible = false

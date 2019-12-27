@@ -1393,8 +1393,8 @@ export default {
         retData.goodsSpecProducts = [{
           prdId: this.goodsProductInfo.updateGoodsSpecProduct !== null ? this.goodsProductInfo.updateGoodsSpecProduct.prdId : null,
           tempId: this.goodsSpecProductsIndex++,
-          prdDesc: null,
-          prdSpecs: null,
+          prdDesc: '',
+          prdSpecs: '',
           prdSn: this.goodsProductInfo.prdSn,
           prdNumber: this.goodsProductInfo.prdNumber,
           prdPrice: this.goodsProductInfo.prdPrice,

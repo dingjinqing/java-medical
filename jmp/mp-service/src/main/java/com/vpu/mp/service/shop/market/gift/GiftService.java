@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -65,6 +66,12 @@ public class GiftService extends ShopBaseService {
     public static final GoodsSpecProduct PRODUCT = GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 
     private static final int MAX_RULE_SIZE = 3;
+
+    /**赠送满足赠品条件的所有赠品*/
+    protected static final Byte CONDITION_ALL = 0;
+
+    /**只赠送其中优先级最高的活动赠品*/
+    protected static final Byte CONDITION_PRIORITY = 1;
 
     /**
      * 添加赠品活动
@@ -195,7 +202,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 获取活动赠品
      */
-    private List<ProductVo> getGiftProduct(Integer giftId) {
+    protected List<ProductVo> getGiftProduct(Integer giftId) {
         return db().select(SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
                 PRODUCT.PRD_IMG,PRODUCT.PRD_PRICE,PRODUCT.PRD_DESC,GOODS.GOODS_NAME,GOODS.GOODS_IMG)
             .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC)
@@ -205,6 +212,21 @@ public class GiftService extends ShopBaseService {
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
             .where(SUB_TABLE.GIFT_ID.eq(giftId))
             .fetchInto(ProductVo.class);
+    }
+
+    /**
+     * 获取活动赠品(下单)
+     */
+    protected List<OrderGiftProductVo> getOrderGiftProducts(Integer giftId) {
+        return db().select(SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
+            PRODUCT.PRD_IMG,PRODUCT.PRD_PRICE,PRODUCT.PRD_DESC,GOODS.GOODS_NAME,GOODS.GOODS_IMG)
+            .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC, PRODUCT.PRD_SN)
+            .select(GOODS.GOODS_ID,GOODS.GOODS_SN, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.DELIVER_TEMPLATE_ID, GOODS.SHOP_PRICE, GOODS.GOODS_WEIGHT, GOODS.CAT_ID, GOODS.SORT_ID)
+            .from(SUB_TABLE)
+            .leftJoin(PRODUCT).on(PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
+            .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
+            .where(SUB_TABLE.GIFT_ID.eq(giftId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(SUB_TABLE.PRODUCT_NUMBER.gt(0)))
+            .fetchInto(OrderGiftProductVo.class);
     }
 
    /**
@@ -228,7 +250,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 出参格式转换
      */
-    private void transformVo(GiftVo giftVo) {
+    protected void transformVo(GiftVo giftVo) {
         giftVo.setGoodsIds(stringToList(giftVo.getGoodsId()));
         String rule = giftVo.getRule();
         RuleJson ruleJson = underLineStyleGson().fromJson(rule, RuleJson.class);
