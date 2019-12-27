@@ -1,27 +1,10 @@
 package com.vpu.mp.service.shop.user.message;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant.MSG_TEMP_CONFIG;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.RegexUtil;
-import com.vpu.mp.service.pojo.shop.config.ShopMsgTempConfig;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -34,9 +17,20 @@ import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageSer
 import com.vpu.mp.service.shop.config.ShopMsgTemplateConfigService;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 
 /**
@@ -142,7 +136,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
 			e.printStackTrace();
 			return Boolean.FALSE;
 		}
-    	
+
     	 return Boolean.TRUE;
     }
 
@@ -191,7 +185,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
-    					.build();    			
+                    .build();
     			resultList.add(info);
     		}
     		return resultList;
@@ -204,7 +198,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
-    					.build();    			
+                    .build();
     			resultList.add(info);
     		}
     		return resultList;
@@ -240,20 +234,5 @@ public class WechatMessageTemplateService extends ShopBaseService {
             return resultList;
         }
         return resultList;
-    }
-
-    /**
-     * TODO 是否使用公众号发送模板消息
-     *
-     * @param unionId     the union id
-     * @param openId      the open id
-     * @param templateNoA the template no a
-     * @param templateNoB the template no b
-     * @return bool
-     */
-    public boolean chooseMessageTemplate(Integer unionId, Integer openId, String templateNoA, String templateNoB) {
-        ShopMsgTempConfig messageLibrary = Optional.ofNullable(msgTemplateConfigService.getShopTempConfig()).orElse(MSG_TEMP_CONFIG);
-        MpAuthShopRecord mpAuthShop = mpAuthShopService.getAuthShopByShopId(getShopId());
-        return false;
     }
 }

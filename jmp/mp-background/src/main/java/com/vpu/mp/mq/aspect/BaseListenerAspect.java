@@ -27,8 +27,6 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class BaseListenerAspect {
 
-    @Autowired
-    private SaasApplication saas;
 
     @Pointcut("@annotation(org.springframework.amqp.rabbit.annotation.RabbitHandler)")
     public void mqSuccessListenerAspect(){}
