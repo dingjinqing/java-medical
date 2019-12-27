@@ -161,7 +161,7 @@ public class AdminBargainController extends AdminBaseController {
      */
     @PostMapping(value = "/api/admin/market/bargain/user/list/export")
     public void exportBargainUserList(@RequestBody @Valid BargainUserListQueryParam param, HttpServletResponse response) throws IOException {
-        Workbook workbook =shop().bargain.bargainUser.exportBargainUserList(param,getLang());
+        Workbook workbook =shop().bargain.bargainRecord.bargainUser.exportBargainUserList(param,getLang());
         response.setContentType("application/vnd.ms-excel;charset=UTF-8");
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.BARGAIN_USER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
@@ -174,7 +174,7 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/record/detail")
 	public JsonResult getBargainUserPageList(@RequestBody @Valid BargainUserListQueryParam param) {
-		return success(shop().bargain.bargainUser.getPageList(param));
+		return success(shop().bargain.bargainRecord.bargainUser.getPageList(param));
 	}
 
 	/**

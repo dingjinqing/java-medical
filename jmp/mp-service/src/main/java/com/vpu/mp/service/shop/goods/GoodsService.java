@@ -1881,4 +1881,26 @@ public class GoodsService extends ShopBaseService {
     public GoodsRecord getGoodsRecordById(int goodsId){
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(GoodsRecord.class).orElse(null);
     }
+
+    /**
+     * 更新商品和规格的库存和销量，减少number个库存，增加number个销量，number可以是负数
+     * @param goodsId
+     * @param prdId
+     * @param number
+     */
+    public void updateGoodsNumberAndSale(int goodsId,int prdId,int number){
+        transaction(()->{
+            db().update(GOODS).set(GOODS.GOODS_NUMBER,GOODS.GOODS_NUMBER.sub(number)).set(GOODS.GOODS_SALE_NUM,GOODS.GOODS_SALE_NUM.add(number)).where(GOODS.GOODS_ID.eq(goodsId)).execute();
+            db().update(GOODS_SPEC_PRODUCT).set(GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_NUMBER.sub(number)).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId)).execute();
+        });
+
+        try {
+            //es
+            if (esUtilSearchService.esState()){
+                esGoodsCreateService.updateEsGoodsIndex(goodsId,getShopId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
