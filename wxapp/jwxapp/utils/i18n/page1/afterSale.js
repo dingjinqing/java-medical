@@ -102,6 +102,17 @@ module.exports = {
   orderInfo: "订单信息",
   dateOfApply: "申请日期",
   contactCustomer: "联系客服",
+  hasEnded: "已经截止",
+  day: "天",
+  hour: "时",
+  minute: "分",
+  second: "秒",
+  isCancelApplication: "您确定要撤销该申请吗？",
+  successfulRevocation: "撤销成功",
+  undoFailed: "撤销失败",
+  cancel: "取消",
+  determine: "确定",
+
   // 提交物流
   pReturn: "请退货给商家",
   returnAddress: "退货地址",

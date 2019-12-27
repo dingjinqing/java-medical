@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -58,11 +57,6 @@ public class BargainService extends ShopBaseService  {
 	 *  砍价发起记录
 	 */
 	@Autowired public BargainRecordService bargainRecord;
-	
-	/**
-	 *  帮忙砍价的用户
-	 */
-	@Autowired public BargainUserService bargainUser;
 
     @Autowired
     private QrCodeService qrCode;
@@ -86,6 +80,15 @@ public class BargainService extends ShopBaseService  {
 	 * 活动类型 砍到区间内结算 
 	 */
 	public static final byte BARGAIN_TYPE_RANDOM = 1;
+
+    /**
+     * 任意金额结算模式的单次帮砍金额模式：0固定金额
+     */
+    public static final byte BARGAIN_MONEY_TYPE_FIXED = 0;
+    /**
+     * 任意金额结算模式的单次帮砍金额模式：1区间随机金额
+     */
+    public static final byte BARGAIN_MONEY_TYPE_RANDOM = 1;
 
     /**
      * 取holdDate的一下天
@@ -416,4 +419,12 @@ public class BargainService extends ShopBaseService  {
         return moduleBargain;
     }
 
+    /**
+     * 更新砍价活动库存和销量，减少number个库存，增加number个销量，number可以是负数
+     * @param bargainId
+     * @param number
+     */
+    public void updateBargainStock(int bargainId,int number){
+        db().update(BARGAIN).set(BARGAIN.STOCK,BARGAIN.STOCK.sub(number)).set(BARGAIN.SALE_NUM,BARGAIN.SALE_NUM.add(number)).where(BARGAIN.ID.eq(bargainId)).execute();
+    }
 }
