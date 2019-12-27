@@ -18,14 +18,18 @@ public class WxAppCollectGiftConfigController extends WxAppBaseController {
      * 收藏有礼开关状态
      * @return
      */
-    @GetMapping("/api/wxapp/collectGift/switch")
+    @PostMapping("/api/wxapp/collectGift/switch")
     public JsonResult getSwitchStatus(){
         Integer userId = wxAppAuth.user().getUserId();
         CollectGiftParam res = shop().config.collectGiftConfigService.collectGiftConfig(userId);
         return this.success(res);
     }
 
-    @GetMapping("/api/wxapp/collectGift/setRewards")
+    /**
+     * 收藏有礼礼品发放
+     * @return
+     */
+    @PostMapping("/api/wxapp/collectGift/setRewards")
     public JsonResult setRewards(){
         Integer userId = wxAppAuth.user().getUserId();
         shop().config.collectGiftConfigService.setRewards(userId);

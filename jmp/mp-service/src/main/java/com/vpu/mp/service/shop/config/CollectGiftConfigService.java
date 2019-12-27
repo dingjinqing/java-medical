@@ -19,7 +19,9 @@ import org.springframework.util.StringUtils;
 import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -97,6 +99,11 @@ public class CollectGiftConfigService extends BaseShopConfigService{
         if (param == null) {
             param = new CollectGiftParam();
             this.setJsonObject(K_COLLECT_GIFT, param);
+        }
+        //判断活动是否生效
+        Timestamp nowDate = new Timestamp(System.currentTimeMillis());
+        if(!(param.getStartTime().before(nowDate) && nowDate.before(param.getEndTime()))){
+            param.setOnOff(0);
         }
         //判断当前用户是否第一次参与收藏有礼活动
         Integer into = db().select(USER.GET_COLLECT_GIFT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
