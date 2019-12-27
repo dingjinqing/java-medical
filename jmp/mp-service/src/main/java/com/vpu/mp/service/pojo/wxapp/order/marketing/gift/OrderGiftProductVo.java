@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
@@ -40,7 +41,7 @@ public class OrderGiftProductVo extends ProductVo {
             .marketPrice(shopPrice)
             .goodsPrice(BigDecimal.ZERO)
             .goodsAttr(getPrdDesc())
-            .goodsImg(getPrdImg() == null ? goodsImg : getPrdImg())
+            .goodsImg(StringUtils.isBlank(getPrdImg()) ? goodsImg : getPrdImg())
             .isGift(OrderConstant.IS_GIFT_Y)
             .discountedGoodsPrice(BigDecimal.ZERO)
             .deliverTemplateId(deliverTemplateId)
