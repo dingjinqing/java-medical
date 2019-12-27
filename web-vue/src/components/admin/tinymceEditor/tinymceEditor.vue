@@ -47,7 +47,8 @@ export default {
     },
     toolbar: {
       type: [String, Array],
-      default: ' forecolor | fontsizeselect |　undo redo　| bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image media table | removeformat'
+      // eslint-disable-next-line no-useless-escape
+      default: ' forecolor | fontsizeselect |　undo redo　| bold italic | alignleft aligncenter alignright alignjustify | \ bullist numlist outdent indent | lists image media table | removeformat'
     },
     height: {
       type: Number,
