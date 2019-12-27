@@ -250,6 +250,7 @@ export default {
     handleClick (index) {
       this.clickIindex = index
       let path = `${this.path}${this.trList[index].id}`
+      this.$emit('handleToGetDetailData', this.trList[index])
       this.choisePagePath(path)
     }
 

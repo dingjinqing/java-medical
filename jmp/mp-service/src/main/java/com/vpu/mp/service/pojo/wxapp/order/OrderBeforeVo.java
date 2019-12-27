@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
@@ -34,7 +35,9 @@ public class OrderBeforeVo {
     private Byte activityType;
     /** 指定本次结算所参加的唯一营销活动类型 ID */
     private Integer activityId;
-
+    /**订单类型*/
+    @Builder.Default
+    private List<Byte> orderType = Lists.newArrayList();
 	private UserAddressVo address;
 	private Byte[] expressList;
 	private Byte deliverType;

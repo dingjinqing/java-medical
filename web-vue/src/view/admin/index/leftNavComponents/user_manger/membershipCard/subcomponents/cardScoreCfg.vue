@@ -20,8 +20,7 @@
               v-model="ruleForm.score"
               size="small"
               :controls="false"
-              :min="0"
-              :max="999999999"
+              :precision="0"
             >
             </el-input-number>
             <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
@@ -38,35 +37,39 @@
       >
       <div class="sendScoreMiddle">
           <el-form-item prop="scoreSendFullFix" class="scoreReceiveSubItem" >
-            <!-- <div class="scoreReceiveSubItem"> -->
               <el-radio
                 v-model="ruleForm.offSet"
                 label='0'
               >
                 {{ $t('memberCard.shopFull') }}
               </el-radio>
-              <el-input
+              <el-input-number
                 v-model='ruleForm.shopingInputLeft'
                 size="small"
-                type="number"
+                :controls="false"
+                :precision="0"
+                :min="0"
+                :max="999999999"
               >
-              </el-input>
+              </el-input-number>
               <span class="sendInfo">
                 {{ $t('memberCard.send') }}
               </span>
-              <el-input
+              <el-input-number
                 size="small"
-                type="number"
+                :controls="false"
+                :precision="0"
+                :min="0"
+                :max="999999999"
                 v-model="ruleForm.shopingInputRight"
               >
-              </el-input>
+              </el-input-number>
               <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
               <img
                 style="cursor:pointer"
                 :src="$imageHost +'/image/admin/sign_jia.png' "
                 @click="handleToAddIntegral()"
               >
-            <!-- </div> -->
           </el-form-item>
           <div v-if="ruleForm.offSet==='0'">
             <el-form-item  v-for="(item,index) in ruleForm.addIntegralArr"
@@ -76,18 +79,24 @@
               class="scoreReceiveAddSubItem">
 
                 <span class="shopFullInfo">{{ $t('memberCard.shopFull') }}</span>
-                  <el-input
+                  <el-input-number
                     size="small"
-                    type="number"
+                    :controls="false"
+                    :precision="0"
+                    :min="0"
+                    :max="999999999"
                     v-model="ruleForm.addIntegralArr[index].leftInput"
-                  ></el-input>
+                  ></el-input-number>
                   <span class="sendInfo">{{ $t('memberCard.send') }}</span>
-                  <el-input
+                  <el-input-number
                     size="small"
-                    type="number"
+                    :precision="0"
+                    :controls="false"
+                    :min="0"
+                    :max="999999999"
                     v-model="ruleForm.addIntegralArr[index].rightInput"
                   >
-                  </el-input>
+                  </el-input-number>
                   <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
                   <img
                     style="cursor:pointer"
@@ -97,7 +106,7 @@
             </el-form-item>
 
           </div>
-          <el-form-item prop="scoreSendEachFix" class="scoreReceiveSubItem" >
+          <el-form-item prop="scoreSendEachFix" class="scoreReceiveSubItemBottom" >
 
               <el-radio
                 v-model="ruleForm.offSet"
@@ -105,21 +114,27 @@
               >
                 {{ $t('memberCard.shopEachFull') }}
               </el-radio>
-              <el-input
+              <el-input-number
                 v-model='ruleForm.shopingInputLeftM'
                 size="small"
-                type="number"
+                :precision="0"
+                :controls="false"
+                :min="0"
+                :max="999999999"
               >
-              </el-input>
+              </el-input-number>
               <span class="sendInfo">
                 {{ $t('memberCard.send') }}
               </span>
-              <el-input
+              <el-input-number
                 size="small"
-                type="number"
                 v-model="ruleForm.shopingInputRightM"
+                :controls="false"
+                :precision="0"
+                :min="0"
+                :max="999999999"
               >
-              </el-input>
+              </el-input-number>
               <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
           </el-form-item>
       </div>
@@ -129,6 +144,7 @@
   </div>
 </template>
 <script>
+import { isSixNumberWithTwoDecimal } from '@/util/typeUtil'
 export default {
   props: {
     val: {
@@ -149,6 +165,8 @@ export default {
   watch: {
     'ruleForm.powerScore': {
       handler (newName, oldName) {
+        this.$refs.ruleFormScore.validate((valid) => {})
+        this.$refs.ruleForm.validate((valid) => {})
         this.val.powerScore = newName
         this.ruleForm = this.val
       },
@@ -234,11 +252,14 @@ export default {
         if (this.checkScoreError(value)) {
           callback(new Error('请输入赠送积分'))
         }
+        if (!isSixNumberWithTwoDecimal(value)) {
+          callback(new Error('请输入0-999999999范围的数字'))
+        }
       }
       callback()
     }
     let validateScoreSendFullFix = (rule, value, callback) => {
-      if (this.ruleForm.offSet === '0') {
+      if (this.ruleForm.offSet === '0' && this.ruleForm.powerScore) {
         if (this.checkScoreSendFull()) {
           callback(new Error('请输入积分'))
           this.sendFullErrorFix = true
@@ -252,7 +273,7 @@ export default {
     }
 
     let validateScoreSendEachFix = (rule, value, callback) => {
-      if (this.ruleForm.offSet === '1') {
+      if (this.ruleForm.offSet === '1' && this.ruleForm.powerScore) {
         if (this.checkScoreSendEach()) {
           callback(new Error('请输入积分'))
         } else {
@@ -266,7 +287,7 @@ export default {
     let validateScoreSendEach = (rule, value, callback) => {
       // 校验动态数组
       let index = Number(rule.fullField.split('.')[1])
-      if (value && this.ruleForm.addIntegralArr[index].rightInput) {
+      if (value && this.ruleForm.addIntegralArr[index].rightInput && this.ruleForm.powerScore) {
         callback()
       } else {
         callback(new Error('请输入积分'))
@@ -297,7 +318,6 @@ export default {
       if (val === 0) {
         return false
       }
-      console.log(val, this.isBlank(val))
       return this.isBlank(val)
     },
     isBlank (val) {
@@ -316,11 +336,12 @@ export default {
       return true
     },
     handleToAddIntegral () {
-      console.log('添加积分')
-      this.ruleForm.addIntegralArr.push({
-        leftInput: undefined,
-        rightInput: undefined
-      })
+      if (this.ruleForm.offSet === '0') {
+        this.ruleForm.addIntegralArr.push({
+          leftInput: undefined,
+          rightInput: undefined
+        })
+      }
     },
     handleToDelIntegral (index) {
       this.ruleForm.addIntegralArr.splice(index, 1)
@@ -368,7 +389,7 @@ export default {
     }
     .scoreReceiveSubItem {
       /deep/ .el-input {
-        width: 20%;
+        width: 100% !important;
         .el-input__inner {
           text-align: center;
           width: 100%;
@@ -409,7 +430,7 @@ export default {
         margin-right: 31px;
       }
       /deep/ .el-input {
-        width: 20%;
+        width: 100% !important;
         .el-input__inner {
           text-align: center;
           width: 100%;
@@ -421,6 +442,29 @@ export default {
       .scoreInfo {
         margin: 0 5px 0 20px;
       }
+    }
+
+    .scoreReceiveSubItemBottom {
+        padding-left: 170px;
+        display: flex;
+        align-items: center;
+        /deep/ .el-radio {
+          margin-right: 18px;
+        }
+        /deep/ .el-input {
+          width: 100% !important;
+          .el-input__inner {
+            text-align: center;
+            width: 100%;
+          }
+        }
+        .scoreInfo {
+          margin-left: 20px;
+        }
+        .sendInfo {
+          margin: 0 10px;
+        }
+
     }
   }
   .sendScoreBottom {
@@ -441,6 +485,7 @@ export default {
       }
       .scoreInfo {
         margin-left: 20px;
+        color: red;
       }
       .sendInfo {
         margin: 0 10px;

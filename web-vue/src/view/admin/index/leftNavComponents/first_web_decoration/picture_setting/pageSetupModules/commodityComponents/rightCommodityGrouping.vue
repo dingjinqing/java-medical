@@ -38,12 +38,19 @@
               >指定商品</el-radio>
             </div>
             <div class="groupItemOperation">
-              <img :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'">
               <img
+                @click="handleToClickTopIcon(0,index)"
+                :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
+              >
+              <img
+                @click="handleToClickTopIcon(1,index)"
                 :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
                 style="padding:0 5px"
               >
-              <img :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'">
+              <img
+                @click="handleToClickTopIcon(2,index)"
+                :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
+              >
             </div>
           </div>
 
@@ -83,13 +90,14 @@
                 v-model="linkageData.bgColorRadio"
                 label="2"
               >自定义</el-radio>
-              <span class="colorSelect">
-                <colorPicker
+              <span>
+                <el-color-picker
                   v-model="linkageData.bg_color"
-                  :defaultColor="defaultBgColor"
+                  show-alpha
                   :disabled="linkageData.bgColorRadio==='1'?true:false"
-                  style="width:60px;height:30px;"
-                />
+                  :predefine="predefineColors"
+                >
+                </el-color-picker>
               </span>
               <div style="margin-left:10px;margin-top:-1px">
                 <el-button
@@ -293,9 +301,6 @@
   </div>
 </template>
 <script>
-import vcolorpicker from 'vcolorpicker'
-import Vue from 'vue'
-Vue.use(vcolorpicker)
 export default {
   components: {
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'), // 选择商家分类标签弹窗
@@ -330,30 +335,46 @@ export default {
         cart_btn_choose: '1', // 购买按钮选中显示模块radio
         hiddenOtherInfoRadio: '1', // 其他信息选中显示模块radio
         goodsItems: [ // 商品分组菜单隐藏模块数据列表
-          {
-            type: '商家分类',
-            typeName: '彩妆',
-            customName: '彩妆',
-            goodsNum: 1,
-            radio: '1'
-          },
-          {
-            type: '商家标签',
-            typeName: '围巾',
-            customName: '围巾',
-            goodsNum: 2,
-            radio: '1'
-          },
-          {
-            type: '商家品牌',
-            typeName: '阿迪达斯',
-            customName: '阿迪达斯',
-            goodsNum: 3,
-            radio: '1'
-          }
+          // {
+          //   type: '商家分类',
+          //   typeName: '彩妆',
+          //   customName: '彩妆',
+          //   goodsNum: 1,
+          //   radio: '1'
+          // },
+          // {
+          //   type: '商家标签',
+          //   typeName: '围巾',
+          //   customName: '围巾',
+          //   goodsNum: 2,
+          //   radio: '1'
+          // },
+          // {
+          //   type: '商家品牌',
+          //   typeName: '阿迪达斯',
+          //   customName: '阿迪达斯',
+          //   goodsNum: 3,
+          //   radio: '1'
+          // }
         ],
         input: '',
-        radio: '1'
+        radio: '1',
+        predefineColors: [
+          '#ff4500',
+          '#ff8c00',
+          '#ffd700',
+          '#90ee90',
+          '#00ced1',
+          '#1e90ff',
+          '#c71585',
+          'rgba(255, 69, 0, 0.68)',
+          'rgb(255, 120, 0)',
+          'hsv(51, 100, 98)',
+          'hsva(120, 40, 94, 0.5)',
+          'hsl(181, 100%, 37%)',
+          'hsla(209, 100%, 56%, 0.73)',
+          '#c7158577'
+        ]
       }
     }
   },
@@ -418,6 +439,40 @@ export default {
     },
     handleToGetBrandBackData (data) {
       console.log(data)
+    },
+    handleToClickTopIcon (flag, index) { // 顶部icon点击统一处理
+      let arr = JSON.parse(JSON.stringify(this.linkageData.goodsItems))
+      let pre, next, temp
+      if ((index - 1) < 0) {
+        pre = -1
+      } else {
+        pre = arr[(index - 1)]
+      }
+      if ((index + 1) > (arr.length - 1)) {
+        next = -1
+      } else {
+        next = arr[(index + 1)]
+      }
+      temp = arr[index]
+      switch (flag) {
+        case 0:
+          if (pre === -1) return
+          arr[index] = pre
+          arr[(index - 1)] = temp
+          this.isClickGoodsUpOrDownIcon = true
+          break
+        case 1:
+          if (next === -1) return
+          arr[index] = next
+          arr[(index + 1)] = temp
+          this.isClickGoodsUpOrDownIcon = true
+          break
+        case 2:
+          arr.splice(index, 1)
+          break
+      }
+      console.log(arr)
+      this.linkageData.goodsItems = arr
     }
   }
 }
@@ -476,28 +531,6 @@ export default {
               justify-content: center;
               align-items: center;
               padding-top: 5px;
-            }
-            .colorSelect {
-              display: inline-block;
-              height: 32px;
-              width: 62px;
-              margin-left: 5px;
-              background-color: #fff;
-              border: 1px solid #ccc;
-              /deep/ .m-colorPicker {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                /deep/ .colorBtn {
-                  width: 50px;
-                  height: 20px;
-                  border: 1px solid #000;
-                }
-                .open {
-                  margin-top: 60px;
-                  z-index: 10000;
-                }
-              }
             }
           }
         }

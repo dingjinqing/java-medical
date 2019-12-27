@@ -31,10 +31,11 @@ public class WxMainUserService extends MainBaseService {
 	 * @param sendRecord
 	 * @param type
 	 */
-	public void syncMainUser(Integer shopId, Integer userId,com.vpu.mp.db.shop.tables.records.UserRecord infoRecord) {
+	public int[] syncMainUser(Integer shopId, Integer userId,com.vpu.mp.db.shop.tables.records.UserRecord infoRecord) {
 		UserMainVo info = infoRecord.into(UserMainVo.class);
 		logger().info("User同步开始到主库,shopId:"+shopId+" userId:"+userId);
 		UserRecord record = db().selectFrom(USER).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).fetchAny();
+		int success[]=new int[2];
 		if (record != null) {
 			// 更新
 			logger().info("更新");
@@ -43,6 +44,7 @@ public class WxMainUserService extends MainBaseService {
 			UserRecord newRecord = db().newRecord(USER, info);
 			int executeUpdate = newRecord.update();
 			logger().info("更新User，结果" + executeUpdate);
+			success[0]=executeUpdate;
 		} else {
 			// 插入
 			logger().info("插入");
@@ -50,7 +52,9 @@ public class WxMainUserService extends MainBaseService {
 			UserRecord newRecord = db().newRecord(USER, info);
 			int insert = newRecord.insert();
 			logger().info("插入User，结果" + insert);
+			success[1]=insert;
 		}
+		return success;
 
 	}
 
@@ -60,9 +64,10 @@ public class WxMainUserService extends MainBaseService {
 	 * @param sendRecord
 	 * @param type
 	 */
-	public void syncMainUserDetail(Integer shopId, Integer userId,com.vpu.mp.db.shop.tables.records.UserDetailRecord infoRecord) {
+	public int[] syncMainUserDetail(Integer shopId, Integer userId,com.vpu.mp.db.shop.tables.records.UserDetailRecord infoRecord) {
 		UserDetailMainVo info=infoRecord.into(UserDetailMainVo.class);
 		logger().info("UserDetail同步开始到主库,shopId:"+shopId+" userId:"+userId);
+		int success[]=new int[2];
 		UserDetailRecord record = db().selectFrom(USER_DETAIL).where(USER_DETAIL.SHOP_ID.eq(shopId).and(USER_DETAIL.USER_ID.eq(userId)))
 				.fetchAny();
 		if (record != null) {
@@ -73,6 +78,7 @@ public class WxMainUserService extends MainBaseService {
 			UserDetailRecord newRecord = db().newRecord(USER_DETAIL, info);
 			int executeUpdate = newRecord.update();
 			logger().info("更新UserDetail，结果" + executeUpdate);
+			success[0]=executeUpdate;
 		} else {
 			// 插入
 			logger().info("插入");
@@ -80,7 +86,9 @@ public class WxMainUserService extends MainBaseService {
 			UserDetailRecord newRecord = db().newRecord(USER_DETAIL, info);
 			int insert = newRecord.insert();
 			logger().info("插入UserDetail，结果" + insert);
+			success[1]=insert;
 		}
+		return success;
 	}
 	
 	/**

@@ -1,4 +1,5 @@
 <!--pages/bargaininfo/bargaininfo.wxml-->
+
 <include src="../common/header.wxml" />
 
 <view class='main-container'>
@@ -225,6 +226,6 @@
     <!-- 绑定手机号弹窗 -->
     <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以帮TA砍价哦！" />
   </view>
+  
 </view>
-
 <include src="../common/footer.wxml" />

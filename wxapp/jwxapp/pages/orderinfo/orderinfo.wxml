@@ -37,15 +37,46 @@
         </view>
       </view>
     </view>
+    <view class="fight_info" wx:if="{{orderInfo.isFightGroup && orderInfo.groupBuyInfo}}">
+      <view class="fight-header" bindtap="goGroupBuyingDetail">
+        <view class="fight-h-left">
+          <image class="fight-h-icon" src="{{imageUrl + 'image/wxapp/icon_group3.png'}}" style="width:35rpx;margin-right: 10rpx;" mode="widthFix"></image>
+          <text wx:if="{{orderInfo.groupBuyInfo.status == 0}}">{{i18n.$t(localePack,"pages.order.inFight")}}</text>
+          <text wx:if="{{orderInfo.groupBuyInfo.status == 1||orderInfo.groupBuyInfo.status == 2}}">{{i18n.$t(localePack,"pages.order.completeFight")}}</text>
+        </view>
+        <view class="fight-h-right">
+          {{i18n.$t(localePack,"pages.order.spellDetails")}}
+          <image class="fight-h-icon" src="{{imageUrl + 'image/wxapp/backward_right.png'}}" style="width:15rpx;margin-left:10rpx;" mode="widthFix"></image>
+        </view>
+      </view>
+      <view class="fight-content">
+        <block wx:for="{{orderInfo.groupBuyUserInfos}}">
+          <image class="fight-avatar" src="{{item.userAvatar}}" mode="widthFix" />
+        </block>
+        <block wx:if="{{orderInfo.groupBuyInfo.show_noper>0}}">
+          <image class="fight-avatar" src='{{img_noperson}}' />
+        </block>
+        <block wx:if="{{orderInfo.groupBuyInfo.show_noper>1}}">
+          <image class="fight-avatar" src='{{img_noperson}}' />
+        </block>
+        <block wx:if="{{orderInfo.groupBuyInfo.show_noper>2}}">
+          <image class="fight-avatar" src='{{img_noperson}}' />
+        </block>
+        <block wx:if="{{orderInfo.groupBuyInfo.show_noper>3}}">
+          <image class="fight-avatar" src='{{img_noperson}}' />
+        </block>
+        <block wx:if="{{orderInfo.groupBuyInfo.limit_amount > 5}}">
+          <image class="fight-avatar" src='{{img_otherperson}}' />
+        </block>
+      </view>
+    </view>
     <view class="order_top">
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{i18n.$t(localePack,"pages.checkout.deliverType["+orderInfo.deliverType+"]")}}</text>
     </view>
     <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
       <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
       <view class="goods_info">
-        <view class="goods_name">
-          {{goodsItem.goodsName}}
-        </view>
+        <view class="goods_name">{{goodsItem.goodsName}}</view>
         <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
         <view class="goods_price_num">
           <view class="goods_price" style="color:{{comColor}}">￥{{goodsItem.goodsPrice}}</view>
@@ -140,14 +171,21 @@
     </view>
     <view class="order_info">
       <text class="title">{{i18n.$t(localePack,"pages.order.orderDetail")}}</text>
-      <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderSn")}}：{{orderInfo.orderSn}}</text>
+      <view class="order_item" selectable>
+        <text class="activity_icon" wx:if="{{orderInfo.activityName}}">{{orderInfo.activityName}}</text>
+        <text>{{i18n.$t(localePack,"pages.order.orderSn")}}：{{orderInfo.orderSn}}</text>
+      </view>
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
     </view>
     <view class="fixed_footer">
       <block wx:for="{{orderInfo.operate}}" wx:key="*this" wx:for-item="operateItem" wx:for-index="operateKey">
-        <view bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_id="{{orderInfo.orderId}}" data-order_sn="{{orderInfo.orderSn}}" class="footer_item" wx:if="{{operateItem > 0}}">{{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}</view>
+        <view bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_id="{{orderInfo.orderId}}" data-order_sn="{{orderInfo.orderSn}}" class="footer_item" wx:if="{{operateItem > 0}}">
+          {{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}
+        </view>
       </block>
-      <view bindtap="handleOperate" class="footer_item" wx:if="{{orderInfo.isReturnMoney || orderInfo.isReturnGoods}}" data-is_return="{{orderInfo.isReturn}}" data-operate_info="returnCenter" data-order_id="{{orderInfo.orderId}}" data-order_sn="{{orderInfo.orderSn}}">{{i18n.$t(localePack,"pages.order.operateList.returnCenter")}}</view>
+      <view bindtap="handleOperate" class="footer_item" wx:if="{{orderInfo.isReturnMoney || orderInfo.isReturnGoods}}" data-is_return="{{orderInfo.isReturn}}" data-operate_info="returnCenter" data-order_id="{{orderInfo.orderId}}" data-order_sn="{{orderInfo.orderSn}}">
+        {{i18n.$t(localePack,"pages.order.operateList.returnCenter")}}
+      </view>
     </view>
   </view>
   <include src="../common/footer.wxml" />

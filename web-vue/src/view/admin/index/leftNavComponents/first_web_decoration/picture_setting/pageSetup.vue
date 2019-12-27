@@ -61,7 +61,8 @@ export default {
     RiVideoModule: () => import('./pageSetupModules/graphicAndTextComponents/riVideoModule'), // 视频模块
     RiShopNotices: () => import('./pageSetupModules/graphicAndTextComponents/riShopNotices'), // 店铺公告
     RiOfficialAccount: () => import('./pageSetupModules/graphicAndTextComponents/riOfficialAccount'), // 公众号模块
-    RiCustomerServiceModule: () => import('./pageSetupModules/graphicAndTextComponents/riCustomerServiceModule') // 客服模块
+    RiCustomerServiceModule: () => import('./pageSetupModules/graphicAndTextComponents/riCustomerServiceModule'), // 客服模块
+    RiPictureHotSpot: () => import('./pageSetupModules/graphicAndTextComponents/riPictureHotSpot') // 右侧图片热区模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -123,6 +124,10 @@ export default {
         {
           id: 14,
           name: 'RiMagicMap'
+        },
+        {
+          id: 15,
+          name: 'RiPictureHotSpot'
         },
         {
           id: 16,

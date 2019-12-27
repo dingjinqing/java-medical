@@ -1,17 +1,14 @@
 package com.vpu.mp.service.shop.user.message;
 
-import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.RegexUtil;
-import com.vpu.mp.service.pojo.shop.config.ShopMsgTempConfig;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
@@ -19,11 +16,9 @@ import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
 import com.vpu.mp.service.shop.config.ShopMsgTemplateConfigService;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
-import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.user.UserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +26,11 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant.MSG_TEMP_CONFIG;
 
 
 /**
@@ -143,7 +136,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
 			e.printStackTrace();
 			return Boolean.FALSE;
 		}
-    	
+
     	 return Boolean.TRUE;
     }
 
@@ -183,17 +176,29 @@ public class WechatMessageTemplateService extends ShopBaseService {
      */
     public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId) {
     	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
-    	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE) ) {
+    	MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
+    	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER) ) {
     		for(Integer userId:userIdList) {
     			MpOfficialAccountUserRecord accountUserListByRecord =
-    					accountUserService.getAccountUserListByRecid(userId);
-    			//通过shopId得到小程序信息
-    			MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
+    					saas.getShopApp(shopId).officialAccountUser.getAccountUserListByRecid(userId);
     			WxUserInfo info=WxUserInfo.builder()
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
-    					.build();    			
+                    .build();
+    			resultList.add(info);
+    		}
+    		return resultList;
+    	}if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE) ) {
+    		for(Integer userId:userIdList) {
+				MpOfficialAccountUserRecord accountUserListByRecord = saas.getShopApp(shopId).officialAccountUser
+						.getAccountUserByUserId(userId);
+    			//通过shopId得到小程序信息
+    			WxUserInfo info=WxUserInfo.builder()
+    					.mpAppId(accountUserListByRecord.getAppId())
+    					.mpOpenId(accountUserListByRecord.getOpenid())
+    					.maAppId(authShopByShopId.getAppId())
+                    .build();
     			resultList.add(info);
     		}
     		return resultList;
@@ -203,7 +208,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
             Map<Integer,UserRecord> userMap = userList.stream()
                 .collect(Collectors.toMap(UserRecord::getUserId, x->x));
             List<MpOfficialAccountUserRecord> accountUserList =
-                accountUserService.getAccountUserListByUnionIds(
+            		saas.getShopApp(shopId).officialAccountUser.getAccountUserListByUnionIds(
                     userList.stream()
                         .map(x->x.get(USER.WX_UNION_ID))
                         .collect(Collectors.toList())
@@ -229,20 +234,5 @@ public class WechatMessageTemplateService extends ShopBaseService {
             return resultList;
         }
         return resultList;
-    }
-
-    /**
-     * TODO 是否使用公众号发送模板消息
-     *
-     * @param unionId     the union id
-     * @param openId      the open id
-     * @param templateNoA the template no a
-     * @param templateNoB the template no b
-     * @return bool
-     */
-    public boolean chooseMessageTemplate(Integer unionId, Integer openId, String templateNoA, String templateNoB) {
-        ShopMsgTempConfig messageLibrary = Optional.ofNullable(msgTemplateConfigService.getShopTempConfig()).orElse(MSG_TEMP_CONFIG);
-        MpAuthShopRecord mpAuthShop = mpAuthShopService.getAuthShopByShopId(getShopId());
-        return false;
     }
 }

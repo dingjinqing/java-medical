@@ -203,9 +203,7 @@ public class WechatTaskService extends ShopBaseService {
             MpUserPortraitRecord record = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).fetchAny();
             
             if(record!=null) {
-            	logger().info("更新");
-            	record=assignment(type, info, record);
-            	record.update();
+            	return;
             }else {
             	logger().info("插入");
             	record = db().newRecord(MP_USER_PORTRAIT);

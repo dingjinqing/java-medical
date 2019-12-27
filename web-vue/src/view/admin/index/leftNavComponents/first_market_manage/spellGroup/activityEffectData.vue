@@ -181,7 +181,6 @@ export default {
         startTime: this.starDate,
         endTime: this.endDate
       }
-      this.handleEcharts()
       groupBuyAnalysis(obj).then(res => {
         this.handleData(res.content)
         console.log('aaaaaaaaaaaaaaaaaaaaa', this.echartData.marketPriceList)
@@ -191,6 +190,7 @@ export default {
         })
         console.log(res)
       })
+      this.handleEcharts()
     },
     handleEcharts () {
       this.option = {
