@@ -181,7 +181,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
                 coupon.couponGiveService.handlerCouponGive(couponParam);
 
                 //返回积分，优惠券相关信息
-                AvailCouponDetailVo couponInfo = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.TYPE)
+                AvailCouponDetailVo couponInfo = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.TYPE,MRKING_VOUCHER.USE_CONSUME_RESTRICT)
                     .from(MRKING_VOUCHER)
                     .where(MRKING_VOUCHER.ID.eq(id)).fetchOne().into(AvailCouponDetailVo.class);
                 couponList.add(couponInfo);
