@@ -24,6 +24,11 @@ public class RabbitParamConstant {
          * 小程序订阅消息，小程序请以2开头。切大于2000 否则发不出去
          */
         public static final Integer MA_SUBSCRIBEMESSAGE_TYPE=2001;
+        
+        /**
+         *微信公众号模板消息类型,用户没有使用过小程序，比如扫公众号二维码
+         */
+        public static final Integer MP_TEMPLE_TYPE_NO_USER=1003;
 
 //    可以参考
 //    const TEMPLATE_TYPE_ORDER = 1;          // 订单类型
