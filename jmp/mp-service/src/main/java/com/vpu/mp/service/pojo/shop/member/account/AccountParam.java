@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.account;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Data;
 
@@ -17,6 +18,10 @@ public class AccountParam {
 	private BigDecimal amount;
 	/** 用户id */
 	private Integer userId;
+	/** 备注模板id */
+	private Integer remarkId;
+	/** 备注模板数据 */
+	private List<Integer> remarkData;
 	/** 备注 */
 	private String remark;
 	/** 订单编号 */

@@ -203,11 +203,16 @@ public class AccountService extends ShopBaseService {
 	 */
 	public void addRow(AccountParam param, int adminUser) {
 		logger().info("插入userAccount记录");
+		String remarkData = null;
+		if(param.getRemarkData()!=null && param.getRemarkData().size()>0) {
+			remarkData = Util.listToString(param.getRemarkData());
+		}
 		UserAccountRecordBuilder
 			.create(db().newRecord(USER_ACCOUNT))
 			.userId(param.getUserId())
 			.amount(param.getAmount())
-			.remark(param.getRemark())
+			.remarkId(String.valueOf(param.getRemarkId()))
+			.remarkData(remarkData)
 			.adminUser(String.valueOf(adminUser))
 			.isPaid(param.getIsPaid())
 			.payment(param.getPayment())
