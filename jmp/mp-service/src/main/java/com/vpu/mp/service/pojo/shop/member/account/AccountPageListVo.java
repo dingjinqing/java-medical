@@ -3,16 +3,14 @@ package com.vpu.mp.service.pojo.shop.member.account;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
 * @author 黄壮壮
 * @Date: 2019年8月13日
 * @Description: 分页查询会员用户详细余额信息-出参
 */
-@Setter
-@Getter
+@Data
 public class AccountPageListVo {
 	/** 用户名称 */
 	private String username;

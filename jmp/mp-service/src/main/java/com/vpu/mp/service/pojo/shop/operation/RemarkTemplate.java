@@ -15,9 +15,16 @@ public enum RemarkTemplate {
 	/** 用户输入 */
 	USER_INPUT_MSG(0,null),
 	
+	
 	/**
 	 * 登录
 	 */
+	
+	/**
+	 * 订单
+	 */
+	/** 订单: {订单号}退余额 */
+	ORDER_RETURN(2001,RemarkMessage.MSG_ORDER_RETURN),
 	
 	/**
 	 * 会员卡
@@ -37,6 +44,7 @@ public enum RemarkTemplate {
 	 */
 	/** 管理员操作 */
 	ADMIN_OPERATION(6001,RemarkMessage.MSG_ADMIN_OPERATION),
+	/** 管理员测试 */
 	ADMIN_OPERATION_TEST(6002,RemarkMessage.MSG_ADMIN_OPERATION_TEST);
 	
 	

@@ -8,7 +8,7 @@ public class RemarkMessage {
 	/**
 	 * 订单
 	 */
-	
+	public static final String MSG_ORDER_RETURN = "order.return";
 	
 	/**
 	 * 会员卡
@@ -35,4 +35,7 @@ public class RemarkMessage {
 	public static final String MSG_ADMIN_OPERATION = "admin.operation";
 
 	public static final String MSG_ADMIN_OPERATION_TEST = "admin.operation.test";
+
+
+	
 }
