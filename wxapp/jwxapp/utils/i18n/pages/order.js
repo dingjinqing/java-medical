@@ -1,4 +1,5 @@
 module.exports = {
+  "search": "搜索",
   "navType": {
     "ALL": "全部订单",
     "WAIT_PAY": "待付款",
