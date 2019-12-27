@@ -80,6 +80,8 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+  box-sizing: border-box;
+  line-height: 40rpx;
 }
 .goods_item > .goods_info > .goods_name > .spec{
   color: #888;
@@ -211,4 +213,9 @@
   flex: 1;
   text-align: center;
   border-bottom: 2rpx solid transparent;
+}
+.goods-tag{
+  border: 1rpx solid;
+  margin-right: 10rpx;
+  padding: 0 4rpx;
 }
