@@ -61,7 +61,7 @@ public class GiftProcessorDao extends GiftService {
             //转化
             transformVo(activity);
             goodsBo.forEach(goods->{
-                if(CollectionUtils.isEmpty(activity.getGoodsIds())|| activity.getGoodsIds().contains(goods.getGoodsId())){
+                if(CollectionUtils.isEmpty(activity.getGoodsIds()) || activity.getGoodsIds().contains(goods.getGoodsId())){
                     number[0] = number[0] + goods.getGoodsNumber();
                     price[0] = price[0].add(goods.getDiscountedTotalPrice());
                     joinRecord.add(goods.getGoodsId());
@@ -114,7 +114,7 @@ public class GiftProcessorDao extends GiftService {
         }
         if(rules.getFullNumber() != null && rules.getFullNumber() <= number){
             logger().info("赠品：满件数满足,活动id:{}", giftVo.getId());
-            packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
+            return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
         }
         return Collections.EMPTY_LIST;
     }
