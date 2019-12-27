@@ -207,7 +207,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 获取活动赠品
      */
-    protected List<ProductVo> getGiftProduct(Integer giftId) {
+    protected List<ProductVo> getGiftProduct(Integer... giftId) {
         return db().select(SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
                 PRODUCT.PRD_IMG,PRODUCT.PRD_PRICE,PRODUCT.PRD_DESC,GOODS.GOODS_NAME,GOODS.GOODS_IMG)
             .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC)
@@ -215,7 +215,7 @@ public class GiftService extends ShopBaseService {
             .from(SUB_TABLE)
             .leftJoin(PRODUCT).on(PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
-            .where(SUB_TABLE.GIFT_ID.eq(giftId))
+            .where(SUB_TABLE.GIFT_ID.in(giftId))
             .fetchInto(ProductVo.class);
     }
 
