@@ -156,7 +156,7 @@ public class EsFactSearchService extends EsBaseSearchService{
         Map<Short,List<GoodsSortCacheInfo>> resultMap = sortDataHelper.getAndGroup(sortIds);
         List<GoodsSortSelectTreeVo> retList = Lists.newArrayList();
         for(Map.Entry<Short,List<GoodsSortCacheInfo>> entry: resultMap.entrySet()){
-            if(CollectionUtils.isEmpty(entry.getValue())){
+            if(!CollectionUtils.isEmpty(entry.getValue())){
                 entry.getValue().forEach(x->{
                     GoodsSortSelectTreeVo vo =new GoodsSortSelectTreeVo();
                     vo.setSortId(x.getSortId());
