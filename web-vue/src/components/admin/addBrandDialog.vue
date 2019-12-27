@@ -47,15 +47,18 @@
             ref="multipleTable"
             class="version-manage-table"
             header-row-class-name="tableClss"
+            highlight-current-row
             :data="tableData"
             border
             style="width: 100%"
+            @current-change="handleToClickRow"
             @selection-change="changeFun"
           >
             <el-table-column
               align="center"
               width="100"
               type="selection"
+              v-if="!isElection"
             >
               <!-- <template slot-scope="scope">
                 <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
@@ -132,7 +135,8 @@ export default {
     classification: { // 分类id
       type: Number,
       default: -1
-    }
+    },
+    singleElection: Boolean
   },
   data () {
     return {
@@ -180,7 +184,8 @@ export default {
           value: 2,
           label: '非自营品牌'
         }
-      ]
+      ],
+      isElection: null
     }
   },
   watch: {
@@ -246,6 +251,9 @@ export default {
         })
         console.log(this.tableData)
       }
+    },
+    singleElection (newVal) {
+      this.isElection = newVal
     }
   },
   mounted () {
@@ -303,6 +311,9 @@ export default {
 
       console.log(val)
       this.checkBoxData = val
+    },
+    handleToClickRow (val) {
+      console.log(val)
     },
     // 当前页改变
     handleCurrentChange () {

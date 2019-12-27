@@ -15,9 +15,12 @@
             :key="index"
           >
             <div>
-              <span>{{item.type}}：</span>
+              <span>{{item.type===0?'商家分类':item.type===1?'商家标签':'商家品牌'}}：</span>
               <span style="display:inline-block;width:100px">{{item.typeName}}</span>
-              <span style="padding-left: 20px;color: #5A8BFF;cursor: pointer;">修改</span>
+              <span
+                @click="handleToEditData(index)"
+                style="padding-left: 20px;color: #5A8BFF;cursor: pointer;"
+              >修改</span>
             </div>
             <div class="nameContainer">
               <span>自定义分组名称：</span>
@@ -286,17 +289,22 @@
       :dialogVisible.sync='classificationDialogVisible'
       :classFlag='1'
       :backDataArr='backDataArr'
-      @BusClassTrueArr='BusClassTrueArr'
+      @BusClassTrueDetailData='busClassTrueDetailData'
+      :singleElection="classSingleElection"
     />
     <!--商品标签弹窗-->
     <AddProductLabel
       :callAddProductLabel.sync='callAddProductLabel'
       @handleToGetBackData='handleToGetBackData'
+      :brandBackData="[]"
+      :singleElection="classSingleElection"
     />
     <!--商品品牌弹窗-->
     <AddBrandDialog
       :callAddBrand.sync='callAddBrand'
       @handleToGetBackData='handleToGetBrandBackData'
+      :brandBackData="[]"
+      :singleElection="true"
     />
   </div>
 </template>
@@ -313,6 +321,22 @@ export default {
   },
   data () {
     return {
+      predefineColors: [ // 预定义颜色池
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585',
+        'rgba(255, 69, 0, 0.68)',
+        'rgb(255, 120, 0)',
+        'hsv(51, 100, 98)',
+        'hsva(120, 40, 94, 0.5)',
+        'hsl(181, 100%, 37%)',
+        'hsla(209, 100%, 56%, 0.73)',
+        '#c7158577'
+      ],
       callAddBrand: false, // 调起商品品牌弹窗flag
       callAddProductLabel: false, // 调起商品标签弹窗flag
       classificationDialogVisible: false, // 调起商家分类弹窗flag
@@ -334,48 +358,14 @@ export default {
         otherInfo: true, // 其他信息chexkbox
         cart_btn_choose: '1', // 购买按钮选中显示模块radio
         hiddenOtherInfoRadio: '1', // 其他信息选中显示模块radio
-        goodsItems: [ // 商品分组菜单隐藏模块数据列表
-          // {
-          //   type: '商家分类',
-          //   typeName: '彩妆',
-          //   customName: '彩妆',
-          //   goodsNum: 1,
-          //   radio: '1'
-          // },
-          // {
-          //   type: '商家标签',
-          //   typeName: '围巾',
-          //   customName: '围巾',
-          //   goodsNum: 2,
-          //   radio: '1'
-          // },
-          // {
-          //   type: '商家品牌',
-          //   typeName: '阿迪达斯',
-          //   customName: '阿迪达斯',
-          //   goodsNum: 3,
-          //   radio: '1'
-          // }
-        ],
+        goodsItems: [], // 商品分组菜单隐藏模块数据列表
         input: '',
-        radio: '1',
-        predefineColors: [
-          '#ff4500',
-          '#ff8c00',
-          '#ffd700',
-          '#90ee90',
-          '#00ced1',
-          '#1e90ff',
-          '#c71585',
-          'rgba(255, 69, 0, 0.68)',
-          'rgb(255, 120, 0)',
-          'hsv(51, 100, 98)',
-          'hsva(120, 40, 94, 0.5)',
-          'hsl(181, 100%, 37%)',
-          'hsla(209, 100%, 56%, 0.73)',
-          '#c7158577'
-        ]
-      }
+        radio: '1'
+
+      },
+      clickEditBtn: false, // 是否点击修改按钮
+      editIndex: null, // 当前修改的index
+      classSingleElection: false
     }
   },
   watch: {
@@ -417,7 +407,12 @@ export default {
       this.linkageData.bg_color = this.defaultBgColor
     },
     // 调起弹窗
-    handleToCallDialog (flag) {
+    handleToCallDialog (flag, isEdit) {
+      if (isEdit) {
+        this.classSingleElection = true // 控制弹窗单选
+      } else {
+        this.classSingleElection = false
+      }
       switch (flag) {
         case 0:
           this.classificationDialogVisible = true
@@ -430,15 +425,77 @@ export default {
       }
     },
     // 商家分类弹窗选中回传数据
-    BusClassTrueArr (data) {
+    busClassTrueDetailData (data) {
       console.log(data)
+      let arr = []
+      data.forEach((item, index) => {
+        //  obj
+        let obj = { type: 0, radio: '1' }
+        console.log(item.goodsSumNum)
+        if (item.goodsSumNum !== undefined) {
+          obj.typeName = item.sortName
+          obj.customName = item.sortName
+          obj.goodsNum = item.goodsSumNum
+          arr.push(obj)
+        }
+      })
+      console.log(this.clickEditBtn, this.editIndex, arr)
+      if (this.clickEditBtn) {
+        this.linkageData.goodsItems[this.editIndex] = arr
+      } else {
+        let newArr = this.linkageData.goodsItems.concat(arr)
+        this.linkageData.goodsItems = newArr
+      }
+      this.clickEditBtn = false
+      console.log(this.linkageData.goodsItems, arr)
     },
     // 商品标签弹窗选中回传数据
     handleToGetBackData (data) {
       console.log(data)
+      let arr = []
+      data.forEach((item, index) => {
+        //  obj
+        let obj = { type: 1, radio: '1' }
+        console.log(item.goodsSumNum)
+        obj.typeName = item.name
+        obj.customName = item.name
+        obj.goodsNum = item.goodsNum
+        arr.push(obj)
+      })
+      console.log(this.clickEditBtn, this.editIndex, arr)
+      if (this.clickEditBtn) {
+        this.linkageData.goodsItems[this.editIndex] = arr
+      } else {
+        let newArr = this.linkageData.goodsItems.concat(arr)
+        this.linkageData.goodsItems = newArr
+      }
+      this.clickEditBtn = false
     },
-    handleToGetBrandBackData (data) {
+    handleToGetBrandBackData (data) { // 商品品牌弹窗数据回传
       console.log(data)
+      let arr = []
+      data.forEach((item, index) => {
+        //  obj
+        let obj = { type: 2, radio: '1' }
+        console.log(item.goodsSumNum)
+        obj.typeName = item.brandName
+        obj.customName = item.brandName
+        obj.goodsNum = item.goodsNum
+        arr.push(obj)
+      })
+      if (this.clickEditBtn) {
+        this.linkageData.goodsItems[this.editIndex] = arr
+      } else {
+        let newArr = this.linkageData.goodsItems.concat(arr)
+        this.linkageData.goodsItems = newArr
+      }
+      this.clickEditBtn = false
+    },
+    handleToEditData (index) { // 点击修改
+      this.clickEditBtn = true
+      this.editIndex = index
+      let flag = this.linkageData.goodsItems[index].type
+      this.handleToCallDialog(flag, true)
     },
     handleToClickTopIcon (flag, index) { // 顶部icon点击统一处理
       let arr = JSON.parse(JSON.stringify(this.linkageData.goodsItems))
