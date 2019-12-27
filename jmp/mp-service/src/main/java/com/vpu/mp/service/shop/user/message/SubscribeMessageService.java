@@ -288,7 +288,7 @@ public class SubscribeMessageService extends ShopBaseService {
 					UserRecord user = userService.getUserByUserId(userId);
 					insertRecord.setWxOpenid(user.getWxOpenid());
 					insertRecord.setTemplateId(success.getTemplateId());
-					insertRecord.setTemplateNo(String.valueOf(success.getId()));
+					insertRecord.setTemplateNo(String.valueOf(successConfig.getId()));
 					insertRecord.setCanUseNum(1);
 					int insert = insertRecord.insert();
 					logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);		
