@@ -114,6 +114,7 @@ public class JsonResultMessage {
   public static final String GOODS_RECOMMEND_CHOOSE_TYPE_NOT_NULL =
       "goods.recommend.choose_type.notNull";
   public static final String GOODS_RECOMMEND_NUMBER_NOT_NULL = "goods.recommend.number.notNull";
+  public static final String GOODS_RECOMMEND_NO_RECOMMENDED_GOODS = "goods.recommend.no.recommended.goods";
 
     /**
      * 商品导出

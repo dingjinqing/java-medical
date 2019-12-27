@@ -37,51 +37,24 @@
       <view class="item_line" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}"></view>
     </v-sel-spec>
     <!-- 拼团提示 -->
-    <block wx:if="{{specParams.activity.activityType === 1}}">
+    <block wx:if="{{specParams.activity.activityType === 1 && groupBuyListMpVos.length > 0}}">
       <view class="flex_outside_box" >
         <view class="flex_box">
-          <view class="item_left"><text style="color:{{comColor}}">4个</text>小伙伴正在开团，可直接参与</view>
+          <view class="item_left"><text style="color:{{comColor}}">{{groupBuyListMpVos.length}}个</text>小伙伴正在开团，可直接参与</view>
         </view>
         <view class="item_line"></view>
-        <view class="flex_box join-group">
-          <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
-          <text class="user-name">方框</text>
-          <view class="join-item-info">
-            <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
-            <text>剩余23:14:15</text>
+        <block wx:for="{{groupBuyListMpVos}}" wx:for-item="groupItem" wx:for-index="groupIndex" wx:key="groupId">
+          <view class="flex_box join-group">
+            <image src="{{groupItem.userAvatar}}"></image>
+            <text class="user-name">{{groupItem.userName}}</text>
+            <view class="join-item-info">
+              <text>还差 <text style="color:{{comColor}}">{{groupItem.remainNum}}人</text> 成团</text>
+              <text>剩余{{groupItem.countDown}}</text>
+            </view>
+            <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' data-group-id="{{groupItem.groupId}}" bindtap="goGroup">去参团</view>
           </view>
-          <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
-        </view>
-        <view class="item_line"></view>
-        <view class="flex_box join-group">
-          <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
-          <text class="user-name">方框</text>
-          <view class="join-item-info">
-            <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
-            <text>剩余23:14:15</text>
-          </view>
-          <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
-        </view>
-        <view class="item_line"></view>
-        <view class="flex_box join-group">
-          <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
-          <text class="user-name">方框</text>
-          <view class="join-item-info">
-            <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
-            <text>剩余23:14:15</text>
-          </view>
-          <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
-        </view>
-        <view class="item_line"></view>
-        <view class="flex_box join-group">
-          <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
-          <text class="user-name">方框</text>
-          <view class="join-item-info">
-            <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
-            <text>剩余23:14:15</text>
-          </view>
-          <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
-        </view>
+          <view class="item_line" wx:if="{{groupIndex < specParams.activity.groupBuyListMpVos.length - 1}}"></view>
+        </block>
       </view>
       <view class="flex_outside_box" >
         <view class="flex_box">

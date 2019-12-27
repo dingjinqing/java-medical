@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.shop.order.analysis;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 /**
  * 活动订单用户数量
  * @author 孔德成
@@ -12,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 public class OrderActivityUserNum {
 
-    private Timestamp date;
+    private String date;
 
     private Integer num;
 }

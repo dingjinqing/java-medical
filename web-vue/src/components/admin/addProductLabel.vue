@@ -21,7 +21,10 @@
             @click="queryLabelData()"
           >查询</el-button>
         </div>
-        <div class="footer">
+        <div
+          class="footer"
+          :class="isElection?'isElection':''"
+        >
           <el-table
             class="version-manage-table"
             header-row-class-name="tableClss"
@@ -29,20 +32,19 @@
             border
             style="width: 100%"
             @selection-change="changeFun"
+            ref="labelTable"
           >
             <el-table-column
               align="center"
               width="100"
               type="selection"
             >
-              <template slot-scope="scope">
-                <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
-              </template>
             </el-table-column>
             <el-table-column
               prop="name"
               label="标签名称"
               align="center"
+              class="name"
             >
             </el-table-column>
           </el-table>
@@ -84,7 +86,8 @@ export default {
     brandBackData: { // 回显数据
       type: Array,
       default: () => []
-    }
+    },
+    singleElection: Boolean
   },
   data () {
     return {
@@ -92,9 +95,9 @@ export default {
       totle: 1,
       pageCount: 1,
       classValue: '',
-
       tableData: [],
-      backFlag: false
+      backFlag: false,
+      isElection: false
     }
   },
   watch: {
@@ -132,6 +135,20 @@ export default {
         })
         console.log(this.tableData)
       }
+    },
+    brandBackData (arr) {
+      console.log(arr)
+      //  labelTable
+      if (arr.length) {
+        arr.forEach(row => {
+          this.$refs.labelTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.labelTable.clearSelection()
+      }
+    },
+    singleElection (newVal) {
+      this.isElection = newVal
     }
   },
   mounted () {
@@ -162,32 +179,38 @@ export default {
       })
     },
     changeFun (val) {
-      if (val.length) {
-        this.tableData.forEach((item, index) => {
-          item.ischeck = true
-        })
-      } else {
-        this.tableData.forEach((item, index) => {
-          item.ischeck = false
-        })
-      }
-
       console.log(val)
-      this.checkBoxData = val
+      // if (val.length) {
+      //   this.tableData.forEach((item, index) => {
+      //     item.ischeck = true
+      //   })
+      // } else {
+      //   this.tableData.forEach((item, index) => {
+      //     item.ischeck = false
+      //   })
+      // }
+      if (val.length > 1) {
+        this.$refs.labelTable.clearSelection()
+        this.$refs.labelTable.toggleRowSelection(val.pop())
+        this.checkBoxData = [val[0]]
+      } else {
+        this.checkBoxData = val
+      }
+      console.log(val)
     },
     // 当前页改变
     handleCurrentChange () {
-
+      this.queryLabelData()
     },
     // 确定事件
     handleToSure () {
-      let arr = []
-      this.tableData.forEach(item => {
-        if (item.ischeck) {
-          arr.push(item)
-        }
-      })
-      this.$emit('handleToGetBackData', arr)
+      // let arr = []
+      // this.tableData.forEach(item => {
+      //   if (item.ischeck) {
+      //     arr.push(item)
+      //   }
+      // })
+      this.$emit('handleToGetBackData', this.checkBoxData)
       this.$emit('update:callAddProductLabel', false)
     }
   }
@@ -253,6 +276,18 @@ export default {
       .cell
       .el-checkbox:after {
       content: " 本页全选";
+    }
+  }
+  .isElection {
+    /deep/ .is-leaf {
+      .cell {
+        display: none;
+      }
+    }
+    /deep/ .el-table_1_column_2 {
+      .cell {
+        display: block;
+      }
     }
   }
   .pagination {

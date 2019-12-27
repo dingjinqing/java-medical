@@ -55,7 +55,8 @@ public class WxAppGroupBuyController extends WxAppBaseController {
     @PostMapping("/api/wxapp/groupbuy/share/image")
     public JsonResult getShareImage(@RequestBody @Valid GroupBuyInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        return success(shop().groupBuy.getGroupBuyShareImage(user.getUserId(),param.getGroupId()));
+        //TODO:
+        return success();
     }
 
     /**
@@ -65,6 +66,7 @@ public class WxAppGroupBuyController extends WxAppBaseController {
     @PostMapping("/api/wxapp/groupbuy/pictorial")
     public JsonResult sharaToWx(@RequestBody @Valid GroupBuyInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        return success(shop().groupBuy.getGroupBuyShareBase64Pictorial(user.getUserId(),param.getGroupId()));
+        //TODO:
+        return success();
     }
 }

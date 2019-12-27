@@ -1467,21 +1467,24 @@ public class MpAuthShopService extends MainBaseService {
 						String page="pages/auth/auth";//String page="pages/auth/auth";pages/index/index
 						String content="点击进入小程序";
 						//MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
-						ShopApplication shopApp = saas.getShopApp(authShopRecord.getShopId());
 						List<Integer> userIdList = new ArrayList<Integer>();
 						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
+						Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE;
+						//unioId在登录过小程序后才会传
 						if(!StringUtils.isEmpty(userInfo.getUnionId())) {
-							logger().info("直接发");
-							WxUserInfo info=WxUserInfo.builder().mpAppId(appId).mpOpenId(userInfo.getOpenId()).maAppId(authShopRecord.getAppId()).build();
-							RabbitMessageParam param = paramBuild(authShopRecord, page, userIdList, data);
-							shopApp.wechatMessageTemplateService.sendMpMessage(param, info);
+							logger().info("用户没有登录过小程序");
+							com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord user = saas
+									.getShopApp(authShopRecord.getShopId()).officialAccountUser.getUser(appId,
+											userInfo.getOpenId());
+							userIdList.add(user.getRecId());
+							mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER;
 						}else {
-							logger().info("走队列");
+							logger().info("用户登录过小程序");
 							UserRecord user = saas.getShopApp(authShopRecord.getShopId()).user.getUserByUnionId(userInfo.getUnionId());
-							userIdList.add(user.getUserId());							
-							RabbitMessageParam param = paramBuild(authShopRecord, page, userIdList, data);
-							saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), authShopRecord.getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());							
+							userIdList.add(user.getUserId());
 						}
+						RabbitMessageParam param = paramBuild(authShopRecord, page, userIdList, data,mpTempleType);
+						saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), authShopRecord.getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());							
 					}
 				}
 				return message;
@@ -1505,12 +1508,12 @@ public class MpAuthShopService extends MainBaseService {
 		return message;
 	}
 	private RabbitMessageParam paramBuild(MpAuthShopRecord authShopRecord, String page, List<Integer> userIdList,
-			String[][] data) {
+			String[][] data,Integer mpTempleType) {
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(
 						MpTemplateData.builder().config(MpTemplateConfig.PUSHMSG).data(data).build())
 				.page(page).shopId(authShopRecord.getShopId()).userIdList(userIdList)
-				.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+				.type(mpTempleType).build();
 		return param;
 	}
 
