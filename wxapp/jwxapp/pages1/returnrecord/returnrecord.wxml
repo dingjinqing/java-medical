@@ -1,12 +1,15 @@
 <!-- pages1/returnrecord/returnrecord.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class='main-container'>
   <view class='order_goods'>
     <view class='order_num' style='margin-bottom:20rpx;' wx:if="{{activityName}}">
       <text class='ps_type' wx:if='{{activityName != ""}}'>{{activityName}}</text>
-      订单编号：{{orderInfo.orderSn}}
+      {{i18n.$t(localePack,"page1.afterSale.orderNo")}}：{{orderInfo.orderSn}}
     </view>
-    <view class='returnr_num'>售后编号：{{orderInfo.returnOrderSn}}</view>
+    <view class='returnr_num'>
+      {{i18n.$t(localePack,"page1.afterSale.afterSaleNum")}}：{{orderInfo.returnOrderSn}}
+    </view>
     <view class='goods_info clearfix' wx:for='{{orderInfo.returnGoods}}' wx:key='key'>
       <view class='goods_img'>
         <image src='{{imageUrl + item.goodsImg}}'></image>
@@ -17,7 +20,7 @@
         <view class='price_info'>
           <view wx:if="{{orderInfo.goodsType == 4}}" class='goods_price' style='color:{{comColor}}'>
             <text style='color:{{comColor}}' wx:if="{{orderInfo.inte_money>0}}">￥{{orderInfo.inte_money}} +</text>
-            {{orderInfo.inte_score}}积分
+            {{orderInfo.inte_score}}{{i18n.$t(localePack,"page1.afterSale.points")}}
           </view>
           <view wx:else class='goods_price' style='color:{{comColor}}'>￥{{item.goodsPrice}}</view>
           <view class='goods_num'>x{{item.goodsNumber}}</view>
@@ -29,136 +32,218 @@
     <!-- 商家同意退款退货申请 -->
     <view class='buyer_info' wx:if='{{item.status == 5 && (orderInfo.returnType == 1 || orderInfo.returnType == 4)}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
         <view class='return_state' style="color:{{comColor}}">
-          {{ orderInfo.returnType == 1 ? "退货/退款":"换货" }}完成
+          {{ orderInfo.returnType == 1 ? i18n.$t(localePack,"page1.afterSale.refunds"):i18n.$t(localePack,"page1.afterSale.exchange") }}{{i18n.$t(localePack,"page1.afterSale.carryOut")}}
         </view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>审核售后申请时间：{{orderInfo.refundSuccessTime}}</view>
         <view class='main_cen_left'>
-          注：{{ orderInfo.returnType == 1 ? "退款将在3个工作日内到账，本次维权结束":"商家确认收货并提交换货物流，本次维权结束" }}。
+          {{i18n.$t(localePack,"page1.afterSale.reviewTime")}}：{{orderInfo.refundSuccessTime}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.note")}}：{{ orderInfo.returnType == 1 ? i18n.$t(localePack,"page1.afterSale.refund3Days"):i18n.$t(localePack,"page1.afterSale.receiptOfGoods") }}。
         </view>
       </view>
     </view>
     <!-- 发了物流 商家拒绝退款退货申请 -->
     <view class='buyer_info' wx:if='{{item.status == 6 && (orderInfo.returnType == 1 || orderInfo.returnType == 4)}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
         <view class='return_state' style="color:{{comColor}}">
-          未收货,拒绝{{orderInfo.returnType == 1 ? "退款/退货":"换货"}}
+          {{i18n.$t(localePack,"page1.afterSale.notReceived")}}{{orderInfo.returnType == 1 ? i18n.$t(localePack,"page1.afterSale.refunds"):i18n.$t(localePack,"page1.afterSale.exchange")}}
         </view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>审核售后申请时间：{{orderInfo.refundRefuseTime}}</view>
-        <view class='main_cen_left'>拒绝理由：{{orderInfo.refundRefuseReason}}</view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.reviewTime")}}：{{orderInfo.refundRefuseTime}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.reasonOfRefusal")}}：{{orderInfo.refundRefuseReason}}
+        </view>
       </view>
     </view>
     <!-- 商家同意退款退货申请,买家没处理,自动完成 -->
     <view class='buyer_info' wx:if='{{item.status == 7 && item.type == 2}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>系统</view>
-        <view class='return_state'>撤销售后申请</view>
+        <view class='bt_left'>{{i18n.$t(localePack,"page1.afterSale.system")}}</view>
+        <view class='return_state'>{{i18n.$t(localePack,"page1.afterSale.applyAfter")}}</view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>撤销售后申请时间：{{orderInfo.refundCancelTime}}</view>
-        <view class='main_cen_left'>您未在商家审核售后申请之后7日内提交退货物流(或商家未确认收货),售后申请已自动撤销。</view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.withdrawalTime")}}：{{orderInfo.refundCancelTime}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.didnotSubmitLogistics")}}
+        </view>
       </view>
     </view>
     <!-- 买家写的物流信息 -->
     <view class='buyer_info' wx:if='{{item.status == 4 && (orderInfo.returnType == 1 || orderInfo.returnType == 4)}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
-        <view class='return_state' style="color:{{comColor}}">物流已提交，等待商家确认</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
+        <view class='return_state' style="color:{{comColor}}">
+          {{i18n.$t(localePack,"page1.afterSale.waitMerchantConf")}}
+        </view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>提交物流时间：{{orderInfo.shippingOrRefundTime}}</view>
-        <view class='main_cen_left'>物流公司：{{orderInfo.shippingType}}</view>
-        <view class='main_cen_left'>运单号码：{{orderInfo.shippingNo}}</view>
-        <view class='main_cen_left'>联系电话：{{orderInfo.phone}}</view>
-        <view class='main_cen_left'>物流凭证：见详情</view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.submitDeliveryTime")}}：{{orderInfo.shippingOrRefundTime}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：{{orderInfo.shippingType}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.waybillNumber")}}：{{orderInfo.shippingNo}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.contactNumber")}}：{{orderInfo.phone}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.logisticsSeeDetails")}}
+        </view>
       </view>
     </view>
     <!-- 卖家同意退货退款退款申请 -->
     <view class='buyer_info' wx:if='{{item.status == 2}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
-        <view class='return_state' style="color:{{comColor}}">同意售后申请</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
+        <view class='return_state' style="color:{{comColor}}">
+          {{i18n.$t(localePack,"page1.afterSale.agreeAfterSales")}}
+        </view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>审核售后申请时间：{{orderInfo.applyPassTime}}</view>
-        <view class='main_cen_left'>注：请提交物流信息，商家将尽快处理您的订单。</view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.reviewTime")}}：{{orderInfo.applyPassTime}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.pSubmitLogistics")}}
+        </view>
       </view>
     </view>
     <!-- 商家直接拒绝退款、退货申请 -->
     <view class='buyer_info' wx:if='{{item.status == 3}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
-        <view class='return_state' style="color:{{comColor}}">拒绝售后申请</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
+        <view class='return_state' style="color:{{comColor}}">
+          {{i18n.$t(localePack,"page1.afterSale.rejectAfterSales")}}
+        </view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>审核售后申请时间：{{orderInfo.applyNotPassTime}}</view>
-        <view class='main_cen_left'>拒绝理由：{{orderInfo.applyNotPassReason}}</view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.reviewTime")}}：{{orderInfo.applyNotPassTime}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.reasonOfRefusal")}}：{{orderInfo.applyNotPassReason}}
+        </view>
       </view>
     </view>
     <!-- 商家同意退款申请 -->
     <view class='buyer_info' wx:if='{{item.status == 5 && orderInfo.returnType == 0}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
-        <view class='return_state' style="color:{{comColor}}">退款成功</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
+        <view class='return_state' style="color:{{comColor}}">
+          {{i18n.$t(localePack,"page1.afterSale.refundSuccess")}}
+        </view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>审核退款申请时间：{{orderInfo.refundSuccessTime}}</view>
-        <view class='main_cen_left'>注：退款将在3个工作日内到账，本次维权结束。</view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.reviewTime")}}：{{orderInfo.refundSuccessTime}}
+        </view>
+        <view class='main_cen_left'>{{i18n.$t(localePack,"page1.afterSale.noteOver")}}</view>
       </view>
     </view>
     <!-- 商家拒绝退款申请 -->
     <view class='buyer_info' wx:if='{{item.status == 6 && orderInfo.returnType == 0}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
-        <view class='return_state' style="color:{{comColor}}">拒绝退款</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
+        <view class='return_state' style="color:{{comColor}}">
+          {{i18n.$t(localePack,"page1.afterSale.refusalofRefund")}}
+        </view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>审核退款申请时间：{{orderInfo.refundRefuseTime}}</view>
-        <view class='main_cen_left'>拒绝理由：{{orderInfo.refundRefuseReason}}</view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.reviewTime")}}：{{orderInfo.refundRefuseTime}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.reasonOfRefusal")}}：{{orderInfo.refundRefuseReason}}
+        </view>
       </view>
     </view>
     <!-- 买家撤销退款申请 -->
     <view class='buyer_info' wx:if='{{item.status == 7 && item.type != 2}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
-        <view class='return_state' style="color:{{comColor}}">买家撤销售后申请</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
+        <view class='return_state' style="color:{{comColor}}">
+          {{i18n.$t(localePack,"page1.afterSale.buyerApplyAfter")}}
+        </view>
       </view>
       <view class='main_center'>
-        <view class='main_cen_left'>撤销售后申请时间：{{orderInfo.refundCancelTime}}</view>
-        <view class='main_cen_left'>售后申请关闭：买家主动撤销售后申请。</view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.withdrawalTime")}}：{{orderInfo.refundCancelTime}}
+        </view>
+        <view class='main_cen_left'>
+          {{i18n.$t(localePack,"page1.afterSale.afterSalesclosed")}}
+        </view>
       </view>
     </view>
     <!-- 买家申请退款或者退货退款或者换货的状态 -->
     <view class='buyer_info' wx:if='{{(item.status == 4 && orderInfo.returnType == 0) || item.status == 1}}'>
       <view class='buyer_title'>
-        <view class='bt_left'>{{item.type == 1 ? '买家' : '卖家'}}</view>
-        <view class='return_state' style="color:{{comColor}}">等待卖家处理售后申请</view>
+        <view class='bt_left'>
+          {{item.type == 1 ? i18n.$t(localePack,"page1.afterSale.buyer") : i18n.$t(localePack,"page1.afterSale.seller")}}
+        </view>
+        <view class='return_state' style="color:{{comColor}}">
+          {{i18n.$t(localePack,"page1.afterSale.waitSellerProcess")}}
+        </view>
       </view>
       <view class="main_center">
         <view class="main_cen_left clearfix">
           <view wx:if='{{orderInfo.returnType == 0}}'>
-            申请退款时间：{{orderInfo.shippingOrRefundTime}}
+            {{i18n.$t(localePack,"page1.afterSale.timeForRequest")}}：{{orderInfo.shippingOrRefundTime}}
           </view>
-          <view wx:if='{{orderInfo.returnType == 1}}'>申请退款/退货时间：{{orderInfo.applyTime}}</view>
-          <view wx:if='{{orderInfo.returnType == 4}}'>申请换货时间：{{orderInfo.applyTime}}</view>
+          <view wx:if='{{orderInfo.returnType == 1}}'>
+            {{i18n.$t(localePack,"page1.afterSale.requestRefund")}}：{{orderInfo.applyTime}}
+          </view>
+          <view wx:if='{{orderInfo.returnType == 4}}'>
+            {{i18n.$t(localePack,"page1.afterSale.replacementTime")}}：{{orderInfo.applyTime}}
+          </view>
         </view>
         <view class='main_cen_left'>
-          <text>售后类型：</text>
-          <block wx:if='{{orderInfo.returnType == 0}}'>仅退款</block>
-          <block wx:if='{{orderInfo.returnType == 1}}'>退款/退货</block>
-          <block wx:if='{{orderInfo.returnType == 2}}'>仅退运费</block>
-          <block wx:if='{{orderInfo.returnType == 4}}'>换货</block>
+          <text>{{i18n.$t(localePack,"page1.afterSale.afterMarketType")}}：</text>
+          <block wx:if='{{orderInfo.returnType == 0}}'>
+            {{i18n.$t(localePack,"page1.afterSale.return[0]")}}
+          </block>
+          <block wx:if='{{orderInfo.returnType == 1}}'>
+            {{i18n.$t(localePack,"page1.afterSale.return[1]")}}
+          </block>
+          <block wx:if='{{orderInfo.returnType == 2}}'>
+            {{i18n.$t(localePack,"page1.afterSale.return[2]")}}
+          </block>
+          <block wx:if='{{orderInfo.returnType == 4}}'>
+            {{i18n.$t(localePack,"page1.afterSale.return[4]")}}
+          </block>
         </view>
         <!-- 换货 -->
         <block wx:if='{{orderInfo.returnType == 4}}'>
           <view class='main_cen_left'>
-            <text>换货商品：</text>
+            <text>{{i18n.$t(localePack,"page1.afterSale.replacementProducts")}}：</text>
           </view>
           <view class="huanhuo_goods_area clearfix">
             <view class="h_gd_img">
@@ -180,44 +265,44 @@
             </view>
           </view>
         </block>
-        <view class='main_cen_left'>
-          <text>申请售后原因：</text>
-          {{orderInfo.reason}}
+        <view class='main_cen_left' wx:if="{{orderInfo.reasonDesc}}">
+          <text>{{i18n.$t(localePack,"page1.afterSale.resonsOfRefund")}}：</text>
+          {{orderInfo.reasonDesc}}
         </view>
         <!-- 退货退款 -->
         <block wx:if='{{orderInfo.returnType != 4}}'>
           <view wx:if="{{orderInfo.goodsType != 4}}" class='main_cen_left'>
-            <text>退款金额：</text>
+            <text>{{i18n.$t(localePack,"page1.afterSale.refundAmount")}}：</text>
             ￥{{orderInfo.money}}
           </view>
           <block wx:else>
             <view class='main_cen_left' wx:if="{{orderInfo.money>0}}">
-              <text>退款金额：</text>
+              <text>{{i18n.$t(localePack,"page1.afterSale.refundAmount")}}：</text>
               ￥{{orderInfo.money}}
             </view>
             <view class='main_cen_left'>
-              <text>退款积分：</text>
-              {{orderInfo.return_score}}积分
+              <text>{{i18n.$t(localePack,"page1.afterSale.refund")}}{{i18n.$t(localePack,"page1.afterSale.points")}}：</text>
+              {{orderInfo.return_score}}{{i18n.$t(localePack,"page1.afterSale.points")}}
             </view>
           </block>
           <view class='main_cen_left'>
             <block wx:if='{{orderInfo.refundStatus == 5}}'>
-              <text>运费金额：</text>
+              <text>{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
               ￥{{orderInfo.shippingFee}}
             </block>
             <block wx:if='{{orderInfo.refundStatus != 5}}'>
-              <text>运费金额：</text>
-              ￥{{can_shippingFee}}
+              <text>{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
+              ￥{{orderInfo.shippingFee}}
             </block>
           </view>
         </block>
         <view class='main_cen_left return_descs clearfix' wx:if='{{orderInfo.reasonDesc != ""}}'>
-          <text>售后说明：</text>
+          <text>{{i18n.$t(localePack,"page1.afterSale.afterSaleDescription")}}：</text>
           <text class='return_shuom'>{{orderInfo.reasonDesc}}</text>
         </view>
         <view class='main_cen_left return_descs clearfix' wx:if='{{orderInfo.goodsImages != "" && orderInfo.goodsImages != null}}'>
-          <text>售后凭证：</text>
-          见详情
+          <text>{{i18n.$t(localePack,"page1.afterSale.afterSalesCertificate")}}：</text>
+          {{i18n.$t(localePack,"page1.afterSale.seeDetails")}}
         </view>
       </view>
     </view>

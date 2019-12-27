@@ -68,7 +68,7 @@ global.wxPage({
   shippingNoBlur (e) {
     let value = e.detail.value
     if (!value) {
-      util.showModal('提示', '请填写运单号码！')
+      util.showModal(this.$t('page1.afterSale.prompt'), this.$t('page1.afterSale.pfillWaybillNum'))
     }
     this.setData({
       shippingNo: value
@@ -79,14 +79,14 @@ global.wxPage({
   phoneBlur (e) {
     let value = e.detail.value
     if (!value) {
-      util.showModal('提示', '请填写手机号！')
+      util.showModal(this.$t('page1.afterSale.prompt'), this.$t('page1.afterSale.pfillPhone2'))
     }
     if (/^1[3456789]\d{9}$/.test(e.detail.value)) {
       this.setData({
         phone: e.detail.value
       })
     } else {
-      util.showModal('提示', "请输入正确的手机号！");
+      util.showModal(this.$t('page1.afterSale.prompt'), this.$t('page1.afterSale.validPhone'));
       this.setData({
         phone: ''
       })
@@ -138,15 +138,15 @@ global.wxPage({
       returnType: that.data.orderInfo.returnType
     }
     if (!params.shippingNo) {
-      util.showModal('提示', '请填写运单号码！')
+      util.showModal(this.$t('page1.afterSale.prompt'), this.$t('page1.afterSale.pfillWaybillNum'))
       return false;
     }
     if (!params.phone) {
-      util.showModal('提示', '请填写手机号码！')
+      util.showModal(this.$t('page1.afterSale.prompt'), this.$t('page1.afterSale.pfillPhone2'))
       return false;
     }
     if (!/^1[3456789]\d{9}$/.test(params.phone)) {
-      util.showModal('提示', "请输入正确的手机号！");
+      util.showModal(this.$t('page1.afterSale.prompt'), this.$t('page1.afterSale.validPhone'));
       return false;
     }
     if (that.data.uploadedImg.length > 0) {
@@ -161,7 +161,7 @@ global.wxPage({
           url: '/pages1/returndetail/returndetail?return_sn=' + that.data.returnSn
         })
       } else {
-        util.toast_fail('抱歉，提交失败！')
+        util.toast_fail(that.$t('page1.afterSale.submitFail'))
       }
     }, params)
   },

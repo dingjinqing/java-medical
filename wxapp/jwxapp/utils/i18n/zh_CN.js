@@ -3,7 +3,8 @@ var order = require("./pages/order.js")
 var checkout = require("./pages/checkout.js")
 var comment = require('./page1/commentCn.js')
 var afterSale = require('./page1/afterSale.js') // 售后中心
-var fight = require('./page1/fight.js')
+var fight = require('./page1/fight.js') // 拼团
+var reserve = require('./page1/reserve.js') // 预约
 var decorate = require('./components/decorate/decorate.js')
 var zh_CN = {
   "common": {
@@ -86,7 +87,8 @@ var zh_CN = {
   "page1": {
     "comment": comment,
     "afterSale": afterSale,
-    "fight": fight
+    "fight": fight,
+    "reserve": reserve
   },
   "page2": {
 

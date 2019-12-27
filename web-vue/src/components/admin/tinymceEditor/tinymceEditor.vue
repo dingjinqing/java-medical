@@ -47,7 +47,8 @@ export default {
     },
     toolbar: {
       type: [String, Array],
-      default: ' forecolor | fontsizeselect |　undo redo　| bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image media table | removeformat'
+      // eslint-disable-next-line no-useless-escape
+      default: ' forecolor | fontsizeselect |　undo redo　| bold italic | alignleft aligncenter alignright alignjustify | \ bullist numlist outdent indent | lists image media table | removeformat'
     },
     height: {
       type: Number,
@@ -63,10 +64,10 @@ export default {
       langName: 'zh_CN',
       cnInit: {
         selector: '#cnTinymce',
-        language_url: `http://${window.location.host}/static/tinymce_languages/langs/zh_CN.js`,
+        language_url: `http://${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`,
         language: 'zh_CN',
         height: 450,
-        skin_url: `http://${window.location.host}/static/skins/ui/oxide`,
+        skin_url: `http://${window.location.host}/static/tinymce/skins/ui/oxide`,
         plugins: this.plugins,
         toolbar: this.toolbar,
         branding: false,
