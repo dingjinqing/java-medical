@@ -1,4 +1,4 @@
-<!-- 退货退款中心：pages1/returnorder/returnorder.wxml -->
+<!-- 退货退款中心：page1/returnorder/returnorder.wxml -->
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
@@ -6,13 +6,13 @@
   <block>
     <view class="order-header">
       <text class="activity-type-mark" wx:if="{{activityName != ''}}" style='color:{{comColor}};border-color:{{comColor}}'>{{activityName}}</text>
-      <text>{{i18n.$t(localePack,"pages1.afterSale.orderNo")}}：{{orderSn}}</text>
-      <button class="copy-button" bindtap="copyOrder">{{i18n.$t(localePack,"pages1.afterSale.copy")}}</button>
+      <text>{{i18n.$t(localePack,"page1.afterSale.orderNo")}}：{{orderSn}}</text>
+      <button class="copy-button" bindtap="copyOrder">{{i18n.$t(localePack,"page1.afterSale.copy")}}</button>
     </view>
     <view class="order-info" style="padding-bottom:0;">
       <view>
         <text class="order-required">*</text>
-        售后类型
+        {{i18n.$t(localePack,"page1.afterSale.afterMarketType")}}
       </view>
       <view class="order-info-type">
         <block wx:for="{{returnTypes}}" wx:key="index">
@@ -30,16 +30,16 @@
           </view>
           <view class="goods-wrap">
             <view class="goods-name">
-              <text class="activity-type-mark" wx:if="{{!item.isGift}}" style='color:{{comColor}};border-color:{{comColor}}'>赠品</text>
+              <text class="activity-type-mark" wx:if="{{item.isGift}}" style='color:{{comColor}};border-color:{{comColor}}'>赠品</text>
               {{item.goodsName}}
             </view>
             <view class="goods-spec" style="opacity:{{item.goodsAttr?1:0}}">
               {{item.goodsAttr}}
             </view>
             <view class="goods-price">
-              <text wx:if="{{goodsType == 4}}">积分：{{ item.goodsScore }}<text wx:if="{{item.money > 0}}" style="margin-left:20rpx">现金：￥{{ item.money }}</text></text>
-              <text wx:else>价格：￥{{item.goodsPrice}}</text>
-              <text>可退货商品数量：{{item.returnable}}</text>
+              <text wx:if="{{goodsType == 4}}">{{i18n.$t(localePack,"page1.afterSale.integral")}}：{{ item.goodsScore }}<text wx:if="{{item.money > 0}}" style="margin-left:20rpx">现金：￥{{ item.money }}</text></text>
+              <text wx:else>{{i18n.$t(localePack,"page1.afterSale.price")}}：￥{{item.goodsPrice}}</text>
+              <text>{{i18n.$t(localePack,"page1.afterSale.returnableNum")}}：{{item.returnable}}</text>
             </view>
           </view>
         </view>
@@ -47,7 +47,7 @@
     </view>
     <view class="order-info">
       <view class="order-flex">
-        <text><text class="order-required">*</text>申请原因：</text>
+        <text><text class="order-required">*</text>{{i18n.$t(localePack,"page1.afterSale.reasonApplication")}}：</text>
         <view class="order-flex">
           <picker mode="selector" bindchange="bindPickerChange" wx:if='{{returnType != 4}}' value="{{reasoneIndex}}" range="{{reasone}}">
             <view>
@@ -64,24 +64,24 @@
     </view>
     <view class="order-info" wx:if="{{returnType != 4}}">
       <block wx:if="{{goodsType == 4}}">
-        <text><text class="order-place">*</text>退还积分：</text>
+        <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.refundPoints")}}：</text>
         <text><text style="color:{{comColor}}">￥{{ orderInfo.returnScore }}</text></text>
       </block>
-      <text><text class="order-place">*</text>退款金额：</text>
+      <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.refundAmount")}}：</text>
       <text><text style="color:{{comColor}}">￥{{ returnMoney }}</text></text>
     </view>
     <view class="order-info">
       <view>
         <text class="order-place">*</text>
-        <text>申请说明：</text>
-        <text class="order-remark">（可不填）</text>
+        <text>{{i18n.$t(localePack,"page1.afterSale.applyInstruct")}}：</text>
+        <text class="order-remark">（{{i18n.$t(localePack,"page1.afterSale.notFill")}}）</text>
       </view>
       <view class="order-textarea">
-        <textarea placeholder="请输入0-200字的申请说明" bindblur="reasonDescInput" value="{{reasonDesc}}"></textarea>
+        <textarea placeholder="{{i18n.$t(localePack,'page1.afterSale.applyDesc')}}" bindblur="reasonDescInput" value="{{reasonDesc}}"></textarea>
       </view>
     </view>
     <view class="order-info">
-      <text class="order-left"><text class="order-place">*</text>上传凭证：</text>
+      <text class="order-left"><text class="order-place">*</text>{{i18n.$t(localePack,'page1.afterSale.uploadCertificate')}}：</text>
       <view class="order-upload order-left" wx:for="{{uploadedImg}}" wx:key="index">
         <image class="order-upload-img" src="{{imageUrl + item.imgPath}}" mode="cover" />
         <image src='{{dele_service}}' class="order-upload-delete" bindtap='delImage' data-idx="{{index}}"></image>
@@ -93,10 +93,11 @@
   </block>
   <view class="order-footer">
     <form report-submit='true' bindsubmit='submitRefund' class='ipx_en' wx:if='{{ (returnType == 4 && bottom.subscribe_message) || !bottom.subscribe_message }}'>
-      <button form-type='submit' class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>提交申请</button>
+      <button form-type='submit' class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>{{i18n.$t(localePack,'page1.afterSale.submitApplication')}}</button>
     </form>
+    <!-- 换货提交 -->
     <form bindtap="toSubscribeMessage" class='ipx_en' wx:if='{{returnType != 4 && bottom.subscribe_message }}'>
-      <button class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>提交申请</button>
+      <button class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>{{i18n.$t(localePack,'page1.afterSale.submitApplication')}}</button>
     </form>
   </view>
 </view>

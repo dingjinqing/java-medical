@@ -73,18 +73,18 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
                 .where(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
                 .and(ORDER_INFO.CREATE_TIME.lt(record2s.field("time",Timestamp.class))).fetchInto(Integer.class);
         // 老用户订单数据
-        List<OrderActivityUserNum> oldList= db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME).as("date"),count(ORDER_INFO.CREATE_TIME))
+        List<OrderActivityUserNum> oldList= db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME).as("date"),count(ORDER_INFO.CREATE_TIME).as("num"))
             .from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
             .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
             .and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
             .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {goodType})))
             .and(ORDER_INFO.USER_ID.in(oldUserIdList))
-            .groupBy(ORDER_INFO.CREATE_TIME)
+            .groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
             .fetchInto(OrderActivityUserNum.class);
         //新用户订单数据
         userIdList.removeAll(oldUserIdList);
-        List<OrderActivityUserNum> newList = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME).as("date"), count(ORDER_INFO.CREATE_TIME))
+        List<OrderActivityUserNum> newList = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME).as("date"), count(ORDER_INFO.CREATE_TIME).as("num"))
             .from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
             .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
@@ -96,6 +96,8 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
         ActiveOrderList activeOrderList=new ActiveOrderList();
         activeOrderList.setNewUserNum(newList);
         activeOrderList.setOldUserNum(oldList);
+        activeOrderList.setOldUser(oldUserIdList.size());
+        activeOrderList.setNewUser(userIdList.size());
         return activeOrderList;
     }
 

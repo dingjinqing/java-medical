@@ -22,10 +22,12 @@ import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
+import com.vpu.mp.service.shop.goods.mp.GoodsActivityShareRecordService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.image.postertraits.PictorialService;
 import com.vpu.mp.service.shop.image.postertraits.UserCenterTraitService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.channel.ChannelService;
@@ -99,9 +101,13 @@ public class ShopApplication {
 	@Autowired
 	public GoodsMpService goodsMp;
 	@Autowired
+	public GoodsActivityShareRecordService goodsActivityShareRecord;
+	@Autowired
 	public ImageService image;
 	@Autowired
 	public QrCodeService qrCode;
+	@Autowired
+	public PictorialService pictorialService;
 	@Autowired
 	public ImageCategoryService imageCatgory;
 	@Autowired

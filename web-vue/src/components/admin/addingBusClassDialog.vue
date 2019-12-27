@@ -41,6 +41,7 @@
               highlight-current
               :props="defaultProps"
               :default-checked-keys="defaultArr"
+              @check-change="handleClick"
             >
             </el-tree>
           </div>
@@ -67,7 +68,11 @@ export default {
   props: {
     dialogVisible: Boolean, // 弹窗调起flag
     classFlag: Number,
-    backDataArr: Array
+    backDataArr: Array,
+    singleElection: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -95,7 +100,8 @@ export default {
       flag: null,
       loading: true,
       dialogTitle: '',
-      busClassDialogVisible: false
+      busClassDialogVisible: false,
+      singleEle: false
     }
   },
   watch: {
@@ -114,6 +120,9 @@ export default {
       if (!newData) {
         this.$emit('update:dialogVisible', false)
       }
+    },
+    singleElection (newData) {
+      this.singleEle = newData
     }
   },
   mounted () {
@@ -151,6 +160,13 @@ export default {
     })
   },
   methods: {
+    // 节点点击
+    handleClick (data, checked, node) {
+      console.log(data, checked, node)
+      if (checked && this.singleEle) {
+        this.$refs.cardTree.setCheckedNodes([data])
+      }
+    },
     // 弹窗确认
     handleSure () {
       let arr = ''
