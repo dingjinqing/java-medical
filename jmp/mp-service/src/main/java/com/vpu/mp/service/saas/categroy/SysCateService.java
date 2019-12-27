@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record1;
 import org.springframework.stereotype.Service;
 
@@ -248,5 +249,28 @@ public class SysCateService extends MainBaseService {
 
     private List<CategoryRecord> getCategoryListVo(Collection<Integer> inIds, Collection<Integer> notInIds) {
         return db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(inIds)).and(CATEGORY.CAT_ID.notIn(notInIds)).fetchInto(CategoryRecord.class);
+    }
+
+    /**
+     * 得到当前节点自身及所有子节点的集合
+     * @param ids 节点集合
+     * @return 所有子节点结合
+     */
+    public List<Integer> getAllChild(List<Integer> ids) {
+        //得到子节点
+        List<Integer> childIds = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.in(ids)).fetchInto(Integer.class);
+        //得到子节点中还有子节点的节点
+        List<Integer> grandChildIds = db().select(CATEGORY.CAT_ID).from(CATEGORY)
+            .where(CATEGORY.PARENT_ID.in(childIds))
+            .and(CATEGORY.HAS_CHILD.greaterThan(NumberUtils.BYTE_ZERO))
+            .fetchInto(Integer.class);
+        //若存在二级子节点，递归得到后合并
+        if (grandChildIds.size()> NumberUtils.INTEGER_ZERO){
+            List<Integer> anotherChild = getAllChild(grandChildIds);
+            childIds.addAll(anotherChild);
+            //id去重
+            childIds = childIds.stream().distinct().collect(Collectors.toList());
+        }
+        return childIds;
     }
 }
