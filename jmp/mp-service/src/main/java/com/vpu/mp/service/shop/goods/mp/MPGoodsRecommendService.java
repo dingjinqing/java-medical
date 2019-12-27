@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.goods.mp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecSource;
@@ -84,19 +86,18 @@ public class MPGoodsRecommendService extends ShopBaseService {
     /**
      * 获取推荐商品
      */
-    public void getRecommendGoods(RecommendGoodsParam param) {
+    public List<Integer> getRecommendGoods(RecommendGoodsParam param) {
         //如果recommendGoodsIds是空数组,为其赋值
         if (param.getRecommendGoodsIds().size() == 0) {
             param.setRecommendGoodsIds(getRecommendGoodsIds(param.getPageName(), param.getUserId()));
         }
         //判断赋值是否成功
         if (param.getRecommendGoodsIds().size() == 0) {
-            //todo 返回失败信息jsonCode
-            return;
+            throw new BusinessException(JsonResultCode.GOODS_RECOMMEND_NO_RECOMMENDED_GOODS);
         }
         //todo 对接post
         //todo 不同页面信息展示
-
+        return null;
      }
 
      /**
