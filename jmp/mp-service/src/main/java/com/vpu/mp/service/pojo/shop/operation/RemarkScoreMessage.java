@@ -35,4 +35,6 @@ public class RemarkScoreMessage {
 	 */
 	/** 管理员操作 */
 	public static final String MSG_ADMIN_OPERATION = "admin.operation";
+
+	public static final String MSG_ADMIN_OPERATION_TEST = "admin.operation.test";
 }

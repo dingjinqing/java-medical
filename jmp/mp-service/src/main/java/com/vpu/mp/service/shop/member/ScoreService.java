@@ -20,15 +20,17 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record7;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.exception.DataAccessException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScorePageInfo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
@@ -80,6 +83,7 @@ public class ScoreService extends ShopBaseService {
 	@Autowired
 	public MemberService member;	
 	
+	final static String LANGUAGE_TYPE="remark";
 	/**
 	 *   创建用户积分表,增加，消耗用户积分
 	 * @param param 积分变动相关数据
@@ -388,16 +392,65 @@ public class ScoreService extends ShopBaseService {
 	 * @param param 
 	 * @return PageResult<ScorePageListVo>
 	 */
-	public PageResult<ScorePageListVo> getPageListOfScoreDetails(ScorePageListParam param) {
-		SelectJoinStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select = db()
-				.select(USER.USERNAME,USER.MOBILE,USER_SCORE.ORDER_SN,USER_SCORE.SCORE,USER_SCORE.CREATE_TIME,USER_SCORE.EXPIRE_TIME,USER_SCORE.REMARK)
+	public PageResult<ScorePageListVo> getPageListOfScoreDetails(ScorePageListParam param,String language) {
+		SelectJoinStep<? extends Record> select = db()
+				.select(USER.USERNAME,USER.MOBILE,USER_SCORE.ORDER_SN,USER_SCORE.SCORE,USER_SCORE.CREATE_TIME,USER_SCORE.EXPIRE_TIME
+						,USER_SCORE.REMARK_DATA,USER_SCORE.REMARK_ID)
 				.from(USER_SCORE.join(USER).on(USER.USER_ID.eq(USER_SCORE.USER_ID)));
 		
 		
 		buildOptions(select,param);
 		select.orderBy(USER_SCORE.CREATE_TIME.desc());
 		
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(),ScorePageListVo.class);
+		PageResult<ScorePageInfo> resultBefore = getPageResult(select, param.getCurrentPage(), param.getPageRows(),ScorePageInfo.class);
+		
+		return scoreInfoToScoreVo(language, resultBefore);
+
+	}
+	
+	/**
+	 *	数据类型转换
+	 */
+	public PageResult<ScorePageListVo> scoreInfoToScoreVo(String language, PageResult<ScorePageInfo> resultBefore) {
+		PageResult<ScorePageListVo> resultAfter = new PageResult<>();
+		List<ScorePageListVo> dataList = new ArrayList<>();
+		for(ScorePageInfo scoreItem: resultBefore.dataList) {
+			ScorePageListVo scoreVo = new ScorePageListVo();
+			BeanUtils.copyProperties(scoreItem, scoreVo);
+			String remark = remarkI18N(language, scoreItem.getRemarkId(),scoreItem.getRemarkData());
+			scoreVo.setRemark(remark);
+			dataList.add(scoreVo);
+		}
+		resultAfter.setPage(resultBefore.getPage());
+		resultAfter.setDataList(dataList);
+		return resultAfter;
+	}
+	
+	/**
+	 * 处理备注国际化
+	 * @param language 语言
+	 * @param tmpId	模板Id
+	 * @param tmpData 模板数据
+	 * @return String remark 国际化的备注
+	 */
+	public String remarkI18N(String language,Integer tmpId,String tmpData) {
+		// remark i18n
+		String remark;
+		String msgTmp = RemarkScoreTemplate.getMessageByCode(tmpId);
+		if(!StringUtils.isBlank(msgTmp)) {
+			// 系统定义信息
+			if(StringUtils.isBlank(tmpData)) {
+				// 直接翻译
+				remark = Util.translateMessage(language, msgTmp, LANGUAGE_TYPE);
+			}else {
+				// 需要数据进行翻译
+				remark = Util.translateMessage(language, msgTmp, LANGUAGE_TYPE, (Object[])tmpData.split(","));
+			}
+		}else {
+			// 来自用户输入的数据，不进行翻译
+			remark = tmpData;
+		}
+		return remark;
 	}
 
 
@@ -407,7 +460,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param param  
 	 */
 	private void buildOptions(
-			SelectJoinStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select,
+			SelectJoinStep<? extends Record> select,
 			ScorePageListParam param) {
 		logger().info("正在构建查询条件");
 		

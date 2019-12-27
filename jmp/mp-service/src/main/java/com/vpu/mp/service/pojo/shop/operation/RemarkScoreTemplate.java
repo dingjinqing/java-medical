@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.operation;
 /**
  * @author 黄壮壮
  * 备注模块: 
- * 用户输入: 0,
+ * 用户输入: 0, 代表的是用户自己输入
  * 登录签到相关:1开头四位数，如1001,
  * 订单相关: 2开头四位数，如2001,
  * 会员卡相关:3开头四位数，如3001,
@@ -36,8 +36,8 @@ public enum RemarkScoreTemplate {
 	 * 管理员
 	 */
 	/** 管理员操作 */
-	ADMIN_OPERATION(6001,RemarkScoreMessage.MSG_ADMIN_OPERATION);
-	
+	ADMIN_OPERATION(6001,RemarkScoreMessage.MSG_ADMIN_OPERATION),
+	ADMIN_OPERATION_TEST(6002,RemarkScoreMessage.MSG_ADMIN_OPERATION_TEST);
 	
 	
 	/** 返回码 */
@@ -48,5 +48,14 @@ public enum RemarkScoreTemplate {
 	private RemarkScoreTemplate(int code,String message) {
 		this.code = code;
 		this.message = message;
+	}
+	
+	public static String getMessageByCode(Integer code) {
+		for(RemarkScoreTemplate item: RemarkScoreTemplate.values()) {
+			if(code.equals(item.code)) {
+				return item.message;
+			}
+		}
+		return null;
 	}
 }
