@@ -55,24 +55,24 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
             propertyList.add(new FieldProperty(EsSearchName.MIN_SPEC_PRD_PRICE,param.getLowShopPrice(),Operator.GTE));
         }
         if( null != param.getCatId() ){
-            propertyList.add(new FieldProperty(EsSearchName.CAT_ID,param.getCatId()));
+            propertyList.add(new FieldProperty(EsSearchName.FULL_CAT_ID,param.getCatId()));
         }
         if( null != param.getSortId() ){
-            propertyList.add(new FieldProperty(EsSearchName.SORT_ID,param.getSortId()));
+            propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getSortId()));
         }
         if( null != param.getLabelId() ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_LABEL,param.getLabelId()));
         }
-        if( null != param.getSaleTimeStart() ){
-            //TODO 上架时间开始
-//            propertyList.add(new FieldProperty(EsSearchName.Sa,shopId));
-
-        }
-        if( null != param.getSaleTimeEnd() ){
-            //TODO 上架时间截止
-//            propertyList.add(new FieldProperty(EsSearchName.Sa,shopId));
-
-        }
+//        if( null != param.getSaleTimeStart() ){
+//            //TODO 上架时间开始
+//            propertyList.add(new FieldProperty(EsSearchName.C,shopId));
+//
+//        }
+//        if( null != param.getSaleTimeEnd() ){
+//            //TODO 上架时间截止
+////            propertyList.add(new FieldProperty(EsSearchName.Sa,shopId));
+//
+//        }
         if( null != param.getBrandId() ){
             propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getBrandId()));
         }
