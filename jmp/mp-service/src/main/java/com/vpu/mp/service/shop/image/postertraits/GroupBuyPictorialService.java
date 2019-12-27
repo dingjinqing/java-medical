@@ -6,7 +6,13 @@ import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
+import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -40,6 +46,48 @@ public class GroupBuyPictorialService  extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private DomainConfig domainConfig;
+
+    public GroupBuyShareInfoVo getGroupBuyShareInfo(GroupBuyShareInfoParam param) {
+        GroupBuyShareInfoVo shareInfoVo = new GroupBuyShareInfoVo();
+
+        GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecordNullable(param.getActivityId());
+        // 拼团活动信息不可用
+        if (groupBuyDefineRecord == null) {
+            groupBuyLog("分享","拼团活动信息不可用");
+            shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
+            return shareInfoVo;
+        }
+
+        GoodsRecord goodsRecord = goodsService.getValidGoodsRecordById(groupBuyDefineRecord.getGoodsId());
+        // 拼团商品信息不可用
+        if (goodsRecord == null) {
+            groupBuyLog("分享","拼团商品信息不可用");
+            shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
+            return shareInfoVo;
+        }
+
+        shareInfoVo.setPath(QrCodeTypeEnum.GROUP_BOOKING.getUrl());
+        PictorialShareConfig shareConfig = Util.parseJson(groupBuyDefineRecord.getShareConfig(), PictorialShareConfig.class);
+
+        // 用户自定义分享样式
+        if (PictorialShareConfig.CUSTOMER_STYLE.equals(shareConfig.getShareAction())) {
+            if (PictorialShareConfig.DEFAULT_IMG.equals(shareConfig.getShareImgAction())) {
+                shareInfoVo.setImgUrl(goodsRecord.getGoodsImg());
+            } else {
+                shareInfoVo.setImgUrl(shareConfig.getShareImg());
+            }
+            shareInfoVo.setShareDoc(shareConfig.getShareDoc());
+        } else {
+//            db().selectFrom(PICTORIAL).where()
+        }
+
+        return shareInfoVo;
+    }
+
+    public void createGroupBuyShareImg(GroupBuyDefineRecord groupBuyDefineRecord,GoodsRecord goodsRecord,GroupBuyShareInfoParam param){
+
+    }
+
     /**
      * 拼团海报
      * @return
@@ -93,4 +141,7 @@ public class GroupBuyPictorialService  extends ShopBaseService {
         return null;
     }
 
+    private void groupBuyLog(String share,String msg){
+        logger().debug("小程序-拼团{}-{}",share,msg);
+    }
 }

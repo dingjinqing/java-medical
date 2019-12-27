@@ -49,25 +49,43 @@ var user = {
       }
     })
   },
-  toSubscribeMessage (templateIds, module_name, cb) {
+  getNeedTemplateId(typs){
+    this.api('/api/wxapp/subscribe/getNeedTemplateId',(res)=>{
+      if(res.error === 0){
+        // let templateIds = res.content.map(item=>item.templateId)
+        // console.log(templateIds)
+        this.toSubscribeMessage(res.content)
+      }
+    },{typs:typs})
+  },
+  toSubscribeMessage (content, module_name, cb) {
     var that = this;
+    let templateIds = content.map(item=>item.templateId)
     if (wx.requestSubscribeMessage) {
       wx.requestSubscribeMessage({
         tmplIds: templateIds,
         success (res) {
-          console.log(res);
-          that.api('/api/wxapp/common/subscribemessage', function (res) { }, { json_data: JSON.stringify(res), module_name: module_name })
+          let params = {}
+          Object.keys(res).forEach(item=>{
+            if(item === 'errMsg') return
+            if(!params[res[item]]){
+              params[res[item]] = [content.find(templateItem=>{return templateItem.templateId === item})]
+            } else {
+              if(params[res[item]]) params[res[item]] =  [...params[res[item]],content.find(templateItem=>{return templateItem.templateId === item})]
+            }
+          })
+          that.api('/api/wxapp/subscribe/updateTemplate', function (res) { }, { ...params })
         },
         fail (res) {
           console.log(res);
         },
         complete (res) {
           console.log(res);
-          cb();
+          cb && cb();
         }
       })
     } else {
-      cb();
+      cb && cb();
     }
   },
   getUserInfoCommon (e, cb) {

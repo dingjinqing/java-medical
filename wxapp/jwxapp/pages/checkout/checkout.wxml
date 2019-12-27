@@ -44,11 +44,11 @@
         <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
         <view class="goods_info">
           <view class="goods_name">
-            <text class="name">{{goodsItem.goodsName}}</text>
+            <text class="name"><text class="goods-tag" wx:if="{{goodsItem.isGift}}" style="color:{{comColor}};border-color:{{comColor}}">赠品</text>{{goodsItem.goodsName}}</text>
             <text class="spec">{{goodsItem.goodsAttr}}</text>
           </view>
           <view class="goods_price">
-            <text class="price" style="color:{{comColor}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.goodsPrice})}}</text>
+            <text class="price" style="color:{{comColor}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.goodsPrice || '0'})}}</text>
             <text class="num">x{{goodsItem.goodsNumber}}</text>
           </view>
         </view>

@@ -10,7 +10,9 @@
             <image src='{{imageUrl}}/image/wxapp/search_clear.png' mode='widthFix'></image>
           </view>
         </view>
-        <view class="btn_search" bindtap="handleSearch">搜索</view>
+        <view class="btn_search" bindtap="handleSearch">
+          {{i18n.$t(localePack,"pages.order.search")}}
+        </view>
       </view>
       <scroll-view class="top_nav" wx:if="{{navStatusNum}}" scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
         <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">

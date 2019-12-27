@@ -12,6 +12,6 @@ public class ShareRecordParam {
     /** 活动id */
     private Integer activityId;
     /** 活动类型 */
-    private Byte activityType;
+    private Integer activityType;
     private Integer userId;
 }

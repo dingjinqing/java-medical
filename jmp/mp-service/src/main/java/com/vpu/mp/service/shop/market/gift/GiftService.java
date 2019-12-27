@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.gift;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.Gift;
 import com.vpu.mp.db.shop.tables.GiftProduct;
 import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
@@ -24,9 +25,11 @@ import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -60,6 +63,8 @@ import static org.springframework.util.StringUtils.isEmpty;
 @Service
 @Primary
 public class GiftService extends ShopBaseService {
+    @Autowired
+    private DomainConfig domainConfig;
 
     public static final Gift TABLE = Gift.GIFT;
     public static final GiftProduct SUB_TABLE = GiftProduct.GIFT_PRODUCT;
@@ -202,7 +207,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 获取活动赠品
      */
-    protected List<ProductVo> getGiftProduct(Integer giftId) {
+    protected List<ProductVo> getGiftProduct(Integer... giftId) {
         return db().select(SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
                 PRODUCT.PRD_IMG,PRODUCT.PRD_PRICE,PRODUCT.PRD_DESC,GOODS.GOODS_NAME,GOODS.GOODS_IMG)
             .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC)
@@ -210,7 +215,7 @@ public class GiftService extends ShopBaseService {
             .from(SUB_TABLE)
             .leftJoin(PRODUCT).on(PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
-            .where(SUB_TABLE.GIFT_ID.eq(giftId))
+            .where(SUB_TABLE.GIFT_ID.in(giftId))
             .fetchInto(ProductVo.class);
     }
 
@@ -243,6 +248,11 @@ public class GiftService extends ShopBaseService {
             .fetchOneInto(ProductVo.class);
         if (vo!=null){
             vo.setOfferNumber(getGiftOrderedNumber(productId, giftId));
+        }
+        if(StringUtils.isNotEmpty(vo.getPrdImg())){
+            vo.setPrdImg(domainConfig.imageUrl(vo.getPrdImg()));
+        }else if(StringUtils.isNotEmpty(vo.getGoodsImg())){
+            vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
         }
         return vo;
     }

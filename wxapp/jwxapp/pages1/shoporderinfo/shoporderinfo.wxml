@@ -3,19 +3,19 @@
 <view class="main-container">
   <view class='main-container' style='min-height:950rpx;'>
     <view class='header' style='background:{{somColor}}'>
-      <view style='color:{{comColor}}'>￥{{info.money_paid}}</view>
+      <view style='color:{{comColor}}'>￥{{orderInfo.moneyPaid}}</view>
       <view style='color:{{comColor}}'>
         <text class='iconfont icondanxuan pay_check' style='color:{{comColor}};font-size:30rpx;'></text>
         支付完成
       </view>
     </view>
     <view class='header2'>
-      <view>支付人：{{info.user_name}}</view>
-      <view>支付门店：{{info.store_info.store_name}}</view>
+      <view>支付人：{{orderInfo.username}}</view>
+      <view>支付门店：{{orderInfo.storeName}}</view>
       <view class='clearfix'>
         <view>门店地址：</view>
         <view class='shop_addr'>
-          {{info.store_info.province_name}}{{info.store_info.city_name}}{{info.store_info.district_name}}{{info.store_info.address}}
+          {{orderInfo.provinceCode}}{{orderInfo.cityCode}}{{orderInfo.districtCode}}{{orderInfo.address}}
         </view>
         <view class='look_map' bindtap='showMap'>查看地图</view>
       </view>
@@ -24,36 +24,36 @@
       <view class='money'>
         <view class='clearfix'>
           <text>合计</text>
-          <text class='fr'>￥{{info.order_amount}}</text>
+          <text class='fr'>￥{{orderInfo.orderAmount}}</text>
         </view>
-        <view class='clearfix' wx:if="{{info.member_card_redunce != '0.00'}}">
+        <view class='clearfix' wx:if="{{orderInfo.memberCardReduce != '0.00'}}">
           <text>会员卡折扣</text>
-          <text class='fr'>-￥{{info.member_card_redunce}}</text>
+          <text class='fr'>-￥{{orderInfo.memberCardReduce}}</text>
         </view>
-        <view class='clearfix' wx:if="{{info.member_card_balance != '0.00'}}">
+        <view class='clearfix' wx:if="{{orderInfo.memberCardBalance != '0.00'}}">
           <text>会员卡支付</text>
-          <text class='fr'>-￥{{info.member_card_balance}}</text>
+          <text class='fr'>-￥{{orderInfo.memberCardBalance}}</text>
         </view>
-        <view class='clearfix' wx:if="{{info.score_discount != '0.00'}}">
+        <view class='clearfix' wx:if="{{orderInfo.scoreDiscount != '0.00'}}">
           <text>积分抵现</text>
-          <text class='fr'>-￥{{info.score_discount}}</text>
+          <text class='fr'>-￥{{orderInfo.scoreDiscount}}</text>
         </view>
-        <view class='clearfix' wx:if="{{info.use_account != '0.00'}}">
+        <view class='clearfix' wx:if="{{orderInfo.useAccount != '0.00'}}">
           <text>余额支付</text>
-          <text class='fr'>-￥{{info.use_account}}</text>
+          <text class='fr'>-￥{{orderInfo.useAccount}}</text>
         </view>
       </view>
       <view class='real_money'>
         实付款：
-        <text style='color:{{comColor}}'>￥{{info.money_paid}}</text>
+        <text style='color:{{comColor}}'>￥{{orderInfo.moneyPaid}}</text>
       </view>
     </view>
     <view class='order'>
       <view>支付单信息</view>
       <view class='money'>
-        <view>支付单号：{{info.order_sn}}</view>
-        <view>支付时间：{{info.add_time}}</view>
-        <view wx:if="{{info.add_message}}">备注：{{info.add_message}}</view>
+        <view>支付单号：{{orderInfo.orderSn}}</view>
+        <view>支付时间：{{orderInfo.payTime}}</view>
+        <view wx:if="{{orderInfo.addMessage}}">备注：{{orderInfo.addMessage}}</view>
       </view>
     </view>
   </view>

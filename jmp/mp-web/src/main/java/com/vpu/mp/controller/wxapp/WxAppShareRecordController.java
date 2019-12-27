@@ -22,7 +22,7 @@ public class WxAppShareRecordController extends WxAppBaseController{
     public JsonResult addShareRecord(@RequestBody ShareRecordParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-
+        shop().goodsActivityShareRecord.addShareRecord(param);
         return success();
     }
 }

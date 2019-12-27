@@ -143,31 +143,11 @@
             </tr>
           </table>
           <div style="text-align: center;">
-            <span>{{$t('goodsAddEditInfo.stockAndPriceInfo.batchUpdate')}}</span>
-            <el-link
-              size="small"
-              :underline="false"
-              @click="unifyPrdSpecAttr('prdPrice')"
-              style="margin-right: 5px;"
-            >{{$t('goodsAddEditInfo.stockAndPriceInfo.batchPrice')}}</el-link>
-            <el-link
-              size="small"
-              :underline="false"
-              @click="unifyPrdSpecAttr('prdCostPrice')"
-              style="margin-right: 5px;"
-            >{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</el-link>
-            <el-link
-              size="small"
-              :underline="false"
-              @click="unifyPrdSpecAttr('prdNumber')"
-              style="margin-right: 5px;"
-            >{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</el-link>
-            <el-link
-              size="small"
-              :underline="false"
-              @click="unifyPrdSpecAttr('prdImg')"
-              style="margin-right: 5px;"
-            >{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</el-link>
+            <span class="batchSpan ">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchUpdate')}}</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchPrice')}}</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdCostPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdNumber')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdImg')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</span>
           </div>
         </div>
       </el-form-item>
@@ -1553,5 +1533,17 @@ table tr:nth-child(odd) {
 
 table tr:nth-child(even) {
   background: #f5fafa;
+}
+
+.batchSpan{
+  display: inline-block;
+  margin:0px 2px;
+}
+.linkSpan{
+  color: #555;
+  cursor: pointer;
+}
+.linkSpan:hover {
+  color: #66b1ff;
 }
 </style>
