@@ -678,6 +678,9 @@ export default {
         return
       }
       if (this.update) {
+        this.param.gifts.map((item, index) => {
+          item.productId = item.prdId
+        })
         var obj = this.param
         obj.id = this.id
         // 编辑保存
@@ -824,6 +827,8 @@ export default {
         // const { productId, productNumber } = row
         const { giftId, productId, productNumber } = row
         getProductDetail(giftId, productId).then(({ content }) => {
+          row.goodsImg = content.prdImg || content.goodsImg
+          row.productId = productId
           this.tableData.push({
             ...row,
             productNumber
