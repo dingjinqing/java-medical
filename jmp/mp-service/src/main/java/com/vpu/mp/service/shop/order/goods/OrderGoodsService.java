@@ -351,6 +351,20 @@ public class OrderGoodsService extends ShopBaseService{
         }
         return type;
     }
+
+    /**
+     * 获取赠品活动订单号
+     * @param giftId 赠品活动id
+     * @param isIncludeReturn 是否包含退款
+     * @return
+     */
+    public List<String> getGiftOrderSns(Integer giftId, boolean isIncludeReturn){
+        Condition condition = TABLE.IS_GIFT.eq(OrderConstant.IS_GIFT_Y).and(TABLE.GIFT_ID.eq(giftId));
+        if(isIncludeReturn == false){
+            condition.and(TABLE.RETURN_NUMBER.eq(0));
+        }
+        return db().selectDistinct(TABLE.ORDER_SN).from(TABLE).where(condition).fetchInto(String.class);
+    }
 	/**
 	 *  购买商品记录(三个月内)
 	 * @param userId  用户ID
