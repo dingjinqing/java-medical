@@ -70,6 +70,13 @@
             :label="item.title"
             :name="item.name"
           >
+            <span slot="label">
+                {{item.title}}<span class="wait_num" v-if="item.name === '-1'">{{countingData.all}}</span>
+              <span class="wait_num" v-if="item.name === '0'">{{countingData.waitPay}}</span>
+              <span class="wait_num" v-if="item.name === '1'">{{countingData.waitService}}</span>
+              <span class="wait_num" v-if="item.name === '2'">{{countingData.canceled}}</span>
+              <span class="wait_num" v-if="item.name === '3'">{{countingData.finished}}</span>
+              </span>
           </el-tab-pane>
         </el-tabs>
         <!--列表展示-->
@@ -523,7 +530,7 @@ export default {
         all: 0,
         waitPay: 0,
         waitService: 0,
-        cancelled: 0,
+        canceled: 0,
         finished: 0
       },
       // 核销入参
@@ -637,7 +644,7 @@ export default {
       getList(params).then(res => {
         if (res.error === 0) {
           this.tableData = [...res.content.pageList.dataList]
-          this.countingData = [...res.content.countingData]
+          this.countingData = res.content.countingData
           this.pageParams = Object.assign({}, res.content.pageList.page)
           // 合并时期时间段
           this.tableData.map((item, index) => {
@@ -834,7 +841,8 @@ export default {
       getList(params).then(res => {
         if (res.error === 0) {
           this.tableData = [...res.content.pageList.dataList]
-          this.countingData = [...res.content.countingData]
+          this.countingData = res.content.countingData
+          console.log('统计数据：' + JSON.stringify(this.countingData))
           this.pageParams = Object.assign({}, res.content.pageList.page)
           // 合并时期时间段
           this.tableData.map((item, index) => {
@@ -882,6 +890,18 @@ export default {
   .modifypersonDivTop,
   .modifypersonDivTop > div {
     display: flex;
+  }
+  .wait_num {
+    position: relative;
+    top: -7px;
+    right: 0;
+    border-radius: 10px;
+    background: #ff9d0e;
+    color: #fff;
+    line-height: 1;
+    font-size: 11px;
+    text-align: center;
+    padding: 2px 5px;
   }
   .modifypersonDivTop > div > span {
     line-height: 32px;
