@@ -426,6 +426,10 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
 	public static final String CODE_CARD_NO = "code.card.no";
+	
+	//会员导入
+	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
+	public static final String CODE_NEED_ONE = "code.need.one";
 	/**
 	 * 概览
 	 */
