@@ -728,5 +728,12 @@ public class JsonResultMessage {
      */
     public static final String MSG_WX_PAY_PREPAY_ID_IS_NULL ="wx_pay_prepay_id_is_null";
 
+    /**
+     * 商品、活动分享图片文字内容
+     */
+    public static final String WX_MA_PICTORIAL_MONEY_FLAG = "wx.ma.pictorial.money.flag";
+    /** 开团省 */
+    public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
+    public static final String WX_MA_GROUP_BUY_MONEY = "wx.ma.group.buy.money";
 
 }

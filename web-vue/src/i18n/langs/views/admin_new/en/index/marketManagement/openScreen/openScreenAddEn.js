@@ -61,5 +61,6 @@ export const en = {
   integralNum: 'Integral must be a number',
   piAmount: 'Please enter the amount',
   amountNum: 'Amount must be a number',
-  pselectLink: 'Please select a link'
+  pselectLink: 'Please select a link',
+  piPizesNum: 'Please enter the number of prizes'
 }

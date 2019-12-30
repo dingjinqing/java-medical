@@ -19,4 +19,8 @@ public class RecommendGoodsParam {
     private Integer userId;
     /** 推荐商品id数组 */
     private List<Integer> recommendGoodsIds;
+    /** 页码 */
+    private Integer pageNum = 1;
+    /** 每页多少条 */
+    private Integer pageSize = 10;
 }

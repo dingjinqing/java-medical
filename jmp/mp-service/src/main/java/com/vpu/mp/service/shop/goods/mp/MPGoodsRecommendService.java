@@ -9,7 +9,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecSource;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
@@ -46,6 +45,8 @@ public class MPGoodsRecommendService extends ShopBaseService {
     HotWordsService hotWordsService;
     @Autowired
     ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    GoodsMpService goodsMpService;
     /**
      * 商品推荐活动状态标识 0:未删除/未停用
      */
@@ -114,18 +115,31 @@ public class MPGoodsRecommendService extends ShopBaseService {
      */
     public RecommendGoodsVo getRecommendGoods(RecommendGoodsParam param) {
         //如果recommendGoodsIds是空数组,为其赋值
-        if (param.getRecommendGoodsIds().size() == 0) {
+        if (param.getRecommendGoodsIds()==null) {
             param.setRecommendGoodsIds(getRecommendGoodsIds(param.getPageName(), param.getUserId()));
         }
         //判断赋值是否成功
-        if (param.getRecommendGoodsIds().size() == 0) {
+        if (param.getRecommendGoodsIds()==null) {
             throw new BusinessException(JsonResultCode.GOODS_RECOMMEND_NO_RECOMMENDED_GOODS);
         }
         //todo 对接pos
         //不同页面信息展示
-        GoodsRecommendSortConfig recommendSort = configService.recommendSortConfigService.getRecommendSortConfig();
-        String sortName =(recommendSort.getRecommendSortStatus()==1)?configService.shopCommonConfigService.getGoodsSort():null;
-        PageResult<GoodsRecord> recommendGoods = getRecommendPageList(param.getRecommendGoodsIds(),sortName);
+//        GoodsRecommendSortConfig recommendSort = configService.recommendSortConfigService.getRecommendSortConfig();
+//        String sortName =(recommendSort.getRecommendSortStatus()==1)?configService.shopCommonConfigService.getGoodsSort():null;
+//        PageResult<GoodsRecord> recommendGoods = getRecommendPageList(param.getRecommendGoodsIds(),sortName);
+
+        List<?> goodsListNormal = goodsMpService.getGoodsListNormal(param.getRecommendGoodsIds(),param.getUserId());
+        logger().info(goodsListNormal.toString());
+        int pageNum = param.getPageNum();
+        int pageSize = param.getPageSize();
+        int startIndex = (pageNum-1)*pageSize;
+        int endIndex = pageNum*pageSize;
+        int total = goodsListNormal.size();
+        if (pageNum*pageSize<=total){
+            goodsListNormal = goodsListNormal.subList(startIndex,endIndex);
+        }else {
+            goodsListNormal = goodsListNormal.subList(startIndex,total);
+        }
         //遍历分页商品信息
 //        for (GoodsRecord recommendGood:recommendGoods.dataList){
 //            //获取并设置商品种类 默认为0：普通商品
@@ -137,18 +151,16 @@ public class MPGoodsRecommendService extends ShopBaseService {
 //
 //            }
 //        }
-        //获取商品展示配置信息
         //是否显示划线价开关
         Byte delMarket = shopCommonConfigService.getDelMarket();
         //是否显示购买按钮
         ShowCartConfig showCart = shopCommonConfigService.getShowCart();
-
-        return new RecommendGoodsVo(){{
-            setRecommendGoodsIds(param.getRecommendGoodsIds());
-            setRecommendGoods(recommendGoods);
-            setDelMarket(delMarket);
-            setShowCart(showCart);
-        }};
+        RecommendGoodsVo result = new RecommendGoodsVo();
+        result.setShowCart(showCart);
+        result.setDelMarket(delMarket);
+        result.setRecommendGoodsIds(param.getRecommendGoodsIds());
+        result.setRecommendGoods(goodsListNormal);
+        return result;
      }
 
      /**

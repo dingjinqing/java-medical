@@ -58,15 +58,15 @@
 
       <block wx:if="{{filter.includes([4,5,6],giftInfo.giftType) && hasGift}}">
         <view class="no-coupon-info">
-          <text class="info-title">获得{{giftInfo.giftType === 4 && '余额'}}</text>
-          <text class="no-gift-info" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">{{giftInfo.giftType === 4 ? giftInfo.awardInfo.accountNumber + '元': giftInfo.awardInfo.scoreNumber +'积分'}}</text>
+          <text class="info-title">获得</text>
+          <text class="no-gift-info" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">{{giftInfo.giftType === 4 ? giftInfo.awardInfo.account + '元': giftInfo.awardInfo.scoreNumber +'积分'}}</text>
           <view class="no-gift-tips" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">
             <text>{{giftInfo.giftType === 4 ? '余额':'积分'}}</text>
             <text>去看看 ></text>
           </view>
           <view class="gift-name" wx:if="{{giftInfo.giftType === 5}}">台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
-            <image class="gift-image" src="{{imageUrl}}image/wxapp/img1.jpg"></image>
-            <text class="gift-tips">已放入“我的奖品”快领取把</text>
+          <image class="gift-image" wx:if="{{giftInfo.giftType === 5}}" src="{{imageUrl}}image/wxapp/img1.jpg"></image>
+          <text class="gift-tips" wx:if="{{giftInfo.giftType === 5}}">已放入“我的奖品”快领取把</text>
         </view>
       </block>
       <view class="step-content" wx:if="{{stepInfo}}">
