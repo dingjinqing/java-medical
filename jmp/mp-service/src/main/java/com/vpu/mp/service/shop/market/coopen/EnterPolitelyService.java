@@ -118,6 +118,7 @@ public class EnterPolitelyService extends ShopBaseService {
             if (StringUtils.isNotEmpty(jedisManager.get(cacheKey))) {
                 return noAward;
             }
+            logger().info("缓存key【{}】已失效！", cacheKey);
             // 用户是否已领取/奖品是否已发放完
             CoopenActivityRecordsRecord receiveRecord = getReceiveRecords(userId, activityId);
             if (Objects.nonNull(receiveRecord) || activityReceiveNum(activityId) >= record.getAwardNum()) {
@@ -269,7 +270,7 @@ public class EnterPolitelyService extends ShopBaseService {
             default:
                 break;
         }
-        record.insert();
+        db().executeInsert(record);
         return award;
     }
 
