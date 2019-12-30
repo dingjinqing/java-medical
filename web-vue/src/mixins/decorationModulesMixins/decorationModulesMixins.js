@@ -124,8 +124,7 @@ export default {
         case 10: // 商品分组模块
           obj = {
             module_name: 'm_goods_group',
-            sort_group_arr: [],
-            menu_style: '0',
+            menu_style: '0', // 菜单样式radio
             position_style: '0',
             shop_style: '1',
             if_radius: '0',
@@ -135,10 +134,12 @@ export default {
             show_market: '1',
             goods_module_bg: '0',
             goods_bg_color: '#f5f5f5',
-            show_name: 0,
-            show_price: 0,
-            cart_btn: 1,
-            other_message: 0
+            show_name: true,
+            show_price: true,
+            cart_btn: true,
+            cart_btn_choose: '0',
+            other_message: false,
+            goodsItems: []
           }
           break
         case 11: // 轮播图模块
