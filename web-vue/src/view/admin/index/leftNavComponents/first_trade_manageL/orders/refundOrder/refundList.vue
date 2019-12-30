@@ -184,10 +184,10 @@
                       :rowspan="orderItem.goods.length"
                     >
                       <el-button
-                        :type="orderItem.refundStatus === 1 ? 'primary' : 'default'"
+                        :type="(orderItem.refundStatus === 1 || orderItem.refundStatus === 2 || orderItem.refundStatus === 4) ? 'primary' : 'default'"
                         size="small"
                         @click="checkDetail(orderItem.returnOrderSn)"
-                      >{{orderItem.refundStatus === 1 ? '处理退款':'查看详情'}}</el-button>
+                      >{{(orderItem.refundStatus === 1 || orderItem.refundStatus === 2 || orderItem.refundStatus === 4) ? '处理退款':'查看详情'}}</el-button>
                     </td>
                   </tr>
                 </template>

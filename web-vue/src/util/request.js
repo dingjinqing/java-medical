@@ -6,7 +6,6 @@ import router from '@/router/index.js'
 
 // 环境的切换
 let baseURL = 'http://' + process.env.API_DOMAIN + '/'
-
 // 创建axios实例
 const service = axios.create({
   baseURL: baseURL, // api的base_url

@@ -520,17 +520,17 @@ export default {
         goodsId: 0,
         expectationPrice: 0,
         shareConfig: {
-          'share_action': 1,
-          'share_doc': '',
-          'share_img_action': 1,
-          'share_img': ''
+          'shareAction': 1,
+          'shareDoc': '',
+          'shareImgAction': 1,
+          'shareImg': ''
         }
       },
       shareConfig: {
-        'share_action': 1,
-        'share_doc': '',
-        'share_img_action': 1,
-        'share_img': ''
+        'shareAction': 1,
+        'shareDoc': '',
+        'shareImgAction': 1,
+        'shareImg': ''
       },
       isEditFlag: false,
       actId: null,
@@ -628,7 +628,7 @@ export default {
                   name: 'bargain'
                 })
               } else {
-                this.$message.error(this.$t('marketCommon.failureOperation'))
+                this.$message.error(res.message)
               }
             })
           }

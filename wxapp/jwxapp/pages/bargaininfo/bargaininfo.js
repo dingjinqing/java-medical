@@ -47,7 +47,7 @@ global.wxPage({
     clearTimeout(set_time_out);
     var that = this;
     record_id = options.record_id;
-    request_kanjia(that);
+    // request_kanjia(that);
     var user_name = util.getCache('nickName');
     var user_avatar = util.getCache('avatarUrl');
     if (!user_name || user_name == '用户' + parseInt(util.getCache('user_id') + 10000)
@@ -274,34 +274,34 @@ global.wxPage({
 
   },
   go_share: function () {
-    var that = this;
-    wx.showLoading({
-      title: '生成中',
-    })
-    util.api('/api/wxapp/pictorial', function (res) {
-      if (res.error == 0) {
-        pictorial = res.content.pictorial;
-        if (pictorial) {
-          util.api('/api/wxapp/upayyun/image', function (res) {
-            if (res.error == 0) {
-              pictorial = imageUrl + pictorial + "!big";
-              posterBase64 = res.content
-              that.setData({
-                pictorial: posterBase64
-              })
-              wx.hideLoading();
-              that.setData({
-                is_share: 1
-              })
-            }
-          }, { image_path: pictorial });
-        }
-      } else {
-        wx.hideLoading();
-        util.toast_fail(res.message);
-        return false;
-      }
-    }, { action: 3, goods_id: bargain_info.record_info.goods_id, record_id: record_id, identity_id: bargain_info.record_info.bargain_id })
+    // var that = this;
+    // wx.showLoading({
+    //   title: '生成中',
+    // })
+    // util.api('/api/wxapp/pictorial', function (res) {
+    //   if (res.error == 0) {
+    //     pictorial = res.content.pictorial;
+    //     if (pictorial) {
+    //       util.api('/api/wxapp/upayyun/image', function (res) {
+    //         if (res.error == 0) {
+    //           pictorial = imageUrl + pictorial + "!big";
+    //           posterBase64 = res.content
+    //           that.setData({
+    //             pictorial: posterBase64
+    //           })
+    //           wx.hideLoading();
+    //           that.setData({
+    //             is_share: 1
+    //           })
+    //         }
+    //       }, { image_path: pictorial });
+    //     }
+    //   } else {
+    //     wx.hideLoading();
+    //     util.toast_fail(res.message);
+    //     return false;
+    //   }
+    // }, { action: 3, goods_id: bargain_info.record_info.goods_id, record_id: record_id, identity_id: bargain_info.record_info.bargain_id })
   },
   not_show_share: function () {
     var that = this;

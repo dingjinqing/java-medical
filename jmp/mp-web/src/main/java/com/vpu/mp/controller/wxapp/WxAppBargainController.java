@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainApplyParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainApplyVo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordListQueryParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,5 +52,16 @@ public class WxAppBargainController extends WxAppBaseController {
             //无法发起
             return success(BargainApplyVo.builder().resultCode(resultCode).build());
         }
+    }
+
+    /**
+     * 砍价详情
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/bargain/info")
+    public JsonResult bargainInfo(@RequestBody @Valid BargainInfoParam param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        return success(shop().bargain.bargainRecord.getBargainInfo(user.getUserId(),param.getRecordId()));
     }
 }

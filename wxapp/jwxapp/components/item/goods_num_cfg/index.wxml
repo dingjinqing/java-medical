@@ -1,4 +1,4 @@
-<view class="flex_box {{origin}}">
+<view class="flex_box {{origin}}" style="{{limitInfo.activityType === 3 ? 'display:none;' : ''}}">
     <view class="item_left">
     购买数量：
     </view>
