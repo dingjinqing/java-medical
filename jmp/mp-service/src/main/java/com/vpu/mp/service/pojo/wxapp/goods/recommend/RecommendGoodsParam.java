@@ -15,8 +15,6 @@ public class RecommendGoodsParam {
     private Integer shopId;
     /** 页面名称 */
     private String pageName;
-    /** ??? */
-    private Integer pageNo;
     /** 用户id */
     private Integer userId;
     /** 推荐商品id数组 */

@@ -33,7 +33,7 @@ global.wxApp({
   },
 
   onShow: function (options) {
-
+    util.setCache('is_login', 1);
   },
 
   onPageNotFound(res) {
