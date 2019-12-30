@@ -188,7 +188,8 @@ export default {
           label: '非自营品牌'
         }
       ],
-      isElection: null
+      isElection: null,
+      nowClickRow: null
     }
   },
   watch: {
@@ -314,6 +315,7 @@ export default {
     },
     handleToClickRow (val) {
       console.log(val)
+      this.nowClickRow = [val]
     },
     // 当前页改变
     handleCurrentChange () {
@@ -324,42 +326,43 @@ export default {
     },
     // 确定事件
     handleToSure () {
-      let arr = []
-      let idArr = []
-      this.tableData.forEach(item => {
-        if (item.ischeck) {
-          arr.push(item)
-          idArr.push(item.id)
-        }
-      })
-      console.log(this.classification)
-      if (this.classification !== -1) {
-        let obj = {
-          classifyId: this.classification,
-          brandIds: idArr
-        }
-        batchBind(obj).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            this.$message.success({
-              message: '添加成功',
-              showClose: true
-            })
-            this.$emit('handleToGetBackData', arr)
-            this.$emit('update:callAddBrand', false)
-          } else if (res.error === 131006) {
-            this.$message.error({
-              message: '请选择品牌分类',
-              showClose: true
-            })
+      if (this.singleElection) {
+        this.$emit('handleToGetBackData', this.nowClickRow)
+      } else {
+        let arr = []
+        let idArr = []
+        this.tableData.forEach(item => {
+          if (item.ischeck) {
+            arr.push(item)
+            idArr.push(item.id)
           }
         })
-      } else {
-        this.$emit('handleToGetBackData', arr)
-        this.$emit('update:callAddBrand', false)
+        console.log(this.classification)
+        if (this.classification !== -1) {
+          let obj = {
+            classifyId: this.classification,
+            brandIds: idArr
+          }
+          batchBind(obj).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                message: '添加成功',
+                showClose: true
+              })
+              this.$emit('handleToGetBackData', arr)
+            } else if (res.error === 131006) {
+              this.$message.error({
+                message: '请选择品牌分类',
+                showClose: true
+              })
+            }
+          })
+        } else {
+          this.$emit('handleToGetBackData', arr)
+        }
       }
-
-      console.log(this.classValue, arr)
+      this.$emit('update:callAddBrand', false)
     }
   }
 }
