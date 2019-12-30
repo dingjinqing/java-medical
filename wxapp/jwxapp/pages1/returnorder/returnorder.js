@@ -30,6 +30,7 @@ global.wxPage({
     returnMoney: 0.00, //退款金额
     uploadedImg: [], // 已经上传的图片
     reasonDesc: '', // 申请说明
+    isRefund: false // 是否需要退运费
   },
 
   /**
@@ -53,7 +54,7 @@ global.wxPage({
     util.api('/api/wxapp/order/refund/query', function (res) {
       if (res.error === 0) {
         let orderInfo = res.content
-        let supportTypes = []
+        let supportTypes = [], isRefund = false
         // 本单支持的操作
         if (orderInfo.returnType && orderInfo.returnType.length > 0) {
           orderInfo.returnType.forEach((item, index) => {
@@ -68,6 +69,9 @@ global.wxPage({
                   id: 1,
                   name: that.$t("page1.afterSale.return[1]")
                 })
+              } else if(index == 2) {
+                // 退运费
+                isRefund = true
               } else if (index === 4) {
                 supportTypes.push({
                   id: 4,
@@ -113,7 +117,8 @@ global.wxPage({
           orderInfo: orderInfo,
           goodsInfo: goodsInfo ? goodsInfo : [],
           activityName: activityName,
-          goodsType: goodsType
+          goodsType: goodsType,
+          isRefund: isRefund
         })
       }
     }, {
@@ -157,14 +162,24 @@ global.wxPage({
   // 计算退款金额
   computedRetureMoney () {
     let goodsInfo = this.data.goodsInfo
+    let selectGoodIds = this.data.selectGoodIds||[]
     let returnMoney = 0
     goodsInfo.forEach((item, index) => {
+      let selectIndex = selectGoodIds.indexOf(item.productId)
       if (item.checked) {
         returnMoney += item.discountedGoodsPrice * item.returnable
+        if(selectIndex === -1) {
+          selectGoodIds.push(item.productId)
+        }
+      } else {
+        if (selectIndex > -1) {
+          selectGoodIds.splice(index, 1)
+        }
       }
     })
     this.setData({
-      returnMoney: returnMoney
+      returnMoney: returnMoney,
+      selectGoodIds: selectGoodIds
     })
   },
 
