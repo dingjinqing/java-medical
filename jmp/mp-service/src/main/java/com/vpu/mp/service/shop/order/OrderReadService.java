@@ -793,6 +793,7 @@ public class OrderReadService extends ShopBaseService {
         List<String> giftOrderSns = orderGoods.getGiftOrderSns(giftId, isIncludeReturn);
         return orderInfo.getGiftOrderCount(giftOrderSns);
     }
+
     /*********************************************************************************************************/
 
 	/**
