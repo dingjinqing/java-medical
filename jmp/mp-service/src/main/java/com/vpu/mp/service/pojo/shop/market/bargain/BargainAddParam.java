@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 
 import lombok.Data;
 
@@ -72,7 +72,7 @@ public class BargainAddParam {
 	/**
 	 * 分享设置 
 	 */
-	private ShopShareConfig shareConfig;
+	private PictorialShareConfig shareConfig;
 	
 	/**
 	 * 任意金额结算模式的结算金额底价 

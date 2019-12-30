@@ -43,7 +43,7 @@
           >
             <span style="color:#606266">{{$t('marketCommon.copywriting')}}:</span>
             <el-input
-              v-model="shareConfig.share_doc"
+              v-model="shareConfig.shareDoc"
               size="small"
               style="width:200px"
             ></el-input>
@@ -51,14 +51,14 @@
           <div v-if="actShare == '2'">
             <span style="color:#606266">{{$t('marketCommon.sharedPicture')}}:</span>
             <el-radio
-              v-model="shareImg.share_img_action"
+              v-model="shareImg.shareImgAction"
               label="1"
               style="margin-left:10px"
             >{{$t('marketCommon.goodsInformationPicture')}}</el-radio>
 
             <div style="margin: 10px 0 0 60px">
               <el-radio
-                v-model="shareImg.share_img_action"
+                v-model="shareImg.shareImgAction"
                 label="2"
               >{{$t('marketCommon.customPicture')}}</el-radio>
             </div>
@@ -97,11 +97,11 @@ import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: { ImageDalog },
   props: ['shareConfig'],
-  data () {
+  data() {
     return {
       actShare: '1',
       shareImg: {
-        share_img_action: '1'
+        shareImgAction: '1'
       },
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
@@ -113,13 +113,12 @@ export default {
     }
   },
   methods: {
-
     // 活动分享 -- 添加图片点击事件，弹出图片选择组件
-    addGoodsImg () {
+    addGoodsImg() {
       this.showImageDialog = !this.showImageDialog
     },
     // 图片点击回调函数
-    handleSelectImg (res) {
+    handleSelectImg(res) {
       console.log(res)
       if (res != null) {
         console.log(res)
@@ -127,7 +126,7 @@ export default {
       }
     },
     // 删除商品图片
-    deleteSelectImg () {
+    deleteSelectImg() {
       this.srcList.src3 = `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
     }
   }

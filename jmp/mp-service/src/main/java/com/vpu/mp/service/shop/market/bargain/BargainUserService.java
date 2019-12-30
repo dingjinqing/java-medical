@@ -4,7 +4,7 @@ import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
 import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static java.util.stream.Collectors.toList;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserExportVo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoVo;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,7 +29,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryVo;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -184,7 +184,7 @@ public class BargainUserService extends ShopBaseService{
      * @param recordId
      * @return
      */
-    private int getUserBargainNumber(int userId,int recordId){
+    public int getUserBargainNumber(int userId,int recordId){
         return db().selectCount().from(BARGAIN_USER_LIST).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.RECORD_ID.gt(recordId))).fetchOptionalInto(Integer.class).orElse(0);
     }
 
@@ -311,8 +311,16 @@ public class BargainUserService extends ShopBaseService{
      * @param recordId
      * @return
      */
-    private BargainUserListRecord getFirstUserBargain(int userId,int recordId){
+    public BargainUserListRecord getFirstUserBargain(int userId,int recordId){
         return db().selectFrom(BARGAIN_USER_LIST).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.RECORD_ID.eq(recordId))).orderBy(BARGAIN_USER_LIST.CREATE_TIME.asc()).fetchOne();
+    }
+
+    public List<BargainInfoVo.BargainUser> getBargainUserList(int recordId){
+        return db().select(BARGAIN_USER_LIST.asterisk(),USER.USERNAME,USER.WX_OPENID,USER_DETAIL.USER_AVATAR).from(
+            BARGAIN_USER_LIST
+            .leftJoin(USER).on(USER.USER_ID.eq(BARGAIN_USER_LIST.USER_ID))
+            .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(BARGAIN_USER_LIST.USER_ID))
+        ).where(BARGAIN_USER_LIST.RECORD_ID.eq(recordId)).orderBy(BARGAIN_USER_LIST.CREATE_TIME.asc()).limit(20).fetchInto(BargainInfoVo.BargainUser.class);
     }
 
 }
