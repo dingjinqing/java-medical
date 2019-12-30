@@ -7,7 +7,7 @@
 </view>
 
 <!-- 收藏小程序提示弹窗 -->
-<v-popup-collect-mp-tips show="{{show_collect_mp_tips}}" collect_info="{{pageContent.shop_collect}}" />
+<v-popup-collect-mp-tips show="{{show_collect_mp_tips}}" collect_info="{{collectContent}}" />
 
 <!-- 收藏有礼送优惠券积分弹窗 -->
 <v-popup-collect-coupon show="{{collect_coupon_display}}" bind:closeCollectMp="closeCollectMp" collect_score="{{collect_score}}" collect_coupons="{{collect_coupons}}" />
