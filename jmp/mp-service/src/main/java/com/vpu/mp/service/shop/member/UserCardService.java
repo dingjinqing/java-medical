@@ -94,6 +94,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
@@ -240,7 +241,7 @@ public class UserCardService extends ShopBaseService {
 		logger().info("卡升级赠送积分");
 		// TODO 国际化
 		UserScoreVo userScore = UserScoreVoBuilder.create().userId(userId).score(card.getSorce())
-				.scoreDis(memberService.getUserScore(userId)).desc("score_open_card").remark("open.card.send.score")
+				.scoreDis(memberService.getUserScore(userId)).desc("score_open_card").remarkCode(RemarkTemplate.CARD_UPGRADE.code)
 				.expireTime(scoreService.getScoreExpireTime()).shopId(getShopId()).build();
 
 		scoreService.addUserScore(userScore, DEFAULT_ADMIN, TYPE_SCORE_CREATE_CARD.val(), TRADE_FLOW_IN.val());

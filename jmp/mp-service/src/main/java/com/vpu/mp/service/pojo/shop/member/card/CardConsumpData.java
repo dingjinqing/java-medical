@@ -21,8 +21,8 @@ public class CardConsumpData {
 	private String cardNo;
 	/** 余额变动金额 区分正负号 */
 	private BigDecimal money;
-	/** 消费原因 */
-	private String reason ;
+	/** 消费原因模板Id */
+	private Integer reason ;
 	/** 消费类型 {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant} */
 	private Byte type;
 	/** 订单编号 */
@@ -64,7 +64,7 @@ public class CardConsumpData {
 		this.money = money;
 		return this;
 	}
-	public CardConsumpData setReason(String reason) {
+	public CardConsumpData setReason(Integer reason) {
 		this.reason = reason;
 		return this;
 	}

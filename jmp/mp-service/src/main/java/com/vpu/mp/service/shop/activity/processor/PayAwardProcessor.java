@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
@@ -238,7 +239,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                     setOrderSn(order.getOrderSn());
                     setPayment(PAY_CODE_BALANCE_PAY);
                     setIsPaid(UACCOUNT_RECHARGE.val());
-                    setRemark("支付有礼活动");
+                    setRemarkId(RemarkTemplate.PAY_HAS_GIFT.code);
                 }};
                 TradeOptParam tradeOptParam = TradeOptParam.builder()
                         .tradeType(TYPE_CRASH_PAY_AWARD.val())

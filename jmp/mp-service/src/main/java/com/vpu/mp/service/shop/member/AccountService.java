@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
 import com.vpu.mp.service.pojo.shop.member.builder.UserAccountRecordBuilder;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -47,6 +48,8 @@ import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.member.dao.AccountDao;
 import com.vpu.mp.service.shop.member.dao.UserAccountDao;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+
+import jodd.util.StringUtil;
 /**
  * 余额管理
  * @author 黄壮壮
@@ -130,15 +133,17 @@ public class AccountService extends ShopBaseService {
 	 * 处理备注
 	 */
 	private void dealWithRemark(AccountParam param) {
-		String remark ;
-		if (StringUtils.isBlank(param.getRemark())) {
-			/** -默认管理员操作 国际化*/
-			//remark = DEFAULT_FLAG.val()+ADMIN_OPERATION.val();
-			remark = null;
+		// 用户输入备注
+		if(!StringUtil.isBlank(param.getUserInputRemark())) {
+			param.setRemarkId(RemarkTemplate.USER_INPUT_MSG.code);
+			param.setRemarkData(param.getUserInputRemark());
 		}else {
-			remark = param.getRemark();
-		}	
-		param.setRemark(remark);
+			// 系统定义的备注
+			if(param.getRemarkId()==null) {
+				// 默认管理员操作
+				param.setRemarkId(RemarkTemplate.ADMIN_OPERATION.code);
+			}
+		}
 	}
 	
 	private BigDecimal calcAccount(UserRecord user,AccountParam param) {
@@ -207,16 +212,12 @@ public class AccountService extends ShopBaseService {
 	 */
 	public void addRow(AccountParam param, int adminUser) {
 		logger().info("插入userAccount记录");
-		String remarkData = null;
-		if(param.getRemarkData()!=null && param.getRemarkData().size()>0) {
-			remarkData = Util.listToString(param.getRemarkData());
-		}
 		UserAccountRecordBuilder
 			.create(db().newRecord(USER_ACCOUNT))
 			.userId(param.getUserId())
 			.amount(param.getAmount())
 			.remarkId(String.valueOf(param.getRemarkId()))
-			.remarkData(remarkData)
+			.remarkData(param.getRemarkData())
 			.adminUser(String.valueOf(adminUser))
 			.isPaid(param.getIsPaid())
 			.payment(param.getPayment())

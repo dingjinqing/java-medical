@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.member.account;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import lombok.Data;
 
 /**
@@ -18,12 +20,16 @@ public class AccountParam {
 	private BigDecimal amount;
 	/** 用户id */
 	private Integer userId;
+	/** 
+	 * 备注remark需要国际化
+	 */
 	/** 备注模板id */
 	private Integer remarkId;
 	/** 备注模板数据 */
-	private List<Integer> remarkData;
-	/** 备注 */
-	private String remark;
+	private String remarkData;
+	/** 用户输入的备注 */
+	@JsonAlias("remark")
+	private String userInputRemark;
 	/** 订单编号 */
 	private String orderSn;
 	/** 支付方式 */

@@ -301,7 +301,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	            orderSn("123456").
 	            //退款金额
 	                amount(BigDecimal.valueOf(566.5).negate()).
-	                remark("下单：123456").
+	             //   remark("下单：123456").
 	                payment("订单").
 	            //支付类型
 	                isPaid((byte)0).

@@ -153,6 +153,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
@@ -1420,14 +1421,14 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 				throw new MpException(JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 			}
 			/** -消费会员卡余额 */
-			consumpUserCard(data, MEMBER_CARD_ACCOUNT);
+			consumpUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
 		} else {
 			/** 2.2 充值会员卡余额 */
-			chargeUserCard(data, MEMBER_CARD_ACCOUNT);
+			chargeUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
 		}
 
 		/** 3-更新user_card用户会员卡的余额 */
-		updateUserCard(data, userCard, MEMBER_CARD_ACCOUNT);
+		updateUserCard(data, userCard, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
 
 		insertCardAccountTradesRecord(data, tradeOpt);
 		// TODO模板消息
@@ -1465,14 +1466,14 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 				throw new MpException(JsonResultCode.CODE_MEMBER_CARD_SURPLUS_UPDATE_FAIL);
 			}
 			/** -消费会员卡剩余次数 */
-			consumpUserCard(data, STORE_SERVICE_TIMES);
+			consumpUserCard(data, RemarkTemplate.ADMIN_STORE_SERIVICE.code);
 		} else {
 			/** 3.2-增加(充值)卡剩余次数 */
-			chargeUserCard(data, STORE_SERVICE_TIMES);
+			chargeUserCard(data, RemarkTemplate.ADMIN_STORE_SERIVICE.code);
 		}
 
 		/** 4-更新user_card用户会员卡的消费次数 */
-		updateUserCard(data, userCard, STORE_SERVICE_TIMES);
+		updateUserCard(data, userCard, RemarkTemplate.ADMIN_STORE_SERIVICE.code);
 		// TODO模板消息
 		/**
 		 * 5-记录交易明细
@@ -1504,14 +1505,14 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 				throw new MpException(JsonResultCode.CODE_MEMBER_CARD_EXCHANGSURPLUS_UPDATE_FAIL);
 			}
 			/** -消费会员卡剩余次数 */
-			consumpUserCard(data, EXCHANGE_GOODS_NUM);
+			consumpUserCard(data, RemarkTemplate.ADMIN_EXCHANGE_GOODS.code);
 		} else {
 			/** 3.2-增加(充值)卡剩余次数 */
-			chargeUserCard(data, EXCHANGE_GOODS_NUM);
+			chargeUserCard(data, RemarkTemplate.ADMIN_EXCHANGE_GOODS.code);
 		}
 
 		/** 4-更新user_card用户会员卡的卡剩余兑换次数 */
-		updateUserCard(data, userCard, EXCHANGE_GOODS_NUM);
+		updateUserCard(data, userCard, RemarkTemplate.ADMIN_EXCHANGE_GOODS.code);
 		// TODO模板消息
 		/**
 		 * 5-记录交易明细
@@ -1524,19 +1525,19 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * 
 	 * @param data
 	 */
-	private void chargeUserCard(CardConsumpData data, MemberOperateRecordEnum memberOperate) {
-		setDefaultReason(data, memberOperate);
+	private void chargeUserCard(CardConsumpData data, Integer code) {
+		setDefaultReason(data, code);
 		insertIntoChargeMoney(data);
 	}
 
 	/**
-	 * 消费用户卡
+	 * 	消费用户卡
 	 * 
 	 * @throws MpException
 	 */
-	private void consumpUserCard(CardConsumpData data, MemberOperateRecordEnum memberOperate) {
+	private void consumpUserCard(CardConsumpData data, Integer code) {
 
-		setDefaultReason(data, memberOperate);
+		setDefaultReason(data, code);
 		insertIntoCardConsumer(data);
 	}
 
@@ -1544,11 +1545,11 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * 设置默认的充值 | 消费原因
 	 * 
 	 */
-	private void setDefaultReason(CardConsumpData data, MemberOperateRecordEnum memberOperate) {
+	private void setDefaultReason(CardConsumpData data, Integer code) {
 		/** 1-若reason原因为空 则设置为默认值 */
-		if (StringUtils.isBlank(data.getReason())) {
+		if (data.getReason()==null) {
 			/** - 会员卡余额 */
-			data.setReason(memberOperate.val());
+			data.setReason(code);
 		}
 	}
 
@@ -1558,18 +1559,18 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * @param data
 	 * @param userCard
 	 */
-	private void updateUserCard(CardConsumpData data, UserCardRecord userCard, MemberOperateRecordEnum memberOperate) {
+	private void updateUserCard(CardConsumpData data, UserCardRecord userCard, Integer code) {
 		/** 更新用户卡余额 */
-		if (memberOperate == MEMBER_CARD_ACCOUNT) {
+		if (RemarkTemplate.ADMIN_CARD_ACCOUNT.code.equals(code)) {
 			BigDecimal money = userCard.getMoney().add(data.getMoney());
 			db().update(USER_CARD).set(USER_CARD.MONEY, money).where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
 					.execute();
-		} else if (memberOperate == STORE_SERVICE_TIMES) {
+		} else if (RemarkTemplate.ADMIN_STORE_SERIVICE.code.equals(code)) {
 			/** 更新用户卡消费次数 */
 			Integer surplus = userCard.getSurplus() + data.getCount();
 			db().update(USER_CARD).set(USER_CARD.SURPLUS, surplus).where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
 					.execute();
-		} else if (memberOperate == EXCHANGE_GOODS_NUM) {
+		} else if (RemarkTemplate.ADMIN_EXCHANGE_GOODS.code.equals(code)) {
 			/** 更新用户卡兑换次数 */
 			Integer exchangeSurplus = userCard.getExchangSurplus() + data.getExchangeCount();
 			db().update(USER_CARD).set(USER_CARD.EXCHANG_SURPLUS, exchangeSurplus)

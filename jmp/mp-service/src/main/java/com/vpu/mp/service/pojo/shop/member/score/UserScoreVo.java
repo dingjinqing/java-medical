@@ -2,9 +2,10 @@ package com.vpu.mp.service.pojo.shop.member.score;
 
 import java.sql.Timestamp;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import lombok.Data;
-import lombok.ToString;
+
 
 /**
  * 
@@ -25,7 +26,12 @@ public class UserScoreVo {
 	private String orderSn;
 	private Integer shopId;
 	private String desc;
-	private String remark;
+	/** 备注模板code */
+	private Integer remarkCode;
+	/** 备注模板数据 */
+	@JsonAlias("remark")
+	private String remarkData;
+	//private String remark;
 	private Timestamp createTime;
 	private Timestamp expireTime;
 	private String adminUser;

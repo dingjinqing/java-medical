@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
@@ -764,10 +765,11 @@ public class GoodsCommentService extends ShopBaseService {
               {
                 setUserId(userIdArray);
                 setScore(Integer.valueOf(param.getAward()));
-                  setScoreStatus(BYTE_ZERO);
+                setScoreStatus(BYTE_ZERO);
                 setDesc("score");
                 setOrderSn(param.getOrderSn());
-                setRemark("评价有礼获得");
+                setRemarkCode(RemarkTemplate.COMMENT_HAS_GIFT.code);
+                //setRemark("评价有礼获得");
               }
             },
             0,

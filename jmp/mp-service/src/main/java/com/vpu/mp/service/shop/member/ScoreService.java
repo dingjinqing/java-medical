@@ -130,13 +130,13 @@ public class ScoreService extends ShopBaseService {
 		/** 3. 准备数据  */
 
 		/** 3.1 处理备注  */
-		if (param.getRemarkId() == null) {
-			if(param.getRemarkData()==null || param.getRemarkData().size()==0 ) {
+		if (param.getRemarkCode() == null) {
+			if(StringUtils.isBlank(param.getRemarkData())) {
 				// 默认管理员操作
-				param.setRemarkId(RemarkTemplate.ADMIN_OPERATION.code);
+				param.setRemarkCode(RemarkTemplate.ADMIN_OPERATION.code);
 			}else {
 				// 用户输入
-				param.setRemarkId(RemarkTemplate.USER_INPUT_MSG.code);
+				param.setRemarkCode(RemarkTemplate.USER_INPUT_MSG.code);
 			}
 		}
 		
@@ -176,8 +176,8 @@ public class ScoreService extends ShopBaseService {
 				//TODO 还有一些数据不知道从哪些业务传递过来的如goods_id,desc,identity_id 
 				userScoreRecord.setScore(score);
 				userScoreRecord.setUserId(userId);
-				userScoreRecord.setRemarkId(String.valueOf(param.getRemarkId()));
-				userScoreRecord.setRemarkData(Util.listToString(param.getRemarkData()));
+				userScoreRecord.setRemarkId(String.valueOf(param.getRemarkCode()));
+				userScoreRecord.setRemarkData(param.getRemarkData());
 				userScoreRecord.setAdminUser(String.valueOf(subAccountId));
 				userScoreRecord.setOrderSn(orderSn);
 				userScoreRecord.setFlowNo(flowOn);
@@ -511,8 +511,9 @@ public class ScoreService extends ShopBaseService {
 		int insert=0;
 		try {
 
-			if (StringUtils.isEmpty(data.getRemark())) {
-				data.setRemark("管理员操作");
+			if (data.getRemarkCode()==null) {
+				//data.setRemark("管理员操作");
+				data.setRemarkCode(RemarkTemplate.ADMIN_OPERATION.code);
 			}
 			UserScoreRecord record =db().newRecord(USER_SCORE);
 			FieldsUtil.assignNotNull(data, record);
