@@ -320,7 +320,11 @@
             align="center"
           >
             <template slot-scope="scope">
-              <p v-if="hiddle_1">{{ scope.row.goodsNum }}</p>
+              <p
+                style="color:#5a8bff;cursor:pointer"
+                v-if="hiddle_1"
+                @click="handleToTurnGoodsNum(scope.row)"
+              >{{ scope.row.goodsNum }}</p>
               <p v-if="!hiddle_1">{{ scope.row.brandNum }}</p>
             </template>
           </el-table-column>
@@ -457,7 +461,8 @@ import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest,
 // 工具导入
 import { startOrEndDayWithFormat } from '@/util/date'
 export default {
-  components: { pagination,
+  components: {
+    pagination,
     AddBrandDialog: () => import('@/components/admin/addBrandDialog')
   },
   data () {
@@ -973,6 +978,10 @@ export default {
     // 品牌分类点击筛选
     handleToScreen () {
       this.defaultPageingGrand()
+    },
+    // 点击包含在售商品数量
+    handleToTurnGoodsNum (row) {
+      console.log(row)
     }
   }
 }

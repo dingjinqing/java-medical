@@ -12,8 +12,8 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const env = process.env.NODE_ENV === 'production'
-  ? require('../config/prod.env') : (process.env.NODE_ENV === 'testing' ? 
-  require('../config/test.env'): require('../config/dev.env') )
+  ? require('../config/prod.env') : (process.env.NODE_ENV === 'testing'
+    ? require('../config/test.env') : require('../config/dev.env'))
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -118,7 +118,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // copy custom static assets
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, '../static/tinymce'),
+        from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }

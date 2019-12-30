@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
+import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
 import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 
 /**
@@ -75,5 +77,17 @@ public class ProvinceService extends MainBaseService {
         String cityName = Optional.ofNullable(cityService.getCityName(cityId)).orElseThrow(() -> new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "cityId: " + cityId)).getName();
         String districtName = Optional.ofNullable(districtService.getDistrictName(districtId)).orElseThrow(() -> new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "districtId: " + districtId)).getName();
         return provinceName + StringUtils.SPACE + cityName + StringUtils.SPACE + districtName + StringUtils.SPACE;
+    }
+
+    public String getProvincePinYinByCode(String code) {
+        return db().select(DICT_PROVINCE.PINYIN).from(DICT_PROVINCE).where(DICT_PROVINCE.PROVINCE_ID.eq(Integer.valueOf(code))).fetchOneInto(String.class);
+    }
+
+    public String getCityPinYinByCode(String code) {
+        return db().select(DICT_CITY.PINYIN).from(DICT_CITY).where(DICT_CITY.CITY_ID.eq(Integer.valueOf(code))).fetchOneInto(String.class);
+    }
+
+    public String getDistrictPinYinByCode(String code) {
+        return db().select(DICT_DISTRICT.PINYIN).from(DICT_DISTRICT).where(DICT_DISTRICT.DISTRICT_ID.eq(Integer.valueOf(code))).fetchOneInto(String.class);
     }
 }

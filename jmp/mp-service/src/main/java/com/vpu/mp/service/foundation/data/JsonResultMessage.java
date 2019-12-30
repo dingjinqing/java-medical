@@ -114,6 +114,7 @@ public class JsonResultMessage {
   public static final String GOODS_RECOMMEND_CHOOSE_TYPE_NOT_NULL =
       "goods.recommend.choose_type.notNull";
   public static final String GOODS_RECOMMEND_NUMBER_NOT_NULL = "goods.recommend.number.notNull";
+  public static final String GOODS_RECOMMEND_NO_RECOMMENDED_GOODS = "goods.recommend.no.recommended.goods";
 
     /**
      * 商品导出
@@ -522,6 +523,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_DATABASE_ERROR = "order.database.error";
     public static final String MSG_ORDER_GOODS_LIMIT_MIN = "order.goods.limit.min";
     public static final String MSG_ORDER_GOODS_LIMIT_MAX = "order.goods.limit.max";
+    public static final String MSG_ORDER_GIFT_GOODS_ZERO = "order.gift.goods.zero";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";

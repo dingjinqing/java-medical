@@ -2,10 +2,14 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
+import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -20,6 +24,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -140,5 +145,43 @@ public class GiftProcessorDao extends GiftService {
             bos.add(gPrd.toOrderGoodsBo());
         });
         return bos;
+    }
+
+    /**
+     *
+     * @param param k->giftId, v->(k->prdId, v->数量（>0下单，<0退款）)
+     */
+    public void updateStockAndSales(Map<Integer, Map<Integer, Integer>> param) throws MpException {
+        ListIterator<ProductVo> iterator = getGiftProduct(param.keySet().toArray(new Integer[0])).listIterator();
+        List<GiftProductRecord> result = Lists.newArrayList();
+        for (Map.Entry<Integer, Map<Integer, Integer>> entry : param.entrySet()) {
+            for (Map.Entry<Integer, Integer> entry1 : entry.getValue().entrySet()) {
+                GiftProductRecord giftProductRecord = db().newRecord(SUB_TABLE);
+                giftProductRecord.setGiftId(entry.getKey());
+                giftProductRecord.setProductId(entry1.getKey());
+                while (iterator.hasNext()){
+                    ProductVo next = iterator.next();
+                    if(next.getGiftId().equals(entry.getKey()) && next.getProductId().equals(entry1.getKey())){
+                        if(entry1.getValue() > 0 && next.getProductNumber() < entry1.getValue()){
+                            logger().error("下单时赠品已经送完，请重新下单");
+                            throw new MpException(JsonResultCode.CODE_ORDER_GIFT_GOODS_ZERO);
+                        }
+                        giftProductRecord.setProductNumber(next.getProductNumber() - entry1.getValue());
+                        iterator.remove();
+                        break;
+                    }
+                }
+                if(giftProductRecord.getProductNumber() == null){
+                    if(entry1.getValue() > 0){
+                        logger().error("下单时赠品已经送完，请重新下单");
+                        throw new MpException(JsonResultCode.CODE_ORDER_GIFT_GOODS_ZERO);
+                    }
+                }else{
+                    logger().info("{}时更新赠品库存,giftId={},productId={}",entry1.getValue() > 0 ? "下单" : "退款", entry.getKey(), entry1.getKey());
+                    result.add(giftProductRecord);
+                }
+            }
+        }
+        db().batchUpdate(result).execute();
     }
 }

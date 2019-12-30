@@ -232,7 +232,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //商品退款退货配置
                 calculate.setReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order);
                 //TODO exchang、好友助力
-                //保存营销活动信息
+                //保存营销活动信息 订单状态以改变
                 processorFactory.processSaveOrderInfo(param,order);
                 //TODO 订单类型拼接(支付有礼)
                 //订单入库,以上只有orderSn，无法获取orderId
@@ -248,7 +248,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
                     (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-                    processorFactory.processStockAndSales(param);
+                    processorFactory.processStockAndSales(param,order);
                     atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), false);
                 }
             });
@@ -482,14 +482,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processExpressList(storeLists, vo);
         //计算金额相关、vo赋值
         processOrderBeforeVo(param, vo, vo.getOrderGoods());
-        //TODO 送赠品(处理门店)
-        giftProcessor.getGifts(param.getWxUserInfo().getUserId(), vo.getOrderGoods(), vo.getOrderType());
+        //赠品活动。。。
+        processBeforeUniteActivity(param, vo);
         //服务条款
         setServiceTerms(vo);
         // 积分使用规则
         setScorePayRule(vo);
         //订单必填信息处理
         vo.setMust(calculate.getOrderMust(vo.getOrderGoods()));
+    }
+
+    private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
+        //TODO 送赠品(处理门店)
+        giftProcessor.getGifts(param.getWxUserInfo().getUserId(), vo.getOrderGoods(), vo.getOrderType());
     }
 
     /**
@@ -577,7 +582,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 校验
+     * 校验商品和规格信息
      * @param goods
      * @throws MpException
      */

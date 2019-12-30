@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
@@ -8,6 +9,8 @@ import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
+import com.vpu.mp.service.pojo.wxapp.collectGift.SetCollectGiftVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.coupon.MpCouponService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -16,11 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.USER;
 
 /**
  *	收藏有礼开关配置
@@ -91,24 +96,35 @@ public class CollectGiftConfigService extends BaseShopConfigService{
      * @param userId
      * @return
      */
-    public CollectGiftParam collectGiftConfig(Integer userId) {
+    public CollectGiftParam collectGiftConfig(Integer userId,Integer shopId) {
         //收藏有礼开关是否开启
         CollectGiftParam param = this.getJsonObject(K_COLLECT_GIFT,CollectGiftParam.class);
         if (param == null) {
             param = new CollectGiftParam();
             this.setJsonObject(K_COLLECT_GIFT, param);
         }
+        //判断活动是否生效
+        Timestamp nowDate = new Timestamp(System.currentTimeMillis());
+        if(!(param.getStartTime().before(nowDate) && nowDate.before(param.getEndTime()))){
+            param.setOnOff(0);
+        }
         //判断当前用户是否第一次参与收藏有礼活动
         Integer into = db().select(USER.GET_COLLECT_GIFT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
         if(into == 1){//已参与，不展示支付有礼图标
             param.setOnOff(0);
         }
+        //获取店铺名称
+        ShopRecord shop = saas().shop.getShopById(shopId);
+        param.setShopName(shop.getShopName());
         return param;
     }
 
-	public String setRewards(Integer userId){
+	public SetCollectGiftVo setRewards(Integer userId){
 	    //收藏有礼对应活动规则
         CollectGiftParam info = this.collectGiftConfig();
+
+        SetCollectGiftVo setResultVo = new SetCollectGiftVo();
+        List<AvailCouponDetailVo> couponList = new ArrayList<>();
         //发放积分
         if(info.getScore() > 0){
             /** -交易明细类型 */
@@ -123,6 +139,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
             Integer subAccountId = 0;
             try {
                 member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
+                setResultVo.setScore(info.getScore());
             } catch (MpException e) {
                 logger().info("积分更新失败");
             }
@@ -138,19 +155,23 @@ public class CollectGiftConfigService extends BaseShopConfigService{
                 CouponListVo couponData = mpCoupon.getCouponData(param);
                 //通过alias_code查看优惠券是否存在
                 if (StringUtils.isEmpty(couponData)) {
-                    return "领取失败";
+                    setResultVo.setMsg((byte)1);
+                    return setResultVo;
                 }
                 //是否过期
-                if (couponData.getValidity() <= 0 && couponData.getValidityHour() <= 0 && couponData.getValidityMinute() <= 0 && couponData.getEndTime().before(nowDate)) {
-                    return "优惠券已过期";
+                if (couponData.getValidityType() == 0 && couponData.getEndTime().before(nowDate)) {
+                    setResultVo.setMsg((byte)2);
+                    return setResultVo;
                 }
                 //是否停用
                 if (couponData.getEnabled() == 0) {
-                    return "优惠券已停用";
+                    setResultVo.setMsg((byte)3);
+                    return setResultVo;
                 }
                 //库存判断
                 if (couponData.getLimitSurplusFlag() == 0 && couponData.getSurplus() <= 0) {
-                    return "优惠券库存不足";
+                    setResultVo.setMsg((byte)4);
+                    return setResultVo;
                 }
                 CouponGiveQueueParam couponParam = new CouponGiveQueueParam();
                 List<Integer> userIds = new ArrayList();
@@ -162,9 +183,18 @@ public class CollectGiftConfigService extends BaseShopConfigService{
                 couponParam.setAccessMode((byte) 1);
                 couponParam.setGetSource((byte) 5);
                 coupon.couponGiveService.handlerCouponGive(couponParam);
+
+                //返回积分，优惠券相关信息
+                AvailCouponDetailVo couponInfo = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.TYPE,MRKING_VOUCHER.USE_CONSUME_RESTRICT)
+                    .from(MRKING_VOUCHER)
+                    .where(MRKING_VOUCHER.ID.eq(id)).fetchOne().into(AvailCouponDetailVo.class);
+                couponList.add(couponInfo);
+
             }
-            db().update(USER).set(USER.GET_COLLECT_GIFT,(byte)1).where(USER.USER_ID.eq(userId)).execute();
+            setResultVo.setCouponDetail(couponList);
         }
-        return "成功";
+        db().update(USER).set(USER.GET_COLLECT_GIFT,(byte)1).where(USER.USER_ID.eq(userId)).execute();
+        setResultVo.setMsg((byte)0);
+        return setResultVo;
     }
 }

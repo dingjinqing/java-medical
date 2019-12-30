@@ -2,8 +2,10 @@ var navigation = require("./components/navigation.js")
 var order = require("./pages/order.js")
 var checkout = require("./pages/checkout.js")
 var comment = require('./page1/commentCn.js')
+var store = require('./pages/store.js')
 var afterSale = require('./page1/afterSale.js') // 售后中心
-var fight = require('./page1/fight.js')
+var fight = require('./page1/fight.js') // 拼团
+var reserve = require('./page1/reserve.js') // 预约
 var decorate = require('./components/decorate/decorate.js')
 var zh_CN = {
   "common": {
@@ -73,20 +75,21 @@ var zh_CN = {
       "orderVerify": "扫码核销",
       "presentList": "礼物记录"
     },
-    "store": {
+    "store": Object.assign({}, {
       "searchGoods": "搜索商品",
       "noClassification": "暂无分类",
       "leftMenuA": "全部品牌",
       "leftMenuB": "推荐品牌",
       "leftMenuC": "推荐分类"
-    },
+    }, store),
     "order": order,
     "checkout": checkout
   },
   "page1": {
     "comment": comment,
     "afterSale": afterSale,
-    "fight": fight
+    "fight": fight,
+    "reserve": reserve
   },
   "page2": {
 

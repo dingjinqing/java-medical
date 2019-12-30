@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
@@ -1235,6 +1236,16 @@ public class OrderInfoService extends ShopBaseService {
     }
 
     /**
+     * 批量改为拼团成功
+     * @param orderSnList
+     */
+	public void batchChangeToGroupBuySuccess(List<String> orderSnList){
+	    if(orderSnList != null && orderSnList.size() > 0){
+	        db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_PIN_SUCCESSS).where(TABLE.ORDER_SN.in(orderSnList)).execute();
+        }
+    }
+
+    /**
      * Overdue delivery integer.发货逾期
      *
      * @param nDays the n days
@@ -1244,7 +1255,7 @@ public class OrderInfoService extends ShopBaseService {
         return db().fetchCount(TABLE, TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
             .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
     }
-    
+
     /**
      * 获得待支付尾款的订单
      * @param pinGroupId
@@ -1255,7 +1266,7 @@ public class OrderInfoService extends ShopBaseService {
 				.and(TABLE.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)
 						.and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_FRONT)).and(TABLE.ACTIVITY_ID.eq(pinGroupId)
 								.and(TABLE.GOODS_TYPE.eq(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE)))))).fetch();
-		 
+
     }
 
 }

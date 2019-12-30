@@ -1,68 +1,69 @@
 <!-- pages1/shopcheckout/shopcheckout.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <view wx:if="true">
     <form report-submit="true">
       <view class="header">
         <view>
-          <text>消费总额</text>
-          <input type="digit" bindchange="inputMoney" placeholder="请询问商家后输入" placeholder-style="#ccc" />
+          <text>{{i18n.$t(localePack,"pages.store.totalSpending")}}</text>
+          <input type="digit" bindchange="inputMoney" placeholder="{{i18n.$t(localePack,'pages.store.askingTheMerchant')}}" placeholder-style="#ccc" />
         </view>
       </view>
       <view class="pay">
         <view class="pay_li clearfix" wx:if="{{orderInfo.memberCardList != ''}}" bindtap='cardClick'>
-          <text class="score_fl">会员卡</text>
+          <text class="score_fl">{{i18n.$t(localePack,"pages.store.membershipCard")}}</text>
           <view class="coupon fr" wx:if="{{imageUrl}}" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
             <text>{{useCard.cardName}}</text>
           </view>
         </view>
         <view class="pay_li clearfix">
-          <text class="score_fl">会员卡支付</text>
+          <text class="score_fl">{{i18n.$t(localePack,"pages.store.memberCardPayment")}}</text>
           <view class="score">
-            <input type="digit" value="{{payInfo.cardAmount?payInfo.cardAmount:''}}" bindblur='card_discount' placeholder="会员卡有{{useCard.money}}元余额" placeholder-style="#ccc" />
+            <input type="digit" value="{{payInfo.cardAmount?payInfo.cardAmount:''}}" bindblur='card_discount' placeholder="{{i18n.$t(localePack,'pages.store.cardhas')}}{{useCard.money}}{{i18n.$t(localePack,'pages.store.yuanBalance')}}" placeholder-style="#ccc" />
           </view>
           <view class="fr">
-            <text>减{{payInfo.cardAmount}}元</text>
+            <text>{{i18n.$t(localePack,"pages.store.less")}}{{payInfo.cardAmount}}{{i18n.$t(localePack,"pages.store.yuan")}}</text>
           </view>
         </view>
         <view class="pay_li clearfix" wx:if="{{orderInfo.score >= 100}}">
-          <text class="score_fl">积分支付</text>
+          <text class="score_fl">{{i18n.$t(localePack,"pages.store.pointPayment")}}</text>
           <view class="score">
-            <input type="number" value="{{payInfo.inputScore?payInfo.inputScore:''}}" bindblur="score_money" placeholder="最多可使用{{orderInfo.score}}积分" placeholder-style="#ccc" />
+            <input type="number" value="{{payInfo.inputScore?payInfo.inputScore:''}}" bindblur="score_money" placeholder="{{i18n.$t(localePack,'pages.store.upToUse')}}{{orderInfo.score}}{{i18n.$t(localePack,'pages.store.integral')}}" placeholder-style="#ccc" />
           </view>
           <view class="fr">
-            <text>减{{payInfo.scoreAmount}}元</text>
+            <text>{{i18n.$t(localePack,"pages.store.less")}}{{payInfo.scoreAmount}}{{i18n.$t(localePack,"pages.store.yuan")}}</text>
           </view>
         </view>
         <view class="pay_li clearfix">
-          <text class='score_fl'>余额支付</text>
+          <text class='score_fl'>{{i18n.$t(localePack,"pages.store.balancePayment")}}</text>
           <view class='score'>
-            <input type='digit' value="{{payInfo.balanceAmount?payInfo.balanceAmount:''}}" bindblur='user_account' placeholder="您有{{orderInfo.account}}元余额" placeholder-style="#ccc" />
+            <input type='digit' value="{{payInfo.balanceAmount?payInfo.balanceAmount:''}}" bindblur='user_account' placeholder="{{i18n.$t(localePack,'pages.store.youhave')}}{{orderInfo.account}}{{i18n.$t(localePack,'pages.store.yuanBalance')}}" placeholder-style="#ccc" />
           </view>
           <view class='fr'>
-            <text>减{{payInfo.balanceAmount}}元</text>
+            <text>{{i18n.$t(localePack,"pages.store.less")}}{{payInfo.balanceAmount}}{{i18n.$t(localePack,"pages.store.yuan")}}</text>
           </view>
         </view>
       </view>
       <view class="pay" wx:if="{{orderInfo.invoiceSwitch}}">
         <view class="pay_li clearfix" bindtap='chooseInvoice'>
-          <text class='score_fl'>发票</text>
+          <text class='score_fl'>{{i18n.$t(localePack,"pages.store.invoice")}}</text>
           <view class='fr coupon' wx:if="{{imageUrl}}" data-in="{{orderInfo.invoice_title}}" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
-            <text wx:if="{{!invoiceInfo.invoice_title}}">请选择发票</text>
+            <text wx:if="{{!invoiceInfo.invoice_title}}">{{i18n.$t(localePack,"pages.store.selectAnInvoice")}}</text>
             <text wx:else>{{invoiceInfo.invoice_title}}</text>
           </view>
         </view>
       </view>
       <view class="pay">
         <view class='pay_li clearfix'>
-          <text class='score_fl'>备注</text>
+          <text class='score_fl'>{{i18n.$t(localePack,"pages.store.remarks")}}</text>
           <view class='text_area fr'>
-            <input bindblur='remarkInput' placeholder="如服务员号码，桌号等" placeholder-style="#ccc" />
+            <input bindblur='remarkInput' placeholder="{{i18n.$t(localePack,'pages.store.suchAsWaiter')}}" placeholder-style="#ccc" />
           </view>
         </view>
         <view class="pay_li clearfix" wx:if="{{payInfo.totalDiscount > 0}}">
-          <text class='score_fl'>折扣</text>
-          <text class='look_detail' bindtap='look_detail'>查看详情</text>
+          <text class='score_fl'>{{i18n.$t(localePack,"pages.store.discount")}}</text>
+          <text class='look_detail' bindtap='look_detail'>{{i18n.$t(localePack,"pages.store.seeDetails")}}</text>
           <image src="{{imageUrl}}/image/wxapp/detail0.png" wx:if="true" class='to_look' mode='widthFix' bindtap='look_detail' />
           <image src="{{imageUrl}}/image/wxapp/detail1.png" wx:else class='to_look' mode='widthFix' bindtap='look_detail' />
           <view class='fr'>
@@ -75,19 +76,19 @@
       <view class="discount_detail" wx:if="{{discount_block == 1}}">
         <view>
           <view class='clearfix' wx:if="{{payInfo.cardDisAmount>0}}">
-            <text class='fl'>会员卡折扣</text>
+            <text class='fl'>{{i18n.$t(localePack,"pages.store.memberCardDiscount")}}</text>
             <view class='fr'>-￥{{payInfo.cardDisAmount}}</view>
           </view>
           <view class='clearfix' wx:if="{{payInfo.cardAmount>0}}">
-            <text class='fl'>会员卡支付</text>
+            <text class='fl'>{{i18n.$t(localePack,"pages.store.memberCardPayment")}}</text>
             <view class='fr'>-￥{{payInfo.cardAmount}}</view>
           </view>
           <view class='clearfix' wx:if="{{payInfo.scoreAmount>0}}">
-            <text class='fl'>积分抵扣</text>
+            <text class='fl'>{{i18n.$t(localePack,"pages.store.pointCash")}}</text>
             <view class='fr'>-￥{{payInfo.scoreAmount}}</view>
           </view>
           <view class='clearfix' wx:if="{{payInfo.balanceAmount>0}}">
-            <text class='fl'>余额支付</text>
+            <text class='fl'>{{i18n.$t(localePack,"pages.store.balancePayment")}}</text>
             <view class='fr'>-￥{{payInfo.balanceAmount}}</view>
           </view>
         </view>
@@ -95,7 +96,7 @@
       <form report-submit='true' bindsubmit='toConfirm'>
         <button class='footer' form-type='submit'>
           <view style='background:{{comColor}}'>
-            立即支付
+            {{i18n.$t(localePack,"pages.store.payImmediately")}}
             <text wx:if="{{payInfo.orderAmount>0}}">￥{{payInfo.moneyPaid}}</text>
           </view>
         </button>

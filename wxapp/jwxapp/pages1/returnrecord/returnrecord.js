@@ -76,13 +76,13 @@ global.wxPage({
             goodsType = type
             switch (type) {
               case 1:
-                activityName = '拼团'
+                activityName = that.$t('page1.afterSale.activityName[0]')
                 break
               case 3:
-                activityName = '砍价'
+                activityName = that.$t('page1.afterSale.activityName[1]')
                 break
               case 5:
-                activityName = '秒杀'
+                activityName = that.$t('page1.afterSale.activityName[2]')
                 break
               default:
                 activityName = ''

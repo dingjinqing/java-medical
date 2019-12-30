@@ -1,10 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
+import com.vpu.mp.service.pojo.wxapp.collectGift.SetCollectGiftVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,17 +16,22 @@ public class WxAppCollectGiftConfigController extends WxAppBaseController {
      * 收藏有礼开关状态
      * @return
      */
-    @GetMapping("/api/wxapp/collectGift/switch")
+    @PostMapping("/api/wxapp/collectGift/switch")
     public JsonResult getSwitchStatus(){
         Integer userId = wxAppAuth.user().getUserId();
-        CollectGiftParam res = shop().config.collectGiftConfigService.collectGiftConfig(userId);
+        Integer shopId = wxAppAuth.user().getShopId();
+        CollectGiftParam res = shop().config.collectGiftConfigService.collectGiftConfig(userId,shopId);
         return this.success(res);
     }
 
-    @GetMapping("/api/wxapp/collectGift/setRewards")
+    /**
+     * 收藏有礼礼品发放
+     * @return
+     */
+    @PostMapping("/api/wxapp/collectGift/setRewards")
     public JsonResult setRewards(){
         Integer userId = wxAppAuth.user().getUserId();
-        shop().config.collectGiftConfigService.setRewards(userId);
-        return this.success();
+        SetCollectGiftVo res = shop().config.collectGiftConfigService.setRewards(userId);
+        return this.success(res);
     }
 }
