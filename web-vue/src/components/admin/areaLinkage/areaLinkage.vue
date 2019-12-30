@@ -63,9 +63,13 @@ import { deepCloneObj } from '@/util/deepCloneObj'
 export default {
   name: 'areaLinkage',
   props: {
-    provinceCode: [String, Number],
-    cityCode: [String, Number],
-    districtCode: [String, Number]
+    areaCode: {
+      type: Object,
+      default: null
+    }
+    // provinceCode: [String, Number],
+    // cityCode: [String, Number],
+    // districtCode: [String, Number]
   },
   data () {
     return {
@@ -86,9 +90,7 @@ export default {
       },
       province: [],
       city: [],
-      areaDistrict: [],
-
-      editType: false
+      areaDistrict: []
     }
   },
   computed: {
@@ -98,10 +100,21 @@ export default {
   },
   watch: {
     // 编辑数据回显
-    provinceCode (val) {
-      this.editType = true
-      this.values.province = Number(val)
-      this.choseProvince(this.values.province)
+    areaCode: {
+      handler (val) {
+        debugger
+        this.values.province = Number(val.provinceCode)
+        this.choseProvince(this.values.province)
+        this.$nextTick(() => {
+          this.values.city = Number(val.cityCode)
+          this.choseCity(this.values.city)
+          this.$nextTick(() => {
+            this.values.district = Number(val.districtCode)
+            this.choseDistrict(this.values.district)
+          })
+        })
+      },
+      deep: true
     }
   },
   mounted () {
@@ -141,15 +154,12 @@ export default {
     // 选择省份
     choseProvince (val) {
       // if (val === ``) return
+
+      this.values.city = ``
+      this.values.district = ``
+
       if (val) {
         this.city = this.province.find((item, index) => val === item['provinceId'])['areaCity']
-        if (this.editType === true) {
-          this.values.city = Number(this.cityCode)
-          this.choseCity(this.values.city)
-        } else {
-          this.values.city = ``
-          this.values.district = ``
-        }
       } else {
         this.city = []
       }
@@ -176,14 +186,10 @@ export default {
     choseCity (val) {
       // if (val === ``) return
 
+      this.values.district = ``
+
       if (val) {
         this.areaDistrict = this.city.find((item, index) => val === item['cityId'])['areaDistrict']
-        if (this.editType === true) {
-          this.values.district = Number(this.districtCode)
-          this.choseDistrict(this.values.district)
-        } else {
-          this.values.district = ``
-        }
       } else {
         this.areaDistrict = []
       }
@@ -206,8 +212,6 @@ export default {
     },
 
     choseDistrict (val) {
-      this.editType = false
-
       let district = this.areaDistrict.find(data => val === data.districtId)
       if (district) {
         this.areas.district = {

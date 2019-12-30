@@ -3,6 +3,7 @@
 <include src="../common/header.wxml" />
 
 <view class='main-container'>
+  <!-- 下载海报 -->
   <block wx:if="{{show_poster.flag == 1}}">
     <block wx:if="{{getsq == true || click_num == true}}">
       <view class='share_img_btn' wx:if='{{is_share == 0 && !(bargain_info.record_status.status == 1 || bargain_info.record_status.status == 2 || bargain_info.record_status.status == 4 || bargain_info.record_status.status == 6) }}' bindtap='go_share'>
@@ -19,6 +20,7 @@
   </block>
 
   <view class='all'>
+    <!-- 砍价信息 -->
     <view class='info_top'>
       <image class='user_icon' src='{{bargain_info.record_info.user_avatar}}'></image>
       <view class='top_content'>
@@ -52,6 +54,7 @@
       </view>
       <image src='{{imageUrl}}image/wxapp/kanjia_info_bg.png' class='top_bg' mode='widthFix'></image>
     </view>
+    <!-- 砍价进度 -->
     <view class='get_persent'>
       <block wx:if = "{{bargain_info.record_info.bargain_type == 1}}">
         <block wx:if='{{bargain_info.record_info.not_freee_monet > 0}}'>
@@ -84,6 +87,7 @@
         </view>
       </block>
     </view>
+    <!-- 砍价按钮 -->
     <view class='btn_kanjia' wx:if='{{bargain_info.record_status.status == 0}}' style='position:relative;height:70rpx;padding:0'>
       <form report-submit='true' bindsubmit='toKnajia'>
        <block wx:if="{{getsq == true || click_num == true}}">
@@ -102,39 +106,31 @@
       <button class='btn_kanjia' formType="submit" wx:if='{{bargain_info.record_status.status == 5}}'>砍价成功，立即完善订单</button>
     </form>
     <block wx:if="{{ getsq == true || click_num == true}}">
-    <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 7}}'>
-      <button open-type='share'></button>
-      {{bargain_info.record_status.msg}}
-    </view>
-    <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 8}}'>
-      <button open-type='share'></button>
-      {{bargain_info.record_status.msg}}
-    </view>
-    <view class='have_two_btn clearfix' wx:if='{{bargain_info.record_status.status == 11}}'>
-      <view class='btn_half has_btn'>
+      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 7 || bargain_info.record_status.status == 8}}'>
         <button open-type='share'></button>
         {{bargain_info.record_status.msg}}
       </view>
-      <form report-submit='true' bindsubmit='toCheckout'>
-        <button class='btn_half btn_to_pay' formType="submit">
-          立即下单
-        </button>
-      </form>
-    </view>
+      <view class='have_two_btn clearfix' wx:if='{{bargain_info.record_status.status == 11}}'>
+        <view class='btn_half has_btn'>
+          <button open-type='share'></button>
+          {{bargain_info.record_status.msg}}
+        </view>
+        <form report-submit='true' bindsubmit='toCheckout'>
+          <button class='btn_half btn_to_pay' formType="submit">
+            立即下单
+          </button>
+        </form>
+      </view>
     </block>
     <block wx:else>
-      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 7}}'>
-      <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
-      {{bargain_info.record_status.msg}}
-    </view>
-    <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 8}}'>
-      <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
-      {{bargain_info.record_status.msg}}
-    </view>
-
+      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.record_status.status == 7 || bargain_info.record_status.status == 8}}'>
+        <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
+        {{bargain_info.record_status.msg}}
+      </view>
     </block>
     <view class='btn_kanjia' bindtap='toWhere' wx:if='{{bargain_info.record_status.status == 9}}'>{{bargain_info.record_status.msg}}</view>
     <view class='btn_kanjia' bindtap='toOrder' data-order_sn="{{bargain_info.record_status.order_sn}}" wx:if='{{bargain_info.record_status.status == 10}}'>{{bargain_info.record_status.msg}},点击查看详情</view>
+    <!-- 砍价记录 -->
     <view class='kanjia_person' wx:if='{{bargain_info.record_user_list.length>0}}'>
       <view class='list_title'>
         <view class='neirong'>砍价记录</view>
@@ -214,7 +210,7 @@
       </view>
     </view>
 
-    <!--fenxiang弹框  -->
+    <!-- 分享弹框  -->
     <view class='share_bg' style='display:{{is_share == 1?"block":"none"}};margin-top:{{margin_top_nav + 8}}px;'>
       <view class='zhezhao' catchtap='not_show_share'></view>
       <view class='share_content'>
@@ -223,6 +219,7 @@
         <view class='save_tips'>保存图片到本地相册</view>
       </view>
     </view>
+
     <!-- 绑定手机号弹窗 -->
     <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以帮TA砍价哦！" />
   </view>
