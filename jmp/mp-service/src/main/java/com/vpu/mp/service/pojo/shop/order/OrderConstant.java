@@ -524,6 +524,10 @@ public class OrderConstant {
     public static final Byte TK_JD = 1;
     public static final Byte TK_TB = 2;
 
+    /**赠品判断新老用户*/
+    public static final Byte USER_ACTION_NEW = 1;
+    public static final Byte USER_ACTION_OLD = 2;
+
     /**
      * 交易售后配置
      */
