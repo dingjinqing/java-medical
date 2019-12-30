@@ -129,6 +129,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
 //        PageResult<GoodsRecord> recommendGoods = getRecommendPageList(param.getRecommendGoodsIds(),sortName);
 
         List<?> goodsListNormal = goodsMpService.getGoodsListNormal(param.getRecommendGoodsIds(),param.getUserId());
+        logger().info(goodsListNormal.toString());
         int pageNum = param.getPageNum();
         int pageSize = param.getPageSize();
         int startIndex = (pageNum-1)*pageSize;
