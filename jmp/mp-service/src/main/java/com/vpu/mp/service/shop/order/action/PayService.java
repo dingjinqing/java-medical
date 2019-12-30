@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -84,6 +85,8 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     private OrderPayService orderPay;
     @Autowired
     private GroupBuyListService groupBuyListService;
+    @Autowired
+    private GroupBuyService groupBuyService;
     @Override
     public Object query(OrderOperateQueryParam param) {
         return null;
@@ -188,7 +191,6 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             logger().error("订单支付方式必须为微信支付且必须有payRecord(PayService.toWaitDeliver),sn:{}", orderInfo.getOrderSn());
             throw new MpException(JsonResultCode.CODE_ORDER_NOT_TO_WAIT_DELIVER, "订单支付方式必须为微信支付且必须有payRecord");
         }
-
         //微信支付记录(全部)
         tradesRecord.addRecord(orderInfo.getMoneyPaid(),orderInfo.getOrderSn(),orderInfo.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CRASH_WX_PAY.val(),RecordTradeEnum.TRADE_FLOW_IN.val(),TradesRecordService.TRADE_CONTENT_MONEY);
         //状态转化
@@ -206,6 +208,13 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
         //订单商品
         List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
+        // 更新拼团状态
+        if (goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
+            GroupOrderVo byOrder = groupBuyListService.getByOrder(orderInfo.getOrderSn());
+            String goodsName =goods.get(0).getGoodsName();
+            String goodsPrice =goods.get(0).getGoodsPrice().toString();
+            groupBuyService.groupBuySuccess(orderInfo.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
+        }
         //库存销量
         atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
         //TODO 异常订单处理等等
