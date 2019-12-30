@@ -37,4 +37,8 @@ public class CollectGiftParam {
 	/** 优惠券id*/
 	@JsonProperty(value = "coupon_ids")
 	private String couponIds;
+    /**
+     * 店铺名称 小程序端收藏有礼
+     */
+	private String shopName;
 }

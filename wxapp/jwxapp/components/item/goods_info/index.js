@@ -22,7 +22,7 @@ global.wxComponent({
               let {productId:prdId,[priceName[data.activity.activityType].prdRealPrice]:prdRealPrice,[priceName[data.activity.activityType].prdLinePrice]:prdLinePrice} = item
               return {prdId,prdRealPrice,prdLinePrice}
             }) : data.activity[priceName[data.activity.activityType].prdRealPrice]
-            this.getPrice({defaultPrd,products,activityType:data.activity.activityType})
+            this.getPrice({defaultPrd,products,activity:data.activity})
         }
         this.setData({
           isCollected:data.isCollected
@@ -46,7 +46,12 @@ global.wxComponent({
   methods: {
     // 商品价格/划线价
     getPrice(data) {
-      if(data.activityType && priceName[data.activityType].multiSkuAct){
+      if(data.activity && !priceName[data.activity.activityType].multiSkuAct){
+        this.setData({
+          goodsPrice:data.products,
+          markingPrice: data.defaultPrd ? this.data.goodsInfo.products[0].prdLinePrice : `${this.getMin(this.data.goodsInfo.products.map(item => item.prdRealPrice))}~${this.getMin(this.data.goodsInfo.products.map(item => item.prdRealPrice))}`
+        })
+      } else {
         if (data.defaultPrd) {
           this.setData({
             goodsPrice: data.products[0].prdRealPrice,
@@ -62,11 +67,6 @@ global.wxComponent({
             )}`
           });
         }
-      } else {
-        this.setData({
-          goodsPrice:data.products,
-          markingPrice: data.defaultPrd ? this.data.goodsInfo.products[0].prdLinePrice : `${this.getMin(this.data.goodsInfo.products.map(item => item.prdRealPrice))}~${this.getMin(this.data.goodsInfo.products.map(item => item.prdRealPrice))}`
-        })
       }
     },
     // 获取最小值

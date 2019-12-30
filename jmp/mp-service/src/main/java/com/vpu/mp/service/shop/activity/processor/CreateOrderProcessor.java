@@ -30,6 +30,6 @@ public interface CreateOrderProcessor extends Processor {
      * @param param 规格id
      * @throws MpException
      */
-    void  processStockAndSales(OrderBeforeParam param)throws MpException;
+    void  processStockAndSales(OrderBeforeParam param,OrderInfoRecord order)throws MpException;
 
 }

@@ -11,7 +11,7 @@ import java.util.Collection;
  * @author 孔德成
  * @date 2019/12/2 18:18
  */
-public class ListValidValidator implements ConstraintValidator<ListValid, Collection> {
+public class ListValidValidator implements ConstraintValidator<ListValid, Collection<?>> {
 
     private int min;
     private int max;
@@ -27,7 +27,7 @@ public class ListValidValidator implements ConstraintValidator<ListValid, Collec
     }
 
     @Override
-    public boolean isValid(Collection value, ConstraintValidatorContext context) {
+    public boolean isValid(Collection<?> value, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
         if (value==null){
             if (!notNull){

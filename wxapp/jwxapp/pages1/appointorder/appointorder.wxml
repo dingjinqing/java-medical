@@ -1,4 +1,5 @@
 <!-- 提交预约：pages1/appointorder/appointorder.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <view class="container" wx:if="delFlag != 1">
@@ -9,10 +10,10 @@
           <image class="img_pre" src="{{img_person}}"></image>
         </view>
         <view class="left-tips">
-          <text>预约人</text>
+          <text>{{i18n.$t(localePack,"page1.reserve.reservedBy")}}</text>
         </view>
         <view class="right-tips">
-          <input placeholder="请输入预约人" value="{{recentOrderInfo.subscriber ||''}}" bindblur="nameBlur" bindchange="nameChange"></input>
+          <input placeholder="{{i18n.$t(localePack,'page1.reserve.enterReservation')}}" value="{{recentOrderInfo.subscriber ||''}}" bindblur="nameBlur" bindchange="nameChange"></input>
         </view>
         <view>
           <image src="{{img_cancel}}" class="img_cancel" bindtap='cancelName'></image>
@@ -23,10 +24,10 @@
           <image src="{{img_phone}}" class="img_pre"></image>
         </view>
         <view class="left-tips">
-          <text>手机号</text>
+          <text>{{i18n.$t(localePack,'page1.reserve.phoneNum')}}</text>
         </view>
         <view class="right-tips">
-          <input placeholder="请输入联系电话" value="{{recentOrderInfo.mobile ||''}}" bindblur="mobileBlur" type="number" bindchange="mobileChange"></input>
+          <input placeholder="{{i18n.$t(localePack,'page1.reserve.enterPhoneNum')}}" value="{{recentOrderInfo.mobile ||''}}" bindblur="mobileBlur" type="number" bindchange="mobileChange"></input>
         </view>
         <view>
           <image src="{{img_cancel}}" class="img_cancel" bindtap='cancelMobile'></image>
@@ -38,7 +39,7 @@
       <view style="width:8%;text-align:left;">
         <image class="img_pre" src="{{img_time}}"></image>
       </view>
-      <text class="tips" style="width:36%;">预约时间</text>
+      <text class="tips" style="width:36%;">{{i18n.$t(localePack,'page1.reserve.appointment')}}</text>
       <view style="width:50%;">
         <text style="color:{{comColor}};">{{reserveInfo.date}} {{reserveInfo.startTime}} - {{reserveInfo.endTime}}</text>
       </view>
@@ -77,24 +78,24 @@
           <block wx:if="{{serviceInfo.serviceSubsist > 0}}">
             <view class='appoine_bottom'>
               <view class="appoint-price" style="text-align:center;color:{{linColor}};border-color:{{linColor}}">
-                <text>订金</text>
+                <text>{{i18n.$t(localePack,'page1.reserve.deposit')}}</text>
               </view>
               <view class="appoint-money" style='color:{{comColor}}'>
                 <text style='font-size:28rpx;color:{{comColor}}'>￥</text>
                 <text>{{serviceInfo.serviceSubsist}}</text>
               </view>
               <view class='all-price' wx:if='{{serviceInfo.servicePrice!=0}}'>
-                <text>服务总价：￥{{serviceInfo.servicePrice}}</text>
+                <text>{{i18n.$t(localePack,'page1.reserve.totalPriceOfService')}}：￥{{serviceInfo.servicePrice}}</text>
               </view>
             </view>
           </block>
           <block wx:else>
             <view class='appoine_bottom'>
               <view class="appoint-price" wx:if='{{service.servicePrice!=0}}' style="color:{{comColor}};border-color:{{comColor}}">
-                <text>总价</text>
+                <text>{{i18n.$t(localePack,'page1.reserve.totalPrice')}}</text>
               </view>
-              <view class="appoint-money" wx:if='{{service.servicePrice!=0}}' style="color:{{comColor}};">
-                <text>￥{{service.servicePrice}}</text>
+              <view class="appoint-money" wx:if='{{service.servicePrice!=""}}' style="color:{{comColor}};">
+                <text>￥{{service.servicePrice?service.servicePrice:0}}</text>
               </view>
             </view>
           </block>
@@ -105,21 +106,23 @@
     <view class="pay_type">
       <block wx:if="{{cardList && cardList.length > 0}}">
         <view class='choose_coupon' bindtap='cardClick' style='padding:24rpx 0;'>
-          <view>会员卡</view>
+          <view>{{i18n.$t(localePack,'page1.reserve.membershipCard')}}</view>
           <view style='margin:0;'>
             <block wx:if="{{ useCard.cardName }}">
               <text style='margin-right:10rpx;'>{{ useCard.cardName }}</text>
             </block>
             <block wx:else>
-              <text style='margin-right:30rpx;'>选择会员卡</text>
+              <text style='margin-right:30rpx;'>{{i18n.$t(localePack,'page1.reserve.selectMembershipCard')}}</text>
             </block>
             <image src='{{img_right}}'></image>
           </view>
         </view>
         <view class='hr' wx:if="{{cardList.length != 0}}"></view>
         <view class='yue_pay'>
-          <view>会员卡余额支付:</view>
-          <view class='pay_focus'><text style='color:{{comColor}}' wx:if='{{create_order.member_card_balance > 0}}'>减{{create_order.member_card_balance}}元</text></view>
+          <view>{{i18n.$t(localePack,'page1.reserve.memberCardBalancePay')}}:</view>
+          <view class='pay_focus'>
+            <text style='color:{{comColor}}' wx:if='{{create_order.member_card_balance > 0}}'>{{i18n.$t(localePack,'page1.reserve.less')}}{{create_order.member_card_balance}}{{i18n.$t(localePack,'page1.reserve.yuan')}}</text>
+          </view>
           <view class='pay_check' bindtap='{{create_order.member_card_balance > 0 ? "" : "payCardBalanceClick"}}' data-type='card'>
             <image src="{{ checkbox_no }}" mode='widthFix' wx:if='{{create_order.member_card_balance == 0}}' />
             <text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' bindtap='checkCancelCard' wx:else></text>
@@ -128,10 +131,10 @@
         <view class='hr' wx:if="{{useCard.money > 0}}"></view>
       </block>
       <view class="yue_pay" wx:if="{{account > 0 && isBalance}}">
-        <view>余额支付:</view>
+        <view>{{i18n.$t(localePack,'page1.reserve.balancePay')}}:</view>
         <view class='pay_focus'>
           <text style='color:{{comColor}}' wx:if='{{create_order.account_discount > 0}}'>
-            <text>减{{create_order.account_discount}}元</text>
+            <text>{{i18n.$t(localePack,'page1.reserve.less')}}{{create_order.account_discount}}{{i18n.$t(localePack,'page1.reserve.yuan')}}</text>
           </text>
         </view>
         <view class='pay_check' bindtap='{{create_order.account_discount > 0 ? "" : "payBalanceClick"}}' data-type='yue'>
@@ -142,25 +145,25 @@
     </view>
     <!-- 备注 -->
     <view class="appoint-service">
-      <label for="beizhu">备注</label>
-      <input type="text" placeholder="选填，可输入您的喜好" id="beizhu" bindinput="msgInput" value="{{add_message}}" />
+      <label for="beizhu">{{i18n.$t(localePack,'page1.reserve.remarks')}}</label>
+      <input type="text" placeholder="{{i18n.$t(localePack,'page1.reserve.optional')}}" id="beizhu" bindinput="msgInput" value="{{add_message}}" />
     </view>
     <!-- 金额信息 -->
     <view class='checkout_detail' wx:if="{{post_type != 'integral'}}">
       <view class='price_amount'>
-        <view>订单总计</view>
+        <view>{{i18n.$t(localePack,'page1.reserve.orderTotal')}}</view>
         <view style='color:{{comColor}}'>￥{{serviceInfo.serviceSubsist}}</view>
       </view>
       <view class="pay_nums" wx:if="{{create_order.member_card_discount > 0 && create_order.member_card_discount > 0}}">
-        <view>会员卡折扣</view>
+        <view>{{i18n.$t(localePack,'page1.reserve.memberCardDiscount')}}</view>
         <view style="color:{{comColor}}">-￥{{create_order.member_card_discount}}</view>
       </view>
       <view class='pay_nums' wx:if="{{create_order.member_card_balance > 0 && create_order.member_card_balance > 0}}">
-        <view>会员卡余额</view>
+        <view>{{i18n.$t(localePack,'page1.reserve.memberBalance')}}</view>
         <view style='color:{{comColor}}'>-￥{{create_order.member_card_balance}}</view>
       </view>
       <view class='pay_nums' wx:if="{{create_order.account_discount > 0 && create_order.account_discount > 0}}">
-        <view>余额支付</view>
+        <view>{{i18n.$t(localePack,'page1.reserve.balancePay')}}</view>
         <view style='color:{{comColor}}'>-￥{{create_order.account_discount}}</view>
       </view>
     </view>
@@ -169,21 +172,21 @@
   <view class="appoint-btm" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
     <block wx:if="{{serviceInfo.serviceSubsist > 0}}">
       <view class="all-money">
-        <text style='color:{{comColor}}'>应付总额：￥{{create_order.money_paid}}</text>
+        <text style='color:{{comColor}}'>{{i18n.$t(localePack,'page1.reserve.totalPayable')}}：￥{{create_order.money_paid}}</text>
       </view>
       <form report-submit='true' bindsubmit='oneClickBuy' style='width:35%'>
-        <button class="go-order" formType='submit' style='background:{{comColor}}'>提交预约</button>
+        <button class="go-order" formType='submit' style='background:{{comColor}}'>{{i18n.$t(localePack,'page1.reserve.submitApply')}}</button>
       </form>
     </block>
     <block wx:else>
       <form report-submit='true' bindsubmit='oneClickBuy' style="width:100%;">
-        <button class="go-order" formType='submit' style='background:{{comColor}}'>确认预约</button>
+        <button class="go-order" formType='submit' style='background:{{comColor}}'>{{i18n.$t(localePack,'page1.reserve.confirmAppointment')}}</button>
       </form>
     </block>
   </view>
 </view>
 <!-- 会员卡弹窗组件 -->
-<select_card_dialog show="{{showCardDialog}}" member-card-list="{{cardList}}" default-member-card-no="{{useCard.cardNo}}"  bindconfirm="getSelectCard"></select_card_dialog>
+<select_card_dialog show="{{showCardDialog}}" member-card-list="{{cardList}}" default-member-card-no="{{useCard.cardNo}}" bindconfirm="getSelectCard"></select_card_dialog>
 <!-- 会员卡余额支付弹窗 -->
 <pay_card_balance_dialog show="{{showCardBalanceDialog}}" user-card-balance="{{useCard.money}}" money-paid="{{create_order.money_paid}}" bindconfirm="getInputCardBalance" bindclose="closeDialog"></pay_card_balance_dialog>
 <!-- 余额支付弹窗 -->

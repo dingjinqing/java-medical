@@ -1,0 +1,268 @@
+/* @import "../act-coupon/index.wxss"; */
+/*活动送券  */
+
+.one_coupon {
+  width: 550rpx;
+  height: 620rpx;
+}
+
+.cou_detail {
+  width: 550rpx;
+  height: 540rpx;
+}
+
+.cou_detail .tips1 {
+  width: 430rpx;
+  margin: 0 auto;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40rpx;
+}
+
+.tips1 {
+  color: #fff;
+  font-size: 36rpx;
+  text-align: center;
+  width: 430rpx;
+  margin: 0 auto;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tips2 {
+  color: #fff;
+  font-size: 36rpx;
+  margin-top: 10rpx;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 120rpx;
+}
+
+.price_cou {
+  width: 400rpx;
+  margin: 50rpx auto;
+  height: 100rpx;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 115rpx;
+}
+
+.price_cou>view {
+  float: left;
+}
+
+.left_money {
+  color: #f66;
+  font-size: 50rpx;
+  font-weight: bold;
+  border-right: 2rpx dashed #ddd;
+  width: 200rpx;
+  margin-right: 10rpx;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left_money text {
+  font-size: 70rpx;
+}
+
+.right_money {
+  width: 170rpx;
+  display: flex;
+  align-items: center;
+  padding-left: 20rpx;
+  color: #333;
+  font-size: 30rpx;
+}
+
+.tip3 {
+  color: #fff;
+  font-size: 30rpx;
+  margin-bottom: 10rpx;
+  text-align: center;
+  width: 100%;
+  margin-top: 85rpx;
+}
+
+.go_list {
+  color: #fff;
+  font-size: 24rpx;
+  text-align: center;
+  width: 100%;
+}
+
+.go_list image {
+  width: 15rpx;
+}
+
+.two_cou {
+  width: 550rpx;
+  height: 770rpx;
+}
+
+.price_cou2 {
+  height: 360rpx;
+  overflow-y: scroll
+}
+
+.each_tow {
+  width: 430rpx;
+  height: 170rpx;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.each_tow:last-of-type {
+  margin-bottom: 0;
+}
+
+.two_detail .tips2 {
+  margin-bottom: 40rpx;
+}
+
+.two_detail .tip3 {
+  margin-top: 25rpx;
+}
+
+.two_detail {
+  width: 550rpx;
+  height: 690rpx;
+}
+
+.each_tow .et_left {
+  width: 215rpx;
+  color: #f66;
+  font-size: 50rpx;
+  font-weight: bold;
+  border-right: 2rpx dashed #ddd;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.each_tow .et_left text {
+  font-size: 70rpx;
+}
+
+.each_tow .et_right {
+  width: 155rpx;
+  color: #333;
+  font-size: 30rpx;
+  padding: 0 30rpx;
+  text-align: center;
+}
+/* END */
+
+
+.collect_coupon_detail{
+  width: 550rpx;
+  background: skyblue;
+  overflow: visible;
+  padding: 30rpx 0;
+  border-radius: 16rpx;
+}
+
+.collect_tip{
+  color: #fff;
+  text-align: center;
+  font-size: 36rpx;
+}
+.collect_score_tip{
+  text-align: center;
+  color: #fff;
+  margin-top: 30rpx;
+}
+.collect_score_info{
+  text-align: center;
+  width: 424rpx;
+  line-height: 80rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
+  margin: 30rpx auto 0;
+}
+.collect_coupon_button{
+  color: #fff;
+  width: 200rpx;
+  line-height: 60rpx;
+  border: 2rpx solid #fff;
+  border-radius: 30rpx;
+  text-align: center;
+  margin:30rpx auto 0;
+}
+.collect_coupon .price_cou2{
+  height: auto;
+  max-height: 334rpx;
+  overflow-y: auto;
+  margin-top: 30rpx
+}
+.collect_coupon .each_tow{
+  background-color: #fff;
+  border-radius: 10rpx;
+  position: relative;
+  height: 150rpx;
+  overflow-x: hidden;
+}
+.collect_coupon .each_tow+.each_tow{
+  margin-top: 30rpx;
+}
+.collect_coupon .each_tow::before,.collect_coupon .each_tow::after{
+  content: '';
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  background-color: #fc726a ;
+  position: absolute;
+  z-index: 300;
+}
+.collect_coupon .each_tow::before{
+  left: -15rpx;
+}
+.collect_coupon .each_tow::after{
+  right: -15rpx;
+}
+
+.collect_coupon_box{
+  overflow-y: auto;
+}
+.no_gift{
+  width: 546rpx;
+  height: 500rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+  text-align: center;
+}
+.no_gift > image{
+  width: 180rpx;
+  margin-top: 70rpx;
+}
+.no_gift > view:nth-child(2){
+  font-size: 36rpx;
+  color: #333;
+  margin-top: 38rpx;
+  font-weight: 600
+}
+.no_gift > view:nth-child(3){
+  font-size: 26rpx;
+  color: #333;
+  margin-top: 30rpx
+}
+.no_gift_button{
+  color: #ff6666;
+  width: 200rpx;
+  line-height: 60rpx;
+  border: 2rpx solid #ff6666;
+  border-radius: 30rpx;
+  text-align: center;
+  margin:30rpx auto 0;
+}

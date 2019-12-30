@@ -1,10 +1,18 @@
 <include src="../common/header.wxml" />
+
 <!-- 装修 -->
 <view class='main-container' style='{{color}};padding-bottom:80rpx;'>
     <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />
     <include src="../common/footer.wxml" />
 </view>
+
+<!-- 收藏小程序提示弹窗 -->
+<v-popup-collect-mp-tips show="{{show_collect_mp_tips}}" collect_info="{{collectContent}}" />
+
+<!-- 收藏有礼送优惠券积分弹窗 -->
+<v-popup-collect-coupon show="{{collect_coupon_display}}" bind:closeCollectMp="closeCollectMp" collect_score="{{collect_score}}" collect_coupons="{{collect_coupons}}" />
+
 <!-- 收藏小程序提示按钮 -->
 <view class="collect_gifts" bindtap='bindShowCollectMp' wx:if="{{collect_gift}}">
-  <image src='{{pageContent.shop_collect.collect_logo == 0 ? imageUrl+"image/wxapp/collect_gifts.png" : pageContent.shop_collect.collect_logo_src}}'></image>
+  <image src='{{collectContent.collect_logo == 0 ? imageUrl+"image/wxapp/collect_gifts.png" : collectContent.collect_logo_src}}'></image>
 </view>

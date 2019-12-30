@@ -31,7 +31,7 @@ public class StoreGroupService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	@RecordAction(templateId = {RecordContentTemplate.GOODS_CONTENT_ADD},templateData = {"#{param.groupId}"})
+//	@RecordAction(templateId = {RecordContentTemplate.GOODS_CONTENT_ADD},templateData = {"#{param.groupId}"})
 	public PageResult<StoreGroup> getStoreGroupPageList(StoreGroupQueryParam param){
 		SelectWhereStep<? extends Record> select = db()
             .select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,STORE_GROUP.CREATE_TIME)

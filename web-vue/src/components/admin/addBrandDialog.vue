@@ -58,7 +58,7 @@
               align="center"
               width="100"
               type="selection"
-              v-if="!isElection"
+              v-if="!singleElection"
             >
               <!-- <template slot-scope="scope">
                 <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
@@ -136,7 +136,10 @@ export default {
       type: Number,
       default: -1
     },
-    singleElection: Boolean
+    singleElection: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -251,9 +254,6 @@ export default {
         })
         console.log(this.tableData)
       }
-    },
-    singleElection (newVal) {
-      this.isElection = newVal
     }
   },
   mounted () {

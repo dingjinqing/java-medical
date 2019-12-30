@@ -67,7 +67,7 @@ global.wxPage({
         console.log(res)
         let info = res.content;
         if (info.storeBuy === 0) {
-          util.showModal('提示', '商家已禁止使用门店买单功能', function () {
+          util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.noPayment'), function () {
             util.reLaunch({
               url: '/pages/index/index'
             })
@@ -75,7 +75,7 @@ global.wxPage({
           return;
         }
         if (info.delFlag == 1) {
-          util.showModal('提示', '该门店已删除', function () {
+          util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.hasDeleteStore'), function () {
             util.reLaunch({
               url: '/pages/index/index'
             })
@@ -83,7 +83,7 @@ global.wxPage({
           return;
         }
         if (info.shopBusinessState == 0) {
-          util.showModal('提示', '该店铺未营业，随便逛逛', function () {
+          util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.wanderAround'), function () {
             util.reLaunch({
               url: '/pages/index/index'
             })
@@ -91,7 +91,7 @@ global.wxPage({
           return;
         }
         if (info.storeBusinessState == 0) {
-          util.showModal('提示', '该门店未营业，随便逛逛', function () {
+          util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.wanderAround'), function () {
             util.reLaunch({
               url: '/pages/index/index'
             })
@@ -191,7 +191,7 @@ global.wxPage({
   // 选择会员卡弹窗 
   cardClick () {
     if (!this.data.payInfo.orderAmount) {
-      util.showModal('', '请输入消费金额')
+      util.showModal('', this.$t('pages.store.enterAmount'))
       return false
     }
     this.setData({
@@ -219,7 +219,7 @@ global.wxPage({
       value = Number(value)
       let isPrice = this.isAmount(value)
       if (!isPrice) {
-        util.showModal('', '请输入正确的金额')
+        util.showModal('', this.$t('pages.store.enterCorrect'))
         this.setData({
           'payInfo.cardAmount': 0
         })
@@ -227,7 +227,7 @@ global.wxPage({
         return false
       }
       if (value > this.data.useCard.money) {
-        util.showModal('', '最多可以使用：' + this.data.useCard.money + '会员卡余额')
+        util.showModal('', this.$t('pages.store.upTo') + this.data.useCard.money + this.$t('pages.store.memberCardBalance'))
         this.setData({
           'payInfo.cardAmount': 0
         })
@@ -235,7 +235,7 @@ global.wxPage({
         return false
       }
       if (value > this.data.payInfo.moneyPaid) {
-        util.showModal('', '使用余额不得超过支付金额')
+        util.showModal('', this.$t('pages.store.notExceed'))
         this.setData({
           'payInfo.cardAmount': 0
         })
@@ -261,7 +261,7 @@ global.wxPage({
     if (value) {
       value = Number(value)
       if (isNaN(value) || value < 0) {
-        util.showModal('', '请输入正确的积分数')
+        util.showModal('', this.$t('pages.store.correctScore'))
         this.setData({
           'payInfo.inputScore': '',
           'payInfo.scoreAmount': 0
@@ -270,7 +270,7 @@ global.wxPage({
         return false
       }
       if (value % 100 !== 0) {
-        util.showModal('', '积分数量必须等于 100 的整数倍')
+        util.showModal('', this.$t('pages.store.integerMultiple'))
         this.setData({
           'payInfo.inputScore': '',
           'payInfo.scoreAmount': 0
@@ -279,7 +279,7 @@ global.wxPage({
         return false
       }
       if (value > this.data.orderInfo.score) {
-        util.showModal('', '最多可以使用：' + this.data.orderInfo.score + '积分')
+        util.showModal('', this.$t('pages.store.upTo') + this.data.orderInfo.score + this.$t('pages.store.integral'))
         this.setData({
           'payInfo.inputScore': '',
           'payInfo.scoreAmount': 0
@@ -289,7 +289,7 @@ global.wxPage({
       }
       let amount = parseFloat(Number(value) / 100).toFixed(2)
       if (amount > this.data.payInfo.moneyPaid) {
-        util.showModal('', '积分抵扣金额不得大于支付金额')
+        util.showModal('', this.$t('pages.store.scoreLimit'))
         this.setData({
           'payInfo.inputScore': '',
           'payInfo.scoreAmount': 0
@@ -317,7 +317,7 @@ global.wxPage({
     if (value) {
       value = Number(value)
       if (isNaN(value) || !(this.isAmount(value))) {
-        util.showModal('', '请输入正确的金额')
+        util.showModal('', this.$t('pages.store.enterCorrect'))
         this.setData({
           'payInfo.balanceAmount': 0
         })
@@ -325,7 +325,7 @@ global.wxPage({
         return false
       }
       if (value > this.data.orderInfo.account) {
-        util.showModal('', '最多可使用：' + this.orderInfo.account + '余额')
+        util.showModal('', this.$t('pages.store.upTo') + this.orderInfo.account + this.$t('pages.store.balance'))
         this.setData({
           'payInfo.balanceAmount': 0
         })
@@ -333,7 +333,7 @@ global.wxPage({
         return false
       }
       if (value > this.data.payInfo.moneyPaid) {
-        util.showModal('', '使用金额不得超过支付金额')
+        util.showModal('', this.$t('pages.store.notExceedPaid'))
         this.setData({
           'payInfo.balanceAmount': 0
         })
@@ -378,7 +378,7 @@ global.wxPage({
         })
       },
       fail () {
-        util.showModal('', "获取发票信息失败");
+        util.showModal('', that.$t('pages.store.failedGetInvoice'));
       }
     })
   },
@@ -395,7 +395,7 @@ global.wxPage({
   toConfirm: function (e) {
     let that = this
     if (this.data.orderInfo.shopBusinessState == 0) {
-      util.showModal('提示', '该店铺未营业，随便逛逛', function () {
+      util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.wanderAround'), function () {
         util.reLaunch({
           url: '/pages/index/index'
         })
@@ -403,7 +403,7 @@ global.wxPage({
       return false;
     }
     if (this.data.orderInfo.storeBusinessState == 0) {
-      util.showModal('提示', '该门店未营业，随便逛逛', function () {
+      util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.storeClosed'), function () {
         util.reLaunch({
           url: '/pages/index/index'
         })
@@ -411,11 +411,11 @@ global.wxPage({
       return false;
     }
     if (this.data.payInfo.orderAmount == '') {
-      util.showModal('', '请输入消费金额');
+      util.showModal('', that.$t('pages.store.enterAmount'));
       return false;
     }
     if (this.data.payInfo.orderAmount == 0) {
-      util.showModal('', '支付金额不能为0');
+      util.showModal('', that.$t('pages.store.cannotBe0'));
       return flase;
     }
     let payInfo = this.data.payInfo
@@ -437,7 +437,7 @@ global.wxPage({
               'signType': typeof res.content.signType == "undefined" ? 'MD5' : res.content.signType,
               'paySign': res.content.paySign,
               'success': function (res) {
-                util.toast_success('支付成功');
+                util.toast_success(that.$t('pages.store.paymentSuccessful'));
                 util.redirectTo({
                   url: '/pages1/shoporderinfo/shoporderinfo?order_sn=' + order_sn,
                 })
@@ -447,7 +447,7 @@ global.wxPage({
                 that.setData({
                   discount_block: discount_block
                 })
-                util.toast_fail('支付失败');
+                util.toast_fail(that.$t('pages.store.paymentFailed'));
                 that.initOrderInfo()
               }
             });
@@ -456,18 +456,18 @@ global.wxPage({
             that.setData({
               discount_block: discount_block
             })
-            util.toast_fail('支付失败');
+            util.toast_fail(that.$t('pages.store.paymentFailed'));
             that.initOrderInfo()
           }
         } else {
           var order_sn = res.content.orderSn;
-          util.toast_success('支付成功');
+          util.toast_success(that.$t('pages.store.paymentSuccessful'));
           util.redirectTo({
             url: '/pages1/shoporderinfo/shoporderinfo?order_sn=' + order_sn,
           })
         }
       } else {
-        util.showModal('提示', res.message, function () {
+        util.showModal(that.$t('pages.store.prompt'), res.message, function () {
           // util.reLaunch({
           //   url: '/pages/index/index',
           // })

@@ -587,7 +587,7 @@ public class OrderReadService extends ShopBaseService {
 			//未退款
 			if (!groupOrder.getStatus().equals(GroupBuyConstant.STATUS_FAILED)&&!groupOrder.getStatus().equals(STATUS_WAIT_PAY)){
                 Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
-                List<GroupBuyUserInfo> pinUserList = groupBuyList.getPinUserList(groupOrder.getGroupId());
+                List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
                 order.setGroupBuyUserInfos(pinUserList);
                 order.setGroupId(groupOrder.getGroupId());
 				GroupOrderVo groupOrderVo =new GroupOrderVo();
