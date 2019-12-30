@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -28,12 +29,15 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyShareConfigVo;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyDefineInfo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyGoodsInfo;
@@ -48,6 +52,7 @@ import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -518,7 +523,15 @@ public class GroupBuyService extends ShopBaseService {
             updateGroupSuccess(groupBuyId, date, orderSnList);
             logger().info("修改订单状态");
             orderInfoService.batchChangeToWaitDeliver(orderSnList);
-            // todo 发送支成功消息
+            String[][] data = new String[][] { { "已成团" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "您好，您有新的拼团成功订单" } };
+            List<Integer> userId = groupUserList.stream().map(JoinGroupListInfo::getUserId).collect(Collectors.toList());
+            RabbitMessageParam param = RabbitMessageParam.builder()
+                    .maTemplateData(
+                            MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
+                    .page(null).shopId(getShopId())
+                    .userIdList(userId)
+                    .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         }
     }
 
