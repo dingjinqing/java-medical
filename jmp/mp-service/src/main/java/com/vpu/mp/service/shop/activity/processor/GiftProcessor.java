@@ -49,7 +49,7 @@ public class GiftProcessor implements CreateOrderProcessor{
     }
 
     @Override
-    public void processStockAndSales(OrderBeforeParam param) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
         Map<Integer, Map<Integer, Integer>> updateparam = Maps.newHashMap();
         param.getBos().stream()
             .filter(x -> OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.groupingBy(OrderGoodsBo::getGiftId))

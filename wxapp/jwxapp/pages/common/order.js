@@ -34,6 +34,25 @@ var order = {
   viewComment (orderSn) {
     util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
   },
+  //发货
+  confirmation (orderSn,orderId){
+    util.api(
+      "/api/wxapp/order/operation",
+      res => {
+        if (res.error == 0) {
+          util.toast_success("收货成功");
+          this.requestList()
+        } else {
+          util.showModal("提示", res.message);
+        }
+      },
+      {
+        orderId: orderId,
+        orderSn: orderSn,
+        action: 6
+      }
+    )
+  },
   // 再次购买
   addCart (orderSn, orderId) {
     console.log(orderSn, orderId);
@@ -135,6 +154,7 @@ var order = {
   },
   // 订单下按钮事件
   handleBtnEvent (e) {
+    console.log(e)
     let optionList = {
       orderInfo: (() => {
         return this.viewInfo;
@@ -159,6 +179,9 @@ var order = {
       })(),
       isPayEndPayment: (() => {
         return this.viewComment;
+      })(),
+      confirmation:(()=>{
+        return this.confirmation;
       })(),
       returnCenter: (() => {
         return this.toReturnCenter;

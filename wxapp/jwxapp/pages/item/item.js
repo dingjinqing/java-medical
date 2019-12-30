@@ -184,15 +184,17 @@ global.wxPage({
   getProduct ({
     detail: {
       prdNumber,
-      limitBuyNum,
-      limitMaxNum
+      limitBuyNum=null,
+      limitMaxNum=null,
+      activityType=null
     }
   }) {
     this.setData({
       limitInfo: {
         prdNumber,
         limitBuyNum,
-        limitMaxNum
+        limitMaxNum,
+        activityType
       }
     });
   },
@@ -250,7 +252,6 @@ global.wxPage({
   getActBarPrice (activity, getPrice) {
     if (actBaseInfo[activity.activityType].multiSkuAct) {
       return this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
-        console.log(actBaseInfo[activity.activityType]['prdPriceName'][getPrice])
         let { [actBaseInfo[activity.activityType]['prdPriceName'][getPrice]]: price } = item;
         return price
       }))
@@ -278,21 +279,14 @@ global.wxPage({
   },
   // 倒计时
   countdown (total_micro_second, actState, activityType) {
-    let clock =
-      total_micro_second <= 0 ?
-        "已经截至" :
-        util.dateformat(total_micro_second);
-    this.setData({
-      'actBarInfo.clock': clock
-    });
-    this.getActCanBuy(total_micro_second, actState, activityType)
-    if (total_micro_second <= 0) return;
-    this.setData({
-      actBartime: setTimeout(() => {
-        total_micro_second -= 1;
-        this.countdown(total_micro_second, actState, activityType);
-      }, 1000)
-    });
+      this.actBartime=setInterval(()=>{
+        total_micro_second -= 1
+        let clock = total_micro_second <= 0 ? "已经截至" : util.dateformat(total_micro_second);
+        this.setData({
+          'actBarInfo.clock': clock
+        });
+        this.getActCanBuy(total_micro_second, actState, activityType)
+      },1000)
   },
   getActCanBuy (total_micro_second, actState, activityType) {
     const state = new Map([
@@ -307,6 +301,7 @@ global.wxPage({
           'dealtAct.canBuy': false,
           'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
         })
+        clearTimeout(this.actBartime)
         this.getCountDown({ activityType, actState, endTime: this.specParams.activity.endTime, startTime: this.specParams.activity.endTime })
       }],
       [{ actState: "startTime", second: true }, () => {
@@ -320,6 +315,7 @@ global.wxPage({
           'dealtAct.canBuy': true,
           'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
         })
+        clearTimeout(this.actBartime)
         this.getCountDown({ activityType, actState, endTime: this.specParams.activity.endTime, startTime: this.specParams.activity.endTime })
       }]
     ])
@@ -327,8 +323,7 @@ global.wxPage({
   },
   // 设置列表倒计时
   setListCountDown (listData, target) {
-    this.setData({
-      listCountDown: setInterval(() => {
+      this.listCountDown=setInterval(() => {
         listData = listData.map((v, i) => {
           if (v.remainTime <= 0) {
             v.remainTime = 0;
@@ -341,7 +336,6 @@ global.wxPage({
           [target]: listData
         });
       }, 1000)
-    })
   },
   dateformats: function (micro_second) {
     // 秒数
@@ -376,8 +370,8 @@ global.wxPage({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    clearTimeout(this.data.actBartime)
-    clearTimeout(this.data.listCountDown)
+    clearTimeout(this.actBartime)
+    clearTimeout(this.listCountDown)
   },
 
   /**
@@ -394,8 +388,12 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    return {
-      title: '已删除title'
-    }
+    util.api('/api/wxapp/groupbuy/share/info',res=>{
+      console.log(res)
+    },{
+        "activityId":38,
+        "realPrice":12,
+        "linePrice":30
+    })
   }
 });

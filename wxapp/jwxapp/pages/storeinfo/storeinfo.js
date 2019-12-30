@@ -94,7 +94,7 @@ global.wxPage({
     util.api('/api/wxapp/store/info', function (res) {
       if (res.error === 0) {
         if (res.content.delFlag == 1) {
-          util.showModal('提示', '该门店不存在', function () {
+          util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.notExist'), function () {
             util.reLaunch({
               url: '/pages/index/index'
             })
@@ -236,7 +236,7 @@ global.wxPage({
     if (info.serviceCat && info.serviceCat.length > 0) {
       let allServiceCat = {
         catId: 0,
-        catName: '全部分类',
+        catName: that.$t('pages.store.allCategories'),
         createTime: '',
         serviceList: info.allService
       }

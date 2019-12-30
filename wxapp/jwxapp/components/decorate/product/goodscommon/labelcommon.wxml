@@ -39,4 +39,4 @@
 <!--砍价-->
 <view wx:if="{{item.isBargain}}" class="bargain">{{item.realPrice===null?"0.00":item.realPrice}}{{i18n.$t(localePack,'components.decorate.yuanChopAway')}}</view>
 <!--多人拼团-->
-<view wx:if="{{item.assemble}}" class="bargain">{{i18n.$t(localePack,'components.decorate.establishaProvince')}}{{item.discountPrice===null?"0.00":item.discountPrice}}{{i18n.$t(localePack,'components.decorate.element')}}</view>
+<view wx:if="{{item.assemble}}" class="bargain">{{i18n.$t(localePack,'components.decorate.establishaProvince')}}{{item.groupDiscount===null?"0.00":item.groupDiscount}}{{i18n.$t(localePack,'components.decorate.element')}}</view>

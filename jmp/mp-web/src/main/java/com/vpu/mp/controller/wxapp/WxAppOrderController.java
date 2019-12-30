@@ -68,7 +68,7 @@ public class WxAppOrderController extends WxAppBaseController{
     }
 
     /**
-     * 	支付
+     * 	支付 11
      */
     @PostMapping("/pay")
     public JsonResult pay(@RequestBody PayParam param) {
