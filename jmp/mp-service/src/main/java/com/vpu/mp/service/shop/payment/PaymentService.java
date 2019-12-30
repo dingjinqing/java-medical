@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -200,6 +200,7 @@ public class PaymentService extends ShopBaseService {
 
 		// 支付有礼
 		payAwardActivity(param, orderInfo);
+
 		/**
 		 * TODO:POS推送订单
 		 */
@@ -225,7 +226,7 @@ public class PaymentService extends ShopBaseService {
 		}
 		OrderBeforeParam orderBeforeParam =new OrderBeforeParam();
 		orderBeforeParam.setDate(param.getCreated());
-		orderBeforeParam.setGoods(Collections.emptyList());
+		orderBeforeParam.setGoods(new ArrayList<>());
 		List<GoodsRecord> orderGoods = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
 		orderGoods.forEach(orderGood->{
 			OrderBeforeParam.Goods goods = new OrderBeforeParam.Goods();

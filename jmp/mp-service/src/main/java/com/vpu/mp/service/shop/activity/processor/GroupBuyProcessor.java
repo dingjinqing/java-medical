@@ -225,11 +225,13 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      * @throws MpException
      */
     @Override
-    public void processStockAndSales(OrderBeforeParam param) throws MpException {
-        for (OrderBeforeParam.Goods goods : param.getGoods()) {
-            boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
-            if (!b) {
-                throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+        if (order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY) {
+            for (OrderBeforeParam.Goods goods : param.getGoods()) {
+                boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
+                if (!b) {
+                    throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
+                }
             }
         }
 

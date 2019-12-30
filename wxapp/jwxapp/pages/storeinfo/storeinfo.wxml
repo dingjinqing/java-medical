@@ -1,7 +1,8 @@
-<!--pages/storeInfo/storeinfo.wxml-->
-<include src="../common/header.wxml"/>
+<!-- pages/storeInfo/storeinfo.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<include src="../common/header.wxml" />
 <view class="main-container" style='padding-bottom:65rpx;'>
-  <block  wx:if="{{info.delFlag == 0}}">
+  <block wx:if="{{info.delFlag == 0}}">
     <view class="container" style="padding-bottom:{{ bot_main === 1? '110rpx': '0rpx'}}">
       <!-- 轮播图 -->
       <view class="swiper-top">
@@ -19,45 +20,49 @@
           <view>{{info.storeName}}</view>
           <text class="iconfont icondianhua" style="color:{{comColor}};font-size=40rpx;float:right;" bindtap="phoneCall"></text>
         </view>
-        <view class="nowappoint" bindtap="changeStore">切换门店</view>
+        <view class="nowappoint" bindtap="changeStore">
+          {{i18n.$t(localePack,"pages.store.switchStore")}}
+        </view>
       </view>
       <!-- 门店地址营业时间 -->
       <view class="store-other-info-all">
         <view class="store-info top" bindtap="showMap">
           <view class="info_top_detail">
-            <image class="store-info-img" src="{{imageUrl}}image/wxapp/store_address.png" mode="widthFix" ></image>
+            <image class="store-info-img" src="{{imageUrl}}image/wxapp/store_address.png" mode="widthFix"></image>
             <text class="text-top">{{info.address}}</text>
             <image class="store-info-img-rt" src="{{imageUrl}}image/wxapp/backward_right.png" mode="widthFix"></image>
           </view>
           <view class="store-text1">
-            <text class="store-text2" wx:if="{{dis > 0}}">距离您{{dis}}km</text>
+            <text class="store-text2" wx:if="{{dis > 0}}">{{i18n.$t(localePack,"pages.store.distanceFromYou")}}{{dis}}km</text>
           </view>
         </view>
         <view class="store-other-info">
           <image class="store-info-img" src="{{imageUrl}}image/wxapp/store_time.png" mode="widthFix"></image>
           <view>
-            <text class="bus-time">营业时间：</text>
+            <text class="bus-time">{{i18n.$t(localePack,"pages.store.businessHours")}}：</text>
             <text class="text-btm">
-              <text wx:if="{{info.businessType === 1}}">每天<block wx:if="{{info.openingTime != null}}">{{info.openingTime}}-{{info.closeTime}}</block></text>
-              <text wx:if="{{info.businessType == 0}}">工作日 <block wx:if='{{info.openingTime != null}}'> {{info.openingTime}}-{{info.closeTime}}</block></text>
+              <text wx:if="{{info.businessType === 1}}">{{i18n.$t(localePack,"pages.store.everyDay")}}<block wx:if="{{info.openingTime != null}}">{{info.openingTime}}-{{info.closeTime}}</block></text>
+              <text wx:if="{{info.businessType == 0}}">{{i18n.$t(localePack,"pages.store.workingDay")}} <block wx:if='{{info.openingTime != null}}'> {{info.openingTime}}-{{info.closeTime}}</block></text>
             </text>
           </view>
         </view>
       </view>
       <!-- 扫码购 -->
-      <view class="scancode"  bindtap="toScanBuy" wx:if="{{info.scanBuy == true}}" data-storeid="{{info.store_id}}" style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}});border-color:{{somColor}}' >
+      <view class="scancode" bindtap="toScanBuy" wx:if="{{info.scanBuy == true}}" data-storeid="{{info.store_id}}" style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}});border-color:{{somColor}}'>
         <image src="{{imageUrl}}/image/wxapp/scancode_bigqr.png" />
-        <view class='scancode_text'>扫码购</view>
+        <view class='scancode_text'>{{i18n.$t(localePack,"pages.store.scanCode")}}</view>
       </view>
       <!-- 在线买单 -->
       <view class='store_pay' wx:if="{{info.storeBuy === 1}}">
-        <text>在线买单</text>
-        <view class='to_store_check' bindtap='toCheckout' data-storeid='{{info.storeId}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}});box-shadow:0 0 5px {{comColor1}};' data-store_id="{{info.store_id}}" bindtap='toCheckout'>买单</view>
+        <text>{{i18n.$t(localePack,"pages.store.payOnline")}}</text>
+        <view class='to_store_check' bindtap='toCheckout' data-storeid='{{info.storeId}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}});box-shadow:0 0 5px {{comColor1}};' data-store_id="{{info.store_id}}" bindtap='toCheckout'>
+          {{i18n.$t(localePack,"pages.store.pay")}}
+        </view>
       </view>
       <!-- 门店服务 -->
       <view class='store-service' wx:if="{{info.service}}">
         <view class="title">
-          <text class="title-text">服务</text>    
+          <text class="title-text">{{i18n.$t(localePack,"pages.store.service")}}</text>
         </view>
         <view class="store-service-btn">
           <block wx:for="{{info.service}}" wx:key="key">
@@ -65,50 +70,54 @@
           </block>
         </view>
       </view>
-       <!--门店介绍  -->
+      <!-- 门店介绍 -->
       <view class='store-introduction' wx:if="{{info.content != null && info.content != ''}}">
         <view class="title">
-          <text class="title-text">店铺介绍</text>
-        </view>    
+          <text class="title-text">{{i18n.$t(localePack,"pages.store.storeIntroduction")}}</text>
+        </view>
         <view class='detail_content'>
-       	  <rich-text nodes="{{content}}"></rich-text>
+          <rich-text nodes="{{content}}"></rich-text>
         </view>
       </view>
-      <!--门店预约  -->
+      <!-- 门店预约 -->
       <view class='store-appointment' wx:if="{{info.serviceCat}}">
         <view class="title">
-          <text class="title-text">门店预约</text>    
+          <text class="title-text">{{i18n.$t(localePack,"pages.store.storeAppointment")}}</text>
         </view>
         <view class="store-nav nav">
-        <scroll-view class="scroll-view_H" scroll-x  scroll-left="{{scroll_left}}">
-          <block wx:for="{{info.serviceCat}}" wx:key="catId" wx:for-index="index">
-            <view class="tabs-item {{currentTabsIndex == index?'selected':''}}" style='color:{{currentTabsIndex == index?comColor:""}};border-color:{{currentTabsIndex == index?comColor:""}}' bindtap="onTabsItemTap" data-index='{{index}}'>
-              {{item.catName}}
-            </view>
-          </block>    
-        </scroll-view> 
+          <scroll-view class="scroll-view_H" scroll-x scroll-left="{{scroll_left}}">
+            <block wx:for="{{info.serviceCat}}" wx:key="catId" wx:for-index="index">
+              <view class="tabs-item {{currentTabsIndex == index?'selected':''}}" style='color:{{currentTabsIndex == index?comColor:""}};border-color:{{currentTabsIndex == index?comColor:""}}' bindtap="onTabsItemTap" data-index='{{index}}'>
+                {{item.catName}}
+              </view>
+            </block>
+          </scroll-view>
         </view>
         <block wx:for="{{info.serviceCat}}" wx:key="catName">
           <view hidden='{{currentTabsIndex != index}}'>
-            <block wx:for="{{item.serviceList}}" wx:key="id" wx:for-item="serv">       
+            <block wx:for="{{item.serviceList}}" wx:key="id" wx:for-item="serv">
               <view class="store-nav-list" wx:if="{{serv.serviceShelf == 1}}" bindtap='nowappoint' data-id="{{serv.id}}">
                 <view class="list-left">
                   <image class="list-left-img" src="{{imageUrl}}{{serv.serviceImg}}"></image>
                 </view>
                 <view class="list-right">
                   <view class="list-center">{{serv.serviceName}}</view>
-                  <view class="list-time">{{serv.startDate}} 至 {{serv.endDate}} {{serv.startPeriod}}-{{serv.endPeriod}}</view>
+                  <view class="list-time">
+                    {{serv.startDate}} {{i18n.$t(localePack,"pages.store.to")}} {{serv.endDate}} {{serv.startPeriod}}-{{serv.endPeriod}}
+                  </view>
                   <view class="list-rt-top">
                     <view class='leftlisyt'>
                       <block wx:if="{{serv.service_subsist>0}}">
-                        <text class="list-rt-text" style="color:{{linColor}};border-color:{{linColor}}">订金</text>
+                        <text class="list-rt-text" style="color:{{linColor}};border-color:{{linColor}}">{{i18n.$t(localePack,"pages.store.deposit")}}</text>
                         <text style="color:{{comColor}};">￥{{serv.service_subsist}}</text>
                       </block>
                       <block wx:else>
-                        <text style="color:{{comColor}};" wx:if='{{serv.servicePrice!=0}}'><text class="list-rt-text" style="color:{{comColor}};border-color:{{comColor}}">总价</text>￥{{serv.servicePrice}}</text> 
+                        <text style="color:{{comColor}};" wx:if='{{serv.servicePrice!=0}}'><text class="list-rt-text" style="color:{{comColor}};border-color:{{comColor}}">{{i18n.$t(localePack,"pages.store.totalPrice")}}</text>￥{{serv.servicePrice}}</text>
                       </block>
                     </view>
-                    <view class="list-right-btn" style='background:{{comColor}}'>立即预约</view>
+                    <view class="list-right-btn" style='background:{{comColor}}'>
+                      {{i18n.$t(localePack,"pages.store.reservationNow")}}
+                    </view>
                   </view>
                 </view>
               </view>
@@ -119,4 +128,4 @@
     </view>
   </block>
 </view>
-<include src="../common/footer.wxml"/>
+<include src="../common/footer.wxml" />
