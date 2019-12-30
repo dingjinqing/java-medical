@@ -87,15 +87,18 @@ public class WxAppGroupBuyController extends WxAppBaseController {
         if (officeAppId == null) {
             logger().info("店铺" + shopId() + "没有关注公众号");
         }
-        String[][] data = new String[][] { { "模板消息测试", "#173177" }, { "", "#173177" },
-                { "测试", "#173177" },
+        String[][] data = new String[][] { { "您的拼团订单已经拼团成功", "#173177" },
+                { "拼团成功", "#173177" },
+                { "抱枕", "#173177" },
+                { "订单", "#173177" },
+                { "0", "#173177" },
                 { DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, DateUtil.getLocalDateTime()), "#173177" },
-                { "", "#173177" } };
+                { "感觉您的惠顾，更多拼团请点击详情！", "#173177" } };
         String page = "pages/couponlist/couponlist";
         List<Integer> userIdList = new ArrayList<Integer>();
         userIdList.add(user.getUserId());
         RabbitMessageParam param = RabbitMessageParam.builder()
-                .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(data).build())
+                .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_BUY_RESULTS).data(data).build())
                 .page(page).shopId(shopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
                 .build();
         logger().info("准备发");

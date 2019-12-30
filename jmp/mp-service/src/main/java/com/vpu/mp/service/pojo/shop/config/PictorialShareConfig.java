@@ -12,7 +12,7 @@ public class PictorialShareConfig {
     /** 默认样式*/
     public static final Byte DEFAULT_STYLE = 1;
     /** 自定义样式和文案*/
-    public static final Byte CUSTOMER_STYLE = 1;
+    public static final Byte CUSTOMER_STYLE = 2;
     /** 活动分享展示方式 1默认样式 2自定义样式和文案 */
     private Byte shareAction;
     /**  shareAction=2的时候起效果，自定义文案内容*/

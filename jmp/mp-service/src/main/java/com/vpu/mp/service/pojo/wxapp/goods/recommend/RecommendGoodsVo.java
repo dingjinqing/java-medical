@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.wxapp.goods.recommend;
 
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import lombok.Data;
 
@@ -17,7 +15,7 @@ public class RecommendGoodsVo {
     /** 商品id集合 */
     private List<Integer> recommendGoodsIds;
     /** 商品详情集合 */
-    private PageResult<GoodsRecord> recommendGoods;
+    private List<?> recommendGoods;
     /** 是否显示划线价开关 */
     private Byte delMarket;
     /** 商品搜索页以及推荐商品列表中会显示购买按钮 */

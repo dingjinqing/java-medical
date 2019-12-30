@@ -1867,7 +1867,7 @@ public class GoodsService extends ShopBaseService {
 
         db().update(GOODS).set(GOODS.IS_ON_SALE,GoodsConstant.ON_SALE).where(GOODS.GOODS_ID.in(goodsIds)).execute();
 
-        if (esUtilSearchService.esState()){
+        if ( !goodsIds.isEmpty()&& esUtilSearchService.esState()){
             esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
             esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds,DBOperating.UPDATE);
 
