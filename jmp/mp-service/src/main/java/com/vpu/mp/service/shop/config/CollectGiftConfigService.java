@@ -192,8 +192,8 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 
             }
             setResultVo.setCouponDetail(couponList);
-            db().update(USER).set(USER.GET_COLLECT_GIFT,(byte)1).where(USER.USER_ID.eq(userId)).execute();
         }
+        db().update(USER).set(USER.GET_COLLECT_GIFT,(byte)1).where(USER.USER_ID.eq(userId)).execute();
         setResultVo.setMsg((byte)0);
         return setResultVo;
     }
