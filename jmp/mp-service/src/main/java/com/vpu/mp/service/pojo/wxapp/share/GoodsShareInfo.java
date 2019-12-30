@@ -17,8 +17,6 @@ public class GoodsShareInfo {
     private Byte shareAction;
     /** 自定义文案内容 shareAction=2的时候起效果 */
     private String shareDoc;
-    /** 分享显示的图片地址 */
+    /** 分享显示的图片相对地址 */
     private String imgUrl;
-    /** 分享操作需要关联的页面地址 */
-    private String path;
 }

@@ -10,7 +10,8 @@ global.wxComponent({
     limitInfo: {
       type: Object,
       value: null,
-      observer() {
+      observer(val) {
+        console.log(val)
         this.init();
       }
     }

@@ -190,6 +190,9 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        Integer groupId =0;
+        String goodsName="";
+        BigDecimal goodsPrice =BigDecimal.ZERO;
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GroupBuyListRecord groupBuyProductList = db().newRecord(GROUP_BUY_LIST);
             groupBuyProductList.setActivityId(param.getActivityId());
@@ -214,7 +217,13 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 groupBuyProductList.setGroupId(groupBuyProductList.getId());
                 groupBuyProductList.update();
             }
-
+            groupId =groupBuyProductList.getGroupId();
+            goodsName =goods.getGoodsInfo().getGoodsName();
+            goodsPrice =goods.getProductPrice();
+        }
+        if (param.getGroupId()==null&&order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY){
+            //发送模板消息
+            groupBuyProcessorDao.groupBuySuccess(param.getActivityId(),groupId,goodsName,goodsPrice.toString());
         }
     }
 

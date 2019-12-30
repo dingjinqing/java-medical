@@ -1,7 +1,7 @@
 <view class="flex_outside_box">
   <slot name="service-promises" />
   <v-goods-num-cfg wx:if="{{productsInfo.defaultPrd}}"  limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
-  <view class="flex_box" wx:else bindtap="specDialogShow">
+  <view class="flex_box" wx:if="{{!productsInfo.defaultPrd}}" bindtap="specDialogShow">
     <view class="item_left">
       选择
     </view>
@@ -11,6 +11,6 @@
 </view>
 
 <v-spec-dialog show="{{showSpec}}" bind:close="bindClose" products-info="{{productsInfo}}" bindproductData="getProductData">
-  <v-goods-num-cfg slot="num-cfg" origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+  <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
   <v-item-footer slot="footer" dealt-act="{{dealtAct}}" activity="{{productsInfo.activity}}"  origin="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}" bindclose="bindClose"/>
 </v-spec-dialog>

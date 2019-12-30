@@ -1,5 +1,5 @@
-<!-- 预约服务：
-  pages1/appointment/appointment.wxml -->
+<!-- 预约服务：pages1/appointment/appointment.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <block>
   <include src="/pages/common/header.wxml" />
   <view class="main-container" wx:if="serviceInfo.delFlag === 0">
@@ -7,7 +7,7 @@
       <!-- 轮播图 -->
       <view class="swiper-top">
         <swiper class="swiper" autoplay="true" circular="true" indicator-dots="true" indicator-active-color="#fff" interval="5000" duration="500">
-          <block wx:for="{{serviceInfo.serviceImg}}" wx:key="{{index}}">
+          <block wx:for="{{serviceInfo.serviceImg}}" wx:key="index">
             <swiper-item item-id="{{index}}+1">
               <image class="slide-image" src="{{imageUrl}}{{item}}" mode="widthFix" lazy-load="false" binderror="" bindload="" />
             </swiper-item>
@@ -20,19 +20,19 @@
         <view class="appoint-name-btm" wx:if="{{serviceInfo.serviceSubsist != 0 || serviceInfo.servicePrice != 0}}">
           <block wx:if="{{serviceInfo.serviceSubsist > 0}}">
             <view class="appoint-price" style="color:{{linColor}};border-color:{{linColor}}">
-              订金
+              {{i18n.$t(localePack,"page1.reserve.deposit")}}
             </view>
             <view class="appoint-money" style='color:{{comColor}}'>
               <text style="font-size:28rpx;">￥</text>
               <text>{{serviceInfo.serviceSubsist}}</text>
             </view>
             <view class="appoint-old-price" wx:if="serviceInfo.servicePrice != 0">
-              服务总价：￥{{serviceInfo.servicePrice}}
+              {{i18n.$t(localePack,"page1.reserve.totalPriceOfService")}}：￥{{serviceInfo.servicePrice}}
             </view>
           </block>
           <block wx:else>
             <view class="appoint-price" wx:if="{{serviceInfo.servicePrice != 0}}" style="color:{{comColor}};border-color:{{comColor}}">
-              总价
+              {{i18n.$t(localePack,"page1.reserve.totalPrice")}}
             </view>
             <view class="appoint-money" wx:if="{{serviceInfo.servicePrice != 0}}" style="color:{{comColor}};">
               <text style="font-size:28rpx;">￥</text>
@@ -57,9 +57,9 @@
         <view class="status-btm status">
           <image src="{{ img_time }}"></image>
           <view class="appoint-text">
-            营业时间：
-            <text wx:if="{{storeInfo.businessType == 1}}">每天</text>
-            <text wx:if="{{storeInfo.businessType == 0}}">工作日</text>
+            {{i18n.$t(localePack,"page1.reserve.businessHours")}}：
+            <text wx:if="{{storeInfo.businessType == 1}}">{{i18n.$t(localePack,"page1.reserve.everyDay")}}</text>
+            <text wx:if="{{storeInfo.businessType == 0}}">{{i18n.$t(localePack,"page1.reserve.workingDay")}}</text>
             {{storeInfo.openingTime}} - {{storeInfo.closeTime}}
           </view>
         </view>
@@ -67,15 +67,17 @@
       <!-- 预约时间 -->
       <view class="appoint_ss">
         <view class="appoint-time" bindtap="timeShow">
-          <view class="app_tips appoint-text">预约时间</view>
+          <view class="app_tips appoint-text">
+            {{i18n.$t(localePack,"page1.reserve.appointment")}}
+          </view>
           <view class="app_times">
             <text class="app_text" wx:if="{{reservationInfoList && reservationInfoList.length > 0 && !reserveInfo.startTime}}" style="color:#666;">
-              <text>请选择</text>
+              <text>{{i18n.$t(localePack,"page1.reserve.pleaseChoose")}}</text>
             </text>
             <text class="app_text" wx:if="{{reservationInfoList && reserveInfo.startTime}}" style="color:{{comColor}}">
               <text>{{reserveInfo.startTime}} - {{reserveInfo.endTime}}</text>
             </text>
-            <text class="app_text" wx:if="{{!reservationInfoList}}">暂无时段可选择</text>
+            <text class="app_text" wx:if="{{!reservationInfoList}}">{{i18n.$t(localePack,"page1.reserve.noTime")}}</text>
             <image class="brn_tight" src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
           </view>
         </view>
@@ -87,7 +89,7 @@
               <text class="app_text" wx:if="{{tech_name}}" style='color:{{comColor}}'>
                 <text>{{tech_name}}</text>
               </text>
-              <text class="app_text" wx:if="{{!tech_name}}" style="color:#666;">请选择</text>
+              <text class="app_text" wx:if="{{!tech_name}}" style="color:#666;">{{i18n.$t(localePack,"page1.reserve.pleaseChoose")}}</text>
               <image class="brn_tight" src="{{img_arrow}}" mode='widthFix'></image>
             </view>
           </view>
@@ -97,9 +99,9 @@
       <block wx:if="{{commentInfo && commentInfo.length > 0}}">
         <view class="goods-comment" bindtap="click_to_detail">
           <view class="clearfix goods_comment_title">
-            <view class="goods_act_title">评价</view>
+            <view class="goods_act_title">{{i18n.$t(localePack,"page1.reserve.evaluation")}}</view>
             <view class="goods_comment_all">
-              <text>查看全部</text>
+              <text>{{i18n.$t(localePack,"page1.reserve.viewAll")}}</text>
               <image class="click_more" src='{{ img_arrow }}' mode="widthFix"></image>
             </view>
           </view>
@@ -135,7 +137,9 @@
       <!-- 服务详情 -->
       <block wx:if="{{storeInfo.content}}">
         <view class="appoint-service">
-          <view class="appoint-service-name appoint-text">预约服务详情</view>
+          <view class="appoint-service-name appoint-text">
+            {{i18n.$t(localePack,"page1.reserve.detailsOfService")}}
+          </view>
           <view class="appoint-service-cont" style="overflow-x:hidden">
             <view>
               <rich-text content="{{storeInfo.content}}"></rich-text>
@@ -148,42 +152,44 @@
         <view class='footer_1'>
           <view bindtap="toIndex">
             <image src='{{ img_store }}' mode="widthFix"></image>
-            <view>门店首页</view>
+            <view>{{i18n.$t(localePack,"page1.reserve.storeHome")}}</view>
           </view>
           <view>
             <button open-type="contact" session-from="weapp"></button>
             <image src='{{ img_sercer }}' mode="widthFix" style="margin-top:2rpx;"></image>
-            <view style="margin-top:6rpx;">客服</view>
+            <view style="margin-top:6rpx;">{{i18n.$t(localePack,"page1.reserve.customer")}}</view>
           </view>
         </view>
-        <view class='footer_3' bindtap="reservationNow" style='background:{{comColor}}'>立即预约</view>
+        <view class='footer_3' bindtap="reservationNow" style='background:{{comColor}}'>
+          {{i18n.$t(localePack,"page1.reserve.reservationNow")}}
+        </view>
       </view>
       <view class='footer clearfix no_check' wx:if="{{storeInfo.businessState != 1 || storeInfo.scanBuy == 1}}">
         <button open-type="contact"></button>
         <image src='{{img_service}}' mode='widthFix'></image>
-        <view>客服</view>
+        <view>{{i18n.$t(localePack,"page1.reserve.customer")}}</view>
       </view>
     </view>
   </view>
   <include src="/pages/common/footer.wxml" />
   <!-- 绑定手机号弹窗 -->
-  <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" content="您需要绑定手机号才可以预约" />
+  <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" content="{{i18n.$t(localePack,'page1.reserve.needPhonenum')}}" />
   <!-- 弹出层预约时间 -->
   <action-sheet hidden="{{!timeMode}}">
     <view class='pro_title'>
-      选择预约时间
+      {{i18n.$t(localePack,"page1.reserve.chooseTime")}}
       <image src='{{ img_close }}' mode="widthFix" bindtap="timeClose" class='pro_close' />
     </view>
     <view class='pro_content' style='margin-bottom:{{isIpx == 1 ? "160rpx":"100rpx"}}'>
       <view class='pc_left' style='height:{{isIpx == 1?"430rpx;":"500rpx;"}}'>
-        <block wx:for="{{reservationInfoList}}" wx:key="{{index}}">
+        <block wx:for="{{reservationInfoList}}" wx:key="index">
           <view data-key="{{index}}" data-date="{{item.reservationDate}}" bindtap="selectedDay" style='border-left-color:{{show_id == index?comColor:""}};color:{{show_id == index?comColor:""}}' class='{{show_id == index ?"ischecked":"normal"}}'>
             {{item.reservationDate}}
           </view>
         </block>
       </view>
       <scroll-view scroll-y="true" class='pc_right' style='height:{{isIpx == 1?"430rpx;":"500rpx;"}}'>
-        <block wx:for="{{reservationInfoList}}" wx:key="{{index}}">
+        <block wx:for="{{reservationInfoList}}" wx:key="index">
           <view data-id='{{index}}' style="display:{{show_id == index?'block':'none'}}">
             <block wx:for="{{item.reservationTimeList}}" wx:key="key2" wx:for-item="time" wx:for-index="time_id">
               <view class="{{show_time == time_id ? 'active' : 'common' }}" data-key="{{time_id}}" data-start_time="{{time.startTime}}" data-end_time="{{time.endTime}}" bindtap='selectedHour' style='color:{{show_time == time_id?comColor:""}};background:{{show_time == time_id?somColor:""}}'>
@@ -194,18 +200,18 @@
         </block>
       </scroll-view>
       <view class='card_sure' bindtap='timeConfirm' style='bottom:{{isIpx == 1?"60rpx;":"0rpx;"}};background:{{comColor}}'>
-        确定
+        {{i18n.$t(localePack,"page1.reserve.determine")}}
       </view>
     </view>
   </action-sheet>
   <!-- 技师的弹框 -->
   <action-sheet hidden="{{!techMode}}">
     <view class='pro_title'>
-      选择{{serviceInfo.technician_title}}
+      {{i18n.$t(localePack,"page1.reserve.choose")}}{{serviceInfo.technician_title}}
       <image src='{{ img_close }}' mode="widthFix" bindtap="techClose" class='pro_close' />
     </view>
     <view class='pro_content'>
-      <block wx:for="{{ technicianPojoList }}" wx:key="{{index}}">
+      <block wx:for="{{ technicianPojoList }}" wx:key="index">
         <view class='each_person' data-index="{{index}}" bindtap='chooseTach' data-name="{{item.technicianName}}" data-id="{{item.id}}">
           <!-- <view class='choose_btn'>
             <image src="{{ item.src }}" mode="widthFix" wx:if='{{item.src != ""}}' />
@@ -227,7 +233,7 @@
       </block>
     </view>
     <view class='card_sure' bindtap='techConfirm' style='bottom:{{isIpx == 1?"60rpx;":"0rpx;"}};background:{{comColor}}'>
-      确定
+      {{i18n.$t(localePack,"page1.reserve.determine")}}
     </view>
   </action-sheet>
   <!-- 弹出层预约时间 -->

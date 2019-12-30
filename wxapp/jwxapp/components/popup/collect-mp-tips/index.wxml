@@ -16,7 +16,7 @@
           <image src='{{imageUrl}}image/wxapp/collect_2.png' mode='widthFix' class='collect_2'></image>
         </view>
         <view>3.回到微信下拉列表,从“我的小程序”中打开“
-          <text style="color:#ff6666">{{collect_info.shop_name}}</text>”
+          <text style="color:#ff6666">{{collect_info.shopName}}</text>”
         </view>
         <view>4.完成后即可获得
           <text wx:if="{{collect_info.score > 0}}">“{{collect_info.score}}积分”</text>

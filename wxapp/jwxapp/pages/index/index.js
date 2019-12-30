@@ -69,6 +69,7 @@ global.wxPage({
         var lastLoginTime = util.getCache('login_time');
         util.setCache('login_time', now);
         util.setCache('can_gift', 1);
+        console.log(util.getCache('can_gift'))
       }
     } else {
       util.setCache('can_gift', 0);
@@ -79,7 +80,7 @@ global.wxPage({
     })
 
     var time2 = now - lastLoginTime;
-    if (_this.data.pageContent.is_first_page == 1 && can_gift == 1 && util.getCache('is_login') == 1 && time2 < 60 * 1000) {
+    if (_this.data.pageContent.is_first_page == 1 && collectInfo.on_off == 1 && can_gift == 1 && util.getCache('is_login') == 1 && time2 < 60 * 1000) {
       util.api('/api/wxapp/collectGift/setRewards', function (res) {
         if (res.error == 0) {
           // if (res.content && res.content.length != 0) {

@@ -17,9 +17,9 @@
       <image class="prd-img" src="{{checkedProduct.prdImg ? checkedProduct.prdImg : productsInfo.goodsImgs[0]}}"></image>
       <view class="desc-info">
         <view class="info">
-          <text class="price" style="color:{{main_setting.comColor}};">￥{{productsInfo.activity ? filter.getActPrd(checkedProduct,activityPrds).prdRealPrice :checkedProduct.prdRealPrice}}</text>
-          <text class="marking-price">￥{{productsInfo.activity ? filter.getActPrd(checkedProduct,activityPrds).prdLinePrice :checkedProduct.prdLinePrice}}</text>
-          <text>库存：{{productsInfo.activity ? filter.getActPrd(checkedProduct,activityPrds).prdNumber :checkedProduct.prdNumber}}</text>
+          <text class="price" style="color:{{main_setting.comColor}};">￥{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdRealPrice :checkedProduct.prdRealPrice}}</text>
+          <text class="marking-price">￥{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdLinePrice :checkedProduct.prdLinePrice}}</text>
+          <text>库存：{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdNumber :checkedProduct.prdNumber}}</text>
         </view>
         <image class="close-img" src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="bindClose"></image>
       </view>

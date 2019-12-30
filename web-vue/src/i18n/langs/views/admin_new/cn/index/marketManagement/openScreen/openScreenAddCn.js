@@ -61,5 +61,6 @@ export const cn = {
   integralNum: '积分必须为数字',
   piAmount: '请输入金额',
   amountNum: '金额必须为数字',
-  pselectLink: '请选择链接'
+  pselectLink: '请选择链接',
+  piPizesNum: '请输入奖品份数'
 }

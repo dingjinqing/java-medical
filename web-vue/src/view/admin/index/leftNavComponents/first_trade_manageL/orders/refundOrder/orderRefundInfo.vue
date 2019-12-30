@@ -201,7 +201,7 @@
                     :key="goods.recId"
                   >
                     <img
-                      :src="$imageHost + '/' +goods.goodsImg"
+                      :src="$imageHost + '/' + goods.goodsImg"
                       alt=""
                     >
                     <div class="goods_info_right">

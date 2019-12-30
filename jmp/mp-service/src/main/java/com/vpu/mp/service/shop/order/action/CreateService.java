@@ -62,6 +62,7 @@ import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -382,6 +383,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
         }
+        //删除赠品
+        ListIterator<Goods> goodsListIterator = param.getGoods().listIterator();
+
     }
     /**
      * 初始化购买商品信息(初始化param里的goods信息)

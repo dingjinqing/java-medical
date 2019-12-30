@@ -52,7 +52,7 @@ global.wxComponent({
         [1,'couponView'],
         [2,'couponView'],
         [3,'lotteryId'],
-        [4,'accountNumber'],
+        [4,'account'],
         [5,'product'],
         [6,'scoreNumber'],
         [7,'customImage']

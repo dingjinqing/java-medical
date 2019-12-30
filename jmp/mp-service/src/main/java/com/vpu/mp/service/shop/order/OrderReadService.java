@@ -784,6 +784,15 @@ public class OrderReadService extends ShopBaseService {
         return vo;
     }
 
+    /**
+     * 获取赠品订单数
+     * @param giftId 赠品id
+     * @param isIncludeReturn 是否包含退款赠品
+     */
+    public Integer getGiftOrderCount(Integer giftId, boolean isIncludeReturn){
+        List<String> giftOrderSns = orderGoods.getGiftOrderSns(giftId, isIncludeReturn);
+        return orderInfo.getGiftOrderCount(giftOrderSns);
+    }
     /*********************************************************************************************************/
 
 	/**
