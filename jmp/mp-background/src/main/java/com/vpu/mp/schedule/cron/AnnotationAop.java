@@ -52,13 +52,14 @@ public class AnnotationAop {
      * @param paramTypes     the param types
      * @return the annotation
      */
-    public Annotation modifyAnnotation(Class className, Class annotationName, String methodName, String modifyField, String paramName, Class<?>... paramTypes) {
+    public <T, R extends Annotation> Annotation modifyAnnotation(Class<T> className, Class<R> annotationName, String methodName, String modifyField, String paramName, Class<?>... paramTypes) {
         try {
             Method method = className.getDeclaredMethod(methodName, paramTypes);
             Annotation annotation = method.getAnnotation(annotationName);
             InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
             Field memberValues = invocationHandler.getClass().getDeclaredField("memberValues");
             memberValues.setAccessible(true);
+            @SuppressWarnings("unchecked")
             Map<String, Object> values = (Map<String, Object>) memberValues.get(invocationHandler);
             System.out.println("maxAttempts当前值为：" + values.get("maxAttempts"));
             values.put(modifyField, paramName);
