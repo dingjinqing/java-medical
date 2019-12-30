@@ -679,7 +679,7 @@ export default {
       }
       if (this.update) {
         this.param.gifts.map((item, index) => {
-          item.productId = item.prdId
+          item.productId = item.prdId || item.productId
         })
         var obj = this.param
         obj.id = this.id
