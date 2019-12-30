@@ -49,9 +49,9 @@ global.wxPage({
       0:null,
       1:['couponView'],
       2:['couponView'],
-      3:['lotteryName','lotteryId'],
-      4:['accountNumber'],
-      5:['product'],
+      3:['lotteryId'],
+      4:['account'],
+      5:['product','productId','keepDays'],
       6:['scoreNumber'],
       7:['customImage','customLink'],
     }

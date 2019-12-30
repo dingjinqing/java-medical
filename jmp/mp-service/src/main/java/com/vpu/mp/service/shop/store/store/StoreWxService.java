@@ -441,10 +441,12 @@ public class StoreWxService extends ShopBaseService {
             // 创建门店订单
             orderSn.set(storeOrderService.createStoreOrder(storeOrderTran));
             if (BigDecimalUtil.greaterThanZero(orderInfo.getMoneyPaid())) {
-                //支付预留接口
+                //微信支付接口
                 String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
                 webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), STORE_BUY, orderSn.get(), orderInfo.getMoneyPaid(), openId));
                 log.debug("微信支付接口调用结果：{}", webPayVo.get());
+                // 更新记录微信预支付id：prepayid
+                storeOrderService.updatePrepayIdByOrderSn(orderSn.get(), webPayVo.get().getResult().getPrepayId());
             } else {
                 // 更新门店订单支付状态
                 storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(orderSn.get()), new StoreOrderRecord() {{

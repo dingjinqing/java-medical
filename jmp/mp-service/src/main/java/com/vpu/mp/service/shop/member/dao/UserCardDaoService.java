@@ -50,8 +50,8 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 @Slf4j
 @Service
 public class UserCardDaoService extends ShopBaseService{
-	final static Byte CARD_ONLINE = 0;
-	final static Byte CARD_OFFLINE = 1;
+	public final static Byte CARD_ONLINE = 0;
+    public final static Byte CARD_OFFLINE = 1;
 	@Autowired private  UserCardService userCardService;
 
 

@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -28,7 +29,11 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyShareConfigVo;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
@@ -506,7 +511,7 @@ public class GroupBuyService extends ShopBaseService {
      * @param groupBuyId
      * @param groupId
      */
-    public void  groupBuySuccess(Integer groupBuyId,Integer groupId){
+    public void  groupBuySuccess(Integer groupBuyId,Integer groupId,String goodsName,String order){
         List<JoinGroupListInfo> pinUserList = groupBuyListService.getGroupList(groupId);
         List<JoinGroupListInfo> groupUserList = pinUserList.stream().filter(p -> p.getStatus().equals(STATUS_ONGOING)).collect(Collectors.toList());
         Integer groupBuyLimitAmountRecord = getGroupBuyLimitAmountRecord(groupBuyId);
@@ -518,8 +523,35 @@ public class GroupBuyService extends ShopBaseService {
             updateGroupSuccess(groupBuyId, date, orderSnList);
             logger().info("修改订单状态");
             orderInfoService.batchChangeToWaitDeliver(orderSnList);
-            // todo 发送支成功消息
+            List<Integer> userId = groupUserList.stream().map(JoinGroupListInfo::getUserId).collect(Collectors.toList());
+            groupBuySuccessMessage(userId,goodsName, order);
         }
+    }
+
+    /**
+     * 拼团成功 发送消息
+     */
+    private void groupBuySuccessMessage( List<Integer> userId,String goodsName,String order){
+        logger().info("拼团成功 发送消息");
+        String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
+        if (officeAppId == null) {
+            logger().info("店铺" + getShopId() + "没有关注公众号");
+        }
+        String[][] data = new String[][] { { "您的拼团订单已经拼团成功", "#173177" },
+                { "拼团成功", "#173177" },
+                { goodsName, "#173177" },
+                { order, "#173177" },
+                { "0", "#173177" },
+                { DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, DateUtil.getLocalDateTime()), "#173177" },
+                { "感觉您的惠顾，更多拼团请点击详情！", "#173177" } };
+        String page = "pages/couponlist/couponlist";
+        RabbitMessageParam param = RabbitMessageParam.builder()
+                .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_BUY_RESULTS).data(data).build())
+                .page(page).shopId(getShopId()).userIdList(userId).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+                .build();
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+                TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+
     }
 
     /**

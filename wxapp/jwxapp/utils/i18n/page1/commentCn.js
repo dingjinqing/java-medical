@@ -35,5 +35,6 @@ module.exports = {
   // js文件
   selectRating:'请选择评分',
   comment: '待评价',
-  reviewed: '已评价'
+  reviewed: '已评价',
+  reviewSuccess: "评价成功"
 }

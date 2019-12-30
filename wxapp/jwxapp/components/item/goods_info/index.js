@@ -49,7 +49,7 @@ global.wxComponent({
       if(data.activity && !priceName[data.activity.activityType].multiSkuAct){
         this.setData({
           goodsPrice:data.products,
-          markingPrice: data.defaultPrd ? this.data.goodsInfo.products[0].prdLinePrice : `${this.getMin(this.data.goodsInfo.products.map(item => item.prdRealPrice))}~${this.getMin(this.data.goodsInfo.products.map(item => item.prdRealPrice))}`
+          markingPrice: data.defaultPrd ? this.data.goodsInfo.products[0].prdRealPrice : `${this.getMin(this.data.goodsInfo.products.map(item => item.prdRealPrice))}~${this.getMin(this.data.goodsInfo.products.map(item => item.prdRealPrice))}`
         })
       } else {
         if (data.defaultPrd) {

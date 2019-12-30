@@ -3,7 +3,7 @@
     <div class="addBrandDialogMain">
       <el-dialog
         title="添加商品标签"
-        :visible.sync="callAddProductLabel"
+        :visible.sync="visible"
         width="40%"
         :modal-append-to-body='false'
       >
@@ -64,7 +64,7 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="$emit('update:callAddProductLabel', false)">取 消</el-button>
+          <el-button @click="visible=false">取 消</el-button>
           <el-button
             type="primary"
             @click="handleToSure()"
@@ -87,7 +87,10 @@ export default {
       type: Array,
       default: () => []
     },
-    singleElection: Boolean
+    singleElection: { // 是否单选
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -97,7 +100,8 @@ export default {
       classValue: '',
       tableData: [],
       backFlag: false,
-      isElection: false
+      isElection: false,
+      visible: false
     }
   },
   watch: {
@@ -115,7 +119,7 @@ export default {
           })
       }
     },
-    callAddProductLabel (newData) {
+    visible (newData) {
       if (!newData) {
         this.$emit('update:callAddProductLabel', false)
       }
@@ -143,12 +147,18 @@ export default {
         arr.forEach(row => {
           this.$refs.labelTable.toggleRowSelection(row)
         })
-      } else {
-        this.$refs.labelTable.clearSelection()
+      } else if (this.callAddProductLabel) {
+        this.$nextTick(() => {
+          this.$refs.labelTable.clearSelection()
+        })
       }
+
+      this.isElection = this.singleElection
     },
-    singleElection (newVal) {
-      this.isElection = newVal
+    callAddProductLabel (newVal) {
+      if (newVal) {
+        this.visible = true
+      }
     }
   },
   mounted () {
@@ -180,23 +190,13 @@ export default {
     },
     changeFun (val) {
       console.log(val)
-      // if (val.length) {
-      //   this.tableData.forEach((item, index) => {
-      //     item.ischeck = true
-      //   })
-      // } else {
-      //   this.tableData.forEach((item, index) => {
-      //     item.ischeck = false
-      //   })
-      // }
       if (val.length > 1) {
         this.$refs.labelTable.clearSelection()
         this.$refs.labelTable.toggleRowSelection(val.pop())
-        this.checkBoxData = [val[0]]
       } else {
+        console.log(val)
         this.checkBoxData = val
       }
-      console.log(val)
     },
     // 当前页改变
     handleCurrentChange () {
@@ -211,7 +211,7 @@ export default {
       //   }
       // })
       this.$emit('handleToGetBackData', this.checkBoxData)
-      this.$emit('update:callAddProductLabel', false)
+      this.visible = false
     }
   }
 }

@@ -308,7 +308,7 @@ global.wxPage({
     // console.log(info)
     util.api('/api/wxapp/comment/add', function (res) {
       if (res.error === 0) {
-        util.toast_success('评价成功');
+        util.toast_success(that.$t('page1.comment.reviewSuccess'));
         that.get_comment(that, 0);
       }
     }, params);

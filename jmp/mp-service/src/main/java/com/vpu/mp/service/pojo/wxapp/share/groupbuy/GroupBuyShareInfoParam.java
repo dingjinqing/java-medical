@@ -13,12 +13,12 @@ import java.math.BigDecimal;
 public class GroupBuyShareInfoParam {
     /** 活动Id */
     private Integer activityId;
-    /** 参与的拼团项Id */
-    private Integer groupId;
     /** 活动分享图片中需要显示的拼团价格 */
     private BigDecimal realPrice;
     /** 活动分享图片中需要显示的划线价格 */
     private BigDecimal linePrice;
     /** 发起分享操作的用户Id*/
     private Integer userId;
+
+    private Integer width;
 }

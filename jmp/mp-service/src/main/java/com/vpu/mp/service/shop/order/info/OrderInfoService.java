@@ -845,6 +845,33 @@ public class OrderInfoService extends ShopBaseService {
             fetch();
     }
 
+    /**
+     * 获取赠品订单数
+     * @param orderSns sns
+     */
+    public Integer getGiftOrderCount(List<String> orderSns){
+        return db().selectCount().from(TABLE).where(
+            TABLE.ORDER_SN.in(orderSns)
+                //TODO 待付款锁库存.and(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.i))
+                .and(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+        ).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 获取活动指定商品当前用户购买次数
+     * @param userId userid
+     * @param goodsId goodsId
+     * @return count
+     */
+    public Integer getGoodsBuyNum(Integer userId, List<Integer> goodsId){
+        Condition condition = TABLE.USER_ID.eq(userId).and(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY));
+        SelectJoinStep<Record1<Integer>> select = db().selectCount().from(TABLE);
+        if(CollectionUtils.isNotEmpty(goodsId)){
+            select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
+        }
+        return select.where(condition).fetchAnyInto(Integer.class);
+    }
+
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
