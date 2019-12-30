@@ -57,7 +57,7 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         if( !CollectionUtils.isEmpty(param.getActivityTypes()) ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getActivityTypes()));
         }
-        if( !CollectionUtils.isEmpty( param.getGoodsIds()) ){
+        if( !CollectionUtils.isEmpty( param.getLabelIds()) ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsIds()));
         }
         if( !propertyList.isEmpty() ){

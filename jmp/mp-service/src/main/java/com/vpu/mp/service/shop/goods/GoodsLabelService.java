@@ -163,13 +163,7 @@ public class GoodsLabelService extends ShopBaseService {
             record.update();
             goodsLabelCoupleService.deleteByGoodsLabelId(param.getId());
             insertGoodsLabelCouple(param);
-            //update elasticSearch data
-            try {
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE,
-                    null,Collections.singletonList(param.getId()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
         });
     }
 
@@ -186,14 +180,14 @@ public class GoodsLabelService extends ShopBaseService {
                 goodsLabelCoupleService.batchInsertSortTypeGoodsLabelCouple(param.getId(), param.getSortIds());
                 goodsLabelCoupleService.batchInsertCatTypeGoodsLabelCouple(param.getId(), param.getCatIds());
             }
-            //update elasticSearch data
-            try {
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
-                    null,Collections.singletonList(param.getId()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
+        //update elasticSearch data
+        try {
+            esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE,
+                null,Collections.singletonList(param.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
