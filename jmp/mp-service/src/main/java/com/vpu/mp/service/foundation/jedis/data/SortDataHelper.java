@@ -104,7 +104,7 @@ public class SortDataHelper extends ShopBaseService implements DataHelperInterfa
         }
         Map<Short,List<GoodsSortCacheInfo>> levelMap =
             infos.stream().collect(Collectors.groupingBy(GoodsSortCacheInfo::getLevel));
-        results.put(GoodsConstant.SECOND_LEVEL,levelMap.get(GoodsConstant.ROOT_LEVEL));
+        results.put(GoodsConstant.SECOND_LEVEL,levelMap.get(GoodsConstant.SECOND_LEVEL));
         List<Integer> parentIds = levelMap.get(GoodsConstant.ROOT_LEVEL).stream().
             map(GoodsSortCacheInfo::getSortId).
             collect(Collectors.toList());

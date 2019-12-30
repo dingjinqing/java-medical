@@ -77,6 +77,8 @@ public class GoodsMpService extends ShopBaseService {
     protected UpYunConfig upYunConfig;
     @Autowired
     protected Calculate calculate;
+    @Autowired
+    public MPGoodsRecommendService mpGoodsRecommendService;
 
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理

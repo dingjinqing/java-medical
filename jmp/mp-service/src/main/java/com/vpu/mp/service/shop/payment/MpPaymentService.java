@@ -340,7 +340,7 @@ public class MpPaymentService extends ShopBaseService {
 	 * 微信小程序支付回调
 	 * @param orderResult
 	 */
-	public void onPayNotify(WxPayOrderNotifyResult orderResult) throws MpException {
+    public void onPayNotify(WxPayOrderNotifyResult orderResult) throws MpException, WxPayException {
 		PaymentRecordParam param = PaymentRecordParam.builder()
 				.payCode(PayCode.PAY_CODE_WX_PAY)
 				.tradeNo(orderResult.getTransactionId())

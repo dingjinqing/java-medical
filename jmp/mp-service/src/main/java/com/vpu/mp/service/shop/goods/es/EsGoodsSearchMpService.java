@@ -28,6 +28,7 @@ import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -112,7 +113,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      */
     public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsSearchMpParam mpParam) throws IOException {
         Integer shopId = getShopId();
-        if( mpParam.getLabelIds() != null && !mpParam.getLabelIds().isEmpty() ){
+        if(!CollectionUtils.isEmpty(mpParam.getLabelIds())){
             mpParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(mpParam.getLabelIds(),EsGoodsConstant.GOODS_SEARCH_PAGE));
         }
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);

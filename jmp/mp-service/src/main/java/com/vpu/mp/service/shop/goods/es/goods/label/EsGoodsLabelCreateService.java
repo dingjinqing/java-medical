@@ -327,9 +327,11 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
     private void deleteIndexByIds(Integer shopId,List<Integer> goodsIds,List<Integer> labelIds){
         BoolQueryBuilder bool = QueryBuilders.boolQuery();
         if( labelIds != null && !labelIds.isEmpty() ){
+            log.debug("商品标签删除，商品标签id:{}",labelIds.toString());
             bool.must(QueryBuilders.termsQuery(EsLabelName.ID,labelIds));
         }
         if( goodsIds != null && !goodsIds.isEmpty() ){
+            log.debug("商品标签删除，商品id:{}",goodsIds.toString());
             bool.must(QueryBuilders.termsQuery(EsLabelName.GOODS_ID,goodsIds));
         }
         bool.must(QueryBuilders.termQuery(EsLabelName.SHOP_ID,shopId));

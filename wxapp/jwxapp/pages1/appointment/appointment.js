@@ -47,7 +47,7 @@ global.wxPage({
   /**
    * 
    */
-  showMap() {
+  showMap () {
     let address = this.data.storeInfo.address;
     let latt = parseFloat(this.data.storeInfo.latitude);
     let lonn = parseFloat(this.data.storeInfo.longitude);
@@ -59,8 +59,8 @@ global.wxPage({
     })
   },
 
-  toBack() {
-    util.showModal('提示', '找不到该服务', function () {
+  toBack () {
+    util.showModal(this.$t('page1.reserve.prompt'), this.$t('page1.reserve.notFound'), function () {
       wx.navigateBack()
     })
   },
@@ -68,10 +68,10 @@ global.wxPage({
   /**
    * 评价
    */
-  click_to_detail() { },
-  clickComment() { },
+  click_to_detail () { },
+  clickComment () { },
 
-  bindGetPhoneNumberOk(e) {
+  bindGetPhoneNumberOk (e) {
     this.setData({
       mobile: e.detail.phoneNumber
     })
@@ -80,7 +80,7 @@ global.wxPage({
   /**
    * 选择预约时间
    */
-  timeShow() {
+  timeShow () {
     if (this.data.reservationInfoList && this.data.reservationInfoList.length > 0) {
       this.setData({
         timeMode: true
@@ -97,15 +97,15 @@ global.wxPage({
         })
       }
     } else {
-      util.showModal('提示', '暂无时间可选择！');
+      util.showModal(this.$t('page1.reserve.prompt'), this.$t('page1.reserve.noTimeChoose'));
     }
   },
-  timeClose() {
+  timeClose () {
     this.setData({
       timeMode: false
     })
   },
-  selectedDay(e) {
+  selectedDay (e) {
     let key = e.currentTarget.dataset.key
     let date = e.currentTarget.dataset.date
     this.setData({
@@ -113,7 +113,7 @@ global.wxPage({
       'reserveInfo.date': date
     })
   },
-  selectedHour(e) {
+  selectedHour (e) {
     let key = e.currentTarget.dataset.key
     let startTime = e.currentTarget.dataset.start_time
     let endTime = e.currentTarget.dataset.end_time
@@ -123,7 +123,7 @@ global.wxPage({
       'reserveInfo.endTime': endTime
     })
   },
-  timeConfirm() {
+  timeConfirm () {
     this.setData({
       timeMode: false
     })
@@ -141,21 +141,21 @@ global.wxPage({
   /**
    * 技师，选择技师
    */
-  techShow() {
+  techShow () {
     if (this.data.technicianPojoList) {
       this.setData({
         techMode: true
       })
     } else {
-      util.showModal('提示', '暂无技师可选择');
+      util.showModal(this.$t('page1.reserve.prompt'), this.$t('page1.reserve.noTechnician'));
     }
   },
-  techClose() {
+  techClose () {
     this.setData({
       techMode: false
     })
   },
-  chooseTach(e) {
+  chooseTach (e) {
     let key = e.currentTarget.dataset.index
     let id = e.currentTarget.dataset.id
     let name = e.currentTarget.dataset.name
@@ -164,7 +164,7 @@ global.wxPage({
       tech_name: name
     })
   },
-  techConfirm() {
+  techConfirm () {
     this.setData({
       techMode: false,
       'reserveInfo.tech_name': this.data.tech_name,
@@ -175,7 +175,7 @@ global.wxPage({
   /**
    * 立即预约
    */
-  reservationNow() {
+  reservationNow () {
     console.log(this.data.reserveInfo)
     let reserveInfo = this.data.reserveInfo
     if (!reserveInfo || !reserveInfo.date || !reserveInfo.startTime) {
@@ -215,7 +215,7 @@ global.wxPage({
         let storeInfo = res.content.storeInfo
         let reservationInfoList = res.content.reservationInfoList
         if (storeInfo.delFlag == 1 || serviceInfo.delFlag == 1) {
-          util.showModal('提示', '该服务已删除', function () {
+          util.showModal(that.$t('page1.reserve.prompt'), that.$t('page1.reserve.serviceDeleted'), function () {
             util.reLaunch({
               url: '/pages/index/index'
             })
@@ -223,7 +223,7 @@ global.wxPage({
           return;
         }
         if (res.content.businessState == 0) {
-          // util.showModal('提示', '该店铺未营业，随便逛逛', function () {
+          // util.showModal(that.$t('page1.reserve.prompt'), '该店铺未营业，随便逛逛', function () {
           //   util.reLaunch({
           //     url: '/pages/bottom/bottom'
           //   })

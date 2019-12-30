@@ -7,8 +7,6 @@ import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -570,7 +568,8 @@ public class CouponGiveService extends ShopBaseService {
       // 查询结果为空直接返回
       if (couponDetails == null) {
         String couponInfo = "优惠券ID:" + couponId;
-        throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, couponInfo);
+          log.error("优惠券 [id：{}] 不存在", couponId);
+          continue;
       }
       // 判断优惠券类型 减价or打折
       byte type = 0;
@@ -822,8 +821,8 @@ public class CouponGiveService extends ShopBaseService {
 		  // TODO 批量发放优惠券给会员
 	  }
   }
-  
-  /**
+
+    /**
    * 根据Id获取优惠券信息
    * @param id
    * @return

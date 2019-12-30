@@ -125,13 +125,17 @@
       </div>
     </div>
     <!--设置激活通知弹窗-->
-    <ActivationNotificationDialog />
+    <ActivationNotificationDialog :visible.sync="activationNotificationVisible"></ActivationNotificationDialog>
+    <!-- 会员导入 -->
+    <MemberIntroductionDialog :visible.sync="memberIntroductionVisible"></MemberIntroductionDialog>
   </div>
 </template>
 <script>
-import ActivationNotificationDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/activationNotificationDialog'
 export default {
-  components: { ActivationNotificationDialog },
+  components: {
+    ActivationNotificationDialog: () => import('./activationNotificationDialog'),
+    MemberIntroductionDialog: () => import('./memberIntroductionDialog')
+  },
   data () {
     return {
       input: '',
@@ -162,8 +166,9 @@ export default {
           num: '2'
         }
       ],
-      currentPage: null
-
+      currentPage: null,
+      activationNotificationVisible: false, // 设置激活通知
+      memberIntroductionVisible: false // 会员导入
     }
   },
   methods: {
@@ -183,10 +188,13 @@ export default {
     },
     // 设置激活通知  会员导入  筛选 综合处理
     handleSetAll (flag) {
+      let that = this
       switch (flag) {
         case 0:
+          that.activationNotificationVisible = !that.activationNotificationVisible
           break
         case 1:
+          that.memberIntroductionVisible = !that.memberIntroductionVisible
           break
         case 2:
           break

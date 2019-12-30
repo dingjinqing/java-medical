@@ -105,6 +105,7 @@ global.wxPage({
           } else if (card.bgType == 0) {
             card.bg = card.bgColor
           }
+          card.bgImg = _this.data.imageUrl + card.bgImg
           if (card.expireTime) {
             card.expireTime = card.expireTime.substring(0, 10)
           }
@@ -141,7 +142,7 @@ global.wxPage({
         // if (_this.data.useCard && _this.data.useCard.discount) {
         //   let discount = (parseFloat(_this.data.useCard.discount) / 10).toFixed(2)
         //   if (discount < 0 || discount > 1 || isNaN(discount)) {
-        //     util.showModal('提示', '会员卡折扣错误', function () {
+        //     util.showModal(that.$t('page1.reserve.prompt'), '会员卡折扣错误', function () {
         //       util.redirectTo({
         //         url: 'pages/appointment/appointment?service_id=' + content.service.serviceId,
         //       })
@@ -198,7 +199,7 @@ global.wxPage({
   nameBlur (e) {
     let value = e.detail.value
     if (value === "") {
-      util.showModal('提示', '请输入预约人姓名')
+      util.showModal(this.$t('page1.reserve.prompt'), this.$t('page1.reserve.enterName'))
       return false
     }
   },
@@ -217,7 +218,7 @@ global.wxPage({
   mobileBlur (e) {
     let value = e.detail.value
     if (value === "") {
-      util.showModal('提示', '请输入手机号')
+      util.showModal(this.$t('page1.reserve.prompt'), this.$t('page1.reserve.enterPhoneNum'))
       return false
     }
   },
@@ -277,11 +278,11 @@ global.wxPage({
   oneClickBuy (e) {
     var that = this
     if (!that.data.recentOrderInfo.subscriber) {
-      util.showModal('提示', '请输入预约人姓名')
+      util.showModal(this.$t('page1.reserve.prompt'), this.$t('page1.reserve.enterName'))
       return false
     }
     if (!that.data.recentOrderInfo.mobile) {
-      util.showModal('提示', '请输入预约人手机号')
+      util.showModal(this.$t('page1.reserve.prompt'), this.$t('page1.reserve.enterApplyPhone'))
       return false
     }
     let params = {
@@ -313,13 +314,13 @@ global.wxPage({
             signType: !res.content.signType ? 'MD5' : res.content.signType,
             paySign: res.content.paySign,
             success (opt) {
-              util.toast_success('支付成功')
+              util.toast_success(that.$t('page1.reserve.paymentSuccessful'))
               util.redirectTo({
                 url: '/pages/appointinfo/appointinfo?order_sn=' + res.content.orderSn
               })
             },
             fail (opt) {
-              util.toast_fail('支付失败')
+              util.toast_fail(that.$t('page1.reserve.paymentFailed'))
               util.redirectTo({
                 url: '/pages/appointinfo/appointinfo?order_sn=' + res.content.orderSn
               })
@@ -331,13 +332,13 @@ global.wxPage({
           })
         }
       } else if (res.error == 400002) {
-        util.showModal('提示', res.message, function () {
+        util.showModal(that.$t('page1.reserve.prompt'), res.message, function () {
           util.redirectTo({
             url: 'pages/appointment/appointment?service_id=' + params.serviceId,
           })
         });
       } else {
-        util.showModal('提示', res.message)
+        util.showModal(that.$t('page1.reserve.prompt'), res.message)
       }
     }, params)
   },
@@ -391,7 +392,7 @@ global.wxPage({
     let { service_deposit, member_card_balance, account_discount, money_paid } = this.data.create_order
     money_paid = service_deposit - member_card_balance - account_discount
     if (money_paid < 0 || isNaN(money_paid)) {
-      util.showModal('提醒', '计算金额出错，请稍后再试', function () {
+      util.showModal(_this.$t('page1.reserve.prompt'), _this.$t('page1.reserve.errorCalculating'), function () {
         util.redirectTo({
           url: 'pages/appointment/appointment?service_id=' + _this.data.reserveInfo.serviceId
         })
