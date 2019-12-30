@@ -97,7 +97,7 @@ import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: { ImageDalog },
   props: ['shareConfig'],
-  data() {
+  data () {
     return {
       actShare: '1',
       shareImg: {
@@ -114,11 +114,11 @@ export default {
   },
   methods: {
     // 活动分享 -- 添加图片点击事件，弹出图片选择组件
-    addGoodsImg() {
+    addGoodsImg () {
       this.showImageDialog = !this.showImageDialog
     },
     // 图片点击回调函数
-    handleSelectImg(res) {
+    handleSelectImg (res) {
       console.log(res)
       if (res != null) {
         console.log(res)
@@ -126,7 +126,7 @@ export default {
       }
     },
     // 删除商品图片
-    deleteSelectImg() {
+    deleteSelectImg () {
       this.srcList.src3 = `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
     }
   }

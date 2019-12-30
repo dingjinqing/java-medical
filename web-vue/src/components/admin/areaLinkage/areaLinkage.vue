@@ -102,7 +102,6 @@ export default {
     // 编辑数据回显
     areaCode: {
       handler (val) {
-        debugger
         this.values.province = Number(val.provinceCode)
         this.choseProvince(this.values.province)
         this.$nextTick(() => {
