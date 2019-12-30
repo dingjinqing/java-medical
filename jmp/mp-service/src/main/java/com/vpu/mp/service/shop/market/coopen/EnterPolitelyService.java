@@ -31,6 +31,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ import java.util.*;
 
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_NO_PRIZE;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ONE;
@@ -137,23 +138,23 @@ public class EnterPolitelyService extends ShopBaseService {
             }
             ExtBo coupon = ExtBo.builder().title(record.getTitle()).bgImg(imgDomain(record.getBgImgs())).build();
             switch (record.getActivityAction()) {
-                case GIVE_TYPE_LOTTERY:
-                    award = sendAward(GIVE_TYPE_LOTTERY, String.valueOf(record.getLotteryId()), userId, activityId, null);
+                case 2:
+                    award = sendAward((byte) 2, String.valueOf(record.getLotteryId()), userId, activityId, null);
                     break;
-                case GIVE_TYPE_BALANCE:
-                    award = sendAward(GIVE_TYPE_BALANCE, String.valueOf(record.getGiveAccount()), userId, activityId, null);
+                case 5:
+                    award = sendAward((byte) 5, String.valueOf(record.getGiveAccount()), userId, activityId, null);
                     break;
-                case GIVE_TYPE_SCORE:
-                    award = sendAward(GIVE_TYPE_SCORE, String.valueOf(record.getGiveScore()), userId, activityId, null);
+                case 4:
+                    award = sendAward((byte) 4, String.valueOf(record.getGiveScore()), userId, activityId, null);
                     break;
-                case GIVE_TYPE_CUSTOM:
-                    award = sendAward(GIVE_TYPE_CUSTOM, record.getCustomizeUrl(), userId, activityId, ExtBo.builder().customizeImgPath(record.getCustomizeImgPath()).build());
+                case 3:
+                    award = sendAward((byte) 3, record.getCustomizeUrl(), userId, activityId, ExtBo.builder().customizeImgPath(record.getCustomizeImgPath()).build());
                     break;
-                case GIVE_TYPE_ORDINARY_COUPON:
-                    award = sendAward(GIVE_TYPE_ORDINARY_COUPON, record.getMrkingVoucherId(), userId, activityId, coupon);
+                case 1:
+                    award = sendAward((byte) 1, record.getMrkingVoucherId(), userId, activityId, coupon);
                     break;
-                case GIVE_TYPE_SPLIT_COUPON:
-                    award = sendAward(GIVE_TYPE_SPLIT_COUPON, record.getMrkingVoucherId(), userId, activityId, coupon);
+                case 6:
+                    award = sendAward((byte) 6, record.getMrkingVoucherId(), userId, activityId, coupon);
                     break;
                 default:
                     return noAward;
@@ -174,19 +175,14 @@ public class EnterPolitelyService extends ShopBaseService {
         record.setUserId(userId);
         record.setActivityAction(awardType);
         switch (awardType) {
-            case GIVE_TYPE_NO_PRIZE:
+            case 0:
                 logger().info("无奖励");
                 break;
-            case GIVE_TYPE_ORDINARY_COUPON:
+            case 1:
                 logger().info("优惠卷");
-            case GIVE_TYPE_SPLIT_COUPON:
+            case 6:
                 logger().info("分裂优惠卷");
-                List<Integer> integers = Util.json2Object(awardContent, new TypeReference<List<Integer>>() {
-                }, false);
-                String[] couponArray = new String[0];
-                if (integers != null) {
-                    couponArray = integers.stream().map(Object::toString).toArray(String[]::new);
-                }
+                String[] couponArray = awardContent.split(",");
                 CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
                 couponGive.setUserIds(Collections.singletonList(userId));
                 couponGive.setCouponArray(couponArray);
@@ -206,7 +202,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 }});
                 record.setMrkingVoucherId(awardContent);
                 break;
-            case GIVE_TYPE_LOTTERY:
+            case 2:
                 logger().info("幸运大抽奖");
                 JoinLotteryParam joinLotteryParam = new JoinLotteryParam();
                 joinLotteryParam.setUserId(userId);
@@ -218,11 +214,11 @@ public class EnterPolitelyService extends ShopBaseService {
                 }
                 record.setLotteryId(Integer.valueOf(awardContent));
                 break;
-            case GIVE_TYPE_BALANCE:
+            case 5:
                 logger().info("余额");
                 AccountParam accountParam = new AccountParam() {{
                     setUserId(userId);
-                    setAmount(new BigDecimal(awardContent));
+                    setAmount(NumberUtils.createBigDecimal(awardContent));
                     setOrderSn(Objects.isNull(bo) ? StringUtils.EMPTY : bo.getOrderSn());
                     setPayment(PAY_CODE_BALANCE_PAY);
                     setIsPaid(UACCOUNT_RECHARGE.val());
@@ -240,14 +236,14 @@ public class EnterPolitelyService extends ShopBaseService {
                 logger().info("余额发放完成");
                 record.setGiveNum(new BigDecimal(awardContent));
                 break;
-            case GIVE_TYPE_GOODS:
+            case 7:
                 logger().info("奖品");
                 //TODO ...
                 break;
-            case GIVE_TYPE_SCORE:
+            case 4:
                 logger().info("积分");
                 ScoreParam scoreParam = new ScoreParam();
-                scoreParam.setScore(new BigDecimal(awardContent).intValue());
+                scoreParam.setScore(NumberUtils.createBigDecimal(awardContent).intValue());
                 scoreParam.setUserId(new Integer[]{userId});
                 scoreParam.setOrderSn(Objects.isNull(bo) ? StringUtils.EMPTY : bo.getOrderSn());
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
@@ -260,7 +256,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 logger().info("积分发放完成");
                 record.setGiveNum(new BigDecimal(awardContent));
                 break;
-            case GIVE_TYPE_CUSTOM:
+            case 3:
                 logger().info("自定义");
                 String imgPath = this.imageUrl(bo.getCustomizeImgPath());
                 award.setExtContent(new HashMap<String, String>(INTEGER_ONE) {{
