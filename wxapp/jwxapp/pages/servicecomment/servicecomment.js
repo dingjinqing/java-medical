@@ -46,7 +46,9 @@ global.wxPage({
     util.api('/api/wxapp/store/service/reservationComment', function (res) {
       if (res.error === 0) {
         let serviceInfo = res.content;
-        serviceInfo.serviceImg = JSON.parse(serviceInfo.serviceImg)[0];
+        if (serviceInfo.serviceImg && serviceInfo.serviceImg.indexOf('[') > -1) {
+          serviceInfo.serviceImg = JSON.parse(serviceInfo.serviceImg)[0];
+        }
         // 开始不展示评价详情
         serviceInfo.src = src_down; // 展开图标
         serviceInfo.show = false; // 是否展示评价
@@ -151,7 +153,7 @@ global.wxPage({
                     })
                   }
                 }, function (err) {
-                  util.toast_fail('上传失败')
+                  util.toast_fail(that.$t('page1.reserve.uploadFailed'))
                   console.log(err)
                 });
               }
@@ -193,11 +195,11 @@ global.wxPage({
     let that = this
     let serviceInfo = this.data.serviceInfo
     if (parseInt(serviceInfo.commstar) == parseInt(0)) {
-      util.showModal('提示', '请选择评分');
+      util.showModal(that.$t('page1.reserve.prompt'), that.$t('page1.reserve.selectRating'));
       return false;
     }
     if (serviceInfo.commNote == '') {
-      util.showModal('提示', '请填写心得');
+      util.showModal(that.$t('page1.reserve.prompt'), that.$t('page1.reserve.fillExperience'));
       return false;
     }
     if (serviceInfo.commImg != '') {
