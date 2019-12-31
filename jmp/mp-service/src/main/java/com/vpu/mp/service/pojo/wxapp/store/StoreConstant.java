@@ -17,4 +17,6 @@ public class StoreConstant {
     public static final String PAY_SUCCESS_NAME = "已付款";
     public static final String STORE_BUY = "门店买单";
     public static final String STORE_ORDER_SN_PREFIX = "D";
+    public static final String STORE_SERVICE_ORDER_SN_PREFIX = "S";
+
 }
