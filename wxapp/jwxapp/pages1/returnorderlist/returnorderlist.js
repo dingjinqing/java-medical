@@ -17,7 +17,7 @@ global.wxPage({
     returnFlag: 0, // 是否展示创建售后申请按钮
     returnOrderList: [], // 售后单列表
     createTime: '', // 下单时间
-
+    canReturnShippingFee: '', // 还可以退运费
     return: i18n.trans("page1.afterSale.return"), // 售后类型
     reasone: i18n.trans("page1.afterSale.reasone"), // 退货退款原因
     reasone_huan: i18n.trans("page1.afterSale.reasone_huan"), // 换货原因
@@ -48,6 +48,7 @@ global.wxPage({
           }
         })
         that.setData({
+          canReturnShippingFee: content.canReturnShippingFee,
           orderSn: content.orderSn,
           returnFlag: content.returnFlag,
           returnOrderList: content.returnOrderlist,
