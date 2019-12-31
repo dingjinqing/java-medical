@@ -213,9 +213,9 @@ global.wxPage({
   },
   toKnajia: function (e) {
     var that = this;
-    var form_info = {};
-    var open_id = util.getCache("openid");
-    var form_id = e.detail.formId;
+    // var form_info = {};
+    // var open_id = util.getCache("openid");
+    // var form_id = e.detail.formId;
     if (util.getCache('mobile') == '' && bargain_info.recordInfo.need_bind_mobile == 1) {
       util.checkSession(function () {
         that.setData({
@@ -224,11 +224,12 @@ global.wxPage({
       })
       return false;
     }
+    // 帮助砍价
     util.api("/api/wxapp/bargain/cut", function (res) {
       if (res.error == 0) {
         that.setData({
           is_help: 1,
-          cut_money: res.content.bargain_money
+          cut_money: res.content.bargainMoney
         })
         setTimeout(function () {
           clearTimeout(set_time_out);
@@ -238,7 +239,7 @@ global.wxPage({
         util.showModal('提示', res.content);
         return false;
       }
-    }, { record_id: record_id, open_id: open_id, form_id: form_id });
+    }, { record_id: record_id });
 
   },
   toOrder: function (e) {
