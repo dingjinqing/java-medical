@@ -28,6 +28,7 @@ import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.store.store.StoreReservation;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -114,6 +115,12 @@ public class ServiceOrderService extends ShopBaseService {
      */
     @Autowired
     public DomainConfig domainConfig;
+
+    /**
+     * The Reservation.
+     */
+    @Autowired
+    public StoreReservation reservation;
 
     /**
      * 订单状态 0：待付款，1：待服务，2：已取消，3：已完成
@@ -827,7 +834,9 @@ public class ServiceOrderService extends ShopBaseService {
             setPayCode(payment.getPayCode());
             setPayName(Objects.nonNull(paymentVo) ? paymentVo.getPayName() : StringUtils.EMPTY);
         }});
-        // todo //发送模板消息
+        log.info("预约支付回调成功，发送预约成功消息模板！");
+        //发送模板消息
+        reservation.sendAppointmentSuccess(orderRecord);
     }
 
 }

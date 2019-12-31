@@ -48,6 +48,7 @@ import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_NO_STOCK;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_RECEIVED;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_UNRECEIVED;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.REDIS_PAY_AWARD_JOIN_COUNT;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_CRASH_PAY_AWARD;
@@ -67,7 +68,6 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 @Service
 public class PayAwardProcessor extends ShopBaseService implements Processor, CreateOrderProcessor {
 
-    private static final String REDIS_PAY_AWARD ="pay_award:join_count:";
     @Autowired
     private PayAwardService payAwardService;
     @Autowired
@@ -156,9 +156,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 logger().info("支付有礼没有配置奖品");
                 return;
             }
-            String valueAndSave = jedisManager.getValueAndSave(REDIS_PAY_AWARD + order.getUserId(), 60000,
-                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString());
-            Integer joinAwardCount = Integer.valueOf(valueAndSave);
+            Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId(), 60000,
+                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
             int circleTimes = joinAwardCount / payAwardSize;
             logger().info("循环次数:{}", circleTimes);

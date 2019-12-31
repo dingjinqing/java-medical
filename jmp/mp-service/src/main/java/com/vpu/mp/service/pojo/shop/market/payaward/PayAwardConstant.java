@@ -8,12 +8,24 @@ package com.vpu.mp.service.pojo.shop.market.payaward;
  */
 public class PayAwardConstant {
 
+    //***************redis key
+
+    /**
+     * 支付有礼
+     */
+    public final static String REDIS_PAY_AWARD = "pay_award:";
+    /**
+     * 用户参加支付有礼次数
+     */
+    public final static String REDIS_PAY_AWARD_JOIN_COUNT = "pay_award:join_count:";
+
+
     //*********************领奖状态 0未领取1已领取
 
     /**
      * 还未领取
      */
-    public final static byte PAY_AWARD_GIVE_STATUS_UNRECEIVED=0;
+    public final static byte PAY_AWARD_GIVE_STATUS_UNRECEIVED = 0;
     /**
      * 已领取
      */
@@ -22,7 +34,6 @@ public class PayAwardConstant {
      * 奖品已领光
      */
     public final static byte PAY_AWARD_GIVE_STATUS_NO_STOCK = 2;
-
 
 
     //***********************奖品类型
@@ -41,7 +52,7 @@ public class PayAwardConstant {
      */
     public final static byte GIVE_TYPE_NO_PRIZE = 0;
     /**
-     *普通优惠卷
+     * 普通优惠卷
      */
     public final static byte GIVE_TYPE_ORDINARY_COUPON = 1;
     /**
@@ -51,21 +62,21 @@ public class PayAwardConstant {
     /**
      * 幸运大抽奖
      */
-    public final static byte GIVE_TYPE_LOTTERY=3;
+    public final static byte GIVE_TYPE_LOTTERY = 3;
     /**
      * 余额
      */
-    public final static byte GIVE_TYPE_BALANCE=4;
+    public final static byte GIVE_TYPE_BALANCE = 4;
     /**
      * 奖品
      */
     public final static byte GIVE_TYPE_GOODS = 5;
     /**
-     *积分
+     * 积分
      */
-    public final static byte GIVE_TYPE_SCORE =6;
+    public final static byte GIVE_TYPE_SCORE = 6;
     /**
      * 之定义
      */
-    public final static byte GIVE_TYPE_CUSTOM=7;
+    public final static byte GIVE_TYPE_CUSTOM = 7;
 }

@@ -51,7 +51,7 @@ global.wxPage({
         hot_info: hot_info
       })
     }
-
+    this.selectComponent('#recommend').resetDataList().resetPage().requestData() //推荐商品
     // util.api('/api/wxapp/search/hotwords', function (res) {
     //   if (res.error == 0) {
     //     hot_info = res.content;
@@ -167,7 +167,7 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    this.selectComponent('#recommend').requestData()
   },
 
   /**

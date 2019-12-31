@@ -90,7 +90,8 @@ public class BargainUserService extends ShopBaseService{
 		return workbook;
 	}
 
-    public PageResult<BargainUsersListVo> getWxPageList(BargainUsersListParam param){
+    public BargainUsersListVo getWxPageList(BargainUsersListParam param){
+        BargainUsersListVo vo = new BargainUsersListVo();
         SelectConditionStep<? extends Record> select = db().select(
             BARGAIN_USER_LIST.asterisk(),USER.MOBILE,USER.USERNAME,USER.WX_OPENID,USER_DETAIL.USER_AVATAR
         ).
@@ -99,7 +100,10 @@ public class BargainUserService extends ShopBaseService{
             leftJoin(USER_DETAIL).on(BARGAIN_USER_LIST.USER_ID.eq(USER_DETAIL.USER_ID)).
             where(BARGAIN_USER_LIST.RECORD_ID.eq(param.getRecordId()));
         select.orderBy(BARGAIN_USER_LIST.CREATE_TIME.desc());
-        return getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainUsersListVo.class);
+        PageResult<BargainUsersListVo.BargainUsers> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainUsersListVo.BargainUsers.class);
+        vo.setBargainUsers(res);
+        vo.setTimestamp(DateUtil.getLocalDateTime());
+        return vo;
     }
 
     /**

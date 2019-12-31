@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.bargain;
 
+import com.vpu.mp.service.foundation.util.PageResult;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,14 +15,22 @@ import java.sql.Timestamp;
 @Setter
 public class BargainUsersListVo {
 
-    private Integer id;
-    private Integer recordId;
-    private Integer userId;
-    private Timestamp createTime;
-    private BigDecimal bargainMoney;
+    private Timestamp timestamp;
+    private PageResult<BargainUsers> bargainUsers;
 
-    private String username;
-    private String wxOpenid;
-    private String mobile;
-    private String userAvatar;
+    @Setter
+    @Getter
+    public static class BargainUsers{
+        private Integer id;
+        private Integer recordId;
+        private Integer userId;
+        private Timestamp createTime;
+        private BigDecimal bargainMoney;
+
+        private String username;
+        private String wxOpenid;
+        private String mobile;
+        private String userAvatar;
+    }
+
 }

@@ -33,5 +33,6 @@
     </view>
   </view>
   <v-filter show="{{showFilterDialog}}" filter-data="{{filterData}}" bindconfirm="getSelectedData" nav-height="{{margin_top_nav + 8}}"/>
+  <v-recommend id="recommend" pageName="search"/>
   <include src="/pages/common/footer.wxml"/>
 </view>

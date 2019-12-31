@@ -87,6 +87,7 @@ public class BargainInfoVo {
         private Integer    recordId;
         private Integer    userId;
         private BigDecimal bargainMoney;
+        private Timestamp createTime;
 
         private String username;
         private String wxOpenid;
