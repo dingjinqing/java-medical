@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
@@ -66,6 +67,7 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 @Service
 public class PayAwardProcessor extends ShopBaseService implements Processor, CreateOrderProcessor {
 
+    private static final String REDIS_PAY_AWARD ="pay_award:join_count:";
     @Autowired
     private PayAwardService payAwardService;
     @Autowired
@@ -80,7 +82,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     private OrderInfoService orderInfoService;
     @Autowired
     private LotteryService lotteryService;
-
+    @Autowired
+    private JedisManager jedisManager;
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_BARGAIN_PRIORITY;
@@ -153,7 +156,9 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 logger().info("支付有礼没有配置奖品");
                 return;
             }
-            Integer joinAwardCount = payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId());
+            String valueAndSave = jedisManager.getValueAndSave(REDIS_PAY_AWARD + order.getUserId(), 60000,
+                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString());
+            Integer joinAwardCount = Integer.valueOf(valueAndSave);
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
             int circleTimes = joinAwardCount / payAwardSize;
             logger().info("循环次数:{}", circleTimes);
