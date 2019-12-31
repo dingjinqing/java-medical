@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -26,7 +27,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class ExcelUtil {
 
     private static final String STR_FLAG = "\"";
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 
     public static String getCellStringValue(Cell cell, Workbook workbook) {
@@ -61,7 +62,10 @@ public class ExcelUtil {
                     Date date = cell.getDateCellValue();
                     cellValue = formater.format(date);
                 } else {
-                    cellValue = String.valueOf(cell.getNumericCellValue());
+                	//解决手机号会变成1.509303703E10这样的问题,目前不影响其他值
+                	DecimalFormat df = new DecimalFormat("#");
+                	cellValue = df.format(cell.getNumericCellValue());
+                    //cellValue = String.valueOf(cell.getNumericCellValue());
                     if (isDecimalPointOfManyZero(cellValue)) {
                         cellValue = cellValue.split("\\.")[0];
                     }
