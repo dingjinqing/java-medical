@@ -44,6 +44,9 @@ global.wxPage({
       res => {
         console.log(res)
         if (res.error === 0) {
+          if(res.content.dataList.length < 20){
+            this.selectComponent('#recommend').resetDataList().resetPage().requestData()
+          }
           this.setData({
             pageParams: res.content.page,
             ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.dataList
@@ -155,8 +158,10 @@ global.wxPage({
     if (
       this.data.pageParams &&
       this.data.pageParams.currentPage === this.data.pageParams.lastPage
-    )
+    ) {
+      this.selectComponent('#recommend').requestData()
       return;
+    }
     this.setData({
       'pageParams.currentPage': this.data.pageParams.currentPage + 1
     });

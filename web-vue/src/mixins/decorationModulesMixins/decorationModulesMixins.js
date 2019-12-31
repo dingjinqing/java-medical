@@ -51,6 +51,31 @@ export default {
             bargain_goods: [] // 商品列表
           }
           break
+        case 4: // 积分兑换
+          obj = {
+            'module_name': 'm_integral',
+            'integral_goods': [
+              //   {
+              //     "goods_id":"1139",
+              //     "integral_goods_id":"175",
+              //     "goods_img":"http://mpdevimg2.weipubao.cn/upload/4748160/image/20191211/yGJPwQANqKOHCqWS.jpeg",
+              //     "goods_name":"
+              //                         夜间保湿修护唇膜 补水保湿 20克
+              //                     ",
+              //     "stock_sum":"3",
+              //     "prd_price":"59.00",
+              //     "money":"10.00",
+              //     "score":"100",
+              //     "start_time":"2019-12-25 14:10:31",
+              //     "end_time":"2020-01-02 14:10:33",
+              //     "is_on_sale":"1",
+              //     "is_delete":"0"
+              // }
+            ],
+            'list_styles': '1',
+            'show_goods_price': true
+          }
+          break
         case 5: // 秒杀
           obj = {
             module_name: 'm_seckill',

@@ -416,7 +416,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void processQueryParam(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
 
         //初始化所有可选支付方式
-        vo.setPaymentList(getSupportPayment());
+        param.setPaymentList(payment.getSupportPayment());
         //设置规格和商品信息、基础校验规格与商品
         processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
         //TODO 营销相关 活动校验或活动参数初始化
@@ -493,6 +493,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         setServiceTerms(vo);
         // 积分使用规则
         setScorePayRule(vo);
+        //支付方式
+        if(param.getPaymentList() != null){
+            vo.setPaymentList(param.getPaymentList());
+        }else {
+            vo.setPaymentList(payment.getSupportPayment());
+        }
         //订单必填信息处理
         vo.setMust(calculate.getOrderMust(vo.getOrderGoods()));
     }
@@ -631,14 +637,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 vo.setStoreList(null);
             }
         }
-    }
-
-    /**
-     * 支付方式
-     */
-    public Map<String, PaymentVo> getSupportPayment(){
-        return payment.getSupportPayment();
-        //TODO 营销活动
     }
 
     /**
@@ -957,7 +955,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException 当前支付方式不支持
      */
     public void checkPayWay(Byte orderPayWay, OrderBeforeVo vo) throws MpException {
-        Map<String, PaymentVo> supportPayment = getSupportPayment();
+        Map<String, PaymentVo> supportPayment = payment.getSupportPayment();
         if(OrderConstant.MP_PAY_CODE_WX_PAY.equals(orderPayWay) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[orderPayWay])){
             //wx
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_WX);

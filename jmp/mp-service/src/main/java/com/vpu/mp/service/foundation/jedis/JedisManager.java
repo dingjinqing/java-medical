@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
 
@@ -111,6 +112,17 @@ public class JedisManager {
 	}
 
 	/**
+	 * 删除key的缓存
+	 *
+	 * @param keys
+	 */
+	public void delete(Set<String> keys) {
+		try (Jedis jedis = getJedisPool().getResource()){
+			jedis.del(keys.toArray(new String[]{}));
+		}
+	}
+
+	/**
 	 * 得到key的缓存
 	 *
 	 * @param  key
@@ -119,6 +131,18 @@ public class JedisManager {
 	public String get(String key) {
 		try (Jedis jedis = getJedisPool().getResource()){
 			return jedis.get(key);
+		}
+	}
+
+	/**
+	 * 得到keys
+	 *
+	 * @param  key
+	 * @return
+	 */
+	public Set<String> keys(String key) {
+		try (Jedis jedis = getJedisPool().getResource()){
+			return jedis.keys(key);
 		}
 	}
 

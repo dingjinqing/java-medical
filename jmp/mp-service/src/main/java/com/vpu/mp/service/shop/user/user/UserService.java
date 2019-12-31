@@ -1030,4 +1030,8 @@ public class UserService extends ShopBaseService {
 		UserSysVo vo=new UserSysVo(allUserDetail.size(), updateSuccess, insertSuccess, updateFail, insertFail);
 		return vo;
 	}
+	
+	public UserRecord getUserByMobile(String mobile) {
+		return db().selectFrom(USER).where(USER.MOBILE.eq(mobile)).fetchAny();
+	}
 }

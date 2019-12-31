@@ -465,7 +465,7 @@ public class CardDaoService extends ShopBaseService {
 	 * 获取会员卡信息
 	 */
 	public MemberCardRecord getCardById(Integer cardId) {
-		MemberCardRecord mCard = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
+		MemberCardRecord mCard = getInfoByCardId(cardId);
 		// 处理背景图片
 		if(mCard != null && CardUtil.isBgImgType(mCard.getBgType())) {
 			if(!StringUtils.isBlank(mCard.getBgImg())) {
@@ -475,6 +475,11 @@ public class CardDaoService extends ShopBaseService {
 		}
 		return mCard;
 		
+	}
+
+	public MemberCardRecord getInfoByCardId(Integer cardId) {
+		MemberCardRecord mCard = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
+		return mCard;
 	}
 
 	/**

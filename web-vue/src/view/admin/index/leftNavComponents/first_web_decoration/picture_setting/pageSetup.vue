@@ -41,6 +41,7 @@ export default {
     RightBargain: () => import('./pageSetupModules/marketingComponents/rightBargain'), // 右侧砍价配置页面
     RightSpike: () => import('./pageSetupModules/marketingComponents/rightSpike'), // 右侧秒杀配置页面
     RightFightGroup: () => import('./pageSetupModules/marketingComponents/rightFightGroup'), // 右侧拼团抽奖配置页面
+    RiIntegralExchange: () => import('./pageSetupModules/marketingComponents/riIntegralExchange'), // 右侧积分兑换页面
     // 商品组件库
     RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'), // 右侧商品配置页面
     RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch'), // 右侧页面商品搜索配置页面
@@ -88,6 +89,10 @@ export default {
         {
           id: 3,
           name: 'RightBargain'
+        },
+        {
+          id: 4,
+          name: 'RiIntegralExchange'
         },
         {
           id: 5,
