@@ -15,6 +15,11 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
@@ -39,6 +44,7 @@ import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
+import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -221,6 +227,12 @@ public class StoreReservation extends ShopBaseService {
      */
     @Autowired
     public DomainConfig domainConfig;
+
+    /**
+     * The Mp schedule task service.
+     */
+    @Autowired
+    private MaMpScheduleTaskService mpScheduleTaskService;
 
     /**
      * The constant HH_MM_FORMATTER.
@@ -430,6 +442,10 @@ public class StoreReservation extends ShopBaseService {
             } else {
                 // 如果不需要调用微信支付，直接将订单状态由待付款改为待服务
                 serviceOrderService.updateServiceOrderStatus(orderSn, ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
+                log.info("订单支付成功，发送预约成功通知！");
+                // 预约成功通知
+                sendAppointmentSuccess(orderTran.getServiceOrder());
+                log.info("预约成功通知已下发");
             }
             if (Objects.isNull(webPayVo.get())) {
                 webPayVo.set(new WebPayVo() {{
@@ -439,16 +455,6 @@ public class StoreReservation extends ShopBaseService {
                 webPayVo.get().setOrderSn(orderSn);
             }
         });
-        /*// 队列前置校验
-        prefixCheck(serviceOrder);
-        // TODO 发送模板消息; 1. 预约订单支付成功模板消息; 2. 定时提醒预约服务过期模板消息
-        saas.taskJobMainService.dispatchImmediately(
-            serviceOrder,
-            ServiceOrderRecord.class.getName(),
-            getShopId(),
-            TaskJobsConstant.TaskJobEnum.RESERVATION_PAY.getExecutionType());*/
-        // 返回支付成功后的预约订单详情
-//        return serviceOrderService.getServiceOrderDetail(orderSn.get());
         return webPayVo.get();
     }
 
@@ -533,31 +539,57 @@ public class StoreReservation extends ShopBaseService {
     }
 
     /**
-     * Prefix check boolean.发送队列之前的一些前置校验
+     * Prefix check boolean.预约成功通知
      *
      * @param serviceOrder the service order
      * @return the boolean
      */
-    public boolean prefixCheck(ServiceOrderRecord serviceOrder) {
-        if (Objects.isNull(storeService.getStoreService(serviceOrder.getServiceId()))) {
-            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "ServiceId: " + serviceOrder.getServiceId());
+//    @Async
+    public void sendAppointmentSuccess(ServiceOrderRecord serviceOrder) {
+        int serviceId = serviceOrder.getServiceId();
+        StoreServiceParam service = storeService.getStoreService(serviceId);
+        if (Objects.isNull(service)) {
+            log.info("服务{}不存在！", serviceId);
+            return;
         }
-        UserRecord userInfo = userService.getUserByUserId(serviceOrder.getUserId());
-        if (Objects.isNull(userInfo.getWxOpenid())) {
-            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "WxOpenid: " + userInfo.getWxOpenid());
+        int userId = serviceOrder.getUserId();
+        UserRecord userInfo = userService.getUserByUserId(userId);
+        String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
+        if (officeAppId == null) {
+            logger().info("店铺" + getShopId() + "没有关注公众号");
+            return;
         }
-        // todo 构造发送消息模板的入参数据
-        StorePojo storePojo = store.getStore(serviceOrder.getStoreId());
-        // 拼接地址信息
-        String address = provinceService.getFullAddressById(Integer.parseInt(storePojo.getProvinceCode()), Integer.parseInt(storePojo.getCityCode()), Integer.parseInt(storePojo.getDistrictCode())) + storePojo.getAddress();
-        /*
-        $keywordsValues = [
-        $service->service_name, $store ? $store->store_name : "", $address ?? "",
-            $serviceOrder->service_date . " " . $serviceOrder->service_period,
-            $serviceOrder->mobile, $serviceOrder->subscriber
-        ];*/
-        ServiceOrderTemplate serviceOrderTemplate = new ServiceOrderTemplate();
-        return true;
+        StorePojo storeInfo = store.getStore(serviceOrder.getStoreId());
+        List<Integer> userIdList = new ArrayList<>();
+        UserRecord wxUserInfo = mpScheduleTaskService.checkMp(userInfo.getWxUnionId(), officeAppId);
+        if (null == wxUserInfo) {
+            // 用户未关注公众号，不发送公众号模板消息给用户
+            log.info("用户{}未关注公众号{}，不发送公众号模板消息给用户", userId, officeAppId);
+            return;
+        }
+        userIdList.add(wxUserInfo.getUserId());
+        String page = "pages/appointinfo/appointinfo?order_sn=" + serviceOrder.getOrderSn();
+        String serviceDate = serviceOrder.getServiceDate();
+        String servicePeriod = serviceOrder.getServicePeriod();
+        String subscriber = serviceOrder.getSubscriber();
+        String mobile = serviceOrder.getMobile();
+        String storeName = storeInfo.getStoreName();
+        String serviceName = service.getServiceName();
+        String first = "您已成功预约" + serviceName + "!";
+        String remake = "温馨提示：请您按照预约日期 " + serviceDate + "-" + servicePeriod + " 准时前往" + storeName + "。";
+        String[][] data = new String[][]{{first, "#173177"}
+            , {serviceName, "#173177"}
+            , {serviceDate + " " + servicePeriod.substring(0, 5), "#173177"}
+            , {subscriber, "#173177"}
+            , {mobile, "#173177"}
+            , {storeName, "#173177"}
+            , {remake, "#173177"}};
+        RabbitMessageParam param = RabbitMessageParam.builder()
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.APPOINTMENT_SUCCESS).data(data).build())
+            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+            .build();
+        logger().info("预约成功通知发送模板消息");
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
 
     /**
@@ -653,7 +685,7 @@ public class StoreReservation extends ShopBaseService {
     }
 
     /**
-     * Confirm complete reservation detail.服务订单确认完成 todo 取消
+     * Confirm complete reservation detail.服务订单确认完成
      *
      * @param param the param
      * @return the reservation detail

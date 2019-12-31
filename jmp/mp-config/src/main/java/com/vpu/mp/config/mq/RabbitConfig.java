@@ -53,8 +53,6 @@ public class RabbitConfig {
     public static final String QUEUE_BATCH_UPLOAD="batch.upload.queue";
     /** ES的路由 */
     public static final String QUEUE_ES_GOODS = "es.goods";
-    /** 订单支付发送消息模板默认存放队列, 这里指门店服务预约订单*/
-    public static final String QUEUE_RESERVATION_ORDER_MESSAGE = "reservation.message";
     /*************好物圈队列start************/
     /** 订单*/
     public static final String QUEUE_WX_MALL_IMPORTORDER = "wx.mall.importorder";
@@ -97,8 +95,6 @@ public class RabbitConfig {
     public static final String BINDING_BATCH_UPLOAD_KEY="bind.batch.upload";
     /** 批量提交小程序*/
     public static final String BINDING_ES_GOODS_KEY = "bind.es.goods";
-    /**发送门店服务预约订单支付成功模板消息路由键*/
-    public static final String BINDING_EXCHANGE_RESERVATION_KEY = "direct.order.reservation";
     /*************好物圈路由键start************/
     /**
      * 好物圈订单
@@ -186,14 +182,6 @@ public class RabbitConfig {
     @Bean
     public Queue sendCouponWithQueue() {
         return new Queue(QUEUE_COUPON_SEND, true, false, false);
-    }
-
-    /**
-     * @return 发送预约订单支付成功模板消息队列
-     */
-    @Bean
-    public Queue sendReservationWithQueue() {
-        return new Queue(QUEUE_RESERVATION_ORDER_MESSAGE,true,false,false);
     }
 
     /**
@@ -300,11 +288,6 @@ public class RabbitConfig {
     @Bean
     public Binding bindingCouponSend(){
         return BindingBuilder.bind(sendCouponWithQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_COUPON_KEY);
-    }
-
-    @Bean
-    public Binding bindingReservation() {
-        return BindingBuilder.bind(sendReservationWithQueue()).to(orderExchange()).with(BINDING_EXCHANGE_RESERVATION_KEY);
     }
 
     @Bean
