@@ -17,5 +17,8 @@ public class BargainCutVo {
      * 0砍价成功 1用户砍价次数已达到上限
      */
     private Byte state;
+    /**
+     * 砍掉的金额
+     */
     private BigDecimal bargainMoney;
 }

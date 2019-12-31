@@ -506,4 +506,14 @@ public class GoodsSpecProductService extends ShopBaseService {
     public BigDecimal getMaxPrdPrice(int goodsId) {
         return db().select(DSL.max(GOODS_SPEC_PRODUCT.PRD_PRICE)).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOptionalInto(BigDecimal.class).orElse(BigDecimal.ZERO);
     }
+
+    /**
+     * 取单规格商品的规格ID
+     *
+     * @param goodsId
+     * @return
+     */
+    public int getDefaultPrdId(int goodsId) {
+        return db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(0);
+    }
 }
