@@ -209,7 +209,7 @@ public class PayAwardService extends ShopBaseService {
      */
     private PayAwardVo recordToPayAwardVo(PayAwardRecord record) {
         if (record == null) {
-            return new PayAwardVo();
+            return null;
         }
         PayAwardVo payAwardVo = record.into(PayAwardVo.class);
         List<PayAwardContentBo> awardContentList = getPayAwardPrizeToBo(record.getId());
