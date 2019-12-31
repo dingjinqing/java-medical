@@ -465,10 +465,8 @@
     <!--修改余额&修改积分弹窗-->
     <div
       class="balanceDialo"
-      v-for="(item,index) in addDialogData"
-      :key="index"
     >
-      <el-dialog
+      <!-- <el-dialog
         :title="item.title"
         :visible.sync="balanceDialogVisible"
         width="40%"
@@ -521,7 +519,13 @@
             @click="handleScoreSure()"
           >{{ $t('membershipIntroduction.scoreCertain') }}</el-button>
         </span>
-      </el-dialog>
+      </el-dialog> -->
+      <ModifyData
+        :model="modifyDialogData"
+        :userId="userId"
+        @submitRes="hanldeModifyData"
+        >
+        </ModifyData>
     </div>
     <!--设置会员卡弹窗-->
     <div class="balanceDialo setUpDialog">
@@ -869,11 +873,23 @@ import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/setUpMemCDialog'
 import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
+import ModifyData from './modifyData'
 export default {
-  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog },
+  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog, ModifyData },
   props: ['labelText'],
   data () {
     return {
+      modifyDialogData: {
+        title: null,
+        presentText: null,
+        addText: null,
+        tips: null,
+        bzText: null,
+        persentMoney: '',
+        index: 0, // 0 余额，1 积分
+        visiable: false
+      },
+
       minixLabel: '',
       memberListliNav: '',
       deletePersondialogVisible: false,
@@ -1155,15 +1171,28 @@ export default {
     },
     // 控制修改余额-积分弹窗
     handlebalanceDialog (index, item, id) {
+      let val = null
       if (index === 0) {
         this.balanceDialogData[0].persentMoney = item
-        this.addDialogData = this.balanceDialogData
-      } else {
+        val = this.balanceDialogData[0]
+      } else if (index === 1) {
         this.integralDialogData[0].persentMoney = item
-        this.addDialogData = this.integralDialogData
+        val = this.integralDialogData[0]
       }
-      this.balanceDialogVisible = true
+      // copy value by same key
+      Object.keys(this.modifyDialogData).forEach(key => {
+        this.modifyDialogData[key] = val[key] || this.modifyDialogData[key]
+      })
+      this.modifyDialogData.visiable = true
       this.userId = id
+      console.log(this.modifyDialogData)
+    },
+
+    hanldeModifyData (res) {
+      if (res) {
+        this.defaultTabelListData()
+      }
+      this.modifyDialogData.visiable = false
     },
     // 修改余额弹窗确认按钮
     hanldemodifySure () {
