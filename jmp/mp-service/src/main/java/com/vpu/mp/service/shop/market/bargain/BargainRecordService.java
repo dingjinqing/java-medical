@@ -368,8 +368,9 @@ public class BargainRecordService extends ShopBaseService {
 
             //图片地址
             vo.getRecordInfo().setGoodsImg(domainConfig.imageUrl(recordInfo.getGoodsImg()));
-            vo.getRecordInfo().setUserAvatar(domainConfig.imageUrl(recordInfo.getUserAvatar()));
-
+            if(recordInfo.getUserAvatar() != null){
+                vo.getRecordInfo().setUserAvatar(domainConfig.imageUrl(recordInfo.getUserAvatar()));
+            }
 
             //帮忙砍价用户
             vo.setRecordUserList(bargainUser.getBargainUserList(recordId));
@@ -404,7 +405,7 @@ public class BargainRecordService extends ShopBaseService {
      * @param recordInfo
      * @return 状态码
      * 0可以砍价（别人的砍价） 11可以邀请砍价（自己的砍价） 1活动不存在 2砍价失败 3活动未开始 4或已结束
-     * 5砍价成功 6商品已抢光 7可以邀请砍价（自己的砍价） 8可以再砍一刀（自己的砍价） 9我也要X元得好物（别人的砍价，已帮砍过一刀） 10已完成订单（自己的砍价）
+     * 5砍价成功 6商品已抢光 7可以邀请砍价（自己的砍价，已经砍了2刀） 8可以再砍一刀（自己的砍价） 9我也要X元得好物（别人的砍价，已帮砍过一刀） 10已完成订单（自己的砍价）
      */
     private byte userBargainRecordStatus(int userId,BargainInfoVo.BargainRecordInfo recordInfo){
         if(recordInfo == null){
@@ -506,18 +507,16 @@ public class BargainRecordService extends ShopBaseService {
 
         //可用状态过滤
         byte canCutStatus = userBargainRecordStatus(userId,getRecordInfo(recordId));
-        if(canCutStatus != 0 || canCutStatus != 8 || canCutStatus != 11){
+        if(canCutStatus != 0 && canCutStatus != 8 && canCutStatus != 11){
             vo.setState(canCutStatus);
             return vo;
         }
 
         //进行砍价
-        transaction(()->{
-            bargainUser.addUserBargain(userId,recordId);
-        });
-
-
-return vo;
+        BigDecimal bargainMoney = bargainUser.addUserBargain(userId,recordId);
+        vo.setState((byte)0);
+        vo.setBargainMoney(bargainMoney);
+        return vo;
     }
 
 }

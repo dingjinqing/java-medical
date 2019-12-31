@@ -157,23 +157,27 @@ public class BargainUserService extends ShopBaseService{
         insertRecord.setRecordId(recordId);
         insertRecord.setUserId(userId);
         insertRecord.setBargainMoney(bargainMoney);
-        insertRecord.insert();
 
-        boolean isSuccess = bargain.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) ? (bargainRecord.getStatus().equals(BargainRecordService.STATUS_IN_PROCESS) && (bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney().add(bargainMoney)).compareTo(bargain.getExpectationPrice()) <= 0)) : (bargain.getExpectationNumber() == (bargainRecord.getUserNumber() + 1));
+        transaction(()->{
+            insertRecord.insert();
 
-        if(isSuccess){
-            //砍价成功了
-            //库存更新
-            saas.getShopApp(getShopId()).bargain.updateBargainStock(bargain.getId(),1);
-            saas.getShopApp(getShopId()).goods.updateGoodsNumberAndSale(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),1);
+            boolean isSuccess = bargain.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) ? (bargainRecord.getStatus().equals(BargainRecordService.STATUS_IN_PROCESS) && (bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney().add(bargainMoney)).compareTo(bargain.getExpectationPrice()) <= 0)) : (bargain.getExpectationNumber() == (bargainRecord.getUserNumber() + 1));
 
-            //砍价record的状态更新
-            db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.STATUS,BargainRecordService.STATUS_SUCCESS).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();
-            //TODO 向用户bargainRecord.getUserId发送砍价成功的消息
-        }else {
-            //砍价record的状态更新
-            db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();
-        }
+            if(isSuccess){
+                //砍价成功了
+                //库存更新
+                saas.getShopApp(getShopId()).bargain.updateBargainStock(bargain.getId(),1);
+                saas.getShopApp(getShopId()).goods.updateGoodsNumberAndSale(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),1);
+
+                //砍价record的状态更新
+                db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.STATUS,BargainRecordService.STATUS_SUCCESS).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();
+                //TODO 向用户bargainRecord.getUserId发送砍价成功的消息
+            }else {
+                //砍价record的状态更新
+                db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();
+            }
+        });
+
 
         if(StringUtil.isNotEmpty(bargain.getMrkingVoucherId()) && userId != bargainRecord.getUserId()){
             //向帮忙砍价的用户赠送优惠券
@@ -192,7 +196,7 @@ public class BargainUserService extends ShopBaseService{
      * @return
      */
     public int getUserBargainNumber(int userId,int recordId){
-        return db().selectCount().from(BARGAIN_USER_LIST).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.RECORD_ID.gt(recordId))).fetchOptionalInto(Integer.class).orElse(0);
+        return db().selectCount().from(BARGAIN_USER_LIST).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.RECORD_ID.eq(recordId))).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
@@ -319,7 +323,7 @@ public class BargainUserService extends ShopBaseService{
      * @return
      */
     public BargainUserListRecord getFirstUserBargain(int userId,int recordId){
-        return db().selectFrom(BARGAIN_USER_LIST).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.RECORD_ID.eq(recordId))).orderBy(BARGAIN_USER_LIST.CREATE_TIME.asc()).fetchOne();
+        return db().selectFrom(BARGAIN_USER_LIST).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.RECORD_ID.eq(recordId))).orderBy(BARGAIN_USER_LIST.CREATE_TIME.asc()).limit(1).fetchOne();
     }
 
     /**
@@ -334,7 +338,9 @@ public class BargainUserService extends ShopBaseService{
             .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(BARGAIN_USER_LIST.USER_ID))
         ).where(BARGAIN_USER_LIST.RECORD_ID.eq(recordId)).orderBy(BARGAIN_USER_LIST.CREATE_TIME.asc()).limit(20).fetchInto(BargainInfoVo.BargainUser.class);
         res.forEach(user->{
-            user.setUserAvatar(domainConfig.imageUrl(user.getUserAvatar()));
+            if(user.getUserAvatar() != null){
+                user.setUserAvatar(domainConfig.imageUrl(user.getUserAvatar()));
+            }
         });
         return res;
     }
@@ -345,7 +351,7 @@ public class BargainUserService extends ShopBaseService{
      * @return
      */
     public int getUserTodayCutTimes(int userId){
-        return db().selectCount().from(BARGAIN_USER_LIST).leftJoin(BARGAIN_RECORD).on(BARGAIN_USER_LIST.RECORD_ID.eq(BARGAIN_RECORD.ID)).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.CREATE_TIME.gt(DateUtil.getLocalTimeDate()))).fetchOptionalInto(Integer.class).orElse(0);
+        return db().selectCount().from(BARGAIN_USER_LIST).leftJoin(BARGAIN_RECORD).on(BARGAIN_USER_LIST.RECORD_ID.eq(BARGAIN_RECORD.ID)).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.CREATE_TIME.gt(DateUtil.getLocalDateTime()))).fetchOptionalInto(Integer.class).orElse(0);
     }
 
 }
