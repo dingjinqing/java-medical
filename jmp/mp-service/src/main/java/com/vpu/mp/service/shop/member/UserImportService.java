@@ -8,6 +8,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,12 +21,14 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportRecord;
@@ -39,11 +42,16 @@ import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.IdentityUtils;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
+import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.user.user.UserService;
 
@@ -57,6 +65,8 @@ import com.vpu.mp.service.shop.user.user.UserService;
 public class UserImportService extends ShopBaseService {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private CardDaoService cardDaoService;
 
 	private static final String PHONEREG = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
 	private static final String USER_IMPORT_NOTICE = "user_import_notice";
@@ -152,12 +162,12 @@ public class UserImportService extends ShopBaseService {
 		UserImExcelWrongHandler handler = new UserImExcelWrongHandler();
 		ExcelReader excelReader = new ExcelReader(lang, workbook, handler);
 		List<UserImportPojo> models = excelReader.readModelList(UserImportPojo.class);
-		checkList(models,param);
+		checkList(models, param);
 		return true;
 
 	}
 
-	public void checkList(List<UserImportPojo> list,UserImportParam param) {
+	public void checkList(List<UserImportPojo> list, UserImportParam param) {
 		String cardId = param.getCardId();
 		Integer groupId = param.getGroupId();
 		Integer tagId = param.getTagId();
@@ -223,7 +233,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String birthday = userImportPojo.getBirthday();
-			
+
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
 					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(ExcelUtil.DATE_FORMAT));
@@ -231,7 +241,7 @@ public class UserImportService extends ShopBaseService {
 				} catch (Exception e) {
 					logger().info("生日日期格式错误");
 					userImportPojo.setErrorMsg("生日日期格式错误");
-					logger().info(e.getMessage(),e);
+					logger().info(e.getMessage(), e);
 					continue;
 				}
 			}
@@ -306,7 +316,7 @@ public class UserImportService extends ShopBaseService {
 			}
 			successNum++;
 		}
-		//可能存在id不正确
+		// 可能存在id不正确
 		UserImportRecord newRecord = db().newRecord(USER_IMPORT);
 		newRecord.setSuccessNum(successNum);
 		newRecord.setTotalNum(totalNum);
@@ -336,7 +346,7 @@ public class UserImportService extends ShopBaseService {
 	}
 
 	public ExcelTypeEnum checkFile(MultipartFile multipartFile) {
-		if(multipartFile==null) {
+		if (multipartFile == null) {
 			return null;
 		}
 		ExcelTypeEnum type = null;
@@ -399,5 +409,45 @@ public class UserImportService extends ShopBaseService {
 			result = record.insert();
 		}
 		return result;
+	}
+
+	public PageResult<UIGetListVo> getList(UIGetListParam param) {
+		SelectWhereStep<UserImportRecord> selectFrom = db().selectFrom(USER_IMPORT);
+		Integer batchId = param.getBatchId();
+		if (batchId != null) {
+			selectFrom.where(USER_IMPORT.ID.eq(batchId));
+		}
+		Timestamp startTime = param.getStartTime();
+		if (startTime != null) {
+			selectFrom.where(USER_IMPORT.CREATE_TIME.ge(startTime));
+		}
+		Timestamp endTime = param.getEndTime();
+		if (endTime != null) {
+			selectFrom.where(USER_IMPORT.CREATE_TIME.le(endTime));
+		}
+		selectFrom.where(USER_IMPORT.TOTAL_NUM.gt(0));
+		selectFrom.orderBy(USER_IMPORT.ID.desc());
+		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UIGetListVo.class);
+	}
+
+	public PageResult<UIGetListVo> descList(UIGetListParam param) {
+		PageResult<UIGetListVo> list = getList(param);
+		for (UIGetListVo vo : list.getDataList()) {
+			vo.setFailNum(vo.getTotalNum() - vo.getSuccessNum());
+			String cardIds = vo.getCardId();
+			if (StringUtils.isNotEmpty(cardIds)) {
+				String[] caStrings = cardIds.split(",");
+				List<CardInfoVo> cardList = new ArrayList<CardInfoVo>();
+				for (String cardId : caStrings) {
+					CardInfoVo cardVo = new CardInfoVo();
+					MemberCardRecord cardInfo = cardDaoService.getInfoByCardId(Integer.parseInt(cardId));
+					cardVo.setCardId(cardInfo.getId());
+					cardVo.setCardName(cardInfo.getCardName());
+					cardList.add(cardVo);
+				}
+				vo.setCardList(cardList);
+			}
+		}
+		return list;
 	}
 }

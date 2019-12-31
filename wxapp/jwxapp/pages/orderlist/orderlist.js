@@ -39,7 +39,6 @@ global.wxPage({
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
-    console.log(parseInt(currentPage) - 1);
     util.api("/api/wxapp/order/statistic", res => {
       this.setData({
         navStatusNum: res.content
@@ -50,6 +49,9 @@ global.wxPage({
       res => {
         if (res.error === 0) {
           let dataList = this.formatData(res.content.dataList);
+          if(dataList.length < 20){
+            this.selectComponent('#recommend').resetDataList().resetPage().requestData()
+          }
           this.setData({
             pageParams: res.content.page,
             ["dataList[" + (parseInt(currentPage) - 1) + "]"]: dataList
@@ -147,8 +149,10 @@ global.wxPage({
     if (
       this.data.pageParams &&
       this.data.pageParams.currentPage === this.data.pageParams.lastPage
-    )
+    ){
+      this.selectComponent('#recommend').requestData()
       return;
+    }
     this.setData({
       "pageParams.currentPage": this.data.pageParams.currentPage + 1
     });

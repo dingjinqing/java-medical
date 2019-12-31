@@ -14,11 +14,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class PictorialIntegrationService extends ShopBaseService {
     @Autowired
-    public GroupBuyPictorialService groupBuyPictorialService;
+    private GroupBuyPictorialService groupBuyPictorialService;
 
     /**
      * 拼团分享信息生成
      * @param param 拼团活动信息
+     * @return 拼团活动分享信息
      */
     public GroupBuyShareInfoVo getGroupBuyShareInfo(GroupBuyShareInfoParam param){
         return groupBuyPictorialService.getGroupBuyShareInfo(param);
@@ -26,11 +27,10 @@ public class PictorialIntegrationService extends ShopBaseService {
 
     /**
      * 拼团还报下载
-     * @return
+     * @param param 拼团活动信息
+     * @return base64图片信息
      */
-    public String getGroupBuyShareBase64Pictorial(){
-//        return groupBuyPictorialService.getGroupBuyShareBase64Pictorial();
-        // TODO:拼团海报生成
-        return null;
+    public String getGroupBuyPictorialInfo(GroupBuyShareInfoParam param){
+        return groupBuyPictorialService.getGroupBuyPictorialInfo(param);
     }
 }

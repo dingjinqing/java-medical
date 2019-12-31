@@ -130,6 +130,7 @@
         </view>
       </view>
     </view>
+    <v-recommend id="recommend" pageName="groupbuyitem" />
     <!-- 下载海报 -->
     <v-poster wx:if="{{posterImg}}" image="{{posterImg}}" show="{{showPoster}}"></v-poster>
     <!-- 绑定手机号弹窗 -->

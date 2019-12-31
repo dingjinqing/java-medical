@@ -28,9 +28,6 @@
             </view>
         </view>
     </view>
-
-    <!-- 推荐商品 start-->
-    <!-- <v-goods-recommend page-name='new_search'></v-goods-recommend> -->
-    <!-- 推荐商品 end -->
 </view>
+<v-recommend id="recommend" pageName="new_search" />
 <include src="../common/footer.wxml" />

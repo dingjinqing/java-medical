@@ -179,6 +179,7 @@ global.wxPage({
       brandId: brandId
     }
     );
+    this.selectComponent('#recommend').requestData() //推荐商品请求
   },
   // 获取规格信息
   getProduct ({
@@ -234,6 +235,7 @@ global.wxPage({
       this.setListCountDown(activity.groupBuyListMpVos, 'groupBuyListMpVos')
     }
   },
+  
   // 获取actBar活动名称
   getActName ({
     activityType
@@ -270,7 +272,6 @@ global.wxPage({
   }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
     let total_micro_second = actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime
-    console.log(total_micro_second, actState, activityType)
     this.countdown(total_micro_second, actState, activityType)
   },
   // 获取最小值
@@ -351,6 +352,29 @@ global.wxPage({
   goGroup (e) {
     util.jumpLink(`pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`, 'navigateTo')
   },
+  share(){
+    this.setData({
+      showShareDialog:true
+    })
+  },
+  // 切换收藏
+  toogleCollect(){
+    let {goodsId,isCollected} = this.data.goodsInfo
+    const apiMap = new Map([
+      [true,{api:'/api/wxapp/cancel/collect',msg:'已取消',error:'取消失败'}],
+      [false,{api:'/api/wxapp/add/collect',msg:'收藏成功',error:'收藏失败'}]
+    ])
+    util.api(apiMap.get(isCollected).api,res=>{
+      if(res.error === 0){
+        util.toast_success(apiMap.get(isCollected).msg)
+        this.setData({
+          'goodsInfo.isCollected':!isCollected
+        })
+      } else {
+        util.toast_fail(apiMap.get(isCollected).error)
+      }
+    },{goodsId})
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -382,8 +406,10 @@ global.wxPage({
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () { },
-
+  onReachBottom: function () { 
+    this.selectComponent('#recommend').requestData()
+  },
+    
   /**
    * 用户点击右上角分享
    */

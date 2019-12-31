@@ -22,6 +22,7 @@ global.wxPage({
       orderSn,
       useInfo:JSON.parse(useInfo)
     })
+    this.selectComponent('#recommend').requestData()
     this.payGiftRequest()
   },
   checkOrder(){
@@ -87,7 +88,7 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    this.selectComponent('#recommend').requestData()
   },
 
   /**
