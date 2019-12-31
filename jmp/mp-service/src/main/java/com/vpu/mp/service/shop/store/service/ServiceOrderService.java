@@ -390,7 +390,7 @@ public class ServiceOrderService extends ShopBaseService {
                 setPayment(PAY_CODE_BALANCE_PAY);
                 // 支付类型，0：充值，1：消费
                 setIsPaid(BYTE_ONE);
-                setRemark(orderSn);
+                setUserInputRemark(orderSn);
             }};
             moneyPaidSecondCheck = moneyPaidSecondCheck.subtract(balance);
         }
@@ -575,7 +575,7 @@ public class ServiceOrderService extends ShopBaseService {
         accountData.setAccount(userService.getUserByUserId(param.getUserId()).getAccount());
         accountData.setAmount(param.getBalance().negate());
         accountData.setUserId(param.getUserId());
-        accountData.setRemark(param.getReason());
+        accountData.setUserInputRemark(param.getReason());
         accountData.setOrderSn(param.getOrderSn());
         /** 国际化语言 */
         String language = "";

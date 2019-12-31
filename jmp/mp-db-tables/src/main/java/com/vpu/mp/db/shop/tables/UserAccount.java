@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAccount extends TableImpl<UserAccountRecord> {
 
-    private static final long serialVersionUID = 1848225041;
+    private static final long serialVersionUID = 785636704;
 
     /**
      * The reference instance of <code>jmini_shop_444801.b2c_user_account</code>
@@ -99,9 +99,14 @@ public class UserAccount extends TableImpl<UserAccountRecord> {
     public final TableField<UserAccountRecord, Byte> IS_PAID = createField("is_paid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "支付类型，0：充值，1：消费");
 
     /**
-     * The column <code>jmini_shop_444801.b2c_user_account.remark</code>. 备注
+     * The column <code>jmini_shop_444801.b2c_user_account.remark_id</code>. 备注模板id
      */
-    public final TableField<UserAccountRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR(1024), this, "备注");
+    public final TableField<UserAccountRecord, String> REMARK_ID = createField("remark_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "备注模板id");
+
+    /**
+     * The column <code>jmini_shop_444801.b2c_user_account.remark_data</code>. 备注模板数据
+     */
+    public final TableField<UserAccountRecord, String> REMARK_DATA = createField("remark_data", org.jooq.impl.SQLDataType.VARCHAR(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注模板数据");
 
     /**
      * The column <code>jmini_shop_444801.b2c_user_account.source</code>. 1:分销来源，0:充值

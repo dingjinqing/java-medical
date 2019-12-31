@@ -25,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -166,7 +167,9 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 		orderSn(order.getOrderSn()).
 		//退款金额
 		amount(money).
-		remark("订单取消："+order.getOrderSn()+"余额退款").
+		remarkCode(RemarkTemplate.ORDER_CANCEL.code).
+		remarkData(order.getOrderSn()).
+		//remark("订单取消："+order.getOrderSn()+"余额退款").
 		payment(order.getPayCode()).
 		//支付类型
 		isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
@@ -202,7 +205,9 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 		orderSn(order.getOrderSn()).
 		//退款积分
 		score(score).
-		remark("订单取消："+order.getOrderSn()+"退款，退积分：score").
+		remarkCode(RemarkTemplate.ORDER_CANCEL_SCORE_ACCOUNT.code).
+		remarkData(order.getOrderSn()).
+		//remark("订单取消："+order.getOrderSn()+"退款，退积分：score").
 		//后台处理时为操作人id为0
 		adminUser(0).
 		//用户余额充值 

@@ -85,8 +85,13 @@ public class UserScoreVoBuilder {
 		return this;
 	}
 
-	public UserScoreVoBuilder remark (String remark) {
-		userScoreVo.setRemark(remark);
+	public UserScoreVoBuilder remarkCode (Integer remarkCode) {
+		userScoreVo.setRemarkCode(remarkCode);
+		return this;
+	}
+	
+	public UserScoreVoBuilder remarkData(String remarkData) {
+		userScoreVo.setRemarkData(remarkData);
 		return this;
 	}
 

@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
@@ -305,7 +306,8 @@ public class StoreOrderService extends ShopBaseService {
                 // 积分变动数额
                 setScore(scoreValue);
                 setOrderSn(orderSn);
-                setRemark(orderSn);
+                setRemarkData(orderSn);
+                //setRemark(orderSn);
             }};
             log.debug("积分抵扣金额:{}", scoreAmount);
             moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);
@@ -327,7 +329,7 @@ public class StoreOrderService extends ShopBaseService {
                 setPayment(PAY_CODE_BALANCE_PAY);
                 // 支付类型，0：充值，1：消费
                 setIsPaid(BYTE_ONE);
-                setRemark(orderSn);
+                setUserInputRemark(orderSn);
             }};
             log.debug("余额抵扣金额:{}", balanceAmount);
             moneyPaid = moneyPaid.subtract(balanceAmount).setScale(2, RoundingMode.UP);
@@ -533,7 +535,8 @@ public class StoreOrderService extends ShopBaseService {
                         setScoreStatus(NO_USE_SCORE_STATUS);
                         setDesc("score");
                         setOrderSn(orderSn);
-                        setRemark("门店支付得积分");
+                        setRemarkCode(RemarkTemplate.ORDER_STORE_SCORE.code);
+                        //setRemark("门店支付得积分");
                     }
                 },
                 INTEGER_ZERO,

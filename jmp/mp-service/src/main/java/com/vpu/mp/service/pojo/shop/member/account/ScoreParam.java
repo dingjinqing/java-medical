@@ -1,11 +1,11 @@
 package com.vpu.mp.service.pojo.shop.member.account;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import lombok.Data;
@@ -19,11 +19,13 @@ import lombok.Data;
 @Data
 public class ScoreParam {
 	/** 备注Id */
-	private Integer remarkId;
+	private Integer remarkCode;
+	
 	/** 备注数据 */
-	private List<String> remarkData;
+	@JsonAlias("remark")
+	private String remarkData;
 	/** -备注 */
-	private String remark;
+	//private String remark;
 	/** -描述 */
 	private String desc;
 	

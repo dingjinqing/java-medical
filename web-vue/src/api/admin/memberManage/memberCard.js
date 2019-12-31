@@ -224,3 +224,12 @@ export function getAllNoDeleteGradeCard () {
     data: null
   })
 }
+
+// 增加减少会员卡余额和次数
+export function chargeConsume (data) {
+  return service({
+    url: '/api/admin/user/card/consume',
+    method: 'post',
+    data
+  })
+}

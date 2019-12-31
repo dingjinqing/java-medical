@@ -34,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessPa
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupperInfoPojo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 
 /**
  * @author huangronggang
@@ -252,7 +253,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 			listParticipation.forEach(item->{
 				ScoreParam scoreParam = new ScoreParam();
 				scoreParam.setOrderSn("");
-				scoreParam.setRemark(REMARK);
+				scoreParam.setRemarkCode(RemarkTemplate.DIVIDE_SCORE.code);
 				scoreParam.setScore(item.getIntegration());
 				scoreParam.setScoreDis(0);
 				//scoreService.updateMemberScore(scoreParam, null, item.getUserId(),TRADE_TYPE, TRADE_FLOW);

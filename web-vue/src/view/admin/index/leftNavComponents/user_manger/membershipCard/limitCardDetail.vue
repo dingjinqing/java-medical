@@ -148,10 +148,6 @@ export default {
       useTime: '0',
       count: undefined,
       choosedStore: [
-        // {
-        //   storeId: 10,
-        //   storeName: '小猴店1'
-        // }
       ],
       valid: false
     }

@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
@@ -74,7 +75,9 @@ public class VirtualOrderService extends ShopBaseService {
     				AccountData accountData = AccountData.newBuilder().userId(payInfo.getUserId())
     						.orderSn(payInfo.getOrderSn()).
     				// 退款金额
-    				amount(param.getAccount()).remark(String.format("虚拟订单退款:%s", payInfo.getOrderSn()))
+    				amount(param.getAccount())
+    						.remarkCode(RemarkTemplate.ORDER_VIRTUAL_RETURN.code)
+    						.remarkData(String.format(payInfo.getOrderSn()))
     						.payment(OrderConstant.PAY_CODE_BALANCE_PAY).
     				// 支付类型
     				isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
@@ -114,8 +117,10 @@ public class VirtualOrderService extends ShopBaseService {
     				/** TODO 积分退款服务 */
     				ScoreData scoreData = ScoreData.newBuilder().userId(payInfo.getUserId()).orderSn(payInfo.getOrderSn()).
     				// 退款积分
-    				score(param.getScore())
-    						.remark(String.format("虚拟订单退款:%s，退积分：%s", payInfo.getOrderSn(), param.getScore())).
+    				score(param.getScore()).
+    				remarkCode(RemarkTemplate.ORDER_VIRTUAL_RETURN_SCORE_ACCOUNT.code).
+    				remarkData(payInfo.getOrderSn()+","+param.getScore()).
+    				//remark(String.format("虚拟订单退款:%s，退积分：%s", payInfo.getOrderSn(), param.getScore())).
     				// 后台处理时为操作人id为0
     				adminUser(0).
     				// 用户余额充值

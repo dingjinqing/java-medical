@@ -11,95 +11,104 @@ import com.vpu.mp.db.shop.tables.records.UserAccountRecord;
 * @Description:
 */
 
+
 public class UserAccountRecordBuilder {
-	private UserAccountRecord userAccountRecord;
+	private UserAccountRecord record;
 	
 	private UserAccountRecordBuilder(){
-		userAccountRecord = new UserAccountRecord();
+		record = new UserAccountRecord();
 	}
 	private UserAccountRecordBuilder(UserAccountRecord record) {
-		this.userAccountRecord = record;
+		this.record = record;
 	}
 	
 	
 	public static UserAccountRecordBuilder create() {
 		return new UserAccountRecordBuilder();
 	}
-	public static UserAccountRecordBuilder create(UserAccountRecord userAccountRecord) {
-		return new UserAccountRecordBuilder(userAccountRecord);
+	
+	
+	public static UserAccountRecordBuilder create(UserAccountRecord record) {
+		return new UserAccountRecordBuilder(record);
 	}
 
 	public UserAccountRecordBuilder id (Integer id) {
-		userAccountRecord.setId(id);
+		record.setId(id);
 		return this;
 	}
 
 	public UserAccountRecordBuilder userId (Integer userId) {
-		userAccountRecord.setUserId(userId);
+		record.setUserId(userId);
 		return this;
 	}
 
 	public UserAccountRecordBuilder adminUser (String adminUser) {
-		userAccountRecord.setAdminUser(adminUser);
+		record.setAdminUser(adminUser);
 		return this;
 	}
 
 	public UserAccountRecordBuilder orderSn (String orderSn) {
-		userAccountRecord.setOrderSn(orderSn);
+		record.setOrderSn(orderSn);
 		return this;
 	}
 
 	public UserAccountRecordBuilder amount (BigDecimal amount) {
-		userAccountRecord.setAmount(amount);
+		record.setAmount(amount);
 		return this;
 	}
 
 	public UserAccountRecordBuilder adminNote (String adminNote) {
-		userAccountRecord.setAdminNote(adminNote);
+		record.setAdminNote(adminNote);
 		return this;
 	}
 
 	public UserAccountRecordBuilder payment (String payment) {
-		userAccountRecord.setPayment(payment);
+		record.setPayment(payment);
 		return this;
 	}
 
 	public UserAccountRecordBuilder isPaid (Byte isPaid) {
-		userAccountRecord.setIsPaid(isPaid);
+		record.setIsPaid(isPaid);
 		return this;
 	}
 
-	public UserAccountRecordBuilder remark (String remark) {
-		userAccountRecord.setRemark(remark);
+	public UserAccountRecordBuilder remarkId (String remarkId) {
+		record.setRemarkId(remarkId);
+		return this;
+	}
+
+	public UserAccountRecordBuilder remarkData (String remarkData) {
+		record.setRemarkData(remarkData);
 		return this;
 	}
 
 	public UserAccountRecordBuilder source (Byte source) {
-		userAccountRecord.setSource(source);
+		record.setSource(source);
 		return this;
 	}
-	
+
 	public UserAccountRecordBuilder withdrawStatus (Byte withdrawStatus) {
-		userAccountRecord.setWithdrawStatus(withdrawStatus);
+		record.setWithdrawStatus(withdrawStatus);
 		return this;
 	}
 
 	public UserAccountRecordBuilder settleAccount (BigDecimal settleAccount) {
-		userAccountRecord.setSettleAccount(settleAccount);
+		record.setSettleAccount(settleAccount);
 		return this;
 	}
 
 	public UserAccountRecordBuilder createTime (Timestamp createTime) {
-		userAccountRecord.setCreateTime(createTime);
+		record.setCreateTime(createTime);
 		return this;
 	}
 
 	public UserAccountRecordBuilder updateTime (Timestamp updateTime) {
-		userAccountRecord.setUpdateTime(updateTime);
+		record.setUpdateTime(updateTime);
 		return this;
 	}
 
 	public UserAccountRecord build() {
-		return userAccountRecord;
+		return record;
 	}
 }
+

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
-import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 
 /**
  * @author 黄壮壮
@@ -24,7 +24,7 @@ public class UserAccountDao extends ShopBaseService {
 	/**
 	 * 分页查询会员用户余额详情
 	 */
-	public PageResult<AccountPageListVo> getPageListOfAccountDetails(AccountPageListParam param) {
+	public PageResult<AccountPageInfo> getPageListOfAccountDetails(AccountPageListParam param) {
 
 		SelectJoinStep<? extends Record> select = db()
 				.select(USER.USERNAME, USER.MOBILE, USER_ACCOUNT.asterisk())
@@ -33,7 +33,7 @@ public class UserAccountDao extends ShopBaseService {
 		buildOptions(select, param);
 
 		select.orderBy(USER_ACCOUNT.CREATE_TIME.desc());
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), AccountPageListVo.class);
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), AccountPageInfo.class);
 	}
 
 	/**

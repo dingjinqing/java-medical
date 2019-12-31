@@ -20,15 +20,17 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record7;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.exception.DataAccessException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,17 +44,19 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RemarkUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScorePageInfo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.operation.RemarkScoreTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
@@ -79,7 +83,6 @@ public class ScoreService extends ShopBaseService {
 	public ScoreCfgService scoreCfgService;
 	@Autowired
 	public MemberService member;	
-	
 	/**
 	 *   创建用户积分表,增加，消耗用户积分
 	 * @param param 积分变动相关数据
@@ -127,13 +130,13 @@ public class ScoreService extends ShopBaseService {
 		/** 3. 准备数据  */
 
 		/** 3.1 处理备注  */
-		if (param.getRemarkId() == null) {
-			if(param.getRemarkData()==null || param.getRemarkData().size()==0 ) {
+		if (param.getRemarkCode() == null) {
+			if(StringUtils.isBlank(param.getRemarkData())) {
 				// 默认管理员操作
-				param.setRemarkId(RemarkScoreTemplate.ADMIN_OPERATION.code);
+				param.setRemarkCode(RemarkTemplate.ADMIN_OPERATION.code);
 			}else {
 				// 用户输入
-				param.setRemarkId(RemarkScoreTemplate.USER_INPUT_MSG.code);
+				param.setRemarkCode(RemarkTemplate.USER_INPUT_MSG.code);
 			}
 		}
 		
@@ -173,8 +176,8 @@ public class ScoreService extends ShopBaseService {
 				//TODO 还有一些数据不知道从哪些业务传递过来的如goods_id,desc,identity_id 
 				userScoreRecord.setScore(score);
 				userScoreRecord.setUserId(userId);
-				userScoreRecord.setRemarkId(String.valueOf(param.getRemarkId()));
-				userScoreRecord.setRemarkData(Util.listToString(param.getRemarkData()));
+				userScoreRecord.setRemarkId(String.valueOf(param.getRemarkCode()));
+				userScoreRecord.setRemarkData(param.getRemarkData());
 				userScoreRecord.setAdminUser(String.valueOf(subAccountId));
 				userScoreRecord.setOrderSn(orderSn);
 				userScoreRecord.setFlowNo(flowOn);
@@ -388,17 +391,41 @@ public class ScoreService extends ShopBaseService {
 	 * @param param 
 	 * @return PageResult<ScorePageListVo>
 	 */
-	public PageResult<ScorePageListVo> getPageListOfScoreDetails(ScorePageListParam param) {
-		SelectJoinStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select = db()
-				.select(USER.USERNAME,USER.MOBILE,USER_SCORE.ORDER_SN,USER_SCORE.SCORE,USER_SCORE.CREATE_TIME,USER_SCORE.EXPIRE_TIME,USER_SCORE.REMARK)
+	public PageResult<ScorePageListVo> getPageListOfScoreDetails(ScorePageListParam param,String language) {
+		SelectJoinStep<? extends Record> select = db()
+				.select(USER.USERNAME,USER.MOBILE,USER_SCORE.ORDER_SN,USER_SCORE.SCORE,USER_SCORE.CREATE_TIME,USER_SCORE.EXPIRE_TIME
+						,USER_SCORE.REMARK_DATA,USER_SCORE.REMARK_ID)
 				.from(USER_SCORE.join(USER).on(USER.USER_ID.eq(USER_SCORE.USER_ID)));
 		
 		
 		buildOptions(select,param);
 		select.orderBy(USER_SCORE.CREATE_TIME.desc());
 		
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(),ScorePageListVo.class);
+		PageResult<ScorePageInfo> resultBefore = getPageResult(select, param.getCurrentPage(), param.getPageRows(),ScorePageInfo.class);
+		
+		return scoreInfoToScoreVo(language, resultBefore);
+
 	}
+	
+	/**
+	 *	数据类型转换
+	 */
+	public PageResult<ScorePageListVo> scoreInfoToScoreVo(String language, PageResult<ScorePageInfo> resultBefore) {
+		PageResult<ScorePageListVo> resultAfter = new PageResult<>();
+		List<ScorePageListVo> dataList = new ArrayList<>();
+		for(ScorePageInfo scoreItem: resultBefore.dataList) {
+			ScorePageListVo scoreVo = new ScorePageListVo();
+			BeanUtils.copyProperties(scoreItem, scoreVo);
+			String remark = RemarkUtil.remarkI18N(language, scoreItem.getRemarkId(),scoreItem.getRemarkData());
+			scoreVo.setRemark(remark);
+			dataList.add(scoreVo);
+		}
+		resultAfter.setPage(resultBefore.getPage());
+		resultAfter.setDataList(dataList);
+		return resultAfter;
+	}
+	
+	
 
 
 	/**
@@ -407,7 +434,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param param  
 	 */
 	private void buildOptions(
-			SelectJoinStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select,
+			SelectJoinStep<? extends Record> select,
 			ScorePageListParam param) {
 		logger().info("正在构建查询条件");
 		
@@ -484,8 +511,9 @@ public class ScoreService extends ShopBaseService {
 		int insert=0;
 		try {
 
-			if (StringUtils.isEmpty(data.getRemark())) {
-				data.setRemark("管理员操作");
+			if (data.getRemarkCode()==null) {
+				//data.setRemark("管理员操作");
+				data.setRemarkCode(RemarkTemplate.ADMIN_OPERATION.code);
 			}
 			UserScoreRecord record =db().newRecord(USER_SCORE);
 			FieldsUtil.assignNotNull(data, record);

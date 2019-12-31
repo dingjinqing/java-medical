@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.collectGift.SetCollectGiftVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -135,7 +136,8 @@ public class CollectGiftConfigService extends BaseShopConfigService{
             scoreParam.setScore(info.getScore());
             scoreParam.setScoreStatus(ScoreStatusConstant.USED_SCORE_STATUS);
             scoreParam.setDesc("score");
-            scoreParam.setRemark("收藏有礼");
+            scoreParam.setRemarkCode(RemarkTemplate.COLLECT_HAS_GIFT.code);
+            //scoreParam.setRemark("收藏有礼");
             Integer subAccountId = 0;
             try {
                 member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");

@@ -19,8 +19,12 @@ public class AccountData extends BaseData {
 	protected Integer userId;
 	/** 操作员id */
 	protected Integer adminUser;
-	/** 备注 */
-	protected String remark;
+	/** 备注模板code */
+	private Integer remarkCode;
+	/** 备注模板数据 */
+	private String remarkData;
+	/** 用户输入的备注 */
+	//protected String remark;
 	/** 交易类型 */
 	protected Byte tradeType;
 	/** 资金流向 */

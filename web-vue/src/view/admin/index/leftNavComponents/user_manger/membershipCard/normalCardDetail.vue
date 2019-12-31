@@ -155,10 +155,6 @@ export default {
     let cardStoreCfgDataTmp = {
       storeListType: '0',
       choosedStore: [
-        {
-          storeId: 10,
-          storeName: '小猴店1'
-        }
       ]
     }
     let cardUsageCfgDataTmp = {

@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.member.card;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -18,6 +20,9 @@ public class ChargeVo {
 	private String mobile;
 	// 余额变动明细
 	private BigDecimal money;
+	// 充值模板code
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Integer reasonId;
 	// 充值原因
 	private String reason;
 	// 备注

@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
@@ -111,7 +112,8 @@ public class WxAppCouponController extends WxAppBaseController {
 				scoreParam.setScore(-(couponData.getScoreNumber()));
 				scoreParam.setScoreStatus(ScoreStatusConstant.USED_SCORE_STATUS);
 				scoreParam.setDesc("score");
-				scoreParam.setRemark("领取优惠券");
+				scoreParam.setRemarkCode(RemarkTemplate.RECEIVE_COUPON.code);
+				//scoreParam.setRemark("领取优惠券");
 				Integer subAccountId = 0;
 
 				/** -交易明细类型 */

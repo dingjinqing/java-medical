@@ -5,8 +5,8 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 
 import java.sql.Timestamp;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserScore extends TableImpl<UserScoreRecord> {
 
-    private static final long serialVersionUID = -1609880064;
+    private static final long serialVersionUID = 272985273;
 
     /**
      * The reference instance of <code>jmini_shop_444801.b2c_user_score</code>
@@ -121,11 +121,6 @@ public class UserScore extends TableImpl<UserScoreRecord> {
      * The column <code>jmini_shop_444801.b2c_user_score.remark_data</code>. 备注模板数据
      */
     public final TableField<UserScoreRecord, String> REMARK_DATA = createField("remark_data", org.jooq.impl.SQLDataType.VARCHAR(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注模板数据");
-
-    /**
-     * The column <code>jmini_shop_444801.b2c_user_score.remark</code>. 备注
-     */
-    public final TableField<UserScoreRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR(1024), this, "备注");
 
     /**
      * The column <code>jmini_shop_444801.b2c_user_score.create_time</code>.

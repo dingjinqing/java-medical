@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
@@ -67,7 +68,7 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		ScorePageListParam param=new ScorePageListParam();
 		param.setUserId(wxAppAuth.user().getUserId());
 		param.setType("wxapp");
-		PageResult<ScorePageListVo> list = shop().userCard.scoreService.getPageListOfScoreDetails(param);
+		PageResult<ScorePageListVo> list = shop().userCard.scoreService.getPageListOfScoreDetails(param,getLang());
 		ExpireVo expire= shop().userCard.scoreService.getUserScoreCfg(param.getUserId());
 		vo.setList(list);
 		vo.setExpire(expire);
@@ -105,7 +106,9 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		vo.setStatus((byte)0);
 		vo.setShopId(shopId());
 		vo.setDesc("sign_score");
-		vo.setRemark("连续签到"+signData.getSignData().getDay()+"天，获得"+param.getScore()+"积分");
+		//vo.setRemark("连续签到"+signData.getSignData().getDay()+"天，获得"+param.getScore()+"积分");
+		vo.setRemarkCode(RemarkTemplate.SIGN_SOME_DAY_SEND.code);
+		vo.setRemarkData(signData.getSignData().getDay()+","+param.getScore());
 		shop().userCard.scoreService.addUserScore(vo, "0", (byte) 6, (byte) 1);
 		CheckSignVo checkSignInScore = shop().userCard.scoreService.checkSignInScore(userId);
 		logger().info("签到完成");
