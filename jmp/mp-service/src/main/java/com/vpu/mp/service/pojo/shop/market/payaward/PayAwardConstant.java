@@ -11,13 +11,17 @@ public class PayAwardConstant {
     //*********************领奖状态 0未领取1已领取
 
     /**
+     * 还未领取
+     */
+    public final static byte PAY_AWARD_GIVE_STATUS_UNRECEIVED=0;
+    /**
      * 已领取
      */
     public final static byte PAY_AWARD_GIVE_STATUS_RECEIVED = 1;
     /**
-     * 还未领取
+     * 奖品已领光
      */
-    public final static byte PAY_AWARD_GIVE_STATUS_UNRECEIVED=0;
+    public final static byte PAY_AWARD_GIVE_STATUS_NO_STOCK = 2;
 
 
 

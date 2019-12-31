@@ -15,8 +15,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -204,15 +202,8 @@ public class EnterPolitelyService extends ShopBaseService {
                 break;
             case 2:
                 logger().info("幸运大抽奖");
-                JoinLotteryParam joinLotteryParam = new JoinLotteryParam();
-                joinLotteryParam.setUserId(userId);
-                joinLotteryParam.setLotteryId(Integer.valueOf(awardContent));
-                JoinLottery joinLottery = lotteryService.validJoinLottery(joinLotteryParam);
-                if (!BYTE_ZERO.equals(joinLottery.getStatus())) {
-                    logger().debug("没有可用抽奖活动");
-                    return noAward;
-                }
                 record.setLotteryId(Integer.valueOf(awardContent));
+                logger().debug("抽奖活动id：{}", awardContent);
                 break;
             case 5:
                 logger().info("余额");

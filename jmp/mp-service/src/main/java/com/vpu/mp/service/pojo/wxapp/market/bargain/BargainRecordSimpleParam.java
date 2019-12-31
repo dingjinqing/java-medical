@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  **/
 @Getter
 @Setter
-public class BargainInfoParam {
+public class BargainRecordSimpleParam {
     @NotNull
     private Integer recordId;
 }

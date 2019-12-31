@@ -9,8 +9,17 @@ import lombok.Data;
 @Data
 public class JoinLotteryParam {
 
+    /**
+     * 分享
+     */
     public static final byte SHARE =1;
+    /**
+     * 积分
+     */
     public static final byte SCORE =2;
+    /**
+     * 免费
+     */
     public static final byte FREE =3;
 
 
