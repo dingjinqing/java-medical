@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class BargainCutVo {
     /**
      * 帮助砍价结果
-     * 0砍价成功 1用户砍价次数已达到上限
+     * 0砍价成功 12用户砍价次数已达到上限
      */
     private Byte state;
     /**

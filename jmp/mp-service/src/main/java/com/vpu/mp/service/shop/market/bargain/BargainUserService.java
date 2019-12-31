@@ -19,10 +19,13 @@ import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserExportVo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoVo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListParam;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListVo;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,6 +89,18 @@ public class BargainUserService extends ShopBaseService{
 		excelWriter.writeModelList(voList,BargainUserExportVo.class);
 		return workbook;
 	}
+
+    public PageResult<BargainUsersListVo> getWxPageList(BargainUsersListParam param){
+        SelectConditionStep<? extends Record> select = db().select(
+            BARGAIN_USER_LIST.asterisk(),USER.MOBILE,USER.USERNAME,USER.WX_OPENID,USER_DETAIL.USER_AVATAR
+        ).
+            from(BARGAIN_USER_LIST).
+            leftJoin(USER).on(BARGAIN_USER_LIST.USER_ID.eq(USER.USER_ID)).
+            leftJoin(USER_DETAIL).on(BARGAIN_USER_LIST.USER_ID.eq(USER_DETAIL.USER_ID)).
+            where(BARGAIN_USER_LIST.RECORD_ID.eq(param.getRecordId()));
+        select.orderBy(BARGAIN_USER_LIST.CREATE_TIME.desc());
+        return getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainUsersListVo.class);
+    }
 
     /**
      * userId是否能给recordId砍一刀
@@ -337,11 +352,6 @@ public class BargainUserService extends ShopBaseService{
             .leftJoin(USER).on(USER.USER_ID.eq(BARGAIN_USER_LIST.USER_ID))
             .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(BARGAIN_USER_LIST.USER_ID))
         ).where(BARGAIN_USER_LIST.RECORD_ID.eq(recordId)).orderBy(BARGAIN_USER_LIST.CREATE_TIME.asc()).limit(20).fetchInto(BargainInfoVo.BargainUser.class);
-        res.forEach(user->{
-            if(user.getUserAvatar() != null){
-                user.setUserAvatar(domainConfig.imageUrl(user.getUserAvatar()));
-            }
-        });
         return res;
     }
 

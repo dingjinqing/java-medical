@@ -501,7 +501,7 @@ public class BargainRecordService extends ShopBaseService {
         int daileCutTimes = saas.getShopApp(getShopId()).config.bargainCfg.getDailyCutTimes();
         int userTodayCutTimes = bargainUser.getUserTodayCutTimes(userId);
         if(daileCutTimes > 0 && userTodayCutTimes >= daileCutTimes){
-            vo.setState((byte)1);
+            vo.setState((byte)12);
             return vo;
         }
 
