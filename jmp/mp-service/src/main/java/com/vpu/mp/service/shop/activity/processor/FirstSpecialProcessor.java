@@ -186,7 +186,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
     }
 
     @Override
-    public void processStockAndSales(OrderBeforeParam param) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 
     }
 }

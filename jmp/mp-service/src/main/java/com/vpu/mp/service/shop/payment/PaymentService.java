@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.payment;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -16,20 +13,22 @@ import com.vpu.mp.service.shop.activity.processor.PayAwardProcessor;
 import com.vpu.mp.service.shop.order.action.PayService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_WAIT_SERVICE;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_SERVICE;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.STORE_ORDER_SN_PREFIX;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.STORE_SERVICE_ORDER_SN_PREFIX;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_PAY;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Service
 public class PaymentService extends ShopBaseService {
@@ -55,6 +54,9 @@ public class PaymentService extends ShopBaseService {
      */
     @Autowired
     public ServiceOrderService serviceOrderService;
+
+    @Autowired
+    private StoreOrderService storeOrder;
 
 	public PaymentVo getPaymentInfo(String payCode) {
 		return db().select(PAYMENT.asterisk()).from(PAYMENT).where(PAYMENT.PAY_CODE.eq(payCode)).fetchOneInto(PaymentVo.class);
@@ -94,17 +96,18 @@ public class PaymentService extends ShopBaseService {
 	/**
 	 * 统一订单支付回调
 	 */
-	public void unionPayNotify(PaymentRecordParam param) throws MpException {
+    public void unionPayNotify(PaymentRecordParam param) throws MpException, WxPayException {
         String orderSn = param.getOrderSn();
         String prefix = orderSn.substring(0,1);
         switch (prefix) {
             //TODO 订单根据前缀判断处理类型,将字面量替换为对应常量
-            case "S":
+            case STORE_SERVICE_ORDER_SN_PREFIX:
                 //服务订单统一支付回调
-                serviceOrderService.updateServiceOrderStatus(orderSn, ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
+                onPayNotifyService(param);
                 break;
-            case "D":
+            case STORE_ORDER_SN_PREFIX:
                 //门店买单订单统一支付回调
+                onPayNotifyStore(param);
                 break;
             case "C":
                 //会员卡充值订单统一支付回调
@@ -200,6 +203,7 @@ public class PaymentService extends ShopBaseService {
 
 		// 支付有礼
 		payAwardActivity(param, orderInfo);
+
 		/**
 		 * TODO:POS推送订单
 		 */
@@ -225,7 +229,7 @@ public class PaymentService extends ShopBaseService {
 		}
 		OrderBeforeParam orderBeforeParam =new OrderBeforeParam();
 		orderBeforeParam.setDate(param.getCreated());
-		orderBeforeParam.setGoods(Collections.emptyList());
+		orderBeforeParam.setGoods(new ArrayList<>());
 		List<GoodsRecord> orderGoods = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
 		orderGoods.forEach(orderGood->{
 			OrderBeforeParam.Goods goods = new OrderBeforeParam.Goods();
@@ -235,4 +239,59 @@ public class PaymentService extends ShopBaseService {
 		});
 		payAwardProcessor.processSaveOrderInfo(orderBeforeParam,orderInfo);
 	}
+
+    /**
+     * On pay notify store.门店买单订单统一支付回调
+     *
+     * @param param the param
+     */
+    private void onPayNotifyStore(PaymentRecordParam param) throws WxPayException {
+        String orderSn = param.getOrderSn();
+        StoreOrderRecord orderInfo = storeOrder.fetchStoreOrder(orderSn);
+        if (Objects.isNull(orderInfo)) {
+            logger().error("门店买单订单统一支付回调（onPayNotifyStore）：买单订单【订单号：{}】不存在！", orderSn);
+            throw new WxPayException("onPayNotifyStore：orderSn 【" + orderSn + "】not found ！");
+        }
+        if (NumberUtils.createBigDecimal(param.getTotalFee()).compareTo(orderInfo.getMoneyPaid()) != INTEGER_ZERO) {
+            logger().error("门店买单订单统一支付回调（onPayNotifyStore）：订单【订单号：{}】实付金额不符【系统计算金额：{} != 微信支付金额：{}】！", orderSn, orderInfo.getMoneyPaid(), param.getTotalFee());
+            throw new WxPayException("onPayNotifyStore：orderSn 【 " + orderSn + "】 pay amount  did not match ！");
+        }
+        if (BYTE_ONE.equals(orderInfo.getOrderStatus())) {
+            logger().info("门店买单订单统一支付回调（onPayNotifyStore）：订单【订单号：{}】已支付！", orderSn);
+            return;
+        }
+        // 添加支付记录（wx）
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+        // 完成支付
+        storeOrder.finishPayCallback(orderInfo, paymentRecord);
+        logger().info("门店买单订单统一支付回调SUCCESS完成！");
+    }
+
+    /**
+     * On pay notify service.
+     *
+     * @param param the param
+     * @throws WxPayException the wx pay exception
+     */
+    public void onPayNotifyService(PaymentRecordParam param) throws WxPayException {
+        String orderSn = param.getOrderSn();
+        ServiceOrderRecord orderInfo = serviceOrderService.getRecord(orderSn);
+        if (Objects.isNull(orderInfo)) {
+            logger().error("服务订单统一支付回调（onPayNotifyService）：订单【订单号：{}】不存在！", orderSn);
+            throw new WxPayException("onPayNotifyStore：orderSn 【" + orderSn + "】not found ！");
+        }
+        if (NumberUtils.createBigDecimal(param.getTotalFee()).compareTo(orderInfo.getMoneyPaid()) != INTEGER_ZERO) {
+            logger().error("服务订单统一支付回调（onPayNotifyService）：订单【订单号：{}】实付金额不符【系统计算金额：{} != 微信支付金额：{}】！", orderSn, orderInfo.getMoneyPaid(), param.getTotalFee());
+            throw new WxPayException("onPayNotifyStore：orderSn 【 " + orderSn + "】 pay amount  did not match ！");
+        }
+        if (!ORDER_STATUS_WAIT_PAY.equals(orderInfo.getOrderStatus())) {
+            logger().info("服务订单统一支付回调（onPayNotifyService）：订单【订单号：{}】已支付！", orderSn);
+            return;
+        }
+        // 添加支付记录（wx）
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+        // 完成支付
+        serviceOrderService.finishPayCallback(orderInfo, paymentRecord);
+        logger().info("服务订单统一支付回调SUCCESS完成！");
+    }
 }

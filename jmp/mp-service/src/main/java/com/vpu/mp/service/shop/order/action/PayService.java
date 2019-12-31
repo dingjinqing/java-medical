@@ -10,6 +10,8 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.base.ResultMessage;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
@@ -20,6 +22,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -42,6 +46,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_GROUP_BUY;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 
 /**
  * 订单支付
@@ -76,7 +83,10 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     @Autowired
     private OrderPayService orderPay;
-
+    @Autowired
+    private GroupBuyListService groupBuyListService;
+    @Autowired
+    private GroupBuyService groupBuyService;
     @Override
     public Object query(OrderOperateQueryParam param) {
         return null;
@@ -85,26 +95,26 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     @Override
     public ExecuteResult execute(PayParam param) {
         OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
-        if(order == null) {
+        if (order == null) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
         }
-        if(order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY){
+        if (order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY);
         }
         //过期校验
-        long currenTmilliseconds  = Instant.now().toEpochMilli();
-        if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
+        long currenTmilliseconds = Instant.now().toEpochMilli();
+        if (order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
             //定金订单
             Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
-            if(timeInterval.value1().getTime() < currenTmilliseconds) {
+            if (timeInterval.value1().getTime() < currenTmilliseconds) {
                 return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START);
             }
-            if(currenTmilliseconds > timeInterval.value2().getTime()) {
+            if (currenTmilliseconds > timeInterval.value2().getTime()) {
                 return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
             }
-        }else {
+        } else {
             //普通订单
-            if(order.getExpireTime().getTime() < currenTmilliseconds) {
+            if (order.getExpireTime().getTime() < currenTmilliseconds) {
                 return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
             }
         }
@@ -124,6 +134,19 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
                 return ExecuteResult.create(e.getErrorCode(), e.getMessage(), e.getCodeParam());
             }
         }
+        ArrayList<String> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        //拼团校验
+        if (goodsType.contains(ACTIVITY_TYPE_GROUP_BUY.toString())){
+            GroupOrderVo groupBuyRecord = groupBuyListService.getByOrder(order.getOrderSn());
+            Timestamp date = DateUtil.getLocalDateTime();
+            // 是否可以参加拼团
+            ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(groupBuyRecord.getUserId(), date, groupBuyRecord.getActivityId(), groupBuyRecord.getGroupId(), IS_GROUPER_N);
+            if (!resultMessage.getFlag()) {
+                String[] str2 = resultMessage.getMessages().toArray(new String[0]);
+                return ExecuteResult.create(resultMessage.getJsonResultCode(), null, str2);
+            }
+        }
+
         CreateOrderVo result = new CreateOrderVo();
         result.setOrderSn(order.getOrderSn());
         try {
@@ -168,7 +191,6 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             logger().error("订单支付方式必须为微信支付且必须有payRecord(PayService.toWaitDeliver),sn:{}", orderInfo.getOrderSn());
             throw new MpException(JsonResultCode.CODE_ORDER_NOT_TO_WAIT_DELIVER, "订单支付方式必须为微信支付且必须有payRecord");
         }
-
         //微信支付记录(全部)
         tradesRecord.addRecord(orderInfo.getMoneyPaid(),orderInfo.getOrderSn(),orderInfo.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CRASH_WX_PAY.val(),RecordTradeEnum.TRADE_FLOW_IN.val(),TradesRecordService.TRADE_CONTENT_MONEY);
         //状态转化
@@ -186,6 +208,13 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
         //订单商品
         List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
+        // 更新拼团状态
+        if (goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
+            GroupOrderVo byOrder = groupBuyListService.getByOrder(orderInfo.getOrderSn());
+            String goodsName =goods.get(0).getGoodsName();
+            String goodsPrice =goods.get(0).getGoodsPrice().toString();
+            groupBuyService.groupBuySuccess(orderInfo.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
+        }
         //库存销量
         atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
         //TODO 异常订单处理等等

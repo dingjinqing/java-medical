@@ -33,10 +33,12 @@
               <span>展示商品数量：</span>
               <el-radio
                 v-model="item.radio"
+                @change="handleToClickShowNumRadio(index)"
                 label="1"
               >全部{{item.goodsNum}}件</el-radio>
               <el-radio
                 v-model="item.radio"
+                @change="handleToClickShowNumRadio(index)"
                 label="2"
               >指定商品</el-radio>
             </div>
@@ -73,31 +75,31 @@
         <div class="mainList">
           <span>菜单样式</span>
           <el-radio
-            v-model="linkageData.menuStyle"
-            label="1"
+            v-model="linkageData.menu_style"
+            label="0"
           >顶部展示商品分组</el-radio>
           <el-radio
-            v-model="linkageData.menuStyle"
-            label="2"
+            v-model="linkageData.menu_style"
+            label="1"
           >左侧展示商品分组</el-radio>
         </div>
         <div class="mainList bgContainer">
           <span>背景颜色</span>
           <div class="bgDiv">
             <el-radio
-              v-model="linkageData.bgColorRadio"
-              label="1"
+              v-model="linkageData.goods_module_bg"
+              label="0"
             >与页面背景颜色一致</el-radio>
             <div class="customBgColor">
               <el-radio
-                v-model="linkageData.bgColorRadio"
-                label="2"
+                v-model="linkageData.goods_module_bg"
+                label="1"
               >自定义</el-radio>
               <span>
                 <el-color-picker
-                  v-model="linkageData.bg_color"
+                  v-model="linkageData.goods_bg_color"
                   show-alpha
-                  :disabled="linkageData.bgColorRadio==='1'?true:false"
+                  :disabled="linkageData.goods_module_bg==='0'?true:false"
                   :predefine="predefineColors"
                 >
                 </el-color-picker>
@@ -113,19 +115,19 @@
           </div>
 
         </div>
-        <div v-if="linkageData.menuStyle === '1'">
+        <div v-if="linkageData.menu_style === '0'">
           <div class="mainList allGroup">
             <span>全部分组</span>
             <div>
               <div style="color:#999;margin-bottom:10px">全部分组将展示已选商品分组种的所有商品</div>
               <div>
                 <el-radio
-                  v-model="linkageData.allGrouped"
+                  v-model="linkageData.group_display"
                   label="1"
                 >展示</el-radio>
                 <el-radio
-                  v-model="linkageData.allGrouped"
-                  label="2"
+                  v-model="linkageData.group_display"
+                  label="0"
                 >不展示</el-radio>
               </div>
             </div>
@@ -134,12 +136,12 @@
           <div class="mainList menuLocation">
             <span>菜单位置</span>
             <el-radio
-              v-model="linkageData.menuLocation"
-              label="1"
+              v-model="linkageData.position_style"
+              label="0"
             >一般样式</el-radio>
             <el-radio
-              v-model="linkageData.menuLocation"
-              label="2"
+              v-model="linkageData.position_style"
+              label="1"
             >滚动至顶部固定</el-radio>
           </div>
           <div class="mainList listStyle">
@@ -147,26 +149,26 @@
             <div>
               <div class="listStyleFirstDiv">
                 <el-radio
-                  v-model="linkageData.goodsListStyle"
-                  label="1"
+                  v-model="linkageData.shop_style"
+                  label="0"
                 >大图展示</el-radio>
                 <el-radio
-                  v-model="linkageData.goodsListStyle"
-                  label="2"
+                  v-model="linkageData.shop_style"
+                  label="1"
                 >一行两个</el-radio>
                 <el-radio
-                  v-model="linkageData.goodsListStyle"
-                  label="3"
+                  v-model="linkageData.shop_style"
+                  label="2"
                 >一行三个</el-radio>
               </div>
               <div>
                 <el-radio
-                  v-model="linkageData.goodsListStyle"
-                  label="4"
+                  v-model="linkageData.shop_style"
+                  label="3"
                 >商品列表</el-radio>
                 <el-radio
-                  v-model="linkageData.goodsListStyle"
-                  label="5"
+                  v-model="linkageData.shop_style"
+                  label="4"
                 >一行横滑</el-radio>
               </div>
             </div>
@@ -179,49 +181,48 @@
           <div>
             <span>模块样式</span>
             <el-radio
-              v-model="linkageData.modulesStyle"
+              v-model="linkageData.module_style"
               label="1"
             >白底无边框</el-radio>
             <el-radio
-              v-model="linkageData.modulesStyle"
+              v-model="linkageData.module_style"
               label="2"
             >边框投影</el-radio>
             <el-radio
-              v-model="linkageData.modulesStyle"
+              v-model="linkageData.module_style"
               label="3"
             >白底有边框</el-radio>
           </div>
           <div style="margin:10px 0">
             <span>模块角度</span>
             <el-radio
-              v-model="linkageData.modulesAngle"
-              label="1"
+              v-model="linkageData.if_radius"
+              label="0"
             >直角</el-radio>
             <el-radio
-              v-model="linkageData.modulesAngle"
-              label="2"
+              v-model="linkageData.if_radius"
+              label="1"
             >圆角</el-radio>
           </div>
           <div class="endDiv">
             <span>显示内容</span>
             <div>
               <div>
-                <el-checkbox v-model="linkageData.whiteNoBoder">白底无边框</el-checkbox>
-                <el-checkbox v-model="linkageData.projection">边框投影</el-checkbox>
-                <el-checkbox v-model="linkageData.whiteHaveBoder">白底有边框</el-checkbox>
+                <el-checkbox v-model="linkageData.show_name">商品名称</el-checkbox>
+                <el-checkbox v-model="linkageData.show_price">商品价格</el-checkbox>
               </div>
               <div style="margin:10px 0">
-                <el-checkbox v-model="linkageData.bugBtn">购买按钮</el-checkbox>
+                <el-checkbox v-model="linkageData.cart_btn">购买按钮</el-checkbox>
                 <span style="color:#999">显示购买按钮时将不显示其他信息</span>
               </div>
               <!--购买按钮checkbox选中后显示的隐藏模块-->
               <div
                 class="buyBtnHidden"
-                v-if="linkageData.bugBtn"
+                v-if="linkageData.cart_btn"
               >
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
-                  label="1"
+                  label="0"
                 >
                   <i
                     class="iconfont icontianjia icon_font_size new_class"
@@ -230,14 +231,14 @@
                 </el-radio>
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
-                  label="2"
+                  label="1"
                 ><i
                     class="iconfont icongouwuche1 icon_font_size new_class"
                     style="color: rgb(177, 78, 105);"
                   ></i></el-radio>
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
-                  label="3"
+                  label="2"
                 >
                   <i
                     class="right_buy new_back"
@@ -248,7 +249,7 @@
                 </el-radio>
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
-                  label="4"
+                  label="3"
                 >
                   <i
                     class="cart_buy"
@@ -258,21 +259,21 @@
               </div>
               <!--end-->
               <div style="margin-bottom:10px">
-                <el-checkbox v-model="linkageData.otherInfo">其他信息</el-checkbox>
+                <el-checkbox v-model="linkageData.other_message">其他信息</el-checkbox>
                 <span style="color:#999">后台数据仅为参考请以实际显示为准</span>
               </div>
               <!--其他信息checkbox选中后显示的隐藏模块-->
-              <div v-if="linkageData.otherInfo">
+              <div v-if="linkageData.other_message">
                 <el-radio
-                  v-model="linkageData.hiddenOtherInfoRadio"
+                  v-model="linkageData.show_market"
                   label="1"
                 >市场价</el-radio>
                 <el-radio
-                  v-model="linkageData.hiddenOtherInfoRadio"
+                  v-model="linkageData.show_market"
                   label="2"
                 >销量</el-radio>
                 <el-radio
-                  v-model="linkageData.hiddenOtherInfoRadio"
+                  v-model="linkageData.show_market"
                   label="3"
                 >评价数</el-radio>
               </div>
@@ -284,20 +285,40 @@
       </div>
       <!--end-->
     </div>
+    <!--删除提示弹窗-->
+    <el-dialog
+      title="提示"
+      :visible.sync="delVisible"
+      :append-to-body='true'
+      width="30%"
+    >
+      <div style="width:100%;text-align:center"><span>确认要删除吗？</span></div>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleToDel()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
     <!--商家分类弹窗-->
     <AddingBusClassDialog
       :dialogVisible.sync='classificationDialogVisible'
       :classFlag='1'
       :backDataArr='backDataArr'
       @BusClassTrueDetailData='busClassTrueDetailData'
-      :singleElection="classSingleElection"
+      :singleElection="true"
     />
     <!--商品标签弹窗-->
     <AddProductLabel
       :callAddProductLabel.sync='callAddProductLabel'
       @handleToGetBackData='handleToGetBackData'
       :brandBackData="[]"
-      :singleElection="classSingleElection"
+      :singleElection="true"
     />
     <!--商品品牌弹窗-->
     <AddBrandDialog
@@ -306,6 +327,12 @@
       :brandBackData="[]"
       :singleElection="true"
     />
+    <!--选择商品弹窗-->
+    <ChoosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :chooseGoodsBack="chooseGoodsBack"
+      @resultGoodsDatas="resultGoodsDatas"
+    />
   </div>
 </template>
 <script>
@@ -313,7 +340,8 @@ export default {
   components: {
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'), // 选择商家分类标签弹窗
     AddProductLabel: () => import('@/components/admin/addProductLabel'), // 选择商品标签弹窗
-    AddBrandDialog: () => import('@/components/admin/addBrandDialog') // 选择商品品牌弹窗
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog'), // 选择商品品牌弹窗
+    ChoosingGoods: () => import('@/components/admin/choosingGoods') // 选择商品弹窗
   },
   props: {
     modulesData: Object,
@@ -343,29 +371,28 @@ export default {
       backDataArr: [], // 商家分类弹窗回显数据
       defaultBgColor: '#f5f5f5', // 背景自定义颜色默认
       linkageData: {
-        menuStyle: '1', // 菜单样式radio
-        bgColorRadio: '1', // 背景颜色radio
-        bg_color: '', // 背景自定义颜色
-        allGrouped: '1', // 全部分组radio
-        menuLocation: '1', // 菜单位置radio
-        goodsListStyle: '1', // 商品列表样式radio
-        modulesStyle: '1', // 模块样式radio
-        modulesAngle: '1', // 模块角度radio
-        whiteNoBoder: true, // 白底无边框checkbox
-        projection: false, // 边框投影
-        whiteHaveBoder: false, // 白底有边框checkbox
-        bugBtn: false, // 购买按钮checkbox
-        otherInfo: true, // 其他信息chexkbox
-        cart_btn_choose: '1', // 购买按钮选中显示模块radio
-        hiddenOtherInfoRadio: '1', // 其他信息选中显示模块radio
-        goodsItems: [], // 商品分组菜单隐藏模块数据列表
-        input: '',
-        radio: '1'
-
+        menu_style: '0', // 菜单样式radio
+        goods_module_bg: '0', // 背景颜色radio
+        goods_bg_color: '', // 背景自定义颜色
+        group_display: '1', // 全部分组radio
+        position_style: '0', // 菜单位置radio
+        shop_style: '1', // 商品列表样式radio
+        module_style: '1', // 模块样式radio
+        if_radius: '0', // 模块角度radio
+        show_name: false, // 商品名称
+        show_price: false, // 商品价格
+        cart_btn: false, // 购买按钮checkbox
+        cart_btn_choose: '0', // 购买按钮选中显示模块radio
+        other_message: false, // 其他信息按钮
+        show_market: '1', // 其它信息按钮下隐藏模块radio
+        goodsItems: [] // 商品分组菜单隐藏模块数据列表
       },
       clickEditBtn: false, // 是否点击修改按钮
       editIndex: null, // 当前修改的index
-      classSingleElection: false
+      delVisible: false, // 删除提示框flag
+      delIndex: null, // 删除下标
+      tuneUpChooseGoods: false, // 选择商品弹窗调起
+      chooseGoodsBack: [] // 选择商品弹窗回显
     }
   },
   watch: {
@@ -373,7 +400,9 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        this.data = this.modulesData
+        if (this.modulesData) {
+          this.linkageData = this.modulesData
+        }
       },
       immediate: true
     },
@@ -381,38 +410,71 @@ export default {
     linkageData: {
       handler (newData) {
         console.log(newData)
+        // 测试数据
+        newData['sort_length'] = newData.goodsItems.length
+        newData['goods_img'] = [
+          'http://mpdevimg2.weipubao.cn/upload/0/image/20191018/crop_KXCyQS7bFi7w4RgL.jpeg',
+          'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191218/SQzKExx7QTSH1kzu.jpeg'
+        ]
+        newData['goods_name'] = [
+          '海阔跳的高',
+          '门店商品8--勿动'
+        ]
+        newData['goods_price'] = [
+          '200.00',
+          '100.00'
+        ]
+        newData['market_price'] = [
+          '500.00',
+          null
+        ]
+        newData['goods_tag'] = [
+          [
+            '满减'
+          ],
+          [
+            '满减',
+            '领券减￥1'
+          ]
+        ]
+        newData['label'] = [
+          {
+            'label_class': 'label-style1',
+            'label_parttern': 1,
+            'label_name': '特价商品',
+            'new_label_img': ''
+          },
+          {
+            'label_class': 'label-style4',
+            'label_parttern': 4,
+            'label_name': '新品首发',
+            'new_label_img': ''
+          }
+        ]
         this.$emit('handleToBackData', newData)
       },
       deep: true
     },
     // 购买按钮
-    'linkageData.bugBtn' (newData) {
+    'linkageData.cart_btn' (newData) {
       if (newData) {
-        this.linkageData.otherInfo = false
+        this.linkageData.other_message = false
       }
     },
     // 其他信息按钮
-    'linkageData.otherInfo' (newData) {
+    'linkageData.other_message' (newData) {
       if (newData) {
-        this.linkageData.bugBtn = false
+        this.linkageData.cart_btn = false
       }
     }
-  },
-  mounted () {
-
   },
   methods: {
     // 背景颜色自定义点击重置
     handleToReset () {
-      this.linkageData.bg_color = this.defaultBgColor
+      this.linkageData.goods_bg_color = this.defaultBgColor
     },
     // 调起弹窗
-    handleToCallDialog (flag, isEdit) {
-      if (isEdit) {
-        this.classSingleElection = true // 控制弹窗单选
-      } else {
-        this.classSingleElection = false
-      }
+    handleToCallDialog (flag) {
       switch (flag) {
         case 0:
           this.classificationDialogVisible = true
@@ -441,7 +503,7 @@ export default {
       })
       console.log(this.clickEditBtn, this.editIndex, arr)
       if (this.clickEditBtn) {
-        this.linkageData.goodsItems[this.editIndex] = arr
+        this.linkageData.goodsItems[this.editIndex] = arr[0]
       } else {
         let newArr = this.linkageData.goodsItems.concat(arr)
         this.linkageData.goodsItems = newArr
@@ -464,7 +526,7 @@ export default {
       })
       console.log(this.clickEditBtn, this.editIndex, arr)
       if (this.clickEditBtn) {
-        this.linkageData.goodsItems[this.editIndex] = arr
+        this.linkageData.goodsItems[this.editIndex] = arr[0]
       } else {
         let newArr = this.linkageData.goodsItems.concat(arr)
         this.linkageData.goodsItems = newArr
@@ -484,7 +546,7 @@ export default {
         arr.push(obj)
       })
       if (this.clickEditBtn) {
-        this.linkageData.goodsItems[this.editIndex] = arr
+        this.linkageData.goodsItems[this.editIndex] = arr[0]
       } else {
         let newArr = this.linkageData.goodsItems.concat(arr)
         this.linkageData.goodsItems = newArr
@@ -525,11 +587,28 @@ export default {
           this.isClickGoodsUpOrDownIcon = true
           break
         case 2:
-          arr.splice(index, 1)
+          this.delVisible = true
+          this.delIndex = index
           break
       }
       console.log(arr)
       this.linkageData.goodsItems = arr
+    },
+    // 删除框确认
+    handleToDel () {
+      this.linkageData.goodsItems.splice(this.delIndex, 1)
+      this.delVisible = false
+    },
+    // 点击指定商品
+    handleToClickShowNumRadio (index) {
+      console.log(index, this.linkageData.goodsItems[index].radio)
+      if (this.linkageData.goodsItems[index].radio === '2') {
+        this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+      }
+    },
+    // 选择商品弹窗数据回传
+    resultGoodsDatas (res) {
+      console.log(res)
     }
   }
 }

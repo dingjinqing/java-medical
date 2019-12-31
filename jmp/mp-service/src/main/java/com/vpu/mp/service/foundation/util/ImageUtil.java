@@ -1,23 +1,17 @@
 package com.vpu.mp.service.foundation.util;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import com.thoughtworks.xstream.core.util.Base64Encoder;
+import lombok.extern.slf4j.Slf4j;
+import sun.font.FontDesignMetrics;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
-import com.thoughtworks.xstream.core.util.Base64Encoder;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 图片的处理
@@ -33,7 +27,7 @@ public final class ImageUtil {
 	 *
 	 * @param width
 	 * @param height
-	 * @param bufferedImages
+	 * @param bufferedImage
 	 * @return
 	 */
 	public static BufferedImage resizeImage(int width, int height, BufferedImage bufferedImage) {
@@ -66,6 +60,50 @@ public final class ImageUtil {
 		graphics.dispose();
 		return backgroundImage;
 	}
+
+    /**
+     * 在图片上绘制矩形
+     * @param bufferedImage 目标背景图对象
+     * @param x 矩形左上角x位置
+     * @param y 矩形左上角y位置
+     * @param width 矩形宽度
+     * @param height 矩形高度
+     * @param lineColor 矩形边框线颜色，如果为null则表示不画边框色，直接进行填充
+     * @param fillColor 矩形填充颜色，如果为null表示不填充颜色
+     */
+    public static void addRect(BufferedImage bufferedImage, int x, int y, int width, int height, Color lineColor, Color fillColor) {
+        if (lineColor == null && fillColor == null) {
+            return;
+        }
+        Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if (fillColor != null) {
+            graphics.setColor(fillColor);
+            graphics.fillRect(x,y,width,height);
+        }
+        if (lineColor != null) {
+            graphics.setColor(lineColor);
+            graphics.drawRect(x,y,width,height);
+        }
+        graphics.dispose();
+    }
+
+    /**
+     * 添加线段
+     * @param bufferedImage 目标背景图对象
+     * @param x1 开始x
+     * @param y1 开始y
+     * @param x2 结束x
+     * @param y2 结束y
+     * @param color 颜色
+     */
+    public static void addLine(BufferedImage bufferedImage, int x1, int y1, int x2, int y2, Color color) {
+        Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setColor(color);
+        graphics.drawLine(x1,y1,x2,y2);
+        graphics.dispose();
+    }
 
 	/**
 	 * 背景图上添加前景图
@@ -147,7 +185,6 @@ public final class ImageUtil {
 					os.close();
 				} catch (IOException e) {
 					log.error(e.getMessage(), e);
-					return null;
 				}
 			}
 		}
@@ -175,8 +212,22 @@ public final class ImageUtil {
 			e.printStackTrace();
 		}
 		return actionJsonBase;
-
 	}
+
+    /**
+     * 获取文本内容的宽度
+     * @param font 文本使用的字体
+     * @param text 文本内容
+     * @return 文本宽度
+     */
+    public static Integer getTextWidth(Font font, String text) {
+        FontDesignMetrics metrics = FontDesignMetrics.getMetrics(font);
+        int width = 0;
+        for (int i = 0; i < text.length(); i++) {
+            width+=metrics.charWidth(text.charAt(i));
+        }
+        return width;
+    }
 
 
 }

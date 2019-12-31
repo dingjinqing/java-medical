@@ -48,11 +48,6 @@ public class TaskJobsConstant {
     	BATCH_UPLOAD(1003, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_BATCH_UPLOAD_KEY),
     	/**定向发券*/
         GIVE_COUPON(1004, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_COUPON_KEY),
-        /**
-         * 服务预约订单支付成功发送模板消息
-         */
-        RESERVATION_PAY(1005, RabbitConfig.EXCHANGE_ORDER, RabbitConfig.BINDING_EXCHANGE_RESERVATION_KEY),
-        
     	/**订单 */
     	WX_IMPORTORDER(1006, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_IMPORTORDER_KEY),
     	/**收藏 */

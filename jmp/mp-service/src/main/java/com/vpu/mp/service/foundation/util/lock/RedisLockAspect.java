@@ -16,7 +16,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -32,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
- import java.util.List;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -246,7 +245,7 @@ public final class RedisLockAspect extends ShopBaseService {
             addLocks(keys, currentValue.get(), redisLockAnnotation.expiredTime(), fail);
             if (fail.size() < keys.size()) {
                 //获取批量锁失败
-                log.error("批量锁获取失败,当前获取到:", fail.toString());
+                log.error("批量锁获取失败,当前获取到:{}", fail.toString());
                 releaseLocks(fail, currentValue.get());
             } else {
                 log.info("批量锁获取成功，执行后续方法");

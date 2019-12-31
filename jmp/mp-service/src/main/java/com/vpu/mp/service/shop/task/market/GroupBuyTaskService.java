@@ -19,7 +19,6 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
-import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -33,9 +32,10 @@ import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
-import static com.vpu.mp.db.shop.tables.GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
+import static com.vpu.mp.db.shop.tables.GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_DEFAULT_SUCCESS;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
@@ -110,7 +110,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
                     //更改订单状态
                     orderInfoService.batchChangeToWaitDeliver(orderSnList);
                     //更改参团状态
-                    updateGroupBuyListStatus(group.getGroupId(),STATUS_SUCCESS);
+                    updateGroupBuyListStatus(group.getGroupId(),STATUS_DEFAULT_SUCCESS);
                 });
 
                 // TODO 同步订单状态到CRM

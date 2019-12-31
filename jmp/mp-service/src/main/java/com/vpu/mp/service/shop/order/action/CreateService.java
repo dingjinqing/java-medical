@@ -62,6 +62,7 @@ import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -232,7 +233,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //商品退款退货配置
                 calculate.setReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order);
                 //TODO exchang、好友助力
-                //保存营销活动信息
+                //保存营销活动信息 订单状态以改变
                 processorFactory.processSaveOrderInfo(param,order);
                 //TODO 订单类型拼接(支付有礼)
                 //订单入库,以上只有orderSn，无法获取orderId
@@ -248,12 +249,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
                     (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-                    processorFactory.processStockAndSales(param);
-                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), false);
+                    processorFactory.processStockAndSales(param,order);
+                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
                 }
             });
-            //释放锁
-            atomicOperation.releaseLocks();
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
         } catch (DataAccessException e) {
@@ -267,6 +266,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (Exception e) {
             logger().error("下单捕获mp异常", e);
             return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
+        }finally {
+            //释放锁
+            atomicOperation.releaseLocks();
         }
         //购物车删除
         if(OrderConstant.CART_Y.equals(param.getIsCart())){
@@ -382,6 +384,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
         }
+        //删除赠品
+        ListIterator<Goods> goodsListIterator = param.getGoods().listIterator();
+
     }
     /**
      * 初始化购买商品信息(初始化param里的goods信息)
@@ -582,7 +587,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 校验
+     * 校验商品和规格信息
      * @param goods
      * @throws MpException
      */

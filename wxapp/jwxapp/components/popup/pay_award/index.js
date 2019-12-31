@@ -1,4 +1,5 @@
 var base = require("../base/base.js");
+var util = require("../../../utils/util.js");
 global.wxComponent({
   mixins: [base],
 
@@ -52,7 +53,7 @@ global.wxComponent({
         [1,'couponView'],
         [2,'couponView'],
         [3,'lotteryId'],
-        [4,'accountNumber'],
+        [4,'account'],
         [5,'product'],
         [6,'scoreNumber'],
         [7,'customImage']
@@ -72,6 +73,9 @@ global.wxComponent({
         DialogClass,
         DialogStyle
       })
+    },
+    goCustomLink(e){
+      util.jumpLink(e.currentTarget.dataset.link,'navigateTo')
     }
   }
 });

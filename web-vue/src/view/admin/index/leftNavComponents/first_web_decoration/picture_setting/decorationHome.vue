@@ -240,6 +240,7 @@ export default {
     Bargain: () => import('./decorationModules/marketingComponents/Bargain'), // 砍价
     Spike: () => import('./decorationModules/marketingComponents/Spike'), // 秒杀
     FightGroup: () => import('./decorationModules/marketingComponents/fightGroup'), // 拼团抽奖
+    IntegralExchange: () => import('./decorationModules/marketingComponents/integralExchange'), // 积分兑换
     // 右侧显示出口组件
     PageSetup: () => import('./pageSetup'),
     // 商品组件库
@@ -271,7 +272,7 @@ export default {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'IntegralExchange', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -440,6 +441,9 @@ export default {
           break
         case 'm_bargain':
           moduleNameId = 3
+          break
+        case 'm_integral':
+          moduleNameId = 4
           break
         case 'm_seckill':
           moduleNameId = 5
@@ -673,6 +677,9 @@ export default {
               break
             case 3:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 3)
+              break
+            case 4:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 4)
               break
             case 5:
               this_.handleToMiddleAcceptData(this._insertModulesId, this._showModulesList, insert, 5)

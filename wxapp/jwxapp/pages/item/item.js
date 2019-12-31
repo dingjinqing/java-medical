@@ -179,20 +179,23 @@ global.wxPage({
       brandId: brandId
     }
     );
+    this.selectComponent('#recommend').requestData() //推荐商品请求
   },
   // 获取规格信息
   getProduct ({
     detail: {
       prdNumber,
-      limitBuyNum,
-      limitMaxNum
+      limitBuyNum=null,
+      limitMaxNum=null,
+      activityType=null
     }
   }) {
     this.setData({
       limitInfo: {
         prdNumber,
         limitBuyNum,
-        limitMaxNum
+        limitMaxNum,
+        activityType
       }
     });
   },
@@ -232,6 +235,7 @@ global.wxPage({
       this.setListCountDown(activity.groupBuyListMpVos, 'groupBuyListMpVos')
     }
   },
+  
   // 获取actBar活动名称
   getActName ({
     activityType
@@ -250,7 +254,6 @@ global.wxPage({
   getActBarPrice (activity, getPrice) {
     if (actBaseInfo[activity.activityType].multiSkuAct) {
       return this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
-        console.log(actBaseInfo[activity.activityType]['prdPriceName'][getPrice])
         let { [actBaseInfo[activity.activityType]['prdPriceName'][getPrice]]: price } = item;
         return price
       }))
@@ -269,7 +272,6 @@ global.wxPage({
   }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
     let total_micro_second = actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime
-    console.log(total_micro_second, actState, activityType)
     this.countdown(total_micro_second, actState, activityType)
   },
   // 获取最小值
@@ -278,21 +280,14 @@ global.wxPage({
   },
   // 倒计时
   countdown (total_micro_second, actState, activityType) {
-    let clock =
-      total_micro_second <= 0 ?
-        "已经截至" :
-        util.dateformat(total_micro_second);
-    this.setData({
-      'actBarInfo.clock': clock
-    });
-    this.getActCanBuy(total_micro_second, actState, activityType)
-    if (total_micro_second <= 0) return;
-    this.setData({
-      actBartime: setTimeout(() => {
-        total_micro_second -= 1;
-        this.countdown(total_micro_second, actState, activityType);
-      }, 1000)
-    });
+      this.actBartime=setInterval(()=>{
+        total_micro_second -= 1
+        let clock = total_micro_second <= 0 ? "已经截至" : util.dateformat(total_micro_second);
+        this.setData({
+          'actBarInfo.clock': clock
+        });
+        this.getActCanBuy(total_micro_second, actState, activityType)
+      },1000)
   },
   getActCanBuy (total_micro_second, actState, activityType) {
     const state = new Map([
@@ -307,6 +302,7 @@ global.wxPage({
           'dealtAct.canBuy': false,
           'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
         })
+        clearTimeout(this.actBartime)
         this.getCountDown({ activityType, actState, endTime: this.specParams.activity.endTime, startTime: this.specParams.activity.endTime })
       }],
       [{ actState: "startTime", second: true }, () => {
@@ -320,6 +316,7 @@ global.wxPage({
           'dealtAct.canBuy': true,
           'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
         })
+        clearTimeout(this.actBartime)
         this.getCountDown({ activityType, actState, endTime: this.specParams.activity.endTime, startTime: this.specParams.activity.endTime })
       }]
     ])
@@ -327,8 +324,7 @@ global.wxPage({
   },
   // 设置列表倒计时
   setListCountDown (listData, target) {
-    this.setData({
-      listCountDown: setInterval(() => {
+      this.listCountDown=setInterval(() => {
         listData = listData.map((v, i) => {
           if (v.remainTime <= 0) {
             v.remainTime = 0;
@@ -341,7 +337,6 @@ global.wxPage({
           [target]: listData
         });
       }, 1000)
-    })
   },
   dateformats: function (micro_second) {
     // 秒数
@@ -356,6 +351,29 @@ global.wxPage({
   },
   goGroup (e) {
     util.jumpLink(`pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`, 'navigateTo')
+  },
+  share(){
+    this.setData({
+      showShareDialog:true
+    })
+  },
+  // 切换收藏
+  toogleCollect(){
+    let {goodsId,isCollected} = this.data.goodsInfo
+    const apiMap = new Map([
+      [true,{api:'/api/wxapp/cancel/collect',msg:'已取消',error:'取消失败'}],
+      [false,{api:'/api/wxapp/add/collect',msg:'收藏成功',error:'收藏失败'}]
+    ])
+    util.api(apiMap.get(isCollected).api,res=>{
+      if(res.error === 0){
+        util.toast_success(apiMap.get(isCollected).msg)
+        this.setData({
+          'goodsInfo.isCollected':!isCollected
+        })
+      } else {
+        util.toast_fail(apiMap.get(isCollected).error)
+      }
+    },{goodsId})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -376,8 +394,8 @@ global.wxPage({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    clearTimeout(this.data.actBartime)
-    clearTimeout(this.data.listCountDown)
+    clearTimeout(this.actBartime)
+    clearTimeout(this.listCountDown)
   },
 
   /**
@@ -388,14 +406,20 @@ global.wxPage({
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () { },
-
+  onReachBottom: function () { 
+    this.selectComponent('#recommend').requestData()
+  },
+    
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    return {
-      title: '已删除title'
-    }
+    util.api('/api/wxapp/groupbuy/share/info',res=>{
+      console.log(res)
+    },{
+        "activityId":38,
+        "realPrice":12,
+        "linePrice":30
+    })
   }
 });

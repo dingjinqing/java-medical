@@ -190,6 +190,9 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        Integer groupId =0;
+        String goodsName="";
+        BigDecimal goodsPrice =BigDecimal.ZERO;
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GroupBuyListRecord groupBuyProductList = db().newRecord(GROUP_BUY_LIST);
             groupBuyProductList.setActivityId(param.getActivityId());
@@ -214,7 +217,13 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 groupBuyProductList.setGroupId(groupBuyProductList.getId());
                 groupBuyProductList.update();
             }
-
+            groupId =groupBuyProductList.getGroupId();
+            goodsName =goods.getGoodsInfo().getGoodsName();
+            goodsPrice =goods.getProductPrice();
+        }
+        if (param.getGroupId()==null&&order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY){
+            //发送模板消息
+            groupBuyProcessorDao.groupBuySuccess(param.getActivityId(),groupId,goodsName,goodsPrice.toString());
         }
     }
 
@@ -225,11 +234,13 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      * @throws MpException
      */
     @Override
-    public void processStockAndSales(OrderBeforeParam param) throws MpException {
-        for (OrderBeforeParam.Goods goods : param.getGoods()) {
-            boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
-            if (!b) {
-                throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+        if (order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY) {
+            for (OrderBeforeParam.Goods goods : param.getGoods()) {
+                boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
+                if (!b) {
+                    throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
+                }
             }
         }
 

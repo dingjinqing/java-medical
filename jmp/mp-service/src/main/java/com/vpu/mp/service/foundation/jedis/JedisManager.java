@@ -3,18 +3,16 @@ package com.vpu.mp.service.foundation.jedis;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  *
@@ -114,6 +112,17 @@ public class JedisManager {
 	}
 
 	/**
+	 * 删除key的缓存
+	 *
+	 * @param keys
+	 */
+	public void delete(Set<String> keys) {
+		try (Jedis jedis = getJedisPool().getResource()){
+			jedis.del(keys.toArray(new String[]{}));
+		}
+	}
+
+	/**
 	 * 得到key的缓存
 	 *
 	 * @param  key
@@ -122,6 +131,18 @@ public class JedisManager {
 	public String get(String key) {
 		try (Jedis jedis = getJedisPool().getResource()){
 			return jedis.get(key);
+		}
+	}
+
+	/**
+	 * 得到keys
+	 *
+	 * @param  key
+	 * @return
+	 */
+	public Set<String> keys(String key) {
+		try (Jedis jedis = getJedisPool().getResource()){
+			return jedis.keys(key);
 		}
 	}
 
@@ -293,5 +314,30 @@ public class JedisManager {
 	public String getIncrSequence(String key){
 		Long sequence = getIncrSequence(key, INCR_SEQUENCE_MAX, INCR_SEQUENCE_MIN);
 		return StringUtils.leftPad(sequence.toString(), INCR_SEQUENCE_MAX.toString().length(), STRING_ZERO);
+	}
+
+	/**
+	 * 获取自增字段
+	 * @param key key
+	 * @param timeOut 超时时间
+	 * @param function redis没有时去方法中的值
+	 * @return incr
+	 */
+	public Long getIncrValueAndSave(String key,Integer timeOut, JedisGetProcess function){
+		Long value =null;
+		try (Jedis jedis = getJedisPool().getResource()){
+			Boolean exists = jedis.exists(key);
+			if (exists){
+				value = jedis.incr(key);
+			}
+			if( value != null ){
+				return value;
+			}else {
+				String byDb = function.getByDb();
+				jedis.set(key, byDb);
+				jedis.expire(key,timeOut);
+				return Long.valueOf(byDb);
+			}
+		}
 	}
 }

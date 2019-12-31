@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD;
@@ -54,6 +56,7 @@ import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SCORE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SPLIT_COUPON;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.REDIS_PAY_AWARD;
 
 /**
  * 支付有礼
@@ -75,7 +78,8 @@ public class PayAwardService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private LotteryService lotteryService;
-
+    @Autowired
+    private JedisManager jedisManager;
 
     /**
      * 添加
@@ -185,6 +189,8 @@ public class PayAwardService extends ShopBaseService {
             payAward.setAwardList(null);
             payAward.update();
             db().delete(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.ID.notIn(payAwardPrizeIds)).and(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAward.getId())).execute();
+            Set<String> keys = jedisManager.keys(REDIS_PAY_AWARD + "*");
+            jedisManager.delete(keys);
             return true;
         }
         return false;
@@ -209,7 +215,7 @@ public class PayAwardService extends ShopBaseService {
      */
     private PayAwardVo recordToPayAwardVo(PayAwardRecord record) {
         if (record == null) {
-            return new PayAwardVo();
+            return null;
         }
         PayAwardVo payAwardVo = record.into(PayAwardVo.class);
         List<PayAwardContentBo> awardContentList = getPayAwardPrizeToBo(record.getId());
@@ -370,6 +376,9 @@ public class PayAwardService extends ShopBaseService {
         PayAwardPrizeRecord payAwardPrizeRecord = payAwardPrizeRecords.get(payAwardRecord.getAwardTimes());
         PayAwardPrizeVo prizeVo =new PayAwardPrizeVo();
         prizeVo.setGiftType(payAwardRecord.getGiftType());
+        if (payAwardRecord.getSendData()==null){
+
+        }
         switch (payAwardRecord.getGiftType()){
             case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
@@ -390,7 +399,7 @@ public class PayAwardService extends ShopBaseService {
                 break;
             case GIVE_TYPE_BALANCE:
                 logger().info("余额");
-                prizeVo.setAccount(payAwardPrizeRecord.getAccount());
+                prizeVo.setAccount(new BigDecimal(payAwardRecord.getSendData()));
                 break;
             case GIVE_TYPE_GOODS:
                 logger().info("奖品");
@@ -506,23 +515,23 @@ public class PayAwardService extends ShopBaseService {
                 if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())){
                     if (payAward.getMinPayMoney().equals(BigDecimal.ZERO)){
                         logger().debug("多次不限制");
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL,MESSAGE,size,payAwardPrizeName);
+                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL,MESSAGE,count,payAwardPrizeName);
                     }else {
                         logger().debug("多次限制-最少金额");
                         String limitAmount =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS,MESSAGE,payAward.getMinPayMoney());
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE,size,limitAmount,payAwardPrizeName);
+                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE,count,limitAmount,payAwardPrizeName);
                     }
                 }else {
                     logger().debug("多次限制");
                     String limitGoods =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS,MESSAGE);
                     if (payAward.getMinPayMoney().equals(BigDecimal.ZERO)){
                         logger().debug("多次限制-指定商品");
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE,size,limitGoods,payAwardPrizeName);
+                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE,count,limitGoods,payAwardPrizeName);
                     }else {
                         logger().debug("多次限制-指定商品,最少金额");
                         String limitAmount =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS,MESSAGE,payAward.getMinPayMoney());
                         limitGoods =limitGoods+Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL,MESSAGE)+limitAmount;
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE,size,limitGoods,payAwardPrizeName);
+                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE,count,limitGoods,payAwardPrizeName);
                     }
                 }
             }
@@ -557,6 +566,7 @@ public class PayAwardService extends ShopBaseService {
             case GIVE_TYPE_BALANCE:
                 logger().info("余额");
                 prizeName =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_BALANCE,MESSAGE);
+                prizeName+= payAwardPrize.getAccount().toString();
                 break;
             case GIVE_TYPE_GOODS:
                 logger().info("奖品");
@@ -566,6 +576,7 @@ public class PayAwardService extends ShopBaseService {
             case GIVE_TYPE_SCORE:
                 logger().info("积分");
                 prizeName =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_SCORE,MESSAGE);
+                prizeName+=payAwardPrize.getScoreNumber();
                 break;
             case GIVE_TYPE_CUSTOM:
                 logger().info("自定义");

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.store;
 
 import com.vpu.mp.db.shop.tables.StoreOrder;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -25,6 +26,7 @@ import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.store.StoreOrderTran;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
@@ -46,6 +48,8 @@ import org.springframework.util.comparator.Comparators;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -63,8 +67,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NOR
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_WX_PAY;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.WAIT_TO_PAY;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.WAIT_TO_PAY_NAME;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.*;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY_EACH;
 import static java.math.BigDecimal.*;
@@ -194,13 +197,21 @@ public class StoreOrderService extends ShopBaseService {
             .fetchOneInto(StoreOrderInfoVo.class);
     }
 
-    private static final String PREFIX = "D";
+    /**
+     * Fetch store order store order record.
+     *
+     * @param orderSn the order sn
+     * @return the store order record
+     */
+    public StoreOrderRecord fetchStoreOrder(String orderSn) {
+        return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOneInto(TABLE);
+    }
 
     /**
      * 生成门店买单订单号
      */
     public String generateOrderSn() {
-        return IncrSequenceUtil.generateOrderSn(PREFIX);
+        return IncrSequenceUtil.generateOrderSn(STORE_ORDER_SN_PREFIX);
     }
 
     /**
@@ -535,5 +546,25 @@ public class StoreOrderService extends ShopBaseService {
             log.error("门店买单支付送积分失败,原因如下:{}", e.getMessage());
             throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
+    }
+
+
+    /**
+     * Finish pay callback.
+     *
+     * @param storeOrder the store order
+     * @param payment    the payment
+     */
+    public void finishPayCallback(StoreOrderRecord storeOrder, PaymentRecordRecord payment) {
+        // WxPayException
+        PaymentVo paymentVo = paymentService.getPaymentInfo(payment.getPayCode());
+        updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrder.getOrderSn()), new StoreOrderRecord() {{
+            setPayTime(Timestamp.valueOf(LocalDateTime.now()));
+            setOrderStatus(PAY_SUCCESS);
+            setOrderStatusName(PAY_SUCCESS_NAME);
+            setPaySn(payment.getPaySn());
+            setPayCode(payment.getPayCode());
+            setPayName(Objects.nonNull(paymentVo) ? paymentVo.getPayName() : StringUtils.EMPTY);
+        }});
     }
 }

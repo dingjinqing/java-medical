@@ -4,10 +4,44 @@
     <view class="goods-image">
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
-    <v-goods-info goods-info="{{goodsInfo}}"  bindshareMoments="onShareAppMessage">
-      <!--轮播图下方，商品信息上方插槽 -->
-      <v-act-content act-bar-info="{{actBarInfo}}"/>
-    </v-goods-info>
+    <v-act-content act-bar-info="{{actBarInfo}}"/>
+    <view class="goods-info">
+      <view class="goods-info_top">
+        <view class="goods_name" data-typs="give_gift" bindtap="getNeedTemplateId">
+        {{goodsInfo.goodsName}}
+        </view>
+        <view class="goods_operate">
+          <view class="goods_share" bindtap="share">
+            <text class="iconfont iconfenxiang" style="color:{{comColor}}"></text>
+          </view>
+          <view class="goods_collect" bindtap="toogleCollect">
+            <text class="iconfont {{goodsInfo.isCollected ? 'iconshoucang' : 'iconshoucang1'}}" style="color:{{comColor}}"></text>
+          </view>
+        </view>
+      </view>
+      <view class="goods_ad" wx:if="{{goodsInfo.goodsAd}}">{{goodsInfo.goodsAd}}</view>
+      <view class="goods_price_info">
+        <view class="goods_price" style='color:{{comColor}}'>
+          <text>￥</text><text>{{goodsPrice}}</text>
+        </view>
+        <view class="marking_price">￥<text>{{markingPrice}}</text></view>
+      </view>
+      <view class="label-content" wx:if="{{goodsInfo.labels && goodsInfo.labels.length > 0}}">
+        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">{{item}}</text>
+      </view>
+      <view class="flex-wrap">
+        <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">剩余可秒杀数量：{{goodsInfo.activity.stock}}个</view>
+        <view class="flex-item" wx:else>库存：{{goodsInfo.goodsNumber}}个</view>
+        <view class="flex-item" wx:if="{{goodsInfo.activity.activityType !== 5}}">销量：{{goodsInfo.goodsSaleNum}}</view>
+        <view class="flex-item">运费：{{goodsInfo.deliverPrice}}</view>
+      </view>
+      <view class="flex-wrap" wx:if="{{goodsInfo.activity.activityType !== 5}}">
+        <view class="flex-item">配送：快递</view>
+        <view class="flex-item">门店自提 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
+        <view class="flex-item">同城配送 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
+      </view>
+    </view>
+    
     <!-- 发货地 -->
     <view class="flex_outside_box" wx:if="{{deliverPlace}}">
       <view class="flex_box">
@@ -19,7 +53,6 @@
     <v-coupon-promotion coupon-list="{{couponList}}"/>
     <!--  选择规格（包含无规格情况）  -->
     <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
-      <!--  服务信息  -->
       <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">
           服务
@@ -75,7 +108,11 @@
 
     <!-- 商品详情 -->
     <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/>
+    <v-recommend id="recommend" pageName="item" />
   </view>
   <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" dealt-act="{{dealtAct}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
   <include src="../common/footer.wxml" />
 </view>
+
+
+<v-share show="{{showShareDialog}}" shareMoments="onShareAppMessage"/>

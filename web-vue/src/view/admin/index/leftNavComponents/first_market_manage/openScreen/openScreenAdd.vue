@@ -492,6 +492,9 @@ export default {
         ],
         customizeUrl: [
           { required: true, message: this.$t('openScreenAdd.pselectLink'), trigger: 'blur' }
+        ],
+        awardNum: [
+          { required: true, message: this.$t('openScreenAdd.piPizesNum'), trigger: 'blur' }
         ]
       },
 

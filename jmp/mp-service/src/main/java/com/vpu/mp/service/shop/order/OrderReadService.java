@@ -366,7 +366,7 @@ public class OrderReadService extends ShopBaseService {
 		//获取已退运费
 		BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(rOrder.getOrderSn());
 		//退运费校验
-		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo(), returnShipingFee, true)){
+		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo().getShippingFee(), returnShipingFee, true)){
 			vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
 		}
 		//退款商品
@@ -587,7 +587,7 @@ public class OrderReadService extends ShopBaseService {
 			//未退款
 			if (!groupOrder.getStatus().equals(GroupBuyConstant.STATUS_FAILED)&&!groupOrder.getStatus().equals(STATUS_WAIT_PAY)){
                 Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
-                List<GroupBuyUserInfo> pinUserList = groupBuyList.getPinUserList(groupOrder.getGroupId());
+                List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
                 order.setGroupBuyUserInfos(pinUserList);
                 order.setGroupId(groupOrder.getGroupId());
 				GroupOrderVo groupOrderVo =new GroupOrderVo();
@@ -770,6 +770,12 @@ public class OrderReadService extends ShopBaseService {
         }else {
             vo.setReturnFlag(NO);
         }
+        //获取已退运费
+        BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(param.getOrderSn());
+        //退运费校验
+        if(OrderOperationJudgment.adminIsReturnShipingFee(order.getShippingFee(), returnShipingFee, true)){
+            vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
+        }
         //退款记录
         Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());
         vo.setReturnOrderlist(new ArrayList<>(rOrders.size()));
@@ -782,6 +788,16 @@ public class OrderReadService extends ShopBaseService {
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });
         return vo;
+    }
+
+    /**
+     * 获取赠品订单数
+     * @param giftId 赠品id
+     * @param isIncludeReturn 是否包含退款赠品
+     */
+    public Integer getGiftOrderCount(Integer giftId, boolean isIncludeReturn){
+        List<String> giftOrderSns = orderGoods.getGiftOrderSns(giftId, isIncludeReturn);
+        return orderInfo.getGiftOrderCount(giftOrderSns);
     }
 
     /*********************************************************************************************************/

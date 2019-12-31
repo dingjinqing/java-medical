@@ -1,13 +1,18 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
+import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import org.jooq.Condition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +25,10 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 @Service
 
 public class GoodsLabelCoupleService extends ShopBaseService {
+
+
+    @Autowired
+    EsGoodsLabelCreateService esGoodsLabelCreateService;
 
     /**
      * 批量插入商品标签所关联的商品ID信息，注意没有开启事务，须由调用者开启
@@ -182,6 +191,7 @@ public class GoodsLabelCoupleService extends ShopBaseService {
             list.add(record);
         });
         db().batchInsert(list).execute();
+        esGoodsLabelCreateService.createEsLabelIndexForGoodsId(Collections.singletonList(goodsId), DBOperating.UPDATE);
     }
 
     /**

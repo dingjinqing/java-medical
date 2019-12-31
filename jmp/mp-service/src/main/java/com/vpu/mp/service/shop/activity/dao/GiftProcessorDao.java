@@ -11,17 +11,26 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
 import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
 import com.vpu.mp.service.shop.config.GiftConfigService;
 import com.vpu.mp.service.shop.market.gift.GiftService;
+import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -38,6 +47,18 @@ public class GiftProcessorDao extends GiftService {
 
     @Autowired
     private GiftConfigService giftConfig;
+
+    @Autowired
+    private OrderReadService orderRead;
+
+    @Autowired
+    private OrderInfoService orderInfo;
+
+    @Autowired
+    private MemberService member;
+
+    @Autowired
+    private UserCardService userCard;
 
     /**
      * 下单获取赠品
@@ -121,6 +142,54 @@ public class GiftProcessorDao extends GiftService {
             logger().info("赠品：满件数满足,活动id:{}", giftVo.getId());
             return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
         }
+        if(CollectionUtils.isNotEmpty(rules.getCardId())){
+            logger().info("赠品：会员卡满足,活动id:{}", giftVo.getId());
+            List<ValidUserCardBean> validCardList = userCard.userCardDao.getValidCardList(userId, new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, UserCardDaoService.CARD_ONLINE);
+            List<Integer> cardIds = validCardList.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
+            cardIds.retainAll(rules.getCardId());
+            if(CollectionUtils.isNotEmpty(cardIds)){
+                logger().info("赠品：会员卡满足,活动id:{}", giftVo.getId());
+                return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
+            }
+        }
+        if(CollectionUtils.isNotEmpty(rules.getTagId())){
+            List<TagVo> tagVos = member.getTagForMember(userId);
+            Collection<Integer> tagIds = tagVos.stream().map(TagVo::getTagId).collect(Collectors.toList());
+            tagIds.retainAll(rules.getTagId());
+            if(CollectionUtils.isNotEmpty(tagIds)){
+                logger().info("赠品：会员标签满足,活动id:{}", giftVo.getId());
+                return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
+            }
+        }
+        if(rules.getPayStartTime() != null && rules.getPayEndTime() !=null){
+            Timestamp now = DateUtil.getSqlTimestamp();
+            if(now.after(rules.getPayStartTime()) && now.before(rules.getPayEndTime())){
+                logger().info("赠品：付款时间满足,活动id:{}", giftVo.getId());
+                return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
+            }
+        }
+        if(rules.getPayTop() !=null){
+            Integer giftOrderCount = orderRead.getGiftOrderCount(giftVo.getId(), false);
+            if(giftOrderCount < rules.getPayTop()){
+                logger().info("赠品：付款排名满足,活动id:{}", giftVo.getId());
+                return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
+            }
+        }
+        if(rules.getMaxPayNum() != null && rules.getMinPayNum() != null){
+            //仅在店铺内购买活动商品达到指定次数的用户可获得赠品
+            Integer giftOrderCount = orderInfo.getGoodsBuyNum(userId, giftVo.getGoodsIds());
+            if(giftOrderCount >= rules.getMinPayNum() && giftOrderCount <= rules.getMaxPayNum()){
+                logger().info("赠品：已购买指定商品次数满足,活动id:{}", giftVo.getId());
+                return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
+            }
+        }
+        if(rules.getUserAction() !=null){
+            boolean newUser = orderInfo.isNewUser(userId);
+            if(rules.getUserAction().equals(newUser ? OrderConstant.USER_ACTION_NEW : OrderConstant.USER_ACTION_OLD)){
+                logger().info("赠品：新老用户满足,活动id:{}", giftVo.getId());
+                return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
+            }
+        }
         return Collections.EMPTY_LIST;
     }
 
@@ -148,7 +217,7 @@ public class GiftProcessorDao extends GiftService {
     }
 
     /**
-     *
+     * 赠品库存
      * @param param k->giftId, v->(k->prdId, v->数量（>0下单，<0退款）)
      */
     public void updateStockAndSales(Map<Integer, Map<Integer, Integer>> param) throws MpException {

@@ -1867,7 +1867,7 @@ public class GoodsService extends ShopBaseService {
 
         db().update(GOODS).set(GOODS.IS_ON_SALE,GoodsConstant.ON_SALE).where(GOODS.GOODS_ID.in(goodsIds)).execute();
 
-        if (esUtilSearchService.esState()){
+        if ( !goodsIds.isEmpty()&& esUtilSearchService.esState()){
             esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
             esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds,DBOperating.UPDATE);
 
@@ -1902,5 +1902,15 @@ public class GoodsService extends ShopBaseService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取有效的商品-通过商品ID和delFlag是否有效
+     * @param goodsId 商品Id
+     * @return 商品信息 可为null
+     */
+    public GoodsRecord getValidGoodsRecordById(Integer goodsId) {
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
+            .fetchAny();
     }
 }

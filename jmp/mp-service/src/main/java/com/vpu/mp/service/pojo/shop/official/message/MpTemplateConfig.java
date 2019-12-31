@@ -1,12 +1,12 @@
 package com.vpu.mp.service.pojo.shop.official.message;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.vpu.mp.service.foundation.util.RegexUtil;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 公众号模版消息
@@ -23,42 +23,50 @@ public enum MpTemplateConfig {
         "业务处理结果通知",
         "{{first.DATA}}业务类型：{{keyword1.DATA}}业务内容：{{keyword2.DATA}}处理结果：" +
             "{{keyword3.DATA}}操作时间：{{keyword4.DATA}}{{remark.DATA}}"),
-	
+
     PUSHMSG(
             "OPENTM411665252",
             "反馈结果通知",
             "{{first.DATA}}回复者：{{keyword1.DATA}}回复时间：{{keyword2.DATA}}回复内容：{{keyword3.DATA}}{{remark.DATA}}"),
-    
+
     COUPON_EXPIRE(
             "OPENTM408237933",
             "服务到期提醒",
             "{{first.DATA}}业务号码：{{keyword1.DATA}}业务类型：{{keyword2.DATA}}到期时间：{{keyword3.DATA}}{{remark.DATA}}"),
-	
+
     APPOINTMENT_REMINDER(
             "OPENTM414204481",
             "预约到期提醒",
             "{{first.DATA}}单据号：{{keyword1.DATA}}开始时间：{{keyword2.DATA}}{{remark.DATA}}"),
-    
+
+    APPOINTMENT_SUCCESS(
+        "OPENTM410419150",
+        "预约成功通知",
+        "{{first.DATA}}服务名称：{{keyword1.DATA}}预约日期：{{keyword2.DATA}}预约人：{{keyword3.DATA}}联系电话：{{keyword4.DATA}}预约机构：{{keyword5.DATA}}{{remark.DATA}}"),
+
     PAYMENT_REMINDER(
             "OPENTM401751289",
             "订单待付款提醒",
             "{{first.DATA}}订单编号：{{keyword1.DATA}}支付金额：{{keyword2.DATA}}{{remark.DATA}}"),
-    
+
     LOTTERY_RESULTS(
             "OPENTM412181311",
             "抽奖结果通知",
-            "{{first.DATA}}奖品名称：{{keyword1.DATA}}中奖时间：{{keyword2.DATA}}{{remark.DATA}}");
-	
+            "{{first.DATA}}奖品名称：{{keyword1.DATA}}中奖时间：{{keyword2.DATA}}{{remark.DATA}}"),
+    GROUP_BUY_RESULTS(
+            "OPENTM414768654",
+            "拼团结果提醒",
+            "{{first.DATA}}拼团状态：{{keyword1.DATA}}商品明细：{{keyword2.DATA}}拼团价格：{{keyword3.DATA}}剩余人数：{{keyword4.DATA}}时间：{{keyword5.DATA}}{{remark.DATA}}");
 	/**
 	 * 模板编号
 	 */
 	private String templateNo;
-	
+
 	/**
 	 * 标题
 	 */
     private String title;
-	
+
 	/**
 	 * 内容，样例： 您好，您已购买成功。商品信息：{{name.DATA}}{{remark.DATA}}
 	 */

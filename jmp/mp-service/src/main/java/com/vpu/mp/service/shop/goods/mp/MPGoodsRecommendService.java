@@ -6,10 +6,14 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecSource;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsParam;
+import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
 import com.vpu.mp.service.saas.categroy.SysCateService;
+import com.vpu.mp.service.saas.shop.ShopAppService;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.overview.HotWordsService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -38,69 +42,117 @@ public class MPGoodsRecommendService extends ShopBaseService {
     SysCateService sysCateService;
     @Autowired
     HotWordsService hotWordsService;
+    @Autowired
+    ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    GoodsMpService goodsMpService;
+    @Autowired
+    ShopAppService shopAppService;
     /**
      * 商品推荐活动状态标识 0:未删除/未停用
      */
-    public static final Byte GOING_STATUS = 0;
+    private static final Byte GOING_STATUS = 0;
     /**
      * 商品推荐活动推荐类型 1:智能推荐
      */
-    public static final Byte SMART_RECOMMEND = 1;
+    private static final Byte SMART_RECOMMEND = 1;
     /**
-     * 商品推荐活动推荐类型 0:只能推荐
+     * 商品推荐活动推荐类型 0:智能推荐
      */
-    public static final Byte ALL_GOODS = 0;
+    private static final Byte ALL_GOODS = 0;
     /**
      * 商品是否在售 1:在售
      */
-    public static final Byte IS_ON_SALE = 1;
+    private static final Byte IS_ON_SALE = 1;
     /**
      * 商品是否删除 0:未删除
      */
-    public static final Byte NOT_DELETE = 0;
+    private static final Byte NOT_DELETE = 0;
     /**
      * 分类是否有子节点 0:没有
      */
-    public static final Byte HAS_CHILD = 0;
+    private static final Byte HAS_CHILD = 0;
     /**
      * 搜索条数：1
      */
-    public static final Integer LIMIT_ONE_NUM = 1;
+    private static final Integer LIMIT_ONE_NUM = 1;
     /**
      * 标签分类类型type 1：关联商品
      */
-    public static final Byte LABEL_TYPE_ONE = 1;
+    private static final Byte LABEL_TYPE_ONE = 1;
     /**
      * 标签分类类型type  2：平台分类
      */
-    public static final Byte LABEL_TYPE_TWO = 2;
+    private static final Byte LABEL_TYPE_TWO = 2;
     /**
-     * 标签分类类型type 3店鋪分類
+     * 标签分类类型type 3:店铺分类
      */
-    public static final Byte LABEL_TYPE_THREE = 3;
+    private static final Byte LABEL_TYPE_THREE = 3;
     /**
      * 标签分类类型type 4：全部商品
      */
-    public static final Byte LABEL_TYPE_FOUR = 4;
+    private static final Byte LABEL_TYPE_FOUR = 4;
+    /**
+     * pos店铺id默认值：0
+     */
+    private static final Integer DEFAULT_POS_SHOP_ID = 0;
+    /**
+     * 门店商品是否已同步 1：已同步
+     */
+    private static final Byte IS_SYNC = 1;
 
     /**
      * 获取推荐商品
      */
-    public List<Integer> getRecommendGoods(RecommendGoodsParam param) {
+    public RecommendGoodsVo getRecommendGoods(RecommendGoodsParam param) {
         //如果recommendGoodsIds是空数组,为其赋值
-        if (param.getRecommendGoodsIds().size() == 0) {
+        if (param.getRecommendGoodsIds() == null) {
             param.setRecommendGoodsIds(getRecommendGoodsIds(param.getPageName(), param.getUserId()));
         }
         //判断赋值是否成功
-        if (param.getRecommendGoodsIds().size() == 0) {
+        if (param.getRecommendGoodsIds() == null) {
             throw new BusinessException(JsonResultCode.GOODS_RECOMMEND_NO_RECOMMENDED_GOODS);
         }
-        //todo 对接post
-        //todo 不同页面信息展示
-        return null;
-     }
+        //对接门店
+        if (param.getStoreId()!=null){
+            //获取商品规格id
+            List<Integer> prdId = getGoodsProducts(param.getRecommendGoodsIds());
+            //获取商品id
+            List<Integer> storeGoodsIds = getStoreGoodsList(param.getStoreId(),prdId);
+            //和推荐商品id取交集
+            List<Integer> newGoodsIds = param.getRecommendGoodsIds();
+            newGoodsIds.retainAll(storeGoodsIds);
+            param.setRecommendGoodsIds(newGoodsIds);
+        }
+        //商品详情展示
+        List<?> goodsListNormal = goodsMpService.getGoodsListNormal(param.getRecommendGoodsIds(), param.getUserId());
+        logger().info(goodsListNormal.toString());
+        //pageNum:当前页码
+        int pageNum = param.getPageNum();
+        //pageSize:每页多少条数据
+        int pageSize = param.getPageSize();
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = pageNum * pageSize;
+        int total = goodsListNormal.size();
+        //自定义分页处理
+        if (pageNum * pageSize <= total) {
+            goodsListNormal = goodsListNormal.subList(startIndex, endIndex);
+        } else {
+            goodsListNormal = goodsListNormal.subList(startIndex, total);
+        }
+        //是否显示划线价开关
+        Byte delMarket = shopCommonConfigService.getDelMarket();
+        //是否显示购买按钮
+        ShowCartConfig showCart = shopCommonConfigService.getShowCart();
+        RecommendGoodsVo result = new RecommendGoodsVo();
+        result.setShowCart(showCart);
+        result.setDelMarket(delMarket);
+        result.setRecommendGoodsIds(param.getRecommendGoodsIds());
+        result.setRecommendGoods(goodsListNormal);
+        return result;
+    }
 
-     /**
+    /**
      * 获取推荐商品
      *
      * @param pageName 当前所在页面
@@ -126,7 +178,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
         List<Integer> recommendGoodsIds;
         //智能推荐
         if (record.getChooseType().equals(SMART_RECOMMEND)) {
-            recommendGoodsIds = getSmartRecommendGoodsIds(record,userId);
+            recommendGoodsIds = getSmartRecommendGoodsIds(record, userId);
         }
         //普通推荐
         else {
@@ -160,6 +212,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
 
     /**
      * 获取普通推荐商品id
+     *
      * @param record 商品推荐活动
      * @return 商品id集合
      */
@@ -259,6 +312,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
 
     /**
      * 获取智能推荐商品id
+     *
      * @param record 商品推荐活动信息
      * @param userId 用户id
      * @return 商品id
@@ -383,13 +437,15 @@ public class MPGoodsRecommendService extends ShopBaseService {
         }
         //来源遍历结束
         int remainderNumber = recommendNumber - totalGoodsIds.size();
-        if (remainderNumber>0){
+        if (remainderNumber > 0) {
             List<Integer> goodsList = getPageList(recommendNumber);
-            for (Integer item : goodsList){
+            for (Integer item : goodsList) {
                 if (!totalGoodsIds.contains(item)) {
                     totalGoodsIds.add(item);
                     remainderNumber -= 1;
-                    if (remainderNumber<=0){break;}
+                    if (remainderNumber <= 0) {
+                        break;
+                    }
                 }
             }
         }
@@ -398,6 +454,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
 
     /**
      * 得到智能推荐来源（用户最近操作涉及到的商品）
+     *
      * @param userId 用户id
      * @return 各类型对应的商品id（搜索、购物车、访问、订单、分享、收藏）
      */
@@ -615,10 +672,10 @@ public class MPGoodsRecommendService extends ShopBaseService {
         Integer labelId = db().select(GOODS_LABEL_COUPLE.LABEL_ID)
             .from(GOODS_LABEL_COUPLE)
             .leftJoin(GOODS_LABEL).on(GOODS_LABEL_COUPLE.LABEL_ID.eq(GOODS_LABEL.ID))
-            .where(GOODS_LABEL_COUPLE.TYPE.eq((byte) 1).and(GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
-            .or(GOODS_LABEL_COUPLE.TYPE.eq((byte) 2).and(GOODS_LABEL_COUPLE.GTA_ID.eq(catId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
-            .or(GOODS_LABEL_COUPLE.TYPE.eq((byte) 3).and(GOODS_LABEL_COUPLE.GTA_ID.eq(sortId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
-            .or(GOODS_LABEL_COUPLE.TYPE.eq((byte) 4).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+            .where(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_ONE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+            .or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_TWO).and(GOODS_LABEL_COUPLE.GTA_ID.eq(catId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+            .or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_THREE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(sortId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+            .or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_FOUR).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
             .orderBy(DSL.min(GOODS_LABEL_COUPLE.TYPE).asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
             .limit(LIMIT_ONE_NUM)
             .fetchOptionalInto(Integer.class)
@@ -708,6 +765,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
         return goodsId.orderBy(GOODS.GOODS_SALE_NUM.desc())
             .fetchInto(Integer.class);
     }
+
     /**
      * 根据平台分类id获取商品信息
      *
@@ -731,10 +789,11 @@ public class MPGoodsRecommendService extends ShopBaseService {
 
     /**
      * 得到数量等同于推荐商品数的商品id
+     *
      * @param limitNum 推荐商品数量
      * @return 商品id集合
      */
-    public List<Integer> getPageList(Integer limitNum){
+    public List<Integer> getPageList(Integer limitNum) {
         List<Integer> goodsList = db().select(GOODS.GOODS_ID)
             .from(GOODS)
             .where(GOODS.DEL_FLAG.eq(NOT_DELETE))
@@ -742,5 +801,59 @@ public class MPGoodsRecommendService extends ShopBaseService {
             .limit(limitNum)
             .fetchInto(Integer.class);
         return goodsList;
+    }
+
+    /**
+     * 获取商品规格id
+     * @param goodsIds 商品id集合
+     * @return 对应规格id集合
+     */
+    public List<Integer> getGoodsProducts(List<Integer> goodsIds){
+        List<Integer> prdIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID)
+            .from(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
+            .fetchInto(Integer.class);
+        return prdIds;
+    }
+
+    /**
+     * 判断是否对接pos
+     * @param storeId 门店id
+     * @return true or false
+     */
+    public boolean isHasPosService(Integer storeId) {
+        Byte status = shopAppService.getShopAppByPos(getShopId());
+        if (NumberUtils.BYTE_ZERO.equals(status)){
+            return false;
+        }
+        if (storeId!=null){
+            Integer posShopId = db().select(STORE.POS_SHOP_ID)
+                .from(STORE)
+                .where(STORE.STORE_ID.eq(storeId))
+                .fetchOptionalInto(Integer.class)
+                .orElse(DEFAULT_POS_SHOP_ID);
+            if (NumberUtils.INTEGER_ZERO.equals(posShopId)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<Integer> getStoreGoodsList(Integer storeId,List<Integer> productIds){
+        boolean isHasPosService = isHasPosService(storeId);
+        SelectConditionStep<Record1<Integer>> storeGoodsIds = db().select(STORE_GOODS.GOODS_ID)
+            .from(STORE_GOODS)
+            .leftJoin(GOODS).on(STORE_GOODS.GOODS_ID.eq(GOODS.GOODS_ID))
+            .where(GOODS.DEL_FLAG.eq(NOT_DELETE))
+            .and(STORE_GOODS.STORE_ID.eq(storeId))
+            .and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE))
+            .and(GOODS.IS_ON_SALE.eq(IS_ON_SALE));
+        if (productIds!=null&&productIds.size()>0){
+            storeGoodsIds.and(STORE_GOODS.PRD_ID.in(productIds));
+        }
+        if (isHasPosService){
+            storeGoodsIds.and(STORE_GOODS.IS_SYNC.eq(IS_SYNC));
+        }
+        return storeGoodsIds.fetchInto(Integer.class);
     }
 }

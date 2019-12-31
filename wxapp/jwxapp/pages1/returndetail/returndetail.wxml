@@ -178,7 +178,8 @@
         </view>
         <view class="order-block-detail-item">
           <text class="details-item-title">{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
-          <text>{{orderInfo.shippingFee}}元</text>
+          <text wx:if="{{refundStatus == 5}}">{{orderInfo.shippingFee}}元</text>
+          <text wx:else>{{orderInfo.canReturnShippingFee}}元</text>
         </view>
         <!-- 0	'协商一致退款'
         1	'未按约定时间发货',

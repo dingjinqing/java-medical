@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
@@ -96,7 +97,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
      * @param userId
      * @return
      */
-    public CollectGiftParam collectGiftConfig(Integer userId) {
+    public CollectGiftParam collectGiftConfig(Integer userId,Integer shopId) {
         //收藏有礼开关是否开启
         CollectGiftParam param = this.getJsonObject(K_COLLECT_GIFT,CollectGiftParam.class);
         if (param == null) {
@@ -113,6 +114,9 @@ public class CollectGiftConfigService extends BaseShopConfigService{
         if(into == 1){//已参与，不展示支付有礼图标
             param.setOnOff(0);
         }
+        //获取店铺名称
+        ShopRecord shop = saas().shop.getShopById(shopId);
+        param.setShopName(shop.getShopName());
         return param;
     }
 
@@ -183,15 +187,15 @@ public class CollectGiftConfigService extends BaseShopConfigService{
                 coupon.couponGiveService.handlerCouponGive(couponParam);
 
                 //返回积分，优惠券相关信息
-                AvailCouponDetailVo couponInfo = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.TYPE)
+                AvailCouponDetailVo couponInfo = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.TYPE,MRKING_VOUCHER.USE_CONSUME_RESTRICT)
                     .from(MRKING_VOUCHER)
                     .where(MRKING_VOUCHER.ID.eq(id)).fetchOne().into(AvailCouponDetailVo.class);
                 couponList.add(couponInfo);
 
             }
             setResultVo.setCouponDetail(couponList);
-            db().update(USER).set(USER.GET_COLLECT_GIFT,(byte)1).where(USER.USER_ID.eq(userId)).execute();
         }
+        db().update(USER).set(USER.GET_COLLECT_GIFT,(byte)1).where(USER.USER_ID.eq(userId)).execute();
         setResultVo.setMsg((byte)0);
         return setResultVo;
     }

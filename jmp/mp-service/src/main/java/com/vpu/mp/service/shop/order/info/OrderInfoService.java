@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
@@ -844,6 +845,33 @@ public class OrderInfoService extends ShopBaseService {
             fetch();
     }
 
+    /**
+     * 获取赠品订单数
+     * @param orderSns sns
+     */
+    public Integer getGiftOrderCount(List<String> orderSns){
+        return db().selectCount().from(TABLE).where(
+            TABLE.ORDER_SN.in(orderSns)
+                //TODO 待付款锁库存.and(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.i))
+                .and(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+        ).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 获取活动指定商品当前用户购买次数
+     * @param userId userid
+     * @param goodsId goodsId
+     * @return count
+     */
+    public Integer getGoodsBuyNum(Integer userId, List<Integer> goodsId){
+        Condition condition = TABLE.USER_ID.eq(userId).and(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY));
+        SelectJoinStep<Record1<Integer>> select = db().selectCount().from(TABLE);
+        if(CollectionUtils.isNotEmpty(goodsId)){
+            select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
+        }
+        return select.where(condition).fetchAnyInto(Integer.class);
+    }
+
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
@@ -1235,6 +1263,16 @@ public class OrderInfoService extends ShopBaseService {
     }
 
     /**
+     * 批量改为拼团成功
+     * @param orderSnList
+     */
+	public void batchChangeToGroupBuySuccess(List<String> orderSnList){
+	    if(orderSnList != null && orderSnList.size() > 0){
+	        db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_PIN_SUCCESSS).where(TABLE.ORDER_SN.in(orderSnList)).execute();
+        }
+    }
+
+    /**
      * Overdue delivery integer.发货逾期
      *
      * @param nDays the n days
@@ -1244,7 +1282,7 @@ public class OrderInfoService extends ShopBaseService {
         return db().fetchCount(TABLE, TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
             .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
     }
-    
+
     /**
      * 获得待支付尾款的订单
      * @param pinGroupId
@@ -1255,7 +1293,7 @@ public class OrderInfoService extends ShopBaseService {
 				.and(TABLE.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)
 						.and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_FRONT)).and(TABLE.ACTIVITY_ID.eq(pinGroupId)
 								.and(TABLE.GOODS_TYPE.eq(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE)))))).fetch();
-		 
+
     }
 
 }

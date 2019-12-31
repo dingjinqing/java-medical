@@ -22,6 +22,7 @@ global.wxPage({
       orderSn,
       useInfo:JSON.parse(useInfo)
     })
+    this.selectComponent('#recommend').requestData()
     this.payGiftRequest()
   },
   checkOrder(){
@@ -49,9 +50,9 @@ global.wxPage({
       0:null,
       1:['couponView'],
       2:['couponView'],
-      3:['lotteryName','lotteryId'],
-      4:['accountNumber'],
-      5:['product'],
+      3:['lotteryId'],
+      4:['account'],
+      5:['product','productId','keepDays'],
       6:['scoreNumber'],
       7:['customImage','customLink'],
     }
@@ -87,7 +88,7 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    this.selectComponent('#recommend').requestData()
   },
 
   /**

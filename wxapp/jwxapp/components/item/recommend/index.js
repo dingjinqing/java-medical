@@ -1,3 +1,5 @@
+
+const util = require("../../../utils/util.js");
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -5,25 +7,52 @@ global.wxComponent({
   properties: {
     pageName: {
       type: String,
-      value: "cart" //cart,bargainitem,groupbuyitem,new_search,orderlist,payment,search,item
+      value: null, //cart,bargainitem,groupbuyitem,new_search,orderlist,payment,search,item
     },
     pageParams: {
       type: Object,
-      value: null
+      value: null,
+      observer(res){
+        
+      }
     }
   },
-
   /**
    * 组件的初始数据
    */
   data: {
-    pageParams: null
+    currentPage:1
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
-    init() {}
+    requestData() {
+      util.api('/api/wxapp/goods/recommend',res=>{
+        if(res.error === 0){
+          this.setData({
+            ['dataList[' + (parseInt(this.data.currentPage) - 1) + ']']: res.content.recommendGoods,
+            currentPage:++this.data.currentPage
+          });
+        }
+      },{
+        pageName:this.data.pageName,
+        pageNum:this.data.currentPage,
+        pageSize:20
+      })
+    },
+    resetDataList(){
+      this.setData({
+        dataList:null
+      })
+      return this;
+    },
+    resetPage(){
+      this.setData({
+        currentPage:1,
+      })
+      return this;
+    }
   }
 });
