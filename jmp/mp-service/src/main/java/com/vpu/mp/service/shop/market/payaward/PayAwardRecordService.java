@@ -118,9 +118,10 @@ public class PayAwardRecordService  extends ShopBaseService {
      * @param prizeId
      * @return
      */
-    public void updateAwardStock(Integer payAwardId, Integer prizeId){
-        db().update(PAY_AWARD_PRIZE).set(PAY_AWARD_PRIZE.SEND_NUM,PAY_AWARD_PRIZE.SEND_NUM.add(1))
+    public int updateAwardStock(Integer payAwardId, Integer prizeId){
+        return db().update(PAY_AWARD_PRIZE).set(PAY_AWARD_PRIZE.SEND_NUM,PAY_AWARD_PRIZE.SEND_NUM.add(1))
                 .where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardId))
-                .and(PAY_AWARD_PRIZE.ID.eq(prizeId)).execute();
+                .and(PAY_AWARD_PRIZE.ID.eq(prizeId))
+                .and(PAY_AWARD_PRIZE.SEND_NUM.lt(PAY_AWARD_PRIZE.AWARD_NUMBER)).execute();
     }
 }

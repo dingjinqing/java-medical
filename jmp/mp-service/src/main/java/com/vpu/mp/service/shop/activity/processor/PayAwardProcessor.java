@@ -171,9 +171,14 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             }
             logger().info("礼物数量校验");
             PayAwardPrizeRecord awardInfo = payAwardRecordService.getAwardInfo(payAward.getId(), payAwardContentBo.getId());
-            Boolean canSendAwardFlag = awardInfo.getSendNum()<awardInfo.getAwardNumber();
-            if (canSendAwardFlag){
-                payAwardRecordService.updateAwardStock(payAward.getId(), payAwardContentBo.getId());
+            boolean canSendAwardFlag =true;
+            if (awardInfo.getAwardNumber()!=null&&awardInfo.getSendNum()<awardInfo.getAwardNumber()){
+                int i = payAwardRecordService.updateAwardStock(payAward.getId(), payAwardContentBo.getId());
+                if (i<1){
+                    canSendAwardFlag =false;
+                }else {
+                    logger().info("礼物发完了");
+                }
             }else {
                 logger().info("礼物已发完");
             }
@@ -205,7 +210,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
      * @param payAwardRecordRecord
      * @throws MpException
      */
-    private void sendAward(Boolean canSendAwardFlag, OrderInfoRecord order, PayAwardVo payAward, PayAwardContentBo payAwardContentBo, PayAwardRecordRecord payAwardRecordRecord) throws MpException {
+    private void sendAward(boolean canSendAwardFlag, OrderInfoRecord order, PayAwardVo payAward, PayAwardContentBo payAwardContentBo, PayAwardRecordRecord payAwardRecordRecord) throws MpException {
         switch (payAwardContentBo.getGiftType()) {
             case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
