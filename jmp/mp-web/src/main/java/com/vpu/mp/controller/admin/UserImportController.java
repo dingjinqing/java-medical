@@ -6,7 +6,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,8 +13,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
 
 /**
@@ -59,12 +61,13 @@ public class UserImportController extends AdminBaseController {
 
 	/**
 	 * 上传文件
+	 * 
 	 * @param file
 	 * @return
 	 */
 	@PostMapping(value = "/admin/user/import/insert")
 	public JsonResult importUser(UserImportParam param) {
-		//multipart/form-data不加@RequestBody
+		// multipart/form-data不加@RequestBody
 		MultipartFile file = param.getFile();
 		logger().info("上传文件:" + file.getName());
 		ExcelTypeEnum checkFile = shop().member.userImportService.checkFile(file);
@@ -73,6 +76,18 @@ public class UserImportController extends AdminBaseController {
 		}
 		shop().member.userImportService.insertUser(getLang(), param);
 		return success();
+
+	}
+
+	/**
+	 * 会员导入列表
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "admin/user/import/list")
+	public JsonResult getList(@RequestBody UIGetListParam param) {
+		PageResult<UIGetListVo> descList = shop().member.userImportService.descList(param);
+		return success(descList);
 
 	}
 }
