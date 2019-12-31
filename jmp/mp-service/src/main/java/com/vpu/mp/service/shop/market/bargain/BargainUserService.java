@@ -139,7 +139,7 @@ public class BargainUserService extends ShopBaseService{
      * @param recordId
      * @return 是否成功
      */
-    public void addUserBargain(int userId,int recordId){
+    public BigDecimal addUserBargain(int userId,int recordId){
         BargainRecordRecord bargainRecord = db().selectFrom(BARGAIN_RECORD).where(BARGAIN_RECORD.ID.eq(recordId)).fetchAny();
         BargainRecord bargain = db().selectFrom(BARGAIN).where(BARGAIN.ID.eq(bargainRecord.getBargainId())).fetchAny();
 
@@ -182,6 +182,7 @@ public class BargainUserService extends ShopBaseService{
             saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
         }
 
+        return bargainMoney;
     }
 
     /**
