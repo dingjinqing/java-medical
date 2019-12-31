@@ -430,6 +430,9 @@ public class JsonResultMessage {
 	//会员导入
 	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
 	public static final String CODE_NEED_ONE = "code.need.one";
+	public static final String GET_TEMPLATE_NAME = "get.template.name";
+	public static final String CODE_EXCEL_ERRO = "code.excel.name";
+	
 	/**
 	 * 概览
 	 */
