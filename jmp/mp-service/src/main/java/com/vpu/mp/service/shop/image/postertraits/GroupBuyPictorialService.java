@@ -49,7 +49,7 @@ public class GroupBuyPictorialService  extends ShopBaseService {
     @Autowired
     private ImageService imageService;
     @Autowired
-    private PictorialDao pictorialDao;
+    private PictorialService pictorialService;
 
     public GroupBuyShareInfoVo getGroupBuyShareInfo(GroupBuyShareInfoParam param) {
         GroupBuyShareInfoVo shareInfoVo = new GroupBuyShareInfoVo();
@@ -109,7 +109,7 @@ public class GroupBuyPictorialService  extends ShopBaseService {
     private static final String PIN_GROUP_BG_IMG = "image/wxapp/pin_group_bg.jpg";
 
     private String createGroupBuyShareImg(GroupBuyDefineRecord groupBuyDefineRecord,GoodsRecord goodsRecord,GroupBuyShareInfoParam param){
-        PictorialRecord pictorialRecord = pictorialDao.getPictorial(goodsRecord.getGoodsId(), PictorialConstant.GROUP_BUY_ACTION_SHARE, param.getUserId());
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.GROUP_BUY_ACTION_SHARE, param.getUserId());
         // 已存在生成的图片
         if (pictorialRecord != null) {
             String rule = pictorialRecord.getRule();
@@ -184,12 +184,12 @@ public class GroupBuyPictorialService  extends ShopBaseService {
             pictorialRecord.setUserId(param.getUserId());
             pictorialRecord.setIdentityId(goodsRecord.getGoodsId());
             pictorialRecord.setRule(Util.toJson(new PictorialRule(goodsRecord.getUpdateTime(), groupBuyDefineRecord.getUpdateTime())));
-            pictorialDao.addPictorial(pictorialRecord);
+            pictorialService.addPictorialDao(pictorialRecord);
         } else {
             // 更新
             pictorialRecord.setPath(relativePath);
             pictorialRecord.setRule(Util.toJson(new PictorialRule(goodsRecord.getUpdateTime(), groupBuyDefineRecord.getUpdateTime())));
-            pictorialDao.updatePictorila(pictorialRecord);
+            pictorialService.updatePictorilaDao(pictorialRecord);
         }
     }
 

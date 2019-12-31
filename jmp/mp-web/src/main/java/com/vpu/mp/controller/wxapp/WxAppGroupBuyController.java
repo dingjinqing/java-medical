@@ -57,7 +57,7 @@ public class WxAppGroupBuyController extends WxAppBaseController {
     public JsonResult getShareImage(@RequestBody GroupBuyShareInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
-        return success(shop().pictorialService.getGroupBuyShareInfo(param));
+        return success(shop().pictorialIntegrationService.getGroupBuyShareInfo(param));
     }
 
     /**
