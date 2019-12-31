@@ -811,7 +811,7 @@
   </div>
 </template>
 <script>
-import { membershipListRequest, accountAddRequest, scoreUpdateRequest, allUserCardRequest, allSourceRequest, allTagRequest, getTagForMemberRequest, setTagForMemberRequest, loginStatusRequest } from '@/api/admin/membershipList.js'
+import { membershipListRequest, allUserCardRequest, allSourceRequest, allTagRequest, getTagForMemberRequest, setTagForMemberRequest, loginStatusRequest } from '@/api/admin/membershipList.js'
 import { getAllMemberCardByClassRequest, setCardForMemberRequest, getAllAvailableMemberCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'

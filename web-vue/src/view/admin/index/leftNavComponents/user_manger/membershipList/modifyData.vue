@@ -33,7 +33,6 @@
                     <span>{{model.bzText}}</span>
                     <el-input
                         v-model="desc"
-                        :placeholder="$t('membershipIntroduction.Pleasecontent')"
                         size="small"
                     >
                     </el-input>
@@ -135,6 +134,10 @@ export default {
           this.fail()
         }
       })
+    },
+    submitCardChargeConsume () {
+      // 会员卡余额，兑换次数
+
     },
     success () {
       this.$message.success(this.$t('membershipIntroduction.success'))
