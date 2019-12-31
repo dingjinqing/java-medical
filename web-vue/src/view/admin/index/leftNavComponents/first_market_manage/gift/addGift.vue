@@ -305,11 +305,11 @@
             <span class="remarks">{{ $t('gift.addTip') }}</span>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row style="margin-top: 10px;">
           <el-col>
             <el-table
               class="version-manage-table"
-              header-row-class-name="tableHeader"
+              header-row-class-name="tableClss"
               :data="tableData"
               border
               style="width: 100%"
@@ -423,7 +423,7 @@
         @resultGoodsIds="getSpecsIds"
         @resultGoodsDatas="getSpecsData"
       />
-      <!-- </wrapper> -->
+
     </div>
   </div>
 
@@ -431,6 +431,7 @@
 <script>
 import { mapActions } from 'vuex'
 import inputEdit from '@/components/admin/inputEdit'
+import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
 // import { format, range } from '@/util/date'
@@ -439,6 +440,7 @@ import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getP
 
 export default {
   components: {
+    wrapper,
     inputEdit,
     choosingGoods
   },
@@ -1073,5 +1075,13 @@ export default {
   height: 30px;
   line-height: 30px;
   font-size: 14px;
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
 }
 </style>
