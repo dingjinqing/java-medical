@@ -15,8 +15,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -39,7 +37,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
@@ -198,21 +199,14 @@ public class EnterPolitelyService extends ShopBaseService {
                 }
                 award.setExtContent(new HashMap<String, String>(INTEGER_TWO) {{
                     put("title", bo.getTitle());
-                    put("bg_img", Optional.ofNullable(bo.getBgImg()).orElse(imageUrl(DEFAULT_COUPON_BG_IMG)));
+                    put("bg_img", StringUtils.isBlank(bo.getBgImg()) ? imageUrl(DEFAULT_COUPON_BG_IMG) : bo.getBgImg());
                 }});
                 record.setMrkingVoucherId(awardContent);
                 break;
             case 2:
                 logger().info("幸运大抽奖");
-                JoinLotteryParam joinLotteryParam = new JoinLotteryParam();
-                joinLotteryParam.setUserId(userId);
-                joinLotteryParam.setLotteryId(Integer.valueOf(awardContent));
-                JoinLottery joinLottery = lotteryService.validJoinLottery(joinLotteryParam);
-                if (!BYTE_ZERO.equals(joinLottery.getStatus())) {
-                    logger().debug("没有可用抽奖活动");
-                    return noAward;
-                }
                 record.setLotteryId(Integer.valueOf(awardContent));
+                logger().debug("抽奖活动id：{}", awardContent);
                 break;
             case 5:
                 logger().info("余额");

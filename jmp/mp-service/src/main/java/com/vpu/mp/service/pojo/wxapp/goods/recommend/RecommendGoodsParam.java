@@ -11,12 +11,12 @@ import java.util.List;
  */
 @Data
 public class RecommendGoodsParam {
-    /** 店铺id */
-    private Integer shopId;
     /** 页面名称 */
     private String pageName;
     /** 用户id */
     private Integer userId;
+    /** 门店Id */
+    private Integer storeId;
     /** 推荐商品id数组 */
     private List<Integer> recommendGoodsIds;
     /** 页码 */
