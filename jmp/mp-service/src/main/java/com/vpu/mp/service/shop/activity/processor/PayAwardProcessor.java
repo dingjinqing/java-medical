@@ -172,7 +172,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             logger().info("礼物数量校验");
             PayAwardPrizeRecord awardInfo = payAwardRecordService.getAwardInfo(payAward.getId(), payAwardContentBo.getId());
             boolean canSendAwardFlag =true;
-            if (awardInfo.getAwardNumber()!=null&&awardInfo.getSendNum()<awardInfo.getAwardNumber()){
+            if (awardInfo!=null&&awardInfo.getSendNum()<awardInfo.getAwardNumber()){
                 int i = payAwardRecordService.updateAwardStock(payAward.getId(), payAwardContentBo.getId());
                 if (i<1){
                     canSendAwardFlag =false;
