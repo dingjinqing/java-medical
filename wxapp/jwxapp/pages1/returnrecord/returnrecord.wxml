@@ -292,12 +292,12 @@
             </block>
             <block wx:if='{{orderInfo.refundStatus != 5}}'>
               <text>{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
-              ￥{{orderInfo.shippingFee}}
+              ￥{{orderInfo.canReturnShippingFee}}
             </block>
           </view>
         </block>
         <view class='main_cen_left return_descs clearfix' wx:if='{{orderInfo.reasonDesc != ""}}'>
-          <text>{{i18n.$t(localePack,"page1.afterSale.afterSaleDescription")}}：</text>
+          <text style="float:left;">{{i18n.$t(localePack,"page1.afterSale.afterSaleDescription")}}：</text>
           <text class='return_shuom'>{{orderInfo.reasonDesc}}</text>
         </view>
         <view class='main_cen_left return_descs clearfix' wx:if='{{orderInfo.goodsImages != "" && orderInfo.goodsImages != null}}'>
