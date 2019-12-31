@@ -899,11 +899,7 @@ export default {
     // 规格弹窗数据
     getSpecsData (data) {
       // this.specsData = data
-      debugger
       this.tableData = data
-      // this.tableData.forEach((item, index) => {
-      //   item.productNumber = item.prdNumber
-      // })
       console.log(data)
     },
 
