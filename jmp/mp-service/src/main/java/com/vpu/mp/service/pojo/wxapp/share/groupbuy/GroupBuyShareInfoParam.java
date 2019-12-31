@@ -19,6 +19,5 @@ public class GroupBuyShareInfoParam {
     private BigDecimal linePrice;
     /** 发起分享操作的用户Id*/
     private Integer userId;
-
-    private Integer width;
+    private Integer height;
 }
