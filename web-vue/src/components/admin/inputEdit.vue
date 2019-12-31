@@ -10,7 +10,7 @@
 * @author 郑保乐
 -->
 <template>
-  <div class="container">
+  <div class="inputEditContainer">
     <div
       v-show="!showInput"
       class="input"
@@ -38,6 +38,7 @@
         style="color:#409EFF;fontSize:20px;height:45px;line-height:45px;"
       ></i>
     </el-tooltip>
+
   </div>
 </template>
 <script>
@@ -103,7 +104,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.container {
+.inputEditContainer {
   display: flex;
   line-height: 45px;
   vertical-align: middle;

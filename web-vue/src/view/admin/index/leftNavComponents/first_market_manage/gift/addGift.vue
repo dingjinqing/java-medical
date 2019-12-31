@@ -5,7 +5,7 @@
 -->
 <template>
   <div style="padding: 10px;">
-    <div class="container">
+    <div class="content">
 
       <!-- step -->
       <el-steps
@@ -1039,7 +1039,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.container {
+.content {
   padding: 20px;
   margin-bottom: 60px;
   background: #fff;
