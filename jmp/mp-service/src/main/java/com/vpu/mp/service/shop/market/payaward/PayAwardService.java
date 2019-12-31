@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD;
@@ -54,6 +56,7 @@ import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SCORE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SPLIT_COUPON;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.REDIS_PAY_AWARD;
 
 /**
  * 支付有礼
@@ -75,7 +78,8 @@ public class PayAwardService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private LotteryService lotteryService;
-
+    @Autowired
+    private JedisManager jedisManager;
 
     /**
      * 添加
@@ -185,6 +189,8 @@ public class PayAwardService extends ShopBaseService {
             payAward.setAwardList(null);
             payAward.update();
             db().delete(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.ID.notIn(payAwardPrizeIds)).and(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAward.getId())).execute();
+            Set<String> keys = jedisManager.keys(REDIS_PAY_AWARD + "*");
+            jedisManager.delete(keys);
             return true;
         }
         return false;
