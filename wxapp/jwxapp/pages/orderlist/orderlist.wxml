@@ -110,6 +110,7 @@
         </block>
       </block>
     </view>
+    <v-recommend id="recommend" pageName="orderlist" />
   </view>
   <include src="../common/footer.wxml" />
 </view>

@@ -46,6 +46,7 @@ global.wxPage({
       groupId: Number(groupId),
       pinGroupId: pinGroupId
     })
+    this.selectComponent('#recommend').requestData() //推荐商品请求
     // 判断用户是否登录
     that.judgeLogin()
 
@@ -441,7 +442,7 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    this.selectComponent('#recommend').requestData()
   },
 
   /**
