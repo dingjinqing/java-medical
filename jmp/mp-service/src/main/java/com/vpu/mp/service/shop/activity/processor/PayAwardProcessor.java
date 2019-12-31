@@ -156,9 +156,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 logger().info("支付有礼没有配置奖品");
                 return;
             }
-            String valueAndSave = jedisManager.getValueAndSave(REDIS_PAY_AWARD + order.getUserId(), 60000,
-                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString());
-            Integer joinAwardCount = Integer.valueOf(valueAndSave);
+            Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD + order.getUserId(), 60000,
+                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
             int circleTimes = joinAwardCount / payAwardSize;
             logger().info("循环次数:{}", circleTimes);
