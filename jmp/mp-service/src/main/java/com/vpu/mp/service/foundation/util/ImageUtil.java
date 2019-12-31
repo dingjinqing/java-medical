@@ -2,6 +2,7 @@ package com.vpu.mp.service.foundation.util;
 
 import com.thoughtworks.xstream.core.util.Base64Encoder;
 import lombok.extern.slf4j.Slf4j;
+import sun.font.FontDesignMetrics;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -212,8 +213,22 @@ public final class ImageUtil {
 			e.printStackTrace();
 		}
 		return actionJsonBase;
-
 	}
+
+    /**
+     * 获取文本内容的宽度
+     * @param font 文本使用的字体
+     * @param text 文本内容
+     * @return 文本宽度
+     */
+    public static Integer getTextWidth(Font font, String text) {
+        FontDesignMetrics metrics = FontDesignMetrics.getMetrics(font);
+        int width = 0;
+        for (int i = 0; i < text.length(); i++) {
+            width+=metrics.charWidth(text.charAt(i));
+        }
+        return width;
+    }
 
 
 }

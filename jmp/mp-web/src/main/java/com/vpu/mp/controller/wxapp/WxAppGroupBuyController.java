@@ -64,10 +64,11 @@ public class WxAppGroupBuyController extends WxAppBaseController {
      * 下载海报
      * @return
      */
-    @PostMapping("/api/wxapp/groupbuy/pictorial")
-    public JsonResult sharaToWx(@RequestBody @Valid GroupBuyInfoParam param){
+    @PostMapping("/api/wxapp/groupbuy/pictorial/info")
+    public JsonResult sharaToWx(@RequestBody GroupBuyShareInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        //TODO:
+        param.setUserId(user.getUserId());
+        shop().pictorialIntegrationService.getGroupBuyPictorialInfo(param);
         return success();
     }
 }
