@@ -60,4 +60,9 @@ public class GiftProcessor implements CreateOrderProcessor{
             giftDao.updateStockAndSales(updateparam);
         }
     }
+
+    @Override
+    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
 }
