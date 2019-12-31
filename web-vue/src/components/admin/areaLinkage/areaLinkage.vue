@@ -162,6 +162,7 @@ export default {
       } else {
         this.city = []
       }
+      this.areaDistrict = []
 
       let province = this.province.find(data => val === data.provinceId)
       if (province) {

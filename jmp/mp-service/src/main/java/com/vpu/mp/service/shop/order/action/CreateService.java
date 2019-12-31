@@ -250,11 +250,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
                     processorFactory.processStockAndSales(param,order);
-                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), false);
+                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
                 }
             });
-            //释放锁
-            atomicOperation.releaseLocks();
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
         } catch (DataAccessException e) {
@@ -268,6 +266,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (Exception e) {
             logger().error("下单捕获mp异常", e);
             return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
+        }finally {
+            //释放锁
+            atomicOperation.releaseLocks();
         }
         //购物车删除
         if(OrderConstant.CART_Y.equals(param.getIsCart())){

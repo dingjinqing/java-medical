@@ -382,6 +382,7 @@ public class BargainService extends ShopBaseService  {
             bargainGoods.setIsPrd(goodsInfo.getIsDefaultProduct());
             if(goodsInfo.getIsDefaultProduct().equals(GoodsConstant.IS_DEFAULT_PRODUCT_Y)){
                 bargainGoods.setMaxPrice(goodsInfo.getShopPrice());
+                bargainGoods.setPrdId(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getDefaultPrdId(goodsInfo.getGoodsId()));
             }else{
                 bargainGoods.setMaxPrice(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getMaxPrdPrice(goodsInfo.getGoodsId()));
             }

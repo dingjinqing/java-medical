@@ -39,6 +39,11 @@ public enum MpTemplateConfig {
             "预约到期提醒",
             "{{first.DATA}}单据号：{{keyword1.DATA}}开始时间：{{keyword2.DATA}}{{remark.DATA}}"),
 
+    APPOINTMENT_SUCCESS(
+        "OPENTM410419150",
+        "预约成功通知",
+        "{{first.DATA}}服务名称：{{keyword1.DATA}}预约日期：{{keyword2.DATA}}预约人：{{keyword3.DATA}}联系电话：{{keyword4.DATA}}预约机构：{{keyword5.DATA}}{{remark.DATA}}"),
+
     PAYMENT_REMINDER(
             "OPENTM401751289",
             "订单待付款提醒",
