@@ -1,4 +1,5 @@
 var base = require("../base/base.js");
+var util = require("../../../utils/util.js");
 global.wxComponent({
   mixins: [base],
 
@@ -72,6 +73,9 @@ global.wxComponent({
         DialogClass,
         DialogStyle
       })
+    },
+    goCustomLink(e){
+      util.jumpLink(e.currentTarget.dataset.link,'navigateTo')
     }
   }
 });

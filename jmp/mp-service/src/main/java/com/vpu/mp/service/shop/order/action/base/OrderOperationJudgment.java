@@ -94,13 +94,13 @@ public class OrderOperationJudgment {
 	
 	/**
 	 * 	退运费，买家操作
-	 * @param order
+	 * @param shippingFee 运费
 	 * @param returnShipingFee 已退运费/已退+此次要退
      * @param flag true query;false execute
 	 * @return true可退；false不可退
 	 */
-	public static Boolean adminIsReturnShipingFee(OrderListInfoVo order , BigDecimal returnShipingFee, boolean flag) {
-        int result = BigDecimalUtil.compareTo(order.getShippingFee(), returnShipingFee);
+	public static Boolean adminIsReturnShipingFee(BigDecimal shippingFee , BigDecimal returnShipingFee, boolean flag) {
+        int result = BigDecimalUtil.compareTo(shippingFee, returnShipingFee);
         if(flag) {
             if(result <= 0) {
                 return Boolean.FALSE;

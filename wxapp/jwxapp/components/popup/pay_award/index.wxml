@@ -49,7 +49,7 @@
         <text>去看看 ></text>
       </view>
       <view class="custom-item" wx:if="{{giftInfo.giftType === 7 && hasGift}}">
-        <image src="{{imageUrl}}image/wxapp/share_dis.jpg" lazy-load="{{true}}"></image>
+        <image bindtap="goCustomLink" src="{{giftInfo.awardInfo.customImage}}" data-link="{{giftInfo.awardInfo.customLink}}" lazy-load="{{true}}"></image>
       </view>
       <view class="no_award" wx:if="{{giftInfo.giftType!==0 && !hasGift}}">
         <image src="{{imageUrl}}image//wxapp/paygift_no_award.png" lazy-load="{{true}}"></image>

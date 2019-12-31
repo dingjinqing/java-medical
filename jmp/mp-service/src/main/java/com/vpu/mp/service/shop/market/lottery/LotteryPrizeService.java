@@ -58,7 +58,7 @@ public class LotteryPrizeService  extends ShopBaseService {
             if (randNumber < record.getChanceNumerator()) {
                 //中奖了
                 if (record.getAwardTimes() >= record.getLotteryNumber()) {
-                    //奖品发完了(^0^)
+                    //奖品发完了
                     joinValid.setFlag(false);
                     break;
                 }

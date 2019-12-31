@@ -61,16 +61,8 @@ public class BargainService extends ShopBaseService  {
     @Autowired
     private QrCodeService qrCode;
     @Autowired
-    protected DomainConfig domainConfig;
-	
-	/**
-	 * 启用状态 
-	 */
-	public static final byte STATUS_NORMAL = 1;
-	/**
-	 * 停用状态 
-	 */
-	public static final byte STATUS_DISABLED = 0;
+    private DomainConfig domainConfig;
+
 	
 	/**
 	 * 活动类型 固定人数
@@ -133,16 +125,16 @@ public class BargainService extends ShopBaseService  {
             Timestamp now = DateUtil.getLocalDateTime();
             for(byte state : param.getState()){
                 if(state == 1){
-                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.lt(now)).and(BARGAIN.END_TIME.gt(now)));
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.START_TIME.lt(now)).and(BARGAIN.END_TIME.gt(now)));
                 }
                 if(state == 2){
-                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.gt(now)));
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.START_TIME.gt(now)));
                 }
                 if(state == 3){
-                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.END_TIME.lt(now)));
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.END_TIME.lt(now)));
                 }
                 if(state == 4){
-                    stateCondition = stateCondition.or(BARGAIN.STATUS.eq(STATUS_DISABLED));
+                    stateCondition = stateCondition.or(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                 }
             }
             select.where(stateCondition);
@@ -318,7 +310,7 @@ public class BargainService extends ShopBaseService  {
     public Map<Integer,List<BargainRecord>> getBargainRecordByGoodsIds(List<Integer> goodsIds, Timestamp date){
         return db().select(BARGAIN.ID,BARGAIN.GOODS_ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
             .from(BARGAIN)
-            .where(BARGAIN.STATUS.eq(STATUS_NORMAL))
+            .where(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(BARGAIN.GOODS_ID.in(goodsIds))
             .and(BARGAIN.START_TIME.lessThan(date))
@@ -390,6 +382,7 @@ public class BargainService extends ShopBaseService  {
             bargainGoods.setIsPrd(goodsInfo.getIsDefaultProduct());
             if(goodsInfo.getIsDefaultProduct().equals(GoodsConstant.IS_DEFAULT_PRODUCT_Y)){
                 bargainGoods.setMaxPrice(goodsInfo.getShopPrice());
+                bargainGoods.setPrdId(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getDefaultPrdId(goodsInfo.getGoodsId()));
             }else{
                 bargainGoods.setMaxPrice(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getMaxPrdPrice(goodsInfo.getGoodsId()));
             }

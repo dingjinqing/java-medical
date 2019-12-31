@@ -70,6 +70,12 @@
       <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.refundAmount")}}：</text>
       <text><text style="color:{{comColor}}">￥{{ returnMoney }}</text></text>
     </view>
+    <view class="order-info" wx:if="{{selectGoodIds.length && isRefund && orderInfo.returnShippingFee}}">
+      <block>
+        <text><text class="order-place">*</text>运费退款金额：</text>
+        <text style="color:{{comColor}}">￥{{orderInfo.returnShippingFee}}</text>
+      </block>
+    </view>
     <view class="order-info">
       <view>
         <text class="order-place">*</text>

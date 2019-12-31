@@ -72,7 +72,7 @@
               </view>
               <view>
                 <text class="order-item-title">{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
-                <text>￥{{item.shippingFee}}</text>
+                <text>￥{{item.shippingFee?item.shippingFee:canReturnShippingFee}}</text>
               </view>
             </block>
             <view wx:if="{{item.refundRefuseReason != '' && item.refundRefuseReason != null}}">
@@ -153,11 +153,11 @@
             </block>
             <view class='order-item-title'>
               <text>{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
-              ￥{{item.shippingFee}}
+              ￥{{item.shippingFee?item.shippingFee:canReturnShippingFee}}
             </view>
             <view class='order-item-title return_descs clearfix' wx:if='{{item.reasonDesc != "" }}'>
-              <text>{{i18n.$t(localePack,"page1.afterSale.refundInstruct")}}：</text>
-              <text class='return_shuom'>{{item.reasonDesc}}</text>
+              <text style="float:left;">{{i18n.$t(localePack,"page1.afterSale.refundInstruct")}}：</text>
+              <text class='return_shuom' style="width:518rpx;height:auto;">{{item.reasonDesc}}</text>
             </view>
             <view wx:if="{{item.goodsImages && item.goodsImages.length>0}}">
               <text class="order-item-title">{{i18n.$t(localePack,"page1.afterSale.refundCertificate")}}：</text>

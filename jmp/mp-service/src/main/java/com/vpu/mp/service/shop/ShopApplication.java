@@ -27,7 +27,7 @@ import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.image.postertraits.PictorialService;
+import com.vpu.mp.service.shop.image.postertraits.PictorialIntegrationService;
 import com.vpu.mp.service.shop.image.postertraits.UserCenterTraitService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.channel.ChannelService;
@@ -107,7 +107,7 @@ public class ShopApplication {
 	@Autowired
 	public QrCodeService qrCode;
 	@Autowired
-	public PictorialService pictorialService;
+	public PictorialIntegrationService pictorialIntegrationService;
 	@Autowired
 	public ImageCategoryService imageCatgory;
 	@Autowired

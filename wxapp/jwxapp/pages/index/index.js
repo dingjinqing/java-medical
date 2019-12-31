@@ -31,6 +31,8 @@ global.wxPage({
     );
     // 初始化收藏有礼
     this.renderCollectData()
+    // 初始化开屏有礼
+    this.openGiftRequest()
   },
 
   //  渲染装修模块
@@ -41,9 +43,9 @@ global.wxPage({
       pageContent: pageContent
     });
   },
-  
+
   // 收藏有礼相关
-  renderCollectData() {
+  renderCollectData () {
     var _this = this
     util.api('/api/wxapp/collectGift/switch', function (res) {
       if (res.error == 0) {
@@ -103,20 +105,123 @@ global.wxPage({
   },
 
   // 收藏提示弹窗
-  bindShowCollectMp(e) {
+  bindShowCollectMp (e) {
     this.setData({
       show_collect_mp_tips: true
     });
   },
 
   // 奖励是否领取
-  closeCollectMp() {
+  closeCollectMp () {
     this.setData({
       collect_gift: 0
     })
   },
 
+  // 开屏有礼
+  openGiftRequest () {
+    util.api('/api/wxapp/enterpolitely/index', (res) => {
+      if (res.error === 0 && res.content && res.content.awardType !== 0) {
+        console.log(res, 'openGift')
+        let { show } = res.content
+        console.log(res.content, 'res.content')
+        let awardInfo = this.getAwardInfo(res.content)
+        console.log(awardInfo, '---')
+        this.setData({
+          openGiftDialog: true,
+          awardInfo
+        })
+        console.log(this.data.awardInfo, 'this.data.awardInfo')
+      } else {
 
+      }
+    }, {
+      userId: util.getCache('user_id')
+    })
+  },
+  getAwardInfo (awardInfo) {
+    const needParams = {
+      0: null,
+      1: ['couponView'],
+      2: ['couponView'],
+      3: ['lotteryId'],
+      4: ['account'],
+      5: ['product'],
+      6: ['scoreNumber'],
+      7: ['customImage', 'customImage'],
+    }
+    let formatObj = {
+      1: (() => {
+        return {
+          couponView: awardInfo.awardContent
+        }
+      })(),
+      2: (() => {
+        return {
+          couponView: awardInfo.awardContent
+        }
+      })(),
+      3: (() => {
+        return {
+          lotteryId: awardInfo.awardContent
+        }
+      })(),
+      4: (() => {
+        return {
+          account: awardInfo.awardContent
+        }
+      })(),
+      5: (() => {
+        return {
+          product: awardInfo.awardContent
+        }
+      })(),
+      6: (() => {
+        return {
+          scoreNumber: awardInfo.awardContent
+        }
+      })(),
+      7: (() => {
+        return {
+          customLink: awardInfo.awardContent,
+          customImage: awardInfo.extContent && awardInfo.extContent.customize_img_path || null
+        }
+      })()
+    }
+    const Type = {
+      1: 1,
+      2: 3,
+      3: 7,
+      4: 6,
+      5: 4,
+      6: 2
+    }
+    console.log(Type[awardInfo.awardType])
+    console.log(formatObj[Type[awardInfo.awardType]])
+    return {
+      giftInfo: {
+        giftType: Type[awardInfo.awardType],
+        awardInfo: {
+          ...this.filterObj(formatObj[Type[awardInfo.awardType]], needParams[Type[awardInfo.awardType]])
+        }
+      }
+    }
+  },
+  // 过滤需要的参数
+  filterObj (obj, arr) {
+    console.log(obj, 'obj--arr', arr, 'arr')
+
+    if (typeof obj !== "object" || !Array.isArray(arr)) {
+      throw new Error("参数格式不正确");
+    }
+    const result = {};
+    Object.keys(obj)
+      .filter(key => arr.includes(key))
+      .forEach(key => {
+        result[key] = obj[key];
+      });
+    return result;
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

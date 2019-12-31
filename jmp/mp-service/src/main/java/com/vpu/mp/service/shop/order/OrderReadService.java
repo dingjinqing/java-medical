@@ -366,7 +366,7 @@ public class OrderReadService extends ShopBaseService {
 		//获取已退运费
 		BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(rOrder.getOrderSn());
 		//退运费校验
-		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo(), returnShipingFee, true)){
+		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo().getShippingFee(), returnShipingFee, true)){
 			vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
 		}
 		//退款商品
@@ -770,6 +770,12 @@ public class OrderReadService extends ShopBaseService {
         }else {
             vo.setReturnFlag(NO);
         }
+        //获取已退运费
+        BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(param.getOrderSn());
+        //退运费校验
+        if(OrderOperationJudgment.adminIsReturnShipingFee(order.getShippingFee(), returnShipingFee, true)){
+            vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
+        }
         //退款记录
         Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());
         vo.setReturnOrderlist(new ArrayList<>(rOrders.size()));
@@ -793,6 +799,7 @@ public class OrderReadService extends ShopBaseService {
         List<String> giftOrderSns = orderGoods.getGiftOrderSns(giftId, isIncludeReturn);
         return orderInfo.getGiftOrderCount(giftOrderSns);
     }
+
     /*********************************************************************************************************/
 
 	/**

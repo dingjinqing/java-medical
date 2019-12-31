@@ -237,10 +237,11 @@
                 <template v-if="returnInfo.refundStatus == 2 || returnInfo.refundStatus == 4">
                   <p class="refund_info"> {{$t('order.refundGoodsPrice')}}：
                     <el-input-number
-                      v-model="returnInfo.money"
+                      v-model="returnMoney"
                       :precision="2"
                       :controls="false"
                       :min="0"
+                      :max="returnInfo.money"
                       size="small"
                       controls-position="right"
                     ></el-input-number>
@@ -249,12 +250,13 @@
                          $t('order.returnShippingFee')
                       }}：
                     <el-input-number
-                      v-model="canReturnShippingFee"
+                      v-model="shippingFee"
                       size="small"
                       controls-position="right"
                       :precision="2"
                       :controls="false"
                       :min="0"
+                      :max="returnInfo.canReturnShippingFee"
                     ></el-input-number>
                     {{
                         getCurrencyPool_0 + '，' + $t('order.maxRefundShippingFee') +
@@ -264,21 +266,21 @@
                   </p>
                   <p>
                     {{$t('order.totalRefundPrice') + '：' + getCurrencyPool_1}}
-                    <span class="text-warning refund-money">0.00</span>
+                    <span class="text-warning refund-money">{{refundtotalPrice.toFixed(2)}}</span>
                     =
                     <template v-if="returnInfo.orderInfo.bkOrderMoney > 0">
                       <span>{{$t('order.bk_order_money') + '：' + getCurrencyPool_1}}
-                        <span class="text-warning refund-bk-order-money">0.00</span> +
+                        <span class="text-warning refund-bk-order-money">{{bk_order_money.toFixed(2)}}</span> +
                       </span>
                     </template>
                     {{$t('order.member_card_balance') + '：' + getCurrencyPool_1}}
-                    <span class="text-warning refund-member-card-money">0.00</span> +
+                    <span class="text-warning refund-member-card-money">{{member_card_balance.toFixed(2)}}</span> +
                     {{$t('order.use_account') + '：' + getCurrencyPool_1}}
-                    <span class="text-warning refund-balance-money">0.00</span> +
+                    <span class="text-warning refund-balance-money">{{refund_balance_money.toFixed(2)}}</span> +
                     {{$t('order.score_discount') + '：' + getCurrencyPool_1}}
-                    <span class="text-warning refund-score-money">0.00</span> +
+                    <span class="text-warning refund-score-money">{{refund_score_money.toFixed(2)}}</span> +
                     {{$t('order.money_paid') + '：' + getCurrencyPool_1}}
-                    <span class="text-warning refund-pay-money">0.00</span>
+                    <span class="text-warning refund-pay-money">{{refund_pay_money.toFixed(2)}}</span>
                   </p>
                   <p class="tips">{{$t('order.refundTips')}}</p>
                 </template>
@@ -350,7 +352,7 @@
                   <template>
                     <img
                       v-for="(image , index) in getReturnImageArray"
-                      :src="$imageHost + image"
+                      :src="$imageHost + '/' + image"
                       alt=""
                       :key="index"
                     />
@@ -363,7 +365,7 @@
               <td colspan="3">
                 {{
                   returnInfo.returnType != 1 ?
-                  returnInfo. shippingOrRefundTime:
+                  returnInfo.shippingOrRefundTime:
                   returnInfo.applyTime
                 }}
               </td>
@@ -478,13 +480,13 @@
                   <li>{{$t('order.logisticsVoucherImages') + '：'}}
                     <a
                       v-for="(image , index) in getVoucherImages"
-                      :href="$imageHost + image"
+                      :href="$imageHost + '/' + image"
                       :title="$t('order.showBigImage')"
                       target="_blank"
                       :key="index"
                     >
                       <img
-                        :src="$imageHost + image"
+                        :src="$imageHost + '/' + image"
                         alt=""
                         style='max-width: 50px;max-height: 50px'
                       />
@@ -641,7 +643,21 @@ export default {
         return_address: null,
         mobile: null,
         zip_code: null
-      }
+      },
+      returnMoney: 0,
+      shippingFee: 0,
+      returnAmountMap: {
+        bk_order_money: 0,
+        member_card_balance: 0,
+        use_account: 0,
+        score_discount: 0,
+        money_paid: 0
+      },
+      member_card_balance: 0.00,
+      refund_balance_money: 0.00,
+      refund_score_money: 0.00,
+      refund_pay_money: 0.00,
+      bk_order_money: 0.00
     }
   },
   created () {
@@ -696,8 +712,8 @@ export default {
         orderSn: this.returnInfo.orderSn,
         action: 1,
         returnOperate: returnOperate,
-        returnMoney: this.returnInfo.money,
-        shippingFee: this.returnInfo.canReturnShippingFee,
+        returnMoney: this.returnMoney,
+        shippingFee: this.shippingFee,
         reasonDesc: this.refusalInfo,
         returnType: this.returnInfo.returnType,
         retId: this.returnInfo.retId,
@@ -714,6 +730,9 @@ export default {
       this.searchParam.returnOrderSn = returnOrderSn
       returnInfo(this.searchParam).then(res => {
         this.returnInfo = res.content
+        this.returnMoney = this.returnInfo.money
+        this.shippingFee = this.returnInfo.shippingFee
+        this.returnAmountMap = res.content.calculateMoney
         this.setRecordLogicStatus(this.returnInfo.operatorRecord)
         this.setAutoTime()
       }).catch(() => {
@@ -721,7 +740,7 @@ export default {
     },
     setRecordLogicStatus (operatorRecord) {
       operatorRecord.forEach(record => {
-        if ((record.status === 4 && returnInfo.returnType === 0) || record.status === 1) {
+        if (record.status === 4 || (returnInfo.returnType === 0 && record.status === 1)) {
           // 发起申请
           record.logicStatus = 1
         } else if (record.status === 6 && returnInfo.returnType === 0) {
@@ -802,6 +821,23 @@ export default {
     lang () {
       this.langDefault()
       this.arrayToMap()
+    },
+    refundtotalPrice (newVal) {
+      let totalPrice = newVal
+      this.bk_order_money = totalPrice > this.returnAmountMap.bk_order_money ? this.returnAmountMap.bk_order_money : totalPrice
+      totalPrice -= this.bk_order_money
+
+      this.member_card_balance = totalPrice > this.returnAmountMap.member_card_balance ? this.returnAmountMap.member_card_balance : totalPrice
+      totalPrice -= this.member_card_balance
+
+      this.refund_balance_money = totalPrice > this.returnAmountMap.use_account ? this.returnAmountMap.use_account : totalPrice
+      totalPrice -= this.refund_balance_money
+
+      this.refund_score_money = totalPrice > this.returnAmountMap.score_discount ? this.returnAmountMap.score_discount : totalPrice
+      totalPrice -= this.refund_score_money
+
+      this.refund_pay_money = totalPrice > this.returnAmountMap.money_paid ? this.returnAmountMap.money_paid : totalPrice
+      totalPrice -= this.refund_pay_money
     }
   },
   computed: {
@@ -814,17 +850,16 @@ export default {
       return this.currencyPool[this.returnInfo.currency][this.lang][1]
     },
     getReturnImageArray () {
-      return (this.returnInfo.goodsImages == null
-        ? []
-        : this.returnInfo.goodsImages.split(','))
+      return JSON.parse(this.returnInfo.goodsImages)
     },
     getVoucherImages () {
-      return (this.returnInfo.voucherImages == null
-        ? []
-        : this.returnInfo.voucherImages.split(','))
+      return this.returnInfo.voucherImages
     },
     toShippingView () {
       return 'https://www.kuaidi100.com/chaxun?com=' + this.returnInfo.shippingCode + '&nu=' + this.returnInfo.shippingNo
+    },
+    refundtotalPrice () {
+      return this.returnMoney + this.shippingFee
     }
   }
 }

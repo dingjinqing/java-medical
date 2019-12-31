@@ -3,6 +3,7 @@
   "usingComponents": {
     "v-decorate": "/components/decorate/decorate/index",
     "v-popup-collect-mp-tips": "/components/popup/collect-mp-tips/index",
-    "v-popup-collect-coupon": "/components/popup/collect-coupon/index"
+    "v-popup-collect-coupon": "/components/popup/collect-coupon/index",
+    "v-pay-award": "/components/popup/pay_award/index"
   }
 }
