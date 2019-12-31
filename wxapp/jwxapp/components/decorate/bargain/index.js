@@ -53,28 +53,85 @@ global.wxComponent({
         util.showModal('提示', '商品已删除');
       } else if (d.is_on_sale == 0 || d.goods_number <= 0) {
         util.showModal('提示', '商品已下架');
-      } else if (d.act_status == 0 || d.time_state == 2 || d.actDelFlag == 1) {
+      } else if (d.act_status == 0 || d.time_state == 2 || d.act_del_flag == 1) {
         this.navigateToItem(d.goods_id);
       } else {
-        if (d.is_prd == 1) {
+
+        if (d.prd_id == null) {
           console.log(d.link)
           util.jumpLink(d.link);
-        } else if (d.is_prd == 0) {
-          var choose_list = util.values(d, ['bargain_id', 'goods_id', 'goods_price', 'prd_id']);
-          choose_list.user_id = util.getCache('user_id');
+        } else {
           util.api("/api/wxapp/bargain/apply", function (res) {
             console.log(res)
             if (res.error == 0) {
               var data = res.content;
-              var url = "/pages/bargaininfo/bargaininfo?record_id=" + data.record_id + "&bargain_money=" + data.bargain_money;
-              util.jumpLink(url);
+              if (data.resultCode == 0) {
+                var url = "/pages/bargaininfo/bargaininfo?record_id=" + data.recordId;
+                util.jumpLink(url);
+              } else if (data.resultCode == 1) {
+                util.showModal('提示', '该活动不存在');
+              } else if (data.resultCode == 2) {
+                util.showModal('提示', '该活动已停用');
+              } else if (data.resultCode == 3) {
+                util.showModal('提示', '该活动未开始');
+              } else if (data.resultCode == 4) {
+                util.showModal('提示', '该活动已结束');
+              } else if (data.resultCode == 5) {
+                util.showModal('提示', '商品库存不足');
+              } else if (data.resultCode == -1) {
+                util.showModal('提示', '操作失败');
+              }
             } else {
               _this.navigateToItem(d.goods_id);
             }
           }, {
-            choose_list: JSON.stringify(choose_list)
+            bargainId: d.bargain_id,
+            prdId: d.prd_id
           })
         }
+
+        
+
+
+
+
+
+        // if (d.is_prd == 1) {
+        //   console.log(d.link)
+        //   util.jumpLink(d.link);
+        // } else {
+        //   // var choose_list = util.values(d, ['bargain_id', 'goods_id', 'goods_price', 'prd_id']);
+        //   // choose_list.user_id = util.getCache('user_id');
+        //   util.api("/api/wxapp/bargain/apply", function (res) {
+        //     console.log(res)
+        //     if (res.error == 0) {
+        //       var data = res.content;
+        //       if (data.resultCode == 0) {
+        //         // var url = "/pages/bargaininfo/bargaininfo?record_id=" + data.recordId + "&bargain_money=" + data.bargain_money;
+        //         var url = "/pages/bargaininfo/bargaininfo?record_id=" + data.recordId;
+        //         util.jumpLink(url);
+        //       } else if (data.resultCode == 1) {
+        //         util.showModal('提示', '该活动不存在');
+        //       } else if (data.resultCode == 2) {
+        //         util.showModal('提示', '该活动已停用');
+        //       } else if (data.resultCode == 3) {
+        //         util.showModal('提示', '该活动未开始');
+        //       } else if (data.resultCode == 4) {
+        //         util.showModal('提示', '该活动已结束');
+        //       } else if (data.resultCode == 5) {
+        //         util.showModal('提示', '商品库存不足');
+        //       } else if (data.resultCode == -1) {
+        //         util.showModal('提示', '操作失败');
+        //       }
+        //     } else {
+        //       _this.navigateToItem(d.goods_id);
+        //     }
+        //   }, {
+        //     // choose_list: JSON.stringify(choose_list)
+        //     bargainId: d.bargain_id,
+        //     prdId: d.prd_id
+        //   })
+        // }
       }
     }
   }

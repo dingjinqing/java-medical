@@ -356,7 +356,19 @@
                     :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
                     @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
                   >
-                    <span slot="before">
+                    <!-- <span slot="before">
+                      {{scope.row.productNumber}} /
+                    </span> -->
+                    <span
+                      slot="before"
+                      v-if="!scope.row.productNumber"
+                    >
+                      {{scope.row.prdNumber}} / {{scope.row.prdNumber}}
+                    </span>
+                    <span
+                      slot="before"
+                      v-if="scope.row.productNumber"
+                    >
                       {{scope.row.productNumber}} /
                     </span>
                   </inputEdit>
