@@ -454,7 +454,7 @@ import { addBargain, getBargainByIsd, updateBargain } from '@/api/admin/marketMa
 
 export default {
   components: { addCoupon, actShare, AddCouponDialog, choosingGoods },
-  mounted() {
+  mounted () {
     this.langDefault()
     if (this.$route.query.id > 0) {
       // 编辑砍价活动
@@ -485,7 +485,7 @@ export default {
     }
   },
   filters: {
-    formatLeastConsume(useConsumeRestrict, leastConsume) {
+    formatLeastConsume (useConsumeRestrict, leastConsume) {
       if (useConsumeRestrict === 0) {
         return `不限制`
       } else {
@@ -493,7 +493,7 @@ export default {
       }
     }
   },
-  data() {
+  data () {
     return {
       // 向帮忙砍价的用户赠送优惠券
       mrkingVoucherObjs: [],
@@ -562,19 +562,19 @@ export default {
   },
   methods: {
     // 选择优惠券弹窗-帮忙砍价的用户
-    handleToCallDialog1() {
+    handleToCallDialog1 () {
       this.dialogFlag = 0
       this.couponIdList = this.getCouponIdsArray(this.mrkingVoucherObjs)
       this.showCouponDialog = !this.showCouponDialog
     },
     // 选择优惠券弹窗-砍价失败后向买家赠送
-    handleToCallDialog2() {
+    handleToCallDialog2 () {
       this.dialogFlag = 1
       this.couponIdList = this.getCouponIdsArray(this.rewardCouponObjs)
       this.showCouponDialog = !this.showCouponDialog
     },
     // 确认选择优惠券-新增-删除
-    handleToCheck(data, index) {
+    handleToCheck (data, index) {
       console.log(data)
       console.log(this.rewardCouponObjs)
       if (this.dialogFlag === 1) {
@@ -591,19 +591,19 @@ export default {
       }
     },
     // 删除好友砍价优惠券图片
-    deleteCouponImg(index) {
+    deleteCouponImg (index) {
       this.mrkingVoucherObjs.splice(index, 1)
     },
     // 删除鼓励奖优惠券图片
-    deleteCouponImg2(index) {
+    deleteCouponImg2 (index) {
       this.rewardCouponObjs.splice(index, 1)
     },
     // 选择商品弹窗
-    showChoosingGoods() {
+    showChoosingGoods () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     //  选择商品弹窗确认
-    choosingGoodsResult(row) {
+    choosingGoodsResult (row) {
       this.param.goodsId = row.goodsId
       this.goodsRow = []
       this.goodsRow.push(row)
@@ -611,7 +611,7 @@ export default {
       this.goodsIdList.push(row.goodsId)
       this.param.stock = this.goodsRow[0].goodsNumber
     },
-    addSubmit() {
+    addSubmit () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.param.shareConfig = this.shareConfig
@@ -635,7 +635,7 @@ export default {
         }
       })
     },
-    updateSubmit() {
+    updateSubmit () {
       // 更新活动
       this.param.id = this.actId
       this.param.shareConfig = this.shareConfig
@@ -654,7 +654,7 @@ export default {
         }
       })
     },
-    getCouponIdsString(data) {
+    getCouponIdsString (data) {
       let res = ''
       data.forEach((item, index) => {
         if (index === 0) {
@@ -665,7 +665,7 @@ export default {
       })
       return res
     },
-    getCouponIdsArray(data) {
+    getCouponIdsArray (data) {
       let res = []
       data.forEach((item, index) => {
         res.push(item.id)
@@ -673,11 +673,11 @@ export default {
       return res
     },
     // 改变箭头事件
-    handleToChangeArror() {
+    handleToChangeArror () {
       this.arrorFlag = !this.arrorFlag
     },
     // 提交前校验
-    validParam() {
+    validParam () {
       if (!this.param.goodsId) {
         this.$message.warning(this.$t('addBargainAct.vaildGoodsSelect'))
         return false

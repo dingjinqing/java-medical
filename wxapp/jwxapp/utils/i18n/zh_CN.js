@@ -6,6 +6,7 @@ var store = require('./pages/store.js')
 var afterSale = require('./page1/afterSale.js') // 售后中心
 var fight = require('./page1/fight.js') // 拼团
 var reserve = require('./page1/reserve.js') // 预约
+var usercenter = require('./page1/usercenter.js') // 个人中心
 var decorate = require('./components/decorate/decorate.js')
 var zh_CN = {
   "common": {
@@ -41,40 +42,6 @@ var zh_CN = {
       "disableLogin": "您已被禁止登录",
       "contactMerchant": "联系商家",
     },
-    "usercenter": {
-      "available": "今日可领",
-      "qrcTitle": "今日已领",
-      "qrcTitleB": "积分",
-      "signIn": "签到",
-      "continuouslySignedIn": "已连续签到",
-      "day": "天",
-      "signInForPoints ": "签到领积分",
-      "checkInToday": "今日签到可获取",
-      "checkInTomorrow": "明日连续签到可获取",
-      "checkIn": "已签到",
-      "membershipCard": "您有一张等级会员卡可领取",
-      "collectImmediately ": "立即领取",
-      "viewAllOrders": "查看全部订单",
-      "waitPay": "待付款",
-      "waitDeliver": "待发货",
-      "waitReceive": "待收货",
-      "waitComment": "评价",
-      "refund": "退款中",
-      "allOrders": "全部订单",
-      "viewAllAppointments": "查看全部预约",
-      "appointmentTime": "预约到店时间",
-      "collect": "商品收藏",
-      "buyHistory": "历史购买",
-      "footPrint": "我的足迹",
-      "distribution": "分销中心",
-      "bargain": "我的砍价",
-      "award": "我的奖品",
-      "commentList": "我的评价",
-      "storeList": "门店列表",
-      "userActivate": "会员激活",
-      "orderVerify": "扫码核销",
-      "presentList": "礼物记录"
-    },
     "store": Object.assign({}, {
       "searchGoods": "搜索商品",
       "noClassification": "暂无分类",
@@ -89,7 +56,8 @@ var zh_CN = {
     "comment": comment,
     "afterSale": afterSale,
     "fight": fight,
-    "reserve": reserve
+    "reserve": reserve,
+    "usercenter": usercenter
   },
   "page2": {
 

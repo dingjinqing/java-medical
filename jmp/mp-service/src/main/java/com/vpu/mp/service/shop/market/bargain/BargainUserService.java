@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
 import com.vpu.mp.db.shop.tables.records.BargainUserListRecord;
@@ -13,6 +14,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserExportVo;
@@ -22,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -41,6 +44,9 @@ import java.util.List;
  */
 @Service
 public class BargainUserService extends ShopBaseService{
+
+    @Autowired
+    private DomainConfig domainConfig;
 
 	public PageResult<BargainUserListQueryVo> getPageList(BargainUserListQueryParam param){
 		SelectWhereStep<? extends Record> select = db().select(
@@ -315,12 +321,30 @@ public class BargainUserService extends ShopBaseService{
         return db().selectFrom(BARGAIN_USER_LIST).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.RECORD_ID.eq(recordId))).orderBy(BARGAIN_USER_LIST.CREATE_TIME.asc()).fetchOne();
     }
 
+    /**
+     * 帮忙砍价的用户列表
+     * @param recordId
+     * @return
+     */
     public List<BargainInfoVo.BargainUser> getBargainUserList(int recordId){
-        return db().select(BARGAIN_USER_LIST.asterisk(),USER.USERNAME,USER.WX_OPENID,USER_DETAIL.USER_AVATAR).from(
+        List<BargainInfoVo.BargainUser> res =  db().select(BARGAIN_USER_LIST.asterisk(),USER.USERNAME,USER.WX_OPENID,USER_DETAIL.USER_AVATAR).from(
             BARGAIN_USER_LIST
             .leftJoin(USER).on(USER.USER_ID.eq(BARGAIN_USER_LIST.USER_ID))
             .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(BARGAIN_USER_LIST.USER_ID))
         ).where(BARGAIN_USER_LIST.RECORD_ID.eq(recordId)).orderBy(BARGAIN_USER_LIST.CREATE_TIME.asc()).limit(20).fetchInto(BargainInfoVo.BargainUser.class);
+        res.forEach(user->{
+            user.setUserAvatar(domainConfig.imageUrl(user.getUserAvatar()));
+        });
+        return res;
+    }
+
+    /**
+     * 用户当天砍价次数
+     * @param userId
+     * @return
+     */
+    public int getUserTodayCutTimes(int userId){
+        return db().selectCount().from(BARGAIN_USER_LIST).leftJoin(BARGAIN_RECORD).on(BARGAIN_USER_LIST.RECORD_ID.eq(BARGAIN_RECORD.ID)).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.CREATE_TIME.gt(DateUtil.getLocalTimeDate()))).fetchOptionalInto(Integer.class).orElse(0);
     }
 
 }

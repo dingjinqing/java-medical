@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -17,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
+import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardRecordService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import com.vpu.mp.service.shop.member.AccountService;
@@ -42,6 +44,7 @@ import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SCORE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SPLIT_COUPON;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_NO_STOCK;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_RECEIVED;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_UNRECEIVED;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
@@ -75,6 +78,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     private ScoreService scoreService;
     @Autowired
     private OrderInfoService orderInfoService;
+    @Autowired
+    private LotteryService lotteryService;
 
     @Override
     public Byte getPriority() {
@@ -165,9 +170,17 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 return;
             }
             logger().info("礼物数量校验");
-            Boolean canSendAwardFlag = payAwardRecordService.canSendAward(payAward.getId(), payAwardContentBo.getId());
-            if (!canSendAwardFlag) {
-                logger().info("礼物发放数量超过上限");
+            PayAwardPrizeRecord awardInfo = payAwardRecordService.getAwardInfo(payAward.getId(), payAwardContentBo.getId());
+            boolean canSendAwardFlag =true;
+            if (awardInfo.getAwardNumber()!=null&&awardInfo.getSendNum()<awardInfo.getAwardNumber()){
+                int i = payAwardRecordService.updateAwardStock(payAward.getId(), payAwardContentBo.getId());
+                if (i<1){
+                    canSendAwardFlag =false;
+                }else {
+                    logger().info("礼物发完了");
+                }
+            }else {
+                logger().info("礼物已发完");
             }
             PayAwardRecordRecord payAwardRecordRecord = db().newRecord(PAY_AWARD_RECORD);
             payAwardRecordRecord.setAwardId(payAward.getId());
@@ -178,7 +191,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             payAwardRecordRecord.setGiftType(payAwardContentBo.getGiftType());
             // 定点杆添加支付有礼id
             order.setPayAwardId(payAward.getId());
-            sendAward(param, order, payAward, payAwardContentBo, payAwardRecordRecord);
+            sendAward(canSendAwardFlag, order, payAward, payAwardContentBo, payAwardRecordRecord);
             payAwardRecordRecord.insert();
         } catch (Exception e) {
             logger().error("支付有礼活动异常");
@@ -190,14 +203,14 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     /**
      * 发送奖品
      *
-     * @param param
+     * @param canSendAwardFlag
      * @param order
      * @param payAward
      * @param payAwardContentBo
      * @param payAwardRecordRecord
      * @throws MpException
      */
-    private void sendAward(OrderBeforeParam param, OrderInfoRecord order, PayAwardVo payAward, PayAwardContentBo payAwardContentBo, PayAwardRecordRecord payAwardRecordRecord) throws MpException {
+    private void sendAward(boolean canSendAwardFlag, OrderInfoRecord order, PayAwardVo payAward, PayAwardContentBo payAwardContentBo, PayAwardRecordRecord payAwardRecordRecord) throws MpException {
         switch (payAwardContentBo.getGiftType()) {
             case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
@@ -211,67 +224,98 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 if (integers != null) {
                     couponArray = integers.stream().map(Object::toString).toArray(String[]::new);
                 }
-                CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
-                couponGive.setUserIds(Collections.singletonList(order.getUserId()));
-                couponGive.setCouponArray(couponArray);
-                couponGive.setActId(payAward.getId());
-                couponGive.setAccessMode((byte) 0);
-                couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
-                /**
-                 * 发送优惠卷
-                 */
-                CouponGiveQueueBo sendData = couponGiveService.handlerCouponGive(couponGive);
-                payAwardRecordRecord.setSendData(Util.listToString(new ArrayList<>(sendData.getCouponSet())));
+                if (canSendAwardFlag){
+                    CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
+                    couponGive.setUserIds(Collections.singletonList(order.getUserId()));
+                    couponGive.setCouponArray(couponArray);
+                    couponGive.setActId(payAward.getId());
+                    couponGive.setAccessMode((byte) 0);
+                    couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
+                    /**
+                     * 发送优惠卷
+                     */
+                    CouponGiveQueueBo sendData = couponGiveService.handlerCouponGive(couponGive);
+                    if (sendData.getCouponSet().size()>0){
+                        payAwardRecordRecord.setSendData(Util.listToString(new ArrayList<>(sendData.getCouponSet())));
+                        payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
+                        payAwardRecordRecord.setAwardData(payAwardContentBo.getCouponIds());
+                        return;
+                    }
+                }
+                payAwardRecordRecord.setSendData("");
+                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getCouponIds());
-                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
                 break;
             case GIVE_TYPE_LOTTERY:
                 logger().info("幸运大抽奖");
+                if (canSendAwardFlag){
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_UNRECEIVED);
+                }else {
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
+                }
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getLotteryId().toString());
-                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_UNRECEIVED);
                 break;
             case GIVE_TYPE_BALANCE:
                 logger().info("余额");
-                AccountParam accountParam = new AccountParam() {{
-                    setUserId(order.getUserId());
-                    setAmount(payAwardContentBo.getAccountNumber());
-                    setOrderSn(order.getOrderSn());
-                    setPayment(PAY_CODE_BALANCE_PAY);
-                    setIsPaid(UACCOUNT_RECHARGE.val());
-                    setRemark("支付有礼活动");
-                }};
-                TradeOptParam tradeOptParam = TradeOptParam.builder()
-                        .tradeType(TYPE_CRASH_PAY_AWARD.val())
-                        .tradeFlow(TRADE_FLOW_IN.val())
-                        .build();
-                accountService.updateUserAccount(accountParam, tradeOptParam);
-                logger().info("余额发放完成");
+                if (canSendAwardFlag){
+                    AccountParam accountParam = new AccountParam() {{
+                        setUserId(order.getUserId());
+                        setAmount(payAwardContentBo.getAccountNumber());
+                        setOrderSn(order.getOrderSn());
+                        setPayment(PAY_CODE_BALANCE_PAY);
+                        setIsPaid(UACCOUNT_RECHARGE.val());
+                        setRemark("支付有礼活动");
+                    }};
+                    TradeOptParam tradeOptParam = TradeOptParam.builder()
+                            .tradeType(TYPE_CRASH_PAY_AWARD.val())
+                            .tradeFlow(TRADE_FLOW_IN.val())
+                            .build();
+                    accountService.updateUserAccount(accountParam, tradeOptParam);
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
+                    payAwardRecordRecord.setSendData(payAwardContentBo.getAccountNumber().toString());
+                }else {
+                    logger().info("余额发放完成");
+                    payAwardRecordRecord.setSendData("");
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
+                }
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getAccountNumber().toString());
-                payAwardRecordRecord.setSendData(payAwardContentBo.getAccountNumber().toString());
-                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
                 break;
             case GIVE_TYPE_GOODS:
                 logger().info("奖品");
-                //TODO ...
+                if (canSendAwardFlag){
+                    //TODO ...
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_UNRECEIVED);
+                }else {
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
+                }
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getProductId().toString());
-                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_UNRECEIVED);
                 break;
             case GIVE_TYPE_SCORE:
                 logger().info("积分");
-                ScoreParam scoreParam = new ScoreParam();
-                scoreParam.setScore(payAwardContentBo.getScoreNumber());
-                scoreParam.setUserId(new Integer[]{order.getUserId()});
-                scoreParam.setOrderSn(order.getOrderSn());
-                scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
-                scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());
+                if (canSendAwardFlag){
+                    ScoreParam scoreParam = new ScoreParam();
+                    scoreParam.setScore(payAwardContentBo.getScoreNumber());
+                    scoreParam.setUserId(new Integer[]{order.getUserId()});
+                    scoreParam.setOrderSn(order.getOrderSn());
+                    scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                    scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
+                    payAwardRecordRecord.setSendData(payAwardContentBo.getScoreNumber().toString());
+                }else {
+                    payAwardRecordRecord.setSendData("");
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
+                }
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getScoreNumber().toString());
-                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
-                payAwardRecordRecord.setSendData(payAwardContentBo.getScoreNumber().toString());
                 break;
             case GIVE_TYPE_CUSTOM:
                 logger().info("自定义");
+                payAwardRecordRecord.setSendData("");
                 payAwardRecordRecord.setAwardData(Util.toJson(payAwardContentBo));
-                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_UNRECEIVED);
+                if (canSendAwardFlag){
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_UNRECEIVED);
+                }else {
+                    payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
+                }
                 break;
             default:
         }
