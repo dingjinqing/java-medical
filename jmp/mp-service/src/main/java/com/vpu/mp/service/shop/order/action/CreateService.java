@@ -250,7 +250,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
                     processorFactory.processStockAndSales(param,order);
-                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), false);
+                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
                 }
             });
             //释放锁
