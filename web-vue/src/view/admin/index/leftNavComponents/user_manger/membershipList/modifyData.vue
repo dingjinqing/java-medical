@@ -18,6 +18,7 @@
                         :precision="2"
                         :controls="false"
                         size="small"
+                        :max="999999999"
                         :placeholder="$t('membershipIntroduction.Pleasecontent')"
                         :class="{errorClass: inputError}"
                         @blur="inputCheckValid"
@@ -26,7 +27,7 @@
                     <span>{{model.tips}}</span>
                 </div>
                 <div v-if="inputError" class="show-item">
-                    <span style="color: red">请输入数额</span>
+                    <span class="error-tips">请输入数额</span>
                 </div>
                 <div class="show-item">
                     <span>{{model.bzText}}</span>
@@ -54,14 +55,14 @@
                     type="primary"
                     @click="submitData(model.index)"
                 >
-                    {{ certain(model.index) }}
+                    {{ certain() }}
                 </el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
-import { accountAddRequest } from '@/api/admin/membershipList.js'
+import { accountAddRequest, scoreUpdateRequest } from '@/api/admin/membershipList.js'
 export default {
   props: {
     model: {
@@ -81,7 +82,9 @@ export default {
     }
   },
   methods: {
-    certain (index) {
+    certain () {
+      console.log('->', this.model.index)
+      let index = this.model.index
       // 余额
       if (index === 0) {
         return this.$t('membershipIntroduction.accountCertain')
@@ -102,6 +105,7 @@ export default {
       }
     },
     submitAccount () {
+      // 余额更新
       accountAddRequest(
         {
           'userId': this.userId,
@@ -111,16 +115,34 @@ export default {
         }
       ).then(res => {
         if (res.error === 0) {
-          this.$message.success(this.$t('membershipIntroduction.success'))
-          this.$emit('submitRes', true)
+          this.success()
         } else {
-          this.$message.error(this.$t('membershipIntroduction.error'))
-          this.$emit('submitRes', false)
+          this.fail()
         }
       })
     },
     submitScore () {
-
+      // 积分更新
+      scoreUpdateRequest({
+        'userId': [this.userId],
+        'score': this.inputValue,
+        'remark': this.desc,
+        'scoreDis': this.model.persentMoney
+      }).then(res => {
+        if (res.error === 0) {
+          this.success()
+        } else {
+          this.fail()
+        }
+      })
+    },
+    success () {
+      this.$message.success(this.$t('membershipIntroduction.success'))
+      this.$emit('submitRes', true)
+    },
+    fail () {
+      this.$message.error(this.$t('membershipIntroduction.error'))
+      this.$emit('submitRes', false)
     },
     inputCheckValid () {
       console.log('check input info')
@@ -160,6 +182,10 @@ export default {
                /deep/ .el-input__inner{
                     border-color: red !important;
                 }
+            }
+            .error-tips{
+                color: red;
+                font-size: 13px;
             }
         }
     }
