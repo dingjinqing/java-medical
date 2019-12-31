@@ -37,7 +37,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
@@ -196,7 +199,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 }
                 award.setExtContent(new HashMap<String, String>(INTEGER_TWO) {{
                     put("title", bo.getTitle());
-                    put("bg_img", Optional.ofNullable(bo.getBgImg()).orElse(imageUrl(DEFAULT_COUPON_BG_IMG)));
+                    put("bg_img", StringUtils.isBlank(bo.getBgImg()) ? imageUrl(DEFAULT_COUPON_BG_IMG) : bo.getBgImg());
                 }});
                 record.setMrkingVoucherId(awardContent);
                 break;
