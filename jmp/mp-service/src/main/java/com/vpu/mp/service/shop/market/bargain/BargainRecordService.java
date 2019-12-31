@@ -366,7 +366,12 @@ public class BargainRecordService extends ShopBaseService {
             }
             vo.setRecordInfo(recordInfo);
 
-            //砍价用户
+            //图片地址
+            vo.getRecordInfo().setGoodsImg(domainConfig.imageUrl(recordInfo.getGoodsImg()));
+            vo.getRecordInfo().setUserAvatar(domainConfig.imageUrl(recordInfo.getUserAvatar()));
+
+
+            //帮忙砍价用户
             vo.setRecordUserList(bargainUser.getBargainUserList(recordId));
 
             vo.setTimestamp(DateUtil.getLocalDateTime());
@@ -477,6 +482,26 @@ public class BargainRecordService extends ShopBaseService {
             }
         }
         return 0;
+    }
+
+    /**
+     * 帮助砍价
+     * @param userId
+     * @param recordId
+     * @return
+     */
+    public BargainCutVo getBargainCut(int userId,int recordId){
+        BargainCutVo vo = new BargainCutVo();
+
+        //判断今天砍价次数
+        int daileCutTimes = saas.getShopApp(getShopId()).config.bargainCfg.getDailyCutTimes();
+        int userTodayCutTimes = bargainUser.getUserTodayCutTimes(userId);
+        if(daileCutTimes > 0 && userTodayCutTimes >= daileCutTimes){
+            vo.setState((byte)1);
+            return vo;
+        }
+
+return vo;
     }
 
 }

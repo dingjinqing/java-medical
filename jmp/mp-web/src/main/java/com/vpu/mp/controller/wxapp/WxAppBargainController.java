@@ -2,11 +2,10 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainApplyParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainApplyVo;
-import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoParam;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordSimpleParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordListQueryParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,8 +59,19 @@ public class WxAppBargainController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/api/wxapp/bargain/info")
-    public JsonResult bargainInfo(@RequestBody @Valid BargainInfoParam param) {
+    public JsonResult bargainInfo(@RequestBody @Valid BargainRecordSimpleParam param) {
         WxAppSessionUser user = wxAppAuth.user();
         return success(shop().bargain.bargainRecord.getBargainInfo(user.getUserId(),param.getRecordId()));
+    }
+
+    /**
+     * 帮助砍价
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/bargain/cut")
+    public JsonResult getBargainCut(@RequestBody @Valid BargainRecordSimpleParam param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        return success(shop().bargain.bargainRecord.getBargainCut(user.getUserId(),param.getRecordId()));
     }
 }
