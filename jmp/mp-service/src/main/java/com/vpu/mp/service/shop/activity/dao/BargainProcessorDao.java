@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -130,5 +131,16 @@ public class BargainProcessorDao extends ShopBaseService {
 
 
         return BaseConstant.ACTIVITY_STATUS_CAN_USE;
+    }
+
+
+    //砍价下单
+
+    /**
+     * 处理砍价订单的价格
+     * @param param
+     */
+    public void setOrderPrdBargainPrice(OrderBeforeParam param){
+        //TODO
     }
 }

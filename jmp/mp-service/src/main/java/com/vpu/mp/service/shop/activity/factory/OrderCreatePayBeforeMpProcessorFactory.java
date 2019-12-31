@@ -37,7 +37,7 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
     /**
      * 全局的活动  支付有礼
      */
-    private final static List<Byte> globaActivity = Arrays.asList(
+    private final static List<Byte> globalActivity = Arrays.asList(
             BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
             BaseConstant.ACTIVITY_TYPE_GIFT
     );
@@ -68,7 +68,7 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
             if (generalActivity.contains(processor.getActivityType())){
                 processorGeneralList.add(processor);
             }
-            if (globaActivity.contains(processor.getActivityType())){
+            if (globalActivity.contains(processor.getActivityType())){
                 processorGlobalList.add(processor);
             }
         }
@@ -80,7 +80,7 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      * @throws MpException
      */
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
-        if (param.getActivityId()!=null){
+        if (param.getActivityId()!=null && param.getActivityType()!=null){
             //单一营销
             processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);
         }else {

@@ -245,4 +245,9 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         }
 
     }
+
+    @Override
+    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
 }

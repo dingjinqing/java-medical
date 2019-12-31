@@ -237,7 +237,7 @@ public class PaymentService extends ShopBaseService {
 			goods.setGoodsInfo(orderGood);
 			orderBeforeParam.getGoods().add(goods);
 		});
-		payAwardProcessor.processSaveOrderInfo(orderBeforeParam,orderInfo);
+		payAwardProcessor.processPayCallback(orderBeforeParam,orderInfo);
 	}
 
     /**

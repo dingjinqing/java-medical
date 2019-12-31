@@ -182,4 +182,9 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
     public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 
     }
+
+    @Override
+    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
 }
