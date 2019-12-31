@@ -658,8 +658,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 增加会员卡消费记录
-	 * 
+	 * 	增加会员卡消费记录
 	 * @param tradeType  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
 	 * @param isContinue 卡余额时（次数或余额）在休息时间内（23:00-8:00）是否继续发送消息：true继续，false停止
 	 */

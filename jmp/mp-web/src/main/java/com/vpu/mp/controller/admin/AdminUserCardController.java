@@ -1,13 +1,19 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
-import com.vpu.mp.service.pojo.wxapp.store.ValidCon;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.pojo.shop.member.account.CardConsumeParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean.UserCardConsumeBeanBuilder;
+import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
+import com.vpu.mp.service.pojo.wxapp.store.ValidCon;
 
 /**
 * @author 黄壮壮
@@ -36,4 +42,47 @@ public class AdminUserCardController extends AdminBaseController {
     public JsonResult getStoreValidCardList(@RequestBody @Validated(ValidCon.class) StoreParam param) {
         return this.success(shop().userCard.userCardDao.getStoreValidCardList(param.getUserId(), param.getStoreId()));
     }
+    
+    /**
+     *	 增加减少会员卡余额和次数
+     */
+    @PostMapping("/api/admin/user/card/consume")
+    public JsonResult chargeConsume(CardConsumeParam param) {
+    	UserCardConsumeBeanBuilder consumer = UserCardConsumeBean.builder();
+    	Byte cardType = param.getCardType();
+    	Boolean isContinue = true;
+    	
+    	if(CardUtil.isLimitCard(cardType)) {
+    		// 限次卡
+    		if(NumberUtils.BYTE_ONE.equals(param.getType())) {
+    			// 兑换商品次数、
+    			consumer.exchangCount(param.getReduce().intValue())
+    					.countDis(param.getCountDis());
+    			if(param.getReduce().intValue()<0) {
+    				isContinue = false;
+    			}
+    		}else {
+    			// 兑换门店次数
+    			consumer.count(param.getReduce().intValue())
+    					.countDis(param.getCountDis());
+    		}
+    	}else {
+    		// 普通卡
+    		consumer.money(param.getReduce())
+    				.moneyDis(param.getMoneyDis());
+    	}
+    	
+    	UserCardConsumeBean bean = consumer.type(cardType)
+	    			.userId(param.getUserId())
+	    			.cardId(param.getCardId())
+	    			.message(param.getMessage())
+	    			.cardNo(param.getCardNo())
+	    			.build();
+    	shop().userCard.cardConsumer(bean, 0, (byte)10, (byte)2, param.getType(), isContinue);
+    	return success();
+    }
+    
+    
+    
+    
 }

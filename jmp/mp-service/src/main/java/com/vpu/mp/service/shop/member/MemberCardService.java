@@ -1549,7 +1549,7 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 		/** 1-若reason原因为空 则设置为默认值 */
 		if (data.getReason()==null) {
 			/** - 会员卡余额 */
-			data.setReason(code);
+			data.setReasonId(code);
 		}
 	}
 
@@ -1781,8 +1781,8 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * @param param
 	 * @return
 	 */
-	public PageResult<ChargeVo> getChargeList(ChargeParam param) {
-		return cardDao.getChargeList(param);
+	public PageResult<ChargeVo> getChargeList(ChargeParam param,String language) {
+		return cardDao.getChargeList(param,language);
 	}
 
 	/**
@@ -1791,9 +1791,9 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * @param param
 	 * @return
 	 */
-	public PageResult<ChargeVo> getConsumeList(ChargeParam param) {
+	public PageResult<ChargeVo> getConsumeList(ChargeParam param,String language) {
 
-		return cardDao.getConsumeList(param);
+		return cardDao.getConsumeList(param,language);
 	}
 
 	/**
