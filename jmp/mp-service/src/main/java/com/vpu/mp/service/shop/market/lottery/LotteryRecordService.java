@@ -1,14 +1,5 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
-import static com.vpu.mp.db.shop.tables.User.USER;
-
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.SelectOnConditionStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -18,6 +9,14 @@ import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 import com.vpu.mp.service.shop.member.MemberService;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.SelectOnConditionStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  *  抽奖记录
@@ -105,18 +104,22 @@ public class LotteryRecordService extends ShopBaseService {
         LotteryPrizeRecord lotteryPrize = joinValid.getLotteryPrize();
         //安慰奖
         if (lotteryPrize == null) {
+            logger().info("安慰奖");
             //送积分
             return;
         }
         //选择奖类型
         switch (lotteryPrize.getLotteryType()) {
             case 0:
+                logger().info("积分");
                 //积分
                 break;
             case 1:
+                logger().info("用户余额");
                 //用户余额
                 break;
             case 2:
+                logger().info("优惠卷");
                 //2优惠券
                 break;
             case 3:
