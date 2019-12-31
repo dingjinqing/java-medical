@@ -235,6 +235,7 @@ global.wxPage({
       this.setListCountDown(activity.groupBuyListMpVos, 'groupBuyListMpVos')
     }
   },
+  
   // 获取actBar活动名称
   getActName ({
     activityType

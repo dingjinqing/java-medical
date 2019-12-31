@@ -52,7 +52,7 @@
     <!-- 优惠券&促销信息-->
     <v-coupon-promotion coupon-list="{{couponList}}"/>
     <!--  选择规格（包含无规格情况）  -->
-    <!-- <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
+    <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
       <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">
           服务
@@ -68,7 +68,7 @@
         <view class="item_right">></view>
       </view>
       <view class="item_line" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}"></view>
-    </v-sel-spec> -->
+    </v-sel-spec>
     <!-- 拼团提示 -->
     <block wx:if="{{specParams.activity.activityType === 1 && groupBuyListMpVos.length > 0}}">
       <view class="flex_outside_box" >
