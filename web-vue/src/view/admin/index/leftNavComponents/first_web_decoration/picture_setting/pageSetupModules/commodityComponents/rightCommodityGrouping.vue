@@ -33,10 +33,12 @@
               <span>展示商品数量：</span>
               <el-radio
                 v-model="item.radio"
+                @change="handleToClickShowNumRadio(index)"
                 label="1"
               >全部{{item.goodsNum}}件</el-radio>
               <el-radio
                 v-model="item.radio"
+                @change="handleToClickShowNumRadio(index)"
                 label="2"
               >指定商品</el-radio>
             </div>
@@ -125,7 +127,7 @@
                 >展示</el-radio>
                 <el-radio
                   v-model="linkageData.group_display"
-                  label="2"
+                  label="0"
                 >不展示</el-radio>
               </div>
             </div>
@@ -325,6 +327,12 @@
       :brandBackData="[]"
       :singleElection="true"
     />
+    <!--选择商品弹窗-->
+    <ChoosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :chooseGoodsBack="chooseGoodsBack"
+      @resultGoodsDatas="resultGoodsDatas"
+    />
   </div>
 </template>
 <script>
@@ -332,7 +340,8 @@ export default {
   components: {
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'), // 选择商家分类标签弹窗
     AddProductLabel: () => import('@/components/admin/addProductLabel'), // 选择商品标签弹窗
-    AddBrandDialog: () => import('@/components/admin/addBrandDialog') // 选择商品品牌弹窗
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog'), // 选择商品品牌弹窗
+    ChoosingGoods: () => import('@/components/admin/choosingGoods') // 选择商品弹窗
   },
   props: {
     modulesData: Object,
@@ -381,7 +390,9 @@ export default {
       clickEditBtn: false, // 是否点击修改按钮
       editIndex: null, // 当前修改的index
       delVisible: false, // 删除提示框flag
-      delIndex: null // 删除下标
+      delIndex: null, // 删除下标
+      tuneUpChooseGoods: false, // 选择商品弹窗调起
+      chooseGoodsBack: [] // 选择商品弹窗回显
     }
   },
   watch: {
@@ -587,6 +598,17 @@ export default {
     handleToDel () {
       this.linkageData.goodsItems.splice(this.delIndex, 1)
       this.delVisible = false
+    },
+    // 点击指定商品
+    handleToClickShowNumRadio (index) {
+      console.log(index, this.linkageData.goodsItems[index].radio)
+      if (this.linkageData.goodsItems[index].radio === '2') {
+        this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+      }
+    },
+    // 选择商品弹窗数据回传
+    resultGoodsDatas (res) {
+      console.log(res)
     }
   }
 }

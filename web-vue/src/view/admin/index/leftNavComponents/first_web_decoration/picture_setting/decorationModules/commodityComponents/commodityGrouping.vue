@@ -9,11 +9,15 @@
       :class="activeBorder?'activeBorder':''"
     >
       <!--模块编辑区-->
-      <div class="commodityGrouping">
+      <!--菜单样式为顶部展示商品分组-->
+      <div
+        class="commodityGrouping"
+        v-if="data.menu_style==='0'"
+      >
         <div class="commodityGroupingMain">
           <div
             class="groupList"
-            v-for="(item,index) in showNav"
+            v-for="(item,index) in showNav.filter((item,index)=>data.group_display==='0'?index!==0:index!==-1)"
             :class="index===4?'greater':''"
             :key="index"
             :style="index===0?'border-bottom: 1px solid rgb(177, 78, 105);color:rgb(177, 78, 105)':index>4?'display:none':''"
@@ -25,7 +29,7 @@
         </div>
         <ul
           v-if="data.goodsItems.length"
-          :style="(data.shop_style==='1' || data.shop_style==='2')?'display: flex;flex-wrap: wrap;':''+data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:data.shop_style==='4'?'display:flex':''"
+          :style="((data.shop_style==='1' || data.shop_style==='2')?'display: flex;flex-wrap: wrap;':'')+(data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:data.shop_style==='4'?'display:flex':'')"
         >
           <li
             v-for="(item,index) in data.goods_img"
@@ -34,7 +38,7 @@
           >
             <div
               class="listClass"
-              :style="data.if_radius==='1'?'border-radius:8px;':''+data.goods_module_style==='4'?'':data.goods_module_style==='1'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':'border: 1px solid #eee !important;'+'border:0'"
+              :style="(data.module_style==='2'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':data.module_style==='3'?'border: 1px solid #eee !important;':'')+(data.if_radius==='1'?'border-radius:8px;':'')"
             >
               <div
                 class="containter"
@@ -89,17 +93,18 @@
                       class="goodsNameClass"
                       v-if="data.show_name"
                     >{{data.goods_name[index]}}</div>
+                    <div :style="!data.show_name?'height:14px':''"></div>
                     <div
                       class="activityContainer"
                       :style="(data.shop_style==='0')?'display:flex;margin-top:0':data.shop_style==='1'?'display:flex;margin-top:0':data.shop_style==='2'?'display:flex':data.shop_style==='3'?'margin-top:50px;display:flex':'display:flex'"
                     >
                       <div
-                        :style="indexC===0?'margin-right:5px;':'margin-top:0'+((data.shop_style==='0'||data.shop_style==='1')&&indexC===1)?'margin-left:5px':data.shop_style!=='3'?'margin-top:5px;':'margin-top:0'"
+                        :style="indexC===0?'':'margin-top:0'+((data.shop_style==='0'||data.shop_style==='1')&&indexC===1)?'margin-left:5px':data.shop_style!=='3'?'margin-top:5px;margin-top:0':''"
                         v-for="(itemC,indexC) in data.goods_tag[index]"
                         :key="indexC"
                         class="activitySpan"
                       >
-                        <span :style="((data.shop_style==='2'||data.shop_style==='4')?'max-width:100%;white-space: nowrap;':data.shop_style==='1'?'max-width:145px':data.shop_style==='1'?'max-width:163px':data.shop_style==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC}}</span>
+                        <span :style="((data.shop_style==='2'||data.shop_style==='4')?'max-width:100%;white-space: nowrap;margin-top:0;':data.shop_style==='1'?'max-width:145px':data.shop_style==='1'?'max-width:163px':data.shop_style==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC}}</span>
                       </div>
                     </div>
 
@@ -145,6 +150,150 @@
             </div>
           </li>
         </ul>
+      </div>
+      <!--菜单样式为左侧展示商品分组-->
+      <div
+        v-else
+        class="leftShowModule commodityGrouping"
+      >
+        <!--左侧导航条-->
+        <div class="left">
+          <div
+            class="navList"
+            v-for="(item,index) in showNav.filter((item,index)=>index!==0)"
+            :key="index"
+            :style="!index?'background: #fff;':''"
+          >
+            {{item}}
+          </div>
+        </div>
+        <!--右侧商品列表-->
+        <div class="right">
+          <div class="rightTop">
+            {{showNav.filter((item,index)=>index!==0)[0]}}
+          </div>
+          <ul
+            v-if="data.goodsItems.length"
+            :style="(data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:'')+';padding: 10px;overflow: hidden;'"
+          >
+            <li
+              v-for="(item,index) in data.goods_img"
+              :key="index"
+              style="width:100%"
+            >
+              <div
+                class="listClass"
+                :style="(data.module_style==='2'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':data.module_style==='3'?'border: 1px solid #eee !important;':'')+(data.if_radius==='1'?'border-radius:8px;':'')+';overflow:hidden'"
+              >
+                <div
+                  class="containter"
+                  style="display:flex;padding:0;height:128px"
+                >
+                  <div class="commodityTop">
+                    <div class="label">
+                      <!--左上角图形-->
+                      <!--限时降价图形-->
+                      <div
+                        class="labelStyle1"
+                        style="height:auto;width:44px"
+                        v-if="(data.label[index]?data.label[index].label_parttern:-1)===1"
+                      >
+                        <span style="display: block;word-break: break-all;width: 34px;white-space: pre-wrap;">{{data.label[index].label_name}}</span>
+                      </div>
+                      <div
+                        class="labelStyle2"
+                        v-if="(data.label[index]?data.label[index].label_parttern:-1)===2"
+                        :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
+                      >
+                        <span style="display: inline;">{{data.label[index].label_name}}</span>
+                      </div>
+                      <div
+                        class="label newGoods"
+                        v-if="(data.label[index]?data.label[index].label_parttern:-1)===3"
+                      >
+                        <span>{{data.label[index].label_name}}</span>
+                      </div>
+                      <div
+                        class="labelStyle3"
+                        v-if="(data.label[index]?data.label[index].label_parttern:-1)===4"
+                        :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
+                      >
+                        <span style="display: inline-block;">{{data.label[index].label_name}}</span>
+                      </div>
+                    </div>
+                    <img
+                      style="width:128px"
+                      :src="data.goods_img[index]"
+                    >
+                  </div>
+                  <div
+                    class="commodityBottom"
+                    style="padding-left:10px"
+                  >
+                    <div class="bottomHead">
+                      <div
+                        class="goodsNameClass"
+                        v-if="data.show_name"
+                      >{{data.goods_name[index]}}</div>
+                      <div :style="!data.show_name?'height:14px':''"></div>
+                      <div
+                        class="activityContainer"
+                        :style="'display:flex;'+(!data.show_name?'margin: 10px 0 50px;':'margin-top:50px;')"
+                      >
+                        <div
+                          :style="indexC===0?'margin-right:5px;':'margin-top:0px;'"
+                          v-for="(itemC,indexC) in data.goods_tag[index]"
+                          :key="indexC"
+                          class="activitySpan"
+                        >
+                          <span :style="'max-width:128px'+`;color:${bgColor};border-color:${bgColor};white-space:nowrap`">{{itemC}}</span>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div
+                      class="bottomFooter"
+                      style="display:flex;width:100%;flex-direction:row;width:123px"
+                    >
+                      <span
+                        :style="`color:${bgColor};position:static;padding-top:3px`"
+                        v-if="data.show_price"
+                      >￥{{Number(data.goods_price[index]).toFixed(2)}}</span>
+                      <span v-if="!data.show_price"></span>
+                      <span
+                        :style="'text-decoration: line-through;color: #c0c0c0;position:static'+(data.other_message?'width: 50px;padding-top: 3px;':'')"
+                        v-if="data.shop_style!=='2'&&data.other_message"
+                      >{{data.show_market==='1'?'￥0.00':data.show_market==='2'?'0人付款':'0人评价'}}</span>
+                      <!--购买按钮-->
+                      <i
+                        class="iconfont icontianjia icon_font_size new_class"
+                        :style="`color:${bgColor};`+'position:static'"
+                        v-if="data.cart_btn&&data.cart_btn_choose === '0'"
+                      ></i>
+                      <i
+                        class="iconfont icongouwuche1 icon_font_size new_class"
+                        :style="`color:${bgColor};`+'position:static'"
+                        v-if="data.cart_btn&&data.cart_btn_choose === '1'"
+                      ></i>
+                      <i
+                        class="right_buy new_back"
+                        style="`position:static;backgroundColor:${bgColor};`"
+                        v-if="data.cart_btn&&data.cart_btn_choose==='2'"
+                      >
+                        {{$t('commodity.grabAtOnce')}}
+                      </i>
+                      <i
+                        class="cart_buy"
+                        :style="`position:static;color:${bgColor};border-color:${bgColor};`"
+                        v-if="data.cart_btn&&data.cart_btn_choose==='3'"
+                      >{{$t('commodity.purchase')}}</i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
       <!--模块编辑区结束-->
       <div class="item_module_title">
@@ -500,7 +649,7 @@ export default {
               }
               div:nth-of-type(2) {
                 font-size: 12px;
-                margin-top: 5px;
+                // margin-top: 5px;
                 span {
                   padding: 1px 4px;
                   border-radius: 2px;
@@ -574,6 +723,31 @@ export default {
           }
         }
       }
+    }
+  }
+}
+.leftShowModule {
+  display: flex;
+  height: 506px;
+  .left {
+    width: 23%;
+    height: 100%;
+    overflow-y: hidden;
+    background: #f5f5f5;
+    .navList {
+      width: 100%;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      padding: 17px 13px 17px 11px;
+    }
+  }
+  .right {
+    flex: 1;
+    .rightTop {
+      width: 100%;
+      padding: 17px 15px 5px 13px;
+      font-size: 16px;
     }
   }
 }
