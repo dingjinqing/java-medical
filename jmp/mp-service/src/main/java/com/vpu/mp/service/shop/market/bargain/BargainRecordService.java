@@ -366,11 +366,8 @@ public class BargainRecordService extends ShopBaseService {
             }
             vo.setRecordInfo(recordInfo);
 
-            //图片地址
+            //商品图片地址
             vo.getRecordInfo().setGoodsImg(domainConfig.imageUrl(recordInfo.getGoodsImg()));
-            if(recordInfo.getUserAvatar() != null){
-                vo.getRecordInfo().setUserAvatar(domainConfig.imageUrl(recordInfo.getUserAvatar()));
-            }
 
             //帮忙砍价用户
             vo.setRecordUserList(bargainUser.getBargainUserList(recordId));
