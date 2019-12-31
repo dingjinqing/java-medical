@@ -253,8 +253,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
                 }
             });
-            //释放锁
-            atomicOperation.releaseLocks();
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
         } catch (DataAccessException e) {
@@ -268,6 +266,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (Exception e) {
             logger().error("下单捕获mp异常", e);
             return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
+        }finally {
+            //释放锁
+            atomicOperation.releaseLocks();
         }
         //购物车删除
         if(OrderConstant.CART_Y.equals(param.getIsCart())){
