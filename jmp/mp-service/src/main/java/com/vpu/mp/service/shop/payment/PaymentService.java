@@ -25,8 +25,8 @@ import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
 import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.STORE_ORDER_SN_PREFIX;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_WAIT_SERVICE;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_SERVICE;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.STORE_SERVICE_ORDER_SN_PREFIX;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_PAY;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
@@ -101,9 +101,9 @@ public class PaymentService extends ShopBaseService {
         String prefix = orderSn.substring(0,1);
         switch (prefix) {
             //TODO 订单根据前缀判断处理类型,将字面量替换为对应常量
-            case "S":
+            case STORE_SERVICE_ORDER_SN_PREFIX:
                 //服务订单统一支付回调
-                serviceOrderService.updateServiceOrderStatus(orderSn, ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
+                onPayNotifyService(param);
                 break;
             case STORE_ORDER_SN_PREFIX:
                 //门店买单订单统一支付回调
@@ -265,5 +265,33 @@ public class PaymentService extends ShopBaseService {
         // 完成支付
         storeOrder.finishPayCallback(orderInfo, paymentRecord);
         logger().info("门店买单订单统一支付回调SUCCESS完成！");
+    }
+
+    /**
+     * On pay notify service.
+     *
+     * @param param the param
+     * @throws WxPayException the wx pay exception
+     */
+    public void onPayNotifyService(PaymentRecordParam param) throws WxPayException {
+        String orderSn = param.getOrderSn();
+        ServiceOrderRecord orderInfo = serviceOrderService.getRecord(orderSn);
+        if (Objects.isNull(orderInfo)) {
+            logger().error("服务订单统一支付回调（onPayNotifyService）：订单【订单号：{}】不存在！", orderSn);
+            throw new WxPayException("onPayNotifyStore：orderSn 【" + orderSn + "】not found ！");
+        }
+        if (NumberUtils.createBigDecimal(param.getTotalFee()).compareTo(orderInfo.getMoneyPaid()) != INTEGER_ZERO) {
+            logger().error("服务订单统一支付回调（onPayNotifyService）：订单【订单号：{}】实付金额不符【系统计算金额：{} != 微信支付金额：{}】！", orderSn, orderInfo.getMoneyPaid(), param.getTotalFee());
+            throw new WxPayException("onPayNotifyStore：orderSn 【 " + orderSn + "】 pay amount  did not match ！");
+        }
+        if (!ORDER_STATUS_WAIT_PAY.equals(orderInfo.getOrderStatus())) {
+            logger().info("服务订单统一支付回调（onPayNotifyService）：订单【订单号：{}】已支付！", orderSn);
+            return;
+        }
+        // 添加支付记录（wx）
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+        // 完成支付
+        serviceOrderService.finishPayCallback(orderInfo, paymentRecord);
+        logger().info("服务订单统一支付回调SUCCESS完成！");
     }
 }
