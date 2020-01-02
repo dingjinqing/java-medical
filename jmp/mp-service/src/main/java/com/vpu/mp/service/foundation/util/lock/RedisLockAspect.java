@@ -245,7 +245,6 @@ public final class RedisLockAspect extends ShopBaseService {
             if (fail.size() < keys.size()) {
                 //获取批量锁失败
                 logger().error("批量锁获取失败,当前获取到:{}", fail.toString());
-                log.error("批量锁获取失败,当前获取到:{}", fail.toString());
                 releaseLocks(fail, currentValue.get());
             } else {
                 logger().info("批量锁获取成功，执行后续方法");
