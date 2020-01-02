@@ -228,9 +228,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		} catch (DataAccessException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
-				return ExecuteResult.create(((MpException) cause).getErrorCode());
+				return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getCodeParam());
 			} else {
-				return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, e.getMessage());
 			}
 		} catch (Exception e) {
 			logger.error("退款捕获mp异常", e);

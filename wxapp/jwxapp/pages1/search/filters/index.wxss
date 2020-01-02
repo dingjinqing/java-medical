@@ -83,7 +83,7 @@
   position: absolute;
   bottom: 0;
 }
-.filter-footer > view{
+.filter-footer > .reset,.filter-footer > .confirm{
   flex: 1;
   line-height: 90rpx;
 }

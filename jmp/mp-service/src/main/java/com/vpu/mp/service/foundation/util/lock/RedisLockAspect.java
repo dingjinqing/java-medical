@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
  * @author 王帅
  */
 @Aspect
-@Slf4j
 @Component
 public final class RedisLockAspect extends ShopBaseService {
 
@@ -54,7 +53,7 @@ public final class RedisLockAspect extends ShopBaseService {
 
     @Around("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.RedisLock)")
     public void around(ProceedingJoinPoint joinPoint) throws MpException {
-        log.info("redis环绕批量锁start");
+        logger().info("redis环绕批量锁start");
         //keys
         List<String> keys = null;
         //开始时间
@@ -65,14 +64,14 @@ public final class RedisLockAspect extends ShopBaseService {
         //获取方法签名
         MethodSignature methodSignature = (MethodSignature) signature;
         addLocks(joinPoint);
-        log.info("redis环绕批量锁调用代理方法start");
+        logger().info("redis环绕批量锁调用代理方法start");
         try {
             joinPoint.proceed();
         } catch (Throwable throwable) {
-            log.error("批量锁执行joinPoint.proceed()异常", throwable);
+            logger().error("批量锁执行joinPoint.proceed()异常", throwable);
             throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
         }
-        log.info("redis环绕批量锁调用代理方法end");
+        logger().info("redis环绕批量锁调用代理方法end");
 
 
     }
@@ -131,7 +130,7 @@ public final class RedisLockAspect extends ShopBaseService {
                         keys.add(PropertyUtils.getProperty(keyObj, keyFieldName).toString());
                     }
                 }catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    log.error("redis获取锁PropertyUtils.getProperty错误");
+                    logger().error("redis获取锁PropertyUtils.getProperty错误");
                     throw new MpException(JsonResultCode.CODE_ORDER_GOODS_GET_LOCK_FAIL, "redis获取锁PropertyUtils.getProperty错误");
                 }
             }
@@ -157,7 +156,7 @@ public final class RedisLockAspect extends ShopBaseService {
             try {
                 keys.add(PropertyUtils.getProperty(args[keyIndex.intValue()], keyFieldName).toString());
             }catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                log.error("redis获取锁PropertyUtils.getProperty错误");
+                logger().error("redis获取锁PropertyUtils.getProperty错误");
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_GET_LOCK_FAIL, "redis获取锁PropertyUtils.getProperty错误");
             }
         }
@@ -207,7 +206,7 @@ public final class RedisLockAspect extends ShopBaseService {
 
     @Before("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.operation.AddRedisLocks)")
     public void addLocks(JoinPoint joinPoint) throws MpException {
-        log.info("AddRedisLocks,加redis锁start");
+        logger().info("AddRedisLocks,加redis锁start");
         //keys
         List<String> keys;
         //开始时间
@@ -218,7 +217,7 @@ public final class RedisLockAspect extends ShopBaseService {
         keys = getKeys(joinPoint.getArgs(),(MethodSignature) signature);
         //keys为空，则结束
         if(CollectionUtils.isEmpty(keys)){
-            log.info("AddRedisLocks,加redis锁(keys is null)end");
+            logger().info("AddRedisLocks,加redis锁(keys is null)end");
             return;
         }
         currentValue.set(Util.randomId());
@@ -245,10 +244,10 @@ public final class RedisLockAspect extends ShopBaseService {
             addLocks(keys, currentValue.get(), redisLockAnnotation.expiredTime(), fail);
             if (fail.size() < keys.size()) {
                 //获取批量锁失败
-                log.error("批量锁获取失败,当前获取到:{}", fail.toString());
+                logger().error("批量锁获取失败,当前获取到:{}", fail.toString());
                 releaseLocks(fail, currentValue.get());
             } else {
-                log.info("批量锁获取成功，执行后续方法");
+                logger().info("批量锁获取成功，执行后续方法");
                 break;
             }
         } while (nano - System.nanoTime() < redisLockAnnotation.maxWait() * 1000000);
@@ -257,13 +256,15 @@ public final class RedisLockAspect extends ShopBaseService {
             releaseLocks(fail, currentValue.get());
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_GET_LOCK_FAIL);
         }
-        log.info("AddRedisLocks,加redis锁end");
+        logger().info("AddRedisLocks,加redis锁end");
     }
 
     @Before("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.operation.ReleaseRedisLocks)")
     public void releaseLocks(JoinPoint joinPoint){
-        log.info("AddRedisLocks,释放redis锁start");
+        logger().info("AddRedisLocks,释放redis锁start");
         releaseLocks(currentKeys.get(), currentValue.get());
-        log.info("AddRedisLocks,释放redis锁end");
+        //释放锁后清除key
+        currentKeys.get().clear();
+        logger().info("AddRedisLocks,释放redis锁end");
     }
 }
