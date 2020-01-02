@@ -582,6 +582,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
 					//待发货+规格库存
 					GoodsSpecProductRecord product = products.get(rGoods.getProductId());
+					if(product == null){
+                        continue;
+                    }
 					product.setPrdNumber(product.getPrdNumber() + rGoods.getGoodsNumber());
 					//规格库存加入更新数组
 					updateProducts.add(product);
@@ -591,6 +594,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			}
 			//销量修改
 			GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
+			if(normalGoods == null){
+                continue;
+            }
 			goods.setGoodsSaleNum(goods.getGoodsSaleNum() - rGoods.getGoodsNumber());
 			updateNormalGoods.add(goods);
 			}
