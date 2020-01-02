@@ -119,6 +119,7 @@ global.wxPage({
       url: '/pages/index/index',
     })
   },
+  // 砍价商品详情
   toItem: function () {
     var bargain_id = bargain_info.recordInfo.bargainId;
     util.reLaunch({
@@ -151,6 +152,7 @@ global.wxPage({
       url: '/pages/bargainusers/bargainusers?record_id=' + record_id,
     })
   },
+  // 直接购买
   to_buy: function () {
     util.navigateTo({
       url: "/pages/item/item?goods_id=" + bargain_info.recordInfo.goodsId
@@ -193,6 +195,7 @@ global.wxPage({
     // 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
     wx.stopPullDownRefresh();
   },
+  // 关闭弹窗
   guan: function (e) {
     var that = this;
     that.setData({
@@ -211,6 +214,7 @@ global.wxPage({
       is_success: 1
     })
   },
+  // 帮忙砍价
   toKnajia: function (e) {
     var that = this;
     // var form_info = {};
@@ -242,6 +246,7 @@ global.wxPage({
     }, { record_id: record_id });
 
   },
+  // 订单详情
   toOrder: function (e) {
     var order_sn = e.currentTarget.dataset.order_sn;
     util.navigateTo({
