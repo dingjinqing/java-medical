@@ -277,10 +277,6 @@ global.wxPage({
     let total_micro_second = actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime
     this.countdown(total_micro_second, actState, activityType)
   },
-  // 获取最小值
-  getMin (arr) {
-    return Math.min(...arr);
-  },
   // 倒计时
   countdown (total_micro_second, actState, activityType) {
       this.actBartime=setInterval(()=>{

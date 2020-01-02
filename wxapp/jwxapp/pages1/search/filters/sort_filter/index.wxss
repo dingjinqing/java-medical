@@ -17,7 +17,7 @@
   display: flex;
   z-index: 2;
 }
-.sort-item > .back > image{
+.sort-item > .back > .back-image{
   width: 14rpx;
   height: 28rpx;
   vertical-align: middle;
@@ -28,7 +28,7 @@
   text-align: center;
   margin-left: -60rpx;
 }
-.sort-item > .arrow > image{
+.sort-item > .arrow > .arrow-image{
   width: 26rpx;
   height: 16rpx;
   transition: transform 0.3s;
@@ -44,6 +44,6 @@
   padding-left: 40rpx;
   color: #666;
 }
-.sort-item > .arrow > image.up{
+.sort-item > .arrow > .arrow-image.up{
   transform: rotate(180deg);
 }

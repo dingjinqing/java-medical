@@ -23,7 +23,7 @@
   padding: 40rpx 0;
 }
 
-.popup-buttons button {
+.popup-buttons .button {
   width: 100%;
   height: 90rpx;
   line-height: 90rpx;
