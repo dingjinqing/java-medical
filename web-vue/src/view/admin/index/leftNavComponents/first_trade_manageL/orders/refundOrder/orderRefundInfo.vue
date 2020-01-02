@@ -288,7 +288,10 @@
                   <p class="refund_info">{{$t('order.refundGoodsPrice')}}：<span class="text-warning"> {{getCurrencyPool_1 + returnInfo.money}}</span></p>
                   <p class="refund_info">{{$t('order.shippingFee')}}：<span class="text-warning">{{getCurrencyPool_1 + returnInfo.shippingFee}}</span></p>
 
-                  <p v-if="returnInfo.refundStatus == 5">
+                  <span
+                    v-if="returnInfo.refundStatus == 5"
+                    class="refund_info"
+                  >
                     {{$t('order.returnInfo')}}：
                     <span
                       v-for="(value,key,index) in returnInfo.calculateMoney"
@@ -304,7 +307,7 @@
                         </span>
                       </template>
                     </span>
-                  </p>
+                  </span>
                 </template>
               </td>
             </tr>

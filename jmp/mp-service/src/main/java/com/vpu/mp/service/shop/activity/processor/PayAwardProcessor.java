@@ -115,6 +115,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
     }
 
     /**
@@ -293,11 +294,12 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 return;
             }
             Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId(), 60000,
-                () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
+                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
-            int circleTimes = joinAwardCount / payAwardSize;
+            int circleTimes = (joinAwardCount+1) / payAwardSize;
             logger().info("循环次数:{}", circleTimes);
             if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes() <= circleTimes) {
+                jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId());
                 logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
                 return;
             }
@@ -307,6 +309,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             logger().info("当前奖励:" + payAwardContentBo.toString());
             if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_NO_PRIZE)) {
                 logger().info("当前奖励无奖品");
+                jedisManager.decr(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId());
                 return;
             }
             logger().info("礼物数量校验");

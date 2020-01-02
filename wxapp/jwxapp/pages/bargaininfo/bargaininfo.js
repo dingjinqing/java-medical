@@ -119,6 +119,7 @@ global.wxPage({
       url: '/pages/index/index',
     })
   },
+  // 砍价商品详情
   toItem: function () {
     var bargain_id = bargain_info.recordInfo.bargainId;
     util.reLaunch({
@@ -151,6 +152,7 @@ global.wxPage({
       url: '/pages/bargainusers/bargainusers?record_id=' + record_id,
     })
   },
+  // 直接购买
   to_buy: function () {
     util.navigateTo({
       url: "/pages/item/item?goods_id=" + bargain_info.recordInfo.goodsId
@@ -193,6 +195,7 @@ global.wxPage({
     // 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
     wx.stopPullDownRefresh();
   },
+  // 关闭弹窗
   guan: function (e) {
     var that = this;
     that.setData({
@@ -211,11 +214,12 @@ global.wxPage({
       is_success: 1
     })
   },
+  // 帮忙砍价
   toKnajia: function (e) {
     var that = this;
-    var form_info = {};
-    var open_id = util.getCache("openid");
-    var form_id = e.detail.formId;
+    // var form_info = {};
+    // var open_id = util.getCache("openid");
+    // var form_id = e.detail.formId;
     if (util.getCache('mobile') == '' && bargain_info.recordInfo.need_bind_mobile == 1) {
       util.checkSession(function () {
         that.setData({
@@ -224,11 +228,12 @@ global.wxPage({
       })
       return false;
     }
+    // 帮助砍价
     util.api("/api/wxapp/bargain/cut", function (res) {
       if (res.error == 0) {
         that.setData({
           is_help: 1,
-          cut_money: res.content.bargain_money
+          cut_money: res.content.bargainMoney
         })
         setTimeout(function () {
           clearTimeout(set_time_out);
@@ -238,9 +243,10 @@ global.wxPage({
         util.showModal('提示', res.content);
         return false;
       }
-    }, { record_id: record_id, open_id: open_id, form_id: form_id });
+    }, { record_id: record_id });
 
   },
+  // 订单详情
   toOrder: function (e) {
     var order_sn = e.currentTarget.dataset.order_sn;
     util.navigateTo({
