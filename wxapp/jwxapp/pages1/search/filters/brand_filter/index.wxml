@@ -3,7 +3,7 @@
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="sort-item">
       <view class="back" bindtap="bindClose">
-        <image src="{{imageUrl}}/image/wxapp/category_back.png"></image>
+        <image class="back-image" src="{{imageUrl}}/image/wxapp/category_back.png"></image>
       </view>
       <view class="center-title">更多品牌</view>
     </view>
@@ -19,7 +19,7 @@
     </scroll-view>
     <view class="zimu">
       <block wx:for="{{brand_keys}}" wx:key="index">
-        <text bindtap='scrollToView' data-id="{{item}}">{{item}}</text>
+        <text class="zumu-item" bindtap='scrollToView' data-id="{{item}}">{{item}}</text>
       </block>
     </view>
   </view>
