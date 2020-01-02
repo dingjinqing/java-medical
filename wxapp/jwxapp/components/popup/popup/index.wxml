@@ -1,7 +1,7 @@
 <view bindtap='bindBackTap' class="back-mask horizon-{{horizon}} vertical-{{vertical}} " style='{{back_style}}'  wx:if="{{ show }}" >
   <view class="popup" catchtap="bindNullClick" style="margin-top:{{margin_top_nav + 8}}px">
     <view class='close-container {{close_pos}} {{hide_close ? " hide ": " "}}'>
-      <image src='{{close_img_url}}' bindtap='bindClose' style="margin-top:{{close_pos == 'mask-corner' ? margin_top_nav + 8 : '' }}px"></image>
+      <image src='{{close_img_url}}' bindtap='bindClose' class="image" style="margin-top:{{close_pos == 'mask-corner' ? margin_top_nav + 8 : '' }}px"></image>
       <view class="vertical-line"></view>
     </view>
     <slot />
