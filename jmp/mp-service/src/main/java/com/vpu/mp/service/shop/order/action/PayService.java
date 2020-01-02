@@ -204,17 +204,9 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         orderInfo.setPayTime(DateUtil.getSqlTimestamp());
         orderInfo.setPaySn(payRecord == null ? StringUtils.EMPTY : payRecord.getPaySn());
         orderInfo.update();
-        //TODO 更新拼团状态
 
         //订单商品
         List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
-        // 更新拼团状态
-        if (goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
-            GroupOrderVo byOrder = groupBuyListService.getByOrder(orderInfo.getOrderSn());
-            String goodsName =goods.get(0).getGoodsName();
-            String goodsPrice =goods.get(0).getGoodsPrice().toString();
-            groupBuyService.groupBuySuccess(orderInfo.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
-        }
         //库存销量
         atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
         //TODO 异常订单处理等等
@@ -230,5 +222,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         });
 
     }
+
+
 
 }
