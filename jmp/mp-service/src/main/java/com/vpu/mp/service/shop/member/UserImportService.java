@@ -9,21 +9,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,11 +42,16 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.IdentityUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportActivePojo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -81,7 +84,9 @@ public class UserImportService extends ShopBaseService {
 			"大型设备/机电设备/重工业", "加工制造（原料加工/模具）", "汽车/摩托车（制造/维护/配件/销售/服务）", "交通/运输/物流", "医药/生物工程", "医疗/护理/美容/保健", "医疗设备/器械",
 			"酒店/餐饮", "娱乐/体育/休闲", "旅游/度假", "石油/石化/化工", "能源/矿产/采掘/冶炼", "电气/电力/水利", "航空/航天", "学术/科研", "政府/公共事业/非盈利机构",
 			"环保", "农/林/牧/渔", "跨领域经营", "其它" };
+	private static final Byte ONE = 1;
 
+	private static final String DATE_FORMATE="yyyy/MM/dd";
 	/**
 	 * 设置用户导入通知
 	 * 
@@ -233,10 +238,11 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String birthday = userImportPojo.getBirthday();
-
+			System.out.println("生日");
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
-					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(ExcelUtil.DATE_FORMAT));
+					//ExcelUtil.DATE_FORMAT
+					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(DATE_FORMATE));
 					userImportPojo.setBirthday(parse.toString());
 				} catch (Exception e) {
 					logger().info("生日日期格式错误");
@@ -380,6 +386,87 @@ public class UserImportService extends ShopBaseService {
 		return workbook;
 	}
 
+	/**
+	 * 错误信息的返回
+	 * 
+	 * @param lang
+	 * @param list
+	 * @return
+	 */
+	public Workbook getModelErrorMsg(String lang, List<UserImportErroPojo> list) {
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(list, UserImportErroPojo.class);
+		return workbook;
+	}
+	
+	/**
+	 * 查询激活成功
+	 * @param lang
+	 * @param list
+	 * @return
+	 */
+	public Workbook getModelActive(String lang, List<UserImportActivePojo> list) {
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(list, UserImportActivePojo.class);
+		return workbook;
+	}
+
+	/**
+	 * 查询失败数据
+	 * 
+	 * @param batchId
+	 * @return
+	 */
+	public List<UserImportErroPojo> getErrorMsgById(Integer batchId) {
+		Result<UserImportDetailRecord> fetch = db().selectFrom(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.ERROR_MSG
+				.isNotNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq("")).and(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId)))
+				.fetch();
+		List<UserImportErroPojo> into = new ArrayList<UserImportErroPojo>();
+		if (fetch != null) {
+			into = fetch.into(UserImportErroPojo.class);
+		}
+		return into;
+	}
+
+	/**
+	 * 查询激活成功数据
+	 * 
+	 * @param batchId
+	 * @return
+	 */
+	public List<UserImportActivePojo> getActiveById(Integer batchId) {
+		Result<UserImportDetailRecord> fetch = db().selectFrom(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.IS_ACTIVATE.eq(ONE).and(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId)))
+				.fetch();
+		List<UserImportActivePojo> into = new ArrayList<UserImportActivePojo>();
+		if (fetch != null) {
+			into = fetch.into(UserImportActivePojo.class);
+		}
+		return into;
+	}
+
+	/**
+	 * 返回失败的信息
+	 * 
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getErrorMsg(Integer batchId, String lang) {
+		return getModelErrorMsg(lang, getErrorMsgById(batchId));
+	}
+	
+	/**
+	 * 激活成功的用户信息
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getActiveExcel(Integer batchId, String lang) {
+		return getModelActive(lang, getActiveById(batchId));
+	}
+
 	private String setMrkingVoucher(int[] num) {
 		int length = num.length;
 		if (length != 0) {
@@ -430,6 +517,12 @@ public class UserImportService extends ShopBaseService {
 		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UIGetListVo.class);
 	}
 
+	/**
+	 * 会员导入列表
+	 * 
+	 * @param param
+	 * @return
+	 */
 	public PageResult<UIGetListVo> descList(UIGetListParam param) {
 		PageResult<UIGetListVo> list = getList(param);
 		for (UIGetListVo vo : list.getDataList()) {
@@ -441,13 +534,74 @@ public class UserImportService extends ShopBaseService {
 				for (String cardId : caStrings) {
 					CardInfoVo cardVo = new CardInfoVo();
 					MemberCardRecord cardInfo = cardDaoService.getInfoByCardId(Integer.parseInt(cardId));
-					cardVo.setCardId(cardInfo.getId());
-					cardVo.setCardName(cardInfo.getCardName());
+					if(cardInfo!=null) {
+						cardVo.setCardId(cardInfo.getId());
+						cardVo.setCardName(cardInfo.getCardName());						
+					}
 					cardList.add(cardVo);
 				}
 				vo.setCardList(cardList);
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * 会员导入明细列表
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public PageResult<UIGetNoActListVo> getDetailList(UIGetNoActListParam param) {
+		SelectWhereStep<UserImportDetailRecord> selectFrom = db().selectFrom(USER_IMPORT_DETAIL);
+		selectFrom.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull());
+		Timestamp startTime = param.getStartTime();
+		if (startTime != null) {
+			selectFrom.where(USER_IMPORT_DETAIL.CREATE_TIME.ge(startTime));
+		}
+		Timestamp endTime = param.getEndTime();
+		if (endTime != null) {
+			selectFrom.where(USER_IMPORT_DETAIL.CREATE_TIME.le(endTime));
+		}
+		Byte isActivate = param.getIsActivate();
+		if (isActivate != null) {
+			selectFrom.where(USER_IMPORT_DETAIL.IS_ACTIVATE.eq(isActivate));
+		}
+		Integer batchId = param.getBatchId();
+		if (batchId != null) {
+			selectFrom.where(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId));
+		}
+		String mobile = param.getMobile();
+		if (StringUtils.isNotEmpty(mobile)) {
+			selectFrom.where(USER_IMPORT_DETAIL.MOBILE.eq(mobile));
+		}
+		String realName = param.getRealName();
+		if (StringUtils.isNotEmpty(realName)) {
+			selectFrom.where(USER_IMPORT_DETAIL.NAME.eq(realName));
+		}
+		Byte isDistributor = param.getIsDistributor();
+		if (isDistributor != null) {
+			selectFrom.where(USER_IMPORT_DETAIL.IS_DISTRIBUTOR.eq(isDistributor));
+		}
+		Integer groupId = param.getGroupId();
+		if (groupId != null) {
+			selectFrom.where(USER_IMPORT_DETAIL.GROUP_ID.eq(groupId));
+		}
+		selectFrom.orderBy(USER_IMPORT_DETAIL.ID.desc());
+		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UIGetNoActListVo.class);
+	}
+
+	public PageResult<UIGetNoActListVo> addGroupName(UIGetNoActListParam param) {
+		PageResult<UIGetNoActListVo> detailList = getDetailList(param);
+		for (UIGetNoActListVo vo : detailList.dataList) {
+			DistributorGroupListVo oneInfo = saas.getShopApp(getShopId()).distributorGroup.getOneInfo(vo.getGroupId());
+			if (oneInfo == null) {
+				vo.setGroupName("分组已删除");
+			} else {
+				vo.setGroupName(oneInfo.getGroupName());
+			}
+		}
+		return detailList;
+
 	}
 }
