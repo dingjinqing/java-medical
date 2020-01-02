@@ -2,6 +2,7 @@ package com.vpu.mp.service.foundation.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.google.common.collect.Lists;
@@ -11,9 +12,11 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
+import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.tools.Convert;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -71,6 +74,42 @@ public class Util {
 		}
 		return null;
 	}
+
+    /**
+     * To json enable null string.
+     *
+     * @param o the o
+     * @return the string
+     */
+    public static String toJsonEnableNull(Object o) {
+        if (Objects.isNull(o)) {
+            return StringUtils.EMPTY;
+        }
+        if (o instanceof UpdatableRecordImpl) {
+
+        }
+        MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        try {
+            return MAPPER.writeValueAsString(o);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } finally {
+            MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, true);
+        }
+        return null;
+    }
+
+    /**
+     * String list 2 int list list.
+     *
+     * @param source the source
+     * @return the list
+     */
+    public static List<Integer> stringList2IntList(List<String> source) {
+        List<Integer> target = new ArrayList<>();
+        CollectionUtils.collect(source, Integer::valueOf, target);
+        return target;
+    }
 
 	/**
 	 *  对象转json忽略null字段
