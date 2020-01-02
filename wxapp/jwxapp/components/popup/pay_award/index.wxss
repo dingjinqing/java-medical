@@ -247,3 +247,6 @@
   transform: translateX(-50%);
   border-top: 1rpx dashed #fff;
 }
+.lottery_content{
+  height:540rpx;
+}
