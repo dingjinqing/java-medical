@@ -314,7 +314,7 @@ export default {
   methods: {
     // 拼团抽奖列表
     initDataList () {
-      this.requestParams.status = this.tabSwitch
+      this.requestParams.status = Number(this.tabSwitch)
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       this.closeTabAddGroup()

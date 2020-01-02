@@ -21,7 +21,7 @@ export function addLotteryDraw (data) {
 // 获取编辑详情
 export function getLotteryDetail (data) {
   return service({
-    url: '/api/admin/order/group_draw/detail/{id}',
+    url: '/api/admin/group_draw/detail',
     method: 'post',
     data: data
   })
