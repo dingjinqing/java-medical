@@ -140,7 +140,7 @@
               </td>
               <td class="td-money">
                   <span style="margin-right: 10px;">{{item.money}}</span>
-                  <img :src="plusImg" align="right" @click="modifyAccount(item.cardNo)">
+                  <img :src="plusImg" align="right" @click="modifyAccount(item,0)">
               </td>
               <td>{{item.surplus}}</td>
               <td>{{item.exchang_surplus}}</td>
@@ -207,13 +207,19 @@
         </div>
       </div>
     </div>
+    <modify-data
+    :model="modifyDialogData">
+    </modify-data>
   </div>
 </template>
 <script>
-import { getAllMemberCardDetailRequest, deleteUserCardRequest, chargeConsume } from '@/api/admin/memberManage/memberCard.js'
+import { getAllMemberCardDetailRequest, deleteUserCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { allUserCardRequest } from '@/api/admin/membershipList.js'
-
+import modifyData from './modifyData'
 export default {
+  components: {
+    modifyData: modifyData
+  },
   data () {
     return {
       modifyDialogData: {
@@ -223,9 +229,12 @@ export default {
         tips: null,
         bzText: null,
         persentMoney: '',
-        index: 0, // 0 余额，1 积分
+        index: 0, // 0 余额，1 积分，2卡余额
         visiable: false,
-        cardNo: null
+        cardNo: null,
+        userId: null,
+        cardId: null,
+        type: null // 0卡余额，1 兑换商品次数，2 兑换门店次数
       },
       userId: '', // 用户id
       username: '', // 用户名
@@ -337,9 +346,8 @@ export default {
     },
     // 3.2- 获取所有会员卡类型
     getAllCardType () {
-      console.log(this.CardTypeOptins)
       this.CardTypeOptins = this.$t('membershipIntroduction.cardTypeArray')
-      console.log(this.CardTypeOptins)
+      // load 余额修改弹窗
     },
     // 4- 清空缓存
     clearCacheData () {
@@ -363,14 +371,27 @@ export default {
         }
       })
     },
-    modifyAccount (cardNo) {
+    modifyAccount (row, type) {
       // 修改弹窗
       console.log('修改账户余额')
-      chargeConsume({
-
-      }).then(res => {
-
+      let dialogData = this.$t('membershipIntroduction.balanceDialogData')[0]
+      Object.keys(this.modifyDialogData).forEach(key => {
+        this.modifyDialogData[key] = dialogData[key] || this.modifyDialogData[key]
       })
+
+      this.modifyDialogData.cardNo = row.cardNo
+      this.modifyDialogData.userId = row.userId
+      this.modifyDialogData.cardId = row.cardId
+      // 代表卡余额,兑换次数，门店兑换次数
+      this.modifyDialogData.index = 2
+      this.modifyDialogData.type = type
+      this.modifyDialogData.visiable = true
+      console.log(this.modifyDialogData)
+      // chargeConsume({
+
+      // }).then(res => {
+
+      // })
     }
   }
 }
