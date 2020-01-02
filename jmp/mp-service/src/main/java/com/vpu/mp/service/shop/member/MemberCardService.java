@@ -1426,7 +1426,6 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 			/** 2.2 充值会员卡余额 */
 			chargeUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
 		}
-        logger().info("退款debug{}",data.toString());
 		/** 3-更新user_card用户会员卡的余额 */
 		updateUserCard(data, userCard, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
 
