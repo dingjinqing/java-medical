@@ -217,9 +217,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null,  e.getCodeParam());
         }
+        //生成orderSn
+        String orderSn = IncrSequenceUtil.generateOrderSn(OrderConstant.ORDER_SN_PREFIX);
         try{
-            //生成orderSn
-            String orderSn = IncrSequenceUtil.generateOrderSn(OrderConstant.ORDER_SN_PREFIX);
             //record入库
             transaction(()->{
                 //初始化订单（赋值部分数据）
@@ -228,29 +228,31 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 processNormalActivity(order, orderBo, orderBeforeVo);
                 //计算其他数据（需关联去其他模块）
                 setOtherValue(order, orderBo, orderBeforeVo);
-                //支付系统金额
-                orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //商品退款退货配置
                 calculate.setReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order);
                 //TODO exchang、好友助力
-                //保存营销活动信息 订单状态以改变
-                processorFactory.processSaveOrderInfo(param,order);
                 //TODO 订单类型拼接(支付有礼)
                 //订单入库,以上只有orderSn，无法获取orderId
                 order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
                 order.store();
                 orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
+                //保存营销活动信息 订单状态以改变
+                processorFactory.processSaveOrderInfo(param,order);
+                //支付系统金额
+                orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
                 must.addRecord(param.getMust());
                 orderBo.setOrderId(order.getOrderId());
-                //加锁
-                atomicOperation.addLock(orderBo.getOrderGoodsBo());
                 if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
                     (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
+                    //加锁
+                    atomicOperation.addLock(orderBo.getOrderGoodsBo());
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
                     processorFactory.processStockAndSales(param,order);
+                    logger().error("加锁{}",order.getOrderSn());
                     atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
+                    logger().error("更新成功{}",order.getOrderSn());
                 }
             });
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
@@ -268,6 +270,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
         }finally {
             //释放锁
+            logger().error("释放锁{}",orderSn);
             atomicOperation.releaseLocks();
         }
         //购物车删除
