@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -20,8 +22,11 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_CHEAP_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 
 /**
  * 商品列表,下单
@@ -50,6 +61,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     GroupBuyProcessorDao groupBuyProcessorDao;
     @Autowired
     GroupBuyListService groupBuyListService;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
 
     /*****处理器优先级*****/
     @Override
@@ -248,6 +261,14 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
 
     @Override
     public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
+        ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        if (goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
+            GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
+            String goodsName =goods.get(0).getGoodsName();
+            String goodsPrice =goods.get(0).getGoodsPrice().toString();
+            groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
+        }
 
     }
 }

@@ -132,6 +132,9 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
         switch (payAwardContentBo.getGiftType()) {
             case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
+                payAwardRecordRecord.setSendData("");
+                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
+                payAwardRecordRecord.setAwardData("");
                 break;
             case GIVE_TYPE_ORDINARY_COUPON:
                 logger().info("奖品:优惠卷");
@@ -309,8 +312,6 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             logger().info("当前奖励:" + payAwardContentBo.toString());
             if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_NO_PRIZE)) {
                 logger().info("当前奖励无奖品");
-                jedisManager.decr(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId());
-                return;
             }
             logger().info("礼物数量校验");
             PayAwardPrizeRecord awardInfo = payAwardRecordService.getAwardInfo(payAward.getId(), payAwardContentBo.getId());
