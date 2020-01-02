@@ -18,7 +18,8 @@ public class UIGetListVo {
 	private Integer totalNum;
 	private Integer successNum;
 	private Integer failNum;
-	private Timestamp addTime;
+	private Integer activateNum;
+	private Timestamp createTime;
 	private Timestamp updateTime;
 	private Byte delFlag;
 	private Timestamp delTime;

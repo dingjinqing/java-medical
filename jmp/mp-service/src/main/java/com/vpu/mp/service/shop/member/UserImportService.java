@@ -86,7 +86,8 @@ public class UserImportService extends ShopBaseService {
 			"环保", "农/林/牧/渔", "跨领域经营", "其它" };
 	private static final Byte ONE = 1;
 
-	private static final String DATE_FORMATE="yyyy/MM/dd";
+	private static final String DATE_FORMATE = "yyyy/MM/dd";
+
 	/**
 	 * 设置用户导入通知
 	 * 
@@ -107,7 +108,9 @@ public class UserImportService extends ShopBaseService {
 		}
 		SetNoticeJson json = new SetNoticeJson();
 		json.setExplain(explain);
-		json.setMrkingVoucherId(setMrkingVoucher(couponIds));
+		if (couponIds != null) {
+			json.setMrkingVoucherId(setMrkingVoucher(couponIds));
+		}
 		json.setScore(StringUtils.isEmpty(score) ? "" : score);
 
 		String json2 = Util.toJson(json);
@@ -241,7 +244,7 @@ public class UserImportService extends ShopBaseService {
 			System.out.println("生日");
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
-					//ExcelUtil.DATE_FORMAT
+					// ExcelUtil.DATE_FORMAT
 					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(DATE_FORMATE));
 					userImportPojo.setBirthday(parse.toString());
 				} catch (Exception e) {
@@ -399,9 +402,10 @@ public class UserImportService extends ShopBaseService {
 		excelWriter.writeModelList(list, UserImportErroPojo.class);
 		return workbook;
 	}
-	
+
 	/**
 	 * 查询激活成功
+	 * 
 	 * @param lang
 	 * @param list
 	 * @return
@@ -437,8 +441,8 @@ public class UserImportService extends ShopBaseService {
 	 * @return
 	 */
 	public List<UserImportActivePojo> getActiveById(Integer batchId) {
-		Result<UserImportDetailRecord> fetch = db().selectFrom(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.IS_ACTIVATE.eq(ONE).and(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId)))
-				.fetch();
+		Result<UserImportDetailRecord> fetch = db().selectFrom(USER_IMPORT_DETAIL)
+				.where(USER_IMPORT_DETAIL.IS_ACTIVATE.eq(ONE).and(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId))).fetch();
 		List<UserImportActivePojo> into = new ArrayList<UserImportActivePojo>();
 		if (fetch != null) {
 			into = fetch.into(UserImportActivePojo.class);
@@ -456,9 +460,10 @@ public class UserImportService extends ShopBaseService {
 	public Workbook getErrorMsg(Integer batchId, String lang) {
 		return getModelErrorMsg(lang, getErrorMsgById(batchId));
 	}
-	
+
 	/**
 	 * 激活成功的用户信息
+	 * 
 	 * @param batchId
 	 * @param lang
 	 * @return
@@ -527,6 +532,8 @@ public class UserImportService extends ShopBaseService {
 		PageResult<UIGetListVo> list = getList(param);
 		for (UIGetListVo vo : list.getDataList()) {
 			vo.setFailNum(vo.getTotalNum() - vo.getSuccessNum());
+			int activateNum = getActivateNum(vo.getId(), ONE);
+			vo.setActivateNum(activateNum);
 			String cardIds = vo.getCardId();
 			if (StringUtils.isNotEmpty(cardIds)) {
 				String[] caStrings = cardIds.split(",");
@@ -534,9 +541,9 @@ public class UserImportService extends ShopBaseService {
 				for (String cardId : caStrings) {
 					CardInfoVo cardVo = new CardInfoVo();
 					MemberCardRecord cardInfo = cardDaoService.getInfoByCardId(Integer.parseInt(cardId));
-					if(cardInfo!=null) {
+					if (cardInfo != null) {
 						cardVo.setCardId(cardInfo.getId());
-						cardVo.setCardName(cardInfo.getCardName());						
+						cardVo.setCardName(cardInfo.getCardName());
 					}
 					cardList.add(cardVo);
 				}
@@ -544,6 +551,11 @@ public class UserImportService extends ShopBaseService {
 			}
 		}
 		return list;
+	}
+
+	public int getActivateNum(Integer batchId, Byte isActivate) {
+		return db().selectCount().from(USER_IMPORT_DETAIL)
+				.where(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId).and(USER_IMPORT_DETAIL.IS_ACTIVATE.eq(isActivate))).fetchOne(0, int.class);
 	}
 
 	/**
