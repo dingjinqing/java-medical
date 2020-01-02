@@ -362,6 +362,7 @@
                         :prop="`prizeList[${index}].integralScore`"
                         :rules="{ required: true, message: $t('luckyDraw.validScore'), trigger: 'blur' }"
                         :inline-message="true"
+                        class="before-star"
                       >
                         <span>{{$t('luckyDraw.presentExp')}}：</span>
                         <el-input
@@ -376,6 +377,7 @@
                         :prop="`prizeList[${index}].integralScore`"
                         :rules="{ required: true, message: $t('luckyDraw.validBounsAmount'), trigger: 'blur' }"
                         :inline-message="true"
+                        class="before-star"
                       >
                         <span>{{$t('luckyDraw.giveTheBalance')}}：</span>
                         <el-input
@@ -390,6 +392,7 @@
                         :prop="`prizeList[${index}].couponId`"
                         :rules="{ required: true, message: $t('luckyDraw.validCoupon'), trigger: 'blur' }"
                         :inline-message="true"
+                        class="before-star"
                       >
                         <span>{{$t('luckyDraw.coupons')}}：</span>
                         <el-select
@@ -424,6 +427,7 @@
                         :prop="`prizeList[${index}].goodsName`"
                         :rules="{ required: true, message: $t('luckyDraw.validGivea'), trigger: 'blur' }"
                         :inline-message="true"
+                        class="before-star"
                       >
                         <div>
                           <span>{{$t('luckyDraw.givinggifts')}}：</span>
@@ -1184,6 +1188,15 @@ export default {
 
   .change_goods_del {
     text-decoration: none;
+  }
+  .before-star {
+    &::before {
+      display: block;
+      float: left;
+      content: "*";
+      color: #f56c6c;
+      margin-right: 4px;
+    }
   }
 }
 </style>>
