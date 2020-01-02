@@ -48,8 +48,7 @@
                 size="small"
                 :controls="false"
                 :precision="0"
-                :min="0"
-                :max="999999999"
+
               >
               </el-input-number>
               <span class="sendInfo">
@@ -59,8 +58,6 @@
                 size="small"
                 :controls="false"
                 :precision="0"
-                :min="0"
-                :max="999999999"
                 v-model="ruleForm.shopingInputRight"
               >
               </el-input-number>
@@ -83,8 +80,7 @@
                     size="small"
                     :controls="false"
                     :precision="0"
-                    :min="0"
-                    :max="999999999"
+
                     v-model="ruleForm.addIntegralArr[index].leftInput"
                   ></el-input-number>
                   <span class="sendInfo">{{ $t('memberCard.send') }}</span>
@@ -92,8 +88,7 @@
                     size="small"
                     :precision="0"
                     :controls="false"
-                    :min="0"
-                    :max="999999999"
+
                     v-model="ruleForm.addIntegralArr[index].rightInput"
                   >
                   </el-input-number>
@@ -119,8 +114,7 @@
                 size="small"
                 :precision="0"
                 :controls="false"
-                :min="0"
-                :max="999999999"
+
               >
               </el-input-number>
               <span class="sendInfo">
@@ -131,8 +125,6 @@
                 v-model="ruleForm.shopingInputRightM"
                 :controls="false"
                 :precision="0"
-                :min="0"
-                :max="999999999"
               >
               </el-input-number>
               <span class="scoreInfo">{{ $t('memberCard.score') }}</span>
@@ -165,8 +157,10 @@ export default {
   watch: {
     'ruleForm.powerScore': {
       handler (newName, oldName) {
-        this.$refs.ruleFormScore.validate((valid) => {})
-        this.$refs.ruleForm.validate((valid) => {})
+        this.$nextTick(() => {
+          this.$refs.ruleFormScore.validate((valid) => {})
+          this.$refs.ruleForm.validate((valid) => {})
+        })
         this.val.powerScore = newName
         this.ruleForm = this.val
       },
@@ -181,11 +175,9 @@ export default {
     },
     'ruleForm.offSet': {
       handler (newName, oldName) {
-        if (oldName === '0') {
-          this.$refs.ruleForm.validateField('scoreSendFullFix')
-        } else if (oldName === '1') {
-          this.$refs.ruleForm.validateField('scoreSendEachFix')
-        }
+        this.$nextTick(() => {
+          this.$refs.ruleForm.validate((valid) => {})
+        })
         this.val.offSet = newName
         this.ruleForm = this.val
       },
@@ -263,6 +255,8 @@ export default {
         if (this.checkScoreSendFull()) {
           callback(new Error('请输入积分'))
           this.sendFullErrorFix = true
+        } else if (!isSixNumberWithTwoDecimal(value)) {
+          callback(new Error('请输入0-999999999范围的数字'))
         } else {
           this.sendFullErrorFix = false
           callback()
@@ -276,6 +270,8 @@ export default {
       if (this.ruleForm.offSet === '1' && this.ruleForm.powerScore) {
         if (this.checkScoreSendEach()) {
           callback(new Error('请输入积分'))
+        } else if (!isSixNumberWithTwoDecimal(value)) {
+          callback(new Error('请输入0-999999999范围的数字'))
         } else {
           callback()
         }
@@ -286,11 +282,17 @@ export default {
 
     let validateScoreSendEach = (rule, value, callback) => {
       // 校验动态数组
-      let index = Number(rule.fullField.split('.')[1])
-      if (value && this.ruleForm.addIntegralArr[index].rightInput && this.ruleForm.powerScore) {
-        callback()
-      } else {
-        callback(new Error('请输入积分'))
+      if (this.ruleForm.powerScore) {
+        let index = Number(rule.fullField.split('.')[1])
+        if ((value === 0 || value) && this.ruleForm.addIntegralArr[index].rightInput) {
+          callback()
+        } else if (!value) {
+          callback(new Error('请输入积分'))
+        } else if (!isSixNumberWithTwoDecimal(value)) {
+          callback(new Error('请输入0-999999999范围的数字'))
+        } else {
+          callback(new Error('请输入积分'))
+        }
       }
     }
 

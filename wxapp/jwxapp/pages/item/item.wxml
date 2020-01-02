@@ -22,9 +22,9 @@
       <view class="goods_ad" wx:if="{{goodsInfo.goodsAd}}">{{goodsInfo.goodsAd}}</view>
       <view class="goods_price_info">
         <view class="goods_price" style='color:{{comColor}}'>
-          <text>￥</text><text>{{goodsPrice}}</text>
+          <text>￥</text><text>{{goodsInfo.prdRealPrice}}</text>
         </view>
-        <view class="marking_price">￥<text>{{markingPrice}}</text></view>
+        <view class="marking_price">￥<text>{{goodsInfo.prdLinePrice}}</text></view>
       </view>
       <view class="label-content" wx:if="{{goodsInfo.labels && goodsInfo.labels.length > 0}}">
         <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">{{item}}</text>

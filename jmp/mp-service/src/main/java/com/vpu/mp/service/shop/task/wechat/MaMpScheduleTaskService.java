@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.store.service.order.StoreAppointmentRemindVo;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
@@ -306,7 +307,8 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 
             if (item.getFailedSendType().equals(TWO)) {
 				UserScoreVo data=new UserScoreVo();
-				data.setRemark("好友助力失败奖励积分");
+				//data.setRemark("好友助力失败奖励积分");
+				data.setRemarkCode(RemarkTemplate.FRIENDS_HELP_FAIL.code);
 				data.setIdentityId(String.valueOf(item.getPromoteId()));
 				data.setScore(item.getFailedSendContent());
 				data.setUserId(item.getUserId());

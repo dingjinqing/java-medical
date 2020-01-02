@@ -41,7 +41,7 @@ import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DE
  */
 @Service
 @Slf4j
-public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,OrderBeforeProcessor,CreateOrderProcessor{
+public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,CreateOrderProcessor{
     @Autowired
     SecKillProcessorDao secKillProcessorDao;
     /*****处理器优先级*****/
@@ -117,24 +117,14 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     /**
-     * 订单确认页-秒杀下单处理
-     * @param orderBeforeParam
-     */
-    @Override
-    public void processOrderBefore(OrderBeforeParam orderBeforeParam, OrderBeforeVo vo) {
-        secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam);
-        //秒杀不允许使用积分支付
-        vo.setScoreMaxDiscount(BigDecimal.ZERO);
-        vo.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
-    }
-
-    /**
      * 订单生成前，重新计算秒杀价格
      * @param param
      */
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) {
         secKillProcessorDao.setOrderPrdSeckillPrice(param);
+        //秒杀不允许使用积分支付
+        param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
     }
 
     /**
@@ -150,6 +140,11 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Override
     public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
 
     }
 

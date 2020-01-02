@@ -463,65 +463,13 @@
       :chooseGoodsBack="chooseGoodsBack"
     />
     <!--修改余额&修改积分弹窗-->
-    <div
-      class="balanceDialo"
-      v-for="(item,index) in addDialogData"
-      :key="index"
-    >
-      <el-dialog
-        :title="item.title"
-        :visible.sync="balanceDialogVisible"
-        width="40%"
-        :modal-append-to-body="false"
-      >
-        <div class="balanceDialogDiv">
-          <div class="bD_div">
-            <span>{{item.presentText}}：</span>
-            <span>{{item.persentMoney}}</span>
-          </div>
-          <div class="bD_div">
-            <span>{{item.addText}}：</span>
-            <el-input
-              type="number"
-              v-model="balanceDialogInput"
-              :placeholder="$t('membershipIntroduction.Pleasecontent')"
-              size="small"
-            ></el-input>
-            <span>{{item.tips}}</span>
-          </div>
-          <div class="bD_div">
-            <span>{{item.bzText}}：</span>
-            <el-input
-              v-model="balanceDialogBottomInput"
-              :placeholder="$t('membershipIntroduction.Pleasecontent')"
-              size="small"
-            ></el-input>
-          </div>
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
+    <div class="balanceDialo">
+      <ModifyData
+        :model="modifyDialogData"
+        :userId="userId"
+        @submitRes="hanldeModifyData"
         >
-          <el-button
-            size="small"
-            @click="balanceDialogVisible = false"
-          >{{ $t('membershipIntroduction.cancel') }}</el-button>
-
-          <el-button
-            v-if="item.index === 0"
-            type="primary"
-            size="small"
-            @click="hanldemodifySure()"
-          >{{ $t('membershipIntroduction.accountCertain') }}</el-button>
-
-          <el-button
-            v-else-if="item.index === 1"
-            type="primary"
-            size="small"
-            @click="handleScoreSure()"
-          >{{ $t('membershipIntroduction.scoreCertain') }}</el-button>
-        </span>
-      </el-dialog>
+        </ModifyData>
     </div>
     <!--设置会员卡弹窗-->
     <div class="balanceDialo setUpDialog">
@@ -863,17 +811,29 @@
   </div>
 </template>
 <script>
-import { membershipListRequest, accountAddRequest, scoreUpdateRequest, allUserCardRequest, allSourceRequest, allTagRequest, getTagForMemberRequest, setTagForMemberRequest, loginStatusRequest } from '@/api/admin/membershipList.js'
+import { membershipListRequest, allUserCardRequest, allSourceRequest, allTagRequest, getTagForMemberRequest, setTagForMemberRequest, loginStatusRequest } from '@/api/admin/membershipList.js'
 import { getAllMemberCardByClassRequest, setCardForMemberRequest, getAllAvailableMemberCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/setUpMemCDialog'
 import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
+import ModifyData from './modifyData'
 export default {
-  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog },
+  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog, ModifyData },
   props: ['labelText'],
   data () {
     return {
+      modifyDialogData: {
+        title: null,
+        presentText: null,
+        addText: null,
+        tips: null,
+        bzText: null,
+        persentMoney: '',
+        index: 0, // 0 余额，1 积分
+        visiable: false
+      },
+
       minixLabel: '',
       memberListliNav: '',
       deletePersondialogVisible: false,
@@ -960,7 +920,7 @@ export default {
       labelDialogInput: '',
       totalNum: null,
       pageCount: '',
-      userId: '',
+      userId: null,
       minx_bottom_select: '',
       hitLabeloptions: [],
       memberListliLast: '',
@@ -1155,66 +1115,33 @@ export default {
     },
     // 控制修改余额-积分弹窗
     handlebalanceDialog (index, item, id) {
+      let val = null
+      console.log(index)
       if (index === 0) {
         this.balanceDialogData[0].persentMoney = item
-        this.addDialogData = this.balanceDialogData
-      } else {
+        val = this.balanceDialogData[0]
+      } else if (index === 1) {
         this.integralDialogData[0].persentMoney = item
-        this.addDialogData = this.integralDialogData
+        val = this.integralDialogData[0]
       }
-      this.balanceDialogVisible = true
+      console.log('val->', val)
+      // copy value by same key
+      Object.keys(this.modifyDialogData).forEach(key => {
+        if (!(!val[key] && val[key] !== 0)) {
+          this.modifyDialogData[key] = val[key]
+        }
+      })
+      this.modifyDialogData.visiable = true
       this.userId = id
-    },
-    // 修改余额弹窗确认按钮
-    hanldemodifySure () {
-      let obj = {
-        'userId': this.userId,
-        'account': this.addDialogData[0].persentMoney,
-        'remark': this.balanceDialogBottomInput,
-        'amount': parseInt(this.balanceDialogInput)
-      }
-      accountAddRequest(obj).then((res) => {
-        if (res.error === 0) {
-          this.getSuccessMessagePrompt()
-          this.defaultTabelListData()
-        } else {
-          this.getFailMessagePrompt()
-        }
-      }).catch(e => {
-        // 失败弹窗
-        this.getFailMessagePrompt()
-      })
-      // 隐藏弹窗
-      this.balanceDialogVisible = false
-      // 清空数据
-      this.balanceDialogBottomInput = ''
-      this.balanceDialogInput = ''
+      console.log(this.modifyDialogData)
     },
 
-    // 修改积分弹窗确认按钮
-    handleScoreSure () {
-      let obj = {
-        'userId': [this.userId],
-        'score': parseInt(this.balanceDialogInput),
-        'remark': this.balanceDialogBottomInput,
-        'scoreDis': this.addDialogData[0].persentMoney
+    hanldeModifyData (res) {
+      if (res) {
+        this.defaultTabelListData()
       }
-      scoreUpdateRequest(obj).then(res => {
-        if (res.error === 0) {
-          this.getSuccessMessagePrompt()
-          this.defaultTabelListData()
-        } else {
-          // 失败弹窗
-          this.getFailMessagePrompt()
-        }
-      })
-      // 隐藏弹窗
-      this.balanceDialogVisible = false
-      // 清空数据
-      this.balanceDialogBottomInput = ''
-      this.balanceDialogInput = ''
+      this.modifyDialogData.visiable = false
     },
-
     // 表格底部下拉框选中事件
     handleFooterSelect (index) {
       if (index === 0) {

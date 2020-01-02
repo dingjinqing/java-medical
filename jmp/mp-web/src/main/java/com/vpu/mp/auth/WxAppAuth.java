@@ -17,6 +17,7 @@ import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -130,7 +131,8 @@ public class WxAppAuth {
 				// data.setScoreDis(shopApp.user.getUserByUserId(user.getUserId()).getScore());
 				data.setScore(Integer.parseInt(scoreNum.getV()));
 				data.setDesc("score_login");
-				data.setRemark("每日登录送积分");
+				data.setRemarkCode(RemarkTemplate.LOGIN_EVERY_DAY_SEND.code);
+				//data.setRemark("每日登录送积分");
 				data.setShopId(shopId);
 				data.setExpireTime(shopApp.member.score.getScoreExpireTime());
 				shopApp.member.score.addUserScore(data, "0", (byte) 5, (byte) 1);

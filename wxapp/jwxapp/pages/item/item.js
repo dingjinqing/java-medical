@@ -97,6 +97,7 @@ global.wxPage({
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
+            this.getActivity(res.content)
             let { comment, goodsImgs, goodsVideo, goodsVideoImg, coupons, goodsDesc = null, isPageUp = 0, goodsPageId = null, deliverPlace, defaultPrd, activity, goodsNumber, goodsSaleNum, labels, goodsAd, isCollected, products, goodsName, deliverPrice, limitBuyNum,
               limitMaxNum, goodsId } = res.content
             let goodsMediaInfo = {
@@ -141,10 +142,11 @@ global.wxPage({
               specParams
             })
             this.setData({
-              goodsInfo
+              goodsInfo:{
+                ...goodsInfo,
+                ...this.getPrice(goodsInfo)
+              }
             })
-            // this.getGoodsInfo(res.content);
-            this.getActivity(res.content)
             resolve(res.content);
           }
         }, {
@@ -221,14 +223,15 @@ global.wxPage({
   },
   // 获取活动信息
   getActivity ({
-    activity
+    activity,
+    products
   }) {
     if (!activity) return
     this.setData({
       'actBarInfo.actName': this.getActName(activity),
       'actBarInfo.actStatusName': this.getActStatusName(activity),
-      'actBarInfo.prdRealPrice': this.getActBarPrice(activity, 'prdRealPrice'),
-      'actBarInfo.prdLinePrice': this.getActBarPrice(activity, 'prdLinePrice')
+      'actBarInfo.prdRealPrice': this.getActBarPrice(products,activity, 'prdRealPrice'),
+      'actBarInfo.prdLinePrice': this.getActBarPrice(products,activity, 'prdLinePrice')
     })
     this.getCountDown(activity)
     if (activity.activityType === 1 && activity.groupBuyListMpVos.length > 0) {
@@ -251,7 +254,7 @@ global.wxPage({
     return actBaseInfo[activityType]['actStatus'][actState] || null
   },
   // 获取actBar价格
-  getActBarPrice (activity, getPrice) {
+  getActBarPrice (products,activity, getPrice) {
     if (actBaseInfo[activity.activityType].multiSkuAct) {
       return this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
         let { [actBaseInfo[activity.activityType]['prdPriceName'][getPrice]]: price } = item;
@@ -260,7 +263,7 @@ global.wxPage({
     } else if (getPrice === 'prdRealPrice') {
       return activity[actBaseInfo[activity.activityType][getPrice]]
     } else if (getPrice === 'prdLinePrice') {
-      return this.getMin(this.data.specParams.products.map(item => item.prdRealPrice))
+      return this.getMin(products.map(item => item.prdRealPrice))
     }
   },
   // 获取actBar活动倒计时
@@ -374,6 +377,35 @@ global.wxPage({
         util.toast_fail(apiMap.get(isCollected).error)
       }
     },{goodsId})
+  },
+  // 获取最小值
+  getMin(arr) {
+    return Math.min(...arr);
+  },
+  // 获取最大值
+  getMax(arr) {
+    return Math.max(...arr);
+  },
+  getPrice(data){
+    let {products,activity} = data
+    if(activity && actBaseInfo[activity.activityType].multiSkuAct) {
+      products = activity[actBaseInfo[activity.activityType]['prdListName']]
+    }
+    let {realPrice,linePrice} = products.reduce((defaultData,val)=>{
+        if(activity && actBaseInfo[activity.activityType].multiSkuAct){
+          var {[actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]:prdRealPrice,[actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]:prdLinePrice} = val
+        } else { 
+          var {prdRealPrice,prdLinePrice} = val
+        }
+        defaultData.realPrice.push(prdRealPrice)
+        defaultData.linePrice.push(prdLinePrice)
+        return defaultData
+    },{realPrice:[],linePrice:[]})
+    console.log(realPrice,linePrice)
+    return {
+      prdRealPrice:data.defaultPrd ? realPrice[0] : `${this.getMin(realPrice)}~${this.getMax(realPrice)}`,
+      prdLinePrice:data.defaultPrd ? linePrice[0] : `${this.getMin(linePrice)}~${this.getMax(linePrice)}`
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

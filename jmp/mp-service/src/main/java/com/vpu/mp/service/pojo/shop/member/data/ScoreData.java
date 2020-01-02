@@ -19,8 +19,12 @@ public class ScoreData extends BaseData {
 	protected Integer userId;
 	/** 操作员id */
 	protected Integer adminUser;
+	/** 备注模板code */
+	protected Integer remarkCode;
+	/** 备注模板数据 */
+	protected String remarkData;
 	/** 备注 */
-	protected String remark;
+	// protected String remark;
 	/** 交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum } */
 	protected Byte tradeType;
 	/** 资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum }  */

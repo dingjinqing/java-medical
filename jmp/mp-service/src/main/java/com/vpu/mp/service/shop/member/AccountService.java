@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.DEFAULT_FLAG;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
@@ -11,10 +10,13 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_CO
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RECHARGE;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,16 +28,19 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RemarkUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
 import com.vpu.mp.service.pojo.shop.member.builder.UserAccountRecordBuilder;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -43,6 +48,8 @@ import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.member.dao.AccountDao;
 import com.vpu.mp.service.shop.member.dao.UserAccountDao;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+
+import jodd.util.StringUtil;
 /**
  * 余额管理
  * @author 黄壮壮
@@ -126,15 +133,17 @@ public class AccountService extends ShopBaseService {
 	 * 处理备注
 	 */
 	private void dealWithRemark(AccountParam param) {
-		String remark ;
-		if (StringUtils.isBlank(param.getRemark())) {
-			/** -默认管理员操作 国际化*/
-			//remark = DEFAULT_FLAG.val()+ADMIN_OPERATION.val();
-			remark = null;
+		// 用户输入备注
+		if(!StringUtil.isBlank(param.getUserInputRemark())) {
+			param.setRemarkId(RemarkTemplate.USER_INPUT_MSG.code);
+			param.setRemarkData(param.getUserInputRemark());
 		}else {
-			remark = param.getRemark();
-		}	
-		param.setRemark(remark);
+			// 系统定义的备注
+			if(param.getRemarkId()==null) {
+				// 默认管理员操作
+				param.setRemarkId(RemarkTemplate.ADMIN_OPERATION.code);
+			}
+		}
 	}
 	
 	private BigDecimal calcAccount(UserRecord user,AccountParam param) {
@@ -207,7 +216,8 @@ public class AccountService extends ShopBaseService {
 			.create(db().newRecord(USER_ACCOUNT))
 			.userId(param.getUserId())
 			.amount(param.getAmount())
-			.remark(param.getRemark())
+			.remarkId(String.valueOf(param.getRemarkId()))
+			.remarkData(param.getRemarkData())
 			.adminUser(String.valueOf(adminUser))
 			.isPaid(param.getIsPaid())
 			.payment(param.getPayment())
@@ -219,6 +229,7 @@ public class AccountService extends ShopBaseService {
 	 * 添加操作记录到b2c_record_admin_action
 	 */
 	public void addActionRecord(AccountParam param, UserRecord user, AdminTokenAuthInfo admin) {
+		//TODO 删除掉这段代码
 		Integer userId = user.getUserId();
 		String name = user.getUsername();
 		BigDecimal zero = new BigDecimal(0);
@@ -250,35 +261,32 @@ public class AccountService extends ShopBaseService {
 	 * 分页查询会员用户余额详情
 	 */
 	public PageResult<AccountPageListVo> getPageListOfAccountDetails(AccountPageListParam param,String language) {
-		PageResult<AccountPageListVo> res = uAccountDao.getPageListOfAccountDetails(param);
-		// deal with 国际化
-		for(AccountPageListVo vo: res.dataList) {
-			dealWithRemarkI18n(vo,language);
-		}
-		
-		return res;
-	}
-
-	private void dealWithRemarkI18n(AccountPageListVo vo,String language) {
-		if(isNeedI18n(vo)) {
-			String msg = vo.getRemark().split(":")[1];
-			String languageType = msg.split("\\.")[0];
-			String transMsg = Util.translateMessage(language, msg, languageType);
-			vo.setRemark(transMsg);
-		}
+		PageResult<AccountPageInfo> resultBefore = uAccountDao.getPageListOfAccountDetails(param);
+		return  accountInfoToAccountVo(language,resultBefore);
 	}
 
 	/**
-	 * 是否需要国际化
+	 * 数据类型转换
 	 */
-	private boolean isNeedI18n(AccountPageListVo vo) {
-		String noWhiteSpaceRemark = vo.getRemark().replaceAll("\\s+","");
-		boolean startFlag = noWhiteSpaceRemark.startsWith(DEFAULT_FLAG.val());
-		String[] arr = noWhiteSpaceRemark.split(":");
-		return startFlag  &&  arr.length==2;
+	private PageResult<AccountPageListVo> accountInfoToAccountVo(String language,
+			PageResult<AccountPageInfo> resultBefore) {
+		
+		PageResult<AccountPageListVo> resultAfter = new PageResult<>();
+		List<AccountPageListVo> dataList = new ArrayList<>();
+		for(AccountPageInfo info: resultBefore.dataList) {
+			// change AccountPageInfo to AccountPageListVo
+			AccountPageListVo vo = new AccountPageListVo();
+			BeanUtils.copyProperties(info, vo);
+			// remark i18n 
+			String remark = RemarkUtil.remarkI18N(language, info.getRemarkId(), info.getRemarkData());
+			vo.setRemark(remark);
+			dataList.add(vo);
+		}
+		resultAfter.setPage(resultBefore.getPage());
+		resultAfter.setDataList(dataList);
+		return resultAfter;
 	}
 
-	
 	private boolean isNotNull(BigDecimal account) {
 		return account != null;
 	}

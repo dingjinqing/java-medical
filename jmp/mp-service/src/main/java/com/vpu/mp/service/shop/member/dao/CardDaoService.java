@@ -39,6 +39,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RemarkUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
@@ -173,7 +174,7 @@ public class CardDaoService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<ChargeVo> getChargeList(ChargeParam param) {
+	public PageResult<ChargeVo> getChargeList(ChargeParam param,String language) {
 		SelectJoinStep<?> select = db()
 				.select(USER.USERNAME, USER.MOBILE, CHARGE_MONEY.CHARGE.as("money"), CHARGE_MONEY.REASON,
 						CHARGE_MONEY.CHARGE,CHARGE_MONEY.TYPE,CHARGE_MONEY.COUNT,CHARGE_MONEY.EXCHANG_COUNT,
@@ -182,8 +183,12 @@ public class CardDaoService extends ShopBaseService {
 
 		buildOptionsForCharge(param, select);
 
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
-
+		PageResult<ChargeVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
+		for(ChargeVo vo: result.dataList) {
+			String reason = RemarkUtil.remarkI18N(language, vo.getReasonId(), vo.getReason());
+			vo.setReason(reason);
+		}
+		return result;
 	}
 
 	/**
@@ -230,13 +235,19 @@ public class CardDaoService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<ChargeVo> getConsumeList(ChargeParam param) {
+	public PageResult<ChargeVo> getConsumeList(ChargeParam param,String language) {
 		SelectJoinStep<?> select = db()
 				.select(USER.USERNAME, USER.MOBILE, CARD_CONSUMER.MONEY, CARD_CONSUMER.REASON,CARD_CONSUMER.TYPE,CARD_CONSUMER.EXCHANG_COUNT,CARD_CONSUMER.COUNT,
 						CARD_CONSUMER.CREATE_TIME, CARD_CONSUMER.MESSAGE)
 				.from(CARD_CONSUMER.leftJoin(USER).on(CARD_CONSUMER.USER_ID.eq(USER.USER_ID)));
 		buildOptionsForConsume(param, select);
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
+		PageResult<ChargeVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
+		// 处理国际化
+		for(ChargeVo vo: result.dataList) {
+			String reason = RemarkUtil.remarkI18N(language, vo.getReasonId(), vo.getReason());
+			vo.setReason(reason);
+		}
+		return result;
 	}
 
 	/**
