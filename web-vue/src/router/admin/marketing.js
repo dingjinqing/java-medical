@@ -527,6 +527,62 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDraw'
       )
   },
+  // 拼团抽奖 活动订单
+  {
+    path: '/admin/home/main/lotteryDraw/orderList',
+    name: 'lottery_order_view',
+    meta: {
+      // crumbTitle: 'router.orderSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryOrderList'
+      )
+  },
+  // 拼团抽奖 用户明细
+  {
+    path: '/admin/home/main/lotteryDraw/detailList',
+    name: 'lottery_detail_view',
+    meta: {
+      // crumbTitle: 'router.detailSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDetailList'
+      )
+  },
+  // 拼团抽奖 开团明细
+  {
+    path: '/admin/home/main/lotteryDraw/groupList',
+    name: 'lottery_group_view',
+    meta: {
+      // crumbTitle: 'router.userSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryGroupList'
+      )
+  },
+  // 拼团抽奖 活动效果数据
+  {
+    path: '/admin/home/main/lotteryDraw/lotteryEffect',
+    name: 'lottery_effect_view',
+    meta: {
+      // crumbTitle: 'router.resultSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryEffect'
+      )
+  },
   // 幸运大抽奖活动
   {
     path: '/admin/home/main/luckyDraw',
