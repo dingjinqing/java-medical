@@ -5,7 +5,7 @@
     <view class="item_middle"></view>
     <view class="item_right num_cfg">
     <view class="num_minus {{!canMinus ? 'not-tap':''}}" data-type="minus" bindtap="{{canMinus ? 'setNum' :''}}">-</view>
-    <input type="number" value="{{goodsNum}}"></input>
+    <input class="input" type="number" value="{{goodsNum}}"></input>
     <view class="num_plus {{!canPlus ? 'not-tap':''}}" data-type="plus" bindtap="{{canPlus ? 'setNum' : ''}}">+</view>
     </view>
 </view>
