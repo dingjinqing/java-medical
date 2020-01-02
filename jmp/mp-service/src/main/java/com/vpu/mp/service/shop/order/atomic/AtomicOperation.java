@@ -103,6 +103,7 @@ public class AtomicOperation extends ShopBaseService {
             int goodsSales = goods.getGoodsSaleNum() + num;
             //规格库存
             int productStock = product.getPrdNumber() - num;
+            log.info("规格原库存；{}，扣减库存：{}", product.getPrdNumber(), productStock);
             if(product.getPrdNumber() < num) {
                 //库存不足
                 log.error("库存不足订单超卖,订单号:{},规格id:{};" +
