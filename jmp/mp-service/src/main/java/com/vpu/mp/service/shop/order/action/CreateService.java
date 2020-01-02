@@ -264,9 +264,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().error("下单捕获mp异常", e);
             Throwable cause = e.getCause();
             if (cause instanceof MpException) {
-                return ExecuteResult.create(((MpException) cause).getErrorCode(), null,  ((MpException) cause).getCodeParam());
+                return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getCodeParam());
             } else {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR, e.getMessage());
             }
         } catch (Exception e) {
             logger().error("下单捕获mp异常", e);

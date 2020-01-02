@@ -80,11 +80,11 @@ public class ReturnMethodService extends ShopBaseService{
 			if (cause instanceof MpException) {
 				throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
 			}else {
-				logger().error("退款统一入口调用方法异常(非MpException)retId:"+retId+"。异常信息："+e.getMessage());
+				logger().error("退款统一入口调用方法异常(非MpException)retId:"+retId+"。异常信息：{}", e.getMessage());
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR, e.getMessage());
 			}
 		} catch (Exception e) {
-			logger().error("退款统一入口调用异常retId:"+retId+"。异常信息："+e.getMessage());
+			logger().error("退款统一入口调用异常retId:"+retId+"。异常信息：{}", e.getMessage());
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR,e.getMessage());
 		}
 		return true;
