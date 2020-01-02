@@ -30,7 +30,7 @@
   right: 20rpx;
   top: 2rpx;
 }
-.small_view image {
+.small_view .image {
   width: 44rpx;
 }
 .footer_flex_view {

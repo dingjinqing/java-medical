@@ -11,11 +11,11 @@
               <view class="vip_exclusive" wx:if="{{item.is_exclusive}}">会员</view>
               <view style='padding-right:20rpx'>{{item.actName}}</view>
               <view class="coupon_left_text">
-                <text wx:if="{{item.actCode=='voucher'}}">￥<text>{{item.denomination}}</text></text>
-                <text wx:else><text>{{item.denomination}}</text>折</text>
+                <text class="text" wx:if="{{item.actCode=='voucher'}}">￥<text class="text">{{item.denomination}}</text></text>
+                <text class="text" wx:else><text class="text">{{item.denomination}}</text>折</text>
               </view>
               <view class='coupon_xian'>
-                <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
+                <image class="image" src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
               </view>
             </view>
 
@@ -36,7 +36,7 @@
                 </view>
               </block>
               <form report-submit='true' class="get_new_coupon" wx:if="{{item.canFetch}}" bindsubmit="bindGetCoupon" data-coupon="{{index}}" data-exclusive="{{item.isCardExclusive}}" data-use_score="{{item.useScore}}" data-coupon_id="{{ item.id }}">
-                <button form-type='submit' plain="false" disabled='{{item.disableds}}' style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>立即领取</button>
+                <button class="button" form-type='submit' plain="false" disabled='{{item.disableds}}' style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>立即领取</button>
               </form>
               <view class="get_new_coupon got_coupon" wx:else>
                 已领取
