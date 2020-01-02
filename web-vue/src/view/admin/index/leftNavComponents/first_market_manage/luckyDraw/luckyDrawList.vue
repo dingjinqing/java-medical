@@ -16,6 +16,7 @@
             type="primary"
             @click="addActivity"
             class="barginBtn"
+            size="small"
           >{{$t('luckyDraw.addActivity')}}
           </el-button>
         </el-tab-pane>
@@ -403,11 +404,12 @@ export default {
 }
 
 .opt {
-  text-align: left;
+  text-align: center;
   color: #5a8bff;
 
   span {
     cursor: pointer;
+    font-size: 22px;
   }
 }
 
