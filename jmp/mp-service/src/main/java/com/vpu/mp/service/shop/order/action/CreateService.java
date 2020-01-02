@@ -234,10 +234,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //TODO 订单类型拼接(支付有礼)
                 //订单入库,以上只有orderSn，无法获取orderId
                 order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
-                order.store();
-                orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
                 //保存营销活动信息 订单状态以改变
                 processorFactory.processSaveOrderInfo(param,order);
+                order.store();
+                orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
@@ -250,9 +250,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     atomicOperation.addLock(orderBo.getOrderGoodsBo());
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
                     processorFactory.processStockAndSales(param,order);
-                    logger().error("加锁{}",order.getOrderSn());
+                    logger().info("加锁{}",order.getOrderSn());
                     atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
-                    logger().error("更新成功{}",order.getOrderSn());
+                    logger().info("更新成功{}",order.getOrderSn());
                 }
             });
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
@@ -270,7 +270,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
         }finally {
             //释放锁
-            logger().error("释放锁{}",orderSn);
+            logger().info("释放锁{}",orderSn);
             atomicOperation.releaseLocks();
         }
         //购物车删除
