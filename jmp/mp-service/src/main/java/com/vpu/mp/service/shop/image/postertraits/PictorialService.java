@@ -129,10 +129,10 @@ public class PictorialService extends ShopBaseService {
 
         // 设置商品图片
         goodsImg = ImageUtil.resizeImage(imgPx.getGoodsWidth(), imgPx.getGoodsHeight(), goodsImg);
-        ImageUtil.addTwoImage(bgBufferedImage,goodsImg,imgPx.getBgPadding(),imgPx.getHeaderHeight());
+        ImageUtil.addTwoImage(bgBufferedImage,goodsImg,imgPx.getGoodsStartX(),imgPx.getGoodsStartY());
 
         // 设置商品名称
-        ImageUtil.addFont(bgBufferedImage,goodsName,ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()),imgPx.getBgPadding(),imgPx.getBottomStartY()+imgPx.getMediumFontSize(),imgPx.getGoodsNameColor());
+        ImageUtil.addFont(bgBufferedImage,goodsName,ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()),imgPx.getBgPadding(),imgPx.getBottomStartY()+imgPx.getMediumFontSize()*2,imgPx.getGoodsNameColor());
         // 设置二维码
         qrCodeImg = ImageUtil.makeRound(qrCodeImg, imgPx.getQrCodeDiameter());
         ImageUtil.addTwoImage(bgBufferedImage,qrCodeImg,imgPx.getQrCodeStartX(),imgPx.getBottomStartY());
@@ -151,13 +151,40 @@ public class PictorialService extends ShopBaseService {
         Integer lineY = imgPx.getPriceY() - imgPx.getSmallFontSize()/3;
         ImageUtil.addLine(bgBufferedImage,lineStartX,lineY,lineEndX,lineY,imgPx.getLinePriceColor());
 
+        // 设置商品图片上方显示自定义内容区域
+        ImageUtil.addRect(bgBufferedImage,imgPx.getCustomerRectStartX(),imgPx.getCustomerRectStartY(),imgPx.getCustomerRectWidth(),imgPx.getCustomerRectHeight(),null,imgPx.getCustomerRectFillColor());
+
         return bgBufferedImage;
     }
 
+    /**
+     * 生成海报通用背景图
+     * @param userInfo 用户信息
+     * @param qrCodeImg 二维码
+     * @param goodsImg 商品图片
+     * @param shareDoc 海报分享文案
+     * @param goodsName 商品名称
+     * @param realPrice 商品原件
+     * @param linePrice 商品划线价
+     * @return 通过图片
+     */
     BufferedImage createPictorialBgImage(PictorialUserInfo userInfo,BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName,BigDecimal realPrice,BigDecimal linePrice){
         ShopRecord shop = saas.shop.getShopById(getShopId());
         return  createPictorialBgImage(userInfo,shop,qrCodeImg,goodsImg,shareDoc,goodsName,realPrice,linePrice,new PictorialImgPx());
     }
+
+    /**
+     * 生成海报通用背景图
+     * @param userInfo 用户信息
+     * @param shop 店铺配置
+     * @param qrCodeImg 二维码
+     * @param goodsImg 商品图片
+     * @param shareDoc 海报分享文案
+     * @param goodsName 商品名称
+     * @param realPrice 商品原件
+     * @param linePrice 商品划线价
+     * @return 通过图片
+     */
     BufferedImage createPictorialBgImage(PictorialUserInfo userInfo,ShopRecord shop,BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName,BigDecimal realPrice,BigDecimal linePrice){
         return  createPictorialBgImage(userInfo,shop,qrCodeImg,goodsImg,shareDoc,goodsName,realPrice,linePrice,new PictorialImgPx());
     }
