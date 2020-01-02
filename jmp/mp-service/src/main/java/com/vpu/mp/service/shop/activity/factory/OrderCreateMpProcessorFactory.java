@@ -96,7 +96,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 保存数据
+     * 保存数据（该方法不要在并发情况下出现临界资源）
      * @param param
      * @param order
      */

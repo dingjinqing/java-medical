@@ -231,7 +231,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //TODO 订单类型拼接(支付有礼)
                 //订单入库,以上只有orderSn，无法获取orderId
                 order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
-                //保存营销活动信息 订单状态以改变
+                //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 order.store();
                 if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){

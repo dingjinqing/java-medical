@@ -47,7 +47,7 @@
                 </el-date-picker>
               </div>
             </li>
-            <li>
+            <li class="specialLi">
               {{$t('brandManagement.brandClassify')}}：
               <el-select
                 v-model="valueClss"
@@ -58,7 +58,6 @@
                   :key="item.classifyName"
                   :label="item.classifyName"
                   :value="item.classifyId"
-                  :class="item.classifyId === 1 ? 'grandSelectClass' : ''"
                 >
                 </el-option>
               </el-select>
@@ -408,9 +407,10 @@
         <p style="margin-top:10px">
           <span style="margin-right:11px">{{$t('brandManagement.classificationPriority')}}：</span>
           <el-input
-            v-model="classificationName"
+            v-model.number="classificationName"
             :placeholder="$t('brandManagement.inputPlaceText')"
             size="mini"
+            @input="handleInputClass"
           ></el-input>
         </p>
         <p>{{$t('brandManagement.dialogTips')}}</p>
@@ -858,6 +858,11 @@ export default {
         console.log(res)
       })
     },
+    // 优先级输入框过滤
+    handleInputClass () {
+      console.log('ssss')
+      this.classificationName = this.classificationName.replace(/[^\w]/g, '')
+    },
     // 鼠标划入查看案例
     showOver (index) {
       switch (index) {
@@ -1017,9 +1022,7 @@ export default {
 .noData span {
   margin: 10px;
 }
-.grandSelectClass {
-  padding-left: 30px;
-}
+
 .zwiclass {
   height: 1px;
   width: 10px;
@@ -1239,6 +1242,9 @@ tbody img {
 }
 </style>
 <style>
+.el-popper .grandSelectClass {
+  padding-left: 20px;
+}
 .topUl .el-input {
   width: 170px;
 }
