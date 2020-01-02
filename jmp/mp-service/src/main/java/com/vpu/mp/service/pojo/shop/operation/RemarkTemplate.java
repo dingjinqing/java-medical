@@ -91,7 +91,7 @@ public enum RemarkTemplate {
 	
 	public static String getMessageByCode(Integer code) {
 		for(RemarkTemplate item: RemarkTemplate.values()) {
-			if(code.equals(item.code)) {
+			if(item.code.equals(code)) {
 				return item.message;
 			}
 		}
