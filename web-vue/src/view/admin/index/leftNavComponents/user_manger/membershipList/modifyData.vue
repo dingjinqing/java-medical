@@ -62,6 +62,7 @@
 </template>
 <script>
 import { accountAddRequest, scoreUpdateRequest } from '@/api/admin/membershipList.js'
+import { chargeConsume } from '@/api/admin/memberManage/memberCard.js'
 export default {
   props: {
     model: {
@@ -84,8 +85,9 @@ export default {
     certain () {
       console.log('->', this.model.index)
       let index = this.model.index
-      // 余额
-      if (index === 0) {
+
+      // 余额,卡余额
+      if ([0, 2].includes(index)) {
         return this.$t('membershipIntroduction.accountCertain')
       } else if (index === 1) {
         // 积分
@@ -100,6 +102,9 @@ export default {
         } else if (index === 1) {
         // 积分
           this.submitScore()
+        } else if (index === 2) {
+          // 卡余额，门店兑换次数，商品兑换次数
+          this.submitCardChargeConsume(this.model.type)
         }
       }
     },
@@ -135,9 +140,37 @@ export default {
         }
       })
     },
-    submitCardChargeConsume () {
-      // 会员卡余额，兑换次数
+    submitCardChargeConsume (type) {
+      let obj = null
+      console.log(typeof type, type)
+      switch (type) {
+        case 0:
+          // 卡余额
+          obj = {
+            moneyDis: this.model.presentText,
+            reduce: this.inputValue,
+            userId: this.model.userId,
+            cardId: this.model.cardId,
+            cardNo: this.model.cardNo,
+            message: this.desc,
+            cardType: this.model.cardType
+          }
+          break
+        case 1:
+          // 兑换商品次数
 
+          break
+        case 2:
+          // 兑换门店次数
+
+          break
+        default:
+          break
+      }
+      // 会员卡余额，兑换次数
+      chargeConsume(obj).then(res => {
+
+      })
     },
     success () {
       this.$message.success(this.$t('membershipIntroduction.success'))
