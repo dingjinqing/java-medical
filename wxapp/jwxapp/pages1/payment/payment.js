@@ -45,9 +45,9 @@ global.wxPage({
       }
     },{orderSn:this.data.orderSn})
   },
-  getAwardInfo({currentAwardTimes:currentStep,payAwardSize:totalStep,payAwardPrize:awardInfo}){
+  getAwardInfo({currentAwardTimes:currentStep,payAwardSize:totalStep,payAwardPrize:awardInfo,message}){
     const needParams = {
-      0:null,
+      0:[null],
       1:['couponView'],
       2:['couponView'],
       3:['lotteryId'],
@@ -63,6 +63,7 @@ global.wxPage({
     }
     return {
       stepInfo,
+      message,
       giftInfo:{
         giftType:awardInfo.giftType,
         awardInfo:{

@@ -99,14 +99,24 @@ export default {
           break
         case 6: // 拼团抽奖
           obj = {
-            module_name: 'm_group_draw',
-            group_draw_id: '', // 拼团抽奖活动id
-            name_set: '0', // 是否使用默认活动标题 0 使用 1不使用
-            group_draw_name: '', // 自定义活动标题
-            show_clock: '1', // 是否显示活动倒计时 0 隐藏 1显示
-            font_color: '#ffffff', // 字体颜色
-            module_bg: '0', // 活动底图 0 默认 1自定义
-            module_img: '' // 活动底图路径
+            'module_name': 'm_pin_integration',
+            'act_id': '88', // 活动id
+            'pin_title': '0', // 标题 radio 1 0
+            'pin_title_text': '细心些', // 标题 自定义内容
+            'hide_active': '1', // 隐藏内容 活动内容
+            'hide_time': '1', // 隐藏内容 有效期
+            'module_bg': '1', // 活动地图radio 0 1
+            'module_img': '', // 自定义活动地图
+            'font_color': null
+          }
+          break
+        case 7: // 瓜分积分
+          obj = {
+            'module_name': 'm_pin_integration',
+            'act_id': '88',
+            'pin_title': '1',
+            'module_bg': '0',
+            'font_color': null
           }
           break
         case 8: // 商品模块
@@ -142,7 +152,7 @@ export default {
             goods_type: '0', // 活动商品 0请选择 .. y
             show_market: '1', // 其他信息选中 隐藏radio字段  1市场价 2销量 3评价数 y
             goods_module_bg: '0', // 背景颜色 0与页面一致  1自定义 y
-            goods_bg_color: '#f5f5f5', // 背景自定义颜色 y
+            goods_bg_color: null, // 背景自定义颜色 y
             goodsListData: [] // 传递商品列表数据
           }
           break

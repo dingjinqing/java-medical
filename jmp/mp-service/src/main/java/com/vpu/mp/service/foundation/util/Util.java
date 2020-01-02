@@ -2,7 +2,6 @@ package com.vpu.mp.service.foundation.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.google.common.collect.Lists;
@@ -57,8 +56,10 @@ import static java.util.stream.Collectors.toList;
 public class Util {
 
 	final protected static String UNDEER_LINE = "_";
+    private static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson LINE_GSON = new GsonBuilder().create();
 
-	public static String toJson(Object o) {
+    public static String toJson(Object o) {
         if (Objects.isNull(o)) {
             return StringUtils.EMPTY;
         }
@@ -81,22 +82,14 @@ public class Util {
      * @param o the o
      * @return the string
      */
-    public static String toJsonEnableNull(Object o) {
+    public static String toPrettyJson(Object o) {
         if (Objects.isNull(o)) {
             return StringUtils.EMPTY;
         }
         if (o instanceof UpdatableRecordImpl) {
-
+            return LINE_GSON.toJson(o);
         }
-        MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        try {
-            return MAPPER.writeValueAsString(o);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        } finally {
-            MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, true);
-        }
-        return null;
+        return PRETTY_GSON.toJson(o);
     }
 
     /**
