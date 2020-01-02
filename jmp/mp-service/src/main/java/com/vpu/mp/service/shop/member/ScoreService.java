@@ -517,6 +517,7 @@ public class ScoreService extends ShopBaseService {
 			}
 			UserScoreRecord record =db().newRecord(USER_SCORE);
 			FieldsUtil.assignNotNull(data, record);
+			record.setRemarkId(String.valueOf(data.getRemarkCode()));
 			record.setAdminUser(adminUser);
 			record.setFlowNo(generateFlowNo());
 			record.setUsableScore(data.getScore() > 0 ? data.getScore() : 0);
