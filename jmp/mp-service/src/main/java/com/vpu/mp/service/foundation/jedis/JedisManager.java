@@ -340,4 +340,17 @@ public class JedisManager {
 			}
 		}
 	}
+	/**
+	 * 递减
+	 * @param key key
+	 * @return incr
+	 */
+	public Long decr(String key){
+		Long value =null;
+		try (Jedis jedis = getJedisPool().getResource()){
+			value=jedis.decr(key);
+		}
+		return value;
+	}
+
 }
