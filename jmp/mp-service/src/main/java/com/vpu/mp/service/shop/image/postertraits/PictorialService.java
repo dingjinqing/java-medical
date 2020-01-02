@@ -143,11 +143,11 @@ public class PictorialService extends ShopBaseService {
         ImageUtil.addFont(bgBufferedImage,realPriceStr,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),imgPx.getBgPadding(),imgPx.getPriceY(),imgPx.getRealPriceColor());
 
         // 设置划线价
-        Integer lineStartX =ImageUtil.getTextWidth(ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceStr)+imgPx.getBgPadding()+10;
+        Integer lineStartX =ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceStr)+imgPx.getBgPadding()+10;
         String linePriceStr = linePrice.setScale(2,BigDecimal.ROUND_HALF_UP).toString();
         ImageUtil.addFont(bgBufferedImage,linePriceStr,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),lineStartX,imgPx.getPriceY(),imgPx.getLinePriceColor());
 
-        Integer lineEndX = lineStartX+ImageUtil.getTextWidth(ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),linePriceStr);
+        Integer lineEndX = lineStartX+ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),linePriceStr);
         Integer lineY = imgPx.getPriceY() - imgPx.getSmallFontSize()/3;
         ImageUtil.addLine(bgBufferedImage,lineStartX,lineY,lineEndX,lineY,imgPx.getLinePriceColor());
 
