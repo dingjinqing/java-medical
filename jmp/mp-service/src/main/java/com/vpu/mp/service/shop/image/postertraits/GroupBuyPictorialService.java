@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
+import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialUserInfo;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoVo;
@@ -264,22 +265,42 @@ public class GroupBuyPictorialService extends ShopBaseService {
         try {
             // 测试使用
              qrCodeImage = ImageIO.read(new URL(mpQrCode));
-//            InputStream inputStream = new FileInputStream(new File("E:/qrcode.jpg"));
-//            qrCodeImage = ImageIO.read(inputStream);
         } catch (IOException e) {
             groupBuyLog("pictorial", "获取二维码失败");
             return null;
         }
+        PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice());
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx);
 
-        try {
-            ImageIO.write(bgBufferedImage, "jpg", new File("E:/a.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // 拼装自定义内容
+        // "开团省" 文字
+        String startGroupText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_START_GROUP, "messages", null);
+        // "元" 文字
+        String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_MONEY, "messages", null);
+        BigDecimal saveMoney = param.getLinePrice().subtract(param.getRealPrice()).setScale(2,BigDecimal.ROUND_HALF_UP);
+        String saveText = startGroupText+saveMoney+startGroupMoneyText;
+        ImageUtil.addFont(bgBufferedImage,saveText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextStartX(),imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
 
-        return null;
+        Integer saveTextWidth  = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),saveText);
+        ImageUtil.addRect(bgBufferedImage,imgPx.getCustomerTextStartX()-5,imgPx.getCustomerTextStartY()-imgPx.getSmallFontSize(),saveTextWidth+10,imgPx.getSmallFontSize()+5,imgPx.getCustomerTextFontColor(),null);
+
+        // 活动价
+        String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages", null)+param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP);
+        Integer realPriceTextStartX = imgPx.getCustomerTextStartX()+saveTextWidth+15;
+        ImageUtil.addFont(bgBufferedImage,realPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
+        Integer realPriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceText);
+
+        // 划线价格
+        String linePriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages", null)+param.getLinePrice().setScale(2,BigDecimal.ROUND_HALF_UP);
+        Integer linePriceTextStartX = realPriceTextStartX+realPriceTextWidth+5;
+        ImageUtil.addFont(bgBufferedImage, linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),linePriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
+        Integer linePriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),linePriceText);
+
+        // 画线
+        ImageUtil.addLine(bgBufferedImage,linePriceTextStartX-2,imgPx.getCustomerTextStartY()-imgPx.getSmallFontSize()/3,linePriceTextStartX+linePriceTextWidth+5,imgPx.getCustomerTextStartY()-imgPx.getSmallFontSize()/3,imgPx.getCustomerTextFontColor());
+
+        return ImageUtil.toBase64(bgBufferedImage);
     }
 
 

@@ -1,26 +1,26 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="goods_item" bindtap="toItem">
   <view class="goods_image">
-    <image src="{{goodsItem.goodsImg}}"></image>
+    <image src="{{goodsItem.goodsImg}}" class="goods-image"></image>
     <block wx:if="goodsItem.label">
       <block wx:if="{{goodsItem.label.listPattern == 1}}">
         <view class="label-style1" style='background:url({{imageUrl}}/image/wxapp/label-three.png) no-repeat ; background-size:100%;'>
-          <text>{{goodsItem.label.name}}</text>
+          <text class="label-text">{{goodsItem.label.name}}</text>
         </view>
       </block>
       <block wx:if="{{goodsItem.label.listPattern == 2}}">
         <view class='label-style2' style='background:-webkit-linear-gradient(left,{{linColor}},{{main_setting.comColor1}})'>
-          <text>{{goodsItem.label.name}}</text>
+          <text class="label-text">{{goodsItem.label.name}}</text>
         </view>
       </block>
       <block wx:if="{{goodsItem.label.listPattern == 3 }}">
         <view class='label-style3' style='border-color:{{main_setting.comColor}}'>
-          <text style='color:{{main_setting.comColor}}'>{{goodsItem.label.name}}</text>
+          <text class="label-text" style='color:{{main_setting.comColor}}'>{{goodsItem.label.name}}</text>
         </view>
       </block>
       <block wx:if="{{ goodsItem.label.listPattern == 4}}">
         <view class='label-style4' style='background:-webkit-linear-gradient(left,{{linColor}},{{main_setting.comColor1}})'>
-          <text style='color:#fff'>{{goodsItem.label.name}}</text>
+          <text class="label-text" style='color:#fff'>{{goodsItem.label.name}}</text>
         </view>
       </block>
     </block>
