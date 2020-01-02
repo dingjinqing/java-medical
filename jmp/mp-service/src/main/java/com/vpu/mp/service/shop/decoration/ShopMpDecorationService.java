@@ -24,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.ShopCollectInfo;
+import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageCfgVo;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageVo;
@@ -648,6 +649,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 
             }
         }
+        if(node.getKey().equals("page_cfg")){
+            return this.convertPageCfgIndex(objectMapper, node, user);
+        }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
     }
 
@@ -917,6 +921,19 @@ public class ShopMpDecorationService extends ShopBaseService {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    /**
+     * page_cfg模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private WxAppPageCfgVo convertPageCfgIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        return objectMapper.readValue(node.getValue().toString(), WxAppPageCfgVo.class);
     }
 
 }
