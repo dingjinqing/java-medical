@@ -432,6 +432,8 @@ public class JsonResultMessage {
 	public static final String CODE_NEED_ONE = "code.need.one";
 	public static final String GET_TEMPLATE_NAME = "get.template.name";
 	public static final String CODE_EXCEL_ERRO = "code.excel.name";
+	public static final String EXPORT_TEMPLATE_NAME = "export.template.name";
+	public static final String EXPORT_TEMPLATE_ACTIVE_NAME = "export.template.active.name";
 	
 	/**
 	 * 概览
