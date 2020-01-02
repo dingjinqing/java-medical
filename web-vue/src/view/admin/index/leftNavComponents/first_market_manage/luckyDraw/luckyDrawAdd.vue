@@ -120,14 +120,20 @@
         </div>
 
         <div class="mainContentRight">
-          <!-- 活动信息 -->
-          <div class="boxWrapper">
-            <div class="textDesc">{{$t('luckyDraw.activityInformation')}}</div>
-            <el-form
-              label-width="100px"
-              ref="form"
-            >
-              <el-form-item :label="$t('luckyDraw.activityName')">
+          <el-form
+            label-width="125px"
+            ref="form"
+            :model="requestParam"
+            :rules="formRules"
+          >
+            <!-- 活动信息 -->
+            <div class="boxWrapper">
+              <div class="textDesc">{{$t('luckyDraw.activityInformation')}}</div>
+
+              <el-form-item
+                :label="$t('luckyDraw.activityName')+'：'"
+                prop="lotteryName"
+              >
                 <el-input
                   size="small"
                   v-model="requestParam.lotteryName"
@@ -136,34 +142,47 @@
                 ></el-input>
               </el-form-item>
 
-              <el-form-item :label="$t('luckyDraw.activityValidity')">
-                <div>
+              <el-form-item
+                :label="$t('luckyDraw.activityValidity')+'：'"
+                required
+              >
+                <el-form-item
+                  prop="startTime"
+                  :inline-message="true"
+                >
                   <span>{{$t('luckyDraw.effectiveTime')}}：</span>
                   <el-date-picker
                     v-model="requestParam.startTime"
                     type="datetime"
                     :placeholder="$t('luckyDraw.selectDateTime')"
                     size="small"
-                    style="width: 180px"
+                    style="width: 185px"
                     value-format="yyyy-MM-dd HH:mm:ss"
                   >
                   </el-date-picker>
-                </div>
-                <div>
+                </el-form-item>
+                <el-form-item
+                  prop="endTime"
+                  :inline-message="true"
+                >
                   <span>{{$t('luckyDraw.expirationTime')}}：</span>
                   <el-date-picker
                     v-model="requestParam.endTime"
                     type="datetime"
                     :placeholder="$t('luckyDraw.selectDateTime')"
                     size="small"
-                    style="width: 180px"
+                    style="width: 185px"
+                    default-time="23:59:59"
                     value-format="yyyy-MM-dd HH:mm:ss"
                   >
                   </el-date-picker>
-                </div>
+                </el-form-item>
               </el-form-item>
 
-              <el-form-item :label="$t('luckyDraw.activityName')">
+              <el-form-item
+                :label="$t('luckyDraw.activityDescription')+'：'"
+                prop="lotteryExplain"
+              >
                 <el-input
                   v-model="requestParam.lotteryExplain"
                   type="textarea"
@@ -172,13 +191,12 @@
                   style="width: 300px;height: 100px;"
                 ></el-input>
               </el-form-item>
-            </el-form>
-          </div>
 
-          <!-- 规则设置 -->
-          <div class="boxWrapper">
-            <div class="textDesc">{{$t('luckyDraw.rulesSetting')}}</div>
-            <el-form label-width="125px">
+            </div>
+
+            <!-- 规则设置 -->
+            <div class="boxWrapper">
+              <div class="textDesc">{{$t('luckyDraw.rulesSetting')}}</div>
               <!--                            <el-form-item-->
               <!--                                    label="活动规则："-->
               <!--                                    prop=""-->
@@ -189,7 +207,7 @@
               <!--                                </el-radio-group>-->
               <!--                            </el-form-item>-->
 
-              <el-form-item :label="$t('luckyDraw.freePrizeDraw')">
+              <el-form-item :label="$t('luckyDraw.freePrizeDraw')+'：'">
                 <el-input
                   size="small"
                   :placeholder="$t('luckyDraw.nullUnrestricted')"
@@ -199,7 +217,7 @@
                 <span style="color:#999;">{{$t('luckyDraw.freePizeTimes')}}</span>
               </el-form-item>
 
-              <el-form-item :label="$t('luckyDraw.shareTheLuckyDraw')">
+              <el-form-item :label="$t('luckyDraw.shareTheLuckyDraw')+'：'">
                 <el-radio-group v-model="requestParam.canShare">
                   <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
                   <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
@@ -219,7 +237,7 @@
                 </div>
               </el-form-item>
 
-              <el-form-item :label="$t('luckyDraw.payLuckyDraw')">
+              <el-form-item :label="$t('luckyDraw.payLuckyDraw')+'：'">
                 <el-radio-group v-model="requestParam.canUseScore">
                   <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
                   <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
@@ -249,7 +267,7 @@
                 </div>
               </el-form-item>
 
-              <el-form-item :label="$t('luckyDraw.noWinningBonusPoints')">
+              <el-form-item :label="$t('luckyDraw.noWinningBonusPoints')+'：'">
                 <el-input
                   size="small"
                   :placeholder="$t('luckyDraw.nullIsNoPoints')"
@@ -291,29 +309,30 @@
                   </div>
                 </section>
               </el-form-item>
-            </el-form>
-          </div>
+            </div>
 
-          <!-- 抽奖设置 -->
-          <div class="boxWrapper">
-            <div class="textDesc">{{$t('luckyDraw.lotteryIsSet')}}</div>
-            <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips1')}}</p>
-            <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips2')}}</p>
-            <!-- 一等奖~四等奖 tab切换 -->
-            <el-tabs
-              type="border-card"
-              class="tabs"
-              v-model="tabSwitch"
-              @tab-click="handleTabClick"
-            >
-              <el-tab-pane
-                v-for="(item,index) in requestParam.prizeList"
-                :key="index"
-                :label="item.iconImgs"
-                :name="item.lotteryGrade"
+            <!-- 抽奖设置 -->
+            <div class="boxWrapper">
+              <div class="textDesc">{{$t('luckyDraw.lotteryIsSet')}}</div>
+              <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips1')}}</p>
+              <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips2')}}</p>
+              <!-- 一等奖~四等奖 tab切换 -->
+              <el-tabs
+                type="border-card"
+                class="tabs"
+                v-model="tabSwitch"
+                @tab-click="handleTabClick"
               >
-                <el-form label="100px">
-                  <el-form-item :label="$t('luckyDraw.prizeRate')">
+                <el-tab-pane
+                  v-for="(item,index) in requestParam.prizeList"
+                  :key="index"
+                  :label="item.iconImgs"
+                  :name="item.lotteryGrade"
+                >
+                  <el-form-item
+                    :label="$t('luckyDraw.prizeRate')+':'"
+                    label-width="80px"
+                  >
                     <el-input
                       size="small"
                       style="width:120px"
@@ -322,16 +341,28 @@
                     ></el-input>&nbsp;&nbsp;%
                   </el-form-item>
 
-                  <el-form-item :label="$t('luckyDraw.selectPrize')">
-                    <el-radio-group v-model="item.lotteryType">
+                  <el-form-item
+                    :label="$t('luckyDraw.selectPrize')+':'"
+                    label-width="80px"
+                  >
+                    <el-radio-group
+                      v-model="item.lotteryType"
+                      @change="lotteryTypeChange"
+                    >
                       <el-radio :label="1">{{$t('luckyDraw.prizeType')[0][1]}}</el-radio>
                       <el-radio :label="2">{{$t('luckyDraw.prizeType')[1][1]}}</el-radio>
                       <el-radio :label="3">{{$t('luckyDraw.prizeType')[2][1]}}</el-radio>
                       <el-radio :label="4">{{$t('luckyDraw.prizeType')[3][1]}}</el-radio>
                       <el-radio :label="5">{{$t('luckyDraw.prizeType')[4][1]}}</el-radio>
                     </el-radio-group>
-                    <section style="margin-left: 81px;">
-                      <div v-if="item.lotteryType===1">
+                    <section>
+                      <el-form-item
+                        v-if="item.lotteryType===1"
+                        required
+                        :prop="`prizeList[${index}].integralScore`"
+                        :rules="{ required: true, message: $t('luckyDraw.validScore'), trigger: 'blur' }"
+                        :inline-message="true"
+                      >
                         <span>{{$t('luckyDraw.presentExp')}}：</span>
                         <el-input
                           size="small"
@@ -339,8 +370,13 @@
                           style="width: 120px"
                           v-model="item.integralScore"
                         ></el-input>
-                      </div>
-                      <div v-if="item.lotteryType===2">
+                      </el-form-item>
+                      <el-form-item
+                        v-if="item.lotteryType===2"
+                        :prop="`prizeList[${index}].integralScore`"
+                        :rules="{ required: true, message: $t('luckyDraw.validBounsAmount'), trigger: 'blur' }"
+                        :inline-message="true"
+                      >
                         <span>{{$t('luckyDraw.giveTheBalance')}}：</span>
                         <el-input
                           size="small"
@@ -348,8 +384,13 @@
                           style="width: 120px"
                           v-model="item.integralScore"
                         ></el-input>
-                      </div>
-                      <div v-if="item.lotteryType===3">
+                      </el-form-item>
+                      <el-form-item
+                        v-if="item.lotteryType===3"
+                        :prop="`prizeList[${index}].couponId`"
+                        :rules="{ required: true, message: $t('luckyDraw.validCoupon'), trigger: 'blur' }"
+                        :inline-message="true"
+                      >
                         <span>{{$t('luckyDraw.coupons')}}：</span>
                         <el-select
                           v-model="item.couponId"
@@ -377,15 +418,20 @@
                         </span>
                         <p style="color: #999;">
                           {{$t('luckyDraw.couponsTips',[couponNumber])}}</p>
-                      </div>
-                      <div v-if="item.lotteryType===4">
+                      </el-form-item>
+                      <el-form-item
+                        v-if="item.lotteryType===4"
+                        :prop="`prizeList[${index}].goodsName`"
+                        :rules="{ required: true, message: $t('luckyDraw.validGivea'), trigger: 'blur' }"
+                        :inline-message="true"
+                      >
                         <div>
                           <span>{{$t('luckyDraw.givinggifts')}}：</span>
-                          <span
-                            style="border: 1px solid #ccc; cursor:pointer"
-                            @click="showGoodsDialog()"
+                          <el-button
+                            size="small"
+                            @click="showGoodsDialog"
                           > + {{$t('luckyDraw.selectGoods')}}
-                          </span>
+                          </el-button>
                         </div>
                         <div v-if="requestParam.prizeList[tabSwitch-1].goodsShow">
                           <table
@@ -445,8 +491,8 @@
                           <p style="margin-left:80px;color:#999;">
                             {{$t('luckyDraw.giftValidityTips2')}}</p>
                         </div>
-                      </div>
-                      <div v-if="item.lotteryType===5">
+                      </el-form-item>
+                      <el-form-item v-if="item.lotteryType===5">
                         <span>{{$t('luckyDraw.custom')}}：</span>
                         <el-input
                           size="small"
@@ -454,8 +500,8 @@
                           style="width: 150px"
                           v-model="item.lotteryDetail"
                         ></el-input>
-                      </div>
-                      <div>
+                      </el-form-item>
+                      <el-form-item>
                         <span>{{$t('luckyDraw.prizeNumber')}}：</span>
                         <el-input
                           size="small"
@@ -467,56 +513,56 @@
                         <div class="numberTips bottomTips">
                           {{$t('luckyDraw.prizeNumberTips4')}}
                         </div>
-                      </div>
+                      </el-form-item>
 
                     </section>
 
                   </el-form-item>
-                </el-form>
-              </el-tab-pane>
-            </el-tabs>
+                </el-tab-pane>
+              </el-tabs>
 
-            <!-- 一等奖~四等奖 icon图表及其文字设置 -->
-            <div class="levelBoxSetting">
-              <section class="upInfo levelUpInfo">
-                <div class="upIcons">
-                  <div class="leftContent">
-                    <img
-                      :src="this.$imageHost + this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage "
-                      alt=""
-                    >
-                  </div>
-                  <div class="rightContent">
-                    <div class="operate">
-                      <span @click="showLotteryDialog(2)">{{$t('luckyDraw.modification')}}</span>
-                      <span
-                        class="operateBtn fixstyle"
-                        @click="changeImgHandler(2)"
+              <!-- 一等奖~四等奖 icon图表及其文字设置 -->
+              <div class="levelBoxSetting">
+                <section class="upInfo levelUpInfo">
+                  <div class="upIcons">
+                    <div class="leftContent">
+                      <img
+                        :src="this.$imageHost + this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage "
+                        alt=""
                       >
-                        {{$t('luckyDraw.uploadChartForWinning')}}
-                      </span>
-                      <span
-                        class="operateBtn"
-                        @click="handleClear()"
-                      >{{$t('luckyDraw.empty')}}
-                      </span>
                     </div>
-                    <p style="margin-top:10px;">{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
+                    <div class="rightContent">
+                      <div class="operate">
+                        <span @click="showLotteryDialog(2)">{{$t('luckyDraw.modification')}}</span>
+                        <span
+                          class="operateBtn fixstyle"
+                          @click="changeImgHandler(2)"
+                        >
+                          {{$t('luckyDraw.uploadChartForWinning')}}
+                        </span>
+                        <span
+                          class="operateBtn"
+                          @click="handleClear()"
+                        >{{$t('luckyDraw.empty')}}
+                        </span>
+                      </div>
+                      <p style="margin-top:10px;">{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
+                    </div>
                   </div>
-                </div>
-                <div class="iconDesc">
-                  <span>{{$t('luckyDraw.iconDescribe')}}：</span>
-                  <el-input
-                    size="small"
-                    :placeholder="$t('luckyDraw.iconDescribeTips')"
-                    style="width: 180px"
-                    v-model="requestParam.prizeList[tabSwitch-1].iconImgs"
-                  ></el-input>
-                </div>
-              </section>
-            </div>
+                  <div class="iconDesc">
+                    <span>{{$t('luckyDraw.iconDescribe')}}：</span>
+                    <el-input
+                      size="small"
+                      :placeholder="$t('luckyDraw.iconDescribeTips')"
+                      style="width: 180px"
+                      v-model="requestParam.prizeList[tabSwitch-1].iconImgs"
+                    ></el-input>
+                  </div>
+                </section>
+              </div>
 
-          </div>
+            </div>
+          </el-form>
         </div>
       </div>
 
@@ -579,6 +625,13 @@ export default {
     lotteryImageDialog
   },
   data () {
+    let that = this
+    function validTime (rule, value, callback) {
+      if (new Date(that.requestParam.startTime) > new Date(that.requestParam.endTime)) {
+        callback(new Error('结束时间必须大于开始时间'))
+      }
+      callback()
+    }
     return {
       requestParam: {
         lotteryName: '',
@@ -616,7 +669,16 @@ export default {
       couponlist: [],
       couponNumber: 5,
       tabSwitch: '1',
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+      formRules: {
+        lotteryName: [{ required: true, message: that.$t('luckyDraw.validName'), trigger: 'blur' }],
+        startTime: [{ required: true, message: that.$t('luckyDraw.validStartTime'), trigger: 'blur' }],
+        endTime: [
+          { required: true, message: that.$t('luckyDraw.validEndTime'), trigger: 'blur' },
+          { validator: validTime, trigger: 'blur' }
+        ],
+        lotteryExplain: [{ required: true, message: that.$t('luckyDraw.validDesc'), trigger: 'blur' }]
+      }
     }
   },
   mounted () {
@@ -627,32 +689,40 @@ export default {
   },
   watch: {},
   methods: {
+    lotteryTypeChange (val) {
+      console.log(val)
+      this.$refs.form.clearValidate()
+    },
     // 保存
     submitData () {
       this.submitStatus = true
-      console.log('this.requestParam', this.requestParam)
-      if (this.isEdite) {
-        editLottery(this.requestParam).then(res => {
-          console.log('update', res)
-          if (res.error === 0) {
-            this.$message.success(res.message)
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          console.log('this.requestParam', this.requestParam)
+          if (this.isEdite) {
+            editLottery(this.requestParam).then(res => {
+              console.log('update', res)
+              if (res.error === 0) {
+                this.$message.success(res.message)
+              } else {
+                this.$message.warning(res.message)
+              }
+            }).catch(e => {
+              console.log(e)
+              this.$message.warning(e.message)
+            })
           } else {
-            this.$message.warning(res.message)
+            addLottery(this.requestParam).then(res => {
+              console.log('addLottery', res)
+              if (res.error === 0) {
+                this.$message.success(res.message)
+              } else {
+                this.$message.warning(res.message)
+              }
+            })
           }
-        }).catch(e => {
-          console.log(e)
-          this.$message.warning(e.message)
-        })
-      } else {
-        addLottery(this.requestParam).then(res => {
-          console.log('addLottery', res)
-          if (res.error === 0) {
-            this.$message.success(res.message)
-          } else {
-            this.$message.warning(res.message)
-          }
-        })
-      }
+        }
+      })
       this.submitStatus = false
     },
     handleClear () {
@@ -836,6 +906,11 @@ export default {
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
+                img {
+                  width: 40px;
+                  height: 40px;
+                  margin-bottom: 10px;
+                }
               }
             }
           }
@@ -1105,6 +1180,10 @@ export default {
     height: 50px;
     background: #f8f8fa;
     margin-left: -20px;
+  }
+
+  .change_goods_del {
+    text-decoration: none;
   }
 }
 </style>>

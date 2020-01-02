@@ -79,4 +79,5 @@ public class AdminCouponGiveController extends AdminBaseController{
 		shop().coupon.couponGiveService.deleteCoupon(param);
 		return success();
 	}
+
 }

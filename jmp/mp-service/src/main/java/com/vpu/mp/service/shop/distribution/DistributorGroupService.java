@@ -123,7 +123,7 @@ public class DistributorGroupService extends ShopBaseService{
 	public DistributorGroupListVo getOneInfo(Integer id) {
 		DistributorGroupListVo result = db().select().from(DISTRIBUTOR_GROUP)
 				.where(DISTRIBUTOR_GROUP.ID.eq(id))
-				.fetchOne().into(DistributorGroupListVo.class);
+				.fetchOneInto(DistributorGroupListVo.class);
 		return result;	
 	}
 	

@@ -11,21 +11,27 @@
       <!--模块编辑区-->
       <div class="integralExchange">
         <div class="integralExchangeMain">
-          <ul>
+          <ul :style="modulesData.list_styles==='1'?'display:block':'display:flex'">
             <li
-              v-for="(item,index) in occupyingData"
+              v-for="(item,index) in showData"
               :key="index"
-              :style="(index !==0&&index!==1)?'margin-top:5px':''"
+              :style="((index !==0&&index!==1)?'margin-top:5px;':'')+modulesData.list_styles==='1'?'display:flex;width:100%':'display:block'"
             >
               <div
                 class="liTop"
-                :style="'background:#eaf2ff url('+$imageHost+'/image/admin/shop_beautify/decorate_model.png) center no-repeat'"
+                :style="(!item.goods_img?'background:#eaf2ff url('+$imageHost+'/image/admin/shop_beautify/decorate_model.png) center no-repeat':'backgroundColor:#fff')+(modulesData.list_styles==='1'?';width:100px;height:100px;padding:5px':'')"
               >
                 <img :src="item.goods_img">
               </div>
-              <div class="liBottom">
+              <div
+                class="liBottom"
+                :style="modulesData.list_styles==='1'?'flex:1':''"
+              >
                 <div class="goodsName">{{item.goods_name}}</div>
-                <div class="integral_info_head ">
+                <div
+                  class="integral_info_head "
+                  :style="modulesData.list_styles==='1'?'margin-top:37px':''"
+                >
                   <div class="goodsPrice">
                     <div class="integral_price ">
                       ￥{{item.money}} + {{item.score}} <i style="font-size:12px">积分</i>
@@ -33,7 +39,14 @@
                   </div>
                 </div>
                 <div class="goods_prices_bottom">
-                  <div class="orignakl_orice">￥{{item.prd_price}}</div>
+                  <div
+                    class="orignakl_orice"
+                    v-if="modulesData.show_goods_price"
+                  >￥{{item.prd_price}}</div>
+                  <div
+                    v-else
+                    style="height:25px"
+                  ></div>
                   <div class="btn_convert ">去兑换</div>
                 </div>
               </div>
@@ -92,7 +105,7 @@ export default {
       activeBorder: false, // 模块公共
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
-      occupyingData: [
+      occupyingData: [ // 占位数据
         {
           'goods_img': '',
           'goods_name': '积分商城名称-1',
@@ -106,9 +119,9 @@ export default {
           'prd_price': '1000.00',
           'money': '200.00',
           'score': '400000'
-
         }
-      ], // 占位数据
+      ],
+      showData: [], //  显示数据
       // 模块私有
       modulesData: {
 
@@ -147,6 +160,11 @@ export default {
       handler (newData) {
         if (newData) {
           this.modulesData = newData
+          if (newData.integral_goods.length) {
+            this.showData = newData.integral_goods
+          } else {
+            this.showData = this.occupyingData
+          }
         }
         console.log(newData)
       },

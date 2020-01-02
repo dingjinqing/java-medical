@@ -12,6 +12,10 @@ import lombok.Data;
 */
 @Data
 public class UserCardDetailVo {
+	/** 会员id */
+	private Integer userId;
+	/** 卡id */
+	private Integer cardId;
 	/** - 领取时间 */
 	private Timestamp createTime;
 	/** - 过期时间 */

@@ -38,10 +38,9 @@
   margin-left: 10rpx;
   color: #333;
   word-break: break-all;
-  /* text-overflow: hidden; */
   padding-right: 40rpx;
 }
-.zimu text{
+.zimu .zumu-item{
   font-size: 24rpx;
   color: #666;
   padding: 0 8rpx;
@@ -79,7 +78,7 @@
   display: flex;
   z-index: 2;
 }
-.sort-item > .back > image{
+.sort-item > .back > .back-image{
   width: 14rpx;
   height: 28rpx;
   vertical-align: middle;
