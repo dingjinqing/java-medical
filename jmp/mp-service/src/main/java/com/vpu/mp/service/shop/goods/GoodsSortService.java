@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.goods;
 
 import com.google.common.base.Functions;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
-import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.sort.*;
@@ -185,7 +184,11 @@ public class GoodsSortService extends ShopBaseService {
                 }
                 db().update(SORT).set(SORT.HAS_CHILD,GoodsConstant.HAS_CHILD).where(SORT.SORT_ID.eq(param.getParentId())).execute();
             }
-            esDataUpdateMqService.updateEsGoodsIndexBySortId(sortRecord.getSortId(),getShopId());
+            try {
+                esDataUpdateMqService.updateEsGoodsIndexBySortId(sortRecord.getSortId(),getShopId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
     }
@@ -263,7 +266,11 @@ public class GoodsSortService extends ShopBaseService {
                         .where(SORT.SORT_ID.eq(sortRecord.getParentId())).execute();
                 }
             }
-            esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
+            try {
+                esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 

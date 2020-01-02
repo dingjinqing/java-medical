@@ -170,6 +170,16 @@ public class EnterPolitelyService extends ShopBaseService {
         return award;
     }
 
+    /**
+     * Send award award vo.
+     *
+     * @param awardType    the award type
+     * @param awardContent the award content
+     * @param userId       the user id
+     * @param activityId   the activity id
+     * @param bo           the bo
+     * @return the award vo
+     */
     public AwardVo sendAward(byte awardType, String awardContent, int userId, int activityId, ExtBo bo) {
         AwardVo noAward = AwardVo.builder().activityId(activityId).awardType(GIVE_TYPE_NO_PRIZE).build();
         AwardVo award = AwardVo.builder().activityId(activityId).awardType(awardType).awardContent(awardContent).build();
