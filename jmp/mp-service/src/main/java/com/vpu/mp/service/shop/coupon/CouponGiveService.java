@@ -7,6 +7,8 @@ import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -584,7 +586,6 @@ public class CouponGiveService extends ShopBaseService {
                     .fetchOneInto(CouponDetailsVo.class);
             // 查询结果为空直接返回
             if (couponDetails == null) {
-                String couponInfo = "优惠券ID:" + couponId;
                 log.error("优惠券 [id：{}] 不存在", couponId);
                 continue;
             }
@@ -603,45 +604,42 @@ public class CouponGiveService extends ShopBaseService {
             }
             // 发券入库
             for (Integer userId : param.getUserIds()) {
-                // 如果库存为0，返回信息库存不足
-                if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
-                    && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
-                    logger().info("所选优惠券库存不足");
-                    break;
-                }
                 // 库存足够，发券
-                else {
-                    // 如果是限制库存类型
-                    if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)) {
-                        int affectedRows = db().update(MRKING_VOUCHER)
-                            .set(MRKING_VOUCHER.SURPLUS, (couponDetails.getSurplus() - 1))
-                            .where(MRKING_VOUCHER.ID.eq(Integer.parseInt(couponId)))
-                            .and(MRKING_VOUCHER.SURPLUS.greaterThan(NumberUtils.INTEGER_ZERO))
-                            .execute();
-                        if (affectedRows > 0) {
-                            // 同时当前对象中优惠券剩余量-1
-                            couponDetails.setSurplus(couponDetails.getSurplus() - 1);
-                        } else {
-                            break;
+                CustomerAvailCouponsRecord customerAvailCouponsRecord = db().newRecord(CUSTOMER_AVAIL_COUPONS);
+                customerAvailCouponsRecord.setType(type);
+                customerAvailCouponsRecord.setActId(Integer.valueOf(couponId));
+                customerAvailCouponsRecord.setUserId(userId);
+                customerAvailCouponsRecord.setActDesc(couponDetails.getActName());
+                customerAvailCouponsRecord.setAmount(couponDetails.getDenomination());
+                customerAvailCouponsRecord.setCouponSn(getCouponSn());
+                customerAvailCouponsRecord.setAccessId(param.getActId());
+                customerAvailCouponsRecord.setStartTime(timeMap.get("startTime"));
+                customerAvailCouponsRecord.setEndTime(timeMap.get("endTime"));
+                customerAvailCouponsRecord.setAccessMode(param.getAccessMode());
+                customerAvailCouponsRecord.setGetSource(param.getGetSource());
+                try {
+                    this.transaction(()-> {
+                        // 如果是限制库存类型
+                        if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)) {
+                            int affectedRows = db().update(MRKING_VOUCHER)
+                                .set(MRKING_VOUCHER.SURPLUS, (couponDetails.getSurplus() - 1))
+                                .where(MRKING_VOUCHER.ID.eq(Integer.parseInt(couponId)))
+                                .and(MRKING_VOUCHER.SURPLUS.greaterThan(NumberUtils.INTEGER_ZERO))
+                                .execute();
+                            //库存为0 减库存失败
+                            if (affectedRows <= 0) {
+                                throw new BusinessException(JsonResultCode.CODE_FAIL);
+                            }
                         }
-                    }
-                    CustomerAvailCouponsRecord customerAvailCouponsRecord = db().newRecord(CUSTOMER_AVAIL_COUPONS);
-                    customerAvailCouponsRecord.setType(type);
-                    customerAvailCouponsRecord.setActId(Integer.valueOf(couponId));
-                    customerAvailCouponsRecord.setUserId(userId);
-                    customerAvailCouponsRecord.setActDesc(couponDetails.getActName());
-                    customerAvailCouponsRecord.setAmount(couponDetails.getDenomination());
-                    customerAvailCouponsRecord.setCouponSn(getCouponSn());
-                    customerAvailCouponsRecord.setAccessId(param.getActId());
-                    customerAvailCouponsRecord.setStartTime(timeMap.get("startTime"));
-                    customerAvailCouponsRecord.setEndTime(timeMap.get("endTime"));
-                    customerAvailCouponsRecord.setAccessMode(param.getAccessMode());
-                    customerAvailCouponsRecord.setGetSource(param.getGetSource());
-                    customerAvailCouponsRecord.insert();
-                    // 得到成功条数
-                    successNum++;
-                    couponGiveBo.getCouponSet().add(Integer.valueOf(couponId));
+                        //发券操作
+                        customerAvailCouponsRecord.insert();
+                    });
+                    }catch (BusinessException e){
+                        break;
                 }
+                // 得到成功条数
+                successNum++;
+                couponGiveBo.getCouponSet().add(Integer.valueOf(couponId));
             }
         }
         //更新优惠券表发放/领取数量

@@ -605,13 +605,13 @@ create table `b2c_mp_deploy_history`
 create table `b2c_mp_operate_log`
 (
   `operate_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `app_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '小程序app_id',
+  `app_id` varchar(191) NOT NULL DEFAULT '' COMMENT '小程序app_id',
   `template_id` int(11) NOT NULL COMMENT '小程序模板Id',
   `operate_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作类型',
-  `memo` text COLLATE utf8mb4_unicode_ci COMMENT '操作日志',
+  `memo` text  COMMENT '操作日志',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
-  `memo_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `memo_list` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `memo_id` varchar(100)  NOT NULL,
+  `memo_list` varchar(100) NOT NULL,
   `operate_state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作状态:1成功 2失败',
   PRIMARY KEY (`operate_id`),
   KEY `app_id` (`app_id`),
@@ -1710,9 +1710,9 @@ create table `b2c_user_summary_trend`
 -- drop table if exists `b2c_mp_user_portrait`;
 CREATE TABLE `b2c_mp_user_portrait` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ref_date` char(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '时间： 如： "20180313"',
-  `visit_uv_new` longtext COLLATE utf8mb4_unicode_ci COMMENT '新用户',
-  `visit_uv` longtext COLLATE utf8mb4_unicode_ci COMMENT '活跃用户',
+  `ref_date` char(30)  NOT NULL COMMENT '时间： 如： "20180313"',
+  `visit_uv_new` longtext  COMMENT '新用户',
+  `visit_uv` longtext  COMMENT '活跃用户',
   `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0:昨天，1：最近7天，2:30天',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',

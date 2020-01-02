@@ -30,22 +30,32 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     /**
      * 一般营销  首单特惠 会员专享
      */
-    private final static List<Byte> generalActivity = Arrays.asList(
+    private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
             BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
             BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
     );
     /**
      * 全局的活动  支付有礼
      */
-    private final static List<Byte> globalActivity = Arrays.asList(
+    private final static List<Byte> GLOBAL_ACTIVITY = Arrays.asList(
             BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
             BaseConstant.ACTIVITY_TYPE_GIFT
+    );
+
+    /**
+     * 全局的活动  支付有礼
+     */
+    public final static List<Byte> SINGLENESS_ACTIVITY = Arrays.asList(
+            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+            BaseConstant.ACTIVITY_TYPE_BARGAIN
     );
 
     /**
      * 单一营销
      */
     private Map<Byte,CreateOrderProcessor> processorMap;
+
     /**
      * 普通营销活动
      */
@@ -64,11 +74,13 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         processorGeneralList=new ArrayList<>(processors.size());
         processorGlobalList=new ArrayList<>(processors.size());
         for (CreateOrderProcessor processor : processors) {
-            processorMap.put(processor.getActivityType(), processor);
-            if (generalActivity.contains(processor.getActivityType())){
+            if (SINGLENESS_ACTIVITY.contains(processor.getActivityType())){
+                processorMap.put(processor.getActivityType(), processor);
+            }
+            if (GENERAL_ACTIVITY.contains(processor.getActivityType())){
                 processorGeneralList.add(processor);
             }
-            if (globalActivity.contains(processor.getActivityType())){
+            if (GLOBAL_ACTIVITY.contains(processor.getActivityType())){
                 processorGlobalList.add(processor);
             }
         }
@@ -96,7 +108,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 保存数据
+     * 保存数据（该方法不要在并发情况下出现临界资源）
      * @param param
      * @param order
      */

@@ -55,7 +55,7 @@ public class GoodsBrandService extends ShopBaseService {
     public PageResult<GoodsBrandPageListVo> getPageList(GoodsBrandPageListParam param) {
         Condition condition = buildOptions(param);
         SelectSeekStep2<Record8<Integer, String, String, Byte, Timestamp, String, Short, Byte>, Byte, Timestamp> select = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME,
-            BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST.as("calssify_first"), GOODS_BRAND.IS_RECOMMEND)
+            BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST.as("classify_first"), GOODS_BRAND.IS_RECOMMEND)
             .from(GOODS_BRAND).leftJoin(BRAND_CLASSIFY).on(GOODS_BRAND.CLASSIFY_ID.eq(BRAND_CLASSIFY.CLASSIFY_ID))
             .where(condition).and(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).or(BRAND_CLASSIFY.DEL_FLAG.isNull()))
             .orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME.desc());
