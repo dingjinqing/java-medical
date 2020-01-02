@@ -2,14 +2,14 @@
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="sort-item">
       <view class="back" bindtap="bindClose">
-        <image src="{{imageUrl}}/image/wxapp/category_back.png"></image>
+        <image class="back-image" src="{{imageUrl}}/image/wxapp/category_back.png"></image>
       </view>
       <view class="center-title">更多分类</view>
     </view>
     <view class="sort-item" bindtap="toogleChange">
       <view class="sort-name">服装(10)</view>
       <view class="arrow">
-        <image src="/images/comment_down.png" class="{{ changeStatus ? 'up' : '' }}"></image>
+        <image src="/images/comment_down.png" class="{{ changeStatus ? 'up' : '' }} arrow-image"></image>
       </view>
     </view>
     <view class="sort-item" wx:if="{{changeStatus}}">

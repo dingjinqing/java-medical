@@ -23,7 +23,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    record_id = options.record_id;
+    record_id = Number(options.record_id);
     var that = this;
     list_request(that);
   },
@@ -60,13 +60,34 @@ global.wxPage({
   },
 })
 function list_request(that) {
-  util.api('/api/wxapp/bargain/user_list', function (res) {
+  util.api('/api/wxapp/bargain/users', function (res) {
     if (res.error == 0) {
       that.setData({
-        info_list: res.content.data,
-        page: res.content.current_page,
-        last_page: res.content.last_page
+        info_list: res.content.dataList,
+        page: res.content.page.currentPage,
+        last_page: res.content.page.lastPage
       })
+      // 砍价列表时间
+      // if (info_list.length > 0) {
+      //   // var now = new Date(bargain_info.timestamp).getTime();
+      //   info_list.forEach((item, index) => {
+      //     item.allTime = (new Date(item.timestamp).getTime() - new Date(item.createTime).getTime()) / 1000;
+      //     if (item.allTime < 60) {
+      //       item.show_time = '刚刚'
+      //     } else if (item.allTime < 3600) {
+      //       item.show_time = Math.ceil(item.allTime / 60) + '分钟前'
+      //     } else if (item.allTime < 24 * 3600) {
+      //       item.show_time = Math.ceil(item.allTime / 3600) + '小时前'
+      //     } else {
+      //       item.show_time = Math.ceil(item.allTime / (24 * 3600)) + '天前'
+      //     }
+      //   })
+      // }
+
+      // that.setData({
+      //   info_list: info_list,
+      // })
+
     }
-  }, { record_id: record_id, pageNo: that.data.page });
+  }, { recordId: record_id, pageNo: that.data.page });
 }

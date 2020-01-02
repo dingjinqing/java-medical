@@ -59,7 +59,7 @@
   right: 30rpx;
 }
 
-.close-container image {
+.close-container .image {
   display: block;
   width: 50rpx;
   height: 50rpx;
@@ -97,7 +97,7 @@
   right: 30rpx;
 }
 
-.inner image {
+.inner .image {
   width: 40rpx;
   height: 40rpx;
 }
