@@ -10,7 +10,7 @@
   height: 346rpx;
   position: relative;
 }
-.goods_image > image {
+.goods_image > .goods-image {
   width: 100%;
   height: 100%;
 }
@@ -124,7 +124,7 @@ rgba(91, 158, 164, 0.8),
   border: 6rpx solid rgba(255,255,255,0.2);
 }
 
-.label-style1 >text, .label-style13>text {
+.label-style1 >.label-text, .label-style13>.label-text {
   color: white;
   font-size: 22rpx;
   padding-left: 5rpx;
@@ -133,7 +133,7 @@ rgba(91, 158, 164, 0.8),
   line-height: 27rpx;
   padding-bottom: 4rpx;
 }
-.label-style2>text {
+.label-style2>.label-text {
   padding-bottom: 0rpx !important;
   padding-left: 14rpx;
   padding-right: 14rpx;
@@ -159,7 +159,7 @@ rgba(91, 158, 164, 0.8),
   justify-content: center;
 }
 
-.label-style3>text{
+.label-style3>.label-text{
   color: #f66;
   font-size: 22rpx;
   text-align: center;
@@ -179,7 +179,7 @@ rgba(91, 158, 164, 0.8),
   float: left;
 }
 
-.label-style4>text{
+.label-style4>.label-text{
   color: white;
   font-size: 22rpx;
   white-space: normal;
