@@ -48,18 +48,18 @@ public class RemindService extends ShopBaseService implements IorderOperate<Orde
 	public ExecuteResult execute(OrderOperateQueryParam param) {
 		OrderInfoMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoMpVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		if(!OrderOperationJudgment.isShowRemindShip(order)) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_NOT_SUPPORTED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_NOT_SUPPORTED, null);
 		}
 		if(order.getOrderRemind() == 3) {
 			//限制三次
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT, null);
 		}
 		if(order.getOrderRemindTime() != null && DateUtil.TimestampIsNowDay(order.getOrderRemindTime())) {
 			//限制一天一次
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT_TODAY);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT_TODAY, null);
 		}
 		//提醒
 		orderInfo.remind(order);
