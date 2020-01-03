@@ -17,5 +17,5 @@
   <image src='{{pageContent.shop_collect.collect_logo == 0 ? imageUrl+"image/wxapp/collect_gifts.png" : pageContent.shop_collect.collect_logo_src}}'></image>
 </view>
 
-<!-- 开屏有礼小程序弹窗 -->
+<!-- 开屏有礼弹窗 -->
 <v-pay-award show="{{openGiftDialog}}" award-info="{{awardInfo}}"/>
