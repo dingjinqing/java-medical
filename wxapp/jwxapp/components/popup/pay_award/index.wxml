@@ -20,6 +20,7 @@
         <text class="no-coupon-title">恭 喜 您 !</text>
       </block>
       <view class="act-title" wx:if="{{filter.includes([0,1],giftInfo.giftType) || !hasGift}}">支付有礼</view>
+      <view class="lottery_content" wx:if="{{giftInfo.giftType === 3}}"></view>
       <view class="coupon-content" wx:if="{{giftInfo.giftType === 1 && hasGift}}">
         <block wx:for="{{giftInfo.awardInfo.couponView}}" wx:key="*this">
           <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
@@ -49,7 +50,7 @@
         <text>去看看 ></text>
       </view>
       <view class="custom-item" wx:if="{{giftInfo.giftType === 7 && hasGift}}">
-        <image bindtap="goCustomLink" src="{{giftInfo.awardInfo.customImage}}" data-link="{{giftInfo.awardInfo.customLink}}" lazy-load="{{true}}"></image>
+        <image bindtap="goCustomLink" src="{{imageUrl}}{{giftInfo.awardInfo.customImage}}" data-link="{{giftInfo.awardInfo.customLink}}" lazy-load="{{true}}"></image>
       </view>
       <view class="no_award" wx:if="{{giftInfo.giftType!==0 && !hasGift}}">
         <image src="{{imageUrl}}image//wxapp/paygift_no_award.png" lazy-load="{{true}}"></image>
@@ -76,8 +77,8 @@
           </view>
         </block>
       </view>
-      <text wx:if="{{stepInfo}}" class="act-desc">第3次在店铺内购买“指定商品”且“订单金额满100元”，可获得“20元优惠券；30元优惠券”</text>
-      <view class="btn-ok" bindtap="bindClose">知道了</view>
+      <text wx:if="{{stepInfo}}" class="act-desc" wx:if="{{awardInfo.message}}">{{awardInfo.message}}</text>
+      <view class="btn-ok" bindtap="confirm">{{giftInfo.giftType === 3 ? '立即抽奖':'知道了'}}</view>
     </view>
   
 </v-popup>
