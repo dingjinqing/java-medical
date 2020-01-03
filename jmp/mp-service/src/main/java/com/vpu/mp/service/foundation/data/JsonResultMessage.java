@@ -231,6 +231,8 @@ public class JsonResultMessage {
      * 营销-砍价
      */
     public static final String BARGAIN_CONFLICTING_ACT_TIME="bargain.conflicting.act.time";
+    public static final String BARGAIN_NOT_YET_SUCCESSFUL="bargain.not.yet.successful";
+    public static final String BARGAIN_RECORD_ORDERED="bargain.record.ordered";
 
 
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
