@@ -1504,3 +1504,7 @@ MODIFY COLUMN `count` int(11) DEFAULT NULL COMMENT '允许门店兑换次数' AF
 
 ALTER TABLE `b2c_shipping`
 ADD COLUMN `express100_code` VARCHAR(20) DEFAULT '' NOT NULL COMMENT '快递100code' AFTER `shipping_code`;
+
+-- 删除无用字段
+ALTER TABLE `b2c_coopen_activity`
+DROP COLUMN`bg_imgs`;

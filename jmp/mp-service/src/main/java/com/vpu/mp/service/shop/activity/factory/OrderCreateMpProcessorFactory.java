@@ -43,7 +43,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     );
 
     /**
-     * 全局的活动  支付有礼
+     * 单一营销 排他性
      */
     public final static List<Byte> SINGLENESS_ACTIVITY = Arrays.asList(
             BaseConstant.ACTIVITY_TYPE_GROUP_BUY,

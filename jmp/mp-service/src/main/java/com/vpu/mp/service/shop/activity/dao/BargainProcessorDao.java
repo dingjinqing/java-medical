@@ -173,4 +173,6 @@ public class BargainProcessorDao extends ShopBaseService {
             prd.setProductPrice(bargainRecordInfo.getGoodsPrice().subtract(bargainRecordInfo.getBargainMoney()));
         }
     }
+
+
 }

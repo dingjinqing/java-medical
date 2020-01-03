@@ -112,7 +112,7 @@ export default {
         case 7: // 瓜分积分
           obj = {
             'module_name': 'm_pin_integration',
-            'act_id': '88', // 活动id
+            'act_id': -1, // 活动id
             'pin_title': '0', // 标题 radio 1 0
             'pin_title_text': '', // 标题 自定义内容
             'hide_active': '1', // 隐藏内容 活动内容
@@ -468,6 +468,7 @@ export default {
         return false
       }
       let flag = true
+      let isMpinintegration = false
       //  模块私有校验
       data.forEach((item, index) => {
         switch (item.module_name) {
@@ -578,10 +579,18 @@ export default {
               })
               flag = false
             }
+            break
+          case 'm_pin_integration':
+            if (item.act_id === -1) {
+              flag = false
+              isMpinintegration = true
+            } else {
+              isMpinintegration = false
+            }
         }
       })
       console.log(flag)
-      return flag
+      return { flag, isMpinintegration }
     },
     // 处理保存数据
     handleToSaveModulesData (data, pageSetData) {
