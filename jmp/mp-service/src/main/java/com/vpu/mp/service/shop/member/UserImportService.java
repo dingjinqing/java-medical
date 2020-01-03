@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +43,9 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.IdentityUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.market.message.BindOARabbitParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
@@ -52,6 +55,7 @@ import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportActivePojo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -117,15 +121,16 @@ public class UserImportService extends ShopBaseService {
 		int setShopCfg = setShopCfg(USER_IMPORT_NOTICE, json2);
 		return setShopCfg > 0 ? JsonResultCode.CODE_SUCCESS : JsonResultCode.CODE_FAIL;
 	}
-	
+
 	/**
 	 * 获取用户导入通知
+	 * 
 	 * @return
 	 */
 	public SetNoticeJson getActivationNotice() {
 		ShopCfgRecord record = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(USER_IMPORT_NOTICE)).fetchAny();
 		SetNoticeJson json = new SetNoticeJson();
-		if(record==null) {
+		if (record == null) {
 			return json;
 		}
 		json = Util.parseJson(record.getV(), SetNoticeJson.class);
@@ -162,6 +167,7 @@ public class UserImportService extends ShopBaseService {
 	}
 
 	public Boolean insertUser(String lang, UserImportParam param) {
+		logger().info("会员导入");
 		MultipartFile multipartFile = param.getFile();
 		ExcelTypeEnum type = checkFile(multipartFile);
 		if (type == null) {
@@ -184,15 +190,20 @@ public class UserImportService extends ShopBaseService {
 		UserImExcelWrongHandler handler = new UserImExcelWrongHandler();
 		ExcelReader excelReader = new ExcelReader(lang, workbook, handler);
 		List<UserImportPojo> models = excelReader.readModelList(UserImportPojo.class);
-		checkList(models, param);
+		String cardId = param.getCardId();
+		Integer groupId = param.getGroupId();
+		Integer tagId = param.getTagId();
+		UserImportMqParam mqParam = new UserImportMqParam(models, lang, getShopId(), cardId, groupId, tagId);
+		logger().info("会员导入发队列");
+		saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
+				TaskJobEnum.OTHER_MQ.getExecutionType());
+		// checkList(models, cardId, groupId, tagId);
 		return true;
 
 	}
 
-	public void checkList(List<UserImportPojo> list, UserImportParam param) {
-		String cardId = param.getCardId();
-		Integer groupId = param.getGroupId();
-		Integer tagId = param.getTagId();
+	public void checkList(List<UserImportPojo> list, String cardId, Integer groupId, Integer tagId) {
+		logger().info("会员导入执行队列");
 		int successNum = 0;
 		int totalNum = list.size();
 		for (UserImportPojo userImportPojo : list) {
@@ -255,7 +266,6 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String birthday = userImportPojo.getBirthday();
-			System.out.println("生日");
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
 					// ExcelUtil.DATE_FORMAT
@@ -569,7 +579,8 @@ public class UserImportService extends ShopBaseService {
 
 	public int getActivateNum(Integer batchId, Byte isActivate) {
 		return db().selectCount().from(USER_IMPORT_DETAIL)
-				.where(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId).and(USER_IMPORT_DETAIL.IS_ACTIVATE.eq(isActivate))).fetchOne(0, int.class);
+				.where(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId).and(USER_IMPORT_DETAIL.IS_ACTIVATE.eq(isActivate)))
+				.fetchOne(0, int.class);
 	}
 
 	/**

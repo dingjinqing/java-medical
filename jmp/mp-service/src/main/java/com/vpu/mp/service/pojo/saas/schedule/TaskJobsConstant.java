@@ -53,7 +53,10 @@ public class TaskJobsConstant {
     	/**收藏 */
     	WX_ADDSHOPPINGLIST(1007, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_ADDSHOPPINGLIST_KEY),
     	/**物品信息 */
-    	WX_IMPORTPRODUCT(1008, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_IMPORTPRODUCT_KEY);
+    	WX_IMPORTPRODUCT(1008, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_IMPORTPRODUCT_KEY),
+    	/** 读取Excel用，也可以其他未分类异步任务使用*/
+    	OTHER_MQ(1009, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_OTHER_KEY);
+    	
         private Integer executionType;
         private String exchangeName;
         private String routingKey;
