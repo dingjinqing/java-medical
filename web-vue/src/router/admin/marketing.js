@@ -532,7 +532,7 @@ const routes = [
     path: '/admin/home/main/lotteryDraw/orderList',
     name: 'lottery_order_view',
     meta: {
-      // crumbTitle: 'router.orderSeckill',
+      crumbTitle: 'router.group_order',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -541,12 +541,26 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryOrderList'
       )
   },
+  // 拼团抽奖 参与用户
+  {
+    path: '/admin/home/main/lotteryDraw/userList',
+    name: 'lottery_user_view',
+    meta: {
+      crumbTitle: 'router.group_user',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryUserList'
+      )
+  },
   // 拼团抽奖 用户明细
   {
     path: '/admin/home/main/lotteryDraw/detailList',
     name: 'lottery_detail_view',
     meta: {
-      // crumbTitle: 'router.detailSeckill',
+      crumbTitle: 'router.group_user_detail',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -560,7 +574,7 @@ const routes = [
     path: '/admin/home/main/lotteryDraw/groupList',
     name: 'lottery_group_view',
     meta: {
-      // crumbTitle: 'router.userSeckill',
+      crumbTitle: 'router.group_detail',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },

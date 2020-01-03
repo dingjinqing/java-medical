@@ -214,6 +214,10 @@ import {
 import {
   cn as statusTab
 } from './views/admin_new/cn/components/status/statusTabCn'
+// 拼团抽奖
+import {
+  cn as lotteryDraw
+} from './views/admin_new/cn/index/marketManagement/lotteryDraw/lotteryDrawCn'
 // 分享有礼
 import {
   cn as sharePolite
@@ -944,6 +948,7 @@ const cn = {
   ordinaryCouponList, // 普通优惠券列表页面
   couponReceive, // 普通优惠券获取明细
   groupBuy, // 多人拼团
+  lotteryDraw, // 拼团抽奖
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页
   bargainList, // 砍价活动列表

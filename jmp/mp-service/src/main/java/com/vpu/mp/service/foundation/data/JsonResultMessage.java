@@ -436,6 +436,13 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_ERRO = "code.excel.name";
 	public static final String EXPORT_TEMPLATE_NAME = "export.template.name";
 	public static final String EXPORT_TEMPLATE_ACTIVE_NAME = "export.template.active.name";
+	public static final String CODE_EXCEL_EXAMPLE_USERNAME = "example.username";
+	public static final String CODE_EXCEL_EXAMPLE_SEX = "example.sex";
+	public static final String CODE_EXCEL_EXAMPLE_PROVINCE = "examplepProvince";
+	public static final String CODE_EXCEL_EXAMPLE_CITY = "example.city";
+	public static final String CODE_EXCEL_EXAMPLE_DISTRICT = "example.district";
+	public static final String CODE_EXCEL_EXAMPLE_MARRIAGE = "example.marriage";
+	public static final String CODE_EXCEL_EXAMPLE_ADDRESS = "example.address";
 	
 	/**
 	 * 概览

@@ -1,4 +1,36 @@
 export const cn = {
+  // tabs
+  tabInfo: [
+    {
+      title: '全部限时降价活动',
+      name: '0'
+    },
+    {
+      title: '进行中',
+      name: '1'
+    },
+    {
+      title: '未开始',
+      name: '2'
+    },
+    {
+      title: '已过期',
+      name: '3'
+    },
+    {
+      title: '已停用',
+      name: '4'
+    },
+    {
+      title: '批量降价',
+      name: '5'
+    },
+    {
+      title: '批量加价率',
+      name: '6'
+    }
+  ],
+
   // 通用
   reducePrice: '限时降价',
   expressDelivery: '含快递',
