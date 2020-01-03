@@ -101,7 +101,9 @@ public class WxAppBargainController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/bargain/pictorial/info")
     public JsonResult getBargainPictorialInfo(@RequestBody BargainShareInfoParam param){
-      return null;
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        return success(shop().pictorialIntegrationService.getBargainPictorialInfo(param));
     }
 
 }

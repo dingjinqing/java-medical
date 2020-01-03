@@ -139,7 +139,7 @@ public class PictorialService extends ShopBaseService {
         // 设置商品名称
         ImageUtil.addFont(bgBufferedImage,goodsName,ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()),imgPx.getBgPadding(),imgPx.getBottomStartY()+imgPx.getMediumFontSize()*2,imgPx.getGoodsNameColor());
         // 设置二维码
-        qrCodeImg = ImageUtil.makeRound(qrCodeImg, imgPx.getQrCodeDiameter());
+        qrCodeImg = ImageUtil.resizeImage(imgPx.getQrCodeWidth(),imgPx.getQrCodeWidth(),qrCodeImg);
         ImageUtil.addTwoImage(bgBufferedImage,qrCodeImg,imgPx.getQrCodeStartX(),imgPx.getBottomStartY());
 
         // 设置原价

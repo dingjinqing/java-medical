@@ -25,36 +25,36 @@
         <block wx:for="{{giftInfo.awardInfo.couponView}}" wx:key="*this">
           <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
             <block wx:if="{{item.actCode === 'voucher'}}">
-              <view class="coupon-l">￥<text>{{item.denomination}}</text></view>
+              <view class="coupon-l view">￥<text class="text">{{item.denomination}}</text></view>
               <block wx:if="{{item.useConsumeRestrict === 1}}">
-                <view class="coupon-r"><text>满{{item.leastConsume}}减{{item.denomination}}</text></view>
+                <view class="coupon-r view"><text class="text">满{{item.leastConsume}}减{{item.denomination}}</text></view>
               </block>
               <block wx:else>
-                <view class="coupon-r"><text>优惠券减{{item.denomination}}</text></view>
+                <view class="coupon-r view"><text class="text">优惠券减{{item.denomination}}</text></view>
               </block>
             </block>
             <block wx:else>
-              <view class="coupon-l"><text>{{item.denomination}}</text>折</view>
+              <view class="coupon-l view"><text class="text">{{item.denomination}}</text>折</view>
               <block wx:if="{{item.useConsumeRestrict === 1}}">
-                <view class="coupon-r"><text>满{{item.leastConsume}}打{{item.denomination}}折</text></view>
+                <view class="coupon-r view"><text class="text">满{{item.leastConsume}}打{{item.denomination}}折</text></view>
               </block>
               <block wx:else>
-                <view class="coupon-r"><text>优惠券打{{item.denomination}}折</text></view>
+                <view class="coupon-r view"><text class="text">优惠券打{{item.denomination}}折</text></view>
               </block>
             </block>
           </view>
         </block>
       </view>
       <view class="coupon-tips" wx:if="{{giftInfo.giftType === 1 && hasGift}}">
-        <text>优惠券已放入个人中心</text>
-        <text>去看看 ></text>
+        <text class="text">优惠券已放入个人中心</text>
+        <text class="text">去看看 ></text>
       </view>
       <view class="custom-item" wx:if="{{giftInfo.giftType === 7 && hasGift}}">
-        <image bindtap="goCustomLink" src="{{imageUrl}}{{giftInfo.awardInfo.customImage}}" data-link="{{giftInfo.awardInfo.customLink}}" lazy-load="{{true}}"></image>
+        <image class="image" bindtap="goCustomLink" src="{{imageUrl}}{{giftInfo.awardInfo.customImage}}" data-link="{{giftInfo.awardInfo.customLink}}" lazy-load="{{true}}"></image>
       </view>
       <view class="no_award" wx:if="{{giftInfo.giftType!==0 && !hasGift}}">
-        <image src="{{imageUrl}}image//wxapp/paygift_no_award.png" lazy-load="{{true}}"></image>
-        <text>很抱歉! 奖励领光啦! </text>
+        <image class="image" src="{{imageUrl}}image//wxapp/paygift_no_award.png" lazy-load="{{true}}"></image>
+        <text class="text">很抱歉! 奖励领光啦! </text>
       </view>
 
       <block wx:if="{{filter.includes([4,5,6],giftInfo.giftType) && hasGift}}">
@@ -62,8 +62,8 @@
           <text class="info-title">获得</text>
           <text class="no-gift-info" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">{{giftInfo.giftType === 4 ? giftInfo.awardInfo.account + '元': giftInfo.awardInfo.scoreNumber +'积分'}}</text>
           <view class="no-gift-tips" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">
-            <text>{{giftInfo.giftType === 4 ? '余额':'积分'}}</text>
-            <text>去看看 ></text>
+            <text class="text">{{giftInfo.giftType === 4 ? '余额':'积分'}}</text>
+            <text class="text">去看看 ></text>
           </view>
           <view class="gift-name" wx:if="{{giftInfo.giftType === 5}}">台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
           <image class="gift-image" wx:if="{{giftInfo.giftType === 5}}" src="{{imageUrl}}image/wxapp/img1.jpg"></image>

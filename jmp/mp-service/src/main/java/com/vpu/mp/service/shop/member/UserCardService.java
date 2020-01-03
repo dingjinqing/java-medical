@@ -661,14 +661,17 @@ public class UserCardService extends ShopBaseService {
 	 * 	增加会员卡消费记录
 	 * @param tradeType  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
 	 * @param isContinue 卡余额时（次数或余额）在休息时间内（23:00-8:00）是否继续发送消息：true继续，false停止
+	 * @param type 修改类型 0: 卡余额；1：兑换商品次数，2： 兑换门店次数
 	 */
 	public int cardConsumer(UserCardConsumeBean data, Integer adminUser, Byte tradeType, Byte tradeFlow, Byte type,
 			Boolean isContinue) {
 		// 生成新的充值记录
 		// 验证现有积分跟提交的积分是否一致
 		UserCardParam userInfo = userCardDao.getUserCardInfo(data.getCardNo());
-		if (data.getType() == (byte) 1) {
-			if (type == (byte) 1) {
+	
+		if (CardUtil.isLimitCard(data.getType())) {
+			// 限次卡
+			if (NumberUtils.BYTE_ONE.equals(type)) {
 				if (adminUser != null && (userInfo.getExchangCount() - data.getCountDis()) != 0) {
 					return -1;
 				}
@@ -678,6 +681,7 @@ public class UserCardService extends ShopBaseService {
 				}
 			}
 		} else {
+			// 普通卡
 			if (adminUser != null
 					&& BigDecimalUtil.subtrac(userInfo.getMoney(), data.getMoneyDis()).floatValue() != 0.00) {
 				return -1;
@@ -688,21 +692,24 @@ public class UserCardService extends ShopBaseService {
 
 		data.setCreateTime(DateUtil.getLocalDateTime());
 		if (StringUtils.isBlank(data.getReason())) {
-			data.setReason(ADMIN_OPTION);
+			data.setReasonId(String.valueOf(RemarkTemplate.ADMIN_OPERATION.code));
 		}
-
-		if (type == (byte) 1) {
-			if (data.getType() == (byte) 1) {
-				data.setReason(EXCHANGE_GOODS_NUM);
+		
+		if (CardUtil.isLimitCard(data.getType())) {
+			if (NumberUtils.BYTE_ONE.equals(type)) {
+				// 兑换商品次数
+				data.setReasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code));
 			} else {
-				data.setReason(STORE_SERVICE_TIMES);
+				// 兑换门店次数
+				data.setReasonId(String.valueOf(RemarkTemplate.ADMIN_STORE_SERIVICE.code));
 			}
 		} else {
-			data.setReason(MEMBER_MONEY);
+			// 卡余额变动
+			data.setReasonId(String.valueOf(RemarkTemplate.ADMIN_CARD_ACCOUNT.code));
 		}
 
-		if (data.getType() == (byte) 1) {
-			if (type == (byte) 1) {
+		if (CardUtil.isLimitCard(data.getType())) {
+			if (NumberUtils.BYTE_ONE.equals(type)) {
 				if (data.getExchangCount() < 0) {
 					// 消费记录
 					userCardDao.insertConsume(data);
@@ -720,8 +727,8 @@ public class UserCardService extends ShopBaseService {
 				}
 			}
 		} else {
-			if (data.getMoneyDis().intValue() < 0) {
-				data.setMoney(data.getMoneyDis());
+			if (data.getMoney().intValue() < 0) {
+				data.setMoney(data.getMoney().abs());
 				userCardDao.insertConsume(data);
 			} else {
 				data.setCharge(data.getMoney());

@@ -242,16 +242,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
                     (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
+                    //货到付款、余额、积分(非微信混合)付款，订单生效(不再调用微信支付)时营销活动后续处理
+                    marketProcessorFactory.processOrderEffective(param,order);
+
                     //加锁
                     atomicOperation.addLock(orderBo.getOrderGoodsBo());
-                    //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-                    marketProcessorFactory.processStockAndSales(param,order);
                     logger().info("加锁{}",order.getOrderSn());
                     atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
                     logger().info("更新成功{}",order.getOrderSn());
                     //营销活动支付回调
                 }
-                marketProcessorFactory.processPayCallback(param,order);
             });
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
@@ -280,7 +280,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderAfterRecord.getOrderSn(), orderAfterRecord.getMoneyPaid(), orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
-            return ExecuteResult.create(e.getErrorCode());
+            return ExecuteResult.create(e.getErrorCode(), null);
         }
     }
 

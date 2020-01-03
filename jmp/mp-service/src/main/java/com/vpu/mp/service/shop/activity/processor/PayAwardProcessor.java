@@ -242,18 +242,9 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
         }
     }
 
-    /**
-     * 减库存操作
-     *
-     * @param param 规格id
-     * @throws MpException
-     */
-    @Override
-    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
-    }
 
     @Override
-    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         try {
             logger().info("支付有礼活动校验");
             if (!order.getOrderStatus().equals(ORDER_WAIT_DELIVERY) || order.getPayCode().equals(PAY_CODE_COD)) {
