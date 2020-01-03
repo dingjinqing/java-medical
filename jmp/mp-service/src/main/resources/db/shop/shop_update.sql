@@ -1508,3 +1508,7 @@ ADD COLUMN `express100_code` VARCHAR(20) DEFAULT '' NOT NULL COMMENT '快递100c
 -- 删除无用字段
 ALTER TABLE `b2c_coopen_activity`
 DROP COLUMN`bg_imgs`;
+
+-- 修改字段类型
+ALTER TABLE `b2c_bargain_record`
+MODIFY COLUMN `is_ordered` tinyint(1)  NOT NULL DEFAULT '0' COMMENT '是否下单';

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainRecord extends TableImpl<BargainRecordRecord> {
 
-    private static final long serialVersionUID = -938661661;
+    private static final long serialVersionUID = -1685243809;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_bargain_record</code>
@@ -106,7 +106,7 @@ public class BargainRecord extends TableImpl<BargainRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_bargain_record.is_ordered</code>. 是否下单
      */
-    public final TableField<BargainRecordRecord, Integer> IS_ORDERED = createField("is_ordered", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否下单");
+    public final TableField<BargainRecordRecord, Byte> IS_ORDERED = createField("is_ordered", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否下单");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain_record.order_sn</code>. 订单号
@@ -116,12 +116,12 @@ public class BargainRecord extends TableImpl<BargainRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_bargain_record.create_time</code>.
      */
-    public final TableField<BargainRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BargainRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain_record.update_time</code>. 最后修改时间
      */
-    public final TableField<BargainRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<BargainRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain_record.del_flag</code>.
