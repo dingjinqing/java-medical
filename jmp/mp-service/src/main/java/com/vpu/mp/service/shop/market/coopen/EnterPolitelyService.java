@@ -111,8 +111,9 @@ public class EnterPolitelyService extends ShopBaseService {
         AwardVo award;
         try {
             UserRecord userRecord = userService.getUserByUserId(userId);
-            if (Objects.isNull(userRecord))
+            if (Objects.isNull(userRecord)) {
                 throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
             // 获取进行中的开屏有礼活动（取优先级最高的活动）
             CoopenActivityRecord record = getProcessingActivity().stream().findFirst().orElseThrow(() -> new BusinessException(JsonResultCode.CODE_FAIL));
             int activityId = record.getId();
@@ -139,7 +140,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 logger().debug("不满足支付新用户");
                 return noAward;
             }
-            ExtBo coupon = ExtBo.builder().title(record.getTitle()).bgImg(imgDomain(record.getBgImgs())).build();
+            ExtBo coupon = ExtBo.builder().title(record.getTitle()).bgImg(this.imgDomain(DEFAULT_COUPON_BG_IMG)).build();
             switch (record.getActivityAction()) {
                 case 2:
                     award = sendAward((byte) 2, String.valueOf(record.getLotteryId()), userId, activityId, null);
