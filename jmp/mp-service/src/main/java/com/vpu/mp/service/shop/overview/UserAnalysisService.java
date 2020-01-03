@@ -47,7 +47,8 @@ public class UserAnalysisService extends ShopBaseService {
             .from(USER_SUMMARY_TREND)
             .where(USER_SUMMARY_TREND.REF_DATE.eq(new Date(param.getOldTime().getTime())))
             .and(USER_SUMMARY_TREND.TYPE.eq(param.getType()))
-            .fetchOneInto(TrendTotalVo.class);
+            .fetchOptionalInto(TrendTotalVo.class)
+            .orElse(new TrendTotalVo());
     // 得到下一个时间段的数据
     TrendTotalVo afterVo =
         db().select(
@@ -57,7 +58,8 @@ public class UserAnalysisService extends ShopBaseService {
             .from(USER_SUMMARY_TREND)
             .where(USER_SUMMARY_TREND.REF_DATE.eq(new Date(param.getNewTime().getTime())))
             .and(USER_SUMMARY_TREND.TYPE.eq(param.getType()))
-            .fetchOneInto(TrendTotalVo.class);
+            .fetchOptionalInto(TrendTotalVo.class)
+            .orElse(new TrendTotalVo());
     // 得到每天的数据
     List<TrendDailyVo> trendDailyVo =
         db().select(
@@ -67,12 +69,12 @@ public class UserAnalysisService extends ShopBaseService {
                 USER_SUMMARY_TREND.ORDER_USER_DATA)
             .from(USER_SUMMARY_TREND)
             .where(
-                USER_SUMMARY_TREND.REF_DATE.between(
-                    new Date(param.getOldTime().getTime()), new Date(param.getNewTime().getTime())))
+                USER_SUMMARY_TREND.REF_DATE.greaterThan(new Date(param.getOldTime().getTime())))
+            .and(USER_SUMMARY_TREND.REF_DATE.lessOrEqual(new Date(param.getNewTime().getTime())))
             .and(USER_SUMMARY_TREND.TYPE.eq(NumberUtils.BYTE_ONE))
             .orderBy(USER_SUMMARY_TREND.REF_DATE.asc())
             .fetchInto(TrendDailyVo.class);
-    trendDailyVo.remove(0);
+//    trendDailyVo.remove(0);
     // 得到变化率
     Double loginDataRate = getChangeRate(beforeVo.getLoginData(), afterVo.getLoginData());
     Double userDataRate = getChangeRate(beforeVo.getUserData(), afterVo.getUserData());

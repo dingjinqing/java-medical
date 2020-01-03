@@ -231,6 +231,8 @@ public class JsonResultMessage {
      * 营销-砍价
      */
     public static final String BARGAIN_CONFLICTING_ACT_TIME="bargain.conflicting.act.time";
+    public static final String BARGAIN_NOT_YET_SUCCESSFUL="bargain.not.yet.successful";
+    public static final String BARGAIN_RECORD_ORDERED="bargain.record.ordered";
 
 
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
@@ -742,11 +744,11 @@ public class JsonResultMessage {
     public static final String WX_MA_DEFAULT_USER_NAME = "wx.ma.default.user.name";
     /** 逗号分隔符 */
     public static final String WX_MA_DOT = "wx.ma.dot";
+    /** 元 */
+    public static final String WX_MA_PICTORIAL_MONEY = "wx.ma.pictorial.money";
     /** 拼团相关 */
     /** 开团省 */
     public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
-    /** 元 */
-    public static final String WX_MA_GROUP_BUY_MONEY = "wx.ma.group.buy.money";
     /** 2人品仅需*/
     public static final String WX_MA_GROUP_BUY_DOC_PERSON_NUM = "wx.ma.group.buy.doc.person.num";
     /** 推荐给你 */

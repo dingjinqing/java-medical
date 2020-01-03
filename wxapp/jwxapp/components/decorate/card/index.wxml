@@ -1,16 +1,16 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <block wx:if="{{m.status==-1}}">
   <view class='card' wx:if="{{m.card_id}}" style='margin-bottom:{{m.margin_bot}}rpx'>
-    <view style="background:{{m.bg}} no-repeat;background-size:cover;">
+    <view class="view" style="background:{{m.bg}} no-repeat;background-size:cover;">
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>
       <view class="card_type" wx:if="{{m.card_type==1}}">{{i18n.$t(localePack,'components.decorate.limitCard')}}</view>
       <view class="card_content clearfix">
         <view class="card_shop_icon">
-          <image src='{{m.shipImg}}' />
+          <image class="image" src='{{m.shipImg}}' />
         </view>
         <view class="card_content_right">
           <view style='font-size:28rpx;'>{{m.card_name}}</view>
-          <text wx:if="{{m.legal}}">{{m.legal}}</text>
+          <text class="text" wx:if="{{m.legal}}">{{m.legal}}</text>
           <view wx:if="{{m.exchang_count_legal}}"  style="font-size:24rpx">{{m.exchang_count_legal}}</view>
         </view>
         <view class="card_price" wx:if="{{m.is_pay == 1 && m.pay_type == 0}}">￥{{m.pay_fee}}</view>
@@ -18,32 +18,32 @@
       </view>
       <view class="card_bottom">
         {{i18n.$t(localePack,'components.decorate.moreToCheck')}}
-        <text catchtap="bindGetCard" data-is_pay="{{m.is_pay}}" data-activation="{{m.activation}}" data-card_type="{{m.card_type}}" data-card_id="{{m.card_id}}" data-cur_idx="{{m.cur_idx}}">{{i18n.$t(localePack,'components.decorate.collarCard')}}</text>
+        <text class="text" catchtap="bindGetCard" data-is_pay="{{m.is_pay}}" data-activation="{{m.activation}}" data-card_type="{{m.card_type}}" data-card_id="{{m.card_id}}" data-cur_idx="{{m.cur_idx}}">{{i18n.$t(localePack,'components.decorate.collarCard')}}</text>
       </view>
     </view>
   </view>
 </block>
 <block wx:else>
   <view class='card' wx:if="{{m.card_id}}" bindtap="{{m.status==1 ? 'viewCard' : ''}}"  data-card_id="{{m.card_id}}" style='margin-bottom:{{m.margin_bot}}rpx'>
-    <view style="background:{{m.bg}} no-repeat;background-size:cover;">
+    <view class="view" style="background:{{m.bg}} no-repeat;background-size:cover;">
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>
       <view class="card_type" wx:if="{{m.card_type==1}}">{{i18n.$t(localePack,'components.decorate.limitCard')}}</view>
       <view class="card_content clearfix">
         <view class="card_shop_icon">
-          <image src='{{m.shop_img}}' />
+          <image class="image" src='{{m.shop_img}}' />
         </view>
         <view class="card_content_right">
           <view style='font-size:28rpx;'>{{m.card_name}}</view>
-          <text wx:if="{{m.legal}}">{{m.legal}}</text>
+          <text class="text" wx:if="{{m.legal}}">{{m.legal}}</text>
           <view wx:if="{{m.exchang_count_legal}}" style="font-size:24rpx">{{m.exchang_count_legal}}</view>
           <view wx:if="{{m.activation == 1}}">{{i18n.$t(localePack,'components.decorate.needActivation')}}</view>
         </view>
       </view>
       <view class="card_bottom" style='text-align:left;padding-left:390rpx;'>{{i18n.$t(localePack,'components.decorate.moreEquity')}}</view>
       <view class='card_out'>
-        <image src="{{m.imageUrl}}image/wxapp/card_stop.png?v=1" mode='widthFix' wx:if="{{m.status==3}}" />
-        <image src="{{m.imageUrl}}image/wxapp/card_out_time.png?v=1" mode='widthFix' wx:if="{{m.status==2}}" />
-        <image src="{{m.imageUrl}}image/wxapp/card_have.png?v=1" mode='widthFix' wx:if="{{m.status==1}}" />
+        <image class="image" src="{{m.imageUrl}}image/wxapp/card_stop.png?v=1" mode='widthFix' wx:if="{{m.status==3}}" />
+        <image class="image" src="{{m.imageUrl}}image/wxapp/card_out_time.png?v=1" mode='widthFix' wx:if="{{m.status==2}}" />
+        <image class="image" src="{{m.imageUrl}}image/wxapp/card_have.png?v=1" mode='widthFix' wx:if="{{m.status==1}}" />
       </view>
     </view>
   </view>

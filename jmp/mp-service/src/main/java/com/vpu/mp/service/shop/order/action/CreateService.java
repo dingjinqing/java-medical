@@ -233,9 +233,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 order.store();
-                if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
-
-                }
                 orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());

@@ -123,7 +123,10 @@ public class GroupDrawService extends ShopBaseService {
             .from(GROUP_DRAW).leftJoin(JOIN_GROUP_LIST).on(GROUP_DRAW.ID.eq(JOIN_GROUP_LIST.GROUP_DRAW_ID))
             .leftJoin(JOIN_DRAW_LIST).on(GROUP_DRAW.ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)).where();
         buildOptions(select, param);
-        select.groupBy(GROUP_DRAW.ID);
+        select.groupBy(GROUP_DRAW.ID,GROUP_DRAW.NAME,
+            GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW, GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY,
+            GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM, GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS,
+            GROUP_DRAW.TO_NUM_SHOW,GROUP_DRAW.GOODS_ID);
         return select;
     }
 

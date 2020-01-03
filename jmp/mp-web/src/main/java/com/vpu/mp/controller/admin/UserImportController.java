@@ -17,6 +17,8 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
@@ -51,6 +53,18 @@ public class UserImportController extends AdminBaseController {
 		return fail(resCode);
 	}
 
+	
+	/**
+	 * 获取用户导入通知
+	 * 
+	 * @param param
+	 * @return
+	 */
+	@GetMapping(value = "/admin/user/import/getnotice")
+	public JsonResult getActivationNotice() {
+		SetNoticeJson resCode = shop().member.userImportService.getActivationNotice();
+		return success(new SetNoticeJsonVo(resCode.getExplain(),resCode.getScore(),resCode.getMrkingVoucherId()));
+	}
 	/**
 	 * 获取模板
 	 * 
