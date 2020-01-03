@@ -156,7 +156,7 @@ export default {
           // 卡余额
           obj = {
             ...commonAttr,
-            moneyDis: this.model.presentText
+            moneyDis: Number(this.model.persentMoney)
           }
           break
         case 1:
