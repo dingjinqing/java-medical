@@ -117,6 +117,20 @@ public class UserImportService extends ShopBaseService {
 		int setShopCfg = setShopCfg(USER_IMPORT_NOTICE, json2);
 		return setShopCfg > 0 ? JsonResultCode.CODE_SUCCESS : JsonResultCode.CODE_FAIL;
 	}
+	
+	/**
+	 * 获取用户导入通知
+	 * @return
+	 */
+	public SetNoticeJson getActivationNotice() {
+		ShopCfgRecord record = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(USER_IMPORT_NOTICE)).fetchAny();
+		SetNoticeJson json = new SetNoticeJson();
+		if(record==null) {
+			return json;
+		}
+		json = Util.parseJson(record.getV(), SetNoticeJson.class);
+		return json;
+	}
 
 	/**
 	 * 获取模板
