@@ -80,11 +80,11 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 	public ExecuteResult execute(OrderOperateQueryParam param) {
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		if(!OrderOperationJudgment.mpIsCancel(order)) {
             logger().error("该订单不能取消");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_NOT_CANCEL);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_NOT_CANCEL, null);
 		}
 		try {
 			transaction(()->{
@@ -98,7 +98,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 				//库存更新
 			});
 		} catch (Exception e) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_FAIL);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_FAIL, null);
 		}
 		//订单状态记录
 		orderAction.addRecord(order, param, order.getOrderStatus() , "买家取消订单");
@@ -142,7 +142,8 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 		cardId(order.getCardId()).
 		cardNo(order.getCardNo()).
 		money(money).
-		reason("订单取消，订单会员卡余额支付退款").
+//		reason("订单取消，订单会员卡余额支付退款").
+		reasonId(RemarkTemplate.ORDER_CANCEL_RETURN_CARD_ACCOUNT.code).
 		//普通会员卡
 		type(CardConstant.MCARD_TP_NORMAL).
 		orderSn(order.getOrderSn()).

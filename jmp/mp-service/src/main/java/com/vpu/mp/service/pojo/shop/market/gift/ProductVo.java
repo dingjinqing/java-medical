@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 @Data
 public class ProductVo {
 
+    /**id **/
+    private Integer id;
     /** 活动id **/
     private Integer giftId;
     /** 规格id **/

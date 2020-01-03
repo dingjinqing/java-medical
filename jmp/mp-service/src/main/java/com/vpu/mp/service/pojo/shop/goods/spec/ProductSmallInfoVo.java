@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @Getter
 public class ProductSmallInfoVo {
 
+    private Integer goodsId;
     /**
      * 商品名
      */

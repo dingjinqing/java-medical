@@ -55,7 +55,10 @@
           </el-form-item>
           <el-form-item label="激活奖励：">
             <div>
-              <el-checkbox v-model="form.score">积分</el-checkbox>
+              <el-checkbox
+                v-model="scoreCheck"
+                :checked="scoreCheck"
+              >积分</el-checkbox>
               <el-input-number
                 v-model="form.score"
                 controls-position="right"
@@ -192,16 +195,19 @@ export default {
       }
     },
     scoreCheck: {
-      get: function () {
+      get () {
         if (this.form.score !== '' && this.form.score > 0) {
           return true
         } else {
           return false
         }
       },
-      set: function (val) {
+      set (val) {
+        console.log(val)
         if (val === false) {
           this.$set(this.form, 'score', '')
+        } else {
+          this.$set(this.form, 'score', 1)
         }
       }
     }

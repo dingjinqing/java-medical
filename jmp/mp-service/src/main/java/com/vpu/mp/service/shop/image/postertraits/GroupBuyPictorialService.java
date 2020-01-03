@@ -12,29 +12,23 @@ import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialUserInfo;
+import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 
@@ -65,7 +59,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
     public GroupBuyShareInfoVo getGroupBuyShareInfo(GroupBuyShareInfoParam param) {
         GroupBuyShareInfoVo shareInfoVo = new GroupBuyShareInfoVo();
 
-        GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecordNullable(param.getActivityId());
+        GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecord(param.getActivityId());
         // 拼团活动信息不可用
         if (groupBuyDefineRecord == null) {
             groupBuyLog("分享", "拼团活动信息不可用");
@@ -73,7 +67,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
             return shareInfoVo;
         }
 
-        GoodsRecord goodsRecord = goodsService.getValidGoodsRecordById(groupBuyDefineRecord.getGoodsId());
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(groupBuyDefineRecord.getGoodsId());
         // 拼团商品信息不可用
         if (goodsRecord == null) {
             groupBuyLog("分享", "拼团商品信息不可用");
@@ -103,32 +97,17 @@ public class GroupBuyPictorialService extends ShopBaseService {
         return shareInfoVo;
     }
 
-    /**
-     * 拼团活动画报，是否需要重新生成新图片规则类
-     */
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    private static class PictorialRule {
-        private Timestamp goodsUpdateTime;
-        private Timestamp activityUpdateTime;
-    }
 
     /**
-     * 拼团分享图和海报背景图片地址
+     * 拼团分享图片地址
      */
     private static final String PIN_GROUP_BG_IMG = "image/wxapp/pin_group_bg.jpg";
 
     private String createGroupBuyShareImg(GroupBuyDefineRecord groupBuyDefineRecord, GoodsRecord goodsRecord, GroupBuyShareInfoParam param) {
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.GROUP_BUY_ACTION_SHARE, param.getUserId());
         // 已存在生成的图片
-        if (pictorialRecord != null) {
-            String rule = pictorialRecord.getRule();
-            PictorialRule pictorialRule = Util.parseJson(rule, PictorialRule.class);
-            // 之前生成的图片依然可用，则直接返回其在upanyun上的相对路径
-            if (pictorialRule.getGoodsUpdateTime().compareTo(goodsRecord.getUpdateTime()) >= 0 && pictorialRule.getActivityUpdateTime().compareTo(groupBuyDefineRecord.getUpdateTime()) >= 0) {
-                return pictorialRecord.getPath();
-            }
+        if (pictorialRecord != null&&pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(),goodsRecord.getUpdateTime(),groupBuyDefineRecord.getUpdateTime())) {
+            return pictorialRecord.getPath();
         }
 
         try (InputStream bgInputStream = Util.loadFile(PIN_GROUP_BG_IMG)) {
@@ -143,10 +122,10 @@ public class GroupBuyPictorialService extends ShopBaseService {
             String realPrice = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
             ShopRecord shop = saas.shop.getShopById(getShopId());
             // "开团省" 文字
-            String startGroupText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_START_GROUP, "messages", null);
+            String startGroupText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_START_GROUP, "messages");
             // "元" 文字
-            String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_MONEY, "messages", null);
-            String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages", null);
+            String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
+            String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
             // 一个字符占的宽度
             int fontWidth = 20;
 
@@ -168,9 +147,10 @@ public class GroupBuyPictorialService extends ShopBaseService {
             // 划线
             ImageUtil.addLine(bgBufferImg, 250, 225, 250 + linePrice.length() * 10 + 28, 225, lineColor);
 
+            // 上传u盘云并缓存入库
             String relativePath = createFilePath(groupBuyDefineRecord.getId(), "share");
-
-            uploadToUpanYun(bgBufferImg, relativePath, groupBuyDefineRecord, goodsRecord, pictorialRecord, param);
+            PictorialRule pictorialRule =new PictorialRule(goodsRecord.getUpdateTime(),groupBuyDefineRecord.getUpdateTime());
+            pictorialService.uploadToUpanYun(bgBufferImg, relativePath,pictorialRule, goodsRecord.getGoodsId(),pictorialRecord, param.getUserId());
 
             return relativePath;
         } catch (IOException e) {
@@ -179,29 +159,6 @@ public class GroupBuyPictorialService extends ShopBaseService {
             groupBuyLog("分享", "UpanYun上传错误：" + e.getMessage());
         }
         return null;
-    }
-
-    private void uploadToUpanYun(BufferedImage bufferedImage, String relativePath, GroupBuyDefineRecord groupBuyDefineRecord, GoodsRecord goodsRecord, PictorialRecord pictorialRecord, GroupBuyShareInfoParam param) throws IOException, UpException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-        // 上传upanyun
-        this.imageService.getUpYunClient().writeFile(relativePath, byteArrayOutputStream.toByteArray(), true);
-
-        // 新增
-        if (pictorialRecord == null) {
-            pictorialRecord = new PictorialRecord();
-            pictorialRecord.setAction(PictorialConstant.GROUP_BUY_ACTION_SHARE);
-            pictorialRecord.setPath(relativePath);
-            pictorialRecord.setUserId(param.getUserId());
-            pictorialRecord.setIdentityId(goodsRecord.getGoodsId());
-            pictorialRecord.setRule(Util.toJson(new PictorialRule(goodsRecord.getUpdateTime(), groupBuyDefineRecord.getUpdateTime())));
-            pictorialService.addPictorialDao(pictorialRecord);
-        } else {
-            // 更新
-            pictorialRecord.setPath(relativePath);
-            pictorialRecord.setRule(Util.toJson(new PictorialRule(goodsRecord.getUpdateTime(), groupBuyDefineRecord.getUpdateTime())));
-            pictorialService.updatePictorialDao(pictorialRecord);
-        }
     }
 
 
@@ -213,8 +170,8 @@ public class GroupBuyPictorialService extends ShopBaseService {
     public String getGroupBuyPictorialInfo(GroupBuyShareInfoParam param) {
 
         ShopRecord shop = saas.shop.getShopById(getShopId());
-        GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecordNullable(param.getActivityId());
-        GoodsRecord goodsRecord = goodsService.getValidGoodsRecordById(groupBuyDefineRecord.getGoodsId());
+        GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecord(param.getActivityId());
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(groupBuyDefineRecord.getGoodsId());
 
         if (groupBuyDefineRecord == null || goodsRecord == null) {
             groupBuyLog("pictorial", "商品或拼团信息已删除或失效");
@@ -249,21 +206,20 @@ public class GroupBuyPictorialService extends ShopBaseService {
         String shareDoc;
         if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
             shareDoc = new StringBuilder().append(groupBuyDefineRecord.getLimitAmount().toString())
-                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC_PERSON_NUM, "messages", null))
+                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC_PERSON_NUM, "messages"))
                 .append(param.getRealPrice().toString())
-                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_MONEY, "messages", null))
-                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_DOT, "messages", null))
-                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC_RECOMMEND_TO_YOU, "messages", null))
+                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages"))
+                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_DOT, "messages"))
+                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC_RECOMMEND_TO_YOU, "messages"))
                 .toString();
         } else {
             shareDoc = shareConfig.getShareDoc();
         }
 
         // 获取分享码
-        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("goodsId=%d&activityId=%d&activityType=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
+        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
         BufferedImage qrCodeImage;
         try {
-            // 测试使用
              qrCodeImage = ImageIO.read(new URL(mpQrCode));
         } catch (IOException e) {
             groupBuyLog("pictorial", "获取二维码失败");
@@ -275,9 +231,9 @@ public class GroupBuyPictorialService extends ShopBaseService {
 
         // 拼装自定义内容
         // "开团省" 文字
-        String startGroupText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_START_GROUP, "messages", null);
+        String startGroupText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_START_GROUP, "messages");
         // "元" 文字
-        String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_MONEY, "messages", null);
+        String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
         BigDecimal saveMoney = param.getLinePrice().subtract(param.getRealPrice()).setScale(2,BigDecimal.ROUND_HALF_UP);
         String saveText = startGroupText+saveMoney+startGroupMoneyText;
         ImageUtil.addFont(bgBufferedImage,saveText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextStartX(),imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
@@ -286,13 +242,13 @@ public class GroupBuyPictorialService extends ShopBaseService {
         ImageUtil.addRect(bgBufferedImage,imgPx.getCustomerTextStartX()-5,imgPx.getCustomerTextStartY()-imgPx.getSmallFontSize(),saveTextWidth+10,imgPx.getSmallFontSize()+5,imgPx.getCustomerTextFontColor(),null);
 
         // 活动价
-        String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages", null)+param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP);
+        String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP);
         Integer realPriceTextStartX = imgPx.getCustomerTextStartX()+saveTextWidth+15;
         ImageUtil.addFont(bgBufferedImage,realPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
         Integer realPriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceText);
 
         // 划线价格
-        String linePriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages", null)+param.getLinePrice().setScale(2,BigDecimal.ROUND_HALF_UP);
+        String linePriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2,BigDecimal.ROUND_HALF_UP);
         Integer linePriceTextStartX = realPriceTextStartX+realPriceTextWidth+5;
         ImageUtil.addFont(bgBufferedImage, linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),linePriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
         Integer linePriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),linePriceText);

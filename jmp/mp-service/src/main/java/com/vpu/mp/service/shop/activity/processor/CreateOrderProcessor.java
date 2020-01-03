@@ -25,18 +25,12 @@ public interface CreateOrderProcessor extends Processor {
      */
     void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException;
 
-    /**
-     *  库存与销量（订单入库后）
-     * @param param
-     * @throws MpException
-     */
-    void  processStockAndSales(OrderBeforeParam param,OrderInfoRecord order)throws MpException;
 
     /**
-     * 支付完成（订单生效后的回调）
+     * 订单生效后（微信支付、其他支付、货到付款等）的营销后续处理（库存、活动状态相关）
      * @param param
      * @param order
      * @throws MpException
      */
-    void processPayCallback(OrderBeforeParam param,OrderInfoRecord order)throws MpException;
+    void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order)throws MpException;
 }

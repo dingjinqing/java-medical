@@ -115,8 +115,8 @@ public class AdminTestController extends AdminBaseController {
 	
 	@RequestMapping(value = "/api/admin/test/sendTest")
 	public JsonResult testSend() {
-		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
-		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("YYYY-MM-dd HH:mm:ss")}};
+		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
+		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("yyyy-MM-dd HH:mm:ss")}};
 		Boolean sendMessage=false;
 		try {
 			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.DRAW_RESULT, data, null);
@@ -146,7 +146,7 @@ public class AdminTestController extends AdminBaseController {
 	
 	@RequestMapping(value = "/api/admin/test/sendTestByMq/{id}")
 	public JsonResult testSendByMq(@PathVariable Integer id) {
-		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
+		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
 		ArrayList<Integer> arrayList = new ArrayList<Integer>();
 		arrayList.add(id);
 		RabbitMessageParam param = RabbitMessageParam.builder()
@@ -156,7 +156,7 @@ public class AdminTestController extends AdminBaseController {
 				.userIdList(arrayList)
 				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), adminAuth.user().getLoginShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
-		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("YYYY-MM-dd HH:mm:ss")}};
+		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("yyyy-MM-dd HH:mm:ss")}};
 		return success();
 		
 	}

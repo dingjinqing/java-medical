@@ -231,6 +231,8 @@ public class JsonResultMessage {
      * 营销-砍价
      */
     public static final String BARGAIN_CONFLICTING_ACT_TIME="bargain.conflicting.act.time";
+    public static final String BARGAIN_NOT_YET_SUCCESSFUL="bargain.not.yet.successful";
+    public static final String BARGAIN_RECORD_ORDERED="bargain.record.ordered";
 
 
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
@@ -434,6 +436,13 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_ERRO = "code.excel.name";
 	public static final String EXPORT_TEMPLATE_NAME = "export.template.name";
 	public static final String EXPORT_TEMPLATE_ACTIVE_NAME = "export.template.active.name";
+	public static final String CODE_EXCEL_EXAMPLE_USERNAME = "example.username";
+	public static final String CODE_EXCEL_EXAMPLE_SEX = "example.sex";
+	public static final String CODE_EXCEL_EXAMPLE_PROVINCE = "examplepProvince";
+	public static final String CODE_EXCEL_EXAMPLE_CITY = "example.city";
+	public static final String CODE_EXCEL_EXAMPLE_DISTRICT = "example.district";
+	public static final String CODE_EXCEL_EXAMPLE_MARRIAGE = "example.marriage";
+	public static final String CODE_EXCEL_EXAMPLE_ADDRESS = "example.address";
 	
 	/**
 	 * 概览
@@ -742,13 +751,18 @@ public class JsonResultMessage {
     public static final String WX_MA_DEFAULT_USER_NAME = "wx.ma.default.user.name";
     /** 逗号分隔符 */
     public static final String WX_MA_DOT = "wx.ma.dot";
+    /** 元 */
+    public static final String WX_MA_PICTORIAL_MONEY = "wx.ma.pictorial.money";
     /** 拼团相关 */
     /** 开团省 */
     public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
-    /** 元 */
-    public static final String WX_MA_GROUP_BUY_MONEY = "wx.ma.group.buy.money";
     /** 2人品仅需*/
     public static final String WX_MA_GROUP_BUY_DOC_PERSON_NUM = "wx.ma.group.buy.doc.person.num";
     /** 推荐给你 */
     public static final String WX_MA_GROUP_BUY_DOC_RECOMMEND_TO_YOU="wx.ma.group.buy.doc.recommend.to.you";
+    /** 砍价 */
+    public static final String  WX_MA_BARGAIN_DOC="wx.ma.bargain.doc";
+    /** 砍走*/
+    public static final String WX_MA_BARGAIN_TAKE = "wx.ma.bargain.take";
+
 }

@@ -15,7 +15,7 @@ public class WxAppPageCfgVo {
     @JsonProperty(value = "is_ok")
     Byte isOk;
     @JsonProperty(value = "cat_id")
-    Integer catCd;
+    Integer catId;
     @JsonProperty(value = "page_name")
     String pageName;
     @JsonProperty(value = "bg_types")
@@ -27,7 +27,7 @@ public class WxAppPageCfgVo {
     @JsonProperty(value = "margin_val")
     Integer marginVal;
     @JsonProperty(value = "page_bg_color")
-    String page_bg_color;
+    String pageBgColor;
     @JsonProperty(value = "page_bg_image")
     String pageBgImage;
     @JsonProperty(value = "last_cur_idx")

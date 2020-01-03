@@ -487,7 +487,7 @@ public class MpAuthShopService extends MainBaseService {
 			upMp.setAppId(appId);
 			upMp.setUploadState((byte) 1);
 			upMp.setBindTemplateId(templateId);
-			upMp.setLastAuthTime(Timestamp.valueOf(LocalDateTime.now()));
+			upMp.setLastUploadTime(Timestamp.valueOf(LocalDateTime.now()));
 			db().executeUpdate(upMp);
 		}
 		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result, WxContentTemplate.WX_UPLOAD_CODE_SUCCESS.code, new String[] {});
@@ -1468,7 +1468,7 @@ public class MpAuthShopService extends MainBaseService {
 						String content="点击进入小程序";
 						//MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
 						List<Integer> userIdList = new ArrayList<Integer>();
-						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
+						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("yyyy-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
 						Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE;
 						//unioId在登录过小程序后才会传
 						if(!StringUtils.isEmpty(userInfo.getUnionId())) {

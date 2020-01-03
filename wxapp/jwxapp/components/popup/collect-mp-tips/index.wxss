@@ -31,12 +31,12 @@
   margin-bottom: 126rpx;
 }
 
-.collect_text view:nth-child(1), .collect_text view:nth-child(2) {
+.collect_text .view:nth-child(1), .collect_text .view:nth-child(2) {
   line-height: 80rpx;
   margin-bottom: 21rpx;
 }
 
-.collect_text view:nth-last-child(1), .collect_text view:nth-last-child(2) {
+.collect_text .view:nth-last-child(1), .collect_text .view:nth-last-child(2) {
   margin-bottom: 28rpx;
 }
 

@@ -1,4 +1,5 @@
 export const en = {
+
   // 概括系列模块
   // 概况-店铺助手
   taskList: ['Survey', 'Shop Assistant'],
@@ -29,6 +30,8 @@ export const en = {
   GradeCard: ['Membership', 'Grade Card'],
   // 会员管理 持卡会员
   Cardholder: ['Membership management'],
+  // 消费明细
+  refillDetailsItem: ['member', 'consumeDetail'],
 
   // 小程序管理 页面分类
   pageClassification: ['Small Program Management', 'Page classification'],

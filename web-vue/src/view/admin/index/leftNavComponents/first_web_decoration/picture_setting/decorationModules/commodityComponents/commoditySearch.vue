@@ -129,6 +129,11 @@ export default {
       handler (newData) {
         if (newData) {
           this.data = newData
+          console.log(this.data.box_color)
+          if (!this.data.box_color) {
+            this.data.box_color = ''
+          }
+          this.$forceUpdate()
         }
         console.log(newData)
       },

@@ -4,8 +4,8 @@
     data-sk_id='{{item.act_id}}' data-prd_id='{{item.prd_id}}' data-goods_id='{{item.goods_id}}' data-act_del_flag="{{item.act_del_flag}}" wx:key='key' data-is_delete='{{item.goods_is_delete}}' data-act_status='{{item.act_status}}' data-time_state='{{item.time_state}}'
     data-is_on_sale="{{item.is_on_sale}}">
     <view class='seckill_left'>
-        <image class="sell_out" wx:if ='{{item.goods_number == 0}}'  src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
-      <image wx:if="{{item.isShowImg}}" src='{{item.goods_img}}'></image>
+        <image class="sell_out image" wx:if ='{{item.goods_number == 0}}'  src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
+      <image wx:if="{{item.isShowImg}}" class="image" src='{{item.goods_img}}'></image>
       <view class='daojishi' wx:if='{{m.goods_count_down==true &&item.time_state == 0&&item.goods_is_delete==0&&item.act_del_flag == 0 &&item.act_status != 0}}'>
         <view class="start_time">{{item.act_begin_time}}开始</view>
       </view>
@@ -24,7 +24,7 @@
       <view class='seckill_bottom clearfix'>
         <view class='bottom_top'>
           <view class='price_info'>
-            <text class='seckill_price' style='color:{{comColor}};'>￥<text >{{item.sec_price}}</text></text>
+            <text class='seckill_price' style='color:{{comColor}};'>￥<text class="text">{{item.sec_price}}</text></text>
           </view>
           <view class='free_ntn' wx:if="{{item.percent < 100 && item.time_state != 2 && item.act_status != 0 && item.is_on_sale == 1 && item.goods_is_delete == 0}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去抢购</view>
           <view class='orig_ntn' wx:else="{{item.percent == 100 || item.time_state == 2&&item.goods_is_delete==0&&item.act_del_flag == 0&&item.is_on_sale == 0 && item.goods_is_delete == 1 || item.act_status == 0}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'
@@ -53,8 +53,8 @@
     <view class='two_seckill' catchtap="bindToSecKill" data-is_prd='{{item.is_prd}}' data-idx="{{m.cur_idx}}" wx:for='{{m.seckill_goods}}' wx:if='{{m.list_style == 0}}' data-goods_price='{{item.goods_price}}' data-sk_id='{{item.act_id}}' data-prd_id='{{item.prd_id}}'
       data-goods_id='{{item.goods_id}}' data-act_del_flag="{{item.act_del_flag}}" wx:key='key' data-is_delete='{{item.goods_is_delete}}' data-act_status='{{item.act_status}}' data-time_state='{{item.time_state}}' data-is_on_sale="{{item.is_on_sale}}">
       <view class='each_img'>
-          <image class="sell_out" wx:if ='{{item.goods_number == 0}}'  src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
-        <image wx:if="{{item.isShowImg}}"  src='{{item.goods_img}}'></image>
+          <image class="sell_out image" wx:if ='{{item.goods_number == 0}}'  src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
+        <image wx:if="{{item.isShowImg}}" class="image"  src='{{item.goods_img}}'></image>
         <view class='daojishi' wx:if='{{m.goods_count_down==true &&item.time_state == 0&&item.goods_is_delete==0&&item.act_del_flag == 0 &&item.act_status != 0}}'>
           <view>{{item.act_begin_time}} 开始</view>
         </view>
@@ -68,7 +68,7 @@
       <view class='goods_names'>{{item.goods_name}}</view>
       <view class='prices_info'>
         <text class='seckill_icon' style='font-size:26rpx;color:{{comColor}};border-color:{{comColor}}'>秒杀</text>
-        <text class='seckill_price' style='color:{{comColor}}'>￥<text style='font-size:34rpx;'>{{item.sec_price}}</text></text>
+        <text class='seckill_price' style='color:{{comColor}}'>￥<text class="text" style='font-size:34rpx;'>{{item.sec_price}}</text></text>
         <text class='original_price'>￥{{item.max_price}}</text>
       </view>
     </view>

@@ -15,7 +15,9 @@ import java.sql.Timestamp;
  */
 @Data
 public class GroupDrawUpdateParam {
-
+    /** 活动id **/
+    @NotNull
+    private Integer id;
     /** 活动名称 **/
     @NotEmpty
     private String name;
