@@ -504,11 +504,24 @@ export default {
             })
             break
           case 'm_scroll_image': // 轮播图相关校验
-            console.log(item)
             if (item.img_items.length <= 0) {
               flag = false
               this.$message.error({
                 message: '请添加轮播图片',
+                showClose: true
+              })
+            }
+            // 验证轮播图组件至少设置一张轮播图为全部用户可见
+            let hasCanSee = false
+            item.img_items.forEach(img => {
+              if (img.can_show === 0) {
+                hasCanSee = true
+              }
+            })
+            if (!hasCanSee) {
+              flag = false
+              this.$message.error({
+                message: '至少设置一张轮播图为全部用户可见',
                 showClose: true
               })
             }
