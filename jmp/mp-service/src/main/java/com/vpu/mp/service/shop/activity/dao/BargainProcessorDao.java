@@ -2,13 +2,21 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.google.common.base.Functions;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
+import com.vpu.mp.service.shop.market.bargain.BargainService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -26,6 +34,12 @@ import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
  */
 @Service
 public class BargainProcessorDao extends ShopBaseService {
+
+    @Autowired
+    private BargainService bargainService;
+    @Autowired
+    private OrderInfoService orderInfo;
+
     /**
      * 获取商品集合内的砍价信息
      *
@@ -137,10 +151,26 @@ public class BargainProcessorDao extends ShopBaseService {
     //砍价下单
 
     /**
+     * 下单前
      * 处理砍价订单的价格
      * @param param
      */
-    public void setOrderPrdBargainPrice(OrderBeforeParam param){
-        //TODO
+    public void setOrderPrdBargainPrice(OrderBeforeParam param) throws MpException {
+        BargainInfoVo.BargainRecordInfo bargainRecordInfo = bargainService.bargainRecord.getRecordInfo(param.getRecordId());
+        if(!bargainRecordInfo.getStatus().equals(BargainRecordService.STATUS_SUCCESS)){
+            //状态不对
+            throw new MpException(JsonResultCode.BARGAIN_NOT_YET_SUCCESSFUL);
+        }else if(bargainRecordInfo.getIsOrdered().equals(BargainRecordService.IS_ORDERED_Y)){
+            //已下单
+            OrderInfoRecord order = orderInfo.getOrderByOrderSn(bargainRecordInfo.getOrderSn());
+            if(order.getOrderAmount().equals(bargainRecordInfo.getFloorPrice()) || order.getOrderStatus() > 2){
+                throw new MpException(JsonResultCode.BARGAIN_RECORD_ORDERED);
+            }
+        }
+
+        for(OrderBeforeParam.Goods prd : param.getGoods()){
+            //砍价价格
+            prd.setProductPrice(bargainRecordInfo.getGoodsPrice().subtract(bargainRecordInfo.getBargainMoney()));
+        }
     }
 }

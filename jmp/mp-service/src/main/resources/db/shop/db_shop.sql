@@ -768,6 +768,7 @@ create table `b2c_shipping`
 (
     `shipping_id`    tinyint(3)   not null auto_increment,
     `shipping_code`  varchar(20)  not null default '',
+    `express100_code` varchar(20)  not null default '' comment '快递100code',
     `shipping_name`  varchar(120) not null default '',
     `shipping_desc`  varchar(191) not null default '',
     `insure`         varchar(10)  not null default '0',
@@ -4793,7 +4794,6 @@ CREATE TABLE `b2c_coopen_activity`
     `action`             tinyint(1)                              NOT NULL DEFAULT '1' COMMENT '针对用户群体： 1: 初次访问新用户 2: 全部用户 3:未支付的用户',
     `name`               varchar(50) COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '活动名称',
     `title`              varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '宣传语',
-    `bg_imgs` VARCHAR (255)   NOT NULL DEFAULT '[]' COMMENT '背景图',
     `is_forever`         int(11)                                 NOT NULL DEFAULT '0' COMMENT '是否永久有效 0:无效 1:有效',
     `start_date`         datetime                                NOT NULL COMMENT '有效期-起始',
     `end_date`           datetime                                NOT NULL COMMENT '有效期-结束',

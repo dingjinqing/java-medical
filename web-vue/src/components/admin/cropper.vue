@@ -181,7 +181,7 @@ export default {
       this.orignWidth = obj.imgWidth
       this.orignHeight = obj.imgHeight
       let minWith = Math.min(obj.imgWidth, 150)
-      let minHeight = Math.max(obj.imgHeight, 150)
+      let minHeight = Math.min(obj.imgHeight, 150)
       this.option.autoCropWidth = minWith
       this.option.autoCropHeight = minHeight
       if (obj.imgWidth > 150) {
@@ -193,7 +193,7 @@ export default {
     imageSize: {
       handler (newData) {
         console.log(newData)
-        if (newData) {
+        if (newData.length) {
           this.cropperTopInput_one = newData[0]
           this.cropperTopInput_two = newData[1]
           if (newData[0] && newData[1]) {
