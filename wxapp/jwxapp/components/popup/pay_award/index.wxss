@@ -33,7 +33,7 @@
 .coupon-item+.coupon-item{
   margin-top: 20rpx;
 }
-.coupon-item > view{
+.coupon-item > .view{
   flex: 1;
   text-align: center;
 }
@@ -42,7 +42,7 @@
   color: #f66;
   font-weight: 600;
 }
-.coupon-item > .coupon-l > text{
+.coupon-item > .coupon-l > .text{
   font-size: 40rpx;
 }
 .coupon-item > .coupon-r{
@@ -50,7 +50,7 @@
   min-height: 80rpx;
   display: flex;
 }
-.coupon-item > .coupon-r > text{
+.coupon-item > .coupon-r > .text{
   margin: auto;
   color: #353535;
   font-size: 28rpx;
@@ -64,7 +64,7 @@
   color: #fff;
   align-items: center;
 }
-.coupon-tips > text:nth-child(1){
+.coupon-tips > .text:nth-child(1){
   flex: 1
 }
 .step-content{
@@ -110,7 +110,7 @@
   height: 446rpx;
   background-color: #fff;
 }
-.custom-item > image{
+.custom-item > .image{
   width: 100%;
   height: 100%;
 }
@@ -119,12 +119,12 @@
   flex-direction: column;
   align-items: center;
 }
-.no_award > image{
+.no_award > .image{
   width: 160rpx;
   height: 135rpx;
   margin-bottom: 20rpx;
 }
-.no_award > text{
+.no_award > .text{
   font-size: 30rpx;
   color: #ffe251;
 }
@@ -175,10 +175,10 @@
   align-items: center;
   width: 100%;
 }
-.no-gift-tips > text{
+.no-gift-tips > .text{
   color: #EF943E;
 }
-.no-gift-tips > text:nth-child(1){
+.no-gift-tips > .text:nth-child(1){
   flex: 1
 }
 .gift-name{
