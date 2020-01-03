@@ -6,9 +6,6 @@ import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
@@ -82,7 +79,6 @@ import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
-import com.vpu.mp.config.DomainConfig;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
@@ -91,9 +87,11 @@ import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
@@ -108,14 +106,12 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
@@ -1605,7 +1601,8 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 */
 	private void insertIntoChargeMoney(CardConsumpData data) {
 		ChargeMoneyRecord chargeMoneyRecord = db().newRecord(CHARGE_MONEY);
-		FieldsUtil.assignNotNull(data, chargeMoneyRecord);
+//		FieldsUtil.assignNotNull(data, chargeMoneyRecord);
+		BeanUtils.copyProperties(data, chargeMoneyRecord);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
 			chargeMoneyRecord.setUserId(data.getUserId());
@@ -1653,7 +1650,8 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 */
 	private void insertIntoCardConsumer(CardConsumpData data) {
 		CardConsumerRecord cardConsumerRecord = db().newRecord(CARD_CONSUMER);
-		FieldsUtil.assignNotNull(data, cardConsumerRecord);
+//		FieldsUtil.assignNotNull(data, cardConsumerRecord);
+		BeanUtils.copyProperties(data, cardConsumerRecord);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
 			cardConsumerRecord.setUserId(data.getUserId());
