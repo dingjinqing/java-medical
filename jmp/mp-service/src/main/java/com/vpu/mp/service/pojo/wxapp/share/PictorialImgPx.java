@@ -68,11 +68,11 @@ public class PictorialImgPx {
     /**
      * 二维码直径
      */
-    private Integer qrCodeDiameter = 150;
+    private Integer qrCodeWidth = 150;
     /**
      * 二维码X
      */
-    private Integer qrCodeStartX = bgWidth - (bgPadding + qrCodeDiameter);
+    private Integer qrCodeStartX = bgWidth - (bgPadding + qrCodeWidth);
 
     /**
      * 底部商品价格
