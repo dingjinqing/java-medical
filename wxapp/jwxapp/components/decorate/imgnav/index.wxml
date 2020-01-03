@@ -1,8 +1,8 @@
 <view class="imgnav-container" style='margin-bottom:{{m.margin_bot}}rpx'>
   <block wx:for="{{m.nav_group}}" wx:key='key' wx:for-item='item' wx:for-index='index'>
     <view class="imgnav-item" catchtap="bindJumpLink" data-url="{{item.nav_link}}" data-idx='{{m.cur_idx}}' style='background:{{m.bg_color}}'>
-      <image mode="aspectFit" src="{{item.nav_src}}" lazy-load="{{true}}" class="{{m.nav_style == 1 ? 'circle':' '}}"></image>
-      <text style='color:{{m.font_color}}'>{{item.nav_name}}</text>
+      <image mode="aspectFit" src="{{item.nav_src}}" lazy-load="{{true}}" class="{{m.nav_style == 1 ? 'circle':' '}} image"></image>
+      <text class="text" style='color:{{m.font_color}}'>{{item.nav_name}}</text>
     </view>
   </block>
 </view>

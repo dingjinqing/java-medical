@@ -13,7 +13,7 @@
     justify-content: center;
     margin-top: 2rpx;
   }
-  .shop_img image{
+  .shop_img .image{
     width: 34rpx;
     height: 28rpx;
   }

@@ -378,7 +378,7 @@ public class BargainRecordService extends ShopBaseService {
         return vo;
     }
 
-    private BargainInfoVo.BargainRecordInfo getRecordInfo(int recordId){
+    public BargainInfoVo.BargainRecordInfo getRecordInfo(int recordId){
         return db().select(BARGAIN_RECORD.asterisk(),
             GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,
             USER_DETAIL.USER_AVATAR,
