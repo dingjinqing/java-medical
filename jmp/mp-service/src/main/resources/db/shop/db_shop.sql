@@ -768,6 +768,7 @@ create table `b2c_shipping`
 (
     `shipping_id`    tinyint(3)   not null auto_increment,
     `shipping_code`  varchar(20)  not null default '',
+    `express100_code` varchar(20)  not null default '' comment '快递100code',
     `shipping_name`  varchar(120) not null default '',
     `shipping_desc`  varchar(191) not null default '',
     `insure`         varchar(10)  not null default '0',
@@ -3276,18 +3277,19 @@ create table `b2c_trades_record`
 -- drop table if exists `b2c_trades_record_summary`;
 create table `b2c_trades_record_summary`
 (
-    `id`                 mediumint(8)   not null auto_increment,
+    `id`                 int(11)   not null auto_increment,
+     `ref_date`           date           not null comment '2018-09-04',
     `type`               tinyint(2)     not null default '1' comment '统计类型：1,7,30',
-    `income_total_money` decimal(10, 2) not null default 0.00 comment '总现金收入',
-    `outgo_money`        decimal(10, 2) not null default 0.00 comment '现金支出',
-    `income_real_money`  decimal(10, 2) not null default 0.00 comment '净现金收入',
-    `income_total_score` decimal(10, 2) not null default 0.00 comment '总积分收入',
-    `outgo_score`        decimal(10, 2) not null default 0.00 comment '积分支出',
-    `income_real_score`  decimal(10, 2) not null default 0.00 comment '净积分收入',
-    `ref_date`           date           not null comment '2018-09-04',
+    `income_total_money` decimal(12, 2) not null default 0.00 comment '总现金收入',
+    `outgo_money`        decimal(12, 2) not null default 0.00 comment '现金支出',
+    `income_real_money`  decimal(12, 2) not null default 0.00 comment '净现金收入',
+    `income_total_score` decimal(12, 2) not null default 0.00 comment '总积分收入',
+    `outgo_score`        decimal(12, 2) not null default 0.00 comment '积分支出',
+    `income_real_score`  decimal(12, 2) not null default 0.00 comment '净积分收入',
     `create_time`        timestamp               default current_timestamp,
     `update_time`        timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key (`id`)
+    primary key (`id`),
+    unique index date_type (`ref_date`, `type`)
 );
 
 -- 分销提现记录

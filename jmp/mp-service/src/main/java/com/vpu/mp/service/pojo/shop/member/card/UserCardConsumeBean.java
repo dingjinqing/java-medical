@@ -22,15 +22,17 @@ public class UserCardConsumeBean {
 	private String cardNo;
 	//消费类型 0是普通卡 1限次卡
 	private Byte type;
-	// 兑换次数
+	// 门店兑换次数
 	private Integer countDis;
-	// 卡余额消耗
+	// 原来的钱
 	private BigDecimal moneyDis;
-	// 别名： 卡余额消耗 
+	// 卡余额消耗金额
 	private BigDecimal money;
 	// 创建时间
 	private Timestamp createTime;
-	// 消费原因
+	// 消费原因模板id
+	private String reasonId;
+	// 模板消费原因
 	private String reason;
 	private Integer exchangCount;
 	// 订单号

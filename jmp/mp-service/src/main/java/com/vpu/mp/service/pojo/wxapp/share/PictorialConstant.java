@@ -8,10 +8,12 @@ package com.vpu.mp.service.pojo.wxapp.share;
 public class PictorialConstant {
     /** 普通海报 */
     public static final Byte NORMAL_ACTION_PICTORIAL=1;
-    /** 拼团海报 */
-    public static final Byte GROUP_BUY_ACTION_PICTORIAL = 2;
     /** 拼团分享 */
-    public static final Byte GROUP_BUY_ACTION_SHARE =3;
+    public static final Byte GROUP_BUY_ACTION_SHARE =2;
+    /** 拼团海报 */
+    public static final Byte GROUP_BUY_ACTION_PICTORIAL = 3;
+    /** 砍价分享 */
+    public static final Byte BARGAIN_ACTION_SHARE = 4;
 
 
 }
