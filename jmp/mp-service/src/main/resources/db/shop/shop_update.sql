@@ -1491,3 +1491,8 @@ ADD COLUMN `express100_code` VARCHAR(20) DEFAULT '' NOT NULL COMMENT '快递100c
 -- 删除无用字段
 ALTER TABLE `b2c_coopen_activity`
 DROP COLUMN`bg_imgs`;
+
+
+-- 删除无用字段
+ALTER TABLE `b2c_coopen_activity`
+DROP COLUMN `bg_imgs`;
