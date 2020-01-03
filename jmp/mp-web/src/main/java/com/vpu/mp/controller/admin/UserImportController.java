@@ -60,7 +60,7 @@ public class UserImportController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/user/import/getnotice")
+	@GetMapping(value = "/admin/user/import/getnotice")
 	public JsonResult getActivationNotice() {
 		SetNoticeJson resCode = shop().member.userImportService.getActivationNotice();
 		return success(new SetNoticeJsonVo(resCode.getExplain(),resCode.getScore(),resCode.getMrkingVoucherId()));
