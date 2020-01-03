@@ -248,7 +248,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public List<GoodsRecord> getGoodsInfoRecordByOrderSn(String orderSn){
-		return db().select(GOODS.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID)
+		return db().select(TABLE.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
 				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsRecord.class);
@@ -348,7 +348,7 @@ public class OrderGoodsService extends ShopBaseService{
                 //限时降价
                 type.add(OrderConstant.GOODS_TYPE_REDUCE_PRICE);
             }
-            if(bo.getFirstSpecialId() != null){
+            if(!NumberUtils.INTEGER_ZERO.equals(bo.getFirstSpecialId())){
                 //首单特惠
                 type.add(OrderConstant.GOODS_TYPE_FIRST_SPECIAL);
             }
