@@ -359,6 +359,7 @@ public class Indexes {
     public static final Index TRADES_REF_DATE = Indexes0.TRADES_REF_DATE;
     public static final Index TRADES_REF_HOUR = Indexes0.TRADES_REF_HOUR;
     public static final Index TRADES_RECORD_PRIMARY = Indexes0.TRADES_RECORD_PRIMARY;
+    public static final Index TRADES_RECORD_SUMMARY_DATE_TYPE = Indexes0.TRADES_RECORD_SUMMARY_DATE_TYPE;
     public static final Index TRADES_RECORD_SUMMARY_PRIMARY = Indexes0.TRADES_RECORD_SUMMARY_PRIMARY;
     public static final Index UPLOADED_IMAGE_IMG_ORIG_FNAME = Indexes0.UPLOADED_IMAGE_IMG_ORIG_FNAME;
     public static final Index UPLOADED_IMAGE_PRIMARY = Indexes0.UPLOADED_IMAGE_PRIMARY;
@@ -803,6 +804,7 @@ public class Indexes {
         public static Index TRADES_REF_DATE = Internal.createIndex("ref_date", Trades.TRADES, new OrderField[] { Trades.TRADES.REF_DATE }, false);
         public static Index TRADES_REF_HOUR = Internal.createIndex("ref_hour", Trades.TRADES, new OrderField[] { Trades.TRADES.REF_DATE, Trades.TRADES.HOUR }, false);
         public static Index TRADES_RECORD_PRIMARY = Internal.createIndex("PRIMARY", TradesRecord.TRADES_RECORD, new OrderField[] { TradesRecord.TRADES_RECORD.ID }, true);
+        public static Index TRADES_RECORD_SUMMARY_DATE_TYPE = Internal.createIndex("date_type", TradesRecordSummary.TRADES_RECORD_SUMMARY, new OrderField[]{TradesRecordSummary.TRADES_RECORD_SUMMARY.REF_DATE, TradesRecordSummary.TRADES_RECORD_SUMMARY.TYPE}, true);
         public static Index TRADES_RECORD_SUMMARY_PRIMARY = Internal.createIndex("PRIMARY", TradesRecordSummary.TRADES_RECORD_SUMMARY, new OrderField[] { TradesRecordSummary.TRADES_RECORD_SUMMARY.ID }, true);
         public static Index UPLOADED_IMAGE_IMG_ORIG_FNAME = Internal.createIndex("img_orig_fname", UploadedImage.UPLOADED_IMAGE, new OrderField[] { UploadedImage.UPLOADED_IMAGE.IMG_ORIG_FNAME }, false);
         public static Index UPLOADED_IMAGE_PRIMARY = Internal.createIndex("PRIMARY", UploadedImage.UPLOADED_IMAGE, new OrderField[] { UploadedImage.UPLOADED_IMAGE.IMG_ID }, true);

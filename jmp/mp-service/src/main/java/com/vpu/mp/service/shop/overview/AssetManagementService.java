@@ -50,11 +50,16 @@ public class AssetManagementService extends ShopBaseService {
         if (screeningTime > 0) {
             Date current = Util.getEarlySqlDate(new java.util.Date(), 0);
             Date prior = Util.getEarlySqlDate(new java.util.Date(), -screeningTime);
+            // 拿到当前数值
             vo = getRevenueDate(current, screeningTime);
+            // 拿到较前N日的数值
             RevenueProfileVo tempPre = getRevenueDate(prior, screeningTime);
+            // 计算增长率
             calGrowthRate(vo, tempPre);
+            // 获取折线图数据
             vo.setRevenueDates(getRevenueDateList(prior, current));
         } else {
+            // 自定义日期统计数据
             Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), -1));
             Date endDate = Optional.of(param.getEndTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
             int day = (int) ((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
