@@ -54,4 +54,8 @@ public class GroupDrawListVo {
     private Integer goodsCount;
     /** 参与人数 **/
     private Integer joinUserCount;
+    /** 优惠券 id **/
+    private List<Integer> couponIds;
+    @JsonIgnore
+    private String rewardCouponId;
 }
