@@ -1416,25 +1416,25 @@ ALTER TABLE `b2c_user_score`
 ADD COLUMN `remark_data` varchar(200) DEFAULT '' COMMENT '备注模板数据' AFTER `remark_id`;
 
 
-ALTER TABLE `b2c_user_account` 
+ALTER TABLE `b2c_user_account`
 ADD COLUMN `remark_id` varchar(100) NOT NULL COMMENT '备注模板id' AFTER `is_paid`;
 
-ALTER TABLE `b2c_user_account` 
+ALTER TABLE `b2c_user_account`
 ADD COLUMN `remark_data` varchar(200) DEFAULT '' COMMENT '备注模板数据' AFTER `remark_id`;
 
 
-ALTER TABLE `b2c_charge_money` 
+ALTER TABLE `b2c_charge_money`
 ADD COLUMN `reason_id` varchar(100) NOT NULL COMMENT '充值原因模板id' AFTER `type`;
 
-ALTER TABLE `b2c_card_consumer` 
+ALTER TABLE `b2c_card_consumer`
 ADD COLUMN `reason_id` varchar(100) NOT NULL COMMENT '充值原因模板id' AFTER `type`;
 
 
 -- 删除字段
-ALTER TABLE `b2c_user_score` 
+ALTER TABLE `b2c_user_score`
 DROP COLUMN `remark`;
 
-ALTER TABLE `b2c_user_account` 
+ALTER TABLE `b2c_user_account`
 DROP COLUMN `remark`;
 
 
@@ -1456,11 +1456,15 @@ MODIFY COLUMN `lottery_id` int(11)  DEFAULT NULL COMMENT '抽奖id';
 
 
 -- 修改备注
-ALTER TABLE `b2c_member_card` 
+ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `exchang_count` int(11) DEFAULT NULL COMMENT '允许商品兑换次数' AFTER `exchang_freight`;
 
-ALTER TABLE `b2c_member_card` 
+ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `count` int(11) DEFAULT NULL COMMENT '允许门店兑换次数' AFTER `store_list`;
 -- 王帅 快递公司表增加快递100code
 ALTER TABLE `b2c_shipping`
 ADD COLUMN `express100_code` VARCHAR(20) DEFAULT '' NOT NULL COMMENT '快递100code' AFTER `shipping_code`;
+
+-- 删除无用字段
+ALTER TABLE `b2c_coopen_activity`
+DROP COLUMN `bg_imgs`;
