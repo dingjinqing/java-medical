@@ -37,7 +37,10 @@
               :src="item.image"
               v-if="moduleSavedata.image_type==='2'?!(moduleSavedata.image_type==='2'&&index>1):moduleSavedata.image_type==='3'?!(moduleSavedata.image_type==='3'&&index>2):moduleSavedata.image_type==='4'?!(moduleSavedata.image_type==='4'&&index>2):true"
             >
-            <p v-if="item.title">{{item.title}}</p>
+            <p
+              :style="'bottom:'+moduleSavedata.image_space+'px'"
+              v-if="item.title"
+            >{{item.title}}</p>
           </div>
         </div>
       </div>
