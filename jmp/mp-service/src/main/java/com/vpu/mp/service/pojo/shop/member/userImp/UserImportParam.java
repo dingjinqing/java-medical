@@ -13,7 +13,6 @@ import lombok.Data;
 @Data
 public class UserImportParam {
 	private MultipartFile file;
-
 	private String cardId;
 	private Integer tagId;
 	private Integer groupId;
