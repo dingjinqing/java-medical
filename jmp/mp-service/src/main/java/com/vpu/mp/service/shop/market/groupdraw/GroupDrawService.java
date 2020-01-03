@@ -73,13 +73,13 @@ public class GroupDrawService extends ShopBaseService {
     /**
      * 更新活动
      */
-    public void updateGroupDraw(Integer id, GroupDrawUpdateParam param) {
+    public void updateGroupDraw( GroupDrawUpdateParam param) {
         db().update(GROUP_DRAW).set(GROUP_DRAW.NAME, param.getName()).set(GROUP_DRAW.START_TIME,
             param.getStartTime()).set(GROUP_DRAW.END_TIME, param.getEndTime()).set(GROUP_DRAW.JOIN_LIMIT,
             param.getJoinLimit()).set(GROUP_DRAW.LIMIT_AMOUNT, param.getLimitAmount()).set(GROUP_DRAW.OPEN_LIMIT,
             param.getOpenLimit()).set(GROUP_DRAW.MIN_JOIN_NUM, param.getMinJoinNum()).set(GROUP_DRAW.PAY_MONEY,
             param.getPayMoney()).set(GROUP_DRAW.TO_NUM_SHOW, param.getToNumShow())
-            .where(GROUP_DRAW.ID.eq(id)).execute();
+            .where(GROUP_DRAW.ID.eq(param.getId())).execute();
     }
 
     /**
