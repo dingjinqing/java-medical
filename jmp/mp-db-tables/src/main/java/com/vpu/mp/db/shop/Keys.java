@@ -39,6 +39,7 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<PrizeRecordRecord, Integer> IDENTITY_PRIZE_RECORD = Identities0.IDENTITY_PRIZE_RECORD;
     public static final Identity<CoopenActivityRecord, Integer> IDENTITY_COOPEN_ACTIVITY = Identities0.IDENTITY_COOPEN_ACTIVITY;
     public static final Identity<CoopenActivityRecordsRecord, Integer> IDENTITY_COOPEN_ACTIVITY_RECORDS = Identities0.IDENTITY_COOPEN_ACTIVITY_RECORDS;
     public static final Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Identities0.IDENTITY_COMMENT_GOODS;
@@ -250,6 +251,7 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<PrizeRecordRecord> KEY_B2C_PRIZE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PRIZE_RECORD_PRIMARY;
     public static final UniqueKey<PayAwardPrizeRecord> KEY_B2C_PAY_AWARD_PRIZE_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIZE_PRIMARY;
     public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = UniqueKeys0.KEY_B2C_CART_PRIMARY;
     public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_PRIMARY;
@@ -504,7 +506,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-
+        public static Identity<PrizeRecordRecord, Integer> IDENTITY_PRIZE_RECORD = Internal.createIdentity(PrizeRecord.PRIZE_RECORD, PrizeRecord.PRIZE_RECORD.ID);
         public static Identity<CoopenActivityRecord, Integer> IDENTITY_COOPEN_ACTIVITY = Internal.createIdentity(CoopenActivity.COOPEN_ACTIVITY, CoopenActivity.COOPEN_ACTIVITY.ID);
         public static Identity<CoopenActivityRecordsRecord, Integer> IDENTITY_COOPEN_ACTIVITY_RECORDS = Internal.createIdentity(CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID);
         public static Identity<PayAwardRecord, Integer> IDENTITY_PAY_AWARD = Internal.createIdentity(PayAward.PAY_AWARD, PayAward.PAY_AWARD.ID);
@@ -717,6 +719,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<PrizeRecordRecord> KEY_B2C_PRIZE_RECORD_PRIMARY = Internal.createUniqueKey(PrizeRecord.PRIZE_RECORD, "KEY_b2c_prize_record_PRIMARY", PrizeRecord.PRIZE_RECORD.ID);
         public static final UniqueKey<PayAwardPrizeRecord> KEY_B2C_PAY_AWARD_PRIZE_PRIMARY = Internal.createUniqueKey(PayAwardPrize.PAY_AWARD_PRIZE, "KEY_b2c_pay_award_prize_PRIMARY", PayAwardPrize.PAY_AWARD_PRIZE.ID);
         public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = Internal.createUniqueKey(Cart.CART, "KEY_b2c_cart_PRIMARY", Cart.CART.CART_ID);
         public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = Internal.createUniqueKey(CoopenActivity.COOPEN_ACTIVITY, "KEY_b2c_coopen_activity_PRIMARY", CoopenActivity.COOPEN_ACTIVITY.ID);

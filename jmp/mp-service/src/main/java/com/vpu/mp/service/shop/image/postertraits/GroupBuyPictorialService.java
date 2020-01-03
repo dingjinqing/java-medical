@@ -220,7 +220,6 @@ public class GroupBuyPictorialService extends ShopBaseService {
         String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("goodsId=%d&activityId=%d&activityType=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
         BufferedImage qrCodeImage;
         try {
-            // 测试使用
              qrCodeImage = ImageIO.read(new URL(mpQrCode));
         } catch (IOException e) {
             groupBuyLog("pictorial", "获取二维码失败");
