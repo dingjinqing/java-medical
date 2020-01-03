@@ -114,7 +114,7 @@ export default {
             'module_name': 'm_pin_integration',
             'act_id': '88', // 活动id
             'pin_title': '0', // 标题 radio 1 0
-            'pin_title_text': '细心些', // 标题 自定义内容
+            'pin_title_text': '', // 标题 自定义内容
             'hide_active': '1', // 隐藏内容 活动内容
             'hide_time': '1', // 隐藏内容 有效期
             'module_bg': '1', // 活动地图radio 0 1
