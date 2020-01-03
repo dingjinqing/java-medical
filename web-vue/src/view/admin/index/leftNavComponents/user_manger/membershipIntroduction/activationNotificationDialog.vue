@@ -20,16 +20,20 @@
           class="an-form"
           ref="anForm"
           :model="form"
-          label-width="90px"
+          :rules="formRules"
+          label-width="100px"
           size="small"
         >
-          <el-form-item label="激活说明：">
+          <el-form-item
+            label="激活说明："
+            prop="explain"
+          >
             <el-input
               class="an-textarea"
               type="textarea"
               placeholder="激活说明"
               :rows="3"
-              v-model="form.textarea"
+              v-model="form.explain"
             ></el-input>
             <el-popover
               placement="right"
@@ -51,13 +55,14 @@
           </el-form-item>
           <el-form-item label="激活奖励：">
             <div>
-              <el-checkbox>积分</el-checkbox>
+              <el-checkbox
+                v-model="scoreCheck"
+                :checked="scoreCheck"
+              >积分</el-checkbox>
               <el-input-number
                 v-model="form.score"
                 controls-position="right"
-                @change="handleChange"
-                :min="1"
-                :max="10"
+                :min="0"
               ></el-input-number>
             </div>
             <div>
@@ -137,6 +142,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="saveActivationNotification"
           >保存</el-button>
         </div>
       </div>
@@ -144,13 +150,14 @@
     <addCouponDialog
       :type="-1"
       :tuneUpCoupon="!addCouponDialogVisible"
-      :couponBack="couponBackList"
+      :couponBack="form.couponIds"
       @handleToCheck="handleToCheck"
     ></addCouponDialog>
   </div>
 </template>
 
 <script>
+import { setnoticeApi } from '@/api/admin/memberManage/membershipIntroduction.js'
 export default {
   components: {
     addCouponDialog: () => import('@/components/admin/addCouponDialog')
@@ -165,14 +172,17 @@ export default {
     return {
       form: {
         score: '',
-        textarea: '感谢您一直以来对本店铺的关注，您之前使用的全部服务已经全部迁移至本小程序中，为方便您找回此前的会员权益，请同意授权您的手机号'
+        explain: '感谢您一直以来对本店铺的关注，您之前使用的全部服务已经全部迁移至本小程序中，为方便您找回此前的会员权益，请同意授权您的手机号',
+        couponIds: []
       },
       srcList: [
         this.$imageHost + '/image/admin/new_preview_image/user_vip.jpg'
       ],
       coupons: [], // 选择的优惠券
       addCouponDialogVisible: false,
-      couponBackList: []
+      formRules: {
+        explain: { required: true, message: '请填写激活说明', trigger: 'blur' }
+      }
     }
   },
   computed: {
@@ -183,21 +193,52 @@ export default {
       set (val) {
         this.$emit('update:visible', val)
       }
+    },
+    scoreCheck: {
+      get () {
+        if (this.form.score !== '' && this.form.score > 0) {
+          return true
+        } else {
+          return false
+        }
+      },
+      set (val) {
+        console.log(val)
+        if (val === false) {
+          this.$set(this.form, 'score', '')
+        } else {
+          this.$set(this.form, 'score', 1)
+        }
+      }
     }
   },
   methods: {
-    handleChange () { },
     handleToCheck (coupons) {
       if (coupons && coupons.length > 0) {
         this.coupons = coupons
-        this.couponBackList = coupons.map(item => item.id)
+        let couponBackList = coupons.map(item => item.id) || []
+        this.$set(this.form, 'couponIds', couponBackList)
       }
     },
     deleteCouponHandle (index) {
       let coupons = this.coupons
       coupons.splice(index, 1)
       this.coupons = coupons
-      this.couponBackList = coupons.map(item => item.id)
+      let couponBackList = coupons.map(item => item.id) || []
+      this.$set(this.form, 'couponIds', couponBackList)
+    },
+    // 设置激活通知
+    saveActivationNotification () {
+      let that = this
+      let params = Object.assign({}, that.form)
+      setnoticeApi(params).then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          that.$message.success('设置激活通知成功')
+        } else {
+          that.$message.error(res.message)
+        }
+      })
     }
   }
 }

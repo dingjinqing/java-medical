@@ -295,6 +295,7 @@ global.wxPage({
     //     pictorial = res.content.pictorial;
     //     if (pictorial) {
     //       util.api('/api/wxapp/upayyun/image', function (res) {
+      
     //         if (res.error == 0) {
     //           pictorial = imageUrl + pictorial + "!big";
     //           posterBase64 = res.content
