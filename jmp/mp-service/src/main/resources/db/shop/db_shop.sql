@@ -334,7 +334,7 @@ create table `b2c_cart`
     `create_time`    timestamp               default current_timestamp,
     `update_time`    timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`cart_id`),
-    KEY `user_id` (`cart_id`,`store_id`) 
+    KEY `user_id` (`cart_id`,`store_id`)
 );
 
 -- -- --  b2c_uploaded_image 上传图片表
@@ -1028,7 +1028,7 @@ CREATE TABLE `b2c_return_order_goods`
     INDEX `ret_id` (`ret_id`) ,
     INDEX `order_sn` (`order_sn`) ,
     INDEX `goods_id` (`goods_id`) ,
-    INDEX `shop_id` (`shop_id`) 
+    INDEX `shop_id` (`shop_id`)
 );
 
 -- -- 满折满减活动列表
@@ -1485,7 +1485,7 @@ create table `b2c_mp_daily_visit`
     `visit_depth`       float   not null default '0' comment '平均访问深度 (浮点型)',
     `create_time`       timestamp        default current_timestamp,
     `update_time`       timestamp        default current_timestamp on update current_timestamp comment '最后修改时间',
-    key `ref_date` (`ref_date`) 
+    key `ref_date` (`ref_date`)
 );
 
 -- -- 小程序概况趋势
@@ -1498,7 +1498,7 @@ create table `b2c_mp_summary_trend`
     `share_uv`    int(11) not null default '0' comment '转发人数',
     `create_time` timestamp        default current_timestamp,
     `update_time` timestamp        default current_timestamp on update current_timestamp comment '最后修改时间',
-    key `ref_date` (`ref_date`) 
+    key `ref_date` (`ref_date`)
 );
 
 -- -- 周趋势
@@ -1541,7 +1541,7 @@ create table `b2c_mp_distribution_visit`
     `list`        text comment '存入所有类型的指标情况',
     `create_time` timestamp default current_timestamp,
     `update_time` timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
-    key `ref_date` (`ref_date`) 
+    key `ref_date` (`ref_date`)
 );
 
 -- -- 日留存
@@ -1553,7 +1553,7 @@ create table `b2c_mp_daily_retain`
     `visit_uv`     text comment '活跃用户留存',
     `create_time`  timestamp default current_timestamp,
     `update_time`  timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
-    key `ref_date` (`ref_date`) 
+    key `ref_date` (`ref_date`)
 );
 
 -- -- 周留存
@@ -1595,7 +1595,7 @@ create table `b2c_mp_visit_page`
     `update_time`      timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
     key `ref_date` (`ref_date`) ,
     key `page_path` (`page_path`) ,
-    key `page_visit_pv` (`page_visit_pv`) 
+    key `page_visit_pv` (`page_visit_pv`)
 );
 
 -- -- 用户登录记录表,每小时存一条
@@ -1618,7 +1618,7 @@ create table `b2c_user_login_record`
     `update_time`   timestamp           default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
     key `create_time` (`create_time`) ,
-    key `district_create_time` (`create_time`, `district_code`) 
+    key `district_create_time` (`create_time`, `district_code`)
 );
 
 -- -- 发票表
@@ -1758,7 +1758,7 @@ create table `b2c_comment_service`
   `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1:删除',
   PRIMARY KEY (`id`) ,
   UNIQUE KEY `order_sn` (`order_sn`) ,
-  KEY `service_id` (`service_id`) 
+  KEY `service_id` (`service_id`)
 );
 
 -- -- 门店买单订单表
@@ -2006,7 +2006,7 @@ CREATE TABLE `b2c_mp_user_portrait` (
   `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间，ref_date前8个字符',
   PRIMARY KEY (`id`),
   KEY `type` (`type`) ,
-  KEY `ref_date` (`ref_date`) 
+  KEY `ref_date` (`ref_date`)
 );
 
 -- --  消息模板配置表
@@ -2674,7 +2674,7 @@ create table `b2c_user_goods_record`
     `create_time`   timestamp            default current_timestamp,
     `update_time`   timestamp            default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
-    key `create_time` (`create_time`) 
+    key `create_time` (`create_time`)
 );
 
 -- -- 用户添加购物车商品记录表
@@ -2702,7 +2702,7 @@ create table `b2c_user_cart_record`
     primary key (`id`),
     key `create_time` (`create_time`) ,
     key `goods_create_time` (`goods_id`, `create_time`) ,
-    key `user_create_time` (`user_id`, `create_time`) 
+    key `user_create_time` (`user_id`, `create_time`)
 );
 
 -- 商品概览
@@ -2724,7 +2724,7 @@ create table `b2c_goods_overview_summary`
     `create_time`       timestamp  default current_timestamp comment '创建时间',
     `update_time`       timestamp  default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
-    key `ref_type` (`ref_date`, `type`) 
+    key `ref_type` (`ref_date`, `type`)
 ) comment '商品概览统计表' ;
 
 -- 商品概览-效果
@@ -2750,7 +2750,7 @@ create table `b2c_goods_summary`
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`) ,
-  UNIQUE KEY `uni_key` (`ref_date`,`type`,`goods_id`) 
+  UNIQUE KEY `uni_key` (`ref_date`,`type`,`goods_id`)
 );
 
 -- 用户概览
@@ -2783,7 +2783,7 @@ create table `b2c_user_summary_trend`
     `create_time`          timestamp      default current_timestamp,
     `update_time`          timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
-    key `ref_type` (`ref_date`, `type`) 
+    key `ref_type` (`ref_date`, `type`)
 );
 
 -- 标签用户下单统计
@@ -2804,7 +2804,7 @@ create table `b2c_distribution_tag`
     `create_time`      timestamp      default current_timestamp,
     `update_time`      timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
-    unique index `date_type_tag` (`ref_date`, `type`, `tag_id`) 
+    unique index `date_type_tag` (`ref_date`, `type`, `tag_id`)
 );
 
 -- 交易订单地区分布
@@ -2826,7 +2826,7 @@ create table `b2c_distribution_order`
     `create_time`     timestamp              default current_timestamp,
     `update_time`     timestamp              default current_timestamp on update current_timestamp comment '最后修改时间',
     key `ref_date` (`ref_date`) ,
-    key `pay_order_money` (`pay_order_money`) 
+    key `pay_order_money` (`pay_order_money`)
 );
 
 -- 交易统计 每小时统计数据
@@ -2846,7 +2846,7 @@ create table `b2c_trades`
     `create_time`      timestamp      default current_timestamp,
     `update_time`      timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
     key `ref_date` (`ref_date`) ,
-    key `ref_hour` (`ref_date`, `hour`) 
+    key `ref_hour` (`ref_date`, `hour`)
 );
 
 -- goods备份
@@ -4628,7 +4628,7 @@ CREATE TABLE `b2c_share_award`
     `create_time`       timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`       timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`) ,
-    INDEX `share_name` (`name`, `del_flag`) 
+    INDEX `share_name` (`name`, `del_flag`)
 );
 
 -- 用户分享记录表
@@ -4648,7 +4648,7 @@ CREATE TABLE `b2c_share_award_record`
     `update_time`  timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`) ,
     INDEX `share_id` (`share_id`) ,
-    INDEX `user_share` (`user_id`, `share_id`, `goods_id`) 
+    INDEX `user_share` (`user_id`, `share_id`, `goods_id`)
 );
 
 -- 用户领取分享奖励记录表
@@ -4664,7 +4664,7 @@ CREATE TABLE `b2c_share_award_receive`
     `update_time` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     INDEX `share_id` (`share_id`) ,
-    INDEX `user_share` (`user_id`, `share_id`, `goods_id`) 
+    INDEX `user_share` (`user_id`, `share_id`, `goods_id`)
 );
 
 -- 用户点击分享链接触发分享生效记录表
@@ -4682,7 +4682,7 @@ CREATE TABLE `b2c_attend_share_user`
     `create_time`    timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`    timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`) ,
-    INDEX `attend_share_user` (`record_id`, `user_id`) 
+    INDEX `attend_share_user` (`record_id`, `user_id`)
 );
 
 -- 评价有礼活动
@@ -4782,7 +4782,7 @@ CREATE TABLE `b2c_user_rfm_summary` (
   `update_time` timestamp    default current_timestamp on update current_timestamp comment '最后修改时间',
   `order_num` int(11) DEFAULT '0' COMMENT '订单数量（已付款订单数）',
   PRIMARY KEY (`id`) ,
-  KEY `ref_date` (`ref_date`) 
+  KEY `ref_date` (`ref_date`)
 );
 
 -- 开屏有礼活动
@@ -4793,7 +4793,6 @@ CREATE TABLE `b2c_coopen_activity`
     `action`             tinyint(1)                              NOT NULL DEFAULT '1' COMMENT '针对用户群体： 1: 初次访问新用户 2: 全部用户 3:未支付的用户',
     `name`               varchar(50)   NOT NULL COMMENT '活动名称',
     `title`              varchar(100)  NOT NULL COMMENT '宣传语',
-    `bg_imgs` VARCHAR (255)   NOT NULL DEFAULT '[]' COMMENT '背景图',
     `is_forever`         int(11)                                 NOT NULL DEFAULT '0' COMMENT '是否永久有效 0:无效 1:有效',
     `start_date`         datetime                                NOT NULL COMMENT '有效期-起始',
     `end_date`           datetime                                NOT NULL COMMENT '有效期-结束',
@@ -4828,7 +4827,7 @@ CREATE TABLE `b2c_coopen_activity_records`
     `give_num`          decimal(10, 2)                                                DEFAULT '0.00' COMMENT '积分或者余额数量',
     `create_time`       timestamp    NOT NULL                                         DEFAULT CURRENT_TIMESTAMP,
     `update_time`       timestamp    NOT NULL                                         DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
-    PRIMARY KEY (`id`) 
+    PRIMARY KEY (`id`)
 );
 
 --小程序订阅消息
