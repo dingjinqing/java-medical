@@ -123,8 +123,11 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) {
         secKillProcessorDao.setOrderPrdSeckillPrice(param);
-        //秒杀不允许使用积分支付
-        param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+        //秒杀不允许使用积分支付和货到付款
+        if(param.getPaymentList() != null){
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
     }
 
     /**
@@ -139,12 +142,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     @Override
-    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
-
-    }
-
-    @Override
-    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+    public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 
     }
 

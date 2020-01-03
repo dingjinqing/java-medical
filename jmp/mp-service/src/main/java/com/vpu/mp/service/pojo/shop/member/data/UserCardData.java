@@ -27,15 +27,19 @@ public class UserCardData extends BaseData {
 	
 	/** 用户Id */
 	protected Integer userId;
-	/** 备注 */
-	protected String remark;
+	/** 备注模板Id */
+	private Integer remarkId;
+	/** 备注模板数据 */
+	protected String remarkData;
 	/** 会员卡id */
 	private Integer cardId;
 	/** 会员卡号 */
 	private String cardNo;
 	/** 卡余额  */
 	private BigDecimal money;
-	/** 消费原因 */
+	/** 消费原因模板Id */
+	private Integer reasonId;
+	/** 消费原因数据 */
 	private String reason ;
 	/** 消费类型 0是普通卡 1限次卡  {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE }*/
 	private Byte type;

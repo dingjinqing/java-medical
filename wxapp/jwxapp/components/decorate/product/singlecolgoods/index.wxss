@@ -22,7 +22,7 @@
     position: relative;
   }
   
-  .single_column .product-image image {
+  .single_column .product-image .image {
     height: 280rpx;
     width: 280rpx;
     margin: 0 auto;

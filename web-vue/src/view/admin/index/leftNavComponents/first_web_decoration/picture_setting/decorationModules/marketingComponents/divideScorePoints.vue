@@ -12,6 +12,12 @@
       <div class="divideScorePoints">
         <div class="main">
           <img :src="$imageHost+'/image/admin/pin_background.png'">
+          <!--图片上浮动模块-->
+          <div class="floatModule">
+            <div class="title">腾飞测试</div>
+            <div class="content">3人瓜分333积分</div>
+            <div class="date">2020-01-01 17:15:12至2020-01-24 17:15:15</div>
+          </div>
         </div>
       </div>
       <!--模块编辑区结束-->
@@ -166,9 +172,32 @@ export default {
 
 .divideScorePoints {
   .main {
+    position: relative;
     img {
       height: 165px;
       width: 100%;
+    }
+    .floatModule {
+      color: #fff;
+      width: 100%;
+      height: 165px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      .title {
+        margin: 30px 0 0 30px;
+        font-size: 18px;
+        width: 100%;
+        height: 60px;
+      }
+      .content {
+        margin-left: 30px;
+        font-size: 14px;
+      }
+      .date {
+        margin: 10px 0 0 30px;
+        font-size: 12px;
+      }
     }
   }
 }

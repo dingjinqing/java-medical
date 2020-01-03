@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.overview.asset;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import java.util.List;
  * @description
  */
 @Data
+@Builder
 public class RevenueProfileScoreVo {
     @JsonIgnore
     public Date refDate;
@@ -30,4 +33,9 @@ public class RevenueProfileScoreVo {
 
     /** 折线图数据 */
     private List<RevenueScoreDate> revenueDates;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date startTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date endTime;
 }

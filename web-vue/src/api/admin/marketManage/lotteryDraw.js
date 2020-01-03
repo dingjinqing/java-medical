@@ -9,7 +9,7 @@ export function lotteryDrawList (data) {
   })
 }
 
-// 添加拼团抽奖
+// 添加
 export function addLotteryDraw (data) {
   return service({
     url: '/api/admin/group_draw/add',
@@ -21,40 +21,40 @@ export function addLotteryDraw (data) {
 // 获取编辑详情
 export function getLotteryDetail (data) {
   return service({
-    url: '/api/admin/group_draw/detail',
+    url: `/api/admin/group_draw/detail/${data}`,
     method: 'post',
     data: data
   })
 }
 
-// 更新拼团抽奖
+// 更新
 export function updateLotteryDraw (data) {
   return service({
-    url: '/api/admin/group_draw/update/{id}',
+    url: '/api/admin/group_draw/update',
     method: 'post',
     data: data
   })
 }
 
-// 删除拼团抽奖
+// 删除
 export function deleteLotteryDraw (data) {
   return service({
-    url: '/api/admin/group_draw/delete/{id}',
+    url: `/api/admin/group_draw/delete/${data}`,
     method: 'post',
     data: data
   })
 }
 
-// 停用启用拼团抽奖
+// 停用
 export function updateStatus (data) {
   return service({
-    url: '',
+    url: `/api/admin/group_draw/disable/${data}`,
     method: 'post',
     data: data
   })
 }
 
-// 分享拼团抽奖
+// 分享
 export function shareLotteryDraw (data) {
   return service({
     url: '',
@@ -63,37 +63,46 @@ export function shareLotteryDraw (data) {
   })
 }
 
-// 查询秒杀订单列表
-export function orderSeckillList (data) {
+// 查询订单列表
+export function orderLotteryList (data) {
   return service({
-    url: '/api/admin/market/seckill/order',
+    url: '/api/admin/group_draw/order/list',
     method: 'post',
     data: data
   })
 }
 
 // 查询用户明细列表
-export function detailSeckillList (data) {
+export function detailLotteryList (data) {
   return service({
-    url: '/api/admin/market/seckill/source',
+    url: '/api/admin/group_draw/invited_user/list',
     method: 'post',
     data: data
   })
 }
 
-// 查询秒杀用户列表
-export function userSeckillList (data) {
+// 查询参与用户列表
+export function userLotteryList (data) {
   return service({
-    url: '/api/admin/market/seckill/detail',
+    url: '/api/admin/group_draw/join_user/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 开团明细
+export function groupLotteryList (data) {
+  return service({
+    url: '/api/admin/group_draw/group/list',
     method: 'post',
     data: data
   })
 }
 
 // 查询活动数据
-export function effactSeckillList (data) {
+export function effactLotteryList (data) {
   return service({
-    url: '/api/admin/market/seckill/analysis',
+    url: '',
     method: 'post',
     data: data
   })

@@ -70,40 +70,40 @@ public class ExtendReceiveService extends ShopBaseService implements IorderOpera
 		}
 		OrderInfoMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoMpVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		if(order.getOrderStatus() == OrderConstant.ORDER_SHIPPED) {
 			//已发货订单才可以延迟收货时间
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_NO_SHIPPED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_NO_SHIPPED, null);
 		}
 		//店铺配置延长收货天数
 		int extendReceiveDays = orderRead.getExtendReceiveDays();
 		if(extendReceiveDays == 0) {
 			//不可以延长收货(商家配置时间为0)
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_NOT_SUPPORTED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_NOT_SUPPORTED, null);
 		}
 		if(order.getExtendReceiveAction() > OPERATION_ONLY_ADMIN && param.getIsMp() == OrderConstant.IS_MP_Y) {
 			//买家仅一次机会
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_ONLY_ONE);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_ONLY_ONE, null);
 		}
 		//自动收货时间
 		Instant autoReceive = order.getShippingTime().toInstant().plusSeconds(Duration.ofDays(order.getReturnDaysCfg()).getSeconds());
 		if(param.getIsMp() == OrderConstant.IS_MP_ADMIN) {
 			if(extendTime.getTime() < autoReceive.toEpochMilli()) {}
 			//延长收货时间不能小于自动收货时间
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_TIME_NOT_LT_AUTOTIME);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_TIME_NOT_LT_AUTOTIME, null);
 		}
 		//mp申请时间
 		long mpApplyTime = 0;
 		if(param.getIsMp() == OrderConstant.IS_MP_Y) {
 			if(!OrderOperationJudgment.isExtendReceive(order, extendReceiveDays)) {
 				//据自动确认收货时间大于2天，不可延长收货
-				return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_NOW_AUTOTIME_INTERVAL_GT_TWO_DAYS);
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_NOW_AUTOTIME_INTERVAL_GT_TWO_DAYS, null);
 			}
 			mpApplyTime = autoReceive.plusSeconds(Duration.ofDays(extendReceiveDays).getSeconds()).toEpochMilli();
 			if(order.getExtendReceiveAction() > 0 && order.getExtendReceiveTime().getTime() > mpApplyTime) {
 				//商家已操作更长的收货时间，请勿再操作
-				return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_ADMIN_SET_MORE_TIME);
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER_EXTEND_RECEIVE_ADMIN_SET_MORE_TIME, null);
 			}
 		}
 		//最终延长时间

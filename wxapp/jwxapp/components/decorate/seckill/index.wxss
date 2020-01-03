@@ -31,7 +31,7 @@ position:relative;
   float: right
 }
 
-.two_seckill image{
+.two_seckill .image{
   width: 350rpx;
   height: 335rpx;
 }
@@ -52,7 +52,7 @@ position:relative;
     font-size: 28rpx;
     font-weight: bold;
 }
-.seckill_price text{
+.seckill_price .text{
   font-size: 36rpx;
 }
 .original_price{
@@ -68,41 +68,6 @@ position:relative;
   overflow: hidden;
   white-space: nowrap;
   height: 35rpx;
-}
-.number_info {
-  height: 55rpx;
-  line-height: 55rpx;
-  padding: 0 20rpx; 
-  margin: 15rpx 0;
-}
-.number_info view{
-   height: 55rpx;
-  line-height: 55rpx;
-}
-.number_info .more_unit{
-  color: #666;
-  float: left;
-  font-size: 24rpx;
-}
-.number_info .free_ntn{
-  float: right;
-  width: 130rpx;
-  text-align: center;
-  color: #fff;
-  background: linear-gradient(left,#f66,#ff8585);
-  background: -webkit-linear-gradient(left,#f66,#ff8585);
-  background: -moz-linear-gradient(left,#f66,#ff8585);
-  border-radius: 50rpx;
-}
-.number_info .orig_ntn{
-  float: right;
-  width: 130rpx;
-  text-align: center;
-  color: #fff;
-  background: linear-gradient(left,#f66,#ff8585);
-  background: -webkit-linear-gradient(left,#f66,#ff8585);
-  background: -moz-linear-gradient(left,#f66,#ff8585);
-  border-radius: 50rpx;
 }
 /* danlie */
 .one_seckill{
@@ -129,7 +94,7 @@ position:relative;
   font-size: 24rpx;
   padding: 5rpx 0;
 }
-.one_seckill .seckill_left image{
+.one_seckill .seckill_left .image{
   width: 260rpx;
   height: 260rpx;
 }
@@ -184,10 +149,6 @@ border-radius:6rpx;
   line-height: 55rpx;
   padding: 0;
   overflow: hidden;
-}
-.seckill_bottom .bottom_top .price_info view{
-  height: 55rpx;
-  line-height: 55rpx;
 }
 .seckill_bottom .bottom_top .free_ntn{
   float: right;

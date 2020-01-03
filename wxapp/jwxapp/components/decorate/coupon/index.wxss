@@ -5,7 +5,7 @@
   overflow:hidden;
 }
 
-button::after {
+.button::after {
   border-radius: none;
   border: none;
 }
@@ -50,7 +50,7 @@ button::after {
   justify-content: center;
 }
 
-.coupon_list_top text {
+.coupon_list_top .text {
   font-size: 40rpx;
   font-weight: bold;
   display: inline-block;
@@ -111,7 +111,7 @@ button::after {
   padding-top: 15rpx;
 }
 
-.coupon_list1 .coupon_list_top text {
+.coupon_list1 .coupon_list_top .text {
   font-size: 60rpx;
 }
 
@@ -128,7 +128,7 @@ button::after {
   color: #d5d7d9;
 }
 
-.coupon_list_bottom button {
+.coupon_list_bottom .button {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -148,7 +148,7 @@ button::after {
   /* float: left; */
 }
 
-view .coupon_list2:last-child {
+.coupon_list2:last-child {
   float: right;
   margin-right: 0;
 }
@@ -172,18 +172,18 @@ view .coupon_list2:last-child {
   box-sizing: border-box;
 }
 
-.coupon_code>view {
+.coupon_code>.view {
   background: white;
   border-radius: 5px;
 }
 
-.coupon_code>view .code_ipt {
+.coupon_code>.view .code_ipt {
   padding: 50rpx;
   border-bottom: 1px solid #eee;
   box-sizing: border-box;
 }
 
-.code_ipt input {
+.code_ipt .input {
   border: 1px solid #ddd;
   width: 100%;
   height: 80rpx;
@@ -196,7 +196,7 @@ view .coupon_list2:last-child {
   display: flex;
 }
 
-.code_btn view {
+.code_btn .view {
   flex: 1;
   height: 90rpx;
   line-height: 90rpx;
@@ -206,7 +206,7 @@ view .coupon_list2:last-child {
   text-align: center;
 }
 
-.code_btn view:last-child {
+.code_btn .view:last-child {
   color: #f66;
   border-left: 1px solid #eee;
 }

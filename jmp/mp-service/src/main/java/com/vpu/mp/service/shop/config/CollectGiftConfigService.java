@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -105,7 +106,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
             this.setJsonObject(K_COLLECT_GIFT, param);
         }
         //判断活动是否生效
-        Timestamp nowDate = new Timestamp(System.currentTimeMillis());
+        Timestamp nowDate = DateUtil.getLocalDateTime();
         if(!(param.getStartTime().before(nowDate) && nowDate.before(param.getEndTime()))){
             param.setOnOff(0);
         }
