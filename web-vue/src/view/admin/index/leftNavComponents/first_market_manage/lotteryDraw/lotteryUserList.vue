@@ -9,35 +9,46 @@
         >
           <el-input
             size="small"
+            v-model="requestParams.nickName"
             placeholder="请输入用户昵称"
-            maxlength="11"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="开团时间："
+          label="参与时间："
           class="item"
         >
-          <el-input
+          <el-date-picker
             size="small"
+            v-model="requestParams.startTime"
+            type="datetime"
             clearable
             class="inputWidth"
-          ></el-input>
-          至
-          <el-input
+            value-format="yyyy-MM-dd 00:00:00"
+            :placeholder="$t('actionRecord.startTime')"
+          >
+          </el-date-picker>
+          <span>至</span>
+          <el-date-picker
             size="small"
+            v-model="requestParams.endTime"
+            type="datetime"
             clearable
             class="inputWidth"
-          ></el-input>
+            value-format="yyyy-MM-dd 23:59:59"
+            :placeholder="$t('actionRecord.endTime')"
+          >
+          </el-date-picker>
         </el-form-item>
         <el-form-item
-          label="团ID："
+          label="订单号："
           class="item"
         >
           <el-input
             size="small"
-            placeholder="请输入团ID"
+            v-model="requestParams.orderSn"
+            placeholder="请输入订单号"
             clearable
             class="inputWidth"
           ></el-input>
@@ -48,7 +59,38 @@
         >
           <el-input
             size="small"
+            v-model="requestParams.mobile"
             placeholder="请输入手机号"
+            clearable
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="邀请用户数："
+          class="item"
+        >
+          <el-input
+            size="small"
+            v-model="requestParams.minInviteUserCount"
+            clearable
+            class="inputWidth"
+          ></el-input>
+          至
+          <el-input
+            size="small"
+            v-model="requestParams.maxInviteUserCount"
+            clearable
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="团ID："
+          class="item"
+        >
+          <el-input
+            size="small"
+            v-model="requestParams.groupId"
+            placeholder="请输入团ID"
             clearable
             class="inputWidth"
           ></el-input>
@@ -59,6 +101,7 @@
         >
           <el-select
             size="small"
+            v-model="requestParams.grouped"
             class="inputWidth"
             placeholder="请选择"
           >
@@ -70,11 +113,30 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item
+          label="是否团长："
+          class="item"
+        >
+          <el-select
+            size="small"
+            v-model="requestParams.isGrouper"
+            class="inputWidth"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in groupList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-button
           size="small"
           type="primary"
           class="item"
           style="margin-left: 10px;"
+          @click="initDataList"
         >筛选</el-button>
         <el-button
           size="small"
@@ -94,38 +156,52 @@
         style="width: 100%"
       >
         <el-table-column
+          label="昵称"
+          prop="username"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="手机号"
+          prop="mobile"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="参与时间"
+          prop="createTime"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="订单号"
+          prop="orderSn"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="是否团长"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.isGrouper === true">是</span>
+            <span v-if="scope.row.isGrouper === false">否</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="团ID"
-          prop=""
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="参团人数"
-          prop=""
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="活动商品"
-          prop=""
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="开团时间"
-          prop=""
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="团长昵称"
-          prop=""
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="团长手机号"
-          prop=""
+          prop="groupId"
           align="center"
         ></el-table-column>
         <el-table-column
           label="成团时间"
           prop=""
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="抽奖码数量"
+          prop="codeCount"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="邀请用户数"
+          prop="inviteUserNum"
           align="center"
         ></el-table-column>
       </el-table>
@@ -140,7 +216,7 @@
 <script>
 // 引入组件
 import pagination from '@/components/admin/pagination/pagination.vue'
-import { groupLotteryList } from '@/api/admin/marketManage/lotteryDraw.js'
+import { userLotteryList } from '@/api/admin/marketManage/lotteryDraw.js'
 export default {
 
   components: {
@@ -156,9 +232,28 @@ export default {
         value: '2',
         label: '未成团'
       }],
+      // 是否团长
+      groupList: [{
+        value: '1',
+        label: '是'
+      }, {
+        value: '2',
+        label: '否'
+      }],
       loading: false,
       pageParams: {}, // 分页
-      requestParams: {},
+      requestParams: {
+        nickName: '', // 昵称
+        startTime: '',
+        endTime: '',
+        orderSn: '', // 订单号
+        mobile: '', // 手机号
+        minInviteUserCount: '', // 最小邀请人数
+        maxInviteUserCount: '', // 最大邀请人数
+        groupId: '', // 团ID
+        grouped: '', // 成团状态
+        isGrouper: '' // 团长id
+      },
       tableData: [] // 表格数据
     }
   },
@@ -171,10 +266,10 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.requestParams.skId = this.$route.query.id
+      this.requestParams.groupDrawId = this.$route.query.id
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
-      groupLotteryList(this.requestParams).then((res) => {
+      userLotteryList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page

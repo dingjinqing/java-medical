@@ -56,16 +56,13 @@
             type="primary"
             size="small"
             class="item"
+            @click="initDataList"
             style="margin-left: 10px;"
           >筛选</el-button>
         </el-form>
-      </div>
-
-      <div>
         <el-button
           type="primary"
           size="small"
-          v-if="tableListView"
           @click="addLotteryDraw"
         >添加拼团抽奖活动</el-button>
       </div>
@@ -148,23 +145,25 @@
         <el-table-column
           label="操作"
           align="center"
-          width="200"
+          width="150"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                :content="$t('seckill.edit')"
+                content="编辑"
                 placement="top"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-edit-outline"
-                  @click="editHandler(scope.row.id, scope.row)"
+                  @click="editHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
-                :content="$t('seckill.share')"
+                content="分享"
                 placement="top"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -173,8 +172,9 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                :content="$t('seckill.stop')"
+                content="停用"
                 placement="top"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -182,19 +182,21 @@
                   @click="stopHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
-              <el-tooltip
-                :content="$t('seckill.start')"
+              <!-- <el-tooltip
+                content="启用"
                 placement="top"
+                v-if="scope.row.status === 4"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-circle-check"
                   @click="startHandler(scope.row.id)"
                 ></span>
-              </el-tooltip>
+              </el-tooltip> -->
               <el-tooltip
-                :content="$t('seckill.order')"
+                content="查看活动订单"
                 placement="top"
+                v-if="scope.row.status !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -203,8 +205,20 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                :content="$t('seckill.detail')"
+                content="参与用户"
                 placement="top"
+                v-if="scope.row.status !== 2"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-s-unfold"
+                  @click="userHanlder(scope.row.id, scope.row.name)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="获取新用户明细"
+                placement="top"
+                v-if="scope.row.status !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -215,6 +229,7 @@
               <el-tooltip
                 content="开团明细"
                 placement="top"
+                v-if="scope.row.status !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -223,8 +238,9 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                :content="$t('seckill.delete')"
+                content="删除"
                 placement="top"
+                v-if="scope.row.status === 3 || scope.row.status === 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -233,7 +249,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                :content="$t('seckill.effect')"
+                content="活动效果数据"
                 placement="top"
               >
                 <span
@@ -267,8 +283,7 @@
 import addLotteryDraw from './addLotteryDraw.vue'
 import shareDialog from '@/components/admin/shareDialog'
 import pagination from '@/components/admin/pagination/pagination'
-import { lotteryDrawList, shareLotteryDraw } from '@/api/admin/marketManage/lotteryDraw.js'
-// deleteLotteryDraw, updateStatus,
+import { lotteryDrawList, deleteLotteryDraw, shareLotteryDraw, updateStatus } from '@/api/admin/marketManage/lotteryDraw.js'
 export default {
   components: {
     addLotteryDraw,
@@ -279,7 +294,7 @@ export default {
     return {
       tabSwitch: '1',
       tableListView: true, // tab显示隐藏
-      tabInfo: this.$t('seckill.tabInfo'),
+      tabInfo: this.$t('lotteryDraw.tabInfo'),
       tableData: [], // 表格数据
       // 分页
       pageParams: {
@@ -302,8 +317,8 @@ export default {
   },
   watch: {
     lang () {
-      this.tabInfo = this.$t('seckill.tabInfo')
-      // this.initDataList()
+      this.tabInfo = this.$t('lotteryDraw.tabInfo')
+      this.initDataList()
     }
   },
   mounted () {
@@ -314,7 +329,11 @@ export default {
   methods: {
     // 拼团抽奖列表
     initDataList () {
-      this.requestParams.status = Number(this.tabSwitch)
+      if (this.tabSwitch === '0') {
+        this.requestParams.status = null
+      } else {
+        this.requestParams.status = Number(this.tabSwitch)
+      }
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       this.closeTabAddGroup()
@@ -323,7 +342,7 @@ export default {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
           this.tableData.map((item, index) => {
-            item.statusText = this.getActStatusString(item.currentState)
+            item.statusText = this.getActStatusString(item.status)
           })
         }
       })
@@ -336,7 +355,7 @@ export default {
     },
 
     // 编辑
-    editHandler (id, row) {
+    editHandler (id) {
       this.editId = id
       this.isEdite = true
       this.showTabAddGroup('编辑拼团抽奖活动')
@@ -384,12 +403,12 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        // deleteLotteryDraw({ id: id }).then((res) => {
-        //   if (res.error === 0) {
-        //     this.$message.success({ message: this.$t('seckill.deleteSuccess') })
-        //     this.initDataList()
-        //   }
-        // })
+        deleteLotteryDraw(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.deleteSuccess') })
+            this.initDataList()
+          }
+        })
       }).catch(() => {
         this.$message.info({ message: this.$t('seckill.deleteFail') })
       })
@@ -413,40 +432,37 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        // updateStatus({
-        //   id: id,
-        //   status: 0
-        // }).then((res) => {
-        //   if (res.error === 0) {
-        //     this.$message.success({ message: this.$t('seckill.stopSuccess') })
-        //     this.initDataList()
-        //   }
-        // })
+        updateStatus(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.stopSuccess') })
+            this.initDataList()
+          }
+        })
       }).catch(() => {
         this.$message.info({ message: this.$t('seckill.stopFail') })
       })
     },
 
     // 启用
-    startHandler (id) {
-      this.$confirm(this.$t('seckill.startTip'), {
-        confirmButtonText: this.$t('seckill.sure'),
-        cancelButtonText: this.$t('seckill.cancel'),
-        type: 'warning'
-      }).then(() => {
-        // updateStatus({
-        //   id: id,
-        //   status: 1
-        // }).then((res) => {
-        //   if (res.error === 0) {
-        //     this.$message.success({ message: this.$t('seckill.startSuccess') })
-        //     this.initDataList()
-        //   }
-        // })
-      }).catch(() => {
-        this.$message.info({ message: this.$t('seckill.startFail') })
-      })
-    },
+    // startHandler(id) {
+    //   this.$confirm(this.$t('seckill.startTip'), {
+    //     confirmButtonText: this.$t('seckill.sure'),
+    //     cancelButtonText: this.$t('seckill.cancel'),
+    //     type: 'warning'
+    //   }).then(() => {
+    //     // updateStatus({
+    //     //   id: id,
+    //     //   status: 1
+    //     // }).then((res) => {
+    //     //   if (res.error === 0) {
+    //     //     this.$message.success({ message: this.$t('seckill.startSuccess') })
+    //     //     this.initDataList()
+    //     //   }
+    //     // })
+    //   }).catch(() => {
+    //     this.$message.info({ message: this.$t('seckill.startFail') })
+    //   })
+    // },
 
     // 查看活动订单
     orderHanlder (id, name) {
@@ -456,6 +472,11 @@ export default {
     // 获取新用户明细
     detailHanlder (id, name) {
       this.$router.push({ name: 'lottery_detail_view', query: { id: id, name: name } })
+    },
+
+    // 参与用户
+    userHanlder (id, name) {
+      this.$router.push({ name: 'lottery_user_view', query: { id: id, name: name } })
     },
 
     // 开团明细

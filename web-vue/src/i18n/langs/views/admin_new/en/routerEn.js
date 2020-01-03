@@ -211,6 +211,15 @@ export const en = {
   ],
   // 营销管理 拼团抽奖
   group_draw: ['Marketing management', 'raffle draw'],
+  // 营销管理 拼团抽奖 活动订单
+  group_order: ['Marketing management', 'raffle draw', 'Group lottery order'],
+  // 营销管理 拼团抽奖 参与用户
+  group_user: ['Marketing management', 'raffle draw', 'Participating users'],
+  // 营销管理 拼团抽奖 用户明细
+  group_user_detail: ['Marketing management', 'raffle draw', 'Get new user details'],
+  // 营销管理 拼团抽奖 开团明细
+  group_detail: ['Marketing management', 'raffle draw', 'Opening details'],
+
   // 营销管理 分销
   distribution_info: ['Marketing management', 'distribution'],
   // 营销管理 分销 推广测试
