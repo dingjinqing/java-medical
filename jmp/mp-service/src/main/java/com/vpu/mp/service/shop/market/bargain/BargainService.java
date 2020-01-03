@@ -354,7 +354,7 @@ public class BargainService extends ShopBaseService  {
      * @param actId
      * @return
      */
-    private BargainRecord getBargainActById(int actId){
+    public BargainRecord getBargainActById(int actId){
         return db().select().from(BARGAIN).where(BARGAIN.ID.eq(actId)).fetchOptionalInto(BargainRecord.class).orElse(null);
     }
 
