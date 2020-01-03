@@ -141,7 +141,7 @@ export default {
         'hsva(120, 40, 94, 0.5)',
         'hsl(181, 100%, 37%)',
         'hsla(209, 100%, 56%, 0.73)',
-        '#c7158577'
+        '#FF0000'
       ],
       data: {
         'module_name': 'm_goods_search', // 模块名称
@@ -180,13 +180,13 @@ export default {
     handleToReset (index) {
       switch (index) {
         case 0:
-          this.data.box_color = '#eee'
+          this.data.box_color = null
           break
         case 1:
-          this.data.back_color = '#fff'
+          this.data.back_color = null
           break
         case 2:
-          this.data.sort_bg_color = '#666666'
+          this.data.sort_bg_color = null
       }
     }
   }

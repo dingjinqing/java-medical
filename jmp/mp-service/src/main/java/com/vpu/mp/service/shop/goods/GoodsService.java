@@ -1903,14 +1903,4 @@ public class GoodsService extends ShopBaseService {
             e.printStackTrace();
         }
     }
-
-    /**
-     * 获取有效的商品-通过商品ID和delFlag是否有效
-     * @param goodsId 商品Id
-     * @return 商品信息 可为null
-     */
-    public GoodsRecord getValidGoodsRecordById(Integer goodsId) {
-        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
-            .fetchAny();
-    }
 }

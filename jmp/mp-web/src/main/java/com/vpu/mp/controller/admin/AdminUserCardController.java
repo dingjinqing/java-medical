@@ -49,6 +49,7 @@ public class AdminUserCardController extends AdminBaseController {
     @PostMapping("/api/admin/user/card/consume")
     public JsonResult chargeConsume(@RequestBody CardConsumeParam param) {
     	logger().info("增加减少会员卡余额和次数");
+    	System.out.println(param);
     	UserCardConsumeBeanBuilder consumer = UserCardConsumeBean.builder();
     	Byte cardType = param.getCardType();
     	Boolean isContinue = true;

@@ -434,6 +434,7 @@ public class Keys {
     public static final UniqueKey<TemplateConfigRecord> KEY_B2C_TEMPLATE_CONFIG_PRIMARY = UniqueKeys0.KEY_B2C_TEMPLATE_CONFIG_PRIMARY;
     public static final UniqueKey<TradesRecordRecord> KEY_B2C_TRADES_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_TRADES_RECORD_PRIMARY;
     public static final UniqueKey<TradesRecordSummaryRecord> KEY_B2C_TRADES_RECORD_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_TRADES_RECORD_SUMMARY_PRIMARY;
+    public static final UniqueKey<TradesRecordSummaryRecord> KEY_B2C_TRADES_RECORD_SUMMARY_DATE_TYPE = UniqueKeys0.KEY_B2C_TRADES_RECORD_SUMMARY_DATE_TYPE;
     public static final UniqueKey<UploadedImageRecord> KEY_B2C_UPLOADED_IMAGE_PRIMARY = UniqueKeys0.KEY_B2C_UPLOADED_IMAGE_PRIMARY;
     public static final UniqueKey<UploadedImageCategoryRecord> KEY_B2C_UPLOADED_IMAGE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_UPLOADED_IMAGE_CATEGORY_PRIMARY;
     public static final UniqueKey<UploadedVideoRecord> KEY_B2C_UPLOADED_VIDEO_PRIMARY = UniqueKeys0.KEY_B2C_UPLOADED_VIDEO_PRIMARY;
@@ -900,6 +901,7 @@ public class Keys {
         public static final UniqueKey<TemplateConfigRecord> KEY_B2C_TEMPLATE_CONFIG_PRIMARY = Internal.createUniqueKey(TemplateConfig.TEMPLATE_CONFIG, "KEY_b2c_template_config_PRIMARY", TemplateConfig.TEMPLATE_CONFIG.ID);
         public static final UniqueKey<TradesRecordRecord> KEY_B2C_TRADES_RECORD_PRIMARY = Internal.createUniqueKey(TradesRecord.TRADES_RECORD, "KEY_b2c_trades_record_PRIMARY", TradesRecord.TRADES_RECORD.ID);
         public static final UniqueKey<TradesRecordSummaryRecord> KEY_B2C_TRADES_RECORD_SUMMARY_PRIMARY = Internal.createUniqueKey(TradesRecordSummary.TRADES_RECORD_SUMMARY, "KEY_b2c_trades_record_summary_PRIMARY", TradesRecordSummary.TRADES_RECORD_SUMMARY.ID);
+        public static final UniqueKey<TradesRecordSummaryRecord> KEY_B2C_TRADES_RECORD_SUMMARY_DATE_TYPE = Internal.createUniqueKey(TradesRecordSummary.TRADES_RECORD_SUMMARY, "KEY_b2c_trades_record_summary_date_type", TradesRecordSummary.TRADES_RECORD_SUMMARY.REF_DATE, TradesRecordSummary.TRADES_RECORD_SUMMARY.TYPE);
         public static final UniqueKey<UploadedImageRecord> KEY_B2C_UPLOADED_IMAGE_PRIMARY = Internal.createUniqueKey(UploadedImage.UPLOADED_IMAGE, "KEY_b2c_uploaded_image_PRIMARY", UploadedImage.UPLOADED_IMAGE.IMG_ID);
         public static final UniqueKey<UploadedImageCategoryRecord> KEY_B2C_UPLOADED_IMAGE_CATEGORY_PRIMARY = Internal.createUniqueKey(UploadedImageCategory.UPLOADED_IMAGE_CATEGORY, "KEY_b2c_uploaded_image_category_PRIMARY", UploadedImageCategory.UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static final UniqueKey<UploadedVideoRecord> KEY_B2C_UPLOADED_VIDEO_PRIMARY = Internal.createUniqueKey(UploadedVideo.UPLOADED_VIDEO, "KEY_b2c_uploaded_video_PRIMARY", UploadedVideo.UPLOADED_VIDEO.VIDEO_ID);

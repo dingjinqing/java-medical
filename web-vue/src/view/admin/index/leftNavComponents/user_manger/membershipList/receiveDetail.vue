@@ -146,7 +146,7 @@
               <td>{{item.exchang_surplus}}</td>
               <td class="link">
                 <div class="operateDiv">
-                  <span>充值明细</span>
+                  <span @click="jumpToChargeDetail(item)">充值明细</span>
                   <span>-消费明细</span>
                   <span
                     v-if="item.deleteShow"
@@ -397,6 +397,17 @@ export default {
         this.loadAllPageDate()
       }
       this.modifyDialogData.visiable = false
+    },
+
+    jumpToChargeDetail (item) {
+      // 充值明细
+      this.$router.push({
+        name: 'refillDetailsItem',
+        query: {
+          cardNo: item.cardNo,
+          cardType: item.cardType
+        }
+      })
     }
   }
 }
