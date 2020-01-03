@@ -102,7 +102,7 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        bargainProcessorDao.processSaveOrderInfo(param,order);
     }
 
     @Override

@@ -44,44 +44,6 @@ public class BargainInfoVo {
 
     @Setter
     @Getter
-    @ToString
-    public static class BargainRecordInfo{
-        private Integer    id;
-        private Integer    userId;
-        private Integer    bargainId;
-        private Integer    goodsId;
-        private Integer    prdId;
-        private BigDecimal goodsPrice;
-        private BigDecimal bargainMoney;
-        private Integer    userNumber;
-        private Byte       status;
-        private Integer    isOrdered;
-        private String     orderSn;
-        private Timestamp createTime;
-
-        private String userAvatar;
-        private String goodsName;
-        private String goodsImg;
-        private BigDecimal prdPrice;
-        private String prdDesc;
-        private Integer prdNumber;
-
-        private Byte bargainType;
-        private Timestamp startTime;
-        private Timestamp endTime;
-        private BigDecimal expectationPrice;
-        private BigDecimal floorPrice;
-        private String shareConfig;
-        private Integer stock;
-
-        private String wxOpenid;
-        private String username;
-
-        private long remainingTime;
-    }
-
-    @Setter
-    @Getter
     public static class BargainUser{
         private Integer    id;
         private Integer    recordId;

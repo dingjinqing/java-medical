@@ -10,12 +10,17 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
-import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoVo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -156,17 +161,20 @@ public class BargainProcessorDao extends ShopBaseService {
      * @param param
      */
     public void setOrderPrdBargainPrice(OrderBeforeParam param) throws MpException {
-        BargainInfoVo.BargainRecordInfo bargainRecordInfo = bargainService.bargainRecord.getRecordInfo(param.getRecordId());
+        BargainRecordInfo bargainRecordInfo = bargainService.bargainRecord.getRecordInfo(param.getRecordId());
         if(!bargainRecordInfo.getStatus().equals(BargainRecordService.STATUS_SUCCESS)){
             //状态不对
             throw new MpException(JsonResultCode.BARGAIN_NOT_YET_SUCCESSFUL);
         }else if(bargainRecordInfo.getIsOrdered().equals(BargainRecordService.IS_ORDERED_Y)){
             //已下单
             OrderInfoRecord order = orderInfo.getOrderByOrderSn(bargainRecordInfo.getOrderSn());
-            if(order.getOrderAmount().equals(bargainRecordInfo.getFloorPrice()) || order.getOrderStatus() > 2){
+            if(order.getOrderAmount().equals(bargainRecordInfo.getFloorPrice()) || order.getOrderStatus() > OrderConstant.ORDER_CLOSED){
                 throw new MpException(JsonResultCode.BARGAIN_RECORD_ORDERED);
             }
         }
+
+        //临时记录
+        param.setBargainRecordInfo(bargainRecordInfo);
 
         for(OrderBeforeParam.Goods prd : param.getGoods()){
             //砍价价格
@@ -174,5 +182,26 @@ public class BargainProcessorDao extends ShopBaseService {
         }
     }
 
+    /**
+     * 砍价下单
+     * @param orderParam
+     * @param newOrder 新订单
+     */
+    public void processSaveOrderInfo(OrderBeforeParam orderParam, OrderInfoRecord newOrder) throws MpException {
+        if(orderParam.getBargainRecordInfo().getIsOrdered().equals(BargainRecordService.IS_ORDERED_Y) && StringUtil.isNotEmpty(orderParam.getBargainRecordInfo().getOrderSn())){
+            //关闭砍价记录之前绑定的其他订单
+            OrderOperateQueryParam param = new OrderOperateQueryParam();
+            param.setAction((byte) OrderServiceCode.CLOSE.ordinal());
+            param.setIsMp(OrderConstant.IS_MP_Y);
+            param.setOrderSn(orderParam.getBargainRecordInfo().getOrderSn());
+            param.setOrderId(orderInfo.getOrderIdBySn(orderParam.getBargainRecordInfo().getOrderSn()));
+            //关闭订单
+            ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
+            if(!executeResult.isSuccess()){
+                throw new MpException(JsonResultCode.CODE_FAIL);
+            }
+        }
 
+        db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.IS_ORDERED,BargainRecordService.IS_ORDERED_Y).set(BARGAIN_RECORD.ORDER_SN,newOrder.getOrderSn()).execute();
+    }
 }

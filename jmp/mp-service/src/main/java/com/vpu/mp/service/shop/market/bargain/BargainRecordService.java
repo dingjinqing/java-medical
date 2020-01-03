@@ -336,7 +336,7 @@ public class BargainRecordService extends ShopBaseService {
      */
     public BargainInfoVo getBargainInfo(int userId,int recordId){
         BargainInfoVo vo = new BargainInfoVo();
-        BargainInfoVo.BargainRecordInfo recordInfo = getRecordInfo(recordId);
+        BargainRecordInfo recordInfo = getRecordInfo(recordId);
 
         //详情
         if(recordInfo != null){
@@ -378,7 +378,7 @@ public class BargainRecordService extends ShopBaseService {
         return vo;
     }
 
-    public BargainInfoVo.BargainRecordInfo getRecordInfo(int recordId){
+    public BargainRecordInfo getRecordInfo(int recordId){
         return db().select(BARGAIN_RECORD.asterisk(),
             GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,
             USER_DETAIL.USER_AVATAR,
@@ -393,7 +393,7 @@ public class BargainRecordService extends ShopBaseService {
                 .leftJoin(USER).on(USER.USER_ID.eq(BARGAIN_RECORD.USER_ID))
         )
             .where(BARGAIN_RECORD.ID.eq(recordId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .fetchOptionalInto(BargainInfoVo.BargainRecordInfo.class).orElse(null);
+            .fetchOptionalInto(BargainRecordInfo.class).orElse(null);
     }
 
     /**
@@ -404,7 +404,7 @@ public class BargainRecordService extends ShopBaseService {
      * 0可以砍价（别人的砍价） 11可以邀请砍价（自己的砍价） 1活动不存在 2砍价失败 3活动未开始 4或已结束
      * 5砍价成功 6商品已抢光 7可以邀请砍价（自己的砍价，已经砍了2刀） 8可以再砍一刀（自己的砍价） 9我也要X元得好物（别人的砍价，已帮砍过一刀） 10已完成订单（自己的砍价）
      */
-    private byte userBargainRecordStatus(int userId,BargainInfoVo.BargainRecordInfo recordInfo){
+    private byte userBargainRecordStatus(int userId,BargainRecordInfo recordInfo){
         if(recordInfo == null){
             return 1;
         }
