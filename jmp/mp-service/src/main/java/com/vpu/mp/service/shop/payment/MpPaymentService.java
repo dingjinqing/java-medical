@@ -234,15 +234,15 @@ public class MpPaymentService extends ShopBaseService {
             payInfo.put("timeStamp", timestamp);
             payInfo.put("nonceStr", nonceStr);
             payInfo.put("package", "prepay_id=" + prepayId);
-            payInfo.put("signType", "MD5");
-            String md5 = SignUtils.createSign(payInfo, "MD5", config.getMchKey(), null);
+            payInfo.put("signType", WxPayConstants.SignType.MD5);
+            String md5 = SignUtils.createSign(payInfo, WxPayConstants.SignType.MD5, config.getMchKey(), null);
             //公众号支付/小程序支付.
             vo = JsApiVo.builder().
                 appId(result.getAppid()).
                 timeStamp(timestamp).
                 nonceStr(nonceStr).
                 packageAlias("prepay_id=" + prepayId).
-                signType("MD5").
+                signType(WxPayConstants.SignType.MD5).
                 paySign(md5).
                 build();
         }

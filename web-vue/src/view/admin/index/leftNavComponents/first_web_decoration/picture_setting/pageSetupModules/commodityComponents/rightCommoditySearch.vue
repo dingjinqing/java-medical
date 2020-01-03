@@ -180,13 +180,13 @@ export default {
     handleToReset (index) {
       switch (index) {
         case 0:
-          this.data.box_color = '#eee'
+          this.data.box_color = null
           break
         case 1:
-          this.data.back_color = '#fff'
+          this.data.back_color = null
           break
         case 2:
-          this.data.sort_bg_color = '#666666'
+          this.data.sort_bg_color = null
       }
     }
   }

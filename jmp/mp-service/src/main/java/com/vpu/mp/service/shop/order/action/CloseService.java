@@ -75,11 +75,11 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		if(!OrderOperationJudgment.mpIsClose(order)) {
             logger().error("该订单不能关闭");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_NOT_CLOSE);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_NOT_CLOSE, null);
 		}
 		try {
 			transaction(()->{
@@ -90,7 +90,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 				
 			});
 		} catch (Exception e) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_FAIL);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
 		}
 		//订单状态记录
 		orderAction.addRecord(order, param, order.getOrderStatus() , "商家关闭订单");
