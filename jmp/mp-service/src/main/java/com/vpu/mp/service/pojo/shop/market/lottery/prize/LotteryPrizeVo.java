@@ -38,6 +38,10 @@ public class LotteryPrizeVo {
      */
     private Integer integralScore;
     /**
+     * 账户
+     */
+    private Integer account;
+    /**
      * 优惠券id
      */
     private Byte    couponId;
