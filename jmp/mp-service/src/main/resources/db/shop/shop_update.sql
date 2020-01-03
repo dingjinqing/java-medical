@@ -1459,7 +1459,6 @@ MODIFY COLUMN `lottery_id` int(11)  DEFAULT NULL COMMENT '抽奖id';
 ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `exchang_count` int(11) DEFAULT NULL COMMENT '允许商品兑换次数' AFTER `exchang_freight`;
 
-<<<<<<< HEAD
 ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `count` int(11) DEFAULT NULL COMMENT '允许门店兑换次数' AFTER `store_list`;
 
@@ -1491,8 +1490,3 @@ ADD COLUMN `express100_code` VARCHAR(20) DEFAULT '' NOT NULL COMMENT '快递100c
 -- 删除无用字段
 ALTER TABLE `b2c_coopen_activity`
 DROP COLUMN`bg_imgs`;
-
-
--- 删除无用字段
-ALTER TABLE `b2c_coopen_activity`
-DROP COLUMN `bg_imgs`;
