@@ -328,7 +328,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="first"
+            prop="classifyFirst"
             :label="$t('brandManagement.classificationPriority')"
             align="center"
           ></el-table-column>

@@ -3,7 +3,7 @@
 
 <view class='all'>
   <view class='content'>
-    <view class='each_onne clearfix' wx:for="{{info_list}}" wx:key='{{key}}'>
+    <view class='each_onne clearfix' wx:for="{{info_list}}" wx:key='index'>
         <view class='person_icom'><image src='{{item.userAvatar}}'></image></view>
         <view class='person_name'>
             <view>{{item.username}}</view>
