@@ -101,6 +101,18 @@ public class OrderGoodsService extends ShopBaseService{
 			.where(TABLE.ORDER_SN.in(orderSns))
 			.fetchGroups(TABLE.ORDER_SN,RefundVoGoods.class);
 	}
+
+	/**
+	 * 	通过订单sn[]查询其下商品
+	 * @param orderSns
+	 * @return Map<String, List<OrderGoodsMpVo>>
+	 */
+	public Map<String, List<OrderGoodsMpVo>> getByOrderGoodsSns(List<String> orderSns) {
+		return db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.REC_ID,TABLE.GOODS_NAME,TABLE.GOODS_NUMBER,TABLE.RETURN_NUMBER,TABLE.GOODS_PRICE,TABLE.GOODS_ATTR,TABLE.DISCOUNTED_GOODS_PRICE,TABLE.PRODUCT_ID,TABLE.IS_CAN_RETURN,TABLE.IS_GIFT,TABLE.DISCOUNTED_TOTAL_PRICE,TABLE.GOODS_ID,TABLE.MARKET_PRICE,TABLE.SEND_NUMBER,TABLE.GOODS_IMG).from(TABLE)
+			.where(TABLE.ORDER_SN.in(orderSns))
+			.fetchGroups(TABLE.ORDER_SN,OrderGoodsMpVo.class);
+	}
+
 	/**
 	 *	计算子订单商品数量(主订单返回的map->size=0)
 	 * @param goods
@@ -336,7 +348,7 @@ public class OrderGoodsService extends ShopBaseService{
                 //限时降价
                 type.add(OrderConstant.GOODS_TYPE_REDUCE_PRICE);
             }
-            if(bo.getFirstSpecialId() != null){
+            if(!NumberUtils.INTEGER_ZERO.equals(bo.getFirstSpecialId())){
                 //首单特惠
                 type.add(OrderConstant.GOODS_TYPE_FIRST_SPECIAL);
             }

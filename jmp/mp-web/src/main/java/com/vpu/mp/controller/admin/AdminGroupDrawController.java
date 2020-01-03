@@ -73,9 +73,9 @@ public class AdminGroupDrawController extends AdminBaseController {
     /**
      * 编辑活动 - 更新
      */
-    @PostMapping("/update/{id}")
-    public JsonResult updateGroupDraw(@PathVariable Integer id, @RequestBody @Valid GroupDrawUpdateParam param) {
-        shop().groupDraw.updateGroupDraw(id, param);
+    @PostMapping("/update")
+    public JsonResult updateGroupDraw(@RequestBody @Valid GroupDrawUpdateParam param) {
+        shop().groupDraw.updateGroupDraw(param);
         return success();
     }
 

@@ -1,9 +1,3 @@
-/*
-drop database if exists jmini_main;
-create database jmini_main default charset utf8mb4 ;
-use jmini_main;
-*/
--- ddd
 --
 ##商家账户系统
 #drop table if exists `b2c_shop_account`;
@@ -320,7 +314,7 @@ create table `b2c_mp_auth_shop`
     `is_auth_ok`             tinyint(1)            default 1 comment '是否授权成功,如果小程序后台取消授权，则为0',
     `last_auth_time`         timestamp    null     default null comment '最后成功授权的时间',
     `last_cancel_auth_time`  timestamp    null     default null comment '最后取消授权的时间',
-    `create_time`            timestamp             default now(),
+    `create_time`            timestamp             default current_timestamp,
     `qrcode_url`             varchar(191) comment '二维码图片的URL',
     `open_pay`               tinyint(1)            default 0 comment '是否开头微信支付',
     `open_card`              tinyint(1)            default 0 comment '是否开通微信卡券功能',
@@ -346,8 +340,8 @@ create table `b2c_mp_auth_shop`
     `category`               text comment '小程序可选类目,json存储',
     `page_cfg`               text comment '小程序页面配置,json存储',
     `principal_name`         varchar(191) not null default '' comment '小程序的主体名称',
-    `bind_open_app_id`       varchar(191) not null comment '' comment '绑定开放平台appId',
-    `link_official_app_id`   varchar(191) not null comment '' comment '关联公众号appId，用于发送模板消息',
+    `bind_open_app_id`       varchar(191) not null default '' comment '绑定开放平台appId',
+    `link_official_app_id`   varchar(191) not null default '' comment '关联公众号appId，用于发送模板消息',
     `is_sub_merchant`        tinyint(1)   not null default 0 comment '子商户模式,0：非子商户 1：微铺宝子商户 2：通联支付子商户',
     `union_pay_app_id`       varchar(191) not null default '' comment '通联支付子商户appId',
     `union_pay_cus_id`       varchar(191) not null default '' comment '通联支付子商户商户号',
@@ -377,7 +371,7 @@ create table `b2c_mp_official_account`
     `is_auth_ok`            tinyint(1)            default 1 comment '是否授权成功,如果公众号后台取消授权，则为0',
     `last_auth_time`        timestamp    null     default null comment '最后成功授权的时间',
     `last_cancel_auth_time` timestamp    null     default null comment '最后取消授权的时间',
-    `create_time`           timestamp             default now(),
+    `create_time`           timestamp             default current_timestamp,
     `open_pay`              tinyint(1)            default 0 comment '是否开头微信支付',
     `open_card`             tinyint(1)            default 0 comment '是否开通微信卡券功能',
     `authorizer_info`       text comment '授权者信息,json存储',
@@ -388,7 +382,7 @@ create table `b2c_mp_official_account`
     `pay_key_content`       text comment '支付私钥内容',
     `principal_name`        varchar(191)          default '' comment '公众号的主体名称',
     `account_type`          tinyint(1)   not null default '0' comment '公众号类型：0 订阅号, 1微信认证订阅号 2 服务号, 3微信认证服务号',
-    `bind_open_app_id`      varchar(191) comment '' comment '绑定开放平台appId',
+    `bind_open_app_id`      varchar(191) default '' comment '绑定开放平台appId',
     `sys_id`                int(11)      not null default '0' comment '系统账户ID',
     `qrcode_url`            varchar(500) null     default null comment '二维码图片的URL',
     primary key (`app_id`),
@@ -419,20 +413,6 @@ create table `b2c_mp_official_account_user`
     key (`sys_id`),
     key (`unionid`)
 );
-
-
-/*
- k='alipay_pay_fee_rate'  v=0.006
- k='bank_pay_fee_rate' v=0.006
- k='alipay_wd_fee_rate' v=0.0015
- k='alipay_pay_least' v=2
- k='alipay_pay_max' v=25
- k='alipay_can_wd_least' v=1
- k='alipay_wd_frequency_per_day' v=10000
- k='bank_can_wd_least' v=1
- k='bank_wd_frequency_per_day' v=10000
- k='wxpay_ds_pay_fee_rate' v=0.006
-*/
 #drop table if exists `b2c_system_cfg`;
 create table `b2c_system_cfg`
 (
@@ -608,9 +588,9 @@ create table `b2c_mp_operate_log`
   `app_id` varchar(191) NOT NULL DEFAULT '' COMMENT '小程序app_id',
   `template_id` int(11) NOT NULL COMMENT '小程序模板Id',
   `operate_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作类型',
-  `memo` text  COMMENT '操作日志',
+  `memo` text COMMENT '操作日志',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
-  `memo_id` varchar(100)  NOT NULL,
+  `memo_id` varchar(100) NOT NULL,
   `memo_list` varchar(100) NOT NULL,
   `operate_state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作状态:1成功 2失败',
   PRIMARY KEY (`operate_id`),
@@ -1710,9 +1690,9 @@ create table `b2c_user_summary_trend`
 -- drop table if exists `b2c_mp_user_portrait`;
 CREATE TABLE `b2c_mp_user_portrait` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ref_date` char(30)  NOT NULL COMMENT '时间： 如： "20180313"',
-  `visit_uv_new` longtext  COMMENT '新用户',
-  `visit_uv` longtext  COMMENT '活跃用户',
+  `ref_date` char(30) NOT NULL COMMENT '时间： 如： "20180313"',
+  `visit_uv_new` longtext COMMENT '新用户',
+  `visit_uv` longtext COMMENT '活跃用户',
   `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0:昨天，1：最近7天，2:30天',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -1832,7 +1812,6 @@ CREATE TABLE `b2c_task_job_content`
 );
 
 -- 定时任务定义表
-drop table if exists `b2c_cron_define`;
 CREATE TABLE `b2c_cron_define` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `class_name` varchar(128) NOT NULL COMMENT '定时任务完整类名',
@@ -1845,10 +1824,9 @@ CREATE TABLE `b2c_cron_define` (
     `update_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `cron_key` (`class_name`)
-) COMMENT='定时任务定义表';
+);
 
 -- 定时任务执行结果记录表（只记录执行失败的记录）
-drop table if exists `b2c_cron_record`;
 CREATE TABLE `b2c_cron_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `cron_id` int(11) NOT NULL COMMENT '定时任务id',
@@ -1858,5 +1836,5 @@ CREATE TABLE `b2c_cron_record` (
     `update_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_id` (`cron_id`)
-) COMMENT='定时任务执行结果记录表';
+);
 

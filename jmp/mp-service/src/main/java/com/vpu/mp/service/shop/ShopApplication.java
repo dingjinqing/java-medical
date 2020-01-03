@@ -56,6 +56,7 @@ import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import com.vpu.mp.service.shop.market.presale.PreSaleOrderService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
@@ -354,6 +355,11 @@ public class ShopApplication {
 	 * 我要送礼
 	 */
 	@Autowired public GiveGiftService giveGift;
+	/**
+	 * 奖品记录
+	 */
+	@Autowired
+	public PrizeRecordService prizeRecord;
     /**
      * 定金膨胀
      */

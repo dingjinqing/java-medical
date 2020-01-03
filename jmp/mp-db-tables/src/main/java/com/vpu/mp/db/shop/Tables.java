@@ -21,6 +21,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_prize_record</code>.
+     */
+    public static final PrizeRecord PRIZE_RECORD = com.vpu.mp.db.shop.tables.PrizeRecord.PRIZE_RECORD;
     /**
      * The table <code>mini_shop_4748160.b2c_pay_award_prize</code>.
      */

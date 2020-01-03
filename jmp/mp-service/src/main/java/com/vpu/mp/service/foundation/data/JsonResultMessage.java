@@ -753,4 +753,9 @@ public class JsonResultMessage {
     public static final String WX_MA_GROUP_BUY_DOC_PERSON_NUM = "wx.ma.group.buy.doc.person.num";
     /** 推荐给你 */
     public static final String WX_MA_GROUP_BUY_DOC_RECOMMEND_TO_YOU="wx.ma.group.buy.doc.recommend.to.you";
+    /** 砍价 */
+    public static final String  WX_MA_BARGAIN_DOC="wx.ma.bargain.doc";
+    /** 砍走*/
+    public static final String WX_MA_BARGAIN_TAKE = "wx.ma.bargain.take";
+
 }
