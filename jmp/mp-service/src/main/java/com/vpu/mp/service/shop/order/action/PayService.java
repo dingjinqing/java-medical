@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
@@ -210,6 +211,9 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         //库存销量
         atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
         //TODO 异常订单处理等等
+
+        // 订单生效时营销活动后续处理
+        processOrderEffective(orderInfo, orderInfo);
     }
 
     /**
@@ -221,6 +225,34 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             //TODO 小程序消息推送
         });
 
+    }
+
+    /**
+     *  支付活动
+     * @param param
+     * @param orderInfo
+     * @throws MpException
+     */
+    private void processOrderEffective(OrderInfoRecord param, OrderInfoRecord orderInfo) throws MpException {
+        if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
+            return;
+        }
+        String[] strings = OrderInfoService.orderTypeToArray(orderInfo.getGoodsType());
+        List<Byte> activityTypeList = Arrays.stream(strings).map(Byte::valueOf).collect(Collectors.toList());
+        Byte activityType = OrderCreateMpProcessorFactory.SINGLENESS_ACTIVITY.stream().filter(activityTypeList::contains).findFirst().get();
+        OrderBeforeParam orderBeforeParam =new OrderBeforeParam();
+        orderBeforeParam.setActivityType(activityType);
+        orderBeforeParam.setActivityId(orderInfo.getActivityId());
+        orderBeforeParam.setDate(param.getCreateTime());
+        orderBeforeParam.setGoods(new ArrayList<>());
+        List<GoodsRecord> goodsList = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
+        Map<Integer, OrderBeforeParam.Goods> orderGoodsMap = orderGoodsService.getOrderGoods(orderInfo.getOrderSn()).intoMap(OrderGoods.ORDER_GOODS.GOODS_ID, OrderBeforeParam.Goods.class);
+        goodsList.forEach(goods->{
+            OrderBeforeParam.Goods goodsParam = orderGoodsMap.get(goods.getGoodsId());
+            goodsParam.setGoodsInfo(goods);
+            orderBeforeParam.getGoods().add(goodsParam);
+        });
+        marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
     }
 
 

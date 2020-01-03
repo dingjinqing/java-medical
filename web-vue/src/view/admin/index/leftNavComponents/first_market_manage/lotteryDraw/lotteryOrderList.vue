@@ -1,0 +1,223 @@
+<template>
+  <div class="content">
+
+    <div class="main">
+      <marketOrderSearchTab
+        :requestParams="requestParams"
+        @filter="initDataList"
+        @export="exportDataList"
+      />
+    </div>
+
+    <div class="table_list">
+      <el-table
+        class="version-manage-table"
+        header-row-class-name="tableClss"
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          label="订单号"
+          prop="orderSn"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="活动商品"
+          prop="goodsName"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="是否成团"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.grouped === true">是</span>
+            <span v-if="scope.row.grouped === false">否</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="收货人信息"
+          prop="consigneeRealName"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          label="是否中奖"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.isWinDraw === true">是</span>
+            <span v-if="scope.row.isWinDraw === false">否</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="下单时间"
+          prop="createTime"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="抽奖码数量"
+          prop="codeCount"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="订单状态"
+          prop="orderStatusName"
+          align="center"
+        ></el-table-column>
+      </el-table>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
+    </div>
+
+  </div>
+</template>
+<script>
+// 引入组件
+import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
+import pagination from '@/components/admin/pagination/pagination.vue'
+import { orderLotteryList } from '@/api/admin/marketManage/lotteryDraw.js'
+export default {
+
+  components: {
+    marketOrderSearchTab,
+    pagination
+  },
+  data () {
+    return {
+      loading: false,
+      pageParams: {},
+      requestParams: {},
+      tableData: [],
+      // 订单状态
+      orderStatusArr: {
+        null: '全部订单',
+        1: '待付款',
+        2: '订单取消',
+        3: '订单关闭',
+        4: '代发货/待核销',
+        5: '已发货',
+        6: '已收货/已自提',
+        7: '订单完成',
+        8: '退货中',
+        9: '退货完成',
+        10: '退款中',
+        11: '退款完成',
+        12: '送礼完成'
+      },
+      createTime: '' // 创建时间
+    }
+  },
+  watch: {
+    lang () {
+      this.initDataList()
+    }
+  },
+  mounted () {
+    if (this.$route.query.id > 0) {
+      this.initDataList()
+    }
+  },
+  methods: {
+    initDataList () {
+      this.loading = true
+      this.requestParams.groupDrawId = this.$route.query.id
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      orderLotteryList(this.requestParams).then((res) => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          // this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+          this.loading = false
+        }
+      })
+    },
+
+    // 表格数据处理
+    handleData (data) {
+      console.log('订单状态', this.orderStatusArr)
+
+      data.forEach(item => {
+        item.orderStatusText = this.orderStatusArr[item.orderStatus]
+        item.name = this.$route.query.name
+        item.goods.forEach(val => {
+          item.goodsPrice = val.goodsPrice
+          item.goodsName = val.goodsName
+        })
+      })
+      this.tableData = data
+    },
+
+    getOrderStatusText (index) {
+      this.orderStatus.forEach(item => {
+        if (item.value === index) {
+          return item.label
+        }
+      })
+    },
+
+    // 导出数据
+    exportDataList () {
+      this.$confirm('此操作将导出数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message.success({ message: '导出成功' })
+      }).catch(() => {
+        this.$message.info({ message: '已取消导出' })
+      })
+    }
+
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  .main {
+    position: relative;
+    background-color: #fff;
+    padding: 15px;
+    .wrapper {
+      .el-button {
+        margin-left: 5px;
+      }
+    }
+  }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.table_list {
+  position: relative;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 15px;
+}
+.inputWidth {
+  width: 175px;
+}
+.el-form-item {
+  margin-bottom: 1px;
+}
+.el-row {
+  margin-bottom: 14px !important;
+}
+.el-main {
+  padding: inherit;
+}
+</style>

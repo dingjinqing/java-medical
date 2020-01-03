@@ -25,6 +25,12 @@ public class RemarkMessage {
 	public static final String MSG_ORDER_CANCEL_SCORE_ACCOUNT = "order.cancel.score.account";
 	public static final String MSG_ORDER_RETURN_SCORE_ACCOUNT = "order.return.score.account";
 	public static final String MSG_ORDER_STORE_SCORE = "order.store.score";
+	public static final String MSG_ORDER_CANCEL_RETURN_CARD_ACCOUNT="order.cancel.return.card.account";
+	public static final String MSG_ORDER_CLOSE_RETURN_CARD_ACCOUNT="order.close.return.card.account";
+	public static final String MSG_ORDER_MAKE_CARD_ACCOUNT_PAY = "order.make.card.account.pay";
+	public static final String MSG_ORDER_RETURN_CARD_ACCOUNT = "order.return.card.account";
+	public static final String MSG_ORDER_VIRTUAL_RETURN_DEFAULT = "order.virtual.return.default";
+	
 	/**
 	 * 会员卡
 	 */

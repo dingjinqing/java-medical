@@ -146,7 +146,8 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		cardId(order.getCardId()).
 		cardNo(order.getCardNo()).
 		money(money).
-		reason("订单关闭，订单会员卡余额支付退款").
+		//reason("订单关闭，订单会员卡余额支付退款").
+		reasonId(RemarkTemplate.ORDER_CLOSE_RETURN_CARD_ACCOUNT.code).
 		//普通会员卡
 		type(CardConstant.MCARD_TP_NORMAL).
 		orderSn(order.getOrderSn()).

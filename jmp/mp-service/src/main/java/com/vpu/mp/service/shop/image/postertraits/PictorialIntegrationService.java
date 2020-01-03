@@ -48,7 +48,12 @@ public class PictorialIntegrationService extends ShopBaseService {
         return bargainPictorialService.getBargainShareInfo(param);
     }
 
-    public void getBargainPictorialInfo(BargainShareInfoParam param) {
-
+    /**
+     * 砍价还报下载
+     * @param param 拼团活动信息
+     * @return base64图片信息
+     */
+    public String getBargainPictorialInfo(BargainShareInfoParam param) {
+        return bargainPictorialService.getBargainPictorialInfo(param);
     }
 }

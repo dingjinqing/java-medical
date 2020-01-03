@@ -142,7 +142,8 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 		cardId(order.getCardId()).
 		cardNo(order.getCardNo()).
 		money(money).
-		reason("订单取消，订单会员卡余额支付退款").
+//		reason("订单取消，订单会员卡余额支付退款").
+		reasonId(RemarkTemplate.ORDER_CANCEL_RETURN_CARD_ACCOUNT.code).
 		//普通会员卡
 		type(CardConstant.MCARD_TP_NORMAL).
 		orderSn(order.getOrderSn()).

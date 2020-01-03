@@ -7,7 +7,7 @@ export function download (data, fileName) {
   let link = document.createElement('a')
   link.style.display = 'none'
   link.href = url
-  link.setAttribute('download', fileName)
+  link.setAttribute('download', decodeURI(fileName))
 
   document.body.appendChild(link)
   link.click()
