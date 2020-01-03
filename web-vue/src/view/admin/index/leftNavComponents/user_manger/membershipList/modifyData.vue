@@ -141,35 +141,50 @@ export default {
       })
     },
     submitCardChargeConsume (type) {
+      let commonAttr = {
+        reduce: this.inputValue,
+        userId: this.model.userId,
+        cardId: this.model.cardId,
+        cardNo: this.model.cardNo,
+        message: this.desc,
+        cardType: this.model.cardType,
+        type: type
+      }
       let obj = null
-      console.log(typeof type, type)
       switch (type) {
         case 0:
           // 卡余额
           obj = {
-            moneyDis: this.model.presentText,
-            reduce: this.inputValue,
-            userId: this.model.userId,
-            cardId: this.model.cardId,
-            cardNo: this.model.cardNo,
-            message: this.desc,
-            cardType: this.model.cardType
+            ...commonAttr,
+            moneyDis: this.model.presentText
           }
           break
         case 1:
           // 兑换商品次数
-
+          obj = {
+            ...commonAttr,
+            countDis: this.model.presentText
+          }
           break
         case 2:
           // 兑换门店次数
-
+          obj = {
+            ...commonAttr,
+            countDis: this.model.presentText
+          }
           break
         default:
           break
       }
+
+      console.log(obj)
       // 会员卡余额，兑换次数
       chargeConsume(obj).then(res => {
-
+        if (res.error === 0) {
+          this.success()
+        } else {
+          this.fail()
+        }
       })
     },
     success () {

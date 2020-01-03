@@ -3,7 +3,7 @@
     <view class='once_img' wx:if='{{m.image_type == 0}}' style='margin-bottom:{{m.margin_bot}}rpx'>
       <view class='each_once' wx:for='{{m.image_list}}' style='margin-bottom:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}"  wx:if='{{item.no_show != 1}}'>
         <view style='position:relative;overflow:hidden'>
-          <image src='{{item.image}}!big?v=1' mode='widthFix'  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
           <view class='once_title' wx:if="{{item.title}}">
             <text>{{item.title}}</text>
           </view>
@@ -15,7 +15,7 @@
     <view class='two_img' wx:if='{{m.image_type == 1}}' style='margin-bottom:{{m.margin_bot}}rpx'>
       <view class='each_two' wx:for='{{m.image_list}}' style='margin-bottom:{{m.image_space}}rpx;width:{{m.each_width}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}"  wx:if='{{item.no_show != 1}}'>
         <view style='position:relative;overflow:hidden'>
-          <image src='{{item.image}}!big?v=1' mode='widthFix'  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
           <view class='once_title' wx:if="{{item.title}}">
             <text>{{item.title}}</text>
           </view>
@@ -26,8 +26,8 @@
     <!-- 横向（大） -->
     <scroll-view scroll-x='true' class='slide_big' wx:if='{{m.image_type == 2}}' style='margin-bottom:{{m.margin_bot}}rpx'>
       <view class='each_big' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}" wx:if='{{item.no_show != 1}}'>
-        <view style='position:relative;overflow:hidden'>
-          <image src='{{item.image}}!big?v=1' mode='widthFix'  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+        <view class="view" style='position:relative;overflow:hidden'>
+          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
           <view class='once_title' wx:if="{{item.title}}">
             <text>{{item.title}}</text>
           </view>
@@ -39,7 +39,7 @@
     <scroll-view scroll-x='true' class='slide_small' wx:if='{{m.image_type == 3}}' style='margin-bottom:{{m.margin_bot}}rpx'>
       <view class='each_small' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}" wx:if='{{item.no_show != 1}}'>
         <view style='position:relative;overflow:hidden;max-height:100%'>
-          <image src='{{item.image}}!big?v=1' mode='widthFix'  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
           <view class='once_title' wx:if="{{item.title}}">
             <text>{{item.title}}</text>
           </view>
@@ -53,7 +53,7 @@
       <scroll-view scroll-x='true' class='slide_nav'>
         <view class='each_nav' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}">
           <view style='position:relative;overflow:hidden;max-height:100%'>
-            <image src='{{item.image}}!big?v=1' mode='widthFix'  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+            <image src='{{item.image}}!big?v=1' mode='widthFix' class="image" data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
             <view class='once_title' wx:if="{{item.title}}">
               <text>{{item.title}}</text>
             </view>
