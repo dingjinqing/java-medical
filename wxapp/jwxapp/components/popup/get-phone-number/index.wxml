@@ -6,7 +6,7 @@
       <text>{{content}}</text>
     </view>
     <view class="popup-buttons">
-      <button open-type="getPhoneNumber" bindgetphonenumber="bindGetPhoneNumber">去绑定手机号</button>
+      <button open-type="getPhoneNumber" class="button" bindgetphonenumber="bindGetPhoneNumber">去绑定手机号</button>
     </view>
   </view>
 </v-popup>

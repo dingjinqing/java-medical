@@ -137,7 +137,8 @@
     <view class='kanjia_person' wx:if='{{bargain_info.recordUserList.length > 0}}'>
       <view class='list_title'>
         <view class='neirong'>砍价记录</view>
-        <view class='btn_more' bindtap='go_list' wx:if='{{bargain_info.recordUserList.length >= 20}}'>
+        <!-- <view class='btn_more' bindtap='go_list' wx:if='{{bargain_info.recordUserList.length >= 20}}'> -->
+        <view class='btn_more' bindtap='go_list'>
           查看更多
           <image src='{{imageUrl}}image/wxapp/backward_right.png' mode='widthFix'></image>
         </view>
@@ -192,18 +193,18 @@
             <text>{{cut_money}}</text>元，</view>
           <view class='sentence2'>一起来{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物吧~</view>
           <block wx:if="{{ getsq == true || click_num ==true }}">
-          <view class='but_invite has_btn' bindtap='toWhere' wx:if='{{bargain_info.state != 6}}'>
-            我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物
-          </view>
+            <view class='but_invite has_btn' bindtap='toWhere' wx:if='{{bargain_info.state != 6}}'>
+              我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物
+            </view>
           </block>
           <block wx:else>
-             <button class='but_invite has_btn' data-kj="{{1}}"  open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if='{{bargain_info.state != 6}}'>
-            我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物
-          </button>
+            <button class='but_invite has_btn' data-kj="{{1}}"  open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if='{{bargain_info.state != 6}}'>
+              我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物
+            </button>
           </block>
 
           <view class='but_invite has_btn' bindtap='toIndex' wx:if='{{bargain_info.state == 6}}'>
-            {{bargain_info.record_status.msg}}，随便逛逛
+            商品已抢光，随便逛逛
           </view>
         </view>
         <view class='btn_close' bindtap='guan1'>

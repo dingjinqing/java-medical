@@ -68,6 +68,8 @@ global.wxComponent({
       } else if (giftInfo.giftType === 2 && this.hasGift(giftInfo)){
         DialogClass = 'split'
         DialogStyle = 'background:#fb645e;border-radius:0'
+      } else if (giftInfo.giftType === 3 && this.hasGift(giftInfo)){
+        DialogStyle = 'background:#FC644A url('+this.data.imageUrl+'image/wxapp/index_lottery.png) no-repeat left top / 100%;'
       }
       this.setData({
         DialogClass,
@@ -76,6 +78,21 @@ global.wxComponent({
     },
     goCustomLink(e){
       util.jumpLink(e.currentTarget.dataset.link,'navigateTo')
+    },
+    confirm(){
+      if(this.data.giftInfo.giftType === 3){
+        this.goLottery()
+      } else if(this.data.giftInfo.giftType === 2){
+        this.shareCoupon()
+      } else {
+        this.bindClose()
+      }
+    },
+    goLottery(){
+      util.jumpLink('TODO','navigateTo')
+    },
+    shareCoupon(){
+      this.triggerEvent('TODO')
     }
   }
 });

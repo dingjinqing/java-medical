@@ -41,8 +41,8 @@ public class ModuleGoods extends ModuleBase {
     @JsonProperty("goods_display")
     private Byte goodsDisplay;
 
-    @JsonProperty("goods_items")
-    private List<Integer> goodsItems;
+//    @JsonProperty("goods_items")
+//    private List<Integer> goodsItems;
 
     @JsonProperty("goods_module_bg")
     private Byte goodsModuleBg;

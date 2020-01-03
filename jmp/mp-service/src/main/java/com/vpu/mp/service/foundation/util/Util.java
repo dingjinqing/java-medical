@@ -11,9 +11,11 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
+import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.tools.Convert;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -54,8 +56,10 @@ import static java.util.stream.Collectors.toList;
 public class Util {
 
 	final protected static String UNDEER_LINE = "_";
+    private static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson LINE_GSON = new GsonBuilder().create();
 
-	public static String toJson(Object o) {
+    public static String toJson(Object o) {
         if (Objects.isNull(o)) {
             return StringUtils.EMPTY;
         }
@@ -71,6 +75,34 @@ public class Util {
 		}
 		return null;
 	}
+
+    /**
+     * To json enable null string.
+     *
+     * @param o the o
+     * @return the string
+     */
+    public static String toPrettyJson(Object o) {
+        if (Objects.isNull(o)) {
+            return StringUtils.EMPTY;
+        }
+        if (o instanceof UpdatableRecordImpl) {
+            return LINE_GSON.toJson(o);
+        }
+        return PRETTY_GSON.toJson(o);
+    }
+
+    /**
+     * String list 2 int list list.
+     *
+     * @param source the source
+     * @return the list
+     */
+    public static List<Integer> stringList2IntList(List<String> source) {
+        List<Integer> target = new ArrayList<>();
+        CollectionUtils.collect(source, Integer::valueOf, target);
+        return target;
+    }
 
 	/**
 	 *  对象转json忽略null字段
