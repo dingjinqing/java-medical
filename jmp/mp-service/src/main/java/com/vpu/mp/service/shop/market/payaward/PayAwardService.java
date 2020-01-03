@@ -403,8 +403,8 @@ public class PayAwardService extends ShopBaseService {
                 break;
             case GIVE_TYPE_GOODS:
                 logger().info("奖品");
-                ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(Integer.valueOf(payAwardRecord.getSendData()));
-                prizeVo.setProduct(product);
+//                ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(Integer.valueOf(payAwardRecord.getSendData()));
+//                prizeVo.setProduct(product);
                 prizeVo.setProductId(Integer.parseInt(payAwardRecord.getAwardData()));
                 prizeVo.setKeepDays(payAwardRecord.getKeepDays());
                 break;

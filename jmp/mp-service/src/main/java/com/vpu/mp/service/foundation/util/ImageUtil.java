@@ -31,7 +31,7 @@ public final class ImageUtil {
      * @return
      */
     public static BufferedImage resizeImage(int width, int height, BufferedImage bufferedImage) {
-        BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         newBufferedImage.getGraphics().drawImage(bufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0,
             0, null);
         return newBufferedImage;

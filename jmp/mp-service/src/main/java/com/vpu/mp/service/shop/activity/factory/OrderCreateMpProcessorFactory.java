@@ -43,7 +43,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     );
 
     /**
-     * 全局的活动  支付有礼
+     * 单一营销 排他性
      */
     public final static List<Byte> SINGLENESS_ACTIVITY = Arrays.asList(
             BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
@@ -128,43 +128,24 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 库存修改
+     * 订单生效后（微信支付、其他支付、货到付款等）的营销后续处理（库存、活动状态相关）
      * @param param
+     * @param order
      * @throws MpException
      */
-    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
-        if (param.getActivityId()!=null){
-            //单一营销
-            processorMap.get(param.getActivityType()).processStockAndSales(param, order);
-        }else {
-            for (CreateOrderProcessor processor : processorGeneralList) {
-                processor.processStockAndSales(param, order);
-            }
-        }
-        for (CreateOrderProcessor processor : processorGlobalList) {
-            //全局活动
-            processor.processStockAndSales(param, order);
-        }
-    }
-
-    /**
-     * 支付完成（订单生效后的回调）
-     * @param param
-     * @throws MpException
-     */
-    public void processPayCallback(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+    public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
         if (param.getActivityId()!=null){
             //单一营销
             // 可能有：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
-            processorMap.get(param.getActivityType()).processPayCallback(param, order);
+            processorMap.get(param.getActivityType()).processOrderEffective(param, order);
         }else {
             for (CreateOrderProcessor processor : processorGeneralList) {
-                processor.processPayCallback(param, order);
+                processor.processOrderEffective(param, order);
             }
         }
         for (CreateOrderProcessor processor : processorGlobalList) {
             //全局活动
-            processor.processPayCallback(param, order);
+            processor.processOrderEffective(param, order);
         }
     }
 }

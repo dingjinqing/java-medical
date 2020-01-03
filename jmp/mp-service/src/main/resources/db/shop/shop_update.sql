@@ -1459,7 +1459,6 @@ MODIFY COLUMN `lottery_id` int(11)  DEFAULT NULL COMMENT '抽奖id';
 ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `exchang_count` int(11) DEFAULT NULL COMMENT '允许商品兑换次数' AFTER `exchang_freight`;
 
-<<<<<<< HEAD
 ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `count` int(11) DEFAULT NULL COMMENT '允许门店兑换次数' AFTER `store_list`;
 
@@ -1481,9 +1480,31 @@ create table `b2c_trades_record_summary`
     primary key (`id`),
     unique index date_type (`ref_date`, `type`)
 );
+-- 我的奖品记录
+-- DROP TABLE IF EXISTS `b2c_prize_record`;
+CREATE TABLE `b2c_prize_record`
+(
+    `id`            INT(11)     NOT NULL auto_increment,
+    `user_id`       INT(10)     NOT NULL COMMENT '用户编号',
+    `activity_id`   INT(10)     NOT NULL COMMENT '活动id',
+    `record_id`     INT(10)     NOT NULL COMMENT '活动记录id',
+    `activity_type` TINYINT(1)  NOT NULL DEFAULT '0' COMMENT '奖品来源 0幸运大抽奖，1好友助力，2测评 3支付有礼',
+    `prd_id`        INT(10)     NOT NULL DEFAULT '0' COMMENT '商品（规格）编号',
+    `order_sn`      VARCHAR(60) NOT NULL DEFAULT '' COMMENT '关联订单',
+    `prize_status`  TINYINT(1)  NOT NULL DEFAULT '0' COMMENT '赠品状态:0.待领取，1：已领取，2.已过期',
+    `expired_day`   INT(10)              DEFAULT '7' NULL COMMENT '赠品过期时间',
+    `expired_time`  TIMESTAMP            DEFAULT CURRENT_TIMESTAMP NULL COMMENT '赠品过期时间',
+    `create_time`   TIMESTAMP            DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   TIMESTAMP            DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`)
+);
 ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `count` int(11) DEFAULT NULL COMMENT '允许门店兑换次数' AFTER `store_list`;
 -- 王帅 快递公司表增加快递100code
 
 ALTER TABLE `b2c_shipping`
 ADD COLUMN `express100_code` VARCHAR(20) DEFAULT '' NOT NULL COMMENT '快递100code' AFTER `shipping_code`;
+
+-- 删除无用字段
+ALTER TABLE `b2c_coopen_activity`
+DROP COLUMN`bg_imgs`;
