@@ -59,13 +59,11 @@
         <div
           class="list"
           style="margin-top:20px"
+          v-if="data.module_bg==='1'"
         >
           <span></span>
           <div class="add_bgs">
-            <div style="color: #5a8bff;margin: 27px 0 5px 0;"><img
-                src="http://mpdevimg2.weipubao.cn/image/admin/icon_jia.png"
-                alt=""
-              >添加一个背景图</div>
+            <div style="color: #5a8bff;margin: 27px 0 5px 0;"><img :src="$imageHost+'/image/admin/icon_jia.png'">添加一个背景图</div>
             <div style="color: #999;font-size: 12px">建议宽度720像素以内，高度300像素以内</div>
             <img
               class="pin_ig"
@@ -128,6 +126,11 @@
       </div>
       <!--模块私有end-->
     </div>
+    <ImageDalog
+      pageIndex='pictureSpace'
+      :imageSize="[720,330]"
+      :tuneUp="tuneUp"
+    />
   </div>
 </template>
 <script>
@@ -135,6 +138,9 @@ export default {
   props: {
     modulesData: Object, // 模块公共
     sortIndex: Number // 模块公共
+  },
+  components: {
+    ImageDalog: () => import('@/components/admin/imageDalog') // 添加图片弹窗
   },
   data () {
     var validatePass = (rule, value, callback) => {
@@ -182,7 +188,8 @@ export default {
       }],
       data: {
 
-      }
+      },
+      tuneUp: false // 添加图片弹窗flag
     }
   },
   watch: {
