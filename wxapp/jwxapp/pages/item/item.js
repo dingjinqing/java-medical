@@ -397,7 +397,6 @@ global.wxPage({
         defaultData.linePrice.push(prdLinePrice)
         return defaultData
     },{realPrice:[],linePrice:[]})
-    console.log(realPrice,linePrice)
     return {
       prdRealPrice:data.defaultPrd ? realPrice[0] : `${this.getMin(realPrice)}~${this.getMax(realPrice)}`,
       prdLinePrice:data.defaultPrd ? linePrice[0] : `${this.getMin(linePrice)}~${this.getMax(linePrice)}`

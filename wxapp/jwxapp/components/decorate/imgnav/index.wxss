@@ -16,7 +16,7 @@
   justify-content: center;
 }
 
-.imgnav-container image {
+.imgnav-container .image {
   width: 100rpx;
   height: 100rpx;
   display: block;
@@ -27,6 +27,6 @@
   border-radius: 50%;
 }
 
-.imgnav-item text {
+.imgnav-item .text {
   font-size: 28rpx;
 }
