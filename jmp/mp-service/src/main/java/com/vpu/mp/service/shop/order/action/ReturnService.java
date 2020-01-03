@@ -118,17 +118,17 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY).equals(param.getReturnOperate())){
            //非提交物流、非撤销校验
             if(param.getReturnMoney() == null){
-                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY);
+                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY, null);
             }
             if(param.getShippingFee() == null){
-                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE);
+                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE, null);
             }
         }
 		//获取订单详情
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
             logger.error("退款退货执行异常，订单不存在");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		//result
         ExecuteResult result = ExecuteResult.create();
@@ -228,13 +228,13 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		} catch (DataAccessException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
-				return ExecuteResult.create(((MpException) cause).getErrorCode());
+				return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getCodeParam());
 			} else {
-				return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, e.getMessage());
 			}
 		} catch (Exception e) {
 			logger.error("退款捕获mp异常", e);
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, null);
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
@@ -579,7 +579,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			}
 			if(OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()) {
 				//待发货
-				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
+				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && products.get(rGoods.getProductId()) != null) {
 					//待发货+规格库存
 					GoodsSpecProductRecord product = products.get(rGoods.getProductId());
 					product.setPrdNumber(product.getPrdNumber() + rGoods.getGoodsNumber());
@@ -588,13 +588,14 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					//待发货+商品库存
 					GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
 					goods.setGoodsNumber(goods.getGoodsNumber() + rGoods.getGoodsNumber());
+			    }
+                //销量修改
+                GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
+                if(goods != null){
+                    goods.setGoodsSaleNum(goods.getGoodsSaleNum() - rGoods.getGoodsNumber());
+                    updateNormalGoods.add(goods);
+                }
 			}
-			//销量修改
-			GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
-			goods.setGoodsSaleNum(goods.getGoodsSaleNum() - rGoods.getGoodsNumber());
-			updateNormalGoods.add(goods);
-			}
-			
 			//订单类型为拼团 且存在拼团id
 			if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_PIN_GROUP)) && order.getActivityId() != null) {
 				//TODO 拼团修改库存和销量
@@ -606,9 +607,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		if(updateNormalGoods.size() > 0) {
 			db().batchUpdate(updateNormalGoods);
 		}
-		
 	}
-	
+
 	/**
 	 * 	非仅退运费生成退款订单及校验
 	 * @param param

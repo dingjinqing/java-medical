@@ -66,10 +66,10 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 	public ExecuteResult execute(OrderOperateQueryParam param) {
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		if(!OrderOperationJudgment.isReceive(order)) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED, null);
 		}
 		
 		transaction(()->{

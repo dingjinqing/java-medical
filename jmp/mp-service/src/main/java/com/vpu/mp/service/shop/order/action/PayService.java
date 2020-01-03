@@ -96,10 +96,10 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     public ExecuteResult execute(PayParam param) {
         OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
         if (order == null) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
         }
         if (order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY, null);
         }
         //过期校验
         long currenTmilliseconds = Instant.now().toEpochMilli();
@@ -107,15 +107,15 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             //定金订单
             Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
             if (timeInterval.value1().getTime() < currenTmilliseconds) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START, null);
             }
             if (currenTmilliseconds > timeInterval.value2().getTime()) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
             }
         } else {
             //普通订单
             if (order.getExpireTime().getTime() < currenTmilliseconds) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
             }
         }
         //订单商品
@@ -204,17 +204,9 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         orderInfo.setPayTime(DateUtil.getSqlTimestamp());
         orderInfo.setPaySn(payRecord == null ? StringUtils.EMPTY : payRecord.getPaySn());
         orderInfo.update();
-        //TODO 更新拼团状态
 
         //订单商品
         List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
-        // 更新拼团状态
-        if (goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
-            GroupOrderVo byOrder = groupBuyListService.getByOrder(orderInfo.getOrderSn());
-            String goodsName =goods.get(0).getGoodsName();
-            String goodsPrice =goods.get(0).getGoodsPrice().toString();
-            groupBuyService.groupBuySuccess(orderInfo.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
-        }
         //库存销量
         atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
         //TODO 异常订单处理等等
@@ -230,5 +222,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         });
 
     }
+
+
 
 }

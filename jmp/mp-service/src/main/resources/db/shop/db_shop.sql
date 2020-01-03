@@ -768,6 +768,7 @@ create table `b2c_shipping`
 (
     `shipping_id`    tinyint(3)   not null auto_increment,
     `shipping_code`  varchar(20)  not null default '',
+    `express100_code` varchar(20)  not null default '' comment '快递100code',
     `shipping_name`  varchar(120) not null default '',
     `shipping_desc`  varchar(191) not null default '',
     `insure`         varchar(10)  not null default '0',

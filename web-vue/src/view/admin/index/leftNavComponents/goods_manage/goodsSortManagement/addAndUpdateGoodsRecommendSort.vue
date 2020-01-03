@@ -7,7 +7,7 @@
           <span class="mustInput">*</span>{{$t('goodsRecommendSorts.goodsSortName')}}：
         </div>
         <div class="formItemVal">
-          <el-input v-model="recommendSort.sortName" size="small"/>
+          <el-input v-model="recommendSort.sortName" size="small"  style="width: 170px;"/>
         </div>
       </div>
       <div class="formItem">
@@ -15,7 +15,9 @@
           {{$t('goodsRecommendSorts.goodsSortFirst')}}：
         </div>
         <div class="formItemVal">
-          <el-input v-model.number="recommendSort.firstBind"  @change="firstChanged" size="small"/>
+          <el-input-number
+            :min="1" :max="100" :step="1" step-strictly
+            v-model="recommendSort.firstBind"  @change="firstChanged" size="small"  style="width: 170px;"/>
         </div>
       </div>
       <div class="formItem">
@@ -278,6 +280,7 @@ export default {
   .content{
     margin: 20px 0px;
     padding-left: 30px;
+    font-size: 14px;
   }
   .formItem{
     display: flex;

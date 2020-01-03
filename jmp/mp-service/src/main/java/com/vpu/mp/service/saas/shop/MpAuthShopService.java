@@ -487,7 +487,7 @@ public class MpAuthShopService extends MainBaseService {
 			upMp.setAppId(appId);
 			upMp.setUploadState((byte) 1);
 			upMp.setBindTemplateId(templateId);
-			upMp.setLastAuthTime(Timestamp.valueOf(LocalDateTime.now()));
+			upMp.setLastUploadTime(Timestamp.valueOf(LocalDateTime.now()));
 			db().executeUpdate(upMp);
 		}
 		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result, WxContentTemplate.WX_UPLOAD_CODE_SUCCESS.code, new String[] {});

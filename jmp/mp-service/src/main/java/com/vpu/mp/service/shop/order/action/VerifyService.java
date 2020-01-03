@@ -66,11 +66,11 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		
 		if (!OrderOperationJudgment.isVerify(order)) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_OPERATION_NOT_SUPPORTED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_OPERATION_NOT_SUPPORTED, null);
 		}
 		
 		if(!order.getVerifyCode().equals(param.getVerifyCode()) && param.getIsCheck()) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_CODE_ERROR);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_CODE_ERROR, null);
 		}
 		//发货批次号,同一批次为同一快递
 		String batchNo = order.getOrderSn() + "_" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);

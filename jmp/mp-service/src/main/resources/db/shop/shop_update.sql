@@ -1461,3 +1461,6 @@ MODIFY COLUMN `exchang_count` int(11) DEFAULT NULL COMMENT '允许商品兑换�
 
 ALTER TABLE `b2c_member_card` 
 MODIFY COLUMN `count` int(11) DEFAULT NULL COMMENT '允许门店兑换次数' AFTER `store_list`;
+-- 王帅 快递公司表增加快递100code
+ALTER TABLE `b2c_shipping`
+ADD COLUMN `express100_code` VARCHAR(20) DEFAULT '' NOT NULL COMMENT '快递100code' AFTER `shipping_code`;

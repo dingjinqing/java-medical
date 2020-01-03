@@ -28,7 +28,6 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
-import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -253,10 +252,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     logger().info("加锁{}",order.getOrderSn());
                     atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
                     logger().info("更新成功{}",order.getOrderSn());
-
                     //营销活动支付回调
-                    marketProcessorFactory.processPayCallback(param,order);
                 }
+                marketProcessorFactory.processPayCallback(param,order);
             });
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
@@ -264,9 +262,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().error("下单捕获mp异常", e);
             Throwable cause = e.getCause();
             if (cause instanceof MpException) {
-                return ExecuteResult.create(((MpException) cause).getErrorCode(), null,  ((MpException) cause).getCodeParam());
+                return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getCodeParam());
             } else {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR, e.getMessage());
             }
         } catch (Exception e) {
             logger().error("下单捕获mp异常", e);
@@ -285,7 +283,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderAfterRecord.getOrderSn(), orderAfterRecord.getMoneyPaid(), orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
-            return ExecuteResult.create(e.getErrorCode());
+            return ExecuteResult.create(e.getErrorCode(), null);
         }
     }
 
