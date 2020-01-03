@@ -143,7 +143,7 @@ public class WxAppCardController extends WxAppBaseController {
 	@PostMapping(value="/api/wxapp/card/use")
 	public JsonResult cardConsume(@RequestBody @Validated CardUseListParam param) {
 		logger().info("会员卡使用记录");
-		UserCardMaParam useList = shop().user.wxUserCardService.getUseList(param);
+		UserCardMaParam useList = shop().user.wxUserCardService.getUseList(param,getLang());
 		if(useList==null) {
 			return fail(JsonResultCode.CODE_CARD_NO);
 		}

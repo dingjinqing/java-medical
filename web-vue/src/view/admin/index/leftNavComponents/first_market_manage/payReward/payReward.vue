@@ -55,6 +55,12 @@
           :label="$t('payReward.validDate')"
           align="center"
         >
+          <template slot-scope="scope">
+            <div v-if="scope.row.timeType === 1"> {{$t('marketCommon.permanent')}}</div>
+            <div v-else>
+              {{scope.row.startTime}}<br />{{$t('marketCommon.to')}}<br />{{scope.row.endTime}}
+            </div>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -233,13 +239,6 @@ export default {
     handleData (data) {
       this.param = Object.assign(data.page, this.param)
       this.tableData = data.dataList
-      data.dataList.map((item, index) => {
-        if (item.timeType === 1) {
-          item.vaildDate = this.$t('marketCommon.permanent')
-        } else {
-          item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
-        }
-      })
       this.tableData.map((item, index) => {
         item.statusText = this.getActStatusString(item.currentState)
       })

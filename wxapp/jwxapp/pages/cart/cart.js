@@ -22,6 +22,7 @@ global.wxPage({
     util.api('/api/wxapp/cart/list', (res) => {
       if (res.error === 0) {
         let { cartGoodsList: canBuyGoodsList = [], invalidCartList: invalidGoodsList = [], isAllCheck = null, totalPrice = null } = res.content || []
+        this.selectComponent('#recommend').requestData() //请求推荐商品
         this.setData({
           canBuyGoodsList,
           invalidGoodsList,
@@ -154,5 +155,8 @@ global.wxPage({
   // 列表无数据跳转
   toIndex(){
     util.jumpLink('pages/index/index','navigateTo')
-  }
+  },
+  onReachBottom: function () {
+    this.selectComponent('#recommend').requestData()
+  },
 })

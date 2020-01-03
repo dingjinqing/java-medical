@@ -27,8 +27,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
-import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
+import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
+import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -61,6 +61,7 @@ import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -128,19 +129,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private OrderPayService orderPay;
 
     @Autowired
-    private ProcessorFactoryBuilder processorFactoryBuilder;
-
-    @Autowired
     private AtomicOperation atomicOperation;
 
     @Autowired
     private CartService cart;
 
+    @Autowired
+    private GiftProcessor giftProcessor;
+
     /**
-     * 营销活动processorFactory (拼团)
+     * 营销活动processorFactory
      */
    @Autowired(required = false)
-    private OrderCreatePayBeforeMpProcessorFactory processorFactory;
+    private OrderCreateMpProcessorFactory marketProcessorFactory;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -193,7 +194,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //设置规格和商品信息、基础校验规格与商品
             processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
             //TODO 营销相关 活动校验或活动参数初始化
-            processorFactory.processInitCheckedOrderCreate(param);
+            marketProcessorFactory.processInitCheckedOrderCreate(param);
             if(null != param.getActivityId() && null != param.getActivityType()) {
                 //活动生成ordergodos;
                 orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
@@ -212,9 +213,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null,  e.getCodeParam());
         }
+        //生成orderSn
+        String orderSn = IncrSequenceUtil.generateOrderSn(OrderConstant.ORDER_SN_PREFIX);
         try{
-            //生成orderSn
-            String orderSn = IncrSequenceUtil.generateOrderSn(OrderConstant.ORDER_SN_PREFIX);
             //record入库
             transaction(()->{
                 //初始化订单（赋值部分数据）
@@ -223,46 +224,55 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 processNormalActivity(order, orderBo, orderBeforeVo);
                 //计算其他数据（需关联去其他模块）
                 setOtherValue(order, orderBo, orderBeforeVo);
-                //支付系统金额
-                orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //商品退款退货配置
                 calculate.setReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order);
                 //TODO exchang、好友助力
-                //保存营销活动信息
-                processorFactory.processSaveOrderInfo(param,order);
                 //TODO 订单类型拼接(支付有礼)
                 //订单入库,以上只有orderSn，无法获取orderId
                 order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
+                //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
+                marketProcessorFactory.processSaveOrderInfo(param,order);
                 order.store();
+                if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
+
+                }
                 orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
+                //支付系统金额
+                orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
                 must.addRecord(param.getMust());
                 orderBo.setOrderId(order.getOrderId());
-                //加锁
-                atomicOperation.addLock(orderBo.getOrderGoodsBo());
                 if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
                     (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
+                    //加锁
+                    atomicOperation.addLock(orderBo.getOrderGoodsBo());
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-                    processorFactory.processStockAndSales(param);
-                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), false);
+                    marketProcessorFactory.processStockAndSales(param,order);
+                    logger().info("加锁{}",order.getOrderSn());
+                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
+                    logger().info("更新成功{}",order.getOrderSn());
+                    //营销活动支付回调
                 }
+                marketProcessorFactory.processPayCallback(param,order);
             });
-            //释放锁
-            atomicOperation.releaseLocks();
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
         } catch (DataAccessException e) {
             logger().error("下单捕获mp异常", e);
             Throwable cause = e.getCause();
             if (cause instanceof MpException) {
-                return ExecuteResult.create(((MpException) cause).getErrorCode(), null,  ((MpException) cause).getCodeParam());
+                return ExecuteResult.create(((MpException) cause).getErrorCode(), ((MpException) cause).getCodeParam());
             } else {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR, e.getMessage());
             }
         } catch (Exception e) {
             logger().error("下单捕获mp异常", e);
             return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
+        }finally {
+            //释放锁
+            logger().info("释放锁{}",orderSn);
+            atomicOperation.releaseLocks();
         }
         //购物车删除
         if(OrderConstant.CART_Y.equals(param.getIsCart())){
@@ -378,6 +388,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
         }
+        //删除赠品
+        ListIterator<Goods> goodsListIterator = param.getGoods().listIterator();
+
     }
     /**
      * 初始化购买商品信息(初始化param里的goods信息)
@@ -407,11 +420,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void processQueryParam(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
 
         //初始化所有可选支付方式
-        vo.setPaymentList(getSupportPayment());
+        param.setPaymentList(payment.getSupportPayment());
         //设置规格和商品信息、基础校验规格与商品
         processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
         //TODO 营销相关 活动校验或活动参数初始化
-        processorFactory.processInitCheckedOrderCreate(param);
+        marketProcessorFactory.processInitCheckedOrderCreate(param);
         if(null != param.getActivityId() && null != param.getActivityType()) {
             //活动生成ordergodos;
             vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getStoreId()));
@@ -478,12 +491,25 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processExpressList(storeLists, vo);
         //计算金额相关、vo赋值
         processOrderBeforeVo(param, vo, vo.getOrderGoods());
+        //赠品活动。。。
+        processBeforeUniteActivity(param, vo);
         //服务条款
         setServiceTerms(vo);
         // 积分使用规则
         setScorePayRule(vo);
+        //支付方式
+        if(param.getPaymentList() != null){
+            vo.setPaymentList(param.getPaymentList());
+        }else {
+            vo.setPaymentList(payment.getSupportPayment());
+        }
         //订单必填信息处理
         vo.setMust(calculate.getOrderMust(vo.getOrderGoods()));
+    }
+
+    private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
+        //TODO 送赠品(处理门店)
+        giftProcessor.getGifts(param.getWxUserInfo().getUserId(), vo.getOrderGoods(), vo.getOrderType());
     }
 
     /**
@@ -571,7 +597,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 校验
+     * 校验商品和规格信息
      * @param goods
      * @throws MpException
      */
@@ -615,14 +641,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 vo.setStoreList(null);
             }
         }
-    }
-
-    /**
-     * 支付方式
-     */
-    public Map<String, PaymentVo> getSupportPayment(){
-        return payment.getSupportPayment();
-        //TODO 营销活动
     }
 
     /**
@@ -859,23 +877,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(beforeVo.getDefaultCoupon() != null) {
             coupon.use(beforeVo.getDefaultCoupon().getId(), order.getOrderSn());
         }
-        //TODO 送赠品
-    }
-
-    /**
-     * 处理特殊的营销活动（下单时通过activityId和activityType指定）
-     *  eg 我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
-     * @param orderBo
-     * @param beforeVo
-     */
-    private void processExclusiveActivity(CreateOrderBo orderBo,OrderBeforeVo beforeVo,int userId) throws MpException {
-        List<OrderBeforeVo> capsules = new ArrayList<>();
-        capsules.add(beforeVo);
-        OrderCreatePayBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderCreatePayBeforeMpProcessorFactory.class);
-        processorFactory.doProcess(capsules,userId);
-
-        //拼接活动类型
-        orderBo.getOrderType().add(beforeVo.getActivityType());
+        //TODO 送赠品(处理门店)
+        giftProcessor.getGifts(order.getUserId(), beforeVo.getOrderGoods(), orderBo.getOrderType());
     }
 
     /**
@@ -940,7 +943,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException 当前支付方式不支持
      */
     public void checkPayWay(Byte orderPayWay, OrderBeforeVo vo) throws MpException {
-        Map<String, PaymentVo> supportPayment = getSupportPayment();
+        Map<String, PaymentVo> supportPayment = payment.getSupportPayment();
         if(OrderConstant.MP_PAY_CODE_WX_PAY.equals(orderPayWay) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[orderPayWay])){
             //wx
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_WX);

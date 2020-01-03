@@ -2,6 +2,7 @@
   "navigationBarTitleText": "拼团详情",
   "usingComponents": {
     "v-poster": "/components/item/popup/poster/index",
-    "v-spec-dialog": "/components/item/popup/spec_dialog/index"
+    "v-spec-dialog": "/components/item/popup/spec_dialog/index",
+    "v-recommend":"/components/item/recommend/index"
   }
 }

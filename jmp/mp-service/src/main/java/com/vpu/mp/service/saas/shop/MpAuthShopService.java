@@ -49,6 +49,7 @@ import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -72,8 +73,10 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
+import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
@@ -484,7 +487,7 @@ public class MpAuthShopService extends MainBaseService {
 			upMp.setAppId(appId);
 			upMp.setUploadState((byte) 1);
 			upMp.setBindTemplateId(templateId);
-			upMp.setLastAuthTime(Timestamp.valueOf(LocalDateTime.now()));
+			upMp.setLastUploadTime(Timestamp.valueOf(LocalDateTime.now()));
 			db().executeUpdate(upMp);
 		}
 		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result, WxContentTemplate.WX_UPLOAD_CODE_SUCCESS.code, new String[] {});
@@ -1463,19 +1466,25 @@ public class MpAuthShopService extends MainBaseService {
 						String firest="为你精心准备了关注礼品，快来点击查看吧!";
 						String page="pages/auth/auth";//String page="pages/auth/auth";pages/index/index
 						String content="点击进入小程序";
-						//ShopApplication shopApp = saas.getShopApp(authShopRecord.getShopId());
-						//WxUserInfo info=WxUserInfo.builder().mpAppId(appId).mpOpenId(userInfo.getOpenId()).maAppId(authShopRecord.getAppId()).build();
-						MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
+						//MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
 						List<Integer> userIdList = new ArrayList<Integer>();
-						userIdList.add(user.getRecId());
 						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
-						RabbitMessageParam param = RabbitMessageParam.builder()
-								.mpTemplateData(
-										MpTemplateData.builder().config(MpTemplateConfig.PUSHMSG).data(data).build())
-								.page(page).shopId(authShopRecord.getShopId()).userIdList(userIdList)
-								.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
-						//shopApp.wechatMessageTemplateService.sendMpMessage(param, info);
-						saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), authShopRecord.getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
+						Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE;
+						//unioId在登录过小程序后才会传
+						if(!StringUtils.isEmpty(userInfo.getUnionId())) {
+							logger().info("用户没有登录过小程序");
+							com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord user = saas
+									.getShopApp(authShopRecord.getShopId()).officialAccountUser.getUser(appId,
+											userInfo.getOpenId());
+							userIdList.add(user.getRecId());
+							mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER;
+						}else {
+							logger().info("用户登录过小程序");
+							UserRecord user = saas.getShopApp(authShopRecord.getShopId()).user.getUserByUnionId(userInfo.getUnionId());
+							userIdList.add(user.getUserId());
+						}
+						RabbitMessageParam param = paramBuild(authShopRecord, page, userIdList, data,mpTempleType);
+						saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), authShopRecord.getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());							
 					}
 				}
 				return message;
@@ -1497,6 +1506,15 @@ public class MpAuthShopService extends MainBaseService {
 			}
 		}
 		return message;
+	}
+	private RabbitMessageParam paramBuild(MpAuthShopRecord authShopRecord, String page, List<Integer> userIdList,
+			String[][] data,Integer mpTempleType) {
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.mpTemplateData(
+						MpTemplateData.builder().config(MpTemplateConfig.PUSHMSG).data(data).build())
+				.page(page).shopId(authShopRecord.getShopId()).userIdList(userIdList)
+				.type(mpTempleType).build();
+		return param;
 	}
 
 

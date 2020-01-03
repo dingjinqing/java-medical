@@ -5,7 +5,7 @@
 page{
   background: #f5f5f5;
 }
-view,text,input{
+.main-container view,.main-container text,.main-container input{
   box-sizing: border-box;
 }
 .clearfix::after{

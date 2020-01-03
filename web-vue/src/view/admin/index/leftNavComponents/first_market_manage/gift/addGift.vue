@@ -4,8 +4,8 @@
 * @author 郑保乐
 -->
 <template>
-  <div>
-    <wrapper>
+  <div style="padding: 10px;">
+    <div class="content">
 
       <!-- step -->
       <el-steps
@@ -305,11 +305,11 @@
             <span class="remarks">{{ $t('gift.addTip') }}</span>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row style="margin-top: 10px;">
           <el-col>
             <el-table
               class="version-manage-table"
-              header-row-class-name="tableHeader"
+              header-row-class-name="tableClss"
               :data="tableData"
               border
               style="width: 100%"
@@ -356,7 +356,19 @@
                     :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
                     @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
                   >
-                    <span slot="before">
+                    <!-- <span slot="before">
+                      {{scope.row.productNumber}} /
+                    </span> -->
+                    <span
+                      slot="before"
+                      v-if="!scope.row.productNumber"
+                    >
+                      {{scope.row.prdNumber}} / {{scope.row.prdNumber}}
+                    </span>
+                    <span
+                      slot="before"
+                      v-if="scope.row.productNumber"
+                    >
                       {{scope.row.productNumber}} /
                     </span>
                   </inputEdit>
@@ -414,6 +426,7 @@
         @resultGoodsIds="getGoodsIds"
         :chooseGoodsBack="this.param.goodsIds"
       />
+
       <!-- step2 - 规格弹窗-->
       <choosingGoods
         :tuneUpChooseGoods="tuneUpChooseGoods"
@@ -422,13 +435,15 @@
         @resultGoodsIds="getSpecsIds"
         @resultGoodsDatas="getSpecsData"
       />
-    </wrapper>
+
+    </div>
   </div>
+
 </template>
 <script>
 import { mapActions } from 'vuex'
-import wrapper from '@/components/admin/wrapper/wrapper'
 import inputEdit from '@/components/admin/inputEdit'
+import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
 // import { format, range } from '@/util/date'
@@ -678,6 +693,9 @@ export default {
         return
       }
       if (this.update) {
+        this.param.gifts.map((item, index) => {
+          item.productId = item.prdId || item.productId
+        })
         var obj = this.param
         obj.id = this.id
         // 编辑保存
@@ -824,6 +842,8 @@ export default {
         // const { productId, productNumber } = row
         const { giftId, productId, productNumber } = row
         getProductDetail(giftId, productId).then(({ content }) => {
+          row.goodsImg = content.prdImg || content.goodsImg
+          row.productId = productId
           this.tableData.push({
             ...row,
             productNumber
@@ -1019,6 +1039,11 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.content {
+  padding: 20px;
+  margin-bottom: 60px;
+  background: #fff;
+}
 .label {
   line-height: 40px;
 }
@@ -1026,6 +1051,19 @@ export default {
   margin-right: 10px;
   width: 70px;
 }
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 27px;
+  left: 160px;
+  height: 52px;
+  padding: 10px 0;
+  background-color: #fff;
+  text-align: center;
+  border-top: 1px solid #eee;
+  z-index: 99;
+}
+
 .name_cell {
   display: flex;
   div {
@@ -1043,23 +1081,19 @@ export default {
 .inputWidth {
   width: 180px;
 }
-.footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  text-align: center;
-  background: #f8f8f8;
-  box-sizing: border-box;
-  height: 50px;
-  padding-top: 10px;
-}
 .remarks {
   color: #999;
   margin-left: 20px;
   height: 30px;
   line-height: 30px;
   font-size: 14px;
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
 }
 </style>

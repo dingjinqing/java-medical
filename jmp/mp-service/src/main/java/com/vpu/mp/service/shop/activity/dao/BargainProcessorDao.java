@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -55,7 +56,7 @@ public class BargainProcessorDao extends ShopBaseService {
         BargainRecord bargainRecord = db().selectFrom(BARGAIN).where(BARGAIN.ID.eq(activityId).and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
             .fetchAny();
 
-        Byte aByte = canApplyBargain(userId, now, activityId, bargainRecord);
+        Byte aByte = canApplyBargain(userId, now, bargainRecord);
         vo.setActState(aByte);
 
         // 活动不存在
@@ -92,44 +93,54 @@ public class BargainProcessorDao extends ShopBaseService {
      * 判断用户是否可以发起砍价
      * @param userId 用户id
      * @param date 时间
-     * @param activityId 活动id
      * @param bargainRecord 砍价详情
      * @return
      */
-    private Byte canApplyBargain(Integer userId, Timestamp date, Integer activityId, BargainRecord bargainRecord) {
+    public Byte canApplyBargain(Integer userId, Timestamp date, BargainRecord bargainRecord) {
         logger().debug("小程序-商品详情-砍价信息-是否可以发起砍价判断");
         if (date == null) {
             date = DateUtil.getLocalDateTime();
         }
 
         if (bargainRecord == null) {
-            logger().debug("小程序-商品详情-砍价信息-活动不存在或已删除[activityId:{}]",activityId);
+            logger().debug("小程序-商品详情-砍价信息-活动不存在或已删除[activityId:{}]",bargainRecord.getId());
             return  BaseConstant.ACTIVITY_STATUS_NOT_HAS;
         }
 
         if (BaseConstant.ACTIVITY_STATUS_DISABLE.equals(bargainRecord.getStatus())) {
-            logger().debug("小程序-商品详情-砍价信息-该活动未启用[activityId:{}]",activityId);
+            logger().debug("小程序-商品详情-砍价信息-该活动未启用[activityId:{}]",bargainRecord.getId());
             return BaseConstant.ACTIVITY_STATUS_STOP;
         }
 
         if (bargainRecord.getStartTime().compareTo(date) > 0) {
-            logger().debug("活动未开始[activityId:{}]",activityId);
+            logger().debug("活动未开始[activityId:{}]",bargainRecord.getId());
             return BaseConstant.ACTIVITY_STATUS_NOT_START;
         }
 
         if (bargainRecord.getEndTime().compareTo(date) < 0) {
-            logger().debug("活动已经结束[activityId:{}]", activityId);
+            logger().debug("活动已经结束[activityId:{}]", bargainRecord.getId());
             return BaseConstant.ACTIVITY_STATUS_END;
         }
 
-        int bargainCount = db().fetchCount(BARGAIN_RECORD,BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(BARGAIN_RECORD.BARGAIN_ID.eq(activityId))
+        int bargainCount = db().fetchCount(BARGAIN_RECORD,BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainRecord.getId()))
             .and(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.STATUS.eq((byte) 0)));
         if (bargainCount > 0) {
-            logger().debug("用户存在正在砍价[activityId:{}]", activityId);
+            logger().debug("用户存在正在砍价[activityId:{}]", bargainRecord.getId());
             return BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT;
         }
 
 
         return BaseConstant.ACTIVITY_STATUS_CAN_USE;
+    }
+
+
+    //砍价下单
+
+    /**
+     * 处理砍价订单的价格
+     * @param param
+     */
+    public void setOrderPrdBargainPrice(OrderBeforeParam param){
+        //TODO
     }
 }

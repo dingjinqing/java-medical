@@ -27,30 +27,31 @@ global.wxComponent({
     // 处理商品活动
     handleToGoodsActivities() {
       // 处理商品图片底部出现的活动条
-      let goosItem = JSON.parse(JSON.stringify(this.data.goodsData));
+      let goodsItem = JSON.parse(JSON.stringify(this.data.goodsData));
       let arr = [];
-      goosItem.goodsActivities.forEach((item, index) => {
+      goodsItem.goodsActivities.forEach((item, index) => {
         switch (item.activityType) {
           case 22:
-            goosItem.isMembershipExclusive = true;
+            goodsItem.isMembershipExclusive = true;
             break;
           case 18:
-            goosItem.isFirstOrder = true;
+            goodsItem.isFirstOrder = true;
             break;
           case 6:
-            goosItem.isLimitedPrice = true;
+            goodsItem.isLimitedPrice = true;
             break;
           case 3:
-            goosItem.isBargain = true;
+            goodsItem.isBargain = true;
             break;
           case 1:
-            goosItem.assemble = true;
+            goodsItem.assemble = true;
+            goodsItem.groupDiscountPrice = item.discountPrice
         }
         this.handleToActivitiesLabel(item, arr);
       });
-      goosItem.activityLabelData = arr;
+      goodsItem.activityLabelData = arr;
       this.setData({
-        goosItem
+        goodsItem
       });
     },
     // 处理价格上方显示的label条
@@ -59,6 +60,9 @@ global.wxComponent({
       switch (item.activityType) {
         case 1:
           obj.text = this.$t('components.decorate.assemble');
+          this.setData({
+            groupDiscountPrice:item.discountPrice
+          })
           break;
         case 3:
           obj.text = this.$t('components.decorate.bargain');

@@ -1213,7 +1213,7 @@ create table `b2c_member_card`
     `charge_money`      text comment '充值活动策略',
     `use_time`          int(11)                 default null comment '使用时间 1工作日 2双休 0不限制',
     `store_list`        varchar(191)   not null default '[]' comment '可用门店',
-    `count`             int(11)                 default null comment '卡总次数',
+    `count`             int(11)                 default null comment '允许门店兑换次数',
     `del_flag`          tinyint(1)     not null default '0' comment '1为删除状态',
     `grade`             char(10)       not null default '' comment '等级卡的等级',
     `grade_condition`   varchar(200)   not null default '' comment '等级卡的条件',
@@ -1232,7 +1232,7 @@ create table `b2c_member_card`
     `store_use_switch`  tinyint(1)     not null default '0' comment '可否在门店使用  1可以 0不可以',
     `exchang_goods`     varchar(299)            default null comment '可兑换商品id',
     `exchang_freight`   tinyint(1)              default null comment '运费策略 0免运费 1使用商品运费策略',
-    `exchang_count`     int(11)                 default null comment '允许兑换次数',
+    `exchang_count`     int(11)                 default null comment '允许商品兑换次数',
     `stock`             int(11)                 DEFAULT 0 COMMENT '发放总量',
     `limit`             int(11)                 DEFAULT 1 COMMENT '领取限制',
     `discount_brand_id` varchar(299) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '折扣品牌ID',
@@ -3736,48 +3736,55 @@ create table `b2c_pay_award_record`
 
 -- --  用户导入主表
 -- drop table if exists `b2c_user_import`;
-create table `b2c_user_import`
-(
-    `id`          int       not null auto_increment,
-    `card_id`     varchar(100) comment '会员卡id',
-    `total_num`   int            default 0 comment '总数',
-    `success_num` int            default 0 comment '成功数',
-    `del_flag`    tinyint(1)     default 0,
-    `del_time`    timestamp null default null comment '删除时间',
-    `create_time` timestamp      default current_timestamp,
-    `update_time` timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key (`id`)
+create table `b2c_user_import` (
+  `id`          int not null auto_increment,
+  `card_id`     varchar(100) comment '会员卡ID',
+  `total_num`   int          default 0 comment '总数',
+  `success_num` int          default 0 comment '成功数',
+  `tag_id`      int          default 0 comment '标签ID',
+  `group_id`    int          default 0 comment '分销员分组ID',
+  `create_time`        timestamp      not null default CURRENT_TIMESTAMP comment '创建时间',
+  `update_time`        timestamp      null     default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '最后修改时间',
+  `del_flag`    tinyint      default 0,
+  `del_time`    datetime,
+  primary key (`id`)
 );
 
 -- --  用户导入明细表
 -- drop table if exists `b2c_user_import_detail`;
-create table `b2c_user_import_detail`
-(
-    `id`                 int(11)    not null auto_increment,
-    `batch_id`           int(11)    not null comment '主表id',
-    `mobile`             varchar(15)         default null comment '手机号',
-    `name`               varchar(50)         default null comment '姓名',
-    `invite_user_mobile` varchar(15)         default null comment '邀请人手机号',
-    `score`              int(11)             default null comment '积分',
-    `sex`                char(5)             default null comment '性别： 女f 男m',
-    `birthday`           varchar(15)         default null comment '生日',
-    `province`           varchar(10)         default null comment '省',
-    `city`               varchar(10)         default null comment '市',
-    `district`           varchar(10)         default null comment '区',
-    `address`            varchar(100)        default null comment '地址',
-    `id_number`          varchar(18)         default null comment '身份证号',
-    `education`          varchar(50)         default null comment '教育程度',
-    `industry`           varchar(50)         default null comment '所在行业',
-    `marriage`           varchar(50)         default null comment '婚姻状况',
-    `income`             decimal(10, 2)      default null comment '月收入',
-    `error_msg`          varchar(100)        default null comment '错误内容',
-    `card_id`            varchar(100)        default null comment '会员卡id',
-    `is_activate`        tinyint(1) not null default '0' comment '是否已激活',
-    `create_time`        timestamp           default current_timestamp,
-    `update_time`        timestamp           default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key (`id`),
-    key `mobile` (`mobile`),
-    key `batch_id` (`batch_id`)
+create table `b2c_user_import_detail` (
+  `id`                 int(11) not null auto_increment,
+  `batch_id`           int(11) not null comment '主表ID',
+  `mobile`             varchar(15)      default null comment '手机号',
+  `user_action` TINYINT(1) DEFAULT 1  NULL   COMMENT '1:系统导入用户 2:CRM同步用户',
+  `wx_union_id` VARCHAR(50) NULL,
+  `nick_name` VARCHAR(50) NULL   COMMENT '用户昵称',
+  `user_avatar` VARCHAR(100) NULL   COMMENT '用户头像',
+  `user_grade` VARCHAR(10) NULL   COMMENT '用户等级',
+  `name`               varchar(50)      default null comment '姓名',
+  `invite_user_mobile` varchar(15)      default null comment '邀请人手机号',
+  `score`              int(11)          default null comment '积分',
+  `sex`                char(5)          default null comment '性别： 女f 男m',
+  `birthday`           varchar(15)      default null comment '生日',
+  `province`           varchar(10)      default null comment '省',
+  `city`               varchar(10)      default null comment '市',
+  `district`           varchar(10)      default null comment '区',
+  `address`            varchar(100)     default null comment '地址',
+  `id_number`          varchar(18)      default null comment '身份证号',
+  `education`          varchar(50)      default null comment '教育程度',
+  `industry`           varchar(50)      default null comment '所在行业',
+  `marriage`           varchar(50)      default null comment '婚姻状况',
+  `income`             decimal(10, 2)   default null comment '月收入',
+  `error_msg`          varchar(100)     default null comment '错误内容',
+  `card_id`            varchar(100)     default null comment '会员卡ID',
+  `tag_id`             int              default '0'    comment '标签ID',
+  `group_id`           int              default '0'    comment '分销员分组ID',
+  `is_activate`        tinyint(1)       default '0'  comment '是否已激活',
+  `create_time`        timestamp      not null default CURRENT_TIMESTAMP comment '创建时间',
+  `is_distributor`     tinyint(1)       default '0'  comment '是否是分销员',
+  primary key (`id`),
+  key `mobile` (`mobile`),
+  key `batch_id` (`batch_id`)
 );
 
 -- --  下单必填信息

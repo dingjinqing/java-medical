@@ -3,7 +3,7 @@
     <div class="addBrandDialogMain">
       <el-dialog
         title="添加商品标签"
-        :visible.sync="callAddProductLabel"
+        :visible.sync="visible"
         width="40%"
         :modal-append-to-body='false'
       >
@@ -21,7 +21,10 @@
             @click="queryLabelData()"
           >查询</el-button>
         </div>
-        <div class="footer">
+        <div
+          class="footer"
+          :class="isElection?'isElection':''"
+        >
           <el-table
             class="version-manage-table"
             header-row-class-name="tableClss"
@@ -29,20 +32,19 @@
             border
             style="width: 100%"
             @selection-change="changeFun"
+            ref="labelTable"
           >
             <el-table-column
               align="center"
               width="100"
               type="selection"
             >
-              <template slot-scope="scope">
-                <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
-              </template>
             </el-table-column>
             <el-table-column
               prop="name"
               label="标签名称"
               align="center"
+              class="name"
             >
             </el-table-column>
           </el-table>
@@ -62,7 +64,7 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="$emit('update:callAddProductLabel', false)">取 消</el-button>
+          <el-button @click="visible=false">取 消</el-button>
           <el-button
             type="primary"
             @click="handleToSure()"
@@ -84,6 +86,10 @@ export default {
     brandBackData: { // 回显数据
       type: Array,
       default: () => []
+    },
+    singleElection: { // 是否单选
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -92,9 +98,10 @@ export default {
       totle: 1,
       pageCount: 1,
       classValue: '',
-
       tableData: [],
-      backFlag: false
+      backFlag: false,
+      isElection: false,
+      visible: false
     }
   },
   watch: {
@@ -112,7 +119,7 @@ export default {
           })
       }
     },
-    callAddProductLabel (newData) {
+    visible (newData) {
       if (!newData) {
         this.$emit('update:callAddProductLabel', false)
       }
@@ -131,6 +138,26 @@ export default {
           }
         })
         console.log(this.tableData)
+      }
+    },
+    brandBackData (arr) {
+      console.log(arr)
+      //  labelTable
+      if (arr.length) {
+        arr.forEach(row => {
+          this.$refs.labelTable.toggleRowSelection(row)
+        })
+      } else if (this.callAddProductLabel) {
+        this.$nextTick(() => {
+          this.$refs.labelTable.clearSelection()
+        })
+      }
+
+      this.isElection = this.singleElection
+    },
+    callAddProductLabel (newVal) {
+      if (newVal) {
+        this.visible = true
       }
     }
   },
@@ -162,33 +189,29 @@ export default {
       })
     },
     changeFun (val) {
-      if (val.length) {
-        this.tableData.forEach((item, index) => {
-          item.ischeck = true
-        })
-      } else {
-        this.tableData.forEach((item, index) => {
-          item.ischeck = false
-        })
-      }
-
       console.log(val)
-      this.checkBoxData = val
+      if (val.length > 1) {
+        this.$refs.labelTable.clearSelection()
+        this.$refs.labelTable.toggleRowSelection(val.pop())
+      } else {
+        console.log(val)
+        this.checkBoxData = val
+      }
     },
     // 当前页改变
     handleCurrentChange () {
-
+      this.queryLabelData()
     },
     // 确定事件
     handleToSure () {
-      let arr = []
-      this.tableData.forEach(item => {
-        if (item.ischeck) {
-          arr.push(item)
-        }
-      })
-      this.$emit('handleToGetBackData', arr)
-      this.$emit('update:callAddProductLabel', false)
+      // let arr = []
+      // this.tableData.forEach(item => {
+      //   if (item.ischeck) {
+      //     arr.push(item)
+      //   }
+      // })
+      this.$emit('handleToGetBackData', this.checkBoxData)
+      this.visible = false
     }
   }
 }
@@ -253,6 +276,18 @@ export default {
       .cell
       .el-checkbox:after {
       content: " 本页全选";
+    }
+  }
+  .isElection {
+    /deep/ .is-leaf {
+      .cell {
+        display: none;
+      }
+    }
+    /deep/ .el-table_1_column_2 {
+      .cell {
+        display: block;
+      }
     }
   }
   .pagination {

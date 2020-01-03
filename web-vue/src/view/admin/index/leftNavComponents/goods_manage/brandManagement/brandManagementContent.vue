@@ -47,7 +47,7 @@
                 </el-date-picker>
               </div>
             </li>
-            <li>
+            <li class="specialLi">
               {{$t('brandManagement.brandClassify')}}：
               <el-select
                 v-model="valueClss"
@@ -58,7 +58,6 @@
                   :key="item.classifyName"
                   :label="item.classifyName"
                   :value="item.classifyId"
-                  :class="item.classifyId === 1 ? 'grandSelectClass' : ''"
                 >
                 </el-option>
               </el-select>
@@ -320,7 +319,11 @@
             align="center"
           >
             <template slot-scope="scope">
-              <p v-if="hiddle_1">{{ scope.row.goodsNum }}</p>
+              <p
+                style="color:#5a8bff;cursor:pointer"
+                v-if="hiddle_1"
+                @click="handleToTurnGoodsNum(scope.row)"
+              >{{ scope.row.goodsNum }}</p>
               <p v-if="!hiddle_1">{{ scope.row.brandNum }}</p>
             </template>
           </el-table-column>
@@ -404,9 +407,10 @@
         <p style="margin-top:10px">
           <span style="margin-right:11px">{{$t('brandManagement.classificationPriority')}}：</span>
           <el-input
-            v-model="classificationName"
+            v-model.number="classificationName"
             :placeholder="$t('brandManagement.inputPlaceText')"
             size="mini"
+            @input="handleInputClass"
           ></el-input>
         </p>
         <p>{{$t('brandManagement.dialogTips')}}</p>
@@ -457,7 +461,8 @@ import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest,
 // 工具导入
 import { startOrEndDayWithFormat } from '@/util/date'
 export default {
-  components: { pagination,
+  components: {
+    pagination,
     AddBrandDialog: () => import('@/components/admin/addBrandDialog')
   },
   data () {
@@ -853,6 +858,11 @@ export default {
         console.log(res)
       })
     },
+    // 优先级输入框过滤
+    handleInputClass () {
+      console.log('ssss')
+      this.classificationName = this.classificationName.replace(/[^\w]/g, '')
+    },
     // 鼠标划入查看案例
     showOver (index) {
       switch (index) {
@@ -973,6 +983,10 @@ export default {
     // 品牌分类点击筛选
     handleToScreen () {
       this.defaultPageingGrand()
+    },
+    // 点击包含在售商品数量
+    handleToTurnGoodsNum (row) {
+      console.log(row)
     }
   }
 }
@@ -1008,9 +1022,7 @@ export default {
 .noData span {
   margin: 10px;
 }
-.grandSelectClass {
-  padding-left: 30px;
-}
+
 .zwiclass {
   height: 1px;
   width: 10px;
@@ -1230,6 +1242,9 @@ tbody img {
 }
 </style>
 <style>
+.el-popper .grandSelectClass {
+  padding-left: 20px;
+}
 .topUl .el-input {
   width: 170px;
 }

@@ -1,25 +1,24 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
-
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 
+ *
  * @author 王帅
  *
  */
 @Getter
 @Setter
 public class OrderListMpVo{
-	
+
 	private Integer orderId;
 	private String orderSn;
 	private Byte orderStatus;
@@ -48,7 +47,7 @@ public class OrderListMpVo{
 	private Timestamp extendReceiveTime;
 	@JsonIgnore
     private Integer storeId;
-	
+
 	/**预售、定金支付区间*/
 	private Timestamp[] preSaleTimeInterval;
 	/**支付按钮是否显示*/

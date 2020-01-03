@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Data;
 * @Description: 会员卡消费 | 充值数据
 */
 @Data
+@Builder
 public class UserCardConsumeBean {
 	// 用户Id
 	private Integer userId;
@@ -37,7 +39,7 @@ public class UserCardConsumeBean {
 	private String message;
 
 	// 消费次数
-	private Short count;
+	private Integer count;
 	// 充值的钱
 	private BigDecimal charge;
 	// 支付方式

@@ -32,7 +32,7 @@ global.wxPage({
           orderInfo: orderInfo
         })
       } else {
-        util.showModal('提示', res.message)
+        util.showModal(that.$t('page1.reserve.prompt'), res.message)
       }
     }, { orderSn: orderSn })
   },
@@ -60,7 +60,7 @@ global.wxPage({
     let form_id = e.detail.formId;
     let open_id = util.getCache("openid");
     let that = this;
-    util.showModal('提示', '是否取消该订单', function () {
+    util.showModal(that.$t('page1.reserve.prompt'), that.$t('page1.reserve.whetherToCancelOrder'), function () {
       util.api('/api/wxapp/store/service/cancelReservation', function (res) {
         if (res.error == 0) {
           orderInfo.orderStatus = 2;
@@ -70,18 +70,18 @@ global.wxPage({
         } else if (res.error == 400002) {
 
         }
-      }, { orderId: orderId, cancelReason: "取消原因", orderSn: orderSn, open_id: open_id, form_id: form_id })
+      }, { orderId: orderId, cancelReason: that.$t('page1.reserve.reasonForCancellation'), orderSn: orderSn, open_id: open_id, form_id: form_id })
     }, true);
 
   },
   // 取消预约
   toCancel: function (e) {
     let mobile = e.currentTarget.dataset.mobile;
-    util.showModal('提示', '请与商家联系后，由商家取消', function () {
+    util.showModal(this.$t('page1.reserve.prompt'), this.$t('page1.reserve.contactMerchant'), function () {
       wx.makePhoneCall({
         phoneNumber: mobile
       })
-    }, true, '取消', '直接联系');
+    }, true, $t('page1.reserve.cancel2'), $t('page1.reserve.contactDirectly'));
   },
   // 确认完成
   toConfirm: function (e) {
@@ -116,6 +116,7 @@ global.wxPage({
     let orderSn = e.currentTarget.dataset.ordersn;
     let openid = util.getCache('openid');
     let form_id = e.detail.formId;
+    let that = this;
     util.api('/api/wxapp/store/service/reservationContinuePay', function (res) {
       if (res.error == 0) {
         if (typeof (res.content.timeStamp) != 'undefined') {
@@ -126,13 +127,13 @@ global.wxPage({
             'signType': typeof res.content.signType == "undefined" ? 'MD5' : res.content.signType,
             'paySign': res.content.paySign,
             'success': function (res) {
-              util.toast_success('支付成功');
+              util.toast_success(that.$t('page1.reserve.paymentSuccessful'));
               util.navigateTo({
                 url: '/pages/appointinfo/appointinfo?order_sn=' + orderSn,
               })
             },
             'fail': function (res) {
-              util.toast_fail('支付失败');
+              util.toast_fail(that.$t('page1.reserve.paymentFailed'));
               util.navigateTo({
                 url: '/pages/appointinfo/appointinfo?order_sn=' + orderSn,
               })
@@ -141,17 +142,17 @@ global.wxPage({
             }
           });
         } else {
-          util.toast_fail('支付失败');
+          util.toast_fail(that.$t('page1.reserve.paymentFailed'));
           util.redirectTo({
             url: '/pages/appointinfo/appointinfo?order_sn=' + orderSn,
           })
         }
       } else if (e.error == 400002) {
-        util.showModal('提示', e.content, function () {
+        util.showModal(that.$t('page1.reserve.prompt'), e.content, function () {
           wx.navigateBack();
         });
       } else {
-        util.showModal("提示", res.message, function () {
+        util.showModal(that.$t('page1.reserve.prompt'), res.message, function () {
           wx.navigateBack();
         });
       }

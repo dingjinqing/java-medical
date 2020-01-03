@@ -1,7 +1,8 @@
 const base = require("../../../popup/base/base.js");
 const actPrdType = {
-  1:{prdListName:"groupBuyPrdMpVos",prdRealPrice:'groupPrice',prdLinePrice:'prdPrice'},
-  5:{prdListName:"actProducts",prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice'}
+  1:{prdListName:"groupBuyPrdMpVos",prdRealPrice:'groupPrice',prdLinePrice:'prdPrice',multiSkuAct:true},
+  3:{prdRealPrice:'bargainPrice',multiSkuAct:false},
+  5:{prdListName:"actProducts",prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice',multiSkuAct:true}
 }
 global.wxComponent({
   mixins: [base],
@@ -17,8 +18,16 @@ global.wxComponent({
           // 活动规格限制
           let actLimit = {}
           if(val.activity){
-            actLimit.limitMaxNum = val.activity.limitAmount
-            actLimit.prdNumber = val.activity[actPrdType[val.activity.activityType]['prdListName']][0].stock
+            actLimit.activityType = val.activity.activityType
+            if(val.activity.limitMaxNum){
+              actLimit.limitMaxNum = val.activity.limitMaxNum
+            }
+            if(actPrdType[val.activity.activityType]['prdListName']){
+              actLimit.prdNumber = val.activity[actPrdType[val.activity.activityType]['prdListName']][0].stock
+            }
+            if(val.activity.limitBuyNum){
+              actLimit.limitBuyNum = val.activity.limitBuyNum
+            }
           }
           this.triggerEvent("productData", {
             goodsId: val.goodsId,
@@ -29,12 +38,14 @@ global.wxComponent({
           });
         } else {
           if(val.activity){
-            let activityPrds = val.activity[actPrdType[val.activity.activityType]['prdListName']].map(({productId:prdId,stock:prdNumber,[actPrdType[val.activity.activityType].prdRealPrice]:prdRealPrice,[actPrdType[val.activity.activityType].prdLinePrice]:prdLinePrice }) => {
-              return {prdId,prdNumber,prdRealPrice,prdLinePrice}
-            })
-            this.setData({
-              activityPrds
-            })
+            if(actPrdType[val.activity.activityType].multiSkuAct){
+              let activityPrds = val.activity[actPrdType[val.activity.activityType]['prdListName']].map(({productId:prdId,stock:prdNumber,[actPrdType[val.activity.activityType].prdRealPrice]:prdRealPrice,[actPrdType[val.activity.activityType].prdLinePrice]:prdLinePrice }) => {
+                return {prdId,prdNumber,prdRealPrice,prdLinePrice}
+              })
+              this.setData({
+                activityPrds
+              })
+            }
           }
           this.formatSpec(val.products);
         }
@@ -104,6 +115,10 @@ global.wxComponent({
       let productTarget = this.data.productsInfo.products.filter(
         item => item.prdDesc === str
       )[0];
+      // if(this.data.productsInfo.activity && !actPrdType[this.data.productsInfo.activity.activityType].multiSkuAct){
+      //   productTarget.prdLinePrice = productTarget.prdRealPrice
+      //   productTarget.prdRealPrice = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType].prdRealPrice]
+      // }
       this.setData({
         checkedProduct: productTarget
       });
@@ -111,8 +126,16 @@ global.wxComponent({
       let actLimit = {}
       // 活动规格的限购数量
       if(this.data.productsInfo.activity){
-        actLimit.limitMaxNum = this.data.productsInfo.activity.limitAmount
-        actLimit.prdNumber = this.data.activityPrds.find(item=>item.prdId === productTarget.prdId).prdNumber
+        actLimit.activityType = this.data.productsInfo.activity.activityType
+        if(this.data.productsInfo.activity.limitBuyNum){
+          actLimit.limitMaxNum = this.data.productsInfo.activity.limitMaxNum
+        }
+        if(this.data.activityPrds){
+          actLimit.prdNumber = this.data.activityPrds.find(item=>item.prdId === productTarget.prdId).prdNumber
+        }
+        if(this.data.productsInfo.activity.limitBuyNum){
+          actLimit.limitBuyNum = this.data.productsInfo.activity.limitBuyNum
+        }
       }
       this.triggerEvent("productData", {
         goodsId: this.data.productsInfo.goodsId,

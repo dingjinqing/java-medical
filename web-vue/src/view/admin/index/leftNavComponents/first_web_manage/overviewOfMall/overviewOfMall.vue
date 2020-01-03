@@ -1057,7 +1057,8 @@ export default {
 
     // 公告详情
     noticeDetail (id) {
-      this.$router.push({ path: '/admin/home/shopMain', query: { id: id, change_components: '8' } })
+      let routeUrl = this.$router.resolve({ path: '/admin/home/shopMain', query: { id: id, change_components: '8' } })
+      window.open(routeUrl.href, '_blank')
     },
 
     // 切换轮播图
@@ -1105,12 +1106,13 @@ export default {
       })
     },
     toList () {
-      this.$router.push({
+      let routeUrl = this.$router.resolve({
         path: '/admin/home/shopMain',
         query: {
           change_components: '7'
         }
       })
+      window.open(routeUrl.href, '_blank')
     },
 
     // 刷新

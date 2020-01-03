@@ -151,6 +151,7 @@ export default {
     handleClick (index) {
       this.clickIindex = index
       this.choisePagePath(this.trList[index].linkPath)
+      this.$emit('handleToGetDetailData', this.trList[index])
     },
     // 删除
     deleRr (index) {

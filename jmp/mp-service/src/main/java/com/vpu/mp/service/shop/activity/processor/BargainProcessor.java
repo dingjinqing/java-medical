@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
@@ -9,6 +11,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class BargainProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor{
+public class BargainProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor{
     @Autowired
     BargainProcessorDao bargainProcessorDao;
     /*****处理器优先级*****/
@@ -84,5 +87,25 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
             capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_BARGAIN);
         });
+    }
+
+    @Override
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        bargainProcessorDao.setOrderPrdBargainPrice(param);
+    }
+
+    @Override
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processStockAndSales(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
     }
 }

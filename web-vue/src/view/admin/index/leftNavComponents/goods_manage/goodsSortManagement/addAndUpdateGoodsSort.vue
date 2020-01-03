@@ -34,14 +34,14 @@
             style="width: 170px;"
           />
         </el-form-item>
-        <el-form-item :label="$t('goodsSorts.goodsSortFirst') + '：'">
-          <el-input
+        <el-form-item class="fixBug" :label="$t('goodsSorts.goodsSortFirst') + '：'">
+          <el-input-number
+            :min="1" :max="100" :step="1" step-strictly
             @change="firstChanged"
-            v-model.number="goodsSortDataFirst.firstBind"
+            v-model="goodsSortDataFirst.firstBind"
             size="small"
             style="width: 170px;"
           />
-          <br />
           <span class="inputTip">{{$t('goodsSorts.goodsSortFirstTip')}}</span>
         </el-form-item>
         <el-form-item :label="$t('goodsSorts.goodsSortHeadImg') + '：'">
@@ -96,6 +96,7 @@
           <el-select
             ref="firstSortIdSelector"
             v-model="goodsSortDataSecond.firstSortId"
+            size="small"
             style="width: 170px;"
           >
             <el-option
@@ -136,13 +137,13 @@
           />
         </el-form-item>
         <el-form-item :label="$t('goodsSorts.goodsSortFirst') + '：'">
-          <el-input
+          <el-input-number
+            :min="1" :max="100" :step="1" step-strictly
             @change="firstChanged"
             v-model.number="goodsSortDataSecond.firstBind"
             size="small"
             style="width: 170px;"
           />
-          <br />
           <span class="inputTip">{{$t('goodsSorts.goodsSortFirstTip')}}</span>
         </el-form-item>
         <el-form-item
@@ -320,9 +321,11 @@ export default {
         target.first = sort.first
         target.firstBind = sort.first
         this.level = sort.level
-        target.sortImgObj = {
-          imgPath: sort.sortImg,
-          imgUrl: sort.sortImgUrl
+        if (!isStrBlank(sort.sortImg)) {
+          target.sortImgObj = {
+            imgPath: sort.sortImg,
+            imgUrl: sort.sortImgUrl
+          }
         }
         target.imgLink = sort.imgLink
         target.parentId = sort.parentId
@@ -415,6 +418,9 @@ export default {
 </script>
 
 <style scoped>
+/deep/.fixBug .el-input--small .el-input__inner {
+  line-height: 33px;
+}
 .content {
   margin: 20px 0px;
   margin-bottom: 50px;

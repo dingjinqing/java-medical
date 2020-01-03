@@ -202,7 +202,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/card/charge/list")
 	public JsonResult getChargeList(@RequestBody ChargeParam param) {
-		PageResult<ChargeVo> chargeList = shop().member.card.getChargeList(param);
+		PageResult<ChargeVo> chargeList = shop().member.card.getChargeList(param,getLang());
 		return success(chargeList);
 	}
 	
@@ -215,7 +215,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/card/consume/list")
 	public JsonResult getConsumeList(@RequestBody ChargeParam param) {
-		PageResult<ChargeVo> chargeList = shop().member.card.getConsumeList(param);
+		PageResult<ChargeVo> chargeList = shop().member.card.getConsumeList(param,getLang());
 		return success(chargeList);
 	}
 	
@@ -287,42 +287,6 @@ public class AdminMemberCardController extends AdminBaseController {
 		List<String> res = shop().member.card.getAllNoDeleteCardGrade();
 		return success(res);
 	}
-	
-	
-	/**
-	 * 领取会员卡
-	 */
-	@PostMapping(value="/api/card/getcard")
-	public JsonResult getCard() {
-		logger().info("领取会员卡");
-		
-		AccountData accountData = AccountData.newBuilder().
-	            userId(134).
-	            orderSn("123456").
-	            //退款金额
-	                amount(BigDecimal.valueOf(566.5).negate()).
-	                remark("下单：123456").
-	                payment("订单").
-	            //支付类型
-	                isPaid((byte)0).
-
-	            //后台处理时为操作人id为0
-	                adminUser(0).
-	            //用户余额退款
-	                tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
-	            //资金流量-支出
-	                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
-		try {
-			shop().recordTradeService.updateUserEconomicData(UserCardData.newBuilder().userId(6).cardNo("4448016508219965").build());
-		} catch (MpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return success();
-	}
-	
-	
-	
 	
 	
 	

@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
@@ -194,7 +195,9 @@ public class OrderPayService extends ShopBaseService{
             orderSn(order.getOrderSn()).
             //退款金额
                 amount(money.negate()).
-                remark("下单："+order.getOrderSn()).
+                remarkCode(RemarkTemplate.ORDER_MAKE.code).
+                remarkData(order.getOrderSn()).
+                //remark("下单："+order.getOrderSn()).
                 payment(order.getPayCode()).
             //支付类型
                 isPaid(RecordTradeEnum.UACCOUNT_CONSUMPTION.val()).
@@ -231,7 +234,9 @@ public class OrderPayService extends ShopBaseService{
             orderSn(order.getOrderSn()).
             //积分
                 score(-score).
-                remark("下单："+order.getOrderSn()).
+                remarkCode(RemarkTemplate.ORDER_MAKE.code).
+                remarkData(order.getOrderSn()).
+               // remark("下单："+order.getOrderSn()).
             //后台处理时为操作人id为0
                 adminUser(0).
             //积分消费

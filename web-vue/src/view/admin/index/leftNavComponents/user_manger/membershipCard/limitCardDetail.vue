@@ -42,6 +42,7 @@
           <cardActiveCfg
             :val="cardActiveCfgData"
             @input="initCardActiveCfgData"
+            ref="cardActiveCfgData"
           ></cardActiveCfg>
         </div>
       </div>
@@ -137,20 +138,16 @@ export default {
     let cardEffectTimeTmp = {
       expiredType: '0',
       fixedDate: null,
-      receiveDay: '',
+      receiveDay: undefined,
       dateType: '0',
       valid: false
     }
     let cardStoreCfgDataTmp = {
       cardType: 1,
       storeListType: '0',
-      useTime: '1',
-      count: 0,
+      useTime: '0',
+      count: undefined,
       choosedStore: [
-        {
-          storeId: 10,
-          storeName: '小猴店1'
-        }
       ],
       valid: false
     }
@@ -204,11 +201,11 @@ export default {
         cardType: 1,
         isPay: '0',
         payType: '0',
-        payMoney: '',
-        payScore: '',
+        payMoney: undefined,
+        payScore: undefined,
         receiveAction: '1',
-        stock: 0,
-        limits: 0,
+        stock: undefined,
+        limits: undefined,
         hasSend: 0,
         codeAddDivArr: [{ batchName: null, batchId: null }],
         codeAddDivArrBottom: [{ pwdName: null, pwdId: null }],
@@ -217,7 +214,8 @@ export default {
       cardActiveCfgData: {
         activation: '0',
         activationCfgBox: [],
-        examine: '0'
+        examine: '0',
+        valid: false
       },
       sampleCardData: {
         cardName: '',
@@ -227,8 +225,8 @@ export default {
         powerDiscount: true,
         discount: '',
         discountGoodsType: '0',
-        cardScoreCfgData: cardScoreCfgDataTmp,
-        cardChargeCfgData: cardChargeCfgDataTmp,
+        cardScoreCfgData: null,
+        cardChargeCfgData: null,
         cardEffectTime: cardEffectTimeTmp,
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
@@ -269,7 +267,7 @@ export default {
       if (data.startTime === null) { this.cardEffectTime.fixedDate = '' }
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
-      this.cardEffectTime.dateType = data.dateType ? data.dateType : '0'
+      this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
       // 适用商品
       this.cardSuiteGoodsCfgData.exchangCount = data.exchangCount
       this.cardSuiteGoodsCfgData.isExchange = String(data.isExchange)
@@ -389,8 +387,9 @@ export default {
       this.$refs.cardEffectTime.$emit('checkRule')
       this.$refs.cardStoreCfgData.$emit('checkRule')
       this.$refs.cardReceiveCfgData.$emit('checkRule')
-
-      if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid && this.cardReceiveCfgData.valid) {
+      this.$refs.cardActiveCfgData.$emit('checkRule')
+      if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid &&
+           this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
         this.prepareCardData()
       } else {
         this.$message.error('保存失败')
@@ -519,7 +518,7 @@ export default {
     background: #f5f5f5;
   }
   .rightContainer {
-    width: 60%;
+    width: 70%;
     font-size: 13px;
     margin-bottom: 10px;
     .rightContainerTop {

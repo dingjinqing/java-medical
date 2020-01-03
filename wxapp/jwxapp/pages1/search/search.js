@@ -7,18 +7,18 @@ global.wxPage({
     imageUrl: util.getImageUrl(""),
     dataList: [],
     pageParams: null,
-    showFilterDialog:false,
-    keyWords:null,
-    sortItem:0,
-    sortDirection:1,
-    couponSn:null,
-    filterData:{
-      minPrice:null,
-      maxPrice:null,
-      sortId:null,
-      brandIds:[],
-      activityTypes:[],
-      labelIds:[]
+    showFilterDialog: false,
+    keyWords: null,
+    sortItem: 0,
+    sortDirection: 1,
+    couponSn: null,
+    filterData: {
+      minPrice: null,
+      maxPrice: null,
+      sortId: null,
+      brandIds: [],
+      activityTypes: [],
+      labelIds: []
     }
   },
 
@@ -26,16 +26,16 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.loadFilter(options).then(()=>{
+    this.loadFilter(options).then(() => {
       this.requestList()
     })
   },
-  showFilter(){
+  showFilter () {
     this.setData({
-      showFilterDialog:true
+      showFilterDialog: true
     })
   },
-  requestList() {
+  requestList () {
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
@@ -44,6 +44,9 @@ global.wxPage({
       res => {
         console.log(res)
         if (res.error === 0) {
+          if(res.content.dataList.length < 20){
+            this.selectComponent('#recommend').resetDataList().resetPage().requestData()
+          }
           this.setData({
             pageParams: res.content.page,
             ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.dataList
@@ -53,8 +56,8 @@ global.wxPage({
       {
         currentPage: currentPage,
         pageRows: 20,
-        keyWords:this.data.keyWords,
-        sortItem:this.data.sortItem,
+        keyWords: this.data.keyWords,
+        sortItem: this.data.sortItem,
         sortDirection: this.data.sortDirection,
         couponSn: this.data.couponSn,
         ...this.data.filterData
@@ -62,11 +65,11 @@ global.wxPage({
     );
   },
   // 获取右侧筛选信息
-  getSelectedData(data){
-    let { selectedSort: sortId, selectedBrands: brandIds, selectedLabels: labelIds, selectedActTypes: activityTypes, minPrice, maxPrice} = data.detail
+  getSelectedData (data) {
+    let { selectedSort: sortId, selectedBrands: brandIds, selectedLabels: labelIds, selectedActTypes: activityTypes, minPrice, maxPrice } = data.detail
     console.log(data)
     this.setData({
-      filterData:{
+      filterData: {
         minPrice,
         maxPrice,
         sortId,
@@ -79,26 +82,26 @@ global.wxPage({
     })
     this.requestList()
   },
-  changeInput(e){
+  changeInput (e) {
     this.setData({
       keyWords: e.detail.value
     })
   },
-  inputSearch(){
+  inputSearch () {
     this.setData({
       'pageParams.currentPage': 1,
-      dataList:[]
+      dataList: []
     })
     this.requestList()
   },
-  loadFilter(options){
+  loadFilter (options) {
     return new Promise((resolve, reject) => {
       let target = {
-        filterData:{},
-        data:{}
+        filterData: {},
+        data: {}
       }
-      Object.keys(options).forEach(item=>{
-        if(Object.keys(this.data.filterData).includes(item)){
+      Object.keys(options).forEach(item => {
+        if (Object.keys(this.data.filterData).includes(item)) {
           try {
             target['filterData'][item] = JSON.parse(options[item])
           } catch (error) {
@@ -110,11 +113,11 @@ global.wxPage({
           } catch (error) {
             target['data'][item] = options[item]
           }
-          
+
         }
       })
       this.setData({
-        filterData:{
+        filterData: {
           ...this.data.filterData,
           ...target.filterData
         },
@@ -155,8 +158,10 @@ global.wxPage({
     if (
       this.data.pageParams &&
       this.data.pageParams.currentPage === this.data.pageParams.lastPage
-    )
+    ) {
+      this.selectComponent('#recommend').requestData()
       return;
+    }
     this.setData({
       'pageParams.currentPage': this.data.pageParams.currentPage + 1
     });

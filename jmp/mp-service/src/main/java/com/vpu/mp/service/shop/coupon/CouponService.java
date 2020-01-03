@@ -606,7 +606,7 @@ public class CouponService extends ShopBaseService {
             //代金券
             return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ? coupon.getAmount() : BigDecimal.ZERO;
         }else if(OrderConstant.T_CAC_TYPE_DISCOUNT == coupon.getType()){
-            //打折券 return = totalPrice * (1 - coupon.getAmount /10)
+            //打折券 return = totalPrice * (1 - coupon.getAmount) /10
             return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ?
                 BigDecimalUtil.multiplyOrDivide(
                     BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),

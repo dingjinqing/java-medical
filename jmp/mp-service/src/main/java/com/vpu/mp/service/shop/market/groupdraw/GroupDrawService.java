@@ -4,11 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListVo;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawShareParam;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +22,8 @@ import java.util.List;
 import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
 import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
 import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
-import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
-import static com.vpu.mp.service.foundation.util.Util.stringToList;
-import static java.lang.String.format;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
+import static com.vpu.mp.service.foundation.util.Util.*;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
@@ -152,7 +142,7 @@ public class GroupDrawService extends ShopBaseService {
             select.and(GROUP_DRAW.ID.eq(id));
         }
         if (isNotEmpty(name)) {
-            select.and(GROUP_DRAW.NAME.like(format("%s%%", name)));
+            select.and(GROUP_DRAW.NAME.like(this.likeValue(name)));
         }
         if (null != startTime) {
             select.and(DSL.date(GROUP_DRAW.START_TIME).eq(Date.valueOf(startTime)));

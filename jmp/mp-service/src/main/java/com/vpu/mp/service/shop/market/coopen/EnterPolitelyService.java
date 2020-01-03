@@ -10,18 +10,19 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.wxapp.market.enterpolitely.AwardVo;
 import com.vpu.mp.service.pojo.wxapp.market.enterpolitely.ExtBo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.ScoreService;
@@ -30,6 +31,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,9 +43,10 @@ import java.util.*;
 
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_NO_PRIZE;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
+import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ONE;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -91,6 +94,12 @@ public class EnterPolitelyService extends ShopBaseService {
     @Autowired
     private ScoreService scoreService;
 
+    @Autowired
+    private JedisManager jedisManager;
+
+    @Autowired
+    private CouponService couponService;
+
     /**
      * Enter politely.
      *
@@ -108,9 +117,12 @@ public class EnterPolitelyService extends ShopBaseService {
             CoopenActivityRecord record = getProcessingActivity().stream().findFirst().orElseThrow(() -> new BusinessException(JsonResultCode.CODE_FAIL));
             int activityId = record.getId();
             noAward.setActivityId(activityId);
-
-            // 先查缓存，key = send_coupon_activityId_shopId_userId
-
+            // 先查缓存，key = enter_politely_shopId_activityId_userId
+            String cacheKey = "enter_politely_" + getShopId() + "_" + activityId + "_" + userRecord.getUserId();
+            if (StringUtils.isNotEmpty(jedisManager.get(cacheKey))) {
+                return noAward;
+            }
+            logger().info("缓存key【{}】已失效！", cacheKey);
             // 用户是否已领取/奖品是否已发放完
             CoopenActivityRecordsRecord receiveRecord = getReceiveRecords(userId, activityId);
             if (Objects.nonNull(receiveRecord) || activityReceiveNum(activityId) >= record.getAwardNum()) {
@@ -129,27 +141,28 @@ public class EnterPolitelyService extends ShopBaseService {
             }
             ExtBo coupon = ExtBo.builder().title(record.getTitle()).bgImg(imgDomain(record.getBgImgs())).build();
             switch (record.getActivityAction()) {
-                case GIVE_TYPE_LOTTERY:
-                    award = sendAward(GIVE_TYPE_LOTTERY, String.valueOf(record.getLotteryId()), userId, activityId, null);
+                case 2:
+                    award = sendAward((byte) 2, String.valueOf(record.getLotteryId()), userId, activityId, null);
                     break;
-                case GIVE_TYPE_BALANCE:
-                    award = sendAward(GIVE_TYPE_BALANCE, String.valueOf(record.getGiveAccount()), userId, activityId, null);
+                case 5:
+                    award = sendAward((byte) 5, String.valueOf(record.getGiveAccount()), userId, activityId, null);
                     break;
-                case GIVE_TYPE_SCORE:
-                    award = sendAward(GIVE_TYPE_SCORE, String.valueOf(record.getGiveScore()), userId, activityId, null);
+                case 4:
+                    award = sendAward((byte) 4, String.valueOf(record.getGiveScore()), userId, activityId, null);
                     break;
-                case GIVE_TYPE_CUSTOM:
-                    award = sendAward(GIVE_TYPE_CUSTOM, record.getCustomizeUrl(), userId, activityId, ExtBo.builder().customizeImgPath(record.getCustomizeImgPath()).build());
+                case 3:
+                    award = sendAward((byte) 3, record.getCustomizeUrl(), userId, activityId, ExtBo.builder().customizeImgPath(record.getCustomizeImgPath()).build());
                     break;
-                case GIVE_TYPE_ORDINARY_COUPON:
-                    award = sendAward(GIVE_TYPE_ORDINARY_COUPON, record.getMrkingVoucherId(), userId, activityId, coupon);
+                case 1:
+                    award = sendAward((byte) 1, record.getMrkingVoucherId(), userId, activityId, coupon);
                     break;
-                case GIVE_TYPE_SPLIT_COUPON:
-                    award = sendAward(GIVE_TYPE_SPLIT_COUPON, record.getMrkingVoucherId(), userId, activityId, coupon);
+                case 6:
+                    award = sendAward((byte) 6, record.getMrkingVoucherId(), userId, activityId, coupon);
                     break;
                 default:
                     return noAward;
             }
+            jedisManager.set(cacheKey, STRING_ONE, INTEGER_ONE);
         } catch (Throwable e) {
             logger().error("开屏有礼异常：{}", ExceptionUtils.getStackTrace(e));
             return noAward;
@@ -157,6 +170,16 @@ public class EnterPolitelyService extends ShopBaseService {
         return award;
     }
 
+    /**
+     * Send award award vo.
+     *
+     * @param awardType    the award type
+     * @param awardContent the award content
+     * @param userId       the user id
+     * @param activityId   the activity id
+     * @param bo           the bo
+     * @return the award vo
+     */
     public AwardVo sendAward(byte awardType, String awardContent, int userId, int activityId, ExtBo bo) {
         AwardVo noAward = AwardVo.builder().activityId(activityId).awardType(GIVE_TYPE_NO_PRIZE).build();
         AwardVo award = AwardVo.builder().activityId(activityId).awardType(awardType).awardContent(awardContent).build();
@@ -165,19 +188,15 @@ public class EnterPolitelyService extends ShopBaseService {
         record.setUserId(userId);
         record.setActivityAction(awardType);
         switch (awardType) {
-            case GIVE_TYPE_NO_PRIZE:
+            case 0:
                 logger().info("无奖励");
                 break;
-            case GIVE_TYPE_ORDINARY_COUPON:
+            case 1:
                 logger().info("优惠卷");
-            case GIVE_TYPE_SPLIT_COUPON:
+            case 6:
                 logger().info("分裂优惠卷");
-                List<Integer> integers = Util.json2Object(awardContent, new TypeReference<List<Integer>>() {
-                }, false);
-                String[] couponArray = new String[0];
-                if (integers != null) {
-                    couponArray = integers.stream().map(Object::toString).toArray(String[]::new);
-                }
+                String[] couponArray = awardContent.split(",");
+                List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringList2IntList(Arrays.asList(couponArray)));
                 CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
                 couponGive.setUserIds(Collections.singletonList(userId));
                 couponGive.setCouponArray(couponArray);
@@ -193,27 +212,21 @@ public class EnterPolitelyService extends ShopBaseService {
                 }
                 award.setExtContent(new HashMap<String, String>(INTEGER_TWO) {{
                     put("title", bo.getTitle());
-                    put("bg_img", Optional.ofNullable(bo.getBgImg()).orElse(imageUrl(DEFAULT_COUPON_BG_IMG)));
+                    put("coupon_detail", Util.toJson(couponViews));
+                    put("bg_img", StringUtils.isBlank(bo.getBgImg()) ? imageUrl(DEFAULT_COUPON_BG_IMG) : bo.getBgImg());
                 }});
                 record.setMrkingVoucherId(awardContent);
                 break;
-            case GIVE_TYPE_LOTTERY:
+            case 2:
                 logger().info("幸运大抽奖");
-                JoinLotteryParam joinLotteryParam = new JoinLotteryParam();
-                joinLotteryParam.setUserId(userId);
-                joinLotteryParam.setLotteryId(Integer.valueOf(awardContent));
-                JoinLottery joinLottery = lotteryService.validJoinLottery(joinLotteryParam);
-                if (!BYTE_ZERO.equals(joinLottery.getStatus())) {
-                    logger().debug("没有可用抽奖活动");
-                    return noAward;
-                }
                 record.setLotteryId(Integer.valueOf(awardContent));
+                logger().debug("抽奖活动id：{}", awardContent);
                 break;
-            case GIVE_TYPE_BALANCE:
+            case 5:
                 logger().info("余额");
                 AccountParam accountParam = new AccountParam() {{
                     setUserId(userId);
-                    setAmount(new BigDecimal(awardContent));
+                    setAmount(NumberUtils.createBigDecimal(awardContent));
                     setOrderSn(Objects.isNull(bo) ? StringUtils.EMPTY : bo.getOrderSn());
                     setPayment(PAY_CODE_BALANCE_PAY);
                     setIsPaid(UACCOUNT_RECHARGE.val());
@@ -231,14 +244,14 @@ public class EnterPolitelyService extends ShopBaseService {
                 logger().info("余额发放完成");
                 record.setGiveNum(new BigDecimal(awardContent));
                 break;
-            case GIVE_TYPE_GOODS:
+            case 7:
                 logger().info("奖品");
                 //TODO ...
                 break;
-            case GIVE_TYPE_SCORE:
+            case 4:
                 logger().info("积分");
                 ScoreParam scoreParam = new ScoreParam();
-                scoreParam.setScore(new BigDecimal(awardContent).intValue());
+                scoreParam.setScore(NumberUtils.createBigDecimal(awardContent).intValue());
                 scoreParam.setUserId(new Integer[]{userId});
                 scoreParam.setOrderSn(Objects.isNull(bo) ? StringUtils.EMPTY : bo.getOrderSn());
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
@@ -251,7 +264,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 logger().info("积分发放完成");
                 record.setGiveNum(new BigDecimal(awardContent));
                 break;
-            case GIVE_TYPE_CUSTOM:
+            case 3:
                 logger().info("自定义");
                 String imgPath = this.imageUrl(bo.getCustomizeImgPath());
                 award.setExtContent(new HashMap<String, String>(INTEGER_ONE) {{
@@ -261,7 +274,7 @@ public class EnterPolitelyService extends ShopBaseService {
             default:
                 break;
         }
-        record.insert();
+        db().executeInsert(record);
         return award;
     }
 

@@ -16,8 +16,21 @@ global.wxPage({
    */
   onLoad: function (options) {
     this.setData({
-      order_sn: options.order_sn
+      orderSn: options.order_sn
     })
+    this.initData()
+  },
+
+  initData () {
+    let that = this
+    util.api('/api/wxapp/store/pay/orderDetail', function (res) {
+      if (res.error === 0) {
+        let orderInfo = res.content
+        that.setData({
+          orderInfo: orderInfo
+        })
+      }
+    }, { orderSn: that.data.orderSn })
   },
 
   // 查看地图
@@ -28,6 +41,12 @@ global.wxPage({
       latitude: latitude,
       longitude: longitude,
       scale: 28
+    })
+  },
+
+  to_index: function () {
+    util.navigateTo({
+      url: '/pages/index/index'
     })
   },
 

@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 
 @Service
@@ -341,7 +340,7 @@ public class MpPaymentService extends ShopBaseService {
 	 * 微信小程序支付回调
 	 * @param orderResult
 	 */
-	public void onPayNotify(WxPayOrderNotifyResult orderResult) throws MpException {
+    public void onPayNotify(WxPayOrderNotifyResult orderResult) throws MpException, WxPayException {
 		PaymentRecordParam param = PaymentRecordParam.builder()
 				.payCode(PayCode.PAY_CODE_WX_PAY)
 				.tradeNo(orderResult.getTransactionId())
@@ -360,32 +359,4 @@ public class MpPaymentService extends ShopBaseService {
 				.build();
 		pay.unionPayNotify(param);
 	}
-
-    /**
-     * Gets prepay id.获取微信支付id
-     */
-    public String getPrepayId(String goodsName, String orderSn, String openId, BigDecimal amount) {
-        // 过滤字符串中的表情,微信接口不支持表情
-        goodsName = Util.filterEmoji(goodsName, "");
-        MpAuthShopRecord mpAuthShopRecord = getMpAuthShop();
-        //根据不同的子商户模式,执行不同的支付方法
-        switch (mpAuthShopRecord.getIsSubMerchant()) {
-            case CONDITION_ZERO:
-                // todo 非子商户
-                return null;
-            case CONDITION_ONE:
-                // todo 微信子商户支付
-                return null;
-            case CONDITION_TWO:
-                // todo 通联小程序支付
-                return null;
-            case CONDITION_THREE:
-                // todo 微信国际支付方式
-                return null;
-            default:
-        }
-        WxPayment wxPayment = getMpPay();
-        // ...
-        return null;
-    }
 }

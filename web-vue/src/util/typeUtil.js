@@ -12,3 +12,7 @@ export function isNumberBlank (num) {
   }
   return false
 }
+
+export function isSixNumberWithTwoDecimal (num) {
+  return /^\d{0,9}(\.\d{1,2})?$/.test(num)
+}

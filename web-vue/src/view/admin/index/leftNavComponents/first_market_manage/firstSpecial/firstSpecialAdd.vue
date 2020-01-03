@@ -108,6 +108,7 @@
                 :disabled="!!form.isForever"
                 format="yyyy-MM-dd HH:mm:ss"
                 value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00','23:59:59']"
               ></el-date-picker>
             </div>
           </el-form-item>
@@ -154,6 +155,7 @@
               style="margin-left: 30px;"
               :true-label="1"
               :false-label="0"
+              :disabled="!limit"
             >{{$t('firstSpecialAdd.limitedTip')}}</el-checkbox>
           </el-form-item>
           <!-- 活动商品 -->
@@ -716,15 +718,15 @@ export default {
         }
         if (this.discountType === '0') {
           item.batchDiscount = this.form.batchDiscount
-          item.batchFinalPrice = (item.batchDiscount / 10 * price).toFixed(3)
+          item.batchFinalPrice = (item.batchDiscount / 10 * price).toFixed(2)
           item.batchReduce = price - item.batchFinalPrice
         } else if (this.discountType === '1') {
           item.batchReduce = this.form.batchReduce
-          item.batchFinalPrice = Number(price - item.batchReduce)
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(3) * 10
+          item.batchFinalPrice = Number(price - item.batchReduce).toFixed(2)
+          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
         } else if (this.discountType === '2') {
           item.batchFinalPrice = this.form.batchFinalPrice
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(3) * 10
+          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
           item.batchReduce = price - item.batchFinalPrice
         }
         // 验证计算值安全性
@@ -768,7 +770,7 @@ export default {
         this.$set(row, 'batchDiscount', '')
         return false
       }
-      let batchFinalPrice = (batchDiscount / 10 * price).toFixed(3)
+      let batchFinalPrice = (batchDiscount / 10 * price).toFixed(2)
       let batchReduce = price - batchFinalPrice
       this.$set(row, 'batchFinalPrice', batchFinalPrice)
       this.$set(row, 'batchReduce', batchReduce)
@@ -780,7 +782,7 @@ export default {
       let price = Number(row.shopPrice)
       let batchReduce = Number(row.batchReduce)
       let batchFinalPrice = price - batchReduce
-      let batchDiscount = (batchFinalPrice / price).toFixed(3) * 10
+      let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
       if (isNaN(Number(batchDiscount))) {
         batchDiscount = 0
       }
@@ -794,7 +796,7 @@ export default {
       let price = Number(row.shopPrice)
       let batchFinalPrice = Number(row.batchFinalPrice)
       let batchReduce = price - batchFinalPrice
-      let batchDiscount = (batchFinalPrice / price).toFixed(3) * 10
+      let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
       this.$set(row, 'batchReduce', batchReduce)
       if (isNaN(Number(batchDiscount))) {
         batchDiscount = 0
@@ -816,7 +818,7 @@ export default {
           let originalPrice = item2.originalPrice
           let prdPrice = originalPrice
           if (operate === 'discount') {
-            prdPrice = (originalPrice * (parseFloat(row.batchDiscount / 10))).toFixed(3)
+            prdPrice = (originalPrice * (parseFloat(row.batchDiscount / 10))).toFixed(2)
           } else if (operate === 'reduce') {
             prdPrice = (originalPrice - row.batchReduce)
           } else if (operate === 'final') {

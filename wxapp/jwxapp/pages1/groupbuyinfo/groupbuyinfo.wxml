@@ -1,18 +1,19 @@
 <!-- 拼团详情：pages/groupbuyinfo/groupbuyinfo.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class='main-container'>
   <block>
     <!-- 下载海报 -->
     <block wx:if="{{ islogin }}">
       <view class='share_img_btn' wx:if='{{!(groupbuyInfo.statusInfo.status == 0) }}' bindtap='go_share'>
-        <view>下载</view>
-        <view>海报</view>
+        <view>{{i18n.$t(localePack,"page1.fight.download")}}</view>
+        <view>{{i18n.$t(localePack,"page1.fight.poster")}}</view>
       </view>
     </block>
     <block wx:else>
       <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
-        <view>下载</view>
-        <view>海报</view>
+        <view>{{i18n.$t(localePack,"page1.fight.download")}}</view>
+        <view>{{i18n.$t(localePack,"page1.fight.poster")}}</view>
       </button>
     </block>
     <!-- 拼团商品信息 -->
@@ -24,13 +25,13 @@
         <view class='goods_name'>{{groupbuyInfo.goodsInfo.goodsName}}</view>
         <view class='goods_price'>
           <view>
-            {{groupbuyInfo.groupBuyDefineInfo.limitAmount}}人拼团价
+            {{groupbuyInfo.groupBuyDefineInfo.limitAmount}}{{i18n.$t(localePack,"page1.fight.personGroupPrice")}}
             <text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;</text>
             ￥
             <text style='font-size:32rpx;'>{{groupbuyInfo.goodsInfo.minGroupBuyPrice}}</text>
           </view>
           <view class='ori_price'>
-            单买价
+            {{i18n.$t(localePack,"page1.fight.singlePurchasePrice")}}
             <text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;</text>
             ￥{{groupbuyInfo.goodsInfo.shopPrice}}
           </view>
@@ -39,17 +40,17 @@
     </view>
     <!-- 已经成团人数 -->
     <view class='grouped_info'>
-      <view class='trace_person trace' wx:if="{{groupbuyInfo.statusInfo.status != 2}}">
-        还差
-        <text>{{groupbuyInfo.groupBuyDefineInfo.show_noperson}}人</text>
-        拼团成功
+      <view class='trace_person trace' wx:if="{{groupbuyInfo.statusInfo.status != 143010}}">
+        {{i18n.$t(localePack,"page1.fight.Poor")}}
+        <text>{{groupbuyInfo.groupBuyDefineInfo.show_noperson}}{{i18n.$t(localePack,"page1.fight.people")}}</text>
+        {{i18n.$t(localePack,"page1.fight.fightSuccessfully")}}
       </view>
-      <view class='trace_times trace' wx:if="{{groupbuyInfo.statusInfo.status != 1}}">
-        剩余
+      <view class='trace_times trace' wx:if="{{groupbuyInfo.statusInfo.status != 143006}}">
+        {{i18n.$t(localePack,"page1.fight.Remaining")}}
         <text decode="{{true}}" space="{{true}}">&nbsp;</text>
         <text>{{clock}}</text>
         <text decode="{{true}}" space="{{true}}">&nbsp;</text>
-        结束
+        {{i18n.$t(localePack,"page1.fight.end")}}
       </view>
       <view class='grouped_person'>
         <block wx:for="{{groupbuyInfo.userInfoList}}" wx:key="index">
@@ -75,67 +76,71 @@
       </view>
       <block wx:if="{{islogin == true}}">
         <view class='btn_to_group' bindtap='toJoin' wx:if="{{groupbuyInfo.statusInfo.status == 0}}">
-          我要参团
+          {{i18n.$t(localePack,"page1.fight.joinGroup")}}
         </view>
-        <button class='btn_to_group buttins' open-type="share" wx:if="{{groupbuyInfo.statusInfo.status == 1430011}}">
-          立即分享
+        <button class='btn_to_group buttins' open-type="share" wx:if="{{groupbuyInfo.statusInfo.status == 143011}}">
+          {{i18n.$t(localePack,"page1.fight.shareNow")}}
         </button>
       </block>
       <block wx:else>
         <button class='btn_to_group' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.statusInfo.status == 0}}" data-ct="{{0}}">
-          我要参团
+          {{i18n.$t(localePack,"page1.fight.joinGroup")}}
         </button>
-        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.statusInfo.status == 1430011}}">
-          立即分享
+        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.statusInfo.status == 143011}}">
+          {{i18n.$t(localePack,"page1.fight.shareNow")}}
         </button>
       </block>
-      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 143006}}">本次团购已结束</view>
+      <!-- <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 143006}}">本次团购已结束</view>
       <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 143010}}">该团人数已满</view>
       <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 143009}}">
         该活动您的参团个数已达上限
+      </view> -->
+      <view class="btn_to_group" wx:if="{{groupbuyInfo.statusInfo.status != 0&&groupbuyInfo.statusInfo.status != 143011 && groupbuyInfo.statusInfo.message}}">
+        {{groupbuyInfo.statusInfo.message}}
       </view>
     </view>
     <!-- 老带新团 -->
     <view class="lead_newcomer" wx:if="{{groupbuyInfo.groupBuyDefineInfo.activityType==2}}">
       <view class="lead_title" style="background:url({{imageUrl}}image/wxapp/old_customer_bg.png) no-repeat bottom;background-size:100%">
-        <text>老带新团</text>
+        <text>{{i18n.$t(localePack,"page1.fight.oldHand")}}</text>
       </view>
-      <text class="lead_tips">所有用户都可以开团，但只有新用户才能参团哦</text>
+      <text class="lead_tips">{{i18n.$t(localePack,"page1.fight.allJoin")}}</text>
     </view>
     <!-- 拼团规则 -->
     <view class='group_info' bindtap='toRule'>
       <view class='gf_top'>
-        <view>拼团规则</view>
+        <view>{{i18n.$t(localePack,"page1.fight.punchRules")}}</view>
         <view>
-          详细规则
+          {{i18n.$t(localePack,"page1.fight.detailRules")}}
           <image src='{{click_more}}' mode='widthFix' />
         </view>
       </view>
       <view class='rule_info'>
         <view class='rf_each'>
           <view>1</view>
-          <view>选择商品，付款开团/参团</view>
+          <view>{{i18n.$t(localePack,"page1.fight.chooseProduct")}}</view>
         </view>
         <view class='rf_each'>
           <view>2</view>
-          <view>邀请好友，支付参团</view>
+          <view>{{i18n.$t(localePack,"page1.fight.inviteFriends")}}</view>
         </view>
         <view class='rf_each'>
           <view>3</view>
-          <view>满员发货，不满自动退款</view>
+          <view>{{i18n.$t(localePack,"page1.fight.fullShipping")}}</view>
         </view>
       </view>
     </view>
+    <v-recommend id="recommend" pageName="groupbuyitem" />
     <!-- 下载海报 -->
-    <v-poster image="{{posterImg}}" show="{{showPoster}}"></v-poster>
+    <v-poster wx:if="{{posterImg}}" image="{{posterImg}}" show="{{showPoster}}"></v-poster>
     <!-- 绑定手机号弹窗 -->
-    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{isBlock == 1}}" content="您需要绑定手机号才可以去购买商品" />
+    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{isBlock == 1}}" content="{{i18n.$t(localePack,'page1.fight.needPhone')}}" />
     <!-- 选择规格弹窗 -->
     <v-spec-dialog show="{{showSpec}}" bind:close="specDialogClose" products-info="{{productsInfo}}" bindproductData="getProductData">
       <view slot="num-cfg">
         <view class="spec-num clearfix">
-          <text>购买数量：(最少{{groupbuyInfo.groupBuyDefineInfo.limitBuyNum}}件，</text>
-          <text>最多{{groupbuyInfo.groupBuyDefineInfo.limitMaxNum}}件)</text>
+          <text>{{i18n.$t(localePack,"page1.fight.purchase")}}{{groupbuyInfo.groupBuyDefineInfo.limitBuyNum}}{{i18n.$t(localePack,"page1.fight.piece")}}，</text>
+          <text>{{i18n.$t(localePack,"page1.fight.most")}}{{groupbuyInfo.groupBuyDefineInfo.limitMaxNum}}{{i18n.$t(localePack,"page1.fight.piece")}})</text>
           <view class="spec-num-btns">
             <text class="spec-num-btn" bindtap="bindMinus" style='background:{{specInfo.goodsNum <= groupbuyInfo.groupBuyDefineInfo.limitBuyNum ? "#eee" : "#fff"}};color:{{specInfo.goodsNum <= groupbuyInfo.groupBuyDefineInfo.limitBuyNum ? "#ccc" : "#666"}}'>
               <text>-</text>
@@ -148,16 +153,20 @@
         </view>
       </view>
       <view slot="footer" class='modal_footer' style='padding-bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>
-        <view class='modal_footer_now' bindtap="OneClickBuy">一键参团</view>
+        <view class='modal_footer_now' bindtap="OneClickBuy">
+          {{i18n.$t(localePack,"page1.fight.oneTouch")}}
+        </view>
       </view>
     </v-spec-dialog>
     <!-- 分享弹框 -->
     <view class='share_bg' style='display:{{is_share == 1?"block":"none"}}'>
       <view class='zhezhao' catchtap='not_show_share'></view>
       <view class='share_content'>
-        <image src='{{pictorial}}'></image>
-        <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>保存图片</view>
-        <view class='save_tips'>保存图片到本地相册</view>
+        <image wx:if="{{pictorial}}" src='{{pictorial}}'></image>
+        <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>
+          {{i18n.$t(localePack,"page1.fight.savePicture")}}
+        </view>
+        <view class='save_tips'>{{i18n.$t(localePack,"page1.fight.saveToLocal")}}</view>
       </view>
     </view>
   </block>

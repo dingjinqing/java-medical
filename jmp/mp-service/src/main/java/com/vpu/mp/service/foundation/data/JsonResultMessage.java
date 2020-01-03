@@ -114,6 +114,7 @@ public class JsonResultMessage {
   public static final String GOODS_RECOMMEND_CHOOSE_TYPE_NOT_NULL =
       "goods.recommend.choose_type.notNull";
   public static final String GOODS_RECOMMEND_NUMBER_NOT_NULL = "goods.recommend.number.notNull";
+  public static final String GOODS_RECOMMEND_NO_RECOMMENDED_GOODS = "goods.recommend.no.recommended.goods";
 
     /**
      * 商品导出
@@ -425,6 +426,13 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
 	public static final String CODE_CARD_NO = "code.card.no";
+	
+	//会员导入
+	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
+	public static final String CODE_NEED_ONE = "code.need.one";
+	public static final String GET_TEMPLATE_NAME = "get.template.name";
+	public static final String CODE_EXCEL_ERRO = "code.excel.name";
+	
 	/**
 	 * 概览
 	 */
@@ -522,6 +530,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_DATABASE_ERROR = "order.database.error";
     public static final String MSG_ORDER_GOODS_LIMIT_MIN = "order.goods.limit.min";
     public static final String MSG_ORDER_GOODS_LIMIT_MAX = "order.goods.limit.max";
+    public static final String MSG_ORDER_GIFT_GOODS_ZERO = "order.gift.goods.zero";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
@@ -722,5 +731,22 @@ public class JsonResultMessage {
      */
     public static final String MSG_WX_PAY_PREPAY_ID_IS_NULL ="wx_pay_prepay_id_is_null";
 
-
+    /**
+     * 商品、活动分享图片文字内容
+     */
+    /** ￥ */
+    public static final String WX_MA_PICTORIAL_MONEY_FLAG = "wx.ma.pictorial.money.flag";
+    /** 神秘人 */
+    public static final String WX_MA_DEFAULT_USER_NAME = "wx.ma.default.user.name";
+    /** 逗号分隔符 */
+    public static final String WX_MA_DOT = "wx.ma.dot";
+    /** 拼团相关 */
+    /** 开团省 */
+    public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
+    /** 元 */
+    public static final String WX_MA_GROUP_BUY_MONEY = "wx.ma.group.buy.money";
+    /** 2人品仅需*/
+    public static final String WX_MA_GROUP_BUY_DOC_PERSON_NUM = "wx.ma.group.buy.doc.person.num";
+    /** 推荐给你 */
+    public static final String WX_MA_GROUP_BUY_DOC_RECOMMEND_TO_YOU="wx.ma.group.buy.doc.recommend.to.you";
 }

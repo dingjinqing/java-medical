@@ -41,6 +41,7 @@ export default {
     RightBargain: () => import('./pageSetupModules/marketingComponents/rightBargain'), // 右侧砍价配置页面
     RightSpike: () => import('./pageSetupModules/marketingComponents/rightSpike'), // 右侧秒杀配置页面
     RightFightGroup: () => import('./pageSetupModules/marketingComponents/rightFightGroup'), // 右侧拼团抽奖配置页面
+    RiIntegralExchange: () => import('./pageSetupModules/marketingComponents/riIntegralExchange'), // 右侧积分兑换页面
     // 商品组件库
     RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'), // 右侧商品配置页面
     RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch'), // 右侧页面商品搜索配置页面
@@ -61,7 +62,8 @@ export default {
     RiVideoModule: () => import('./pageSetupModules/graphicAndTextComponents/riVideoModule'), // 视频模块
     RiShopNotices: () => import('./pageSetupModules/graphicAndTextComponents/riShopNotices'), // 店铺公告
     RiOfficialAccount: () => import('./pageSetupModules/graphicAndTextComponents/riOfficialAccount'), // 公众号模块
-    RiCustomerServiceModule: () => import('./pageSetupModules/graphicAndTextComponents/riCustomerServiceModule') // 客服模块
+    RiCustomerServiceModule: () => import('./pageSetupModules/graphicAndTextComponents/riCustomerServiceModule'), // 客服模块
+    RiPictureHotSpot: () => import('./pageSetupModules/graphicAndTextComponents/riPictureHotSpot') // 右侧图片热区模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -87,6 +89,10 @@ export default {
         {
           id: 3,
           name: 'RightBargain'
+        },
+        {
+          id: 4,
+          name: 'RiIntegralExchange'
         },
         {
           id: 5,
@@ -123,6 +129,10 @@ export default {
         {
           id: 14,
           name: 'RiMagicMap'
+        },
+        {
+          id: 15,
+          name: 'RiPictureHotSpot'
         },
         {
           id: 16,

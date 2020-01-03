@@ -138,7 +138,10 @@
                   {{$t('membershipIntroduction.abolished')}}
                 </span>
               </td>
-              <td>{{item.money}}</td>
+              <td class="td-money">
+                  <span style="margin-right: 10px;">{{item.money}}</span>
+                  <img :src="plusImg" align="right" @click="modifyAccount(item.cardNo)">
+              </td>
               <td>{{item.surplus}}</td>
               <td>{{item.exchang_surplus}}</td>
               <td class="link">
@@ -207,12 +210,23 @@
   </div>
 </template>
 <script>
-import { getAllMemberCardDetailRequest, deleteUserCardRequest } from '@/api/admin/memberManage/memberCard.js'
+import { getAllMemberCardDetailRequest, deleteUserCardRequest, chargeConsume } from '@/api/admin/memberManage/memberCard.js'
 import { allUserCardRequest } from '@/api/admin/membershipList.js'
 
 export default {
   data () {
     return {
+      modifyDialogData: {
+        title: null,
+        presentText: null,
+        addText: null,
+        tips: null,
+        bzText: null,
+        persentMoney: '',
+        index: 0, // 0 余额，1 积分
+        visiable: false,
+        cardNo: null
+      },
       userId: '', // 用户id
       username: '', // 用户名
       phoneNum: '',
@@ -227,7 +241,8 @@ export default {
       trList: [], // 表格数据
       clickIindex: null,
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      mixinleftDiv: ''
+      mixinleftDiv: '',
+      plusImg: this.$imageHost + '/image/admin/add_some.png'
     }
   },
   created () {
@@ -347,6 +362,15 @@ export default {
           this.loadAllPageDate()
         }
       })
+    },
+    modifyAccount (cardNo) {
+      // 修改弹窗
+      console.log('修改账户余额')
+      chargeConsume({
+
+      }).then(res => {
+
+      })
     }
   }
 }
@@ -463,6 +487,15 @@ tbody td {
   border: 1px solid #eff1f5;
   color: #666;
 }
+
+.td-money > *{
+  vertical-align: middle;
+}
+
+.td-money > img{
+  padding-right: 10px;
+}
+
 td {
   padding: 8px 10px;
   vertical-align: middle !important;

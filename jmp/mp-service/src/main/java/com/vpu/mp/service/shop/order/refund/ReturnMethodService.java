@@ -28,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -79,11 +80,11 @@ public class ReturnMethodService extends ShopBaseService{
 			if (cause instanceof MpException) {
 				throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
 			}else {
-				logger().error("退款统一入口调用方法异常(非MpException)retId:"+retId+"。异常信息："+e.getMessage());
+				logger().error("退款统一入口调用方法异常(非MpException)retId:"+retId+"。异常信息：{}", e.getMessage());
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR, e.getMessage());
 			}
 		} catch (Exception e) {
-			logger().error("退款统一入口调用异常retId:"+retId+"。异常信息："+e.getMessage());
+			logger().error("退款统一入口调用异常retId:"+retId+"。异常信息：{}", e.getMessage());
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR,e.getMessage());
 		}
 		return true;
@@ -151,7 +152,9 @@ public class ReturnMethodService extends ShopBaseService{
 		orderSn(order.getOrderSn()).
 		//退款金额
 		amount(money).
-		remark("订单："+order.getOrderSn()+"余额退款").
+		remarkCode(RemarkTemplate.ORDER_RETURN.code).
+		remarkData(order.getOrderSn()).
+		//remark("订单："+order.getOrderSn()+"余额退款").
 		payment(order.getPayCode()).
 		//支付类型
 		isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
@@ -189,7 +192,9 @@ public class ReturnMethodService extends ShopBaseService{
 		orderSn(order.getOrderSn()).
 		//退款积分
 		score(score).
-		remark("订单："+order.getOrderSn()+"退款，退积分：score").
+		remarkCode(RemarkTemplate.ORDER_RETURN_SCORE_ACCOUNT.code).
+		remarkData(order.getOrderSn()).
+		//remark("订单："+order.getOrderSn()+"退款，退积分：score").
 		//后台处理时为操作人id为0
 		adminUser(0).
 		//交易类型

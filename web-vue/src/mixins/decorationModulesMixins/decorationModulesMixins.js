@@ -51,6 +51,43 @@ export default {
             bargain_goods: [] // 商品列表
           }
           break
+        case 4: // 积分兑换
+          obj = {
+            'module_name': 'm_integral',
+            'integral_goods': [
+              // {
+              //   'goods_id': '1139',
+              //   'integral_goods_id': '175',
+              //   'goods_img': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191211/yGJPwQANqKOHCqWS.jpeg',
+              //   'goods_name': '夜间保湿修护唇膜 补水保湿 20克',
+              //   'stock_sum': '4',
+              //   'prd_price': '59.00',
+              //   'money': '10.00',
+              //   'score': '100',
+              //   'start_time': '2019-12-25 14:10:31',
+              //   'end_time': '2020-01-02 14:10:33',
+              //   'is_on_sale': '1',
+              //   'is_delete': '0'
+              // },
+              // {
+              //   'goods_id': '1156',
+              //   'integral_goods_id': '176',
+              //   'goods_img': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20190929/5b641c86N5b3f6ae6.jpg',
+              //   'goods_name': '原味泡芙',
+              //   'stock_sum': '132',
+              //   'prd_price': '200.00',
+              //   'money': '22.00',
+              //   'score': '34',
+              //   'start_time': '2019-12-29 14:51:47',
+              //   'end_time': '2020-01-09 14:51:53',
+              //   'is_on_sale': '1',
+              //   'is_delete': '0'
+              // }
+            ],
+            'list_styles': '1',
+            'show_goods_price': true
+          }
+          break
         case 5: // 秒杀
           obj = {
             module_name: 'm_seckill',
@@ -124,8 +161,7 @@ export default {
         case 10: // 商品分组模块
           obj = {
             module_name: 'm_goods_group',
-            sort_group_arr: [],
-            menu_style: '0',
+            menu_style: '0', // 菜单样式radio
             position_style: '0',
             shop_style: '1',
             if_radius: '0',
@@ -135,10 +171,12 @@ export default {
             show_market: '1',
             goods_module_bg: '0',
             goods_bg_color: '#f5f5f5',
-            show_name: 0,
-            show_price: 0,
-            cart_btn: 1,
-            other_message: 0
+            show_name: true,
+            show_price: true,
+            cart_btn: true,
+            cart_btn_choose: '0',
+            other_message: false,
+            goodsItems: []
           }
           break
         case 11: // 轮播图模块
@@ -230,6 +268,27 @@ export default {
               // }
             },
             isAllCheckFull: true // 布局是否填充完毕
+          }
+          break
+        case 15: // 图片热区
+          obj = {
+            'module_name': 'm_hot_area',
+            'data': {
+              'bg_img_url': '',
+              'rectangles': [
+                // {
+                //   'hot_idx': 1,
+                //   'x': 0,
+                //   'y': 0,
+                //   'w': 115,
+                //   'h': 115,
+                //   'link_url': 'pages/searchs/search?is_from=integral',
+                //   'link_text': '积分商品列表'
+                // }
+              ],
+              'bg_img_width': '',
+              'bg_img_height': ''
+            }
           }
           break
         case 16: // 左图右文

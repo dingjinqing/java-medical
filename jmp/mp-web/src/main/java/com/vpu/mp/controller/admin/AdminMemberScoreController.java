@@ -30,7 +30,7 @@ public class AdminMemberScoreController extends AdminBaseController {
 	@PostMapping("/api/admin/member/score/list")
 	public JsonResult getScoreDetails(@RequestBody @Valid ScorePageListParam param) {
 		logger().info("正在会员用户积分明细");
-		PageResult<ScorePageListVo> pageList = shop().member.score.getPageListOfScoreDetails(param);
+		PageResult<ScorePageListVo> pageList = shop().member.score.getPageListOfScoreDetails(param,getLang());
 		return success(pageList);
 	}
 	

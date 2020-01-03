@@ -1,4 +1,5 @@
 var base = require("../base/base.js");
+var util = require("../../../utils/util.js");
 global.wxComponent({
   mixins: [base],
 
@@ -52,7 +53,7 @@ global.wxComponent({
         [1,'couponView'],
         [2,'couponView'],
         [3,'lotteryId'],
-        [4,'accountNumber'],
+        [4,'account'],
         [5,'product'],
         [6,'scoreNumber'],
         [7,'customImage']
@@ -67,11 +68,31 @@ global.wxComponent({
       } else if (giftInfo.giftType === 2 && this.hasGift(giftInfo)){
         DialogClass = 'split'
         DialogStyle = 'background:#fb645e;border-radius:0'
+      } else if (giftInfo.giftType === 3 && this.hasGift(giftInfo)){
+        DialogStyle = 'background:#FC644A url('+this.data.imageUrl+'image/wxapp/index_lottery.png) no-repeat left top / 100%;'
       }
       this.setData({
         DialogClass,
         DialogStyle
       })
+    },
+    goCustomLink(e){
+      util.jumpLink(e.currentTarget.dataset.link,'navigateTo')
+    },
+    confirm(){
+      if(this.data.giftInfo.giftType === 3){
+        this.goLottery()
+      } else if(this.data.giftInfo.giftType === 2){
+        this.shareCoupon()
+      } else {
+        this.bindClose()
+      }
+    },
+    goLottery(){
+      util.jumpLink('TODO','navigateTo')
+    },
+    shareCoupon(){
+      this.triggerEvent('TODO')
     }
   }
 });

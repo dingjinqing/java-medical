@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.store.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.store.store.StoreReservation;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -39,6 +41,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -112,6 +115,12 @@ public class ServiceOrderService extends ShopBaseService {
      */
     @Autowired
     public DomainConfig domainConfig;
+
+    /**
+     * The Reservation.
+     */
+    @Autowired
+    public StoreReservation reservation;
 
     /**
      * 订单状态 0：待付款，1：待服务，2：已取消，3：已完成
@@ -230,7 +239,9 @@ public class ServiceOrderService extends ShopBaseService {
     public ServiceOrderDetailVo getServiceOrderDetail(String orderSn) {
         ServiceOrderDetailVo vo =
             db().select(
-                SERVICE_ORDER.ORDER_ID, SERVICE_ORDER.SERVICE_ID, SERVICE_ORDER.STORE_ID, SERVICE_ORDER.ORDER_SN, SERVICE_ORDER.ORDER_STATUS, SERVICE_ORDER.ORDER_STATUS_NAME, SERVICE_ORDER.SUBSCRIBER,
+                SERVICE_ORDER.ORDER_ID, SERVICE_ORDER.SERVICE_ID, SERVICE_ORDER.STORE_ID
+                , SERVICE_ORDER.DISCOUNT, SERVICE_ORDER.USE_ACCOUNT, SERVICE_ORDER.MEMBER_CARD_BALANCE
+                , SERVICE_ORDER.ORDER_SN, SERVICE_ORDER.ORDER_STATUS, SERVICE_ORDER.ORDER_STATUS_NAME, SERVICE_ORDER.SUBSCRIBER,
                 SERVICE_ORDER.MOBILE, SERVICE_ORDER.TECHNICIAN_NAME, SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.ADD_MESSAGE,
                 SERVICE_ORDER.ADMIN_MESSAGE, SERVICE_ORDER.ORDER_AMOUNT, SERVICE_ORDER.MONEY_PAID, SERVICE_ORDER.FINISHED_TIME, SERVICE_ORDER.VERIFY_TYPE,
                 SERVICE_ORDER.VERIFY_CODE, SERVICE_ORDER.VERIFY_ADMIN, SERVICE_ORDER.TYPE, SERVICE_ORDER.VERIFY_PAY, SERVICE_ORDER.CREATE_TIME,
@@ -379,7 +390,7 @@ public class ServiceOrderService extends ShopBaseService {
                 setPayment(PAY_CODE_BALANCE_PAY);
                 // 支付类型，0：充值，1：消费
                 setIsPaid(BYTE_ONE);
-                setRemark(orderSn);
+                setUserInputRemark(orderSn);
             }};
             moneyPaidSecondCheck = moneyPaidSecondCheck.subtract(balance);
         }
@@ -564,7 +575,7 @@ public class ServiceOrderService extends ShopBaseService {
         accountData.setAccount(userService.getUserByUserId(param.getUserId()).getAccount());
         accountData.setAmount(param.getBalance().negate());
         accountData.setUserId(param.getUserId());
-        accountData.setRemark(param.getReason());
+        accountData.setUserInputRemark(param.getReason());
         accountData.setOrderSn(param.getOrderSn());
         /** 国际化语言 */
         String language = "";
@@ -704,6 +715,16 @@ public class ServiceOrderService extends ShopBaseService {
     }
 
     /**
+     * Update service order.
+     *
+     * @param orderSn the order sn
+     * @param record  the record
+     */
+    public void updateServiceOrder(String orderSn, ServiceOrderRecord record) {
+        db().update(SERVICE_ORDER).set(record).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).execute();
+    }
+
+    /**
      * Update single field.
      *
      * @param <T>     the type parameter
@@ -797,5 +818,25 @@ public class ServiceOrderService extends ShopBaseService {
 		return into;
     }
 
+    /**
+     * Finish pay callback.
+     *
+     * @param orderRecord the order record
+     * @param payment     the payment
+     */
+    public void finishPayCallback(ServiceOrderRecord orderRecord, PaymentRecordRecord payment) {
+        PaymentVo paymentVo = paymentService.getPaymentInfo(payment.getPayCode());
+        updateServiceOrder(orderRecord.getOrderSn(), new ServiceOrderRecord() {{
+            setPayTime(Timestamp.valueOf(LocalDateTime.now()));
+            setOrderStatus(ORDER_STATUS_WAIT_SERVICE);
+            setOrderStatusName(ORDER_STATUS_NAME_WAIT_SERVICE);
+            setPaySn(payment.getPaySn());
+            setPayCode(payment.getPayCode());
+            setPayName(Objects.nonNull(paymentVo) ? paymentVo.getPayName() : StringUtils.EMPTY);
+        }});
+        log.info("预约支付回调成功，发送预约成功消息模板！");
+        //发送模板消息
+        reservation.sendAppointmentSuccess(orderRecord);
+    }
 
 }

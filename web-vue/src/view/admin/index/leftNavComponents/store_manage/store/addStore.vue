@@ -135,11 +135,12 @@
         >
           <div>
             <areaLinkage
-              :provinceCode="storeFormInfo.provinceCode"
-              :cityCode="storeFormInfo.cityCode"
-              :districtCode="storeFormInfo.districtCode"
+              :areaCode="areaLinkage"
               @areaData="handleAreaData"
             />
+            <!-- :provinceCode="storeFormInfo.provinceCode" -->
+            <!-- :cityCode="storeFormInfo.cityCode" -->
+            <!-- :districtCode="storeFormInfo.districtCode" -->
             <!-- @areaChange="areaLinkage" -->
           </div>
         </el-form-item>
@@ -401,6 +402,11 @@ export default {
       },
       step1: this.$t('addStore.storeBasic'),
       step2: this.$t('addStore.storeDisInfo'),
+      areaLinkage: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
+      },
       storeFormInfo: {
         storeName: '',
         manager: '',
@@ -546,6 +552,10 @@ export default {
       }
       getStore(params).then(res => {
         if (res.error === 0) {
+          this.areaLinkage.provinceCode = res.content.provinceCode
+          this.areaLinkage.cityCode = res.content.cityCode
+          this.areaLinkage.districtCode = res.content.districtCode
+
           if (res.content.storeImgs) {
             res.content.storeImgs = JSON.parse(res.content.storeImgs)
           }

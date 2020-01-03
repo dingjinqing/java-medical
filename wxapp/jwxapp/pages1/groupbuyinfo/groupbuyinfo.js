@@ -46,6 +46,7 @@ global.wxPage({
       groupId: Number(groupId),
       pinGroupId: pinGroupId
     })
+    this.selectComponent('#recommend').requestData() //推荐商品请求
     // 判断用户是否登录
     that.judgeLogin()
 
@@ -99,7 +100,7 @@ global.wxPage({
           specInfo: that.data.specInfo
         })
       } else {
-        util.showModal('提示', '该活动已失效', function () {
+        util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.hasExpired'), function () {
           util.reLaunch({
             url: '/pages/index/index'
           })
@@ -131,11 +132,10 @@ global.wxPage({
     util.api('/api/wxapp/groupbuy/share/image', function (res) {
       if (res.error === 0) {
         that.setData({
-          shareImg: String(res.content),
-          posterImg: [String(res.content)]
+          shareImg: String(res.content)
         })
       }
-    }, { groupId: 4 })
+    }, { groupId: that.data.groupId })
   },
 
   // 倒计时
@@ -146,7 +146,7 @@ global.wxPage({
     })
     if (totalSeconds <= 0) {
       that.setData({
-        clock: '已经截止'
+        clock: that.$t('page1.fight.deadline')
       })
       if (timer) {
         clearTimeout(timer)
@@ -171,12 +171,12 @@ global.wxPage({
   // 去参团
   toJoin (e) {
     let that = this
-    var activityType = this.data.groupbuyInfo.groupBuyDefineInfo.activityType
+    var activityType = this.data.groupbuyInfo.groupBuyDefineInfo.activityType // 新老用户
     let newUser = this.data.groupbuyInfo.newUser
     if (activityType == 2 && !newUser) {
-      util.showModal('提示', '您是老用户啦,“老带新团”只有新用户可以参团哦！可以去开个新团享受更多优惠。', function () {
-        util.alert('我要开团')
-      }, true, '取消', '我要开团')
+      util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.oldHandNew'), function () {
+        util.alert(that.$t('page1.fight.Iwant'))
+      }, true, that.$t('page1.fight.cancel'), that.$t('page1.fight.psSpec'))
       return false;
     } else {
       if (this.data.has_spec) {
@@ -203,15 +203,16 @@ global.wxPage({
 
   // 在一键开团时再校验规格
   checkSelBuy () {
+    let that = this
     if (this.data.has_spec && Object.keys(this.data.specInfo).length == 0) {
-      if (this.data.showSpec) util.alert("请选择规格！")
+      if (this.data.showSpec) util.alert(that.$t('page1.fight.psSpec'))
       this.setData({
         showSpec: true
       })
       return false;
     }
     if (this.data.specInfo.prdNumber <= 0) {
-      util.alert('库存不足')
+      util.alert(that.$t('page1.fight.inventoryShortage'))
       this.setData({
         showSpec: true
       })
@@ -239,21 +240,19 @@ global.wxPage({
     if (!this.checkSelBuy()) return false;
     // 限制数量
     if (groupbuyInfo.goodsInfo.groupBuygoodsNum <= 0) {
-      util.showModal('提示', '该商品库存不足，无法购买', function () { }, false)
+      util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.hasExpired'), function () { }, false)
     } else {
       let goodsList = [{
         goodsId: groupbuyInfo.goodsInfo.goodsId,
-        group_id: this.data.groupId,
-        pin_group_id: this.data.pinGroupId,
         prdRealPrice: specInfo.prdId ? specInfo.prdRealPrice : groupbuyInfo.goodsInfo.minGroupBuyPrice,
         goodsPrice: specInfo.prdLinePrice ? specInfo.prdLinePrice : groupbuyInfo.goodsInfo.shopPrice,
         goodsNum: specInfo.goodsNum ? specInfo.goodsNum : 1,
-        prdId: specInfo.prdId ? specInfo.prdId : groupbuyInfo.goodsInfo.goodsId,
-        productId: specInfo.prdId ? specInfo.prdId : groupbuyInfo.goodsInfo.goodsId
+        prdId: specInfo.prdId,
+        productId: specInfo.prdId
       }]
       console.log(goodsList)
       util.navigateTo({
-        url: "/pages/checkout/checkout?activityType=1&activityId=" + this.data.groupId + "&goodsList=" + JSON.stringify(goodsList)
+        url: "/pages/checkout/checkout?activityType=1&activityId=" + Number(this.data.groupbuyInfo.groupBuyDefineInfo.id) + "&groupid=" + Number(this.data.groupId) + "&goodsList=" + JSON.stringify(goodsList)
       })
     }
   },
@@ -317,12 +316,19 @@ global.wxPage({
   go_share () {
     let that = this
     wx.showLoading({
-      title: '生成中'
+      title: that.$t('page1.fight.generating')
     })
-    this.setData({
-      showPoster: true
-    })
-    wx.hideLoading();
+    util.api('/api/wxapp/groupbuy/share/image', function (res) {
+      if (res.error === 0 && res.content != '') {
+        that.setData({
+          posterImg: String(res.content),
+          showPoster: true
+        })
+      } else {
+        util.toast_fail(that.$t('page1.fight.failedToGetPoster'))
+      }
+      wx.hideLoading();
+    }, { groupId: that.data.groupId })
   },
 
   // 拼团规则
@@ -338,7 +344,7 @@ global.wxPage({
   },
 
   getProductData (data) {
-    data = Object.assign({}, this.data.specInfo, data)
+    data = Object.assign({}, this.data.specInfo, data.detail)
     this.setData({
       specInfo: data
     })
@@ -349,14 +355,14 @@ global.wxPage({
     let value = Number(e.detail.value)
     let that = this
     if (isNaN(value)) {
-      util.showModal('提示', '请输入数字')
+      util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.enterNum'))
       that.setData({
         'specInfo.goodsNum': this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum
       })
       return false
     }
     if (value > this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum) {
-      util.showModal('提示', '不能超过限定数量', function () { })
+      util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.cannotExceed'), function () { })
       that.setData({
         'specInfo.goodsNum': this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum
       })
@@ -436,7 +442,7 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    this.selectComponent('#recommend').requestData()
   },
 
   /**
@@ -444,11 +450,11 @@ global.wxPage({
    */
   onShareAppMessage: function (res) {
     let { groupbuyInfo, shareImg, groupId } = this.data
-    let title = groupbuyInfo.groupBuyDefineInfo.limitAmount + '人拼购仅需' + groupbuyInfo.goodsInfo.minGroupBuyPrice + '元，' + groupbuyInfo.goodsInfo.goodsName
+    let title = groupbuyInfo.groupBuyDefineInfo.limitAmount + this.$t('page1.fight.personToBuy') + groupbuyInfo.goodsInfo.minGroupBuyPrice + this.$t('page1.fight.yuan') + groupbuyInfo.goodsInfo.goodsName
     let path = '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
     return {
       title: title,
-      imageUrl: imageUrl + 'image/wxapp/backward_right.png',
+      imageUrl: imageUrl + shareImg,
       path: path
     }
   }

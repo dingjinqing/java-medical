@@ -240,6 +240,7 @@ export default {
     Bargain: () => import('./decorationModules/marketingComponents/Bargain'), // 砍价
     Spike: () => import('./decorationModules/marketingComponents/Spike'), // 秒杀
     FightGroup: () => import('./decorationModules/marketingComponents/fightGroup'), // 拼团抽奖
+    IntegralExchange: () => import('./decorationModules/marketingComponents/integralExchange'), // 积分兑换
     // 右侧显示出口组件
     PageSetup: () => import('./pageSetup'),
     // 商品组件库
@@ -262,7 +263,8 @@ export default {
     VideoModule: () => import('./decorationModules/graphicAndTextComponents/videoModule'), // 视频模块
     ShopNotices: () => import('./decorationModules/graphicAndTextComponents/shopNotices'), // 店铺公告模块
     OfficialAccount: () => import('./decorationModules/graphicAndTextComponents/officialAccount'), // 公众号模块
-    CustomerServiceModule: () => import('./decorationModules/graphicAndTextComponents/customerServiceModule') // 客服模块
+    CustomerServiceModule: () => import('./decorationModules/graphicAndTextComponents/customerServiceModule'), // 客服模块
+    PictureHotSpot: () => import('./decorationModules/graphicAndTextComponents/pictureHotSpot') // 图片热区组件
   },
   data () {
     return {
@@ -270,7 +272,7 @@ export default {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'IntegralExchange', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -440,6 +442,9 @@ export default {
         case 'm_bargain':
           moduleNameId = 3
           break
+        case 'm_integral':
+          moduleNameId = 4
+          break
         case 'm_seckill':
           moduleNameId = 5
           break
@@ -466,6 +471,9 @@ export default {
           break
         case 'm_magic_cube':
           moduleNameId = 14
+          break
+        case 'm_hot_area':
+          moduleNameId = 15
           break
         case 'm_shop':
           moduleNameId = 27
@@ -670,6 +678,9 @@ export default {
             case 3:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 3)
               break
+            case 4:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 4)
+              break
             case 5:
               this_.handleToMiddleAcceptData(this._insertModulesId, this._showModulesList, insert, 5)
               break
@@ -696,6 +707,9 @@ export default {
               break
             case 14:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 14)
+              break
+            case 15:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 15)
               break
             case 16:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 16)

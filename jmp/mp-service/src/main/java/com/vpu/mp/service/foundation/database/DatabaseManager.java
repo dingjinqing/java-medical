@@ -131,6 +131,7 @@ public class DatabaseManager {
 		db.setDbConfig(dbConfig);
 		db.execute("SET NAMES utf8mb4");
 		db.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
+		db.execute("set global transaction isolation level read committed");
 		return db;
 	}
 

@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.member.InviteSourceConstant;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
@@ -41,6 +42,7 @@ import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
@@ -53,6 +55,7 @@ import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
@@ -93,6 +96,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
@@ -135,6 +139,8 @@ public class OrderReadService extends ShopBaseService {
 	private TradeService trade;
 	@Autowired
 	private GroupBuyListService groupBuyList;
+	@Autowired
+	private GroupBuyService groupBuyService;
 	@Autowired
 	private PreSaleService preSale;
 	@Autowired
@@ -360,7 +366,7 @@ public class OrderReadService extends ShopBaseService {
 		//获取已退运费
 		BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(rOrder.getOrderSn());
 		//退运费校验
-		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo(), returnShipingFee, true)){
+		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo().getShippingFee(), returnShipingFee, true)){
 			vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
 		}
 		//退款商品
@@ -385,7 +391,6 @@ public class OrderReadService extends ShopBaseService {
 		setReturnCfg(vo, rOrder);
 		//设置订单类型
         vo.setOrderType(OrderInfoService.orderTypeToArray(order.getGoodsType()));
-        //
 		return vo;
 	}
 
@@ -576,10 +581,20 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//好物圈
 
-		//TODO 拼团
+		// 拼团
 		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
-			groupBuyList.getPinUserList(groupOrder.getGroupId());
+			//未退款
+			if (!groupOrder.getStatus().equals(GroupBuyConstant.STATUS_FAILED)&&!groupOrder.getStatus().equals(STATUS_WAIT_PAY)){
+                Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
+                List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
+                order.setGroupBuyUserInfos(pinUserList);
+                order.setGroupId(groupOrder.getGroupId());
+				GroupOrderVo groupOrderVo =new GroupOrderVo();
+				groupOrderVo.setStatus(groupOrder.getStatus());
+				groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
+                order.setGroupBuyInfo(groupOrderVo);
+            }
 		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
 
 		}
@@ -755,6 +770,12 @@ public class OrderReadService extends ShopBaseService {
         }else {
             vo.setReturnFlag(NO);
         }
+        //获取已退运费
+        BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(param.getOrderSn());
+        //退运费校验
+        if(OrderOperationJudgment.adminIsReturnShipingFee(order.getShippingFee(), returnShipingFee, true)){
+            vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
+        }
         //退款记录
         Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());
         vo.setReturnOrderlist(new ArrayList<>(rOrders.size()));
@@ -767,6 +788,16 @@ public class OrderReadService extends ShopBaseService {
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });
         return vo;
+    }
+
+    /**
+     * 获取赠品订单数
+     * @param giftId 赠品id
+     * @param isIncludeReturn 是否包含退款赠品
+     */
+    public Integer getGiftOrderCount(Integer giftId, boolean isIncludeReturn){
+        List<String> giftOrderSns = orderGoods.getGiftOrderSns(giftId, isIncludeReturn);
+        return orderInfo.getGiftOrderCount(giftOrderSns);
     }
 
     /*********************************************************************************************************/

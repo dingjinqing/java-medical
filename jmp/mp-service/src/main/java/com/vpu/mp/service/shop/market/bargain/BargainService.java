@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -58,25 +57,12 @@ public class BargainService extends ShopBaseService  {
 	 *  砍价发起记录
 	 */
 	@Autowired public BargainRecordService bargainRecord;
-	
-	/**
-	 *  帮忙砍价的用户
-	 */
-	@Autowired public BargainUserService bargainUser;
 
     @Autowired
     private QrCodeService qrCode;
     @Autowired
-    protected DomainConfig domainConfig;
-	
-	/**
-	 * 启用状态 
-	 */
-	public static final byte STATUS_NORMAL = 1;
-	/**
-	 * 停用状态 
-	 */
-	public static final byte STATUS_DISABLED = 0;
+    private DomainConfig domainConfig;
+
 	
 	/**
 	 * 活动类型 固定人数
@@ -86,6 +72,15 @@ public class BargainService extends ShopBaseService  {
 	 * 活动类型 砍到区间内结算 
 	 */
 	public static final byte BARGAIN_TYPE_RANDOM = 1;
+
+    /**
+     * 任意金额结算模式的单次帮砍金额模式：0固定金额
+     */
+    public static final byte BARGAIN_MONEY_TYPE_FIXED = 0;
+    /**
+     * 任意金额结算模式的单次帮砍金额模式：1区间随机金额
+     */
+    public static final byte BARGAIN_MONEY_TYPE_RANDOM = 1;
 
     /**
      * 取holdDate的一下天
@@ -130,16 +125,16 @@ public class BargainService extends ShopBaseService  {
             Timestamp now = DateUtil.getLocalDateTime();
             for(byte state : param.getState()){
                 if(state == 1){
-                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.lt(now)).and(BARGAIN.END_TIME.gt(now)));
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.START_TIME.lt(now)).and(BARGAIN.END_TIME.gt(now)));
                 }
                 if(state == 2){
-                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.gt(now)));
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.START_TIME.gt(now)));
                 }
                 if(state == 3){
-                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.END_TIME.lt(now)));
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.END_TIME.lt(now)));
                 }
                 if(state == 4){
-                    stateCondition = stateCondition.or(BARGAIN.STATUS.eq(STATUS_DISABLED));
+                    stateCondition = stateCondition.or(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                 }
             }
             select.where(stateCondition);
@@ -315,7 +310,7 @@ public class BargainService extends ShopBaseService  {
     public Map<Integer,List<BargainRecord>> getBargainRecordByGoodsIds(List<Integer> goodsIds, Timestamp date){
         return db().select(BARGAIN.ID,BARGAIN.GOODS_ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
             .from(BARGAIN)
-            .where(BARGAIN.STATUS.eq(STATUS_NORMAL))
+            .where(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(BARGAIN.GOODS_ID.in(goodsIds))
             .and(BARGAIN.START_TIME.lessThan(date))
@@ -387,6 +382,7 @@ public class BargainService extends ShopBaseService  {
             bargainGoods.setIsPrd(goodsInfo.getIsDefaultProduct());
             if(goodsInfo.getIsDefaultProduct().equals(GoodsConstant.IS_DEFAULT_PRODUCT_Y)){
                 bargainGoods.setMaxPrice(goodsInfo.getShopPrice());
+                bargainGoods.setPrdId(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getDefaultPrdId(goodsInfo.getGoodsId()));
             }else{
                 bargainGoods.setMaxPrice(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getMaxPrdPrice(goodsInfo.getGoodsId()));
             }
@@ -416,4 +412,12 @@ public class BargainService extends ShopBaseService  {
         return moduleBargain;
     }
 
+    /**
+     * 更新砍价活动库存和销量，减少number个库存，增加number个销量，number可以是负数
+     * @param bargainId
+     * @param number
+     */
+    public void updateBargainStock(int bargainId,int number){
+        db().update(BARGAIN).set(BARGAIN.STOCK,BARGAIN.STOCK.sub(number)).set(BARGAIN.SALE_NUM,BARGAIN.SALE_NUM.add(number)).where(BARGAIN.ID.eq(bargainId)).execute();
+    }
 }

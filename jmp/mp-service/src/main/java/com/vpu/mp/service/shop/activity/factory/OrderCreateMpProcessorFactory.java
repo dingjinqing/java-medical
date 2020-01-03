@@ -21,7 +21,7 @@ import java.util.Map;
  * @create: 2019-11-18 15:51
  **/
 @Service
-public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFactory<CreateOrderProcessor, OrderBeforeVo>  {
+public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<CreateOrderProcessor, OrderBeforeVo>  {
     @Override
     public void doProcess(List<OrderBeforeVo> capsules, Integer userId) throws MpException {
 
@@ -30,22 +30,32 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
     /**
      * 一般营销  首单特惠 会员专享
      */
-    private final static List<Byte> generalActivity = Arrays.asList(
+    private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
             BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
             BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
     );
     /**
      * 全局的活动  支付有礼
      */
-    private final static List<Byte> globaActivity = Arrays.asList(
+    private final static List<Byte> GLOBAL_ACTIVITY = Arrays.asList(
             BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
             BaseConstant.ACTIVITY_TYPE_GIFT
+    );
+
+    /**
+     * 全局的活动  支付有礼
+     */
+    public final static List<Byte> SINGLENESS_ACTIVITY = Arrays.asList(
+            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+            BaseConstant.ACTIVITY_TYPE_BARGAIN
     );
 
     /**
      * 单一营销
      */
     private Map<Byte,CreateOrderProcessor> processorMap;
+
     /**
      * 普通营销活动
      */
@@ -64,11 +74,13 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
         processorGeneralList=new ArrayList<>(processors.size());
         processorGlobalList=new ArrayList<>(processors.size());
         for (CreateOrderProcessor processor : processors) {
-            processorMap.put(processor.getActivityType(), processor);
-            if (generalActivity.contains(processor.getActivityType())){
+            if (SINGLENESS_ACTIVITY.contains(processor.getActivityType())){
+                processorMap.put(processor.getActivityType(), processor);
+            }
+            if (GENERAL_ACTIVITY.contains(processor.getActivityType())){
                 processorGeneralList.add(processor);
             }
-            if (globaActivity.contains(processor.getActivityType())){
+            if (GLOBAL_ACTIVITY.contains(processor.getActivityType())){
                 processorGlobalList.add(processor);
             }
         }
@@ -80,7 +92,7 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      * @throws MpException
      */
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
-        if (param.getActivityId()!=null){
+        if (param.getActivityId()!=null && param.getActivityType()!=null){
             //单一营销
             processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);
         }else {
@@ -96,7 +108,7 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
     }
 
     /**
-     * 保存数据
+     * 保存数据（该方法不要在并发情况下出现临界资源）
      * @param param
      * @param order
      */
@@ -120,18 +132,39 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      * @param param
      * @throws MpException
      */
-    public void processStockAndSales(OrderBeforeParam param) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
         if (param.getActivityId()!=null){
             //单一营销
-            processorMap.get(param.getActivityType()).processStockAndSales(param);
+            processorMap.get(param.getActivityType()).processStockAndSales(param, order);
         }else {
             for (CreateOrderProcessor processor : processorGeneralList) {
-                processor.processStockAndSales(param);
+                processor.processStockAndSales(param, order);
             }
         }
         for (CreateOrderProcessor processor : processorGlobalList) {
             //全局活动
-            processor.processStockAndSales(param);
+            processor.processStockAndSales(param, order);
+        }
+    }
+
+    /**
+     * 支付完成（订单生效后的回调）
+     * @param param
+     * @throws MpException
+     */
+    public void processPayCallback(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+        if (param.getActivityId()!=null){
+            //单一营销
+            // 可能有：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
+            processorMap.get(param.getActivityType()).processPayCallback(param, order);
+        }else {
+            for (CreateOrderProcessor processor : processorGeneralList) {
+                processor.processPayCallback(param, order);
+            }
+        }
+        for (CreateOrderProcessor processor : processorGlobalList) {
+            //全局活动
+            processor.processPayCallback(param, order);
         }
     }
 }

@@ -47,15 +47,18 @@
             ref="multipleTable"
             class="version-manage-table"
             header-row-class-name="tableClss"
+            highlight-current-row
             :data="tableData"
             border
             style="width: 100%"
+            @current-change="handleToClickRow"
             @selection-change="changeFun"
           >
             <el-table-column
               align="center"
               width="100"
               type="selection"
+              v-if="!singleElection"
             >
               <!-- <template slot-scope="scope">
                 <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
@@ -132,6 +135,10 @@ export default {
     classification: { // 分类id
       type: Number,
       default: -1
+    },
+    singleElection: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -180,7 +187,9 @@ export default {
           value: 2,
           label: '非自营品牌'
         }
-      ]
+      ],
+      isElection: null,
+      nowClickRow: null
     }
   },
   watch: {
@@ -304,6 +313,10 @@ export default {
       console.log(val)
       this.checkBoxData = val
     },
+    handleToClickRow (val) {
+      console.log(val)
+      this.nowClickRow = [val]
+    },
     // 当前页改变
     handleCurrentChange () {
       this.handleToQueryData()
@@ -313,42 +326,43 @@ export default {
     },
     // 确定事件
     handleToSure () {
-      let arr = []
-      let idArr = []
-      this.tableData.forEach(item => {
-        if (item.ischeck) {
-          arr.push(item)
-          idArr.push(item.id)
-        }
-      })
-      console.log(this.classification)
-      if (this.classification !== -1) {
-        let obj = {
-          classifyId: this.classification,
-          brandIds: idArr
-        }
-        batchBind(obj).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            this.$message.success({
-              message: '添加成功',
-              showClose: true
-            })
-            this.$emit('handleToGetBackData', arr)
-            this.$emit('update:callAddBrand', false)
-          } else if (res.error === 131006) {
-            this.$message.error({
-              message: '请选择品牌分类',
-              showClose: true
-            })
+      if (this.singleElection) {
+        this.$emit('handleToGetBackData', this.nowClickRow)
+      } else {
+        let arr = []
+        let idArr = []
+        this.tableData.forEach(item => {
+          if (item.ischeck) {
+            arr.push(item)
+            idArr.push(item.id)
           }
         })
-      } else {
-        this.$emit('handleToGetBackData', arr)
-        this.$emit('update:callAddBrand', false)
+        console.log(this.classification)
+        if (this.classification !== -1) {
+          let obj = {
+            classifyId: this.classification,
+            brandIds: idArr
+          }
+          batchBind(obj).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                message: '添加成功',
+                showClose: true
+              })
+              this.$emit('handleToGetBackData', arr)
+            } else if (res.error === 131006) {
+              this.$message.error({
+                message: '请选择品牌分类',
+                showClose: true
+              })
+            }
+          })
+        } else {
+          this.$emit('handleToGetBackData', arr)
+        }
       }
-
-      console.log(this.classValue, arr)
+      this.$emit('update:callAddBrand', false)
     }
   }
 }

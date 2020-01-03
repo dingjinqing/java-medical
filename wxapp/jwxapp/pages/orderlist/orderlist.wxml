@@ -10,7 +10,9 @@
             <image src='{{imageUrl}}/image/wxapp/search_clear.png' mode='widthFix'></image>
           </view>
         </view>
-        <view class="btn_search" bindtap="handleSearch">搜索</view>
+        <view class="btn_search" bindtap="handleSearch">
+          {{i18n.$t(localePack,"pages.order.search")}}
+        </view>
       </view>
       <scroll-view class="top_nav" wx:if="{{navStatusNum}}" scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
         <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
@@ -88,6 +90,9 @@
               </view>
             </view>
             <view class="order_button_box">
+              <view bindtap="handleOperate" wx:if="{{item.orderStatusName === '已发货'}}" data-operate_info="confirmation" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">
+                确认收货
+              </view>
               <block wx:for="{{item.operate}}" wx:for-item="operateItem" wx:key="operateKey" wx:for-index="operateKey">
                 <view wx:if="{{operateItem > 0}}" bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">
                   {{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}
@@ -105,6 +110,7 @@
         </block>
       </block>
     </view>
+    <v-recommend id="recommend" pageName="orderlist" />
   </view>
   <include src="../common/footer.wxml" />
 </view>

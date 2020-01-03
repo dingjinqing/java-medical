@@ -1,16 +1,14 @@
-<view class="recommend_content">
+<view class="recommend_content" wx:if="{{dataList[0].length > 0}}">
   <view class="reco_title">
-    <image src="{{imageUrl}}/image/wxapp/re_l.png"></image>
-    <text>猜你喜欢</text>
-    <image src="{{imageUrl}}/image/wxapp/re_r.png"></image>
+    <image class="image" src="{{imageUrl}}/image/wxapp/re_l.png"></image>
+    <text class="reco_title-text">猜你喜欢</text>
+    <image class="image" src="{{imageUrl}}/image/wxapp/re_r.png"></image>
   </view>
   <view class="goods_content">
-    <v-double-col-goods />
-    <v-double-col-goods />
-    <v-double-col-goods />
-    <v-double-col-goods />
-    <v-double-col-goods />
-    <v-double-col-goods />
-    <v-double-col-goods />
+    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+      <block wx:for="{{pageItem}}" wx:for-item="goodsItem" wx:key="itemIndex" wx:for-index="itemIndex">
+        <v-double-col-goods goods-data="{{goodsItem}}" />
+      </block>
+    </block>
   </view>
 </view>

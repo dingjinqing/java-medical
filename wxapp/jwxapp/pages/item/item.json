@@ -2,12 +2,13 @@
   "navigationBarTitleText": "商品详情",
   "usingComponents": {
     "v-goods-swiper": "/components/item/swiper/index",
-    "v-goods-info": "/components/item/goods_info/index",
     "v-comment": "/components/item/comment/index",
     "v-goods-detail": "/components/item/goods_detail/index",
     "v-act-content":"/components/item/act_content/index",
     "v-coupon-promotion":"/components/item/coupon_promotion/index",
     "v-sel-spec":"/components/item/spec/index",
-    "v-item-footer":"/components/item/footer/index"
+    "v-item-footer":"/components/item/footer/index",
+    "v-share":"/components/item/popup/share/index",
+    "v-recommend":"/components/item/recommend/index"
   }
 }

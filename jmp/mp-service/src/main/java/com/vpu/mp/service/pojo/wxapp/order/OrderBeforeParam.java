@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
@@ -38,6 +39,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Byte activityType;
     /** 指定本次结算所参加的唯一营销活动类型 ID */
     private Integer activityId;
+
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_ADDRESS_NO_NULL)
 	private Integer addressId;
     @Valid
@@ -61,10 +63,6 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private BigDecimal balance;
     /**会员卡抵扣金额*/
     private BigDecimal cardBalance;
-	/** 没有id就是团长*/
-	private Integer groupId;
-	/** 是否是团长*/
-	private Byte isGrouper;
     /**支付方式*/
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_AMOUNT_NO_NULL)
     private Byte orderPayWay;
@@ -81,6 +79,26 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	/**下单时间*/
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Timestamp date = DateUtil.getLocalDateTime();
+
+    /**
+     * 指定可用的支付方式
+     */
+    private Map<String, PaymentVo> paymentList;
+
+    /**
+     * 拼团标记
+     */
+    /** 没有id就是团长*/
+    private Integer groupId;
+    /** 是否是团长*/
+    private Byte isGrouper;
+
+    /**
+     * 砍价标记
+     */
+    /** 砍价发起记录的ID */
+    private Integer recordId;
+
 	/**
 	 * 商品参数
 	 * @author 王帅

@@ -1,4 +1,5 @@
 <!-- pages/servicecomment/servicecomment.wxml -->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="../common/header.wxml" />
 <view class='main-container'>
   <view class="container">
@@ -8,7 +9,7 @@
         <view class="comment_list">
           <view class="commm_goods clearfix">
             <view class="left">
-              <image src="{{imageUrl}}{{serviceInfo.serviceImg}}"></image>
+              <image src="{{serviceInfo.serviceImg.indexOf('http')>-1?imageUrl:''}}{{serviceInfo.serviceImg}}"></image>
             </view>
             <view class="middle">
               <view class="goods_name">{{ serviceInfo.serviceName}}</view>
@@ -18,11 +19,11 @@
               <view class="goods_time clearfix">
                 <text>{{serviceInfo.serviceDate}} {{serviceInfo.servicePeriod}}</text>
                 <view wx:if="{{serviceInfo.flag != 1}}" bindtap="com_show" class="right" data-shop_id="{{serviceInfo.shop_id}}" data-osn="{{serviceInfo.order_sn}}" data-service_id="{{serviceInfo.service_id}}" data-store_id="{{serviceInfo.store_id}}" data-technician_id="{{serviceInfo.technician_id}}">
-                  发表评价
+                  {{i18n.$t(localePack,'page1.reserve.postAReview')}}
                   <image style="width:10px;height:5px;margin-left:5rpx;" src="{{serviceInfo.src}}"></image>
                 </view>
                 <view wx:else bindtap="com_show" class="right">
-                  查看评价
+                  {{i18n.$t(localePack,'page1.reserve.viewReviews')}}
                   <image src="{{ serviceInfo.src }}" style="width:10px;height:5px;margin-left:5rpx;" />
                 </view>
               </view>
@@ -34,7 +35,7 @@
               <view class="pingfen">
                 <view class="ping_left">
                   <text>*</text>
-                  评分:
+                  {{i18n.$t(localePack,'page1.reserve.score')}}:
                 </view>
                 <block wx:for="{{star}}" wx:for-index="id" wx:key="id">
                   <block wx:if="{{item.show}}">
@@ -45,26 +46,36 @@
                   </block>
                 </block>
                 <view class='ping_zi'>
-                  <block wx:if='{{serviceInfo.commstar == 1}}'>非常差</block>
-                  <block wx:if='{{serviceInfo.commstar == 2}}'>差</block>
-                  <block wx:if='{{serviceInfo.commstar == 3}}'>一般</block>
-                  <block wx:if='{{serviceInfo.commstar == 4}}'>好</block>
-                  <block wx:if='{{serviceInfo.commstar == 5}}'>非常好</block>
+                  <block wx:if='{{serviceInfo.commstar == 1}}'>
+                    {{i18n.$t(localePack,'page1.reserve.evaluation[0]')}}
+                  </block>
+                  <block wx:if='{{serviceInfo.commstar == 2}}'>
+                    {{i18n.$t(localePack,'page1.reserve.evaluation[1]')}}
+                  </block>
+                  <block wx:if='{{serviceInfo.commstar == 3}}'>
+                    {{i18n.$t(localePack,'page1.reserve.evaluation[2]')}}
+                  </block>
+                  <block wx:if='{{serviceInfo.commstar == 4}}'>
+                    {{i18n.$t(localePack,'page1.reserve.evaluation[3]')}}
+                  </block>
+                  <block wx:if='{{serviceInfo.commstar == 5}}'>
+                    {{i18n.$t(localePack,'page1.reserve.evaluation[4]')}}
+                  </block>
                 </view>
               </view>
               <view class="xinde">
                 <view class="xin_left">
                   <text>*</text>
-                  心得:
+                  {{i18n.$t(localePack,'page1.reserve.experience')}}:
                 </view>
-                <textarea wx:if="{{serviceInfo.flag != 1}}" value="{{serviceInfo.commNote}}" bindinput="comm_note" placeholder="服务是否给力？快分享你的体验心得吧" style="float:left" />
+                <textarea wx:if="{{serviceInfo.flag != 1}}" value="{{serviceInfo.commNote}}" bindinput="comm_note" placeholder="{{i18n.$t(localePack,'page1.reserve.servicePowerful')}}" style="float:left" />
                 <text wx:else>{{serviceInfo.commNote}}</text>
                 <view style="clear:both"></view>
               </view>
               <view class="shaidan">
                 <view class="shai_left">
                   <text style='color:#fff;'>*</text>
-                  晒单:
+                  {{i18n.$t(localePack,'page1.reserve.sunOrder')}}:
                 </view>
                 <view class="shai_content">
                   <block wx:if="{{serviceInfo.commImg && serviceInfo.commImg.length > 0}}">
@@ -89,13 +100,13 @@
                     <checkbox-group bindchange="anonymousChange">
                       <label>
                         <checkbox value="1" checked="{{serviceInfo.anonymousflag}}" color="{{comColor}}" />
-                        <text>匿名评价</text>
+                        <text>{{i18n.$t(localePack,'page1.reserve.anonymousReview')}}</text>
                       </label>
                     </checkbox-group>
                   </view>
                   <form report-submit='true' bindsubmit='good_commtag' style='float:right'>
                     <button form-type='submit' class='s_left' style='background:{{comColor}};border-color:{{comColor}}'>
-                      评价并继续
+                      {{i18n.$t(localePack,'page1.reserve.evaluateContinue')}}
                     </button>
                   </form>
                 </view>

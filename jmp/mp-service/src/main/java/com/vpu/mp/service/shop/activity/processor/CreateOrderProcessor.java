@@ -11,14 +11,14 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 public interface CreateOrderProcessor extends Processor {
 
     /**
-     *  初始化参数,活动校验
+     *  初始化参数,活动校验（订单确认页接口、点击确认提交生成订单前）
      * @param param
      * @throws MpException
      */
     void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException;
 
     /**
-     * 保存信息
+     * 保存信息（订单入库前）
      * @param param
      * @param order
      * @throws MpException
@@ -26,10 +26,17 @@ public interface CreateOrderProcessor extends Processor {
     void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException;
 
     /**
-     *  库存与销量
-     * @param param 规格id
+     *  库存与销量（订单入库后）
+     * @param param
      * @throws MpException
      */
-    void  processStockAndSales(OrderBeforeParam param)throws MpException;
+    void  processStockAndSales(OrderBeforeParam param,OrderInfoRecord order)throws MpException;
 
+    /**
+     * 支付完成（订单生效后的回调）
+     * @param param
+     * @param order
+     * @throws MpException
+     */
+    void processPayCallback(OrderBeforeParam param,OrderInfoRecord order)throws MpException;
 }

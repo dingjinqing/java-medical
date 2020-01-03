@@ -13,7 +13,7 @@
       <view style="background-color:{{comColor}};color:#fff" bindtap="checkOrder">查看订单</view>
       <view bindtap="goHome">返回首页</view>
     </view>
-    <v-recommend />
+    <v-recommend id="recommend" pageName="payment" />
   </view>
   <include src="../../pages/common/footer.wxml" />
   <v-pay-award show="{{payAwardDialog}}" award-info="{{awardInfo}}"/>

@@ -1,0 +1,60 @@
+.collect_detail {
+  width: 631rpx;
+  height: 735rpx;
+  color: #fff;
+  overflow: visible;
+}
+
+.arrow-container {
+  position: relative;
+  height: 100rpx;
+}
+
+.collect_arrow {
+  position: absolute;
+  right: 80rpx;
+  top: 13rpx;
+  display: block;
+  height: 87rpx;
+  width: 80rpx;
+}
+
+.collect_big_title {
+  display: block;
+  width: 576rpx;
+  line-height: 80rpx;
+  border: 2rpx dashed #fff;
+  margin-left: 28rpx;
+  margin-top: 56rpx;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 126rpx;
+}
+
+.collect_text view:nth-child(1), .collect_text view:nth-child(2) {
+  line-height: 80rpx;
+  margin-bottom: 21rpx;
+}
+
+.collect_text view:nth-last-child(1), .collect_text view:nth-last-child(2) {
+  margin-bottom: 28rpx;
+}
+
+.collect_1 {
+  width: 91rpx;
+  vertical-align: middle;
+}
+
+.collect_2 {
+  width: 236rpx;
+  vertical-align: middle;
+}
+
+.collect_tips_button {
+  text-align: center;
+  width: 240rpx;
+  line-height: 80rpx;
+  margin: 0 auto;
+  border: 1rpx solid #fff;
+  border-radius: 40rpx;
+}

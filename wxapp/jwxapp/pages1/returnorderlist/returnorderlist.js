@@ -1,5 +1,6 @@
 // pages1/returnorderlist/returnorderlist.js
 var util = require('../../utils/util.js');
+var i18n = require("../../utils/i18n/i18n.js")
 var app = getApp();
 var imageUrl = app.globalData.imageUrl;
 
@@ -16,10 +17,10 @@ global.wxPage({
     returnFlag: 0, // 是否展示创建售后申请按钮
     returnOrderList: [], // 售后单列表
     createTime: '', // 下单时间
-
-    return: ['仅退款', '退货退款', '仅退运费', '手动退款', '换货'], // 售后类型
-    reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'], // 退货退款原因
-    reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
+    canReturnShippingFee: '', // 还可以退运费
+    return: i18n.trans("page1.afterSale.return"), // 售后类型
+    reasone: i18n.trans("page1.afterSale.reasone"), // 退货退款原因
+    reasone_huan: i18n.trans("page1.afterSale.reasone_huan"), // 换货原因
 
     voucherImages: [], // 物流凭证
   },
@@ -47,6 +48,7 @@ global.wxPage({
           }
         })
         that.setData({
+          canReturnShippingFee: content.canReturnShippingFee,
           orderSn: content.orderSn,
           returnFlag: content.returnFlag,
           returnOrderList: content.returnOrderlist,

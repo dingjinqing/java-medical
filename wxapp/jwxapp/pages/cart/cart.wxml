@@ -103,6 +103,6 @@
             </view>
         </view>
     </view>
-    <!-- <v-recommend /> -->
+    <v-recommend id="recommend" pageName="cart"/>
     <include src="../common/footer.wxml" />
 </view>

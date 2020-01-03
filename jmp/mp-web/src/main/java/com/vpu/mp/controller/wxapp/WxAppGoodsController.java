@@ -2,6 +2,8 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsParam;
+import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,4 +23,15 @@ public class WxAppGoodsController extends WxAppBaseController {
 	    param.setFromPage(EsGoodsConstant.GOODS_DETAIL_PAGE);
 		return success(shop().goodsMp.getGoodsDetailMp(param));
 	}
+
+    /**
+     * 小程序-商品推荐
+     * @param param 用户和店铺信息
+     * @return 推荐商品信息
+     */
+	@PostMapping("/api/wxapp/goods/recommend")
+    public JsonResult getRecommendGoods(@RequestBody RecommendGoodsParam param) {
+        RecommendGoodsVo result = shop().goodsMp.mpGoodsRecommendService.getRecommendGoods(param);
+        return success(result);
+    }
 }

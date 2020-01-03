@@ -2,6 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import java.util.ArrayList;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -142,11 +144,11 @@ public class AdminTestController extends AdminBaseController {
 	}
 	
 	
-	@RequestMapping(value = "/api/admin/test/sendTestByMq")
-	public JsonResult testSendByMq() {
+	@RequestMapping(value = "/api/admin/test/sendTestByMq/{id}")
+	public JsonResult testSendByMq(@PathVariable Integer id) {
 		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
 		ArrayList<Integer> arrayList = new ArrayList<Integer>();
-		arrayList.add(195);
+		arrayList.add(id);
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.maTemplateData(
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())

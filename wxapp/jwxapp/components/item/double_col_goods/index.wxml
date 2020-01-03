@@ -1,50 +1,50 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="goods_item" bindtap="toItem">
   <view class="goods_image">
-    <image src="{{goosItem.goodsImg}}"></image>
-    <block wx:if="goosItem.label">
-      <block wx:if="{{goosItem.label.listPattern == 1}}">
+    <image src="{{goodsItem.goodsImg}}" class="goods-image"></image>
+    <block wx:if="goodsItem.label">
+      <block wx:if="{{goodsItem.label.listPattern == 1}}">
         <view class="label-style1" style='background:url({{imageUrl}}/image/wxapp/label-three.png) no-repeat ; background-size:100%;'>
-          <text>{{goosItem.label.name}}</text>
+          <text class="label-text">{{goodsItem.label.name}}</text>
         </view>
       </block>
-      <block wx:if="{{goosItem.label.listPattern == 2}}">
+      <block wx:if="{{goodsItem.label.listPattern == 2}}">
         <view class='label-style2' style='background:-webkit-linear-gradient(left,{{linColor}},{{main_setting.comColor1}})'>
-          <text>{{goosItem.label.name}}</text>
+          <text class="label-text">{{goodsItem.label.name}}</text>
         </view>
       </block>
-      <block wx:if="{{goosItem.label.listPattern == 3 }}">
+      <block wx:if="{{goodsItem.label.listPattern == 3 }}">
         <view class='label-style3' style='border-color:{{main_setting.comColor}}'>
-          <text style='color:{{main_setting.comColor}}'>{{goosItem.label.name}}</text>
+          <text class="label-text" style='color:{{main_setting.comColor}}'>{{goodsItem.label.name}}</text>
         </view>
       </block>
-      <block wx:if="{{ goosItem.label.listPattern == 4}}">
+      <block wx:if="{{ goodsItem.label.listPattern == 4}}">
         <view class='label-style4' style='background:-webkit-linear-gradient(left,{{linColor}},{{main_setting.comColor1}})'>
-          <text style='color:#fff'>{{goosItem.label.name}}</text>
+          <text class="label-text" style='color:#fff'>{{goodsItem.label.name}}</text>
         </view>
       </block>
     </block>
     
     <!--会员专享商品图片tip-->
-    <view wx:if="{{goosItem.isMembershipExclusive}}" class='exclusive'>{{i18n.$t(localePack,'components.decorate.membershipExclusive')}}</view>
+    <view wx:if="{{goodsItem.isMembershipExclusive}}" class='exclusive'>{{i18n.$t(localePack,'components.decorate.membershipExclusive')}}</view>
     <!--首单特惠商品图片tip-->
-    <view wx:if="{{goosItem.isFirstOrder}}" class="reduce_price">{{i18n.$t(localePack,'components.decorate.newRecruitsExclusive')}}</view>
+    <view wx:if="{{goodsItem.isFirstOrder}}" class="reduce_price">{{i18n.$t(localePack,'components.decorate.newRecruitsExclusive')}}</view>
     <!--限时降价商品图片tip-->
-    <view wx:if="{{goosItem.isLimitedPrice}}" class="reduce_price">{{i18n.$t(localePack,'components.decorate.limitedPriceReduction')}}</view>
+    <view wx:if="{{goodsItem.isLimitedPrice}}" class="reduce_price">{{i18n.$t(localePack,'components.decorate.limitedPriceReduction')}}</view>
     <!--砍价-->
-    <view wx:if="{{goosItem.isBargain}}" class="bargain">{{goosItem.realPrice===null?"0.00":goosItem.realPrice}}{{i18n.$t(localePack,'components.decorate.yuanChopAway')}}</view>
+    <view wx:if="{{goodsItem.isBargain}}" class="bargain">{{goodsItem.realPrice===null?"0.00":goodsItem.realPrice}}{{i18n.$t(localePack,'components.decorate.yuanChopAway')}}</view>
     <!--多人拼团-->
-    <view wx:if="{{goosItem.assemble}}" class="bargain">{{i18n.$t(localePack,'components.decorate.establishaProvince')}}{{goosItem.discountPrice===null?"0.00":goosItem.discountPrice}}{{i18n.$t(localePack,'components.decorate.element')}}</view>
+    <view wx:if="{{goodsItem.assemble}}" class="bargain">{{i18n.$t(localePack,'components.decorate.establishaProvince')}}{{goodsItem.groupDiscountPrice===null?"0.00":goodsItem.groupDiscountPrice}}{{i18n.$t(localePack,'components.decorate.element')}}</view>
   </view>
   <view class="goods_bottom">
-    <view class="goods_name {{goosItem.activityLabelData.length > 0 ? 'one_line' : 'two_lines'}}">{{goosItem.goodsName}}</view>
-    <view class="goods_coupon" wx:if="{{goosItem.activityLabelData.length > 0}}">
-      <block wx:for="{{goosItem.activityLabelData}}" wx:for-item="labelItem" wx:key="index">
+    <view class="goods_name {{goodsItem.activityLabelData.length > 0 ? 'one_line' : 'two_lines'}}">{{goodsItem.goodsName}}</view>
+    <view class="goods_coupon" wx:if="{{goodsItem.activityLabelData.length > 0}}">
+      <block wx:for="{{goodsItem.activityLabelData}}" wx:for-item="labelItem" wx:key="index">
         <view class="coupon_item" wx:if="index < 2" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{labelItem.text}}</view>
       </block>
     </view>
     <view class="goods_price">
-      <text class="price" style="color:{{main_setting.comColor}};">￥{{goosItem.realPrice===null?'0.00':goosItem.realPrice}}</text>
+      <text class="price" style="color:{{main_setting.comColor}};">￥{{goodsItem.realPrice===null?'0.00':goodsItem.realPrice}}</text>
       <!-- <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}};"></text> -->
     </view>
   </view>

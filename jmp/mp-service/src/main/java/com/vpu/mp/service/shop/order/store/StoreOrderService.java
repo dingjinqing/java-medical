@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.store;
 
 import com.vpu.mp.db.shop.tables.StoreOrder;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -18,12 +19,14 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.store.StoreOrderTran;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
@@ -45,6 +48,8 @@ import org.springframework.util.comparator.Comparators;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -62,8 +67,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NOR
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_WX_PAY;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.WAIT_TO_PAY;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.WAIT_TO_PAY_NAME;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.*;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY_EACH;
 import static java.math.BigDecimal.*;
@@ -180,9 +184,10 @@ public class StoreOrderService extends ShopBaseService {
 
     public StoreOrderInfoVo get(String orderSn) {
         return db().select(TABLE.ORDER_ID, TABLE.ORDER_SN, TABLE.ORDER_STATUS, TABLE.STORE_ID, TABLE.PAY_TIME, TABLE.MONEY_PAID, TABLE.PAY_CODE, TABLE.PAY_NAME,
-            TABLE.MEMBER_CARD_BALANCE, TABLE.MEMBER_CARD_REDUCE, TABLE.SCORE_DISCOUNT, TABLE.USE_ACCOUNT, TABLE.ORDER_AMOUNT, TABLE.MONEY_PAID, TABLE.ADD_MESSAGE, TABLE.CURRENCY,
+            TABLE.MEMBER_CARD_BALANCE, TABLE.MEMBER_CARD_REDUCE, TABLE.SCORE_DISCOUNT, TABLE.USE_ACCOUNT
+            , TABLE.ORDER_AMOUNT, TABLE.MONEY_PAID, TABLE.ADD_MESSAGE, TABLE.CURRENCY,
             USER.USERNAME,
-            STORE.STORE_NAME,
+            STORE.STORE_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.LATITUDE, STORE.LONGITUDE,
             INVOICE.TYPE, INVOICE.TITLE, INVOICE.TAXNUMBER.as("taxNumber"), INVOICE.COMPANYADDRESS.as("companyAddress"))
             .from(TABLE)
             .leftJoin(USER).on(USER.USER_ID.eq(TABLE.USER_ID))
@@ -192,13 +197,21 @@ public class StoreOrderService extends ShopBaseService {
             .fetchOneInto(StoreOrderInfoVo.class);
     }
 
-    private static final String PREFIX = "D";
+    /**
+     * Fetch store order store order record.
+     *
+     * @param orderSn the order sn
+     * @return the store order record
+     */
+    public StoreOrderRecord fetchStoreOrder(String orderSn) {
+        return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOneInto(TABLE);
+    }
 
     /**
      * 生成门店买单订单号
      */
     public String generateOrderSn() {
-        return IncrSequenceUtil.generateOrderSn(PREFIX);
+        return IncrSequenceUtil.generateOrderSn(STORE_ORDER_SN_PREFIX);
     }
 
     /**
@@ -293,7 +306,8 @@ public class StoreOrderService extends ShopBaseService {
                 // 积分变动数额
                 setScore(scoreValue);
                 setOrderSn(orderSn);
-                setRemark(orderSn);
+                setRemarkData(orderSn);
+                //setRemark(orderSn);
             }};
             log.debug("积分抵扣金额:{}", scoreAmount);
             moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);
@@ -315,7 +329,7 @@ public class StoreOrderService extends ShopBaseService {
                 setPayment(PAY_CODE_BALANCE_PAY);
                 // 支付类型，0：充值，1：消费
                 setIsPaid(BYTE_ONE);
-                setRemark(orderSn);
+                setUserInputRemark(orderSn);
             }};
             log.debug("余额抵扣金额:{}", balanceAmount);
             moneyPaid = moneyPaid.subtract(balanceAmount).setScale(2, RoundingMode.UP);
@@ -521,7 +535,8 @@ public class StoreOrderService extends ShopBaseService {
                         setScoreStatus(NO_USE_SCORE_STATUS);
                         setDesc("score");
                         setOrderSn(orderSn);
-                        setRemark("门店支付得积分");
+                        setRemarkCode(RemarkTemplate.ORDER_STORE_SCORE.code);
+                        //setRemark("门店支付得积分");
                     }
                 },
                 INTEGER_ZERO,
@@ -531,5 +546,25 @@ public class StoreOrderService extends ShopBaseService {
             log.error("门店买单支付送积分失败,原因如下:{}", e.getMessage());
             throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
+    }
+
+
+    /**
+     * Finish pay callback.
+     *
+     * @param storeOrder the store order
+     * @param payment    the payment
+     */
+    public void finishPayCallback(StoreOrderRecord storeOrder, PaymentRecordRecord payment) {
+        // WxPayException
+        PaymentVo paymentVo = paymentService.getPaymentInfo(payment.getPayCode());
+        updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrder.getOrderSn()), new StoreOrderRecord() {{
+            setPayTime(Timestamp.valueOf(LocalDateTime.now()));
+            setOrderStatus(PAY_SUCCESS);
+            setOrderStatusName(PAY_SUCCESS_NAME);
+            setPaySn(payment.getPaySn());
+            setPayCode(payment.getPayCode());
+            setPayName(Objects.nonNull(paymentVo) ? paymentVo.getPayName() : StringUtils.EMPTY);
+        }});
     }
 }

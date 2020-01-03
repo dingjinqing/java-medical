@@ -66,7 +66,7 @@ public class WxUserCardService extends ShopBaseService {
 		
 	}
 	
-	public UserCardMaParam getUseList(CardUseListParam param) {
+	public UserCardMaParam getUseList(CardUseListParam param,String language) {
 		Record userCardInfo = userCardService.userCardDao.getUserCardInfoBycardNo(param.getCardNo());
 		if(userCardInfo==null) {
 			//该卡不存在
@@ -80,12 +80,12 @@ public class WxUserCardService extends ShopBaseService {
 		Byte showType = param.getShowType();
 		if(showType.equals(ONE)) {
 			logger().info("showType为1");
-			PageResult<ChargeVo> chargeList = userCardService.cardDao.getChargeList(param2);
+			PageResult<ChargeVo> chargeList = userCardService.cardDao.getChargeList(param2,language);
 			into.setChargeList(chargeList);
 		}
 		if(showType.equals(NEONE)) {
 			logger().info("showType为-1");
-			PageResult<ChargeVo> consumeList = userCardService.cardDao.getConsumeList(param2);
+			PageResult<ChargeVo> consumeList = userCardService.cardDao.getConsumeList(param2,language);
 			into.setChargeList(consumeList);
 		}
 		return into;

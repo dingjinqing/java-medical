@@ -27,6 +27,8 @@ public class RefundVo {
 	private Map<String , BigDecimal> returnAmountMap;
 	/** 可退运费 */
 	private BigDecimal returnShippingFee;
+	/**订单类型*/
+	private String[] orderType;
 	@Data
 	public static class RefundVoGoods {
 
