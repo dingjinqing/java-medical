@@ -22,11 +22,21 @@
                 label="0"
               >自定义</el-radio>
               <el-input
-                :disabled="data.pin_title==='0'?true:false"
+                :disabled="data.pin_title==='1'?true:false"
                 v-model="data.pin_title_text"
                 size="small"
               ></el-input><i style="color: #999;font-size:12px">限制14字，为空不显示</i>
             </div>
+          </div>
+        </div>
+        <div
+          class="list"
+          style="margin-top:20px"
+        >
+          <span>隐藏内容：</span>
+          <div>
+            <el-checkbox v-model="data.hide_active">活动内容</el-checkbox>
+            <el-checkbox v-model="data.hide_time">有效期</el-checkbox>
           </div>
         </div>
       </div>
@@ -68,7 +78,22 @@ export default {
     sortIndex: { // 模块公共
       handler (newData) {
         console.log(newData, this.modulesData)
-        this.data = this.modulesData
+        if (this.modulesData) {
+          console.log(typeof this.modulesData.hide_active)
+          if (this.modulesData.hide_active === '1') {
+            this.modulesData.hide_active = true
+            console.log('触发')
+          } else {
+            this.modulesData.hide_active = false
+          }
+          if (this.modulesData.hide_time === '1') {
+            this.modulesData.hide_time = true
+          } else {
+            this.modulesData.hide_time = false
+          }
+          console.log(this.modulesData)
+          this.data = this.modulesData
+        }
       },
       immediate: true
     },
@@ -76,6 +101,16 @@ export default {
     data: { // 模块公共
       handler (newData) {
         console.log(newData)
+        if (newData.hide_active) {
+          newData.hide_active = '1'
+        } else {
+          newData.hide_active = '0'
+        }
+        if (newData.hide_time) {
+          newData.hide_time = '1'
+        } else {
+          newData.hide_time = '0'
+        }
         this.$emit('handleToBackData', newData)
       },
       deep: true
