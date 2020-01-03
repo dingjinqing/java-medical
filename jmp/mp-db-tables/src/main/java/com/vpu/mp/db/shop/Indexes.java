@@ -29,6 +29,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index PRIZE_RECORD_PRIMARY = Indexes0.PRIZE_RECORD_PRIMARY;
     public static final Index CART_PRIMARY = Indexes0.CART_PRIMARY;
     public static final Index CART_USER_ID = Indexes0.CART_USER_ID;
     public static final Index COOPEN_ACTIVITY_PRIMARY = Indexes0.COOPEN_ACTIVITY_PRIMARY;
@@ -484,6 +485,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index PRIZE_RECORD_PRIMARY = Internal.createIndex("PRIMARY", PrizeRecord.PRIZE_RECORD, new OrderField[] { PrizeRecord.PRIZE_RECORD.ID }, true);
         public static Index PAY_AWARD_PRIZE_PRIMARY = Internal.createIndex("PRIMARY", PayAwardPrize.PAY_AWARD_PRIZE, new OrderField[] { PayAwardPrize.PAY_AWARD_PRIZE.ID }, true);
         public static Index COMMENT_AWARD_PRIMARY = Internal.createIndex("PRIMARY", CommentAward.COMMENT_AWARD, new OrderField[] { CommentAward.COMMENT_AWARD.ID }, true);
         public static Index GROUP_BUY_LIST_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyList.GROUP_BUY_LIST, new OrderField[] { GroupBuyList.GROUP_BUY_LIST.ID }, true);

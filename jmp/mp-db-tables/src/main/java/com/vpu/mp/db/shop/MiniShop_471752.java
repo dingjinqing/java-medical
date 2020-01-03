@@ -30,6 +30,10 @@ public class MiniShop_471752 extends SchemaImpl {
 
     private static final long serialVersionUID = -390755599;
 
+    /**
+     * The table <code>mini_shop_4748160.b2c_prize_record</code>.
+     */
+    public final PrizeRecord PRIZE_RECORD = com.vpu.mp.db.shop.tables.PrizeRecord.PRIZE_RECORD;
 
     /**
      * The table <code>mini_shop_4748160.b2c_pay_award_prize</code>.

@@ -4830,7 +4830,7 @@ CREATE TABLE `b2c_coopen_activity_records`
     PRIMARY KEY (`id`)
 );
 
---小程序订阅消息
+-- 小程序订阅消息
 -- drop table if exists `b2c_subscribe_message`;
 CREATE TABLE `b2c_subscribe_message` (
   `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -4848,4 +4848,23 @@ CREATE TABLE `b2c_subscribe_message` (
   KEY `wx_openid` (`wx_openid`),
   KEY `template_id` (`template_id`),
   KEY `template_no` (`template_no`)
+);
+
+-- 我的奖品记录
+-- DROP TABLE IF EXISTS `b2c_prize_record`;
+CREATE TABLE `b2c_prize_record`
+(
+    `id`            INT(11)     NOT NULL auto_increment,
+    `user_id`       INT(10)     NOT NULL COMMENT '用户编号',
+    `activity_id`   INT(10)     NOT NULL COMMENT '活动id',
+    `record_id`     INT(10)     NOT NULL COMMENT '活动记录id',
+    `activity_type` TINYINT(1)  NOT NULL DEFAULT '0' COMMENT '奖品来源 0幸运大抽奖，1好友助力，2测评 3支付有礼',
+    `prd_id`        INT(10)     NOT NULL DEFAULT '0' COMMENT '商品（规格）编号',
+    `order_sn`      VARCHAR(60) NOT NULL DEFAULT '' COMMENT '关联订单',
+    `prize_status`  TINYINT(1)  NOT NULL DEFAULT '0' COMMENT '赠品状态:0.待领取，1：已领取，2.已过期',
+    `expired_day`   INT(10)              DEFAULT '7' NULL COMMENT '赠品过期时间',
+    `expired_time`  TIMESTAMP            DEFAULT CURRENT_TIMESTAMP NULL COMMENT '赠品过期时间',
+    `create_time`   TIMESTAMP            DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   TIMESTAMP            DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`)
 );

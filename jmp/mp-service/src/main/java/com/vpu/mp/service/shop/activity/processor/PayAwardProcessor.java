@@ -20,9 +20,9 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
-import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardRecordService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardService;
+import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -58,6 +58,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RE
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_COD;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_PAY_AWARD;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
@@ -82,7 +83,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     @Autowired
     private OrderInfoService orderInfoService;
     @Autowired
-    private LotteryService lotteryService;
+    private PrizeRecordService prizeRecordService;
     @Autowired
     private JedisManager jedisManager;
     @Override
@@ -204,7 +205,6 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             case GIVE_TYPE_GOODS:
                 logger().info("奖品");
                 if (canSendAwardFlag){
-                    //TODO ...
                     payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_UNRECEIVED);
                 }else {
                     payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
@@ -327,6 +327,9 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             order.setPayAwardId(payAward.getId());
             sendAward(canSendAwardFlag, order, payAward, payAwardContentBo, payAwardRecordRecord);
             payAwardRecordRecord.insert();
+            if (canSendAwardFlag&&payAwardContentBo.getGiftType().equals(GIVE_TYPE_GOODS)){
+                prizeRecordService.savePrize(order.getUserId(),payAward.getId(),payAwardContentBo.getId(),PRIZE_SOURCE_PAY_AWARD,payAwardContentBo.getProductId(),payAwardContentBo.getKeepDays());
+            }
         } catch (Exception e) {
             logger().error("支付有礼活动异常");
             e.printStackTrace();
