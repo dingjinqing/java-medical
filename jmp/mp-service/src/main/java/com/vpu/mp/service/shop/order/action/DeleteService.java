@@ -49,11 +49,11 @@ public class DeleteService  extends ShopBaseService implements IorderOperate <Or
         logger().info("订单删除start");
 		OrderListMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderListMpVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		if(!OrderOperationJudgment.isDelete(order)) {
             logger().error("该订单不可删除");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_DELETE_OPERATION_NOT_SUPPORTED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_DELETE_OPERATION_NOT_SUPPORTED, null);
 		}		
 		orderInfo.delete(order);
 		//操作记录
