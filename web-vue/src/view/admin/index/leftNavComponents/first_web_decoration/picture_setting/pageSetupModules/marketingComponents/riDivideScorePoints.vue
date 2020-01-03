@@ -24,6 +24,7 @@
               <el-input
                 :disabled="data.pin_title==='1'?true:false"
                 v-model="data.pin_title_text"
+                :maxlength="14"
                 size="small"
               ></el-input><i style="color: #999;font-size:12px">限制14字，为空不显示</i>
             </div>
@@ -62,16 +63,20 @@
           v-if="data.module_bg==='1'"
         >
           <span></span>
-          <div class="add_bgs">
+          <div
+            class="add_bgs"
+            @click="handleToAddActPic()"
+          >
             <div style="color: #5a8bff;margin: 27px 0 5px 0;"><img :src="$imageHost+'/image/admin/icon_jia.png'">添加一个背景图</div>
             <div style="color: #999;font-size: 12px">建议宽度720像素以内，高度300像素以内</div>
             <img
+            v-if="data.module_img"
+            :src="data.module_img"
               class="pin_ig"
-              style="display: none;"
             >
             <div
               class="change-img2"
-              style="display: none;"
+              v-if="data.module_img"
             >更换图片</div>
           </div>
           <div></div>
@@ -130,6 +135,7 @@
       pageIndex='pictureSpace'
       :imageSize="[720,330]"
       :tuneUp="tuneUp"
+      @handleSelectImg="handleSelectImg"
     />
   </div>
 </template>
@@ -222,6 +228,9 @@ export default {
     },
     hide_time (newVal) {
       this.handleToSendData()
+    },
+    'ruleForm.act_id' (newVal) {
+      this.modulesData.act_id = newVal
     }
   },
   mounted () {
@@ -273,6 +282,15 @@ export default {
     handlevisibleChange (res) {
       console.log(res)
       this.isFirstClick = false
+    },
+    // 调用图片弹窗
+    handleToAddActPic () {
+      this.tuneUp = !this.tuneUp
+    },
+    // 图片弹窗选中回传
+    handleSelectImg (res) {
+      console.log(res)
+      this.data.module_img = res.imgUrl
     }
   }
 }
