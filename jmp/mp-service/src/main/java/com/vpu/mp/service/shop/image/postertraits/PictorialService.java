@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.image.postertraits;
 
+import com.upyun.UpException;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
@@ -10,7 +11,9 @@ import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
+import com.vpu.mp.service.pojo.wxapp.share.PictorialRule;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialUserInfo;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -21,10 +24,12 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.Timestamp;
 
 import static com.vpu.mp.db.shop.Tables.PICTORIAL;
 
@@ -52,7 +57,7 @@ public class PictorialService extends ShopBaseService {
         UserInfo userInfo = user.getUserInfo(userId);
 
         String userName = StringUtils.isBlank(userInfo.getUsername()) ?
-            Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_DEFAULT_USER_NAME, "messages", null)
+            Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_DEFAULT_USER_NAME, "messages")
             : userInfo.getUsername();
         BufferedImage userAvatarImage;
         if (StringUtils.isBlank(userInfo.getUserAvatar())) {
@@ -138,7 +143,7 @@ public class PictorialService extends ShopBaseService {
         ImageUtil.addTwoImage(bgBufferedImage,qrCodeImg,imgPx.getQrCodeStartX(),imgPx.getBottomStartY());
 
         // 设置原价
-        String realPriceStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages", null)
+        String realPriceStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")
             +realPrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         ImageUtil.addFont(bgBufferedImage,realPriceStr,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),imgPx.getBgPadding(),imgPx.getPriceY(),imgPx.getRealPriceColor());
 
@@ -188,6 +193,64 @@ public class PictorialService extends ShopBaseService {
     BufferedImage createPictorialBgImage(PictorialUserInfo userInfo,ShopRecord shop,BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName,BigDecimal realPrice,BigDecimal linePrice){
         return  createPictorialBgImage(userInfo,shop,qrCodeImg,goodsImg,shareDoc,goodsName,realPrice,linePrice,new PictorialImgPx());
     }
+
+
+    /**
+     * 将待分享图片上传到U盘云，并在数据库缓存记录
+     * @param bufferedImage 待上传图片
+     * @param relativePath 相对路径
+     * @param pictorialRule 缓存规则
+     * @param goodsId 商品ID
+     * @param pictorialRecord 对应的记录行
+     * @param userId 用户ID
+     * @throws UpException 上传异常
+     * @throws IOException 文件io异常
+     */
+    public void uploadToUpanYun(BufferedImage bufferedImage, String relativePath, PictorialRule pictorialRule,Integer goodsId, PictorialRecord pictorialRecord, Integer userId) throws UpException, IOException {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+            // 上传upanyun
+            this.imageService.getUpYunClient().writeFile(relativePath, byteArrayOutputStream.toByteArray(), true);
+        } catch (IOException e) {
+            logger().debug("小程序-图片上传u盘云操作错误："+e.getMessage());
+            throw e;
+        }
+
+        // 新增
+        if (pictorialRecord == null) {
+            pictorialRecord = new PictorialRecord();
+            pictorialRecord.setAction(PictorialConstant.GROUP_BUY_ACTION_SHARE);
+            pictorialRecord.setPath(relativePath);
+            pictorialRecord.setUserId(userId);
+            pictorialRecord.setIdentityId(goodsId);
+            pictorialRecord.setRule(Util.toJson(pictorialRule));
+            addPictorialDao(pictorialRecord);
+        } else {
+            // 更新
+            pictorialRecord.setPath(relativePath);
+            pictorialRecord.setRule(Util.toJson(pictorialRule));
+            updatePictorialDao(pictorialRecord);
+        }
+    }
+
+
+    /**
+     * 判断Pictorial内存的数据是否还有效
+     * @param rule 判断规则
+     * @param goodsUpdateTime 商品更新时间
+     * @param activityUpdateTime 活动更新时间
+     * @return true 缓存有效，false 无效
+     */
+    public boolean isGoodsSharePictorialRecordCanUse(String rule, Timestamp goodsUpdateTime, Timestamp activityUpdateTime) {
+        PictorialRule pictorialRule = Util.parseJson(rule, PictorialRule.class);
+        // 之前生成的图片依然可用，则直接返回其在upanyun上的相对路径
+        if (pictorialRule.getGoodsUpdateTime().compareTo(goodsUpdateTime) >= 0 && pictorialRule.getActivityUpdateTime().compareTo(activityUpdateTime) >= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * 根据过了条件查询指定的记录
