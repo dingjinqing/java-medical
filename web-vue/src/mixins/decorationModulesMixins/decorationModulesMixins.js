@@ -99,6 +99,18 @@ export default {
           break
         case 6: // 拼团抽奖
           obj = {
+            module_name: 'm_group_draw',
+            group_draw_id: '', // 拼团抽奖活动id
+            name_set: '0', // 是否使用默认活动标题 0 使用 1不使用
+            group_draw_name: '', // 自定义活动标题
+            show_clock: '1', // 是否显示活动倒计时 0 隐藏 1显示
+            font_color: '#ffffff', // 字体颜色
+            module_bg: '0', // 活动底图 0 默认 1自定义
+            module_img: '' // 活动底图路径
+          }
+          break
+        case 7: // 瓜分积分
+          obj = {
             'module_name': 'm_pin_integration',
             'act_id': '88', // 活动id
             'pin_title': '0', // 标题 radio 1 0
@@ -107,15 +119,6 @@ export default {
             'hide_time': '1', // 隐藏内容 有效期
             'module_bg': '1', // 活动地图radio 0 1
             'module_img': '', // 自定义活动地图
-            'font_color': null
-          }
-          break
-        case 7: // 瓜分积分
-          obj = {
-            'module_name': 'm_pin_integration',
-            'act_id': '88',
-            'pin_title': '1',
-            'module_bg': '0',
             'font_color': null
           }
           break
