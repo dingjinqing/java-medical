@@ -240,8 +240,14 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         }
     }
 
+    /**
+     * 改库存
+     *
+     * @param param CreateParams
+     * @throws MpException
+     */
     @Override
-    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
         if (order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY) {
             for (OrderBeforeParam.Goods goods : param.getGoods()) {
                 boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());

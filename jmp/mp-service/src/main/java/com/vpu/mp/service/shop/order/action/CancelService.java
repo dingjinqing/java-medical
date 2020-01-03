@@ -80,11 +80,11 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 	public ExecuteResult execute(OrderOperateQueryParam param) {
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		if(!OrderOperationJudgment.mpIsCancel(order)) {
             logger().error("该订单不能取消");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_NOT_CANCEL, null);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_NOT_CANCEL);
 		}
 		try {
 			transaction(()->{
@@ -98,7 +98,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 				//库存更新
 			});
 		} catch (Exception e) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_FAIL, null);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_FAIL);
 		}
 		//订单状态记录
 		orderAction.addRecord(order, param, order.getOrderStatus() , "买家取消订单");

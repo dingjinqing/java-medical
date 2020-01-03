@@ -348,7 +348,7 @@ public class OrderGoodsService extends ShopBaseService{
                 //限时降价
                 type.add(OrderConstant.GOODS_TYPE_REDUCE_PRICE);
             }
-            if(!NumberUtils.INTEGER_ZERO.equals(bo.getFirstSpecialId())){
+            if(bo.getFirstSpecialId() != null){
                 //首单特惠
                 type.add(OrderConstant.GOODS_TYPE_FIRST_SPECIAL);
             }

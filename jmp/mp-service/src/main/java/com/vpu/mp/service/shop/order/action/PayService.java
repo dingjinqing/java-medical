@@ -19,10 +19,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
@@ -46,7 +44,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -91,11 +88,6 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     private GroupBuyListService groupBuyListService;
     @Autowired
     private GroupBuyService groupBuyService;
-    /**
-     * 营销活动processorFactory
-     */
-    @Autowired
-    private OrderCreateMpProcessorFactory marketProcessorFactory;
     @Override
     public Object query(OrderOperateQueryParam param) {
         return null;
@@ -105,10 +97,10 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     public ExecuteResult execute(PayParam param) {
         OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
         if (order == null) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
         }
         if (order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY, null);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY);
         }
         //过期校验
         long currenTmilliseconds = Instant.now().toEpochMilli();
@@ -116,15 +108,15 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             //定金订单
             Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
             if (timeInterval.value1().getTime() < currenTmilliseconds) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START, null);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START);
             }
             if (currenTmilliseconds > timeInterval.value2().getTime()) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
             }
         } else {
             //普通订单
             if (order.getExpireTime().getTime() < currenTmilliseconds) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
             }
         }
         //订单商品

@@ -185,7 +185,6 @@ public class BaseController {
 			response.setContentType("application/octet-stream;charset=UTF-8");
 			String encodeFileName = URLEncoder.encode(fileName + ".xlsx", "utf-8");
 			response.setHeader("Content-Disposition", "attachment;filename=" + encodeFileName);
-            response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
 			workbook.write(response.getOutputStream());
 		} catch (IOException e) {
 			e.printStackTrace();

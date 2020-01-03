@@ -142,7 +142,12 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     @Override
-    public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
 
     }
 
