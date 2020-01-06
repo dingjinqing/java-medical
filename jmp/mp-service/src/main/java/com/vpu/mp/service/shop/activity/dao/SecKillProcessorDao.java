@@ -194,8 +194,12 @@ public class SecKillProcessorDao extends ShopBaseService {
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
             }
 
+            //修改库存
             db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,seckillStock - goods.getGoodsNumber()).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
             db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,seckillPrdStock - goods.getGoodsNumber()).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
+
+            //秒杀记录
+            seckillService.seckillList.addSecRecord(order,param.getGoods().get(0).getGoodsId());
         }
 
     }

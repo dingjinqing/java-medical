@@ -240,14 +240,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         }
     }
 
-    /**
-     * 改库存
-     *
-     * @param param CreateParams
-     * @throws MpException
-     */
     @Override
-    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         if (order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY) {
             for (OrderBeforeParam.Goods goods : param.getGoods()) {
                 boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
@@ -255,14 +249,16 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                     throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
                 }
             }
-            List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
-            ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
-            if (goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
-                GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
-                String goodsName =goods.get(0).getGoodsName();
-                String goodsPrice =goods.get(0).getGoodsPrice().toString();
-                groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
-            }
         }
+
+        List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
+        ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        if (goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
+            GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
+            String goodsName =goods.get(0).getGoodsName();
+            String goodsPrice =goods.get(0).getGoodsPrice().toString();
+            groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
+        }
+
     }
 }

@@ -3,8 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.reduceprice;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import lombok.Data;
 
 
@@ -37,14 +36,18 @@ public class ReducePriceVo {
     private String pointTime;
 
     /** 每月第几日；每周第几天 */
-    private Byte extendTime;
+    private String extendTime;
 
     /** 超限购买设置标记，1禁止超限购买，0超限全部恢复原价 */
     private Byte limitFlag;
+
+    /** 优先级 */
+    private Byte first;
 
     /** 改价的商品数组 */
     private List<ReducePriceGoodsVo> reducePriceGoods;
 
     /** 分享设置 */
-    private ShopShareConfig shopShareConfig;
+    private String shareConfig;
+    private PictorialShareConfigVo shopShareConfig;
 }

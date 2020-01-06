@@ -3,7 +3,6 @@ package com.vpu.mp.controller.wxapp;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -177,5 +176,28 @@ public class WxAppAccountController extends WxAppBaseController {
 		}
 		MpAuditStateVo appAuditInfo = saas.shop.mp.getAppAuditInfo(shopId);
 		return success(appAuditInfo.getAuditState());
+	}
+	
+	/**
+	 * 获取用户待激活信息
+	 * @return
+	 */
+	@PostMapping(value = "/api/wxapp/user/waitactivate")
+	public JsonResult waitActivateUser() {
+		return success(shop().member.userImportService.getActivationNotice());
+	}
+	
+	
+	/**
+	 * 用户待激活
+	 * @return
+	 */
+	@PostMapping(value = "/api/wxapp/user/toactivate")
+	public JsonResult toActivateUser() {
+		JsonResultCode activateUser = shop().member.userImportService.toActivateUser(wxAppAuth.user().getUserId());
+		if(activateUser.equals(JsonResultCode.CODE_SUCCESS)) {
+			return success();
+		}
+		return fail(activateUser);
 	}
 }

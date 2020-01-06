@@ -8,7 +8,10 @@
     <view class="goods-info">
       <view class="goods-info_top">
         <view class="goods_name" data-typs="give_gift" bindtap="getNeedTemplateId">
-        {{goodsInfo.goodsName}}
+        <view class="goods-tag" wx:if="{{goodsInfo.activity.activityType === 1}}" style="border-color:{{comColor}};color:{{comColor}};background:{{somColor}};">{{goodsInfo.activity.limitAmount}}人团</view>
+        <view class="name">
+          {{goodsInfo.goodsName}}
+        </view>
         </view>
         <view class="goods_operate">
           <view class="goods_share" bindtap="share">
@@ -32,10 +35,11 @@
       <view class="flex-wrap">
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">剩余可秒杀数量：{{goodsInfo.activity.stock}}个</view>
         <view class="flex-item" wx:else>库存：{{goodsInfo.goodsNumber}}个</view>
-        <view class="flex-item" wx:if="{{goodsInfo.activity.activityType !== 5}}">销量：{{goodsInfo.goodsSaleNum}}</view>
+        <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 1}}">已团：{{goodsInfo.activity.groupBuySuccessCount}}</view>
+        <view class="flex-item" wx:if="{{goodsInfo.activity.activityType !== 5 && goodsInfo.activity.activityType !== 1}}">销量：{{goodsInfo.goodsSaleNum}}</view>
         <view class="flex-item">运费：{{goodsInfo.deliverPrice}}</view>
       </view>
-      <view class="flex-wrap" wx:if="{{goodsInfo.activity.activityType !== 5}}">
+      <view class="flex-wrap" wx:if="{{goodsInfo.activity.activityType !== 5 && goodsInfo.activity.activityType !== 1}}">
         <view class="flex-item">配送：快递</view>
         <view class="flex-item">门店自提 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
         <view class="flex-item">同城配送 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
@@ -70,8 +74,8 @@
       <view class="item_line" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}"></view>
     </v-sel-spec>
     <!-- 拼团提示 -->
-    <block wx:if="{{specParams.activity.activityType === 1 && groupBuyListMpVos.length > 0}}">
-      <view class="flex_outside_box" >
+    <block wx:if="{{specParams.activity.activityType === 1}}">
+      <view class="flex_outside_box" wx:if="{{ groupBuyListMpVos.length > 0 }}">
         <view class="flex_box">
           <view class="item_left"><text style="color:{{comColor}}">{{groupBuyListMpVos.length}}个</text>小伙伴正在开团，可直接参与</view>
         </view>
@@ -100,6 +104,21 @@
         <view><view>1</view><text>选择商品，付款开团/参团</text></view>
         <view><view>2</view><text>邀请好友,支付参团</text></view>
         <view><view>3</view><text>满员发货，不满自动退款</text></view>
+      </view>
+    </block>
+
+    <block wx:if="{{specParams.activity.activityType === 3}}">
+      <view class="flex_outside_box" >
+        <view class="flex_box">
+          <view class="item_left">砍价规则</view>
+          <view class="item_right">详细规则></view>
+        </view>
+      </view>
+      <view class="item_line"></view>
+      <view class="flex_box group">
+        <view><view>1</view><text>点击下方“砍价拿”按钮开始</text></view>
+        <view><view>2</view><text>邀请好友来砍价</text></view>
+        <view><view>3</view><text>砍价成功，商品低价拿</text></view>
       </view>
     </block>
     

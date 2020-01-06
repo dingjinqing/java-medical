@@ -163,6 +163,11 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png'
     }
   },
+  watch: {
+    lang () {
+      this.getUserDetailScoreData()
+    }
+  },
   methods: {
     // 处理分页查询
     dealWithPagination () {
@@ -192,7 +197,9 @@ export default {
           // 装载数据
           this.trList = res.content.dataList
           // 表格可视化
-          this.tbodyFlag = true
+          if (this.trList.length > 0) {
+            this.tbodyFlag = true
+          }
           // 分页信息
           this.pageParams = res.content.page
           // 清除id

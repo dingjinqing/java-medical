@@ -2,37 +2,37 @@
   <!-- 会员导入 -->
   <div class="member-introduction-page">
     <el-dialog
-      title="会员导入"
+      :title="$t('memberIntroductionDialog.memberImport')"
       :visible.sync="dialogVisible"
       width="700"
       custom-class="mi-dialog"
       v-loading="loading"
     >
       <div class="mi-content">
-        <h2 class="mi-title">第一步：模板下载</h2>
+        <h2 class="mi-title">{{$t('memberIntroductionDialog.templateDownload')}}</h2>
         <div class="mi-model">
-          下载模板：<el-button
+          {{$t('memberIntroductionDialog.downloadTemplate')}}<el-button
             type="text"
             @click="downloadTemplate"
-          >会员导入文件模板</el-button>
+          >{{$t('memberIntroductionDialog.template')}}</el-button>
           <div>
             <el-checkbox
               v-model="importInfo.cardCheck"
               :checked="!!importInfo.cardCheck"
-            >批量发放会员卡</el-checkbox>
+            >{{$t('memberIntroductionDialog.bulkCard')}}</el-checkbox>
             <div
               class="mi-model-con"
               v-if="importInfo.cardCheck"
             >
               <ul>
                 <li>
-                  普通会员卡
+                  {{$t('memberIntroductionDialog.ordinaryCard')}}
                   <el-select
                     size="small"
                     v-model="importInfo.regularCard"
                   >
                     <el-option
-                      label="请选择会员卡"
+                      :label="$t('memberIntroductionDialog.psCard')"
                       value=""
                     ></el-option>
                     <el-option
@@ -44,13 +44,13 @@
                   </el-select>
                 </li>
                 <li>
-                  限次会员卡
+                  {{$t('memberIntroductionDialog.limitedCard')}}
                   <el-select
                     size="small"
                     v-model="importInfo.limitCard"
                   >
                     <el-option
-                      label="请选择会员卡"
+                      :label="$t('memberIntroductionDialog.psCard')"
                       value=""
                     ></el-option>
                     <el-option
@@ -62,13 +62,13 @@
                   </el-select>
                 </li>
                 <li>
-                  等级会员卡
+                  {{$t('memberIntroductionDialog.levelCard')}}
                   <el-select
                     size="small"
                     v-model="importInfo.levelCard"
                   >
                     <el-option
-                      label="请选择会员卡"
+                      :label="$t('memberIntroductionDialog.psCard')"
                       value=""
                     ></el-option>
                     <el-option
@@ -80,25 +80,25 @@
                   </el-select>
                 </li>
               </ul>
-              <p class="tips">导入并激活后，将自动给被导入的用户发放会员卡</p>
+              <p class="tips">{{$t('memberIntroductionDialog.afterImport')}}</p>
             </div>
           </div>
           <div style="margin-top: 15px;">
             <el-checkbox
               v-model="importInfo.tagCheck"
               :checked="!!importInfo.tagCheck"
-            >批量打标签</el-checkbox>
+            >{{$t('memberIntroductionDialog.batchTag')}}</el-checkbox>
             <div
               class="mi-model-con"
               v-if="importInfo.tagCheck"
             >
-              <span>选择标签</span>
+              <span>{{$t('memberIntroductionDialog.chooseTag')}}</span>
               <el-select
                 size="small"
                 v-model="importInfo.tagId"
               >
                 <el-option
-                  label="请选择标签"
+                  :label="$t('memberIntroductionDialog.psTag')"
                   value=""
                 ></el-option>
                 <el-option
@@ -108,25 +108,25 @@
                   :value="tag.id"
                 ></el-option>
               </el-select>
-              <p class="tips">导入并激活后，将自动给被导入的用户打标签</p>
+              <p class="tips">{{$t('memberIntroductionDialog.afterActivating')}}</p>
             </div>
           </div>
           <div style="margin-top: 15px;">
             <el-checkbox
               v-model="importInfo.groupCheck"
               :checked="!!importInfo.tagCheck"
-            >批量设置分销员分组</el-checkbox>
+            >{{$t('memberIntroductionDialog.setDistributor')}}</el-checkbox>
             <div
               class="mi-model-con"
               v-if="importInfo.groupCheck"
             >
-              选择分组
+              {{$t('memberIntroductionDialog.selectGroup')}}
               <el-select
                 size="small"
                 v-model="importInfo.groupId"
               >
                 <el-option
-                  label="未分组"
+                  :label="$t('memberIntroductionDialog.unclassified')"
                   value=""
                 ></el-option>
                 <el-option
@@ -136,14 +136,14 @@
                   :value="group.id"
                 ></el-option>
               </el-select>
-              <p class="tips">导入并激活后，将自动给被导入的用户设置分销员分组</p>
+              <p class="tips">{{$t('memberIntroductionDialog.afterGroup')}}</p>
             </div>
           </div>
         </div>
-        <h2 class="mi-title">第二步：数据导入</h2>
+        <h2 class="mi-title">{{$t('memberIntroductionDialog.dataImport')}}</h2>
         <div class="mi-model">
           <div class="mi-flex">
-            <span class="flex-title">上传文件：</span>
+            <span class="flex-title">{{$t('memberIntroductionDialog.uploadFiles')}}</span>
             <el-input
               v-model="importInfo.filename"
               size="small"
@@ -166,14 +166,14 @@
               <el-button
                 slot="trigger"
                 size="small"
-              >浏览...</el-button>
+              >{{$t('memberIntroductionDialog.browse')}}...</el-button>
             </el-upload>
           </div>
           <div class="mi-flex">
-            <span class="flex-title">导入规则：</span>
+            <span class="flex-title">{{$t('memberIntroductionDialog.importRule')}}</span>
             <ol>
-              <li>1、文件当前仅支持excel格式。</li>
-              <li>2、导入以手机号为唯一标识，系统中已有手机号无法导入，请严格按照模板文件格式填写用户信息。</li>
+              <li>{{$t('memberIntroductionDialog.one')}}</li>
+              <li>{{$t('memberIntroductionDialog.two')}}</li>
             </ol>
           </div>
         </div>
@@ -186,7 +186,7 @@
           size="small"
           type="primary"
           @click="submitImport"
-        >导入</el-button>
+        >{{$t('memberIntroductionDialog.import')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -306,6 +306,7 @@ export default {
       this.importInfo.filename = file.name
       this.importInfo.file = file.raw
     },
+    // 点击导入按钮
     submitImport () {
       let cardId = []
       let importInfo = this.importInfo
@@ -316,10 +317,9 @@ export default {
       } else if (importInfo.levelCard) {
         cardId.push(importInfo.levelCard)
       }
-      console.log(this.fileList)
       cardId = cardId.join(',')
       if (!this.importInfo.filename) {
-        this.$message.warning('请选择要上传的文件')
+        this.$message.warning(this.$t('memberIntroductionDialog.psFile'))
         return false
       }
       this.uploadData = {
@@ -341,13 +341,13 @@ export default {
       formdata.append('groupId', this.uploadData.groupId)
       importInsert(formdata).then(res => {
         that.loading = false
-        console.log(res)
         if (res.error === 0) {
-          that.$message.success('上传成功')
+          that.$message.success(that.$t('memberIntroductionDialog.uploadSuccess'))
           that.dialogVisible = false
         } else {
-          that.$message.error('上传失败')
+          that.$message.error(that.$t('memberIntroductionDialog.uploadFail'))
         }
+        that.fileList = []
       }).catch(err => {
         that.loading = false
         throw err

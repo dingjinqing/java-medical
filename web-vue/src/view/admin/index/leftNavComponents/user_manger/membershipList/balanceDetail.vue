@@ -83,6 +83,10 @@
           <span>暂无相关数据</span>
         </div>
       </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="dealWithPagination"
+      />
     </div>
   </div>
 </template>
@@ -97,13 +101,16 @@ export default {
       // 用户id
       id: '',
       username: '',
+      pageParams: {
+        pageRows: 20,
+        currentPage: 0
+      },
       orderSn: '',
       nameInput: '',
       dateInput: null,
       tbodyFlag: false,
       clickIindex: null,
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      pageParams: null,
       trList: [],
       showUserFlag: false
 
@@ -117,6 +124,11 @@ export default {
     console.log(this.id)
     // 加载用户余额明细数据
     this.getUserDetailAcountData()
+  },
+  watch: {
+    lang () {
+      this.getUserDetailAcountData()
+    }
   },
   mounted () {
     console.log('mounted method')
@@ -137,6 +149,8 @@ export default {
       this.clearData()
       console.log(this.dateInput)
       let obj = {
+        'currentPage': this.pageParams.currentPage,
+        'pageRows': this.pageParams.pageRows,
         'userId': this.id,
         'userName': this.username,
         'orderSn': this.orderSn,

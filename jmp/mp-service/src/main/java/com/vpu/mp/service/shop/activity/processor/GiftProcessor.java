@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @author 王帅
  */
 @Service
+@Slf4j
 public class GiftProcessor implements CreateOrderProcessor{
 
     @Autowired
@@ -49,7 +51,7 @@ public class GiftProcessor implements CreateOrderProcessor{
     }
 
     @Override
-    public void processStockAndSales(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+    public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
         Map<Integer, Map<Integer, Integer>> updateparam = Maps.newHashMap();
         param.getBos().stream()
             .filter(x -> OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.groupingBy(OrderGoodsBo::getGiftId))
@@ -59,10 +61,5 @@ public class GiftProcessor implements CreateOrderProcessor{
         if(updateparam.size() != 0){
             giftDao.updateStockAndSales(updateparam);
         }
-    }
-
-    @Override
-    public void processPayCallback(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
     }
 }
