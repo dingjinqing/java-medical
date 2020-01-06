@@ -45,7 +45,7 @@
     </view>
     <view class="goods_price">
       <text class="price" style="color:{{main_setting.comColor}};">￥{{goodsItem.realPrice===null?'0.00':goodsItem.realPrice}}</text>
-      <!-- <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}};"></text> -->
+      <text class="{{textContent.className}}" style="{{textContent.styleName}}" wx:if="{{textContent !== ''}}">{{textContent.text}}</text>
     </view>
   </view>
 </view>

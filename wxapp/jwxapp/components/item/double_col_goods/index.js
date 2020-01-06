@@ -6,15 +6,25 @@ global.wxComponent({
   properties: {
     goodsData: {
       type: Object,
-      value: null,
-      observer(val) {
-        this.init();
-      }
+      value: null
+    },
+    delMarket: {
+      type: Number,
+      value: null
+    },
+    showCart: {
+      type: Object,
+      value: null
     }
   },
   /**
    * 组件的初始数据
    */
+  lifetimes:{
+    ready(){
+      this.init()
+    }
+  },
   data: {},
 
   /**
@@ -23,6 +33,7 @@ global.wxComponent({
   methods: {
     init() {
       this.handleToGoodsActivities();
+      this.handleButtonSet()
     },
     // 处理商品活动
     handleToGoodsActivities() {
@@ -61,7 +72,7 @@ global.wxComponent({
         case 1:
           obj.text = this.$t('components.decorate.assemble');
           this.setData({
-            groupDiscountPrice:item.discountPrice
+            groupDiscountPrice: item.discountPrice
           })
           break;
         case 3:
@@ -109,31 +120,47 @@ global.wxComponent({
       if (!obj.text) return;
       arr.push(obj);
     },
-    // getCouponDesc(){
-    //    let coupon = this.data.goodsData.goodsActivities.filter(item => item.activityType === 19).map(item=> {
-    //       let data = JSON.parse(JSON.stringify(item))
-    //       let str = ''
-    //       if (data.actCode === 'voucher'){
-    //         if (data.useConsumeRestrict === 1){
-    //           str = `满${data.leastConsume}减${data.denomination}`
-    //         } else {
-    //           str = `优惠券减${data.denomination}`
-    //         }
-    //       } else {
-    //         if (data.useConsumeRestrict === 1) {
-    //           str = `满${data.leastConsume}打${data.denomination}折`
-    //         } else {
-    //           str = `优惠券打${data.denomination}折`
-    //         }
-    //       }
-    //       data.couponDesc = str
-    //       return data
-    //     })
-    //     this.setData({
-    //       coupons: coupon
-    //     })
-    //     console.log(this.data.coupons)
-    // },
+    // 处理购买按钮和划线价
+    handleButtonSet() {
+      let data = this.data
+      const cartType = {
+        '1-0': {
+          className: 'iconfont icontianjia1',
+          styleName:`color:${data.main_setting.comColor}`
+        }, //开启购物车按钮-样式 
+        '1-1': {
+          className: 'iconfont icongouwuche5',
+          styleName:`color:${data.main_setting.comColor}`
+        },
+        '1-2': {
+          className: 'boder-button',
+          styleName:`background-color:${data.main_setting.comColor};color:#fff;border-color:transparent;`,
+          text:'马上抢'
+        },
+        '1-3': {
+          className: 'boder-button',
+          styleName:`background-color:#fff;color:#666;border-color:#888;`,
+          text:'购买'
+        },
+        '0-1': {
+          className:'gray-text line-through',
+          text:`市场价: ${data.goodsData.linePrice}`
+        }, //关闭购物车按钮-划线价类别
+        '0-2': {
+          className:'gray-text',
+          text:`销量: ${data.goodsData.goodsSaleNum}`
+        },
+        '0-3': {
+          className:'gray-text',
+          text:`评价数: ${data.goodsData.commentNum}`
+        },
+      }
+      let textContent = cartType[`${data.showCart.show_cart}-${data.showCart.show_cart ? data.showCart.cart_type : data.delMarket}`] || ''
+      console.log(textContent)
+        this.setData({
+          textContent
+        })
+    },
     toItem() {
       util.jumpLink(
         `pages/item/item?goodsId=${this.data.goodsData.goodsId}&activityType=${this.data.goodsData.activityType}&activityId=${this.data.goodsData.activityId}`,
