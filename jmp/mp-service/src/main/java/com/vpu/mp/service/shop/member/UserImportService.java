@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportRecord;
@@ -46,6 +47,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
@@ -158,13 +160,13 @@ public class UserImportService extends ShopBaseService {
 	public SetNoticeJsonDetailVo getInfo() {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
-		List<AvailCouponDetailVo> voList = new ArrayList<AvailCouponDetailVo>();
+		List<CouponParam> voList = new ArrayList<CouponParam>();
 		if (StringUtils.isNotEmpty(mrkingVoucherId)) {
 			String[] split = mrkingVoucherId.split(",");
 			for (String string : split) {
-				AvailCouponDetailVo couponVo = couponService.getCouponDetailById(Integer.valueOf(string));
+				MrkingVoucherRecord couponVo = couponService.getOneCouponById(Integer.valueOf(string));
 				if (couponVo != null) {
-					voList.add(couponVo);
+					voList.add(couponVo.into(CouponParam.class));
 				}
 
 			}
