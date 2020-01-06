@@ -61,13 +61,13 @@ public class GroupDrawJoinUserService extends ShopBaseService {
         String inviteUserNickname = param.getInviteUserNickname();
         select.and(GROUP_DRAW_INVITE.IDENTITY_ID.eq(groupDrawId));
         if (isNotEmpty(nickName)) {
-            select.and(USER.as(ALIAS_NEW).USERNAME.like(format("%s%%", nickName)));
+            select.and(USER.as(ALIAS_NEW).USERNAME.like(likeValue(nickName)));
         }
         if (isNotEmpty(mobile)) {
-            select.and(USER.as(ALIAS_NEW).MOBILE.like(format("%s%%", mobile)));
+            select.and(USER.as(ALIAS_NEW).MOBILE.like(likeValue(mobile)));
         }
         if (isNotEmpty(inviteUserNickname)) {
-            select.and(USER.as(ALIAS_OLD).USERNAME.like(format("%s%%", inviteUserNickname)));
+            select.and(USER.as(ALIAS_OLD).USERNAME.like(likeValue(inviteUserNickname)));
         }
     }
 
