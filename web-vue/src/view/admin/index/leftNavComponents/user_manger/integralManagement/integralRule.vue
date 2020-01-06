@@ -666,7 +666,6 @@ export default {
     getScoreHandler () {
       getScoreConfigRequest().then((res) => {
         if (res.error === 0 && res.content) {
-          this.$message.success('获取积分配置')
           var data = res.content
           this.form.scoreLimit = data.scoreLimit
           this.form.scoreDay = data.scoreDay
