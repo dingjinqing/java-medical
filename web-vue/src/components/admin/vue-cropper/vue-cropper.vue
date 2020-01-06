@@ -532,7 +532,8 @@ export default {
       if (this.img.substr(0, 4) !== 'data') {
         img.crossOrigin = ''
       }
-
+      console.log(this.img.replace('http:', ''))
+      this.img = this.img.replace('http:', '')
       if (this.isIE) {
         var xhr = new XMLHttpRequest()
         xhr.onload = function () {
