@@ -72,4 +72,5 @@ public class WxAppCouponController extends WxAppBaseController {
         Byte fetchStatus = shop().mpCoupon.fetchCoupon(param);
         return this.success(fetchStatus);
 	}
+
 }
