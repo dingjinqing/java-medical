@@ -16,7 +16,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
@@ -123,8 +122,11 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) {
         secKillProcessorDao.setOrderPrdSeckillPrice(param);
-        //秒杀不允许使用积分支付
-        param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+        //秒杀不允许使用积分支付和货到付款
+        if(param.getPaymentList() != null){
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
     }
 
     /**
@@ -142,6 +144,5 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 
     }
-
 
 }

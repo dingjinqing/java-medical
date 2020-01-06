@@ -43,6 +43,7 @@
           prop="minJoinNum"
         >
           <el-input-number
+            :disabled="this.isEdite"
             size="small"
             :min="0"
             v-model="form.minJoinNum"
@@ -56,6 +57,7 @@
           prop="payMoney"
         >
           <el-input
+            :disabled="this.isEdite"
             size="small"
             v-model="form.payMoney"
             class="inputWidth"
@@ -68,6 +70,7 @@
           prop="joinLimit"
         >
           <el-input-number
+            :disabled="this.isEdite"
             size="small"
             :min="0"
             v-model="form.joinLimit"
@@ -81,6 +84,7 @@
           prop="openLimit"
         >
           <el-input-number
+            :disabled="this.isEdite"
             size="small"
             :min="0"
             v-model="form.openLimit"
@@ -94,6 +98,7 @@
           prop="limitAmount"
         >
           <el-input-number
+            :disabled="this.isEdite"
             size="small"
             :min="0"
             v-model="form.limitAmount"
@@ -107,6 +112,7 @@
           prop="toNumShow"
         >
           <el-input-number
+            :disabled="this.isEdite"
             size="small"
             :min="0"
             v-model="form.toNumShow"
@@ -171,7 +177,7 @@
               <div
                 class="rewardCouponInfo"
                 @click="handleToCallDialog()"
-                v-if="rewardCouponList.length<5"
+                v-if="rewardCouponList.length<5 && !this.isEdite"
                 style="line-height:normal"
               >
                 <div>
@@ -195,6 +201,7 @@
         >
           <div>
             <el-button
+              v-if="!this.isEdite"
               class="el-icon-plus"
               size="small"
               @click="showChoosingGoods"
@@ -212,23 +219,24 @@
             >
               <el-table-column
                 label="商品名称"
-                prop="name"
+                prop="goodsName"
                 align="center"
               ></el-table-column>
               <el-table-column
                 label="商品原价"
-                prop="prdPrice"
+                prop="shopPrice"
                 align="center"
               ></el-table-column>
 
               <el-table-column
                 label="商品库存"
-                prop="prdNumber"
+                prop="goodsNumber"
                 align="center"
               ></el-table-column>
               <el-table-column
                 label="操作"
                 align="center"
+                v-if="!this.isEdite"
               >
                 <template slot-scope="scope">
                   <span
@@ -262,8 +270,8 @@
     />
 
     <!--添加商品弹窗-->
+    <!-- :loadProduct="true" -->
     <choosingGoods
-      :loadProduct="true"
       :checkedNumMax="20"
       :chooseGoodsBack="form.goodsIds"
       :tuneUpChooseGoods="isShowChoosingGoodsDialog"
@@ -278,6 +286,7 @@ import addCouponDialog from '@/components/admin/addCouponDialog'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { addLotteryDraw, getLotteryDetail, updateLotteryDraw } from '@/api/admin/marketManage/lotteryDraw.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
+import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     addCouponDialog,
@@ -306,7 +315,6 @@ export default {
       }
     }
     return {
-      activeIndex: 0, // 批量设置
       // 表单
       form: {
         name: '', // 活动名称
@@ -360,7 +368,7 @@ export default {
       imgHost: `${this.$imageHost}`,
 
       isShowChoosingGoodsDialog: false, // 商品弹窗
-      goodsRow: {}
+      goodsRow: [] // 活动商品
 
     }
   },
@@ -378,15 +386,23 @@ export default {
   methods: {
     // 编辑初始化
     editLotteryInit () {
-      getLotteryDetail({ id: this.editId }).then((res) => {
+      getLotteryDetail(this.editId).then((res) => {
         if (res.error === 0) {
           this.form = res.content
           // 有效期
           this.form.validity = [this.form.startTime, this.form.endTime]
+
           // 商品信息
           this.form.goodsIds.forEach((item, index) => {
             this.getGoodsInfo(item)
           })
+
+          // 优惠券信息
+          this.form.couponIds.forEach((item, index) => {
+            this.getCouponInfo(item)
+          })
+
+          console.log(this.goodsRow)
         }
       })
     },
@@ -396,6 +412,15 @@ export default {
       getSelectGoods({ goodsId: id }).then((res) => {
         if (res.error === 0) {
           this.goodsRow.push(res.content)
+        }
+      })
+    },
+
+    // 获取优惠券信息
+    getCouponInfo (id) {
+      updateCoupon(id).then((res) => {
+        if (res.error === 0) {
+          this.rewardCouponList.push(res.content[0])
         }
       })
     },
@@ -423,9 +448,7 @@ export default {
             })
           } else {
             // 编辑拼团抽奖
-            this.obj = this.form
-            this.obj.id = this.editId
-            updateLotteryDraw(this.obj).then((res) => {
+            updateLotteryDraw(this.form).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: '修改成功' })
                 this.$emit('addLotterySubmit')
@@ -476,8 +499,8 @@ export default {
     choosingGoodsResult (row) {
       this.goodsRow = row
       this.goodsRow.forEach((item, index) => {
-        this.form.goodsIds.push(item.prdId)
-        item.name = item.goodsName + item.prdDesc
+        this.form.goodsIds.push(item.goodsId)
+        // item.name = item.goodsName + item.prdDesc
       })
     },
 

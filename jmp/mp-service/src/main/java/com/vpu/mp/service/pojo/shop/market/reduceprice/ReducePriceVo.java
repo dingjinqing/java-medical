@@ -37,7 +37,7 @@ public class ReducePriceVo {
     private String pointTime;
 
     /** 每月第几日；每周第几天 */
-    private Byte extendTime;
+    private String extendTime;
 
     /** 超限购买设置标记，1禁止超限购买，0超限全部恢复原价 */
     private Byte limitFlag;

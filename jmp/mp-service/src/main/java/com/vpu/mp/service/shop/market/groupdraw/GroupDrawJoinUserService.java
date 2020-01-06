@@ -105,7 +105,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
         Short maxInviteUserCount = param.getMaxInviteUserCount();
         Short minInviteUserCount = param.getMinInviteUserCount();
         if (isNotEmpty(nickName)) {
-            select.and(USER.USERNAME.like(format("%s%%", nickName)));
+            select.and(USER.USERNAME.like(this.likeValue(nickName)));
         }
         if (null != endTime) {
             select.and(JOIN_GROUP_LIST.CREATE_TIME.le(endTime));

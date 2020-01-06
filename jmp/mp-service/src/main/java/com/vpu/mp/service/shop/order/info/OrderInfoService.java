@@ -1296,4 +1296,13 @@ public class OrderInfoService extends ShopBaseService {
 
     }
 
+    /**
+     * 取orderId
+     * @param orderSn
+     * @return
+     */
+    public Integer getOrderIdBySn(String orderSn){
+        return db().select(TABLE.ORDER_ID).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOptionalInto(Integer.class).orElse(null);
+    }
+
 }

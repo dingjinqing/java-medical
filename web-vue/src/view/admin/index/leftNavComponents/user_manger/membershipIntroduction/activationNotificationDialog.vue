@@ -157,7 +157,7 @@
 </template>
 
 <script>
-import { setnoticeApi } from '@/api/admin/memberManage/membershipIntroduction.js'
+import { getnoticeApi, setnoticeApi } from '@/api/admin/memberManage/membershipIntroduction.js'
 export default {
   components: {
     addCouponDialog: () => import('@/components/admin/addCouponDialog')
@@ -188,9 +188,14 @@ export default {
   computed: {
     dialogVisible: {
       get () {
+        console.log('get', this.visible)
+        if (this.visible) {
+          this.initData()
+        }
         return this.visible
       },
       set (val) {
+        console.log('set', val)
         this.$emit('update:visible', val)
       }
     },
@@ -213,6 +218,13 @@ export default {
     }
   },
   methods: {
+    initData () {
+      getnoticeApi().then(res => {
+        if (res.error === 0) {
+          this.form = Object.assign({}, this.form, res.content)
+        }
+      })
+    },
     handleToCheck (coupons) {
       if (coupons && coupons.length > 0) {
         this.coupons = coupons
@@ -235,6 +247,7 @@ export default {
         if (res.error === 0) {
           console.log(res.content)
           that.$message.success('设置激活通知成功')
+          that.dialogVisible = false
         } else {
           that.$message.error(res.message)
         }

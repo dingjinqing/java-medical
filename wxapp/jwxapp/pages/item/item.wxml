@@ -115,4 +115,4 @@
 </view>
 
 
-<v-share show="{{showShareDialog}}" shareMoments="onShareAppMessage"/>
+<v-share show="{{showShareDialog}}" share-data="{{shareData}}" shareMoments="onShareAppMessage"/>

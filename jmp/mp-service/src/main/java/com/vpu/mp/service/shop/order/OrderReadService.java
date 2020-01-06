@@ -16,7 +16,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
@@ -52,7 +51,6 @@ import com.vpu.mp.service.pojo.wxapp.order.refund.AfterSaleServiceVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
-import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
@@ -159,8 +157,6 @@ public class OrderReadService extends ShopBaseService {
     private FootPrintService footPrintService;
     @Autowired
     private ReturnService returnService;
-    @Autowired
-    private ExpressService expressService;
 	/**
 	 * 订单查询
 	 * @param param
@@ -381,7 +377,7 @@ public class OrderReadService extends ShopBaseService {
             vo.setReturnGoods(goods);
 		}
 		//快递code
-		vo.setShippingCode(getShippingCode(rOrder));
+		vo.setShippingCode(returnOrder.getShippingCode(rOrder));
 		//金额计算
 		setCalculateMoney(vo);
 		//获取该退款订单操作记录
@@ -683,15 +679,7 @@ public class OrderReadService extends ShopBaseService {
 		if(CollectionUtils.isEmpty(result)) {
 			return null;
 		}else {
-            List<Byte> collect = result.stream().map(ShippingInfoVo::getShippingId).collect(Collectors.toList());
-            Map<Byte, ExpressVo> express = expressService.gets(collect);
-            result.forEach(x -> {
-                if(express.get(x.getShippingId()) != null && !StringUtils.isBlank(express.get(x.getShippingId()).getShippingName())){
-                    x.setShippingName(express.get(x.getShippingId()).getShippingName());
-                }else{
-                    //正常情况不会出现这种情况
-                    x.setShippingName(StringUtils.EMPTY);
-                }
+			result.forEach(x -> {
 				x.getGoods().forEach(y->{
 					y.setGoodsImg(goods.get(y.getOrderGoodsId()).getGoodsImg());
 					y.setGoodsPrice(goods.get(y.getOrderGoodsId()).getGoodsPrice());
@@ -810,19 +798,6 @@ public class OrderReadService extends ShopBaseService {
     public Integer getGiftOrderCount(Integer giftId, boolean isIncludeReturn){
         List<String> giftOrderSns = orderGoods.getGiftOrderSns(giftId, isIncludeReturn);
         return orderInfo.getGiftOrderCount(giftOrderSns);
-    }
-
-    /**
-     * 	获取该退款订单物流code(快递100对应code)
-     * @param returnOrder
-     * @return
-     */
-    private String getShippingCode(ReturnOrderRecord returnOrder) {
-        if(returnOrder.getReturnType() == OrderConstant.RT_GOODS && returnOrder.getRefundStatus() >= OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
-            return expressService.get(Byte.valueOf(returnOrder.getShippingType())).getShippingCode();
-        }else {
-            return null;
-        }
     }
 
     /*********************************************************************************************************/

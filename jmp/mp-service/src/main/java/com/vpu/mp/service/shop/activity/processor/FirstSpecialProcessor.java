@@ -14,7 +14,6 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.config.FirstSpecialConfigService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -189,6 +188,4 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
     public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 
     }
-
-
 }
