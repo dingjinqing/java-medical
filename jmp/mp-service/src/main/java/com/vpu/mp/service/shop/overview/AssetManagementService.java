@@ -65,7 +65,7 @@ public class AssetManagementService extends ShopBaseService {
             vo.setEndTime(current);
         } else {
             // 自定义日期统计数据
-            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), -1));
+            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
             //结束日期不能大于当前日期
             Date endDate = Optional.of(param.getEndTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
             LocalDate endLocalDate = endDate.toLocalDate();
@@ -159,10 +159,10 @@ public class AssetManagementService extends ShopBaseService {
      * 获取折线图数据
      */
     private List<RevenueDate> getRevenueDateList(Date startDate, Date endDate) {
-        return getSelectConditon().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueDate.class);
+        return getSelectConditon().and(trs.REF_DATE.greaterThan(startDate)).and(trs.REF_DATE.le(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueDate.class);
     }
     private List<RevenueScoreDate> getRevenueScoreDateList(Date startDate, Date endDate) {
-        return getScoreSelectConditon().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueScoreDate.class);
+        return getScoreSelectConditon().and(trs.REF_DATE.greaterThan(startDate)).and(trs.REF_DATE.le(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueScoreDate.class);
     }
 
     private SelectConditionStep<Record4<Date, BigDecimal, BigDecimal, BigDecimal>> getSelectConditon() {
