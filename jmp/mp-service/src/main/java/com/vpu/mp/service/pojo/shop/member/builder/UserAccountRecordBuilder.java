@@ -48,7 +48,9 @@ public class UserAccountRecordBuilder {
 	}
 
 	public UserAccountRecordBuilder orderSn (String orderSn) {
-		record.setOrderSn(orderSn);
+		if(orderSn != null) {
+			record.setOrderSn(orderSn);
+		}
 		return this;
 	}
 
