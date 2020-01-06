@@ -76,8 +76,8 @@ public class AssetManagementService extends ShopBaseService {
             RevenueProfileVo tempPre = getRevenueDate(Util.getEarlySqlDate(startDate, -day), startDate);
             calGrowthRate(vo, tempPre);
             vo.setRevenueDates(getRevenueDateList(startDate, endDate));
-            vo.setStartTime(startDate);
-            vo.setEndTime(endDate);
+            vo.setStartTime(param.getStartTime());
+            vo.setEndTime(param.getEndTime());
         }
         return vo;
     }
@@ -105,8 +105,8 @@ public class AssetManagementService extends ShopBaseService {
             RevenueProfileScoreVo tempPre = getRevenueScoreDate(Util.getEarlySqlDate(startDate, -day), startDate);
             calScoreGrowthRate(vo, tempPre);
             vo.setRevenueDates(getRevenueScoreDateList(startDate, endDate));
-            vo.setStartTime(startDate);
-            vo.setEndTime(endDate);
+            vo.setStartTime(param.getStartTime());
+            vo.setEndTime(param.getEndTime());
         }
         return vo;
     }

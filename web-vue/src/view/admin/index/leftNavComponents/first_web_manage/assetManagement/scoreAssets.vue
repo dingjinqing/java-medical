@@ -1,6 +1,6 @@
 <template>
   <section class="label">
-    <div class="labelItem">营收概况及趋势 查看明细</div>
+    <div class="labelItem">营收概况及趋势 <el-button type="text" @click="toDetail()">查看明细</el-button></div>
     <el-select
       v-model="timeSelect"
       size="small"
@@ -63,7 +63,7 @@
       </div>
     </div>
     <!-- echarts图表部分 -->
-    <div id="charts"></div>
+    <div id="charts1"></div>
   </section>
 </template>
 
@@ -85,7 +85,7 @@ export default {
 
   mounted () {
     this.langDefault()
-    this.myChart = echarts.init(document.getElementById('charts'))
+    this.myChart = echarts.init(document.getElementById('charts1'))
   },
 
   data () {
@@ -133,6 +133,15 @@ export default {
   },
 
   methods: {
+    // 跳转明细页面
+    toDetail () {
+      this.$router.push({
+        name: 'asset_summary_detail',
+        params: {
+          flag: 1
+        }
+      })
+    },
     // 自定义时间
     customDate () {
       this.chartChange = {
@@ -327,10 +336,9 @@ export default {
 
     }
 
-    #charts {
+    #charts1 {
       width: 90%;
       height: 500px;
-      border: 1px solid #0000;
     }
   }
 

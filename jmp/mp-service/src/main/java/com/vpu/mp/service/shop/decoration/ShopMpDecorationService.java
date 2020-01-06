@@ -49,6 +49,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
@@ -846,7 +847,12 @@ public class ShopMpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(moduleGoods.getRecommendType());
-        //param.setGoodsItems(moduleGoods.getGoodsItems() == null ? new ArrayList<>() : moduleGoods.getGoodsItems());
+        if (moduleGoods.getGoodsItems() == null) {
+            param.setGoodsItems(new ArrayList<>());
+        } else {
+            List<Integer> ids = moduleGoods.getGoodsItems().stream().map(ModuleGoods.PhpPointGoodsConverter::getGoodsId).collect(Collectors.toList());
+            param.setGoodsItems(ids);
+        }
         param.setKeywords(moduleGoods.getKeywords());
         param.setMinPrice(moduleGoods.getMinPrice());
         param.setMaxPrice(moduleGoods.getMaxPrice());

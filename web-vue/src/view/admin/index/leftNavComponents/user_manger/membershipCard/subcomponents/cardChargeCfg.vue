@@ -10,7 +10,7 @@
       <div class="card-charge-top">
         <el-form-item prop="sendMoney">
           <div class="charge-item">
-            <el-checkbox v-model="ruleForm.powerCard">
+            <el-checkbox v-model="ruleForm.powerCard" @change="checkForPowerCard">
               {{$t('memberCard.powerCard')}}
             </el-checkbox>
             <span class="send-info">
@@ -261,7 +261,7 @@ export default {
     }
 
     let validateChargeEach = (rule, value, callback) => {
-      if (this.ruleForm.offset === '0') {
+      if (this.ruleForm.offset === '0' && this.ruleForm.powerCard) {
         let index = Number(rule.fullField.split('.')[1])
         if (value && this.ruleForm.addChargeArr[index].rightInput) {
           callback()
@@ -274,7 +274,7 @@ export default {
     }
 
     let validateChargeFull = (rule, value, callback) => {
-      if (this.ruleForm.offset === '0') {
+      if (this.ruleForm.offset === '0' && this.ruleForm.powerCard) {
         if (this.ruleForm.chargeInputLeft && this.ruleForm.chargeInputRight) {
           callback()
         } else {
@@ -286,7 +286,7 @@ export default {
     }
 
     let validateChargeBottom = (rule, value, callback) => {
-      if (this.ruleForm.offset === '1') {
+      if (this.ruleForm.offset === '1' && this.ruleForm.powerCard) {
         if (this.ruleForm.chargeInputLeftM && this.ruleForm.chargeInputRightM) {
           callback()
         } else {
@@ -314,6 +314,10 @@ export default {
     }
   },
   methods: {
+    checkForPowerCard () {
+      this.$refs.ruleForm.validate(valid => {})
+      this.$refs.ruleFormCharge.validate((valid) => {})
+    },
     checkSendMoneyError (val) {
       if (val === 0) {
         return false

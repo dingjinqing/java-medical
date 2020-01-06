@@ -1,0 +1,59 @@
+<view class='integral_container'>
+  <!-- 双列 -->
+  <view class='two_item clearfix' wx:if='{{m.list_styles == 2}}'>
+    <view class='each_twos' wx:for='{{m.integral_goods}}' wx:key='key' data-tips='{{item.tip}}' data-goods_id="{{item.goods_id}}" data-in_goods_id="{{item.integral_goods_id}}" bindtap='bindToInegral'>
+      <view class='two_imgs'>
+        <image class="sell_out" wx:if ='{{item.goods_number == 0}}'  src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+        <image class="image" src='{{item.goods_img}}'></image>
+        <view class="tips" wx:if="{{item.tip && !item.tips }}">{{item.tip}}</view>
+      </view>
+      <view class='tow_names'>{{item.goods_name}}</view>
+      <view class='clearfix two_info'>
+        <view class='two_prices'>
+          <view class='inver_price' style='color:{{comColor}}'>
+            <view class="money" wx:if="{{item.money && item.money > 0}}">
+              <text class="textClass" decode="{{true}}" style='color:{{comColor}}'>￥{{item.money}}&nbsp;+&nbsp;</text>
+            </view>
+            <text style='color:{{comColor}}'>{{item.score}}积分</text>
+          </view>
+          <view class='two_prices_bottom'>
+            <view class='original_price' wx:if='{{m.show_goods_price == true}}'>￥{{item.prd_price}}</view>
+            <view class='btn_convert' wx:if='{{!item.tip}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去兑换</view>
+            <view class='orig_convert' style="background:#ccc" wx:if="{{item.tip && item.tip == '商品已删除'}}">原价购买</view>
+            <view class='orig_convert' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if="{{item.tip && item.tip != '商品已删除'}}">原价购买</view>
+          </view>
+
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 单列 -->
+  <view class='one_item' wx:if='{{m.list_styles == 1}}'>
+    <view class='each_one clearfix' wx:for='{{m.integral_goods}}' data-tips='{{item.tip}}' wx:key='key' data-in_goods_id="{{item.integral_goods_id}}" data-goods_id="{{item.goods_id}}" bindtap='bindToInegral'>
+      <view class='one_img'>
+        <image class="sell_out" wx:if ='{{item.goods_number == 0}}'  src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
+        <image class="image" src='{{item.goods_img}}'></image>
+        <view class="tips" wx:if="{{item.tip && !item.tips}}">{{item.tip}}</view>
+      </view>
+      <view class='one_info'>
+        <view class='one_name'>{{item.goods_name}}</view>
+        <view class='one_bottom'>
+          <view class='one_bottom_left'>
+            <view class="money" wx:if="{{item.money && item.money > 0}}">
+              <text class="text" decode="{{true}}" style='color:{{comColor}}'>￥{{item.money}}&nbsp;+&nbsp;</text>
+            </view>
+            <view class='one_in_pri' style='color:{{comColor}}'>
+              <text>{{item.score}}积分</text>
+            </view>
+          </view>
+          <view>
+            <view class='one_ori_pri' wx:if='{{m.show_goods_price == true}}'>￥{{item.prd_price}}</view>
+            <view class='btn_convert' wx:if='{{!item.tip}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去兑换</view>
+            <view class='orig_convert' style="background:#ccc" wx:if="{{item.tip && item.tip == '商品已删除'}}">原价购买</view>
+            <view class='orig_convert' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if="{{item.tip && item.tip != '商品已删除'}}">原价购买</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
