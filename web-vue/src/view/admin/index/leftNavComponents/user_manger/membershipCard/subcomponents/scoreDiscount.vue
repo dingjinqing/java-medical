@@ -19,7 +19,6 @@
           <el-input-number
             v-model="ruleForm.discount"
             size="small"
-            :precision="2"
             :controls="false"
           >
           </el-input-number>

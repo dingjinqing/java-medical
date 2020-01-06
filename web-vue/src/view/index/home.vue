@@ -32,16 +32,18 @@ export default {
     }
   },
   mounted () {
-    // console.log(this.$route)
-    // let arr = [undefined, 'newsList', 'aboutUs', 'indexHomeOntrial']
-    // if (arr.indexOf(this.$route.name) !== -1) {
-    //   this.defaultFlag = false
-    //   this.$router.push({ path: this.$route.fullPath })
-    // }
+    console.log(this.$route.path === '/')
+    if (this.$route.path !== '/') {
+      let arr = [undefined, 'newsList', 'aboutUs', 'indexHomeOntrial']
+      if (arr.indexOf(this.$route.name) !== -1) {
+        this.defaultFlag = false
+        this.$router.push({ path: this.$route.fullPath })
+      }
 
-    // if (this.$route.meta.defaultTurn) {
-    //   this.defaultFlag = this.$route.meta.defaultTurn
-    // }
+      if (this.$route.meta.defaultTurn) {
+        this.defaultFlag = this.$route.meta.defaultTurn
+      }
+    }
     // 初始化判断打开的设备
     this.isMobile()
   },

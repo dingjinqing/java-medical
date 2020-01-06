@@ -9,7 +9,9 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -72,7 +74,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private GoodsActivityBaseMp activity;
 
     /**商品促销活动列表*/
-    List<PromotionBase> promotions = new ArrayList<>();
+    Map<Byte,List<PromotionBase>> promotions = new HashMap();
     //**********服务承诺
     /**
      * 服务承诺是否开启
