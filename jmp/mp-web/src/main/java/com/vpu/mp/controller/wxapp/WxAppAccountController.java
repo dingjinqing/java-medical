@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
@@ -177,5 +178,28 @@ public class WxAppAccountController extends WxAppBaseController {
 		}
 		MpAuditStateVo appAuditInfo = saas.shop.mp.getAppAuditInfo(shopId);
 		return success(appAuditInfo.getAuditState());
+	}
+	
+	/**
+	 * 获取用户待激活信息
+	 * @return
+	 */
+	@PostMapping(value = "/api/wxapp/user/waitactivate")
+	public JsonResult waitActivateUser() {
+		return success(shop().member.userImportService.getActivationNotice());
+	}
+	
+	
+	/**
+	 * 用户待激活
+	 * @return
+	 */
+	@PostMapping(value = "/api/wxapp/user/waitactivate")
+	public JsonResult toActivateUser() {
+		JsonResultCode activateUser = shop().member.userImportService.toActivateUser(wxAppAuth.user().getUserId());
+		if(activateUser.equals(JsonResultCode.CODE_SUCCESS)) {
+			return success();
+		}
+		return fail(activateUser);
 	}
 }
