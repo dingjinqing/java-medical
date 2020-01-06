@@ -10,7 +10,7 @@
 		<v-coupon wx:elif="{{module.component_name == 'v-coupon'}}" module="{{module}}" />
 		<!--商品模块-->
 		<v-product wx:elif="{{module.component_name == 'v-product'}}" module="{{module}}" />
-		<!--商品广告-->
+		<!--图片广告-->
 		<v-advimg wx:elif="{{module.component_name == 'v-advimg'}}" module="{{module}}" />
 		<!--店铺公告-->
 		<v-shop-announce wx:elif="{{module.component_name == 'v-shop-announce'}}" module="{{module}}" />
@@ -22,6 +22,12 @@
 		<v-bargain wx:elif="{{module.component_name == 'v-bargain'}}" module="{{module}}" />
 		<!--秒杀-->
 		<v-seckill wx:elif="{{module.component_name == 'v-seckill'}}" module="{{module}}" />
+		<!--积分兑换-->
+		<v-integral wx:elif="{{module.component_name == 'v-integral'}}" module="{{module}}" />
+	   <!--拼团抽奖(缺接口)-->
+	   <v-pinlottery wx:elif="{{module.component_name == 'v-pinlottery'}}" module="{{module}}" />
+	   <!--瓜分积分(缺接口)-->
+	   <v-pinintegration wx:elif="{{module.component_name == 'v-pinintegration'}}" module="{{module}}" />
 	</block>
 </view>
 

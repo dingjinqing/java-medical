@@ -1,0 +1,51 @@
+.pin_content{
+  width: 720rpx;
+  height: 300rpx;
+  margin: 0 auto;
+  margin-bottom: 20rpx;
+  position: relative;
+  overflow-x:hidden; 
+}
+.pin_content .p1,.p2,.user_auto,.p3,.p4,.status{
+  color:#fff;
+  padding-left:60rpx;
+}
+.p1,.p2{
+font-size:36rpx;
+font-weight:600;
+}
+.p1{
+margin-top:50rpx;
+}
+
+.p3{
+  position: absolute;
+  bottom: 100rpx;
+  font-size: 30rpx;
+}
+.p4{
+  position: absolute;
+  font-size: 24rpx;
+  bottom: 55rpx;
+}
+.status{
+  position: absolute;
+  bottom: 0;
+  color: #fff;
+  width: 720rpx;
+  background:rgba(0, 0, 0, 0.5);
+  text-align: center;
+  font-size: 24rpx;
+  padding: 5rpx 0;
+  padding-left: 0rpx !important;
+}
+.user_auto{
+  margin-top: 50rpx;
+  width:252rpx;
+  height: 120rpx;
+  overflow-y: hidden;
+}
+.user_auto .user_auto_text{
+    font-size:36rpx;
+  font-weight:600;
+}

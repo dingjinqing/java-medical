@@ -11,6 +11,9 @@
     "v-shop": "../shop/index",
     "v-carousel": "../carousel/index",
     "v-bargain": "../bargain/index",
-    "v-seckill": "../seckill/index"
+    "v-seckill": "../seckill/index",
+    "v-integral": "../integral/index",
+    "v-pinlottery": "../pinlottery/index",
+    "v-pinintegration": "../pinintegration/index"
   }
 }

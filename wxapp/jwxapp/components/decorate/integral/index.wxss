@@ -1,0 +1,240 @@
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.integral_container {
+  width: 750rpx;
+  font-size: 26rpx;
+}
+
+.two_item {
+  width: 720rpx;
+  margin: 0 auto;
+}
+
+.each_twos {
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  height: 510rpx;
+}
+
+.each_twos:nth-of-type(odd) {
+  float: left;
+  width: 350rpx;
+  background: #fff;
+}
+
+.each_twos:nth-of-type(even) {
+  float: right;
+  width: 350rpx;
+  background: #fff;
+}
+
+.each_twos .two_imgs {
+  height: 350rpx;
+  width: 350rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.tips {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 24rpx;
+  padding: 10rpx 0;
+  text-align: center;
+}
+
+.each_twos .two_imgs .sell_out,.image {
+  height: 350rpx;
+  width: 350rpx;
+}
+
+.tow_names {
+  width: 330rpx;
+  padding: 0 10rpx;
+  margin: 10rpx 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.two_info {
+  width: 330rpx;
+  padding: 0 10rpx;
+  margin: 10rpx 0;
+}
+
+.two_prices {
+  font-size: 26rpx;
+}
+
+.inver_price {
+  color: #f66;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.inver_price .textClass {
+  font-size: 30rpx;
+  line-height: 40rpx;
+}
+
+.original_price {
+  color: #888;
+  text-decoration: line-through;
+}
+
+.btn_convert {
+  float: right;
+  padding: 0rpx 25rpx;
+  background: linear-gradient(left, #f66, #ff8585);
+  background: -webkit-linear-gradient(left, #f66, #ff8585);
+  background: -moz-linear-gradient(left, #f66, #ff8585);
+  border-radius: 50rpx;
+  color: #fff;
+  height: 50rpx;
+  line-height: 50rpx;
+}
+
+.orig_convert {
+  float: right;
+  padding: 0rpx 25rpx;
+  background: linear-gradient(left, #f66, #ff8585);
+  background: -webkit-linear-gradient(left, #f66, #ff8585);
+  background: -moz-linear-gradient(left, #f66, #ff8585);
+  border-radius: 50rpx;
+  color: #fff;
+  height: 50rpx;
+  line-height: 50rpx;
+}
+
+.two_prices_bottom {
+  padding-bottom: 10rpx;
+}
+
+.two_prices_bottom .original_price {
+  float: left;
+  line-height: 50rpx;
+}
+
+.money {
+  float: left;
+  color: #f66;
+  font-weight: bold;
+}
+
+/* 单列 */
+
+.one_item {
+  width: 750rpx;
+}
+
+.each_one {
+  background: #fff;
+  width: 710rpx;
+  height: 260rpx;
+  margin-bottom: 20rpx;
+  padding: 20rpx;
+}
+
+.one_img {
+  float: left;
+  width: 260rpx;
+  height: 260rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.one_img .image,.sell_out {
+  width: 260rpx;
+  height: 260rpx;
+}
+
+.one_info {
+  float: right;
+  width: 440rpx;
+  height: 260rpx;
+  position: relative;
+}
+
+.one_name {
+  position: absolute;
+  top: 0;
+}
+
+.one_bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.one_in_pri {
+  float: left;
+  color: #f66;
+  height: 50rpx;
+  overflow-y: hidden;
+  font-weight: bold;
+}
+
+.one_ori_pri {
+  text-decoration: line-through;
+  margin-left: 10rpx;
+  color: #888;
+  font-size: 24rpx;
+  height: 50rpx;
+  line-height: 60rpx;
+  overflow-y: hidden;
+  float: left;
+}
+
+.btn_convert {
+  float: right;
+  height: 50rpx;
+  line-height: 50rpx;
+}
+
+.orig_convert {
+  float: right;
+  height: 50rpx;
+  line-height: 50rpx;
+}
+
+.one_bottom_left {
+  width: 314rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.one_bottom_left .text {
+  font-size: 30rpx;
+  vertical-align: middle;
+  line-height: 40rpx;
+}
+
+.imgtwo-container{
+  width: 722rpx;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row; 
+  margin-bottom: 20rpx;
+}
+.sell_out {
+  position: absolute !important;
+  width: 130rpx !important;
+  height: 130rpx !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  float: none;
+  z-index: 3;
+}

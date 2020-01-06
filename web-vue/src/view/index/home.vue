@@ -36,7 +36,7 @@ export default {
     let arr = [undefined, 'newsList', 'aboutUs', 'indexHomeOntrial']
     if (arr.indexOf(this.$route.name) !== -1) {
       this.defaultFlag = false
-      this.$router.push({ path: this.$route.fullPath })
+      this.$router.push({ path: this.$route.fullPath }).catch(data => { })
     }
 
     if (this.$route.meta.defaultTurn) {
@@ -51,7 +51,7 @@ export default {
       let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
       console.log(flag)
       if (flag) {
-        this.$router.push({ name: 'indexMobile' })
+        this.$router.push({ name: 'indexMobile' }).catch(data => { })
       }
     }
   }
