@@ -39,7 +39,7 @@ public class DomainConfig {
 	 * @return
 	 */
 	public String imageUrl(String relativePath, String schema) {
-		schema = StringUtils.isBlank(schema) ? "https" : schema;
+		schema = StringUtils.isBlank(schema) ? "http" : schema;
 		return String.format("%s://%s/%s", schema, imageDomain, relativePath);
 	}
 
