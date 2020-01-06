@@ -245,13 +245,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     //加锁
                     atomicOperation.addLock(orderBo.getOrderGoodsBo());
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-                    marketProcessorFactory.processStockAndSales(param,order);
+                    marketProcessorFactory.processOrderEffective(param,order);
                     logger().info("加锁{}",order.getOrderSn());
                     atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
                     logger().info("更新成功{}",order.getOrderSn());
                     //营销活动支付回调
                 }
-                marketProcessorFactory.processPayCallback(param,order);
             });
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
@@ -385,8 +384,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
         }
-        //删除赠品
-        ListIterator<Goods> goodsListIterator = param.getGoods().listIterator();
+
 
     }
     /**
@@ -397,7 +395,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void initGoodsByParam(List<Goods> goods) {
         // TODO 以下参数为模拟参数
         for (Goods temp : goods) {
-            // 商品参与的促销活动id
+            // 满折满减
             temp.setStraId(null);
             // 购买价格id
             temp.setPurchasePriceId(null);

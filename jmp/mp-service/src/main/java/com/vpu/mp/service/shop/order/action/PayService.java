@@ -19,8 +19,10 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
@@ -44,6 +46,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -84,10 +87,19 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     @Autowired
     private OrderPayService orderPay;
+
     @Autowired
     private GroupBuyListService groupBuyListService;
+
     @Autowired
     private GroupBuyService groupBuyService;
+
+    /**
+     * 营销活动processorFactory
+     */
+    @Autowired
+    private OrderCreateMpProcessorFactory marketProcessorFactory;
+
     @Override
     public Object query(OrderOperateQueryParam param) {
         return null;
@@ -254,7 +266,4 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         });
         marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
     }
-
-
-
 }
