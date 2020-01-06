@@ -12,50 +12,40 @@ import java.util.Map;
 * @Date: 2019年8月19日
 * @Description: 会员受教育程度-枚举类
 */
-public enum MemberEducationEnum {
+public enum MemberMarriageEnum {
 	
-	/** 初中 */
-	JUNIOR(0,"member.education.junior"),
-	/** 高中 */
-	HIGH(1,"member.education.high"),
-	/** 中专 */
-	SECONDARY(2,"member.education.secondary"),
-	/** 大专 */
-	COLLEGE(3,"member.education.college"),
-	/** 本科 */
-	UNDERGRADUATE(4,"member.education.undergraduate"),
-	/** 硕士 */
-	MASTER(5,"member.education.master"),
-	/** 博士 */
-	DOCTOR(6,"member.education.doctor"),
-	/** 其他 */
-	OTHER(7,"member.education.other");
+	/**未婚 */
+	UNMARRIED(1,"member.marriage.unmarried"),
+	/** 已婚  */
+	MARRIED(2,"member.marriage.married"),
+	/** 保密*/
+	CONFIDENTIALITY(3,"member.marriage.confidentiality");
 	/** 数字代号 */
 	private Integer code;
 	/**受教育程度*/
 	private String name;
-	private static Map<Integer,MemberEducationEnum> map = new HashMap<>();
+	private static Map<Integer,MemberMarriageEnum> map = new HashMap<>();
 	static {
-		for(MemberEducationEnum e: MemberEducationEnum.values()) {
+		for(MemberMarriageEnum e: MemberMarriageEnum.values()) {
 			map.put(e.code,e);
 		}
 	}
 	
-	private MemberEducationEnum(int code,String name) {
+	private MemberMarriageEnum(int code,String name) {
 		this.code = code;
 		this.name = name;
 	}
 	
 	/** 根据code Id获取枚举类 */
-	public static MemberEducationEnum valueOf(int code) {
-		return (MemberEducationEnum)map.get(code);
+	public static MemberMarriageEnum valueOf(int code) {
+		return (MemberMarriageEnum)map.get(code);
 	}
 	/**
 	 * 根据 code id 获取相应的name
 	 * @return
 	 */
 	public static String getNameByCode(int code) {
-		MemberEducationEnum obj = valueOf(code);
+		MemberMarriageEnum obj = valueOf(code);
 		return obj.getName();
 	}
 
@@ -66,7 +56,7 @@ public enum MemberEducationEnum {
      * @return
      */
     public static String getNameByCode(int code,String lang) {
-        MemberEducationEnum obj = valueOf(code);
+        MemberMarriageEnum obj = valueOf(code);
         return Util.translateMessage(lang, obj.getName(),"","member");
     }
 	
@@ -88,9 +78,9 @@ public enum MemberEducationEnum {
 			// 请选择
 			eduList.add(Util.translateMessage(lang,"member.please.choose","","member"));
 		}
-		int length = MemberEducationEnum.values().length;
+		int length = MemberMarriageEnum.values().length;
 		for(int i=0;i<length;i++) {
-			eduList.add(MemberEducationEnum.getNameByCode(i,lang));
+			eduList.add(MemberMarriageEnum.getNameByCode(i,lang));
 		}
 		return eduList;
 	}
@@ -99,11 +89,11 @@ public enum MemberEducationEnum {
 		return getAllEducation(lang,false);
 	}
 	
-	public static String[] getArrayEduction(String lang) {
-		MemberEducationEnum[] values = MemberEducationEnum.values();
+	public static String[] getArrayMarriage(String lang) {
+		MemberMarriageEnum[] values = MemberMarriageEnum.values();
 		String[] result=new String[values.length];
 		for (int i = 0; i < values.length; i++) {
-			result[i]=MemberEducationEnum.getNameByCode(i,lang);
+			result[i]=MemberMarriageEnum.getNameByCode(i,lang);
 		}
 		return result;
 	}
