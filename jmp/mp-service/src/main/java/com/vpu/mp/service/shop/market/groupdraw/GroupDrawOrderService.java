@@ -57,16 +57,16 @@ public class GroupDrawOrderService extends ShopBaseService {
         String orderSn = param.getOrderSn();
         select.and(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId));
         if (isNotEmpty(mobile)) {
-            select.and(ORDER_INFO.MOBILE.like(format("%s%%", mobile)));
+            select.and(ORDER_INFO.MOBILE.like(this.likeValue(mobile)));
         }
         if (isNotEmpty(orderSn)) {
-            select.and(JOIN_GROUP_LIST.ORDER_SN.like(format("%s%%", orderSn)));
+            select.and(JOIN_GROUP_LIST.ORDER_SN.like(this.likeValue(orderSn)));
         }
         if (isNotEmpty(goodsName)) {
-            select.and(ORDER_GOODS.GOODS_NAME.like(format("%%%s%%", goodsName)));
+            select.and(ORDER_GOODS.GOODS_NAME.like(this.likeValue(goodsName)));
         }
         if (isNotEmpty(consigneeName)) {
-            select.and(ORDER_MUST.CONSIGNEE_REAL_NAME.like(format("%s%%", consigneeName)));
+            select.and(ORDER_MUST.CONSIGNEE_REAL_NAME.like(this.likeValue(consigneeName)));
         }
         if (isNotEmpty(orderStatusName)) {
             select.and(ORDER_INFO.ORDER_STATUS_NAME.eq(orderStatusName));
