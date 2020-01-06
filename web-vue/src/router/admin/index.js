@@ -99,7 +99,7 @@ const routes = [{
       },
       // 概况 - 资产管理
       {
-        path: '/admin/home/main/searchStatistics',
+        path: '/admin/home/main/assetsManage',
         name: 'asset_summary',
         meta: {
           crumbTitle: 'router.asset_summary',
