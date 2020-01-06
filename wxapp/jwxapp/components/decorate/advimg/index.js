@@ -5,10 +5,10 @@ global.wxComponent({
   methods: {
     onPropChange(newVal, oldVal, changedPath) {
       console.log(newVal)
-      // if (newVal.image_type == '1') {
-      //   newVal.each_width = (750 - parseFloat(newVal.image_space)) / 2;
-      //   newVal.each_width = parseFloat(newVal.each_width).toFixed(0);
-      // }
+      if (newVal.image_type == '1') {
+        newVal.each_width = (750 - parseFloat(newVal.image_space)) / 2;
+        newVal.each_width = parseFloat(newVal.each_width).toFixed(0);
+      }
     }
   }
 });

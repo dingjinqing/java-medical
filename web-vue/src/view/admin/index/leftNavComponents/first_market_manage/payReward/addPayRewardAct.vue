@@ -17,7 +17,6 @@
             height="573px"
             arrow="never"
           >
-            <!-- :autoplay="false" -->
             <el-carousel-item
               v-for="(item,index) in carouselList"
               :key="index"
@@ -66,23 +65,25 @@
               <div>
                 <el-radio
                   v-model="params.timeType"
-                  :label="0"
+                  :label=0
                   style="margin-right: 20px;"
                 >{{$t('payReward.fixedTime')}}</el-radio>
                 <el-date-picker
                   v-model="dateInterval"
-                  type="daterange"
-                  style="width:240px;"
+                  type="datetimerange"
+                  style="width:400px;"
                   size="small"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   :range-separator="$t('payReward.to')"
                   :start-placeholder="$t('payReward.effectTime')"
                   :end-placeholder="$t('payReward.expirationTime')"
                   :disabled="params.timeType === 1"
+                  :default-time="['00:00:00','23:59:59']"
                 ></el-date-picker>
                 <div>
                   <el-radio
                     v-model="params.timeType"
-                    :label="1"
+                    :label=1
                   >{{$t('payReward.foreverTime')}}</el-radio>
                 </div>
               </div>
@@ -133,29 +134,37 @@
                   </div>
                 </div>
               </div>
-              <div>
+              <div style="display: flex">
                 <span>{{$t('payReward.payCondition')}}</span>
                 <span>{{$t('payReward.everyOrder')}}</span>
-                <el-input
-                  v-model="params.minPayMoney"
-                  size="small"
-                  style="width: 100px"
-                ></el-input>
+                <el-form-item
+                  prop="minPayMoney"
+                  style="margin:0 5px"
+                  :rules="[
+                    { message: '请输入支付条件', trigger: 'blur'},
+                    { validator: (rule, value, callback) => {validateMoney(rule, value, callback )}, trigger: ['blur']}
+                  ]"
+                >
+                  <el-input
+                    v-model="params.minPayMoney"
+                    size="small"
+                    style="width: 100px"
+                  ></el-input>
+                </el-form-item>
                 <span>{{$t('payReward.everyOrderTips')}}</span>
               </div>
             </el-form-item>
 
-            <el-form-item
-              :label="$t('payReward.joinConstraint')"
-              prop="limitTimes"
-            >
-              <div>
+            <el-form-item :label="$t('payReward.joinConstraint')">
+              <div style="display:flex">
                 <span>{{$t('payReward.everyJoin')}}</span>
-                <el-input
-                  v-model="params.limitTimes"
-                  size="small"
-                  style="width: 100px;margin:0 5px"
-                ></el-input>
+                <el-form-item prop="limitTimes">
+                  <el-input
+                    v-model="params.limitTimes"
+                    size="small"
+                    style="width: 100px;margin:0 5px"
+                  ></el-input>
+                </el-form-item>
                 <span>{{$t('payReward.everyJoinTime')}}</span>
               </div>
             </el-form-item>
@@ -377,10 +386,10 @@
               v-if="item.giftType === 3"
               :label="$t('payReward.luckyDraw')+'：'"
               class="luckyDraw"
-              prop="awardList[index].lotteryId"
-              :rules="{
-                required: true, message: '请选择幸运大抽奖活动', trigger: 'blur'
-              }"
+              :prop="`awardList[${index}].lotteryId`"
+              :rules="[
+                {required: true, validator:(rule, value, callback) => { validateLottery(rule, value, callback, item.lotteryId)}, trigger: ['change']}
+              ]"
             >
               <el-select
                 size="small"
@@ -402,10 +411,10 @@
             <el-form-item
               v-if="params.awardList[index].giftType === 4"
               :label="$t('payReward.leftMoney')+'：'"
-              prop='awardList[index].accountNumber'
-              :rules="[{
-                  required: true, message: '请选择余额', trigger: 'blur'
-                }]"
+              :prop="`awardList[${index}].accountNumber`"
+              :rules="[
+                { required: true, validator: (rule, value, callback) => {validateAccountNumber(rule, value, callback, item.accountNumber)}, trigger: 'blur' }
+              ]"
             >
               <el-input
                 v-model="params.awardList[index].accountNumber"
@@ -477,10 +486,10 @@
             <el-form-item
               v-if="item.giftType === 5"
               :label="$t('payReward.giftValidity')+'：'"
-              prop="awardList[idnex].keepDays"
-              :rules="{
-                required: true, message:'请输入赠品有效期', trigger: 'blur'
-              }"
+              :prop="`awardList[${index}].keepDays`"
+              :rules="[
+                { required: true, validator: (rule,value, callback)=>(validateKeepDays(rule, value, callback, item.keepDays)), trigger:['blur', 'change']}
+              ]"
             >
               <div>
                 <el-input
@@ -496,10 +505,10 @@
             <el-form-item
               v-if="item.giftType === 6"
               :label="$t('payReward.integral')+'：'"
-              prop="awardList[index].scoreNumber"
-              :rules="{
-                required: true, message: '请输入积分', trigger: 'blur'
-              }"
+              :prop="`awardList[${index}].scoreNumber`"
+              :rules="[
+                { required: true, validator: (rule,value, callback)=>(validateIntegral(rule, value, callback, item.scoreNumber)), trigger:['blur', 'change']}
+              ]"
             >
               <el-input
                 v-model="params.awardList[index].scoreNumber"
@@ -512,10 +521,10 @@
             <el-form-item
               v-if="item.giftType === 7"
               :label="$t('payReward.actImg')+ '：'"
-              prop="awardList[index].image"
-              :rules="{
-                required: true, message:'请选择活动图片', trigger: 'blur'
-              }"
+              :prop="`awardList[${index}].customImage`"
+              :rules="[
+                { required: true, validator: (rule,value, callback)=>(validateImage(rule, value, callback, item.customImage)), trigger:['blur', 'change']}
+              ]"
             >
               <div style="display: flex">
                 <div
@@ -534,10 +543,10 @@
             <el-form-item
               v-if="item.giftType === 7"
               :label="$t('payReward.settingLink')+'：'"
-              prop="awardList[index].customLink"
-              :rules="{
-                required: true, message: '请选择链接', trigger: 'blur'
-              }"
+              :prop="`awardList[${index}].customLink`"
+              :rules="[
+                { required: true, validator: (rule,value, callback)=>(validateCustomLink(rule, value, callback, item.customLink)), trigger:['blur', 'change']}
+              ]"
             >
               <el-input
                 v-model="params.awardList[index].customLink"
@@ -555,7 +564,7 @@
               :label="$t('payReward.giftNumber')+'：'"
               :prop="`awardList[${index}].awardNumber`"
               :rules="[
-                { required: true, validator: (rule, value, callback)=>{validateGiftNmuber(rule, value, callback, params.awardList[index].awardNumber)}, trigger: ['blur', 'change']}
+                { required: true, validator: (rule, value, callback)=>{validateGiftNmuber(rule, value, callback, item.awardNumber)}, trigger: ['blur', 'change']}
               ]"
             >
               <div>
@@ -674,17 +683,19 @@ export default {
   },
   data () {
     var validateSiForever = (rule, value, callback) => {
-      if (this.params.timeType === 0 && (this.params.startTime === '' || this.params.endTime === '')) {
+      console.log(value, 'value data--')
+      if (value === 0 && (this.dateInterval === null || this.dateInterval.length === 0)) {
         return callback(new Error('请选择活动生效时间'))
+      } else {
+        callback()
       }
-      callback()
     }
     var validatelevel = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^([1-9][0-9]{0,1}|100)$/
       if (!value) {
         callback(new Error('请填写优先级'))
       } else if (!re.test(value)) {
-        callback(new Error('请填写0或者正整数'))
+        callback(new Error('请填写1~100之间的正整数'))
       } else {
         callback()
       }
@@ -694,8 +705,6 @@ export default {
       // var re = /^(0|\+?[1-9][0-9]*)$/
       if (this.params.goodsAreaType === 2 && (this.noneBlockDiscArr[0].num.length === 0 || this.noneBlockDiscArr[1].num.length === 0 || this.noneBlockDiscArr[2].num.length === 0)) {
         callback(new Error('请选择参加活动的商品'))
-      } else if (this.params.minPayMoney === '') {
-        callback(new Error('请输入支付条件'))
       } else {
         callback()
       }
@@ -766,50 +775,26 @@ export default {
         goodsSortIds: '', // 商品商家分类
         minPayMoney: '', // 最少支付金额
         limitTimes: '', // 每个用户参与次数
-
-        awardList: [
-          // {
-          //   giftType: 0,
-          //   productId: '', // 奖品ID
-          //   keepDays: '', // 赠品有效期
-          //   accountNumber: '', // 账户余额
-          //   scoreNumber: '', // 积分余额
-          //   awardNumber: '', // 奖品份数
-          //   customImage: 'image/admin/btn_add.png', // 自定义活动图片
-          //   customLink: '', // 自定义图片
-          //   lotteryId: '', // 下拉框
-          //   couponIds: [], // 优惠券ID
-          //   couponList: [],
-
-          //   ordinaryCoupon: [], // 普通优惠券
-          //   splitCoupon: [], // 分裂优惠券
-          //   ordinaryCouponIdList: [], // 普通优惠券ID数组
-          //   splitCouponIdList: [] // 分裂优惠券ID数组
-          // }
-        ]
+        awardList: []
       },
       rules: {
         activityNames: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
-        timeType: [{ required: true, validator: validateSiForever, trigger: 'blur' }],
+        timeType: [{ required: true, validator: validateSiForever, trigger: ['blur', 'change'] }],
         actFirst: { required: true, validator: validatelevel, trigger: 'blur' },
         goodsAreaType: { required: true, validator: validateGoodsAreaType, trigger: 'change' },
         limitTimes: { required: true, validator: limitTimesValidator, trigger: 'blur' }
-        // ordinaryCouponCheck: { required: true, validator: ordinaryCouponValidator, trigger: 'blur' }
-        // lotteryId: { required: true, message: '请选择幸运大抽奖活动', triggger: 'blur' }
-        // 'item.giftType': { required: true }
-        // 'awardList[0].scoreNumber': { required: true }
-        // 'awardList[index].scoreNumber': { required: true }
       }
     }
   },
   watch: {
-    dateInterval: function (newVal) {
-      if (newVal) {
-        this.$set(this.params, 'startTime', newVal[0].format('yyyy-MM-dd hh:mm:ss'))
-        this.$set(this.params, 'endTime', newVal[1].format('yyyy-MM-dd hh:mm:ss'))
-      } else {
-        this.$set(this.params, 'startTime', '')
-        this.$set(this.params, 'endTime', '')
+    'params.timeType': function (value) {
+      if (value) {
+        this.$refs.payRewardForm.validateField('timeType')
+      }
+    },
+    'params.goodsAreaType': function (value) {
+      if (value) {
+        this.$refs.payRewardForm.validateField('goodsAreaType')
       }
     }
   },
@@ -874,6 +859,7 @@ export default {
     // 普通优惠券数据处理回显处理
     addCouponHandle (data) {
       console.log(data, 'coupon data')
+      console.log(this.currentModelIndex, 'first--')
       this.params.awardList[this.currentModelIndex].couponIds = data.map(item => item.id)
       this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
 
@@ -989,6 +975,7 @@ export default {
       if (this.userDialogFlag === '1') {
         this.choosingGoodsDateFlag1 = data
         this.noneBlockDiscArr[0].num = data.length
+        console.log(this.noneBlockDiscArr[0].num, 'num length')
       } else {
         this.ownGoodsId = data
         this.noneBlockVipArr[0].num = data.length
@@ -1084,8 +1071,6 @@ export default {
             console.log(this.params.awardList[index].id, 'data--')
             console.log(awad.sendNum)
 
-            // this.params.awardList[index] = awad
-
             if (awad.giftType === 1) {
               this.params.awardList[index].ordinaryCoupon = awad.couponView
               this.params.awardList[index].ordinaryCouponIdList = awad.couponIds
@@ -1108,23 +1093,6 @@ export default {
             }
             index++
           })
-
-          console.log(this.ordinaryCoupon, 'get ordinaryCoupon')
-          console.log(this.params, 'get reuturnParams')
-          // res.content.awardList.forEach(goodsItem => {
-          //   console.log(goodsItem, 'goodsItem')
-          //   this.params.awardList[this.currentModelIndex].goodsShow = true
-          //   this.params.awardList[this.currentModelIndex].goodsName = this.params.awardList[this.currentModelIndex].product.goodsName + this.params.awardList[this.currentModelIndex].product.prdDesc
-          //   this.params.awardList[this.currentModelIndex].goodsImg = this.$imageHost + '/' + this.params.awardList[this.currentModelIndex].product.goodsImg
-          //   console.log(this.params.awardList[this.currentModelIndex])
-          //   console.log(this.params.awardList[this.currentModelIndex].goodsImg)
-          //   this.params.awardList[this.currentModelIndex].goodsPrice = this.params.awardList[this.currentModelIndex].product.prdPrice
-          //   this.params.awardList[this.currentModelIndex].goodsNumber = this.params.awardList[this.currentModelIndex].product.prdNumber
-          // })
-
-          if (res.content.startTime && res.content.endTime) {
-            this.dateInterval = [new Date(res.content.startTime), new Date(res.content.endTime)]
-          }
         }
       }).catch(err => console.log(err))
     },
@@ -1141,6 +1109,13 @@ export default {
       this.params.goodsSortIds = data.goodsSortIds // 商家商家分类
       this.params.minPayMoney = data.minPayMoney
       this.params.limitTimes = data.limitTimes
+      if (data.startTime && data.endTime) {
+        if (this.params.timeType === 0) {
+          this.dateInterval = [data.startTime, data.endTime]
+          this.params.startTime = data.startTime
+          this.params.endTime = data.endTime
+        }
+      }
     },
 
     // 添加支付有礼活动接口调用
@@ -1148,6 +1123,10 @@ export default {
       this.$refs.payRewardForm.validate(valid => {
         console.log(valid, 'valid--')
         if (valid) {
+          if (this.params.timeType === 0 && this.dateInterval) {
+            this.params.startTime = this.dateInterval[0]
+            this.params.endTime = this.dateInterval[1]
+          }
           let obj = {
             goodsIds: String(this.choosingGoodsDateFlag1), // 商品ID
             goodsCatIds: String(this.platformCategoryIds), // 商家平台分类
@@ -1200,16 +1179,97 @@ export default {
       }).catch(err => console.log(err))
     },
 
+    // 验证奖品份数
     validateGiftNmuber (rule, value, callback, awardNumber) {
-      console.log(value, 'value data--')
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (awardNumber === '') {
+        callback(new Error('请输入奖品份数'))
+      } else if (!re.test(awardNumber)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
+    },
+
+    // 验证积分
+    validateIntegral (rule, value, callback, scoreNumber) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (scoreNumber === '') {
+        callback(new Error('请输入积分'))
+      } else if (!re.test(scoreNumber)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
+    },
+
+    // 验证自定义链接
+    validateCustomLink (rule, value, callback, customLink) {
+      if (!customLink) {
+        callback(new Error('请选择链接'))
+      } else {
+        callback()
+      }
+    },
+
+    // 验证幸运大抽奖
+    validateLottery (rule, value, callback, lotteryId) {
+      console.log(lotteryId, 'lotteryId value--')
+      console.log(value, 'value')
       console.log(rule, 'rule')
       console.log(callback, 'callback')
-      console.log(awardNumber, 'awardNumber')
-      var reNum = /^(0|\+?[1-9][0-9]*)$/
-      if (!value) {
-        callback(new Error('请输入奖品份数'))
-      } else if (reNum.test(value)) {
-        callback(new Error('请填写0或者正整数'))
+      if (!lotteryId) {
+        callback(new Error('请选择幸运大抽奖活动'))
+      } else {
+        callback()
+      }
+    },
+
+    // 验证自定义图片
+    validateImage (rule, value, callback, customImage) {
+      console.log(customImage, 'customImage')
+      console.log(value, 'custom value--')
+      console.log(rule)
+      console.log(callback)
+      if (!customImage) {
+        callback(new Error('请选择定义图片'))
+      } else {
+        callback()
+      }
+    },
+
+    // 验证赠品有效期
+    validateKeepDays (rule, value, callback, keepDays) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!keepDays) {
+        callback(new Error('请输入保质日期'))
+      } else if (!re.test(keepDays)) {
+        callback(new Error('请输入0或者正数'))
+      } else {
+        callback()
+      }
+    },
+
+    // 验证支付条件
+    validateMoney (rule, value, callback) {
+      var re = /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/
+      if (value === '') {
+        callback(new Error('请输入支付条件'))
+      } else if (!re.test(value)) {
+        callback(new Error('请输入0或者正数'))
+      } else {
+        callback()
+      }
+    },
+
+    // 验证余额
+    validateAccountNumber (rule, value, callback, accountNumber) {
+      console.log(value, 'account value--')
+      var re = /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/
+      if (!accountNumber) {
+        callback(new Error('请选择余额'))
+      } else if (!re.test(accountNumber)) {
+        callback(new Error('请输入正整数'))
       } else {
         callback()
       }
