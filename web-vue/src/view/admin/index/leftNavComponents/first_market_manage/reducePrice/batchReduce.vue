@@ -3,10 +3,86 @@
 
     <!-- 搜索 -->
     <div>
-      <el-button
-        type="primary"
-        size="small"
-      >查询</el-button>
+      <el-form label-width="100px">
+        <el-form-item
+          label="活动时间："
+          class="item"
+        >
+          <el-date-picker
+            type="datetime"
+            placeholder="开始日期"
+            size="small"
+            v-model="requestParams.startTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            class="inputWidth"
+          >
+          </el-date-picker>
+          <span>至</span>
+          <el-date-picker
+            type="datetime"
+            placeholder="结束日期"
+            size="small"
+            v-model="requestParams.endTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            class="inputWidth"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item
+          label="活动名称："
+          class="item"
+        >
+          <el-input
+            size="small"
+            v-model="requestParams.name"
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="商品编码："
+          class="item"
+        >
+          <el-input
+            size="small"
+            v-model="requestParams.code"
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="活动状态："
+          class="item"
+        >
+          <el-select
+            size="small"
+            class="inputWidth"
+            placeholder="请选择"
+            v-model="requestParams.status"
+          >
+            <el-option
+              v-for="item in statusOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div>
+        <el-button
+          type="primary"
+          size="small"
+          @click="addHandler"
+        >添加限时降价活动</el-button>
+        <el-button
+          type="primary"
+          size="small"
+        >导出改价活动</el-button>
+        <el-button
+          type="primary"
+          size="small"
+        >查询</el-button>
+      </div>
     </div>
 
     <!-- 表格 -->
@@ -66,9 +142,30 @@ export default {
   },
   data () {
     return {
+      // 搜索数据
+      requestParams: {
+        startTime: '',
+        endTime: '',
+        name: '',
+        code: '',
+        status: ''
+      },
+      // 活动状态
+      statusOption: [{
+        label: '进行中',
+        value: '1'
+      }, {
+        label: '未开始',
+        value: '2'
+      }, {
+        label: '已过期',
+        value: '3'
+      }, {
+        label: '已停用',
+        value: '4'
+      }],
       tableData: [], // 表格数据
-      pageParams: {}, // 分页
-      requestParams: {}
+      pageParams: {} // 分页
     }
   },
   watch: {
@@ -83,6 +180,11 @@ export default {
   methods: {
     initDataList () {
 
+    },
+
+    addHandler () {
+      // 子组件中触发父组件方法ee并传值cc12345
+      this.$emit('addHandler')
     }
   }
 }
@@ -107,5 +209,11 @@ export default {
   margin-top: 10px;
   background-color: #fff;
   //   padding: 15px;
+}
+.item {
+  display: inline-block;
+}
+.inputWidth {
+  width: 170px;
 }
 </style>

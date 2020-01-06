@@ -31,14 +31,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
 import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
 
@@ -95,7 +92,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
             capsule.setRealPrice(result.get(0).get(FIRST_SPECIAL_PRODUCT.PRD_PRICE));
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
             activity.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-            activity.setActivityId(result.get(0).get(FIRST_SPECIAL.ID));
+            activity.setActivityId(result.get(0).get(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID));
             capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(ACTIVITY_TYPE_FIRST_SPECIAL);
         });
@@ -138,7 +135,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
         promotion.setLimitAmount(vo.getLimitAmount());
         promotion.setLimitFlag(vo.getLimitFlag());
 
-        capsule.getPromotions().add(promotion);
+        capsule.getPromotions().put(promotion.getPromotionType(), Collections.singletonList(promotion));
     }
 
 

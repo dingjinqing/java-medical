@@ -110,7 +110,7 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 public class OrderReadService extends ShopBaseService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
-	private OrderInfoService orderInfo;
+	public OrderInfoService orderInfo;
     @Autowired
     private AdminMarketOrderInfoService marketOrderInfo;
 	@Autowired

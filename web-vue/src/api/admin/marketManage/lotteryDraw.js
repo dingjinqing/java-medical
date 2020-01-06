@@ -54,15 +54,6 @@ export function updateStatus (data) {
   })
 }
 
-// 分享
-export function shareLotteryDraw (data) {
-  return service({
-    url: '',
-    method: 'get',
-    data: data
-  })
-}
-
 // 查询订单列表
 export function orderLotteryList (data) {
   return service({
@@ -95,6 +86,15 @@ export function groupLotteryList (data) {
   return service({
     url: '/api/admin/group_draw/group/list',
     method: 'post',
+    data: data
+  })
+}
+
+// 分享
+export function shareLotteryDraw (data) {
+  return service({
+    url: '',
+    method: 'get',
     data: data
   })
 }
