@@ -19,8 +19,8 @@ function api (path, cb, data, content_type, shadow) {
     })
   }
   data = _initData(data, path);
-  console.log("api request:", path, data);
-  console.log(_getHeader())
+  // console.log("api request:", path, data);
+  // console.log(_getHeader())
   wx.request({
     url: nav.getUrl(path),
     data: data,
@@ -28,17 +28,17 @@ function api (path, cb, data, content_type, shadow) {
     header: _getHeader(),
     dataType: "json",
     success: function (res) {
-      console.log(_getHeader());
+      // console.log(_getHeader());
       if (path == "/api/wxapp/login" && res.data.error == 0) {
-        console.log(123)
+        // console.log(123)
         _cacheToken(res.data.content.token);
       }
       if (shadow) wx.hideLoading();
-      console.log("api result " + path + ":", res.data);
+      // console.log("api result " + path + ":", res.data);
       if (cb) cb(res.data);
     },
     fail: function (res) {
-      console.log("api fail:" + JSON.stringify(res));
+      // console.log("api fail:" + JSON.stringify(res));
       if (shadow) wx.hideLoading();
       wx.showModal({
         title: i18n.trans("common.info.title"),
@@ -55,7 +55,7 @@ function uploadFile (url, tempFilePaths, data, backfun, fail, complete) {
   var token = _getToken()
   if (token) data.token = token;
   data = _sign(data);
-  console.log(data)
+  // console.log(data)
   wx.uploadFile({
     url: url, //仅为示例，非真实的接口地址
     header: _getHeader(),
@@ -83,7 +83,7 @@ function uploadImage (count, backfun, data) {
         wx.getImageInfo({
           src: tempFilePaths[0],
           success: function (obj) {
-            console.log(obj)
+            // console.log(obj)
             var params = {
               userId: cache.getCache('user_id'),
               imgCatId: -1,

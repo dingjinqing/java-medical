@@ -23,16 +23,16 @@ global.wxComponent({
     processModuleData (page_content) {
       if (!page_content) return;
 
-      console.log(page_content, '111', module)
+      // console.log(page_content, '111', module)
       let pageInfo = page_content.page_info || null;
-      console.log(pageInfo)
+      // console.log(pageInfo)
       this.scene = page_content.scene || 0
       this.page_id = page_content.page_id;
       if (!pageInfo) return;
       let pageData = [];
       for (var idx in pageInfo) {
         module = pageInfo[idx];
-        console.log(module)
+        // console.log(module)
         // 转化模块名称
         let componentName = this._convertComponentName(module['module_name']);
         if (!componentName) continue;
@@ -57,7 +57,7 @@ global.wxComponent({
         _this.elapse_secs++;
       });
 
-      console.log(pageData)
+      // console.log(pageData)
       this._loadIndex = 0;   // 加载起点
       this._loadFloat = false;
       this._pageData = pageData;
@@ -71,55 +71,55 @@ global.wxComponent({
       console.log(this._loaded)
       var data = {}
       var l = this._loaded = this._loaded || {}
-      console.log(l)
+      // console.log(l)
       var _loaded_len = Object.keys(this._loaded).length;
       var d = this._pageData
       var number = 0;
       var count = Math.max(_loaded_len, d.length);
       var loadMore = false;
       var delayed = {};
-      console.log(this._loadIndex, count)
+      // console.log(this._loadIndex, count)
       for (var i = this._loadIndex; i < count; i++) {
-        console.log('循环次数', l, i)
+        // console.log('循环次数', l, i)
         var key = "pageData[" + i + "]";
         if (!l[i]) {
-          console.log('测试', d[i])
+          // console.log('测试', d[i])
           // 添加悬浮组件 和 其他固定数量模块
           if (!d[i].is_float) {
             if (number < 2) {
               l[i] = data[key] = this._timerConvertModule(d[i]);
-              console.log(l[i])
+              // console.log(l[i])
               if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
               // delayed[i] = `c_${l[i].cur_idx}`
               loadMore = true;
               number++;
               this._loadIndex = i + 1;
-              console.log(this._loadIndex)
+              // console.log(this._loadIndex)
               if (number == 2 && this._loadFloat) break;
             }
           } else {
-            console.log('触发')
+            // console.log('触发')
             l[i] = data[key] = this._timerConvertModule(d[i]);
             if (l[i].need_request) delayed[i] = l[i].cur_idx;
             loadMore = true;
           }
         } else {  // 则更新数据不同的模块
-          console.log('l有值')
+          // console.log('l有值')
           if (!d[i] || l[i] && (JSON.stringify(d[i]) != JSON.stringify(l[i]))) {
             l[i] = data[key] = this._timerConvertModule(d[i]) || {};
             if (l[i].need_request) delayed[i] = l[i].cur_idx;
-            console.log(l[i])
+            // console.log(l[i])
             // delayed[i] = `c_${l[i].cur_idx}`
           }
         }
       }
-      console.log(delayed)
+      // console.log(delayed)
       this._loadFloat = true;
       this._loadedOk = !loadMore;
       if (this._loadedOk) this._loaded = this._pageData;
-      console.log(data)
+      // console.log(data)
       if (Object.keys(data).length > 0) {
-        console.log("loadMore:", data);
+        // console.log("loadMore:", data);
         var _this = this;
         this.setData(data, function () {
           _this.detectLoadingMore();
@@ -138,7 +138,7 @@ global.wxComponent({
     requestPageModule (idx) {
       var _this = this;
       util.api('/api/wxapp/page/module', function (d) {
-        console.log(d, _this.page_id)
+        // console.log(d, _this.page_id)
         _this.refreshModule(idx, d.content);
       }, {
         page: _this.page_id,
@@ -150,22 +150,22 @@ global.wxComponent({
     refreshModule (idx, moduleContent) {
       var data = {};
       let cur_idx = Number(idx.split('_')[1])
-      console.log(this._pageData, cur_idx)
+      // console.log(this._pageData, cur_idx)
       for (var i in this._pageData) {
-        console.log(this._pageData[i], cur_idx, moduleContent, '合并数据')
+        // console.log(this._pageData[i], cur_idx, moduleContent, '合并数据')
         if (this._pageData[i].cur_idx == cur_idx) {
-          console.log(this._pageData[i], moduleContent)
+          // console.log(this._pageData[i], moduleContent)
           this._pageData[i] = Object.assign({}, this._pageData[i], moduleContent);  // 数据合并
-          console.log(this._pageData[i])
+          // console.log(this._pageData[i])
           this._pageData[i]['need_request'] = false;
           var key = "pageData[" + i + "]";
           data[key] = this._timerConvertModule(this._pageData[i]) || {};
           break;
         }
       }
-      console.log(data)
+      // console.log(data)
       if (Object.keys(data).length > 0) {
-        console.log("refreshModule:", data);
+        // console.log("refreshModule:", data);
         this.setData(data);
       }
 
@@ -178,17 +178,17 @@ global.wxComponent({
       return m;
     },
     detectLoadingMore () {
-      console.log('触发', this._gettingRect, this._loadedOk, this._windowHeight)
+      // console.log('触发', this._gettingRect, this._loadedOk, this._windowHeight)
       if (this._gettingRect) return;
       if (this._loadedOk) return;
       if (!this._windowHeight) this._windowHeight = wx.getSystemInfoSync().windowHeight;
-      console.log('发现加载')
+      // console.log('发现加载')
       var _this = this;
       this._gettingRect = true;
       this.getRect("#decorate").then(function (rect) {
-        console.log(rect)
+        // console.log(rect)
         if (rect.height < _this._windowHeight || rect.bottom < _this._windowHeight * 1.5) {
-          console.log('detectLoadingMore 触发')
+          // console.log('detectLoadingMore 触发')
           _this.loadMoreData();
         }
         _this._gettingRect = false;
@@ -201,7 +201,7 @@ global.wxComponent({
       var _this = this;
       this.createTimer("interval", "load_more", function () {
         if (_this._loadedOk) return;
-        console.log('startLoadingMoreTimer 触发')
+        // console.log('startLoadingMoreTimer 触发')
         _this.loadMoreData();
       }, 1000);
     },
