@@ -211,6 +211,10 @@ import {
 import {
   en as statusTab
 } from './views/admin_new/en/components/status/statusTabEn'
+// 拼团抽奖
+import {
+  en as lotteryDraw
+} from './views/admin_new/en/index/marketManagement/lotteryDraw/lotteryDrawEn'
 // 分享有礼
 import {
   en as sharePolite
@@ -356,6 +360,14 @@ import {
 import {
   en as membershipIntroduction
 } from './views/admin_new/en/index/userManagement/member/membershipIntroductionEn'
+// 会员导入
+import {
+  en as memberIntroductionDialog
+} from './views/admin_new/en/index/userManagement/member/memberIntroductionDialogEn'
+// 设置激活通知
+import {
+  en as activationNotificationDialog
+} from './views/admin_new/en/index/userManagement/member/activationNotificationDialogEn'
 // 会员管理-会员卡
 import {
   en as memberCard
@@ -888,6 +900,8 @@ const en = {
   router, // 路由信息
 
   membershipIntroduction, // 会员列表
+  memberIntroductionDialog, // 会员导入
+  activationNotificationDialog, // 设置激活通知
   programVersion, // system 后台小程序版本
   shopAccountList, // system 店铺账户列表
   shopList, // sysytem 店铺列表
@@ -937,6 +951,7 @@ const en = {
   ordinaryCouponList, // 普通优惠券列表页面
   couponReceive, // 普通优惠券获取明细
   groupBuy, // 多人拼团
+  lotteryDraw, // 拼团抽奖
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页
   bargainList, // 砍价活动列表

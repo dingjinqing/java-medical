@@ -109,6 +109,19 @@ export default {
             module_img: '' // 活动底图路径
           }
           break
+        case 7: // 瓜分积分
+          obj = {
+            'module_name': 'm_pin_integration',
+            'act_id': -1, // 活动id
+            'pin_title': '1', // 标题 radio 1 0
+            'pin_title_text': '', // 标题 自定义内容
+            'hide_active': '0', // 隐藏内容 活动内容
+            'hide_time': '0', // 隐藏内容 有效期
+            'module_bg': '0', // 活动地图radio 0 1
+            'module_img': '', // 自定义活动地图
+            'font_color': null
+          }
+          break
         case 8: // 商品模块
           obj = {
             module_name: 'm_goods', // 模块名称
@@ -142,7 +155,7 @@ export default {
             goods_type: '0', // 活动商品 0请选择 .. y
             show_market: '1', // 其他信息选中 隐藏radio字段  1市场价 2销量 3评价数 y
             goods_module_bg: '0', // 背景颜色 0与页面一致  1自定义 y
-            goods_bg_color: '#f5f5f5', // 背景自定义颜色 y
+            goods_bg_color: null, // 背景自定义颜色 y
             goodsListData: [] // 传递商品列表数据
           }
           break
@@ -455,6 +468,7 @@ export default {
         return false
       }
       let flag = true
+      let isMpinintegration = false
       //  模块私有校验
       data.forEach((item, index) => {
         switch (item.module_name) {
@@ -490,11 +504,24 @@ export default {
             })
             break
           case 'm_scroll_image': // 轮播图相关校验
-            console.log(item)
             if (item.img_items.length <= 0) {
               flag = false
               this.$message.error({
                 message: '请添加轮播图片',
+                showClose: true
+              })
+            }
+            // 验证轮播图组件至少设置一张轮播图为全部用户可见
+            let hasCanSee = false
+            item.img_items.forEach(img => {
+              if (img.can_show === 0) {
+                hasCanSee = true
+              }
+            })
+            if (!hasCanSee) {
+              flag = false
+              this.$message.error({
+                message: '至少设置一张轮播图为全部用户可见',
                 showClose: true
               })
             }
@@ -565,10 +592,18 @@ export default {
               })
               flag = false
             }
+            break
+          case 'm_pin_integration':
+            if (item.act_id === -1) {
+              flag = false
+              isMpinintegration = true
+            } else {
+              isMpinintegration = false
+            }
         }
       })
       console.log(flag)
-      return flag
+      return { flag, isMpinintegration }
     },
     // 处理保存数据
     handleToSaveModulesData (data, pageSetData) {

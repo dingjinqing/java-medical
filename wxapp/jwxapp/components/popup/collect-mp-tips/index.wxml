@@ -9,16 +9,16 @@
         60秒内收藏小程序,可获得优惠奖励
       </view>
       <view class='collect_text'>
-        <view>1.点击右上角
+        <view class="view">1.点击右上角
           <image src='{{imageUrl}}image/wxapp/collect_1.png' mode='widthFix' class='collect_1'></image>
         </view>
-        <view>2.选择
+        <view class="view">2.选择
           <image src='{{imageUrl}}image/wxapp/collect_2.png' mode='widthFix' class='collect_2'></image>
         </view>
-        <view>3.回到微信下拉列表,从“我的小程序”中打开“
+        <view class="view">3.回到微信下拉列表,从“我的小程序”中打开“
           <text style="color:#ff6666">{{collect_info.shopName}}</text>”
         </view>
-        <view>4.完成后即可获得
+        <view class="view">4.完成后即可获得
           <text wx:if="{{collect_info.score > 0}}">“{{collect_info.score}}积分”</text>
           <text wx:if="{{collect_info.score > 0 && collect_info.coupon_ids != ''}}">以及</text>
           <text wx:if="{{collect_info.coupon_ids != ''}}">“优惠券奖励”</text>

@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CoopenActivity extends TableImpl<CoopenActivityRecord> {
 
-    private static final long serialVersionUID = -941979426;
+    private static final long serialVersionUID = -1223858065;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coopen_activity</code>
@@ -68,6 +68,11 @@ public class CoopenActivity extends TableImpl<CoopenActivityRecord> {
     public final TableField<CoopenActivityRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "宣传语");
 
     /**
+     * The column <code>mini_shop_471752.b2c_coopen_activity.bg_imgs</code>. 背景图
+     */
+    public final TableField<CoopenActivityRecord, String> BG_IMGS = createField("bg_imgs", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "背景图");
+
+    /**
      * The column <code>mini_shop_471752.b2c_coopen_activity.is_forever</code>. 是否永久有效 0:无效 1:有效
      */
     public final TableField<CoopenActivityRecord, Integer> IS_FOREVER = createField("is_forever", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否永久有效 0:无效 1:有效");
@@ -88,9 +93,9 @@ public class CoopenActivity extends TableImpl<CoopenActivityRecord> {
     public final TableField<CoopenActivityRecord, Integer> FIRST = createField("first", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
 
     /**
-     * The column <code>mini_shop_471752.b2c_coopen_activity.activity_action</code>.  '活动类型：0无奖励 1：普通优惠卷 2：分裂优惠卷 3：幸运大抽奖 4: 余额 5:奖品  6:积分 7：自定义'
+     * The column <code>mini_shop_471752.b2c_coopen_activity.activity_action</code>. 活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂
      */
-    public final TableField<CoopenActivityRecord, Byte> ACTIVITY_ACTION = createField("activity_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, " '活动类型：0无奖励 1：普通优惠卷 2：分裂优惠卷 3：幸运大抽奖 4: 余额 5:奖品  6:积分 7：自定义'");
+    public final TableField<CoopenActivityRecord, Byte> ACTIVITY_ACTION = createField("activity_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂");
 
     /**
      * The column <code>mini_shop_471752.b2c_coopen_activity.mrking_voucher_id</code>. 活动优惠券，逗号分隔

@@ -15,7 +15,8 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     page: 1,
     info_list: [],
-    is_load: 0
+    is_load: 0,
+    timestamp: ''
   },
 
   /**
@@ -43,17 +44,17 @@ global.wxPage({
     }
     that.data.page = that.data.page + 1;
     
-    util.api('/api/wxapp/bargain/user_list', function (res) {
+    util.api('/api/wxapp/bargain/users', function (res) {
       if (res.error == 0) {
         var info_list = [];
-        if (res.content.data.length > 0) {
-          info_list = res.content.data
+        if (res.content.bargainUsers.dataList.length > 0) {
+          info_list = res.content.bargainUsers.dataList
         }
         that.setData({
-          info_list: that.data.info_list.concat(res.content.data),
+          info_list: that.data.info_list.concat(res.content.bargainUsers.dataList),
           is_load: 0,
-          page: res.content.current_page,
-          last_page: res.content.last_page
+          page: res.content.bargainUsers.page.currentPage,
+          last_page: res.content.bargainUsers.page.lastPage
         });
       }
     }, { record_id: record_id, pageNo: that.data.page });
@@ -63,30 +64,31 @@ function list_request(that) {
   util.api('/api/wxapp/bargain/users', function (res) {
     if (res.error == 0) {
       that.setData({
-        info_list: res.content.dataList,
-        page: res.content.page.currentPage,
-        last_page: res.content.page.lastPage
+        info_list: res.content.bargainUsers.dataList,
+        page: res.content.bargainUsers.page.currentPage,
+        last_page: res.content.bargainUsers.page.lastPage,
+        timestamp: res.content.timestamp
       })
-      // 砍价列表时间
-      // if (info_list.length > 0) {
-      //   // var now = new Date(bargain_info.timestamp).getTime();
-      //   info_list.forEach((item, index) => {
-      //     item.allTime = (new Date(item.timestamp).getTime() - new Date(item.createTime).getTime()) / 1000;
-      //     if (item.allTime < 60) {
-      //       item.show_time = '刚刚'
-      //     } else if (item.allTime < 3600) {
-      //       item.show_time = Math.ceil(item.allTime / 60) + '分钟前'
-      //     } else if (item.allTime < 24 * 3600) {
-      //       item.show_time = Math.ceil(item.allTime / 3600) + '小时前'
-      //     } else {
-      //       item.show_time = Math.ceil(item.allTime / (24 * 3600)) + '天前'
-      //     }
-      //   })
-      // }
 
-      // that.setData({
-      //   info_list: info_list,
-      // })
+      // 砍价列表时间
+      if (that.data.info_list.length > 0) {
+        var now = new Date(that.data.timestamp).getTime();
+        that.data.info_list.forEach((item, index) => {
+          item.allTime = (now - new Date(item.createTime).getTime()) / 1000;
+          if (item.allTime < 60) {
+            item.show_time = '刚刚'
+          } else if (item.allTime < 3600) {
+            item.show_time = Math.ceil(item.allTime / 60) + '分钟前'
+          } else if (item.allTime < 24 * 3600) {
+            item.show_time = Math.ceil(item.allTime / 3600) + '小时前'
+          } else {
+            item.show_time = Math.ceil(item.allTime / (24 * 3600)) + '天前'
+          }
+        })
+        that.setData({
+          info_list: that.data.info_list,
+        })
+      }
 
     }
   }, { recordId: record_id, pageNo: that.data.page });

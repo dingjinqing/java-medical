@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.refund;
 
 import com.vpu.mp.db.shop.tables.ReturnOrder;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.ExpressMapping;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -479,6 +480,20 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setApplyNotPassReason(param.getApplyNotPassReason());
 		returnOrder.update();
         logger().info("商家拒绝退货申请end");
+	}
+
+    /**
+	 * 	获取该退款订单物流code(快递100对应code)
+	 * @param returnOrder
+	 * @return
+	 */
+	public String getShippingCode(ReturnOrderRecord returnOrder) {
+		if(returnOrder.getReturnType() == OrderConstant.RT_GOODS && returnOrder.getRefundStatus() >= OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
+			//TODO 修改数据库类型
+			return ExpressMapping.mapping.get(returnOrder.getShippingType());
+		}else {
+			return null;
+		}
 	}
 
     /**

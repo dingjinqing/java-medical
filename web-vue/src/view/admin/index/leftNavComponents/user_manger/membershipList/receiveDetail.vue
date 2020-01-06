@@ -146,7 +146,7 @@
               <td>{{item.exchang_surplus}}</td>
               <td class="link">
                 <div class="operateDiv">
-                  <span>充值明细</span>
+                  <span @click="jumpToChargeDetail(item)">充值明细</span>
                   <span>-消费明细</span>
                   <span
                     v-if="item.deleteShow"
@@ -208,7 +208,8 @@
       </div>
     </div>
     <modify-data
-    :model="modifyDialogData">
+    :model="modifyDialogData"
+    @submitRes="updateModifyData">
     </modify-data>
   </div>
 </template>
@@ -234,6 +235,7 @@ export default {
         cardNo: null,
         userId: null,
         cardId: null,
+        cardType: null,
         type: null // 0卡余额，1 兑换商品次数，2 兑换门店次数
       },
       userId: '', // 用户id
@@ -382,16 +384,30 @@ export default {
       this.modifyDialogData.cardNo = row.cardNo
       this.modifyDialogData.userId = row.userId
       this.modifyDialogData.cardId = row.cardId
+      this.modifyDialogData.cardType = row.cardType
+      this.modifyDialogData.persentMoney = row.money
       // 代表卡余额,兑换次数，门店兑换次数
       this.modifyDialogData.index = 2
       this.modifyDialogData.type = type
       this.modifyDialogData.visiable = true
       console.log(this.modifyDialogData)
-      // chargeConsume({
+    },
+    updateModifyData (flag) {
+      if (flag) {
+        this.loadAllPageDate()
+      }
+      this.modifyDialogData.visiable = false
+    },
 
-      // }).then(res => {
-
-      // })
+    jumpToChargeDetail (item) {
+      // 充值明细
+      this.$router.push({
+        name: 'refillDetailsItem',
+        query: {
+          cardNo: item.cardNo,
+          cardType: item.cardType
+        }
+      })
     }
   }
 }

@@ -53,6 +53,10 @@ public class FirstSpecialService extends ShopBaseService {
      */
     public static final byte FOREVER_NO =0;
 
+    /**
+     * 开启超购限制
+     */
+    public static final Byte LIMIT_FLAG_YES = 1;
 
     /**
      * 新建首单特惠活动

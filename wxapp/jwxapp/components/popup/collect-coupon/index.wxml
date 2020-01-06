@@ -13,10 +13,10 @@
         <view class='price_cou2 clearfix' style="{{collect_coupons.length > 2 ? 'max-height:420rpx;' : ''}}overflow-y:auto;">
           <view class='each_tow' wx:for="{{collect_coupons}}" wx:key="index">
             <view class='et_left' wx:if='{{item.actCode == "voucher"}}' style='font-size:{{item.fontsize2}}rpx'>￥
-              <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>
+              <text class="text" style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>
             </view>
             <view class='et_left' wx:if='{{item.actCode == "discount"}}' style='font-size:{{item.fontsize2}}rpx'>
-              <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折
+              <text class="text" style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折
             </view>
             <!-- <view class='et_right'>{{item.rule}}</view> -->
             <view class='et_right' wx:if='{{item.useConsumeRestrict == 0}}'>无门槛</view>
@@ -31,10 +31,10 @@
   </block>
   <block wx:else>
     <view class="no_gift">
-      <image src='{{imageUrl}}/image/wxapp/promote_icon6.png' mode='widthFix'></image>
-      <view>奖励送光啦!</view>
-      <view>感谢您对本店铺的关注</view>
-      <view class="no_gift_button" bindtap='bindClose'>知道了</view>
+      <image class="image" src='{{imageUrl}}/image/wxapp/promote_icon6.png' mode='widthFix'></image>
+      <view class="view">奖励送光啦!</view>
+      <view class="view">感谢您对本店铺的关注</view>
+      <view class="no_gift_button view" bindtap='bindClose'>知道了</view>
     </view>
   </block>
 </v-popup>

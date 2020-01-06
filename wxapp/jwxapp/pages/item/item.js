@@ -356,7 +356,22 @@ global.wxPage({
     util.jumpLink(`pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`, 'navigateTo')
   },
   share () {
+    let activityData = {}
+    let { goodsId, singleRealPrice: realPrice, singleLinePrice: linePrice, goodsImgs } = this.data.goodsInfo
+    if (this.data.goodsInfo.activity != null) {
+      activityData.activityId = this.data.goodsInfo.activity.activityId
+      activityData.activityType = this.data.goodsInfo.activity.activityType
+    }
+    let shareData = {
+      goodsId,
+      realPrice,
+      linePrice,
+      goodsImgs,
+      ...activityData
+    }
+
     this.setData({
+      shareData,
       showShareDialog: true
     })
   },
@@ -401,10 +416,11 @@ global.wxPage({
       defaultData.linePrice.push(prdLinePrice)
       return defaultData
     }, { realPrice: [], linePrice: [] })
-    console.log(realPrice, linePrice)
     return {
       prdRealPrice: data.defaultPrd ? realPrice[0] : `${this.getMin(realPrice)}~${this.getMax(realPrice)}`,
-      prdLinePrice: data.defaultPrd ? linePrice[0] : `${this.getMin(linePrice)}~${this.getMax(linePrice)}`
+      prdLinePrice: data.defaultPrd ? linePrice[0] : `${this.getMin(linePrice)}~${this.getMax(linePrice)}`,
+      singleRealPrice: this.getMin(realPrice),
+      singleLinePrice: this.getMin(linePrice)
     }
   },
   /**
