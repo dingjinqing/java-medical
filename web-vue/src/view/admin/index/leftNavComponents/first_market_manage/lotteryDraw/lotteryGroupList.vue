@@ -4,12 +4,13 @@
     <div class="main">
       <el-form label-width="100px">
         <el-form-item
-          label="用户昵称："
+          label="团长昵称："
           class="item"
         >
           <el-input
             size="small"
-            placeholder="请输入用户昵称"
+            v-model="requestParams.username"
+            placeholder="请输入团长昵称"
             maxlength="11"
             clearable
             class="inputWidth"
@@ -19,17 +20,28 @@
           label="开团时间："
           class="item"
         >
-          <el-input
+          <el-date-picker
             size="small"
+            v-model="requestParams.startTime"
+            type="datetime"
             clearable
             class="inputWidth"
-          ></el-input>
-          至
-          <el-input
+            value-format="yyyy-MM-dd 00:00:00"
+            :placeholder="$t('actionRecord.startTime')"
+          >
+          </el-date-picker>
+          <span>至</span>
+          <el-date-picker
             size="small"
+            v-model="requestParams.endTime"
+            type="datetime"
             clearable
             class="inputWidth"
-          ></el-input>
+            value-format="yyyy-MM-dd 00:00:00"
+            default-time="23:59:59"
+            :placeholder="$t('actionRecord.endTime')"
+          >
+          </el-date-picker>
         </el-form-item>
         <el-form-item
           label="团ID："
@@ -48,6 +60,7 @@
         >
           <el-input
             size="small"
+            v-model="requestParams.mobile"
             placeholder="请输入手机号"
             clearable
             class="inputWidth"
@@ -59,6 +72,7 @@
         >
           <el-select
             size="small"
+            v-model="requestParams.grouped"
             class="inputWidth"
             placeholder="请选择"
           >
@@ -95,37 +109,37 @@
       >
         <el-table-column
           label="团ID"
-          prop=""
+          prop="groupId"
           align="center"
         ></el-table-column>
         <el-table-column
           label="参团人数"
-          prop=""
+          prop="userCount"
           align="center"
         ></el-table-column>
         <el-table-column
           label="活动商品"
-          prop=""
+          prop="goodsName"
           align="center"
         ></el-table-column>
         <el-table-column
           label="开团时间"
-          prop=""
+          prop="openTime"
           align="center"
         ></el-table-column>
         <el-table-column
           label="团长昵称"
-          prop=""
+          prop="grouperName"
           align="center"
         ></el-table-column>
         <el-table-column
           label="团长手机号"
-          prop=""
+          prop="mobile"
           align="center"
         ></el-table-column>
         <el-table-column
           label="成团时间"
-          prop=""
+          prop="endTime"
           align="center"
         ></el-table-column>
       </el-table>
@@ -150,15 +164,22 @@ export default {
     return {
       // 成团状态
       statusList: [{
-        value: '1',
+        value: true,
         label: '已成团'
       }, {
-        value: '2',
+        value: false,
         label: '未成团'
       }],
       loading: false,
       pageParams: {}, // 分页
-      requestParams: {},
+      requestParams: {
+        username: '',
+        startTime: '',
+        endTime: '',
+        // 团ID
+        mobile: '' // 手机号
+        // 成团状态
+      },
       tableData: [] // 表格数据
     }
   },

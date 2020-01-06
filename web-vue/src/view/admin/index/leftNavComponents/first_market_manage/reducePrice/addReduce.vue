@@ -12,6 +12,7 @@
         prop="name"
       >
         <el-input
+          :disabled="isEditFlag"
           size="small"
           :placeholder="$t('marketCommon.actNamePlaceholder')"
           v-model="reduceData.name"
@@ -24,6 +25,7 @@
         prop="effectiveDate"
       >
         <el-date-picker
+          :disabled="isEditFlag"
           v-model="reduceData.effectiveDate"
           type="datetimerange"
           :range-separator="$t('marketCommon.to')"
@@ -34,15 +36,17 @@
           size="small"
         ></el-date-picker>
         <el-checkbox
+          :disabled="isEditFlag"
           v-model="reduceData.isCycle"
           @change="showCycleDialog"
         >{{$t('reducePriceList.repeatByCycle')}}</el-checkbox>
       </el-form-item>
       <el-form-item
-        label="优先级："
+        :label="$t('marketCommon.first') + '：'"
         prop="first"
       >
         <el-input-number
+          :disabled="isEditFlag"
           size="small"
           :min="0"
           :max="127"
@@ -57,15 +61,18 @@
         prop="isLimit"
       >
         <el-radio
+          :disabled="isEditFlag"
           v-model="reduceData.isLimit"
           label="0"
         >{{$t('reducePriceList.noLimit')}}</el-radio>
         <br />
         <el-radio
+          :disabled="isEditFlag"
           v-model="reduceData.isLimit"
           label="1"
         >{{$t('reducePriceList.limitQuantity')}}
           <el-input-number
+            :disabled="isEditFlag"
             v-model="reduceData.limitAmount"
             controls-position="right"
             :min="1"
@@ -75,7 +82,12 @@
           {{$t('reducePriceList.piece')}}
         </el-radio>
         <div v-if="reduceData.isLimit === '1'">
-          <el-checkbox v-model="reduceData.limitFlag">{{$t('reducePriceList.limitQuantityTip')}}</el-checkbox>
+          <el-checkbox
+            :disabled="isEditFlag"
+            v-model="reduceData.limitFlag"
+            :true-label="1"
+            :false-label="0"
+          >{{$t('reducePriceList.limitQuantityTip')}}</el-checkbox>
         </div>
       </el-form-item>
       <el-form-item
@@ -83,6 +95,7 @@
         prop=""
       >
         <el-button
+          :disabled="isEditFlag"
           size="small"
           plain
           @click="showChoosingGoods"
@@ -90,14 +103,21 @@
           <i class="el-icon-plus"></i> {{$t('marketCommon.selectGoods')}}
         </el-button>
       </el-form-item>
-      <div v-if="pageShowGoodsList.length">
+      <div
+        v-if="pageShowGoodsList.length"
+        style="padding: 0 20px;margin-bottom: 20px;"
+      >
         <div class="set_item batch_item">
           <div class="item_title">
             <em>*</em> {{$t('reducePriceList.setDiscount')}}：
           </div>
           <div class="item_right">
             <el-radio-group v-model="batchFlag">
-              <el-radio :label="1">{{$t('reducePriceList.batch')}}<el-input-number
+              <el-radio
+                :label="1"
+                :disabled="isEditFlag"
+              >{{$t('reducePriceList.batch')}}
+                <el-input-number
                   :disabled="batchFlag != 1 ? true : false"
                   v-model="reduceData.batchDiscount"
                   :controls="false"
@@ -107,7 +127,11 @@
                   :min="0"
                   :max="10"
                 ></el-input-number>{{$t('reducePriceList.discount')}}</el-radio>
-              <el-radio :label="2">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}<el-input-number
+              <el-radio
+                :label="2"
+                :disabled="isEditFlag"
+              >{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}
+                <el-input-number
                   :disabled="batchFlag != 2 ? true : false"
                   v-model="reduceData.batchReduce"
                   :controls="false"
@@ -116,7 +140,11 @@
                   class="small_input"
                   :min="0"
                 ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
-              <el-radio :label="3">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}<el-input-number
+              <el-radio
+                :label="3"
+                :disabled="isEditFlag"
+              >{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}
+                <el-input-number
                   :disabled="batchFlag != 3 ? true : false"
                   v-model="reduceData.batchFinalPrice"
                   :controls="false"
@@ -127,11 +155,13 @@
                 ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
             </el-radio-group>
             <el-button
+              :disabled="isEditFlag"
               type="primary"
               size="small"
               @click="batchSet"
             >{{$t('marketCommon.ok')}}</el-button>
             <el-button
+              :disabled="isEditFlag"
               type="default"
               size="small"
               @click="resetPrice"
@@ -185,6 +215,7 @@
             >
               <template slot-scope="scope">
                 <el-input-number
+                  :disabled="isEditFlag"
                   v-model="scope.row.discount"
                   :controls="false"
                   size="small"
@@ -203,6 +234,7 @@
             >
               <template slot-scope="scope">
                 <el-input-number
+                  :disabled="isEditFlag"
                   v-model="scope.row.reducePrice"
                   :controls="false"
                   size="small"
@@ -222,6 +254,7 @@
               <template slot-scope="scope">
                 <p class="price_red">{{reduceError(scope.row)}}</p>
                 <el-input-number
+                  :disabled="isEditFlag"
                   v-model="scope.row.goodsPrice"
                   :controls="false"
                   size="small"
@@ -231,7 +264,7 @@
                 ></el-input-number> {{$t('marketCommon.yuan')}}
                 <p
                   class="price_blue"
-                  @click="getProductInfo(scope.row)"
+                  @click="isEditFlag ? clickHandler() : getProductInfo(scope.row)"
                   v-if="scope.row.reducePriceProduct && scope.row.reducePriceProduct.length>0"
                 >{{scope.row.reducePriceProduct.length}}{{$t('reducePriceList.productReducePriceTip')}}</p>
               </template>
@@ -244,10 +277,10 @@
               v-else-if="item.index === 7"
             >
               <template slot-scope="scope">
-                <a
+                <span
                   class="del_item"
-                  @click="delReduceData(scope.row.goodsId)"
-                >{{$t('marketCommon.delete')}}</a>
+                  @click="isEditFlag ? clickHandler() : delReduceData(scope.row.goodsId)"
+                >{{$t('marketCommon.delete')}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -282,13 +315,14 @@
       <div v-if="!arrorFlag">
         <!-- 活动分享 -->
         <el-form-item
-          prop="shareConfig.share_action"
+          prop="shareConfig.shareAction"
           label="活动分享："
         >
           <div class="shareContent">
             <el-radio
-              v-model="reduceData.shareConfig.share_action"
+              v-model="reduceData.shareConfig.shareAction"
               :label="1"
+              :disabled="isEditFlag"
             >默认样式</el-radio>
             <el-popover
               placement="right-start"
@@ -316,47 +350,52 @@
           </div>
           <div>
             <el-radio
-              v-model="reduceData.shareConfig.share_action"
+              v-model="reduceData.shareConfig.shareAction"
               :label="2"
+              :disabled="isEditFlag"
             >自定义样式</el-radio>
-            <div v-if="reduceData.shareConfig.share_action === 2">
+            <div v-if="reduceData.shareConfig.shareAction === 2">
               <span>文案：</span>
               <el-input
-                v-model="reduceData.shareConfig.share_doc"
+                v-model="reduceData.shareConfig.shareDoc"
                 size="small "
-                style="width: 180px;"
+                :disabled="isEditFlag"
+                style="width: 170px;"
               ></el-input>
             </div>
-            <div v-if="reduceData.shareConfig.share_action === 2">
+            <div v-if="reduceData.shareConfig.shareAction === 2">
               <span>分享图：</span>
               <el-radio
-                v-model="reduceData.shareConfig.share_img_action"
+                v-model="reduceData.shareConfig.shareImgAction"
                 :label="1"
+                :disabled="isEditFlag"
               >活动商品信息图</el-radio>
               <div style="margin-left: 60px;">
                 <el-radio
-                  v-model="reduceData.shareConfig.share_img_action"
+                  v-model="reduceData.shareConfig.shareImgAction"
                   :label="2"
+                  :disabled="isEditFlag"
                 >自定义图片</el-radio>
               </div>
 
               <div
                 style="display: flex"
-                v-if="reduceData.shareConfig.share_img_action === 2"
+                v-if="reduceData.shareConfig.shareImgAction === 2"
+                :disabled="isEditFlag"
               >
                 <div
                   class="imgContent"
                   @click="addGoodsImg"
                 >
-                  <div>
+                  <div style="width: 100%; height: 100%;">
                     <img
-                      v-if="reduceData.shareConfig.share_img === ''"
+                      v-if="reduceData.shareConfig.shareImg === ''"
                       src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
                       alt=""
                     >
                     <img
-                      v-if="reduceData.shareConfig.share_img !== ''"
-                      :src="reduceData.shareConfig.share_img"
+                      v-if="reduceData.shareConfig.shareImg !== ''"
+                      :src="reduceData.shareConfig.shareImg"
                       alt=""
                       class="shareImg"
                     >
@@ -389,6 +428,9 @@
     <!-- 重复周期弹窗 -->
     <CycleDialog
       :cycleDialog="cycleDialogShow"
+      :CycleType="periodAction"
+      :CycleDate="extendTime"
+      :CycleData="CycleData"
       @handelCycleData="getCycleData"
     />
 
@@ -429,31 +471,37 @@ export default {
       }, {
         img_2: this.$imageHost + '/image/admin/hid_some.png'
       }],
-      arrorFlag: true, // 展开更多配置
+      // 展开更多配置
+      arrorFlag: true,
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
       },
 
-      isEditFlag: false,
-      actId: null,
+      isEditFlag: false, // 编辑时部分信息不可修改
       batchFlag: null,
+      // 周期弹窗
+      cycleDialogShow: false,
+      periodAction: null,
+      extendTime: '',
+      CycleData: '',
+
       reduceData: {
         name: '',
         effectiveDate: '',
         first: 1, // 优先级
         isCycle: false,
         isLimit: '0',
-        limitFlag: '0',
+        limitFlag: 0,
         limitAmount: 1,
-        batchDiscount: '',
+        batchDiscount: '', // 设置折扣
         batchReduce: '',
         batchFinalPrice: '',
         shareConfig: {
-          share_action: 1,
-          share_doc: '',
-          share_img_action: 1,
-          share_img: ''
+          shareAction: 1,
+          shareDoc: '',
+          shareImgAction: 1,
+          shareImg: ''
         }
       },
       // 表单校验
@@ -470,12 +518,8 @@ export default {
         isLimit: [
           { required: true, message: '请填写限购数量', trigger: 'change' }
         ]
-        // 'shareConfig.share_action': [
-        //   { validator: validateShare, trigger: 'change' }
-        // ]
       },
-      activeName: null,
-      cycleDialogShow: false, // 周期弹窗
+
       changeFlag: false,
       productDialogFlag: false,
       productInfo: {},
@@ -513,30 +557,9 @@ export default {
 
     this.changeFlag = true
 
-    if (this.$route.query.id > 0) {
-      // 编辑限时降价活动
-      this.actId = this.$route.query.id
-      // 编辑时部分信息不可修改
-      this.isEditFlag = true
-      // 点击编辑按钮进来，初始化页面数据
-      let SimpleBargainParam = {
-        'id': this.$route.query.id
-      }
-      getReducePriceById(SimpleBargainParam).then((res) => {
-        if (res.error === 0) {
-          // 解析返回的数据结构，回显
-          this.reduceData = res.content
-          this.reduceData.effectiveDate = [res.content.startTime, res.content.endTime]
-          this.reduceData.shareConfig = res.content.shopShareConfig
-          res.content.reducePriceGoods.map(item => {
-            item.goodsName = item.goodsView.goodsName
-            item.goodsNumber = item.goodsView.goodsNumber
-            item.goodsImg = item.goodsView.goodsImg
-            item.shopPrice = item.goodsView.shopPrice
-          })
-          this.pageShowGoodsList = res.content.reducePriceGoods
-        }
-      })
+    // 编辑初始化
+    if (this.isEdite === true) {
+      this.editReduceInit()
     }
   },
   methods: {
@@ -545,14 +568,14 @@ export default {
       this.arrorFlag = !this.arrorFlag
     },
 
-    // 添加图片
-    handleToAddImg () {
+    // 图片弹窗
+    addGoodsImg () {
       this.tuneUp = !this.tuneUp
     },
+
     // 图片选中
     handleSelectImg (res) {
-      this.reduceData.shareConfig.share_img = res.imgPath
-      console.log(res)
+      this.reduceData.shareConfig.shareImg = res.imgUrl
     },
 
     // 周期弹窗
@@ -765,11 +788,49 @@ export default {
       }
     },
 
+    editReduceInit () {
+      // 展开更多配置
+      this.arrorFlag = false
+      // 编辑时部分信息不可修改
+      this.isEditFlag = true
+      getReducePriceById({ id: this.editId }).then((res) => {
+        if (res.error === 0) {
+          this.reduceData = res.content
+          // 有效期
+          this.reduceData.effectiveDate = [res.content.startTime, res.content.endTime]
+          // 周期
+          if (this.reduceData.periodAction === 1 || this.reduceData.periodAction === 2 || this.reduceData.periodAction === 3) {
+            this.reduceData.isCycle = true
+          }
+          // 周期弹窗数据回显
+          this.periodAction = this.reduceData.periodAction
+          this.extendTime = this.reduceData.extendTime
+          this.CycleData = this.reduceData.pointTime
+          // 限购数量
+          if (this.reduceData.limitAmount > 0 || this.reduceData.limitAmount !== null) {
+            this.reduceData.isLimit = '1'
+          } else {
+            this.reduceData.isLimit = '0'
+          }
+          // 活动分享
+          this.reduceData.shareConfig = res.content.shopShareConfig
+
+          // 活动商品
+          res.content.reducePriceGoods.map(item => {
+            item.goodsName = item.goodsView.goodsName
+            item.goodsNumber = item.goodsView.goodsNumber
+            item.goodsImg = item.goodsView.goodsImg
+            item.shopPrice = item.goodsView.shopPrice
+          })
+          this.pageShowGoodsList = res.content.reducePriceGoods
+        }
+      })
+    },
+
     // 保存限时降价
     saveClickHandler () {
       this.$refs['reduceData'].validate((valid) => {
         if (valid) {
-          debugger
           // 有效期
           this.reduceData.startTime = this.reduceData.effectiveDate[0]
           this.reduceData.endTime = this.reduceData.effectiveDate[1]
@@ -777,8 +838,6 @@ export default {
           if (this.reduceData.isLimit === '0') {
             this.reduceData.limitAmount = 0
           }
-          // 限超购买
-          this.reduceData.limitFlag = this.reduceData.limitFlag ? 1 : 0
           // 改价的商品数组
           this.reduceData.reducePriceGoodsAddParams = this.pageShowGoodsList
           // 周期类型
@@ -792,19 +851,17 @@ export default {
             addReducePrice(this.reduceData).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: this.$t('marketCommon.successfulOperation') })
-                this.$emit('addSeckillSubmit')
+                this.$emit('addReduceSubmit')
               } else {
                 this.$message.warning({ message: this.$t('marketCommon.failureOperation') })
               }
             })
           } else {
             // 编辑限时降价
-            this.obj = this.reduceData
-            this.id = this.editId
-            updateReducePrice().then((res) => {
+            updateReducePrice(this.reduceData).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: '编辑成功' })
-                this.$emit('addSeckillSubmit')
+                this.$emit('addReduceSubmit')
               } else {
                 this.$message.warning({ message: '编辑失败' })
               }
@@ -812,6 +869,10 @@ export default {
           }
         }
       })
+    },
+
+    clickHandler () {
+
     }
 
     // 提交前校验
@@ -853,16 +914,86 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  padding-top: 10px;
+  background: #fff;
+  margin-bottom: 10px;
+  .main {
+    padding: 10px;
+    background-color: #fff;
+    .set_box {
+      padding: 0 12px 0;
+      border-radius: 3px;
+      /deep/ .el-collapse {
+        border: none;
+        .el-collapse-item__wrap {
+          border-bottom: none;
+        }
+        .el-collapse-item__header {
+          border-bottom: none;
+          color: #409eff;
+          width: 105px;
+        }
+        .el-collapse-item__content {
+          padding-bottom: 0;
+        }
+      }
+    }
+  }
+  .small_input {
+    width: 90px;
+  }
+  .default_input {
+    width: 150px;
+  }
+  .goods_info {
+    display: flex;
+    > img {
+      width: 45px;
+      height: 45px;
+      margin-right: 5px;
+    }
+    > .goods_name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      /*! autoprefixer: off */
+      -webkit-box-orient: vertical;
+      text-align: left;
+    }
+  }
+  .price_blue {
+    color: #5a8bff;
+    padding-top: 2px;
+    cursor: pointer;
+  }
+  .price_red {
+    color: red;
+    padding-bottom: 2px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .del_item {
+    color: #66b1ff;
+    cursor: pointer;
+  }
+}
 .inputWidth {
   width: 170px;
 }
-
+.footer {
+  width: 100%;
+  height: 50px;
+  padding: 10px 0;
+  background: #f8f8f8;
+  text-align: center;
+}
 .set_item {
   display: flex;
-  margin-bottom: 15px;
   &.batch_item {
-    padding: 0 20px;
-    margin-bottom: 10px;
     border-top: 1px solid #ebeef5;
     border-left: 1px solid #ebeef5;
     border-right: 1px solid #ebeef5;
@@ -935,156 +1066,31 @@ export default {
     }
   }
 }
-.container {
-  // padding: 10px;
-  padding-top: 10px;
-  background: #fff;
-  margin-bottom: 10px;
-  .main {
-    padding: 10px;
-    background-color: #fff;
-    .set_box {
-      padding: 0 12px 0;
-      border-radius: 3px;
-      /deep/ .el-collapse {
-        border: none;
-        .el-collapse-item__wrap {
-          border-bottom: none;
-        }
-        .el-collapse-item__header {
-          border-bottom: none;
-          color: #409eff;
-          width: 105px;
-        }
-        .el-collapse-item__content {
-          padding-bottom: 0;
-        }
-      }
-      .set_item {
-        display: flex;
-        margin-bottom: 15px;
-        &.batch_item {
-          margin-bottom: 0;
-          border-top: 1px solid #ebeef5;
-          border-left: 1px solid #ebeef5;
-          border-right: 1px solid #ebeef5;
-          > .item_title {
-            line-height: 60px;
-          }
-          > .item_right {
-            line-height: 60px;
-          }
-        }
-        > .item_title {
-          width: 150px;
-          font-size: 14px;
-          text-align: right;
-          line-height: 32px;
-          color: #333;
-          > em {
-            color: red;
-          }
-        }
-        > .item_right {
-          flex: 1;
-          line-height: 32px;
-          > .item_tips {
-            color: #999;
-            font-size: 14px;
-          }
-          > .limit {
-            padding-left: 25px;
-          }
-          .choose_list {
-            > .choose_item {
-              display: flex;
-              line-height: 30px;
-              > .item_left {
-                width: 120px;
-                background-color: #fff;
-                color: #5a8bff;
-                border: 1px solid #ddd;
-                cursor: pointer;
-                text-align: center;
-                font-size: 14px;
-              }
-              > .item_right {
-                flex: 1;
-              }
-            }
-          }
-        }
-        .custom_share_item {
-          display: flex;
-          > .item_title {
-            font-size: 14px;
-            text-align: right;
-            line-height: 32px;
-          }
-          > .item_right {
-            flex: 1;
-            line-height: 32px;
-            .upload_img {
-              padding-left: 25px;
-              .bgImgDiv {
-                width: 65px;
-                height: 65px;
-                border: 1px solid #ccc;
-                background-position: center;
-                cursor: pointer;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  .small_input {
-    width: 90px;
-  }
-  .default_input {
-    width: 150px;
-  }
-  .goods_info {
-    display: flex;
-    > img {
-      width: 45px;
-      height: 45px;
-      margin-right: 5px;
-    }
-    > .goods_name {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-      /*! autoprefixer: off */
-      -webkit-box-orient: vertical;
-      text-align: left;
-    }
-  }
-  .price_blue {
-    color: #5a8bff;
-    padding-top: 2px;
-    cursor: pointer;
-  }
-  .price_red {
-    color: red;
-    padding-bottom: 2px;
-    cursor: pointer;
-    font-size: 12px;
-  }
-  .del_item {
-    color: #66b1ff;
-    cursor: pointer;
-  }
+.shareContent a {
+  text-decoration: none;
+  color: #409eff;
 }
-.footer {
-  width: 100%;
-  height: 50px;
-  padding: 10px 0;
-  background: #f8f8f8;
+.shareContent a:first-child {
+  margin-right: 10px;
+}
+.imgContent {
+  width: 80px;
+  height: 80px;
   text-align: center;
+  line-height: 65px;
+  margin-left: 60px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.imgContent .shareImg {
+  width: 100%;
+  height: 100%;
+}
+.picSizeTips {
+  display: block;
+  line-height: 80px;
+  margin-left: 20px;
+  color: rgb(153, 153, 153);
 }
 </style>

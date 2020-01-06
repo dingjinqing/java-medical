@@ -8,9 +8,100 @@
           @export="exportDataList"
         />
       </div>
-      <div class="table_box">
 
+      <div class="table_box">
         <el-table
+          v-loading="loading"
+          class="version-manage-table"
+          header-row-class-name="tableClss"
+          :data="tableData"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            prop=""
+            label="活动名称"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="订单号"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span class="itemColor">{{ scope.row.orderSn }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="商品名称"
+            align="center"
+            width="250px"
+          >
+            <!-- <template slot-scope="scope">
+              <div class="fl">
+                <img
+                  :src="$imageHost+'/image/admin/icon_jia.png'"
+                  alt=""
+                  style="width: 100%; height: 100%;"
+                >
+              </div>
+              <div class="fr">
+                <p><span class="tips">限时降价</span>商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述</p>
+                <p>规格scale:大规;规格tast:甜</p>
+                <div></div>
+              </div>
+            </template> -->
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="单价"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="下单时间"
+            align="center"
+            width="160px"
+          ></el-table-column>
+          <el-table-column
+            label="下单人信息"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <div @click="userHandler(scope.row.userId)">
+                <p class="itemColor">{{ scope.row.username }}</p>
+                <p class="itemColor">{{ scope.row.userMobile }}</p>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="收货人信息"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <div>
+                <p class="itemColor">{{ scope.row.consignee }}</p>
+                <p class="itemColor">{{ scope.row.mobile }}</p>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="支付金额"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <p style="color: #c09853;">￥{{ scope.row.moneyPaid }}</p>
+              <p>(含快递费<span style="color: #c09853;">￥{{ scope.row.shippingFee }}</span>)</p>
+              <span></span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="orderStatus"
+            label="订单状态"
+            align="center"
+          ></el-table-column>
+        </el-table>
+
+        <!-- <el-table
           v-loading="loading"
           :data="tableData"
           style="width:100%;"
@@ -111,7 +202,7 @@
               v-else
             ></el-table-column>
           </template>
-        </el-table>
+        </el-table> -->
         <pagination
           :page-params.sync="pageParams"
           @pagination="initDataList"
@@ -184,7 +275,7 @@ export default {
     },
     // 表格数据处理
     handleData (data) {
-      this.tableData = data
+      // this.tableData = data
     },
     goodsInfo (data) {
       if (data.columnIndex === 1 || data.columnIndex === 2) {
@@ -200,6 +291,11 @@ export default {
     },
     exportDataList () {
       alert(11)
+    },
+
+    // 下单人信息
+    userHandler (id) {
+
     }
   }
 }
@@ -293,5 +389,55 @@ export default {
       }
     }
   }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.itemColor {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.fl {
+  float: left;
+  width: 32%;
+  height: 80px;
+  text-align: center;
+  line-height: 50px;
+  border: 1px solid #ccc;
+  font-size: 0;
+}
+.fr {
+  float: left;
+  margin-left: 3%;
+  width: 65%;
+  height: 80px;
+  position: relative;
+  // margin-left: 12px;
+  font-size: 12px;
+  // text-align: left;
+}
+.fr p {
+  width: 100%;
+  display: -webkit-box;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0;
+  text-align: left;
+}
+.fr p .tips {
+  display: inline-block;
+  border: 1px #ef8115 solid;
+  padding: 0px 3px;
+  color: #ef8115;
+  border-radius: 2px;
+  font-size: 12px;
 }
 </style>
