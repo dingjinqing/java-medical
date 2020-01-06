@@ -60,7 +60,7 @@ public class DomainConfig {
 	 * @return
 	 */
 	public String mainUrl(String relativePath, String schema) {
-		schema = schema == null ? "https" : schema;
+		schema = schema == null ? "http" : schema;
 		return String.format("%s://%s%s", schema, mainDomain, relativePath);
 	}
 
@@ -91,6 +91,6 @@ public class DomainConfig {
 	 * @return
 	 */
 	public String getImageHost() {
-		return String.format("%s://%s/%s", "https", getImageDomain(), "");
+		return String.format("%s://%s/%s", "http", getImageDomain(), "");
 	}
 }
