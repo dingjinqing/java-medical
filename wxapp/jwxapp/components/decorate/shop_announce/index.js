@@ -8,8 +8,15 @@ global.wxComponent({
     windowWidth: '',
     shopContentWidth: ''
   },
+  pageLifetimes: {
+    hide: function () {
+      console.log('触发删除定时器+++++++++++++++++++++++')
+      console.log(this._timers)
+      this.clearTimers();
+    }
+  },
   methods: {
-    onPropChange(newVal, oldVal, changedPath) {
+    onPropChange (newVal, oldVal, changedPath) {
       newVal.fixed = false;
       newVal.cur_idx = `c_${newVal.cur_idx}`
       var m = this.data.m = newVal;
@@ -29,7 +36,8 @@ global.wxComponent({
       });
       console.log(m, 'announce')
     },
-    onShow() {
+    onShow () {
+      this.clearTimers();
       this.initAnimation(this.data.m.shop_text);
     },
     initAnimation: function (shop_announce_Text) {
@@ -38,9 +46,9 @@ global.wxComponent({
       console.log(length, windowWidth)
       this.run(length, windowWidth)
     },
-    run(length, windowWidth) {
+    run (length, windowWidth) {
       var that = this
-      that.createTimer("interval", "name", function () {
+      that.createTimer("interval", "shopAnnounce", function () {
         if (--that.data.marqueeDistance < -length) {
           that.setData({
             marqueeDistance: that.data.shopContentWidth
@@ -55,7 +63,7 @@ global.wxComponent({
         }
       }, 20)
     },
-    onPageScroll(e) {
+    onPageScroll (e) {
       var _this = this;
       var m = this.data.m;
       if (m.announce_position === '1') {

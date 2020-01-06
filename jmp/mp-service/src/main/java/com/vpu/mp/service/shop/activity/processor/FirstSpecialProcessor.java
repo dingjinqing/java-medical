@@ -12,7 +12,13 @@ import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.firstspecial.FirstSpecialMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.firstspecial.FirstSpecialPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FirstSpecialPromotion;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.config.FirstSpecialConfigService;
@@ -29,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
 import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
 
@@ -41,7 +47,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRS
  */
 @Service
 @Slf4j
-public class FirstSpecialProcessor implements Processor, ActivityGoodsListProcessor, ActivityCartListStrategy,CreateOrderProcessor {
+public class FirstSpecialProcessor implements Processor, ActivityGoodsListProcessor, ActivityCartListStrategy, CreateOrderProcessor, GoodsDetailProcessor {
 
     @Autowired
     FirstSpecialProcessorDao firstSpecialProcessorDao;
@@ -74,7 +80,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
             return;
         }
         List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType()) && !x.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
 
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, Result<Record3<Integer, Integer, BigDecimal>>> firstSpecialPrds = firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(goodsIds, DateUtil.getLocalDateTime());
@@ -88,11 +94,52 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
             capsule.setRealPrice(result.get(0).get(FIRST_SPECIAL_PRODUCT.PRD_PRICE));
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
             activity.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-            activity.setActivityId(result.get(0).get(FIRST_SPECIAL.ID));
+            activity.setActivityId(result.get(0).get(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID));
             capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(ACTIVITY_TYPE_FIRST_SPECIAL);
         });
     }
+
+    /*****************商品详情处理*******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        if (param.getUserId() != null && !orderInfoService.isNewUser(param.getUserId(), true)) {
+            return;
+        }
+        if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(param.getActivityType())) {
+            return;
+        }
+        FirstSpecialMpVo vo = firstSpecialProcessorDao.getFirstSpecialInfo(param.getActivityId(), param.getGoodsId(), DateUtil.getLocalDateTime());
+        capsule.setActivity(vo);
+
+        if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(vo.getActState())) {
+            return;
+        }
+        Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
+
+        // 设置规格价格，并且设置有效规格
+        List<FirstSpecialPrdMpVo> newPrdMp = vo.getFirstSpecialPrdMpVos().stream().filter(prd -> {
+            GoodsPrdMpVo goodsPrdMpVo = prdMap.get(prd.getProductId());
+            if (goodsPrdMpVo == null) {
+                return false;
+            } else {
+                prd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
+                return true;
+            }
+        }).collect(Collectors.toList());
+        vo.setFirstSpecialPrdMpVos(newPrdMp);
+
+        // 设置促销列表里的内容
+        FirstSpecialPromotion promotion = new FirstSpecialPromotion();
+        promotion.setPromotionId(param.getActivityId());
+        promotion.setPromotionType(param.getActivityType());
+        promotion.setIsLimit(vo.getIsLimit());
+        promotion.setLimitAmount(vo.getLimitAmount());
+        promotion.setLimitFlag(vo.getLimitFlag());
+
+        capsule.getPromotions().add(promotion);
+    }
+
 
     //**********************购物车********************
 
@@ -107,7 +154,6 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
     }
 
     /**
-     *
      * @param productBo
      */
     public void doOrderOperation(OrderCartProductBo productBo) {
@@ -123,7 +169,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                 AtomicReference<Integer> checkedGoodsNum = new AtomicReference<>(0);
                 productBo.getAll().forEach(product -> {
                     specialPrdIdList.forEach(firstSpecial -> {
-                        if (firstSpecial.getPrdId().equals(product.getProductId())&&!product.getActivityInfo().containsKey(ACTIVITY_TYPE_FIRST_SPECIAL)) {
+                        if (firstSpecial.getPrdId().equals(product.getProductId()) && !product.getActivityInfo().containsKey(ACTIVITY_TYPE_FIRST_SPECIAL)) {
                             log.debug("首单特惠商品[getPrdId:" + firstSpecial.getPrdId() + "]");
                             GoodsActivityInfo firstActivityInfo = new GoodsActivityInfo();
                             firstActivityInfo.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
@@ -138,12 +184,12 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                     //不可继续添加
                                     log.debug("商品数量超过活动数量限制,不可选中[getGoodsNumber:" + product.getGoodsNumber() + ",getLimitAmount:" + firstSpecial.getLimitAmount() + "]");
                                     product.setIsChecked(CartConstant.CART_NO_CHECKED);
-                                    cartService.switchCheckedByProductId(productBo.getUserId(),product.getProductId(),CartConstant.CART_NO_CHECKED);
+                                    cartService.switchCheckedByProductId(productBo.getUserId(), product.getProductId(), CartConstant.CART_NO_CHECKED);
                                     firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                                 }
                             }
                             goodsNum.updateAndGet(v -> v + 1);
-                            product.getActivityInfo().put(ACTIVITY_TYPE_FIRST_SPECIAL,firstActivityInfo);
+                            product.getActivityInfo().put(ACTIVITY_TYPE_FIRST_SPECIAL, firstActivityInfo);
                         }
                     });
                 });
@@ -157,7 +203,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                         if (actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
                             if (Objects.equals(product.getIsChecked(), CartConstant.CART_IS_CHECKED)) {
                                 checkedGoodsNum.updateAndGet(v -> v + 1);
-                                if (checkedGoodsNum.get()>limitGoodsNum){
+                                if (checkedGoodsNum.get() > limitGoodsNum) {
                                     log.debug("超过限制的商品首单特惠不生效,商品价格为原价[" + "product:" + product.getProductId() + "]");
                                     actInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                                     product.setIsChecked(CartConstant.CART_NO_CHECKED);
@@ -185,7 +231,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
     }
 
     @Override
-    public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
 
     }
 }
