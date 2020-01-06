@@ -29,7 +29,7 @@ public class UserImportExcelListener implements BaseRabbitHandler {
 	@RabbitHandler
 	public void handler(@Payload UserImportMqParam param, Message message, Channel channel) {
 		saas.getShopApp(param.getShopId()).member.userImportService.checkList(param.getModels(), param.getCardId(),
-				param.getGroupId(), param.getTagId());
+				param.getGroupId(), param.getTagId(),param.getLang());
 	}
 
 	@Override

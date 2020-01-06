@@ -188,4 +188,13 @@ public enum MemberIndustryEnum {
 		}
 		return res;
 	}
+	
+	public static String[] getArrayIndustryInfo(String lang) {
+		MemberIndustryEnum[] values = MemberIndustryEnum.values();
+		String[] result=new String[values.length];
+		for (int i = 0; i < values.length; i++) {
+			result[i]=getNameByCode(i+1, lang);
+		}
+		return result;
+	}
 }
