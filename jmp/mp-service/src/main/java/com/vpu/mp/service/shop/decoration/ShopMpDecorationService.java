@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -85,6 +86,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     @Autowired
     private QrCodeService qrCode;
+
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 装修页面列表
@@ -761,6 +765,7 @@ public class ShopMpDecorationService extends ShopBaseService {
             if(img.getCanShow() == 1 && !isNewUser){
                 moduleImageAdver.getImageList().remove(img);
             }
+            img.setImage(domainConfig.imageUrl(img.getImage()));
         });
         return moduleImageAdver;
     }
