@@ -773,6 +773,7 @@ export default {
         this.MoveWhiteFlag = false
         console.log(this.nowRightShowIndex, insert, index)
         this.showModulesList.splice(insert, 0, index)
+        this.modulesData.splice(insert, 0, this.handleToAddModules(index))
         this.$nextTick(() => {
           if (this.nowRightShowIndex === insert) {
             this.handleToModuleHight()
@@ -984,6 +985,7 @@ export default {
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
       console.log(this.nowRightShowIndex, this.showModulesList, this.modulesData)
       this.handleToSaveModules(this.showModulesList, this.modulesData)
+      this.nowRightShowMoudlesIndex = -1
       this.$nextTick(() => {
         this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
         console.log(this.nowRightShowIndex, this.modulesData)
