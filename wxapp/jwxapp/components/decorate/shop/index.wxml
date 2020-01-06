@@ -1,6 +1,8 @@
 <view class='shop-container' style='margin-bottom:{{m.margin_bot}}rpx;'>
   <image class='back_img' src='{{m.bg_url}}!big?v=1' lazy-load="{{true}}"></image>
-  <image src='{{m.shop_bg_path}}' class='score_logo'></image>
+  <view class='score_logo'>
+    <image src='{{m.shop_bg_path}}' class="image"></image>
+  </view>
   <view class='store_name'>{{m.shop_name}}</view>
   <view class='store_content'>{{m.shop_notice}}</view>
 </view>
