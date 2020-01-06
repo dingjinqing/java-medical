@@ -31,7 +31,7 @@ export const cn = {
   Balancedetails: '余额明细',
   Integraldetails: '积分明细',
   Nolanding: '禁止登录',
-  NoLandingPrompt: '禁止登陆后会员将不能登陆了，确定禁止登陆吗?',
+  NoLandingPrompt: '禁止登录后会员将不能登录了，确定禁止登录吗?',
   ResumeLogin: '恢复登录',
   ResumeLoginPrompt: '确定要恢复会员的登录功能吗?',
   Labeling: '打标签',

@@ -246,13 +246,13 @@
           <thead>
             <tr>
               <td style="width:8%">ID</td>
-              <td style="width:8%">{{$t('membershipIntroduction.nickname')}}</td>
+              <td style="width:10%">{{$t('membershipIntroduction.nickname')}}</td>
               <td style="width:8%">{{$t('membershipIntroduction.phoneNum')}}</td>
               <td style="width:8%">{{$t('membershipIntroduction.inviter')}}</td>
               <td style="width:7%">{{$t('membershipIntroduction.Balance')}}</td>
               <td style="width:7%">{{$t('membershipIntroduction.integral')}}</td>
               <td style="width:8%">{{$t('membershipIntroduction.membershipCard')}}</td>
-              <td style="width:10%">{{$t('membershipIntroduction.source')}}</td>
+              <td style="width:7%">{{$t('membershipIntroduction.source')}}</td>
               <td style="width:10%">{{$t('membershipIntroduction.registrationTime')}}</td>
               <td style="width:15%">{{$t('membershipIntroduction.operation')}}</td>
             </tr>
@@ -272,10 +272,10 @@
                 </div>
 
               </td>
-              <td :class="isCenterFlag?'tdCenter':''">
+              <td :class="isCenterFlag?'tdCenter':''" style="width: 150px;">
                 <span
                   @click="hanldeToDetail(item.userId)"
-                  style="color: #5A8BFF;cursor:pointer"
+                  style="color: #5A8BFF;cursor:pointer;width: 100px;word-break: break-all;display:inline-block;"
                 >{{item.userName}}</span>
 
               </td>
@@ -286,27 +286,31 @@
                 {{item.inviteUserName}}
               </td>
               <td class="tb_decorate_a">
-                <span class="plusSpan">{{item.account}}</span>
-                <img
-                  @click="handlebalanceDialog(0,item.account,item.userId)"
-                  :src="plusImg"
-                >
+                <div class="mAccountDiv">
+                  <span class="plusSpan">{{item.account}}</span>
+                  <img
+                    @click="handlebalanceDialog(0,item.account,item.userId)"
+                    :src="plusImg"
+                  >
+                </div>
               </td>
               <td class="tb_decorate_a">
-                <span class="plusSpan">{{item.score}}</span>
-                <img
-                  @click="handlebalanceDialog(1,item.score,item.userId)"
-                  :src="plusImg"
-                >
+                <div class="mScoreDiv">
+                  <span class="plusSpan">{{item.score}}</span>
+                  <img
+                    @click="handlebalanceDialog(1,item.score,item.userId)"
+                    :src="plusImg"
+                  >
+                </div>
               </td>
               <td class="tb_decorate_a">
                 <div class="member">
-                  <span>{{item.cardName}}</span>
+                  <span style="text-align: left;line-height: 20px; margin-right: 5px;">{{item.cardName}}</span>
                   <div>
-                    <span @click="handleSetUp(item.userId)">{{$t('membershipIntroduction.setup')}}</span>
+                    <span style="margin-top: 5px;" @click="handleSetUp(item.userId)">{{$t('membershipIntroduction.setup')}}</span>
                     <span
                       @click="handleToTurnMore('receiveDetail',item.userName,item.userId)"
-                      style="margin-top:8px"
+                      style="margin-top:8px;margin-bottom: 0px;"
                     >{{$t('membershipIntroduction.more')}}</span>
                   </div>
                 </div>
@@ -352,7 +356,7 @@
           <span>暂无相关数据</span>
         </div>
         <!--表格底部-->
-        <div class="tableFooter">
+        <div class="tableFooter" style="height: 30px;">
           <div class="footer_t">
 
             <el-checkbox
@@ -443,6 +447,8 @@
               </el-select>
             </div>
           </div>
+        </div>
+        <div class="tableFooter">
           <div class="footer_b">
             <span>{{$t('membershipIntroduction.Currentpage')}}{{this.currentPage3}}/{{this.pageCount}}，{{$t('membershipIntroduction.TotalRecords')}}{{this.totalNum}}{{$t('membershipIntroduction.strip')}}</span>
             <el-pagination
@@ -1574,7 +1580,7 @@ export default {
 <style scoped>
 .membershioListContent {
   padding: 10px;
-  padding-bottom: 68px;
+  padding-bottom: 5px;
   /* padding-right: 23px; */
   min-width: 100%;
   font-size: 14px;
@@ -1774,7 +1780,9 @@ td {
 .plusSpan {
   /* display: inline-block;
   margin-top: -3px; */
-  position: relative;
+  /* position: relative; */
+  vertical-align: middle;
+  text-align: center;
   top: -3px;
 }
 img {
@@ -1813,7 +1821,7 @@ img {
   margin-left: 15px;
 }
 .tableFooter {
-  height: 100px;
+  height: 50px;
   display: flex;
 }
 .footer_t {
@@ -1833,9 +1841,28 @@ img {
   height: 60px !important;
 }
 .tb_decorate_a img {
-  margin-left: 15px;
+  margin-left: 0px;
   cursor: pointer;
 }
+.mAccountDiv{
+  display: flex;
+  width: 100px;
+}
+
+.mAccountDiv > span{
+  width: 95px;
+}
+
+.mScoreDiv{
+  display: flex;
+  /* justify-content: space-between; */
+  width: 90px;
+}
+.mScoreDiv > span{
+  width: 80px;
+  text-align: center;
+}
+
 .member {
   display: flex;
   justify-content: space-between;
@@ -1850,9 +1877,10 @@ img {
   white-space: nowrap;
 }
 .lastDiv {
-  padding: 5px 0 5px 5px;
+  padding: 5px 0 5px 0px;
   text-align: center;
   color: #5a8bff;
+  white-space: nowrap;
 }
 .lastDiv span {
   cursor: pointer;

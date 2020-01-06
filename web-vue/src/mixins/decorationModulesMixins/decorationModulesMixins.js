@@ -383,28 +383,28 @@ export default {
           break
         case 27: // 店招设置
           obj = {
-            module_name: 'm_shop',
-            shop_name: '微铺宝电商运营',
-            shop_notice: '',
-            shop_bg_path: '/image/admin/shop_beautify/beau1.png',
-            bg_url: '/image/admin/shop_beautify/beau1.png',
-            bg_fullUrl: '',
-            ok_ajax: 1
+            'module_name': 'm_shop',
+            'shop_name': '',
+            'shop_notice': '',
+            'shop_bg_path': '',
+            'bg_url': '/image/admin/shop_beautify/beau1.png',
+            'bg_fullUrl': '',
+            'ok_ajax': 1
           }
           break
         case 28: // 地图模块
           obj = {
-            module_name: 'm_map',
-            province: '北京市',
-            province_code: '110000',
-            city: '北京市',
-            city_code: '110100',
-            area: '东城区',
-            area_code: '110101',
-            address: '东直门',
-            map_show: '1',
-            latitude: '39.92855',
-            longitude: '116.41637'
+            'module_name': 'm_map',
+            'province': '北京市',
+            'province_code': '110000',
+            'city': '北京市',
+            'city_code': '110100',
+            'area': '东城区',
+            'area_code': '110101',
+            'address': '东直门',
+            'map_show': '1',
+            'latitude': '39.92855',
+            'longitude': '116.41637'
           }
       }
       console.log(obj)

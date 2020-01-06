@@ -220,8 +220,8 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
         //TODO 异常订单处理等等
 
-        // 支付有礼
-        payAwardActivity(orderInfo, orderInfo);
+        // 订单生效时营销活动后续处理
+        processOrderEffective(orderInfo, orderInfo);
     }
 
     /**
@@ -241,7 +241,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
      * @param orderInfo
      * @throws MpException
      */
-    private void payAwardActivity(OrderInfoRecord param, OrderInfoRecord orderInfo) throws MpException {
+    private void processOrderEffective(OrderInfoRecord param, OrderInfoRecord orderInfo) throws MpException {
         if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
             return;
         }

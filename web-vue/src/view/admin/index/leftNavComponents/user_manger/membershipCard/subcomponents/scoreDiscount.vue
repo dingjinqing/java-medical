@@ -13,13 +13,12 @@
         class="discountItem first"
       >
         <div class="discountDiv equity">
-          <el-checkbox v-model="ruleForm.powerDiscount">
+          <el-checkbox v-model="ruleForm.powerDiscount" @change="checkForPowerDiscount">
             {{ $t('memberCard.memberDiscount') }}
           </el-checkbox>
           <el-input-number
             v-model="ruleForm.discount"
             size="small"
-            :precision="2"
             :controls="false"
           >
           </el-input-number>
@@ -112,10 +111,6 @@ export default {
         return this.val
       },
       set (val) {
-        this.$nextTick(() => {
-          this.$refs.ruleForm.validate((valid) => {
-          })
-        })
         this.$emit('input', this.ruleForm)
       }
     }
@@ -224,6 +219,12 @@ export default {
   },
 
   methods: {
+    checkForPowerDiscount () {
+      this.$nextTick(() => {
+        this.$refs.ruleForm.validate((valid) => {
+        })
+      })
+    },
     checkDiscountVal (val) {
       // 0-10允许两位小数的数字
       return /^((10)||((?:[0-9]|0[1-9])(\.\d{1,2})?))$/.test(val)
