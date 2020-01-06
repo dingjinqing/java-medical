@@ -125,6 +125,11 @@ export default {
     // 加载用户余额明细数据
     this.getUserDetailAcountData()
   },
+  watch: {
+    lang () {
+      this.getUserDetailAcountData()
+    }
+  },
   mounted () {
     console.log('mounted method')
     // 初始化语言

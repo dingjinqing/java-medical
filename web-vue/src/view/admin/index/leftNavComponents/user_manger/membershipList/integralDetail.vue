@@ -163,6 +163,11 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png'
     }
   },
+  watch: {
+    lang () {
+      this.getUserDetailScoreData()
+    }
+  },
   methods: {
     // 处理分页查询
     dealWithPagination () {
