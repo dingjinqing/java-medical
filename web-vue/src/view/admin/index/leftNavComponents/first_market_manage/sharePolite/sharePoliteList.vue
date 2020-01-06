@@ -10,19 +10,36 @@
         <!-- 添加分享有礼活动按钮 -->
         <el-button
           type="primary"
+          size="small"
           @click="addActivity"
         >{{$t('sharePolite.addActivity')}}</el-button>
         <div class="rightContent">
+          <el-tooltip
+            effect="light"
+            placement="top"
+          >
+            <div
+              slot="content"
+              style="width:300px;line-height:1.5;"
+            >若设置为3，即用户每天最多分享ABC3个商品，可获得活动奖励超过3个时，点击分享商品D，不再显示开屏有礼活动</div>
+            <div class="tooltips">
+              <img
+                :src="$imageHost+'/image/admin/analysis_tishi.png'"
+                alt=""
+              >
+            </div>
+          </el-tooltip>
           <span>{{$t('sharePolite.userDaily')}}</span>
           <el-input
             v-model="dailyLimit"
-            style="width: 80px"
+            style="width: 80px;margin:0 5px"
             size="small"
           ></el-input>
-          <span>{{$t('sharePolite.sharePoliteActivity')}}</span>
+          <span style="margin-right:10px;">{{$t('sharePolite.sharePoliteActivity')}}</span>
           <span>{{$t('sharePolite.unlimited')}}</span>
           <el-button
             type="primary"
+            size="small"
             @click="saveDailyLimit()"
           >{{$t('sharePolite.save')}}</el-button>
         </div>
@@ -41,55 +58,67 @@
           :label="$t('sharePolite.activityName')"
           align="center"
         >
-
         </el-table-column>
+
         <el-table-column
           prop="condition"
           :label="$t('sharePolite.condition')"
           align="center"
         >
         </el-table-column>
+
         <el-table-column
           prop="validityPeriod"
           :label="$t('sharePolite.validityPeriod')"
           align="center"
         >
+          <template slot-scope="scope">
+            <div v-if="scope.row.validityPeriod === '1'"> {{$t('marketCommon.permanent')}}</div>
+            <div v-else>
+              {{scope.row.startTime}}<br />{{$t('marketCommon.to')}}<br />{{scope.row.endTime}}
+            </div>
+          </template>
         </el-table-column>
+
         <el-table-column
           prop="rewardType"
           :label="$t('sharePolite.rewardType')"
           align="center"
         >
-
         </el-table-column>
+
         <el-table-column
           prop="priority"
           :label="$t('sharePolite.priority')"
           align="center"
+          width="140px"
         >
-
         </el-table-column>
+
         <el-table-column
           prop="pageStatus"
           :label="$t('sharePolite.activityStatus')"
           align="center"
+          width="140px"
         >
-
         </el-table-column>
+
         <el-table-column
           prop="shareNum"
           :label="$t('sharePolite.shareNum')"
           align="center"
+          width="140px;"
         >
-
         </el-table-column>
+
         <el-table-column
           prop="inviteNum"
           :label="$t('sharePolite.inviteNum')"
           align="center"
+          width="140px"
         >
-
         </el-table-column>
+
         <el-table-column
           :label="$t('sharePolite.option')"
           align="center"
@@ -144,7 +173,7 @@
                   class="el-icon-s-cooperation iconSpn"
                 ></span>
               </el-tooltip>
-<!--              <el-tooltip
+              <!--              <el-tooltip
                 :content="$t('sharePolite.share')"
                 placement="top"
               >
@@ -246,12 +275,6 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.pageResult.dataList.map((item, index) => {
-        // 有效期
-        if (item.validityPeriod === '1') {
-          item.validityPeriod = '永久有效'
-        } else {
-          item.validityPeriod = `${item.startTime}至${item.endTime}`
-        }
         // 触发条件
         switch (item.condition) {
           case 1:
@@ -396,11 +419,16 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 15px;
     .wrapper {
       display: flex;
       justify-content: space-between;
       .rightContent {
+        display: flex;
+        .tooltips {
+          margin: 6px 8px 0 0;
+          cursor: pointer;
+        }
         .el-button {
           margin-left: 5px;
         }
@@ -460,7 +488,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 0 20px;
+  padding: 15px 15px 15px;
 }
 .opt {
   text-align: left;
