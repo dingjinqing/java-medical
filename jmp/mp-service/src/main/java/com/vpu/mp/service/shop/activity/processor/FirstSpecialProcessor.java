@@ -138,7 +138,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
         promotion.setLimitAmount(vo.getLimitAmount());
         promotion.setLimitFlag(vo.getLimitFlag());
 
-        capsule.getPromotions().add(promotion);
+//        capsule.getPromotions().add();
     }
 
 
