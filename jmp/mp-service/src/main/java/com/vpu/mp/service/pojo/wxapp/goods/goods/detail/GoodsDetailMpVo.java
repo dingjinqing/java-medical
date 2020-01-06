@@ -72,7 +72,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private GoodsActivityBaseMp activity;
 
     /**商品促销活动列表*/
-    List<? extends PromotionBase> promotions = new ArrayList<>();
+    List<PromotionBase> promotions = new ArrayList<>();
     //**********服务承诺
     /**
      * 服务承诺是否开启
