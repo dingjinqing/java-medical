@@ -55,7 +55,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
             condition = condition.or(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(value.get(FIRST_SPECIAL.ID)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(value.get(FIRST_SPECIAL_GOODS.GOODS_ID))));
         }
 
-        return db().select(FIRST_SPECIAL_PRODUCT.ID, FIRST_SPECIAL_PRODUCT.GOODS_ID, FIRST_SPECIAL_PRODUCT.PRD_PRICE)
+        return db().select(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID, FIRST_SPECIAL_PRODUCT.GOODS_ID, FIRST_SPECIAL_PRODUCT.PRD_PRICE)
             .from(FIRST_SPECIAL_PRODUCT)
             .where(condition)
             .fetch().intoGroups(FIRST_SPECIAL_PRODUCT.GOODS_ID);
@@ -107,9 +107,9 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
         }
 
         // 是否限购数量
-        vo.setIsLimit(vo.getLimitAmount()>0);
+        vo.setIsLimit(firstSpecialRecord.getLimitAmount()>0);
         // 限购的数量
-        vo.setLimitAmount(vo.getLimitAmount());
+        vo.setLimitAmount(firstSpecialRecord.getLimitAmount());
         // 是否开启超限购购买标记
         vo.setLimitFlag(FirstSpecialService.LIMIT_FLAG_YES.equals(firstSpecialRecord.getLimitFlag()));
 
