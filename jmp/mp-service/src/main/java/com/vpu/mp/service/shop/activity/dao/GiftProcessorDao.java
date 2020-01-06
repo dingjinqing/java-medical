@@ -226,6 +226,8 @@ public class GiftProcessorDao extends GiftService {
         for (Map.Entry<Integer, Map<Integer, Integer>> entry : param.entrySet()) {
             for (Map.Entry<Integer, Integer> entry1 : entry.getValue().entrySet()) {
                 GiftProductRecord giftProductRecord = db().newRecord(SUB_TABLE);
+                giftProductRecord.setGiftId(entry.getKey());
+                giftProductRecord.setProductId(entry1.getKey());
                 while (iterator.hasNext()){
                     ProductVo next = iterator.next();
                     if(next.getGiftId().equals(entry.getKey()) && next.getProductId().equals(entry1.getKey())){
@@ -234,7 +236,6 @@ public class GiftProcessorDao extends GiftService {
                             throw new MpException(JsonResultCode.CODE_ORDER_GIFT_GOODS_ZERO);
                         }
                         giftProductRecord.setProductNumber(next.getProductNumber() - entry1.getValue());
-                        giftProductRecord.setId(next.getId());
                         iterator.remove();
                         break;
                     }

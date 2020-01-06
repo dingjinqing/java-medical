@@ -2,13 +2,13 @@
 ALTER TABLE `b2c_article_category`
 DROP COLUMN `use_footer_nav`,
 ADD COLUMN `del_state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0未删除,1删除',
-ADD COLUMN `add_time`  timestamp NOT NULL DEFAULT current_timestamp() COMMENT '添加时间',
-ADD COLUMN `update_time`  timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间';
+ADD COLUMN `add_time`  timestamp NOT NULL DEFAULT current_timestamp COMMENT '添加时间',
+ADD COLUMN `update_time`  timestamp NOT NULL DEFAULT current_timestamp ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间';
 -- b2c_article表结构修改
 ALTER TABLE `b2c_article`
 DROP COLUMN `show_footer`,
-MODIFY COLUMN `create_time`  timestamp NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
-MODIFY COLUMN `update_time`  timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+MODIFY COLUMN `create_time`  timestamp NOT NULL DEFAULT current_timestamp COMMENT '创建时间',
+MODIFY COLUMN `update_time`  timestamp NOT NULL DEFAULT current_timestamp ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 MODIFY COLUMN `pub_time`  timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '发布时间';
 
 
@@ -26,17 +26,17 @@ alter table b2c_shop ADD COLUMN   `expire_time` date DEFAULT NULL COMMENT '到�
 --  07-16 孔德成 b2c_shop_uploaded_image_category表结构修改
 
 ALTER TABLE `b2c_shop_uploaded_image_category`
-ADD COLUMN `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP() COMMENT '更新时间';
+ADD COLUMN `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间';
 
 --  07-16 孔德成 b2c_uploaded_image表结构修改
 ALTER TABLE `b2c_shop_uploaded_image`
-    MODIFY COLUMN `upload_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
-    ADD COLUMN `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间';
+    MODIFY COLUMN `upload_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ADD COLUMN `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间';
 
 
 -- 把b2c_user_login_record字段更改
-ALTER TABLE `mini_main`.`b2c_user_login_record` MODIFY COLUMN user_id INT( 11 );
-ALTER TABLE `mini_main`.`b2c_user_login_record` CHANGE COLUMN `add_time` `add_time` TIMESTAMP  NULL DEFAULT CURRENT_TIMESTAMP COMMENT '每日登陆时间' ;
+ALTER TABLE `b2c_user_login_record` MODIFY COLUMN user_id INT( 11 );
+ALTER TABLE `b2c_user_login_record` CHANGE COLUMN `add_time` `add_time` TIMESTAMP  NULL DEFAULT CURRENT_TIMESTAMP COMMENT '每日登陆时间' ;
 
 
 -- b2c_shop_renew新增字段
@@ -62,11 +62,11 @@ ALTER TABLE `b2c_mp_deploy_history` CHANGE COLUMN `audit_id` `audit_id` BIGINT(6
 ALTER TABLE `b2c_mp_operate_log` ADD COLUMN `memo_id` VARCHAR(100) NOT NULL AFTER `create_time`, ADD COLUMN `memo_list` VARCHAR(100) NOT NULL AFTER `memo_id`;
 
 --添加币种
-ALTER TABLE `mini_main`.`b2c_shop`  ADD COLUMN `currency` VARCHAR(45) NOT NULL DEFAULT 'CNY' COMMENT '币种';
+ALTER TABLE `b2c_shop`  ADD COLUMN `currency` VARCHAR(45) NOT NULL DEFAULT 'CNY' COMMENT '币种';
 --添加语言
-ALTER TABLE `mini_main`.`b2c_shop`  ADD COLUMN `shop_language` VARCHAR(45) NOT NULL DEFAULT 'zh_CN' COMMENT '语言';
+ALTER TABLE `b2c_shop`  ADD COLUMN `shop_language` VARCHAR(45) NOT NULL DEFAULT 'zh_CN' COMMENT '语言';
 --语言字段更改，如果数据库字段是shopLanguage
-ALTER TABLE `mini_main`.`b2c_shop` CHANGE COLUMN `shopLanguage` `shop_language` VARCHAR(45) NOT NULL DEFAULT 'zh_CN' COMMENT '语言' ;
+ALTER TABLE `b2c_shop` CHANGE COLUMN `shopLanguage` `shop_language` VARCHAR(45) NOT NULL DEFAULT 'zh_CN' COMMENT '语言' ;
 
 -- 修改b2c_category主键字段
 ALTER TABLE b2c_category CHANGE COLUMN `cat_id` `cat_id` int(11) NOT NULL AUTO_INCREMENT;
@@ -92,11 +92,11 @@ CHANGE COLUMN `invite_expiry_date` `invite_expiry_date` date  default null comme
 CHANGE COLUMN `invite_source` `invite_source`  varchar(32)   default null comment '邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖';
 
 --记录表更新
-ALTER TABLE `mini_main`.`b2c_user_login_record`
+ALTER TABLE `b2c_user_login_record`
 ADD COLUMN `account_type` TINYINT(1) NULL COMMENT '登录日志账户类型：0店铺登录日志，1系统账号登录日志' ;
 
 --文章分类
-ALTER TABLE `mini_main`.`b2c_article_category`
+ALTER TABLE `b2c_article_category`
 CHANGE COLUMN `del_state` `use_footer_nav` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否用于底部导航' ;
 
 -- 定时任务定义表

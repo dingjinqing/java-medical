@@ -229,6 +229,7 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
+        this.pictureGapValue = this.modulesData.image_space
         this.moduleSaveData = this.modulesData
       },
       immediate: true

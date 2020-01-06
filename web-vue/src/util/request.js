@@ -50,7 +50,7 @@ service.interceptors.response.use(
     // let flag = localStorage.getItem('V-overallFlag')
     // console.log(flag, res)
     console.log(vm)
-    console.log(res)
+    console.log('api response:', res)
     localStorage.setItem('V-content-disposition', res.headers['content-disposition'])
     if (res) {
       switch (res.status) {

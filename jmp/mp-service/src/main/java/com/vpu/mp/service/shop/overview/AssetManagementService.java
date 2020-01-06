@@ -49,7 +49,7 @@ public class AssetManagementService extends ShopBaseService {
      */
     public RevenueProfileVo revenueprofile(RevenueProfileParam param) {
         byte screeningTime = param.getScreeningTime();
-        RevenueProfileVo vo = RevenueProfileVo.builder().build();
+        RevenueProfileVo vo;
         if (screeningTime > 0) {
             Date current = Util.getEarlySqlDate(new java.util.Date(), 0);
             Date prior = Util.getEarlySqlDate(new java.util.Date(), -screeningTime);
@@ -65,7 +65,7 @@ public class AssetManagementService extends ShopBaseService {
             vo.setEndTime(current);
         } else {
             // 自定义日期统计数据
-            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), -1));
+            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
             //结束日期不能大于当前日期
             Date endDate = Optional.of(param.getEndTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
             LocalDate endLocalDate = endDate.toLocalDate();
@@ -139,30 +139,32 @@ public class AssetManagementService extends ShopBaseService {
      * 获取指定时间段数据
      */
     private RevenueProfileVo getRevenueDate(Date date, byte type) {
-        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileVo.class).orElse(RevenueProfileVo.builder().build());
+        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileVo.class).orElse(new RevenueProfileVo());
     }
     private RevenueProfileScoreVo getRevenueScoreDate(Date date, byte type) {
-        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(RevenueProfileScoreVo.builder().build());
+        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(new RevenueProfileScoreVo());
     }
 
     /**
      * 获取自定义时间数据
      */
     private RevenueProfileVo getRevenueDate(Date startDate, Date endDate) {
-        return getSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileVo.class).orElse(RevenueProfileVo.builder().build());
+        return getSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate))
+            .and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileVo.class).orElse(new RevenueProfileVo());
     }
     private RevenueProfileScoreVo getRevenueScoreDate(Date startDate, Date endDate) {
-        return getScoreSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(RevenueProfileScoreVo.builder().build());
+        return getScoreSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate))
+            .and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(new RevenueProfileScoreVo());
     }
 
     /**
      * 获取折线图数据
      */
     private List<RevenueDate> getRevenueDateList(Date startDate, Date endDate) {
-        return getSelectConditon().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueDate.class);
+        return getSelectConditon().and(trs.REF_DATE.greaterThan(startDate)).and(trs.REF_DATE.le(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueDate.class);
     }
     private List<RevenueScoreDate> getRevenueScoreDateList(Date startDate, Date endDate) {
-        return getScoreSelectConditon().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueScoreDate.class);
+        return getScoreSelectConditon().and(trs.REF_DATE.greaterThan(startDate)).and(trs.REF_DATE.le(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueScoreDate.class);
     }
 
     private SelectConditionStep<Record4<Date, BigDecimal, BigDecimal, BigDecimal>> getSelectConditon() {

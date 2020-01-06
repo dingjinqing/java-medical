@@ -248,7 +248,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public List<GoodsRecord> getGoodsInfoRecordByOrderSn(String orderSn){
-		return db().select(GOODS.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID)
+		return db().select(TABLE.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
 				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsRecord.class);
@@ -284,7 +284,7 @@ public class OrderGoodsService extends ShopBaseService{
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
             //TODO 需要考虑 是否赠品
-            isGift(0).
+            isGift(OrderConstant.IS_GIFT_N).
             //TODO 需要考虑 赠品的关联商品
             rGoods("").
             //TODO 需要考虑 商品积分

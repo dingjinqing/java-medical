@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -19,10 +20,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,22 +33,26 @@ import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelReader;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelUtil;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.IdentityUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.market.message.BindOARabbitParam;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
 import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
@@ -61,6 +66,7 @@ import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
+import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -78,22 +84,25 @@ public class UserImportService extends ShopBaseService {
 	private UserService userService;
 	@Autowired
 	private CardDaoService cardDaoService;
+	@Autowired
+	private CouponMpService couponMpService;
 
 	private static final String PHONEREG = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
 	private static final String USER_IMPORT_NOTICE = "user_import_notice";
 	private static final BigDecimal ZERO = new BigDecimal("0");
-	private static final String[] sexs = { "男", "女" };
-	private static final String[] marriages = { "未婚", "已婚", "保密" };
-	private static final String[] educations = { "初中", "高中", "中专", "大专", "本科", "硕士", "博士", "其他" };
-	private static final String[] industrys = { "计算机硬件及网络设备", "计算机软件", "IT服务（系统/数据/维护）/多领域经营", "互联网/电子商务", "网络游戏",
-			"通讯（设备/运营/增值服务）", "电子技术/半导体/集成电路", "仪器仪表及工业自动化", "金融/银行/投资/基金/证券", "保险", "房地产/建筑/建材/工程", "家居/室内设计/装饰装潢",
-			"物业管理/商业中心", "广告/会展/公关/市场推广", "媒体/出版/影视/文化/艺术", "印刷/包装/造纸", "咨询/管理产业/法律/财会", "教育/培训", "检验/检测/认证", "中介服务",
-			"贸易/进出口", "零售/批发", "快速消费品（食品/饮料/烟酒/化妆品", "耐用消费品（服装服饰/纺织/皮革/家具/家电）", "办公用品及设备", "礼品/玩具/工艺美术/收藏品",
-			"大型设备/机电设备/重工业", "加工制造（原料加工/模具）", "汽车/摩托车（制造/维护/配件/销售/服务）", "交通/运输/物流", "医药/生物工程", "医疗/护理/美容/保健", "医疗设备/器械",
-			"酒店/餐饮", "娱乐/体育/休闲", "旅游/度假", "石油/石化/化工", "能源/矿产/采掘/冶炼", "电气/电力/水利", "航空/航天", "学术/科研", "政府/公共事业/非盈利机构",
-			"环保", "农/林/牧/渔", "跨领域经营", "其它" };
+	// private static final String[] sexs = { "男", "女" };
+	// private static final String[] marriages = { "未婚", "已婚", "保密" };
+	// private static final String[] educations = { "初中", "高中", "中专", "大专", "本科",
+	// "硕士", "博士", "其他" };
+//	private static final String[] industrys = { "计算机硬件及网络设备", "计算机软件", "IT服务（系统/数据/维护）/多领域经营", "互联网/电子商务", "网络游戏",
+//			"通讯（设备/运营/增值服务）", "电子技术/半导体/集成电路", "仪器仪表及工业自动化", "金融/银行/投资/基金/证券", "保险", "房地产/建筑/建材/工程", "家居/室内设计/装饰装潢",
+//			"物业管理/商业中心", "广告/会展/公关/市场推广", "媒体/出版/影视/文化/艺术", "印刷/包装/造纸", "咨询/管理产业/法律/财会", "教育/培训", "检验/检测/认证", "中介服务",
+//			"贸易/进出口", "零售/批发", "快速消费品（食品/饮料/烟酒/化妆品", "耐用消费品（服装服饰/纺织/皮革/家具/家电）", "办公用品及设备", "礼品/玩具/工艺美术/收藏品",
+//			"大型设备/机电设备/重工业", "加工制造（原料加工/模具）", "汽车/摩托车（制造/维护/配件/销售/服务）", "交通/运输/物流", "医药/生物工程", "医疗/护理/美容/保健", "医疗设备/器械",
+//			"酒店/餐饮", "娱乐/体育/休闲", "旅游/度假", "石油/石化/化工", "能源/矿产/采掘/冶炼", "电气/电力/水利", "航空/航天", "学术/科研", "政府/公共事业/非盈利机构",
+//			"环保", "农/林/牧/渔", "跨领域经营", "其它" };
 	private static final Byte ONE = 1;
-
+	private static final Byte BYTE_ZERO = 0;
 	private static final String DATE_FORMATE = "yyyy/MM/dd";
 
 	/**
@@ -151,19 +160,22 @@ public class UserImportService extends ShopBaseService {
 		List<UserImportPojo> list = new ArrayList<UserImportPojo>();
 		UserImportPojo vo = new UserImportPojo();
 		vo.setMobile("15093037027");
-		vo.setName(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_USERNAME.getMessage(),EXCEL,null));
+		vo.setName(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_USERNAME.getMessage(), EXCEL, null));
 		vo.setInviteUserMobile("18700000000");
 		vo.setScore(1000);
-		vo.setSex(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_SEX.getMessage(),EXCEL,null));
+		vo.setSex(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_SEX.getMessage(), EXCEL, null));
 		vo.setBirthday("2019/12/30");
-		vo.setProvince(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_PROVINCE.getMessage(),EXCEL,null));
-		vo.setCity(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_CITY.getMessage(),EXCEL,null));
-		vo.setDistrict(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_DISTRICT.getMessage(),EXCEL,null));
-		vo.setAddress(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_ADDRESS.getMessage(),EXCEL,null));
+		vo.setProvince(
+				Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_PROVINCE.getMessage(), EXCEL, null));
+		vo.setCity(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_CITY.getMessage(), EXCEL, null));
+		vo.setDistrict(
+				Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_DISTRICT.getMessage(), EXCEL, null));
+		vo.setAddress(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_ADDRESS.getMessage(), EXCEL, null));
 		vo.setIdNumber("450328198102039022");
 		vo.setEducation(MemberEducationEnum.getNameByCode(MemberEducationEnum.JUNIOR.getCode(), lang));
 		vo.setIndustry(MemberIndustryEnum.getNameByCode(MemberIndustryEnum.COMMERCE.getCode(), lang));
-		vo.setMarriage(Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_MARRIAGE.getMessage(),EXCEL,null));
+		vo.setMarriage(
+				Util.translateMessage(lang, JsonResultCode.CODE_EXCEL_EXAMPLE_MARRIAGE.getMessage(), EXCEL, null));
 		vo.setIncome(new BigDecimal("100"));
 		vo.setIsDistributor("1");
 		list.add(vo);
@@ -206,7 +218,7 @@ public class UserImportService extends ShopBaseService {
 
 	}
 
-	public void checkList(List<UserImportPojo> list, String cardId, Integer groupId, Integer tagId) {
+	public void checkList(List<UserImportPojo> list, String cardId, Integer groupId, Integer tagId, String lang) {
 		logger().info("会员导入执行队列");
 		int successNum = 0;
 		int totalNum = list.size();
@@ -264,6 +276,7 @@ public class UserImportService extends ShopBaseService {
 			}
 
 			String sex = userImportPojo.getSex();
+			String[] sexs = MemberSexEnum.getArraySexs(lang);
 			if (StringUtils.isNotEmpty(sex) && !checkRule(sexs, sex)) {
 				logger().info("性别仅限男女");
 				userImportPojo.setErrorMsg(UserImportTemplate.SEX_ERROR.getCode());
@@ -334,18 +347,21 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String marriage = userImportPojo.getMarriage();
+			String[] marriages = MemberMarriageEnum.getArrayMarriage(lang);
 			if (StringUtils.isNotEmpty(marriage) && !checkRule(marriages, marriage)) {
 				logger().info("无效婚姻状况");
 				userImportPojo.setErrorMsg(UserImportTemplate.MARRIAGE_ERROR.getCode());
 				continue;
 			}
 			String education = userImportPojo.getEducation();
+			String[] educations = MemberEducationEnum.getArrayEduction(lang);
 			if (StringUtils.isNotEmpty(education) && !checkRule(educations, education)) {
 				logger().info("无效教育");
 				userImportPojo.setErrorMsg(UserImportTemplate.EDUCATION_ERROR.getCode());
 				continue;
 			}
 			String industry = userImportPojo.getIndustry();
+			String[] industrys = MemberIndustryEnum.getArrayIndustryInfo(lang);
 			if (StringUtils.isNotEmpty(industry) && !checkRule(industrys, industry)) {
 				logger().info("无效行业");
 				userImportPojo.setErrorMsg(UserImportTemplate.INDUSTRY_ERROR.getCode());
@@ -451,7 +467,7 @@ public class UserImportService extends ShopBaseService {
 	 * @param batchId
 	 * @return
 	 */
-	public List<UserImportErroPojo> getErrorMsgById(Integer batchId,String lang) {
+	public List<UserImportErroPojo> getErrorMsgById(Integer batchId, String lang) {
 		Result<UserImportDetailRecord> fetch = db().selectFrom(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.ERROR_MSG
 				.isNotNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq("")).and(USER_IMPORT_DETAIL.BATCH_ID.eq(batchId)))
 				.fetch();
@@ -461,7 +477,7 @@ public class UserImportService extends ShopBaseService {
 		}
 		for (UserImportErroPojo userImportErroPojo : into) {
 			String errorMsg = UserImportTemplate.getNameByCode(userImportErroPojo.getErrorMsg(), lang);
-			if(errorMsg!=null) {
+			if (errorMsg != null) {
 				userImportErroPojo.setErrorMsg(errorMsg);
 			}
 		}
@@ -492,7 +508,7 @@ public class UserImportService extends ShopBaseService {
 	 * @return
 	 */
 	public Workbook getErrorMsg(Integer batchId, String lang) {
-		return getModelErrorMsg(lang, getErrorMsgById(batchId,lang));
+		return getModelErrorMsg(lang, getErrorMsgById(batchId, lang));
 	}
 
 	/**
@@ -650,5 +666,61 @@ public class UserImportService extends ShopBaseService {
 		}
 		return detailList;
 
+	}
+	
+	public UserImportDetailRecord getUserByMobile(String mobile, Byte userAction) {
+		return db().selectFrom(USER_IMPORT_DETAIL)
+				.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))
+						.and(USER_IMPORT_DETAIL.MOBILE.eq(mobile)).and(USER_IMPORT_DETAIL.USER_ACTION.eq(userAction)))
+				.fetchOne();
+	}
+	
+	//激活用户
+	public JsonResultCode toActivateUser(Integer userId) {
+		UserRecord user = userService.getUserByUserId(userId);
+		String mobile = user.getMobile();
+		if(StringUtils.isEmpty(mobile)) {
+			//请授权手机号
+			return JsonResultCode.CODE_FAIL;
+		}
+		UserImportDetailRecord importUser = getUserByMobile(mobile, ONE);
+		if (importUser == null) {
+			// 很抱歉！由于您不是本店老会员或因本店还未导入您的会员信息，暂时无法激活，请稍后再试或咨询本店客服
+			return JsonResultCode.CODE_FAIL;
+		}
+		if(Objects.equals(importUser.getIsActivate(), ONE)) {
+			//用户已激活，请勿重复操作
+			return JsonResultCode.CODE_FAIL;
+		}
+		importUser.setIsActivate(ONE);
+		importUser.update();
+		grantCoupon(userId);
+		return JsonResultCode.CODE_SUCCESS;
+	}
+	/**
+	 * 发放优惠券
+	 * @param userId
+	 */
+	private void grantCoupon(Integer userId) {
+		List<Integer> userIds=new ArrayList<Integer>();
+		userIds.add(userId);
+		SetNoticeJson activationNotice = getActivationNotice();
+		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
+		if(StringUtils.isEmpty(mrkingVoucherId)) {
+			return;
+		}
+		String[] split = mrkingVoucherId.split(",");
+		List<String> list=new ArrayList<String>();
+		for (String string : split) {
+			Byte couponGetStatus = couponMpService.couponGetStatus(new mpGetCouponParam(Integer.valueOf(string), userId));
+			if(Objects.equals(couponGetStatus, BYTE_ZERO)) {
+				list.add(string);
+			}else {
+				logger().info("优惠券" + string + "状态：" + couponGetStatus);
+			}
+		}
+		String[] array = list.toArray(new String[0]);
+		CouponGiveQueueParam newParam = new CouponGiveQueueParam(userIds, 0, array, BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
+        saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
 	}
 }

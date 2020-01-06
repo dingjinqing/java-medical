@@ -19,6 +19,8 @@ export const en = {
   analysis_basic: ['Overview', 'Overview Statistics'],
   // 概况 搜索统计
   search_summary: ['Overview', 'Search Statistics'],
+  // 概况 资产管理
+  asset_summary: ['Overview', 'Asset Manage'],
 
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],

@@ -31,24 +31,24 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * 一般营销  首单特惠 会员专享
      */
     private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
-            BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
+        BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
+        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
     );
     /**
      * 全局的活动  支付有礼
      */
     private final static List<Byte> GLOBAL_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
-            BaseConstant.ACTIVITY_TYPE_GIFT
+        BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+        BaseConstant.ACTIVITY_TYPE_GIFT
     );
 
     /**
      * 单一营销 排他性
      */
     public final static List<Byte> SINGLENESS_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
-            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
-            BaseConstant.ACTIVITY_TYPE_BARGAIN
+        BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+        BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+        BaseConstant.ACTIVITY_TYPE_BARGAIN
     );
 
     /**

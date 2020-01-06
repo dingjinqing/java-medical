@@ -97,6 +97,19 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/first_web_manage/searchStatistics/searchStatistics'
           )
       },
+      // 概况 - 资产管理
+      {
+        path: '/admin/home/main/assetsManage',
+        name: 'asset_summary',
+        meta: {
+          crumbTitle: 'router.asset_summary',
+          meta: 'first_web_manage'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/assetManagement/assetsManage'
+          )
+      },
       {
         path: '/admin/home/main/realtimeoverview',
         name: 'situation',

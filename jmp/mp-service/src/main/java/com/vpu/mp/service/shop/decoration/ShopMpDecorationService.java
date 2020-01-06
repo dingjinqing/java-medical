@@ -644,6 +644,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertBargainForIndex(objectMapper, node, user);
                 case ModuleConstant.M_SECKILL:
                     return this.convertSeckillForIndex(objectMapper, node, user);
+                case ModuleConstant.M_IMAGE_ADVER:
+                    return this.convertImageAdverForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -740,6 +742,26 @@ public class ShopMpDecorationService extends ShopBaseService {
         ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
         moduleSecKill.setNeedRequest(true);
         return moduleSecKill;
+    }
+
+    /**
+     * 图片广告模块处理
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleImageAdver convertImageAdverForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
+        boolean isNewUser = saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(user.getUserId());
+        moduleImageAdver.getImageList().forEach(img->{
+            if(img.getCanShow() == 1 && !isNewUser){
+                moduleImageAdver.getImageList().remove(img);
+            }
+        });
+        return moduleImageAdver;
     }
 
     /**

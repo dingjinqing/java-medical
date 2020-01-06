@@ -23,7 +23,7 @@ public class WxAppConfigController extends WxAppBaseController {
 	 */
 	@PostMapping("/api/wxapp/cfg/bottom")
 	public JsonResult config(@RequestBody WxAppCommonParam param) {
-		return success(this.shop().config.getAppConfig());
+		return success(this.shop().config.getAppConfig(wxAppAuth.user()));
 	}
 	
 	/**

@@ -98,4 +98,13 @@ public enum MemberEducationEnum {
 	public static List<String> getAllEducation(String lang){
 		return getAllEducation(lang,false);
 	}
+	
+	public static String[] getArrayEduction(String lang) {
+		MemberEducationEnum[] values = MemberEducationEnum.values();
+		String[] result=new String[values.length];
+		for (int i = 0; i < values.length; i++) {
+			result[i]=MemberEducationEnum.getNameByCode(i,lang);
+		}
+		return result;
+	}
 }

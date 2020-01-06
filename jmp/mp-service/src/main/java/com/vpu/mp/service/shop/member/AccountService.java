@@ -216,6 +216,7 @@ public class AccountService extends ShopBaseService {
 			.create(db().newRecord(USER_ACCOUNT))
 			.userId(param.getUserId())
 			.amount(param.getAmount())
+			.orderSn(param.getOrderSn())
 			.remarkId(String.valueOf(param.getRemarkId()))
 			.remarkData(param.getRemarkData())
 			.adminUser(String.valueOf(adminUser))
