@@ -7,6 +7,7 @@
         <div class="container">
           <span>{{ $t('shopRecruit.shopName') }}：</span>
           <el-input
+            size="small"
             :maxlength="20"
             v-model="data.shop_name"
           ></el-input>
@@ -15,6 +16,7 @@
         <div class="container">
           <span>{{ $t('shopRecruit.shopNotice') }}：</span>
           <el-input
+            size="small"
             :maxlength="30"
             v-model="data.shop_notice"
           ></el-input>
@@ -22,10 +24,10 @@
         </div>
         <div class="container">
           <div class="label">{{ $t('shopRecruit.shopBg') }}：</div>
-
           <div class="defaultBg">
             <span>{{ $t('shopRecruit.defaultBg') }}：</span>
             <el-select
+              size="small"
               v-model="value"
               @change="selectChange"
             >
@@ -96,6 +98,7 @@
 </template>
 <script>
 import vcolorpicker from 'vcolorpicker'
+import { shopInfoRequest } from '@/api/admin/survey.js'
 import Vue from 'vue'
 Vue.use(vcolorpicker)
 export default {
@@ -110,8 +113,6 @@ export default {
     return {
       data: {
         'module_name': 'm_shop', // 模块名称
-        'search_style': '1', // 框体样式
-        'search_font': '1', // 框体高度
         'box_color': '#eee', // 框体颜色
         'back_color': '#fff', // 背景颜色
         'search_sort': '0', // 商家分类是否显示
@@ -182,7 +183,20 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.getShopInfo()
+  },
   methods: {
+    // 获取店铺信息
+    getShopInfo () {
+      shopInfoRequest().then((res) => {
+        if (res.error === 0) {
+          this.data.shop_name = res.content.shopName
+          this.data.shop_bg_path = res.content.shopAvatar
+        }
+      })
+    },
+
     // 切换背景图
     selectChange (val) {
       this.data.bg_url = val

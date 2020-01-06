@@ -10,7 +10,7 @@
       <div class="sendScoreTop">
         <el-form-item prop="score">
           <div class="scoreReceiveItem">
-            <el-checkbox v-model="ruleForm.powerScore">
+            <el-checkbox v-model="ruleForm.powerScore" @change="checkForPowerScore">
               {{ $t('memberCard.getScore') }}
             </el-checkbox>
             <span class="sendInfo">
@@ -157,10 +157,6 @@ export default {
   watch: {
     'ruleForm.powerScore': {
       handler (newName, oldName) {
-        this.$nextTick(() => {
-          this.$refs.ruleFormScore.validate((valid) => {})
-          this.$refs.ruleForm.validate((valid) => {})
-        })
         this.val.powerScore = newName
         this.ruleForm = this.val
       },
@@ -245,7 +241,7 @@ export default {
           callback(new Error('请输入赠送积分'))
         }
         if (!isSixNumberWithTwoDecimal(value)) {
-          callback(new Error('请输入0-999999999范围的数字'))
+          callback(new Error('请输入大于0的数字'))
         }
       }
       callback()
@@ -255,8 +251,9 @@ export default {
         if (this.checkScoreSendFull()) {
           callback(new Error('请输入积分'))
           this.sendFullErrorFix = true
-        } else if (!isSixNumberWithTwoDecimal(value)) {
-          callback(new Error('请输入0-999999999范围的数字'))
+        } else if (!(isSixNumberWithTwoDecimal(this.ruleForm.shopingInputLeft) &&
+            isSixNumberWithTwoDecimal(this.ruleForm.shopingInputRight))) {
+          callback(new Error('请输入大于0的数字'))
         } else {
           this.sendFullErrorFix = false
           callback()
@@ -271,7 +268,7 @@ export default {
         if (this.checkScoreSendEach()) {
           callback(new Error('请输入积分'))
         } else if (!isSixNumberWithTwoDecimal(value)) {
-          callback(new Error('请输入0-999999999范围的数字'))
+          callback(new Error('请输入大于0的数字'))
         } else {
           callback()
         }
@@ -289,7 +286,7 @@ export default {
         } else if (!value) {
           callback(new Error('请输入积分'))
         } else if (!isSixNumberWithTwoDecimal(value)) {
-          callback(new Error('请输入0-999999999范围的数字'))
+          callback(new Error('请输入大于0的数字'))
         } else {
           callback(new Error('请输入积分'))
         }
@@ -316,6 +313,13 @@ export default {
     }
   },
   methods: {
+
+    checkForPowerScore () {
+      this.$nextTick(() => {
+        this.$refs.ruleFormScore.validate((valid) => {})
+        this.$refs.ruleForm.validate((valid) => {})
+      })
+    },
     checkScoreError (val) {
       if (val === 0) {
         return false

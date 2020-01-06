@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.member.userImp;
 
 import java.util.List;
 
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +18,6 @@ public class SetNoticeJsonDetailVo {
 	private String score;
 	/** 优惠券Id */
 	private String mrkingVoucherId;
-	private List<AvailCouponDetailVo> couponList;
+	private List<CouponParam> couponList;
 
 }

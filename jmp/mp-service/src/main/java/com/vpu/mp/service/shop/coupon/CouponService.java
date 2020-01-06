@@ -745,33 +745,4 @@ public class CouponService extends ShopBaseService {
 		}
 		return into;
 	}
-	
-	
-	/**
-	 * 优惠券详情
-	 * @param id
-	 * @return
-	 */
-    public AvailCouponDetailVo getCouponDetailById(Integer id) {
-        Record record = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
-            CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.LEAST_CONSUME,
-            MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT)
-            .from(CUSTOMER_AVAIL_COUPONS
-            .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
-            .where(CUSTOMER_AVAIL_COUPONS.ID.eq(id))
-            .fetchOne();
-            if(record != null){
-                AvailCouponDetailVo list = record.into(AvailCouponDetailVo.class);
-                ExpireTimeVo remain = getExpireTime(list.getEndTime());
-                if(remain != null){
-                    list.setRemainDays(remain.getRemainDays());
-                    list.setRemainHours(remain.getRemainHours());
-                    list.setRemainMinutes(remain.getRemainMinutes());
-                    list.setRemainSeconds(remain.getRemainSeconds());
-                }
-                return list;
-            }else{
-                return null;
-            }
-    }
 }
