@@ -548,7 +548,7 @@ CREATE TABLE `b2c_coupon_pack` (
   `issued_amount` int(11) NOT NULL DEFAULT '0' COMMENT '已发放数量',
   `access_mode` tinyint(1) NOT NULL DEFAULT '0' COMMENT '获取方式，0：现金购买，1：积分购买，2直接领取',
   `access_cost` decimal(10,2) DEFAULT '0.00' COMMENT '价格（现金或积分，直接领取时该值为0）',
-  `act_rule` text CHARACTER COMMENT '活动规则',
+  `act_rule` text COMMENT '活动规则',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '开启状态1:开启，0:停用',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
