@@ -46,6 +46,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
@@ -65,6 +66,7 @@ import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
+import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -82,6 +84,8 @@ public class UserImportService extends ShopBaseService {
 	private UserService userService;
 	@Autowired
 	private CardDaoService cardDaoService;
+	@Autowired
+	private CouponMpService couponMpService;
 
 	private static final String PHONEREG = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
 	private static final String USER_IMPORT_NOTICE = "user_import_notice";
@@ -98,7 +102,7 @@ public class UserImportService extends ShopBaseService {
 //			"酒店/餐饮", "娱乐/体育/休闲", "旅游/度假", "石油/石化/化工", "能源/矿产/采掘/冶炼", "电气/电力/水利", "航空/航天", "学术/科研", "政府/公共事业/非盈利机构",
 //			"环保", "农/林/牧/渔", "跨领域经营", "其它" };
 	private static final Byte ONE = 1;
-
+	private static final Byte BYTE_ZERO = 0;
 	private static final String DATE_FORMATE = "yyyy/MM/dd";
 
 	/**
@@ -706,7 +710,17 @@ public class UserImportService extends ShopBaseService {
 			return;
 		}
 		String[] split = mrkingVoucherId.split(",");
-		CouponGiveQueueParam newParam = new CouponGiveQueueParam(userIds, 0, split, BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
+		List<String> list=new ArrayList<String>();
+		for (String string : split) {
+			Byte couponGetStatus = couponMpService.couponGetStatus(new mpGetCouponParam(Integer.valueOf(string), userId));
+			if(Objects.equals(couponGetStatus, BYTE_ZERO)) {
+				list.add(string);
+			}else {
+				logger().info("优惠券" + string + "状态：" + couponGetStatus);
+			}
+		}
+		String[] array = list.toArray(new String[0]);
+		CouponGiveQueueParam newParam = new CouponGiveQueueParam(userIds, 0, array, BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
         saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
 	}
 }
