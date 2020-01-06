@@ -184,7 +184,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	 */
 	@PostMapping(value = "/api/wxapp/user/waitactivate")
 	public JsonResult waitActivateUser() {
-		return success(shop().member.userImportService.getActivationNotice());
+		return success(shop().member.userImportService.getInfo());
 	}
 	
 	

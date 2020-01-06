@@ -55,6 +55,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
 import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
@@ -66,7 +67,9 @@ import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -86,6 +89,8 @@ public class UserImportService extends ShopBaseService {
 	private CardDaoService cardDaoService;
 	@Autowired
 	private CouponMpService couponMpService;
+	@Autowired
+	private CouponService couponService;
 
 	private static final String PHONEREG = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
 	private static final String USER_IMPORT_NOTICE = "user_import_notice";
@@ -148,6 +153,24 @@ public class UserImportService extends ShopBaseService {
 		}
 		json = Util.parseJson(record.getV(), SetNoticeJson.class);
 		return json;
+	}
+	
+	public SetNoticeJsonDetailVo getInfo() {
+		SetNoticeJson activationNotice = getActivationNotice();
+		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
+		List<AvailCouponDetailVo> voList = new ArrayList<AvailCouponDetailVo>();
+		if (StringUtils.isNotEmpty(mrkingVoucherId)) {
+			String[] split = mrkingVoucherId.split(",");
+			for (String string : split) {
+				AvailCouponDetailVo couponVo = couponService.getCouponDetailById(Integer.valueOf(string));
+				if (couponVo != null) {
+					voList.add(couponVo);
+				}
+
+			}
+		}
+		return new SetNoticeJsonDetailVo(activationNotice.getExplain(), activationNotice.getScore(),
+				activationNotice.getExplain(), voList);
 	}
 
 	/**
