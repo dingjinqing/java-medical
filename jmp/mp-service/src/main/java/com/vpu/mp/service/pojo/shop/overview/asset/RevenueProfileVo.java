@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.overview.asset;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,7 +14,6 @@ import java.util.List;
  * @description
  */
 @Data
-@Builder
 public class RevenueProfileVo {
     @JsonIgnore
     public Date refDate;
