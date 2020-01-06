@@ -14,6 +14,8 @@ export const cn = {
   analysis_basic: ['概况', '概况统计'],
   // 概况 搜索统计
   search_summary: ['概况', '搜索统计'],
+  // 概况 资产管理
+  asset_summary: ['概况', '资产管理'],
 
   // 概况 用户画像
   analysis_portrait: ['概况', '用户画像'],
