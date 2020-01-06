@@ -202,6 +202,7 @@ public class BargainProcessorDao extends ShopBaseService {
             }
         }
 
+        //绑定新订单
         db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.IS_ORDERED,BargainRecordService.IS_ORDERED_Y).set(BARGAIN_RECORD.ORDER_SN,newOrder.getOrderSn()).execute();
     }
 }

@@ -217,9 +217,6 @@ public class PaymentService extends ShopBaseService {
             pay.toWaitDeliver(orderInfo, paymentRecord);
 		}
 
-		// 支付有礼
-		payAwardActivity(param, orderInfo);
-
 		/**
 		 * TODO:POS推送订单
 		 */
@@ -258,7 +255,7 @@ public class PaymentService extends ShopBaseService {
 			goods.setGoodsInfo(orderGood);
 			orderBeforeParam.getGoods().add(goods);
 		});
-		marketProcessorFactory.processPayCallback(orderBeforeParam,orderInfo);
+		marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
 	}
 
     /**

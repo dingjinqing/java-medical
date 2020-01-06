@@ -1,17 +1,17 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
 import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import com.vpu.mp.service.shop.coupon.CouponService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 
 /**
  * mp分销模块service
@@ -55,5 +55,14 @@ public class MpDistributionService extends ShopBaseService{
        }else {
 	       return null;
        }
+    }
+
+    /**
+     * 获取分销推广文案
+     * @return
+     */
+    public DistributionDocumentParam getDistributorDoc(){
+        DistributionDocumentParam distributionDocument = distributionCfg.getDistributionDocument();
+        return distributionDocument;
     }
 }

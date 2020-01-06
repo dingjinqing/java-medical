@@ -301,7 +301,7 @@
 -- 王兵兵 201-07-18
 alter table `b2c_service_order` add index order_sn(order_sn);
 
-/* liufei 2019-07-19 */
+-- liufei 2019-07-19
 alter table b2c_trades drop index ref_date;
 
 -- 2019-07-23 统计相关表添加 int 主键 --
