@@ -1,6 +1,6 @@
 <template>
   <section class="label">
-    <div class="labelItem">营收概况及趋势 查看明细</div>
+    <div class="labelItem">营收概况及趋势 <el-button type="text" @click="toDetail()">查看明细</el-button></div>
     <el-select
       v-model="timeSelect"
       size="small"
@@ -133,6 +133,15 @@ export default {
   },
 
   methods: {
+    // 跳转明细页面
+    toDetail () {
+      this.$router.push({
+        name: 'asset_summary_detail',
+        params: {
+          flag: 0
+        }
+      })
+    },
     // 自定义时间
     customDate () {
       this.chartChange = {
