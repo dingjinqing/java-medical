@@ -284,7 +284,7 @@ public class OrderGoodsService extends ShopBaseService{
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
             //TODO 需要考虑 是否赠品
-            isGift(0).
+            isGift(OrderConstant.IS_GIFT_N).
             //TODO 需要考虑 赠品的关联商品
             rGoods("").
             //TODO 需要考虑 商品积分
@@ -348,7 +348,7 @@ public class OrderGoodsService extends ShopBaseService{
                 //限时降价
                 type.add(OrderConstant.GOODS_TYPE_REDUCE_PRICE);
             }
-            if(bo.getFirstSpecialId() != null){
+            if(!NumberUtils.INTEGER_ZERO.equals(bo.getFirstSpecialId())){
                 //首单特惠
                 type.add(OrderConstant.GOODS_TYPE_FIRST_SPECIAL);
             }

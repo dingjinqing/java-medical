@@ -72,6 +72,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private Map<Integer, Goods> goodsMap;
     @JsonIgnore
     /**方便查找*/
+
     private List<OrderGoodsBo> bos;
 	/**方便查找*/
 	/** 订单业务处理方法*/
