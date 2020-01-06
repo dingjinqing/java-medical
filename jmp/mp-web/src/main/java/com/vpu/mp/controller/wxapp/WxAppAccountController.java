@@ -3,7 +3,6 @@ package com.vpu.mp.controller.wxapp;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +18,6 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
@@ -194,7 +192,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	 * 用户待激活
 	 * @return
 	 */
-	@PostMapping(value = "/api/wxapp/user/waitactivate")
+	@PostMapping(value = "/api/wxapp/user/toactivate")
 	public JsonResult toActivateUser() {
 		JsonResultCode activateUser = shop().member.userImportService.toActivateUser(wxAppAuth.user().getUserId());
 		if(activateUser.equals(JsonResultCode.CODE_SUCCESS)) {
