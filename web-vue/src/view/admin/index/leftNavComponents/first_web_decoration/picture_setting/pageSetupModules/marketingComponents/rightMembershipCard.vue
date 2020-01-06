@@ -37,7 +37,7 @@
                 <span
                   v-else
                   class="card_state"
-                >{{nowChecked.card_state}}</span>
+                >{{nowChecked.card_state===1?'使用中':'停止使用'}}</span>
               </div>
               <!-- <p
                 class="receive_day"
@@ -587,6 +587,7 @@ export default {
       })
       this.zcCheckedData = this.showCardList[index]
       // this.nowChecked.index = index
+      this.nowChecked = this.showCardList[index]
       this.showCardList[index].isChecked = !this.showCardList[index].isChecked
     },
     //  点击添加会员卡
