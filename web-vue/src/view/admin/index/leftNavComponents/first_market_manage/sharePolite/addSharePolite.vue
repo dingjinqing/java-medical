@@ -2,7 +2,7 @@
   <div class="bottomNavigationContent">
     <div class="bottomNavigationContent_main">
 
-      <!-- 左侧内容start -->
+      <!-- 左侧轮播图内容-->
       <div class="cententLleft">
         <div class="cententLleft_title"></div>
         <div id="slider">
@@ -32,8 +32,8 @@
           </div>
         </div>
       </div>
-      <!-- 左侧内容end  -->
 
+      <!-- 右侧内容部分 -->
       <section class="right_main">
         <!-- 活动信息部分 -->
         <div class="contentRight">
@@ -43,28 +43,34 @@
             ref="param"
             label-position="right"
             label-width="100px"
+            style="margin-top:20px;"
             :rules="fieldValidation"
           >
             <el-form-item
-              :label="$t('adSharePolite.activityInfo')"
+              :label="$t('adSharePolite.activityName')+'：'"
               prop="name"
             >
               <el-input
-                size="mini"
+                size="small"
                 style="width:200px"
                 v-model="param.name"
                 :placeholder="$t('adSharePolite.namelimit')"
+                maxlength="10"
+                show-word-limit
               ></el-input>
             </el-form-item>
             <br>
             <el-form-item
-              :label="$t('adSharePolite.validityPeriod')"
+              :label="$t('adSharePolite.validityPeriod')+'：'"
               prop="isForever"
             >
               <el-radio-group v-model="param.isForever">
                 <el-form-item>
                   <el-radio :label=0>{{$t('adSharePolite.fixTime')}}</el-radio>
-                  <el-radio :label=1>{{$t('adSharePolite.forever')}}</el-radio>
+                  <el-radio
+                    :label=1
+                    style="margin-left:50px;"
+                  >{{$t('adSharePolite.forever')}}</el-radio>
                 </el-form-item>
                 <el-form-item
                   prop="effectiveDate"
@@ -73,12 +79,13 @@
                   <el-date-picker
                     v-if="this.param.isForever == 0"
                     v-model="param.effectiveDate"
-                    style="width: 300px;"
+                    style="width: 380px;"
                     type="datetimerange"
                     :range-separator=" $t('marketCommon.to') "
                     :start-placeholder="$t('marketCommon.startTime')"
                     :end-placeholder="$t('marketCommon.endTime')"
                     value-format="yyyy-MM-dd HH:mm:ss"
+                    :default-time="['00:00:00', '23:59:59']"
                     size="small"
                   >
                   </el-date-picker>
@@ -87,21 +94,20 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item
-              :label="$t('adSharePolite.priority')"
+              :label="$t('adSharePolite.priority')+'：'"
               prop="priority"
             >
               <el-input
-                size="mini"
+                size="small"
                 style="width:200px"
                 v-model.number="param.priority"
                 placeholder="0"
               ></el-input>
-              <br>
-              <span>{{$t('adSharePolite.priorityComment')}}</span>
+              <div class="tips">{{$t('adSharePolite.priorityComment')}}</div>
             </el-form-item>
             <br>
             <el-form-item
-              :label="$t('adSharePolite.condition')"
+              :label="$t('adSharePolite.condition')+'：'"
               prop="condition"
             >
               <span>{{$t('adSharePolite.conditionInfo')}}</span>
@@ -129,7 +135,7 @@
             >
               <span>{{$t('adSharePolite.pvInFact')}}</span>
               <el-input
-                size="mini"
+                size="small"
                 style="width:50px"
                 v-model.number="param.goodsPv"
                 placeholder="0"
@@ -172,7 +178,7 @@
                   label-width="60px"
                 >
                   <el-input
-                    size="mini"
+                    size="small"
                     style="width:60px"
                     v-model="item.invite_num"
                     placeholder="0"
@@ -206,7 +212,7 @@
                 >
                   <el-input
                     v-model.number="item.score"
-                    size="mini"
+                    size="small"
                     style="width: 150px"
                     placeholder="0"
                   ></el-input>
@@ -219,7 +225,7 @@
                   v-if="item.reward_type == 1"
                 >
                   <el-input
-                    size="mini"
+                    size="small"
                     style="width:150px"
                     v-model.number="item.score_num"
                     placeholder="0"
@@ -262,7 +268,7 @@
                     <el-col :offset="4">
                       {{$t('adSharePolite.couponStock')}}
                       <el-input
-                        size="mini"
+                        size="small"
                         style="width:70px"
                         v-model.number="item.couponStock"
                         :disabled="true"
@@ -280,7 +286,7 @@
                   v-if="item.reward_type == 2"
                 >
                   <el-input
-                    size="mini"
+                    size="small"
                     style="width:150px"
                     v-model.number="item.coupon_num"
                     placeholder="0"
@@ -328,7 +334,7 @@
                   v-if="item.reward_type == 3"
                 >
                   <el-input
-                    size="mini"
+                    size="small"
                     style="width:150px"
                     v-model.number="item.lottery_num"
                     placeholder="0"
@@ -341,6 +347,7 @@
           </el-form>
         </div>
       </section>
+
       <!--保存-->
       <div class="footer">
         <div
@@ -348,7 +355,15 @@
           @click="add"
         >{{$t('marketCommon.save')}}</div>
       </div>
+      <!-- <div class="footer">
+        <el-button
+          size="middle"
+          type="primary"
+          @click="add"
+        >保存</el-button>
+      </div> -->
     </div>
+
     <!--添加商品弹窗-->
     <choosingGoods
       @resultGoodsIds="choosingGoodsResult"
@@ -446,6 +461,7 @@ export default {
       tuneUpCoupon: false,
       tuneUpChooseGoods: false,
       swiperOption: {
+        loop: true,
         autoplay: {
           delay: 3000, // 自动切换的时间间隔，单位ms
           stopOnLastSlide: false, // 当切换到最后一个slide时停止自动切换
@@ -738,11 +754,12 @@ export default {
   width: 100%;
 }
 .bottomNavigationContent_main {
+  display: flex;
+  position: relative;
+  justify-content: center;
   background-color: #fff;
-  height: 100%;
-  overflow: hidden;
-  overflow-y: auto;
   padding-bottom: 96px;
+  margin: 10px;
 }
 
 .cententLleft_title {
@@ -770,11 +787,11 @@ export default {
   background: #eee;
   position: relative;
   float: left;
-  margin: 70px 0 0 224px;
+  margin: 40px 0 60px 0;
 }
 .right_main {
   float: left;
-  margin: 80px 0 0 30px;
+  margin: 40px 0 0 15px;
 }
 .contentRight {
   border: 1px solid #e5e5e5;
@@ -786,8 +803,15 @@ export default {
 .actInfo_content_item {
   display: flex;
 }
+.tips {
+  margin-top: 10px;
+  line-height: 1.4;
+  font-size: 12px;
+  color: #999;
+}
 .actInfo {
   width: 100%;
+  font-size: 14px;
   padding-bottom: 10px;
   border-bottom: 1px solid #e5e5e5;
 }
@@ -813,16 +837,15 @@ export default {
   cursor: pointer;
 }
 .footer {
-  background: #f8f8fa;
-  border-top: 1px solid #f2f2f2;
-  text-align: center;
-  position: absolute;
-  z-index: 2;
+  position: fixed;
   bottom: 0;
+  right: 27px;
+  left: 160px;
+  height: 52px;
   padding: 10px 0;
-  left: 0;
-  right: 0;
-  margin-right: 10px;
+  z-index: 2;
+  background: #f2f2f2;
+  text-align: center;
 }
 .save {
   width: 70px;
