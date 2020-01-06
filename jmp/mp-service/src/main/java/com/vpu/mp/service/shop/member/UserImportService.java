@@ -170,7 +170,7 @@ public class UserImportService extends ShopBaseService {
 			}
 		}
 		return new SetNoticeJsonDetailVo(activationNotice.getExplain(), activationNotice.getScore(),
-				activationNotice.getExplain(), voList);
+				activationNotice.getMrkingVoucherId(), voList);
 	}
 
 	/**
