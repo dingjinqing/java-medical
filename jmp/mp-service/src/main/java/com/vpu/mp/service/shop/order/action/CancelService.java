@@ -230,8 +230,8 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
         boolean isErpPos = false;
         //订单类型
         List<Integer> orderType = Util.splitValueToList(order.getGoodsType());
+        Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(order.getOrderId());
         if(order.getPayCode() == OrderConstant.PAY_CODE_COD) {
-            Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(order.getOrderId());
             List<Integer> goodsIds = oGoods.stream().map(OrderGoodsRecord::getGoodsId).collect(Collectors.toList());
             List<Integer> proIds = oGoods.stream().map(OrderGoodsRecord::getProductId).collect(Collectors.toList());
             //查询规格
@@ -257,6 +257,10 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
             }
         }else if(orderType.contains(Integer.valueOf(OrderConstant.GOODS_TYPE_SECKILL))){
             //秒杀库存
+            saas.getShopApp(getShopId()).seckill.seckillList.cancelSeckillOrderStock(order,oGoods.get(0));
+        }else if(orderType.contains(Integer.valueOf(OrderConstant.GOODS_TYPE_BARGAIN))){
+            //砍价库存
+            saas.getShopApp(getShopId()).bargain.bargainRecord.bargainUser.cancelBargainOrderStock(order);
         }
     }
 }

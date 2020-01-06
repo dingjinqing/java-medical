@@ -146,6 +146,14 @@ public class GoodsSortService extends ShopBaseService {
     }
 
     /**
+     *
+     * @return
+     */
+    public List<GoodsSortSelectListVo> getListByIds(List<Integer> sortIds) {
+        return db().select(SORT.SORT_ID,SORT.SORT_NAME).from(SORT).where(SORT.SORT_ID.in(sortIds)).fetchInto(GoodsSortSelectListVo.class);
+    }
+
+    /**
      * 普通商家分类新增
      * @param param 普通商家分类
      */

@@ -33,10 +33,16 @@
     />
 
     <!-- 批量降价 -->
-    <batchReduce v-if="tabSwitch === '5'" />
+    <batchReduce
+      v-if="tabSwitch === '5'"
+      @addHandler="addReduce"
+    />
 
     <!-- 批量加价率 -->
-    <batchMarkUpRate v-if="tabSwitch === '6'" />
+    <batchMarkUpRate
+      v-if="tabSwitch === '6'"
+      @addHandler="addReduce"
+    />
 
     <!-- 表格 -->
     <div
@@ -224,6 +230,7 @@ export default {
       this.requestParams.state = this.tabSwitch
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
+      this.closeTabAddGroup()
       reducePriceList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -359,7 +366,6 @@ export default {
     seckillEffectHandler (id) {
       // this.$router.push({ name: 'reduce_order_list', query: { id: id } })
     }
-
   }
 }
 </script>

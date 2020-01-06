@@ -49,7 +49,7 @@ public class AssetManagementService extends ShopBaseService {
      */
     public RevenueProfileVo revenueprofile(RevenueProfileParam param) {
         byte screeningTime = param.getScreeningTime();
-        RevenueProfileVo vo = RevenueProfileVo.builder().build();
+        RevenueProfileVo vo;
         if (screeningTime > 0) {
             Date current = Util.getEarlySqlDate(new java.util.Date(), 0);
             Date prior = Util.getEarlySqlDate(new java.util.Date(), -screeningTime);
@@ -76,8 +76,8 @@ public class AssetManagementService extends ShopBaseService {
             RevenueProfileVo tempPre = getRevenueDate(Util.getEarlySqlDate(startDate, -day), startDate);
             calGrowthRate(vo, tempPre);
             vo.setRevenueDates(getRevenueDateList(startDate, endDate));
-            vo.setStartTime(startDate);
-            vo.setEndTime(endDate);
+            vo.setStartTime(param.getStartTime());
+            vo.setEndTime(param.getEndTime());
         }
         return vo;
     }
@@ -105,8 +105,8 @@ public class AssetManagementService extends ShopBaseService {
             RevenueProfileScoreVo tempPre = getRevenueScoreDate(Util.getEarlySqlDate(startDate, -day), startDate);
             calScoreGrowthRate(vo, tempPre);
             vo.setRevenueDates(getRevenueScoreDateList(startDate, endDate));
-            vo.setStartTime(startDate);
-            vo.setEndTime(endDate);
+            vo.setStartTime(param.getStartTime());
+            vo.setEndTime(param.getEndTime());
         }
         return vo;
     }
@@ -139,20 +139,22 @@ public class AssetManagementService extends ShopBaseService {
      * 获取指定时间段数据
      */
     private RevenueProfileVo getRevenueDate(Date date, byte type) {
-        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileVo.class).orElse(RevenueProfileVo.builder().build());
+        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileVo.class).orElse(new RevenueProfileVo());
     }
     private RevenueProfileScoreVo getRevenueScoreDate(Date date, byte type) {
-        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(RevenueProfileScoreVo.builder().build());
+        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(new RevenueProfileScoreVo());
     }
 
     /**
      * 获取自定义时间数据
      */
     private RevenueProfileVo getRevenueDate(Date startDate, Date endDate) {
-        return getSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileVo.class).orElse(RevenueProfileVo.builder().build());
+        return getSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate))
+            .and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileVo.class).orElse(new RevenueProfileVo());
     }
     private RevenueProfileScoreVo getRevenueScoreDate(Date startDate, Date endDate) {
-        return getScoreSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(RevenueProfileScoreVo.builder().build());
+        return getScoreSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate))
+            .and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(new RevenueProfileScoreVo());
     }
 
     /**

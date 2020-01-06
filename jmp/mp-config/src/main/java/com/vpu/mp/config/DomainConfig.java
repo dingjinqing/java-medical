@@ -8,7 +8,7 @@ import lombok.Data;
 
 /**
  * 域名配置
- * 
+ *
  * @author lixinguo
  *
  */
@@ -24,7 +24,7 @@ public class DomainConfig {
 
 	/**
 	 * 图片路径
-	 * 
+	 *
 	 * @param relativePath
 	 * @return
 	 */
@@ -34,7 +34,7 @@ public class DomainConfig {
 
 	/**
 	 * 图片路径
-	 * 
+	 *
 	 * @param relativePath
 	 * @return
 	 */
@@ -45,7 +45,7 @@ public class DomainConfig {
 
 	/**
 	 * 主域名路径
-	 * 
+	 *
 	 * @param relativePath
 	 * @return
 	 */
@@ -55,7 +55,7 @@ public class DomainConfig {
 
 	/**
 	 * 主域名路径
-	 * 
+	 *
 	 * @param relativePath
 	 * @return
 	 */
@@ -63,8 +63,8 @@ public class DomainConfig {
 		schema = schema == null ? "http" : schema;
 		return String.format("%s://%s%s", schema, mainDomain, relativePath);
 	}
-	
-	
+
+
 	/**
 	 * 小程序支付回调URL
 	 * @param shopId
@@ -73,7 +73,7 @@ public class DomainConfig {
 	public String getWxMaPayNotifyUrl(Integer shopId) {
 		return mainUrl("/wechat/notify/ma/payment/"+shopId);
 	}
-	
+
 	/**
 	 * 判断路径开始是否为/，并做是否删除
 	 * @param relativePath
@@ -85,7 +85,7 @@ public class DomainConfig {
 		}
 		return relativePath;
 	}
-	
+
 	/**
 	 * 获取图片域名
 	 * @return

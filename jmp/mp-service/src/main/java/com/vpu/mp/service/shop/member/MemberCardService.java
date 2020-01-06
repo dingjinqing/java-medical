@@ -1543,7 +1543,6 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	private void setDefaultReason(CardConsumpData data, Integer code) {
 		/** 1-若reason原因为空 则设置为默认值 */
 		if (data.getReason()==null) {
-			/** - 会员卡余额 */
 			data.setReasonId(code);
 		}
 	}

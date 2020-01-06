@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListVo;
+import org.jooq.Record10;
 import org.jooq.Record9;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,8 @@ public class GroupDrawGroupService extends ShopBaseService {
      * 拼团明细列表
      */
     public PageResult<GroupListVo> getGroupList(GroupListParam param) {
-        SelectConditionStep<Record9<Integer, Integer, String, String, Timestamp, Timestamp, Object, Object, Object>>
-            select = db()
-            .select(
+        SelectConditionStep<Record10<Integer, Integer, String, String, Timestamp, Timestamp, Object, Object, Object, Object>>
+            select = db().select(
                 JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID,
                 count(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID).as("userCount"), ORDER_GOODS.GOODS_NAME,
                 ORDER_GOODS.GOODS_IMG, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).OPEN_TIME, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).END_TIME,
@@ -50,6 +50,11 @@ public class GroupDrawGroupService extends ShopBaseService {
                     .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
                         .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
                     .asField("grouperName"),
+                select(USER.USER_ID).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
+                    .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID.eq(USER.USER_ID))
+                    .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
+                        .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
+                    .asField("grouperId"),
                 select(USER.MOBILE).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
                     .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID.eq(USER.USER_ID))
                     .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
@@ -65,8 +70,8 @@ public class GroupDrawGroupService extends ShopBaseService {
         return getPageResult(select, param, GroupListVo.class);
     }
 
-    private void buildOptions(SelectConditionStep<Record9<Integer, Integer, String, String, Timestamp, Timestamp,
-        Object, Object, Object>> select, GroupListParam param) {
+    private void buildOptions(SelectConditionStep<Record10<Integer, Integer, String, String, Timestamp, Timestamp,
+        Object, Object, Object, Object>> select, GroupListParam param) {
         Integer groupDrawId = param.getGroupDrawId();
         String username = param.getUsername();
         String mobile = param.getMobile();
@@ -76,10 +81,10 @@ public class GroupDrawGroupService extends ShopBaseService {
         Integer groupId = param.getGroupId();
         select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_DRAW_ID.eq(groupDrawId));
         if (isNotEmpty(username)) {
-            select.and(USER.USERNAME.like(format("%s%%", username)));
+            select.and(USER.USERNAME.like(likeValue(username)));
         }
         if (isNotEmpty(mobile)) {
-            select.and(USER.MOBILE.like(format("%s%%", mobile)));
+            select.and(USER.MOBILE.like(likeValue(mobile)));
         }
         if (null != grouped) {
             select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).STATUS.eq((byte) (grouped ? 1 : 2)));

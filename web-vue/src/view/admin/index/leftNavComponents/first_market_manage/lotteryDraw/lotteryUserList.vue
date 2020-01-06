@@ -36,7 +36,8 @@
             type="datetime"
             clearable
             class="inputWidth"
-            value-format="yyyy-MM-dd 23:59:59"
+            value-format="yyyy-MM-dd 00:00:00"
+            default-time="23:59:59"
             :placeholder="$t('actionRecord.endTime')"
           >
           </el-date-picker>
@@ -226,18 +227,18 @@ export default {
     return {
       // 成团状态
       statusList: [{
-        value: '1',
+        value: true,
         label: '已成团'
       }, {
-        value: '2',
+        value: false,
         label: '未成团'
       }],
       // 是否团长
       groupList: [{
-        value: '1',
+        value: true,
         label: '是'
       }, {
-        value: '2',
+        value: false,
         label: '否'
       }],
       loading: false,
@@ -248,8 +249,8 @@ export default {
         endTime: '',
         orderSn: '', // 订单号
         mobile: '', // 手机号
-        minInviteUserCount: '', // 最小邀请人数
-        maxInviteUserCount: '', // 最大邀请人数
+        minInviteUserCount: null, // 最小邀请人数
+        maxInviteUserCount: null, // 最大邀请人数
         groupId: '', // 团ID
         grouped: '', // 成团状态
         isGrouper: '' // 团长id
@@ -266,9 +267,12 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.requestParams.groupDrawId = this.$route.query.id
+      this.requestParams.groupDrawId = Number(this.$route.query.id)
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
+      this.requestParams.minInviteUserCount = Number(this.requestParams.minInviteUserCount)
+      this.requestParams.maxInviteUserCount = Number(this.requestParams.maxInviteUserCount)
+
       userLotteryList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
