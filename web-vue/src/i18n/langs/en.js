@@ -360,6 +360,14 @@ import {
 import {
   en as membershipIntroduction
 } from './views/admin_new/en/index/userManagement/member/membershipIntroductionEn'
+// 会员导入
+import {
+  en as memberIntroductionDialog
+} from './views/admin_new/en/index/userManagement/member/memberIntroductionDialogEn'
+// 设置激活通知
+import {
+  en as activationNotificationDialog
+} from './views/admin_new/en/index/userManagement/member/activationNotificationDialogEn'
 // 会员管理-会员卡
 import {
   en as memberCard
@@ -892,6 +900,8 @@ const en = {
   router, // 路由信息
 
   membershipIntroduction, // 会员列表
+  memberIntroductionDialog, // 会员导入
+  activationNotificationDialog, // 设置激活通知
   programVersion, // system 后台小程序版本
   shopAccountList, // system 店铺账户列表
   shopList, // sysytem 店铺列表

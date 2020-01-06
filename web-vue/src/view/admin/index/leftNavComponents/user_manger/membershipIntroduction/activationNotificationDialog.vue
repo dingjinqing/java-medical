@@ -2,18 +2,18 @@
   <!-- 激活通知 -->
   <div>
     <el-dialog
-      title="设置激活通知"
+      :title="$t('activationNotificationDialog.setActivationNotify')"
       :visible.sync="dialogVisible"
       width="750"
       :center="true"
     >
       <div class="activation-notification-dialog">
         <div class="top">
-          <p class="top-title">说明：</p>
+          <p class="top-title">{{$t('activationNotificationDialog.explanation')}}</p>
           <ol>
-            <li>1、会员导入系统后，需要在移动端授权手机号以对应导入的会员信息。</li>
-            <li>2、为提升会员的激活率，可设置一定的授权奖励。</li>
-            <li>3、设置完成后请到“小程序管理”-“个人中心”中开启“会员激活展示开关”。</li>
+            <li>{{$t('activationNotificationDialog.explanation1')}}</li>
+            <li>{{$t('activationNotificationDialog.explanation2')}}</li>
+            <li>{{$t('activationNotificationDialog.explanation3')}}</li>
           </ol>
         </div>
         <el-form
@@ -25,13 +25,13 @@
           size="small"
         >
           <el-form-item
-            label="激活说明："
+            :label="$t('activationNotificationDialog.activationInst')+'：'"
             prop="explain"
           >
             <el-input
               class="an-textarea"
               type="textarea"
-              placeholder="激活说明"
+              :placeholder="$t('activationNotificationDialog.activationInst')"
               :rows="3"
               v-model="form.explain"
             ></el-input>
@@ -50,15 +50,15 @@
                 slot="reference"
                 type="text"
                 class="text-btn"
-              >查看示例</el-button>
+              >{{$t('activationNotificationDialog.viewExample')}}</el-button>
             </el-popover>
           </el-form-item>
-          <el-form-item label="激活奖励：">
+          <el-form-item :label="$t('activationNotificationDialog.acivationReward')">
             <div>
               <el-checkbox
                 v-model="scoreCheck"
                 :checked="scoreCheck"
-              >积分</el-checkbox>
+              >{{$t('activationNotificationDialog.integral')}}</el-checkbox>
               <el-input-number
                 v-model="form.score"
                 controls-position="right"
@@ -66,7 +66,7 @@
               ></el-input-number>
             </div>
             <div>
-              <el-checkbox>优惠券</el-checkbox>
+              <el-checkbox>{{$t('activationNotificationDialog.coupon')}}</el-checkbox>
               <div class="coupon-wrap">
                 <div class="coupons">
                   <div
@@ -114,7 +114,7 @@
                       <div
                         class="coupon-bottom"
                         :style="'background: #f66 url('+$imageHost+'/image/admin/coupon_border.png) repeat-x top;'"
-                      >领取</div>
+                      >{{$t('activationNotificationDialog.reseive')}}</div>
                     </div>
                     <p class="coupon-name">{{coupon.actName}}</p>
                   </div>
@@ -127,10 +127,10 @@
                       :src="$imageHost + '/image/admin/shop_beautify/add_decorete.png'"
                       alt="+"
                     >
-                    <p>添加优惠券</p>
+                    <p>{{$t('activationNotificationDialog.addCoupon')}}</p>
                   </div>
                 </div>
-                <p class="coupon-tips">最多添加5张优惠券，已过期和已停用的优惠券不能添加</p>
+                <p class="coupon-tips">{{$t('activationNotificationDialog.addUplimit')}}</p>
               </div>
             </div>
           </el-form-item>
@@ -143,7 +143,7 @@
             type="primary"
             size="small"
             @click="saveActivationNotification"
-          >保存</el-button>
+          >{{$t('activationNotificationDialog.save')}}</el-button>
         </div>
       </div>
     </el-dialog>
@@ -169,10 +169,11 @@ export default {
     }
   },
   data () {
+    let that = this
     return {
       form: {
         score: '',
-        explain: '感谢您一直以来对本店铺的关注，您之前使用的全部服务已经全部迁移至本小程序中，为方便您找回此前的会员权益，请同意授权您的手机号',
+        explain: that.$t('activationNotificationDialog.thank'),
         couponIds: []
       },
       srcList: [
@@ -181,7 +182,7 @@ export default {
       coupons: [], // 选择的优惠券
       addCouponDialogVisible: false,
       formRules: {
-        explain: { required: true, message: '请填写激活说明', trigger: 'blur' }
+        explain: { required: true, message: that.$t('activationNotificationDialog.pfActivationInst'), trigger: 'blur' }
       }
     }
   },
@@ -246,7 +247,7 @@ export default {
       setnoticeApi(params).then(res => {
         if (res.error === 0) {
           console.log(res.content)
-          that.$message.success('设置激活通知成功')
+          that.$message.success(that.$t('activationNotificationDialog.successSetting'))
           that.dialogVisible = false
         } else {
           that.$message.error(res.message)
