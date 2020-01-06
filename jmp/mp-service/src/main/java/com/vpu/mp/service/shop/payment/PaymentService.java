@@ -217,9 +217,6 @@ public class PaymentService extends ShopBaseService {
             pay.toWaitDeliver(orderInfo, paymentRecord);
 		}
 
-		// 支付有礼
-		payAwardActivity(param, orderInfo);
-
 		/**
 		 * TODO:POS推送订单
 		 */

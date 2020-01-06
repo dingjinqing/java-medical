@@ -87,19 +87,15 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     @Autowired
     private OrderPayService orderPay;
-
     @Autowired
     private GroupBuyListService groupBuyListService;
-
     @Autowired
     private GroupBuyService groupBuyService;
-
     /**
      * 营销活动processorFactory
      */
     @Autowired
     private OrderCreateMpProcessorFactory marketProcessorFactory;
-
     @Override
     public Object query(OrderOperateQueryParam param) {
         return null;
@@ -109,10 +105,10 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     public ExecuteResult execute(PayParam param) {
         OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
         if (order == null) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
         }
         if (order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY, null);
         }
         //过期校验
         long currenTmilliseconds = Instant.now().toEpochMilli();
@@ -120,15 +116,15 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             //定金订单
             Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
             if (timeInterval.value1().getTime() < currenTmilliseconds) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START, null);
             }
             if (currenTmilliseconds > timeInterval.value2().getTime()) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
             }
         } else {
             //普通订单
             if (order.getExpireTime().getTime() < currenTmilliseconds) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
             }
         }
         //订单商品
@@ -266,4 +262,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         });
         marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
     }
+
+
+
 }
