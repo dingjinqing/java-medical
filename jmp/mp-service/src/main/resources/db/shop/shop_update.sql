@@ -301,7 +301,7 @@
 -- 王兵兵 201-07-18
 alter table `b2c_service_order` add index order_sn(order_sn);
 
-/* liufei 2019-07-19 */
+-- liufei 2019-07-19
 alter table b2c_trades drop index ref_date;
 
 -- 2019-07-23 统计相关表添加 int 主键 --
@@ -1459,7 +1459,6 @@ MODIFY COLUMN `lottery_id` int(11)  DEFAULT NULL COMMENT '抽奖id';
 ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `exchang_count` int(11) DEFAULT NULL COMMENT '允许商品兑换次数' AFTER `exchang_freight`;
 
-<<<<<<< HEAD
 ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `count` int(11) DEFAULT NULL COMMENT '允许门店兑换次数' AFTER `store_list`;
 
