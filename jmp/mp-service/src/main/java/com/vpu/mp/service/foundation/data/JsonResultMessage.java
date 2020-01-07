@@ -453,6 +453,9 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_VOUCHER = "example.voucher";
 	public static final String CODE_EXCEL_RANDOM = "example.random";
 	public static final String CODE_EXCEL_OTHER = "example.other";
+	public static final String CODE_EXCEL_NEED_MOBILE = "excel.need.mobile";
+	public static final String CODE_EXCEL_SORRY = "excel.sorry";
+	public static final String CODE_EXCEL_OK = "excel.ok";
 
 	/**
 	 * 概览

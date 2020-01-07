@@ -706,16 +706,16 @@ public class UserImportService extends ShopBaseService {
 		String mobile = user.getMobile();
 		if(StringUtils.isEmpty(mobile)) {
 			//请授权手机号
-			return JsonResultCode.CODE_FAIL;
+			return JsonResultCode.CODE_EXCEL_NEED_MOBILE;
 		}
 		UserImportDetailRecord importUser = getUserByMobile(mobile, ONE);
 		if (importUser == null) {
 			// 很抱歉！由于您不是本店老会员或因本店还未导入您的会员信息，暂时无法激活，请稍后再试或咨询本店客服
-			return JsonResultCode.CODE_FAIL;
+			return JsonResultCode.CODE_EXCEL_SORRY;
 		}
 		if(Objects.equals(importUser.getIsActivate(), ONE)) {
 			//用户已激活，请勿重复操作
-			return JsonResultCode.CODE_FAIL;
+			return JsonResultCode.CODE_EXCEL_OK;
 		}
 		importUser.setIsActivate(ONE);
 		importUser.update();

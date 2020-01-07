@@ -933,8 +933,9 @@ public class UserService extends ShopBaseService {
 		Integer userId=param.getUserId();
 		Integer shopId = this.getShopId();
 		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
-		String sessionKey = jedis.get(getSessionKey(shopId, userId));
-		logger().info("解析手机号获取sessionKey"+StringUtils.isEmpty(sessionKey));
+		String sessionKey2 = getSessionKey(shopId, userId);
+		String sessionKey = jedis.get(sessionKey2);
+		logger().info("获取sessionKey："+sessionKey2+"结果"+StringUtils.isNotEmpty(sessionKey));
 		WxMaPhoneNumberInfo phoneNoInfo = maService.getUserService().getPhoneNoInfo(sessionKey,param.getEncryptedData(), param.getIv());
 		logger().info("获取手机号"+phoneNoInfo);
 		if(phoneNoInfo!=null) {
