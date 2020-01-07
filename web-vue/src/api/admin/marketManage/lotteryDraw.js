@@ -93,8 +93,8 @@ export function groupLotteryList (data) {
 // 分享
 export function shareLotteryDraw (data) {
   return service({
-    url: '',
-    method: 'get',
+    url: '/api/admin/group_draw/share',
+    method: 'post',
     data: data
   })
 }
