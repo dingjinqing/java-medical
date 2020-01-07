@@ -75,7 +75,8 @@
         "returnlogistics/returnlogistics",
         "returnrecord/returnrecord",
         "shoporderinfo/shoporderinfo",
-        "usercardrecord/usercardrecord"
+        "usercardrecord/usercardrecord",
+        "lottery/lottery"
       ]
     }
   ],

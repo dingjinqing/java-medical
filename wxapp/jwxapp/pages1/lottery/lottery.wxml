@@ -1,0 +1,6 @@
+<!--pages1/lottery/lottery.wxml-->
+<include src="/pages/common/header.wxml">
+<view class="main-container">
+  
+</view>
+<include src="/pages/common/footer.wxml">
