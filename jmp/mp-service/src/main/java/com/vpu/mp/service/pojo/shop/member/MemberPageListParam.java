@@ -33,7 +33,7 @@ public class MemberPageListParam extends BaseMemberPojo {
 	
 	
 	/** -标签名称 */
-	private String tagName;
+	private List<Integer> tagName;
 	/** -指定时间内登录有记录 - 开始时间 */
 	private String loginStartTime;
 	/** -指定时间内登录有记录 - 结束时间 */

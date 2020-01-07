@@ -23,7 +23,7 @@ public class AccountParam {
 	/** 
 	 * 备注remark需要国际化
 	 */
-	/** 备注模板id */
+	/** 备注模板id {@link com.vpu.mp.service.pojo.shop.operation.RemarkTemplate} */
 	private Integer remarkId;
 	/** 备注模板数据 */
 	private String remarkData;
