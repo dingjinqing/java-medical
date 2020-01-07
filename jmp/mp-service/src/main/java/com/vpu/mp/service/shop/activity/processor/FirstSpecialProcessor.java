@@ -102,18 +102,21 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
     /*****************商品详情处理*******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+
+        // 已经被其它活动处理，或者是会员专享，则退出
+        if (capsule.getActivity() != null || GoodsConstant.CARD_EXCLUSIVE.equals(capsule.getIsExclusive())) {
+            return;
+        }
+
         if (param.getUserId() != null && !orderInfoService.isNewUser(param.getUserId(), true)) {
             return;
         }
-        if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(param.getActivityType())) {
-            return;
-        }
-        FirstSpecialMpVo vo = firstSpecialProcessorDao.getFirstSpecialInfo(param.getActivityId(), param.getGoodsId(), DateUtil.getLocalDateTime());
-        capsule.setActivity(vo);
 
-        if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(vo.getActState())) {
+        FirstSpecialMpVo vo = firstSpecialProcessorDao.getFirstSpecialInfo(param.getGoodsId(), DateUtil.getLocalDateTime());
+        if (vo == null) {
             return;
         }
+
         Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
 
         // 设置规格价格，并且设置有效规格
