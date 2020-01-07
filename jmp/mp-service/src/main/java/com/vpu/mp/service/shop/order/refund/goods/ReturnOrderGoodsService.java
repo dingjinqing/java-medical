@@ -96,10 +96,8 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 	 * @param successStatus
 	 */
 	public void updateSuccess(List<ReturnOrderGoodsRecord> returnGoods, byte successStatus) {
-		returnGoods.forEach(rGoods -> {
-			rGoods.setSuccess(successStatus);
-		});
-		db().batchUpdate(returnGoods).execute();
+        List<Integer> ids =  returnGoods.stream().map(ReturnOrderGoodsRecord::getId).collect(Collectors.toList());
+        db().update(TABLE).set(TABLE.SUCCESS,successStatus).where(TABLE.ID.in(ids)).execute();
 	}
 	
 	/**
