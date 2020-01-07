@@ -220,7 +220,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				} catch (DataAccessException e) {
 					Throwable cause = e.getCause();
 					if (cause instanceof MpException) {
-						throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
+						throw cause;
 					} else {
 						throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, e.getMessage());
 					}
