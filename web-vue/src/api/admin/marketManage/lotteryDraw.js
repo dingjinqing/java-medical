@@ -102,7 +102,7 @@ export function shareLotteryDraw (data) {
 // 查询活动数据
 export function effactLotteryList (data) {
   return service({
-    url: '',
+    url: '/api/admin/group_draw/effect',
     method: 'post',
     data: data
   })

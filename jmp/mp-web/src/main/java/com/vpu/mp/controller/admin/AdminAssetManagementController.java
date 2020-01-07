@@ -48,7 +48,7 @@ public class AdminAssetManagementController extends AdminBaseController {
      */
     @PostMapping("/api/admin/assetmanagement/export2Excel")
     public void export2Excel(@RequestBody @Validated AssetDetailParam param, HttpServletResponse response) {
-        Workbook workbook = shop().assetService.export2Excel(param);
+        Workbook workbook = shop().assetService.export2Excel(param, getLang());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.ASSETS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
     }
