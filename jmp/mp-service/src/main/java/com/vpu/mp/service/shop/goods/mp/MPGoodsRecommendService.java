@@ -138,6 +138,9 @@ public class MPGoodsRecommendService extends ShopBaseService {
         if (pageNum * pageSize <= total) {
             goodsListNormal = goodsListNormal.subList(startIndex, endIndex);
         } else {
+            if(startIndex>total){
+                return null;
+            }
             goodsListNormal = goodsListNormal.subList(startIndex, total);
         }
         //是否显示划线价开关

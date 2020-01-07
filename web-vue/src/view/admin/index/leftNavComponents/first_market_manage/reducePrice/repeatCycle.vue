@@ -199,12 +199,44 @@ export default {
     cycleDialog: {
       type: Boolean,
       default: false
+    },
+    CycleType: {
+      type: Number,
+      default: 0
+    },
+    CycleDate: {
+      type: [Number, String]
+    },
+    CycleData: {
+      type: String,
+      default: ''
     }
   },
   watch: {
     cycleDialog (newVal) {
       console.log(newVal)
       this.cycleShow = newVal
+    },
+    CycleType (newVal) {
+      console.log(newVal)
+      this.periodAction = newVal
+    },
+    CycleDate (newVal) {
+      console.log(newVal)
+      if (this.periodAction === 2) {
+        this.extendTime1 = newVal
+      } else if (this.periodAction === 3) {
+        this.extendTime2 = newVal.split('@')
+        this.extendTime2 = this.extendTime2.map(Number)
+      }
+      console.log(this.extendTime1)
+      console.log(this.extendTime2)
+    },
+    CycleData (newVal) {
+      console.log(newVal)
+      var arr = newVal.split('@')
+      this.startTime = arr[0]
+      this.endTime = arr[1]
     }
   },
   methods: {

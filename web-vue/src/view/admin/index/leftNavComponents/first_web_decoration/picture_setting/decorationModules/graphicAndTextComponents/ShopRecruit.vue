@@ -65,7 +65,6 @@
   </div>
 </template>
 <script>
-
 export default {
   props: {
     flag: Number, // 模块公共

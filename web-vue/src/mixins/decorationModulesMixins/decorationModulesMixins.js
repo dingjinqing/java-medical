@@ -383,28 +383,28 @@ export default {
           break
         case 27: // 店招设置
           obj = {
-            module_name: 'm_shop',
-            shop_name: localStorage.getItem('V-shopName'),
-            shop_notice: '',
-            shop_bg_path: localStorage.getItem('V-shopAvatar'),
-            bg_url: '/image/admin/shop_beautify/beau1.png',
-            bg_fullUrl: '',
-            ok_ajax: 1
+            'module_name': 'm_shop',
+            'shop_name': localStorage.getItem('V-shopName'),
+            'shop_notice': '',
+            'shop_bg_path': localStorage.getItem('V-shopAvatar'),
+            'bg_url': '/image/admin/shop_beautify/beau1.png',
+            'bg_fullUrl': '',
+            'ok_ajax': 1
           }
           break
         case 28: // 地图模块
           obj = {
-            module_name: 'm_map',
-            province: '北京市',
-            province_code: '110000',
-            city: '北京市',
-            city_code: '110100',
-            area: '东城区',
-            area_code: '110101',
-            address: '东直门',
-            map_show: '1',
-            latitude: '39.92855',
-            longitude: '116.41637'
+            'module_name': 'm_map',
+            'province': '北京市',
+            'province_code': '110000',
+            'city': '北京市',
+            'city_code': '110100',
+            'area': '东城区',
+            'area_code': '110101',
+            'address': '东直门',
+            'map_show': '1',
+            'latitude': '39.92855',
+            'longitude': '116.41637'
           }
       }
       console.log(obj)
@@ -537,6 +537,7 @@ export default {
             }
             break
           case 'm_magic_cube':
+            console.log(item)
             if (item.table_type === 8) {
               if (!item.isAllCheckFull) {
                 this.$message.error({
@@ -555,12 +556,28 @@ export default {
                   flag = false
                 }
               })
+              if (JSON.stringify(item.data) === '{}') { // 处理极端情况
+                this.$message.error({
+                  message: '请上传图片',
+                  showClose: true
+                })
+                flag = false
+              }
             }
             break
           case 'm_text_image':
             if (!item.img_url) {
               this.$message.error({
                 message: '请上传图片',
+                showClose: true
+              })
+              flag = false
+            }
+            break
+          case 'm_shop_announce':
+            if (!item.shop_text) {
+              this.$message.error({
+                message: '请输入店铺公告内容',
                 showClose: true
               })
               flag = false

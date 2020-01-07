@@ -42,19 +42,6 @@
   margin-bottom: 120rpx;
 }
 
-.price_cou {
-  width: 400rpx;
-  margin: 50rpx auto;
-  height: 100rpx;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  margin-top: 115rpx;
-}
-
-.price_cou>view {
-  float: left;
-}
 
 .left_money {
   color: #f66;
@@ -69,9 +56,6 @@
   align-items: center;
 }
 
-.left_money text {
-  font-size: 70rpx;
-}
 
 .right_money {
   width: 170rpx;
@@ -97,11 +81,6 @@
   text-align: center;
   width: 100%;
 }
-
-.go_list image {
-  width: 15rpx;
-}
-
 .two_cou {
   width: 550rpx;
   height: 770rpx;
@@ -151,7 +130,7 @@
   align-items: center;
 }
 
-.each_tow .et_left text {
+.each_tow .et_left .text {
   font-size: 70rpx;
 }
 
@@ -242,17 +221,17 @@
   border-radius: 20rpx;
   text-align: center;
 }
-.no_gift > image{
+.no_gift > .image{
   width: 180rpx;
   margin-top: 70rpx;
 }
-.no_gift > view:nth-child(2){
+.no_gift > .view:nth-child(2){
   font-size: 36rpx;
   color: #333;
   margin-top: 38rpx;
   font-weight: 600
 }
-.no_gift > view:nth-child(3){
+.no_gift > .view:nth-child(3){
   font-size: 26rpx;
   color: #333;
   margin-top: 30rpx

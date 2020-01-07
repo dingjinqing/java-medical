@@ -14,6 +14,8 @@ export const cn = {
   analysis_basic: ['概况', '概况统计'],
   // 概况 搜索统计
   search_summary: ['概况', '搜索统计'],
+  // 概况 资产管理
+  asset_summary: ['概况', '资产管理'],
 
   // 概况 用户画像
   analysis_portrait: ['概况', '用户画像'],
@@ -164,6 +166,15 @@ export const cn = {
   ordinary_coupon_receive_details: ['营销管理', '普通优惠券', '领取明细'],
   // 营销管理 拼团抽奖
   group_draw: ['营销管理', '拼团抽奖'],
+  // 营销管理 拼团抽奖 活动订单
+  group_order: ['营销管理', '拼团抽奖', '拼团抽奖订单'],
+  // 营销管理 拼团抽奖 参与用户
+  group_user: ['营销管理', '拼团抽奖', '参与用户'],
+  // 营销管理 拼团抽奖 用户明细
+  group_user_detail: ['营销管理', '拼团抽奖', '获取新用户明细'],
+  // 营销管理 拼团抽奖 开团明细
+  group_detail: ['营销管理', '拼团抽奖', '开团明细'],
+
   // 营销管理 分销
   distribution_info: ['营销管理', '分销'],
   // 营销管理 分销 推广测试

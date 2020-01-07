@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleBargain;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -201,7 +202,10 @@ public class BargainService extends ShopBaseService  {
         BargainUpdateVo bargain = db().select(BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_MIN,BARGAIN.BARGAIN_MAX,BARGAIN.STOCK,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.BARGAIN_MONEY_TYPE,BARGAIN.BARGAIN_FIXED_MONEY,BARGAIN.BARGAIN_MIN_MONEY,BARGAIN.BARGAIN_MAX_MONEY,BARGAIN.FREE_FREIGHT,BARGAIN.GOODS_ID,BARGAIN.MRKING_VOUCHER_ID,BARGAIN.REWARD_COUPON_ID,BARGAIN.SHARE_CONFIG).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOne().into(BargainUpdateVo.class);
 		if(bargain != null) {
 			bargain.setGoods(saas().getShopApp(getShopId()).goods.getGoodsView(bargain.getGoodsId()));
-            bargain.setShopShareConfig(Util.parseJson(bargain.getShareConfig(), ShopShareConfig.class));
+            bargain.setShopShareConfig(Util.parseJson(bargain.getShareConfig(), PictorialShareConfigVo.class));
+            if(bargain.getShopShareConfig() != null && bargain.getShopShareConfig().getShareImg() != null){
+                bargain.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(bargain.getShopShareConfig().getShareImg()));
+            }
             bargain.setMrkingVoucherList(saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(bargain.getMrkingVoucherId())));
             bargain.setRewardCouponList(saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(bargain.getRewardCouponId())));
 			return bargain;
@@ -354,7 +358,7 @@ public class BargainService extends ShopBaseService  {
      * @param actId
      * @return
      */
-    private BargainRecord getBargainActById(int actId){
+    public BargainRecord getBargainActById(int actId){
         return db().select().from(BARGAIN).where(BARGAIN.ID.eq(actId)).fetchOptionalInto(BargainRecord.class).orElse(null);
     }
 

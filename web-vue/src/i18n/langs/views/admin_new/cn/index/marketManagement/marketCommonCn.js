@@ -50,6 +50,7 @@ export const cn = {
   totalAmount: '总量',
   expandMoreConfigurations: '展开更多配置',
   collapseMoreConfigurations: '收起更多配置',
+  first: '优先级',
   activityGoods: '活动商品',
   selectGoods: '选择商品',
 

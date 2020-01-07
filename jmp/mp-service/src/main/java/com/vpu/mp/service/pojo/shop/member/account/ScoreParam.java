@@ -18,7 +18,7 @@ import lombok.Data;
  */
 @Data
 public class ScoreParam {
-	/** 备注Id */
+	/** 备注Id  {@link com.vpu.mp.service.pojo.shop.operation.RemarkTemplate}*/
 	private Integer remarkCode;
 	
 	/** 备注数据 */

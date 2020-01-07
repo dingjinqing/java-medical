@@ -1,4 +1,36 @@
 export const en = {
+  // tabs
+  tabInfo: [
+    {
+      title: 'All',
+      name: '0'
+    },
+    {
+      title: 'In Progress',
+      name: '1'
+    },
+    {
+      title: 'Not Started',
+      name: '2'
+    },
+    {
+      title: 'Overdue',
+      name: '3'
+    },
+    {
+      title: 'Disable',
+      name: '4'
+    },
+    {
+      title: 'Bulk price reduction',
+      name: '5'
+    },
+    {
+      title: 'Batch mark up rate',
+      name: '6'
+    }
+  ],
+
   // 通用
   reducePrice: 'reduce price',
   expressDelivery: 'including courier fee',

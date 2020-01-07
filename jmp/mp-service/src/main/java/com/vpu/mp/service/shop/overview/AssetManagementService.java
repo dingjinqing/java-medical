@@ -20,9 +20,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import static java.math.BigDecimal.ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 import static org.jooq.impl.DSL.min;
 import static org.jooq.impl.DSL.sum;
 
@@ -33,7 +37,6 @@ import static org.jooq.impl.DSL.sum;
  */
 @Service
 public class AssetManagementService extends ShopBaseService {
-    private static final BigDecimal ZERO = BigDecimal.valueOf(0.00);
     private static TradesRecordSummary trs = TradesRecordSummary.TRADES_RECORD_SUMMARY.as("trs");
     private static TradesRecord tr = TradesRecord.TRADES_RECORD.as("tr");
     private static User u = User.USER.as("u");
@@ -50,18 +53,31 @@ public class AssetManagementService extends ShopBaseService {
         if (screeningTime > 0) {
             Date current = Util.getEarlySqlDate(new java.util.Date(), 0);
             Date prior = Util.getEarlySqlDate(new java.util.Date(), -screeningTime);
+            // 拿到当前数值
             vo = getRevenueDate(current, screeningTime);
+            // 拿到较前N日的数值
             RevenueProfileVo tempPre = getRevenueDate(prior, screeningTime);
+            // 计算增长率
             calGrowthRate(vo, tempPre);
+            // 获取折线图数据
             vo.setRevenueDates(getRevenueDateList(prior, current));
+            vo.setStartTime(prior);
+            vo.setEndTime(current);
         } else {
-            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), -1));
+            // 自定义日期统计数据
+            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
+            //结束日期不能大于当前日期
             Date endDate = Optional.of(param.getEndTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
+            LocalDate endLocalDate = endDate.toLocalDate();
+            endLocalDate = endLocalDate.isBefore(LocalDate.now()) ? endLocalDate.plusDays(INTEGER_ONE) : LocalDate.now();
+            endDate = Date.valueOf(endLocalDate);
             int day = (int) ((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
             vo = getRevenueDate(startDate, endDate);
             RevenueProfileVo tempPre = getRevenueDate(Util.getEarlySqlDate(startDate, -day), startDate);
             calGrowthRate(vo, tempPre);
             vo.setRevenueDates(getRevenueDateList(startDate, endDate));
+            vo.setStartTime(param.getStartTime());
+            vo.setEndTime(param.getEndTime());
         }
         return vo;
     }
@@ -75,14 +91,22 @@ public class AssetManagementService extends ShopBaseService {
             RevenueProfileScoreVo tempPre = getRevenueScoreDate(prior, screeningTime);
             calScoreGrowthRate(vo, tempPre);
             vo.setRevenueDates(getRevenueScoreDateList(prior, current));
+            vo.setStartTime(prior);
+            vo.setEndTime(current);
         } else {
-            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), -1));
+            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 1));
+//            结束日期不能大于当前日期
             Date endDate = Optional.of(param.getEndTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
+            LocalDate endLocalDate = endDate.toLocalDate();
+            endLocalDate = endLocalDate.isBefore(LocalDate.now()) ? endLocalDate.plusDays(INTEGER_ONE) : LocalDate.now();
+            endDate = Date.valueOf(endLocalDate);
             int day = (int) ((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
             vo = getRevenueScoreDate(startDate, endDate);
             RevenueProfileScoreVo tempPre = getRevenueScoreDate(Util.getEarlySqlDate(startDate, -day), startDate);
             calScoreGrowthRate(vo, tempPre);
             vo.setRevenueDates(getRevenueScoreDateList(startDate, endDate));
+            vo.setStartTime(param.getStartTime());
+            vo.setEndTime(param.getEndTime());
         }
         return vo;
     }
@@ -102,6 +126,9 @@ public class AssetManagementService extends ShopBaseService {
     }
 
     private BigDecimal getRate(BigDecimal vo, BigDecimal tempPre) {
+        if (Objects.isNull(vo) || Objects.isNull(tempPre)) {
+            return ZERO;
+        }
         if (vo.subtract(tempPre).compareTo(ZERO) == 0 || tempPre.compareTo(ZERO) == 0) {
             return ZERO;
         }
@@ -122,20 +149,22 @@ public class AssetManagementService extends ShopBaseService {
      * 获取自定义时间数据
      */
     private RevenueProfileVo getRevenueDate(Date startDate, Date endDate) {
-        return getSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileVo.class).orElse(new RevenueProfileVo());
+        return getSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate))
+            .and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileVo.class).orElse(new RevenueProfileVo());
     }
     private RevenueProfileScoreVo getRevenueScoreDate(Date startDate, Date endDate) {
-        return getScoreSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(new RevenueProfileScoreVo());
+        return getScoreSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate))
+            .and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(new RevenueProfileScoreVo());
     }
 
     /**
      * 获取折线图数据
      */
     private List<RevenueDate> getRevenueDateList(Date startDate, Date endDate) {
-        return getSelectConditon().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueDate.class);
+        return getSelectConditon().and(trs.REF_DATE.greaterThan(startDate)).and(trs.REF_DATE.le(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueDate.class);
     }
     private List<RevenueScoreDate> getRevenueScoreDateList(Date startDate, Date endDate) {
-        return getScoreSelectConditon().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueScoreDate.class);
+        return getScoreSelectConditon().and(trs.REF_DATE.greaterThan(startDate)).and(trs.REF_DATE.le(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueScoreDate.class);
     }
 
     private SelectConditionStep<Record4<Date, BigDecimal, BigDecimal, BigDecimal>> getSelectConditon() {

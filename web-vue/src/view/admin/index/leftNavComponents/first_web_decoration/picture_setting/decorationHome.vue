@@ -241,6 +241,7 @@ export default {
     Spike: () => import('./decorationModules/marketingComponents/Spike'), // 秒杀
     FightGroup: () => import('./decorationModules/marketingComponents/fightGroup'), // 拼团抽奖
     IntegralExchange: () => import('./decorationModules/marketingComponents/integralExchange'), // 积分兑换
+    DivideScorePoints: () => import('./decorationModules/marketingComponents/divideScorePoints'), // 瓜分积分
     // 右侧显示出口组件
     PageSetup: () => import('./pageSetup'),
     // 商品组件库
@@ -272,7 +273,7 @@ export default {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'IntegralExchange', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'IntegralExchange', 'Spike', 'FightGroup', 'DivideScorePoints', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'PictureHotSpot', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -450,6 +451,9 @@ export default {
           break
         case 'm_group_draw':
           moduleNameId = 6
+          break
+        case 'm_pin_integration':
+          moduleNameId = 7
           break
         case 'm_goods':
           moduleNameId = 8
@@ -687,6 +691,9 @@ export default {
             case 6:
               this_.handleToMiddleAcceptData(this._insertModulesId, this._showModulesList, insert, 6)
               break
+            case 7:
+              this_.handleToMiddleAcceptData(this._insertModulesId, this._showModulesList, insert, 7)
+              break
             case 8:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 8)
               break
@@ -754,7 +761,7 @@ export default {
     // 左侧模块拖入中间区域后，中间区域数据处理函数
     handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
-      console.log(insertModulesId, index)
+      console.log(insertModulesId, index, this.isAddBottom)
       if (insertModulesId === -1 || this.isAddBottom) {
         console.log(index)
         this.MoveWhiteFlag = true
@@ -766,6 +773,8 @@ export default {
         this.MoveWhiteFlag = false
         console.log(this.nowRightShowIndex, insert, index)
         this.showModulesList.splice(insert, 0, index)
+        this.modulesData.splice(insert, 0, this.handleToAddModules(index))
+        console.log(this.modulesData)
         this.$nextTick(() => {
           if (this.nowRightShowIndex === insert) {
             this.handleToModuleHight()
@@ -977,6 +986,7 @@ export default {
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
       console.log(this.nowRightShowIndex, this.showModulesList, this.modulesData)
       this.handleToSaveModules(this.showModulesList, this.modulesData)
+      this.nowRightShowMoudlesIndex = -1
       this.$nextTick(() => {
         this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
         console.log(this.nowRightShowIndex, this.modulesData)
@@ -998,7 +1008,20 @@ export default {
         console.log(this.modulesData)
       } else if (this.showModulesList.length === this.modulesData.length) {
         console.log(this.oldIndex, this.newIndex, this.modulesData, this.topAreaFlag, this.nowRightShowIndex)
-        if (this.oldIndex === -1) return
+        if (this.oldIndex === -1) {
+          console.log(this.modulesData, this.nowRightShowIndex, this.modulesData[this.nowRightShowIndex])
+          if (this.modulesData[this.nowRightShowIndex]) {
+            console.log(this.cur_idx)
+            this.modulesData[this.nowRightShowIndex].cur_idx = this.cur_idx + 1
+            let newArr = JSON.parse(JSON.stringify(this.modulesData))
+            this.modulesData = null
+            this.modulesData = newArr
+            this.cur_idx = this.cur_idx + 1
+            console.log(newArr)
+          }
+
+          return
+        }
         let temp = this.modulesData[this.oldIndex]
         console.log(temp, this.modulesData[this.nowRightShowIndex])
         if (this.topAreaFlag) {
@@ -1014,7 +1037,7 @@ export default {
         }
         this.oldIndex = -1
       }
-      console.log(this.oldIndex, this.nowRightShowIndex)
+      console.log(this.oldIndex, this.nowRightShowIndex, this.modulesData)
       let newArr = JSON.parse(JSON.stringify(this.modulesData))
       this.modulesData = null
       this.modulesData = newArr
@@ -1048,7 +1071,7 @@ export default {
     },
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
-      console.log(data)
+      console.log(this.modulesData, data)
       this.modulesData[this.nowRightShowIndex] = data
       console.log(this.modulesData)
       this.$forceUpdate()
@@ -1061,6 +1084,7 @@ export default {
     },
     // 保存处理事件
     handleToSave (flag) {
+      console.log(this.modulesData)
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
@@ -1071,7 +1095,7 @@ export default {
       this.pageSetData.last_cur_idx = this.cur_idx
       let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
       console.log(data)
-      console.log(saveMosulesData, this.modulesData, this.pageSetData)
+      console.log(saveMosulesData, this.modulesData, this.pageSetData, data)
       console.log(localStorage.getItem('V-ShopId'))
       if (!this.pageSetData.cat_id) {
         this.pageSetData.cat_id = 0
@@ -1157,13 +1181,19 @@ export default {
     },
     // 底部保存等按钮点击统一处理
     handleToFooter (flag) {
+      console.log(this.modulesData)
       console.log(flag)
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
-      if (!judgeFlag) return
+      if (judgeFlag.isMpinintegration) {
+        this.$http.$emit('isMpinintegration')
+        return
+      }
+      if (!judgeFlag.flag) return
 
       if (flag === 0) {
+        console.log(this.modulesData)
         this.saveTwoDialogVisible = true
       } else {
         this.handleToSave(flag)

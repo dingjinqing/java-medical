@@ -24,8 +24,10 @@ global.wxComponent({
    */
   methods: {
     saveImage(){
-      util.base64ImageHandle(this.data.image,res=>{
-        console.log(res)
+      this.data.image.forEach(item=>{
+        util.base64ImageHandle(item,res=>{
+          console.log(res)
+        })
       })
       this.bindClose()
     }

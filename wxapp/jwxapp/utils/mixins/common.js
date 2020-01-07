@@ -3,7 +3,7 @@ var i18n = require("../i18n/i18n.js")
 var pages = require("../init/pages.js")
 var helper = require("../base/helper.js")
 module.exports = {
-  getRect(selector, all) {
+  getRect (selector, all) {
     var _this = this;
     return new Promise(function (resolve) {
       wx.createSelectorQuery().in(_this)[all ? 'selectAll' : 'select'](selector).boundingClientRect(function (rect) {
@@ -16,19 +16,19 @@ module.exports = {
       }).exec();
     });
   },
-  eventData(event, key) {
+  eventData (event, key) {
     var d = event.currentTarget.dataset;
     if (key == undefined) return d;
     return d[key];
   },
-  bindJumpLink(e) {
+  bindJumpLink (e) {
     var d = this.eventData(e);
     if (d.skip) return false;
     if (d.url) {
       nav.jumpLink(d.url, d.linkType);
     }
   },
-  bindPreviewImage(e) {
+  bindPreviewImage (e) {
     var d = this.eventData(e);
     if (d.skip) return false;
     if (d.src) {
@@ -41,7 +41,7 @@ module.exports = {
   /**
    * type = interval ||  timeout
    */
-  createTimer(type, name, cb, seps = 1000) {
+  createTimer (type, name, cb, seps = 1000) {
     this.killTimer(type, name);
     this._timers = this._timers || {};
     name = "interval_" + name;
@@ -53,14 +53,14 @@ module.exports = {
   /**
     * type = interval ||  timeout
     */
-  killTimer(type, name) {
+  killTimer (type, name) {
     name = type + "_" + name;
     if (this._timers && this._timers[name]) {
       var fn = (type == 'interval') ? clearInterval : clearTimeout;
       fn(this._timers[name]);
     }
   },
-  clearTimers() {
+  clearTimers () {
     if (this._timers) {
       for (var name in this._timers) {
         var t = name.split("_");
@@ -69,7 +69,7 @@ module.exports = {
       }
     }
   },
-  $set(data, cb) {
+  $set (data, cb) {
     if (typeof data == "string") {
       if (typeof this.data[data] !== undefined) {
         var o = {};
@@ -82,42 +82,42 @@ module.exports = {
       this.setData(this.data || {}, cb);
     }
   },
-  getPage(obj) {
+  getPage (obj) {
     return pages.getPage(obj);
   },
-  getComponents(obj) {
+  getComponents (obj) {
     return pages.getComponents(obj);
   },
 
-  $on(event, fn, publisher = "*") {
+  $on (event, fn, publisher = "*") {
     pages.$on(this, event, fn, publisher);
   },
 
-  $off(event, fn) {
+  $off (event, fn) {
     pages.$off(this, event, fn);
   },
 
-  $emit(event) {
+  $emit (event) {
     var args = helper.toArray(arguments, 1);
     pages.$emit(this, event, ...args);
   },
 
-  notify(path, eventName) {
+  notify (path, eventName) {
     var args = helper.toArray(arguments, 2);
     pages.notify(this, path, eventName, ...args);
   },
 
-  notifyAll(eventName) {
+  notifyAll (eventName) {
     var args = helper.toArray(arguments, 1);
     pages.notify(this, "*", eventName, ...args);
   },
-  $t(code, valueObj = {}) {
+  $t (code, valueObj = {}) {
     return i18n.trans(code, valueObj);
   },
-  getLocale() {
+  getLocale () {
     return i18n.getLocale();
   },
-  getLocalePack() {
+  getLocalePack () {
     return i18n.getLocalePack(i18n.getLocale());
   }
 }

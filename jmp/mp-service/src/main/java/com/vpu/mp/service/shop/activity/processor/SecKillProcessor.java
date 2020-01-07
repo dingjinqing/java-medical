@@ -16,7 +16,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
@@ -145,6 +144,5 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 
     }
-
 
 }

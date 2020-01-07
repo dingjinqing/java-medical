@@ -168,7 +168,8 @@ public class OrderPayService extends ShopBaseService{
             cardId(card == null ? null : card.getCardId()).
             cardNo(order.getCardNo()).
             money(money.negate()).
-            reason("订单下单会员卡余额支付"+order.getOrderSn()).
+            reasonId(RemarkTemplate.ORDER_MAKE_CARD_ACCOUNT_PAY.code).
+            reason(order.getOrderSn()).
             //目前只有普通会员卡有余额
             type(CardConstant.MCARD_TP_NORMAL).
             orderSn(order.getOrderSn()).
