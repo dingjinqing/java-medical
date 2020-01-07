@@ -56,6 +56,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
@@ -70,6 +71,8 @@ import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -94,7 +97,9 @@ public class UserImportService extends ShopBaseService {
 	private CouponMpService couponMpService;
 	@Autowired
 	private CouponService couponService;
-
+	@Autowired
+	public ScoreService scoreService;
+	
 	private static final String PHONEREG = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
 	private static final String USER_IMPORT_NOTICE = "user_import_notice";
 	private static final BigDecimal ZERO = new BigDecimal("0");
@@ -719,17 +724,37 @@ public class UserImportService extends ShopBaseService {
 		}
 		importUser.setIsActivate(ONE);
 		importUser.update();
-		grantCoupon(userId);
+		SetNoticeJson activationNotice = getActivationNotice();
+		grantCoupon(userId,activationNotice);
+		sendUserScore(userId,activationNotice);
 		return JsonResultCode.CODE_SUCCESS;
+	}
+	
+	
+
+	/**
+	 * 赠送积分
+	 * @param userId
+	 * @param activationNotice
+	 */
+	private void sendUserScore(Integer userId, SetNoticeJson activationNotice) {
+		String score = activationNotice.getScore();
+		if (StringUtils.isNotEmpty(score)) {
+			ScoreParam param = new ScoreParam();
+			// 写积分
+			param.setScore(Integer.valueOf(score));
+			param.setDesc("user_activate_score");
+			param.setRemarkCode(RemarkTemplate.ADMIN_USER_IMPORT.code);
+			//scoreService.updateMemberScore(param, 0, userId, RecordTradeEnum.USER_IMPORT.val(),RecordTradeEnum.UACCOUNT_RECHARGE.val());
+		}
 	}
 	/**
 	 * 发放优惠券
 	 * @param userId
 	 */
-	private void grantCoupon(Integer userId) {
+	private void grantCoupon(Integer userId,SetNoticeJson activationNotice) {
 		List<Integer> userIds=new ArrayList<Integer>();
 		userIds.add(userId);
-		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
 		if(StringUtils.isEmpty(mrkingVoucherId)) {
 			return;
@@ -747,5 +772,9 @@ public class UserImportService extends ShopBaseService {
 		String[] array = list.toArray(new String[0]);
 		CouponGiveQueueParam newParam = new CouponGiveQueueParam(userIds, 0, array, BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
         saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+	}
+	
+	public void activateUser(Integer userId,UserImportDetailRecord importUser) {
+		
 	}
 }
