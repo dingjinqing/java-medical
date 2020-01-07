@@ -12,8 +12,8 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.asset.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record10;
 import org.jooq.Record4;
-import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 
@@ -190,9 +190,9 @@ public class AssetManagementService extends ShopBaseService {
         return getPageResult(getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), AssetDetailVo.class);
     }
 
-    private SelectConditionStep<Record8<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String>> getSelectConditionStep(AssetDetailParam param) {
-        SelectConditionStep<Record8<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String>> conditionStep = db()
-            .select(tr.TRADE_TIME, tr.TRADE_SN, tr.TRADE_NUM, tr.USER_ID, tr.TRADE_TYPE, tr.TRADE_FLOW, tr.TRADE_STATUS, u.USERNAME)
+    private SelectConditionStep<Record10<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String, String, String>> getSelectConditionStep(AssetDetailParam param) {
+        SelectConditionStep<Record10<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String, String, String>> conditionStep = db()
+            .select(tr.TRADE_TIME, tr.TRADE_SN, tr.TRADE_NUM, tr.USER_ID, tr.TRADE_TYPE, tr.TRADE_FLOW, tr.TRADE_STATUS, u.USERNAME, u.MOBILE, USER_DETAIL.REAL_NAME)
             .from(tr).leftJoin(u).on(tr.USER_ID.eq(u.USER_ID))
             .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(u.USER_ID))
             .where(tr.TRADE_CONTENT.eq(param.getTradeContent()));

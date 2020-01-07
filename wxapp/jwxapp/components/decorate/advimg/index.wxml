@@ -14,7 +14,7 @@
     <!-- 双列图 -->
     <view class='two_img' wx:if='{{m.image_type == 1}}' style='margin-bottom:{{m.margin_bot}}rpx'>
       <view class='each_two' wx:for='{{m.image_list}}' style='margin-bottom:{{m.image_space}}rpx;width:{{m.each_width}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}"  wx:if='{{item.no_show != 1}}'>
-        <view style='position:relative;overflow:hidden;height:372rpx'>
+        <view style='position:relative;overflow:hidden;'>
           <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
           <view class='once_title' wx:if="{{item.title}}">
             <text>{{item.title}}</text>
