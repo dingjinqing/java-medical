@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.overview.asset;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
@@ -16,33 +16,24 @@ import java.sql.Timestamp;
 @Data
 @ExcelSheet
 public class AssetDetailExportVo {
-    @ExcelColumn(columnIndex = 0,columnName = "overview.asset.management.trade_time")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 0, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_TRADE_TIME)
     private Timestamp tradeTime;
-    @ExcelColumn(columnIndex = 1, columnName = "overview.asset.management.trade_sn")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 1, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_TRADE_SN)
     private String tradeSn;
-    @ExcelColumn(columnIndex = 2,columnName = "overview.asset.management.trade_num")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 2, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_TRADE_NUM)
     private BigDecimal tradeNum;
-    @ExcelColumn(columnIndex = 3, columnName = "overview.asset.management.username")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 3, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_USERNAME)
     private String username;
     @ExcelIgnore
     private Integer userId;
-    @ExcelColumn(columnIndex = 4,columnName = "overview.asset.management.trade_type")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 4, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_TRADE_TYPE)
     private Byte tradeType;
-    @ExcelColumn(columnIndex = 5,columnName = "overview.asset.management.trade_flow")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 5, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_TRADE_FLOW)
     private Byte tradeFlow;
-    @ExcelColumn(columnIndex = 6,columnName = "overview.asset.management.trade_status")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 6, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_TRADE_STATUS)
     private Byte tradeStatus;
-    @ExcelColumn(columnIndex = 7, columnName = "overview.asset.management.real_name")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 7, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_REAL_NAME)
     private String realName;
-    @ExcelColumn(columnIndex = 8, columnName = "overview.asset.management.mobile")
-    @ExcelColumnNotNull
+    @ExcelColumn(columnIndex = 8, columnName = JsonResultMessage.ASSETS_EXPORT_COLUMN_MOBILE)
     private String mobile;
 }
