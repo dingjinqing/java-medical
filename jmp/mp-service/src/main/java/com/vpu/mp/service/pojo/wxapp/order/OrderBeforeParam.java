@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -127,6 +126,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private Integer purchasePriceId;
 		private Integer purchasePriceRuleId;
 		private String promoteInfo;
+		/** 拼团的 折后团长优惠价*/
+		private BigDecimal grouperTotalReduce=BigDecimal.ZERO;
+		/** 拼团的 折后团长优惠价单价，逐级计算折扣单价*/
+		private BigDecimal grouperGoodsReduce =BigDecimal.ZERO;
 		/**以下为后台产生逻辑值directPurchase*/
         /** 规格价 */
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
