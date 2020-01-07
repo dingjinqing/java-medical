@@ -574,7 +574,9 @@ export default {
         bg_img: this.zcCheckedData.bgImg, // 背景图片
         is_pay: this.zcCheckedData.isPay,
         pay_type: this.zcCheckedData.payType,
-        pay_fee: this.zcCheckedData.payFee
+        pay_fee: this.zcCheckedData.payFee,
+        cur_idx: this.modulesData.cur_idx,
+        module_name: 'm_card'
       }
       console.log(this.zcCheckedData)
       let data = Object.assign(this.nowChecked, obj)
