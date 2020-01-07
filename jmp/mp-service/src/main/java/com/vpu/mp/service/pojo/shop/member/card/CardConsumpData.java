@@ -23,7 +23,7 @@ public class CardConsumpData {
 	private BigDecimal money;
 	/** 消费原因模板code */
 	private Integer reasonCode;
-	/** 消费原因模板数据  */
+	/** 消费原因模板数据  {@link com.vpu.mp.service.pojo.shop.operation.RemarkTemplate} */
 	private String reason ;
 	/** 消费类型 {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant} */
 	private Byte type;

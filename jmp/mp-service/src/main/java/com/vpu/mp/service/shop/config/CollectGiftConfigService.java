@@ -141,7 +141,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
             //scoreParam.setRemark("收藏有礼");
             Integer subAccountId = 0;
             try {
-                member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
+                member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow);
                 setResultVo.setScore(info.getScore());
             } catch (MpException e) {
                 logger().info("积分更新失败");
