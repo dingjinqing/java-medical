@@ -2,34 +2,38 @@
   <!-- 激活通知 -->
   <div>
     <el-dialog
-      title="设置激活通知"
+      :title="$t('activationNotificationDialog.setActivationNotify')"
       :visible.sync="dialogVisible"
       width="750"
       :center="true"
     >
       <div class="activation-notification-dialog">
         <div class="top">
-          <p class="top-title">说明：</p>
+          <p class="top-title">{{$t('activationNotificationDialog.explanation')}}</p>
           <ol>
-            <li>1、会员导入系统后，需要在移动端授权手机号以对应导入的会员信息。</li>
-            <li>2、为提升会员的激活率，可设置一定的授权奖励。</li>
-            <li>3、设置完成后请到“小程序管理”-“个人中心”中开启“会员激活展示开关”。</li>
+            <li>{{$t('activationNotificationDialog.explanation1')}}</li>
+            <li>{{$t('activationNotificationDialog.explanation2')}}</li>
+            <li>{{$t('activationNotificationDialog.explanation3')}}</li>
           </ol>
         </div>
         <el-form
           class="an-form"
           ref="anForm"
           :model="form"
-          label-width="90px"
+          :rules="formRules"
+          label-width="100px"
           size="small"
         >
-          <el-form-item label="激活说明：">
+          <el-form-item
+            :label="$t('activationNotificationDialog.activationInst')+'：'"
+            prop="explain"
+          >
             <el-input
               class="an-textarea"
               type="textarea"
-              placeholder="激活说明"
+              :placeholder="$t('activationNotificationDialog.activationInst')"
               :rows="3"
-              v-model="form.textarea"
+              v-model="form.explain"
             ></el-input>
             <el-popover
               placement="right"
@@ -46,22 +50,23 @@
                 slot="reference"
                 type="text"
                 class="text-btn"
-              >查看示例</el-button>
+              >{{$t('activationNotificationDialog.viewExample')}}</el-button>
             </el-popover>
           </el-form-item>
-          <el-form-item label="激活奖励：">
+          <el-form-item :label="$t('activationNotificationDialog.acivationReward')">
             <div>
-              <el-checkbox>积分</el-checkbox>
+              <el-checkbox
+                v-model="scoreCheck"
+                :checked="scoreCheck"
+              >{{$t('activationNotificationDialog.integral')}}</el-checkbox>
               <el-input-number
                 v-model="form.score"
                 controls-position="right"
-                @change="handleChange"
-                :min="1"
-                :max="10"
+                :min="0"
               ></el-input-number>
             </div>
             <div>
-              <el-checkbox>优惠券</el-checkbox>
+              <el-checkbox>{{$t('activationNotificationDialog.coupon')}}</el-checkbox>
               <div class="coupon-wrap">
                 <div class="coupons">
                   <div
@@ -109,7 +114,7 @@
                       <div
                         class="coupon-bottom"
                         :style="'background: #f66 url('+$imageHost+'/image/admin/coupon_border.png) repeat-x top;'"
-                      >领取</div>
+                      >{{$t('activationNotificationDialog.reseive')}}</div>
                     </div>
                     <p class="coupon-name">{{coupon.actName}}</p>
                   </div>
@@ -122,10 +127,10 @@
                       :src="$imageHost + '/image/admin/shop_beautify/add_decorete.png'"
                       alt="+"
                     >
-                    <p>添加优惠券</p>
+                    <p>{{$t('activationNotificationDialog.addCoupon')}}</p>
                   </div>
                 </div>
-                <p class="coupon-tips">最多添加5张优惠券，已过期和已停用的优惠券不能添加</p>
+                <p class="coupon-tips">{{$t('activationNotificationDialog.addUplimit')}}</p>
               </div>
             </div>
           </el-form-item>
@@ -137,20 +142,22 @@
           <el-button
             type="primary"
             size="small"
-          >保存</el-button>
+            @click="saveActivationNotification"
+          >{{$t('activationNotificationDialog.save')}}</el-button>
         </div>
       </div>
     </el-dialog>
     <addCouponDialog
       :type="-1"
       :tuneUpCoupon="!addCouponDialogVisible"
-      :couponBack="couponBackList"
+      :couponBack="form.couponIds"
       @handleToCheck="handleToCheck"
     ></addCouponDialog>
   </div>
 </template>
 
 <script>
+import { getnoticeApi, setnoticeApi } from '@/api/admin/memberManage/membershipIntroduction.js'
 export default {
   components: {
     addCouponDialog: () => import('@/components/admin/addCouponDialog')
@@ -162,42 +169,90 @@ export default {
     }
   },
   data () {
+    let that = this
     return {
       form: {
         score: '',
-        textarea: '感谢您一直以来对本店铺的关注，您之前使用的全部服务已经全部迁移至本小程序中，为方便您找回此前的会员权益，请同意授权您的手机号'
+        explain: that.$t('activationNotificationDialog.thank'),
+        couponIds: []
       },
       srcList: [
         this.$imageHost + '/image/admin/new_preview_image/user_vip.jpg'
       ],
       coupons: [], // 选择的优惠券
       addCouponDialogVisible: false,
-      couponBackList: []
+      formRules: {
+        explain: { required: true, message: that.$t('activationNotificationDialog.pfActivationInst'), trigger: 'blur' }
+      }
     }
   },
   computed: {
     dialogVisible: {
       get () {
+        console.log('get', this.visible)
+        if (this.visible) {
+          this.initData()
+        }
         return this.visible
       },
       set (val) {
+        console.log('set', val)
         this.$emit('update:visible', val)
+      }
+    },
+    scoreCheck: {
+      get () {
+        if (this.form.score !== '' && this.form.score > 0) {
+          return true
+        } else {
+          return false
+        }
+      },
+      set (val) {
+        console.log(val)
+        if (val === false) {
+          this.$set(this.form, 'score', '')
+        } else {
+          this.$set(this.form, 'score', 1)
+        }
       }
     }
   },
   methods: {
-    handleChange () { },
+    initData () {
+      getnoticeApi().then(res => {
+        if (res.error === 0) {
+          this.form = Object.assign({}, this.form, res.content)
+        }
+      })
+    },
     handleToCheck (coupons) {
       if (coupons && coupons.length > 0) {
         this.coupons = coupons
-        this.couponBackList = coupons.map(item => item.id)
+        let couponBackList = coupons.map(item => item.id) || []
+        this.$set(this.form, 'couponIds', couponBackList)
       }
     },
     deleteCouponHandle (index) {
       let coupons = this.coupons
       coupons.splice(index, 1)
       this.coupons = coupons
-      this.couponBackList = coupons.map(item => item.id)
+      let couponBackList = coupons.map(item => item.id) || []
+      this.$set(this.form, 'couponIds', couponBackList)
+    },
+    // 设置激活通知
+    saveActivationNotification () {
+      let that = this
+      let params = Object.assign({}, that.form)
+      setnoticeApi(params).then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          that.$message.success(that.$t('activationNotificationDialog.successSetting'))
+          that.dialogVisible = false
+        } else {
+          that.$message.error(res.message)
+        }
+      })
     }
   }
 }

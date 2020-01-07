@@ -21,7 +21,7 @@ public class CardConsumeParam {
 	/**	当前次数	*/
 	private Integer countDis;
 	/**	当前卡余额 	 */
-	private BigDecimal MoneyDis;
+	private BigDecimal moneyDis;
 	/**	变动值（余额，次数）	 */
 	private BigDecimal reduce;
 }

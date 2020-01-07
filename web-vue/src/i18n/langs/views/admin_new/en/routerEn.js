@@ -1,4 +1,5 @@
 export const en = {
+
   // 概括系列模块
   // 概况-店铺助手
   taskList: ['Survey', 'Shop Assistant'],
@@ -18,6 +19,8 @@ export const en = {
   analysis_basic: ['Overview', 'Overview Statistics'],
   // 概况 搜索统计
   search_summary: ['Overview', 'Search Statistics'],
+  // 概况 资产管理
+  asset_summary: ['Overview', 'Asset Manage'],
 
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],
@@ -29,6 +32,8 @@ export const en = {
   GradeCard: ['Membership', 'Grade Card'],
   // 会员管理 持卡会员
   Cardholder: ['Membership management'],
+  // 消费明细
+  refillDetailsItem: ['member', 'consumeDetail'],
 
   // 小程序管理 页面分类
   pageClassification: ['Small Program Management', 'Page classification'],
@@ -211,6 +216,15 @@ export const en = {
   ],
   // 营销管理 拼团抽奖
   group_draw: ['Marketing management', 'raffle draw'],
+  // 营销管理 拼团抽奖 活动订单
+  group_order: ['Marketing management', 'raffle draw', 'Group lottery order'],
+  // 营销管理 拼团抽奖 参与用户
+  group_user: ['Marketing management', 'raffle draw', 'Participating users'],
+  // 营销管理 拼团抽奖 用户明细
+  group_user_detail: ['Marketing management', 'raffle draw', 'Get new user details'],
+  // 营销管理 拼团抽奖 开团明细
+  group_detail: ['Marketing management', 'raffle draw', 'Opening details'],
+
   // 营销管理 分销
   distribution_info: ['Marketing management', 'distribution'],
   // 营销管理 分销 推广测试

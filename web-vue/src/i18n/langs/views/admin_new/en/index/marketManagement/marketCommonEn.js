@@ -51,6 +51,7 @@ export const en = {
   totalAmount: 'total amount',
   expandMoreConfigurations: 'expand more configurations',
   collapseMoreConfigurations: 'collapse more configurations',
+  first: 'Priority',
   activityGoods: 'activity goods',
   selectGoods: 'select goods',
 

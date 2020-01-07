@@ -153,5 +153,14 @@ export const en = {
   newUserNickname: 'New user nickname',
   newUserMobile: 'New user phone number',
   registrationTime: 'Registration time',
-  userNickname: 'User Nickname'
+  userNickname: 'User Nickname',
+  validName: 'Please fill in the event name! ',
+  validStartTime: 'Please fill in the effective time! ',
+  validEndTime: 'Please fill in the expiration time! ',
+  validDesc: 'Please fill in the event description! ',
+  validTime: 'End time must be greater than start time',
+  validScore: 'Please fill in the bonus points',
+  validBounsAmount: 'Please fill in the bonus amount',
+  validCoupon: 'Please select a coupon',
+  validGivea: 'Please select a giveaway'
 }

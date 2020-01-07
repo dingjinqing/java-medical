@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
@@ -42,5 +43,5 @@ public class BargainUpdateVo {
     private List<CouponView> rewardCouponList;
 
     private String shareConfig;
-    private ShopShareConfig shopShareConfig;
+    private PictorialShareConfigVo shopShareConfig;
 }

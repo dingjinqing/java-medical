@@ -6,6 +6,9 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.SecKillListRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,6 +16,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectWhereStep;
@@ -89,5 +93,27 @@ public class SeckillListService extends ShopBaseService {
             return orderSns.get(0).into(String.class);
         }
         return null;
+    }
+
+    /**
+     *
+     * @param order
+     * @param goodsId
+     */
+    public void addSecRecord(OrderInfoRecord order,int goodsId){
+        SecKillListRecord record = db().newRecord(SEC_KILL_LIST);
+        record.setGoodsId(goodsId);
+        record.setOrderSn(order.getOrderSn());
+        record.setUserId(order.getUserId());
+        record.setSkId(order.getActivityId());
+        record.insert();
+    }
+
+    public void cancelSeckillOrderStock(OrderInfoVo order, OrderGoodsRecord orderGoods){
+        //更新库存
+        saas.getShopApp(getShopId()).goods.updateGoodsNumberAndSale(orderGoods.getGoodsId(),orderGoods.getProductId(),-1);
+
+        //删除秒杀记录
+        db().update(SEC_KILL_LIST).set(SEC_KILL_LIST.DEL_FLAG,DelFlag.DISABLE_VALUE).where(SEC_KILL_LIST.ORDER_SN.eq(order.getOrderSn())).execute();
     }
 }

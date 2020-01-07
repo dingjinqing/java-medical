@@ -73,5 +73,11 @@ public class ModuleImageAdver extends ModuleBase {
 		 */
 		@JsonProperty(value = "link")
 		String link;
+
+        /**
+         * 是否只有新用户可见，1是，0所以用户可见
+         */
+        @JsonProperty(value = "can_show")
+		private Byte canShow;
 	}
 }

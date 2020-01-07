@@ -49,6 +49,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
@@ -644,6 +645,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertBargainForIndex(objectMapper, node, user);
                 case ModuleConstant.M_SECKILL:
                     return this.convertSeckillForIndex(objectMapper, node, user);
+                case ModuleConstant.M_IMAGE_ADVER:
+                    return this.convertImageAdverForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -743,6 +746,26 @@ public class ShopMpDecorationService extends ShopBaseService {
     }
 
     /**
+     * 图片广告模块处理
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleImageAdver convertImageAdverForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
+        boolean isNewUser = saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(user.getUserId());
+        moduleImageAdver.getImageList().forEach(img->{
+            if(img.getCanShow() == 1 && !isNewUser){
+                moduleImageAdver.getImageList().remove(img);
+            }
+        });
+        return moduleImageAdver;
+    }
+
+    /**
      * 获取指定装修模块数据
      *
      * @param param 请求模块参数 {@link com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam}
@@ -824,7 +847,12 @@ public class ShopMpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(moduleGoods.getRecommendType());
-        //param.setGoodsItems(moduleGoods.getGoodsItems() == null ? new ArrayList<>() : moduleGoods.getGoodsItems());
+        if (moduleGoods.getGoodsItems() == null) {
+            param.setGoodsItems(new ArrayList<>());
+        } else {
+            List<Integer> ids = moduleGoods.getGoodsItems().stream().map(ModuleGoods.PhpPointGoodsConverter::getGoodsId).collect(Collectors.toList());
+            param.setGoodsItems(ids);
+        }
         param.setKeywords(moduleGoods.getKeywords());
         param.setMinPrice(moduleGoods.getMinPrice());
         param.setMaxPrice(moduleGoods.getMaxPrice());

@@ -1,29 +1,15 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
-import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
-import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
-import org.springframework.util.StringUtils;
+import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 用户优惠券
@@ -151,4 +137,5 @@ public class WxAppCouponController extends WxAppBaseController {
         }
 		return this.success("领取成功");
 	}
+
 }

@@ -72,7 +72,7 @@ public class CardConsumpData {
 	}
 	
 	public CardConsumpData setReasonId(Integer reasonCode) {
-		this.reasonCode = reasonCode;
+		this.reasonId = reasonCode;
 		return this;
 	}
 	public CardConsumpData setType(Byte type) {

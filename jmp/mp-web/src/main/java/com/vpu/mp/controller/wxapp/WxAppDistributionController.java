@@ -1,13 +1,16 @@
 package com.vpu.mp.controller.wxapp;
 
-import java.util.List;
-
-import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
-import org.springframework.web.bind.annotation.*;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 小程序端分销相关控制器
@@ -53,5 +56,16 @@ public class WxAppDistributionController extends WxAppBaseController{
         param.setUserId(userId);
         DistributorApplyDetailParam info = shop().mpDistribution.getDistributorApplyDetail(param);
         return this.success(info);
+    }
+
+    /**
+     * 获取分销推广文案信息
+     * @return
+     */
+    @PostMapping("document")
+    public JsonResult getDistributorDocument(){
+        //获取分销推广文案信息
+        DistributionDocumentParam distributorDoc = shop().mpDistribution.getDistributorDoc();
+        return this.success(distributorDoc);
     }
 }

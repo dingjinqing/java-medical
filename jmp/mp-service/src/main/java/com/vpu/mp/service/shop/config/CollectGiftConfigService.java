@@ -13,8 +13,8 @@ import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.collectGift.SetCollectGiftVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
+import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
-import com.vpu.mp.service.shop.coupon.MpCouponService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
     public ScoreCfgService score;
 
     @Autowired
-    public MpCouponService mpCoupon;
+    public CouponMpService mpCoupon;
 
     @Autowired
     public CouponService coupon;

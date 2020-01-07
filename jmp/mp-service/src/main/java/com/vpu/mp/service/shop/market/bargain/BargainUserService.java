@@ -18,6 +18,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserExportVo;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListVo;
@@ -366,6 +367,17 @@ public class BargainUserService extends ShopBaseService{
      */
     public int getUserTodayCutTimes(int userId){
         return db().selectCount().from(BARGAIN_USER_LIST).leftJoin(BARGAIN_RECORD).on(BARGAIN_USER_LIST.RECORD_ID.eq(BARGAIN_RECORD.ID)).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.CREATE_TIME.gt(DateUtil.getLocalDateTime()))).fetchOptionalInto(Integer.class).orElse(0);
+    }
+
+    /**
+     * 取消砍价订单库存处理
+     * @param order
+     */
+    public void cancelBargainOrderStock(OrderInfoVo order){
+        saas.getShopApp(getShopId()).bargain.updateBargainStock(order.getActivityId(),-1);
+        BargainRecordRecord bargainRecord = db().selectFrom(BARGAIN_RECORD).where(BARGAIN_RECORD.ORDER_SN.eq(order.getOrderSn())).fetchAny();
+        saas.getShopApp(getShopId()).goods.updateGoodsNumberAndSale(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),-1);
+
     }
 
 }

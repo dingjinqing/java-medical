@@ -21,11 +21,7 @@
   flex-direction: column;
   align-items: center;
 }
-.search_sort image{
-  width: 48rpx;
-  height: 36rpx;
-}
-.search_sort text{
+.search_sort .text{
   font-size: 24rpx;
   color: #666;
   position: absolute;
@@ -40,7 +36,7 @@
   margin-left: 20rpx;
   font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
 }
-.search input{
+.search .input{
   height: 100%;
   width: 600rpx;
   font-size: 28rpx;

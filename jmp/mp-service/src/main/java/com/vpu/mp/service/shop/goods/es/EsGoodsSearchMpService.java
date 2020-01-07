@@ -230,15 +230,32 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      * @param source source 源
      * @return PageResult<GoodsListMpBo>
      */
-    private PageResult<GoodsListMpBo> esPageConvertVoPage(PageResult<EsGoods> source){
+    private PageResult<GoodsListMpBo> esPageConvertVoPage(PageResult<EsGoods> source) throws IOException {
         PageResult<GoodsListMpBo> target = new PageResult<>();
         target.setPage(source.getPage());
         List<EsGoods> esGoodsList = source.getDataList();
         List<GoodsListMpBo> voList = new ArrayList<>(esGoodsList.size());
         esGoodsList.forEach(x-> voList.add(LIST_CONVERT.convert(x)));
+        /*封装商品关联的标签信息start*/
+        List<Integer> goodsIds = voList.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
+        Map<Integer,List<EsGoodsLabel>> labelMap =
+            esGoodsLabelSearchService.getGoodsLabelByGoodsId(goodsIds,EsGoodsConstant.GOODS_LIST_PAGE);
+        voList.forEach(x->{
+            if( labelMap.containsKey(x.getGoodsId()) ){
+                com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo vo = new
+                    com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo();
+                EsGoodsLabel label = labelMap.get(x.getGoodsId()).get(0);
+                vo.setListPattern(label.getListPattern());
+                vo.setName(label.getName());
+                x.setLabel(vo);
+            }
+        });
+        /*封装商品关联的标签信息end*/
         target.setDataList(voList);
         return target;
     }
+
+
     /**
      * assembly EsSearchParam
      * @param mpParam {@link GoodsListMpParam}

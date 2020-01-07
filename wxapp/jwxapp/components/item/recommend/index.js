@@ -30,7 +30,7 @@ global.wxComponent({
   methods: {
     requestData() {
       util.api('/api/wxapp/goods/recommend',res=>{
-        if(res.error === 0){
+        if(res.error === 0 && res.content !== null){
           this.setData({
             ['dataList[' + (parseInt(this.data.currentPage) - 1) + ']']: res.content.recommendGoods,
             currentPage:++this.data.currentPage

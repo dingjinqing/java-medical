@@ -1,18 +1,29 @@
 package com.vpu.mp.service.shop.coupon;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
+import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCoupon;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
+import com.vpu.mp.service.shop.member.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 
 /**
  * @author: 王兵兵
@@ -20,7 +31,11 @@ import java.util.Optional;
  **/
 @Service
 public class CouponMpService extends ShopBaseService {
+    @Autowired
+    public MemberService member;
 
+    @Autowired
+    public CouponService coupon;
     /**
      * 获取装修模块优惠券列表
      * @param moduleCoupon
@@ -75,5 +90,121 @@ public class CouponMpService extends ShopBaseService {
     private CouponPageDecorationVo getCouponPageDecorationVo(int couponId){
         Optional<CouponPageDecorationVo> vo =  db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOptionalInto(CouponPageDecorationVo.class);
         return vo.orElse(null);
+    }
+
+    /**
+     * 查询优惠券基本信息
+     * @param param
+     * @return
+     */
+    public CouponListVo getCouponData(mpGetCouponParam param){
+        CouponListVo couponData = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(param.getCouponId()))
+            .fetchOne().into(CouponListVo.class);
+        return couponData;
+    }
+
+    /**
+     * 用户已领取某优惠券数量
+     * @param userId
+     * @param couponId
+     */
+    public Integer couponAlreadyGet(Integer userId,Integer couponId){
+        int res = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(couponId)).and(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId))
+            .fetchOne().into(Integer.class);
+        return res;
+    }
+
+    /**
+     * 领取优惠券到用户
+     * @param param 0：领取成功；1：优惠券不存在；2：优惠券过期；3：优惠券体用；4：库存为0；5：可用积分不足；
+     * @return
+     */
+    public Byte fetchCoupon(mpGetCouponParam param){
+        CouponListVo couponData = this.getCouponData(param);
+        Integer userId = param.getUserId();
+        Byte couponGetStatus = this.couponGetStatus(param);
+        Byte fetchCouponStatus = couponGetStatus;
+        if(couponGetStatus != 0){
+            return fetchCouponStatus;
+        }
+        //积分兑换判断
+        if (couponData.getUseScore() == 1 && couponData.getScoreNumber() > 0) {
+            int availCoupon = member.score.getTotalAvailableScoreById(userId);
+            //查看用户可用积分
+            if (couponData.getScoreNumber() > availCoupon) {
+                //可用积分不足
+                fetchCouponStatus = 5;
+            } else {
+                ScoreParam scoreParam = new ScoreParam();
+                scoreParam.setScore(-(couponData.getScoreNumber()));
+                scoreParam.setScoreStatus(ScoreStatusConstant.USED_SCORE_STATUS);
+                scoreParam.setDesc("score");
+                scoreParam.setRemarkCode(RemarkTemplate.RECEIVE_COUPON.code);
+                //scoreParam.setRemark("领取优惠券");
+                Integer subAccountId = 0;
+
+                /** -交易明细类型 */
+                Byte tradeType = 4;
+                /** -资金流向 */
+                Byte tradeFlow = 1;
+                try {
+                    member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
+                } catch (MpException e) {
+                    logger().info("积分更新失败");
+                    fetchCouponStatus =6;
+                }
+            }
+        }
+        CouponGiveQueueParam couponParam = new CouponGiveQueueParam();
+        List<Integer> userIds = new ArrayList();
+        String[] couponArray = {couponData.getId().toString()};
+        userIds.add(userId);
+        couponParam.setUserIds(userIds);
+        couponParam.setActId(0);
+        couponParam.setCouponArray(couponArray);
+        couponParam.setAccessMode((byte) 1);
+        couponParam.setGetSource((byte) 5);
+        //判断优惠券领取限制
+        if(couponData.getReceivePerPerson().intValue() != 0){//有限制领取
+            Integer alreadyGet = this.couponAlreadyGet(userId, couponData.getId());
+            if(couponData.getReceivePerPerson() > alreadyGet){
+                //添加优惠券到用户，调用定向发券通用方法
+                coupon.couponGiveService.handlerCouponGive(couponParam);
+            }else{
+                fetchCouponStatus = 7;
+            }
+        }else{
+            coupon.couponGiveService.handlerCouponGive(couponParam);
+        }
+        return fetchCouponStatus;
+    }
+
+    /**
+     * 优惠券是否可领取状态
+     * @param param 0：可正常领取；1：优惠券不存在；2：优惠券过期；3：优惠券体用；4：库存为0
+     * @return
+     */
+    public Byte couponGetStatus(mpGetCouponParam param){
+        Timestamp nowDate = DateUtil.getLocalDateTime();
+        //判断领取限制
+        CouponListVo couponData = this.getCouponData(param);
+        Byte couponGetStatus;
+        //通过alias_code查看优惠券是否存在
+        if (StringUtils.isEmpty(couponData)) {
+           couponGetStatus = 1;
+        }else if(couponData.getValidity() <= 0 && couponData.getValidityHour() <= 0 && couponData.getValidityMinute() <= 0 && couponData.getEndTime().before(nowDate)){//是否过期
+            //是否过期
+            couponGetStatus = 2;
+        } else if (couponData.getEnabled() == 0) {
+            //是否停用
+            couponGetStatus = 3;
+        } else if (couponData.getLimitSurplusFlag() == 0 && couponData.getSurplus() <= 0) {
+            //库存判断
+            couponGetStatus = 4;
+        }else{
+            //正常领取
+            couponGetStatus = 0;
+        }
+        return couponGetStatus;
     }
 }

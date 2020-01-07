@@ -11,7 +11,7 @@
   background-color: #f5f5f5;
   position: relative
 }
-.popup_title image{
+.popup_title .image{
   position: absolute;
   width: 40rpx;
   height: 40rpx;
@@ -25,22 +25,22 @@
   align-items:center;
   height: 300rpx;
 }
-.content_box > view,.content_box > button{
+.content_box > .view,.content_box > .button{
   text-align: center;
   font-size: 0;
 }
-.content_box > view image,.content_box > button image{
+.content_box > .view .image,.content_box > .button .image{
   width: 84rpx;
   height: 84rpx;
   margin-bottom: 27rpx;
 }
-.content_box > view > text,.content_box > button > text{
+.content_box > .view > .text,.content_box > .button > .text{
   display: block;
   font-size: 24rpx;
   color: #666;
   line-height: 1;
 }
-.content_box > button{
+.content_box > .button{
   position: relative;
   margin:0;
   padding: 0;
@@ -51,6 +51,6 @@
   display: block;
   z-index: 1
 }
-.content_box > button::after{
+.content_box > .button::after{
   border: none;
 }

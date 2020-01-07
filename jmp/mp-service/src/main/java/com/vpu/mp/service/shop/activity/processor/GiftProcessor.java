@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @author 王帅
  */
 @Service
+@Slf4j
 public class GiftProcessor implements CreateOrderProcessor{
 
     @Autowired
