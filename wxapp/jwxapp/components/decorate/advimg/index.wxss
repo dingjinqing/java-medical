@@ -65,12 +65,12 @@
 
 .slide_big {
   white-space: nowrap;
-  height: 250rpx;
+  /* height: 250rpx; */
 }
 
 .slide_big .each_big {
   width: 300rpx;
-  height: 250rpx;
+  /* height: 250rpx; */
   display: inline-block;
   position: relative;
   overflow: hidden;
@@ -79,7 +79,7 @@
 .slide_big .each_big .image {
   width: 300rpx;
   height: 250rpx;
-  vertical-align: top;
+  /* vertical-align: top; */
 }
 
 /*滑动（小） */

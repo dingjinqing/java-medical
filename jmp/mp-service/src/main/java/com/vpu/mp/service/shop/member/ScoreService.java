@@ -1,39 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
 
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_SCORE;
-import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_NOW;
-import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_YMD;
-import static com.vpu.mp.service.shop.member.UserCardService.UPGRADE;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
-import org.jooq.exception.DataAccessException;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -45,21 +12,42 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
-import com.vpu.mp.service.pojo.shop.member.score.ScorePageInfo;
-import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
-import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
-import com.vpu.mp.service.pojo.shop.member.score.SignData;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.member.score.*;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
+import org.jooq.exception.DataAccessException;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.*;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_SCORE;
+import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_NOW;
+import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_YMD;
+import static com.vpu.mp.service.shop.member.UserCardService.UPGRADE;
 /**
  * 
  * @author 黄壮壮

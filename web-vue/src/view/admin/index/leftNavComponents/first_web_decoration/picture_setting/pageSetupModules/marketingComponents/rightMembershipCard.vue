@@ -26,7 +26,7 @@
               v-else
               @click="handlCallCardDialog()"
               class="selectCard"
-              :style="nowChecked.bg_type===0?`backgroundColor:${nowChecked.bg_color}`:`backgroundImage:url('${nowChecked.bg_img}')`"
+              :style="(nowChecked.bgType===1&&nowChecked.bgImg)?`;backgroundImage:url(${nowChecked.bgImg})`:(nowChecked.bgType===1&&!nowChecked.bgImg)?`backgroundColor:${overallColor}`:nowChecked.bgColor?`backgroundColor:${nowChecked.bgColor}`:`backgroundColor:${overallColor}`"
             >
               <div>
                 <span class="card_name">{{nowChecked.card_name}}</span>
@@ -37,7 +37,7 @@
                 <span
                   v-else
                   class="card_state"
-                >{{nowChecked.card_state}}</span>
+                >{{nowChecked.card_state===1?'使用中':'停止使用'}}</span>
               </div>
               <!-- <p
                 class="receive_day"
@@ -122,7 +122,7 @@
                     v-for="(item,index) in showCardList"
                     :key="index"
                     @click="handleToClickCard(index)"
-                    :style="item.bgType===0?`backgroundColor:${item.bgColor}`:`;backgroundImage:url(${item.bgImg})`"
+                    :style="(item.bgType===1&&item.bgImg)?`;backgroundImage:url(${item.bgImg})`:(item.bgType===1&&!item.bgImg)?`backgroundColor:${overallColor}`:item.bgColor?`backgroundColor:${item.bgColor}`:`backgroundColor:${overallColor}`"
                   >
                     <img
                       v-if="item.isChecked"
@@ -408,7 +408,8 @@ export default {
         }
       ],
       nowChecked: '',
-      zcCheckedData: ''
+      zcCheckedData: '',
+      overallColor: null
     }
   },
   watch: {
@@ -459,13 +460,14 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-
     // 初始化获取会员卡数据
     this.handleToGetCardData()
   },
   methods: {
     // 初始化获取会员卡数据
     handleToGetCardData () {
+      // 获取初始全局颜色
+      this.overallColor = localStorage.getItem('V-backgroundColor') || '#e6cb96'
       allCardData({}).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -572,7 +574,9 @@ export default {
         bg_img: this.zcCheckedData.bgImg, // 背景图片
         is_pay: this.zcCheckedData.isPay,
         pay_type: this.zcCheckedData.payType,
-        pay_fee: this.zcCheckedData.payFee
+        pay_fee: this.zcCheckedData.payFee,
+        cur_idx: this.modulesData.cur_idx,
+        module_name: 'm_card'
       }
       console.log(this.zcCheckedData)
       let data = Object.assign(this.nowChecked, obj)
@@ -587,6 +591,7 @@ export default {
       })
       this.zcCheckedData = this.showCardList[index]
       // this.nowChecked.index = index
+      this.nowChecked = this.showCardList[index]
       this.showCardList[index].isChecked = !this.showCardList[index].isChecked
     },
     //  点击添加会员卡

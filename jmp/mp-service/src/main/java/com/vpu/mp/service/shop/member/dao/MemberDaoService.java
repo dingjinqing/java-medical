@@ -1,43 +1,5 @@
 package com.vpu.mp.service.shop.member.dao;
 
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.STORE;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectOnConditionStep;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectSeekStep3;
-import  org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -54,6 +16,23 @@ import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.cart.UserCartService;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 
 
 

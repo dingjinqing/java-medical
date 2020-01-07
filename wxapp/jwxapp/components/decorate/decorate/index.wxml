@@ -24,10 +24,10 @@
 		<v-seckill wx:elif="{{module.component_name == 'v-seckill'}}" module="{{module}}" />
 		<!--积分兑换-->
 		<v-integral wx:elif="{{module.component_name == 'v-integral'}}" module="{{module}}" />
-	   <!--拼团抽奖(缺接口)-->
-	   <v-pinlottery wx:elif="{{module.component_name == 'v-pinlottery'}}" module="{{module}}" />
-	   <!--瓜分积分(缺接口)-->
-	   <v-pinintegration wx:elif="{{module.component_name == 'v-pinintegration'}}" module="{{module}}" />
+	   	<!--拼团抽奖(缺接口)-->
+	   	<v-pinlottery wx:elif="{{module.component_name == 'v-pinlottery'}}" module="{{module}}" />
+	   	<!--瓜分积分(缺接口)-->
+	   	<v-pinintegration wx:elif="{{module.component_name == 'v-pinintegration'}}" module="{{module}}" />
 	</block>
 </view>
 

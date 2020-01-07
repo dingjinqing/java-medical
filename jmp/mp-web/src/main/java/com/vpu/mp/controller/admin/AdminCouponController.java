@@ -4,7 +4,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
-import org.springframework.web.bind.annotation.*;
+import com.vpu.mp.service.shop.ShopApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -15,13 +19,13 @@ import java.util.List;
  * 2019年7月16日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminCouponController extends AdminBaseController{
 //
-//	@Override
-//	protected ShopApplication shop() {
-//		return saas.getShopApp(471752);
-//	}
+	@Override
+	protected ShopApplication shop() {
+		return saas.getShopApp(471752);
+	}
 	/**
 	 * 创建优惠券
 	 * @param couponInfo

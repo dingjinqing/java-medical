@@ -352,6 +352,12 @@ export default {
       this.goodsTextConArr = this.$t('decorationHome.goodsTextConArr')
       this.marketingTextConArr = this.$t('decorationHome.marketingTextConArr')
       this.initLeftModulesShow(this.activeName)
+    },
+    modulesData: {
+      handler (newData, oldData) {
+        console.log(newData, oldData)
+      },
+      deep: true
     }
   },
   updated () {
@@ -773,6 +779,7 @@ export default {
         this.MoveWhiteFlag = false
         console.log(this.nowRightShowIndex, insert, index)
         this.showModulesList.splice(insert, 0, index)
+        this.modulesData.splice(insert, 0, this.handleToAddModules(index))
         this.$nextTick(() => {
           if (this.nowRightShowIndex === insert) {
             this.handleToModuleHight()
@@ -984,6 +991,7 @@ export default {
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
       console.log(this.nowRightShowIndex, this.showModulesList, this.modulesData)
       this.handleToSaveModules(this.showModulesList, this.modulesData)
+      this.nowRightShowMoudlesIndex = -1
       this.$nextTick(() => {
         this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
         console.log(this.nowRightShowIndex, this.modulesData)
@@ -1005,7 +1013,18 @@ export default {
         console.log(this.modulesData)
       } else if (this.showModulesList.length === this.modulesData.length) {
         console.log(this.oldIndex, this.newIndex, this.modulesData, this.topAreaFlag, this.nowRightShowIndex)
-        if (this.oldIndex === -1) return
+        if (this.oldIndex === -1) {
+          console.log(this.modulesData, this.nowRightShowIndex, this.modulesData[this.nowRightShowIndex])
+          if (this.modulesData[this.nowRightShowIndex]) {
+            this.modulesData[this.nowRightShowIndex].cur_idx = this.cur_idx + 1
+            let newArr = JSON.parse(JSON.stringify(this.modulesData))
+            this.modulesData = null
+            this.modulesData = newArr
+            console.log(newArr)
+          }
+
+          return
+        }
         let temp = this.modulesData[this.oldIndex]
         console.log(temp, this.modulesData[this.nowRightShowIndex])
         if (this.topAreaFlag) {
@@ -1021,7 +1040,7 @@ export default {
         }
         this.oldIndex = -1
       }
-      console.log(this.oldIndex, this.nowRightShowIndex)
+      console.log(this.oldIndex, this.nowRightShowIndex, this.modulesData)
       let newArr = JSON.parse(JSON.stringify(this.modulesData))
       this.modulesData = null
       this.modulesData = newArr
@@ -1068,6 +1087,7 @@ export default {
     },
     // 保存处理事件
     handleToSave (flag) {
+      console.log(this.modulesData)
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
@@ -1164,6 +1184,7 @@ export default {
     },
     // 底部保存等按钮点击统一处理
     handleToFooter (flag) {
+      console.log(this.modulesData)
       console.log(flag)
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
@@ -1175,6 +1196,7 @@ export default {
       if (!judgeFlag.flag) return
 
       if (flag === 0) {
+        console.log(this.modulesData)
         this.saveTwoDialogVisible = true
       } else {
         this.handleToSave(flag)

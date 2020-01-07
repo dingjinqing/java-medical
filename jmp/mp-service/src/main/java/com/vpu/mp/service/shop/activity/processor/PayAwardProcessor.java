@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
+import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -90,7 +91,6 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_BARGAIN_PRIORITY;
     }
-
     @Override
     public Byte getActivityType() {
         return ACTIVITY_TYPE_PAY_AWARD;
@@ -161,7 +161,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                         payAwardRecordRecord.setSendData(Util.listToString(new ArrayList<>(sendData.getCouponSet())));
                         payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
                         payAwardRecordRecord.setAwardData(payAwardContentBo.getCouponIds());
-                        return;
+                        break;
                     }
                 }
                 payAwardRecordRecord.setSendData("");
@@ -210,6 +210,10 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                     payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_NO_STOCK);
                 }
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getProductId().toString());
+                payAwardRecordRecord.setKeepDays(payAwardContentBo.getKeepDays());
+                payAwardRecordRecord.insert();
+                PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(order.getUserId(), payAward.getId(), payAwardContentBo.getId(), PRIZE_SOURCE_PAY_AWARD, payAwardContentBo.getProductId(), payAwardContentBo.getKeepDays());
+                payAwardRecordRecord.setSendData(prizeRecordRecord.getId().toString());
                 break;
             case GIVE_TYPE_SCORE:
                 logger().info("积分");
@@ -326,9 +330,10 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             // 定点杆添加支付有礼id
             order.setPayAwardId(payAward.getId());
             sendAward(canSendAwardFlag, order, payAward, payAwardContentBo, payAwardRecordRecord);
-            payAwardRecordRecord.insert();
-            if (canSendAwardFlag&&payAwardContentBo.getGiftType().equals(GIVE_TYPE_GOODS)){
-                prizeRecordService.savePrize(order.getUserId(),payAward.getId(),payAwardContentBo.getId(),PRIZE_SOURCE_PAY_AWARD,payAwardContentBo.getProductId(),payAwardContentBo.getKeepDays());
+            if (payAwardRecordRecord.getId()!=null){
+                payAwardRecordRecord.update();
+            }else {
+                payAwardRecordRecord.insert();
             }
         } catch (Exception e) {
             logger().error("支付有礼活动异常");

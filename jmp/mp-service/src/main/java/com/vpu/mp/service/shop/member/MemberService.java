@@ -1,53 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.CHANNEL;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
-import static com.vpu.mp.db.shop.Tables.TAG;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_CHANNAL_PAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_SCAN_QRCODE;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.InsertValuesStep2;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectField;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
-import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
-import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.db.shop.tables.records.UserTagRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -64,18 +17,7 @@ import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
-import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
-import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.service.pojo.shop.member.MemberParam;
-import com.vpu.mp.service.pojo.shop.member.MemberRecordExportVo;
-import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
-import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.*;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
@@ -89,6 +31,27 @@ import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.*;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.*;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.*;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
 
 /**
  * 
