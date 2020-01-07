@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.firstspecial.FirstSpecialMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.firstspecial.FirstSpecialPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FirstSpecialPromotion;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.config.FirstSpecialConfigService;

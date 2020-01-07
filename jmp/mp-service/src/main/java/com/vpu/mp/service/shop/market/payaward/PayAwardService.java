@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
+import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
+import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -80,6 +82,8 @@ public class PayAwardService extends ShopBaseService {
     private LotteryService lotteryService;
     @Autowired
     private JedisManager jedisManager;
+    @Autowired
+    private PrizeRecordService prizeRecordService;
 
     /**
      * 添加
@@ -403,10 +407,12 @@ public class PayAwardService extends ShopBaseService {
                 break;
             case GIVE_TYPE_GOODS:
                 logger().info("奖品");
-//                ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(Integer.valueOf(payAwardRecord.getSendData()));
-//                prizeVo.setProduct(product);
+                PrizeRecordRecord prizeRecordRecord = prizeRecordService.getById(Integer.valueOf(payAwardRecord.getSendData()));
+                ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(prizeRecordRecord.getPrdId());
+                prizeVo.setProduct(product);
                 prizeVo.setProductId(Integer.parseInt(payAwardRecord.getAwardData()));
                 prizeVo.setKeepDays(payAwardRecord.getKeepDays());
+                prizeVo.setPrizeId(Integer.parseInt(payAwardRecord.getSendData()));
                 break;
             case GIVE_TYPE_SCORE:
                 logger().info("积分");

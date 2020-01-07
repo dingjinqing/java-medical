@@ -95,5 +95,4 @@ public class CouponProcessor implements Processor,ActivityGoodsListProcessor,Goo
         });
         capsule.setCoupons(coupons);
     }
-
 }
