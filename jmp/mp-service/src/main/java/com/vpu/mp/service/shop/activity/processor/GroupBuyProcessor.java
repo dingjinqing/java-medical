@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;

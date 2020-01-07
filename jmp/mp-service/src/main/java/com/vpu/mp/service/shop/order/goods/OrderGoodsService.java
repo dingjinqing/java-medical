@@ -247,7 +247,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * 查询商品信息
 	 * @return
 	 */
-	public List<GoodsRecord> getGoodsInfoRecordByOrderSn(String orderSn){
+	public List<GoodsRecord>  getGoodsInfoRecordByOrderSn(String orderSn){
 		return db().select(TABLE.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
