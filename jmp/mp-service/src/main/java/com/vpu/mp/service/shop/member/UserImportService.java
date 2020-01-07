@@ -164,11 +164,10 @@ public class UserImportService extends ShopBaseService {
 		if (StringUtils.isNotEmpty(mrkingVoucherId)) {
 			String[] split = mrkingVoucherId.split(",");
 			for (String string : split) {
-				MrkingVoucherRecord couponVo = couponService.getOneCouponById(Integer.valueOf(string));
-				if (couponVo != null) {
-					voList.add(couponVo.into(CouponParam.class));
+				CouponParam couponVo = couponService.getOneMVById(Integer.valueOf(string));
+				if(couponVo!=null) {
+					voList.add(couponVo);					
 				}
-
 			}
 		}
 		return new SetNoticeJsonDetailVo(activationNotice.getExplain(), activationNotice.getScore(),
