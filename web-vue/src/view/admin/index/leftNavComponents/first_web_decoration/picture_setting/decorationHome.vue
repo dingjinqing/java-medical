@@ -1016,10 +1016,12 @@ export default {
         if (this.oldIndex === -1) {
           console.log(this.modulesData, this.nowRightShowIndex, this.modulesData[this.nowRightShowIndex])
           if (this.modulesData[this.nowRightShowIndex]) {
+            console.log(this.cur_idx)
             this.modulesData[this.nowRightShowIndex].cur_idx = this.cur_idx + 1
             let newArr = JSON.parse(JSON.stringify(this.modulesData))
             this.modulesData = null
             this.modulesData = newArr
+            this.cur_idx = this.cur_idx + 1
             console.log(newArr)
           }
 
@@ -1074,7 +1076,7 @@ export default {
     },
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
-      console.log(data)
+      console.log(this.modulesData, data)
       this.modulesData[this.nowRightShowIndex] = data
       console.log(this.modulesData)
       this.$forceUpdate()
@@ -1098,7 +1100,7 @@ export default {
       this.pageSetData.last_cur_idx = this.cur_idx
       let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
       console.log(data)
-      console.log(saveMosulesData, this.modulesData, this.pageSetData)
+      console.log(saveMosulesData, this.modulesData, this.pageSetData, data)
       console.log(localStorage.getItem('V-ShopId'))
       if (!this.pageSetData.cat_id) {
         this.pageSetData.cat_id = 0
