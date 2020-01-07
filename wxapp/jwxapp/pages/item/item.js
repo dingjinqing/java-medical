@@ -97,7 +97,7 @@ global.wxPage({
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
-            this.getActivity(res.content)
+            if(res.content.activity && [1,3,5].includes(res.content.activity.activityType)) this.getActivity(res.content)
             let { comment, goodsImgs, goodsVideo, goodsVideoImg, coupons, goodsDesc = null, isPageUp = 0, goodsPageId = null, deliverPlace, defaultPrd, activity, goodsNumber, goodsSaleNum, labels, goodsAd, isCollected, products, goodsName, deliverPrice, limitBuyNum,
               limitMaxNum, goodsId } = res.content
             let goodsMediaInfo = {
