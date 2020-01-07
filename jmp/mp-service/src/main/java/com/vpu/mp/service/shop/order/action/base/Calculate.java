@@ -88,7 +88,7 @@ public class Calculate extends ShopBaseService {
      * @return 折扣总额
      */
     public BigDecimal calculateOrderGoodsDiscount(BaseMarketingBaseVo mbv, List<OrderGoodsBo> bos, Byte mType) {
-        logger().info("计算订单商品折扣金额start,营销活动:{},商品:{},活动类型（0会员卡，1优惠卷，2满折满减）：{}", mbv, mbv.getBos(), mType);
+        logger().info("计算订单商品折扣金额start,营销活动:{},活动类型（0会员卡，1优惠卷，2满折满减）：{}", mbv, mType);
         if (mbv == null || CollectionUtils.isEmpty(mbv.getBos()) || !mbv.checkRatio()) {
             return BigDecimal.ZERO;
         }
