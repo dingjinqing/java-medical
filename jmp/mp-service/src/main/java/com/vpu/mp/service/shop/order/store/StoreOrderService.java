@@ -402,7 +402,7 @@ public class StoreOrderService extends ShopBaseService {
                 .tradeType(RecordTradeEnum.TYPE_CRASH_MEMBER_CARD_PAY.val())
                 .tradeSn(order.getOrderSn()).adminUserId(INTEGER_ZERO).build();
             try {
-                memberCardService.updateMemberCardAccount(userCard, optParam, org.apache.commons.lang3.StringUtils.EMPTY);
+                memberCardService.updateMemberCardAccount(userCard, optParam);
             } catch (MpException e) {
                 log.debug("会员卡余额抵扣失败：{}", e.getMessage());
                 throw new BusinessException(JsonResultCode.CODE_FAIL);
