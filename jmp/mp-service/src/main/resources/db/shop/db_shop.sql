@@ -771,6 +771,7 @@ CREATE TABLE `b2c_distributor_apply` (
   `config_fields` varchar(500)  DEFAULT NULL COMMENT '审核字段',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `is_auto_pass` tinyint(2) NOT NULL DEFAULT 0 COMMENT '审核类型 0：手动审核；1"自动审核',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
 )COMMENT='分销原申请记录';
@@ -4088,7 +4089,7 @@ CREATE TABLE `b2c_user` (
   `user_grade` int(11) NOT NULL DEFAULT '1' COMMENT '会员级别',
   `invite` int(10) NOT NULL DEFAULT '0',
   `invite_source` varchar(32)  DEFAULT NULL COMMENT '邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖',
-  `invitation_code` int(8) NOT NULL DEFAULT '0' COMMENT '邀请码',
+  `invitation_code` varchar(32) NOT NULL DEFAULT '0' COMMENT '邀请码',
   `account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户余额',
   `discount` int(11) NOT NULL DEFAULT '0' COMMENT '折扣',
   `discount_grade` int(11) NOT NULL DEFAULT '0' COMMENT '会员折扣等级',

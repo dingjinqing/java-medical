@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -85,6 +86,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     @Autowired
     private QrCodeService qrCode;
+
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 装修页面列表
@@ -612,8 +616,7 @@ public class ShopMpDecorationService extends ShopBaseService {
                 }
             }
         } catch (Exception e) {
-            logger().error("装修转换错误");
-            e.printStackTrace();
+            logger().error("装修转换错误:",e);
         }
         return result;
     }
@@ -757,11 +760,14 @@ public class ShopMpDecorationService extends ShopBaseService {
     private ModuleImageAdver convertImageAdverForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
         boolean isNewUser = saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(user.getUserId());
-        moduleImageAdver.getImageList().forEach(img->{
+        Iterator<ModuleImageAdver.ImageAdItem> it = moduleImageAdver.getImageList().iterator();
+        while (it.hasNext()){
+            ModuleImageAdver.ImageAdItem img = it.next();
             if(img.getCanShow() == 1 && !isNewUser){
-                moduleImageAdver.getImageList().remove(img);
+               it.remove();
             }
-        });
+            img.setImage(domainConfig.imageUrl(img.getImage()));
+        }
         return moduleImageAdver;
     }
 
@@ -822,6 +828,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                             return this.convertBargainForModule(objectMapper, node, user);
                         case ModuleConstant.M_SECKILL:
                             return this.convertSeckillForModule(objectMapper, node, user);
+                        case ModuleConstant.M_PIN_INTEGRATION:
+                            return  this.convertPinIntegrationForModule(objectMapper, node, user);
                         //TODO case
                     }
                 }
@@ -932,6 +940,23 @@ public class ShopMpDecorationService extends ShopBaseService {
 
         // 转换实时信息
         return seckillService.getPageIndexSeckill(moduleSecKill);
+    }
+
+    /**
+     * 瓜分积分模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModulePinIntegeration convertPinIntegrationForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModulePinIntegeration modulePinIntegeration = objectMapper.readValue(node.getValue().toString(), ModulePinIntegeration.class);
+
+        // 转换实时信息
+        //return seckillService.getPageIndexSeckill(moduleSecKill);
+        return null;
     }
 
     /**

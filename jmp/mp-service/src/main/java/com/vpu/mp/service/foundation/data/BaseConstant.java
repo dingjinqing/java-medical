@@ -70,6 +70,8 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_MEMBER_GRADE = 22;
     /** 会员专享型（不是营销活动）*/
     public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 23;
+    /** 我的奖品 */
+    public final static byte ACTIVITY_TYPE_MY_PRIZE = 24;
     /** 代付订单 */
     public final static Byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
     /** 扫码购订单 */

@@ -20,12 +20,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.*;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
@@ -61,7 +57,6 @@ import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -599,19 +594,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void checkGoodsAndProduct(Goods goods) throws MpException {
         if (goods.getGoodsInfo() == null || goods.getProductInfo() == null || goods.getGoodsInfo().getDelFlag() == DelFlag.DISABLE.getCode()) {
             logger().error("checkGoodsAndProduct,商品不存在");
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, goods.getGoodsInfo().getGoodsName());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, goods.getGoodsInfo().getGoodsName());
         }
         if (!GoodsConstant.ON_SALE.equals(goods.getGoodsInfo().getIsOnSale())) {
             logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null, goods.getGoodsInfo().getGoodsName());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
         }
         if (goods.getGoodsNumber() > goods.getProductInfo().getPrdNumber()) {
             logger().error("checkGoodsAndProduct,库存不足,id:" + goods.getProductId());
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, goods.getGoodsInfo().getGoodsName());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, null, goods.getGoodsInfo().getGoodsName());
         }
         if (goods.getGoodsNumber() == null || goods.getGoodsNumber() <= 0) {
             logger().error("checkGoodsAndProduct,商品数量不能为0,id:" + goods.getProductId());
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_ZERO, goods.getGoodsInfo().getGoodsName());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_ZERO, null, goods.getGoodsInfo().getGoodsName());
         }
     }
 

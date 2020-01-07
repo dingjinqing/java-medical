@@ -582,6 +582,13 @@ export default {
                   flag = false
                 }
               })
+              if (JSON.stringify(item.data) === '{}') {
+                this.$message.error({
+                  message: '请上传图片',
+                  showClose: true
+                })
+                flag = false
+              }
             }
             break
           case 'm_text_image':
@@ -599,6 +606,15 @@ export default {
               isMpinintegration = true
             } else {
               isMpinintegration = false
+            }
+            break
+          case 'm_shop_announce':
+            if (!item.shop_text) {
+              this.$message.error({
+                message: '请输入店铺公告内容',
+                showClose: true
+              })
+              flag = false
             }
         }
       })

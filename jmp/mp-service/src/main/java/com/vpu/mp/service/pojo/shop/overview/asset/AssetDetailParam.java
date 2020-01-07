@@ -33,4 +33,7 @@ public class AssetDetailParam {
     private Integer currentPage;
     private Integer pageRows;
 
+    private String username;
+    private String mobile;
+    private String realName;
 }

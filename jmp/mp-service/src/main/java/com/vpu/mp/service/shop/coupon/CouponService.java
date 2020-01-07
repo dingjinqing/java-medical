@@ -5,6 +5,8 @@ import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -743,6 +745,49 @@ public class CouponService extends ShopBaseService {
 		if (fetch != null) {
 			into = fetch.into(CouponWxVo.class);
 		}
+		return into;
+	}
+	
+	/**
+	 * 小程序端会员激活使用
+	 * @param couponId
+	 * @return 
+	 * @return
+	 */
+	public CouponWxUserImportVo getOneMVById(Integer couponId,String lang) {
+		MrkingVoucherRecord record = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne();
+		if (record == null) {
+			return null;
+		}
+		CouponWxUserImportVo into = record.into(CouponWxUserImportVo.class);
+		Integer day = record.getValidity();
+		Integer hour = record.getValidityHour();
+		Integer minute = record.getValidityMinute();
+		if (day > 0 || hour > 0 || minute > 0) {
+			into.setStartTime(DateUtil.getSqlTimestamp());
+			Timestamp endTime = Timestamp.valueOf(LocalDateTime.now().plus(day, ChronoUnit.DAYS)
+					.plus(hour, ChronoUnit.HOURS).plus(minute, ChronoUnit.MINUTES));
+			into.setEndTime(endTime);
+		}
+		String couponRule = null;
+		if (into.getUseConsumeRestrict().equals(COUPON_TYPE_NORMAL)
+				|| into.getLeastConsume().equals(new BigDecimal("0"))) {
+			couponRule = "无门槛";
+		} else {
+			String actCode = into.getActCode();
+			BigDecimal leastConsume = into.getLeastConsume();
+			BigDecimal denomination = into.getDenomination();
+			BigDecimal randomMax = into.getRandomMax();
+			if (actCode.equals("voucher")) {
+				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_VOUCHER, "excel", new Object[] {leastConsume,denomination});
+			}
+			if (actCode.equals("random")) {
+				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_RANDOM, "excel", new Object[] {leastConsume,randomMax});
+			}else {
+				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_OTHER, "excel", new Object[] {leastConsume,denomination});
+			}
+		}
+		into.setCouponRule(couponRule);
 		return into;
 	}
 }

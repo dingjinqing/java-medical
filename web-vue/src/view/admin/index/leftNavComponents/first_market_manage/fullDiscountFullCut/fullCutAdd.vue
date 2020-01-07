@@ -55,6 +55,7 @@
 
           <!-- 活动优先级 -->
           <el-form-item
+            v-show="!params.id"
             label="活动优先级："
             prop="strategyPriority"
           >
@@ -72,7 +73,10 @@
             label="活动类型："
             prop="type"
           >
-            <el-radio-group v-model="params.type">
+            <el-radio-group
+              v-model="params.type"
+              :disabled="!!params.id"
+            >
               <el-radio label="2">满减</el-radio>
               <el-radio label="1">每满减</el-radio>
               <el-radio label="3">满折</el-radio>
@@ -90,8 +94,10 @@
               <el-radio
                 label="1"
                 v-model="fullDeduction"
+                :disabled="!!params.id"
               >满金额</el-radio>
               <div
+                v-show="fullDeduction == '1'"
                 v-for="(item, index) in conditionAddParams2"
                 :key="'info'+ index"
               >
@@ -130,11 +136,33 @@
                   </div>
                 </div>
               </div>
+              <div v-show="fullDeduction == '2'">
+                <div class="flex-block">
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    :disabled="fullDeduction == 2"
+                  ></el-input>&nbsp;元，
+                  <span>减</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    :disabled="fullDeduction == 2"
+                  ></el-input>&nbsp;
+                  <span>元</span>
+                  <div class="iconAdd">
+                    <img :src="$imageHost + '/image/admin/sign_jia.png'">
+                  </div>
+                </div>
+              </div>
               <el-radio
                 label="2"
                 v-model="fullDeduction"
+                :disabled="!!params.id"
               >满件数</el-radio>
               <div
+                v-show="fullDeduction == '2'"
                 v-for="(item, index) in conditionAddParams2"
                 :key="'info2'+index"
               >
@@ -151,6 +179,13 @@
                   ></el-input>&nbsp;件，
                   <span>减</span>
                   &nbsp;<el-input
+                    v-if="fullDeduction == 1"
+                    class="form_input"
+                    size="small"
+                    :disabled="fullDeduction == 1"
+                  ></el-input>
+                  <el-input
+                    v-else
                     class="form_input"
                     size="small "
                     v-model="conditionAddParams2[index].reduceMoney"
@@ -173,6 +208,27 @@
                   </div>
                 </div>
               </div>
+              <div v-show="fullDeduction != '2'">
+                <div class="flex-block">
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    :disabled="fullDeduction == 1"
+                  ></el-input>&nbsp;件，
+                  <span>减</span>
+                  &nbsp;
+                  <el-input
+                    class="form_input"
+                    size="small "
+                    :disabled="fullDeduction == 1"
+                  ></el-input>&nbsp;
+                  <span>元</span>
+                  <div class="iconAdd">
+                    <img :src="$imageHost + '/image/admin/sign_jia.png'">
+                  </div>
+                </div>
+              </div>
             </div>
             <div v-else-if="params.type == 1">
               <el-radio
@@ -189,6 +245,13 @@
                 ></el-input>&nbsp;元，
                 <span>减</span>
                 &nbsp;<el-input
+                  v-if="fullDeduction == 2"
+                  class="form_input"
+                  size="small"
+                  :disabled="fullDeduction == 2"
+                ></el-input>
+                <el-input
+                  v-else
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams1[0].reduceMoney"
@@ -210,6 +273,13 @@
                 ></el-input>&nbsp;件，
                 <span>减</span>
                 &nbsp;<el-input
+                  v-if="fullDeduction == 1"
+                  class="form_input"
+                  size="small"
+                  :disabled="fullDeduction == 1"
+                ></el-input>
+                <el-input
+                  v-else
                   class="form_input"
                   size="small "
                   v-model="conditionAddParams1[0].reduceMoney"
@@ -236,6 +306,7 @@
                 v-model="fullDeduction"
               >满金额</el-radio>
               <div
+                v-show="fullDeduction == '1'"
                 v-for="(item, index) in conditionAddParams3"
                 :key="'info1'+index"
               >
@@ -251,7 +322,15 @@
                     :disabled="fullDeduction == 2"
                   ></el-input>&nbsp;元，
                   <span>打</span>
-                  &nbsp;<el-input
+                  &nbsp;
+                  <el-input
+                    v-if="fullDeduction == 2"
+                    class="form_input"
+                    size="small"
+                    :disabled="fullDeduction == 2"
+                  ></el-input>
+                  <el-input
+                    v-else
                     class="form_input"
                     size="small "
                     v-model="conditionAddParams3[index].discount"
@@ -274,11 +353,33 @@
                   </div>
                 </div>
               </div>
+              <div v-show="fullDeduction != '1'">
+                <div class="flex-block">
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    :disabled="fullDeduction == 2"
+                  ></el-input>&nbsp;元，
+                  <span>打</span>
+                  &nbsp;
+                  <el-input
+                    class="form_input"
+                    size="small "
+                    :disabled="fullDeduction == 2"
+                  ></el-input>&nbsp;
+                  <span>折</span>
+                  <div class="iconAdd">
+                    <img :src="$imageHost + '/image/admin/sign_jia.png'">
+                  </div>
+                </div>
+              </div>
               <el-radio
                 label="2"
                 v-model="fullDeduction"
               >满件数</el-radio>
               <div
+                v-show="fullDeduction == '2'"
                 v-for="(item, index) in conditionAddParams3"
                 :key="'info3'+index"
               >
@@ -294,7 +395,15 @@
                     :disabled="fullDeduction == 1"
                   ></el-input>&nbsp;件，
                   <span>打</span>
-                  &nbsp;<el-input
+                  &nbsp;
+                  <el-input
+                    v-if="fullDeduction == 1"
+                    class="form_input"
+                    size="small"
+                    :disabled="fullDeduction == 1"
+                  ></el-input>
+                  <el-input
+                    v-else
                     class="form_input"
                     size="small "
                     v-model="conditionAddParams3[index].reduceMoney"
@@ -314,6 +423,27 @@
                       :src="$imageHost +'/image/admin/sign_del.png' "
                       @click="deleteFullCutItemD(index)"
                     >
+                  </div>
+                </div>
+              </div>
+              <div v-show="fullDeduction != '2'">
+                <div class="flex-block">
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    :disabled="fullDeduction == 1"
+                  ></el-input>&nbsp;件，
+                  <span>打</span>
+                  &nbsp;
+                  <el-input
+                    class="form_input"
+                    size="small "
+                    :disabled="fullDeduction == 1"
+                  ></el-input>&nbsp;
+                  <span>折</span>
+                  <div class="iconAdd">
+                    <img :src="$imageHost + '/image/admin/sign_jia.png'">
                   </div>
                 </div>
               </div>
@@ -583,13 +713,13 @@
           </el-form-item>
 
           <!-- 会员专享活动 -->
-          <el-form-item
-            label="会员专享活动："
-            prop="checkCard"
-          >
+          <el-form-item label="会员专享活动：">
             <el-checkbox v-model="checkCard">用户持会员卡可以参与活动</el-checkbox>
             <br>
-            <div v-if="checkCard">
+            <el-form-item
+              v-if="checkCard"
+              prop="memberCards"
+            >
               <el-select
                 v-model="memberCardInfo"
                 placeholder="请选择"
@@ -623,7 +753,7 @@
                   to="/admin/home/main/user_card"
                 >管理会员卡</router-link>
               </div>
-            </div>
+            </el-form-item>
           </el-form-item>
         </el-form>
       </div>
@@ -677,7 +807,7 @@
 </template>
 
 <script>
-import { addFullCutActivityApi, memberCardActivityName, getOneFullCutActivityInfo } from '@/api/admin/marketManage/fullDiscountFullCut'
+import { addFullCutActivityApi, updateFullCut, memberCardActivityName, getOneFullCutActivityInfo } from '@/api/admin/marketManage/fullDiscountFullCut'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import AddingBusClassDialog from '@/components/admin/addingBusClassDialog'
 import AddBrandDialog from '@/components/admin/addBrandDialog'
@@ -690,11 +820,12 @@ export default {
     // 自定义校验规则
     var validateLevel = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
-      if (!re.test(value)) {
-        callback(new Error('活动等级为正整数'))
-      } else {
+      if (!value) {
         callback(new Error('请输入活动优先级'))
+      } else if (!re.test(value)) {
+        callback(new Error('活动等级为正整数'))
       }
+      callback()
     }
     var validateActType = (rule, value, callback) => {
       if (value === '1' && (that.goodsList.length === 0 && that.goodsNameList.length === 0 && that.labelNameList.length === 0 && that.bussinessList.length === 0 && that.platformList.length === 0)) {
@@ -710,6 +841,18 @@ export default {
         }
         callback()
       }
+    }
+    function validateConditionAdd (rule, value, callback) {
+      let conditionAddParams = that['conditionAddParams' + that.params.type]
+      if (!conditionAddParams || conditionAddParams.length <= 0) {
+        callback(new Error('请设置满减规则'))
+      }
+      conditionAddParams.forEach(item => {
+        if (!((item.reduceMoney && item.fullMoney) || (item.amount && item.reduceMoney) || (item.reduceMoney && item.discount) || (item.amount && item.discount))) {
+          callback(new Error('请完善满减规则'))
+        }
+      })
+      callback()
     }
     return {
       params: {
@@ -800,10 +943,9 @@ export default {
         type: [{ required: true, message: '请选择活动类型', trigger: 'change' }],
         timeInterval: [{ required: true, message: '请选择时间', trigger: 'blur' }],
         actType: { required: true, validator: validateActType, trigger: 'change' },
-        conditionAddParams: [{ required: true, message: '请设置满减规则', trigger: 'blur' }],
-        checkCard: [{ validator: validateCheckCard, trigger: 'change' }]
+        conditionAddParams: [{ required: true, validator: validateConditionAdd, trigger: 'blur' }],
+        memberCards: [{ validator: validateCheckCard, trigger: 'change' }]
       }
-
     }
   },
   watch: {
@@ -867,38 +1009,62 @@ export default {
     // 同步满折满减规则
     syncConditionAddParams () {
       let type = this.params.type
-      this.conditionAddParams = this['conditionAddParams' + type]
+      let conditionAddParams = this['conditionAddParams' + type]
+      this.conditionAddParams = conditionAddParams.filter((item, index) => {
+        return (item.reduceMoney && item.fullMoney) || (item.amount && item.reduceMoney) || (item.reduceMoney && item.discount) || (item.amount && item.discount)
+      })
     },
     // 提交
     submit () {
-      // 校验
-      this.$refs.fullCutAddForm.validate((valid) => {
-        if (valid) {
-          this.syncConditionAddParams()
-          let obj = {
-            actName: this.params.actName,
-            type: this.params.type,
-            actType: this.params.actType,
-            conditionAddParams: this.conditionAddParams,
-            startTime: this.params.startTime,
-            endTime: this.params.endTime,
-            strategyPriority: this.params.strategyPriority,
-            recommendGoodsId: String(this.selectedGoodsIdList), // 指定商品
-            recommendCatId: String(this.platformIdList), // 指定平台
-            recommendSortId: String(this.bussinessIdList), // 指定商家
-            recommendBrandId: String(this.goodsBrandIdList), // 指定品牌
-            cardId: String(this.cardId) // 会员专享活动
-          }
-          addFullCutActivityApi(obj).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              this.$message.success('保存成功')
-            } else {
-              this.$message.warning('保存失败')
-            }
-          })
+      let that = this
+      if (that.params.id) {
+        // 更新满折满减活动
+        let obj = {
+          id: that.params.id,
+          actName: that.params.actName
         }
-      })
+        updateFullCut(obj).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            that.$message.success('更新成功')
+            that.$router.replace('/admin/home/main/fullDiscountFullCut')
+          } else {
+            that.$message.warning('更新失败')
+          }
+        })
+      } else {
+        // 校验
+        this.$refs.fullCutAddForm.validate((valid) => {
+          if (valid) {
+            this.syncConditionAddParams()
+            let obj = {
+              actName: this.params.actName,
+              type: this.params.type,
+              actType: this.params.actType,
+              conditionAddParams: this.conditionAddParams,
+              startTime: this.params.startTime,
+              endTime: this.params.endTime,
+              strategyPriority: this.params.strategyPriority, // 优先级
+              recommendGoodsId: String(this.selectedGoodsIdList), // 指定商品
+              recommendCatId: String(this.platformIdList), // 指定平台
+              recommendSortId: String(this.bussinessIdList), // 指定商家
+              recommendBrandId: String(this.goodsBrandIdList), // 指定品牌
+              cardId: String(this.cardId) // 会员专享活动
+            }
+            console.log(obj)
+            // 添加满折满减活动
+            addFullCutActivityApi(obj).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                that.$message.success('保存成功')
+                that.$router.replace('/admin/home/main/fullDiscountFullCut')
+              } else {
+                that.$message.warning('保存失败')
+              }
+            })
+          }
+        })
+      }
     },
     // 添加满减：满X元减X元
     addFullCutItemA () {
@@ -1036,15 +1202,70 @@ export default {
     },
     // 初始化数据
     fetchCurrentActivityData () {
-      console.log(this.id)
-      getOneFullCutActivityInfo({ id: this.id }).then(res => {
+      let that = this
+      getOneFullCutActivityInfo({ id: this.params.id }).then(res => {
         if (res.error === 0) {
-          console.log(res)
+          let content = res.content
+          that.params = Object.assign({}, that.params, content)
+          // 优惠规则
+          let type = content.type
+          that.params.type = String(type)
+          content.condition.forEach(obj => {
+            for (const key in obj) {
+              if (obj.hasOwnProperty(key)) {
+                const value = obj[key]
+                if (!value) {
+                  obj[key] = ''
+                }
+              }
+            }
+          })
+          if (content.condition[0].fullMoney) {
+            that.fullDeduction = '1'
+          } else if (content.condition[0].amount) {
+            that.fullDeduction = '2'
+          }
+          // 给fullDeduction赋值会触发watch
+          that.$nextTick(() => {
+            that.conditionAddParams = content.condition || [{
+              fullMoney: '',
+              reduceMoney: '',
+              amount: '',
+              discount: ''
+            }]
+            that['conditionAddParams' + type] = content.condition || [{
+              fullMoney: '',
+              reduceMoney: '',
+              amount: '',
+              discount: ''
+            }]
+          })
+          // 有效期
+          that.params.timeInterval = [content.startTime, content.endTime]
+          // 活动范围类型
+          that.params.actType = String(content.actType)
+          // 指定商品
+          that.selectedGoodsIdList = content.recommendGoodsIds || []
+          that.goodsList = content.recommendGoods || []
+          // 指定平台分类
+          that.platformList = content.recommendCat || []
+          that.platformIdList = content.recommendCatIds || []
+          // 指定商家分类
+          that.bussinessList = content.recommendSort || []
+          that.bussinessIdList = content.recommendSortIds || []
+          // 指定商品标签
+          // 指定商品品牌
+          that.labelNameList = content.recommendBrand || []
+          that.labelNameIdList = content.recommendBrandIds || []
+          // 指定会员卡
+          that.memberCardInfo = content.cardIds || []
+          if (content.cardIds && content.cardIds.length > 0) {
+            that.checkCard = true
+          }
         }
       }).catch(err => console.log(err))
     }
   }
-
 }
 
 </script>
