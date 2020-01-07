@@ -22,7 +22,7 @@
     position: relative;
   }
   
-  .single_column .product-image image {
+  .single_column .product-image .image {
     height: 280rpx !important;
     width: 280rpx !important;
     margin: 0 auto;
@@ -30,7 +30,10 @@
     position: relative;
     float: left;
   }
-  
+  .product-image .item_img{
+    height: 280rpx !important;
+    width: 280rpx !important;
+  }
   .single_column .save_money {
     bottom: 0rpx !important;
     width: 240rpx;

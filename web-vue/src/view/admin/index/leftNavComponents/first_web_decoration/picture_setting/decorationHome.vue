@@ -1001,7 +1001,20 @@ export default {
         console.log(this.modulesData)
       } else if (this.showModulesList.length === this.modulesData.length) {
         console.log(this.oldIndex, this.newIndex, this.modulesData, this.topAreaFlag, this.nowRightShowIndex)
-        if (this.oldIndex === -1) return
+        if (this.oldIndex === -1) {
+          console.log(this.modulesData, this.nowRightShowIndex, this.modulesData[this.nowRightShowIndex])
+          if (this.modulesData[this.nowRightShowIndex]) {
+            console.log(this.cur_idx)
+            this.modulesData[this.nowRightShowIndex].cur_idx = this.cur_idx + 1
+            let newArr = JSON.parse(JSON.stringify(this.modulesData))
+            this.modulesData = null
+            this.modulesData = newArr
+            this.cur_idx = this.cur_idx + 1
+            console.log(newArr)
+          }
+
+          return
+        }
         let temp = this.modulesData[this.oldIndex]
         console.log(temp, this.modulesData[this.nowRightShowIndex])
         if (this.topAreaFlag) {
@@ -1017,7 +1030,7 @@ export default {
         }
         this.oldIndex = -1
       }
-      console.log(this.oldIndex, this.nowRightShowIndex)
+      console.log(this.oldIndex, this.nowRightShowIndex, this.modulesData)
       let newArr = JSON.parse(JSON.stringify(this.modulesData))
       this.modulesData = null
       this.modulesData = newArr
@@ -1051,7 +1064,7 @@ export default {
     },
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
-      console.log(data)
+      console.log(this.modulesData, data)
       this.modulesData[this.nowRightShowIndex] = data
       console.log(this.modulesData)
       this.$forceUpdate()
@@ -1064,6 +1077,7 @@ export default {
     },
     // 保存处理事件
     handleToSave (flag) {
+      console.log(this.modulesData)
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
@@ -1074,7 +1088,7 @@ export default {
       this.pageSetData.last_cur_idx = this.cur_idx
       let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
       console.log(data)
-      console.log(saveMosulesData, this.modulesData, this.pageSetData)
+      console.log(saveMosulesData, this.modulesData, this.pageSetData, data)
       console.log(localStorage.getItem('V-ShopId'))
       if (!this.pageSetData.cat_id) {
         this.pageSetData.cat_id = 0
@@ -1160,13 +1174,19 @@ export default {
     },
     // 底部保存等按钮点击统一处理
     handleToFooter (flag) {
+      console.log(this.modulesData)
       console.log(flag)
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
-      if (!judgeFlag) return
+      if (judgeFlag.isMpinintegration) {
+        this.$http.$emit('isMpinintegration')
+        return
+      }
+      if (!judgeFlag.flag) return
 
       if (flag === 0) {
+        console.log(this.modulesData)
         this.saveTwoDialogVisible = true
       } else {
         this.handleToSave(flag)
