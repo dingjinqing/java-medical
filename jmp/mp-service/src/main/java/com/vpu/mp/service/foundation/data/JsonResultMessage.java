@@ -234,8 +234,15 @@ public class JsonResultMessage {
     public static final String BARGAIN_NOT_YET_SUCCESSFUL="bargain.not.yet.successful";
     public static final String BARGAIN_RECORD_ORDERED="bargain.record.ordered";
 
-
-    public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
+	/**
+	 *营销-我的奖品
+	 */
+	public static final String MY_PRIZE_ACTIVITY_RECEIVED="my.prize.activity.goods.received";
+    public static final String MY_PRIZE_ACTIVITY_EXPIRED="my.prize.activity.goods.expired";
+	/**
+	 * 营销- 支付有礼
+	 */
+	public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL = "pay.award.activity.message.multiple.conditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_UNCONDITIONAL = "pay.award.activity.message.multiple.finally.unconditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL = "pay.award.activity.message.multiple.finally.conditional";
@@ -428,7 +435,7 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
 	public static final String CODE_CARD_NO = "code.card.no";
-	
+
 	//会员导入
 	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
 	public static final String CODE_NEED_ONE = "code.need.one";
@@ -446,7 +453,7 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_VOUCHER = "example.voucher";
 	public static final String CODE_EXCEL_RANDOM = "example.random";
 	public static final String CODE_EXCEL_OTHER = "example.other";
-	
+
 	/**
 	 * 概览
 	 */

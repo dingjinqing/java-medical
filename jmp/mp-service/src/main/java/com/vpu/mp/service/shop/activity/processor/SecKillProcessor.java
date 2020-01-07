@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import lombok.extern.slf4j.Slf4j;
