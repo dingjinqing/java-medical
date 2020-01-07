@@ -34,6 +34,11 @@ public class ShopTaskService {
 
     @Autowired
     public OrderTaskService orderTaskService;
+    /**
+     * 奖品
+     */
+    @Autowired
+    public MyPrizeTaskService prizeTaskService;
 
     /**
      * The Goods task service.概况模块-商品统计
@@ -46,7 +51,7 @@ public class ShopTaskService {
 
     @Autowired
     public StatisticalTableInsert statisticalTableInsert;
-    
+
     @Autowired
     public MaMpScheduleTaskService maMpScheduleTaskService;
     @Autowired
