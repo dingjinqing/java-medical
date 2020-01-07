@@ -122,7 +122,7 @@
                     v-for="(item,index) in showCardList"
                     :key="index"
                     @click="handleToClickCard(index)"
-                    :style="item.bgType===0?`backgroundColor:${item.bgColor}`:`;backgroundImage:url(${item.bgImg})`"
+                    :style="(item.bgType===1&&item.bgImg)?`;backgroundImage:url(${item.bgImg})`:(item.bgType===1&&!item.bgImg)?`backgroundColor:${overallColor}`:item.bgColor?`backgroundColor:${item.bgColor}`:`backgroundColor:${overallColor}`"
                   >
                     <img
                       v-if="item.isChecked"
@@ -408,7 +408,8 @@ export default {
         }
       ],
       nowChecked: '',
-      zcCheckedData: ''
+      zcCheckedData: '',
+      overallColor: null
     }
   },
   watch: {
@@ -466,6 +467,8 @@ export default {
   methods: {
     // 初始化获取会员卡数据
     handleToGetCardData () {
+      // 获取初始全局颜色
+      this.overallColor = localStorage.getItem('V-backgroundColor') || '#e6cb96'
       allCardData({}).then(res => {
         console.log(res)
         if (res.error === 0) {
