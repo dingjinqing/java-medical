@@ -537,6 +537,7 @@ export default {
             }
             break
           case 'm_magic_cube':
+            console.log(item)
             if (item.table_type === 8) {
               if (!item.isAllCheckFull) {
                 this.$message.error({
@@ -555,12 +556,28 @@ export default {
                   flag = false
                 }
               })
+              if (JSON.stringify(item.data) === '{}') { // 处理极端情况
+                this.$message.error({
+                  message: '请上传图片',
+                  showClose: true
+                })
+                flag = false
+              }
             }
             break
           case 'm_text_image':
             if (!item.img_url) {
               this.$message.error({
                 message: '请上传图片',
+                showClose: true
+              })
+              flag = false
+            }
+            break
+          case 'm_shop_announce':
+            if (!item.shop_text) {
+              this.$message.error({
+                message: '请输入店铺公告内容',
                 showClose: true
               })
               flag = false

@@ -754,7 +754,7 @@ export default {
     // 左侧模块拖入中间区域后，中间区域数据处理函数
     handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
-      console.log(insertModulesId, index)
+      console.log(insertModulesId, index, this.isAddBottom)
       if (insertModulesId === -1 || this.isAddBottom) {
         console.log(index)
         this.MoveWhiteFlag = true
@@ -766,6 +766,8 @@ export default {
         this.MoveWhiteFlag = false
         console.log(this.nowRightShowIndex, insert, index)
         this.showModulesList.splice(insert, 0, index)
+        this.modulesData.splice(insert, 0, this.handleToAddModules(index))
+        console.log(this.modulesData)
         this.$nextTick(() => {
           if (this.nowRightShowIndex === insert) {
             this.handleToModuleHight()
@@ -977,6 +979,7 @@ export default {
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
       console.log(this.nowRightShowIndex, this.showModulesList, this.modulesData)
       this.handleToSaveModules(this.showModulesList, this.modulesData)
+      this.nowRightShowMoudlesIndex = -1
       this.$nextTick(() => {
         this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
         console.log(this.nowRightShowIndex, this.modulesData)
