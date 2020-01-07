@@ -178,6 +178,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
 
     }
 
+
     @Override
     public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 

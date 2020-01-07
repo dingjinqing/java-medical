@@ -181,8 +181,16 @@
                       >￥{{Number(item.realPrice).toFixed(2)}}</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
-                        v-if="data.col_type!=='2'&&data.other_message==='1'"
+                        v-if="data.show_market==='1'&&data.col_type!=='2'&&data.other_message==='1'"
                       >{{Number(item.linePrice).toFixed(2)}}</span>
+                      <span
+                        style="text-decoration: line-through;color: #c0c0c0"
+                        v-if="data.show_market==='2'&&data.other_message==='1'"
+                      >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                      <span
+                        style="text-decoration: line-through;color: #c0c0c0"
+                        v-if="data.show_market==='3'&&data.other_message==='1'"
+                      >{{Number(item.goodsNumber).toFixed(2)}}</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"

@@ -1,7 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.fullcut;
 
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectListVo;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
+import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -36,9 +39,25 @@ public class MrkingStrategyVo {
 
     /** 活动状态：0停用，1启用 */
     private Byte status;
+
+
     /** 指定商品可用时，选择的商品信息。全部商品参与活动时为空 */
+    private List<Integer> recommendGoodsIds;
     private List<GoodsView> recommendGoods;
 
+    /** 指定商品可用时，选择的平台分类信息。全部商品参与活动时为空 */
+    private List<Integer> recommendCatIds;
+    private List<SysCatevo> recommendCat;
+
+    /** 指定商品可用时，选择的品牌信息。全部商品参与活动时为空 */
+    private List<Integer> recommendBrandIds;
+    private List<GoodsBrandMpVo> recommendBrand;
+
+    /** 指定商品可用时，选择的商家分类信息。全部商品参与活动时为空 */
+    private List<Integer> recommendSortIds;
+    private List<GoodsSortSelectListVo> recommendSort;
+
     /** 限制持有会员卡的用户可参与时时，选择的会员卡信息。全部用户可参与活动时为空 */
+    private List<Integer> cardIds;
     private List<SimpleMemberCardVo> memberCards;
 }

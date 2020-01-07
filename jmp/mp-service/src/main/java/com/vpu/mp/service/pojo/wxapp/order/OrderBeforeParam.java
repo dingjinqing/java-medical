@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import lombok.Getter;
@@ -71,6 +72,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private Map<Integer, Goods> goodsMap;
     @JsonIgnore
     /**方便查找*/
+
     private List<OrderGoodsBo> bos;
 	/**方便查找*/
 	/** 订单业务处理方法*/
@@ -94,10 +96,11 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Byte isGrouper;
 
     /**
-     * 砍价标记
+     * 砍价下单标记
      */
     /** 砍价发起记录的ID */
     private Integer recordId;
+    private BargainRecordInfo bargainRecordInfo;
 
 	/**
 	 * 商品参数

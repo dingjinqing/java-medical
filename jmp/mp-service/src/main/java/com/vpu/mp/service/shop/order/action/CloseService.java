@@ -42,66 +42,66 @@ import com.vpu.mp.service.shop.order.record.OrderActionService;
  */
 @Component
 public class CloseService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam,OrderOperateQueryParam> {
-	
-	@Autowired
-	private OrderInfoService orderInfo;
-	
-	@Autowired
-	private RecordTradeService recordMemberTrade;
-	
-	@Autowired
-	public RecordAdminActionService record;
-	
-	@Autowired
-	private OrderActionService orderAction;
+
+    @Autowired
+    private OrderInfoService orderInfo;
+
+    @Autowired
+    private RecordTradeService recordMemberTrade;
+
+    @Autowired
+    public RecordAdminActionService record;
+
+    @Autowired
+    private OrderActionService orderAction;
 
     @Autowired
     private ReturnMethodService returnMethod;
-	
-	@Override
-	public OrderServiceCode getServiceCode() {
-		return OrderServiceCode.CLOSE;
-	}
 
     @Override
-	public Object query(OrderOperateQueryParam param) throws MpException {
-		return null;
-	}
+    public OrderServiceCode getServiceCode() {
+        return OrderServiceCode.CLOSE;
+    }
+
+    @Override
+    public Object query(OrderOperateQueryParam param) throws MpException {
+        return null;
+    }
 
 
 
     @Override
-	public ExecuteResult execute(OrderOperateQueryParam param) {
-		
-		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
-		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
-		}
-		if(!OrderOperationJudgment.mpIsClose(order)) {
+    public ExecuteResult execute(OrderOperateQueryParam param) {
+
+        OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
+        if(order == null) {
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
+        }
+        if(!OrderOperationJudgment.mpIsClose(order)) {
             logger().error("该订单不能关闭");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_NOT_CLOSE, null);
-		}
-		try {
-			transaction(()->{
-				returnOrder(order);
-				//TODO 好友代付退
-				orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_CLOSED);
-				//操作记录
-				
-			});
-		} catch (Exception e) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
-		}
-		//订单状态记录
-		orderAction.addRecord(order, param, order.getOrderStatus() , "商家关闭订单");
-		//操作记录
-		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_CLOSE.code }), new String[] {param.getOrderSn()});
-		return null;
-	}
-	
-	public void returnOrder(OrderInfoVo order) throws MpException {
-	    if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_DEPOSIT)){
-	        //预售订单特殊处理
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_NOT_CLOSE, null);
+        }
+        try {
+            transaction(()->{
+                returnOrder(order);
+                //TODO 好友代付退
+                orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_CLOSED);
+                //操作记录
+
+            });
+        } catch (Exception e) {
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
+        }
+        //订单状态记录
+        orderAction.addRecord(order, param, order.getOrderStatus() , "商家关闭订单");
+        //操作记录
+        record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_CLOSE.code }), new String[] {param.getOrderSn()});
+        return null;
+    }
+
+    public void returnOrder(OrderInfoVo order) throws MpException {
+        if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_DEPOSIT)){
+            //预售订单特殊处理
             if(order.getBkReturnType() != null && order.getBkReturnType().equals(OrderConstant.BK_RETURN_TYPE_Y)){
                 //设置了自动退款
                 if(BigDecimalUtil.compareTo(order.getMoneyPaid(), null) > 0) {
@@ -121,112 +121,113 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
             //卡余额
             refundMemberCardBalance(order, order.getMemberCardBalance());
         }
-	}
-	/**
-	 * 	退会员卡余额
-	 * @param order
-	 * @param money
-	 * @throws MpException 
-	 */
-	public void refundMemberCardBalance(OrderInfoVo order , BigDecimal money) throws MpException {
-		if(BigDecimalUtil.compareTo(money, null) == 0) {
-			return;
-		}
-		/**
-		 * 交易记录信息
-		 */
-		TradeOptParam tradeOpt = TradeOptParam
-				.builder()
-				.adminUserId(0)
-				.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
-				.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
-				.build();
-		UserCardData userCardData = UserCardData.newBuilder().
-		userId(order.getUserId()).
-		cardId(order.getCardId()).
-		cardNo(order.getCardNo()).
-		money(money).
-		reason("订单关闭，订单会员卡余额支付退款").
-		//普通会员卡
-		type(CardConstant.MCARD_TP_NORMAL).
-		orderSn(order.getOrderSn()).
-		tradeOpt(tradeOpt).build();
-		//调用退会员卡接口
-		recordMemberTrade.updateUserEconomicData(userCardData);
-	}
-	
-	/**
-	 * 	退余额
-	 * @param order
-	 * @param money
-	 * @throws MpException 
-	 */
-	public void refundUseAccount(OrderInfoVo order , BigDecimal money) throws MpException {
-		if(BigDecimalUtil.compareTo(money, null) == 0) {
-			return;
-		}
-		AccountData accountData = AccountData.newBuilder().
-		userId(order.getUserId()).
-		orderSn(order.getOrderSn()).
-		//退款金额
-		amount(money).
-		remarkCode(RemarkTemplate.ORDER_CLOSE.code).
-		remarkData(order.getOrderSn()).
-		//remark("订单关闭："+order.getOrderSn()+"余额退款").
-		payment(order.getPayCode()).
-		//支付类型
-		isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
-		//后台处理时为操作人id为0
-		adminUser(0).
-		//用户余额退款
-		tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
-		//资金流量-支出
-		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
-		//调用退余额接口
-		recordMemberTrade.updateUserEconomicData(accountData);
-	}
-	
-	/**
-	 * 	积分退款
-	 * @param order
-	 * @param money
-	 * @return
-	 * @throws MpException
-	 */
-	public void refundScoreDiscount(OrderInfoVo order , BigDecimal money) throws MpException {
-		if(BigDecimalUtil.compareTo(money, null) == 0) {
-			return;
-		}
-		//金额换算成积分
-		Integer score = BigDecimalUtil.multiplyOrDivide(
-				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
-				BigDecimalPlus.create(money,null)
-				).intValue();
-				
-		ScoreData scoreData = ScoreData.newBuilder().
-		userId(order.getUserId()).
-		orderSn(order.getOrderSn()).
-		//退款积分
-		score(score).
-		remarkCode(RemarkTemplate.ORDER_CLOSE_SCORE_ACCOUNT.code).
-		remarkData(order.getOrderSn()).
-		//remark("订单关闭："+order.getOrderSn()+"退款，退积分：score").
-		//后台处理时为操作人id为0
-		adminUser(0).
-		//用户余额充值 
-		tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
-		//资金流量-支出
-		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
-		//积分变动是否来自退款
-		isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
-		//调用退积分接口
-		recordMemberTrade.updateUserEconomicData(scoreData);
-	}
+    }
+    /**
+     * 	退会员卡余额
+     * @param order
+     * @param money
+     * @throws MpException
+     */
+    public void refundMemberCardBalance(OrderInfoVo order , BigDecimal money) throws MpException {
+        if(BigDecimalUtil.compareTo(money, null) == 0) {
+            return;
+        }
+        /**
+         * 交易记录信息
+         */
+        TradeOptParam tradeOpt = TradeOptParam
+            .builder()
+            .adminUserId(0)
+            .tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
+            .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+            .build();
+        UserCardData userCardData = UserCardData.newBuilder().
+            userId(order.getUserId()).
+            cardId(order.getCardId()).
+            cardNo(order.getCardNo()).
+            money(money).
+            //reason("订单关闭，订单会员卡余额支付退款").
+                reasonId(RemarkTemplate.ORDER_CLOSE_RETURN_CARD_ACCOUNT.code).
+            //普通会员卡
+                type(CardConstant.MCARD_TP_NORMAL).
+                orderSn(order.getOrderSn()).
+                tradeOpt(tradeOpt).build();
+        //调用退会员卡接口
+        recordMemberTrade.updateUserEconomicData(userCardData);
+    }
+
+    /**
+     * 	退余额
+     * @param order
+     * @param money
+     * @throws MpException
+     */
+    public void refundUseAccount(OrderInfoVo order , BigDecimal money) throws MpException {
+        if(BigDecimalUtil.compareTo(money, null) == 0) {
+            return;
+        }
+        AccountData accountData = AccountData.newBuilder().
+            userId(order.getUserId()).
+            orderSn(order.getOrderSn()).
+            //退款金额
+                amount(money).
+                remarkCode(RemarkTemplate.ORDER_CLOSE.code).
+                remarkData(order.getOrderSn()).
+            //remark("订单关闭："+order.getOrderSn()+"余额退款").
+                payment(order.getPayCode()).
+            //支付类型
+                isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
+            //后台处理时为操作人id为0
+                adminUser(0).
+            //用户余额退款
+                tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
+            //资金流量-支出
+                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
+        //调用退余额接口
+        recordMemberTrade.updateUserEconomicData(accountData);
+    }
+
+    /**
+     * 	积分退款
+     * @param order
+     * @param money
+     * @return
+     * @throws MpException
+     */
+    public void refundScoreDiscount(OrderInfoVo order , BigDecimal money) throws MpException {
+        if(BigDecimalUtil.compareTo(money, null) == 0) {
+            return;
+        }
+        //金额换算成积分
+        Integer score = BigDecimalUtil.multiplyOrDivide(
+            BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
+            BigDecimalPlus.create(money,null)
+        ).intValue();
+
+        ScoreData scoreData = ScoreData.newBuilder().
+            userId(order.getUserId()).
+            orderSn(order.getOrderSn()).
+            //退款积分
+                score(score).
+                remarkCode(RemarkTemplate.ORDER_CLOSE_SCORE_ACCOUNT.code).
+                remarkData(order.getOrderSn()).
+            //remark("订单关闭："+order.getOrderSn()+"退款，退积分：score").
+            //后台处理时为操作人id为0
+                adminUser(0).
+            //用户余额充值
+                tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
+            //资金流量-支出
+                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
+            //积分变动是否来自退款
+                isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
+        //调用退积分接口
+        recordMemberTrade.updateUserEconomicData(scoreData);
+    }
 
     /**
      * 自动任务关闭订单
      */
-	public void autoCloseOrders(){
+    public void autoCloseOrders(){
         Result<OrderInfoRecord> orders = orderInfo.getCanAutoCloseOrders();
         orders.forEach(order->{
             OrderOperateQueryParam param = new OrderOperateQueryParam();

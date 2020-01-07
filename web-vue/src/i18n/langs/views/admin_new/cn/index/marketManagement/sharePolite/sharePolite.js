@@ -2,7 +2,7 @@ export const cn = {
   // 分享有礼
   addActivity: '添加分享有礼活动',
   userDaily: '用户每天可参与',
-  sharePoliteActivity: '次 分享有礼活动',
+  sharePoliteActivity: '次分享有礼活动',
   unlimited: '填写0表示不限制',
   save: '保存设置',
 

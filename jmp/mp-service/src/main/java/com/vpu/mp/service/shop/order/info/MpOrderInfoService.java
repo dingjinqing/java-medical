@@ -1,8 +1,12 @@
 package com.vpu.mp.service.shop.order.info;
 
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import java.util.Map;
-
+import com.google.common.collect.ImmutableMap;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -11,20 +15,18 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.ImmutableMap;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
-import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
  * mp端订单业务
- * 
+ *
  * @author 王帅 return
  *         不可变map,key为all,waitPay,waitDelivery,shipped,finished,returning
  *         value默认为0
- * 
+ *
  */
 @Service
 public class MpOrderInfoService extends OrderInfoService{
@@ -84,7 +86,7 @@ public class MpOrderInfoService extends OrderInfoService{
 				.build();
 		return result;
 	}
-	
+
 	/**
 	 * Map value type is Integer,set default value 0
 	 * @param countMap
@@ -97,8 +99,8 @@ public class MpOrderInfoService extends OrderInfoService{
 			return Integer.valueOf(0);
 		}
 		return temp;
-	} 
-	
+	}
+
 	/**
 	 * 是否包含子单
 	 * @param condition
@@ -107,9 +109,9 @@ public class MpOrderInfoService extends OrderInfoService{
 	 */
 	private Condition setIsContainSubOrder(Condition condition , boolean isContainSubOrder) {
 		return isContainSubOrder ? condition : condition.and(TABLE.MAIN_ORDER_SN.eq(StringUtils.EMPTY).or(TABLE.MAIN_ORDER_SN.eq(TABLE.ORDER_SN)));
-		
+
 	}
-	
+
 	/**
 	 * mp端订列表查询
 	 * @param param
@@ -120,9 +122,14 @@ public class MpOrderInfoService extends OrderInfoService{
 		buildOptions(select, param, false);
 		PageResult<OrderListMpVo> pageResult = getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderListMpVo.class);
 		return pageResult;
-		
+
 	}
-	
+	public void getOrderInfoList(List<String> orderList){
+		db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,ORDER_GOODS.GOODS_NAME).from(TABLE).leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.GOODS_ID))
+				.where(TABLE.ORDER_SN.in(orderList));
+
+	}
+
 	/**
 	 * 构造查询条件
 	 */
@@ -149,7 +156,7 @@ public class MpOrderInfoService extends OrderInfoService{
 			select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
 			break;
 		case OrderConstant.RETURNING:
-			//TODO 退款订单状态需要修改 
+			//TODO 退款订单状态需要修改
 			select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING));
 			break;
 		default:

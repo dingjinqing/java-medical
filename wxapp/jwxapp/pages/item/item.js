@@ -142,7 +142,7 @@ global.wxPage({
               specParams
             })
             this.setData({
-              goodsInfo:{
+              goodsInfo: {
                 ...goodsInfo,
                 ...this.getPrice(goodsInfo)
               }
@@ -187,9 +187,9 @@ global.wxPage({
   getProduct ({
     detail: {
       prdNumber,
-      limitBuyNum=null,
-      limitMaxNum=null,
-      activityType=null
+      limitBuyNum = null,
+      limitMaxNum = null,
+      activityType = null
     }
   }) {
     this.setData({
@@ -227,23 +227,27 @@ global.wxPage({
     products
   }) {
     if (!activity) return
+    let actBarInfo = {
+      actStatusName: this.getActStatusName(activity),
+      prdRealPrice: this.getActBarPrice(products, activity, 'prdRealPrice'),
+      prdLinePrice: this.getActBarPrice(products, activity, 'prdLinePrice'),
+    }
+    actBarInfo.actName = this.getActName(activity, actBarInfo)
     this.setData({
-      'actBarInfo.actName': this.getActName(activity),
-      'actBarInfo.actStatusName': this.getActStatusName(activity),
-      'actBarInfo.prdRealPrice': this.getActBarPrice(products,activity, 'prdRealPrice'),
-      'actBarInfo.prdLinePrice': this.getActBarPrice(products,activity, 'prdLinePrice')
+      actBarInfo
     })
     this.getCountDown(activity)
     if (activity.activityType === 1 && activity.groupBuyListMpVos.length > 0) {
       this.setListCountDown(activity.groupBuyListMpVos, 'groupBuyListMpVos')
     }
   },
-  
+
   // 获取actBar活动名称
   getActName ({
     activityType
-  }) {
+  }, actBarInfo) {
     if (!activityType) return null
+    if (activityType === 1) return `开团省${actBarInfo.prdLinePrice - actBarInfo.prdRealPrice}元`
     return actBaseInfo[activityType].actName
   },
   // 获取actBar活动状态
@@ -254,7 +258,7 @@ global.wxPage({
     return actBaseInfo[activityType]['actStatus'][actState] || null
   },
   // 获取actBar价格
-  getActBarPrice (products,activity, getPrice) {
+  getActBarPrice (products, activity, getPrice) {
     if (actBaseInfo[activity.activityType].multiSkuAct) {
       return this.getMin(activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
         let { [actBaseInfo[activity.activityType]['prdPriceName'][getPrice]]: price } = item;
@@ -279,14 +283,14 @@ global.wxPage({
   },
   // 倒计时
   countdown (total_micro_second, actState, activityType) {
-      this.actBartime=setInterval(()=>{
-        total_micro_second -= 1
-        let clock = total_micro_second <= 0 ? "已经截至" : util.dateformat(total_micro_second);
-        this.setData({
-          'actBarInfo.clock': clock
-        });
-        this.getActCanBuy(total_micro_second, actState, activityType)
-      },1000)
+    this.actBartime = setInterval(() => {
+      total_micro_second -= 1
+      let clock = total_micro_second <= 0 ? "已经截至" : util.dateformat(total_micro_second);
+      this.setData({
+        'actBarInfo.clock': clock
+      });
+      this.getActCanBuy(total_micro_second, actState, activityType)
+    }, 1000)
   },
   getActCanBuy (total_micro_second, actState, activityType) {
     const state = new Map([
@@ -323,19 +327,19 @@ global.wxPage({
   },
   // 设置列表倒计时
   setListCountDown (listData, target) {
-      this.listCountDown=setInterval(() => {
-        listData = listData.map((v, i) => {
-          if (v.remainTime <= 0) {
-            v.remainTime = 0;
-          }
-          v.remainTime -= 1;
-          v.countDown = this.dateformats(v.remainTime);
-          return v;
-        })
-        this.setData({
-          [target]: listData
-        });
-      }, 1000)
+    this.listCountDown = setInterval(() => {
+      listData = listData.map((v, i) => {
+        if (v.remainTime <= 0) {
+          v.remainTime = 0;
+        }
+        v.remainTime -= 1;
+        v.countDown = this.dateformats(v.remainTime);
+        return v;
+      })
+      this.setData({
+        [target]: listData
+      });
+    }, 1000)
   },
   dateformats: function (micro_second) {
     // 秒数
@@ -351,56 +355,72 @@ global.wxPage({
   goGroup (e) {
     util.jumpLink(`pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`, 'navigateTo')
   },
-  share(){
+  share () {
+    let activityData = {}
+    let { goodsId, singleRealPrice: realPrice, singleLinePrice: linePrice, goodsImgs } = this.data.goodsInfo
+    if (this.data.goodsInfo.activity != null) {
+      activityData.activityId = this.data.goodsInfo.activity.activityId
+      activityData.activityType = this.data.goodsInfo.activity.activityType
+    }
+    let shareData = {
+      goodsId,
+      realPrice,
+      linePrice,
+      goodsImgs,
+      ...activityData
+    }
+
     this.setData({
-      showShareDialog:true
+      shareData,
+      showShareDialog: true
     })
   },
   // 切换收藏
-  toogleCollect(){
-    let {goodsId,isCollected} = this.data.goodsInfo
+  toogleCollect () {
+    let { goodsId, isCollected } = this.data.goodsInfo
     const apiMap = new Map([
-      [true,{api:'/api/wxapp/cancel/collect',msg:'已取消',error:'取消失败'}],
-      [false,{api:'/api/wxapp/add/collect',msg:'收藏成功',error:'收藏失败'}]
+      [true, { api: '/api/wxapp/cancel/collect', msg: '已取消', error: '取消失败' }],
+      [false, { api: '/api/wxapp/add/collect', msg: '收藏成功', error: '收藏失败' }]
     ])
-    util.api(apiMap.get(isCollected).api,res=>{
-      if(res.error === 0){
+    util.api(apiMap.get(isCollected).api, res => {
+      if (res.error === 0) {
         util.toast_success(apiMap.get(isCollected).msg)
         this.setData({
-          'goodsInfo.isCollected':!isCollected
+          'goodsInfo.isCollected': !isCollected
         })
       } else {
         util.toast_fail(apiMap.get(isCollected).error)
       }
-    },{goodsId})
+    }, { goodsId })
   },
   // 获取最小值
-  getMin(arr) {
+  getMin (arr) {
     return Math.min(...arr);
   },
   // 获取最大值
-  getMax(arr) {
+  getMax (arr) {
     return Math.max(...arr);
   },
-  getPrice(data){
-    let {products,activity} = data
-    if(activity && actBaseInfo[activity.activityType].multiSkuAct) {
+  getPrice (data) {
+    let { products, activity } = data
+    if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
       products = activity[actBaseInfo[activity.activityType]['prdListName']]
     }
-    let {realPrice,linePrice} = products.reduce((defaultData,val)=>{
-        if(activity && actBaseInfo[activity.activityType].multiSkuAct){
-          var {[actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]:prdRealPrice,[actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]:prdLinePrice} = val
-        } else { 
-          var {prdRealPrice,prdLinePrice} = val
-        }
-        defaultData.realPrice.push(prdRealPrice)
-        defaultData.linePrice.push(prdLinePrice)
-        return defaultData
-    },{realPrice:[],linePrice:[]})
-    console.log(realPrice,linePrice)
+    let { realPrice, linePrice } = products.reduce((defaultData, val) => {
+      if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
+        var { [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice, [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice } = val
+      } else {
+        var { prdRealPrice, prdLinePrice } = val
+      }
+      defaultData.realPrice.push(prdRealPrice)
+      defaultData.linePrice.push(prdLinePrice)
+      return defaultData
+    }, { realPrice: [], linePrice: [] })
     return {
-      prdRealPrice:data.defaultPrd ? realPrice[0] : `${this.getMin(realPrice)}~${this.getMax(realPrice)}`,
-      prdLinePrice:data.defaultPrd ? linePrice[0] : `${this.getMin(linePrice)}~${this.getMax(linePrice)}`
+      prdRealPrice: data.defaultPrd ? realPrice[0] : `${this.getMin(realPrice)}~${this.getMax(realPrice)}`,
+      prdLinePrice: data.defaultPrd ? linePrice[0] : `${this.getMin(linePrice)}~${this.getMax(linePrice)}`,
+      singleRealPrice: this.getMin(realPrice),
+      singleLinePrice: this.getMin(linePrice)
     }
   },
   /**
@@ -434,20 +454,20 @@ global.wxPage({
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () { 
+  onReachBottom: function () {
     this.selectComponent('#recommend').requestData()
   },
-    
+
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    util.api('/api/wxapp/groupbuy/share/info',res=>{
+    util.api('/api/wxapp/groupbuy/share/info', res => {
       console.log(res)
-    },{
-        "activityId":38,
-        "realPrice":12,
-        "linePrice":30
+    }, {
+      "activityId": 38,
+      "realPrice": 12,
+      "linePrice": 30
     })
   }
 });

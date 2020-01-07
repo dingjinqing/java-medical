@@ -41,8 +41,23 @@ public class ModuleGoods extends ModuleBase {
     @JsonProperty("goods_display")
     private Byte goodsDisplay;
 
-//    @JsonProperty("goods_items")
-//    private List<Integer> goodsItems;
+    @JsonProperty("goods_items")
+    private List<PhpPointGoodsConverter> goodsItems;
+
+    /**
+     * php 数据迁移转化类，为了兼容php数据中的指定商品问题
+     */
+    public static class PhpPointGoodsConverter{
+        private Integer goodsId;
+
+        public Integer getGoodsId() {
+            return goodsId;
+        }
+
+        public void setGoodsId(Integer goodsId) {
+            this.goodsId = goodsId;
+        }
+    }
 
     @JsonProperty("goods_module_bg")
     private Byte goodsModuleBg;

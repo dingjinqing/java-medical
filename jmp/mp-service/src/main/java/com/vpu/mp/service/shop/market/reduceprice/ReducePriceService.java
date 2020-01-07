@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.reduceprice;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
 import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
@@ -9,7 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
@@ -56,6 +57,8 @@ public class ReducePriceService extends ShopBaseService {
 
     @Autowired
     GoodsService goodsService;
+    @Autowired
+    DomainConfig domainConfig;
     /**
      * 新建限时降价活动
      *
@@ -144,10 +147,13 @@ public class ReducePriceService extends ShopBaseService {
      */
     public ReducePriceVo getReducePriceById(Integer id){
         ReducePriceRecord record = db().select(REDUCE_PRICE.ID,REDUCE_PRICE.NAME,REDUCE_PRICE.START_TIME,REDUCE_PRICE.END_TIME,
-            REDUCE_PRICE.LIMIT_AMOUNT,REDUCE_PRICE.PERIOD_ACTION,REDUCE_PRICE.POINT_TIME,REDUCE_PRICE.EXTEND_TIME,REDUCE_PRICE.LIMIT_FLAG,REDUCE_PRICE.SHARE_CONFIG).
+            REDUCE_PRICE.LIMIT_AMOUNT,REDUCE_PRICE.PERIOD_ACTION,REDUCE_PRICE.POINT_TIME,REDUCE_PRICE.EXTEND_TIME,REDUCE_PRICE.LIMIT_FLAG,REDUCE_PRICE.FIRST,REDUCE_PRICE.SHARE_CONFIG).
             from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchOne().into(ReducePriceRecord.class);
         ReducePriceVo res = record.into(ReducePriceVo.class);
-        res.setShopShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
+        res.setShopShareConfig(Util.parseJson(record.getShareConfig(), PictorialShareConfigVo.class));
+        if(res.getShopShareConfig() != null && res.getShopShareConfig().getShareImg() != null){
+            res.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
+        }
         res.setReducePriceGoods(getReducePriceGoodsVoList(id));
 
         return res;

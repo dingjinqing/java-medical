@@ -350,28 +350,22 @@
                 align="center"
               >
                 <template slot-scope="scope">
-                  <inputEdit
-                    v-model="scope.row.productNumber"
-                    :disabled="ongoing"
-                    :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
-                    @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
-                  >
-                    <!-- <span slot="before">
-                      {{scope.row.productNumber}} /
-                    </span> -->
+                  <div style="display:flex;justify-content: center">
                     <span
                       slot="before"
-                      v-if="!scope.row.productNumber"
+                      style="margin-top:11px"
                     >
-                      {{scope.row.prdNumber}} / {{scope.row.prdNumber}}
+                      {{scope.row.prdNumber}} /&nbsp;
                     </span>
-                    <span
-                      slot="before"
-                      v-if="scope.row.productNumber"
+                    <inputEdit
+                      v-model="scope.row.productNumber"
+                      :disabled="ongoing"
+                      :init="Number(scope.row.offerNumber || 0) + Number(scope.row.productNumber)"
+                      @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
                     >
-                      {{scope.row.productNumber}} /
-                    </span>
-                  </inputEdit>
+
+                    </inputEdit>
+                  </div>
                 </template>
 
               </el-table-column>

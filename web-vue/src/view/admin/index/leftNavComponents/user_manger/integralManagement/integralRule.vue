@@ -666,7 +666,6 @@ export default {
     getScoreHandler () {
       getScoreConfigRequest().then((res) => {
         if (res.error === 0 && res.content) {
-          this.$message.success('获取积分配置')
           var data = res.content
           this.form.scoreLimit = data.scoreLimit
           this.form.scoreDay = data.scoreDay
@@ -701,6 +700,10 @@ export default {
             this.form.scoreEach = data.buyEachScore
             this.buyEach = this.form.buyEach[0]
             this.scoreEach = this.form.scoreEach[0]
+            this.shopFullArr.push({
+              left: null,
+              right: null
+            })
           }
 
           // 门店买单送积分
@@ -736,8 +739,10 @@ export default {
               this.form.score.push(item.right)
             })
           } else {
-            this.buyEach[0] = this.buyEach
-            this.scoreEach = this.scoreEach
+            console.log(this.buyEach)
+            this.form.buyEach[0] = this.buyEach
+            console.log(this.scoreEach)
+            this.form.scoreEach[0] = this.scoreEach
           }
           // 签到积分
           this.form.signScore = []

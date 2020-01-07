@@ -19,8 +19,12 @@
         <div class="shop_name">{{ data.shop_name }}</div>
         <div class="shop_desc">{{ data.shop_notice?data.shop_notice:'为您的店铺发些公告吧~' }}</div>
         <div class="shop_logo">
-          <img
+          <!-- <img
             :src="imageHost + data.bg_url"
+            alt=""
+          > -->
+          <img
+            :src="data.shop_bg_path"
             alt=""
           >
         </div>
@@ -64,7 +68,6 @@
   </div>
 </template>
 <script>
-
 export default {
   props: {
     flag: Number, // 模块公共

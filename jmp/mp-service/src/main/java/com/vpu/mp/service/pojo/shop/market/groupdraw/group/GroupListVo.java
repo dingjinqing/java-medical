@@ -20,6 +20,8 @@ public class GroupListVo {
     private Timestamp openTime;
     /** 成团时间 **/
     private Timestamp endTime;
+    /** 团长id **/
+    private Integer grouperId;
     /** 团长昵称 **/
     private String grouperName;
     /** 团长手机号 **/

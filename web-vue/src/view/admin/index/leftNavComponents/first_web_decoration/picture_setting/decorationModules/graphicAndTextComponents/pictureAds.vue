@@ -33,11 +33,14 @@
             :style="(moduleSavedata.image_type==='1'&&(index===0||index===1))?`display:flex;width:50%;margin-top:${moduleSavedata.image_space}px`:moduleSavedata.image_type==='1'?'display:flex;width:50%;':(moduleSavedata.image_type==='2'&&index===0)?`display:flex;width:70%;margin-right:${moduleSavedata.image_space}px`:(moduleSavedata.image_type==='2'&&index===1)?'display:flex;width:30%':((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===0)?'display:flex;width:40%':((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===1)?`display:flex;width:40%;margin:0 ${moduleSavedata.image_space}px`:((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===2)?'display:flex;width:20%':(moduleSavedata.image_type==='0'&&index===0)?`margin:${moduleSavedata.image_space}px 0`:`margin-bottom:${moduleSavedata.image_space}px`"
           >
             <img
-              :style="moduleSavedata.image_type==='0'?'width:378px':moduleSavedata.image_type==='4'?'width:100%;height:70px':(moduleSavedata.image_type==='1'&&index%2===0)?`width:100%;height:100%;padding-bottom:${moduleSavedata.image_space}px;padding-right:${moduleSavedata.image_space/2}px`:(moduleSavedata.image_type==='1'&&index%2!==0)?`width:100%;height:100%;padding-bottom:${moduleSavedata.image_space}px;padding-left:${moduleSavedata.image_space/2}px`:'width:100%;height:100%'"
-              :src="item.image"
+              :style="moduleSavedata.image_type==='0'?'width:378px;height:378px;':moduleSavedata.image_type==='4'?'width:100%;height:70px':(moduleSavedata.image_type==='1'&&index%2===0)?`width:100%;height:100%;padding-bottom:${moduleSavedata.image_space}px;padding-right:${moduleSavedata.image_space/2}px`:(moduleSavedata.image_type==='1'&&index%2!==0)?`width:100%;height:100%;padding-bottom:${moduleSavedata.image_space}px;padding-left:${moduleSavedata.image_space/2}px`:'width:100%;height:100%'"
+              :src="$imageHost+'/'+item.image"
               v-if="moduleSavedata.image_type==='2'?!(moduleSavedata.image_type==='2'&&index>1):moduleSavedata.image_type==='3'?!(moduleSavedata.image_type==='3'&&index>2):moduleSavedata.image_type==='4'?!(moduleSavedata.image_type==='4'&&index>2):true"
             >
-            <p v-if="item.title">{{item.title}}</p>
+            <p
+              :style="'bottom:'+moduleSavedata.image_space+'px'"
+              v-if="item.title"
+            >{{item.title}}</p>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ export const cn = {
   secondPrize: '二等奖',
   thirdPrize: '三等奖',
   fourthPrize: '四等奖',
+  lotteryIsSet: '抽奖设置',
   lotteryIsSetTips1: '不同等级分别设置不同的奖项、每个奖项的份数和中奖概率，四个等级中奖概率之和小于等于100%。',
   lotteryIsSetTips2: '例如：一等奖1份，中奖概率为2%；二等奖2份，中奖概率为3%；三等奖3份，中奖概率为4%；四等奖4份，中奖概率为5%。则用户A抽奖时，中奖概率为（2%+3%+4%+5%）=14%。',
   prizeRate: '中奖概率',
@@ -153,5 +154,14 @@ export const cn = {
   newUserNickname: '新用户昵称',
   newUserMobile: '新用户手机号',
   registrationTime: '注册时间',
-  userNickname: '用户昵称'
+  userNickname: '用户昵称',
+  validName: '请填写活动名称！',
+  validStartTime: '请填写生效时间！',
+  validEndTime: '请填写过期时间！',
+  validDesc: '请填写活动说明！',
+  validTime: '结束时间必须大于开始时间',
+  validScore: '请填写赠送积分',
+  validBounsAmount: '请填写赠送金额',
+  validCoupon: '请选择优惠券',
+  validGivea: '请选择赠品'
 }

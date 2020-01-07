@@ -3,12 +3,15 @@ package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PromotionBase;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -70,6 +73,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     /** 详情页所指定的营销活动 */
     private GoodsActivityBaseMp activity;
 
+    /**商品促销活动列表*/
+    Map<Byte,List<PromotionBase>> promotions = new HashMap();
     //**********服务承诺
     /**
      * 服务承诺是否开启

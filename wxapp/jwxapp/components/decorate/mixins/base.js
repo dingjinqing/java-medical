@@ -12,7 +12,7 @@ var base = {
         if (typeof this.onPropChange == 'function') {
           if (newVal) this.onPropChange(newVal, oldVal, changedPath);
         }
-        console.log(newVal)
+        // console.log(newVal)
         var data = {
           m: newVal
         };
@@ -20,10 +20,10 @@ var base = {
           // main_setting 为主配置信息，即init.js初始化的信息
           var setting = newVal.main_setting;
           delete newVal.main_setting;
-          console.log(setting)
+          // console.log(setting)
           data = Object.assign({}, data, setting);
         }
-        console.log(data)
+        // console.log(data)
         // console.log("observer:newVal", newVal, "data:", data, "changedPath:", changedPath);
         this.setData(data);
       }
@@ -70,7 +70,7 @@ var base = {
           // 处理价格上方显示的label条
           this.handleToActivitiesLabel(item, itemC, arr)
         })
-        console.log(arr)
+        // console.log(arr)
         let newArr = []
         let specArr = []
         arr.forEach(item => {
@@ -86,7 +86,7 @@ var base = {
         }
         item.activityLabelData = newArr
       })
-      console.log(goodsData)
+      // console.log(goodsData)
     },
     // 处理价格上方显示的label条
     handleToActivitiesLabel (item, itemC, arr) {
@@ -133,7 +133,7 @@ var base = {
         arr.push(obj)
       }
 
-      console.log(item, itemC)
+      // console.log(item, itemC)
     }
   }
 };

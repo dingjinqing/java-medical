@@ -63,7 +63,8 @@ public class RabbitConfig {
     /*************好物圈队列end************/
     /**ElasticSearch--商品标签*/
     public static final String QUEUE_ES_LABEL = "es.label";
-
+    /**读取Excel */
+    public static final String QUEUE_EXCEL = "mq.excel";
     /**
      * 路由和队列的对应关系是1:n不是1:1(路由按照模块区分)
      */
@@ -105,6 +106,8 @@ public class RabbitConfig {
     /*************好物圈队列end************/
     /**商品标签缓存数据一致性*/
     public static final String BINDING_EXCHANGE_ES_GOODS_LABEL_KEY = "bind.es.goods.label";
+    /**读Excel */
+    public static final String BINDING_EXCHANGE_OTHER_KEY = "other.read.excel";
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -230,6 +233,11 @@ public class RabbitConfig {
     public Queue cacheGoodsLabelWithQueue() {
         return new Queue(QUEUE_ES_LABEL,true,false,false);
     }
+    
+    @Bean
+    public Queue excelQueue() {
+        return new Queue(QUEUE_EXCEL,true,false,false);
+    }
     /**
      * 1.路由名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
@@ -329,4 +337,9 @@ public class RabbitConfig {
     public Binding bindingCacheGoodsLabel() {
         return BindingBuilder.bind(cacheGoodsLabelWithQueue()).to(esExchange()).with(BINDING_EXCHANGE_ES_GOODS_LABEL_KEY);
     }
+    @Bean
+    public Binding bindingExcelSome() {
+    	   return BindingBuilder.bind(excelQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_OTHER_KEY);
+    }
+    
 }

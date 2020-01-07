@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.market.fullcut.*;
+import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
@@ -110,17 +111,30 @@ public class MrkingStrategyService extends ShopBaseService {
      *
      */
     public MrkingStrategyVo getMrkingStrategyById(Integer id){
-        MrkingStrategyRecord record = db().select(MRKING_STRATEGY.ID,MRKING_STRATEGY.ACT_NAME,MRKING_STRATEGY.TYPE,MRKING_STRATEGY.ACT_TYPE,MRKING_STRATEGY.START_TIME,MRKING_STRATEGY.END_TIME,MRKING_STRATEGY.STATUS,MRKING_STRATEGY.RECOMMEND_GOODS_ID,MRKING_STRATEGY.CARD_ID).
-            from(MRKING_STRATEGY).where(MRKING_STRATEGY.ID.eq(id)).fetchOne().into(MrkingStrategyRecord.class);
+        MrkingStrategyRecord record = db().selectFrom(MRKING_STRATEGY).where(MRKING_STRATEGY.ID.eq(id)).fetchAny();
         MrkingStrategyVo res = record.into(MrkingStrategyVo.class);
 
-        if(record.getRecommendGoodsId() != null){
-            List<GoodsView> goods = saas().getShopApp(getShopId()).goods.selectGoodsViewList(Util.stringToList(record.getRecommendGoodsId()));
-            res.setRecommendGoods(goods);
+        if(StringUtil.isNotEmpty(record.getRecommendGoodsId())){
+            res.setRecommendGoodsIds(Util.splitValueToList(record.getRecommendGoodsId()));
+            res.setRecommendGoods(saas().getShopApp(getShopId()).goods.selectGoodsViewList(Util.stringToList(record.getRecommendGoodsId())));
         }
-        if(record.getCardId() != null){
+        if(StringUtil.isNotEmpty(record.getCardId())){
+            res.setCardIds(Util.splitValueToList(record.getCardId()));
             res.setMemberCards(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIdsString(record.getCardId()));
         }
+        if(StringUtil.isNotEmpty(record.getRecommendCatId())){
+            res.setRecommendCatIds(Util.splitValueToList(record.getRecommendCatId()));
+            res.setRecommendCat(saas.sysCate.getList(res.getRecommendCatIds()));
+        }
+        if(StringUtil.isNotEmpty(record.getRecommendBrandId())){
+            res.setRecommendBrandIds(Util.splitValueToList(record.getRecommendBrandId()));
+            res.setRecommendBrand(saas.getShopApp(getShopId()).goods.goodsBrand.getGoodsBrandVoById(res.getRecommendBrandIds()));
+        }
+        if(StringUtil.isNotEmpty(record.getRecommendSortId())){
+            res.setRecommendSortIds(Util.splitValueToList(record.getRecommendSortId()));
+            res.setRecommendSort(saas.getShopApp(getShopId()).goods.goodsSort.getListByIds(res.getRecommendSortIds()));
+        }
+
         res.setCondition(this.getMrkingStrategyCondition(record.getId()));
 
         return res;

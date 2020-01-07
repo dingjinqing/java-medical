@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record17;
+import org.jooq.Record18;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -73,13 +74,13 @@ public class GroupDrawService extends ShopBaseService {
     /**
      * 更新活动
      */
-    public void updateGroupDraw(Integer id, GroupDrawUpdateParam param) {
+    public void updateGroupDraw( GroupDrawUpdateParam param) {
         db().update(GROUP_DRAW).set(GROUP_DRAW.NAME, param.getName()).set(GROUP_DRAW.START_TIME,
             param.getStartTime()).set(GROUP_DRAW.END_TIME, param.getEndTime()).set(GROUP_DRAW.JOIN_LIMIT,
             param.getJoinLimit()).set(GROUP_DRAW.LIMIT_AMOUNT, param.getLimitAmount()).set(GROUP_DRAW.OPEN_LIMIT,
             param.getOpenLimit()).set(GROUP_DRAW.MIN_JOIN_NUM, param.getMinJoinNum()).set(GROUP_DRAW.PAY_MONEY,
             param.getPayMoney()).set(GROUP_DRAW.TO_NUM_SHOW, param.getToNumShow())
-            .where(GROUP_DRAW.ID.eq(id)).execute();
+            .where(GROUP_DRAW.ID.eq(param.getId())).execute();
     }
 
     /**
@@ -88,8 +89,8 @@ public class GroupDrawService extends ShopBaseService {
     public GroupDrawListVo getGroupDrawById(Integer id) {
         GroupDrawListParam param = new GroupDrawListParam();
         param.setId(id);
-        SelectConditionStep<Record17<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short,
-            Short, Byte, Short, Integer, Integer, Integer, String, Integer>> select = createSelect(param);
+        SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short,
+            Short, Byte, Short, Integer, Integer, Integer, String, String,Integer>> select = createSelect(param);
         GroupDrawListVo vo = select.fetchOne().into(GroupDrawListVo.class);
         transformStatus(vo);
         return vo;
@@ -99,8 +100,8 @@ public class GroupDrawService extends ShopBaseService {
      * 列表查询
      */
     public PageResult<GroupDrawListVo> getGroupDrawList(GroupDrawListParam param) {
-        SelectConditionStep<Record17<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short,
-            Short, Byte, Short, Integer, Integer, Integer, String, Integer>> select = createSelect(param);
+        SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short,
+            Short, Byte, Short, Integer, Integer, Integer, String, String,Integer>> select = createSelect(param);
         PageResult<GroupDrawListVo> result = getPageResult(select, param, GroupDrawListVo.class);
         List<GroupDrawListVo> dataList = result.getDataList();
         transformStatus(dataList);
@@ -110,28 +111,31 @@ public class GroupDrawService extends ShopBaseService {
     /**
      * 通用查询
      */
-    private SelectConditionStep<Record17<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short,
-        Short, Byte, Short, Integer, Integer, Integer, String, Integer>> createSelect(GroupDrawListParam param) {
-        SelectConditionStep<Record17<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short,
-            Byte, Short, Integer, Integer, Integer, String, Integer>> select = db().select(GROUP_DRAW.ID, GROUP_DRAW.NAME,
+    private SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short,
+        Short, Byte, Short, Integer, Integer, Integer, String, String,Integer>> createSelect(GroupDrawListParam param) {
+        SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short,
+                    Byte, Short, Integer, Integer, Integer, String,String, Integer>> select = db().select(GROUP_DRAW.ID, GROUP_DRAW.NAME,
             GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW, GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY,
             GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM, GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS,
             GROUP_DRAW.TO_NUM_SHOW, DSL.count(JOIN_DRAW_LIST.USER_ID).as("joinUserCount"),
             DSL.count(JOIN_GROUP_LIST.USER_ID).filterWhere(JOIN_GROUP_LIST.STATUS.eq((byte) 1)).as("groupUserCount"),
-            DSL.countDistinct(JOIN_GROUP_LIST.GROUP_ID).as("groupCount"), GROUP_DRAW.GOODS_ID,
+            DSL.countDistinct(JOIN_GROUP_LIST.GROUP_ID).as("groupCount"), GROUP_DRAW.GOODS_ID,GROUP_DRAW.REWARD_COUPON_ID,
             DSL.countDistinct(JOIN_DRAW_LIST.USER_ID).filterWhere(JOIN_DRAW_LIST.IS_WIN_DRAW.eq((byte) 1)).as("drawUserCount"))
             .from(GROUP_DRAW).leftJoin(JOIN_GROUP_LIST).on(GROUP_DRAW.ID.eq(JOIN_GROUP_LIST.GROUP_DRAW_ID))
             .leftJoin(JOIN_DRAW_LIST).on(GROUP_DRAW.ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)).where();
         buildOptions(select, param);
-        select.groupBy(GROUP_DRAW.ID);
+        select.groupBy(GROUP_DRAW.ID,GROUP_DRAW.NAME,
+            GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW, GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY,
+            GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM, GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS,
+            GROUP_DRAW.TO_NUM_SHOW,GROUP_DRAW.GOODS_ID,GROUP_DRAW.REWARD_COUPON_ID);
         return select;
     }
 
     /**
      * 查询条件
      */
-    private void buildOptions(SelectConditionStep<Record17<Integer, String, Timestamp, Timestamp, Byte, Short,
-        BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, Integer>> select,
+    private void buildOptions(SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short,
+        BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String,Integer>> select,
                               GroupDrawListParam param) {
         String name = param.getActivityName();
         LocalDate startTime = param.getStartTime();
@@ -190,6 +194,7 @@ public class GroupDrawService extends ShopBaseService {
         Timestamp startTime = vo.getStartTime();
         Timestamp endTime = vo.getEndTime();
         String goodsId = vo.getGoodsId();
+        String couponId = vo.getRewardCouponId();
         // 活动状态判断
         switch (status) {
             case GROUP_DRAW_ENABLED:
@@ -209,6 +214,9 @@ public class GroupDrawService extends ShopBaseService {
         int goodsCount = goodsId.split(",").length;
         vo.setGoodsCount(goodsCount);
         vo.setGoodsIds(stringToList(goodsId));
+        if(null!=couponId){
+            vo.setCouponIds(stringToList(couponId));
+        }
     }
 
     /**

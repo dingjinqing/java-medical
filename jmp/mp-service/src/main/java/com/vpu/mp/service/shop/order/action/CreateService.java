@@ -233,9 +233,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 order.store();
-                if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
-
-                }
                 orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
@@ -245,11 +242,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
                     (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
-                    //货到付款、余额、积分(非微信混合)付款，订单生效(不再调用微信支付)时营销活动后续处理
-                    marketProcessorFactory.processOrderEffective(param,order);
-
                     //加锁
                     atomicOperation.addLock(orderBo.getOrderGoodsBo());
+                    //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
+                    marketProcessorFactory.processOrderEffective(param,order);
                     logger().info("加锁{}",order.getOrderSn());
                     atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
                     logger().info("更新成功{}",order.getOrderSn());
@@ -283,7 +279,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderAfterRecord.getOrderSn(), orderAfterRecord.getMoneyPaid(), orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
-            return ExecuteResult.create(e.getErrorCode(), null);
+            return ExecuteResult.create(e.getErrorCode());
         }
     }
 
@@ -388,8 +384,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
         }
-        //删除赠品
-        ListIterator<Goods> goodsListIterator = param.getGoods().listIterator();
+
 
     }
     /**
@@ -400,7 +395,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void initGoodsByParam(List<Goods> goods) {
         // TODO 以下参数为模拟参数
         for (Goods temp : goods) {
-            // 商品参与的促销活动id
+            // 满折满减
             temp.setStraId(null);
             // 购买价格id
             temp.setPurchasePriceId(null);
