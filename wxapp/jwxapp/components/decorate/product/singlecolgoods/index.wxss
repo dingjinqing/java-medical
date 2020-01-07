@@ -23,8 +23,8 @@
   }
   
   .single_column .product-image image {
-    height: 280rpx;
-    width: 280rpx;
+    height: 280rpx !important;
+    width: 280rpx !important;
     margin: 0 auto;
     overflow: hidden;
     position: relative;
