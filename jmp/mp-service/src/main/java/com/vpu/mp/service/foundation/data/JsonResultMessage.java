@@ -465,8 +465,9 @@ public class JsonResultMessage {
 	public static final String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
 	public static final String OVERVIEW_USER_ANALYSIS_RFM_NULL = "overview.user.analysis.rfm.null";
 	public static final String OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL = "overview.yesterday.analysis.data.null";
+    public static final String ASSETS_EXPORT_FILE_NAME = "assets.export.file_name";
 
-	/**
+    /**
 	 * 订单
 	 */
     public static final String MSG_ORDER = "order";
