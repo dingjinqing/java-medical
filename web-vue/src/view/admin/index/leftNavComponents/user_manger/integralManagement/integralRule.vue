@@ -674,7 +674,12 @@ export default {
           this.form.scoreLimitNumber = data.scoreLimitNumber
           this.form.scorePeriod = data.scorePeriod
 
-          this.form.scorePayLimit = data.scorePayLimit
+          if (data.scorePayLimit === null) {
+            this.form.scorePayLimit = '0'
+          } else {
+            this.form.scorePayLimit = data.scorePayLimit
+          }
+
           this.form.scorePayNum = data.scorePayNum
           this.form.scoreDiscountRatio = data.scoreDiscountRatio
 
@@ -684,17 +689,24 @@ export default {
           this.shopFullArr = []
           if (this.form.scoreType === '0') {
             this.form.buy = data.buy
-            data.buy.forEach((item, index) => {
-              this.shopFullArr.push({ left: item })
-            })
-            this.form.score = data.buyScore
-            this.shopFullArr.forEach((val, key) => {
-              data.buyScore.forEach((item, index) => {
-                if (key === index) {
-                  val.right = item
-                }
+            if (this.form.buy.length === 0) {
+              this.shopFullArr = [{
+                left: 100,
+                right: 100
+              }]
+            } else {
+              data.buy.forEach((item, index) => {
+                this.shopFullArr.push({ left: item })
               })
-            })
+              this.form.score = data.buyScore
+              this.shopFullArr.forEach((val, key) => {
+                data.buyScore.forEach((item, index) => {
+                  if (key === index) {
+                    val.right = item
+                  }
+                })
+              })
+            }
           } else {
             this.form.buyEach = data.buyEach
             this.form.scoreEach = data.buyEachScore
@@ -717,9 +729,15 @@ export default {
           this.form.signInScore = data.signInScore
           this.form.signScore = data.signScore
           this.signInput = []
-          data.signScore.forEach((item, index) => {
-            this.signInput.push({ input: item })
-          })
+          if (data.signScore.length === 0) {
+            this.signInput = [{
+              input: 10
+            }]
+          } else {
+            data.signScore.forEach((item, index) => {
+              this.signInput.push({ input: item })
+            })
+          }
 
           console.log(this.form)
         }
