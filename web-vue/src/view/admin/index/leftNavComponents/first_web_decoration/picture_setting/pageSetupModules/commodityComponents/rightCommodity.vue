@@ -844,7 +844,7 @@ export default {
     // 监控该模块右边数据操作
     copyData: {
       handler (newData, oldData) {
-        console.log(newData)
+        console.log(newData, oldData)
         console.log('触发')
         // 判断是否是模块推荐中的数据改变
         let judgeChangeFlag = this.handleToJudgeDataChange(newData, oldData)
@@ -882,6 +882,8 @@ export default {
           //   // callBackData.goodsListData = this.temporaryStorageGoods
           //   // this.$emit('handleToBackData', callBackData)
           // }
+        } else {
+          this.$emit('handleToBackData', callBackData)
         }
         this.initRequestFlag = true
         console.log(styleParams)
@@ -1184,7 +1186,7 @@ export default {
     },
     // 商品模块颜色自定义重置点击
     handleToReset () {
-      this.data.goods_bg_color = null
+      this.data.goods_bg_color = '#f5f5f5'
     },
     // 模块推荐商品列表icon点击统一处理
     handleToClickOpera (index, flag) {

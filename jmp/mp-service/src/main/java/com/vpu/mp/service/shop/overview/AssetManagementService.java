@@ -236,7 +236,9 @@ public class AssetManagementService extends ShopBaseService {
      * @param param 导出数据筛选条件
      */
     public Workbook export2Excel(AssetDetailParam param) {
-        List<AssetDetailExportVo> list = getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc()).fetchInto(AssetDetailExportVo.class);
+        List<AssetDetailExportVo> list = getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc())
+            .limit(param.getExportRowStart(), param.getExportRowEnd())
+            .fetchInto(AssetDetailExportVo.class);
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(workbook);
         excelWriter.writeModelList(list, AssetDetailExportVo.class);

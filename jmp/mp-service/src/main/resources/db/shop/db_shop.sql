@@ -771,6 +771,7 @@ CREATE TABLE `b2c_distributor_apply` (
   `config_fields` varchar(500)  DEFAULT NULL COMMENT '审核字段',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `is_auto_pass` tinyint(2) NOT NULL DEFAULT 0 COMMENT '审核类型 0：手动审核；1"自动审核',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
 )COMMENT='分销原申请记录';
@@ -960,7 +961,7 @@ CREATE TABLE `b2c_free_shipping` (
   `expire_type` tinyint(1) DEFAULT '0' COMMENT '0:固定日期 1：永久有效',
   `start_time` datetime DEFAULT NULL COMMENT '开始时间',
   `end_time` datetime DEFAULT NULL COMMENT '结束时间',
-  `type` int(11) NOT NULL COMMENT '条件 0全部 1部分',
+  `type` tinyint(1) NOT NULL COMMENT '条件 1全部 0部分',
   `recommend_goods_id` text  COMMENT '指定商品可用',
   `recommend_cat_id` text  COMMENT '指定分类可用',
   `recommend_sort_id` text  COMMENT '指定商家分类可用',

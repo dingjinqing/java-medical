@@ -52,15 +52,18 @@
           label="优惠规则"
           align="center"
         >
-          <template slot-scope="scope">
+          <template slot-scope="{ row }">
             <div
-              v-for="(item, index) in scope.row.condition"
+              v-for="(item, index) in row.condition"
               :key="index"
             >
-              满{{item.fullMoney}}元减{{item.reduceMoney}}
-              <!-- 满{{item.fullMoney}}元打{{item.discount}}折
-              满{{item.fullMoney}}件减{{item.reduceMoney}}
-              每满{{item.fullMoney}}件减{{iteme.reduceMoney}} -->
+              <span v-if="row.type == 2 && item.fullMoney && item.reduceMoney">满{{item.fullMoney}}元减{{item.reduceMoney}}</span>
+              <span v-else-if="row.type == 2 && item.amount && item.reduceMoney">满{{item.amount}}件减{{item.reduceMoney}}</span>
+              <span v-else-if="row.type == 1">每满{{item.fullMoney}}元减{{item.reduceMoney}}</span>
+              <span v-else-if="row.type == 3 && item.fullMoney && item.discount">满{{item.fullMoney}}元打{{item.discount}}折</span>
+              <span v-else-if="row.type == 3 && item.amount && item.discount">满{{item.fullMoney}}件打{{item.discount}}折</span>
+              <span v-else-if="row.type == 4">第{{item.amount}}件,打{{iteme.discount}}折</span>
+              <span v-else>{{row.type}}</span>
             </div>
           </template>
         </el-table-column>
@@ -181,17 +184,22 @@ export default {
       }).catch(err => console.log(err))
     },
     formatStatus (row, column) {
+      let type = ''
       switch (row.type) {
-        case 1: row.type = '每满减'
+        case 1:
+          type = '每满减'
           break
-        case 2: row.type = '满减'
+        case 2:
+          type = '满减'
           break
-        case 3: row.type = '满折'
+        case 3:
+          type = '满折'
           break
-        case 4: row.type = '仅第X件打折'
+        case 4:
+          type = '仅第X件打折'
           break
       }
-      return row.type
+      return type
     },
     addActivity (id) {
       this.$router.push({

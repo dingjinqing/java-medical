@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectOnConditionStep;
@@ -377,8 +378,16 @@ public class GroupIntegrationListService extends ShopBaseService {
 			select.and(GROUP_INTEGRATION_LIST.END_TIME.le(param.getEndTime()));
 		}
 		return select;
-	}	
-	
-	
+	}
+
+    /**
+     * 正在拼团中的、是团长的groupId
+     * @param userId
+     * @param actId
+     * @return
+     */
+	public int getExistGroup(int userId,int actId){
+	    return db().select(GROUP_INTEGRATION_LIST.GROUP_ID).from(GROUP_INTEGRATION_LIST.leftJoin(GROUP_INTEGRATION_DEFINE).on(GROUP_INTEGRATION_DEFINE.ID.eq(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID))).where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GROUP_INTEGRATION_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_INTEGRATION_LIST.STATUS.eq(Status.UNDERWAY.value())).and(GROUP_INTEGRATION_LIST.IS_GROUPER.eq(IsGrouper.TRUE.value())).and(GROUP_INTEGRATION_LIST.USER_ID.eq(userId)).and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId))).fetchOptionalInto(Integer.class).orElse(0);
+    }
 }
 
