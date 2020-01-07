@@ -2,6 +2,7 @@ package com.vpu.mp.auth;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,6 @@ import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;

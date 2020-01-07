@@ -4088,7 +4088,7 @@ CREATE TABLE `b2c_user` (
   `user_grade` int(11) NOT NULL DEFAULT '1' COMMENT '会员级别',
   `invite` int(10) NOT NULL DEFAULT '0',
   `invite_source` varchar(32)  DEFAULT NULL COMMENT '邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖',
-  `invitation_code` int(8) NOT NULL DEFAULT '0' COMMENT '邀请码',
+  `invitation_code` varchar(32) NOT NULL DEFAULT '0' COMMENT '邀请码',
   `account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户余额',
   `discount` int(11) NOT NULL DEFAULT '0' COMMENT '折扣',
   `discount_grade` int(11) NOT NULL DEFAULT '0' COMMENT '会员折扣等级',

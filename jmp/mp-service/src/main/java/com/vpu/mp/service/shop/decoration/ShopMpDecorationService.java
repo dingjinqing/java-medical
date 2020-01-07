@@ -760,12 +760,14 @@ public class ShopMpDecorationService extends ShopBaseService {
     private ModuleImageAdver convertImageAdverForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
         boolean isNewUser = saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(user.getUserId());
-        moduleImageAdver.getImageList().forEach(img->{
+        Iterator<ModuleImageAdver.ImageAdItem> it = moduleImageAdver.getImageList().iterator();
+        while (it.hasNext()){
+            ModuleImageAdver.ImageAdItem img = it.next();
             if(img.getCanShow() == 1 && !isNewUser){
-                moduleImageAdver.getImageList().remove(img);
+               it.remove();
             }
             img.setImage(domainConfig.imageUrl(img.getImage()));
-        });
+        }
         return moduleImageAdver;
     }
 
@@ -826,6 +828,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                             return this.convertBargainForModule(objectMapper, node, user);
                         case ModuleConstant.M_SECKILL:
                             return this.convertSeckillForModule(objectMapper, node, user);
+                        case ModuleConstant.M_PIN_INTEGRATION:
+                            return  this.convertPinIntegrationForModule(objectMapper, node, user);
                         //TODO case
                     }
                 }
@@ -936,6 +940,23 @@ public class ShopMpDecorationService extends ShopBaseService {
 
         // 转换实时信息
         return seckillService.getPageIndexSeckill(moduleSecKill);
+    }
+
+    /**
+     * 瓜分积分模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModulePinIntegeration convertPinIntegrationForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModulePinIntegeration modulePinIntegeration = objectMapper.readValue(node.getValue().toString(), ModulePinIntegeration.class);
+
+        // 转换实时信息
+        //return seckillService.getPageIndexSeckill(moduleSecKill);
+        return null;
     }
 
     /**

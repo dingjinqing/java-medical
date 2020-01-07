@@ -65,12 +65,12 @@
 
 .slide_big {
   white-space: nowrap;
-  height: 250rpx;
+  /* height: 250rpx; */
 }
 
 .slide_big .each_big {
   width: 300rpx;
-  height: 250rpx;
+  /* height: 250rpx; */
   display: inline-block;
   position: relative;
   overflow: hidden;
@@ -79,19 +79,19 @@
 .slide_big .each_big .image {
   width: 300rpx;
   height: 250rpx;
-  vertical-align: top;
+  /* vertical-align: top; */
 }
 
 /*滑动（小） */
 
 .slide_small {
   white-space: nowrap;
-  height: 200rpx;
+  /* height: 200rpx; */
 }
 
 .slide_small .each_small {
   width: 250rpx;
-  height: 200rpx;
+  /* height: 200rpx; */
   display: inline-block;
   position: relative;
   overflow: hidden;
@@ -112,7 +112,7 @@
 
 .slide_nav .each_nav {
   width: 200rpx;
-  height: 150rpx;
+  /* height: 150rpx; */
   display: inline-block;
   position: relative;
   overflow: hidden;

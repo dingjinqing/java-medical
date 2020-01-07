@@ -1,11 +1,11 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
