@@ -231,7 +231,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 					currentGoodsReturnMoney = BigDecimalUtil.multiplyOrDivide(
 							BigDecimalPlus.create(returnOrder.getMoney(),Operator.multiply),
 							BigDecimalPlus.create(goods.getDiscountedGoodsPrice(),Operator.multiply),
-							BigDecimalPlus.create(BigDecimal.valueOf(goods.getGoodsNumber()),Operator.Divide),
+							BigDecimalPlus.create(BigDecimal.valueOf(goods.getGoodsNumber()),Operator.divide),
 							BigDecimalPlus.create(totalCanReturnMoney,null));
 				}
 			}

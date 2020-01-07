@@ -1076,6 +1076,8 @@ export default {
     getShopInfo () {
       shopInfoRequest().then((res) => {
         if (res.error === 0) {
+          localStorage.setItem('V-shopName', res.content.shopName)
+          localStorage.setItem('V-shopAvatar', res.content.shopAvatar)
           this.shopInfo = res.content
           switch (this.shopInfo.shopType) {
             case 'v1':

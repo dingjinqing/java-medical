@@ -20,9 +20,11 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.base.BaseMarketingBaseVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.shop.activity.processor.FullReductionProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -74,7 +76,8 @@ public class Calculate extends ShopBaseService {
     private UserLoginRecordService userLoginRecordService;
     @Autowired
     private ShopReturnConfigService returnCfg;
-
+    @Autowired
+    private FullReductionProcessor fullReductionProcessor;
 
     /**
      * 计算订单商品折扣金额
@@ -85,7 +88,7 @@ public class Calculate extends ShopBaseService {
      * @return 折扣总额
      */
     public BigDecimal calculateOrderGoodsDiscount(BaseMarketingBaseVo mbv, List<OrderGoodsBo> bos, Byte mType) {
-        logger().info("计算订单商品折扣金额start,营销活动:{},商品:{},活动类型（0会员卡，1优惠卷）：{}", mbv, bos, mType);
+        logger().info("计算订单商品折扣金额start,营销活动:{},商品:{},活动类型（0会员卡，1优惠卷，2满折满减）：{}", mbv, mbv.getBos(), mType);
         if (mbv == null || CollectionUtils.isEmpty(mbv.getBos()) || !mbv.checkRatio()) {
             return BigDecimal.ZERO;
         }
@@ -159,6 +162,9 @@ public class Calculate extends ShopBaseService {
                     defaultMarketing.getCard().setBos(new ArrayList<>());
                 }
                 defaultMarketing.getCard().getBos().add(bo);
+            }
+            if (OrderConstant.D_T_FULL_REDUCE.equals(discountType) && bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) {
+                continue;
             }
             //数量
             tolalNumberAndPrice[BY_TYPE_TOLAL_NUMBER] = BigDecimalUtil.add(tolalNumberAndPrice[0], BigDecimal.valueOf(bo.getGoodsNumber()));
@@ -635,7 +641,7 @@ public class Calculate extends ShopBaseService {
 
         //限时降价
 
-        //会员价
+        //会员等级价
         if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice() != null){
             return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice(), ACTIVITY_TYPE_MEMBER_GRADE, null);
         }
@@ -643,4 +649,14 @@ public class Calculate extends ShopBaseService {
         return UniteMarkeingtRecalculateBo.create(goods.getProductPrice(), BaseConstant.ACTIVITY_TYPE_GENERAL, null);
     }
 
+
+    /**
+     * 计算满折满减活动
+     * @param param
+     * @param bos
+     * @return
+     */
+    public List<OrderFullReduce> calculateFullReduce(OrderBeforeParam param, List<OrderGoodsBo> bos) {
+        return fullReductionProcessor.calculate(param, bos);
+    }
 }

@@ -107,7 +107,7 @@
 
 .slide_nav {
   white-space: nowrap;
-  height: 150rpx;
+  /* height: 150rpx; */
 }
 
 .slide_nav .each_nav {

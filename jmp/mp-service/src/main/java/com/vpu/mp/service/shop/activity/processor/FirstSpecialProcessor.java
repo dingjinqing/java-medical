@@ -15,11 +15,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.firstspecial.FirstSpecialMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.firstspecial.FirstSpecialPrdMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FirstSpecialPromotion;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.config.FirstSpecialConfigService;
@@ -32,9 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
@@ -102,41 +98,44 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
     /*****************商品详情处理*******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        if (param.getUserId() != null && !orderInfoService.isNewUser(param.getUserId(), true)) {
-            return;
-        }
-        if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(param.getActivityType())) {
-            return;
-        }
-        FirstSpecialMpVo vo = firstSpecialProcessorDao.getFirstSpecialInfo(param.getActivityId(), param.getGoodsId(), DateUtil.getLocalDateTime());
-        capsule.setActivity(vo);
-
-        if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(vo.getActState())) {
-            return;
-        }
-        Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
-
-        // 设置规格价格，并且设置有效规格
-        List<FirstSpecialPrdMpVo> newPrdMp = vo.getFirstSpecialPrdMpVos().stream().filter(prd -> {
-            GoodsPrdMpVo goodsPrdMpVo = prdMap.get(prd.getProductId());
-            if (goodsPrdMpVo == null) {
-                return false;
-            } else {
-                prd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
-                return true;
-            }
-        }).collect(Collectors.toList());
-        vo.setFirstSpecialPrdMpVos(newPrdMp);
-
-        // 设置促销列表里的内容
-        FirstSpecialPromotion promotion = new FirstSpecialPromotion();
-        promotion.setPromotionId(param.getActivityId());
-        promotion.setPromotionType(param.getActivityType());
-        promotion.setIsLimit(vo.getIsLimit());
-        promotion.setLimitAmount(vo.getLimitAmount());
-        promotion.setLimitFlag(vo.getLimitFlag());
-
-        capsule.getPromotions().put(promotion.getPromotionType(), Collections.singletonList(promotion));
+//        注：待产品功能确定后再进行开发 首单特惠和限时降价停止开发
+        // 已经被其它活动处理则退出
+//        if (capsule.getActivity() != null) {
+//            return;
+//        }
+//
+//        if (param.getUserId() != null && !orderInfoService.isNewUser(param.getUserId(), true)) {
+//            return;
+//        }
+//
+//        FirstSpecialMpVo vo = firstSpecialProcessorDao.getFirstSpecialInfo(param.getGoodsId(), DateUtil.getLocalDateTime());
+//        if (vo == null) {
+//            return;
+//        }
+//
+//        Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
+//
+//        // 设置规格价格，并且设置有效规格
+//        List<FirstSpecialPrdMpVo> newPrdMp = vo.getFirstSpecialPrdMpVos().stream().filter(prd -> {
+//            GoodsPrdMpVo goodsPrdMpVo = prdMap.get(prd.getProductId());
+//            if (goodsPrdMpVo == null) {
+//                return false;
+//            } else {
+//                prd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
+//                return true;
+//            }
+//        }).collect(Collectors.toList());
+//        vo.setFirstSpecialPrdMpVos(newPrdMp);
+//
+//        // 设置促销列表里的内容
+//        FirstSpecialPromotion promotion = new FirstSpecialPromotion();
+//        promotion.setPromotionId(param.getActivityId());
+//        promotion.setPromotionType(param.getActivityType());
+//        promotion.setIsLimit(vo.getIsLimit());
+//        promotion.setLimitAmount(vo.getLimitAmount());
+//        promotion.setLimitFlag(vo.getLimitFlag());
+//
+//        capsule.getPromotions().put(promotion.getPromotionType(), Collections.singletonList(promotion));
     }
 
 

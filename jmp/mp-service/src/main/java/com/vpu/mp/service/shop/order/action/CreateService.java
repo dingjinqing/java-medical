@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.*;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -190,6 +191,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
             //TODO 营销相关 活动校验或活动参数初始化
             marketProcessorFactory.processInitCheckedOrderCreate(param);
+
             if(null != param.getActivityId() && null != param.getActivityType()) {
                 //活动生成ordergodos;
                 orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
@@ -580,7 +582,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         logger().info("initOrderGoods开始");
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
-            boList.add(orderGoods.initOrderGoods(temp));
+            OrderGoodsBo bo = orderGoods.initOrderGoods(temp);
+
+            boList.add(bo);
         }
         param.setBos(boList);
         return boList;
@@ -650,6 +654,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         BigDecimal cardBalance = param.getCardBalance();
         //总价、总数量
         BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos, null, null);
+        //满折满减特殊处理
+        List<OrderFullReduce> orderFullReduces = calculate.calculateFullReduce(param, bos);
+        BigDecimal fullReduceDiscount = BigDecimal.ZERO;
+        for (OrderFullReduce OrderFullReduce: orderFullReduces) {
+            fullReduceDiscount = fullReduceDiscount.add(calculate.calculateOrderGoodsDiscount(OrderFullReduce, bos, OrderConstant.D_T_FULL_REDUCE));
+        }
         //处理会员卡
         calculate.calculateCardInfo(param, vo);
         //处理当前会员卡
@@ -676,7 +686,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         BigDecimal tolalDiscountAfterPrice = BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(memberDiscount, BigDecimalUtil.Operator.subtrac),
-            BigDecimalUtil.BigDecimalPlus.create(couponDiscount, BigDecimalUtil.Operator.subtrac)
+            BigDecimalUtil.BigDecimalPlus.create(couponDiscount, BigDecimalUtil.Operator.subtrac),
+            BigDecimalUtil.BigDecimalPlus.create(fullReduceDiscount, BigDecimalUtil.Operator.subtrac)
+
         );
         //折扣金额(使用大额优惠券，支付金额不为负的，等于运费金额)
         if(BigDecimalUtil.compareTo(tolalDiscountAfterPrice, BigDecimal.ZERO) < 0){
@@ -702,7 +714,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //最大积分抵扣
         BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivide(
             BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
-            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.Divide),
+            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.divide),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal("100"), null)
         );
         //会员信息
@@ -714,6 +726,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setAccountDiscount(useAccount != null ? useAccount : BigDecimalUtil.BIGDECIMAL_ZERO);
         vo.setMemberCardDiscount(cardBalance  != null ? cardBalance : BigDecimalUtil.BIGDECIMAL_ZERO);
         vo.setMemberCardReduce(memberDiscount  != null ? memberDiscount : BigDecimalUtil.BIGDECIMAL_ZERO);
+        vo.setPromotionReduce(fullReduceDiscount);
         vo.setDiscount(couponDiscount  != null ? couponDiscount : BigDecimalUtil.BIGDECIMAL_ZERO);
         vo.setMoneyPaid(moneyPaid  != null ? moneyPaid : BigDecimalUtil.BIGDECIMAL_ZERO);
         vo.setDiscountedMoney(BigDecimalUtil.subtrac(moneyPaid, vo.getShippingFee()));

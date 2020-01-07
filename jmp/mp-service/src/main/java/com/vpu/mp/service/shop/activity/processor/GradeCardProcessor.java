@@ -17,7 +17,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
@@ -102,18 +101,24 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
 
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
-        List<GoodsDetailMpBo.GradePrd> gradeCards = goodsDetailMpBo.getGradeCardPrice();
-        if (!goodsDetailMpBo.getIsDisposedByEs()) {
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+
+        // 被其它活动处理过，但不是限时降价
+        if (capsule.getActivity() != null && !BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(capsule.getActivity().getActivityType())) {
+            return;
+        }
+
+        List<GoodsDetailMpBo.GradePrd> gradeCards = capsule.getGradeCardPrice();
+        if (!capsule.getIsDisposedByEs()) {
             log.debug("小程序-会员价格查询");
             List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
             gradeCards = goodsGradeGradePrice.stream().map(x -> x.into(GoodsDetailMpBo.GradePrd.class)).collect(Collectors.toList());
-            goodsDetailMpBo.setGradeCardPrice(gradeCards);
+            capsule.setGradeCardPrice(gradeCards);
         }
 
         Map<Integer, BigDecimal> gradePriceMap = gradeCards.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice, (x1, x2) -> x1));
 
-        List<GoodsPrdMpVo> products = goodsDetailMpBo.getProducts();
+        List<GoodsPrdMpVo> products = capsule.getProducts();
         products.forEach(prd -> {
             if (gradePriceMap.get(prd.getPrdId()) != null) {
                 prd.setPrdLinePrice(prd.getPrdRealPrice());
