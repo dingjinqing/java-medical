@@ -229,8 +229,14 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        this.pictureGapValue = this.modulesData.image_space
-        this.moduleSaveData = this.modulesData
+        if (this.modulesData) {
+          this.listTypeData.forEach((item, index) => {
+            item.isChecked = false
+          })
+          this.moduleSaveData = this.modulesData
+          this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
+          this.pictureGapValue = this.moduleSaveData.image_space
+        }
       },
       immediate: true
     },
