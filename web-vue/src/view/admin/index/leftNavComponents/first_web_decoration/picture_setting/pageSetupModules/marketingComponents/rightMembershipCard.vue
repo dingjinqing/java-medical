@@ -26,7 +26,7 @@
               v-else
               @click="handlCallCardDialog()"
               class="selectCard"
-              :style="nowChecked.bg_type===0?`backgroundColor:${nowChecked.bg_color}`:`backgroundImage:url('${nowChecked.bg_img}')`"
+              :style="(nowChecked.bgType===1&&nowChecked.bgImg)?`;backgroundImage:url(${nowChecked.bgImg})`:(nowChecked.bgType===1&&!nowChecked.bgImg)?`backgroundColor:${overallColor}`:nowChecked.bgColor?`backgroundColor:${nowChecked.bgColor}`:`backgroundColor:${overallColor}`"
             >
               <div>
                 <span class="card_name">{{nowChecked.card_name}}</span>
