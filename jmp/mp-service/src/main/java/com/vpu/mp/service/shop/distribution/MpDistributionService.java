@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
@@ -10,6 +11,10 @@ import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
 import static com.vpu.mp.db.shop.Tables.USER;
@@ -26,36 +31,53 @@ public class MpDistributionService extends ShopBaseService{
 	/**
 	 * 用户申请成为分销员
 	 * @param param
-	 * @return
+	 * @return state申请状态 -1：邀请码不存在；0：审核中；1：审核通过
 	 */
 	public int distributorApply(DistributorApplyParam param) {
 	    //生成有效邀请码
         String inviteCode = this.validInviteCode();
 		DistributorApplyRecord record = new DistributorApplyRecord();
-		assign(param, record);
-        int re = db().executeInsert(record);
 		//获取分销配置，成为分销员是否需要审核
         DistributionParam cfg = this.distributionCfg.getDistributionCfg();
-        if(cfg.getJudgeStatus() == 0){//不用审核，自动成为分销员
+        Integer state = 0;
+        if(cfg.getJudgeStatus() == 0){//自动审核
             //校验申请提交的邀请码是否有效
             Integer ret = sentInviteCodeVerify(param.getInviteCode());
-            if(ret != 0){
-                //返回无效邀请码
+            if(ret == 0){
+                //邀请码不存在
+               state = -1;
             }else{//自动审核通过
                 param.setInviteCode(null);
                 assign(param, record);
+                db().executeInsert(record);
                 DistributorApplyDetailParam res = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId())).
                     orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc()).limit(1).fetchOne().into(DistributorApplyDetailParam.class);
-                db().update(DISTRIBUTOR_APPLY).set(DISTRIBUTOR_APPLY.STATUS, (byte) 1).where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
+                db().update(DISTRIBUTOR_APPLY)
+                    .set(DISTRIBUTOR_APPLY.STATUS, (byte) 1)
+                    .set(DISTRIBUTOR_APPLY.IS_AUTO_PASS,(byte)1)
+                    .where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
+                //邀请保护时间
+                Timestamp inviteProtectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
+                Date pd = new Date(inviteProtectDate.getTime());
+                //邀请失效时间
+                Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
+                Date ed = new Date(inviteExpiryDate.getTime());
                 //更新用户信息
-//                db().update(USER)
-//                    .set(USER.IS_DISTRIBUTOR, (byte) 1)
-//                    .set(USER.INVITATION_CODE)
-//                    .where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
+                db().update(USER)
+                    .set(USER.IS_DISTRIBUTOR, (byte) 1)
+                    .set(USER.INVITATION_CODE,inviteCode)
+                    .set(USER.INVITE_EXPIRY_DATE,ed)
+                    .set(USER.INVITE_PROTECT_DATE,pd)
+                    .where(USER.USER_ID.eq(res.getUserId())).execute();
+                //审核通过
+                state = 1;
             }
-
+        }else{//后台手动审核
+            param.setInviteCode(null);
+            assign(param, record);
+            db().executeInsert(record);
         }
-        return re;
+        return state;
 	}
 
     /**
@@ -79,10 +101,10 @@ public class MpDistributionService extends ShopBaseService{
      */
     public String validInviteCode(){
         String inviteCode = this.generateInvitationCode();
-        Record record = db().selectCount().from(USER).where(USER.INVITATION_CODE.equalIgnoreCase(inviteCode)).fetchOne();
-        while (record != null){
+        Integer ct = db().selectCount().from(USER).where(USER.INVITATION_CODE.eq(inviteCode)).fetchOne().into(Integer.class);
+        while (ct != 0){
             inviteCode = this.generateInvitationCode();
-            record = db().selectCount().from(USER).where(USER.INVITATION_CODE.equalIgnoreCase(inviteCode)).fetchOne();
+            ct = db().selectCount().from(USER).where(USER.INVITATION_CODE.equalIgnoreCase(inviteCode)).fetchOne().into(Integer.class);
         }
         return inviteCode;
     }
