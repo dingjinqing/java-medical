@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 /**
  * @author liufei
  * @date 2019/8/5
- * @description
  */
 @Data
 @ExcelSheet
@@ -20,9 +19,15 @@ public class AssetDetailExportVo {
     @ExcelColumn(columnIndex = 0,columnName = "overview.asset.management.trade_time")
     @ExcelColumnNotNull
     private Timestamp tradeTime;
+    @ExcelColumn(columnIndex = 1, columnName = "overview.asset.management.trade_sn")
+    @ExcelColumnNotNull
+    private String tradeSn;
     @ExcelColumn(columnIndex = 2,columnName = "overview.asset.management.trade_num")
     @ExcelColumnNotNull
     private BigDecimal tradeNum;
+    @ExcelColumn(columnIndex = 3, columnName = "overview.asset.management.username")
+    @ExcelColumnNotNull
+    private String username;
     @ExcelIgnore
     private Integer userId;
     @ExcelColumn(columnIndex = 4,columnName = "overview.asset.management.trade_type")
@@ -34,10 +39,10 @@ public class AssetDetailExportVo {
     @ExcelColumn(columnIndex = 6,columnName = "overview.asset.management.trade_status")
     @ExcelColumnNotNull
     private Byte tradeStatus;
-    @ExcelColumn(columnIndex = 1,columnName = "overview.asset.management.trade_sn")
+    @ExcelColumn(columnIndex = 7, columnName = "overview.asset.management.real_name")
     @ExcelColumnNotNull
-    private String tradeSn;
-    @ExcelColumn(columnIndex = 3,columnName = "overview.asset.management.username")
+    private String realName;
+    @ExcelColumn(columnIndex = 8, columnName = "overview.asset.management.mobile")
     @ExcelColumnNotNull
-    private String username;
+    private String mobile;
 }

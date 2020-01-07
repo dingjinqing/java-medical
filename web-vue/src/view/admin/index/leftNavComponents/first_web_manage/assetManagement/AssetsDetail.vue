@@ -144,7 +144,7 @@
               <el-button
                 type="primary"
                 size="small"
-                @click="onSubmit"
+                @click="showDownload"
               >导出</el-button>
             </el-col>
           </el-row>
@@ -229,12 +229,66 @@
         </div>
       </div>
     </div>
+<!--    数据导出/下载弹窗-->
+      <el-dialog
+        :title="$t('allGoods.allGoodsData.tip')"
+        :visible.sync="showNodes"
+        custom-class="custom"
+        v-loading="loading"
+        width="30%"
+        center
+      >
+        <p>{{$t('order.orderExportConfirmTip_1')}}{{totalRows}}{{$t('order.orderExportConfirmTip_2')}}</p>
+        <div
+          v-if="totalRows > 0"
+          style="margin-top: 10px;"
+        >
+          <div style="margin-bottom: 10px;">{{$t('order.orderExportLimitTip')}}</div>
+          <el-input-number
+            v-model="exportRowStart"
+            placeholder=""
+            :min="1"
+            :max="exportRowEnd"
+            :precision="0"
+            size="small"
+            controls-position="right"
+            style="width: 150px;"
+          ></el-input-number>
+          {{$t('orderCommon.to')}}
+          <el-input-number
+            v-model="exportRowEnd"
+            placeholder=""
+            size="small"
+            controls-position="right"
+            :min="exportRowStart"
+            :max="exportRowEnd"
+            :precision="0"
+            style="width: 150px;"
+          ></el-input-number>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+      <el-button
+        size="small"
+        @click="showNodes = false"
+      >{{$t('orderCommon.cancel')}}</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="confirmDownload"
+        v-if="totalRows > 0"
+      >{{$t('orderCommon.ok')}}</el-button>
+    </span>
+      </el-dialog>
   </div>
 </template>
 
 <script>
+import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import { cashDetail } from '@/api/admin/firstWebManage/assetsManage/assetsManage.js'
+import { cashDetail, export2Excel } from '@/api/admin/firstWebManage/assetsManage/assetsManage.js'
 export default {
   components: { pagination },
   created () {
@@ -249,6 +303,12 @@ export default {
   },
   data () {
     return {
+      // 下载/导出弹窗
+      showNodes: false,
+      loading: false,
+      totalRows: 0,
+      exportRowStart: 1,
+      exportRowEnd: 5000,
       tradeTypeOptions: [{
         value: '0',
         label: '全部'
@@ -351,11 +411,28 @@ export default {
         realName: '',
         mobile: '',
         currentPage: '',
-        pageRows: ''
+        pageRows: '',
+        exportRowStart: 1,
+        exportRowEnd: 5000
       }
     }
   },
   methods: {
+    showDownload () {
+      this.showNodes = true
+    },
+    confirmDownload () {
+      this.loading = true
+      this.param.exportRowStart = this.exportRowStart
+      this.param.exportRowEnd = this.exportRowEnd
+      export2Excel(this.param).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        this.loading = false
+        download(res, decodeURIComponent(fileName))
+      })
+      this.showNodes = false
+    },
     // 重置筛选条件
     resetParam () {
       if (this.assetManage === 'first') {
@@ -384,6 +461,8 @@ export default {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
           this.handleData(this.tableData)
+          this.totalRows = this.pageParams.totalRows
+          this.exportRowEnd = this.totalRows > 5000 ? 5000 : this.totalRows
         }
       }).catch(err => console.log(err))
     },
