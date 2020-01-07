@@ -148,7 +148,7 @@ public class CouponMpService extends ShopBaseService {
                 /** -资金流向 */
                 Byte tradeFlow = 1;
                 try {
-                    member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
+                    member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow);
                 } catch (MpException e) {
                     logger().info("积分更新失败");
                     fetchCouponStatus =6;

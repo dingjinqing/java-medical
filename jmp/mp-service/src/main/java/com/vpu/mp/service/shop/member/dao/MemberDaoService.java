@@ -1,5 +1,43 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.STORE;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectOnConditionStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectSeekStep3;
+import  org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -16,23 +54,6 @@ import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.cart.UserCartService;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 
 
 
@@ -57,7 +78,7 @@ public class MemberDaoService extends ShopBaseService {
 		User aliasUser = USER.as("aliasUser");
 
 		SelectOnConditionStep<? extends Record> select = db()
-				.select(USER.USER_ID, USER.USERNAME.as(USER_NAME), aliasUser.USERNAME.as(INVITE_USERNAME), USER.MOBILE,
+				.selectDistinct(USER.USER_ID, USER.USERNAME.as(USER_NAME), aliasUser.USERNAME.as(INVITE_USERNAME), USER.MOBILE,
 						USER.ACCOUNT, USER.SCORE, USER.SOURCE, USER.CREATE_TIME, USER.DEL_FLAG, USER_DETAIL.REAL_NAME)
 				.from(USER)
 				.leftJoin(aliasUser).on(aliasUser.USER_ID.eq(USER.INVITE_ID))
@@ -111,7 +132,7 @@ public class MemberDaoService extends ShopBaseService {
 		if(param.getCardId() != null) {
 			select.leftJoin(USER_CARD).on(USER.USER_ID.eq(USER_CARD.USER_ID));
 		}
-		if(isNotBlank(param.getTagName())) {
+		if(param.getTagName()!=null && param.getTagName().size()>0) {
 			/** -标签处理 */
 			select.leftJoin(USER_TAG).on(USER.USER_ID.eq(USER_TAG.USER_ID));
 		}
@@ -389,7 +410,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition getUserCardCondition(Integer cardId) {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(cardId)) {
-			condition
+			condition = condition
 			.and(USER_CARD.CARD_ID.eq(cardId))
 			.and(USER_CARD.FLAG.eq(UCARD_FG_USING));
 		}
@@ -415,11 +436,10 @@ public class MemberDaoService extends ShopBaseService {
 	/**
 	 * 标签查询条件
 	 */
-	private Condition getTagNameCondition(String name) {
+	private Condition getTagNameCondition(List<Integer> tagIdList) {
 		Condition condition = DSL.noCondition();
-		if(isNotBlank(name)) {
-			List<Integer> tagIdList = tagService.getId(name);
-			condition.and(USER_TAG.TAG_ID.in(tagIdList));
+		if(tagIdList != null && tagIdList.size()>0) {
+			condition = condition.and(USER_TAG.TAG_ID.in(tagIdList));
 		}
 		return condition;
 	}
@@ -431,7 +451,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(time)) {
 			List<Integer> userIdList = userLoginRecordService.getUserIdFromLoginStartTime(time);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -443,7 +463,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(time)) {
 			List<Integer> userIdList = userLoginRecordService.getUserIdUtilToLoginEndTime(time);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -456,7 +476,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(time)) {
 			List<Integer> userIdList = userCartService.getUserIdFromCartStartTime(time);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -468,7 +488,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(time)) {
 			List<Integer> userIdList = userCartService.getUserIdUtilToCartEndTime(time);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -480,7 +500,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(time)) {
 			List<Integer> userIdList = orderInfoService.getUserIdFromBuyStartTime(time);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -493,7 +513,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(time)) {
 			List<Integer> userIdList = orderInfoService.getUserIdUtilToBuyEndTime(time);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -522,7 +542,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(cnt)) {
 			List<Integer> userIdList = orderInfoService.getUserIdGreateThanBuyCountLow(cnt);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -534,7 +554,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(cnt)) {
 			List<Integer> userIdList = orderInfoService.getUserIdLessThanBuyCountHight(cnt);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -546,7 +566,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if (isNotNull(goodsIdList) && goodsIdList.size()>0) {
 			List<Integer> userIdList = orderInfoService.getUserIdHasBuyTheGoods(goodsIdList);
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -582,7 +602,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(hasCard) {
 			List<Integer> userIdList = userCardService.getUserIdThatHasValidCard();
-			condition.and(USER.USER_ID.in(userIdList));
+			condition = condition.and(USER.USER_ID.in(userIdList));
 		}
 		return condition;
 	}
@@ -602,7 +622,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(isNotBlank(name)) {
 			String val = likeValue(name);
-			condition.and(USER_DETAIL.REAL_NAME.like(val));
+			condition = condition.and(USER_DETAIL.REAL_NAME.like(val));
 		}
 		return condition;
 	}
@@ -614,7 +634,7 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(hasImport) {
 			SelectConditionStep<Record1<Integer>> subSelect = db().select(USER_IMPORT_DETAIL.ID).from(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.MOBILE.eq(USER.MOBILE));
-			condition.andExists(subSelect);
+			condition = condition.andExists(subSelect);
 		}
 		return condition;
 	}
@@ -625,7 +645,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition getReceiveCardStartTimeCondition(Timestamp time) {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(time)) {
-			condition.and(USER_CARD.CREATE_TIME.ge(time));
+			condition = condition.and(USER_CARD.CREATE_TIME.ge(time));
 		}
 		return condition;
 	}
@@ -636,7 +656,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition getReceiveCardEndTimeCondition(Timestamp time) {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(time)) {
-			condition.and(USER_CARD.CREATE_TIME.le(time));
+			condition = condition.and(USER_CARD.CREATE_TIME.le(time));
 		}
 		return condition;
 	}
