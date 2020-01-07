@@ -7,7 +7,8 @@ global.wxComponent({
     couponList: {
       type: Array,
       value: null
-    }
+    },
+    promotion:Array
   },
 
   /**
