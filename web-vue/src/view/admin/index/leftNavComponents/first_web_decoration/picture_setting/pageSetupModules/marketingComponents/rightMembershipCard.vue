@@ -26,7 +26,7 @@
               v-else
               @click="handlCallCardDialog()"
               class="selectCard"
-              :style="(nowChecked.bgType===1&&nowChecked.bgImg)?`;backgroundImage:url(${nowChecked.bgImg})`:(nowChecked.bgType===1&&!nowChecked.bgImg)?`backgroundColor:${overallColor}`:nowChecked.bgColor?`backgroundColor:${nowChecked.bgColor}`:`backgroundColor:${overallColor}`"
+              :style="(nowChecked.bg_type===1&&nowChecked.bg_img)?`;backgroundImage:url(${nowChecked.bg_img})`:(nowChecked.bg_type===1&&!nowChecked.bg_img)?`backgroundColor:${overallColor}`:nowChecked.bg_color?`backgroundColor:${nowChecked.bg_color}`:`backgroundColor:${overallColor}`"
             >
               <div>
                 <span class="card_name">{{nowChecked.card_name}}</span>
@@ -460,7 +460,6 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-
     // 初始化获取会员卡数据
     this.handleToGetCardData()
   },
@@ -561,6 +560,7 @@ export default {
     },
     // 弹窗确定事件
     handleToSelectCuopon () {
+      console.log(this.zcCheckedData)
       let obj = {
         card_id: this.zcCheckedData.id, // 会员卡id
         card_name: this.zcCheckedData.cardName, // 会员卡名称
@@ -577,8 +577,9 @@ export default {
         pay_type: this.zcCheckedData.payType,
         pay_fee: this.zcCheckedData.payFee
       }
-      console.log(this.zcCheckedData)
-      let data = Object.assign(this.nowChecked, obj)
+      console.log(this.zcCheckedData, this.modulesData.cur_idx, obj)
+      let data = Object.assign(this.modulesData, obj)
+      this.nowChecked = Object.assign(this.zcCheckedData, obj)
       console.log(this.nowChecked, data)
       this.$emit('handleToBackData', data)
       this.dialogVisible = false
@@ -589,7 +590,8 @@ export default {
         item.isChecked = false
       })
       this.zcCheckedData = this.showCardList[index]
-      this.nowChecked = this.showCardList[index]
+      // this.nowChecked.index = index
+      // this.nowChecked = this.showCardList[index]
       console.log(this.nowChecked)
       this.showCardList[index].isChecked = !this.showCardList[index].isChecked
     },
