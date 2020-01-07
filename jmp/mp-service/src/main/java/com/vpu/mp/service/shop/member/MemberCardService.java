@@ -1404,7 +1404,7 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * @param data 用户卡相关数据
 	 * @throws MpException
 	 */
-	public void updateMemberCardAccount(CardConsumpData data, TradeOptParam tradeOpt, String language)
+	public void updateMemberCardAccount(CardConsumpData data, TradeOptParam tradeOpt)
 			throws MpException {
 
 		/** 1.-获取数据库中的存储的信息 */
