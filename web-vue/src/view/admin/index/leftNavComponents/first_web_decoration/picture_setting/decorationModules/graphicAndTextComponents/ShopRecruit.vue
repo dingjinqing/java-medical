@@ -20,7 +20,8 @@
         <div class="shop_desc">{{ data.shop_notice?data.shop_notice:'为您的店铺发些公告吧~' }}</div>
         <div class="shop_logo">
           <img
-            :src="imageHost + data.bg_url"
+            v-if="data.shop_bg_path"
+            :src="data.shop_bg_path"
             alt=""
           >
         </div>

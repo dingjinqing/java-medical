@@ -384,9 +384,9 @@ export default {
         case 27: // 店招设置
           obj = {
             module_name: 'm_shop',
-            shop_name: '微铺宝电商运营',
+            shop_name: localStorage.getItem('V-shopName'),
             shop_notice: '',
-            shop_bg_path: '/image/admin/shop_beautify/beau1.png',
+            shop_bg_path: localStorage.getItem('V-shopAvatar'),
             bg_url: '/image/admin/shop_beautify/beau1.png',
             bg_fullUrl: '',
             ok_ajax: 1
