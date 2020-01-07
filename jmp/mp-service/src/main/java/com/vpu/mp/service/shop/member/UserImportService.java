@@ -1,39 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-import static java.util.stream.Collectors.toList;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.poifs.filesystem.FileMagic;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record4;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
-import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
-import com.vpu.mp.db.shop.tables.records.UserImportRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
@@ -47,35 +15,42 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
+import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
-import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportActivePojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.*;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.user.user.UserService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.poifs.filesystem.FileMagic;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 会员导入
