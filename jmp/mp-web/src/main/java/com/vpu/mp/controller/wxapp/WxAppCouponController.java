@@ -121,7 +121,7 @@ public class WxAppCouponController extends WxAppBaseController {
 				/** -资金流向 */
 				Byte tradeFlow = 1;
 				try {
-					shop().member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
+					shop().member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow);
 				} catch (MpException e) {
 					logger().info("积分更新失败");
 					return fail(e.getErrorCode().getMessage());
