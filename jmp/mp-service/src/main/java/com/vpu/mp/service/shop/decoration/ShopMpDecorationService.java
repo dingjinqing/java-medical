@@ -616,8 +616,7 @@ public class ShopMpDecorationService extends ShopBaseService {
                 }
             }
         } catch (Exception e) {
-            logger().error("装修转换错误");
-            e.printStackTrace();
+            logger().error("装修转换错误:",e);
         }
         return result;
     }

@@ -40,7 +40,7 @@
     <view class="goods_name {{goodsItem.activityLabelData.length > 0 ? 'one_line' : 'two_lines'}}">{{goodsItem.goodsName}}</view>
     <view class="goods_coupon" wx:if="{{goodsItem.activityLabelData.length > 0}}">
       <block wx:for="{{goodsItem.activityLabelData}}" wx:for-item="labelItem" wx:key="index">
-        <view class="coupon_item" wx:if="index < 2" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{labelItem.text}}</view>
+        <view class="coupon_item" wx:if="{{index < 2}}" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{labelItem.text}}</view>
       </block>
     </view>
     <view class="goods_price">

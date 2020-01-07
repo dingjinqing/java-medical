@@ -724,15 +724,25 @@ export default {
 
       /** 会员卡背景 bgType 0： 背景色；1：背景图 */
       if (item.bgType === 0) {
-        if (item.bgColor) {
+        if (item.bgColor) { // 有颜色，设置为改颜色，无则为默认背景色
           return 'background-color:' + item.bgColor
         } else {
+          // 获取初始全局颜色
+          let defaultColor = localStorage.getItem('V-backgroundColor')
+          if (defaultColor) {
+            return `background-color:${defaultColor}`
+          }
           return 'background-color:#e6cb96'
         }
       } else {
-        if (item.bgImg) {
+        if (item.bgImg) { // 有背景图，设置为该背景图，无则为默认背景色
           return 'backgroundImage:url(' + item.bgImg + ')' + ';backgroundRepeat:no-repeat;background-size: 100% 100%;'
         } else {
+          // 获取初始全局颜色
+          let defaultColor = localStorage.getItem('V-backgroundColor')
+          if (defaultColor) {
+            return `background-color:${defaultColor}`
+          }
           return 'background-color:#e6cb96'
         }
       }

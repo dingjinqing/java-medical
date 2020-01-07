@@ -745,4 +745,28 @@ public class CouponService extends ShopBaseService {
 		}
 		return into;
 	}
+	
+	/**
+	 * 小程序端会员激活使用
+	 * @param couponId
+	 * @return 
+	 * @return
+	 */
+	public CouponParam getOneMVById(Integer couponId) {
+		MrkingVoucherRecord record = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne();
+		if (record == null) {
+			return null;
+		}
+		CouponParam into = record.into(CouponParam.class);
+		Integer day = record.getValidity();
+		Integer hour = record.getValidityHour();
+		Integer minute = record.getValidityMinute();
+		if (day > 0 || hour > 0 || minute > 0) {
+			into.setStartTime(DateUtil.getSqlTimestamp());
+			Timestamp endTime = Timestamp.valueOf(LocalDateTime.now().plus(day, ChronoUnit.DAYS)
+					.plus(hour, ChronoUnit.HOURS).plus(minute, ChronoUnit.MINUTES));
+			into.setEndTime(endTime);
+		}
+		return into;
+	}
 }

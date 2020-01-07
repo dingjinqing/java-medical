@@ -28,8 +28,8 @@ export const cn = {
     '开关开启，则会在用户门店买单后按照购物送积分规则给用户赠送积分，关闭则不赠送',
   loginSendScore: '登陆送积分',
   loginDescOne:
-    '开关开启，则登陆后会给用户按照积分获取规则赠送积分，关闭则不赠送',
-  loginSend: '登陆送',
+    '开关开启，则登录后会给用户按照积分获取规则赠送积分，关闭则不赠送',
+  loginSend: '登录送',
   score: '积分',
   loginDescTwo: '每日仅首次登陆赠送积分',
   signSendScore: '签到送积分',

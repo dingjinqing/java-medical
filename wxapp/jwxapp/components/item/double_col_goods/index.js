@@ -156,7 +156,6 @@ global.wxComponent({
         },
       }
       let textContent = cartType[`${data.showCart.show_cart}-${data.showCart.show_cart ? data.showCart.cart_type : data.delMarket}`] || ''
-      console.log(textContent)
         this.setData({
           textContent
         })
