@@ -186,7 +186,7 @@ public class UserService extends ShopBaseService {
 		}
 		String sessionKey = getSessionKey(shopId, record.getUserId());
 		jedis.set(sessionKey, result.getSessionKey(), 60 * 60 * 24);
-		logger().info("更新sessionKey");
+		logger().info("更新sessionKey："+sessionKey);
 		return record;
 	}
 
@@ -430,8 +430,9 @@ public class UserService extends ShopBaseService {
 		}
 		Integer shopId = this.getShopId();
 		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
-		String sessionKey = jedis.get(getSessionKey(shopId, userId));
-		logger().info("获取sessionKey"+StringUtils.isEmpty(sessionKey));
+		String sessionKey2 = getSessionKey(shopId, userId);
+		String sessionKey = jedis.get(sessionKey2);
+		logger().info("获取sessionKey："+sessionKey2+"结果"+StringUtils.isEmpty(sessionKey));
 		WxMaUserInfo userInfo = maService.getUserService().getUserInfo(sessionKey,
 				param.getEncryptedData(), param.getIv());
 		logger().info("获取用户信息"+userInfo.toString());
