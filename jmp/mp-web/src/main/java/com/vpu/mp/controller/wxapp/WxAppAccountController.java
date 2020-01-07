@@ -184,6 +184,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	 */
 	@PostMapping(value = "/api/wxapp/user/waitactivate")
 	public JsonResult waitActivateUser() {
+		logger().info("获取用户待激活信息");
 		return success(shop().member.userImportService.getInfo(getLang()));
 	}
 	
@@ -194,6 +195,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	 */
 	@PostMapping(value = "/api/wxapp/user/toactivate")
 	public JsonResult toActivateUser() {
+		logger().info("用户待激活");
 		JsonResultCode activateUser = shop().member.userImportService.toActivateUser(wxAppAuth.user().getUserId());
 		if(activateUser.equals(JsonResultCode.CODE_SUCCESS)) {
 			return success();
