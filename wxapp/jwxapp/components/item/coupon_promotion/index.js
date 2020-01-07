@@ -7,7 +7,8 @@ global.wxComponent({
     couponList: {
       type: Array,
       value: null
-    }
+    },
+    promotion:Array
   },
 
   /**
@@ -23,6 +24,12 @@ global.wxComponent({
       this.setData({
         show_recommend_coupons: true
       });
+    },
+    showPromotion(){
+      console.log(111)
+      this.setData({
+        showPromotionDialog:true
+      })
     }
   }
 });

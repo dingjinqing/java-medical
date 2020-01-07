@@ -1255,8 +1255,8 @@ export default {
           that.bussinessIdList = content.recommendSortIds || []
           // 指定商品标签
           // 指定商品品牌
-          that.labelNameList = content.recommendBrand || []
-          that.labelNameIdList = content.recommendBrandIds || []
+          that.goodsNameList = content.recommendBrand || []
+          that.goodsBrandIdList = content.recommendBrandIds || []
           // 指定会员卡
           that.memberCardInfo = content.cardIds || []
           if (content.cardIds && content.cardIds.length > 0) {

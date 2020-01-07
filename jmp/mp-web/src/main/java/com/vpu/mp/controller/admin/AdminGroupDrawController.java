@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -117,5 +118,12 @@ public class AdminGroupDrawController extends AdminBaseController {
     @PostMapping("/share")
     public JsonResult getGroupDrawShare(@RequestBody GroupDrawShareParam param) throws Exception {
         return success(shop().groupDraw.getMpQRCode(param));
+    }
+    /**
+     * 活动分享
+     */
+    @PostMapping("/effect")
+    public JsonResult getGroupDrawEffect(@RequestBody GroupDrawAnalysisParam param)  {
+        return success(shop().groupDraw.groupDrawAnalysis(param));
     }
 }
