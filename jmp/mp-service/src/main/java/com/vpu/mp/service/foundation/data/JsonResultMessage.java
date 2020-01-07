@@ -443,6 +443,9 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_EXAMPLE_DISTRICT = "example.district";
 	public static final String CODE_EXCEL_EXAMPLE_MARRIAGE = "example.marriage";
 	public static final String CODE_EXCEL_EXAMPLE_ADDRESS = "example.address";
+	public static final String CODE_EXCEL_VOUCHER = "example.voucher";
+	public static final String CODE_EXCEL_RANDOM = "example.random";
+	public static final String CODE_EXCEL_OTHER = "example.other";
 	
 	/**
 	 * 概览

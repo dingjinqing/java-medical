@@ -48,6 +48,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
@@ -157,14 +158,14 @@ public class UserImportService extends ShopBaseService {
 		return json;
 	}
 	
-	public SetNoticeJsonDetailVo getInfo() {
+	public SetNoticeJsonDetailVo getInfo(String lang) {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
-		List<CouponParam> voList = new ArrayList<CouponParam>();
+		List<CouponWxUserImportVo> voList = new ArrayList<CouponWxUserImportVo>();
 		if (StringUtils.isNotEmpty(mrkingVoucherId)) {
 			String[] split = mrkingVoucherId.split(",");
 			for (String string : split) {
-				CouponParam couponVo = couponService.getOneMVById(Integer.valueOf(string));
+				CouponWxUserImportVo couponVo = couponService.getOneMVById(Integer.valueOf(string),lang);
 				if(couponVo!=null) {
 					voList.add(couponVo);					
 				}
