@@ -338,7 +338,7 @@ export default {
         })
       } else {
         console.log(imgData)
-        this.moduleSaveData.image_list[this.changeListImgIndex].image = imgData.imgUrl
+        this.moduleSaveData.image_list[this.changeListImgIndex].image = imgData.imgPath
       }
     },
     // 点击添加图片
