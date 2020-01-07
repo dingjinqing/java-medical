@@ -431,4 +431,13 @@ public class OrderGoodsService extends ShopBaseService{
             .fetch()
             .getValues(TABLE.GOODS_ID,Integer.class);
     }
+
+    /**
+     * 是否赠品行
+     * @param recId
+     * @return
+     */
+    public int isGift(int recId){
+	    return db().select(TABLE.IS_GIFT).from(TABLE).where(TABLE.REC_ID.eq(recId)).fetchOptionalInto(Integer.class).orElse(0);
+    }
 }

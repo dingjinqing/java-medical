@@ -15,12 +15,14 @@ import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.PRIZE_RECORD;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_STATUS_EXPIRE;
 import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_STATUS_RECEIVED;
 import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_STATUS_UNCLAIMED;
 
@@ -117,4 +119,16 @@ public class PrizeRecordService extends ShopBaseService {
     public PrizeRecordRecord getById(Integer id){
         return db().selectFrom(PRIZE_RECORD).where(PRIZE_RECORD.ID.eq(id)).fetchOne();
     }
+
+    /**
+     * 定时过期的奖品
+     */
+    public void closePrizeGoods() {
+        Timestamp localDateTime = DateUtil.getLocalDateTime();
+        db().update(PRIZE_RECORD).set(PRIZE_RECORD.PRIZE_STATUS,PRIZE_STATUS_EXPIRE)
+                .where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
+                .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).execute();
+
+    }
+
 }
