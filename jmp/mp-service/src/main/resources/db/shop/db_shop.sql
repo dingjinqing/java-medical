@@ -961,7 +961,7 @@ CREATE TABLE `b2c_free_shipping` (
   `expire_type` tinyint(1) DEFAULT '0' COMMENT '0:固定日期 1：永久有效',
   `start_time` datetime DEFAULT NULL COMMENT '开始时间',
   `end_time` datetime DEFAULT NULL COMMENT '结束时间',
-  `type` int(11) NOT NULL COMMENT '条件 0全部 1部分',
+  `type` tinyint(1) NOT NULL COMMENT '条件 1全部 0部分',
   `recommend_goods_id` text  COMMENT '指定商品可用',
   `recommend_cat_id` text  COMMENT '指定分类可用',
   `recommend_sort_id` text  COMMENT '指定商家分类可用',
