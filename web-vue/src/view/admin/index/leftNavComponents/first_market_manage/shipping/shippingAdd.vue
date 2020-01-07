@@ -68,10 +68,10 @@
           prop="type"
         >
           <el-radio-group v-model="form.type">
-            <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
-            <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
+            <el-radio :label="1">{{ $t('distribution.goodsRadio1') }}</el-radio>
+            <el-radio :label="0">{{ $t('distribution.goodsRadio2') }}</el-radio>
           </el-radio-group>
-          <div v-if="form.type === 1">
+          <div v-if="form.type === 0">
             <div
               v-for="(item,index) in storeArr"
               :key="index"
@@ -245,7 +245,7 @@ export default {
       }
     }
     var validateType = (rule, value, callback) => {
-      if (value === 1 && (this.goodsInfo.length === 0 || this.busClass.length === 0 || this.platClass.length === 0)) {
+      if (value === 0 && (this.goodsInfo.length === 0 || this.busClass.length === 0 || this.platClass.length === 0)) {
         callback(new Error('请选择商品信息'))
       } else {
         callback()
@@ -267,7 +267,7 @@ export default {
         startTime: '',
         endTime: '',
         level: 0, // 优先级
-        type: 0, // 添加商品类型
+        type: 1, // 添加商品类型
         recommendGoodsId: '',
         recommendCatId: '',
         recommendSortId: '',
@@ -372,7 +372,7 @@ export default {
           }
           this.form.level = data.level
           this.form.type = data.type
-          if (this.form.type === 1) {
+          if (this.form.type === 0) {
             this.goodsInfo = data.recommendGoodsId.split(',')
             this.busClass = data.recommendCatId.split(',')
             this.platClass = data.recommendSortId.split(',')

@@ -5,7 +5,6 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
@@ -13,11 +12,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DUR
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.ADMIN_OPTION;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.EXCHANGE_GOODS_NUM;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.MEMBER_MONEY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEND;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.STORE_SERVICE_TIMES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SYSTEM_UPGRADE;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
@@ -1147,7 +1142,7 @@ public class UserCardService extends ShopBaseService {
 									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN,
 											BigDecimalUtil.Operator.subtrac),
 									BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), null)),
-							BigDecimalUtil.Operator.Divide),
+							BigDecimalUtil.Operator.divide),
 					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)));
 		}
 		return card.getTotalDiscount();

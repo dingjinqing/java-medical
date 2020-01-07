@@ -43,7 +43,6 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_ADDRESS_NO_NULL)
 	private Integer addressId;
-    @Valid
 	private List<Goods> goods;
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_DELIVER_TYPE_NO_NULL)
     private Byte deliverType;
@@ -80,7 +79,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private OrderCartProductBo orderCartProductBo;
 	/**下单时间*/
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	private Timestamp date = DateUtil.getLocalDateTime();
+	private Timestamp date = DateUtil.getSqlTimestamp();
 
     /**
      * 指定可用的支付方式
@@ -123,6 +122,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         /**营销活动类型*/
         private Byte goodsPriceAction;
 		/**以下为后台产生逻辑值initGoods*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private Integer straId;
 		private Integer purchasePriceId;
 		private Integer purchasePriceRuleId;

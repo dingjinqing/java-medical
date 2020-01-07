@@ -25,6 +25,7 @@
       <view class="goods_ad" wx:if="{{goodsInfo.goodsAd}}">{{goodsInfo.goodsAd}}</view>
       <view class="goods_price_info">
         <view class="goods_price" style='color:{{comColor}}'>
+        <view class="first-special-tag" wx:if="{{goodsInfo.activity.activityType === 18}}" style="background-color:{{comColor}};">首单特惠</view>
           <text>￥</text><text>{{goodsInfo.prdRealPrice}}</text>
         </view>
         <view class="marking_price">￥<text>{{goodsInfo.prdLinePrice}}</text></view>
@@ -54,7 +55,7 @@
       </view>
     </view>
     <!-- 优惠券&促销信息-->
-    <v-coupon-promotion coupon-list="{{couponList}}"/>
+    <v-coupon-promotion coupon-list="{{couponList}}" promotion="{{promotionInfo}}"/>
     <!--  选择规格（包含无规格情况）  -->
     <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
       <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">

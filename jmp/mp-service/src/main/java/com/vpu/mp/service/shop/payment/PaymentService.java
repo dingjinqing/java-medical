@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -157,7 +158,7 @@ public class PaymentService extends ShopBaseService {
 		OrderInfoRecord orderInfo = order.getOrderByOrderSn(orderSn);
 		if (orderInfo == null) {
             logger().error("订单统一支付回调,未找到订单sn:{}", orderSn);
-			throw new MpException(null, "orderSn " + orderSn + "not found");
+			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST, "orderSn " + orderSn + "not found");
 		}
 		String[] goodsTypes = OrderInfoService.orderTypeToArray(orderInfo.getGoodsType());
 		BigDecimal totalFee = new BigDecimal(param.getTotalFee());

@@ -1,0 +1,10 @@
+<v-popup show="{{show}}" bindtap="bindClose" bind:close="bindClose" horizon="center" vertical="bottom" close_pos="inner">
+  <view class="content">
+    <view class="title">
+      <text>促销</text>
+    </view>
+    <view class="promotion-content">
+      <view class="promotion-item"><view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">首单特惠</view><view class="promotion-desc">123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456</view></view>
+    </view>
+  </view>
+</v-popup>

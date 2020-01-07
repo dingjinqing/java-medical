@@ -64,6 +64,15 @@ const actBaseInfo = {
       3: 'startTime',
       0: 'endTime'
     }
+  },
+  18:{
+    actName:'首单特惠',
+    multiSkuAct:true,
+    prdListName:'firstSpecialPrdMpVos',
+    prdPriceName:{
+      prdRealPrice: 'firsSpecialPrice',
+      prdLinePrice: 'prdPrice'
+    }
   }
 }
 global.wxPage({
@@ -97,7 +106,7 @@ global.wxPage({
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
-            if(res.content.activity && [1,3,5].includes(res.content.activity.activityType)) this.getActivity(res.content)
+            if(res.content.activity && [1,3,5].includes(res.content.activity.activityType)) this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             let { comment, goodsImgs, goodsVideo, goodsVideoImg, coupons, goodsDesc = null, isPageUp = 0, goodsPageId = null, deliverPlace, defaultPrd, activity, goodsNumber, goodsSaleNum, labels, goodsAd, isCollected, products, goodsName, deliverPrice, limitBuyNum,
               limitMaxNum, goodsId } = res.content
             let goodsMediaInfo = {
@@ -147,6 +156,7 @@ global.wxPage({
                 ...this.getPrice(goodsInfo)
               }
             })
+            this.getPromotions(res.content)
             resolve(res.content);
           }
         }, {
@@ -421,6 +431,28 @@ global.wxPage({
       prdLinePrice: data.defaultPrd ? linePrice[0] : `${this.getMin(linePrice)}~${this.getMax(linePrice)}`,
       singleRealPrice: this.getMin(realPrice),
       singleLinePrice: this.getMin(linePrice)
+    }
+  },
+  // 获取促销信息
+  getPromotions({promotions}){
+    if(JSON.stringify(promotions) === '{}') return
+    let promotionArr = Object.keys(promotions).map(k => {
+     return promotions[k].map(item => {
+        return {type:k,...this.getPromotionInfo(k,item)}
+      })
+    })
+    this.setData({
+      promotionInfo:promotionArr.flat(Infinity)
+    })
+  },
+  getPromotionInfo(promotionType,info){
+    switch (promotionType) {
+      case '18':
+        if(info.isLimit){
+          return {desc:`每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`,id:info.promotionId}
+        } else {
+          return {desc:`新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`,id:info.promotionId}
+        }
     }
   },
   /**

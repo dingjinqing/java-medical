@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "v-popup-coupon": "/components/item/popup/coupon/index"
+    "v-popup-coupon": "/components/item/popup/coupon/index",
+    "v-popup-promotion":"./promotion/index"
   }
 }
