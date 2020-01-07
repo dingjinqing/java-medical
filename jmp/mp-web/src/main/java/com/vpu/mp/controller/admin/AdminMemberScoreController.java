@@ -76,7 +76,7 @@ public class AdminMemberScoreController extends AdminBaseController {
 				Integer userId = arrayUserId[i];
 					/** -处理积分变动产生的异常 */
 					try {
-						shop().member.score.updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow,language);
+						shop().member.score.updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow);
 					} catch (MpException e) {
 						logger().info("积分更新失败");
 						return fail(e.getErrorCode().getMessage());

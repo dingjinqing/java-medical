@@ -77,7 +77,7 @@
               >
                 <span
                   class="el-icon-user-solid iconStyle"
-                  @click="viewUserHanlder(scope.row.tagName)"
+                  @click="viewUserHanlder(scope.row.tagId)"
                 ></span>
               </el-tooltip>
             </template>
@@ -242,11 +242,11 @@ export default {
     },
 
     // 查看用户明细
-    viewUserHanlder (name) {
+    viewUserHanlder (tagId) {
       this.$router.push({
         path: '/admin/home/main/membershipList',
         query: {
-          name: name
+          tagId: tagId
         }
       })
     }
