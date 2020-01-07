@@ -182,17 +182,6 @@
                   @click="stopHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
-              <!-- <el-tooltip
-                content="启用"
-                placement="top"
-                v-if="scope.row.status === 4"
-              >
-                <span
-                  style="font-size: 22px;"
-                  class="el-icon-circle-check"
-                  @click="startHandler(scope.row.id)"
-                ></span>
-              </el-tooltip> -->
               <el-tooltip
                 content="查看活动订单"
                 placement="top"
@@ -417,7 +406,7 @@ export default {
     // 分享
     shareHandler (id) {
       this.shareDialog = !this.shareDialog
-      shareLotteryDraw(id).then((res) => {
+      shareLotteryDraw({ groupDrawId: id }).then((res) => {
         if (res.error === 0) {
           this.shareImg = res.content.imageUrl
           this.sharePath = res.content.pagePath
@@ -442,27 +431,6 @@ export default {
         this.$message.info({ message: this.$t('seckill.stopFail') })
       })
     },
-
-    // 启用
-    // startHandler(id) {
-    //   this.$confirm(this.$t('seckill.startTip'), {
-    //     confirmButtonText: this.$t('seckill.sure'),
-    //     cancelButtonText: this.$t('seckill.cancel'),
-    //     type: 'warning'
-    //   }).then(() => {
-    //     // updateStatus({
-    //     //   id: id,
-    //     //   status: 1
-    //     // }).then((res) => {
-    //     //   if (res.error === 0) {
-    //     //     this.$message.success({ message: this.$t('seckill.startSuccess') })
-    //     //     this.initDataList()
-    //     //   }
-    //     // })
-    //   }).catch(() => {
-    //     this.$message.info({ message: this.$t('seckill.startFail') })
-    //   })
-    // },
 
     // 查看活动订单
     orderHanlder (id, name) {
