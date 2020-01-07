@@ -76,8 +76,8 @@ public class ScoreService extends ShopBaseService {
 	 * @param param 积分变动相关数据
 	 * @param subAccountId 操作员id
 	 * @param userId 用户id
-	 * @param tradeType  交易类型说明 如  微信支付类型{@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.WX_PAY }
-	 * @param tradeFlow  资金流向类型  如收入 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
+	 * @param tradeType  交易类型说明  类型{@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum }
+	 * @param tradeFlow  资金流向类型   {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum }
 	 * @return JsonResultCode
 	 * @throws MpException 
 	 */
@@ -213,6 +213,7 @@ public class ScoreService extends ShopBaseService {
 				/** -交易记录表-记录交易的数据信息  */
 				insertTradesRecord(tradesRecord);
 				
+				// TODO 积分变动升级
 				
 				//TODO  admin 操作记录
 				if (subAccountId == 0) {
