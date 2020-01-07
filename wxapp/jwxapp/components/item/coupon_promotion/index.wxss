@@ -18,3 +18,19 @@
 .align-top{
   align-self: flex-start;
 }
+.promotion-item{
+  display: flex;
+  align-items: center;
+}
+.promotion-tag{
+  margin-right: 10rpx;
+  border: 1rpx solid;
+  padding: 4rpx 6rpx;
+  line-height: 1;
+}
+.promotion-desc{
+  flex: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

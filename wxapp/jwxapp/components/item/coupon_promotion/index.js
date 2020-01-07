@@ -24,6 +24,12 @@ global.wxComponent({
       this.setData({
         show_recommend_coupons: true
       });
+    },
+    showPromotion(){
+      console.log(111)
+      this.setData({
+        showPromotionDialog:true
+      })
     }
   }
 });
