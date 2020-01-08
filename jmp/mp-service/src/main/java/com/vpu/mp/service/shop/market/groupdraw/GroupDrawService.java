@@ -11,7 +11,6 @@ import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupDraw;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -351,7 +350,7 @@ public class GroupDrawService extends ShopBaseService {
         SelectConditionStep builder = db().select(ORDER_INFO.CREATE_TIME,ORDER_INFO.USER_ID)
             .from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(id))
-            .and(ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_GROUP_DRAW})))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_GROUP_DRAW})))
             .and(ORDER_INFO.ORDER_STATUS.notIn(new Byte[]{0,2}));
         if (null!=startTime&&null!=endTime){
             builder.and(ORDER_INFO.CREATE_TIME.between(startTime,endTime));

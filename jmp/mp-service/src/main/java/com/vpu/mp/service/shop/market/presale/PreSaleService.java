@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.Presale;
 import com.vpu.mp.db.shop.tables.PresaleProduct;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -56,7 +57,6 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOIN
 import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_POSTPONE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_SPECIFIC;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.GOODS_TYPE_PRE_SALE;
 import static java.lang.String.format;
 import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
@@ -127,7 +127,7 @@ public class PreSaleService extends ShopBaseService {
             )
                 .from(TABLE)
                 .leftJoin(ORDER)
-                .on(ORDER.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {GOODS_TYPE_PRE_SALE}))
+                .on(ORDER.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PRE_SALE}))
                 .and(ORDER.ACTIVITY_ID.eq(TABLE.ID)))
                 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER.ORDER_ID))
                 .where(TABLE.DEL_FLAG.eq(NOT_DELETED));

@@ -158,11 +158,11 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             switch (activityInfo.getType()){
                 case 1:
                     //每满减
-                    if(condition.getFullMoney() != null && condition.getFullMoney().compareTo(price) < 1) {
+                    if(BigDecimalUtil.compareTo(condition.getFullMoney(), null) > 0 && condition.getFullMoney().compareTo(price) < 1) {
                         result = BigDecimalUtil.multiply(
                             condition.getReduceMoney(),
                             new BigDecimal(BigDecimalUtil.divide(price, condition.getFullMoney(), RoundingMode.FLOOR).intValue()));
-                    }else if(condition.getAmount() != null && condition.getAmount() <= num) {
+                    }else if(condition.getAmount() != null && condition.getAmount() > 0 && condition.getAmount() <= num) {
                         result = BigDecimalUtil.multiply(
                             condition.getReduceMoney(),
                             new BigDecimal(num / condition.getAmount()));
@@ -170,16 +170,16 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                     break;
                 case 2:
                     //满减
-                    if(condition.getFullMoney() != null && condition.getFullMoney().compareTo(price) < 1) {
+                    if(BigDecimalUtil.compareTo(condition.getFullMoney(), null) > 0 && condition.getFullMoney().compareTo(price) < 1) {
                         result = condition.getReduceMoney();
-                    }else if(condition.getAmount() != null && condition.getAmount() <= num) {
+                    }else if(condition.getAmount() != null && condition.getAmount() > 0 && condition.getAmount() <= num) {
                         result = condition.getReduceMoney();
                     }
                     break;
                 case 3:
                     //满折
-                    if((condition.getFullMoney() != null && condition.getFullMoney().compareTo(price) < 1) ||
-                        (condition.getAmount() != null && condition.getAmount() <= num)) {
+                    if((BigDecimalUtil.compareTo(condition.getFullMoney(), null) > 0 && condition.getFullMoney().compareTo(price) < 1) ||
+                        (condition.getAmount() != null && condition.getAmount() > 0 && condition.getAmount() <= num)) {
                         result =
                             price.subtract(
                                 BigDecimalUtil.multiplyOrDivide(

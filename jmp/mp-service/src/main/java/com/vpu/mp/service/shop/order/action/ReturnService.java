@@ -1,5 +1,53 @@
 package com.vpu.mp.service.shop.order.action;
 
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import com.vpu.mp.service.shop.config.ShopReturnConfigService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.record.OrderActionService;
+import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
+import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
+import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
+import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Result;
+import org.jooq.exception.DataAccessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -11,58 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.shop.config.ShopReturnConfigService;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.exception.DataAccessException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
-import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-import com.vpu.mp.service.shop.order.action.base.IorderOperate;
-import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
-import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.shop.order.record.OrderActionService;
-import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
-import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
-import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
-import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
-import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 /**
  * 
  * @author 王帅
@@ -522,7 +518,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
 		List<String> goodsType = Arrays.asList(order.getGoodsType().split(","));
 		//非货到付款 非拼团抽奖
-		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_GROUP_DRAW))) {
+		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
 			//修改库存-销量
 			updateStockAndSales(returnGoods,order,goodsType);
 		}
@@ -606,15 +602,15 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			}
 			
 			//订单类型为拼团 且存在拼团id
-			if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_PIN_GROUP)) && order.getActivityId() != null) {
+			if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) && order.getActivityId() != null) {
 				//TODO 拼团修改库存和销量
 			}
             //订单类型为秒杀 且存在秒杀id 且不是赠品行
-            if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_SECKILL)) && order.getActivityId() != null && rGoods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
+            if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_SEC_KILL)) && order.getActivityId() != null && rGoods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
                 saas.getShopApp(getShopId()).seckill.updateSeckillStock(order.getActivityId(),rGoods.getProductId(),- rGoods.getGoodsNumber());
             }
             //订单类型为砍价 且存在砍价id
-            if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_BARGAIN)) && order.getActivityId() != null) {
+            if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_BARGAIN)) && order.getActivityId() != null) {
                 saas.getShopApp(getShopId()).bargain.updateBargainStock(order.getActivityId(),- rGoods.getGoodsNumber());
             }
 		}

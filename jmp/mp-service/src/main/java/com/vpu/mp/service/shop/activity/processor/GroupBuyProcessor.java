@@ -257,7 +257,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
 
         List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
         ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
-        if (goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
+        if (goodsTypes.contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
             GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
             String goodsName =goods.get(0).getGoodsName();
             String goodsPrice =goods.get(0).getGoodsPrice().toString();

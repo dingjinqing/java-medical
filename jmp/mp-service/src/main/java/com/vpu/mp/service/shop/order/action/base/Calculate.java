@@ -607,7 +607,7 @@ public class Calculate extends ShopBaseService {
         Byte isCanReturn = null;
         //售后开关
         Byte saleSwitch = returnCfg.getPostSaleStatus();
-        if (saleSwitch.equals(OrderConstant.NO) || goodsType.contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)) {
+        if (saleSwitch.equals(OrderConstant.NO) || goodsType.contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT)) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_N;
         } else if (order.getPosFlag() != null && OrderConstant.YES == order.getPosFlag()) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_Y;
