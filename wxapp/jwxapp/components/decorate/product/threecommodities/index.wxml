@@ -11,7 +11,7 @@
             <view class='top_title'>
               <view class='van-two-ellipsis'>{{item.goodsName}}</view>
             </view>
-            <view class='title_label_container' style="bottom:54rpx">
+            <view class='title_label_container' style="bottom:50rpx">
               <view style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}" class="{{indexC==0?'title_label':''}}" wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
             {{indexC===0?itemC.text:''}}
             </view>
@@ -22,6 +22,7 @@
               <view class='sale_price' wx:if="{{item.activityType != '10'}}" style='color:{{main_setting.comColor}};'>￥{{item.realPrice===null?"0.00":item.realPrice}}</view>
               <view class='sale_price' wx:if="{{item.activityType == '10'}}" style='color:{{main_setting.comColor}};'>￥{{item.shopPrice}}</view>
             </block>
+            <view wx:if="{{m.hide_price != 1}}"></view>
             <block wx:if="{{m.cart_btn == 1 && item.activityType != 10}}">
               <text class='cart_btn iconfont icontianjia' style='font-size:40rpx;color:{{main_setting.comColor}}' wx:if="{{m.cart_btn_choose == 0}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
               <text class='cart_btn iconfont icongouwuche1' style='font-size:40rpx;color:{{main_setting.comColor}}' wx:if="{{m.cart_btn_choose == 1}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
