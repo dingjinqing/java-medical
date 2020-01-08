@@ -27,4 +27,6 @@ public class CardHolderVo {
 	private Timestamp createTime;
 	/** -过期时间 */
 	private Timestamp expireTime;
+	/** 更新时间 */
+	private Timestamp updateTime;
 }
