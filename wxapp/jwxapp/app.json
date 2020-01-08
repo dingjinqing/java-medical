@@ -76,7 +76,8 @@
         "returnrecord/returnrecord",
         "shoporderinfo/shoporderinfo",
         "usercardrecord/usercardrecord",
-        "lottery/lottery"
+        "lottery/lottery",
+        "pinlotterylist/pinlotterylist"
       ]
     }
   ],
