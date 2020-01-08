@@ -3,16 +3,18 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -20,6 +22,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +30,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -40,12 +46,14 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.IdentityUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -72,6 +80,7 @@ import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -99,7 +108,9 @@ public class UserImportService extends ShopBaseService {
 	private ScoreService scoreService;
 	@Autowired
 	private MemberCardService cardService;
-	
+	@Autowired
+	private ConfigService configService;
+
 	private static final String PHONEREG = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
 	private static final String USER_IMPORT_NOTICE = "user_import_notice";
 	private static final BigDecimal ZERO = new BigDecimal("0");
@@ -116,6 +127,11 @@ public class UserImportService extends ShopBaseService {
 //			"环保", "农/林/牧/渔", "跨领域经营", "其它" };
 	private static final Byte ONE = 1;
 	private static final Byte BYTE_ZERO = 0;
+	private static final Byte BYTE_ONE = 1;
+	private static final Byte BYTE_TWO = 2;
+	private static final Byte BYTE_THREE = 3;
+	private static final Byte BYTE_FOUR = 4;
+	private static final Byte BYTE_FIVE = 5;
 	private static final String DATE_FORMATE = "yyyy/MM/dd";
 
 	/**
@@ -162,7 +178,7 @@ public class UserImportService extends ShopBaseService {
 		json = Util.parseJson(record.getV(), SetNoticeJson.class);
 		return json;
 	}
-	
+
 	public SetNoticeJsonDetailVo getInfo(String lang) {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
@@ -170,9 +186,9 @@ public class UserImportService extends ShopBaseService {
 		if (StringUtils.isNotEmpty(mrkingVoucherId)) {
 			String[] split = mrkingVoucherId.split(",");
 			for (String string : split) {
-				CouponWxUserImportVo couponVo = couponService.getOneMVById(Integer.valueOf(string),lang);
-				if(couponVo!=null) {
-					voList.add(couponVo);					
+				CouponWxUserImportVo couponVo = couponService.getOneMVById(Integer.valueOf(string), lang);
+				if (couponVo != null) {
+					voList.add(couponVo);
 				}
 			}
 		}
@@ -697,20 +713,19 @@ public class UserImportService extends ShopBaseService {
 		return detailList;
 
 	}
-	
 	public UserImportDetailRecord getUserByMobile(String mobile, Byte userAction) {
 		return db().selectFrom(USER_IMPORT_DETAIL)
 				.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))
 						.and(USER_IMPORT_DETAIL.MOBILE.eq(mobile)).and(USER_IMPORT_DETAIL.USER_ACTION.eq(userAction)))
 				.fetchOne();
 	}
-	
-	//激活用户
+
+	// 激活用户
 	public JsonResultCode toActivateUser(Integer userId) {
 		UserRecord user = userService.getUserByUserId(userId);
 		String mobile = user.getMobile();
-		if(StringUtils.isEmpty(mobile)) {
-			//请授权手机号
+		if (StringUtils.isEmpty(mobile)) {
+			// 请授权手机号
 			return JsonResultCode.CODE_EXCEL_NEED_MOBILE;
 		}
 		UserImportDetailRecord importUser = getUserByMobile(mobile, ONE);
@@ -718,26 +733,27 @@ public class UserImportService extends ShopBaseService {
 			// 很抱歉！由于您不是本店老会员或因本店还未导入您的会员信息，暂时无法激活，请稍后再试或咨询本店客服
 			return JsonResultCode.CODE_EXCEL_SORRY;
 		}
-		if(Objects.equals(importUser.getIsActivate(), ONE)) {
-			//用户已激活，请勿重复操作
+		if (Objects.equals(importUser.getIsActivate(), ONE)) {
+			// 用户已激活，请勿重复操作
 			return JsonResultCode.CODE_EXCEL_OK;
 		}
 		importUser.setIsActivate(ONE);
 		importUser.update();
 		SetNoticeJson activationNotice = getActivationNotice();
-		grantCoupon(userId,activationNotice);
-		sendUserScore(userId,activationNotice);
+		grantCoupon(userId, activationNotice);
+		sendUserScore(userId, activationNotice);
+		activateUser(userId, importUser);
 		return JsonResultCode.CODE_SUCCESS;
 	}
-	
-	
 
 	/**
 	 * 赠送积分
+	 * 
 	 * @param userId
 	 * @param activationNotice
 	 */
 	private void sendUserScore(Integer userId, SetNoticeJson activationNotice) {
+		logger().info("赠送积分");
 		String score = activationNotice.getScore();
 		if (StringUtils.isNotEmpty(score)) {
 			ScoreParam param = new ScoreParam();
@@ -745,52 +761,244 @@ public class UserImportService extends ShopBaseService {
 			param.setScore(Integer.valueOf(score));
 			param.setDesc("user_activate_score");
 			param.setRemarkCode(RemarkTemplate.ADMIN_USER_IMPORT.code);
+			param.setUserId(userId);
 			try {
-				scoreService.updateMemberScore(param, 0, userId, RecordTradeEnum.USER_IMPORT.val(),RecordTradeEnum.UACCOUNT_RECHARGE.val());
+				scoreService.updateMemberScore(param, 0, RecordTradeEnum.USER_IMPORT.val(),
+						RecordTradeEnum.UACCOUNT_RECHARGE.val());
 			} catch (MpException e) {
 				e.printStackTrace();
 			}
 		}
 	}
+
 	/**
 	 * 发放优惠券
+	 * 
 	 * @param userId
 	 */
-	private void grantCoupon(Integer userId,SetNoticeJson activationNotice) {
-		List<Integer> userIds=new ArrayList<Integer>();
+	private void grantCoupon(Integer userId, SetNoticeJson activationNotice) {
+		logger().info("发放优惠券");
+		List<Integer> userIds = new ArrayList<Integer>();
 		userIds.add(userId);
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
-		if(StringUtils.isEmpty(mrkingVoucherId)) {
+		if (StringUtils.isEmpty(mrkingVoucherId)) {
 			return;
 		}
 		String[] split = mrkingVoucherId.split(",");
-		List<String> list=new ArrayList<String>();
+		List<String> list = new ArrayList<String>();
 		for (String string : split) {
-			Byte couponGetStatus = couponMpService.couponGetStatus(new mpGetCouponParam(Integer.valueOf(string), userId));
-			if(Objects.equals(couponGetStatus, BYTE_ZERO)) {
+			Byte couponGetStatus = couponMpService
+					.couponGetStatus(new mpGetCouponParam(Integer.valueOf(string), userId));
+			if (Objects.equals(couponGetStatus, BYTE_ZERO)) {
 				list.add(string);
-			}else {
+			} else {
 				logger().info("优惠券" + string + "状态：" + couponGetStatus);
 			}
 		}
 		String[] array = list.toArray(new String[0]);
-		CouponGiveQueueParam newParam = new CouponGiveQueueParam(userIds, 0, array, BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
-        saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+		CouponGiveQueueParam newParam = new CouponGiveQueueParam(userIds, 0, array, BaseConstant.ACCESS_MODE_ISSUE,
+				BaseConstant.GET_SOURCE_ACT);
+		saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(),
+				TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
 	}
-	//激活用户
+
+	// 激活用户
 	public void activateUser(Integer userId, UserImportDetailRecord importUser) {
+		logger().info("激活用户");
 		String cardId = importUser.getCardId();
-		List<Integer> userIdList=new ArrayList<Integer>();
+		List<Integer> userIdList = new ArrayList<Integer>();
 		userIdList.add(userId);
+		logger().info("判断分配会员卡");
 		if (StringUtils.isNotEmpty(cardId)) {
+			logger().info("分配会员卡");
 			String[] split = cardId.split(",");
-			List<Integer> cardIdList=new ArrayList<Integer>();
+			List<Integer> cardIdList = new ArrayList<Integer>();
 			for (String string : split) {
 				cardIdList.add(Integer.valueOf(string));
 			}
 			AddMemberCardParam param = new AddMemberCardParam(userIdList, cardIdList);
-			logger().info("激活用户"+userId+"分配会员卡");
+			logger().info("激活用户" + userId + "分配会员卡");
 			cardService.addCardForMember(param);
 		}
+		logger().info("判断打标签");
+		Integer tagId = importUser.getTagId();
+		if (tagId != null) {
+			logger().info("打标签" + tagId);
+			scoreService.member.addUserTag(tagId, userId);
+		}
+		logger().info("判断原积分导入");
+		Integer score = importUser.getScore();
+		Byte userAction = importUser.getUserAction();
+		if (score != null && !Objects.equals(userAction, BYTE_TWO)) {
+			logger().info("原积分导入");
+			ScoreParam param = new ScoreParam();
+			param.setScore(score);
+			param.setScoreStatus(BYTE_ZERO);
+			param.setDesc("user_activate_score");
+			param.setRemarkCode(RemarkTemplate.ADMIN_USER_ACTIVATE.code);
+			param.setUserId(userId);
+			try {
+				scoreService.updateMemberScore(param, 0, RecordTradeEnum.USER_IMPORT.val(),
+						RecordTradeEnum.UACCOUNT_RECHARGE.val());
+			} catch (MpException e) {
+				logger().info("userId" + userId + "激活用户消耗积分异常");
+				logger().info(e.getMessage(), e);
+			}
+		}
+		logger().info("判断邀请人手机号处理");
+		String inviteUserMobile = importUser.getInviteUserMobile();
+		UserRecord userRecord = userService.getUserByUserId(userId);
+		UserDetailRecord userDetail = userService.getUserDetail(userId);
+		if (StringUtils.isNotEmpty(inviteUserMobile)) {
+			logger().info("邀请人手机号处理");
+			UserRecord inviteUser = userService.getUserByMobile(inviteUserMobile);
+			DistributionParam cfg = configService.distributionCfg.getDistributionCfg();
+			if (cfg != null && inviteUser != null && userId != inviteUser.getUserId()
+					&& cfg.getStatus().equals(BYTE_ONE) && inviteUser.getInviteId() != userId) {
+				logger().info("处理邀请人");
+				userRecord.setInviteId(inviteUser.getUserId());
+				userRecord.setInviteTime(DateUtil.getLocalTimeDate());
+				Byte vaild = cfg.getVaild();
+				Timestamp time = vaild > BYTE_ZERO
+						? DateUtil.getTimeStampPlus(Integer.valueOf(vaild) - 1, ChronoUnit.DAYS)
+						: null;
+				if (time != null) {
+					userRecord.setInviteExpiryDate(new Date(time.getTime()));
+				}
+				Byte protectDate = cfg.getProtectDate();
+				time = vaild > BYTE_ZERO ? DateUtil.getTimeStampPlus(Integer.valueOf(protectDate) - 1, ChronoUnit.DAYS)
+						: null;
+				if (time != null) {
+					userRecord.setInviteProtectDate(new Date(time.getTime()));
+				}
+				int update = userRecord.update();
+				logger().info("更新" + update);
+
+				// TODO 返利
+//                $shop->rebate->updateTotalFanli($inviteUser->user_id);
+//                if ($user->invite_id) {
+//                    $shop->rebate->updateTotalFanli($user->invite_id);
+//                }
+			}
+		}
+		String name = importUser.getName();
+		logger().info("判断realName姓名" + name);
+		String realName = userDetail.getRealName();
+		if (StringUtils.isNotEmpty(name) && StringUtils.isEmpty(realName)) {
+			logger().info("更新realName" + name);
+			userDetail.setRealName(name);
+		}
+		String sex = importUser.getSex();
+		String sex2 = userDetail.getSex();
+		ShopRecord shopById = saas.shop.getShopById(getShopId());
+		String lang = shopById.getShopLanguage();
+		logger().info("店铺语言" + lang);
+		if (StringUtils.isNotEmpty(sex) && StringUtils.isEmpty(sex2)) {
+			// userDetail.setSex(value);
+			String sex3 = MemberSexEnum.getByName(sex, lang);
+			if (sex3 != null) {
+				logger().info("更新性别" + sex3);
+				userDetail.setSex(sex3);
+			}
+		}
+
+		String nickName = importUser.getNickName();
+		String username = userDetail.getUsername();
+		logger().info("判断昵称" + nickName);
+		if (StringUtils.isNotEmpty(nickName) && StringUtils.isEmpty(username)) {
+			logger().info("更新昵称" + nickName);
+			userDetail.setUsername(nickName);
+		}
+		String userGrade = importUser.getUserGrade();
+		if (StringUtils.isNotEmpty(userGrade)) {
+			logger().info("升级用户");
+			scoreService.userCardService.checkUserGradeCard(userId, userGrade);
+		}
+		String birthday = importUser.getBirthday();
+		Integer birthdayYear = userDetail.getBirthdayYear();
+		logger().info("判断是否更新生日");
+		if (StringUtils.isNotEmpty(birthday) && birthdayYear == null) {
+			logger().info("更新生日");
+			String[] birthdays = birthday.split("/");
+			userDetail.setBirthdayYear(Integer.valueOf(birthdays[0]));
+			userDetail.setBirthdayMonth(Integer.valueOf(birthdays[1]));
+			userDetail.setBirthdayDay(Integer.valueOf(birthdays[2]));
+		}
+		// TODO 省市区国际化之后不好判断
+		BigDecimal income = importUser.getIncome();
+		logger().info("判断收入");
+		if (income != null) {
+			logger().info("更新收入");
+			// userDetail.setMonthlyIncome(value);
+			if (Objects.equals(income.compareTo(new BigDecimal("2000")), -1)) {
+				userDetail.setMonthlyIncome(BYTE_ONE);
+			}
+			if (Objects.equals(income.compareTo(new BigDecimal("4000")), -1)) {
+				userDetail.setMonthlyIncome(BYTE_TWO);
+			}
+			if (Objects.equals(income.compareTo(new BigDecimal("6000")), -1)) {
+				userDetail.setMonthlyIncome(BYTE_THREE);
+			}
+			if (Objects.equals(income.compareTo(new BigDecimal("8000")), -1)) {
+				userDetail.setMonthlyIncome(BYTE_FOUR);
+			} else {
+				userDetail.setMonthlyIncome(BYTE_FIVE);
+			}
+		}
+
+		Integer groupId = importUser.getGroupId();
+		logger().info("判断groupId");
+		if (groupId == null) {
+			logger().info("更新groupId");
+			userRecord.setIsDistributor(BYTE_ONE);
+			userRecord.setInviteGroup(groupId);
+		}
+		Byte isDistributor = importUser.getIsDistributor();
+		logger().info("判断是否是分销员" + isDistributor);
+		if (Objects.equals(isDistributor, BYTE_ONE)) {
+			logger().info("更新分销员" + isDistributor);
+			userRecord.setIsDistributor(BYTE_ONE);
+		}
+
+		String marriage = importUser.getMarriage();
+		logger().info("判断婚姻" + marriage);
+		if (StringUtils.isNotEmpty(marriage)) {
+			Integer mem = MemberMarriageEnum.getByName(marriage, lang);
+			if (mem != null) {
+				logger().info("更新婚姻" + mem);
+				userDetail.setMaritalStatus(Byte.valueOf(String.valueOf(mem)));
+			}
+		}
+
+		String idNumber = importUser.getIdNumber();
+		logger().info("判断身份证号" + idNumber);
+		if (StringUtils.isNotEmpty(idNumber)) {
+			logger().info("更新身份证号" + idNumber);
+			userDetail.setCid(idNumber);
+		}
+
+		String education = importUser.getEducation();
+		logger().info("判断教育程度" + education);
+		if (StringUtils.isNotBlank(education)) {
+			Integer edu = MemberEducationEnum.getByName(education, lang);
+			if (edu != null) {
+				logger().info("更新" + edu);
+				userDetail.setEducation(Byte.valueOf(String.valueOf(edu)));
+			}
+		}
+
+		String industry = importUser.getIndustry();
+		logger().info("判断行业" + industry);
+		if (StringUtils.isNotEmpty(industry)) {
+			Integer ind = MemberIndustryEnum.getByName(industry, lang);
+			if (ind != null) {
+				logger().info("更新行业" + ind);
+				userDetail.setIndustryInfo(Byte.valueOf(String.valueOf(ind)));
+			}
+		}
+		int update = userRecord.update();
+		logger().info("user更新" + update);
+		int update2 = userDetail.update();
+		logger().info("userDetail更新" + update2);
 	}
 }

@@ -302,7 +302,7 @@ public class StoreOrderService extends ShopBaseService {
             }
             scoreParam = new ScoreParam() {{
                 setScoreDis(userInfo.getScore());
-                setUserId(new Integer[]{userInfo.getUserId()});
+                setUserId(userInfo.getUserId());
                 // 积分变动数额
                 setScore(scoreValue);
                 setOrderSn(orderSn);
@@ -530,7 +530,7 @@ public class StoreOrderService extends ShopBaseService {
             scoreService.updateMemberScore(
                 new ScoreParam() {
                     {
-                        setUserId(userId);
+                        setUserId(userId[0]);
                         setScore(score);
                         setScoreStatus(NO_USE_SCORE_STATUS);
                         setDesc("score");

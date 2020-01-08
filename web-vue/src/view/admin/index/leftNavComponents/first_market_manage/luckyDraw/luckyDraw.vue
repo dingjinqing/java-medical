@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import luckyDrawList from './luckyDrawList'
+// import luckyDrawList from './luckyDrawList'
 
 export default {
   components: {
-    luckyDrawList
+    // luckyDrawList
   },
   data () {
     return {

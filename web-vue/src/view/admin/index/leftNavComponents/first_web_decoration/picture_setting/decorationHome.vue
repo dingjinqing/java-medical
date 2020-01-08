@@ -1222,13 +1222,14 @@ export default {
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
+      console.log(judgeFlag)
       if (judgeFlag.isMpinintegration) {
         this.$http.$emit('isMpinintegration')
         return
       }
       if (!judgeFlag.flag) return
 
-      if (flag === 0) {
+      if (Number(flag) === 0) {
         console.log(this.modulesData)
         this.saveTwoDialogVisible = true
       } else {

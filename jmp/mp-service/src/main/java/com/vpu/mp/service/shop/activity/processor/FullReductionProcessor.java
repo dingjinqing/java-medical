@@ -180,7 +180,7 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
                         if(joinActivity.get(activityInfo) == null){
                             joinActivity.put(activityInfo, new ArrayList<>());
                         }
-                        //goods.setStraId(activity.getId());
+                        goods.setStraId(activity.getId());
                         joinActivity.get(activityInfo).add(goods);
                         used.add(goods.getProductId());
                     }

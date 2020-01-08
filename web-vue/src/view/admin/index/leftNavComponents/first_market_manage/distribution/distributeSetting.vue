@@ -90,14 +90,23 @@
                 plain
                 @click="customHandler"
               >自定义激活项</el-button>
-              <div style="width: 100%; min-height: 20px; border: 1px dashed #ccc;padding: 5px 10px;margin-top: 10px;">
+              <div
+                v-if="customList.length > 0"
+                style="width: 100%; min-height: 20px; border: 1px dashed #ccc;padding: 5px 10px;margin-top: 10px;"
+              >
                 <div
-                  v-for="(item, index) in form.customList"
+                  v-for="(item, index) in customList"
                   :key="index"
                 >
                   <el-checkbox style="width: 320px;">{{ item.title }}</el-checkbox>
-                  <span class="el-icon-edit-outline iconStyle"></span>
-                  <span class="el-icon-delete iconStyle"></span>
+                  <span
+                    class="el-icon-edit-outline iconStyle"
+                    @click="editCustom(index)"
+                  ></span>
+                  <span
+                    class="el-icon-delete iconStyle"
+                    @click="delCustom(index)"
+                  ></span>
                   <span
                     class="text"
                     v-if="item.checkbox"
@@ -452,31 +461,33 @@
             ></el-input>
             <span class="text">最多可填写20个字</span>
           </el-form-item>
-          <div
-            v-for="(item, index) in customForm.optionList"
-            :key="index"
-          >
-            <el-form-item :label="'选项' + (index + 1) + '：'">
-              <el-input
+          <div v-if="customForm.radio1 !== 2">
+            <div
+              v-for="(item, index) in customForm.optionList"
+              :key="index"
+            >
+              <el-form-item :label="'选项' + (index + 1) + '：'">
+                <el-input
+                  size="small"
+                  v-model="item.value"
+                  class="inputWidth"
+                ></el-input>
+                <span
+                  v-if="index > 1"
+                  class="el-icon-delete iconStyle"
+                  @click="deleteOption(index)"
+                ></span>
+              </el-form-item>
+            </div>
+            <el-form-item>
+              <el-button
                 size="small"
-                v-model="item.value"
-                class="inputWidth"
-              ></el-input>
-              <span
-                v-if="index > 1"
-                class="el-icon-delete iconStyle"
-                @click="deleteOption(index)"
-              ></span>
+                @click="addOption"
+                v-if="customForm.optionList.length < 10"
+              >添加选项</el-button>
+              <span class="text">最多可添加10个选项</span>
             </el-form-item>
           </div>
-          <el-form-item>
-            <el-button
-              size="small"
-              @click="addOption"
-              v-if="customForm.optionList.length < 10"
-            >添加选项</el-button>
-            <span class="text">最多可添加10个选项</span>
-          </el-form-item>
           <el-form-item label="条件验证：">
             <el-checkbox
               v-model="customForm.checkbox"
@@ -538,6 +549,10 @@ export default {
       imageHost: 'http://jmpdevimg.weipubao.cn/',
       vaildDate: null, // 有效期天数
       protectDate: null, // 保护期天数
+      isEdit: false, // 自定义激活项弹窗是否编辑状态
+      editIndex: null,
+      // 自定义激活项
+      customList: [],
       form: {
         status: 1, // 分销开关
         judge_status: 1, // 分销员审核开关
@@ -546,7 +561,7 @@ export default {
         // 信息开关
         info_status: 1,
         // 自定义激活项
-        customList: [],
+        // customList: [],
         invitationCode: 1, // 邀请码
         activation: 1, // 是否需要提交个人信息
         activation_cfg: [], // 个人信息内容
@@ -697,6 +712,7 @@ export default {
     // 自定义激活项
     customHandler () {
       this.customDialogVisible = !this.customDialogVisible
+      this.isEdit = false
     },
 
     // 添加选项
@@ -713,12 +729,20 @@ export default {
 
     // 确定自定义激活项
     sureCustomHandler () {
-      if (!this.form.customList) {
-        this.form.customList = []
+      if (!this.isEdit) {
+        // 添加
+        if (!this.customList) {
+          this.customList = []
+        }
+        this.customList.push(this.customForm)
+      } else {
+        // 编辑
+        this.customList.forEach((item, index) => {
+          if (this.editIndex === index) {
+            item = this.customForm
+          }
+        })
       }
-      console.log(this.form.customList)
-      console.log(this.customForm)
-      this.form.customList.push(this.customForm)
       this.customDialogVisible = false
       // 清空弹窗数据
       this.customForm = {
@@ -747,6 +771,23 @@ export default {
         }],
         checkbox: 1
       }
+    },
+
+    // 编辑自定义选项
+    editCustom (index) {
+      this.customDialogVisible = !this.customDialogVisible
+      this.isEdit = true
+      this.editIndex = index
+      this.customList.forEach((val, key) => {
+        if (index === key) {
+          this.customForm = val
+        }
+      })
+    },
+
+    // 删除自定义选项
+    delCustom (index) {
+      this.customList.splice(index, 1)
     },
 
     // 保存分销配置

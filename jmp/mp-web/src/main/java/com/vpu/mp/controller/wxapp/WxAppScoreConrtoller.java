@@ -118,8 +118,9 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		param2.setScore(param.getScore());
 		param2.setScoreStatus((byte)0);
 		param2.setDesc("sign_score");
+		param2.setUserId(userId);
 		try {
-			shop().userCard.scoreService.updateMemberScore(param2, 0, userId, RecordTradeEnum.TYPE_SCORE_SIGN.val(), RecordTradeEnum.TRADE_FLOW_OUT.val());
+			shop().userCard.scoreService.updateMemberScore(param2, 0, RecordTradeEnum.TYPE_SCORE_SIGN.val(), RecordTradeEnum.TRADE_FLOW_OUT.val());
 		} catch (MpException e) {
 			e.printStackTrace();
 		}

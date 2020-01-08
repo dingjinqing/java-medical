@@ -6,6 +6,8 @@ import java.util.Arrays;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -219,7 +221,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
             //资金流量-支出
                 tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
             //积分变动是否来自退款
-                isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
+                isFromRefund(NumberUtils.BYTE_ONE).build();
         //调用退积分接口
         recordMemberTrade.updateUserEconomicData(scoreData);
     }

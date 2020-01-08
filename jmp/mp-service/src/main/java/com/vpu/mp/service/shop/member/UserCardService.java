@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -1645,7 +1646,29 @@ public class UserCardService extends ShopBaseService {
 	}
 	
 	
-	
-	
+	/**
+	 * 检查用户等级升级
+	 * @param userId
+	 * @param grade
+	 * @return
+	 */
+	public boolean checkUserGradeCard(Integer userId,String grade) {
+		String userGrade = getUserGrade(userId);
+		if(Objects.equals(userGrade, grade)) {
+			return true;
+		}
+		MemberCardRecord cardByGrade = getGradeCardByGrade(grade);
+		if(cardByGrade==null) {
+			return false;
+		}
+		try {
+			updateGrade(userId, cardByGrade.getId(), TP_CHECK);
+		} catch (MpException e) {
+			logger().info("升级错误");
+			logger().info(e.getMessage(),e);
+			return false;
+		}
+		return true;
+	}
 	
 }

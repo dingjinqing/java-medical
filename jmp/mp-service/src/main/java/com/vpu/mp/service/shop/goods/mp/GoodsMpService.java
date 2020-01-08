@@ -364,7 +364,7 @@ public class GoodsMpService extends ShopBaseService {
             try {
                 log.debug("小程序-es-商品搜索条件反推");
                 return esGoodsSearchMpService.getGoodsParam();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.debug("小程序-es-商品搜索条件反推错误-转换db获取数据:" + e.getMessage());
                 return getGoodsSearchFilterConditionFromDb();
             }
@@ -646,6 +646,6 @@ public class GoodsMpService extends ShopBaseService {
      * @return 商品ID集合
      */
     public List<Integer> getGoodsIdsBySortIdDao(Integer sortId) {
-        return db().select().from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
     }
 }

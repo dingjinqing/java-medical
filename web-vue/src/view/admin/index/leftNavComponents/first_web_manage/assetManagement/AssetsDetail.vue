@@ -1,7 +1,10 @@
 <template>
   <div class="userStatistics">
     <div class="userStatistics_content">
-      <el-tabs v-model="assetManage" @tab-click="handleClick">
+      <el-tabs
+        v-model="assetManage"
+        @tab-click="handleClick"
+      >
         <el-tab-pane
           label="现金资产管理"
           name="first"
@@ -14,36 +17,39 @@
         </el-tab-pane>
       </el-tabs>
       <div>
-<!--        筛选条件-->
-        <div >
-          <el-row :gutter="20" class="row_style">
-            <el-col  :span="1.5">交易单号：</el-col>
+        <!--        筛选条件-->
+        <div>
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
+            <el-col :span="1.5">交易单号：</el-col>
             <el-col :span="4">
               <el-input
-              :placeholder="$t('promoteList.actNamePlaceholder')"
-              size="small"
-              v-model="param.tradeSn"
-            ></el-input>
+                :placeholder="$t('promoteList.actNamePlaceholder')"
+                size="small"
+                v-model="param.tradeSn"
+              ></el-input>
             </el-col>
             <el-col :span="1.5">交易时间：</el-col>
             <el-col :span="8">
-                <el-date-picker
-                  size="small"
-                  v-model="param.startTime"
-                  type="datetime"
-                  style="width:200px "
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
+              <el-date-picker
+                size="small"
+                v-model="param.startTime"
+                type="datetime"
+                style="width:200px "
+                value-format="yyyy-MM-dd HH:mm:ss"
+              >
+              </el-date-picker>
               <span>{{$t('promoteList.to')}}</span>
-                <el-date-picker
-                  size="small"
-                  v-model="param.endTime"
-                  type="datetime"
-                  style="width: 200px"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
+              <el-date-picker
+                size="small"
+                v-model="param.endTime"
+                type="datetime"
+                style="width: 200px"
+                value-format="yyyy-MM-dd HH:mm:ss"
+              >
+              </el-date-picker>
             </el-col>
             <el-col :span="1.5">资金流向：</el-col>
             <el-col :span="5">
@@ -66,7 +72,10 @@
               </el-select>
             </el-col>
           </el-row>
-          <el-row :gutter="20" class="row_style">
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
             <el-col :span="1.5">用户昵称：</el-col>
             <el-col :span="4">
               <el-input
@@ -84,7 +93,7 @@
                     size="small"
                     v-model="param.lowerLimit"
                   ></el-input>
-                    </el-col>
+                </el-col>
                 <el-col :span="1"><span>{{$t('promoteList.to')}}</span></el-col>
                 <el-col :span="4">
                   <el-input
@@ -98,18 +107,25 @@
             <el-col :span="1.5">交易类型：</el-col>
             <el-col :span="5">
               <template>
-                <el-select v-model="param.tradeType" placeholder="请选择">
+                <el-select
+                  v-model="param.tradeType"
+                  placeholder="请选择"
+                >
                   <el-option
                     v-for="item in tradeTypeOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
+                    :value="item.value"
+                  >
                   </el-option>
                 </el-select>
               </template>
             </el-col>
           </el-row>
-          <el-row  :gutter="20" class="row_style">
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
             <el-col :span="1.5">真实姓名：</el-col>
             <el-col :span="4">
               <el-input
@@ -150,7 +166,7 @@
           </el-row>
         </div>
         <div class="table_list">
-<!--          表单数据-->
+          <!--          表单数据-->
           <el-table
             class="version-manage-table"
             :data="tableData"
@@ -176,12 +192,12 @@
               v-if="this.flag === 0"
             >
             </el-table-column>
-              <el-table-column
-                prop="tradeNum"
-                label="交易积分"
-                align="center"
-                v-if="this.flag === 1"
-              >
+            <el-table-column
+              prop="tradeNum"
+              label="交易积分"
+              align="center"
+              v-if="this.flag === 1"
+            >
             </el-table-column>
             <el-table-column
               prop="username"
@@ -229,68 +245,21 @@
         </div>
       </div>
     </div>
-<!--    数据导出/下载弹窗-->
-      <el-dialog
-        :title="$t('allGoods.allGoodsData.tip')"
-        :visible.sync="showNodes"
-        custom-class="custom"
-        v-loading="loading"
-        width="30%"
-        center
-      >
-        <p>{{$t('order.orderExportConfirmTip_1')}}{{totalRows}}{{$t('order.orderExportConfirmTip_2')}}</p>
-        <div
-          v-if="totalRows > 0"
-          style="margin-top: 10px;"
-        >
-          <div style="margin-bottom: 10px;">{{$t('order.orderExportLimitTip')}}</div>
-          <el-input-number
-            v-model="exportRowStart"
-            placeholder=""
-            :min="1"
-            :max="exportRowEnd"
-            :precision="0"
-            size="small"
-            controls-position="right"
-            style="width: 150px;"
-          ></el-input-number>
-          {{$t('orderCommon.to')}}
-          <el-input-number
-            v-model="exportRowEnd"
-            placeholder=""
-            size="small"
-            controls-position="right"
-            :min="exportRowStart"
-            :max="exportRowEnd"
-            :precision="0"
-            style="width: 150px;"
-          ></el-input-number>
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-      <el-button
-        size="small"
-        @click="showNodes = false"
-      >{{$t('orderCommon.cancel')}}</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        @click="confirmDownload"
-        v-if="totalRows > 0"
-      >{{$t('orderCommon.ok')}}</el-button>
-    </span>
-      </el-dialog>
+    <!--    数据导出/下载弹窗-->
+    <assetsExportDialog
+      :show.sync="showDialog"
+      :param="this.param"
+      :totalRows="this.totalRows"
+    />
   </div>
 </template>
 
 <script>
-import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import { cashDetail, export2Excel } from '@/api/admin/firstWebManage/assetsManage/assetsManage.js'
+import assetsExportDialog from './assetsExportDialog'
+import { cashDetail } from '@/api/admin/firstWebManage/assetsManage/assetsManage.js'
 export default {
-  components: { pagination },
+  components: { pagination, assetsExportDialog },
   created () {
     if (this.$route.params.flag === 0) {
       this.assetManage = 'first'
@@ -304,11 +273,8 @@ export default {
   data () {
     return {
       // 下载/导出弹窗
-      showNodes: false,
-      loading: false,
+      showDialog: false,
       totalRows: 0,
-      exportRowStart: 1,
-      exportRowEnd: 5000,
       tradeTypeOptions: [{
         value: '0',
         label: '全部'
@@ -419,19 +385,7 @@ export default {
   },
   methods: {
     showDownload () {
-      this.showNodes = true
-    },
-    confirmDownload () {
-      this.loading = true
-      this.param.exportRowStart = this.exportRowStart
-      this.param.exportRowEnd = this.exportRowEnd
-      export2Excel(this.param).then(res => {
-        let fileName = localStorage.getItem('V-content-disposition')
-        fileName = fileName.split(';')[1].split('=')[1]
-        this.loading = false
-        download(res, decodeURIComponent(fileName))
-      })
-      this.showNodes = false
+      this.showDialog = true
     },
     // 重置筛选条件
     resetParam () {
@@ -555,52 +509,52 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-  .userStatistics {
-    padding: 10px;
-    .userStatistics_content {
-      background: #fff;
-      padding: 15px 0 0 20px;
+.userStatistics {
+  padding: 10px;
+  .userStatistics_content {
+    background: #fff;
+    padding: 15px 0 0 20px;
+  }
+}
+.tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.row_style {
+  margin-top: 15px;
+  margin-left: 15px;
+}
+.table_list {
+  position: relative;
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 10px 20px 10px 20px;
+  .select_info {
+    /*display: flex;*/
+    margin: 10px 0px 20px;
+    /*span {*/
+    /*  white-space: nowrap;*/
+    /*  height: 32px;*/
+    /*  line-height: 32px;*/
+    /*}*/
+    /deep/ .el-input__inner {
+      width: 200px;
+      display: inline-block;
     }
   }
-  .tableClss th {
-    background-color: #f5f5f5;
-    border: none;
-    height: 36px;
-    font-weight: bold;
-    color: #000;
-    padding: 8px 10px;
-  }
-  .row_style{
-    margin-top: 15px;
-    margin-left: 15px;
-  }
-  .table_list {
-    position: relative;
-    margin-top: 20px;
-    background-color: #fff;
-    padding: 10px 20px 10px 20px;
-    .select_info {
-      /*display: flex;*/
-      margin: 10px 0px 20px;
-      /*span {*/
-      /*  white-space: nowrap;*/
-      /*  height: 32px;*/
-      /*  line-height: 32px;*/
-      /*}*/
-      /deep/ .el-input__inner {
-        width: 200px;
-        display: inline-block;
-      }
-    }
-    .footer_right {
-      padding: 20px 0 20px 20px;
-      display: flex;
-      justify-content: flex-end;
-      span {
-        display: block;
-        height: 32px;
-        line-height: 32px;
-      }
+  .footer_right {
+    padding: 20px 0 20px 20px;
+    display: flex;
+    justify-content: flex-end;
+    span {
+      display: block;
+      height: 32px;
+      line-height: 32px;
     }
   }
+}
 </style>
