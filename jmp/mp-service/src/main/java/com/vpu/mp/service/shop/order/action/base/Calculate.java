@@ -55,6 +55,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRS
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
+ * 订单模块计算类
  * @author 王帅
  */
 @Component

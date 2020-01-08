@@ -155,7 +155,7 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
      */
     public List<OrderFullReduce> calculate(OrderBeforeParam param, List<OrderGoodsBo> bos) {
         List<OrderFullReduce> result = new ArrayList<>();
-        if(NOT_PERMIT_ACTIVITY.contains(param.getActivityType())){
+        if(!NOT_PERMIT_ACTIVITY.contains(param.getActivityType())){
             List<MrkingStrategyPageListQueryVo> processingActivity = fullReductionProcessorDao.getProcessingActivity(param.getDate());
             if (CollectionUtils.isEmpty(processingActivity)) {
                 return result;
