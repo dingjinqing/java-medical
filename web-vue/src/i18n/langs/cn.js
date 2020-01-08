@@ -374,8 +374,8 @@ import {
 } from './views/admin_new/cn/index/userManagement/member/memberIntroductionDialogCn'
 // 设置激活通知
 import {
-  en as activationNotificationDialog
-} from './views/admin_new/en/index/userManagement/member/activationNotificationDialogEn'
+  cn as activationNotificationDialog
+} from './views/admin_new/cn/index/userManagement/member/activationNotificationDialogCn'
 // 会员管理-会员卡
 import {
   cn as memberCard
