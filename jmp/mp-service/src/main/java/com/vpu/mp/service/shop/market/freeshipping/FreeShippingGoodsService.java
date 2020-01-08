@@ -7,6 +7,9 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
 
 /**
@@ -32,13 +35,24 @@ public class FreeShippingGoodsService extends ShopBaseService {
      */
     public void freeShipGoodsList(Integer userId,Integer ruleId,Integer searchText){
         // 获取活动规则
-        FreeShippingRecord shipRecord = freeShipService.getFreeShippingByRuleId(ruleId);
+        FreeShippingRecord freeShip = freeShipService.getFreeShippingByRuleId(ruleId);
         //包邮规则
         FreeShippingRuleRecord freeShippingRuleRecord =freeShipRuleService.getRuleDetailByRule(ruleId);
         //获取售罄商品展示设置
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
         //活动商品范围
-        if (shipRecord.getType().equals(GOODS_AREA_TYPE_SECTION)){
+        List<Integer> goodsId =null;
+        if (freeShip.getType().equals(GOODS_AREA_TYPE_SECTION)){
+            goodsId =new ArrayList<>();
+           if (!freeShip.getRecommendCatId().trim().isEmpty()){
+
+           }
+           if (freeShip.getRecommendSortId().trim().isEmpty()){
+
+           }
+           if (freeShip.getRecommendGoodsId().trim().isEmpty()){
+
+           }
 
         }
 
