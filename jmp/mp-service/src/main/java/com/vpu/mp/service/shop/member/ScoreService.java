@@ -489,6 +489,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param tradeType
 	 * @param tradeFlow
 	 */
+	@Deprecated
 	public Integer addUserScore(UserScoreVo data, String adminUser, Byte tradeType, Byte tradeFlow) {
 		// 生成新的充值记录
 		// 验证现有积分跟提交的积分是否一致
