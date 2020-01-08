@@ -1,7 +1,10 @@
 <template>
   <div class="userStatistics">
     <div class="userStatistics_content">
-      <el-tabs v-model="assetManage" @tab-click="handleClick">
+      <el-tabs
+        v-model="assetManage"
+        @tab-click="handleClick"
+      >
         <el-tab-pane
           label="现金资产管理"
           name="first"
@@ -14,36 +17,39 @@
         </el-tab-pane>
       </el-tabs>
       <div>
-<!--        筛选条件-->
-        <div >
-          <el-row :gutter="20" class="row_style">
-            <el-col  :span="1.5">交易单号：</el-col>
+        <!--        筛选条件-->
+        <div>
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
+            <el-col :span="1.5">交易单号：</el-col>
             <el-col :span="4">
               <el-input
-              :placeholder="$t('promoteList.actNamePlaceholder')"
-              size="small"
-              v-model="param.tradeSn"
-            ></el-input>
+                :placeholder="$t('promoteList.actNamePlaceholder')"
+                size="small"
+                v-model="param.tradeSn"
+              ></el-input>
             </el-col>
             <el-col :span="1.5">交易时间：</el-col>
             <el-col :span="8">
-                <el-date-picker
-                  size="small"
-                  v-model="param.startTime"
-                  type="datetime"
-                  style="width:200px "
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
+              <el-date-picker
+                size="small"
+                v-model="param.startTime"
+                type="datetime"
+                style="width:200px "
+                value-format="yyyy-MM-dd HH:mm:ss"
+              >
+              </el-date-picker>
               <span>{{$t('promoteList.to')}}</span>
-                <el-date-picker
-                  size="small"
-                  v-model="param.endTime"
-                  type="datetime"
-                  style="width: 200px"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
+              <el-date-picker
+                size="small"
+                v-model="param.endTime"
+                type="datetime"
+                style="width: 200px"
+                value-format="yyyy-MM-dd HH:mm:ss"
+              >
+              </el-date-picker>
             </el-col>
             <el-col :span="1.5">资金流向：</el-col>
             <el-col :span="5">
@@ -66,7 +72,10 @@
               </el-select>
             </el-col>
           </el-row>
-          <el-row :gutter="20" class="row_style">
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
             <el-col :span="1.5">用户昵称：</el-col>
             <el-col :span="4">
               <el-input
@@ -84,7 +93,7 @@
                     size="small"
                     v-model="param.lowerLimit"
                   ></el-input>
-                    </el-col>
+                </el-col>
                 <el-col :span="1"><span>{{$t('promoteList.to')}}</span></el-col>
                 <el-col :span="4">
                   <el-input
@@ -98,18 +107,25 @@
             <el-col :span="1.5">交易类型：</el-col>
             <el-col :span="5">
               <template>
-                <el-select v-model="param.tradeType" placeholder="请选择">
+                <el-select
+                  v-model="param.tradeType"
+                  placeholder="请选择"
+                >
                   <el-option
                     v-for="item in tradeTypeOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
+                    :value="item.value"
+                  >
                   </el-option>
                 </el-select>
               </template>
             </el-col>
           </el-row>
-          <el-row  :gutter="20" class="row_style">
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
             <el-col :span="1.5">真实姓名：</el-col>
             <el-col :span="4">
               <el-input
@@ -150,7 +166,7 @@
           </el-row>
         </div>
         <div class="table_list">
-<!--          表单数据-->
+          <!--          表单数据-->
           <el-table
             class="version-manage-table"
             :data="tableData"
@@ -176,12 +192,12 @@
               v-if="this.flag === 0"
             >
             </el-table-column>
-              <el-table-column
-                prop="tradeNum"
-                label="交易积分"
-                align="center"
-                v-if="this.flag === 1"
-              >
+            <el-table-column
+              prop="tradeNum"
+              label="交易积分"
+              align="center"
+              v-if="this.flag === 1"
+            >
             </el-table-column>
             <el-table-column
               prop="username"
@@ -229,7 +245,7 @@
         </div>
       </div>
     </div>
-<!--    数据导出/下载弹窗-->
+    <!--    数据导出/下载弹窗-->
     <assetsExportDialog
       :show.sync="showDialog"
       :param="this.param"
@@ -493,52 +509,52 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-  .userStatistics {
-    padding: 10px;
-    .userStatistics_content {
-      background: #fff;
-      padding: 15px 0 0 20px;
+.userStatistics {
+  padding: 10px;
+  .userStatistics_content {
+    background: #fff;
+    padding: 15px 0 0 20px;
+  }
+}
+.tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.row_style {
+  margin-top: 15px;
+  margin-left: 15px;
+}
+.table_list {
+  position: relative;
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 10px 20px 10px 20px;
+  .select_info {
+    /*display: flex;*/
+    margin: 10px 0px 20px;
+    /*span {*/
+    /*  white-space: nowrap;*/
+    /*  height: 32px;*/
+    /*  line-height: 32px;*/
+    /*}*/
+    /deep/ .el-input__inner {
+      width: 200px;
+      display: inline-block;
     }
   }
-  .tableClss th {
-    background-color: #f5f5f5;
-    border: none;
-    height: 36px;
-    font-weight: bold;
-    color: #000;
-    padding: 8px 10px;
-  }
-  .row_style{
-    margin-top: 15px;
-    margin-left: 15px;
-  }
-  .table_list {
-    position: relative;
-    margin-top: 20px;
-    background-color: #fff;
-    padding: 10px 20px 10px 20px;
-    .select_info {
-      /*display: flex;*/
-      margin: 10px 0px 20px;
-      /*span {*/
-      /*  white-space: nowrap;*/
-      /*  height: 32px;*/
-      /*  line-height: 32px;*/
-      /*}*/
-      /deep/ .el-input__inner {
-        width: 200px;
-        display: inline-block;
-      }
-    }
-    .footer_right {
-      padding: 20px 0 20px 20px;
-      display: flex;
-      justify-content: flex-end;
-      span {
-        display: block;
-        height: 32px;
-        line-height: 32px;
-      }
+  .footer_right {
+    padding: 20px 0 20px 20px;
+    display: flex;
+    justify-content: flex-end;
+    span {
+      display: block;
+      height: 32px;
+      line-height: 32px;
     }
   }
+}
 </style>

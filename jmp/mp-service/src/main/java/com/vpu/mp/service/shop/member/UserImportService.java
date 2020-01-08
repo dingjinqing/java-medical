@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
@@ -711,7 +713,6 @@ public class UserImportService extends ShopBaseService {
 		return detailList;
 
 	}
-
 	public UserImportDetailRecord getUserByMobile(String mobile, Byte userAction) {
 		return db().selectFrom(USER_IMPORT_DETAIL)
 				.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))

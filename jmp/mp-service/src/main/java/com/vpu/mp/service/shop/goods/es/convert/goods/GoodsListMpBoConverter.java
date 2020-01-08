@@ -8,7 +8,6 @@ public class GoodsListMpBoConverter implements EsGoodsConvertInterface<GoodsList
     @Override
     public GoodsListMpBo convert(EsGoods esGoods) {
         GoodsListMpBo bo = new GoodsListMpBo();
-        GoodsLabelMpVo labelVo = new GoodsLabelMpVo();
         copyValues(bo,esGoods);
 //        labelVo.setName(esGoods.getGoodsLabel());
 //        bo.setLabel();

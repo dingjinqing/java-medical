@@ -1186,7 +1186,7 @@ export default {
     },
     // 商品模块颜色自定义重置点击
     handleToReset () {
-      this.data.goods_bg_color = '#f5f5f5'
+      this.data.goods_bg_color = null
     },
     // 模块推荐商品列表icon点击统一处理
     handleToClickOpera (index, flag) {

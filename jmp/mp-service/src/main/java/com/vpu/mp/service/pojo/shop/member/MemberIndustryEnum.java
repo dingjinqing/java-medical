@@ -212,7 +212,6 @@ public enum MemberIndustryEnum {
 		}
 		return result;
 	}
-	
 
 	/**
 	 * 根据名字和语言找id
