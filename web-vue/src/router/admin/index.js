@@ -97,22 +97,6 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/first_web_manage/searchStatistics/searchStatistics'
           )
       },
-<<<<<<< HEAD
-=======
-      // 概况 - 访问分析
-      // {
-      //   path: '/admin/home/main/visitAnalysis',
-      //   name: 'analysis_visit',
-      //   meta: {
-      //     crumbTitle: 'router.analysis_visit',
-      //     meta: 'first_web_manage'
-      //   },
-      //   component: () =>
-      //     import(
-      //       '@/view/admin/index/leftNavComponents/first_web_manage/visitAnalysis/visitAnalysis'
-      //     )
-      // },
->>>>>>> fd4053a5d82fc97f86dcd098c172d28d1a486e88
       // 概况 - 资产管理
       {
         path: '/admin/home/main/assetsManage',
