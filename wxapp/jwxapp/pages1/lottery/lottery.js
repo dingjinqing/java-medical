@@ -1,5 +1,5 @@
 // pages1/lottery/lottery.js
-var util = require('/utils/util.js')
+var util = require('../../utils/util.js')
 var app = getApp()
 var imageUrl = app.globalData.imageUrl;
 Page({
@@ -8,7 +8,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    imageUrl: imageUrl
+    imageUrl: imageUrl,
+    bgImg: imageUrl + '/image/wxapp/lo_bg4.jpg',
+    rightIcon: imageUrl+ '/image/wxapp/go_cou_list.png',
+    defaultGiftIcon: imageUrl + '/image/admin/icon_lottery/1.png',
+    broadcastIcon: imageUrl + '/image/wxapp/lo_words.png',
+    lotteryInfo: {}
   },
 
   /**
