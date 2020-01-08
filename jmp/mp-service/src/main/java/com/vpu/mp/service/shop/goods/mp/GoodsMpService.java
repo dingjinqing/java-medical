@@ -640,5 +640,12 @@ public class GoodsMpService extends ShopBaseService {
         }
     }
 
-
+    /**
+     * 根据商家分类获取对应商品的ID集合
+     * @param sortId 商家分类ID
+     * @return 商品ID集合
+     */
+    public List<Integer> getGoodsIdsBySortIdDao(Integer sortId) {
+        return db().select().from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
+    }
 }

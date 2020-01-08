@@ -14,6 +14,7 @@
     "v-seckill": "../seckill/index",
     "v-integral": "../integral/index",
     "v-pinlottery": "../pinlottery/index",
-    "v-pinintegration": "../pinintegration/index"
+    "v-pinintegration": "../pinintegration/index",
+    "v-map": "../map/index"
   }
 }

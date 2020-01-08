@@ -55,6 +55,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRS
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
+ * 订单模块计算类
  * @author 王帅
  */
 @Component
@@ -138,7 +139,8 @@ public class Calculate extends ShopBaseService {
             //会员卡 或 优惠卷-> one
             if (OrderConstant.D_T_MEMBER_CARD.equals(discountType) || OrderConstant.D_T_COUPON.equals(discountType)) {
                 //加价购 或 满折满减 与 one 不共存
-                if (bo.getPurchasePriceId() != null || bo.getStraId() != null) {
+                if ((bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) ||
+                    (bo.getStraId() != null && bo.getStraId() > 0)) {
                     continue;
                 }
 

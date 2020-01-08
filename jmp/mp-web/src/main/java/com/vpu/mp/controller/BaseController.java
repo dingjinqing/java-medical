@@ -183,7 +183,7 @@ public class BaseController {
 	protected void export2Excel(Workbook workbook, String fileName, HttpServletResponse response) {
 		try {
 			response.setContentType("application/octet-stream;charset=UTF-8");
-			String encodeFileName = URLEncoder.encode(fileName + ".xlsx", "utf-8");
+            String encodeFileName = URLEncoder.encode(String.format("%s.xlsx", fileName), "utf-8");
 			response.setHeader("Content-Disposition", "attachment;filename=" + encodeFileName);
 			workbook.write(response.getOutputStream());
 		} catch (IOException e) {

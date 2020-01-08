@@ -640,6 +640,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertImageAdverForIndex(objectMapper, node, user);
                 case ModuleConstant.M_PIN_INTEGRATION:
                     return this.convertGroupIntegrationForIndex(objectMapper, node, user);
+                case ModuleConstant.M_GROUP_DRAW:
+                    return this.convertGroupDrawForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -762,7 +764,7 @@ public class ShopMpDecorationService extends ShopBaseService {
     }
 
     /**
-     * 图片广告模块处理
+     * 瓜分积分
      *
      * @param objectMapper
      * @param node
@@ -774,6 +776,21 @@ public class ShopMpDecorationService extends ShopBaseService {
         ModuleGroupIntegration moduleGroupIntegration = objectMapper.readValue(node.getValue().toString(), ModuleGroupIntegration.class);
         moduleGroupIntegration.setNeedRequest(true);
         return moduleGroupIntegration;
+    }
+
+    /**
+     * 瓜分积分
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGroupDraw convertGroupDrawForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+        moduleGroupDraw.setNeedRequest(true);
+        return moduleGroupDraw;
     }
 
     /**
@@ -835,6 +852,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                             return this.convertSeckillForModule(objectMapper, node, user);
                         case ModuleConstant.M_PIN_INTEGRATION:
                             return  this.convertPinIntegrationForModule(objectMapper, node, user);
+                        case ModuleConstant.M_GROUP_DRAW:
+                            return  this.convertGroupDrawForModule(objectMapper, node, user);
                         //TODO case
                     }
                 }
@@ -961,6 +980,22 @@ public class ShopMpDecorationService extends ShopBaseService {
 
         // 转换实时信息
         return saas.getShopApp(getShopId()).groupIntegration.getPageIndexGroupIntegration(moduleGroupIntegration,user.getUserId());
+    }
+
+    /**
+     * 拼团抽奖模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGroupDraw convertGroupDrawForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupDraw ModuleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+
+        // 转换实时信息
+        return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(ModuleGroupDraw);
     }
 
     /**

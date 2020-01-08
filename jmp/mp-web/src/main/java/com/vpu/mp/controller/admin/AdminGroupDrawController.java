@@ -85,7 +85,7 @@ public class AdminGroupDrawController extends AdminBaseController {
      */
     @PostMapping("/join_user/list")
     public JsonResult getJoinUserList(@RequestBody @Valid JoinUserListParam param) {
-        return success(shop().groupDrawUsers.getJoinUserList(param));
+        return success(shop().groupDraw.groupDrawUsers.getJoinUserList(param));
     }
 
     /**
@@ -93,7 +93,7 @@ public class AdminGroupDrawController extends AdminBaseController {
      */
     @PostMapping("/order/list")
     public JsonResult getGroupDrawOrderList(@RequestBody @Valid OrderListParam param) {
-        return success(shop().groupDrawOrders.getGroupDrawOrderList(param));
+        return success(shop().groupDraw.groupDrawOrders.getGroupDrawOrderList(param));
     }
 
     /**
@@ -101,7 +101,7 @@ public class AdminGroupDrawController extends AdminBaseController {
      */
     @PostMapping("/invited_user/list")
     public JsonResult getInvitedUserList(@RequestBody @Valid InvitedUserListParam param) {
-        return success(shop().groupDrawUsers.getInvitedUserList(param));
+        return success(shop().groupDraw.groupDrawUsers.getInvitedUserList(param));
     }
 
     /**
@@ -109,7 +109,7 @@ public class AdminGroupDrawController extends AdminBaseController {
      */
     @PostMapping("/group/list")
     public JsonResult getOpenGroupDetailList(@RequestBody GroupListParam param) {
-        return success(shop().groupDrawGroups.getGroupList(param));
+        return success(shop().groupDraw.groupDrawGroups.getGroupList(param));
     }
 
     /**
