@@ -17,13 +17,13 @@
     <view class="countdown" wx:if="{{actBarInfo.clock}}">
       <block wx:for="{{actBarInfo.clock}}" wx:key="index">
         <block wx:if="{{index === 0 && actBarInfo.clock.length === 4}}">
-          <text class="count" style='color:{{main_setting.comColor}}'>{{item}}</text><text>天</text>
+          <text class="count text" style='color:{{main_setting.comColor}}'>{{item}}</text><text class="text">天</text>
         </block>
         <block wx:elif="{{index === actBarInfo.clock.length - 1}}">
-          <text class="count"  style='color:{{main_setting.comColor}}'>{{item}}</text>
+          <text class="count text"  style='color:{{main_setting.comColor}}'>{{item}}</text>
         </block>
         <block wx:else>
-          <text class="count" style='color:{{main_setting.comColor}}'>{{item}}</text><text>:</text>
+          <text class="count text" style='color:{{main_setting.comColor}}'>{{item}}</text><text class="text">:</text>
         </block>
       </block>
     </view>

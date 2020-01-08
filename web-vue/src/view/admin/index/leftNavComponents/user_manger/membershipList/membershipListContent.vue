@@ -988,8 +988,10 @@ export default {
     // console.log(this.$route.params.tagName)
     // this.labelVal = this.$route.params.tagName
     console.log('会员列表 created ')
-    console.log(this.$route.query.tagId)
-    this.labelVal.push(this.$route.query.tagId)
+    let tagId = this.$route.query.tagId
+    if (tagId || tagId === 0) {
+      this.labelVal.push(this.$route.query.tagId)
+    }
     // 初始化会员列表数据
     this.defaultTabelListData()
     // 初始化会员卡下拉框列表

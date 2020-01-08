@@ -24,18 +24,30 @@ global.wxComponent({
         util.api("/api/wxapp/coupon/get", function (res) {
 
           if (res.error == 0) {
-            if (res.content == '领取成功') {
+            if (res.content == 0) {
               util.toast_success('领取成功', function () {
                 m.isCoupon = 0;
                 m['coupon_arr'][d.coupon_key].status = -1;
                 _this.$set();
               });
             } else {
+              if (res.content == 1) {
+                util.toast_fail('优惠券不存在');
+              } else if (res.content == 2) {
+                util.toast_fail('优惠券已过期');
+              } else if (res.content == 3) {
+                util.toast_fail('优惠券已停用');
+              } else if (res.content == 4) {
+                util.toast_fail('优惠券库存为0');
+              } else if (res.content == 5) {
+                util.toast_fail('可用积分不足');
+              }
               util.toast_fail(res.content);
               m.isCoupon = 0;
               m['coupon_arr'][d.coupon_key].status = -1;
               _this.$set();
             }
+
             // if (res.content == 0) {
             //   util.showModal('提示', '您已领取的个数已达到可领取限制');
             //   m.isCoupon = 0;
@@ -75,13 +87,21 @@ global.wxComponent({
         util.api('/api/wxapp/coupon/get', function (res) {
           wx.hideLoading();
           if (res.error == 0) {
-            if (res.content == '领取成功') {
+            if (res.content == 0) {
               util.toast_success('领取成功', function () {
                 m['coupon_arr'][d.key].status = -1;
                 _this.$set();
               });
-            } else {
-              util.toast_fail(res.content);
+            } else if (res.content == 1) {
+              util.toast_fail('优惠券不存在');
+            } else if (res.content == 2) {
+              util.toast_fail('优惠券已过期');
+            } else if (res.content == 3) {
+              util.toast_fail('优惠券已停用');
+            } else if (res.content == 4) {
+              util.toast_fail('优惠券库存为0');
+            } else if (res.content == 5) {
+              util.toast_fail('可用积分不足');
             }
           } else {
             util.toast_fail('领取失败');

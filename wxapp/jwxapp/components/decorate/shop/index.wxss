@@ -19,23 +19,32 @@
   width:110rpx;
   height:110rpx;
   top:110rpx;
-  left:40rpx;
+  left:25rpx;
   z-index: 999;
+  background: #fff;
+  border-radius: 10rpx;
+}
+.shop-container .score_logo .image {
+  position: absolute;
+  left: 15%;
+  top: 15%;
+  width: 70%;
+  height: 70%;
 }
 .shop-container .store_name{
   position: absolute;
-  top: 103rpx;
+  top: 100rpx;
   left: 160rpx;
-  font-size: 17px;
+  font-size: 32rpx;
   z-index: 1;
   color: #fff;
   font-weight: bold;
 }
 .shop-container .store_content {
   position: absolute;
-  top: 173rpx;
+  top: 180rpx;
   left: 160rpx;
-  font-size: 15px;
+  font-size: 22rpx;
   z-index: 1;
   color: #fff;
 }
