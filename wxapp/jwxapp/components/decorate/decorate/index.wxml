@@ -28,8 +28,12 @@
 	   	<v-pinlottery wx:elif="{{module.component_name == 'v-pinlottery'}}" module="{{module}}" />
 	   	<!--瓜分积分(缺接口)-->
 	   	<v-pinintegration wx:elif="{{module.component_name == 'v-pinintegration'}}" module="{{module}}" />
-		<!--地图-->
+		<!--地图(接口缺字段，需后端处理)-->
 		<v-map wx:elif="{{module.component_name == 'v-map'}}" module="{{module}}" />
+		<!--公众号-->
+		<v-official-accounts wx:elif="{{module.component_name == 'v-official-accounts'}}" module="{{module}}" />
+		<!--视频模块-->
+		<v-video wx:elif="{{module.component_name == 'v-video'}}" module="{{module}}" />
 	</block>
 </view>
 
