@@ -29,7 +29,6 @@
             <el-select
               size="small"
               v-model="value"
-              @change="selectChange"
             >
               <el-option
                 v-for="(item, index) in options"
@@ -98,7 +97,6 @@
 </template>
 <script>
 import vcolorpicker from 'vcolorpicker'
-import { shopInfoRequest } from '@/api/admin/survey.js'
 import Vue from 'vue'
 Vue.use(vcolorpicker)
 export default {
@@ -183,24 +181,7 @@ export default {
       deep: true
     }
   },
-  mounted () {
-    this.getShopInfo()
-  },
   methods: {
-    // 获取店铺信息
-    getShopInfo () {
-      shopInfoRequest().then((res) => {
-        if (res.error === 0) {
-          this.data.shop_name = res.content.shopName
-          this.data.shop_bg_path = res.content.shopAvatar
-        }
-      })
-    },
-
-    // 切换背景图
-    selectChange (val) {
-      this.data.bg_url = val
-    },
     // 点击添加图片
     handleToCallImgDialog () {
       this.tuneUp = !this.tuneUp

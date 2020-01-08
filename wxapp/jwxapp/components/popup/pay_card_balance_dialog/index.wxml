@@ -14,7 +14,7 @@
           <view class="input_box">
             <text>{{i18n.$t(localePack,"pages.checkout.pay")+i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")}}</text>
             <text class="warn">{{msg}}</text>
-            <input type="number" bindinput="changeInput" value="{{cardBalanceInput}}"></input>
+            <input type="digit" bindinput="changeInput" value="{{cardBalanceInput}}"></input>
           </view>
           <view class="info_total">
             <view>{{i18n.$t(localePack,"pages.checkout.my",{name:i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")})}}：￥{{userCardBalance}}</view>
