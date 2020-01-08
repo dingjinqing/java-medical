@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.shop.member;
 
-import com.vpu.mp.service.foundation.util.Util;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
 
 /**
 * @author 黄壮壮
@@ -67,6 +68,30 @@ public enum MemberMarriageEnum {
 	public String getName() {
 		return name;
 	}
+	
+	
+	/**
+	 * 获取婚姻状况 
+	 * 返回例子： [{value=1, label=未婚}]
+	 * @param lang 语言 为null时，为系统默认语言
+	 * @return List<MarriageData> 婚姻状况列表
+	 */
+	public static List<MarriageData> getAllMarriageWithCode(String lang){
+		List<MarriageData> data = new ArrayList<>();
+		for(MemberMarriageEnum e: MemberMarriageEnum.values()) {
+			String name = getNameByCode(e.getCode(),lang);
+			data.add(new MarriageData(e.code,name));
+		}
+		return data;
+	}
+	
+	public static void main(String[] args) {
+		List<MarriageData> list = getAllMarriageWithCode(null);
+		list.stream().forEach(System.out::println);
+	}
+	
+	
+	
 	/**
 	 * 获取所有教育名称
 	 * @param lang 语言
