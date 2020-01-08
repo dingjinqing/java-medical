@@ -100,11 +100,12 @@
           prop="userId"
           align="center"
           label="会员ID"
-          width="120"
+          width="90"
         >
         </el-table-column>
         <el-table-column
           label="昵称"
+          width="120"
           align="center"
         >
           <template slot-scope="scope">
@@ -119,6 +120,7 @@
         <el-table-column
           prop="mobile"
           label="手机号"
+          width="120"
           align="center"
         >
         </el-table-column>
@@ -143,12 +145,11 @@
         </el-table-column>
         <el-table-column
           label="卡状态"
-          width="120"
           align="center"
         >
           <template slot-scope="scope">
             <span v-if="scope.row.flag === 0"> 正常 </span>
-            <span v-else-if="scope.row.flag === 1"> 已废除 </span>
+            <span v-else-if="scope.row.flag === 1"> 已废除({{scope.row.updateTime}}) </span>
             <span v-else-if="scope.row.flag === 2"> 已过期 </span>
           </template>
         </el-table-column>
@@ -162,7 +163,9 @@
                 v-for="(item,index) in operation"
                 :key="index"
                 @click="handleToOperation(scope.row,index)"
-              >{{item}}</span>
+              >
+              <span v-if="item.flag !== 1 && index !== 2">{{item}}</span>
+              </span>
             </div>
           </template>
         </el-table-column>
@@ -208,35 +211,7 @@ export default {
       }],
       statusValue: -1, // 卡状态默认值
       dateValue: null, // 领取时间
-      tableData: [
-        {
-          userID: '51',
-          phoneNum: '18811309193',
-          sickName: '啦啦啦',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '12',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '43',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        }
-      ],
+      tableData: [],
       operation: ['充值明细', '消费明细', '废除']
     }
   },

@@ -1701,7 +1701,8 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 		PageResult<CardHolderVo> allCardHolder = cardDao.getAllCardHolder(param);
 		/** - 如果查询的状态是过期的，设置返回的flag为2过期 */
 		for (CardHolderVo item : allCardHolder.dataList) {
-			if (DateUtil.getLocalDateTime().after(item.getExpireTime())) {
+			if (item.getExpireTime() != null &&
+					DateUtil.getLocalDateTime().after(item.getExpireTime())) {
 				item.setFlag(UCARD_FG_EXPIRED);
 			}
 		}
