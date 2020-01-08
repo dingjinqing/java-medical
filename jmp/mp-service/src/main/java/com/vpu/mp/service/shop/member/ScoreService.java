@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.member;
 
 
-import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.TRADES_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -55,7 +54,6 @@ import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
@@ -137,15 +135,15 @@ public class ScoreService extends ShopBaseService {
 					userScoreRecord.setStatus(NO_USE_SCORE_STATUS);
 				}
 				
-				// TODO CRM
 				userScoreRecord.insert();
 				
 				//更新用户积分
 				Integer totalScore = getTotalAvailableScoreById(param.getUserId());
 				updateUserScore(param.getUserId(), totalScore);
-				
+			});
+			
+			
 				// TODO CRM
-				
 				
 				insertTradesRecord(param, tradeType, tradeFlow);
 				
@@ -158,7 +156,6 @@ public class ScoreService extends ShopBaseService {
 						logger().info("没有可升级的会员卡");
 					}
 				}
-				
 				if (adminUser == 0) {
 					//TODO 等待luguangyao bug修复
 //					String strScore = score>=0? "+"+score:""+score;
@@ -166,7 +163,6 @@ public class ScoreService extends ShopBaseService {
 //							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
 //							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
 				}
-			});
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
 			throw e;

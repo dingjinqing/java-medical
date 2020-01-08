@@ -53,3 +53,4 @@ public class ScoreSetParam {
 	private Timestamp expiredTime;
 	
 }
+
