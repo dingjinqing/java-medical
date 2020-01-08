@@ -238,7 +238,7 @@ public class ScoreService extends ShopBaseService {
 		tradesRecord.setTradeStatus(tradeFlow);
 		
 		/** -交易记录表-记录交易的数据信息  */
-		insertTradesRecord(tradesRecord);
+		tradesRecord.insert();
 	}
 	
 
@@ -253,15 +253,6 @@ public class ScoreService extends ShopBaseService {
 					.and(USER_SCORE.ORDER_SN.eq(orderSn))
 					.orderBy(USER_SCORE.CREATE_TIME)
 					.fetchAnyInto(UserScoreRecord.class);
-	}
-
-	/**
-	 * 更新交易记录
-	 * @param tradesRecord
-	 */
-	private void insertTradesRecord(TradesRecordRecord tradesRecord) {
-		
-		db().executeInsert(tradesRecord);		
 	}
 
 	/**
