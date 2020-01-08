@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
@@ -17,7 +18,6 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
-import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
@@ -253,12 +253,12 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         orderBeforeParam.setActivityId(orderInfo.getActivityId());
         orderBeforeParam.setDate(param.getCreateTime());
         orderBeforeParam.setGoods(new ArrayList<>());
-        List<GoodsRecord> orderGoods = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
-        orderGoods.forEach(orderGood->{
-            OrderBeforeParam.Goods goods = new OrderBeforeParam.Goods();
-            goods.setGoodsId(orderGood.getGoodsId());
-            goods.setGoodsInfo(orderGood);
-            orderBeforeParam.getGoods().add(goods);
+        List<GoodsRecord> goodsList = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
+        Map<Integer, OrderBeforeParam.Goods> orderGoodsMap = orderGoodsService.getOrderGoods(orderInfo.getOrderSn()).intoMap(OrderGoods.ORDER_GOODS.GOODS_ID, OrderBeforeParam.Goods.class);
+        goodsList.forEach(goods->{
+            OrderBeforeParam.Goods goodsParam = orderGoodsMap.get(goods.getGoodsId());
+            goodsParam.setGoodsInfo(goods);
+            orderBeforeParam.getGoods().add(goodsParam);
         });
         marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
     }

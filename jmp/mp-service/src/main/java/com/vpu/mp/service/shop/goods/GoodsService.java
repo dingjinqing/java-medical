@@ -1579,7 +1579,7 @@ public class GoodsService extends ShopBaseService {
      * @return
      */
     public ProductSmallInfoVo getProductVoInfoByProductId(Integer productId){
-        return db().select(GOODS.GOODS_NAME,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS.GOODS_IMG,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS.IS_ON_SALE)
+        return db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS.GOODS_IMG,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS.IS_ON_SALE)
                 .from(GOODS_SPEC_PRODUCT)
                 .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
                 .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOneInto(ProductSmallInfoVo.class);
@@ -1902,15 +1902,5 @@ public class GoodsService extends ShopBaseService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 获取有效的商品-通过商品ID和delFlag是否有效
-     * @param goodsId 商品Id
-     * @return 商品信息 可为null
-     */
-    public GoodsRecord getValidGoodsRecordById(Integer goodsId) {
-        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
-            .fetchAny();
     }
 }

@@ -6,8 +6,8 @@ import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
+import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
-import com.vpu.mp.service.shop.coupon.MpCouponService;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
@@ -56,6 +56,7 @@ import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import com.vpu.mp.service.shop.market.presale.PreSaleOrderService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
@@ -174,6 +175,8 @@ public class ShopApplication {
 	public RebateStrategyService rebateStrategy;
 	@Autowired
 	public RealTimeOverviewService realTimeOverview;
+    @Autowired
+    public CouponMpService mpCoupon; //小程序端优惠券
     /**
      * 分销员分组
      */
@@ -354,6 +357,11 @@ public class ShopApplication {
 	 * 我要送礼
 	 */
 	@Autowired public GiveGiftService giveGift;
+	/**
+	 * 奖品记录
+	 */
+	@Autowired
+	public PrizeRecordService prizeRecord;
     /**
      * 定金膨胀
      */
@@ -487,12 +495,6 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public AddressService addressService;
-
-	/**
-	 * 小程序优惠券
-	 */
-	@Autowired
-	public MpCouponService mpCoupon;
 
 	/**
 	 * 小程序订阅消息

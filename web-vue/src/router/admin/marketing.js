@@ -379,47 +379,47 @@ const routes = [
       )
   },
   // 限时降价
-  {
-    path: '/admin/home/main/reduce',
-    name: 'reduce',
-    meta: {
-      crumbTitle: 'router.reduce',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduce'
-      )
-  },
+  // {
+  //   path: '/admin/home/main/reduce',
+  //   name: 'reduce',
+  //   meta: {
+  //     crumbTitle: 'router.reduce',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduce'
+  //     )
+  // },
   // 添加限时降价
-  {
-    path: '/admin/home/main/reduce/add',
-    name: 'reduce_add_view',
-    meta: {
-      crumbTitle: 'router.reduce',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/addReduce'
-      )
-  },
+  // {
+  //   path: '/admin/home/main/reduce/add',
+  //   name: 'reduce_add_view',
+  //   meta: {
+  //     crumbTitle: 'router.reduce',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/addReduce'
+  //     )
+  // },
   // 限时降价订单列表
-  {
-    path: '/admin/home/main/reduce/orderList',
-    name: 'reduce_order_list',
-    meta: {
-      crumbTitle: 'router.reduce_order_list',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceOrderList'
-      )
-  },
+  // {
+  //   path: '/admin/home/main/reduce/orderList',
+  //   name: 'reduce_order_list',
+  //   meta: {
+  //     crumbTitle: 'router.reduce_order_list',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceOrderList'
+  //     )
+  // },
   // 好友助力
   {
     path: '/admin/home/main/friendHelp',
@@ -514,19 +514,89 @@ const routes = [
       )
   },
   // 拼团抽奖活动
-  {
-    path: '/admin/home/main/lotteryDraw',
-    name: 'group_draw',
-    meta: {
-      crumbTitle: 'router.group_draw',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDraw'
-      )
-  },
+  // {
+  //   path: '/admin/home/main/lotteryDraw',
+  //   name: 'group_draw',
+  //   meta: {
+  //     crumbTitle: 'router.group_draw',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDraw'
+  //     )
+  // },
+  // 拼团抽奖 活动订单
+  // {
+  //   path: '/admin/home/main/lotteryDraw/orderList',
+  //   name: 'lottery_order_view',
+  //   meta: {
+  //     crumbTitle: 'router.group_order',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryOrderList'
+  //     )
+  // },
+  // 拼团抽奖 参与用户
+  // {
+  //   path: '/admin/home/main/lotteryDraw/userList',
+  //   name: 'lottery_user_view',
+  //   meta: {
+  //     crumbTitle: 'router.group_user',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryUserList'
+  //     )
+  // },
+  // 拼团抽奖 用户明细
+  // {
+  //   path: '/admin/home/main/lotteryDraw/detailList',
+  //   name: 'lottery_detail_view',
+  //   meta: {
+  //     crumbTitle: 'router.group_user_detail',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDetailList'
+  //     )
+  // },
+  // 拼团抽奖 开团明细
+  // {
+  //   path: '/admin/home/main/lotteryDraw/groupList',
+  //   name: 'lottery_group_view',
+  //   meta: {
+  //     crumbTitle: 'router.group_detail',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryGroupList'
+  //     )
+  // },
+  // 拼团抽奖 活动效果数据
+  // {
+  //   path: '/admin/home/main/lotteryDraw/lotteryEffect',
+  //   name: 'lottery_effect_view',
+  //   meta: {
+  //     // crumbTitle: 'router.resultSeckill',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryEffect'
+  //     )
+  // },
   // 幸运大抽奖活动
   {
     path: '/admin/home/main/luckyDraw',

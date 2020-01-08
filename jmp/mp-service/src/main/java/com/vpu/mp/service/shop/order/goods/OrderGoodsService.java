@@ -101,6 +101,18 @@ public class OrderGoodsService extends ShopBaseService{
 			.where(TABLE.ORDER_SN.in(orderSns))
 			.fetchGroups(TABLE.ORDER_SN,RefundVoGoods.class);
 	}
+
+	/**
+	 * 	通过订单sn[]查询其下商品
+	 * @param orderSns
+	 * @return Map<String, List<OrderGoodsMpVo>>
+	 */
+	public Map<String, List<OrderGoodsMpVo>> getByOrderGoodsSns(List<String> orderSns) {
+		return db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.REC_ID,TABLE.GOODS_NAME,TABLE.GOODS_NUMBER,TABLE.RETURN_NUMBER,TABLE.GOODS_PRICE,TABLE.GOODS_ATTR,TABLE.DISCOUNTED_GOODS_PRICE,TABLE.PRODUCT_ID,TABLE.IS_CAN_RETURN,TABLE.IS_GIFT,TABLE.DISCOUNTED_TOTAL_PRICE,TABLE.GOODS_ID,TABLE.MARKET_PRICE,TABLE.SEND_NUMBER,TABLE.GOODS_IMG).from(TABLE)
+			.where(TABLE.ORDER_SN.in(orderSns))
+			.fetchGroups(TABLE.ORDER_SN,OrderGoodsMpVo.class);
+	}
+
 	/**
 	 *	计算子订单商品数量(主订单返回的map->size=0)
 	 * @param goods
@@ -236,7 +248,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public List<GoodsRecord> getGoodsInfoRecordByOrderSn(String orderSn){
-		return db().select(GOODS.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID)
+		return db().select(TABLE.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
 				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsRecord.class);
@@ -272,7 +284,7 @@ public class OrderGoodsService extends ShopBaseService{
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
             //TODO 需要考虑 是否赠品
-            isGift(0).
+            isGift(OrderConstant.IS_GIFT_N).
             //TODO 需要考虑 赠品的关联商品
             rGoods("").
             //TODO 需要考虑 商品积分
