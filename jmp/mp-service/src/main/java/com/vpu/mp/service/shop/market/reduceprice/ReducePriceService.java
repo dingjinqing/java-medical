@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -148,7 +149,7 @@ public class ReducePriceService extends ShopBaseService {
             from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchOne().into(ReducePriceRecord.class);
         ReducePriceVo res = record.into(ReducePriceVo.class);
         res.setShopShareConfig(Util.parseJson(record.getShareConfig(), PictorialShareConfigVo.class));
-        if (res.getShopShareConfig() != null && res.getShopShareConfig().getShareImg() != null) {
+        if (res.getShopShareConfig() != null && StringUtil.isNotEmpty(res.getShopShareConfig().getShareImg())) {
             res.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
         }
         res.setReducePriceGoods(getReducePriceGoodsVoList(id));
