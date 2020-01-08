@@ -110,7 +110,7 @@ public class ReducePriceProcessorDao extends ShopBaseService {
         List<Integer> dayArr = null;
 
         // 拼接开始time和结束time
-        if (ReducePriceService.PERIOD_ACTION_NORMAL.equals(periodAction)) {
+        if (StringUtils.isNotBlank(reducePriceRecord.getPointTime())) {
             String[] pointTimeArr = reducePriceRecord.getPointTime().split("@");
             String[] startTimeArr = pointTimeArr[0].split(":");
             String[] endTimeArr = pointTimeArr[1].split(":");
@@ -137,6 +137,7 @@ public class ReducePriceProcessorDao extends ShopBaseService {
             ReducePricePrdMpVo v= new ReducePricePrdMpVo();
             v.setProductId(record.getPrdId());
             v.setReducePrice(record.getPrdPrice());
+            reducePricePrdMpVos.add(v);
         });
         vo.setReducePricePrdMpVos(reducePricePrdMpVos);
 
