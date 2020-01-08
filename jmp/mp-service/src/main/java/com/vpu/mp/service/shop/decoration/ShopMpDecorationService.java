@@ -33,12 +33,9 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.market.bargain.BargainService;
-import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -73,15 +70,6 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     @Autowired
     protected GoodsMpService goodsMpService;
-
-    @Autowired
-    protected CouponMpService couponMpService;
-
-    @Autowired
-    protected BargainService bargainService;
-
-    @Autowired
-    protected SeckillService seckillService;
 
 
     @Autowired
@@ -650,6 +638,10 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertSeckillForIndex(objectMapper, node, user);
                 case ModuleConstant.M_IMAGE_ADVER:
                     return this.convertImageAdverForIndex(objectMapper, node, user);
+                case ModuleConstant.M_PIN_INTEGRATION:
+                    return this.convertGroupIntegrationForIndex(objectMapper, node, user);
+                case ModuleConstant.M_GROUP_DRAW:
+                    return this.convertGroupDrawForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -772,6 +764,36 @@ public class ShopMpDecorationService extends ShopBaseService {
     }
 
     /**
+     * 瓜分积分
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGroupIntegration convertGroupIntegrationForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupIntegration moduleGroupIntegration = objectMapper.readValue(node.getValue().toString(), ModuleGroupIntegration.class);
+        moduleGroupIntegration.setNeedRequest(true);
+        return moduleGroupIntegration;
+    }
+
+    /**
+     * 瓜分积分
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGroupDraw convertGroupDrawForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+        moduleGroupDraw.setNeedRequest(true);
+        return moduleGroupDraw;
+    }
+
+    /**
      * 获取指定装修模块数据
      *
      * @param param 请求模块参数 {@link com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam}
@@ -830,6 +852,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                             return this.convertSeckillForModule(objectMapper, node, user);
                         case ModuleConstant.M_PIN_INTEGRATION:
                             return  this.convertPinIntegrationForModule(objectMapper, node, user);
+                        case ModuleConstant.M_GROUP_DRAW:
+                            return  this.convertGroupDrawForModule(objectMapper, node, user);
                         //TODO case
                     }
                 }
@@ -890,7 +914,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
 
         // 转换实时信息
-        return couponMpService.getPageIndexCouponList(moduleCoupon, userId);
+        return saas.getShopApp(getShopId()).mpCoupon.getPageIndexCouponList(moduleCoupon, userId);
     }
 
     /**
@@ -923,7 +947,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
 
         // 转换实时信息
-        return bargainService.getPageIndexBargain(moduleBargain);
+        return saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
     }
 
     /**
@@ -939,7 +963,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
 
         // 转换实时信息
-        return seckillService.getPageIndexSeckill(moduleSecKill);
+        return saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
     }
 
     /**
@@ -951,12 +975,27 @@ public class ShopMpDecorationService extends ShopBaseService {
      * @return
      * @throws IOException
      */
-    private ModulePinIntegeration convertPinIntegrationForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        ModulePinIntegeration modulePinIntegeration = objectMapper.readValue(node.getValue().toString(), ModulePinIntegeration.class);
+    private ModuleGroupIntegration convertPinIntegrationForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupIntegration moduleGroupIntegration = objectMapper.readValue(node.getValue().toString(), ModuleGroupIntegration.class);
 
         // 转换实时信息
-        //return seckillService.getPageIndexSeckill(moduleSecKill);
-        return null;
+        return saas.getShopApp(getShopId()).groupIntegration.getPageIndexGroupIntegration(moduleGroupIntegration,user.getUserId());
+    }
+
+    /**
+     * 拼团抽奖模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGroupDraw convertGroupDrawForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupDraw ModuleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+
+        // 转换实时信息
+        return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(ModuleGroupDraw);
     }
 
     /**

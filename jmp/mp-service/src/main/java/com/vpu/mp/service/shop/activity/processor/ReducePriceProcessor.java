@@ -4,6 +4,8 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import org.jooq.Record3;
@@ -24,7 +26,7 @@ import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
  * 限时降价 返利
  */
 @Service
-public class ReducePriceProcessor implements Processor,ActivityGoodsListProcessor {
+public class ReducePriceProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     ReducePriceProcessorDao reducePriceProcessorDao;
 
@@ -59,5 +61,35 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
             capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
         });
+    }
+
+    /*****************商品详情处理*******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+//        注：待产品功能确定后再进行开发 首单特惠和限时降价停止开发
+        // 已经被其它活动处理则退出
+//        if (capsule.getActivity() != null) {
+//            return;
+//        }
+//
+//        ReducePriceMpVo reducePriceInfo = reducePriceProcessorDao.getReducePriceInfo(param.getGoodsId(), DateUtil.getLocalDateTime());
+//        if (reducePriceInfo == null) {
+//            return;
+//        }
+//
+//        Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
+//
+//        List<ReducePricePrdMpVo> newReducePrds = reducePriceInfo.getReducePricePrdMpVos().stream().filter(reducePrd -> {
+//            GoodsPrdMpVo goodsPrdMpVo = prdMap.get(reducePrd.getProductId());
+//            if (goodsPrdMpVo == null) {
+//                return false;
+//            } else {
+//                reducePrd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
+//                return true;
+//            }
+//        }).collect(Collectors.toList());
+//
+//        reducePriceInfo.setReducePricePrdMpVos(newReducePrds);
+//        capsule.setActivity(reducePriceInfo);
     }
 }

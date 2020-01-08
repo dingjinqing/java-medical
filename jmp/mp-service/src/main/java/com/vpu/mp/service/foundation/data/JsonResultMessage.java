@@ -465,8 +465,19 @@ public class JsonResultMessage {
 	public static final String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
 	public static final String OVERVIEW_USER_ANALYSIS_RFM_NULL = "overview.user.analysis.rfm.null";
 	public static final String OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL = "overview.yesterday.analysis.data.null";
+    // 资产明细导出
+    public static final String ASSETS_EXPORT_FILE_NAME = "assets.export.file_name";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_TIME = "overview.asset.management.trade_time";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_NUM = "overview.asset.management.trade_num";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_TYPE = "overview.asset.management.trade_type";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_FLOW = "overview.asset.management.trade_flow";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_STATUS = "overview.asset.management.trade_status";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_SN = "overview.asset.management.trade_sn";
+    public static final String ASSETS_EXPORT_COLUMN_USERNAME = "overview.asset.management.username";
+    public static final String ASSETS_EXPORT_COLUMN_REAL_NAME = "overview.asset.management.real_name";
+    public static final String ASSETS_EXPORT_COLUMN_MOBILE = "overview.asset.management.mobile";
 
-	/**
+    /**
 	 * 订单
 	 */
     public static final String MSG_ORDER = "order";

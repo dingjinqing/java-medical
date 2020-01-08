@@ -220,7 +220,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				} catch (DataAccessException e) {
 					Throwable cause = e.getCause();
 					if (cause instanceof MpException) {
-						throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
+						throw cause;
 					} else {
 						throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, e.getMessage());
 					}
@@ -610,7 +610,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				//TODO 拼团修改库存和销量
 			}
             //订单类型为秒杀 且存在秒杀id 且不是赠品行
-            if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_SECKILL)) && order.getActivityId() != null && rGoods.getIsGift() == OrderConstant.IS_GIFT_N) {
+            if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_SECKILL)) && order.getActivityId() != null && rGoods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
                 saas.getShopApp(getShopId()).seckill.updateSeckillStock(order.getActivityId(),rGoods.getProductId(),- rGoods.getGoodsNumber());
             }
             //订单类型为砍价 且存在砍价id

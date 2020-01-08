@@ -449,7 +449,8 @@ public class OrderConstant {
     public static final Byte D_T_MEMBER_CARD = 0;
     /**优惠卷*/
     public static final Byte D_T_COUPON = 1;
-
+    /**满折满减*/
+    public static final Byte D_T_FULL_REDUCE = 2;
     /**
      * table : b2c_customer_avail_coupons type 1为减价，2为打折
      */

@@ -296,16 +296,6 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public GroupDrawService groupDraw;
-	@Autowired
-	public GroupDrawJoinUserService groupDrawUsers;
-	@Autowired
-	public GroupDrawOrderService groupDrawOrders;
-	@Autowired
-	public GroupDrawGroupService groupDrawGroups;
-	@Autowired
-	public GroupDrawInviteService groupDrawInvite;
-	@Autowired
-	public GroupDrawUserService groupDrawUser;
 
 	/**
 	 * 瓜分积分

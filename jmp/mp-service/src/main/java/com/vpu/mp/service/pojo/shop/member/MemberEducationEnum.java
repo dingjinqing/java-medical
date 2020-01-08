@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.shop.member;
 
-import com.vpu.mp.service.foundation.util.Util;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 
 /**
 * @author 黄壮壮
@@ -63,7 +64,7 @@ public enum MemberEducationEnum {
      * 自定义语言  常乐
      * @param code 教育程度数字代号
      * @param lang 语言
-     * @return
+     * @return 
      */
     public static String getNameByCode(int code,String lang) {
         MemberEducationEnum obj = valueOf(code);
@@ -78,9 +79,10 @@ public enum MemberEducationEnum {
 		return name;
 	}
 	/**
-	 * 获取所有教育名称
+	 * 获取所有教育名称 如： ["初中","高中"]
 	 * @param lang 语言
 	 * @param choose true 加入"请选择"，false，没有此项
+	 * @return List<String>
 	 */
 	public static List<String> getAllEducation(String lang,boolean choose){
 		List<String> eduList = new ArrayList<String>(); 
@@ -95,8 +97,28 @@ public enum MemberEducationEnum {
 		return eduList;
 	}
 	
+
+	/**
+	 * 获取所有教育名称，默认不带"请选择选项"
+	 * @param lang 语言
+	 * @return
+	 */
 	public static List<String> getAllEducation(String lang){
 		return getAllEducation(lang,false);
+	}
+
+	/**
+	 * 获取所有教育名称 如： [{value: 0,label: "初中"},{value: 1,label: "高中"}]
+	 * @param lang
+	 * @return List<EducationVo>
+	 */
+	public static List<EducationVo> getAllEducationWithCode(String lang){
+		List<EducationVo> eduList = new ArrayList<>();
+		for(MemberEducationEnum item: MemberEducationEnum.values()) {
+			String name = getNameByCode(item.getCode(),lang);
+			eduList.add(new EducationVo(item.code,name));
+		}
+		return eduList;
 	}
 	
 	public static String[] getArrayEduction(String lang) {
@@ -106,5 +128,11 @@ public enum MemberEducationEnum {
 			result[i]=MemberEducationEnum.getNameByCode(i,lang);
 		}
 		return result;
+	}
+	
+	public static void main(String ...args) {
+		List<EducationVo> res = getAllEducationWithCode(null);
+		res.stream().forEach(System.out::println);
+	
 	}
 }

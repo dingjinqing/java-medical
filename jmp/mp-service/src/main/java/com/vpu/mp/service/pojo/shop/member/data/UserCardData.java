@@ -41,9 +41,9 @@ public class UserCardData extends BaseData {
 	private Integer reasonId;
 	/** 消费原因数据 */
 	private String reason ;
-	/** 消费类型 0是普通卡 1限次卡  {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE }*/
+	/** 消费类型 0是普通卡 1限次卡   */
 	private Byte type;
-	/** 门店兑换 1，消费次数 0  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.STORE_EXCHANGE_TYPE }*/
+	/** 门店兑换 1，消费次数 0  */
 	private Byte StoreOrConsump;
 	/** 订单编号 */
 	private String orderSn;

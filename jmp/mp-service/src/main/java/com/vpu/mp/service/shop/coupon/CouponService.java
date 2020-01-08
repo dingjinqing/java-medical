@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -16,12 +15,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
@@ -318,7 +312,7 @@ public class CouponService extends ShopBaseService {
 
         //根据优惠券使用状态、过期状态条件筛选
         MpBuildOptions(select, param);
-        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
+        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId())).and(MRKING_VOUCHER.DEL_FLAG.eq((byte)0));
         PageResult<AvailCouponVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
             ExpireTimeVo remain = getExpireTime(list.getEndTime());
@@ -613,7 +607,7 @@ public class CouponService extends ShopBaseService {
                 BigDecimalUtil.multiplyOrDivide(
                     BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
                     BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(BigDecimal.ONE, BigDecimalUtil.Operator.subtrac),
-                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), BigDecimalUtil.Operator.Divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), BigDecimalUtil.Operator.divide),
                             BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)), null)
                     ), null))
             : BigDecimal.ZERO;
