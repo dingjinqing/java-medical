@@ -2,18 +2,26 @@ package com.vpu.mp.service.pojo.shop.operation;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月22日
-* @Description: 交易类型，资金流向，交易状态
+* @Description: 交易记录涉及到的交易状态，交易类型，交易内容内聚类
 */
 public enum RecordTradeEnum {
 
 	/** 默认的用户 */
 	DEFAULT_ADMIN(0),
 
+	/**----------------------------------------
+	 *  以下为 trade_status
+	 ----------------------------------------*/
 	/** 交易状态-已入账 */
 	TRADE_STATUS_ALREADY_IN(0),
 	/** 交易状态-已出账 */
 	TRADE_STATUS_ALREADY_OUT(1),
 
+	
+	
+	/**----------------------------------------
+	 *  以下为 trade_flow
+	 ----------------------------------------*/
 
 	/** 资金流向-收入  */
 	TRADE_FLOW_IN(0),
@@ -21,18 +29,25 @@ public enum RecordTradeEnum {
 	TRADE_FLOW_OUT(1),
 	/** 资金流向-待确认收入  */
 	TRADE_FLOW_TO_BE_CONFIRMED(2),
+	
+	
+	/**----------------------------------------
+	 *  以下为 trade_content 交易内容
+	 ----------------------------------------*/
 
 	/** 交易内容 - 现金*/
 	TRADE_CONTENT_CASH(0),
 	/** 交易内容 - 积分*/
 	TRADE_CONTENT_SCORE(1),
-	/** 交易类型默认值 */
-	TYPE_DEFAULT(0),
+	
+	
+	
 
 	/**----------------------------------------
-	 * 以下为交易内容为现金所对应的交易类型说明
+	 * 以下为交易内容为现金所对应的交易类型说明 trade_type
 	 ----------------------------------------*/
-
+	/** 交易类型默认值 */
+	TYPE_DEFAULT(0),
 	/** 微信支付 */
 	TYPE_CRASH_WX_PAY(1),
 	/** 余额支付 */
@@ -55,10 +70,10 @@ public enum RecordTradeEnum {
 	TYPE_POWER_MCARD_ACCOUNT(10),
 	/** 支付有礼*/
 	TYPE_CRASH_PAY_AWARD(11),
-
-
+	/** 用户导入*/
+	USER_IMPORT(16),
 	/**----------------------------------------
-	 * 以下为交易内容为积分所对应的交易类型说明
+	 * 以下为交易内容为积分所对应的交易类型说明 trade_type
 	 ----------------------------------------*/
 
 	/** 积分支付 */
@@ -87,27 +102,21 @@ public enum RecordTradeEnum {
 	TYPE_SCORE_PAY_AWARD(12),
 
 	/**--------------------*/
+	
+	
+	
+	/**----------------------------------------
+	 *  支付类型paid
+	 ----------------------------------------*/
 	/** 充值 */
 	UACCOUNT_RECHARGE(0),
 	/** 消费 */
 	UACCOUNT_CONSUMPTION(1),
 
-	/** 门店兑换类型 */
-	STORE_EXCHANGE_TYPE(1),
-	/** 消费次数类型 */
-	CONSUMPTION_TIMES_TYPE(0),
-
-	/** 按规则 */
-	CHARGE_TYPE_BY_RULE(0),
-	/** 自定义 */
-	CHARGE_TYPE_BY_CUSTOMIZE(1),
-
-	/** -金额积分比例 100积分比一元 */
-	SCALE_HUNDRED(100),
-
 	/** 积分变动是否来自退款 */
 	IS_FROM_REFUND_Y(1),
 	IS_FROM_REFUND_N(0);
+	
 	private Byte val;
 	RecordTradeEnum(int value) {
 		this.val = Byte.valueOf(String.valueOf(value));

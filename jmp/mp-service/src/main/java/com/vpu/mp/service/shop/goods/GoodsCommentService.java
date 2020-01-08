@@ -763,7 +763,7 @@ public class GoodsCommentService extends ShopBaseService {
         scoreService.updateMemberScore(
             new ScoreParam() {
               {
-                setUserId(userIdArray);
+                setUserId(param.getUserId());
                 setScore(Integer.valueOf(param.getAward()));
                 setScoreStatus(BYTE_ZERO);
                 setDesc("score");

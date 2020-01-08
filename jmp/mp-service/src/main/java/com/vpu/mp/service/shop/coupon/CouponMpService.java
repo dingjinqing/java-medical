@@ -140,6 +140,7 @@ public class CouponMpService extends ShopBaseService {
                 scoreParam.setScoreStatus(ScoreStatusConstant.USED_SCORE_STATUS);
                 scoreParam.setDesc("score");
                 scoreParam.setRemarkCode(RemarkTemplate.RECEIVE_COUPON.code);
+                scoreParam.setUserId(userId);
                 //scoreParam.setRemark("领取优惠券");
                 Integer subAccountId = 0;
 
@@ -148,7 +149,7 @@ public class CouponMpService extends ShopBaseService {
                 /** -资金流向 */
                 Byte tradeFlow = 1;
                 try {
-                    member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
+                	member.score.updateMemberScore(scoreParam,subAccountId, tradeType,tradeFlow);
                 } catch (MpException e) {
                     logger().info("积分更新失败");
                     fetchCouponStatus =6;
