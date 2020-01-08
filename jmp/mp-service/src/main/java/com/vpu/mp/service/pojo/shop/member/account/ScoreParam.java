@@ -28,7 +28,10 @@ public class ScoreParam {
 	//private String remark;
 	/** -描述 */
 	private String desc;
-	
+	/** 关联其他属性 */
+	private String identityId;
+	/** 商品Id */
+	private Integer goodsId;
 	/** -需要更新的用户id */
 	@NotNull(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_NULL)
 	private Integer[] userId;
