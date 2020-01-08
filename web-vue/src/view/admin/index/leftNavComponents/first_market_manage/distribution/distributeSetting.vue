@@ -91,11 +91,11 @@
                 @click="customHandler"
               >自定义激活项</el-button>
               <div
-                v-if="form.customList"
+                v-if="customList.length > 0"
                 style="width: 100%; min-height: 20px; border: 1px dashed #ccc;padding: 5px 10px;margin-top: 10px;"
               >
                 <div
-                  v-for="(item, index) in form.customList"
+                  v-for="(item, index) in customList"
                   :key="index"
                 >
                   <el-checkbox style="width: 320px;">{{ item.title }}</el-checkbox>
@@ -551,6 +551,8 @@ export default {
       protectDate: null, // 保护期天数
       isEdit: false, // 自定义激活项弹窗是否编辑状态
       editIndex: null,
+      // 自定义激活项
+      customList: [],
       form: {
         status: 1, // 分销开关
         judge_status: 1, // 分销员审核开关
@@ -559,7 +561,7 @@ export default {
         // 信息开关
         info_status: 1,
         // 自定义激活项
-        customList: [],
+        // customList: [],
         invitationCode: 1, // 邀请码
         activation: 1, // 是否需要提交个人信息
         activation_cfg: [], // 个人信息内容
@@ -729,19 +731,18 @@ export default {
     sureCustomHandler () {
       if (!this.isEdit) {
         // 添加
-        if (!this.form.customList) {
-          this.form.customList = []
+        if (!this.customList) {
+          this.customList = []
         }
-        this.form.customList.push(this.customForm)
+        this.customList.push(this.customForm)
       } else {
         // 编辑
-        this.form.customList.forEach((item, index) => {
+        this.customList.forEach((item, index) => {
           if (this.editIndex === index) {
             item = this.customForm
           }
         })
       }
-
       this.customDialogVisible = false
       // 清空弹窗数据
       this.customForm = {
@@ -777,7 +778,7 @@ export default {
       this.customDialogVisible = !this.customDialogVisible
       this.isEdit = true
       this.editIndex = index
-      this.form.customList.forEach((val, key) => {
+      this.customList.forEach((val, key) => {
         if (index === key) {
           this.customForm = val
         }
@@ -786,7 +787,7 @@ export default {
 
     // 删除自定义选项
     delCustom (index) {
-      this.form.customList.splice(index, 1)
+      this.customList.splice(index, 1)
     },
 
     // 保存分销配置
