@@ -21,9 +21,9 @@ public class CardConsumpData {
 	private String cardNo;
 	/** 余额变动金额 区分正负号 */
 	private BigDecimal money;
-	/** 消费原因模板code */
-	private Integer reasonCode;
-	/** 消费原因模板数据  {@link com.vpu.mp.service.pojo.shop.operation.RemarkTemplate} */
+	/** 消费原因模板Id */
+	private Integer reasonId;
+	/** 消费原因模板数据  */
 	private String reason ;
 	/** 消费类型 {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant} */
 	private Byte type;
