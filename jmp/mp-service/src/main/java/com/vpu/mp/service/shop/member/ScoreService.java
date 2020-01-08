@@ -140,6 +140,7 @@ public class ScoreService extends ShopBaseService {
 				//更新用户积分
 				Integer totalScore = getTotalAvailableScoreById(param.getUserId());
 				updateUserScore(param.getUserId(), totalScore);
+
 			});
 			
 			
@@ -156,6 +157,7 @@ public class ScoreService extends ShopBaseService {
 						logger().info("没有可升级的会员卡");
 					}
 				}
+
 				if (adminUser == 0) {
 					//TODO 等待luguangyao bug修复
 //					String strScore = score>=0? "+"+score:""+score;
@@ -163,6 +165,7 @@ public class ScoreService extends ShopBaseService {
 //							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
 //							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
 				}
+
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
 			throw e;
