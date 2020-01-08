@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.member;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
+import com.vpu.mp.db.shop.tables.records.TagRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -342,7 +343,21 @@ public class MemberService extends ShopBaseService {
 		});
 	}
 
-	
+	public boolean addUserTag(Integer tagId,Integer userId) {
+		TagRecord tagRecord = db().selectFrom(TAG).where(TAG.TAG_ID.eq(tagId)).fetchAny();
+		if(tagRecord==null) {
+			logger().info("userId："+userId+"添加tag"+tagId+"不存在");
+			return false;
+		}
+		UserTagRecord record = db().newRecord(USER_TAG);
+		record.setTagId(tagId);
+		record.setUserId(userId);
+		int insert = record.insert();
+		if(insert>0) {
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * 查询会员所持有标签列表
 	 */
