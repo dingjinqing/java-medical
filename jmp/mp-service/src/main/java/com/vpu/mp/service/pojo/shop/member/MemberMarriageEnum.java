@@ -122,4 +122,23 @@ public enum MemberMarriageEnum {
 		}
 		return result;
 	}
+	
+	/**
+	 * 根据名字和语言找id
+	 * @param name
+	 * @param lang
+	 * @return
+	 */
+	public static Integer getByName(String name, String lang) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		int length = MemberMarriageEnum.values().length;
+		for (int i = 0; i < length; i++) {
+			map.put(MemberMarriageEnum.getNameByCode(i, lang), i);
+		}
+		Integer integer = map.get(name);
+		if (integer != null) {
+			return integer;
+		}
+		return null;
+	}
 }

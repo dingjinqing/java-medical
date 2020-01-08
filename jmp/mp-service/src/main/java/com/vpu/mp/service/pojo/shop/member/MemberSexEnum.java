@@ -16,7 +16,7 @@ public enum MemberSexEnum {
 	
 	/** 男性 */
 	MALE(0,"member.sexs.male"),
-	/** 高中 */
+	/** 女性 */
 	FEMALE(1,"member.sexs.female");
 	/** 数字代号 */
 	private Integer code;
@@ -94,5 +94,28 @@ public enum MemberSexEnum {
 			result[i]=MemberSexEnum.getNameByCode(i,lang);
 		}
 		return result;
+	}
+	
+	/**
+	 * 根据名字和语言找id
+	 * @param name
+	 * @param lang
+	 * @return
+	 */
+	public static String getByName(String name, String lang) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		int length = MemberSexEnum.values().length;
+		for (int i = 0; i < length; i++) {
+			map.put(MemberSexEnum.getNameByCode(i, lang), i);
+		}
+		Integer integer = map.get(name);
+		if (integer != null) {
+			if (integer == 0) {
+				return "m";
+			} else {
+				return "f";
+			}
+		}
+		return null;
 	}
 }
