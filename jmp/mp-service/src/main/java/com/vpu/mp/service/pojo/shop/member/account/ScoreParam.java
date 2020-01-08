@@ -58,8 +58,4 @@ public class ScoreParam {
 	/** 过期时间 */
 	private Timestamp expiredTime;
 	
-	
-	
-	
-	
 }
