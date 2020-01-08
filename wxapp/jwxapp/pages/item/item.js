@@ -73,6 +73,15 @@ const actBaseInfo = {
       prdRealPrice: 'firsSpecialPrice',
       prdLinePrice: 'prdPrice'
     }
+  },
+  6:{
+    actName:'限时降价',
+    multiSkuAct:true,
+    prdListName:'reducePricePrdMpVos',
+    prdPriceName: {
+      prdRealPrice: 'reducePrice',
+      prdLinePrice: 'prdPrice'
+    }
   }
 }
 global.wxPage({
