@@ -21,10 +21,9 @@
             </div>
             <div class="item">{{$t('order.orderTime')}}：{{order.createTime}}</div>
             <div class="item">{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(order.deliverType)}}</div>
-            <div class="item">{{$t('order.paymentType')}}：</div>
             <div class="item">{{$t('order.orderSn')}}：{{order.orderSn}}</div>
             <div class="item">{{$t('order.userNameText')}}：{{order.username}}</div>
-            <div class="item">{{$t('order.userMobileText')}}：{{order.userMobile}}</div>
+            <div class="item">{{$t('order.userMobileText')}}：{{order.userMobile || '无'}}</div>
             <div
               class="item"
               v-if="order.deliverType == 1"
@@ -61,7 +60,7 @@
           <div class="item_box">
             <div class="item">{{$t('order.receivingCustomer')}}：{{order.consignee}}</div>
             <div class="item">{{$t('order.mobile')}}：{{order.mobile}}</div>
-            <div class="item">{{$t('order.shippingAddress')}}：待实现</div>
+            <div class="item">{{$t('order.shippingAddress')}}：{{order.completeAddress}}</div>
             <div class="item">{{$t('order.customerMessage')}}：{{order.addMessage}}</div>
           </div>
         </div>
@@ -316,11 +315,11 @@
                 <td>
                   <div class="goods_info">
                     <img
-                      :src="$imageHost+'/image/admin/icon_jia.png'"
+                      :src="$imageHost+'/'+goodsInfo.goodsImg"
                       alt=""
                     >
                     <div class="right_info">
-                      <div class="goods_name">{{goodsInfo.goodsName}}</div>
+                      <div class="goods_name"><span>{{goodsInfo.goodsName}}</span></div>
                       <div class="goods_spec">{{goodsInfo.goodsAttr}}</div>
                     </div>
                   </div>
@@ -346,6 +345,7 @@
                 <td
                   v-if="index == 0"
                   :rowspan="oneOrder.goods.length"
+                  class="operate"
                 >
 
                   <template v-if="goodsTypeArray.indexOf('17') != -1 && oneOrder.orderSn == oneOrder.mainOrderSn && [8,10,13].indexOf(oneOrder.orderStatus)">
@@ -1068,15 +1068,20 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  display: -webkit-box;
-                  -webkit-line-clamp: 2;
-                  overflow: hidden;
-                  /*! autoprefixer: off */
-                  -webkit-box-orient: vertical;
-                  text-align: left;
+                  > span {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    text-align: left;
+                  }
                 }
+              }
+            }
+            .operate {
+              /deep/ .el-button {
+                margin: 5px;
               }
             }
           }

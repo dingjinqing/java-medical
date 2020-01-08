@@ -5,10 +5,14 @@ import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsUnit;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsVo;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +27,10 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.*;
  */
 @Service
 public class AmountService extends BaseVisitService {
-
+    /** 日期标识符 */
+    private static final Integer CUSTOM_DAYS = 0;
+    /** 总数默认值 */
+    private static final Double TOTAL_NUM = 0.0;
     public void addTestDailyVisit() {
         LocalDate dateToday = LocalDate.now();
         LocalDate i;
@@ -36,11 +43,31 @@ public class AmountService extends BaseVisitService {
                     .values(dateString, 10, 20, 30, 40, 128.23, 256.29).execute();
         }
     }
-
+    /**
+     *得到之前的某一天(字符串类型)
+     *@param days N天前
+     *@return preDay(String)
+     */
+    public String getDate(Integer days) {
+        //格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        //获取当前时间
+        Calendar c = Calendar.getInstance();
+        //计算指定日期
+        c.add(Calendar.DATE, - days);
+        Date time = c.getTime();
+        //返回格式化后的String日期
+        return sdf.format(time);
+    }
     /**
      * 访问统计折线图
      */
     public VisitStatisticsVo getVisitStatistics(VisitStatisticsParam param) {
+        //得到时间
+        if (!param.getType().equals(CUSTOM_DAYS)){
+            param.setStartDate(getDate(param.getType()));
+            param.setEndDate(getDate(NumberUtils.INTEGER_ZERO));
+        }
         Integer action = param.getAction();
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
@@ -72,7 +99,15 @@ public class AmountService extends BaseVisitService {
             default:
                 throw new IllegalStateException("Unexpected action: " + action);
         }
-        return getStatisticsVo(units, grading);
+        VisitStatisticsVo handleData =  getStatisticsVo(units, grading);
+        Double nums = handleData.getList().stream().reduce(Double::sum).orElse(TOTAL_NUM);
+        VisitStatisticsVo vo = new VisitStatisticsVo();
+        vo.setDate(handleData.getDate());
+        vo.setList(handleData.getList());
+        vo.setStartDate(startDate);
+        vo.setEndDate(endDate);
+        vo.setTotalNum(nums);
+        return vo;
     }
 
     /**

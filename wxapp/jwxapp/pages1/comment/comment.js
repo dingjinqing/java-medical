@@ -76,7 +76,8 @@ global.wxPage({
   onLoad: function (opt) {
     if (!util.check_setting(opt)) return;
     var that = this;
-    order_sn = opt.order_sn;
+    debugger
+    order_sn = opt.order_sn || opt.orderSn;
     wx.hideShareMenu(); // 隐藏转发按钮
     this.get_comment(that, 0);
   },
@@ -372,6 +373,7 @@ global.wxPage({
     if (i || i === 0) {
       comment_flag = i
     }
+    console.log(order_sn)
     util.api('/api/wxapp/comment/list', function (res) {
       var order_completed = [];
       if (res.content && res.content.length > 0) {
