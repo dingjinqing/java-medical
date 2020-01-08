@@ -24,7 +24,7 @@ global.wxComponent({
     },
     onShow () {
       this.clearTimers();
-      this.initAnimation(this.data.m.shop_text, m);
+      this.initAnimation(this.data.m.shop_text, this.data.m);
     },
     initAnimation: function (shop_announce_Text, m) {
       var _this = this;

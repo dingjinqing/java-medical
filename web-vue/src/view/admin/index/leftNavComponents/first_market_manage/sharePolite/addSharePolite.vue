@@ -101,7 +101,6 @@
                 size="small"
                 style="width:200px"
                 v-model.number="param.priority"
-                placeholder="0"
               ></el-input>
               <div class="tips">{{$t('adSharePolite.priorityComment')}}</div>
             </el-form-item>
@@ -122,10 +121,10 @@
               ref="goodsIds"
               v-if="param.condition == 2"
             >
-              <el-button
-                type="success"
+              <div
                 @click="showChoosingGoods"
-              >{{$t('adSharePolite.chooseGoods')}}</el-button>
+                class="add_btn specify_goods"
+              >{{$t('adSharePolite.chooseGoods')}}</div>
               <span>{{$t('adSharePolite.alreadyChoose')}}{{selectGoods}}{{$t('adSharePolite.goods')}}</span>
             </el-form-item>
             <el-form-item
@@ -133,15 +132,16 @@
               ref="goodsPv"
               v-if="param.condition == 3"
             >
-              <span>{{$t('adSharePolite.pvInFact')}}</span>
-              <el-input
-                size="small"
-                style="width:50px"
-                v-model.number="param.goodsPv"
-                placeholder="0"
-              ></el-input> {{$t('adSharePolite.pvGoods')}}
+              <div style="margin-left:60px;">
+                <span>{{$t('adSharePolite.pvInFact')}}</span>
+                <el-input
+                  size="small"
+                  style="width:70px"
+                  v-model.number="param.goodsPv"
+                  placeholder="0"
+                ></el-input> {{$t('adSharePolite.pvGoods')}}
+              </div>
             </el-form-item>
-            <br>
           </el-form>
         </div>
 
@@ -171,11 +171,16 @@
             <section
               v-for="(item,index) in shareRules"
               :key="index"
+              class="rules_part"
             >
               <el-form-item :label="(index+1)+$t('adSharePolite.level')">
                 <el-form-item
                   :label="$t('adSharePolite.invite')"
-                  label-width="60px"
+                  label-width="70px"
+                  :prop="`shareRules[${index}].invite_num`"
+                  :rules="[
+                    {required: true, validator: (rule, value, callback) => {validatePersonNumber(rule, value, callback, item.invite_num)}, trigger: ['blur','change']}
+                  ]"
                 >
                   <el-input
                     size="small"
@@ -186,29 +191,37 @@
                   <i
                     v-if="index>0"
                     class="el-icon-delete"
-                    style="color:#409eff;cursor:pointer"
+                    style="color:#409eff;cursor:pointer;font-size:18px;margin-left:190px"
                     @click="deleteItem(index)"
                   ></i>
                 </el-form-item>
                 <el-form-item
-                  :label="$t('adSharePolite.reward')"
+                  :label="$t('adSharePolite.reward')+'：'"
                   label-width="100px"
                   prop="reward_type"
                   ref="reward_type"
+                  style="padding: 10px 0"
                 >
                   <el-radio-group v-model="item.reward_type">
                     <el-radio :label=1>{{$t('adSharePolite.socre')}}</el-radio>
-                    <el-radio :label=2>{{$t('adSharePolite.coupon')}}</el-radio>
+                    <el-radio
+                      :label=2
+                      style="margin: 0 20px"
+                    >{{$t('adSharePolite.coupon')}}</el-radio>
                     <el-radio :label=3>{{$t('adSharePolite.lottery')}}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item
                   v-if="item.reward_type == 1"
-                  :label="$t('adSharePolite.socre')"
-                  prop="rewardScore"
+                  :label="$t('adSharePolite.socre')+'：'"
+                  :prop="`shareRules[${index}].score`"
                   ref="rewardScore"
                   label-width="100px"
                   inline-message=true
+                  style="padding: 0 0 10px"
+                  :rules="[
+                    { required: true, validator: (rule,value, callback)=>(validateIntegral(rule, value, callback, item.score)), trigger:['blur', 'change']}
+                  ]"
                 >
                   <el-input
                     v-model.number="item.score"
@@ -218,31 +231,34 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item
-                  prop="score_num"
-                  ref="score_num"
-                  :label="$t('adSharePolite.rewwardNum')"
-                  label-width="100px"
-                  v-if="item.reward_type == 1"
-                >
-                  <el-input
-                    size="small"
-                    style="width:150px"
-                    v-model.number="item.score_num"
-                    placeholder="0"
-                  ></el-input>
-                  {{$t('adSharePolite.number')}}
-                </el-form-item>
-                <el-form-item
                   prop="rewardCoupon"
                   ref="rewardCoupon"
                   v-if="item.reward_type == 2"
-                  :label="$t('adSharePolite.coupon')"
+                  :label="$t('adSharePolite.coupon')+'：'"
                   label-width="100px"
                 >
-                  <el-button
+                  <!-- <el-button
                     type="primary"
                     @click="handleToCallDialog(index)"
-                  >{{$t('adSharePolite.addCoupon')}}</el-button>
+                  >{{$t('adSharePolite.addCoupon')}}</el-button> -->
+                  <!-- <div
+                    class="add_btn"
+                    @click="handleToCallDialog(index)"
+                  >{{$t('adSharePolite.addCoupon')}}</div> -->
+                  <!-- hello world -->
+                  <el-select
+                    v-model="shareRules[index].lottery"
+                    placeholder="请选择"
+                    size="small"
+                    style="width:150px"
+                  >
+                    <el-option
+                      v-for="item in selectCoupon"
+                      :key="item.id"
+                      :lable="item.actName"
+                      :value="item.actName"
+                    ></el-option>
+                  </el-select>
                   <el-link
                     type="primary"
                     :underline="false"
@@ -264,7 +280,7 @@
                     href="#"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
-                  <el-row>
+                  <el-row style="padding: 10px 0">
                     <el-col :offset="4">
                       {{$t('adSharePolite.couponStock')}}
                       <el-input
@@ -279,31 +295,34 @@
                   </el-row>
                 </el-form-item>
                 <el-form-item
-                  prop="coupon_num"
-                  ref="coupon_num"
-                  :label="$t('adSharePolite.rewwardNum')"
-                  label-width="100px"
-                  v-if="item.reward_type == 2"
-                >
-                  <el-input
-                    size="small"
-                    style="width:150px"
-                    v-model.number="item.coupon_num"
-                    placeholder="0"
-                  ></el-input>
-                  {{$t('adSharePolite.number')}}
-                </el-form-item>
-                <el-form-item
                   prop="rewardLottery"
                   ref="rewardLottery"
                   v-if="item.reward_type == 3"
-                  :label="$t('adSharePolite.lottery')"
+                  :label="$t('adSharePolite.lottery')+'：'"
                   label-width="100px"
+                  style="padding:0 0 10px;"
                 >
-                  <el-button
+                  <!-- <el-button
                     type="primary"
                     @click="handleToCallDialog(index)"
-                  >{{$t('adSharePolite.addLottery')}}</el-button>
+                  >{{$t('adSharePolite.addLottery')}}</el-button> -->
+                  <!-- <div
+                    class="add_btn"
+                    @click="handleToCallDialog(index)"
+                  >{{$t('adSharePolite.addLottery')}}</div> -->
+                  <el-select
+                    v-model="shareRules[index].lottery"
+                    placeholder="请选择"
+                    size="small"
+                    style="width:150px"
+                  >
+                    <el-option
+                      v-for="item in lotteryOption"
+                      :key="item.id"
+                      :lable="item.lotteryName"
+                      :value="item.id"
+                    ></el-option>
+                  </el-select>
                   <el-link
                     type="primary"
                     :underline="false"
@@ -326,22 +345,23 @@
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                 </el-form-item>
-                <el-form-item
-                  prop="lottery_num"
-                  ref="lottery_num"
-                  :label="$t('adSharePolite.rewwardNum')"
-                  label-width="100px"
-                  v-if="item.reward_type == 3"
-                >
-                  <el-input
-                    size="small"
-                    style="width:150px"
-                    v-model.number="item.lottery_num"
-                    placeholder="0"
-                  ></el-input>
-                  {{$t('adSharePolite.number')}}
-                </el-form-item>
-                <br>
+              </el-form-item>
+              <el-form-item
+                ref="lottery_num"
+                :prop="`shareRules[${index}].lottery_num`"
+                :label="$t('adSharePolite.rewwardNum')+'：'"
+                label-width="100px"
+                :rules="[
+                  {required: true, validator:(rule, value, callback) =>{ validateRewardNumber(rule, value, callback, item.lottery_num)}, trigger: 'blur'}
+                ]"
+              >
+                <el-input
+                  size="small"
+                  style="width:150px"
+                  v-model.number="item.lottery_num"
+                  placeholder="0"
+                ></el-input>
+                {{$t('adSharePolite.number')}}
               </el-form-item>
             </section>
           </el-form>
@@ -355,26 +375,20 @@
           @click="add"
         >{{$t('marketCommon.save')}}</div>
       </div>
-      <!-- <div class="footer">
-        <el-button
-          size="middle"
-          type="primary"
-          @click="add"
-        >保存</el-button>
-      </div> -->
     </div>
 
     <!--添加商品弹窗-->
     <choosingGoods
-      @resultGoodsIds="choosingGoodsResult"
+      @result="choosingGoodsResult"
+      :chooseGoodsBack="goodIdList"
       :tuneUpChooseGoods="tuneUpChooseGoods"
     />
     <!--添加优惠券弹窗-->
-    <addCouponDialog
+    <!-- <addCouponDialog
       :singleElection="true"
       :tuneUpCoupon="tuneUpCoupon"
       @handleToCheck="handleToCheck"
-    />
+    /> -->
   </div>
 </template>
 <script>
@@ -383,6 +397,8 @@ import vueSwiper from 'vue-awesome-swiper'
 import Vue from 'vue'
 import { mapActions } from 'vuex'
 import { addShareReward, getShareRewardInfo, updateShareReward } from '@/api/admin/marketManage/sharePolite.js'
+import { isGoingAct } from '@/api/admin/marketManage/payReward.js'
+import { getAllCoupon } from '@/api/admin/marketManage/evaluationGift.js'
 import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import { coupondetail } from '@/api/admin/marketManage/couponList.js'
@@ -396,14 +412,6 @@ export default {
     // 自定义表单字段验证
     // 有效期验证
     var checkValidityPeriod = (rule, value, callback) => {
-      // 延迟显示提示信息
-      // setTimeout(() => {
-      //   if (this.param.isForever === 0) {
-      //     if (this.effectiveDate === null || this.effectiveDate === '') {
-      //       return callback(new Error('请选择固定日期'))
-      //     }
-      //   }
-      // }, 1000)
       if (this.param.isForever === 0) {
         if (this.param.effectiveDate === null || this.param.effectiveDate === '') {
           return callback(new Error(this.$t('adSharePolite.pleaseChooseFixedDate')))
@@ -415,6 +423,17 @@ export default {
       } else {
         // 对该表单项进行重置，将其值重置为初始值并移除校验结果
         this.$refs.effectiveDate.resetField()
+        callback()
+      }
+    }
+    // 优先级验证
+    var validatorPriority = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (!value) {
+        callback(new Error('请输入优先级'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
         callback()
       }
     }
@@ -432,33 +451,31 @@ export default {
     // 触发条件验证
     var checkConditionId = (rule, value, callback) => {
       if (this.param.condition === 2) {
+        var re = /^(0|\+?[1-9][0-9]*)$/
         if (value === null || value === '' || value === 0) {
           return callback(new Error(this.$t('adSharePolite.pleaseAtLeastChooseOne')))
+        } else if (!re.test(value)) {
+          return callback((new Error('请输入0和正整数')))
         } else {
           callback()
         }
-      } else {
-        callback()
       }
     }
     var checkConditionPv = (rule, value, callback) => {
-      if (this.param.condition === 3) {
-        if (value === null || value === 0 || value === '') {
-          return callback(new Error(this.$t('adSharePolite.pleaseInputPV')))
-        } else {
-          callback()
-        }
-        if (!Number.isInteger(value)) {
-          return callback(new Error(this.$t('adSharePolite.PVMsutBeNumber')))
-        } else {
-          callback()
-        }
+      var re = /^[0-9]*[1-9][0-9]*$/
+      if (value === null || value === 0 || value === '') {
+        return callback(new Error(this.$t('adSharePolite.pleaseInputPV')))
+      } else if (!re.test(value)) {
+        callback(new Error('请输入正整数'))
+      }
+      if (!Number.isInteger(value)) {
+        return callback(new Error(this.$t('adSharePolite.PVMsutBeNumber')))
       } else {
         callback()
       }
     }
     return {
-      tuneUpCoupon: false,
+      // tuneUpCoupon: false,
       tuneUpChooseGoods: false,
       swiperOption: {
         loop: true,
@@ -480,13 +497,8 @@ export default {
       ],
       // 添加和更新页面共用一个，此标识用于区别这两个操作，弹窗添加成功(标识为0)，更新成功(标识为1)
       flag: 0,
-      options: [{
-        value: '1',
-        label: '黄金糕'
-      }, {
-        value: '2',
-        label: '双皮奶'
-      }],
+      lotteryOption: [],
+      selectCoupon: [],
       value: '',
       // 已选择商品件数
       selectGoods: 0,
@@ -526,6 +538,7 @@ export default {
         secondAwardNum: 0,
         thirdAwardNum: 0
       },
+      goodIdList: [],
       // 表单字段校验
       fieldValidation: {
         // 活动名称
@@ -539,12 +552,11 @@ export default {
         ],
         // 日期选择
         effectiveDate: [
-          { type: 'date', required: true, validator: checkValidityPeriod, trigger: 'change' }
+          { type: 'date', required: true, validator: checkValidityPeriod, trigger: ['blur', 'change'] }
         ],
         // 优先级
         priority: [
-          { required: true, message: this.$t('adSharePolite.priorityNotNull'), trigger: 'blur' },
-          { type: 'number', message: this.$t('adSharePolite.priorityMushBeNumber'), trigger: 'blur' }
+          { required: true, validator: validatorPriority, trigger: 'blur' }
         ],
         // 触发条件切换
         condition: [
@@ -563,41 +575,39 @@ export default {
   },
   mounted () {
     this.initForm()
+    this.getIsGonigLotteryActivity()
+    this.getSelectCoupon()
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     // 选择优惠券弹窗
-    handleToCallDialog (index) {
-      this.index = index
-      // let obj = {
-      //   couponDialogFlag: !this.couponDialogFlag,
-      //   couponList: this.couponList
-      // }
-      // this.$http.$emit('V-AddCoupon', obj, 'choiseOne')
-      this.tuneUpCoupon = !this.tuneUpCoupon
-    },
+    // handleToCallDialog (index) {
+    //   this.index = index
+    //   this.tuneUpCoupon = !this.tuneUpCoupon
+    // },
     // 优惠券回调
-    handleToCheck (data) {
-      console.log('优惠券', data)
-      let arr = []
-      let stock = []
-      data.forEach(item => {
-        arr.push(item.id)
-        stock.push(item.surplus)
-      })
-      this.shareRules[this.index].coupon = arr.toString()
-      this.shareRules[this.index].couponStock = stock.toString()
-      console.log('conpon', arr.toString())
-    },
+    // handleToCheck (data) {
+    //   console.log('优惠券', data)
+    //   let arr = []
+    //   let stock = []
+    //   data.forEach(item => {
+    //     arr.push(item.id)
+    //     stock.push(item.surplus)
+    //   })
+    //   this.shareRules[this.index].coupon = arr.toString()
+    //   this.shareRules[this.index].couponStock = stock.toString()
+    //   console.log('conpon', arr.toString())
+    // },
     // 选择商品弹窗
     showChoosingGoods () {
-      // this.transmitEditGoodsId(this.param.goodsIds)
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     //  获取商品ids
     choosingGoodsResult (ids) {
-      console.log('获取商品行信息', ids)
+      console.log('ids--', ids)
       this.param.goodsIds = ids.toString()
+      console.log(this.param.goodsIds, 'goodsIds')
+      this.goodIdList = ids
       this.selectGoods = ids.length
     },
     addItem () {
@@ -607,7 +617,7 @@ export default {
       if (this.shareRules.length < 3) {
         this.shareRules.push(obj)
       } else {
-        alert('最多可添加3个规则！')
+        this.$message.warning('最多可添加3个规则！')
       }
     },
     deleteItem (index) {
@@ -723,6 +733,27 @@ export default {
         })
       }
     },
+
+    // 获取优惠券下拉框数据
+    getSelectCoupon () {
+      getAllCoupon({
+        'isHasStock': true
+      }).then(res => {
+        if (res.error === 0) {
+          console.log(res, 'data coupon')
+          this.selectCoupon = res.content
+        }
+      })
+    },
+    // 支付奖励-幸运大抽奖-下拉框选项
+    getIsGonigLotteryActivity () {
+      isGoingAct().then(res => {
+        if (res.error === 0) {
+          console.log(res, 'get data--')
+          this.lotteryOption = res.content.dataList
+        }
+      }).catch(err => console.log(err))
+    },
     // 优惠券库存查询
     getCouponStock (id) {
       console.log(JSON.parse(JSON.stringify(id)))
@@ -736,7 +767,41 @@ export default {
     },
     resetForm () {
       this.$refs['param'].resetFields()
+    },
+    // 校验邀请人数
+    validatePersonNumber (rule, value, callback, inviteNum) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!inviteNum) {
+        callback(new Error('请输入要邀请的人数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请输入正整数'))
+      } else {
+        return callback()
+      }
+    },
+    // 校验奖品份数
+    validateRewardNumber (rule, value, callback, lotteryNum) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!lotteryNum) {
+        callback(new Error('请输入奖品份数'))
+      } else if (re.test(value)) {
+        callback(new Error('请输入正整数'))
+      } else {
+        callback()
+      }
+    },
+    // 验证积分
+    validateIntegral (rule, value, callback, score) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (score === '') {
+        callback(new Error('请输入积分'))
+      } else if (!re.test(score)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
     }
+
   }
 }
 </script>
@@ -746,7 +811,7 @@ export default {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 .bottomNavigationContent {
   position: relative;
@@ -809,6 +874,21 @@ export default {
   font-size: 12px;
   color: #999;
 }
+.add_btn {
+  width: 120px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  color: #5a8bff;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  margin: 10px 10px 10px 0;
+  display: inline-block;
+}
+.specify_goods {
+  margin-left: 60px;
+}
 .actInfo {
   width: 100%;
   font-size: 14px;
@@ -831,10 +911,15 @@ export default {
   height: 25px;
   line-height: 25px;
   padding: 0 5px;
+  margin-top: -5px;
   border: 1px solid #5a8bff;
   color: #5a8bff;
   border-radius: 4px;
   cursor: pointer;
+}
+.rules_part {
+  border-top: 1px dashed #ccc;
+  padding: 10px 0 20px;
 }
 .footer {
   position: fixed;
