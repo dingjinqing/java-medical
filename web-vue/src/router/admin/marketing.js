@@ -379,47 +379,47 @@ const routes = [
       )
   },
   // 限时降价
-  {
-    path: '/admin/home/main/reduce',
-    name: 'reduce',
-    meta: {
-      crumbTitle: 'router.reduce',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduce'
-      )
-  },
+  // {
+  //   path: '/admin/home/main/reduce',
+  //   name: 'reduce',
+  //   meta: {
+  //     crumbTitle: 'router.reduce',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduce'
+  //     )
+  // },
   // 添加限时降价
-  {
-    path: '/admin/home/main/reduce/add',
-    name: 'reduce_add_view',
-    meta: {
-      crumbTitle: 'router.reduce',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/addReduce'
-      )
-  },
+  // {
+  //   path: '/admin/home/main/reduce/add',
+  //   name: 'reduce_add_view',
+  //   meta: {
+  //     crumbTitle: 'router.reduce',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/addReduce'
+  //     )
+  // },
   // 限时降价订单列表
-  {
-    path: '/admin/home/main/reduce/orderList',
-    name: 'reduce_order_list',
-    meta: {
-      crumbTitle: 'router.reduce_order_list',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceOrderList'
-      )
-  },
+  // {
+  //   path: '/admin/home/main/reduce/orderList',
+  //   name: 'reduce_order_list',
+  //   meta: {
+  //     crumbTitle: 'router.reduce_order_list',
+  //     meta: 'first_market_manage',
+  //     category: 'first_market_manage'
+  //   },
+  //   component: () =>
+  //     import(
+  //       '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceOrderList'
+  //     )
+  // },
   // 好友助力
   {
     path: '/admin/home/main/friendHelp',

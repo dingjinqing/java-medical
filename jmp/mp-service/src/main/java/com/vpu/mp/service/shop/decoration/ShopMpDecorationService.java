@@ -642,6 +642,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertGroupIntegrationForIndex(objectMapper, node, user);
                 case ModuleConstant.M_GROUP_DRAW:
                     return this.convertGroupDrawForIndex(objectMapper, node, user);
+                case ModuleConstant.M_SCROLL_IMAGE:
+                    return this.convertScrollImageForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -761,6 +763,29 @@ public class ShopMpDecorationService extends ShopBaseService {
             img.setImage(domainConfig.imageUrl(img.getImage()));
         }
         return moduleImageAdver;
+    }
+
+    /**
+     * 轮播图模块处理
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleScrollImage convertScrollImageForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
+        boolean isNewUser = saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(user.getUserId());
+        Iterator<ModuleScrollImage.ImageItem> it = moduleScrollImage.getImgItems().iterator();
+        while (it.hasNext()){
+            ModuleScrollImage.ImageItem img = it.next();
+            if(img.getCanShow() == 1 && !isNewUser){
+                it.remove();
+            }
+            img.setImageUrl(domainConfig.imageUrl(img.getImageUrl()));
+        }
+        return moduleScrollImage;
     }
 
     /**
