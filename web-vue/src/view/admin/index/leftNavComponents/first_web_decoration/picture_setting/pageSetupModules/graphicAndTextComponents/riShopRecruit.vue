@@ -29,7 +29,6 @@
             <el-select
               size="small"
               v-model="value"
-              @change="selectChange"
             >
               <el-option
                 v-for="(item, index) in options"
@@ -183,10 +182,6 @@ export default {
     }
   },
   methods: {
-    // 切换背景图
-    selectChange (val) {
-      this.data.bg_url = val
-    },
     // 点击添加图片
     handleToCallImgDialog () {
       this.tuneUp = !this.tuneUp
