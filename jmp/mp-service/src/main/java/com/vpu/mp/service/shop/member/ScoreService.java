@@ -137,15 +137,15 @@ public class ScoreService extends ShopBaseService {
 					userScoreRecord.setStatus(NO_USE_SCORE_STATUS);
 				}
 				
-				// TODO CRM
 				userScoreRecord.insert();
 				
+			});
+			
 				//更新用户积分
 				Integer totalScore = getTotalAvailableScoreById(param.getUserId());
 				updateUserScore(param.getUserId(), totalScore);
 				
 				// TODO CRM
-				
 				
 				insertTradesRecord(param, tradeType, tradeFlow);
 				
@@ -166,7 +166,7 @@ public class ScoreService extends ShopBaseService {
 //							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
 //							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
 				}
-			});
+			
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
 			throw e;
