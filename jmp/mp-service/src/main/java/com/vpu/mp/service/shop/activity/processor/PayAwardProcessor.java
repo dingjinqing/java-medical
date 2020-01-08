@@ -220,7 +220,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 if (canSendAwardFlag){
                     ScoreParam scoreParam = new ScoreParam();
                     scoreParam.setScore(payAwardContentBo.getScoreNumber());
-                    scoreParam.setUserId(new Integer[]{order.getUserId()});
+                    scoreParam.setUserId(order.getUserId());
                     scoreParam.setOrderSn(order.getOrderSn());
                     scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
                     scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());

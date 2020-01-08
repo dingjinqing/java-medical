@@ -53,7 +53,6 @@ public class RecordTradeService extends ShopBaseService{
 			AccountParam accountParam = new AccountParam();
 			BeanUtils.copyProperties(accountData, accountParam);
 			accountParam.setRemarkId(accountData.getRemarkCode());
-			Integer adminUser = accountData.getAdminUser();
 			Byte tradeType = accountData.getTradeType();
 			Byte tradeFlow = accountData.getTradeFlow();
 
@@ -64,15 +63,13 @@ public class RecordTradeService extends ShopBaseService{
 			ScoreData scoreData = (ScoreData)data;
 			ScoreParam scoreParam = new ScoreParam();
 			BeanUtils.copyProperties(scoreData, scoreParam);
-			scoreParam.setUserId(new Integer[] {scoreData.getUserId()});
-			String language = scoreData.getLanguage();
-			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(),scoreData.getUserId(), scoreData.getTradeType(), scoreData.getTradeFlow());
+			scoreParam.setUserId(scoreData.getUserId());
+			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(), scoreData.getTradeType(), scoreData.getTradeFlow());
 		}else if(data instanceof UserCardData) {
 			logger().info("会员卡余额，兑换次数，消费次数变动 ");
 			UserCardData userCardData = (UserCardData)data;
 			CardConsumpData cardConsumpData = new CardConsumpData();
 			BeanUtils.copyProperties(userCardData, cardConsumpData);
-			String language = userCardData.getLanguage();
 			memberCardService.updateMemberCardAccount(cardConsumpData,userCardData.getTradeOpt());
 			
 		}

@@ -47,6 +47,7 @@ export const en = {
   // 活动添加页
   actNameTip: 'Only used as a business record, users will not see this name',
   repeatByCycle: 'Repeat by cycle',
+  edit: 'Edit',
   noLimit: 'not limited',
   purchaseQuantity: 'purchase quantity',
   limitQuantity: 'limit quantity',

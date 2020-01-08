@@ -36,10 +36,16 @@
           size="small"
         ></el-date-picker>
         <el-checkbox
-          :disabled="isEditFlag"
           v-model="reduceData.isCycle"
-          @change="showCycleDialog"
+          :disabled="isEditFlag"
         >{{$t('reducePriceList.repeatByCycle')}}</el-checkbox>
+        <el-button
+          size="small"
+          plain
+          @click="showCycleDialog"
+          v-if="isEditFlag || reduceData.isCycle"
+          style="margin-left: 5px;"
+        >{{$t('reducePriceList.edit')}}</el-button>
       </el-form-item>
       <el-form-item
         :label="$t('marketCommon.first') + '：'"
@@ -264,9 +270,10 @@
                 ></el-input-number> {{$t('marketCommon.yuan')}}
                 <p
                   class="price_blue"
-                  @click="isEditFlag ? clickHandler() : getProductInfo(scope.row)"
+                  @click="getProductInfo(scope.row)"
                   v-if="scope.row.reducePriceProduct && scope.row.reducePriceProduct.length>0"
                 >{{scope.row.reducePriceProduct.length}}{{$t('reducePriceList.productReducePriceTip')}}</p>
+                <!-- @click="isEditFlag ? clickHandler() : getProductInfo(scope.row)" -->
               </template>
             </el-table-column>
             <el-table-column
@@ -431,6 +438,7 @@
       :CycleType="periodAction"
       :CycleDate="extendTime"
       :CycleData="CycleData"
+      :isEdit="isEditFlag"
       @handelCycleData="getCycleData"
     />
 
@@ -445,6 +453,7 @@
     <productInfo
       :productDialog.sync="productDialogFlag"
       :product-info="productInfo"
+      :isEdit="isEditFlag"
       @confrim="getProductdata"
     />
 
@@ -823,6 +832,8 @@ export default {
             item.shopPrice = item.goodsView.shopPrice
           })
           this.pageShowGoodsList = res.content.reducePriceGoods
+        } else {
+          this.$message.warning(res.message)
         }
       })
     },
@@ -871,9 +882,7 @@ export default {
       })
     },
 
-    clickHandler () {
-
-    }
+    clickHandler () { }
 
     // 提交前校验
     // validParam() {
