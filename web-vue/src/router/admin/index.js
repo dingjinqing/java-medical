@@ -98,18 +98,18 @@ const routes = [{
           )
       },
       // 概况 - 访问分析
-      {
-        path: '/admin/home/main/visitAnalysis',
-        name: 'analysis_visit',
-        meta: {
-          crumbTitle: 'router.analysis_visit',
-          meta: 'first_web_manage'
-        },
-        component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/first_web_manage/visitAnalysis/visitAnalysis'
-          )
-      },
+      // {
+      //   path: '/admin/home/main/visitAnalysis',
+      //   name: 'analysis_visit',
+      //   meta: {
+      //     crumbTitle: 'router.analysis_visit',
+      //     meta: 'first_web_manage'
+      //   },
+      //   component: () =>
+      //     import(
+      //       '@/view/admin/index/leftNavComponents/first_web_manage/visitAnalysis/visitAnalysis'
+      //     )
+      // },
       // 概况 - 资产管理
       {
         path: '/admin/home/main/assetsManage',
