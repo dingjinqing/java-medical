@@ -230,12 +230,15 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         if (this.modulesData) {
-          this.listTypeData.forEach((item, index) => {
-            item.isChecked = false
+          this.$nextTick(() => {
+            console.log(this.listTypeData, this.listTypeData[Number(this.moduleSaveData.image_type)])
+            this.listTypeData.forEach((item, index) => {
+              item.isChecked = false
+            })
+            this.moduleSaveData = this.modulesData
+            this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
+            this.pictureGapValue = this.moduleSaveData.image_space
           })
-          this.moduleSaveData = this.modulesData
-          this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
-          this.pictureGapValue = this.moduleSaveData.image_space
         }
       },
       immediate: true

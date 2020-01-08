@@ -502,7 +502,7 @@
                   </span>
                 </p>
                 <p v-if="order.promotionReduce > 0">
-                  {{$t('order.packageDiscount')}}：
+                  {{$t('order.promotionReduce')}}：
                   <span>
                     -{{currencyPool[order.currency][lang][1] + order.promotionReduce.toFixed(2)}}
                   </span>

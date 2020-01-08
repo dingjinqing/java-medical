@@ -20,48 +20,44 @@ global.wxComponent({
       newVal.fixed = false;
       newVal.cur_idx = `c_${newVal.cur_idx}`
       var m = this.data.m = newVal;
-
-      //选择id
-      console.log('触发')
-      var that = this;
-      this.getRect(".shop_content").then(function (rect) {
-        console.log(rect)
-        that.setData({
-          marqueeDistance: rect.width
-        })
-        that.setData({
-          shopContentWidth: rect.width
-        })
-        that.initAnimation(that.data.m.shop_text);
-      });
-      console.log(m, 'announce')
+      this.initAnimation(m.shop_text, m);
     },
     onShow () {
       this.clearTimers();
-      this.initAnimation(this.data.m.shop_text);
+      this.initAnimation(this.data.m.shop_text, m);
     },
-    initAnimation: function (shop_announce_Text) {
-      var length = shop_announce_Text.length * 16   // 文字宽度
-      var windowWidth = wx.getSystemInfoSync().windowWidth; // 屏幕宽度
-      console.log(length, windowWidth)
-      this.run(length, windowWidth)
-    },
-    run (length, windowWidth) {
-      var that = this
-      that.createTimer("interval", "shopAnnounce", function () {
-        if (--that.data.marqueeDistance < -length) {
-          that.setData({
-            marqueeDistance: that.data.shopContentWidth
-          })
-          that.run(length)
-        } else {
-          that.clearTimers()
-          that.setData({
-            marqueeDistance: that.data.marqueeDistance - 1
-          })
-          that.run(length)
-        }
-      }, 20)
+    initAnimation: function (shop_announce_Text, m) {
+      var _this = this;
+      _this.animation = wx.createAnimation({
+        duration: 12000,
+        timingFunction: 'linear'
+      })
+      console.log(m)
+      var announcen_len = (shop_announce_Text.length * 13) + 120;
+      m.width = announcen_len;
+      m.animationData = m.animationData || {};
+      if (announcen_len > 480) {
+        _this.animation.translate(0, 0).step({
+          duration: 0
+        });
+        m.animationData = _this.animation.export();
+        _this.$set();
+        this.createTimer("timeout", "name", function () {
+          _this.animation.translate(-Number(announcen_len), 0).step();
+          m.animationData = _this.animation.export();
+          _this.$set();
+          this.createTimer("interval", "name1", function () {
+            _this.animation.translate(310, 0).step({
+              duration: 0
+            });
+            m.animationData = _this.animation.export();
+            _this.$set();
+            _this.animation.translate(-Number(announcen_len), 0).step();
+            m.animationData = _this.animation.export();
+            _this.$set();
+          }.bind(_this), 12000);
+        }.bind(_this), 4000)
+      }
     },
     onPageScroll (e) {
       var _this = this;

@@ -823,6 +823,8 @@ export default {
             item.shopPrice = item.goodsView.shopPrice
           })
           this.pageShowGoodsList = res.content.reducePriceGoods
+        } else {
+          this.$message.warning(res.message)
         }
       })
     },
@@ -871,9 +873,7 @@ export default {
       })
     },
 
-    clickHandler () {
-
-    }
+    clickHandler () { }
 
     // 提交前校验
     // validParam() {

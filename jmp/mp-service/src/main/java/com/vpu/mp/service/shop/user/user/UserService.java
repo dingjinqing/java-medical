@@ -261,7 +261,7 @@ public class UserService extends ShopBaseService {
 			if (path.equals("pages/pinlotteryinfo/pinlotteryinfo") && pathQuery.getQuery().get("group_draw_id") != null
 					&& pathQuery.getQuery().get("invite_id") != null) {
 				pathQuery.getQuery().put("user_id", userId.toString());
-				saas.getShopApp(this.getShopId()).groupDrawInvite.createInviteRecord(path, query, (byte) 1);
+				saas.getShopApp(this.getShopId()).groupDraw.groupDrawInvite.createInviteRecord(path, query, (byte) 1);
 			}
 			if (path.equals("pages/index/index")
 					|| path.equals("pages/item/item") && pathQuery.getQuery().get("channel") != null) {

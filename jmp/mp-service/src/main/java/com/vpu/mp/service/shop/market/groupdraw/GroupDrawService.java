@@ -1,21 +1,26 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.*;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupDraw;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.Put;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,10 +50,19 @@ import static org.apache.commons.lang3.StringUtils.substring;
 @Slf4j
 public class GroupDrawService extends ShopBaseService {
 
-    /** 启用 **/
-    private static final byte GROUP_DRAW_ENABLED = 1;
-    /** 禁用 **/
-    private static final byte GROUP_DRAW_DISABLED = 0;
+    @Autowired
+    public GroupDrawJoinUserService groupDrawUsers;
+    @Autowired
+    public GroupDrawOrderService groupDrawOrders;
+    @Autowired
+    public GroupDrawGroupService groupDrawGroups;
+    @Autowired
+    public GroupDrawInviteService groupDrawInvite;
+    @Autowired
+    public GroupDrawUserService groupDrawUser;
+
+    @Autowired
+    public DomainConfig domainConfig;
 
     private final QrCodeService qrCode;
 
@@ -73,8 +87,8 @@ public class GroupDrawService extends ShopBaseService {
      * 停用活动
      */
     public void disableGroupDraw(Integer id) {
-        int result = db().update(GROUP_DRAW).set(GROUP_DRAW.STATUS, GROUP_DRAW_DISABLED)
-            .where(GROUP_DRAW.ID.eq(id).and(GROUP_DRAW.STATUS.ne(GROUP_DRAW_DISABLED))).execute();
+        int result = db().update(GROUP_DRAW).set(GROUP_DRAW.STATUS, ACTIVITY_STATUS_DISABLE)
+            .where(GROUP_DRAW.ID.eq(id).and(GROUP_DRAW.STATUS.ne(ACTIVITY_STATUS_DISABLE))).execute();
         if (0 == result) {
             throw new IllegalStateException("Invalid group draw id or it has already been disabled.");
         }
@@ -176,12 +190,12 @@ public class GroupDrawService extends ShopBaseService {
                     select.and(GROUP_DRAW.END_TIME.lessThan(currentTimeStamp()));
                     break;
                 case NAVBAR_TYPE_DISABLED:
-                    select.and(GROUP_DRAW.STATUS.eq(GROUP_DRAW_DISABLED));
+                    select.and(GROUP_DRAW.STATUS.eq(ACTIVITY_STATUS_DISABLE));
                     break;
                 default:
             }
             if (NAVBAR_TYPE_DISABLED != status) {
-                select.and(GROUP_DRAW.STATUS.eq(GROUP_DRAW_ENABLED));
+                select.and(GROUP_DRAW.STATUS.eq(ACTIVITY_STATUS_NORMAL));
             }
         }
         select.and(GROUP_DRAW.DEL_FLAG.eq((byte) 0));
@@ -205,19 +219,16 @@ public class GroupDrawService extends ShopBaseService {
         String goodsId = vo.getGoodsId();
         String couponId = vo.getRewardCouponId();
         // 活动状态判断
-        switch (status) {
-            case GROUP_DRAW_ENABLED:
-                if (startTime.after(currentTimeStamp())) {
-                    vo.setStatus(NAVBAR_TYPE_NOT_STARTED);
-                } else if (startTime.before(currentTimeStamp()) && endTime.after(currentTimeStamp())) {
-                    vo.setStatus(NAVBAR_TYPE_ONGOING);
-                } else {
-                    vo.setStatus(NAVBAR_TYPE_FINISHED);
-                }
-                break;
-            case GROUP_DRAW_DISABLED:
-                vo.setStatus(NAVBAR_TYPE_DISABLED);
-                break;
+        if(status.equals(ACTIVITY_STATUS_NORMAL)){
+            if (startTime.after(currentTimeStamp())) {
+                vo.setStatus(NAVBAR_TYPE_NOT_STARTED);
+            } else if (startTime.before(currentTimeStamp()) && endTime.after(currentTimeStamp())) {
+                vo.setStatus(NAVBAR_TYPE_ONGOING);
+            } else {
+                vo.setStatus(NAVBAR_TYPE_FINISHED);
+            }
+        }else if(status.equals(ACTIVITY_STATUS_DISABLE)){
+            vo.setStatus(NAVBAR_TYPE_DISABLED);
         }
         // 商品数量
         int goodsCount = goodsId.split(",").length;
@@ -250,7 +261,7 @@ public class GroupDrawService extends ShopBaseService {
     private GroupDrawRecord createGroupDrawRecord(GroupDrawAddParam param) {
         return new GroupDrawRecord(null, param.getName(), param.getStartTime(),
             param.getEndTime(), param.getGoodsId(), param.getMinJoinNum(), param.getPayMoney(), param.getJoinLimit(),
-            param.getOpenLimit(), param.getLimitAmount(), param.getToNumShow(), GROUP_DRAW_ENABLED, (byte) 1, null,
+            param.getOpenLimit(), param.getLimitAmount(), param.getToNumShow(), ACTIVITY_STATUS_NORMAL, (byte) 1, null,
             null, (byte) 0, null, param.getRewardCouponId());
     }
 
@@ -410,5 +421,43 @@ public class GroupDrawService extends ShopBaseService {
             result.put(entry.getKey(),entry.getValue());
         }
         return result;
+    }
+
+    /**
+     * 小程序装修拼团抽奖模块显示异步调用
+     * @param moduleGroupDraw
+     * @return
+     */
+    public ModuleGroupDraw getPageIndexGroupDraw(ModuleGroupDraw moduleGroupDraw){
+        GroupDrawRecord groupDraw = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(moduleGroupDraw.getGroupDrawId())).fetchAny();
+        if(groupDraw != null){
+            moduleGroupDraw.setName(groupDraw.getName());
+            moduleGroupDraw.setStatus(groupDraw.getStatus());
+            moduleGroupDraw.setStartTime(groupDraw.getStartTime());
+            moduleGroupDraw.setEndTime(groupDraw.getEndTime());
+            moduleGroupDraw.setToNumShow(groupDraw.getToNumShow());
+        }
+
+        if(groupDraw.getStatus().equals(ACTIVITY_STATUS_DISABLE)){
+            moduleGroupDraw.setState((byte)2);
+        }else if(groupDraw.getEndTime().before(DateUtil.getLocalDateTime())){
+            moduleGroupDraw.setState((byte)4);
+        }else if(groupDraw.getStartTime().after(DateUtil.getLocalDateTime())){
+            moduleGroupDraw.setState((byte)3);
+        }else{
+            moduleGroupDraw.setState((byte)0);
+            moduleGroupDraw.setSurplusSecond((groupDraw.getEndTime().getTime() - Calendar.getInstance().getTimeInMillis())/1000);
+        }
+
+        int joinUserNumber = groupDrawUsers.getJoinGroupNumByGroupDraw(moduleGroupDraw.getGroupDrawId());
+        if(groupDraw.getToNumShow() <= joinUserNumber){
+            moduleGroupDraw.setJoinUserNum(joinUserNumber);
+        }
+
+        if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
+            moduleGroupDraw.setModuleImg(domainConfig.imageUrl(moduleGroupDraw.getModuleImg()));
+        }
+
+        return moduleGroupDraw;
     }
 }

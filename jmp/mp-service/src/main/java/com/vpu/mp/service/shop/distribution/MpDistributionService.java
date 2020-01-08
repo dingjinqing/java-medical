@@ -6,6 +6,13 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
+import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
+import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
+import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
+import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
@@ -15,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
 import static com.vpu.mp.db.shop.Tables.USER;
@@ -28,6 +36,27 @@ public class MpDistributionService extends ShopBaseService{
     @Autowired
     public DistributionConfigService distributionCfg;
 
+    /**
+     * 申请分销员页面信息
+     * @param lang
+     * @return
+     */
+    public ActivationInfoVo getActivationInfo(String lang){
+        //获取分销配置，成为分销员是否需要审核
+        DistributionParam cfg = this.distributionCfg.getDistributionCfg();
+        ActivationInfoVo activationInfo = new ActivationInfoVo();
+        //获取行业信息
+        List<IndustryVo> allIndustryInfo = MemberIndustryEnum.getAllIndustryInfo(lang);
+        activationInfo.setIndustryList(allIndustryInfo);
+        //获取教育程度
+        List<EducationVo> allEducationWithCode = MemberEducationEnum.getAllEducationWithCode(lang);
+        activationInfo.setEducationList(allEducationWithCode);
+        //获取婚姻状况
+        List<MarriageData> allMarriageWithCode = MemberMarriageEnum.getAllMarriageWithCode(lang);
+        activationInfo.setMarriageData(allMarriageWithCode);
+        activationInfo.setCfg(cfg);
+        return activationInfo;
+    }
 	/**
 	 * 用户申请成为分销员
 	 * @param param

@@ -848,7 +848,7 @@ export default {
         callback(new Error('请设置满减规则'))
       }
       conditionAddParams.forEach(item => {
-        if (!((item.reduceMoney && item.fullMoney) || (item.amount && item.reduceMoney) || (item.reduceMoney && item.discount) || (item.amount && item.discount))) {
+        if (!((item.reduceMoney && item.fullMoney) || (item.amount && item.reduceMoney) || (item.fullMoney && item.discount) || (item.amount && item.discount))) {
           callback(new Error('请完善满减规则'))
         }
       })
@@ -1011,7 +1011,7 @@ export default {
       let type = this.params.type
       let conditionAddParams = this['conditionAddParams' + type]
       this.conditionAddParams = conditionAddParams.filter((item, index) => {
-        return (item.reduceMoney && item.fullMoney) || (item.amount && item.reduceMoney) || (item.reduceMoney && item.discount) || (item.amount && item.discount)
+        return (item.reduceMoney && item.fullMoney) || (item.amount && item.reduceMoney) || (item.fullMoney && item.discount) || (item.amount && item.discount)
       })
     },
     // 提交
@@ -1034,9 +1034,13 @@ export default {
         })
       } else {
         // 校验
-        this.$refs.fullCutAddForm.validate((valid) => {
+        that.$refs.fullCutAddForm.validate((valid) => {
           if (valid) {
-            this.syncConditionAddParams()
+            that.syncConditionAddParams()
+            if (this.conditionAddParams.length === 0) {
+              this.$message.warning('请设置满减规则')
+              return false
+            }
             let obj = {
               actName: this.params.actName,
               type: this.params.type,

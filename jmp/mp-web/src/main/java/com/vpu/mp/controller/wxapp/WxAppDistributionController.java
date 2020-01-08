@@ -4,6 +4,8 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,10 +29,19 @@ public class WxAppDistributionController extends WxAppBaseController{
 	@PostMapping("group/list")
 	public JsonResult distributorGroupList() {
 		Integer userId = wxAppAuth.user().getUserId();
-		System.out.println(userId);
 		List<DistributorGroupListVo> groupList = shop().brokerage.getGroupList();
 		return this.success(groupList);
 	}
+
+    /**
+     * 申请分销员页面信息
+     * @return
+     */
+	@PostMapping("distributor/activation")
+    public JsonResult activationInfo(){
+        ActivationInfoVo activationInfo = shop().mpDistribution.getActivationInfo(getLang());
+        return this.success(activationInfo);
+    }
 	
 	/**
 	 * 用户申请成为分销员
