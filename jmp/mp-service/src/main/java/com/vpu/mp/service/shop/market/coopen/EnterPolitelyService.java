@@ -252,7 +252,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 logger().info("积分");
                 ScoreParam scoreParam = new ScoreParam();
                 scoreParam.setScore(NumberUtils.createBigDecimal(awardContent).intValue());
-                scoreParam.setUserId(new Integer[]{userId});
+                scoreParam.setUserId(userId);
                 scoreParam.setOrderSn(Objects.isNull(bo) ? StringUtils.EMPTY : bo.getOrderSn());
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
                 try {

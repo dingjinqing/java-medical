@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserTagRecord;
+import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -47,9 +51,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.CHANNEL;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.db.shop.Tables.TAG;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.*;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.*;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_SCAN_QRCODE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_CHANNAL_PAGE;
+
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
