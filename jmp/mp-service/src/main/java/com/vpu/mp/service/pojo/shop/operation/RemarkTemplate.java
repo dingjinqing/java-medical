@@ -39,6 +39,16 @@ public enum RemarkTemplate {
 	ORDER_CANCEL_SCORE_ACCOUNT(2008,RemarkMessage.MSG_ORDER_CANCEL_SCORE_ACCOUNT),
 	ORDER_RETURN_SCORE_ACCOUNT(2009,RemarkMessage.MSG_ORDER_RETURN_SCORE_ACCOUNT),
 	ORDER_STORE_SCORE(2010,RemarkMessage.MSG_ORDER_STORE_SCORE),
+	/**	订单取消，订单会员卡余额支付退款 */
+	ORDER_CANCEL_RETURN_CARD_ACCOUNT(2011,RemarkMessage.MSG_ORDER_CANCEL_RETURN_CARD_ACCOUNT),
+	/**	订单关闭，订单会员卡余额支付退款 */
+	ORDER_CLOSE_RETURN_CARD_ACCOUNT(2012,RemarkMessage.MSG_ORDER_CLOSE_RETURN_CARD_ACCOUNT),
+	/**	订单下单会员卡余额支付{订单号}	*/
+	ORDER_MAKE_CARD_ACCOUNT_PAY(2013,RemarkMessage.MSG_ORDER_MAKE_CARD_ACCOUNT_PAY),
+	/**	订单会员卡余额支付退款 */
+	ORDER_RETURN_CARD_ACCOUNT(2014,RemarkMessage.MSG_ORDER_RETURN_CARD_ACCOUNT),
+	/**	虚拟订单退款	*/
+	ORDER_VIRTUAL_RETURN_DEFAULT(2015,RemarkMessage.MSG_ORDER_VIRTUAL_RETURN_DEFAULT),
 	
 	
 	/**
@@ -91,7 +101,7 @@ public enum RemarkTemplate {
 	
 	public static String getMessageByCode(Integer code) {
 		for(RemarkTemplate item: RemarkTemplate.values()) {
-			if(code.equals(item.code)) {
+			if(item.code.equals(code)) {
 				return item.message;
 			}
 		}

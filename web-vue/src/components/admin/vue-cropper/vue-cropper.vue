@@ -311,7 +311,7 @@ export default {
     }
   },
   computed: {
-    cropInfo() {
+    cropInfo () {
       let obj = {}
       obj.top = this.cropOffsertY > 21 ? '-21px' : '0px'
       obj.width = this.cropW > 0 ? this.cropW : 0
@@ -336,7 +336,7 @@ export default {
       return obj
     },
 
-    isIE() {
+    isIE () {
       var userAgent = navigator.userAgent // 取得浏览器的userAgent字符串
       var isIE =
         userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1 // 判断是否IE浏览器
@@ -345,57 +345,57 @@ export default {
   },
   watch: {
     // 如果图片改变， 重新布局
-    img() {
+    img () {
       // 当传入图片时, 读取图片信息同时展示
       this.checkedImg()
     },
-    imgs(val) {
+    imgs (val) {
       if (val === '') {
         return
       }
       this.reload()
     },
-    cropW() {
+    cropW () {
       this.showPreview()
     },
-    cropH() {
+    cropH () {
       this.showPreview()
     },
-    cropOffsertX() {
+    cropOffsertX () {
       this.showPreview()
     },
-    cropOffsertY() {
+    cropOffsertY () {
       this.showPreview()
     },
-    scale(val, oldVal) {
+    scale (val, oldVal) {
       this.showPreview()
     },
-    x() {
+    x () {
       this.showPreview()
     },
-    y() {
+    y () {
       this.showPreview()
     },
-    autoCrop(val) {
+    autoCrop (val) {
       if (val) {
         this.goAutoCrop()
       }
     },
     // 修改了自动截图框
-    autoCropWidth() {
+    autoCropWidth () {
       if (this.autoCrop) {
         this.goAutoCrop()
       }
     },
-    autoCropHeight() {
+    autoCropHeight () {
       if (this.autoCrop) {
         this.goAutoCrop()
       }
     },
-    mode() {
+    mode () {
       this.checkedImg()
     },
-    rotate() {
+    rotate () {
       this.showPreview()
       if (this.autoCrop) {
         this.goAutoCrop(this.cropW, this.cropH)
@@ -407,7 +407,7 @@ export default {
     }
   },
   methods: {
-    checkOrientationImage(img, orientation, width, height) {
+    checkOrientationImage (img, orientation, width, height) {
       let canvas = document.createElement('canvas')
       let ctx = canvas.getContext('2d')
       ctx.save()
@@ -484,7 +484,7 @@ export default {
     },
 
     // checkout img
-    checkedImg() {
+    checkedImg () {
       if (this.img === '') return
       this.loading = true
       this.scale = 1
@@ -532,7 +532,8 @@ export default {
       if (this.img.substr(0, 4) !== 'data') {
         img.crossOrigin = ''
       }
-
+      console.log(this.img.replace('http:', ''))
+      this.img = this.img.replace('http:', '')
       if (this.isIE) {
         var xhr = new XMLHttpRequest()
         xhr.onload = function () {
@@ -547,7 +548,7 @@ export default {
       }
     },
     // 当按下鼠标键
-    startMove(e) {
+    startMove (e) {
       e.preventDefault()
       // 如果move 为true 表示当前可以拖动
       if (this.move && !this.crop) {
@@ -603,7 +604,7 @@ export default {
     },
 
     // 移动端缩放
-    touchScale(e) {
+    touchScale (e) {
       e.preventDefault()
       let scale = this.scale
       // 记录变化量
@@ -661,12 +662,12 @@ export default {
       }
     },
 
-    cancelTouchScale(e) {
+    cancelTouchScale (e) {
       window.removeEventListener('touchmove', this.touchScale)
     },
 
     // 移动图片
-    moveImg(e) {
+    moveImg (e) {
       e.preventDefault()
       if (e.touches && e.touches.length === 2) {
         this.touches = e.touches
@@ -749,7 +750,7 @@ export default {
       })
     },
     // 移动图片结束
-    leaveImg(e) {
+    leaveImg (e) {
       window.removeEventListener('mousemove', this.moveImg)
       window.removeEventListener('touchmove', this.moveImg)
       window.removeEventListener('mouseup', this.leaveImg)
@@ -765,7 +766,7 @@ export default {
       })
     },
     // 缩放图片
-    scaleImg() {
+    scaleImg () {
       if (this.canScale) {
         window.addEventListener(this.support, this.changeSize, {
           passive: false
@@ -773,13 +774,13 @@ export default {
       }
     },
     // 移出框
-    cancelScale() {
+    cancelScale () {
       if (this.canScale) {
         window.removeEventListener(this.support, this.changeSize)
       }
     },
     // 改变大小函数
-    changeSize(e) {
+    changeSize (e) {
       e.preventDefault()
       let scale = this.scale
       var change = e.deltaY || e.wheelDelta
@@ -822,7 +823,7 @@ export default {
     },
 
     // 修改图片大小函数
-    changeScale(num) {
+    changeScale (num) {
       let scale = this.scale
       num = num || 1
       var coe = 20
@@ -842,7 +843,7 @@ export default {
       this.scale = scale
     },
     // 创建截图框
-    createCrop(e) {
+    createCrop (e) {
       e.preventDefault()
       // 移动生成大小
       var nowX = e.clientX ? e.clientX : e.touches ? e.touches[0].clientX : 0
@@ -897,7 +898,7 @@ export default {
     },
 
     // 改变截图框大小
-    changeCropSize(e, w, h, typeW, typeH) {
+    changeCropSize (e, w, h, typeW, typeH) {
       e.preventDefault()
       window.addEventListener('mousemove', this.changeCropNow)
       window.addEventListener('mouseup', this.changeCropEnd)
@@ -921,7 +922,7 @@ export default {
     },
 
     // 正在改变
-    changeCropNow(e) {
+    changeCropNow (e) {
       e.preventDefault()
       var nowX = e.clientX ? e.clientX : e.touches ? e.touches[0].clientX : 0
       var nowY = e.clientY ? e.clientY : e.touches ? e.touches[0].clientY : 0
@@ -1059,7 +1060,7 @@ export default {
     },
 
     // 结束改变
-    changeCropEnd(e) {
+    changeCropEnd (e) {
       window.removeEventListener('mousemove', this.changeCropNow)
       window.removeEventListener('mouseup', this.changeCropEnd)
       window.removeEventListener('touchmove', this.changeCropNow)
@@ -1067,7 +1068,7 @@ export default {
     },
 
     // 创建完成
-    endCrop() {
+    endCrop () {
       if (this.cropW === 0 && this.cropH === 0) {
         this.cropping = false
       }
@@ -1077,24 +1078,24 @@ export default {
       window.removeEventListener('touchend', this.endCrop)
     },
     // 开始截图
-    startCrop() {
+    startCrop () {
       this.crop = true
       // console.log('开始截图')
     },
     // 停止截图
-    stopCrop() {
+    stopCrop () {
       this.crop = false
       // console.log('停止截图')
     },
     // 清除截图
-    clearCrop() {
+    clearCrop () {
       this.cropping = false
       this.cropW = 0
       this.cropH = 0
       // console.log('清除截图')
     },
     // 截图移动
-    cropMove(e) {
+    cropMove (e) {
       e.preventDefault()
       if (!this.canMoveBox) {
         this.crop = false
@@ -1130,7 +1131,7 @@ export default {
       })
     },
 
-    moveCrop(e, isMove) {
+    moveCrop (e, isMove) {
       let nowX = 0
       let nowY = 0
       if (e) {
@@ -1201,7 +1202,7 @@ export default {
     },
 
     // 算出不同场景下面 图片相对于外层容器的坐标轴
-    getImgAxis(x, y, scale) {
+    getImgAxis (x, y, scale) {
       x = x || this.x
       y = y || this.y
       scale = scale || this.scale
@@ -1242,7 +1243,7 @@ export default {
     },
 
     // 获取截图框的坐标轴
-    getCropAxis() {
+    getCropAxis () {
       let obj = {
         x1: 0,
         x2: 0,
@@ -1256,7 +1257,7 @@ export default {
       return obj
     },
 
-    leaveCrop(e) {
+    leaveCrop (e) {
       window.removeEventListener('mousemove', this.moveCrop)
       window.removeEventListener('mouseup', this.leaveCrop)
       window.removeEventListener('touchmove', this.moveCrop)
@@ -1272,7 +1273,7 @@ export default {
       })
     },
 
-    getCropChecked(cb) {
+    getCropChecked (cb) {
       let canvas = document.createElement('canvas')
       let img = new Image()
       let rotate = this.rotate
@@ -1452,21 +1453,21 @@ export default {
       }
       img.src = this.imgs
 
-      function setCanvasSize(width, height) {
+      function setCanvasSize (width, height) {
         canvas.width = Math.round(width)
         canvas.height = Math.round(height)
       }
     },
 
     // 获取转换成base64 的图片信息
-    getCropData(cb) {
+    getCropData (cb) {
       this.getCropChecked(data => {
         cb(data.toDataURL('image/' + this.outputType, this.outputSize))
       })
     },
 
     // canvas获取为blob对象
-    getCropBlob(cb) {
+    getCropBlob (cb) {
       this.getCropChecked(data => {
         data.toBlob(
           blob => cb(blob),
@@ -1477,7 +1478,7 @@ export default {
     },
 
     // 自动预览函数
-    showPreview() {
+    showPreview () {
       // 优化不要多次触发
       if (this.isCanShow) {
         this.isCanShow = false
@@ -1523,7 +1524,7 @@ export default {
       this.$emit('real-time', obj)
     },
     // reload 图片布局函数
-    reload() {
+    reload () {
       let img = new Image()
       img.onload = () => {
         // 读取图片的信息原始信息， 解析是否需要旋转
@@ -1571,7 +1572,7 @@ export default {
       img.src = this.imgs
     },
     // 背景布局的函数
-    checkedMode() {
+    checkedMode () {
       let scale = 1
       // 通过字符串分割
       let imgW = this.trueWidth
@@ -1634,7 +1635,7 @@ export default {
       return scale
     },
     // 自动截图函数
-    goAutoCrop(cw, ch) {
+    goAutoCrop (cw, ch) {
       this.clearCrop()
       this.cropping = true
       let maxWidth = this.w
@@ -1666,7 +1667,7 @@ export default {
       this.changeCrop(w, h)
     },
     // 手动改变截图框大小函数
-    changeCrop(w, h) {
+    changeCrop (w, h) {
       if (this.centerBox) {
         // 修复初始化时候在centerBox=true情况下
         let axis = this.getImgAxis()
@@ -1694,7 +1695,7 @@ export default {
       }
     },
     // 重置函数， 恢复组件置初始状态
-    refresh() {
+    refresh () {
       // console.log('refresh')
       let img = this.img
       this.imgs = ''
@@ -1712,22 +1713,22 @@ export default {
     },
 
     // 向左边旋转
-    rotateLeft() {
+    rotateLeft () {
       this.rotate = this.rotate <= -3 ? 0 : this.rotate - 1
     },
 
     // 向右边旋转
-    rotateRight() {
+    rotateRight () {
       this.rotate = this.rotate >= 3 ? 0 : this.rotate + 1
     },
 
     // 清除旋转
-    rotateClear() {
+    rotateClear () {
       this.rotate = 0
     },
 
     // 图片坐标点校验
-    checkoutImgAxis(x, y, scale) {
+    checkoutImgAxis (x, y, scale) {
       x = x || this.x
       y = y || this.y
       scale = scale || this.scale
@@ -1759,7 +1760,7 @@ export default {
       return canGo
     }
   },
-  mounted() {
+  mounted () {
     this.support =
       'onwheel' in document.createElement('div')
         ? 'wheel'
@@ -1786,7 +1787,7 @@ export default {
     this.showPreview()
     this.checkedImg()
   },
-  destroyed() {
+  destroyed () {
     window.removeEventListener('mousemove', this.moveCrop)
     window.removeEventListener('mouseup', this.leaveCrop)
     window.removeEventListener('touchmove', this.moveCrop)

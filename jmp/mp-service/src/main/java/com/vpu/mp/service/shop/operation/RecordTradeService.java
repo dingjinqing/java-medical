@@ -56,6 +56,7 @@ public class RecordTradeService extends ShopBaseService{
 			Integer adminUser = accountData.getAdminUser();
 			Byte tradeType = accountData.getTradeType();
 			Byte tradeFlow = accountData.getTradeFlow();
+
 			accountService.updateUserAccount(accountParam, TradeOptParam.builder().tradeType(tradeType).tradeFlow(tradeFlow).build());
 		}else if(data instanceof ScoreData) {
 			logger().info("积分变动");
@@ -65,14 +66,14 @@ public class RecordTradeService extends ShopBaseService{
 			BeanUtils.copyProperties(scoreData, scoreParam);
 			scoreParam.setUserId(new Integer[] {scoreData.getUserId()});
 			String language = scoreData.getLanguage();
-			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(),scoreData.getUserId(), scoreData.getTradeType(), scoreData.getTradeFlow(),language);
+			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(),scoreData.getUserId(), scoreData.getTradeType(), scoreData.getTradeFlow());
 		}else if(data instanceof UserCardData) {
 			logger().info("会员卡余额，兑换次数，消费次数变动 ");
 			UserCardData userCardData = (UserCardData)data;
 			CardConsumpData cardConsumpData = new CardConsumpData();
 			BeanUtils.copyProperties(userCardData, cardConsumpData);
 			String language = userCardData.getLanguage();
-			memberCardService.updateMemberCardAccount(cardConsumpData,userCardData.getTradeOpt(),language);
+			memberCardService.updateMemberCardAccount(cardConsumpData,userCardData.getTradeOpt());
 			
 		}
 			

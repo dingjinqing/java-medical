@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 
 import lombok.Data;
 
@@ -67,5 +67,5 @@ public class ReducePriceAddParam {
 
     /** 分享设置 */
     @NotNull
-    private ShopShareConfig shareConfig;
+    private PictorialShareConfig shareConfig;
 }

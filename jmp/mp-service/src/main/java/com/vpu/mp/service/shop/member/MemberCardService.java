@@ -1404,7 +1404,7 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * @param data 用户卡相关数据
 	 * @throws MpException
 	 */
-	public void updateMemberCardAccount(CardConsumpData data, TradeOptParam tradeOpt, String language)
+	public void updateMemberCardAccount(CardConsumpData data, TradeOptParam tradeOpt)
 			throws MpException {
 
 		/** 1.-获取数据库中的存储的信息 */
@@ -1599,9 +1599,7 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * @param data
 	 */
 	private void insertIntoChargeMoney(CardConsumpData data) {
-		ChargeMoneyRecord chargeMoneyRecord = db().newRecord(CHARGE_MONEY);
-//		FieldsUtil.assignNotNull(data, chargeMoneyRecord);
-		BeanUtils.copyProperties(data, chargeMoneyRecord);
+		ChargeMoneyRecord chargeMoneyRecord = db().newRecord(CHARGE_MONEY,data);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
 			chargeMoneyRecord.setUserId(data.getUserId());
@@ -1648,9 +1646,7 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	 * @param data
 	 */
 	private void insertIntoCardConsumer(CardConsumpData data) {
-		CardConsumerRecord cardConsumerRecord = db().newRecord(CARD_CONSUMER);
-//		FieldsUtil.assignNotNull(data, cardConsumerRecord);
-		BeanUtils.copyProperties(data, cardConsumerRecord);
+		CardConsumerRecord cardConsumerRecord = db().newRecord(CARD_CONSUMER,data);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
 			cardConsumerRecord.setUserId(data.getUserId());

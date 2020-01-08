@@ -94,7 +94,7 @@
             <img
               @click="handleToCallSingleImg(index)"
               style="cursor:pointer"
-              :src="item.image"
+              :src="$imageHost+'/'+item.image"
             >
             <div style="margin-left:10px">
               <div class="textTop">
@@ -229,8 +229,17 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        this.pictureGapValue = this.modulesData.image_space
-        this.moduleSaveData = this.modulesData
+        if (this.modulesData) {
+          this.$nextTick(() => {
+            console.log(this.listTypeData, this.listTypeData[Number(this.moduleSaveData.image_type)])
+            this.listTypeData.forEach((item, index) => {
+              item.isChecked = false
+            })
+            this.moduleSaveData = this.modulesData
+            this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
+            this.pictureGapValue = this.moduleSaveData.image_space
+          })
+        }
       },
       immediate: true
     },
@@ -325,7 +334,7 @@ export default {
       if (this.isAddImgOrChangeFlga) {
         imgData.forEach((item, index) => {
           let obj = {
-            'image': item.imgUrl,
+            'image': item.imgPath, // 图片保存路径
             'width': item.imgWidth, // 图片宽度
             'height': item.imgHeight, // 图片高度
             'title': '', // 文本
@@ -338,7 +347,7 @@ export default {
         })
       } else {
         console.log(imgData)
-        this.moduleSaveData.image_list[this.changeListImgIndex].image = imgData.imgUrl
+        this.moduleSaveData.image_list[this.changeListImgIndex].image = imgData.imgPath
       }
     },
     // 点击添加图片

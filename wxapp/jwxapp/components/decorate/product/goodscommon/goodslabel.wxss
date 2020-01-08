@@ -29,7 +29,7 @@
   border: 6rpx solid rgba(255,255,255,0.2);
 }
 
-.label-style1 >text, .label-style13>text {
+.label-style1 >.text, .label-style13>.text {
   color: white;
   font-size: 22rpx;
   padding-left: 5rpx;
@@ -38,7 +38,7 @@
   line-height: 27rpx;
   padding-bottom: 4rpx;
 }
-.label-style2>text {
+.label-style2>.text {
   padding-bottom: 0rpx !important;
   padding-left: 14rpx;
   padding-right: 14rpx;
@@ -64,7 +64,7 @@
   justify-content: center;
 }
 
-.label-style3>text{
+.label-style3>.text{
   color: #f66;
   font-size: 22rpx;
   text-align: center;
@@ -84,7 +84,7 @@
   float: left;
 }
 
-.label-style4>text{
+.label-style4>.text{
   color: white;
   font-size: 22rpx;
   white-space: normal;

@@ -69,13 +69,20 @@
               :class="minixLabel"
               class="labelClass"
             >{{$t('membershipIntroduction.label')}}：</span>
-            <el-autocomplete
-              v-model="labelVal"
-              :placeholder="$t('membershipIntroduction.placeinpuLabel')"
-              :fetch-suggestions="querySearch"
-              size="small"
-              @select="handleSelect"
-            ></el-autocomplete>
+             <el-select
+                v-model="labelVal"
+                multiple
+                collapse-tags
+                size="small"
+               :placeholder="$t('membershipIntroduction.placeinpuLabel')"
+               >
+              <el-option
+                v-for="(item,index) in tagSource"
+                :key="index"
+                :label="item.value"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </div>
         </li>
         <li>
@@ -763,6 +770,7 @@
             multiple
             size="small"
             :placeholder="$t('membershipIntroduction.placeChoise')"
+            style="overflow: hidden;"
           >
             <el-option
               v-for="(item,index) in tagSource"
@@ -852,7 +860,7 @@ export default {
       membershipCardOptions: [],
       noImg: this.$imageHost + '/image/admin/no_data.png',
       membershipCardVal: '',
-      labelVal: '',
+      labelVal: [],
       datePickerVal: '',
       checkPhone: false,
       checkIntegr: false,
@@ -980,6 +988,10 @@ export default {
     // console.log(this.$route.params.tagName)
     // this.labelVal = this.$route.params.tagName
     console.log('会员列表 created ')
+    let tagId = this.$route.query.tagId
+    if (tagId || tagId === 0) {
+      this.labelVal.push(this.$route.query.tagId)
+    }
     // 初始化会员列表数据
     this.defaultTabelListData()
     // 初始化会员卡下拉框列表
@@ -1029,8 +1041,10 @@ export default {
         'currentPage': this.currentPage3,
         'pageRows': '20'
       }
+      console.log(this.labelVal[0], typeof this.labelVal[0])
       membershipListRequest(obj).then((res) => {
-        if (res) {
+        console.log(res)
+        if (res.error === 0) {
           if (res.content.dataList.length === 0) {
             this.tbodyFlag = false
             return
@@ -1086,9 +1100,7 @@ export default {
         return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
     },
-    // 选中输入框建议列表项
-    handleSelect (item) {
-    },
+
     // 改变箭头事件
     handleToChangeArror () {
       this.arrorFlag = !this.arrorFlag
@@ -1130,7 +1142,6 @@ export default {
         this.integralDialogData[0].persentMoney = item
         val = this.integralDialogData[0]
       }
-      console.log('val->', val)
       // copy value by same key
       Object.keys(this.modifyDialogData).forEach(key => {
         if (!(!val[key] && val[key] !== 0)) {
@@ -1477,19 +1488,24 @@ export default {
     // 打标签
     setTagForMember () {
       // 关闭打标签弹窗
-      this.labelDialogVisible = false
-      let obj = {
-        'userIdList': [this.tagUserId],
-        'tagIdList': this.labelDialogInput
-      }
-      setTagForMemberRequest(obj).then(res => {
-        if (res.error === 0) {
-          // 提示框
-          this.getSuccessMessagePrompt()
-          // 清空tagUserId
-          this.tagUserId = null
+      if (this.labelDialogInput.length > 0) {
+        this.labelDialogVisible = false
+        let obj = {
+          'userIdList': [this.tagUserId],
+          'tagIdList': this.labelDialogInput
         }
-      })
+        console.log(this.labelDialogInput)
+        setTagForMemberRequest(obj).then(res => {
+          if (res.error === 0) {
+          // 提示框
+            this.getSuccessMessagePrompt()
+            // 清空tagUserId
+            this.tagUserId = null
+          }
+        })
+      } else {
+        this.$message.warning('请输入标签')
+      }
     },
     // 获取用户标签
     handleToLabel (userId) {

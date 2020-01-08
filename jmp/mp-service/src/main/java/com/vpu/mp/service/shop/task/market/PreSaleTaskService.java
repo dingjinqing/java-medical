@@ -87,7 +87,6 @@ public class PreSaleTaskService extends ShopBaseService {
                 param.setOrderId(order.getOrderId());
                 //关闭订单
                 ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
-                logger().info(executeResult.toString());
 
                 //将预售库存和销量字段改回去
                 updatePreSaleProductNumber(order);

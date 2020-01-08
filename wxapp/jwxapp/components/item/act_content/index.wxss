@@ -35,7 +35,7 @@
 .countdown {
   font-size: 0;
 }
-.countdown > text {
+.countdown > .text {
   font-size: 26rpx;
 }
 .countdown > .count {
@@ -46,9 +46,9 @@
   border-radius: 6rpx;
   text-align: center;
 }
-.countdown > text:first-child {
+.countdown > .text:first-child {
   margin-left: 0;
 }
-.countdown > text:last-child {
+.countdown > .text:last-child {
   margin-right: 0;
 }

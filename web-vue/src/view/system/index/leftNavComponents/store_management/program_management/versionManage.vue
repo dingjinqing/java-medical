@@ -63,7 +63,7 @@
         width="200"
       >
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         align="center"
         :label="$t('programVersion.developingAppid')"
         width="200"
@@ -78,7 +78,7 @@
         align="center"
         :label="$t('programVersion.developer')"
       >
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         align="center"
         :label="$t('programVersion.isDel')"

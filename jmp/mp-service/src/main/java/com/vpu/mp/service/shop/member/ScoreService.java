@@ -93,22 +93,18 @@ public class ScoreService extends ShopBaseService {
 	 * @return JsonResultCode
 	 * @throws MpException 
 	 */
-	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
-			Byte tradeFlow) throws MpException{
-		updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow,"");
-	}
 	
 	public void updateMemberScore(ScoreParam param, Integer adminUser,Byte tradeType,
 			Byte tradeFlow) throws MpException{
 		if(param.getUserId() != null) {
 			for(Integer userId: param.getUserId()) {
-				updateMemberScore(param,adminUser,userId,tradeType,tradeFlow,"");
+				updateMemberScore(param,adminUser,userId,tradeType,tradeFlow);
 			}
 		}
 	}
 	
 	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
-			Byte tradeFlow,String language) throws MpException {
+			Byte tradeFlow) throws MpException {
 
 		/**  1. 校验userId是否存在数据库中 */
 		if (userId <= 0) {
@@ -517,6 +513,7 @@ public class ScoreService extends ShopBaseService {
 			}
 			UserScoreRecord record =db().newRecord(USER_SCORE);
 			FieldsUtil.assignNotNull(data, record);
+			record.setRemarkId(String.valueOf(data.getRemarkCode()));
 			record.setAdminUser(adminUser);
 			record.setFlowNo(generateFlowNo());
 			record.setUsableScore(data.getScore() > 0 ? data.getScore() : 0);

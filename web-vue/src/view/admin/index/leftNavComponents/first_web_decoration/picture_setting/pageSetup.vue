@@ -23,6 +23,7 @@
     <!--模块配置-->
     <div v-if="!topIconFlag">
       <components
+      v-if="insertFlga"
         :is="showModule"
         :modulesData='modulesData'
         :sortIndex='sortIndex'
@@ -188,7 +189,8 @@ export default {
       sortIndex: -1,
       pageSet: {},
       retract: '收起', // 收起文本
-      open: '展开' // 展开文本
+      open: '展开', // 展开文本
+      insertFlga: true // 解决模块自左插入当前高亮模块上部
     }
   },
   watch: {
@@ -205,25 +207,33 @@ export default {
         } else {
           this.showModule = ''
         }
+        this.insertFlga = false
+        this.$nextTick(() => {
+          this.insertFlga = true
+          console.log(this.nowRightModulesData)
+          this.modulesData = this.nowRightModulesData
+          this.sortIndex = newData
+        })
         console.log(newData)
       },
       immediate: true
     },
-    nowRightShowIndex: {
-      handler (newData) {
-        this.$nextTick(() => {
-          console.log(newData, this.nowRightModulesData)
-          // this.modulesData = this.nowRightModulesData
-          // this.sortIndex = newData
-        })
-        setTimeout(() => {
-          console.log(newData, this.nowRightModulesData)
-          this.modulesData = this.nowRightModulesData
-          this.sortIndex = newData
-        }, 50)
-      },
-      immediate: true
-    },
+    // nowRightShowIndex: {
+    //   handler (newData) {
+    //     console.log(newData, this.nowRightModulesData)
+    //     this.$nextTick(() => {
+    //       console.log(newData, this.nowRightModulesData)
+    //       // this.modulesData = this.nowRightModulesData
+    //       // this.sortIndex = newData
+    //     })
+    //     setTimeout(() => {
+    //       console.log(newData, this.nowRightModulesData)
+    //       this.modulesData = this.nowRightModulesData
+    //       this.sortIndex = newData
+    //     }, 50)
+    //   },
+    //   immediate: true
+    // },
     pageSetData: {
       handler (newData) {
         console.log(newData)

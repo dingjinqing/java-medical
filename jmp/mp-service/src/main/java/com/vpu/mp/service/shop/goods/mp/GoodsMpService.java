@@ -366,7 +366,7 @@ public class GoodsMpService extends ShopBaseService {
             try {
                 log.debug("小程序-es-商品搜索条件反推");
                 return esGoodsSearchMpService.getGoodsParam();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.debug("小程序-es-商品搜索条件反推错误-转换db获取数据:" + e.getMessage());
                 return getGoodsSearchFilterConditionFromDb();
             }

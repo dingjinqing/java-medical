@@ -4,6 +4,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 
 import lombok.Data;
@@ -51,5 +52,5 @@ public class BargainUpdateParam {
 
     private BigDecimal expectationPrice;
 	
-	private ShopShareConfig shareConfig;
+	private PictorialShareConfig shareConfig;
 }
