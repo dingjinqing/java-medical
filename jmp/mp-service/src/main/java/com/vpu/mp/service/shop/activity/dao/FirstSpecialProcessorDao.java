@@ -92,7 +92,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
         vo.setIsLimit(firstSpecialRecord.getLimitAmount()>0);
         // 限购的数量
         vo.setLimitAmount(firstSpecialRecord.getLimitAmount());
-        // 是否开启超限购购买标记
+        // 是否开启超限购买标记
         vo.setLimitFlag(FirstSpecialService.LIMIT_FLAG_YES.equals(firstSpecialRecord.getLimitFlag()));
 
         // 查询对应的规格信息

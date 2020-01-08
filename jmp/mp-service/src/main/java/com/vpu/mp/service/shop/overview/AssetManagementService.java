@@ -22,6 +22,8 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -236,9 +238,15 @@ public class AssetManagementService extends ShopBaseService {
      * @param param 导出数据筛选条件
      */
     public Workbook export2Excel(AssetDetailParam param, String lang) {
-        List<AssetDetailExportVo> list = getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc())
-            .limit(param.getExportRowStart(), param.getExportRowEnd())
-            .fetchInto(AssetDetailExportVo.class);
+/*        List<AssetDetailExportVo> list = getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc())
+            .limit(param.getExportRowStart() - 1, param.getExportRowEnd() - param.getExportRowStart() + 1)
+            .fetchInto(AssetDetailExportVo.class);*/
+
+        List<AssetDetailExportVo> list = new ArrayList<AssetDetailExportVo>() {{
+            add(new AssetDetailExportVo() {{
+                setTradeTime(Timestamp.valueOf(LocalDateTime.now()));
+            }});
+        }};
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
         excelWriter.writeModelList(list, AssetDetailExportVo.class);
