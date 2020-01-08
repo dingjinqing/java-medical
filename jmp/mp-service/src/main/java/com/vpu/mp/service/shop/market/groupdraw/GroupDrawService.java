@@ -1,21 +1,24 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.*;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupDraw;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.Put;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -44,6 +47,17 @@ import static org.apache.commons.lang3.StringUtils.substring;
 @Service
 @Slf4j
 public class GroupDrawService extends ShopBaseService {
+
+    @Autowired
+    public GroupDrawJoinUserService groupDrawUsers;
+    @Autowired
+    public GroupDrawOrderService groupDrawOrders;
+    @Autowired
+    public GroupDrawGroupService groupDrawGroups;
+    @Autowired
+    public GroupDrawInviteService groupDrawInvite;
+    @Autowired
+    public GroupDrawUserService groupDrawUser;
 
     /** 启用 **/
     private static final byte GROUP_DRAW_ENABLED = 1;
@@ -410,5 +424,39 @@ public class GroupDrawService extends ShopBaseService {
             result.put(entry.getKey(),entry.getValue());
         }
         return result;
+    }
+
+    /**
+     * 小程序装修拼团抽奖模块显示异步调用
+     * @param moduleGroupDraw
+     * @return
+     */
+    public ModuleGroupDraw getPageIndexGroupDraw(ModuleGroupDraw moduleGroupDraw){
+        GroupDrawRecord groupDraw = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(moduleGroupDraw.getGroupDrawId())).fetchAny();
+        if(groupDraw != null){
+            moduleGroupDraw.setName(groupDraw.getName());
+            moduleGroupDraw.setStatus(groupDraw.getStatus());
+            moduleGroupDraw.setStartTime(groupDraw.getStartTime());
+            moduleGroupDraw.setEndTime(groupDraw.getEndTime());
+            moduleGroupDraw.setToNumShow(groupDraw.getToNumShow());
+        }
+
+        if(groupDraw.getStatus().equals(ACTIVITY_STATUS_DISABLE)){
+            moduleGroupDraw.setState((byte)2);
+        }else if(groupDraw.getEndTime().before(DateUtil.getLocalDateTime())){
+            moduleGroupDraw.setState((byte)4);
+        }else if(groupDraw.getStartTime().after(DateUtil.getLocalDateTime())){
+            moduleGroupDraw.setState((byte)3);
+        }else{
+            moduleGroupDraw.setState((byte)0);
+            moduleGroupDraw.setSurplusSecond((groupDraw.getEndTime().getTime() - Calendar.getInstance().getTimeInMillis())/1000);
+        }
+
+        int joinUserNumber = groupDrawUsers.getJoinGroupNumByGroupDraw(moduleGroupDraw.getGroupDrawId());
+        if(groupDraw.getToNumShow() <= joinUserNumber){
+            moduleGroupDraw.setJoinUserNum(joinUserNumber);
+        }
+
+        return moduleGroupDraw;
     }
 }
