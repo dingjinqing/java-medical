@@ -289,18 +289,19 @@ public class ScoreService extends ShopBaseService {
 	 * 消耗积分记录
 	 * @param userId 用户id
 	 * @param score 消耗积分的绝对值
+	 * @param identityId 关联其他属性：例如order_sn
 	 * @return true操作成功，false无可用积分
 	 * @throws MpException
 	 */
-	public boolean useUserScore(Integer userId, int score,String orderSn) throws MpException {
+	public boolean useUserScore(Integer userId, int score,String identityId) throws MpException {
 	
 		while (true) {
 
 			/** 1 获取最早一条可用记录 */
 			UserScoreRecord userRecord = getEarlyUsableRecord(userId);
 			/** 更新 关联其他属性：例如order_sn */
-			if(!StringUtils.isBlank(orderSn)) {
-				userRecord.setIdentityId(userRecord.getIdentityId()+","+orderSn);
+			if(!StringUtils.isBlank(identityId)) {
+				userRecord.setIdentityId(userRecord.getIdentityId()+","+identityId);
 			}
 			if (userRecord == null) {
 				logger().info("暂无可用积分");
@@ -313,11 +314,9 @@ public class ScoreService extends ShopBaseService {
 				userRecord.setUsableScore(usableScore);
 				/** 3. 更新记录 */
 				updateUserScoreRecord(userRecord);
-
 				break;
 			} else {
 				score = score - userRecord.getUsableScore();
-
 				/** 4. 更新要插入的数据值,设置记录状态为已使用 并且 可用积分为0  */
 				userRecord.setStatus(USED_SCORE_STATUS);
 				userRecord.setUsableScore(0);
@@ -327,8 +326,6 @@ public class ScoreService extends ShopBaseService {
 					break;
 				}
 			}
-			
-
 		}
 		return true;
 	}
