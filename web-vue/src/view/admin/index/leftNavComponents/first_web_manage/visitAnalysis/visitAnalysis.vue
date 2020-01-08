@@ -1,9 +1,9 @@
 <template>
 
-  <div >
+  <div>
     111
   </div>
-</template>
+</div>
 
 <script>
 export default {
