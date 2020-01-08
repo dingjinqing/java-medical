@@ -242,11 +242,12 @@ public class AssetManagementService extends ShopBaseService {
             .limit(param.getExportRowStart() - 1, param.getExportRowEnd() - param.getExportRowStart() + 1)
             .fetchInto(AssetDetailExportVo.class);*/
 
-        List<AssetDetailExportVo> list = new ArrayList<AssetDetailExportVo>() {{
-            add(new AssetDetailExportVo() {{
-                setTradeTime(Timestamp.valueOf(LocalDateTime.now()));
-            }});
-        }};
+        AssetDetailExportVo vo = new AssetDetailExportVo();
+        vo.setTradeTime(Timestamp.valueOf(LocalDateTime.now()));
+        List<AssetDetailExportVo> list = new ArrayList<>();
+        list.add(vo);
+
+        logger().info("导出数据内容为：{}", Util.toJson(list));
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
         excelWriter.writeModelList(list, AssetDetailExportVo.class);
