@@ -12,11 +12,15 @@
 }
 .promotion-content{
   padding:0 20rpx;
+  max-height: 519rpx;
+  overflow-y: scroll;
 }
 .promotion-item{
   display: flex;
   padding: 20rpx 0;
   border-bottom:1rpx solid #eee;
+  align-items: center;
+  color: #666;
 }
 .promotion-tag{
   margin-right: 10rpx;
@@ -28,5 +32,13 @@
 .promotion-desc{
   flex: 1;
   word-break: break-all;
-  color: #666;
+}
+.right-arrow{
+  width: 20rpx;
+  height: 30rpx;
+  margin-left: 8rpx;
+}
+.right-arrow > .image{
+  width: 100%;
+  height: 100%;
 }

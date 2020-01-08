@@ -80,7 +80,25 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    actBarInfo: {}
+    actBarInfo: {},
+    actRuleText:{
+      1:{
+        title:'拼团规则',
+        ruleList:[
+          '选择商品，付款开团/参团',
+          '邀请好友,支付参团',
+          '满员发货，不满自动退款'
+        ]
+      },
+      3:{
+        title:'砍价规则',
+        ruleList:[
+          '点击下方“砍价拿”按钮开始',
+          '邀请好友来砍价',
+          '砍价成功，商品低价拿'
+        ]
+      }
+    }
   },
   /**
    * 生命周期函数--监听页面加载
@@ -351,6 +369,7 @@ global.wxPage({
       });
     }, 1000)
   },
+  // 格式化时间
   dateformats: function (micro_second) {
     // 秒数
     var second = Math.floor(micro_second);
@@ -362,9 +381,11 @@ global.wxPage({
     var sec = second % 60;
     return `${String(hr).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
   },
+  // 去拼团
   goGroup (e) {
     util.jumpLink(`pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`, 'navigateTo')
   },
+  // 分享弹窗
   share () {
     let activityData = {}
     let { goodsId, singleRealPrice: realPrice, singleLinePrice: linePrice, goodsImgs } = this.data.goodsInfo
@@ -411,6 +432,7 @@ global.wxPage({
   getMax (arr) {
     return Math.max(...arr);
   },
+  // 获取价格
   getPrice (data) {
     let { products, activity } = data
     if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
