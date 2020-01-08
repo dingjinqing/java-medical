@@ -21,7 +21,8 @@ export const en = {
   search_summary: ['Overview', 'Search Statistics'],
   // 概况 资产管理
   asset_summary: ['Overview', 'Asset Manage'],
-
+  // 概况 访问分析
+  analysis_visit: ['Overview', 'visit Analysis'],
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],
   // 会员管理 会员卡
