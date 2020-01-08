@@ -70,7 +70,8 @@ public enum RecordTradeEnum {
 	TYPE_POWER_MCARD_ACCOUNT(10),
 	/** 支付有礼*/
 	TYPE_CRASH_PAY_AWARD(11),
-	
+	/** 用户导入*/
+	USER_IMPORT(16),
 	/**----------------------------------------
 	 * 以下为交易内容为积分所对应的交易类型说明 trade_type
 	 ----------------------------------------*/

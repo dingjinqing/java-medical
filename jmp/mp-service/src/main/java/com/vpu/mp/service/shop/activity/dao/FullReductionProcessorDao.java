@@ -111,7 +111,33 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
      */
     public boolean checkGoods(MrkingStrategyVo activityInfo, OrderGoodsBo goods){
         if(ACT_TYPE_ALL_GOODS == activityInfo.getActType()) {
+            logger().info("满折满减：支持全部商品,活动id:{}", activityInfo.getId());
             return true;
+        }else{
+            if(CollectionUtils.isNotEmpty(activityInfo.getRecommendGoodsIds())){
+                if(activityInfo.getRecommendGoodsIds().contains(goods.getGoodsId())){
+                    logger().info("满折满减：指定商品满足,活动id:{}", activityInfo.getId());
+                    return true;
+                }
+            }
+            if(CollectionUtils.isNotEmpty(activityInfo.getRecommendCatIds())){
+                if(activityInfo.getRecommendCatIds().contains(goods.getCatId())){
+                    logger().info("满折满减：指定普通分类满足,活动id:{}", activityInfo.getId());
+                    return true;
+                }
+            }
+            if(CollectionUtils.isNotEmpty(activityInfo.getRecommendSortIds())){
+                if(activityInfo.getRecommendSortIds().contains(goods.getGoodsId())){
+                    logger().info("满折满减：指定商家分类满足,活动id:{}", activityInfo.getId());
+                    return true;
+                }
+            }
+            if(CollectionUtils.isNotEmpty(activityInfo.getRecommendBrandIds())){
+                if(activityInfo.getRecommendBrandIds().contains(goods.getGoodsId())){
+                    logger().info("满折满减：指定品牌满足,活动id:{}", activityInfo.getId());
+                    return true;
+                }
+            }
         }
         return false;
     }

@@ -1,42 +1,8 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.db.main.tables.records.DictCityRecord;
-import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelReader;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.IdentityUtils;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
-import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
-import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
-import com.vpu.mp.service.pojo.shop.member.userImp.*;
-import com.vpu.mp.service.shop.coupon.CouponMpService;
-import com.vpu.mp.service.shop.coupon.CouponService;
-import com.vpu.mp.service.shop.member.dao.CardDaoService;
-import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
-import com.vpu.mp.service.shop.user.user.UserService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.poifs.filesystem.FileMagic;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -46,11 +12,71 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.poifs.filesystem.FileMagic;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserImportRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelReader;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.IdentityUtils;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
+import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
+import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportActivePojo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.shop.coupon.CouponMpService;
+import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.member.dao.CardDaoService;
+import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
+import com.vpu.mp.service.shop.user.user.UserService;
 
 /**
  * 会员导入
@@ -69,7 +95,11 @@ public class UserImportService extends ShopBaseService {
 	private CouponMpService couponMpService;
 	@Autowired
 	private CouponService couponService;
-
+	@Autowired
+	private ScoreService scoreService;
+	@Autowired
+	private MemberCardService cardService;
+	
 	private static final String PHONEREG = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
 	private static final String USER_IMPORT_NOTICE = "user_import_notice";
 	private static final BigDecimal ZERO = new BigDecimal("0");
@@ -694,17 +724,41 @@ public class UserImportService extends ShopBaseService {
 		}
 		importUser.setIsActivate(ONE);
 		importUser.update();
-		grantCoupon(userId);
+		SetNoticeJson activationNotice = getActivationNotice();
+		grantCoupon(userId,activationNotice);
+		sendUserScore(userId,activationNotice);
 		return JsonResultCode.CODE_SUCCESS;
+	}
+	
+	
+
+	/**
+	 * 赠送积分
+	 * @param userId
+	 * @param activationNotice
+	 */
+	private void sendUserScore(Integer userId, SetNoticeJson activationNotice) {
+		String score = activationNotice.getScore();
+		if (StringUtils.isNotEmpty(score)) {
+			ScoreParam param = new ScoreParam();
+			// 写积分
+			param.setScore(Integer.valueOf(score));
+			param.setDesc("user_activate_score");
+			param.setRemarkCode(RemarkTemplate.ADMIN_USER_IMPORT.code);
+			try {
+				scoreService.updateMemberScore(param, 0, userId, RecordTradeEnum.USER_IMPORT.val(),RecordTradeEnum.UACCOUNT_RECHARGE.val());
+			} catch (MpException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	/**
 	 * 发放优惠券
 	 * @param userId
 	 */
-	private void grantCoupon(Integer userId) {
+	private void grantCoupon(Integer userId,SetNoticeJson activationNotice) {
 		List<Integer> userIds=new ArrayList<Integer>();
 		userIds.add(userId);
-		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
 		if(StringUtils.isEmpty(mrkingVoucherId)) {
 			return;
@@ -722,5 +776,21 @@ public class UserImportService extends ShopBaseService {
 		String[] array = list.toArray(new String[0]);
 		CouponGiveQueueParam newParam = new CouponGiveQueueParam(userIds, 0, array, BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
         saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+	}
+	//激活用户
+	public void activateUser(Integer userId, UserImportDetailRecord importUser) {
+		String cardId = importUser.getCardId();
+		List<Integer> userIdList=new ArrayList<Integer>();
+		userIdList.add(userId);
+		if (StringUtils.isNotEmpty(cardId)) {
+			String[] split = cardId.split(",");
+			List<Integer> cardIdList=new ArrayList<Integer>();
+			for (String string : split) {
+				cardIdList.add(Integer.valueOf(string));
+			}
+			AddMemberCardParam param = new AddMemberCardParam(userIdList, cardIdList);
+			logger().info("激活用户"+userId+"分配会员卡");
+			cardService.addCardForMember(param);
+		}
 	}
 }
