@@ -15,7 +15,9 @@ import java.util.List;
 @Getter
 @Setter
 public class GradeReduceMpVo extends GoodsActivityDetailMp {
-    /** 限时降价此次活动的结束时间,同时存在时不会显示预热 */
+    /**活动开始时间点,用于预热使用*/
+    private Timestamp nextStartTimestamp;
+    /**活动结束时间点*/
     private Timestamp currentEndTimestamp;
 
     /**是否限购 */

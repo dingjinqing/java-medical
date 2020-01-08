@@ -15,8 +15,8 @@ var userId = util.getCache('user_id')
 global.wxPage({
   data: {
     navbar: [
-      i18n.trans('page1.comment.comment'),
-      i18n.trans('page1.comment.reviewed')
+      i18n.trans('page1.comment.comment'),// 待评价
+      i18n.trans('page1.comment.reviewed')// 已评价
     ],
     page: 1,
     last_page: 1,
@@ -380,7 +380,7 @@ global.wxPage({
           item.show = false;
           item.src = src_down;
           item.commstar = item.commstar ? Number(item.commstar) : 5;
-          if (item.commentFlag === 1 && i == 0) {
+          if (item.commentFlag === 1 || i == 0) {
             item.show = true;
             item.src = src_up;
           }
