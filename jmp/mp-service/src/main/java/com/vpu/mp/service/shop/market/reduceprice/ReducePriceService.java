@@ -59,7 +59,6 @@ public class ReducePriceService extends ShopBaseService {
     GoodsService goodsService;
     @Autowired
     DomainConfig domainConfig;
-
     /**
      * 新建限时降价活动
      */

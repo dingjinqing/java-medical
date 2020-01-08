@@ -1,65 +1,65 @@
-  <view class="advimg-container">
-    <!-- 单列图 -->
-    <view class='once_img' wx:if='{{m.image_type == 0}}' style='margin-bottom:{{m.margin_bot}}rpx'>
-      <view class='each_once' wx:for='{{m.image_list}}' style='margin-bottom:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}"  wx:if='{{item.no_show != 1}}'>
-        <view style='position:relative;overflow:hidden'>
-          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
-          <view class='once_title' wx:if="{{item.title}}">
-            <text>{{item.title}}</text>
-          </view>
+<view class="advimg-container">
+  <!-- 单列图 -->
+  <view class='once_img' wx:if='{{m.image_type == 0}}' style='margin-bottom:{{m.margin_bot}}rpx'>
+    <view class='each_once' wx:for='{{m.image_list}}' style='margin-bottom:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink" data-url="{{item.link}}" wx:if='{{item.no_show != 1}}'>
+      <view style='position:relative;overflow:hidden'>
+        <image src='{{item.image}}!big?v=1' mode='widthFix' class="image" data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+        <view class='once_title' wx:if="{{item.title}}">
+          <text>{{item.title}}</text>
         </view>
       </view>
     </view>
-    <!-- 单列图结束 -->
-    <!-- 双列图 -->
-    <view class='two_img' wx:if='{{m.image_type == 1}}' style='margin-bottom:{{m.margin_bot}}rpx'>
-      <view class='each_two' wx:for='{{m.image_list}}' style='margin-bottom:{{m.image_space}}rpx;width:{{m.each_width}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}"  wx:if='{{item.no_show != 1}}'>
-        <view style='position:relative;overflow:hidden;'>
-          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
-          <view class='once_title' wx:if="{{item.title}}">
-            <text>{{item.title}}</text>
-          </view>
-        </view>
-      </view>
-    </view>
-    <!-- 双列图结束 -->
-    <!-- 横向（大） -->
-    <scroll-view scroll-x='true' class='slide_big' wx:if='{{m.image_type == 2}}' style='margin-bottom:{{m.margin_bot}}rpx'>
-      <view class='each_big' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}" wx:if='{{item.no_show != 1}}'>
-        <view class="view" style='position:relative;overflow:hidden'>
-          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
-          <view class='once_title' wx:if="{{item.title}}">
-            <text>{{item.title}}</text>
-          </view>
-        </view>
-      </view>
-    </scroll-view>
-    <!-- 横向（大）结束 -->
-    <!-- 横向（小） -->
-    <scroll-view scroll-x='true' class='slide_small' wx:if='{{m.image_type == 3}}' style='margin-bottom:{{m.margin_bot}}rpx'>
-      <view class='each_small' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}" wx:if='{{item.no_show != 1}}'>
-        <view style='position:relative;overflow:hidden;max-height:100%'>
-          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image"  data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
-          <view class='once_title' wx:if="{{item.title}}">
-            <text>{{item.title}}</text>
-          </view>
-        </view>
-      </view>
-    </scroll-view>
-    <!-- 横向（小）结束 -->
-    <!-- 横向（导航） -->
-    <view wx:if='{{m.image_type == 4}}' style='margin-bottom:{{m.margin_bot}}rpx'>
-      <view class='nav_title' wx:if='{{m.module_title != ""}}'>{{m.module_title}}</view>
-      <scroll-view scroll-x='true' class='slide_nav'>
-        <view class='each_nav' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink"  data-url="{{item.link}}">
-          <view style='position:relative;overflow:hidden;max-height:100%'>
-            <image src='{{item.image}}!big?v=1' mode='widthFix' class="image" data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
-            <view class='once_title' wx:if="{{item.title}}">
-              <text>{{item.title}}</text>
-            </view>
-          </view>
-        </view>
-      </scroll-view>
-    </view>
-    <!-- 横向（导航）结束 -->
   </view>
+  <!-- 单列图结束 -->
+  <!-- 双列图 -->
+  <view class='two_img' wx:if='{{m.image_type == 1}}' style='margin-bottom:{{m.margin_bot}}rpx'>
+    <view class='each_two' wx:for='{{m.image_list}}' style='margin-bottom:{{m.image_space}}rpx;width:{{m.each_width}}rpx' wx:key='key' catchtap="bindJumpLink" data-url="{{item.link}}" wx:if='{{item.no_show != 1}}'>
+      <view style='position:relative;overflow:hidden;'>
+        <image src='{{item.image}}!big?v=1' mode='widthFix' class="image" data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+        <view class='once_title' wx:if="{{item.title}}">
+          <text>{{item.title}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 双列图结束 -->
+  <!-- 横向（大） -->
+  <scroll-view scroll-x='true' class='slide_big' wx:if='{{m.image_type == 2}}' style='margin-bottom:{{m.margin_bot}}rpx'>
+    <view class='each_big' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink" data-url="{{item.link}}" wx:if='{{item.no_show != 1}}'>
+      <view class="view" style='position:relative;overflow:hidden'>
+        <image src='{{item.image}}!big?v=1' mode='widthFix' class="image" data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+        <view class='once_title' wx:if="{{item.title}}">
+          <text>{{item.title}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <!-- 横向（大）结束 -->
+  <!-- 横向（小） -->
+  <scroll-view scroll-x='true' class='slide_small' wx:if='{{m.image_type == 3}}' style='margin-bottom:{{m.margin_bot}}rpx'>
+    <view class='each_small' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink" data-url="{{item.link}}" wx:if='{{item.no_show != 1}}'>
+      <view style='position:relative;overflow:hidden;max-height:100%'>
+        <image src='{{item.image}}!big?v=1' mode='widthFix' class="image" data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+        <view class='once_title' wx:if="{{item.title}}">
+          <text>{{item.title}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <!-- 横向（小）结束 -->
+  <!-- 横向（导航） -->
+  <view wx:if='{{m.image_type == 4}}' style='margin-bottom:{{m.margin_bot}}rpx'>
+    <view class='nav_title' wx:if='{{m.module_title != ""}}'>{{m.module_title}}</view>
+    <scroll-view scroll-x='true' class='slide_nav'>
+      <view class='each_nav' wx:for='{{m.image_list}}' style='margin-right:{{m.image_space}}rpx' wx:key='key' catchtap="bindJumpLink" data-url="{{item.link}}">
+        <view style='position:relative;overflow:hidden;max-height:100%'>
+          <image src='{{item.image}}!big?v=1' mode='widthFix' class="image" data-src='{{item.image}}' data-skip='{{m.is_preview != 1 || item.link}}' bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+          <view class='once_title' wx:if="{{item.title}}">
+            <text>{{item.title}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  <!-- 横向（导航）结束 -->
+</view>
