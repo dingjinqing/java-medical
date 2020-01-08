@@ -64,9 +64,9 @@ public class RecordTradeService extends ShopBaseService{
 			ScoreData scoreData = (ScoreData)data;
 			ScoreParam scoreParam = new ScoreParam();
 			BeanUtils.copyProperties(scoreData, scoreParam);
-			scoreParam.setUserId(new Integer[] {scoreData.getUserId()});
+			scoreParam.setUserId(scoreData.getUserId());
 			String language = scoreData.getLanguage();
-			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(),scoreData.getUserId(), scoreData.getTradeType(), scoreData.getTradeFlow());
+			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(), scoreData.getTradeType(), scoreData.getTradeFlow());
 		}else if(data instanceof UserCardData) {
 			logger().info("会员卡余额，兑换次数，消费次数变动 ");
 			UserCardData userCardData = (UserCardData)data;

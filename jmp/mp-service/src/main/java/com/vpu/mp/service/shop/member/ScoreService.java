@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.member;
 
 
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.TRADES_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
@@ -9,7 +10,6 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_SCORE;
 import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_NOW;
 import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_YMD;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
@@ -45,7 +46,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
@@ -86,46 +86,96 @@ public class ScoreService extends ShopBaseService {
 	/**
 	 *   创建用户积分表,增加，消耗用户积分
 	 * @param param 积分变动相关数据
-	 * @param subAccountId 操作员id
-	 * @param userId 用户id
-	 * @param tradeType  交易类型说明 如  微信支付类型{@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.WX_PAY }
-	 * @param tradeFlow  资金流向类型  如收入 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
+	 * @param adminUser 操作员id
+	 * @param tradeType  交易类型说明  类型{@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum }
+	 * @param tradeFlow  资金流向类型   {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum }
 	 * @return JsonResultCode
 	 * @throws MpException 
 	 */
 	
-	public void updateMemberScore(ScoreParam param, Integer adminUser,Byte tradeType,
-			Byte tradeFlow) throws MpException{
-		if(param.getUserId() != null) {
-			for(Integer userId: param.getUserId()) {
-				updateMemberScore(param,adminUser,userId,tradeType,tradeFlow);
-			}
-		}
-	}
-	
-	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
-			Byte tradeFlow) throws MpException {
 
-		/**  1. 校验userId是否存在数据库中 */
-		if (userId <= 0) {
-			throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
-		}
-		/** 1.1 查询用户 */
-		UserRecord dbUser = member.getUserRecordById(userId);
+	public void updateMemberScore(ScoreParam param, Integer adminUser,Byte tradeType,
+			Byte tradeFlow) throws MpException {
+		UserScoreRecord userScoreRecord = populateUserScoreRecord(param, adminUser);
+		UserRecord dbUser = member.getUserRecordById(param.getUserId());
 
 		if (dbUser == null) {
 			throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 		}
-
-		/** 2. 验证积分与数据库保持一致，批量修改时为最小值，即大于等于 */
-		//Integer scoreDis = param.getScoreDis();
 		
-		/** -目前会员存在数据录中的积分 */
-		Integer dbScore = dbUser.getScore();
+		try {
+			this.transaction(()->{
+				Integer score = param.getScore();
+				if (score < 0) {
+					// 消耗积分
+					if(Math.abs(score)>dbUser.getScore()) {
+						logger().info("消耗的积分超出可用积分");
+						throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
+					}
+					
+					if(param.getIsFromOverdue()==null || 
+							NumberUtils.BYTE_ZERO.equals(param.getIsFromOverdue())) {
+						/**过期不消耗积分 */
+						boolean result = useUserScore(param.getUserId(), Math.abs(score),
+															param.getOrderSn()!=null?param.getOrderSn():"");
+						if(!result) {
+							logger().info("消耗积分异常");
+						}
+					}
+					userScoreRecord.setStatus(USED_SCORE_STATUS);
+				}else if(param.getIsFromRefund() !=null &&
+							NumberUtils.BYTE_ONE.equals(param.getIsFromRefund())) {
+					// 退款处理积分
+					userScoreRecord.setStatus(REFUND_SCORE_STATUS);
+					UserScoreRecord userScore = getScoreRecordByOrderSn(param.getUserId(),param.getOrderSn());
+					if(userScore != null) {
+						userScoreRecord.setScore(Math.abs(userScore.getScore()));
+						userScoreRecord.setUsableScore(Math.abs(userScore.getScore()));
+						userScoreRecord.setExpireTime(userScore.getExpireTime());
+					}
+				}else {
+					userScoreRecord.setStatus(NO_USE_SCORE_STATUS);
+				}
+				
+				userScoreRecord.insert();
+				
+			});
+			
+				//更新用户积分
+				Integer totalScore = getTotalAvailableScoreById(param.getUserId());
+				updateUserScore(param.getUserId(), totalScore);
+				
+				// TODO CRM
+				
+				insertTradesRecord(param, tradeType, tradeFlow);
+				
+				String userGrade = member.card.getUserGrade(param.getUserId());
+				if(!CardConstant.LOWEST_GRADE.equals(userGrade)) {
+					try {
+						// 升级
+						userCardService.updateGrade(param.getUserId(),null, UPGRADE);
+					} catch (MpException e) {
+						logger().info("没有可升级的会员卡");
+					}
+				}
+				
+				if (adminUser == 0) {
+					//TODO 等待luguangyao bug修复
+//					String strScore = score>=0? "+"+score:""+score;
+//					saas().getShopApp(getShopId()).record.insertRecord(
+//							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
+//							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
+				}
+			
+		}catch(DataAccessException e) {
+			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
+			throw e;
+		}
+	}
 
-		/** 3. 准备数据  */
 
-		/** 3.1 处理备注  */
+	private UserScoreRecord populateUserScoreRecord(ScoreParam param, Integer adminUser) {
+		
 		if (param.getRemarkCode() == null) {
 			if(StringUtils.isBlank(param.getRemarkData())) {
 				// 默认管理员操作
@@ -136,109 +186,59 @@ public class ScoreService extends ShopBaseService {
 			}
 		}
 		
-		/** 3.2 获取积分流水号  */
-		String flowOn = generateFlowNo();
-
-		/** 3.3 可用剩余积分  */
-		/** -本条积分记录的积分变动数额 */
-		Integer score = param.getScore();
-		/** -本条积分记录可用的数额 */
-		Integer usableScore = score > 0 ? score : 0;
-		String orderSn = param.getOrderSn() == null ? "" : param.getOrderSn();
-		
-		try {
-			this.transaction(()->{
-				logger().info("开始执行事务");
-				try {
-					/** 4 如果时负数，则消耗积分 */
-					if (score < 0) {
-						if(Math.abs(score)>dbScore) {
-							logger().info("消耗的积分超出可用积分");
-							throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
-						}
-						/** -消耗积分 */
-						//useUserScore(userId, Math.abs(score), orderSn);
-						useUserScore(userId, Math.abs(score),orderSn);
-					}
-				}catch(MpException e) {
-					logger().info("正在处理异常");
-					throw e;
-				}
-				
-
-				logger().info("添加积分记录");
-				UserScoreRecord userScoreRecord = db().newRecord(USER_SCORE);
-				/** 5.1 填充数据 */
-				//TODO 还有一些数据不知道从哪些业务传递过来的如goods_id,desc,identity_id 
-				userScoreRecord.setScore(score);
-				userScoreRecord.setUserId(userId);
-				userScoreRecord.setRemarkId(String.valueOf(param.getRemarkCode()));
-				userScoreRecord.setRemarkData(param.getRemarkData());
-				userScoreRecord.setAdminUser(String.valueOf(subAccountId));
-				userScoreRecord.setOrderSn(orderSn);
-				userScoreRecord.setFlowNo(flowOn);
-				userScoreRecord.setUsableScore(usableScore);
-				logger().info(String.valueOf(param.getScoreStatus()));
-				userScoreRecord.setStatus(param.getScoreStatus());
-				userScoreRecord.setExpireTime(param.getExpiredTime());
-				
-				/** -判断是否为退款积分 */
-				if(param.getIsFromRefund() !=null && IS_FROM_REFUND_Y.val().equals(param.getIsFromRefund())) {
-					logger().info("正在处理退款积分");
-					userScoreRecord.setStatus(REFUND_SCORE_STATUS);
-					UserScoreRecord userScore = getScoreRecordByOrderSn(userId,orderSn);
-					if(userScore != null) {
-						userScoreRecord.setScore(Math.abs(userScore.getScore()));
-						userScoreRecord.setUsableScore(Math.abs(userScore.getScore()));
-						userScoreRecord.setExpireTime(userScore.getExpireTime());
-					}
-				}else if(score < 0) {
-					userScoreRecord.setStatus(USED_SCORE_STATUS);
-				}else {
-					userScoreRecord.setStatus(NO_USE_SCORE_STATUS);
-				}
-			
-				userScoreRecord.insert();
-		
-				
-				/** 6. 更新用户积分 */
-				/** 6.1 获取操作后的积分 */
-				Integer totalScore = getTotalAvailableScoreById(userId);
-				/** 6.2 更新用户积分 */
-				updateUserScore(userId, totalScore);
-				
-				
-				/** 7. 记录更新record action */
-				/** 7.1 准备数据 */
-				TradesRecordRecord tradesRecord=new TradesRecordRecord();
-			
-				tradesRecord.setTradeTime(DateUtil.getLocalDateTime());
-				tradesRecord.setTradeNum(BigDecimal.valueOf(Math.abs(score)));
-				tradesRecord.setTradeSn(orderSn);
-				tradesRecord.setUserId(userId);
-				/** -这是更新积分的明细所以交易内容为积分 */
-				tradesRecord.setTradeContent(TRADE_CONTENT_SCORE.val());
-				tradesRecord.setTradeType(tradeType);
-				tradesRecord.setTradeFlow(tradeFlow);
-				tradesRecord.setTradeStatus(tradeFlow);
-				
-				/** -交易记录表-记录交易的数据信息  */
-				insertTradesRecord(tradesRecord);
-				
-				
-				//TODO  admin 操作记录
-				if (subAccountId == 0) {
-					String strScore = score>=0? "+"+score:""+score;
-					saas().getShopApp(getShopId()).record.insertRecord(
-							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
-							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
-				}
-				});
-		}catch(DataAccessException e) {
-			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
-			throw e;
+		String orderSn="";
+		if( param.getChangeWay()==null || (
+				param.getChangeWay().equals(60)
+				|| param.getChangeWay().equals(10))) {
+			orderSn = param.getOrderSn();
 		}
-		return ;
+		
+		UserScoreRecord userScoreRecord = db().newRecord(USER_SCORE);
+		userScoreRecord.setAdminUser(String.valueOf(adminUser));
+		userScoreRecord.setCreateTime(DateUtil.getLocalDateTime());
+		userScoreRecord.setFlowNo(generateFlowNo());
+		userScoreRecord.setUsableScore(param.getScore()>0?param.getScore():0);
+		// userScoreRecord.setScoreProportion(this.saas.getShopApp(getShopId()).score.getScoreProportion());
+		
+		if(param.getIsFromCrm()!=null && 
+				NumberUtils.BYTE_ZERO.equals(param.getIsFromCrm())) {
+			// TODO CRM
+		}else {
+			userScoreRecord.setExpireTime(param.getExpiredTime());
+		}
+		userScoreRecord.setScore(param.getScore());
+		userScoreRecord.setUserId(param.getUserId());
+		userScoreRecord.setRemarkId(String.valueOf(param.getRemarkCode()));
+		userScoreRecord.setRemarkData(param.getRemarkData());
+		if(orderSn != null) {
+			userScoreRecord.setOrderSn(orderSn);
+		}
+		userScoreRecord.setStatus(param.getScoreStatus());
+		if(param.getDesc() != null) {
+			userScoreRecord.setDesc(param.getDesc());
+		}
+		if(param.getGoodsId() != null) {
+			userScoreRecord.setGoodsId(param.getGoodsId());
+		}
+		userScoreRecord.setIdentityId(param.getIdentityId());
+		return userScoreRecord;
+	}
+
+
+	private void insertTradesRecord(ScoreParam param, Byte tradeType, Byte tradeFlow) {
+		TradesRecordRecord tradesRecord= db().newRecord(TRADES_RECORD);
+		tradesRecord.setTradeTime(DateUtil.getLocalDateTime());
+		tradesRecord.setTradeNum(BigDecimal.valueOf(Math.abs(param.getScore())));
+		tradesRecord.setTradeSn(param.getOrderSn()!=null?param.getOrderSn():"");
+		tradesRecord.setUserId(param.getUserId());
+		/** -这是更新积分的明细所以交易内容为积分 */
+		tradesRecord.setTradeContent(TRADE_CONTENT_SCORE.val());
+		tradesRecord.setTradeType(tradeType);
+		tradesRecord.setTradeFlow(tradeFlow);
+		tradesRecord.setTradeStatus(tradeFlow);
+		
+		/** -交易记录表-记录交易的数据信息  */
+		insertTradesRecord(tradesRecord);
 	}
 	
 
@@ -289,46 +289,41 @@ public class ScoreService extends ShopBaseService {
 	 * 消耗积分记录
 	 * @param userId 用户id
 	 * @param score 消耗积分的绝对值
+	 * @param identityId 关联其他属性：例如order_sn
 	 * @return true操作成功，false无可用积分
-	 * @throws MpException
 	 */
-	public boolean useUserScore(Integer userId, int score,String orderSn) throws MpException {
-	
+	public boolean useUserScore(Integer userId, int score,String identityId) {
 		while (true) {
-
 			/** 1 获取最早一条可用记录 */
 			UserScoreRecord userRecord = getEarlyUsableRecord(userId);
-			/** 更新 关联其他属性：例如order_sn */
-			if(!StringUtils.isBlank(orderSn)) {
-				userRecord.setIdentityId(userRecord.getIdentityId()+","+orderSn);
-			}
+			
 			if (userRecord == null) {
 				logger().info("暂无可用积分");
-				throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
+				return false;
 			}
 
+			/** 更新 关联其他属性：例如order_sn */
+			if(!StringUtils.isBlank(identityId)) {
+				userRecord.setIdentityId(userRecord.getIdentityId()+","+identityId);
+			}
+			
 			/** 2. 处理消耗score值 */
 			if (score < userRecord.getUsableScore()) {
 				int usableScore = userRecord.getUsableScore() - score;
 				userRecord.setUsableScore(usableScore);
 				/** 3. 更新记录 */
 				updateUserScoreRecord(userRecord);
-
 				break;
 			} else {
-				score = score - userRecord.getUsableScore();
-
 				/** 4. 更新要插入的数据值,设置记录状态为已使用 并且 可用积分为0  */
 				userRecord.setStatus(USED_SCORE_STATUS);
 				userRecord.setUsableScore(0);
-
 				updateUserScoreRecord(userRecord);
+				score = score - userRecord.getUsableScore();
 				if (score <= 0) {
 					break;
 				}
 			}
-			
-
 		}
 		return true;
 	}
@@ -500,6 +495,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param tradeType
 	 * @param tradeFlow
 	 */
+	@Deprecated
 	public Integer addUserScore(UserScoreVo data, String adminUser, Byte tradeType, Byte tradeFlow) {
 		// 生成新的充值记录
 		// 验证现有积分跟提交的积分是否一致
