@@ -190,6 +190,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
             GradeReduceMpVo gradeReduceMpVo =new GradeReduceMpVo();
             gradeReduceMpVo.setActivityType(BaseConstant.ACTIVITY_TYPE_GRADE_REDUCE_PRICE);
             gradeReduceMpVo.setActState(reduceMpVo.getActState());
+            gradeReduceMpVo.setNextStartTimestamp(reduceMpVo.getNextStartTimestamp());
             gradeReduceMpVo.setCurrentEndTimestamp(reduceMpVo.getCurrentEndTimestamp());
             gradeReduceMpVo.setIsLimit(reduceMpVo.getIsLimit());
             gradeReduceMpVo.setLimitAmount(reduceMpVo.getLimitAmount());
