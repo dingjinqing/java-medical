@@ -344,7 +344,7 @@ public class GoodsCommentService extends ShopBaseService {
           return db().insertInto(
               COMMENT_GOODS,
               COMMENT_GOODS.USER_ID,
-              COMMENT_GOODS.SHOP_ID,
+//              COMMENT_GOODS.SHOP_ID,
               COMMENT_GOODS.GOODS_ID,
               COMMENT_GOODS.BOGUS_USERNAME,
               COMMENT_GOODS.BOGUS_USER_AVATAR,
@@ -358,7 +358,7 @@ public class GoodsCommentService extends ShopBaseService {
               COMMENT_GOODS.FLAG)
               .values(
                   NumberUtils.INTEGER_ZERO,
-                  getShopId(),
+//                  getShopId(),
                   goodsCommentAddComm.getGoodsId(),
                   goodsCommentAddComm.getBogusUsername(),
                   goodsCommentAddComm.getBogusUserAvatar(),
@@ -399,7 +399,7 @@ public class GoodsCommentService extends ShopBaseService {
           db().select(ORDER_INFO.ORDER_SN)
               .from(ORDER_INFO)
               .where(ORDER_INFO.USER_ID.eq(param.getUserId()))
-              .and(ORDER_INFO.SHOP_ID.eq(getShopId()))
+//              .and(ORDER_INFO.SHOP_ID.eq(getShopId()))
               .and(
                   ORDER_INFO
                       .ORDER_STATUS
@@ -425,7 +425,7 @@ public class GoodsCommentService extends ShopBaseService {
                 .leftJoin(ORDER_INFO)
                 .on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
                 .where(ORDER_GOODS.ORDER_SN.eq(orderSnTemp))
-                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
+//                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
                 .and(ORDER_GOODS.COMMENT_FLAG.eq(param.getCommentFlag()))
                 .and(ORDER_GOODS.GOODS_NUMBER.greaterThan(ORDER_GOODS.RETURN_NUMBER))
                 .fetchInto(CommentListVo.class);
@@ -464,7 +464,7 @@ public class GoodsCommentService extends ShopBaseService {
                         .eq(COMMENT_GOODS_ANSWER.COMMENT_ID)
                         .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(BYTE_ZERO)))
                 .where(ORDER_GOODS.ORDER_SN.eq(orderSnTemp))
-                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
+//                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
                 .and(ORDER_GOODS.COMMENT_FLAG.eq(param.getCommentFlag()))
                 .and(ORDER_GOODS.GOODS_NUMBER.greaterThan(ORDER_GOODS.RETURN_NUMBER))
                 .fetchInto(CommentListVo.class);
@@ -690,7 +690,7 @@ public class GoodsCommentService extends ShopBaseService {
     // 为指定商品添加评论
     db().insertInto(
             COMMENT_GOODS,
-            COMMENT_GOODS.SHOP_ID,
+//            COMMENT_GOODS.SHOP_ID,
             COMMENT_GOODS.USER_ID,
             COMMENT_GOODS.GOODS_ID,
             COMMENT_GOODS.ORDER_SN,
@@ -700,7 +700,7 @@ public class GoodsCommentService extends ShopBaseService {
             COMMENT_GOODS.ANONYMOUSFLAG,
             COMMENT_GOODS.FLAG)
         .values(
-            getShopId(),
+//            getShopId(),
             param.getUserId(),
             param.getGoodsId(),
             param.getOrderSn(),
@@ -763,7 +763,7 @@ public class GoodsCommentService extends ShopBaseService {
         scoreService.updateMemberScore(
             new ScoreParam() {
               {
-                setUserId(userIdArray);
+                setUserId(param.getUserId());
                 setScore(Integer.valueOf(param.getAward()));
                 setScoreStatus(BYTE_ZERO);
                 setDesc("score");
@@ -779,7 +779,7 @@ public class GoodsCommentService extends ShopBaseService {
       // 活动奖励2：赠送优惠券
       else if (param.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
         // 给当前用户赠送优惠券
-          Integer shopId = getShopId();
+//          Integer shopId = getShopId();
           CouponGiveQueueParam giveCoupon = new CouponGiveQueueParam(){{
               setActId(1);
               setGetSource(GET_SOURCE);
