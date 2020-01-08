@@ -606,8 +606,8 @@ global.wxPage({
     var that = this;
     util.api('/api/wxapp/wxdecrypt', function (res) {
       if (res.error == 0) {
-        util.setCache("mobile", res.content.phoneNumber);
-        mobile = res.content.phoneNumber;
+        util.setCache("mobile", res.content);
+        mobile = res.content;
         that.setData({
           mobile: mobile,
         })
