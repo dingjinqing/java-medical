@@ -17,6 +17,7 @@
     "v-pinintegration": "../pinintegration/index",
     "v-map": "../map/index",
     "v-official-accounts": "../official-accounts/index",
-    "v-video": "../video/index"
+    "v-video": "../video/index",
+    "v-title": "../title/index"
   }
 }
