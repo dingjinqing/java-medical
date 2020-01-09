@@ -1104,6 +1104,22 @@ CREATE TABLE `b2c_gift` (
 )COMMENT='赠品活动';
 
 
+CREATE TABLE `b2c_sort` (
+  `sort_id` int(11) NOT NULL,
+  `sort_name` varchar(90)  NOT NULL DEFAULT '',
+  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '分类父节点，0表示一级',
+  `level` smallint(5) NOT NULL DEFAULT '0',
+  `has_child` tinyint(1) NOT NULL DEFAULT '0',
+  `sort_img` varchar(191)  NOT NULL DEFAULT '' COMMENT '一级分类是头图 其他为分类图标',
+  `img_link` varchar(191)  NOT NULL DEFAULT '' COMMENT '图标或者头图链接',
+  `first` smallint(2) NOT NULL DEFAULT '0' COMMENT '优先级',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0普通商家分类 1推荐分类',
+  `sort_desc` varchar(191)  NOT NULL DEFAULT '',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`sort_id`),
+  KEY `parent_id` (`parent_id`)
+)COMMENT='店铺自定义分类';
 
 CREATE TABLE `b2c_gift_product` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1399,6 +1415,37 @@ CREATE TABLE `b2c_goods_opai_spec` (
 )COMMENT='欧派记录价格变化表';
 
 
+CREATE TABLE `b2c_user_detail` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
+  `username` varchar(100)  DEFAULT NULL COMMENT '昵称',
+  `sex` char(5)  DEFAULT NULL COMMENT '性别：女f,男m',
+  `birthday_year` int(4) DEFAULT NULL COMMENT '生日年份',
+  `birthday_month` int(2) DEFAULT NULL,
+  `birthday_day` int(2) DEFAULT NULL,
+  `email` varchar(100)  DEFAULT NULL COMMENT '邮箱',
+  `real_name` varchar(50)  DEFAULT NULL COMMENT '真实姓名',
+  `province_code` mediumint(10) DEFAULT NULL COMMENT '所在地省编号',
+  `city_code` mediumint(10) DEFAULT NULL COMMENT '所在地市编号',
+  `district_code` mediumint(10) DEFAULT NULL COMMENT '所在地区编号',
+  `address` varchar(120)  DEFAULT NULL COMMENT '所在地',
+  `marital_status` tinyint(1) DEFAULT NULL COMMENT '婚姻状况：1未婚，2已婚，3保密',
+  `monthly_income` int(8) DEFAULT NULL,
+  `cid` varchar(18)  DEFAULT NULL COMMENT '身份证号码',
+  `education` tinyint(1) DEFAULT NULL COMMENT '教育程度',
+  `industry_info` tinyint(1) DEFAULT NULL COMMENT '所在行业',
+  `big_image` varchar(191)  DEFAULT NULL COMMENT '头像',
+  `bank_user_name` varchar(100)  DEFAULT NULL COMMENT '开户行姓名',
+  `shop_bank` varchar(100)  DEFAULT NULL COMMENT '开户行',
+  `bank_no` varchar(32)  DEFAULT NULL COMMENT '开户行卡号',
+  `withdraw_passwd` varchar(64)  DEFAULT NULL COMMENT '提现密码验证',
+  `user_avatar` varchar(191)  NOT NULL DEFAULT '/image/admin/head_icon.png' COMMENT '用户头像',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`)
+)COMMENT='用户详情表';
 
 CREATE TABLE `b2c_goods_overview_summary` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1537,6 +1584,17 @@ CREATE TABLE `b2c_goods_user_summary` (
 ) ROW_FORMAT=COMPACT;
 
 
+CREATE TABLE `b2c_user_rebate_price` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品id',
+  `product_id` int(11) NOT NULL DEFAULT '0' COMMENT '产品id',
+  `advice_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分销价格',
+  `expire_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '过期时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`)
+)COMMENT='分销改价价格表';
 
 CREATE TABLE `b2c_grade_prd` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

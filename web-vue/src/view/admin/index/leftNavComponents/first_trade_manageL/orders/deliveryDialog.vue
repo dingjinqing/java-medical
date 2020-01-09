@@ -3,7 +3,7 @@
     title="填入快递信息发货"
     :visible.sync="showDelivery"
     custom-class="custom"
-    width="620px"
+    width="640px"
   >
     <div
       class="delivery-info"
@@ -71,7 +71,7 @@
             <template slot-scope="scope">
               <div class="goods_info">
                 <img
-                  :src="$imageHost+'/image/admin/icon_jia.png'"
+                  :src="$imageHost+'/'+scope.row.goodsImg"
                   alt=""
                 >
                 <div class="right_info">

@@ -5,6 +5,7 @@ import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreSetParam;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月13日
@@ -41,7 +43,7 @@ public class AdminMemberScoreController extends AdminBaseController {
 	 * @return JsonResult
 	 */
 	@PostMapping("/api/admin/member/score/update")
-	public JsonResult updateMemberScore(@RequestBody @Valid ScoreParam param) {
+	public JsonResult updateMemberScore(@RequestBody @Valid ScoreSetParam param) {
 		/** -判断修改后的值不能小于零 */
 		Integer score = param.getScore();
 		/** -最小值 */
@@ -68,15 +70,16 @@ public class AdminMemberScoreController extends AdminBaseController {
 			}else {
 				param.setScoreStatus(USED_SCORE_STATUS);
 			}
-			
-			/** 获取语言 用于国际化 */
-			String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
-			
+
 			for(int i=0;i<userNumber;i++) {
 				Integer userId = arrayUserId[i];
 					/** -处理积分变动产生的异常 */
 					try {
-						shop().member.score.updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow);
+						
+						ScoreParam scoreParam = new ScoreParam();
+						BeanUtils.copyProperties(param, scoreParam);
+						scoreParam.setUserId(userId);
+						shop().member.score.updateMemberScore(scoreParam,subAccountId,tradeType,tradeFlow);
 					} catch (MpException e) {
 						logger().info("积分更新失败");
 						return fail(e.getErrorCode().getMessage());

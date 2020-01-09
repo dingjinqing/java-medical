@@ -43,9 +43,10 @@
             {{$t('commodity.noData')}}
           </div>
           <!--有商品-->
-          <ul
+          <div :style="data.goods_module_bg==='1'?`;backgroundColor:${data.goods_bg_color}`:''">
+<ul
             v-if="goodsFlag"
-            :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''+data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:''"
+            :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''"
           >
             <li
               v-for="(item,index) in data.goodsListData"
@@ -158,10 +159,10 @@
                       >{{item.goodsName}}</div>
                       <div
                         class="activityContainer"
-                        :style="(data.col_type==='4'||data.col_type==='1')?'display:flex':''"
+                        :style="data.col_type==='4'?'display:flex':data.col_type==='1'?'display:flex;margin-top:0':(data.col_type==='2'||data.col_type==='3')?'margin-top:0;height:37px;':'display:flex;margin-top:0'"
                       >
                         <div
-                          :style="((data.col_type==='4'||data.col_type==='1')&&indexC===1)?'margin-left:5px':'margin-top:5px'"
+                          :style="((data.col_type==='4'||data.col_type==='1'||data.col_type==='0')&&indexC===1)?'margin-left:5px':'margin-top:5px'"
                           v-for="(itemC,indexC) in item.goodsActivities"
                           :key="indexC"
                           class="activitySpan"
@@ -220,6 +221,8 @@
               </div>
             </li>
           </ul>
+          </div>
+
         </div>
 
       </div>

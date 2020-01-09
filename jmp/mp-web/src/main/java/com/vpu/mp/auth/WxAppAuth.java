@@ -144,8 +144,9 @@ public class WxAppAuth {
 				param2.setScore(Integer.parseInt(scoreNum.getV()));
 				param2.setRemarkCode(RemarkTemplate.LOGIN_EVERY_DAY_SEND.code);
 				param2.setExpiredTime(shopApp.member.score.getScoreExpireTime());
+				param2.setUserId(user.getUserId());
 				try {
-					shopApp.member.score.updateMemberScore(param2, 0, user.getUserId(), RecordTradeEnum.TYPE_SCORE_LOGIN.val(), RecordTradeEnum.UACCOUNT_CONSUMPTION.val());
+					shopApp.member.score.updateMemberScore(param2, 0, RecordTradeEnum.TYPE_SCORE_LOGIN.val(), RecordTradeEnum.UACCOUNT_CONSUMPTION.val());
 				} catch (MpException e) {
 					log.info("每日登录送积分失败");
 					log.info(e.getMessage(),e);

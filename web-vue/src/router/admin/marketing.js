@@ -296,18 +296,18 @@ const routes = [
       )
   },
   // // 组团瓜分积分
-  // {
-  //   path: '/admin/home/main/divideIntegral',
-  //   name: 'pin_integration',
-  //   meta: {
-  //     crumbTitle: 'router.pin_integration',
-  //     meta: 'first_market_manage'
-  //   },
-  //   component: () =>
-  //     import(
-  //       '@/view/admin/index/leftNavComponents/first_market_manage/divideIntegral/divideIntegral'
-  //     )
-  // },
+  {
+    path: '/admin/home/main/divideIntegral',
+    name: 'pin_integration',
+    meta: {
+      crumbTitle: 'router.pin_integration',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/divideIntegral/divideIntegral'
+      )
+  },
   // 普通优惠券
   {
     path: '/admin/home/main/ordinaryCoupon',
@@ -609,22 +609,22 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDraw'
-      )
-    // children: [
-    //   {
-    //     path: '/admin/home/main/luckyDraw/luckyDrawAdd',
-    //     name: 'lucky_draw_add',
-    //     meta: {
-    //       crumbTitle: 'router.lottery_activity',
-    //       meta: 'first_market_manage',
-    //       category: 'first_market_manage'
-    //     },
-    //     component: () =>
-    //       import(
-    //         '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDrawAdd'
-    //       )
-    //   }
-    // ]
+      ),
+    children: [
+      {
+        path: '/admin/home/main/luckyDraw/luckyDrawAdd',
+        name: 'lucky_draw_add',
+        meta: {
+          crumbTitle: 'router.lottery_activity',
+          meta: 'first_market_manage',
+          category: 'first_market_manage'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDrawAdd'
+          )
+      }
+    ]
   },
   // 幸运大抽奖活动--详情页面
   {

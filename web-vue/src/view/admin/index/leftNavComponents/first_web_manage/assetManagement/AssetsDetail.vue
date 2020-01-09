@@ -1,51 +1,56 @@
 <template>
   <div class="userStatistics">
     <div class="userStatistics_content">
-      <el-tabs v-model="assetManage" @tab-click="handleClick">
+      <el-tabs
+        v-model="assetManage"
+        @tab-click="handleClick"
+      >
         <el-tab-pane
-          label="现金资产管理"
+          :label="this.$t('assetsManage.cashManage')"
           name="first"
         >
         </el-tab-pane>
         <el-tab-pane
-          label="积分资产管理"
+          :label="this.$t('assetsManage.scoreManage')"
           name="second"
         >
         </el-tab-pane>
       </el-tabs>
       <div>
-<!--        筛选条件-->
-        <div >
-          <el-row :gutter="20" class="row_style">
-            <el-col  :span="1.5">交易单号：</el-col>
+        <!--        筛选条件-->
+        <div>
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
+            <el-col :span="1.5">{{$t('assetsManage.number')}}：</el-col>
             <el-col :span="4">
               <el-input
-              :placeholder="$t('promoteList.actNamePlaceholder')"
-              size="small"
-              v-model="param.tradeSn"
-            ></el-input>
+                size="small"
+                v-model="param.tradeSn"
+              ></el-input>
             </el-col>
-            <el-col :span="1.5">交易时间：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.hour')}}：</el-col>
             <el-col :span="8">
-                <el-date-picker
-                  size="small"
-                  v-model="param.startTime"
-                  type="datetime"
-                  style="width:200px "
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
+              <el-date-picker
+                size="small"
+                v-model="param.startTime"
+                type="datetime"
+                style="width:200px "
+                value-format="yyyy-MM-dd HH:mm:ss"
+              >
+              </el-date-picker>
               <span>{{$t('promoteList.to')}}</span>
-                <el-date-picker
-                  size="small"
-                  v-model="param.endTime"
-                  type="datetime"
-                  style="width: 200px"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
+              <el-date-picker
+                size="small"
+                v-model="param.endTime"
+                type="datetime"
+                style="width: 200px"
+                value-format="yyyy-MM-dd HH:mm:ss"
+              >
+              </el-date-picker>
             </el-col>
-            <el-col :span="1.5">资金流向：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.flows')}}：</el-col>
             <el-col :span="5">
               <el-select
                 v-model="param.tradeFlow"
@@ -66,62 +71,67 @@
               </el-select>
             </el-col>
           </el-row>
-          <el-row :gutter="20" class="row_style">
-            <el-col :span="1.5">用户昵称：</el-col>
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
+            <el-col :span="1.5">{{$t('assetsManage.Nickname')}}：</el-col>
             <el-col :span="4">
               <el-input
-                :placeholder="$t('promoteList.actNamePlaceholder')"
                 size="small"
                 v-model="param.username"
               ></el-input>
             </el-col>
-            <el-col :span="1.5">交易金额：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.amount')}}：</el-col>
             <el-col :span="8">
               <el-row :gutter="8">
                 <el-col :span="4">
                   <el-input
-                    :placeholder="$t('promoteList.actNamePlaceholder')"
                     size="small"
                     v-model="param.lowerLimit"
                   ></el-input>
-                    </el-col>
+                </el-col>
                 <el-col :span="1"><span>{{$t('promoteList.to')}}</span></el-col>
                 <el-col :span="4">
                   <el-input
-                    :placeholder="$t('promoteList.actNamePlaceholder')"
                     size="small"
                     v-model="param.upperLimit"
                   ></el-input>
                 </el-col>
               </el-row>
             </el-col>
-            <el-col :span="1.5">交易类型：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.Type')}}：</el-col>
             <el-col :span="5">
               <template>
-                <el-select v-model="param.tradeType" placeholder="请选择">
+                <el-select
+                  v-model="param.tradeType"
+                  :placeholder="$t('promoteList.all')"
+                >
                   <el-option
                     v-for="item in tradeTypeOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
+                    :value="item.value"
+                  >
                   </el-option>
                 </el-select>
               </template>
             </el-col>
           </el-row>
-          <el-row  :gutter="20" class="row_style">
-            <el-col :span="1.5">真实姓名：</el-col>
+          <el-row
+            :gutter="20"
+            class="row_style"
+          >
+            <el-col :span="1.5">{{$t('assetsManage.name')}}：</el-col>
             <el-col :span="4">
               <el-input
-                :placeholder="$t('promoteList.actNamePlaceholder')"
                 size="small"
                 v-model="param.realName"
               ></el-input>
             </el-col>
-            <el-col :span="1.5">手机号：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.phone')}}：</el-col>
             <el-col :span="4">
               <el-input
-                :placeholder="$t('promoteList.actNamePlaceholder')"
                 size="small"
                 v-model="param.mobile"
               ></el-input>
@@ -138,19 +148,19 @@
                 type="primary"
                 size="small"
                 @click="resetParam"
-              >重置</el-button>
+              >{{$t('assetsManage.Reset')}}</el-button>
             </el-col>
             <el-col :span="1">
               <el-button
                 type="primary"
                 size="small"
                 @click="showDownload"
-              >导出</el-button>
+              >{{$t('assetsManage.Export')}}</el-button>
             </el-col>
           </el-row>
         </div>
         <div class="table_list">
-<!--          表单数据-->
+          <!--          表单数据-->
           <el-table
             class="version-manage-table"
             :data="tableData"
@@ -159,63 +169,63 @@
           >
             <el-table-column
               prop="tradeTime"
-              label="交易时间"
+              :label="$t('assetsManage.hour')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeSn"
-              label="交易单号"
+              :label="$t('assetsManage.number')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeNum"
-              label="交易金额"
+              :label="$t('assetsManage.amount')"
               align="center"
               v-if="this.flag === 0"
             >
             </el-table-column>
-              <el-table-column
-                prop="tradeNum"
-                label="交易积分"
-                align="center"
-                v-if="this.flag === 1"
-              >
+            <el-table-column
+              prop="tradeNum"
+              :label="$t('assetsManage.points')"
+              align="center"
+              v-if="this.flag === 1"
+            >
             </el-table-column>
             <el-table-column
               prop="username"
-              label="交易用户"
+              :label="$t('assetsManage.Nickname')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="realName"
-              label="真实姓名"
+              :label="$t('assetsManage.name')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="mobile"
-              label="手机号"
+              :label="$t('assetsManage.phone')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeType"
-              label="交易类型"
+              :label="$t('assetsManage.Type')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeFlow"
-              label="资金流向"
+              :label="$t('assetsManage.flows')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeStatus"
-              label="交易状态"
+              :label="$t('assetsManage.status')"
               align="center"
             >
             </el-table-column>
@@ -229,7 +239,7 @@
         </div>
       </div>
     </div>
-<!--    数据导出/下载弹窗-->
+    <!--    数据导出/下载弹窗-->
     <assetsExportDialog
       :show.sync="showDialog"
       :param="this.param"
@@ -263,83 +273,8 @@ export default {
         value: '0',
         label: '全部'
       }],
-      scoreOptions: [{
-        value: '0',
-        label: '全部'
-      }, {
-        value: '1',
-        label: '积分支付'
-      }, {
-        value: '2',
-        label: '积分兑换'
-      }, {
-        value: '3',
-        label: '幸运大抽奖消耗积分'
-      }, {
-        value: '4',
-        label: '积分充值'
-      }, {
-        value: '5',
-        label: '用户登录送积分'
-      }, {
-        value: '6',
-        label: '用户签到送积分'
-      }, {
-        value: '7',
-        label: '开卡赠送积分'
-      }, {
-        value: '8',
-        label: '买单送积分'
-      }, {
-        value: '9',
-        label: '交易退货退积分'
-      }, {
-        value: '10',
-        label: '组团瓜分积分'
-      }, {
-        value: '11',
-        label: '抽奖获得积分'
-      }, {
-        value: '12',
-        label: '支付有礼'
-      }],
-      cashOptions: [{
-        value: '0',
-        label: '全部'
-      }, {
-        value: '1',
-        label: '微信支付'
-      }, {
-        value: '2',
-        label: '余额支付'
-      }, {
-        value: '3',
-        label: '会员卡支付'
-      }, {
-        value: '4',
-        label: '现金退款'
-      }, {
-        value: '5',
-        label: '用户余额退款'
-      }, {
-        value: '6',
-        label: '用户会员卡余额退款'
-      }, {
-        value: '7',
-        label: '返利'
-      }, {
-        value: '8',
-        label: '抽奖获得余额'
-      }, {
-        value: '9',
-        label: '用户余额充值'
-      }, {
-        value: '10',
-        label: '用户会员卡余额充值'
-      }, {
-        value: '11',
-        label: '支付有礼'
-      }],
+      scoreOptions: this.$t('assetsManage.scoreOptions'),
+      cashOptions: this.$t('assetsManage.cashOptions'),
       assetManage: 'first',
       // 标示是积分还是现金
       flag: this.$route.params.flag,
@@ -493,52 +428,52 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-  .userStatistics {
-    padding: 10px;
-    .userStatistics_content {
-      background: #fff;
-      padding: 15px 0 0 20px;
+.userStatistics {
+  padding: 10px;
+  .userStatistics_content {
+    background: #fff;
+    padding: 15px 0 0 20px;
+  }
+}
+.tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.row_style {
+  margin-top: 15px;
+  margin-left: 15px;
+}
+.table_list {
+  position: relative;
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 10px 20px 10px 20px;
+  .select_info {
+    /*display: flex;*/
+    margin: 10px 0px 20px;
+    /*span {*/
+    /*  white-space: nowrap;*/
+    /*  height: 32px;*/
+    /*  line-height: 32px;*/
+    /*}*/
+    /deep/ .el-input__inner {
+      width: 200px;
+      display: inline-block;
     }
   }
-  .tableClss th {
-    background-color: #f5f5f5;
-    border: none;
-    height: 36px;
-    font-weight: bold;
-    color: #000;
-    padding: 8px 10px;
-  }
-  .row_style{
-    margin-top: 15px;
-    margin-left: 15px;
-  }
-  .table_list {
-    position: relative;
-    margin-top: 20px;
-    background-color: #fff;
-    padding: 10px 20px 10px 20px;
-    .select_info {
-      /*display: flex;*/
-      margin: 10px 0px 20px;
-      /*span {*/
-      /*  white-space: nowrap;*/
-      /*  height: 32px;*/
-      /*  line-height: 32px;*/
-      /*}*/
-      /deep/ .el-input__inner {
-        width: 200px;
-        display: inline-block;
-      }
-    }
-    .footer_right {
-      padding: 20px 0 20px 20px;
-      display: flex;
-      justify-content: flex-end;
-      span {
-        display: block;
-        height: 32px;
-        line-height: 32px;
-      }
+  .footer_right {
+    padding: 20px 0 20px 20px;
+    display: flex;
+    justify-content: flex-end;
+    span {
+      display: block;
+      height: 32px;
+      line-height: 32px;
     }
   }
+}
 </style>

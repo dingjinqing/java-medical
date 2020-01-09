@@ -322,8 +322,9 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 				param.setRemarkCode(RemarkTemplate.FRIENDS_HELP_FAIL.code);
 				param.setOrderSn(String.valueOf(item.getPromoteId()));
 				param.setScore(item.getFailedSendContent());
+				param.setUserId(item.getUserId());
 				try {
-					scoreService.updateMemberScore(param, 0, item.getUserId(), RecordTradeEnum.TYPE_SCORE_POWER.val(), ONE);
+					scoreService.updateMemberScore(param, 0, RecordTradeEnum.TYPE_SCORE_POWER.val(), ONE);
 				} catch (MpException e) {
 					logger().info("创建用户积分记录失败");
 					continue;

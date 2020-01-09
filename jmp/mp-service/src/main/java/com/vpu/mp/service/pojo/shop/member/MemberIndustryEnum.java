@@ -212,7 +212,23 @@ public enum MemberIndustryEnum {
 		}
 		return result;
 	}
-	
 
-	
+	/**
+	 * 根据名字和语言找id
+	 * @param name
+	 * @param lang
+	 * @return
+	 */
+	public static Integer getByName(String name, String lang) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		int length = MemberIndustryEnum.values().length;
+		for (int i = 1; i <=length; i++) {
+			map.put(MemberIndustryEnum.getNameByCode(i, lang), i);
+		}
+		Integer integer = map.get(name);
+		if (integer != null) {
+			return integer;
+		}
+		return null;
+	}
 }

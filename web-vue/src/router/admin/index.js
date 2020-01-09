@@ -25,9 +25,9 @@ const routes = [{
           meta: 'first_web_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/overviewOfMall'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/overviewOfMall'
+          )
       },
       // 店铺助手
       {
@@ -39,9 +39,9 @@ const routes = [{
           category: 'shop_view'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/taskList'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/taskList'
+          )
       },
       // 公告
       // {
@@ -80,9 +80,9 @@ const routes = [{
           meta: 'first_web_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics/overviewStatistics'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics/overviewStatistics'
+          )
       },
       // 概况 - 搜索统计
       {
@@ -108,6 +108,19 @@ const routes = [{
         component: () =>
           import(
             '@/view/admin/index/leftNavComponents/first_web_manage/visitAnalysis/visitAnalysis'
+          )
+      },
+      // 概况 - 来源分析
+      {
+        path: '/admin/home/main/sourceAnalysis',
+        name: 'analysis_visit_source',
+        meta: {
+          crumbTitle: 'router.analysis_visit_source',
+          meta: 'first_web_manage'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/sourceAnalysis/sourceAnalysis'
           )
       },
       // 概况 - 资产管理
@@ -144,9 +157,9 @@ const routes = [{
           meta: 'first_web_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics/overviewStatistics'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics/overviewStatistics'
+          )
       },
       {
         path: '/admin/home/main/userportrait',
@@ -156,9 +169,9 @@ const routes = [{
           meta: 'first_web_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/analysisPortrait/userportrait'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/analysisPortrait/userportrait'
+          )
       },
       // 概况 - 交易统计
       {
@@ -169,9 +182,9 @@ const routes = [{
           meta: 'first_web_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/tradesStatistics/tradesStatistics'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/tradesStatistics/tradesStatistics'
+          )
       },
       // 概况 - 商品统计页面
       {
@@ -182,9 +195,9 @@ const routes = [{
           meta: 'first_web_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/goodsStatistics/goodsStatistics'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/goodsStatistics/goodsStatistics'
+          )
       },
       // 概况 - 用户统计页面
       {
@@ -195,9 +208,9 @@ const routes = [{
           meta: 'first_web_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/userStatistics/userStatistics'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/userStatistics/userStatistics'
+          )
       },
       // 小程序管理系列子路由
       // 页面分类
@@ -209,9 +222,9 @@ const routes = [{
           meta: 'first_web_decoration'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/pageClassification/pageClassification'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/pageClassification/pageClassification'
+          )
       },
       {
         path: '/admin/home/main/freight_template',
@@ -221,9 +234,9 @@ const routes = [{
           meta: 'first_web_decoration'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/PictureSpace/freight_template'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/PictureSpace/freight_template'
+          )
       },
       {
         path: '/admin/home/main/video_space',
@@ -233,9 +246,9 @@ const routes = [{
           meta: 'first_web_decoration'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/videoSpace/videoSpace'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/videoSpace/videoSpace'
+          )
       },
       {
         path: '/admin/home/main/shopStyle',
@@ -245,9 +258,9 @@ const routes = [{
           meta: 'first_web_decoration'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/shopStyle/shopStyle'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/shopStyle/shopStyle'
+          )
       },
       // 页面装修
       {
@@ -258,9 +271,9 @@ const routes = [{
           meta: 'first_web_decoration'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/picture_setting'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/picture_setting'
+          )
       },
       {
         path: '/admin/home/main/decorationHome',
@@ -271,17 +284,17 @@ const routes = [{
           category: 'picture_setting'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/decorationHome'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/decorationHome'
+          )
       },
       {
         path: '/admin/home/main/bottomNavigation',
         name: 'image_manager',
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'
-              ),
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'
+          ),
         meta: {
           crumbTitle: 'router.bottomNavigation',
           meta: 'first_web_decoration'
@@ -298,7 +311,7 @@ const routes = [{
               category: 'image_manager'
             },
             component: () =>
-                  import('@/components/admin/selectLinksComponents/commonLinks')
+              import('@/components/admin/selectLinksComponents/commonLinks')
           },
           // 商品链接
           {
@@ -310,9 +323,9 @@ const routes = [{
               category: 'image_manager'
             },
             component: () =>
-                  import(
-                    '@/components/admin/selectLinksComponents/commodityLinks'
-                  )
+              import(
+                '@/components/admin/selectLinksComponents/commodityLinks'
+              )
           },
           // 自定义页面
           {
@@ -324,7 +337,7 @@ const routes = [{
               category: 'image_manager'
             },
             component: () =>
-                  import('@/components/admin/selectLinksComponents/customPage')
+              import('@/components/admin/selectLinksComponents/customPage')
           },
           // 营销活动
           {
@@ -336,9 +349,9 @@ const routes = [{
               category: 'image_manager'
             },
             component: () =>
-                  import(
-                    '@/components/admin/selectLinksComponents/groupDrawing'
-                  )
+              import(
+                '@/components/admin/selectLinksComponents/groupDrawing'
+              )
           },
           // 商品分类
           {
@@ -350,9 +363,9 @@ const routes = [{
               category: 'image_manager'
             },
             component: () =>
-                  import(
-                    '@/components/admin/selectLinksComponents/classificationOfCommodities'
-                  )
+              import(
+                '@/components/admin/selectLinksComponents/classificationOfCommodities'
+              )
           },
           // 网页跳转
           {
@@ -364,7 +377,7 @@ const routes = [{
               category: 'image_manager'
             },
             component: () =>
-                  import('@/components/admin/selectLinksComponents/pageJump')
+              import('@/components/admin/selectLinksComponents/pageJump')
           },
           // 小程序跳转
           {
@@ -376,9 +389,9 @@ const routes = [{
               category: 'image_manager'
             },
             component: () =>
-                  import(
-                    '@/components/admin/selectLinksComponents/smallProgramJump'
-                  )
+              import(
+                '@/components/admin/selectLinksComponents/smallProgramJump'
+              )
           },
           // 表单页面&&门店
           {
@@ -390,7 +403,7 @@ const routes = [{
               category: 'image_manager'
             },
             component: () =>
-                  import('@/components/admin/selectLinksComponents/formPage')
+              import('@/components/admin/selectLinksComponents/formPage')
           }
         ]
       },
@@ -402,9 +415,9 @@ const routes = [{
           meta: 'first_web_decoration'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/personalCenter/personalCenter'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/personalCenter/personalCenter'
+          )
       },
       // 搜索配置
       {
@@ -415,9 +428,9 @@ const routes = [{
           meta: 'first_web_decoration'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/searchConfig/searchConfig'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_decoration/searchConfig/searchConfig'
+          )
       },
       // 商品管理系列
       // 商品管理/全部商品
@@ -430,9 +443,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/allGoods/allGoods'
-              ),
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/allGoods/allGoods'
+          ),
         children: [
           // 商品管理/出售中商品
           {
@@ -444,9 +457,9 @@ const routes = [{
               category: 'sale_on'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/allGoodsSaleOn'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/allGoodsSaleOn'
+              )
           },
           // 商品管理/已售罄
           {
@@ -458,9 +471,9 @@ const routes = [{
               category: 'sale_on'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
+              )
           },
           // 商品管理/仓库中
           {
@@ -472,9 +485,9 @@ const routes = [{
               category: 'sale_on'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/inStock/allGoodsInStock'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/allGoods/inStock/allGoodsInStock'
+              )
           }
         ]
       },
@@ -487,9 +500,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/addAndUpdateGoods/addAndUpdateGoods'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/addAndUpdateGoods/addAndUpdateGoods'
+          )
       },
       // 商品管理 编辑商品
       {
@@ -500,9 +513,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/addAndUpdateGoods/addAndUpdateGoods'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/addAndUpdateGoods/addAndUpdateGoods'
+          )
       },
       // 商品管理/运费模板
       {
@@ -514,9 +527,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplate'
-              ),
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplate'
+          ),
         children: [
           // 商品管理/运费模板/运费模板列表
           {
@@ -528,9 +541,9 @@ const routes = [{
               category: 'deliver'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateList'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateList'
+              )
           },
           // 商品管理/运费模板/重量运费模板列表
           {
@@ -542,9 +555,9 @@ const routes = [{
               category: 'deliver'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightList'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightList'
+              )
           },
           // 商品管理/运费模板/添加运费模板
           {
@@ -556,9 +569,9 @@ const routes = [{
               category: 'deliver'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateAdd'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateAdd'
+              )
           },
           // 商品管理/运费模板/添加重量运费模板
           {
@@ -570,9 +583,9 @@ const routes = [{
               category: 'deliver'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightAdd'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightAdd'
+              )
           },
           // 商品管理/运费模板/模板编辑
           {
@@ -584,9 +597,9 @@ const routes = [{
               category: 'deliver'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateUpdate'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateUpdate'
+              )
           }
         ]
       },
@@ -600,9 +613,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/sortManagement'
-              ),
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/sortManagement'
+          ),
         children: [
           //  商品管理/商家分类管理/分类列表
           {
@@ -614,9 +627,9 @@ const routes = [{
               category: 'sort'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/allGoodsSort'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/allGoodsSort'
+              )
           },
           {
             path: '/admin/home/main/goodsManage/goodsSortManagement/allGoodsRecommendSort',
@@ -627,9 +640,9 @@ const routes = [{
               category: 'sort'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/allGoodsRecommendSort'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/allGoodsRecommendSort'
+              )
           },
           {
             path: '/admin/home/main/goodsManage/goodsSortManagement/addGoodsSort',
@@ -640,9 +653,9 @@ const routes = [{
               category: 'sort'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsSort'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsSort'
+              )
           },
           {
             path: '/admin/home/main/goodsManage/goodsSortManagement/updateGoodsSort/:sortId',
@@ -653,9 +666,9 @@ const routes = [{
               category: 'sort'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsSort'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsSort'
+              )
           },
           {
             path: '/admin/home/main/goodsManage/goodsSortManagement/addGoodsRecommendSort',
@@ -666,9 +679,9 @@ const routes = [{
               category: 'sort'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsRecommendSort'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsRecommendSort'
+              )
           },
           {
             path: '/admin/home/main/goodsManage/goodsSortManagement/updateGoodsRecommendSort/:sortId',
@@ -679,9 +692,9 @@ const routes = [{
               category: 'sort'
             },
             component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsRecommendSort'
-                  )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsRecommendSort'
+              )
           }
         ]
       },
@@ -694,9 +707,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/brandManagement'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/brandManagement'
+          )
       },
       // 商品管理/品牌管理/添加品牌
       {
@@ -708,9 +721,9 @@ const routes = [{
           category: 'brand'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/addBrand'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/addBrand'
+          )
       },
       // 商品管理/评价管理
       {
@@ -721,9 +734,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
+          )
       },
       // 商品管理/商品推荐
       {
@@ -734,9 +747,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsRecommend/goodsRecommend'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/goodsRecommend/goodsRecommend'
+          )
       },
       // 商品管理/商品推荐
       {
@@ -748,9 +761,9 @@ const routes = [{
           category: 'recommend'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsRecommend/addGoodsRecommend'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/goodsRecommend/addGoodsRecommend'
+          )
       },
 
       // 商品管理/商品标签
@@ -762,9 +775,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/allGoodsLabel'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/allGoodsLabel'
+          )
       },
       {
         path: '/admin/home/main/goodsManage/goodsLabel/addGoodsLabel',
@@ -775,9 +788,9 @@ const routes = [{
           category: 'label'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/addAndUpdateGoodsLabel'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/addAndUpdateGoodsLabel'
+          )
       },
       {
         path: '/admin/home/main/goodsManage/goodsLabel/updateGoodsLabel/:id',
@@ -787,9 +800,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/addAndUpdateGoodsLabel'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/addAndUpdateGoodsLabel'
+          )
       },
       // 商品管理/商品导入
       {
@@ -800,9 +813,9 @@ const routes = [{
           meta: 'goods_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsImport/goodsImport'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/goods_manage/goodsImport/goodsImport'
+          )
       },
       // 门店管理系列子路由
       {
@@ -813,9 +826,9 @@ const routes = [{
           meta: 'store_manage'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/store_manage/store_manage'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/store_manage/store_manage'
+          )
       },
       // 基础配置系列子路由
       {
@@ -826,9 +839,9 @@ const routes = [{
           meta: 'base_manger'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/base_manger'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/base_manger'
+          )
       },
       // 基础配置 - 交易配置
       {
@@ -839,9 +852,9 @@ const routes = [{
           meta: 'base_manger'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/tradeConfigure/tradeConfigure'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/tradeConfigure/tradeConfigure'
+          )
       },
       // 基础配置/模板消息
       {
@@ -852,9 +865,9 @@ const routes = [{
           meta: 'base_manger'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/templateMessage/templateMessage'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/templateMessage/templateMessage'
+          )
       },
       // 基础配置/服务承诺
       {
@@ -865,9 +878,9 @@ const routes = [{
           meta: 'base_manger'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/servicePledge/servicePledgeList'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/servicePledge/servicePledgeList'
+          )
       },
       // 基础配置 - 店铺权限
       {
@@ -878,9 +891,9 @@ const routes = [{
           meta: 'base_manger'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/shopAuthority/shopAuthority'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/shopAuthority/shopAuthority'
+          )
       },
       // 基础配置 - 操作记录
       {
@@ -891,9 +904,9 @@ const routes = [{
           meta: 'base_manger'
         },
         component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/actionRecord/actionRecord'
-              )
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/actionRecord/actionRecord'
+          )
       }
     ].concat(marketing, member, order, store)
   }

@@ -41,4 +41,9 @@
   .mul_column .sale_price{
     padding-top: 12rpx;
   }
-  
+  .van-two-ellipsis{
+    width: 200rpx;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }

@@ -113,12 +113,6 @@ public enum RecordTradeEnum {
 	/** 消费 */
 	UACCOUNT_CONSUMPTION(1),
 
-
-
-
-
-
-
 	/** 积分变动是否来自退款 */
 	IS_FROM_REFUND_Y(1),
 	IS_FROM_REFUND_N(0);
