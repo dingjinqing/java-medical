@@ -190,15 +190,13 @@ public class OrderPayService extends ShopBaseService{
         if(BigDecimalUtil.compareTo(money, null) == 0) {
             return;
         }
-        DefaultDSLContext db1 = db();
         AccountData accountData = AccountData.newBuilder().
             userId(order.getUserId()).
             orderSn(order.getOrderSn()).
-            //退款金额
+            //下单金额
                 amount(money.negate()).
                 remarkCode(RemarkTemplate.ORDER_MAKE.code).
                 remarkData(order.getOrderSn()).
-                //remark("下单："+order.getOrderSn()).
                 payment(order.getPayCode()).
             //支付类型
                 isPaid(RecordTradeEnum.UACCOUNT_CONSUMPTION.val()).

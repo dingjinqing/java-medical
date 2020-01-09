@@ -134,4 +134,13 @@ public class GroupDrawJoinUserService extends ShopBaseService {
             JOIN_GROUP_LIST.INVITE_USER_NUM);
         select.orderBy(JOIN_GROUP_LIST.CREATE_TIME.desc());
     }
+
+    /**
+     * 获得该活动的参团人数
+     * @param actId
+     * @return
+     */
+    public int getJoinGroupNumByGroupDraw(int actId){
+        return db().selectCount().from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(actId)).and(JOIN_GROUP_LIST.STATUS.ge((byte)0)).fetchOptionalInto(Integer.class).orElse(0);
+    }
 }

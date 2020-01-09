@@ -1,0 +1,84 @@
+@import "../formsuccess/formsuccess.wxss";
+.fs_top{
+  padding: 0 23rpx;
+  box-sizing: border-box;
+  display: block;
+}
+.fs_top_image{
+  padding: 60rpx 0;
+  width: 100%;
+  border-bottom: 1rpx solid #ddd;
+  text-align: center;
+}
+.fs_top_title{
+  text-align: left;
+}
+.fs_top_title > text{
+  display: block;
+}
+.fs_top_title text:first-child{
+  line-height: 85rpx;
+}
+.fs_top_title text:last-child{
+  color: #666;
+  line-height: 36rpx;
+  margin-bottom: 30rpx;
+}
+.login_back{
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding: 0 90rpx;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  box-sizing: border-box;
+}
+.activation_fail{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.5);
+}
+.fail_content{
+  background-color: #fff;
+  text-align: center;
+  width: 560rpx;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  border-radius: 8rpx;
+  padding: 40rpx;
+  box-sizing: border-box;
+}
+.fail_content image{
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 24rpx;
+}
+.fail_content text{
+  display: block;
+}
+.fail_content text:first-of-type{
+  margin-bottom: 40rpx;
+}
+.fail_content text:last-of-type{
+  color: #666;
+}
+.fail_button{
+  width: 480rpx;
+  line-height: 70rpx;
+  margin:0 auto;
+  background-color: #09ba07;
+  margin-top: 40rpx;
+  border-radius: 6rpx;
+  color: #fff;
+}

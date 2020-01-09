@@ -241,7 +241,7 @@ public class WechatTaskService extends ShopBaseService {
 	private Timestamp extracted(String date) {
 		LocalDate ld=LocalDate.now();
 		DateTimeFormatter  dtf2=DateTimeFormatter.ofPattern("yyyyMMdd");
-		LocalDate date2=ld.parse(date,dtf2);
+		LocalDate date2= LocalDate.parse(date,dtf2);
 		LocalDateTime localDateTime=LocalDateTime.of(date2, java.time.LocalTime.MIN);
 		Timestamp startTime = Timestamp.valueOf(localDateTime);
 		return startTime;

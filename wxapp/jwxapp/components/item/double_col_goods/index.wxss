@@ -186,3 +186,14 @@ rgba(91, 158, 164, 0.8),
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
+.gray-text{
+  color: #888;
+}
+.gray-text.line-through{
+  text-decoration:line-through;
+}
+.boder-button{
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid;
+}
