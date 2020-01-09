@@ -110,6 +110,19 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/first_web_manage/visitAnalysis/visitAnalysis'
           )
       },
+      // 概况 - 来源分析
+      {
+        path: '/admin/home/main/sourceAnalysis',
+        name: 'analysis_visit_source',
+        meta: {
+          crumbTitle: 'router.analysis_visit_source',
+          meta: 'first_web_manage'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/sourceAnalysis/sourceAnalysis'
+          )
+      },
       // 概况 - 资产管理
       {
         path: '/admin/home/main/assetsManage',
