@@ -148,6 +148,7 @@
               v-model="importInfo.filename"
               size="small"
               style="width:170px;"
+              readonly
             ></el-input>
             <el-upload
               ref="import"
@@ -162,6 +163,7 @@
               :data="uploadData"
               :file-list="fileList"
               :http-request="uploadFile"
+              :on-exceed="exceedHandle"
             >
               <el-button
                 slot="trigger"
@@ -293,6 +295,7 @@ export default {
       })
     },
     beforeUploadHandle (file) {
+      alert('1')
       let isXls = file.type === 'application/vnd.ms-excel application/x-excel'
       let isXlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       if (!isXls && !isXlsx) {
@@ -301,10 +304,17 @@ export default {
       }
       return true
     },
+    // 超出限制
+    exceedHandle (file, fileList) {
+      this.fileList = [file[0]]
+      this.$set(this.importInfo, 'filename', file[0].name)
+      this.$set(this.importInfo, 'file', file[0])
+    },
     // 添加文件、上传成功和上传失败时都会被调用
     uploadChangeHandle (file, fileList) {
-      this.importInfo.filename = file.name
-      this.importInfo.file = file.raw
+      this.fileList = [file]
+      this.$set(this.importInfo, 'filename', file.name)
+      this.$set(this.importInfo, 'file', file.raw)
     },
     // 点击导入按钮
     submitImport () {
