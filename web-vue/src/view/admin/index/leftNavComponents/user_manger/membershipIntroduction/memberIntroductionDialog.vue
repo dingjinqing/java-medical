@@ -299,6 +299,9 @@ export default {
       let isXlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       if (!isXls && !isXlsx) {
         this.$message.warning('上传文件只支持xls、xlsx格式！')
+        this.fileList = []
+        this.$set(this.importInfo, 'filename', '')
+        this.$set(this.importInfo, 'file', '')
         return false
       }
       return true
