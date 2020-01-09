@@ -1,10 +1,5 @@
 package com.vpu.mp.service.shop.order.action;
 
-import java.util.Arrays;
-
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
@@ -12,10 +7,14 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * 删除订单
@@ -49,11 +48,11 @@ public class DeleteService  extends ShopBaseService implements IorderOperate <Or
         logger().info("订单删除start");
 		OrderListMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderListMpVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		if(!OrderOperationJudgment.isDelete(order)) {
             logger().error("该订单不可删除");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_DELETE_OPERATION_NOT_SUPPORTED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_DELETE_OPERATION_NOT_SUPPORTED, null);
 		}		
 		orderInfo.delete(order);
 		//操作记录
