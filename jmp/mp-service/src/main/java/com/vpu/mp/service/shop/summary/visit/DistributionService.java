@@ -8,9 +8,11 @@ import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
 import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.ValueKeyChart;
 import com.vpu.mp.service.pojo.shop.summary.visit.*;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,8 +26,30 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.DistributionIndex.*;
  */
 @Service
 public class DistributionService extends BaseVisitService {
-
+    /** 日期标识符 */
+    private static final Integer CUSTOM_DAYS = 0;
+    /**
+     *得到之前的某一天(字符串类型)
+     *@param days N天前
+     *@return preDay(String)
+     */
+    public String getDate(Integer days) {
+        //格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        //获取当前时间
+        Calendar c = Calendar.getInstance();
+        //计算指定日期
+        c.add(Calendar.DATE, - days);
+        Date time = c.getTime();
+        //返回格式化后的String日期
+        return sdf.format(time);
+    }
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {
+        //得到时间
+        if (!param.getType().equals(CUSTOM_DAYS)){
+            param.setStartDate(getDate(param.getType()));
+            param.setEndDate(getDate(NumberUtils.INTEGER_ZERO));
+        }
         VisitDistributionVo vo = new VisitDistributionVo();
         /* 访问来源 */
         Map<String, Integer> sourceMap = new TreeMap<>();
@@ -40,12 +64,12 @@ public class DistributionService extends BaseVisitService {
         for (MpDistributionVisitRecord record : result) {
             String list = record.getList();
             /* 转换统计 JSON */
-            List<DistributionIndex> indexes = Util.parseJson(list, new TypeReference<List<DistributionIndex>>() {
-            });
+            List<DistributionIndex> indexes = Util.json2Object(list, new TypeReference<List<DistributionIndex>>() {
+            },false);
             for (DistributionIndex index : Objects.requireNonNull(indexes)) {
                 String indexName = index.getIndex();
                 switch (indexName) {
-                    case ACCESS_SOURCE:
+                    case ACCESS_SOURCE_PV:
                         groupingIndex(sourceMap, index, AccessSource.values());
                         break;
                     case VISIT_DURATION:
@@ -60,6 +84,8 @@ public class DistributionService extends BaseVisitService {
         }
         /* 移除参数中忽略的访问来源 */
         cancelSources.forEach(s -> sourceMap.remove(AccessSource.findByIndex(s).getSource()));
+        vo.setStartDate(startDate);
+        vo.setEndDate(endDate);
         vo.setVisitSource(keyValueChart(sourceMap));
         vo.setVisitDepth(valueKeyChart(depthMap));
         vo.setVisitStayTime(valueKeyChart(stayTimeMap));
