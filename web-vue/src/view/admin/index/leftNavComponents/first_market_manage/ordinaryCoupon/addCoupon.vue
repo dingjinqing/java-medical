@@ -130,61 +130,53 @@
                   :label="$t('ordinaryCoupon.validityType') + '：'"
                   prop="validityType"
                 >
-                  <div>
-                    <p>
-                      <el-radio
-                        v-model="param.validityType"
-                        :label='0'
-                        :disabled="editType"
-                        @change="validityTypeChange"
-                      >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
-                    </p>
-                    <p style="margin:15px 0;">
+                  <el-radio
+                    v-model="param.validityType"
+                    :label='0'
+                    :disabled="editType"
+                    @change="validityTypeChange"
+                  >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
+                  <el-date-picker
+                    v-model="param.couponDate"
+                    :disabled="param.validityType === 0 && !editType ? false : true"
+                    type="datetimerange"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    :range-separator="$t('seckill.to')"
+                    :start-placeholder="$t('ordinaryCoupon.startTime')"
+                    :end-placeholder="$t('ordinaryCoupon.endTime')"
+                    :default-time="['00:00:00','23:59:59']"
+                    size="small"
+                  >
+                  </el-date-picker>
 
-                      <el-date-picker
-                        :disabled="param.validityType === 0 && !editType ? false : true"
-                        v-model="param.couponDate"
-                        type="datetimerange"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        format="yyyy-MM-dd HH:mm:ss"
-                        :range-separator="$t('seckill.to')"
-                        :start-placeholder="$t('ordinaryCoupon.startTime')"
-                        :end-placeholder="$t('ordinaryCoupon.endTime')"
-                        :default-time="['00:00:00','23:59:59']"
-                        size="small"
-                      >
-                      </el-date-picker>
-                    </p>
-                    <p>
-                      <el-radio
-                        v-model="param.validityType"
-                        :label='1'
-                        :disabled="editType"
-                        @change="validityTypeChange"
-                        style="margin-right: 25px;"
-                      >{{ $t('ordinaryCoupon.appoint') }}</el-radio>
-                      <span>
-                        <el-input
-                          :disabled="param.validityType===1 && !editType ?false:true"
-                          v-model="param.validity"
-                          size="small"
-                          class="small_input"
-                        ></el-input> {{ $t('ordinaryCoupon.appointDay') }}
-                        <el-input
-                          :disabled="param.validityType===1 && !editType ?false:true"
-                          v-model="param.validityHour"
-                          size="small"
-                          class="small_input"
-                        ></el-input> {{ $t('ordinaryCoupon.appointHour') }}
-                        <el-input
-                          :disabled="param.validityType===1 && !editType ?false:true"
-                          v-model="param.validityMinute"
-                          size="small"
-                          class="small_input"
-                        ></el-input> {{ $t('ordinaryCoupon.appointMinute') }}
-                      </span>
-                    </p>
-                  </div>
+                  <el-radio
+                    v-model="param.validityType"
+                    :label='1'
+                    :disabled="editType"
+                    @change="validityTypeChange"
+                    style="margin-right: 25px;"
+                  >{{ $t('ordinaryCoupon.appoint') }}</el-radio>
+                  <span>
+                    <el-input
+                      :disabled="param.validityType===1 && !editType ?false:true"
+                      v-model="param.validity"
+                      size="small"
+                      class="small_input"
+                    ></el-input> {{ $t('ordinaryCoupon.appointDay') }}
+                    <el-input
+                      :disabled="param.validityType===1 && !editType ?false:true"
+                      v-model="param.validityHour"
+                      size="small"
+                      class="small_input"
+                    ></el-input> {{ $t('ordinaryCoupon.appointHour') }}
+                    <el-input
+                      :disabled="param.validityType===1 && !editType ?false:true"
+                      v-model="param.validityMinute"
+                      size="small"
+                      class="small_input"
+                    ></el-input> {{ $t('ordinaryCoupon.appointMinute') }}
+                  </span>
                 </el-form-item>
                 <el-form-item
                   :label="$t('ordinaryCoupon.surplus') + '：'"
@@ -586,11 +578,12 @@ export default {
     // 自定义校验优惠类型
     var validatePreferentialType = (rule, value, callback) => {
       // 金额 (正数,保留两位小数)
-      var re = /^\+?(\d*\.\d{1,2})$/
+      var re = /^[1-9]\d*(\.\d{1,2})?$/
+      var re1 = /^0\.\d{1,2}$/
       var re2 = /^((0\.[1-9]{1})|(([1-9]{1})(\.\d{1})?))$/
       if (value === 0 && this.param.denomination === null) {
         callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType1')))
-      } else if (value === 0 && !re.test(this.param.denomination)) {
+      } else if (value === 0 && !re.test(this.param.denomination) && !re1.test(this.param.denomination)) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else if (value === 1 && this.param.denomination2 === null) {
         callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType2')))
@@ -598,7 +591,7 @@ export default {
         callback(new Error(this.$t('ordinaryCoupon.validateDiscount')))
       } else if (value === 2 && (this.param.randomMin === null || this.param.randomMax === null)) {
         callback(new Error('请填写随机金额'))
-      } else if (value === 2 && (!re.test(this.param.randomMin) || !re.test(this.param.randomMax))) {
+      } else if (value === 2 && ((!re.test(this.param.randomMin) && !re1.test(this.param.randomMin)) || (!re.test(this.param.randomMax) && !re1.test(this.param.randomMax)))) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else if (this.param.randomMin > this.param.randomMax) {
         callback(new Error('最大金额不能比最小金额小'))
@@ -630,10 +623,11 @@ export default {
     }
     // 自定义校验使用门槛
     var validateuseConsumeRestrict = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*(\.\d{1,2})?$/
+      var re1 = /^0\.\d{1,2}$/
       if (value === 1 && this.param.leastConsume === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateuseConsumeRestrict')))
-      } else if (value === 1 && !re.test(this.param.leastConsume)) {
+      } else if (value === 1 && !re.test(this.param.leastConsume) && !re1.test(this.param.leastConsume)) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
