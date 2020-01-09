@@ -183,6 +183,12 @@ global.wxPage({
                 ...this.getPrice(goodsInfo)
               }
             })
+            // 限时降价状态栏
+            if (res.content.activity && res.content.activity.activityType === 6) { 
+              this.setData({
+                  reduceActBarPrice:this.getActBarPrice(products,activity,'prdRealPrice'),
+              })
+            }
             this.getPromotions(res.content)
             resolve(res.content);
           }
