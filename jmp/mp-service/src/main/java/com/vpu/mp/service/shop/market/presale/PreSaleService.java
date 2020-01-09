@@ -100,7 +100,7 @@ public class PreSaleService extends ShopBaseService {
     public static final Byte DELIVER_TYPE_TIME = 1;
     /**发货时间类型：2 指定下单后的天数*/
     public static final Byte DELIVER_TYPE_DAYS = 2;
-
+    /**定金期数2*/
     public static final Byte PRESALE_MONEY_INTERVAL = 2;
 
 
