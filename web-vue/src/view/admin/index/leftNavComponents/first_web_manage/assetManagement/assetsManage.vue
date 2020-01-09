@@ -3,13 +3,13 @@
     <div class="userStatistics_content">
       <el-tabs v-model="assetManage" @tab-click="handleClick">
         <el-tab-pane
-          label="现金资产管理"
+          :label="this.$t('assetsManage.cashManage')"
           name="first"
         >
           <cashAssets />
         </el-tab-pane>
         <el-tab-pane
-          label="积分资产管理"
+          :label="this.$t('assetsManage.scoreManage')"
           name="second"
         >
           <scoreAssets />

@@ -89,6 +89,10 @@ import {
 import {
   en as tradesStatistics
 } from './views/admin_new/en/index/overview/tradesStatistics/tradesStatisticsEn'
+// 资产管理
+import {
+  en as assetsManage
+} from './views/admin_new/en/index/overview/assetsManage/assetsManageEn'
 
 // 用户画像
 import {
@@ -918,6 +922,7 @@ const en = {
   // 用户画像
   userportrait,
   userStatistics, // 用户统计
+  assetsManage, // 资产管理
 
   // 小程序管理
   pictureSetting,

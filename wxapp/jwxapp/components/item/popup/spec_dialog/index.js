@@ -2,7 +2,9 @@ const base = require("../../../popup/base/base.js");
 const actPrdType = {
   1:{prdListName:"groupBuyPrdMpVos",prdRealPrice:'groupPrice',prdLinePrice:'prdPrice',multiSkuAct:true},
   3:{prdRealPrice:'bargainPrice',multiSkuAct:false},
-  5:{prdListName:"actProducts",prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice',multiSkuAct:true}
+  5:{prdListName:"actProducts",prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice',multiSkuAct:true},
+  6:{prdListName:"reducePricePrdMpVos",prdRealPrice:"reducePrice",prdLinePrice:'prdPrice',multiSkuAct:true},
+  18:{prdListName:"firstSpecialPrdMpVos",prdRealPrice:'firsSpecialPrice',prdLinePrice:'prdPrice',multiSkuAct:true}
 }
 global.wxComponent({
   mixins: [base],

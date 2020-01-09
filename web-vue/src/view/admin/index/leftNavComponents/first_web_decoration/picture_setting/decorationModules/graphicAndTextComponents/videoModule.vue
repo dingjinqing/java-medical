@@ -13,8 +13,8 @@
         <video
           width="100%"
           height="200px"
-          :src="moduleSaveData.video_showurl"
-          :poster="moduleSaveData.video_poster==='1'?moduleSaveData.video_showpath:moduleSaveData.custom_url"
+          :src="moduleSaveData.video_url"
+          :poster="moduleSaveData.video_poster==='1'?moduleSaveData.video_img:moduleSaveData.custom_url"
           controls="controls"
         >
         </video>

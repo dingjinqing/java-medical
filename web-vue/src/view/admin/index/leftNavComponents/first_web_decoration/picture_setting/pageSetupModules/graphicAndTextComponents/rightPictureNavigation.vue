@@ -262,9 +262,9 @@ export default {
     // 点击重置
     handleToReset (index) {
       if (index === 0) {
-        this.data.font_color = 'rgba(255, 69, 0, 1)'
+        this.data.font_color = '#fff'
       } else {
-        this.data.bg_color = 'rgba(255, 255, 255, 1)'
+        this.data.bg_color = '#fff'
       }
     },
     // 导航配置列表右上角icon点击统一处理

@@ -8,8 +8,6 @@
       <text class="user_auto_text" style='color:{{m.font_color}}'>{{m.pin_title_text}}</text>
     </view>
   </block>
-
-
   <view class="p3" wx:if="{{m.hide_active == 0}}" style='color:{{m.font_color}}'>{{m.limit_amount}}人瓜分{{m.inte_group}}积分</view>
   <view class="p4" wx:if="{{m.hide_time == 0}}" style='color:{{m.font_color}}'>有效期：{{m.start_time}} 至 {{m.end_time}}</view>
   <view class='status' wx:if="{{m.can_pin.status}}">{{m.can_pin.msg}}</view>

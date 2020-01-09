@@ -122,7 +122,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
     }
 
     /**
-     * 查询商品不同规格的规格价格
+     * 查询商品不同规格的等级规格价格
      * @param userId 用户id
      * @param goodsId 商品id
      */
@@ -136,6 +136,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
         // 获取商品规格等级信息
         return db().select(GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE,GRADE_PRD.GRADE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GRADE_PRD.GRADE.eq(userGradeCard.get(MEMBER_CARD.GRADE))).and(GRADE_PRD.GOODS_ID.eq(goodsId))
+            .orderBy(GRADE_PRD.GRADE_PRICE.asc())
             .fetchInto(GradePrdRecord.class);
     }
 

@@ -160,23 +160,38 @@ public enum MemberIndustryEnum {
 	
 	
 	public static void main(String ...args) {
-		System.out.println("Hello Wolrd");
 		List<IndustryVo> allIndustryInfo = getAllIndustryInfo();
 		allIndustryInfo.stream().forEach(System.out::println);
 	}
 	
-	/** 获取行业所有信息 */
+	/** 
+	 * 获取行业所有信息
+	 * @return List<IndustryVo>
+	 */
 	public static List<IndustryVo> getAllIndustryInfo() {
-		
+		return getAllIndustryInfo(null);
+	}
+	
+	/**
+	 * 获取行业所有信息，指定语言版本
+	 * @param lang
+	 * @return List<IndustryVo>
+	 */
+	public static List<IndustryVo> getAllIndustryInfo(String lang){
 		List<IndustryVo> industryList = new ArrayList<>();
 		for(MemberIndustryEnum item: MemberIndustryEnum.values()) {
-			industryList.add(new IndustryVo(item.code,item.getName()));
+			String name = getNameByCode(item.code,lang);
+			industryList.add(new IndustryVo(item.code,name));
 		}
 		return industryList;
 	}
+	
+	
 	public static List<String> getAllIndustryName(String lang){
 		return getAllIndustryName(lang,false);
 	}
+	
+	
 	public static List<String> getAllIndustryName(String lang,boolean choose){
 		List<String> res = new ArrayList<String>();
 		if(choose) {
@@ -196,5 +211,24 @@ public enum MemberIndustryEnum {
 			result[i]=getNameByCode(i+1, lang);
 		}
 		return result;
+	}
+
+	/**
+	 * 根据名字和语言找id
+	 * @param name
+	 * @param lang
+	 * @return
+	 */
+	public static Integer getByName(String name, String lang) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		int length = MemberIndustryEnum.values().length;
+		for (int i = 1; i <=length; i++) {
+			map.put(MemberIndustryEnum.getNameByCode(i, lang), i);
+		}
+		Integer integer = map.get(name);
+		if (integer != null) {
+			return integer;
+		}
+		return null;
 	}
 }

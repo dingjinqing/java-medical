@@ -143,10 +143,10 @@ export default {
     // 选中视频后回传事件
     handleToAddVideo (res) {
       console.log(res)
-      this.moduleSaveData.video_showurl = res.videoUrl
-      this.moduleSaveData.video_url = res.videoPath
-      this.moduleSaveData.video_showpath = res.snapshotUrl
-      this.moduleSaveData.video_img = res.videoSnapPath
+      // this.moduleSaveData.video_showurl = res.videoUrl
+      this.moduleSaveData.video_url = res.videoUrl
+      // this.moduleSaveData.video_showpath = res.snapshotUrl
+      this.moduleSaveData.video_img = res.snapshotUrl
       this.moduleSaveData.video_size = res.videoSize
       this.moduleSaveData.video_width = res.videoWidth
       this.moduleSaveData.video_height = res.videoHeight

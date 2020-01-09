@@ -23,7 +23,7 @@
     <!--模块配置-->
     <div v-if="!topIconFlag">
       <components
-      v-if="insertFlga"
+        v-if="insertFlga"
         :is="showModule"
         :modulesData='modulesData'
         :sortIndex='sortIndex'
@@ -43,6 +43,7 @@ export default {
     RightSpike: () => import('./pageSetupModules/marketingComponents/rightSpike'), // 右侧秒杀配置页面
     RightFightGroup: () => import('./pageSetupModules/marketingComponents/rightFightGroup'), // 右侧拼团抽奖配置页面
     RiIntegralExchange: () => import('./pageSetupModules/marketingComponents/riIntegralExchange'), // 右侧积分兑换页面
+    RiDivideScorePoints: () => import('./pageSetupModules/marketingComponents/riDivideScorePoints'), // 右侧瓜分积分页面
     // 商品组件库
     RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'), // 右侧商品配置页面
     RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch'), // 右侧页面商品搜索配置页面
@@ -102,6 +103,10 @@ export default {
         {
           id: 6,
           name: 'RightFightGroup'
+        },
+        {
+          id: 7,
+          name: 'RiDivideScorePoints'
         },
         {
           id: 8,
@@ -210,7 +215,6 @@ export default {
         this.insertFlga = false
         this.$nextTick(() => {
           this.insertFlga = true
-          console.log(this.nowRightModulesData)
           this.modulesData = this.nowRightModulesData
           this.sortIndex = newData
         })
@@ -220,7 +224,6 @@ export default {
     },
     // nowRightShowIndex: {
     //   handler (newData) {
-    //     console.log(newData, this.nowRightModulesData)
     //     this.$nextTick(() => {
     //       console.log(newData, this.nowRightModulesData)
     //       // this.modulesData = this.nowRightModulesData

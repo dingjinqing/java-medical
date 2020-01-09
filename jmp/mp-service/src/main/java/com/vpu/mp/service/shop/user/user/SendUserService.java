@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record4;
@@ -31,7 +32,6 @@ import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -177,7 +177,7 @@ public class SendUserService extends ShopBaseService {
     private Map<Integer, Record4<Integer,String,String,String>> getAllMpUser(List<Integer> userIds){
         return mpOfficialAccountUserByShop.getAccountUserListByUserIds(userIds)
             .stream()
-            .collect(Collectors.toMap(x->x.get(User.USER.USER_ID),x->x));
+            .collect(Collectors.toMap(x->x.get(User.USER.USER_ID), x->x));
     }
     private Map<Integer, Integer> getAllMaUser(List<Integer> userIds){
         return db().select(MP_TEMPLATE_FORM_ID.USER_ID,count(MP_TEMPLATE_FORM_ID.USER_ID).as("numbers"))
