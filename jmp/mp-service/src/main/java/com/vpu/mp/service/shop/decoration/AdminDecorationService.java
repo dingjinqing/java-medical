@@ -211,8 +211,10 @@ public class AdminDecorationService extends ShopBaseService {
             while (elements.hasNext()) {
                 Map.Entry<String, JsonNode> node = elements.next();
                 String key = node.getKey();
+
                 Object element = this.processModule(objectMapper, node);
                 result.put(key, element);
+
             }
         } catch (Exception e) {
             logger().error("装修转换错误:",e);
@@ -294,9 +296,7 @@ public class AdminDecorationService extends ShopBaseService {
         }
         if(node.getKey().equals("page_cfg")){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
-            if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
-                pageCfg.getPictorial().setShareImgPath(domainConfig.imageUrl(pageCfg.getPictorial().getShareImgPath()));
-            }
+            pageCfg.getPictorial().setShareImgPath(domainConfig.imageUrl(pageCfg.getPictorial().getShareImgPath()));
             return pageCfg;
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);

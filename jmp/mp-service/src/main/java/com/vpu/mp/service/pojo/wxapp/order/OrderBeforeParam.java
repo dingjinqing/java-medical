@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import lombok.Getter;
