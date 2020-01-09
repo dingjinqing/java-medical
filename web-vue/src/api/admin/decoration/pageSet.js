@@ -71,7 +71,7 @@ export function pageCopy (data) {
 // 编辑获取页面信息
 export function pageEdit (data) {
   return service({
-    url: '/api/admin/decorate/page/edit',
+    url: '/api/admin/decorate/page/get',
     method: 'post',
     data: data
   })
