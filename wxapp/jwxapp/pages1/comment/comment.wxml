@@ -21,14 +21,14 @@
             <text wx:if="{{item.commentType===1}}">{{i18n.$t(localePack,"page1.comment.aChangeAfterEvaluation")}}</text>
             <!-- 评价类型为自定义 -->
             <text wx:else>
-            <text>{{i18n.$t(localePack,"page1.comment.evaluation")}}</text>
-            <text wx:if="{{item.commentType === 1}}"></text>
-            <text wx:else>
-              <text wx:if="{{item.hasFiveStars}}">"{{i18n.$t(localePack,"page1.comment.fiveStar")}}"</text>
-              <text wx:if="{{item.commentWords}}">"{{i18n.$t(localePack,"page1.comment.over")}}{{item.commentWords}}{{i18n.$t(localePack,"page1.comment.word")}}"</text>
-              <text wx:if="{{item.hasPicNum}}">"{{i18n.$t(localePack,"page1.comment.blueprint")}}"</text>
-            </text>
-            <text>,{{i18n.$t(localePack,"page1.comment.afterHaving")}}</text>
+              <text>{{i18n.$t(localePack,"page1.comment.evaluation")}}</text>
+              <text wx:if="{{item.commentType === 1}}"></text>
+              <text wx:else>
+                <text wx:if="{{item.hasFiveStars}}">"{{i18n.$t(localePack,"page1.comment.fiveStar")}}"</text>
+                <text wx:if="{{item.commentWords}}">"{{i18n.$t(localePack,"page1.comment.over")}}{{item.commentWords}}{{i18n.$t(localePack,"page1.comment.word")}}"</text>
+                <text wx:if="{{item.hasPicNum}}">"{{i18n.$t(localePack,"page1.comment.blueprint")}}"</text>
+              </text>
+              <text>,{{i18n.$t(localePack,"page1.comment.afterHaving")}}</text>
             </text>
             <!-- 积分 -->
             <text wx:if="{{item.awardType === 1}}">{{item.award}}{{i18n.$t(localePack,"page1.comment.integral")}}</text>
@@ -155,7 +155,7 @@
           </block>
         </view>
       </view>
-      <view wx:if='{{order_completed == ""}}' class="no_such_comment">
+      <view wx:if='{{order_completed == "" || order_completed.length == 0}}' class="no_such_comment">
         <image src="{{imageUrl}}image/wxapp/order-no.png"></image>
         <view>{{i18n.$t(localePack,"page1.comment.noSuchEvaluation")}}</view>
       </view>

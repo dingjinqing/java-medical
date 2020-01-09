@@ -111,6 +111,6 @@ export const cn = {
   validateactName1: '请输入活动名称',
   validateactName2: '长度在不能超过10个字符',
   validatereceivePerPerson: '请选择每人限领张数',
-  validateNum: '请输入0或者正整数！',
-  validateDiscount: '请输入正确的数字！'
+  validateNum: '请输入正数, 可以保留两位小数',
+  validateDiscount: '请输入正确的数字'
 }

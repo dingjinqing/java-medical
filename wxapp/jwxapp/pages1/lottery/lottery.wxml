@@ -1,0 +1,52 @@
+<!--pages1/lottery/lottery.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="main-container">
+  <view class="lucky-draw-page"  style="background-image:url({{bgImg}})">
+    <view class="raffle-records">
+      <text class="raffle-records-text">抽奖记录</text>
+      <image class="raffle-records-icon" src="{{rightIcon}}"></image>
+    </view>
+    <view class="lottery-area">
+      <image src='{{imageUrl}}/image/wxapp/lo_coin1.png' mode='widthFix' class='coin1 coin'></image>
+      <image src='{{imageUrl}}/image/wxapp/lo_coin2.png' mode='widthFix' class='coin2 coin'></image>
+      <image src='{{imageUrl}}/image/wxapp/lo_coin3.png' mode='widthFix' class='coin3 coin'></image>
+      <view class="lottery-bg">
+        <view class="lottery-item" wx:for="123456789">
+          <view class="limiande">
+            <image class="limiande-img" src="{{defaultGiftIcon}}"></image>
+            <view class="limiande-text">四等奖</view>
+          </view>
+        </view>
+      </view>
+      <view class="lottery-broadcast">
+        <image class="lottery-broadcast-img" src="{{broadcastIcon}}" mode="widthFix"></image>
+        <swiper class="lottery-broadcast-swiper" autoplay="true" circular="false" vertical="true" interval="1500">
+          <block wx:for="{{lotteryInfo.resentRecord}}"></block>
+          <swiper-item>
+            <view class="lo-words clearfix">
+              {{item.username}}获得
+              <text wx:if='{{item.lotteryGrade == 1}}'>{{lotteryInfo.first_award.iconText}}</text>
+                <text wx:if='{{item.lotteryGrade == 2}}'>{{lotteryInfo.second_award.iconText}}</text>
+                <text wx:if='{{item.lotteryGrade == 3}}'>{{lotteryInfo.third_award.iconText}}</text>
+                <text wx:if='{{item.lotteryGrade == 4}}'>{{lotteryInfo.fourth_award.iconText}}</text>
+                <text wx:if='{{item.lottery_type != 4}}'>{{item.lottery_award}}</text>
+                <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lotteryGrade == 1}}'>{{lotteryInfo.goodsName[1]}}</text>
+                <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lotteryGrade == 2}}'>{{lotteryInfo.goodsName[2]}}</text>
+                <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lotteryGrade == 3}}'>{{lotteryInfo.goodsName[3]}}</text>
+                <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lotteryGrade == 4}}'>{{lotteryInfo.goodsName[4]}}</text>
+            </view>
+          </swiper-item>
+        </swiper>
+      </view>
+    </view>
+    <view class="lottery-opera">
+      <button class="lottery-btn">立即抽奖</button>
+    </view>
+    <view class="lottery-intro">
+      <view class="lottery-opportunities">消耗200积分可获得额外一次抽奖机会哦</view>
+      <view class="lottery-opportunities">分享给好友可获得额外一次抽奖机会哦</view>
+      <view class="lottery-opportunities">您有10次抽奖机会</view>
+    </view>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml"/>

@@ -11,7 +11,10 @@ import lombok.Data;
  */
 @Data
 public class VisitStatisticsVo {
-
+    private Double totalNum;
+    private Double averageNum;
+    private String startDate;
+    private String endDate;
     private List<String> date;
     private List<Double> list;
 }

@@ -34,7 +34,7 @@ global.wxComponent({
         })
         util.api('/api/wxapp/wxdecrypt', function (res) {
           if (res.error == 0) {
-            var mobile = res.content.phoneNumber;
+            var mobile = res.content;
             util.setCache("mobile", mobile);
             _this.$emit("get_phone_number_ok", res.content);
             return;
