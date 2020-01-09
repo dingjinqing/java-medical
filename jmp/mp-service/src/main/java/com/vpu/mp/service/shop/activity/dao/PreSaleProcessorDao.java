@@ -2,8 +2,7 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import org.jooq.Condition;
 import org.jooq.Record3;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
  * @date 2019年11月01日
  */
 @Service
-public class PreSaleProcessorDao extends ShopBaseService {
+public class PreSaleProcessorDao extends PreSaleService {
 
     /**
      * 获取商品集合内的预售信息

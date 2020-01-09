@@ -1,10 +1,13 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,7 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
  * @date 2019年11月01日
  */
 @Service
-public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor {
+public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,CreateOrderProcessor {
     @Autowired
     PreSaleProcessorDao preSaleProcessorDao;
 
@@ -58,5 +61,20 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor {
             capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
 
         });
+    }
+
+    @Override
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+
+    }
+
+    @Override
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
     }
 }

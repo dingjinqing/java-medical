@@ -9,7 +9,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
-import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import lombok.Getter;
@@ -70,7 +69,6 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private Map<Integer, Goods> goodsMap;
     @JsonIgnore
     /**方便查找*/
-
     private List<OrderGoodsBo> bos;
 	/**方便查找*/
 	/** 订单业务处理方法*/
@@ -127,8 +125,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private Integer purchasePriceRuleId;
 		private String promoteInfo;
 		/** 拼团的 折后团长优惠价*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private BigDecimal grouperTotalReduce=BigDecimal.ZERO;
 		/** 拼团的 折后团长优惠价单价，逐级计算折扣单价*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private BigDecimal grouperGoodsReduce =BigDecimal.ZERO;
 		/**以下为后台产生逻辑值directPurchase*/
         /** 规格价 */

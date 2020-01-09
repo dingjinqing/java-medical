@@ -31,6 +31,7 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -67,6 +68,7 @@ import static org.springframework.util.StringUtils.isEmpty;
  * @author 郑保乐
  */
 @Service
+@Primary
 public class PreSaleService extends ShopBaseService {
 
     /**
