@@ -76,7 +76,6 @@ global.wxPage({
   onLoad: function (opt) {
     if (!util.check_setting(opt)) return;
     var that = this;
-    debugger
     order_sn = opt.order_sn || opt.orderSn;
     wx.hideShareMenu(); // 隐藏转发按钮
     this.get_comment(that, 0);
