@@ -295,9 +295,8 @@ export default {
       })
     },
     beforeUploadHandle (file) {
-      let isXls = file.type === 'application/vnd.ms-excel application/x-excel'
-      let isXlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      if (!isXls && !isXlsx) {
+      let isXls = /\.(xls|xlsx|csv)$/.test(file.name)
+      if (!isXls) {
         this.$message.warning('上传文件只支持xls、xlsx格式！')
         this.fileList = []
         this.$set(this.importInfo, 'filename', '')
