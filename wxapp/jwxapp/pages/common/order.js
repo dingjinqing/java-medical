@@ -35,7 +35,7 @@ var order = {
     util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
   },
   //发货
-  confirmation (orderSn,orderId){
+  confirmation (orderSn, orderId) {
     util.api(
       "/api/wxapp/order/operation",
       res => {
@@ -180,7 +180,7 @@ var order = {
       isPayEndPayment: (() => {
         return this.viewComment;
       })(),
-      confirmation:(()=>{
+      confirmation: (() => {
         return this.confirmation;
       })(),
       returnCenter: (() => {
@@ -213,7 +213,7 @@ var order = {
     ) {
       return "等待领取";
     } else {
-      if (orderData.orderStatus != 3 && orderData.partShipFlag != 5) {
+      if (orderData.orderStatus != 3 && orderData.orderStatus != 5) {
         if (orderData.orderStatus == 0 && typeArray.indexOf("10") != -1) {
           if (orderData.bkOrderPaid == 0) {
             return "代付定金";
