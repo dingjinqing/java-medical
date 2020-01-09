@@ -44,7 +44,7 @@ public class WxAppDistributionController extends WxAppBaseController{
     }
 	
 	/**
-	 * 用户申请成为分销员
+	 * 用户申请成为分销员接口
 	 * @param param
 	 * @return
 	 */
