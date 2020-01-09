@@ -18,7 +18,8 @@ export const cn = {
   asset_summary: ['概况', '资产管理'],
   // 概况 访问分析
   analysis_visit: ['概况', '访问分析'],
-
+  // 概况 来源分析
+  analysis_visit_source: ['概况', '来源分析'],
   // 概况 用户画像
   analysis_portrait: ['概况', '用户画像'],
 

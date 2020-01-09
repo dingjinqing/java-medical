@@ -1,6 +1,6 @@
 <template>
   <section class="label">
-    <div class="labelItem">营收概况及趋势 <el-button type="text" @click="toDetail()">查看明细</el-button></div>
+    <div class="labelItem">{{$t('assetsManage.overviewTrends')}} <el-button type="text" @click="toDetail()">{{$t('assetsManage.details')}}</el-button></div>
     <el-select
       v-model="timeSelect"
       size="small"
@@ -59,7 +59,7 @@
           class="num"
           style="color: #5A8BFF"
         >{{item.number}}  ￥</div>
-        <div>较前一周期 {{item.rate}}</div>
+        <div>{{$t('assetsManage.previous')}} {{item.rate}}</div>
       </div>
     </div>
 
@@ -223,19 +223,19 @@ export default {
 
       this.table = [
         {
-          name: '净收入',
+          name: this.$t('assetsManage.income'),
           content: this.$t('userStatistics.content1'),
           number: this.originalData.incomeRealMoney,
           rate: this.originalData.incomeRealMoneyPer
         },
         {
-          name: '总收入',
+          name: this.$t('assetsManage.revenue'),
           content: this.$t('userStatistics.content2'),
           number: this.originalData.incomeTotalMoney,
           rate: this.originalData.incomeTotalMoneyPer
         },
         {
-          name: '总支出',
+          name: this.$t('assetsManage.expenses'),
           content: this.$t('userStatistics.content3'),
           number: this.originalData.outgoMoney,
           rate: this.originalData.outgoMoneyPer
@@ -267,17 +267,17 @@ export default {
         },
         series: [
           {
-            name: '净收入',
+            name: this.$t('assetsManage.income'),
             type: 'line',
             data: this.chartChange.incomeRealMoney
           },
           {
-            name: '总收入',
+            name: this.$t('assetsManage.revenue'),
             type: 'line',
             data: this.chartChange.incomeTotalMoney
           },
           {
-            name: '总支出',
+            name: this.$t('assetsManage.expenses'),
             type: 'line',
             data: this.chartChange.outgoMoney
           }
