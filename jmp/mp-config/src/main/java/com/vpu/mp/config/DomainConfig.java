@@ -22,7 +22,7 @@ public class DomainConfig {
 	@Value(value = "${domain.image}")
 	protected String imageDomain;
 
-    @Value(value = "${domain.video}")
+    @Value(value = "${uyun.video.domain}")
     protected String videoDomain;
 
     /**
