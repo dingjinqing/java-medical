@@ -138,8 +138,8 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
 
         // 设置促销列表里的内容
         FirstSpecialPromotion promotion = new FirstSpecialPromotion();
-        promotion.setPromotionId(param.getActivityId());
-        promotion.setPromotionType(param.getActivityType());
+        promotion.setPromotionId(vo.getActivityId());
+        promotion.setPromotionType(vo.getActivityType());
         promotion.setIsLimit(vo.getIsLimit());
         promotion.setLimitAmount(vo.getLimitAmount());
         promotion.setLimitFlag(vo.getLimitFlag());

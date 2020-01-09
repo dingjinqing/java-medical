@@ -8,10 +8,7 @@ import com.vpu.mp.service.foundation.validator.ValidList;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
-import com.vpu.mp.service.pojo.shop.decoration.BatchSetPageCateParam;
-import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
-import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
-import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
+import com.vpu.mp.service.pojo.shop.decoration.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -170,8 +167,8 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/page/save")
-	public JsonResult saveDecoration(@RequestBody XcxCustomerPageVo param) {
-		boolean res = shop().mpDecoration.saveDecoration(param);
+	public JsonResult saveDecoration(@RequestBody @Valid PageStoreParam param) {
+		boolean res = shop().mpDecoration.storePage(param);
 		if(res) {
 			return this.success();
 		}else {

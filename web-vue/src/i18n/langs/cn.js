@@ -70,6 +70,10 @@ import {
 import {
   cn as userStatistics
 } from './views/admin_new/cn/index/overview/userStatistics/userStatisticsCn'
+// 资产管理
+import {
+  cn as assetsManage
+} from './views/admin_new/cn/index/overview/assetsManage/assetsManageCn'
 
 // 用户画像
 import {
@@ -924,6 +928,7 @@ const cn = {
   // 用户画像
   userportrait,
   userStatistics, // 用户统计
+  assetsManage, // 资产管理
 
   // 小程序管理
   pictureSetting,
