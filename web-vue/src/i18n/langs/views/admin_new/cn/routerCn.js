@@ -76,6 +76,8 @@ export const cn = {
   integralDetail: ['会员管理', '会员列表', '积分明细'],
   // 会员管理 会员导入
   membershipIntroduction: ['会员管理', '会员导入'],
+  // 会员管理 会员导入 未激活会员
+  inactiveMembersList: ['会员管理', '会员导入', '未激活会员'],
   // 会员管理 会员卡
   userCard: ['会员管理', '普通会员卡'],
   // 会员管理 限次

@@ -104,6 +104,8 @@ export const en = {
   ],
   // 会员管理 会员导入
   membershipIntroduction: ['Membership management', 'Membership List'],
+  // 会员管理 会员导入 未激活会员
+  inactiveMembersList: ['Membership management', 'Membership List', 'Member not activated'],
   // 会员管理 积分管理
   integralManagement: ['Member ', 'Score MGR'],
   // 会员管理 标签管理
