@@ -399,7 +399,9 @@ export default {
             arr.push(moduleDataCopy[item])
           })
           console.log(arr)
-          this.modulesData = arr
+          this.$nextTick(() => {
+            this.modulesData = arr
+          })
           this.handleToTurnModulesName(arr)
         }
       })
