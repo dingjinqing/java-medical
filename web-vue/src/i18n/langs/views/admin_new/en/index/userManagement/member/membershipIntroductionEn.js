@@ -238,17 +238,20 @@ export const en = {
   placeChoise: 'Please choose',
   placeinpuLabel: 'Please enter the label',
   userFromSource: [{
-    value: '-2',
+    value: '0',
     label: 'ALL'
   }, {
     value: '-1',
-    label: 'Not acquired'
+    label: 'Search'
   }, {
-    value: '0',
-    label: 'Back stage'
+    value: '-2',
+    label: 'Share'
   }, {
     value: '-3',
     label: 'ScanQrCode'
+  }, {
+    value: '-4',
+    label: 'Not acquired'
   }],
   allSource: 'ALL',
   notAcquired: 'Not acquired',

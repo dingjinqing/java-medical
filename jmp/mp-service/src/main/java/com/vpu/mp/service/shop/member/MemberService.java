@@ -1,11 +1,50 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.db.shop.tables.records.UserTagRecord;
+import static com.vpu.mp.db.shop.Tables.CHANNEL;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
+import static com.vpu.mp.db.shop.Tables.TAG;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.InsertValuesStep2;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectField;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.db.shop.tables.records.TagRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -22,7 +61,19 @@ import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
-import com.vpu.mp.service.pojo.shop.member.*;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberParam;
+import com.vpu.mp.service.pojo.shop.member.MemberRecordExportVo;
+import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
+import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.SourceNameEnum;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
@@ -36,39 +87,7 @@ import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.*;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.CHANNEL;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
-import static com.vpu.mp.db.shop.Tables.TAG;
-import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.*;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_SCAN_QRCODE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_CHANNAL_PAGE;
-
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
 
 /**
  * 
@@ -203,31 +222,34 @@ public class MemberService extends ShopBaseService {
 	 */
 	private String getSourceName(String language, MemberInfoVo member) {
 		logger().info("正在获取用户来源信息");
-		String sourceName = null;
-		if (SRC_NOT_ACQUIRED.getCode().equals(member.getSource())
-				&& !(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource()))
-				&& !(SRC_SCAN_QRCODE.getCode().equals(member.getSource()))) {
-			/** 未获取 */
-			sourceName = Util.translateMessage(language, SRC_NOT_ACQUIRED.getName(), "member");
-			logger().info(sourceName);
-		} else if (SRC_BACK_STAGE.getCode().equals(member.getSource())) {
-			/** 后台 */
-			sourceName = Util.translateMessage(language, SRC_BACK_STAGE.getName(), "member");
-		} else if (INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
-			/** 渠道页-- */
+		// 微信后台相关来源
+		String sourceName = SourceNameEnum.getI18NameByCode(member.getScene(), language);
+		final String SYMBOL = "; ";
+		if(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
+			// 渠道页
+			StringBuilder tmp = new StringBuilder();
 			String channelName = db().select(CHANNEL.CHANNEL_NAME).from(CHANNEL)
 					.where(CHANNEL.ID.eq(member.getInviteActId())).fetchOne().into(String.class);
-			sourceName = Util.translateMessage(language, SRC_CHANNAL_PAGE.getName(), "member") + channelName;
-		} else if (SRC_SCAN_QRCODE.getCode().equals(member.getSource())
-				|| INVITE_SOURCE_SCANQRCODE.equals(member.getInviteSource())) {
-			/** 扫码进入 */
-			sourceName = Util.translateMessage(language, SRC_SCAN_QRCODE.getName(), "member");
-		} else {
-			/** 门店名称 */
-			if(member.getSource() != null) {
-                sourceName = store.getStoreName(new Integer(member.getSource()));
+			if(!StringUtils.isBlank(sourceName)) {
+				tmp.append(sourceName);
+				tmp.append(SYMBOL);
 			}
+			tmp.append(Util.translateMessage(language, "member.channal.page", "member"));
+			tmp.append(channelName);
+			sourceName =  tmp.toString();
 		}
+		
+		if(member.getSource()!=null && member.getSource()>0) {
+			// 门店
+			StringBuilder tmp = new StringBuilder();
+			if(!StringUtils.isBlank(sourceName)) {
+				tmp.append(sourceName);
+				tmp.append(SYMBOL);
+			}
+			tmp.append(store.getStoreName(new Integer(member.getSource())));
+			sourceName = tmp.toString();
+		}
+
 		return sourceName;
 	}
 	

@@ -17,7 +17,7 @@ import lombok.Data;
 @Data
 public class UIGetNoActListParam {
 	/** 批次Id */
-	@NotBlank(message = JsonResultMessage.BATCHID_NOT_NULL)
+	//@NotBlank(message = JsonResultMessage.BATCHID_NOT_NULL)
 	private Integer batchId;
 	private Timestamp startTime;
 	private Timestamp endTime;

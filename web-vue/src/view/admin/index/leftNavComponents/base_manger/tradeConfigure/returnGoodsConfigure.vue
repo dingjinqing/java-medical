@@ -10,12 +10,15 @@
           inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
-        {{this.afterSalesConfiguration?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
+        {{afterSalesConfiguration?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
         <label class="onText">{{$t('returnconfiguration.activeafterconfig')}}</label>
       </div>
     </section>
     <!-- 退货配置 -->
-    <section class="returnGoods" v-if="this.afterSalesConfiguration">
+    <section
+      class="returnGoods"
+      v-if="afterSalesConfiguration"
+    >
       <div class='title'>{{$t('returnconfiguration.returnconfig')}}：</div>
       <div class="content">
         <div style="margin-top: 20px">
@@ -49,14 +52,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectgoods')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="goodsN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="goodsN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="goodsN"
-            ></el-input>  件 商品
+            ></el-input> 件 商品
           </div>
         </div>
         <div
@@ -68,14 +74,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectplant')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="platN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="platN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="platN"
-            ></el-input>  个 平台分类
+            ></el-input> 个 平台分类
           </div>
         </div>
         <div
@@ -87,14 +96,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectshop')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="busClassN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="busClassN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="busClassN"
-            ></el-input>  个 商家分类
+            ></el-input> 个 商家分类
           </div>
         </div>
         <div
@@ -106,14 +118,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectlabel')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="labelN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="labelN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="labelN"
-            ></el-input>  个 商品标签
+            ></el-input> 个 商品标签
           </div>
         </div>
         <div
@@ -125,14 +140,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectbrand')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="brandN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="brandN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="brandN"
-            ></el-input>  个 商品品牌
+            ></el-input> 个 商品品牌
           </div>
         </div>
       </div>
@@ -197,7 +215,7 @@
             <el-input
               size="mini"
               class="inputWidth"
-              v-model="returnParam.return_shopping_days"
+              v-model="returnParam.return_shipping_days"
             ></el-input>
             <span>{{$t('returnconfiguration.note33')}}</span>
           </div>
@@ -221,7 +239,7 @@
         </div>
       </div>
     </section>
-<!--    售后商品库存配置-->
+    <!--    售后商品库存配置-->
     <section class="configureWrapper">
       <div class="title">
         <span></span>
@@ -373,7 +391,7 @@ export default {
         auto_return: 0,
         return_money_days: 7,
         return_address_days: 7,
-        return_shopping_days: 7,
+        return_shipping_days: 7,
         return_pass_days: 7,
         order_return_goods_package: {
           add_goods: [],

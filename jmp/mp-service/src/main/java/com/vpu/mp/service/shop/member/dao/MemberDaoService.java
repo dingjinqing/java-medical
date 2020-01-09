@@ -10,7 +10,6 @@ import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
@@ -79,7 +78,7 @@ public class MemberDaoService extends ShopBaseService {
 
 		SelectOnConditionStep<? extends Record> select = db()
 				.selectDistinct(USER.USER_ID, USER.USERNAME.as(USER_NAME), aliasUser.USERNAME.as(INVITE_USERNAME), USER.MOBILE,
-						USER.ACCOUNT, USER.SCORE, USER.SOURCE, USER.CREATE_TIME, USER.DEL_FLAG, USER_DETAIL.REAL_NAME)
+						USER.ACCOUNT, USER.SCORE, USER.SOURCE, USER.SCENE,USER.CREATE_TIME, USER.DEL_FLAG, USER_DETAIL.REAL_NAME)
 				.from(USER)
 				.leftJoin(aliasUser).on(aliasUser.USER_ID.eq(USER.INVITE_ID))
 				.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(USER.USER_ID));
@@ -148,7 +147,7 @@ public class MemberDaoService extends ShopBaseService {
 		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
 		
 		return db().select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,a.SCORE,a.ACCOUNT,
-				a.INVITE_ID, a.SOURCE, a.UNIT_PRICE, inviteName, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
+				a.INVITE_ID, a.SOURCE,a.SCENE, a.UNIT_PRICE, inviteName, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
 				USER_DETAIL.PROVINCE_CODE, a.IS_DISTRIBUTOR, USER_DETAIL.CITY_CODE, USER_DETAIL.DISTRICT_CODE,
 				USER_DETAIL.BIRTHDAY_DAY, USER_DETAIL.BIRTHDAY_MONTH, USER_DETAIL.BIRTHDAY_YEAR, USER_DETAIL.SEX,
 				USER_DETAIL.MARITAL_STATUS, USER_DETAIL.MONTHLY_INCOME, USER_DETAIL.CID,USER_DETAIL.USER_AVATAR)
@@ -296,7 +295,7 @@ public class MemberDaoService extends ShopBaseService {
 				.and(getUserIdCondition(param.getUserId()))
 				.and(getMobileCondition(param.getMobile()))
 				.and(getUserNameCondition(param.getUsername()))
-				.and(getSourceCondition(param.getSource()))
+				.and(getSourceCondition(param.getSource(),param.getType(),param.getChannelId()))
 				.and(getInviteUserCondition(param.getInviteUserName()))
 				.and(getUserCardCondition(param.getCardId()))
 				.and(getTagNameCondition(param.getTagName()))
@@ -372,17 +371,32 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 来源条件
+	 * @Param source 来源信息
+	 * @Param type 类型  0 微信，1 门店，2渠道页
+	 * @Param channelId 渠道页
+	 * 
 	 */
-	private Condition getSourceCondition(Integer source) {
+	private Condition getSourceCondition(Integer source,Integer type,Integer channelId) {
 		Condition condition = DSL.noCondition();
-		if(isNotNull(source)&&isNotAllStore(source)) {
-			condition = condition.and(USER.SOURCE.eq(source));
+		
+		if(isNotNull(source)) {
+			if(source<0) {
+				// 微信来源
+				condition = condition.and(USER.SCENE.eq(source));
+			}else if(source>0) {
+				// 门店
+				condition = condition.and(USER.SOURCE.eq(source));
+			}else if(type!=null && NumberUtils.INTEGER_TWO.equals(type)) {
+				condition = condition.and(USER.INVITE_SOURCE.eq("channel"))
+								.and(USER.INVITE_ACT_ID.eq(channelId));
+			}
 		}
 		return condition;
 	}
-	private boolean isNotAllStore(Integer source) {
-		return !SRC_ALL.getCode().equals(source);
-	}
+	
+	
+	
+
 	
 	/**
 	 * 邀请人条件
