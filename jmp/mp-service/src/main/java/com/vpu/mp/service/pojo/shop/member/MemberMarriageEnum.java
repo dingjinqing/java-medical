@@ -118,7 +118,7 @@ public enum MemberMarriageEnum {
 		MemberMarriageEnum[] values = MemberMarriageEnum.values();
 		String[] result=new String[values.length];
 		for (int i = 0; i < values.length; i++) {
-			result[i]=MemberMarriageEnum.getNameByCode(i,lang);
+			result[i]=MemberMarriageEnum.getNameByCode(i+1,lang);
 		}
 		return result;
 	}
