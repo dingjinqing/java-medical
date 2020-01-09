@@ -1308,7 +1308,11 @@ public class MemberCardService extends ShopBaseService {
 				.intoMap(MEMBER_CARD.ID, MemberCardRecord.class);
 
 		logger().info("一共查询到: " + map.size() + " 张会员卡");
-
+		if(map.size()==0) {
+			return;
+		}
+			
+		
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime expireTime = null;
 		/** 过期时间-多少日内 */
