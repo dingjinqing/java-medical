@@ -169,7 +169,7 @@ import com.vpu.mp.service.shop.store.store.StoreService;
  *
  * @author 黄壮壮
  * @Date: 2019年7月30日
- * @Description: 会员卡服务
+ * @Description: 会员卡服务..
  */
 @Service
 public class MemberCardService extends ShopBaseService {
