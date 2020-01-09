@@ -5,25 +5,23 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
-import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
-import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.ShopCollectInfo;
+import com.vpu.mp.service.pojo.wxapp.decorate.PageCfgVo;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageVo;
@@ -32,17 +30,12 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
-import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.market.bargain.BargainService;
-import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.user.user.UserService;
+import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +44,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 /**
@@ -59,7 +51,7 @@ import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
  */
 
 @Service
-public class ShopMpDecorationService extends ShopBaseService {
+public class MpDecorationService extends ShopBaseService {
 
     @Autowired
     protected ConfigService config;
@@ -73,94 +65,9 @@ public class ShopMpDecorationService extends ShopBaseService {
     @Autowired
     protected GoodsMpService goodsMpService;
 
-    @Autowired
-    protected CouponMpService couponMpService;
 
     @Autowired
-    protected BargainService bargainService;
-
-    @Autowired
-    protected SeckillService seckillService;
-
-
-    @Autowired
-    private QrCodeService qrCode;
-
-    /**
-     * 装修页面列表
-     *
-     * @param param
-     * @return
-     */
-    public PageResult<XcxCustomerPageVo> getPageList(XcxCustomerPageVo param) {
-        if (getPageCount() == 0) {
-            this.addDefaultPage();
-        }
-        System.out.println(param);
-        SelectWhereStep<? extends Record> select = db()
-            .select(XCX_CUSTOMER_PAGE.PAGE_ID, XCX_CUSTOMER_PAGE.PAGE_NAME, XCX_CUSTOMER_PAGE.CREATE_TIME,
-                XCX_CUSTOMER_PAGE.PAGE_TYPE, XCX_CUSTOMER_PAGE.CAT_ID, PAGE_CLASSIFICATION.NAME)
-            .from(XCX_CUSTOMER_PAGE
-                .leftJoin(PAGE_CLASSIFICATION)
-                .on(XCX_CUSTOMER_PAGE.CAT_ID.eq(PAGE_CLASSIFICATION.ID)));
-        select = buildOptions(select, param);
-        select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
-        return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), XcxCustomerPageVo.class);
-    }
-
-    /**
-     * 查询条件
-     *
-     * @param select
-     * @param param
-     * @return
-     */
-    public SelectWhereStep<? extends Record> buildOptions(
-        SelectWhereStep<? extends Record> select, XcxCustomerPageVo param) {
-        Byte enabled = 1;
-        select.where(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
-        // 页面内容
-        if (param.getPageName() != null) {
-            select.where(XCX_CUSTOMER_PAGE.PAGE_NAME.contains(param.getPageName()));
-        }
-
-        // 页面分类
-        if (param.getCatId() != null && param.getCatId() > 0) {
-            select.where(XCX_CUSTOMER_PAGE.CAT_ID.eq(param.getCatId()));
-        }
-
-        return select;
-    }
-
-    /**
-     * 添加默认装修页
-     *
-     * @return
-     */
-    public int addDefaultPage() {
-        return db()
-            .insertInto(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_NAME, XCX_CUSTOMER_PAGE.PAGE_TYPE,
-                XCX_CUSTOMER_PAGE.PAGE_TPL_TYPE)
-            .values("首页", (byte) 1, (byte) 3)
-            .execute();
-    }
-
-    /**
-     * 添加页面
-     *
-     * @param param
-     * @return
-     */
-    public Integer addPage(XcxCustomerPageVo param) {
-        if(validJson(param.getPageContent()) && validJson(param.getPagePublishContent())){
-            XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
-            this.assign(param, record);
-            record.insert();
-            int pageId = record.getPageId();
-            return pageId;
-        }
-        return 0;
-    }
+    private DomainConfig domainConfig;
 
     public int setPageCatId(Integer pageId, Integer catId) {
         return db().update(XCX_CUSTOMER_PAGE)
@@ -173,16 +80,6 @@ public class ShopMpDecorationService extends ShopBaseService {
         return db().deleteFrom(XCX_CUSTOMER_PAGE)
             .where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)))
             .execute();
-    }
-
-    /**
-     * 获取装修页面
-     *
-     * @param pageId
-     * @return
-     */
-    public XcxCustomerPageRecord getPageById(Integer pageId) {
-        return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)));
     }
 
     /**
@@ -242,150 +139,6 @@ public class ShopMpDecorationService extends ShopBaseService {
     }
 
     /**
-     * 获取装修页面数量
-     *
-     * @return
-     */
-    public int getPageCount() {
-        Byte enabled = 1;
-        return db().fetchCount(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
-    }
-
-    /**
-     * 取得全部装修页面
-     *
-     * @param param
-     * @return
-     */
-//	public Result<RecordAction> getMpList(PageListQueryParam param) {
-//		if (getPageCount() == 0) {
-//			this.addDefaultPage();
-//		}
-//		SelectWhereStep<RecordAction> select = db().select().from(XCX_CUSTOMER_PAGE);
-//		select = this.buildOptions(select, param);
-//		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
-//		return select.fetch();
-//	}
-
-    /**
-     * 设置首页(事务处理)
-     *
-     * @param param
-     * @return
-     */
-    public boolean setIndex(setIndexParam param) {
-        this.transaction(() -> {
-            db().update(XCX_CUSTOMER_PAGE)
-                .set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 0)
-                .where(XCX_CUSTOMER_PAGE.PAGE_TYPE.eq((byte) 1))
-                .execute();
-            db().update(XCX_CUSTOMER_PAGE)
-                .set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 1)
-                .where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((param.getPageId())))
-                .execute();
-        });
-        return true;
-    }
-
-    /**
-     * 编辑-获取装修页面数据
-     *
-     * @param param
-     * @return
-     */
-    public XcxCustomerPageRecord editPage(setIndexParam param) {
-        return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()));
-    }
-
-    /**
-     * 获取页面分类信息
-     *
-     * @return
-     */
-    public List<PageClassificationVo> getPageCate() {
-        List<PageClassificationVo> list = db().select(PAGE_CLASSIFICATION.ID, PAGE_CLASSIFICATION.NAME)
-            .from(PAGE_CLASSIFICATION)
-            .fetch().into(PageClassificationVo.class);
-        return list;
-    }
-
-    /**
-     * 删除装修页面
-     *
-     * @param param
-     * @return
-     */
-    public int delXcxPage(PageClassificationVo param) {
-        int result = db()
-            .update(XCX_CUSTOMER_PAGE)
-            .set(XCX_CUSTOMER_PAGE.PAGE_ENABLED, (byte) 0)
-            .where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()))
-            .execute();
-        return result;
-    }
-
-    /**
-     * 保存页面分类数据
-     *
-     * @param param
-     * @param param
-     * @return
-     */
-    public int setPageCate(PageClassificationVo param) {
-
-        int result = db().update(XCX_CUSTOMER_PAGE)
-            .set(XCX_CUSTOMER_PAGE.CAT_ID, param.getId())
-            .where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()))
-            .execute();
-        return result;
-    }
-
-    /**
-     * 批量设置页面分类（事务处理）
-     *
-     * @param param
-     * @return
-     */
-    public boolean batchSetPageCate(BatchSetPageCateParam param) {
-        List<String> pageIds = Arrays.asList(param.getPageIds().split(","));
-        this.transaction(() -> {
-            for (String pageId : pageIds) {
-                int setPageId = Integer.parseInt(pageId);
-                db().update(XCX_CUSTOMER_PAGE)
-                    .set(XCX_CUSTOMER_PAGE.CAT_ID, param.getId())
-                    .where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(setPageId))
-                    .execute();
-            }
-        });
-        return true;
-    }
-
-    /**
-     * 编辑保存
-     *
-     * @param info
-     * @return
-     */
-    public Boolean saveDecoration(XcxCustomerPageVo info) {
-        XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, info);
-        int res = db().executeUpdate(record);
-        if (res > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 获取首页
-     *
-     * @return
-     */
-    public XcxCustomerPageRecord getIndex() {
-        return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_TYPE.eq((byte) 1));
-    }
-
-    /**
      * 克隆系统模板
      *
      * @param templateId
@@ -400,43 +153,6 @@ public class ShopMpDecorationService extends ShopBaseService {
     }
 
     /**
-     * 复制已有页面
-     *
-     * @param pageId
-     * @return
-     */
-    public Boolean copyDecoration(Integer pageId) {
-        XcxCustomerPageRecord source = this.getPageById(pageId);
-        XcxCustomerPageRecord page = db().newRecord(XCX_CUSTOMER_PAGE);
-        page.setPageName(source.getPageName() + "+copy");
-        page.setPageContent(source.getPageContent());
-        page.setShopId(source.getShopId());
-        page.setPageType((byte) 0);
-        page.setPageEnabled(source.getPageEnabled());
-        page.setPageTplType(source.getPageTplType());
-        page.setPageContent(source.getPageContent());
-        page.setPagePublishContent(source.getPagePublishContent());
-        page.setPageState(source.getPageState());
-        page.setCatId(source.getCatId());
-        page.insert();
-        return true;
-    }
-
-    /**
-     * 获取小程序码
-     */
-    public ShareQrCodeVo getMpQrCode(Integer pageId) {
-
-        String pathParam = "page=" + pageId;
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
-
-        ShareQrCodeVo vo = new ShareQrCodeVo();
-        vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.INDEX.getPathUrl(pathParam));
-        return vo;
-    }
-
-    /**
      * 获取分类下页面个数
      *
      * @param catId
@@ -447,68 +163,22 @@ public class ShopMpDecorationService extends ShopBaseService {
     }
 
     /**
-     * 保存页面，包含添加和更新
+     * 获取首页
      *
-     * @param page
      * @return
      */
-    public XcxCustomerPageRecord storePage(PageStoreParam page) {
-        page.setPageContent(processMapModule(page.getPageContent()));
-        recordPageChange(page);
-        XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
-
-        record.setPageContent(page.getPageContent());
-        record.setPageName(page.getPageName());
-        record.setCatId(page.getCatId() == null ? 0 : page.getCatId());
-
-        Byte toPublishState = 1;
-        if (page.pageState.equals(toPublishState)) {
-            record.setPagePublishContent(page.getPageContent());
-        }
-        if (page.pageId != null) {
-            XcxCustomerPageRecord oldRecord = this.getPageById(page.pageId);
-            record.setPageId((page.getPageId()));
-            Byte toDraftState = 3;
-            if (page.pageState.equals(toDraftState)) {
-                record.setPageContent(oldRecord.getPagePublishContent());
-            }
-            record.update();
-            return record;
-        }
-
-        record.insert();
-        return record;
+    public XcxCustomerPageRecord getIndex() {
+        return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_TYPE.eq((byte) 1));
     }
 
     /**
-     * 处理Map模块
+     * 获取装修页面
      *
-     * @param pageContent
+     * @param pageId
      * @return
      */
-    protected String processMapModule(String pageContent) {
-        return pageContent;
-    }
-
-    /**
-     * 记录页面变化部分
-     *
-     * @param page
-     */
-    protected void recordPageChange(PageStoreParam page) {
-
-    }
-
-    /**
-     * 根据页面名称模糊查询满足条件的页面ID
-     *
-     * @param sourcePage
-     * @return
-     */
-    public List<Integer> getIdByName(String sourcePage) {
-        List<Integer> idList = db().select(XCX_CUSTOMER_PAGE.PAGE_ID).from(XCX_CUSTOMER_PAGE)
-            .where(XCX_CUSTOMER_PAGE.PAGE_NAME.like(this.likeValue(sourcePage))).fetchInto(Integer.class);
-        return idList;
+    public XcxCustomerPageRecord getPageById(Integer pageId) {
+        return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)));
     }
 
     /**
@@ -612,8 +282,7 @@ public class ShopMpDecorationService extends ShopBaseService {
                 }
             }
         } catch (Exception e) {
-            logger().error("装修转换错误");
-            e.printStackTrace();
+            logger().error("装修转换错误:",e);
         }
         return result;
     }
@@ -647,11 +316,33 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertSeckillForIndex(objectMapper, node, user);
                 case ModuleConstant.M_IMAGE_ADVER:
                     return this.convertImageAdverForIndex(objectMapper, node, user);
+                case ModuleConstant.M_PIN_INTEGRATION:
+                    return this.convertGroupIntegrationForIndex(objectMapper, node, user);
+                case ModuleConstant.M_GROUP_DRAW:
+                    return this.convertGroupDrawForIndex(objectMapper, node, user);
+                case ModuleConstant.M_SCROLL_IMAGE:
+                    return this.convertScrollImageForIndex(objectMapper, node, user);
+                case ModuleConstant.M_VIDEO:
+                    return this.convertVideoForIndex(objectMapper, node, user);
+                case ModuleConstant.M_IMAGE_GUIDE:
+                    return this.convertImageGuideForIndex(objectMapper, node, user);
+                case ModuleConstant.M_MAGIC_CUBE:
+                    return this.convertMagicCubeForIndex(objectMapper, node, user);
+                case ModuleConstant.M_HOT_AREA:
+                    return this.convertHotAreaForIndex(objectMapper, node, user);
+                case ModuleConstant.M_TEXT_IMAGE:
+                    return this.convertTextImageForIndex(objectMapper, node, user);
+                case ModuleConstant.M_TITLE:
+                    return this.convertTitleForIndex(objectMapper, node, user);
+                case ModuleConstant.M_MAP:
+                    return this.convertMapForIndex(objectMapper, node, user);
                 /**
-                 * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
+                 * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
-
             }
+        }
+        if(node.getKey().equals("page_cfg")){
+            return this.convertPageCfgIndex(objectMapper, node, user);
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
     }
@@ -757,12 +448,193 @@ public class ShopMpDecorationService extends ShopBaseService {
     private ModuleImageAdver convertImageAdverForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
         boolean isNewUser = saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(user.getUserId());
-        moduleImageAdver.getImageList().forEach(img->{
+        Iterator<ModuleImageAdver.ImageAdItem> it = moduleImageAdver.getImageList().iterator();
+        while (it.hasNext()){
+            ModuleImageAdver.ImageAdItem img = it.next();
             if(img.getCanShow() == 1 && !isNewUser){
-                moduleImageAdver.getImageList().remove(img);
+               it.remove();
             }
-        });
+            img.setImage(domainConfig.imageUrl(img.getImage()));
+        }
         return moduleImageAdver;
+    }
+
+    /**
+     * 轮播图模块处理
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleScrollImage convertScrollImageForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
+        boolean isNewUser = saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(user.getUserId());
+        Iterator<ModuleScrollImage.ImageItem> it = moduleScrollImage.getImgItems().iterator();
+        while (it.hasNext()){
+            ModuleScrollImage.ImageItem img = it.next();
+            if(img.getCanShow() == 1 && !isNewUser){
+                it.remove();
+            }
+            img.setImageUrl(domainConfig.imageUrl(img.getImageUrl()));
+        }
+        return moduleScrollImage;
+    }
+
+    /**
+     * 视频模块处理
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleVideo convertVideoForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleVideo moduleVideo = objectMapper.readValue(node.getValue().toString(), ModuleVideo.class);
+        moduleVideo.setVideoUrl(domainConfig.videoUrl(moduleVideo.getVideoUrl()));
+        if(StringUtil.isNotEmpty(moduleVideo.getVideoImg())){
+            moduleVideo.setVideoImg(domainConfig.videoUrl(moduleVideo.getVideoImg()));
+        }
+        if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+            moduleVideo.setImgUrl(domainConfig.imageUrl(moduleVideo.getImgUrl()));
+        }
+        return moduleVideo;
+    }
+
+    /**
+     * 图片导航模块处理
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleImageGuide convertImageGuideForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleImageGuide moduleImageGuide = objectMapper.readValue(node.getValue().toString(), ModuleImageGuide.class);
+        moduleImageGuide.getNavGroup().forEach(navItem -> {
+            navItem.setNavSrc(domainConfig.imageUrl(navItem.getNavSrc()));
+        });
+        return moduleImageGuide;
+    }
+
+    /**
+     * 魔方多图模块处理
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleMagicCube convertMagicCubeForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleMagicCube moduleMagicCube = objectMapper.readValue(node.getValue().toString(), ModuleMagicCube.class);
+        moduleMagicCube.getData().forEach((s, blockItem) -> {
+            blockItem.setImgUrl(domainConfig.imageUrl(blockItem.getImgUrl()));
+        });
+        return moduleMagicCube;
+    }
+
+    /**
+     * 热区模块处理
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleHotArea convertHotAreaForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleHotArea moduleHotArea = objectMapper.readValue(node.getValue().toString(), ModuleHotArea.class);
+        moduleHotArea.getData().setBgImgUrl(domainConfig.imageUrl(moduleHotArea.getData().getBgImgUrl()));
+        return moduleHotArea;
+    }
+
+    /**
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleTextImage convertTextImageForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleTextImage moduleTextImage = objectMapper.readValue(node.getValue().toString(), ModuleTextImage.class);
+        moduleTextImage.setImgUrl(domainConfig.imageUrl(moduleTextImage.getImgUrl()));
+        return moduleTextImage;
+    }
+
+    /**
+     * 标题模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleTitle convertTitleForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleTitle moduleTitle = objectMapper.readValue(node.getValue().toString(), ModuleTitle.class);
+        if(StringUtil.isNotEmpty(moduleTitle.getImgUrl())){
+            moduleTitle.setImgUrl(domainConfig.imageUrl(moduleTitle.getImgUrl()));
+        }
+        return moduleTitle;
+    }
+
+    /**
+     * 地图模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleMap convertMapForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
+        if(StringUtil.isNotEmpty(moduleMap.getImgPath())){
+            moduleMap.setImgPath(domainConfig.imageUrl(moduleMap.getImgPath()));
+        }
+        return moduleMap;
+    }
+
+    /**
+     * 瓜分积分
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGroupIntegration convertGroupIntegrationForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupIntegration moduleGroupIntegration = objectMapper.readValue(node.getValue().toString(), ModuleGroupIntegration.class);
+        moduleGroupIntegration.setNeedRequest(true);
+        return moduleGroupIntegration;
+    }
+
+    /**
+     * 拼团抽奖
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGroupDraw convertGroupDrawForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+        moduleGroupDraw.setNeedRequest(true);
+        return moduleGroupDraw;
+    }
+
+    /**
+     * page_cfg模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private PageCfgVo convertPageCfgIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        return objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
     }
 
     /**
@@ -822,6 +694,10 @@ public class ShopMpDecorationService extends ShopBaseService {
                             return this.convertBargainForModule(objectMapper, node, user);
                         case ModuleConstant.M_SECKILL:
                             return this.convertSeckillForModule(objectMapper, node, user);
+                        case ModuleConstant.M_PIN_INTEGRATION:
+                            return  this.convertPinIntegrationForModule(objectMapper, node, user);
+                        case ModuleConstant.M_GROUP_DRAW:
+                            return  this.convertGroupDrawForModule(objectMapper, node, user);
                         //TODO case
                     }
                 }
@@ -882,7 +758,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
 
         // 转换实时信息
-        return couponMpService.getPageIndexCouponList(moduleCoupon, userId);
+        return saas.getShopApp(getShopId()).mpCoupon.getPageIndexCouponList(moduleCoupon, userId);
     }
 
     /**
@@ -915,7 +791,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
 
         // 转换实时信息
-        return bargainService.getPageIndexBargain(moduleBargain);
+        return saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
     }
 
     /**
@@ -931,22 +807,39 @@ public class ShopMpDecorationService extends ShopBaseService {
         ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
 
         // 转换实时信息
-        return seckillService.getPageIndexSeckill(moduleSecKill);
+        return saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
     }
 
     /**
-     * 验证格式
-     * @param json
+     * 瓜分积分模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
      * @return
+     * @throws IOException
      */
-    private static final boolean validJson(String json){
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            mapper.readTree(json);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+    private ModuleGroupIntegration convertPinIntegrationForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupIntegration moduleGroupIntegration = objectMapper.readValue(node.getValue().toString(), ModuleGroupIntegration.class);
+
+        // 转换实时信息
+        return saas.getShopApp(getShopId()).groupIntegration.getPageIndexGroupIntegration(moduleGroupIntegration,user.getUserId());
+    }
+
+    /**
+     * 拼团抽奖模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGroupDraw convertGroupDrawForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGroupDraw ModuleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+
+        // 转换实时信息
+        return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(ModuleGroupDraw);
     }
 
 }

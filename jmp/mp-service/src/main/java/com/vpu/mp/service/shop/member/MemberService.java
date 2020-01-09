@@ -14,10 +14,6 @@ import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_CHANNAL_PAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_SCAN_QRCODE;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
@@ -44,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
+import com.vpu.mp.db.shop.tables.records.TagRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -76,6 +73,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MemberRecordExportVo;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.SourceNameEnum;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
@@ -89,6 +87,7 @@ import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+
 
 /**
  * 
@@ -223,31 +222,34 @@ public class MemberService extends ShopBaseService {
 	 */
 	private String getSourceName(String language, MemberInfoVo member) {
 		logger().info("正在获取用户来源信息");
-		String sourceName = null;
-		if (SRC_NOT_ACQUIRED.getCode().equals(member.getSource())
-				&& !(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource()))
-				&& !(SRC_SCAN_QRCODE.getCode().equals(member.getSource()))) {
-			/** 未获取 */
-			sourceName = Util.translateMessage(language, SRC_NOT_ACQUIRED.getName(), "member");
-			logger().info(sourceName);
-		} else if (SRC_BACK_STAGE.getCode().equals(member.getSource())) {
-			/** 后台 */
-			sourceName = Util.translateMessage(language, SRC_BACK_STAGE.getName(), "member");
-		} else if (INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
-			/** 渠道页-- */
+		// 微信后台相关来源
+		String sourceName = SourceNameEnum.getI18NameByCode(member.getScene(), language);
+		final String SYMBOL = "; ";
+		if(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
+			// 渠道页
+			StringBuilder tmp = new StringBuilder();
 			String channelName = db().select(CHANNEL.CHANNEL_NAME).from(CHANNEL)
 					.where(CHANNEL.ID.eq(member.getInviteActId())).fetchOne().into(String.class);
-			sourceName = Util.translateMessage(language, SRC_CHANNAL_PAGE.getName(), "member") + channelName;
-		} else if (SRC_SCAN_QRCODE.getCode().equals(member.getSource())
-				|| INVITE_SOURCE_SCANQRCODE.equals(member.getInviteSource())) {
-			/** 扫码进入 */
-			sourceName = Util.translateMessage(language, SRC_SCAN_QRCODE.getName(), "member");
-		} else {
-			/** 门店名称 */
-			if(member.getSource() != null) {
-                sourceName = store.getStoreName(new Integer(member.getSource()));
+			if(!StringUtils.isBlank(sourceName)) {
+				tmp.append(sourceName);
+				tmp.append(SYMBOL);
 			}
+			tmp.append(Util.translateMessage(language, "member.channal.page", "member"));
+			tmp.append(channelName);
+			sourceName =  tmp.toString();
 		}
+		
+		if(member.getSource()!=null && member.getSource()>0) {
+			// 门店
+			StringBuilder tmp = new StringBuilder();
+			if(!StringUtils.isBlank(sourceName)) {
+				tmp.append(sourceName);
+				tmp.append(SYMBOL);
+			}
+			tmp.append(store.getStoreName(new Integer(member.getSource())));
+			sourceName = tmp.toString();
+		}
+
 		return sourceName;
 	}
 	
@@ -363,7 +365,21 @@ public class MemberService extends ShopBaseService {
 		});
 	}
 
-	
+	public boolean addUserTag(Integer tagId,Integer userId) {
+		TagRecord tagRecord = db().selectFrom(TAG).where(TAG.TAG_ID.eq(tagId)).fetchAny();
+		if(tagRecord==null) {
+			logger().info("userId："+userId+"添加tag"+tagId+"不存在");
+			return false;
+		}
+		UserTagRecord record = db().newRecord(USER_TAG);
+		record.setTagId(tagId);
+		record.setUserId(userId);
+		int insert = record.insert();
+		if(insert>0) {
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * 查询会员所持有标签列表
 	 */

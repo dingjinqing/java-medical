@@ -11,7 +11,7 @@ import lombok.Setter;
  * @create: 2020-01-02 18:29
  **/
 @Data
-public class WxAppPageCfgVo {
+public class PageCfgVo {
     @JsonProperty(value = "is_ok")
     Byte isOk;
     @JsonProperty(value = "cat_id")
@@ -58,7 +58,7 @@ public class WxAppPageCfgVo {
          *按钮名称
          */
         @JsonProperty(value = "share_btn_name")
-        Byte shareBtnName;
+        String shareBtnName;
 
         /**
          *分享语
