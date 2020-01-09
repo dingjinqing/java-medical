@@ -264,7 +264,7 @@ export default {
 
     // 删除明细
     deleteCoupon (id) {
-      this.$confirm('是否删除该张优惠券明细?', '提示', {
+      this.$confirm('是否删除该张优惠券?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

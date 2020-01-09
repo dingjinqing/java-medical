@@ -65,7 +65,7 @@
                        <block wx:if='{{act_info.validityMinute > 0}}'>{{act_info.validityMinute}}分钟</block>内有效
         </view>
         <view class="coupon-time-btm" style="font-size:24rpx;" wx:if="{{(act_info.remainDays == -1) && (act_info.validity == null && act_info.validityHour == null && act_info.validityMinute == null)}}">{{act_info.start_time}} - {{act_info.end_time}}</view>  
-        <view wx:if='{{!act_info.remainDays}}'>该优惠券已过期</view>
+        <!-- <view wx:if='{{!act_info.remainDays}}'>该优惠券已过期</view> -->
       </view> <!--有效日期END  -->
 
       <!--使用限制  -->

@@ -1,4 +1,4 @@
-<!--pages/couponlist/couponlist.wxml-->
+<!--pages/coupon/coupon.wxml-->
 <include src="../common/header.wxml"/>
 <view class='main-container'>
   <view class="container">
@@ -27,8 +27,8 @@
               </view>
               <view class="right">
                   <view class="case">
-                    <block wx:if="{{item.limit_order_amount != 0 && item.limit_order_amount != null}}">
-                      使用条件:满{{item.limit_order_amount}}可用(不含运费)
+                    <block wx:if="{{item.limitOrderAmount != 0 && item.limitOrderAmount != null}}">
+                      使用条件:满{{item.limitOrderAmount}}可用(不含运费)
                     </block> 
                     <block wx:else> 
                       使用条件:无门槛(不含运费)

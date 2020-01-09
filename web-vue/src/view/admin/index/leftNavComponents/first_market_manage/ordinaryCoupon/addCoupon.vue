@@ -149,7 +149,8 @@
                     size="small"
                   >
                   </el-date-picker>
-
+                </el-form-item>
+                <el-form-item prop="validityType1">
                   <el-radio
                     v-model="param.validityType"
                     :label='1'
@@ -178,6 +179,7 @@
                     ></el-input> {{ $t('ordinaryCoupon.appointMinute') }}
                   </span>
                 </el-form-item>
+
                 <el-form-item
                   :label="$t('ordinaryCoupon.surplus') + '：'"
                   prop="limitSurplusFlag"
@@ -553,12 +555,17 @@ export default {
   data () {
     // 自定义校验有效期
     var validateTime = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
       if (value === 0 && this.param.couponDate === '') {
         callback(new Error(this.$t('ordinaryCoupon.validateTime1')))
-      } else if (value === 1 && (this.param.validity === '' || this.param.validityHour === '' || this.param.validityMinute === '')) {
+      } else {
+        callback()
+      }
+    }
+    var validateTime1 = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (this.param.validityType === 1 && (this.param.validity === '' || this.param.validityHour === '' || this.param.validityMinute === '')) {
         callback(new Error(this.$t('ordinaryCoupon.validateTime2')))
-      } else if (value === 1 && (!re.test(this.param.validity) || !re.test(this.param.validityHour) || !re.test(this.param.validityMinute))) {
+      } else if (this.param.validityType === 1 && (!re.test(this.param.validity) || !re.test(this.param.validityHour) || !re.test(this.param.validityMinute))) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
@@ -691,6 +698,7 @@ export default {
           { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'blur' }
         ],
         validityType: { required: true, validator: validateTime, trigger: 'change' },
+        validityType1: { validator: validateTime1, trigger: 'change' },
         limitSurplusFlag: { required: true, validator: validateSurplus, trigger: 'change' },
         preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
         useScore: { required: true, validator: validateisRandom, trigger: 'change' },
@@ -1017,8 +1025,9 @@ export default {
     },
 
     // 切换触发校验
-    validityTypeChange (e) {
+    validityTypeChange (value) {
       this.$refs['param'].validateField('validityType')
+      this.$refs['param'].validateField('validityType1')
     },
     limitSurplusFlagChange (e) {
       this.$refs['param'].validateField('limitSurplusFlag')

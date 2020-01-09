@@ -63,6 +63,23 @@ export function updateSaveCoupon (data) {
   })
 }
 
+// 编辑获取单条记录信息
+export function updateCoupon (data) {
+  return service({
+    url: `/api/admin/coupon/update/info?couponId=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 优惠券详情
+export function coupondetail (data) {
+  return service({
+    url: `/api/admin/coupon/update/info?couponId=${data}`,
+    method: 'get'
+  })
+}
+
 // 优惠券领取明细
 export function couponGetDetail (data) {
   return service({
@@ -78,22 +95,5 @@ export function deleteCouponDetail (data) {
     url: `couponId=${data}`,
     method: 'get',
     data: data
-  })
-}
-
-// 编辑获取单条记录信息
-export function updateCoupon (data) {
-  return service({
-    url: `/api/admin/coupon/update/info?couponId=${data}`,
-    method: 'get',
-    data: data
-  })
-}
-
-// 优惠券详情
-export function coupondetail (data) {
-  return service({
-    url: `/api/admin/coupon/update/info?couponId=${data}`,
-    method: 'get'
   })
 }
