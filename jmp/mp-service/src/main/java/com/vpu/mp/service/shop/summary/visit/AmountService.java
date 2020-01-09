@@ -9,6 +9,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -59,6 +60,23 @@ public class AmountService extends BaseVisitService {
         //返回格式化后的String日期
         return sdf.format(time);
     }
+
+    /**
+     * 计算平均值（保留两位小数）
+     * @param totalNum 总数
+     * @param num 个数
+     * @return 平均值
+     */
+    public Double getAverageNum(Double totalNum,Integer num){
+        if (totalNum==null||num==null||num==0){
+            return TOTAL_NUM;
+        }else {
+            Double averageNum = totalNum/num;
+            BigDecimal tempAverageNum = new BigDecimal(averageNum);
+            averageNum = tempAverageNum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+            return averageNum;
+        }
+    }
     /**
      * 访问统计折线图
      */
@@ -100,13 +118,17 @@ public class AmountService extends BaseVisitService {
                 throw new IllegalStateException("Unexpected action: " + action);
         }
         VisitStatisticsVo handleData =  getStatisticsVo(units, grading);
-        Double nums = handleData.getList().stream().reduce(Double::sum).orElse(TOTAL_NUM);
+        Double totalNum = handleData.getList().stream().reduce(Double::sum).orElse(TOTAL_NUM);
+        BigDecimal tempTotalNum = new BigDecimal(totalNum);
+        totalNum = tempTotalNum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+        Double averageNum = getAverageNum(totalNum,handleData.getDate().size());
         VisitStatisticsVo vo = new VisitStatisticsVo();
         vo.setDate(handleData.getDate());
         vo.setList(handleData.getList());
         vo.setStartDate(startDate);
         vo.setEndDate(endDate);
-        vo.setTotalNum(nums);
+        vo.setTotalNum(totalNum);
+        vo.setAverageNum(averageNum);
         return vo;
     }
 
