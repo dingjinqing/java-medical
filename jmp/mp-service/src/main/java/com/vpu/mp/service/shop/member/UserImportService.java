@@ -777,6 +777,7 @@ public class UserImportService extends ShopBaseService {
 			param.setDesc("user_activate_score");
 			param.setRemarkCode(RemarkTemplate.ADMIN_USER_IMPORT.code);
 			param.setUserId(userId);
+			param.setRemarkData(score);
 			try {
 				scoreService.updateMemberScore(param, 0, RecordTradeEnum.USER_IMPORT.val(),
 						RecordTradeEnum.UACCOUNT_RECHARGE.val());
@@ -852,6 +853,7 @@ public class UserImportService extends ShopBaseService {
 			param.setDesc("user_activate_score");
 			param.setRemarkCode(RemarkTemplate.ADMIN_USER_ACTIVATE.code);
 			param.setUserId(userId);
+			param.setRemarkData(String.valueOf(score));
 			try {
 				scoreService.updateMemberScore(param, 0, RecordTradeEnum.USER_IMPORT.val(),
 						RecordTradeEnum.UACCOUNT_RECHARGE.val());
