@@ -135,6 +135,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
         }).collect(Collectors.toList());
         // 设置新的首单特惠活动规格信息
         vo.setFirstSpecialPrdMpVos(newPrdMp);
+        capsule.setActivity(vo);
 
         // 设置促销列表里的内容
         FirstSpecialPromotion promotion = new FirstSpecialPromotion();
