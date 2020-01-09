@@ -148,9 +148,10 @@
               v-model="importInfo.filename"
               size="small"
               style="width:170px;"
+              readonly
             ></el-input>
             <el-upload
-              ref="import"
+              ref="importUpload"
               action=""
               class="mi-upload"
               accept=".xls,.xlsx"
@@ -158,10 +159,11 @@
               :before-upload="beforeUploadHandle"
               :auto-upload="false"
               :show-file-list="false"
-              :limit="1"
+              :limit="2"
               :data="uploadData"
               :file-list="fileList"
               :http-request="uploadFile"
+              :on-exceed="exceedHandle"
             >
               <el-button
                 slot="trigger"
@@ -297,17 +299,29 @@ export default {
       let isXlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       if (!isXls && !isXlsx) {
         this.$message.warning('上传文件只支持xls、xlsx格式！')
+        this.fileList = []
+        this.$set(this.importInfo, 'filename', '')
+        this.$set(this.importInfo, 'file', '')
         return false
       }
       return true
     },
+    // 超出限制
+    exceedHandle (file, fileList) {
+      this.$refs.importUpload.clearFiles()
+      this.fileList = [file[0]]
+      this.$set(this.importInfo, 'filename', file[0].name)
+      this.$set(this.importInfo, 'file', file[0])
+    },
     // 添加文件、上传成功和上传失败时都会被调用
     uploadChangeHandle (file, fileList) {
-      this.importInfo.filename = file.name
-      this.importInfo.file = file.raw
+      this.fileList = [fileList[fileList.length - 1]]
+      this.$set(this.importInfo, 'filename', file.name)
+      this.$set(this.importInfo, 'file', file.raw)
     },
     // 点击导入按钮
     submitImport () {
+      let that = this
       let cardId = []
       let importInfo = this.importInfo
       if (importInfo.regularCard) {
@@ -328,7 +342,8 @@ export default {
         groupId: this.importInfo.groupId || ''
       }
       this.$nextTick(() => {
-        this.$refs.import.submit()
+        that.$refs.importUpload.submit()
+        // that.uploadFile()
       })
     },
     uploadFile () {

@@ -11,12 +11,12 @@
       <div class="carModule">
         <div
           class="card_back_module"
-          :style="carData.bgType===0?`backgroundColor:${carData.bg_color}`:`backgroundImage:url('${carData.bg_img}');background-size: 100% 100%`"
+          :style="(carData.bg_type===1&&carData.bg_img)?`;backgroundImage:url(${carData.bg_img})`:(carData.bg_type===1&&!carData.bg_img)?`backgroundColor:${overallColor}`:carData.bg_color?`backgroundColor:${carData.bg_color}`:`backgroundColor:${overallColor}`"
         >
           <div class="card_type">{{carData.card_type===0?'普通卡':carData.card_type===1?'限次卡':'等级卡'}}</div>
           <div class="card_content clearfix">
             <div class="card_shop_icon">
-              <img :src="$imageHost+'/image/admin/shop_def_y.png'">
+              <img :src="shopAvatar">
             </div>
             <div class="card_content_right">
               <div>{{carData.card_name}}</div>
@@ -86,7 +86,9 @@ export default {
       carData: {
         backgroundColor: '#ecc98f',
         bgImgUrl: ''
-      }
+      },
+      shopAvatar: null, // 店铺头像
+      overallColor: null // 默认颜色
     }
   },
   watch: {
@@ -149,6 +151,10 @@ export default {
     this.langDefault()
     // 初始化数据
     this.defaultData()
+    // 初始化获取头像
+    this.shopAvatar = localStorage.getItem('V-shopAvatar') || this.$imageHost + '/image/admin/shop_def_y.png'
+    // 获取初始全局颜色
+    this.overallColor = localStorage.getItem('V-backgroundColor') || '#e6cb96'
   },
   methods: {
     defaultData () {

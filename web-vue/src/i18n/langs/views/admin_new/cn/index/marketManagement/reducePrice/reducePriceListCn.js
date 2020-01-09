@@ -47,6 +47,7 @@ export const cn = {
   // 活动添加页
   actNameTip: '只作为商家记录使用，用户不会看到这个名称',
   repeatByCycle: '按周期重复',
+  edit: '修改',
   noLimit: '不限制',
   purchaseQuantity: '限购数量',
   limitQuantity: '限制数量',

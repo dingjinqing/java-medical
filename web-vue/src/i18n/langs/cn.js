@@ -70,6 +70,10 @@ import {
 import {
   cn as userStatistics
 } from './views/admin_new/cn/index/overview/userStatistics/userStatisticsCn'
+// 资产管理
+import {
+  cn as assetsManage
+} from './views/admin_new/cn/index/overview/assetsManage/assetsManageCn'
 
 // 用户画像
 import {
@@ -374,8 +378,8 @@ import {
 } from './views/admin_new/cn/index/userManagement/member/memberIntroductionDialogCn'
 // 设置激活通知
 import {
-  en as activationNotificationDialog
-} from './views/admin_new/en/index/userManagement/member/activationNotificationDialogEn'
+  cn as activationNotificationDialog
+} from './views/admin_new/cn/index/userManagement/member/activationNotificationDialogCn'
 // 会员管理-会员卡
 import {
   cn as memberCard
@@ -924,6 +928,7 @@ const cn = {
   // 用户画像
   userportrait,
   userStatistics, // 用户统计
+  assetsManage, // 资产管理
 
   // 小程序管理
   pictureSetting,

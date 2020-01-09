@@ -432,7 +432,7 @@
                         alt=""
                       >
                       <div class="right_info">
-                        <div class="goods_name">{{goodsItem.goodsName}}</div>
+                        <div class="goods_name"><span>{{goodsItem.goodsName}}</span></div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -473,7 +473,7 @@
                       {{$t('order.waitReceive')}}
                     </template>
                     <template v-else>
-                      <template v-if="orderItem.orderStatus != 3 && orderItem.partShipFlag != 5">
+                      <template v-if="orderItem.orderStatus != 3 && orderItem.orderStatus != 5">
                         <template v-if="orderItem.orderStatus == 0 && orderItem.goodsTypeArray.indexOf('10') != -1">
                           <template v-if="orderItem.bkOrderPaid == 0">
                             {{$t('order.waitDeposit')}}
@@ -613,7 +613,7 @@
                           alt=""
                         >
                         <div class="right_info">
-                          <div class="goods_name">{{childGoods.goodsName}}</div>
+                          <div class="goods_name"><span>{{childGoods.goodsName}}</span></div>
                           <div class="goods_spec">{{childGoods.goodsAttr}}</div>
                         </div>
                       </div>
@@ -639,7 +639,7 @@
                       :rowspan="childOrder.goods.length"
                     >
                       <template>
-                        <template v-if="childOrder.orderStatus != 3 && childOrder.partShipFlag != 5">
+                        <template v-if="childOrder.orderStatus != 3 && childOrder.orderStatus != 5">
                           {{orderStatusMap.get(childOrder.orderStatus)}}
                         </template>
                         <template v-else>
@@ -1177,15 +1177,15 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  display: -webkit-box;
-                  -webkit-line-clamp: 2;
-                  overflow: hidden;
-                  /*! autoprefixer: off */
-                  -webkit-box-orient: vertical;
-                  text-align: left;
-                  line-height: 1;
+                  > span {
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    overflow: hidden;
+                    -webkit-box-orient: vertical;
+                    text-align: left;
+                    line-height: 1;
+                  }
                 }
               }
             }

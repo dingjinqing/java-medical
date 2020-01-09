@@ -10,6 +10,7 @@
         <el-radio
           v-model="periodAction"
           :label="1"
+          :disabled="isEdit"
         >每天</el-radio>
         <el-time-select
           placeholder="起始时间"
@@ -19,7 +20,7 @@
             step: '00:15',
             end: '23:59'
           }"
-          :disabled="periodAction === 1 ? false : true"
+          :disabled="periodAction !== 1 || isEdit"
           size="small"
           class="small_input"
         >
@@ -34,7 +35,7 @@
             end: '23:59',
             minTime: startTime
           }"
-          :disabled="periodAction === 1 ? false : true"
+          :disabled="periodAction !== 1 || isEdit"
           size="small"
           class="small_input"
         >
@@ -44,12 +45,13 @@
         <el-radio
           v-model="periodAction"
           :label="2"
+          :disabled="isEdit"
         >每月</el-radio>
         <el-select
           v-model="extendTime1"
           size="small"
           class="small_input"
-          :disabled="periodAction === 2 ? false : true"
+          :disabled="periodAction !== 2 || isEdit"
         >
           <el-option
             v-for="(item,index) in 31"
@@ -67,7 +69,7 @@
             step: '00:15',
             end: '23:59'
           }"
-          :disabled="periodAction === 2 ? false : true"
+          :disabled="periodAction !== 2 || isEdit"
           size="small"
           class="small_input"
         >
@@ -82,7 +84,7 @@
             end: '23:59',
             minTime: startTime
           }"
-          :disabled="periodAction === 2 ? false : true"
+          :disabled="periodAction !== 2 || isEdit"
           size="small"
           class="small_input"
         >
@@ -92,12 +94,13 @@
         <el-radio
           v-model="periodAction"
           :label="3"
+          :disabled="isEdit"
         >每周</el-radio>
         <el-checkbox-group
           v-model="extendTime2"
           size="small"
           class="weeks_choose"
-          :disabled="periodAction === 3 ? false : true"
+          :disabled="periodAction !== 3 || isEdit"
         >
           <el-checkbox-button
             v-for="item in weeks"
@@ -113,7 +116,7 @@
             step: '00:15',
             end:'23:59'
           }"
-          :disabled="periodAction === 3 ? false : true"
+          :disabled="periodAction !== 3 || isEdit"
           size="small"
           class="small_input"
         >
@@ -128,7 +131,7 @@
             end: '23:59',
             minTime: startTime
           }"
-          :disabled="periodAction === 3 ? false : true"
+          :disabled="periodAction !== 3 || isEdit"
           size="small"
           class="small_input"
         >
@@ -210,6 +213,10 @@ export default {
     CycleData: {
       type: String,
       default: ''
+    },
+    isEdit: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
