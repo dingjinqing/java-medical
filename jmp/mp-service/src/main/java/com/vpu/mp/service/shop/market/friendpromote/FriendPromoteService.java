@@ -1,24 +1,5 @@
 package com.vpu.mp.service.shop.market.friendpromote;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.DatePart;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Record6;
-import org.jooq.Record7;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectHavingStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
-
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
 import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
@@ -29,23 +10,21 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteAddParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteOptionParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import com.vpu.mp.service.shop.member.MemberService;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
-import static com.vpu.mp.db.shop.Tables.USER;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER;
 
 /**
  * 好友助力

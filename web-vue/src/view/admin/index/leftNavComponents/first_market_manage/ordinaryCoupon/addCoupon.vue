@@ -201,7 +201,7 @@
                       <span>
                         <el-input
                           :disabled="param.limitSurplusFlag===0 && !editType ?false:true"
-                          v-model.number="param.totalAmount"
+                          v-model="param.totalAmount"
                           size="small"
                           class="small_input"
                         ></el-input> {{ $t('ordinaryCoupon.surplusTip1') }}
@@ -259,7 +259,7 @@
                         {{ $t('ordinaryCoupon.typeTip3') }}
                         <el-input
                           :disabled="param.preferentialType==0 && !editType ?false:true"
-                          v-model.number="param.denomination"
+                          v-model="param.denomination"
                           size="small"
                           class="small_input"
                         ></el-input> {{ $t('ordinaryCoupon.typeTip4') }}
@@ -585,7 +585,8 @@ export default {
     }
     // 自定义校验优惠类型
     var validatePreferentialType = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      // 金额 (正数,保留两位小数)
+      var re = /^\+?(\d*\.\d{1,2})$/
       var re2 = /^((0\.[1-9]{1})|(([1-9]{1})(\.\d{1})?))$/
       if (value === 0 && this.param.denomination === null) {
         callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType1')))

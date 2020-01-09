@@ -169,7 +169,7 @@ import com.vpu.mp.service.shop.store.store.StoreService;
  *
  * @author 黄壮壮
  * @Date: 2019年7月30日
- * @Description: 会员卡服务
+ * @Description: 会员卡服务..
  */
 @Service
 public class MemberCardService extends ShopBaseService {
@@ -1308,7 +1308,11 @@ public class MemberCardService extends ShopBaseService {
 				.intoMap(MEMBER_CARD.ID, MemberCardRecord.class);
 
 		logger().info("一共查询到: " + map.size() + " 张会员卡");
-
+		if(map.size()==0) {
+			return;
+		}
+			
+		
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime expireTime = null;
 		/** 过期时间-多少日内 */
@@ -2175,8 +2179,9 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 		if(mCard==null) {
 			return;
 		}
-		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch()))
+		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch())) {
 			return;
+		}
 		List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
 		if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
 			couponGiveService.sendVoucher(userId,sendCouponList,cardId,19,(byte)1);

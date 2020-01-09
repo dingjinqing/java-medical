@@ -191,6 +191,14 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 goods.setProductPrice(groupBuyProduct.getGroupPrice());
             }
             goods.setGoodsPriceAction(param.getActivityType());
+            // 团长优惠价
+            if (groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y)&&isGrouper.equals(IS_GROUPER_Y)){
+                // (拼团价-团长价)*数量
+                goods.setGrouperTotalReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()).multiply(BigDecimal.valueOf(goods.getGoodsNumber())));
+                //拼团价-团长价
+                goods.setGrouperGoodsReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()));
+            }
+
         }
     }
 
@@ -233,10 +241,6 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             groupId =groupBuyProductList.getGroupId();
             goodsName =goods.getGoodsInfo().getGoodsName();
             goodsPrice =goods.getProductPrice();
-        }
-        if (param.getGroupId()==null&&order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY){
-            //发送模板消息
-            groupBuyProcessorDao.groupBuySuccess(param.getActivityId(),groupId,goodsName,goodsPrice.toString());
         }
     }
 

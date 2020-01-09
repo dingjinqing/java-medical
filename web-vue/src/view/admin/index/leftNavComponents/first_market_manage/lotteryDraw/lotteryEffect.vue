@@ -36,11 +36,11 @@
       <section>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">{{ this.$t('seckill.payment') }}</div>
+            <div class="titless">付款订单数</div>
             <el-tooltip
               class="item"
               effect="light"
-              :content="this.$t('seckill.paymentTip')"
+              content="活动带来的付款订单数（包括退款部分）"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -49,15 +49,15 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >{{ total.totalPayment }}</div>
+          >{{ totalOrderNumber }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">{{ this.$t('seckill.discount') }}</div>
+            <div class="titless">参与用户数</div>
             <el-tooltip
               class="item"
               effect="light"
-              :content="this.$t('seckill.discountTip')"
+              content="参与活动的用户数（包括开团及参团用户）"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -65,16 +65,16 @@
           </div>
           <div
             class="num"
-            style="color: #fc6181;"
-          >{{ total.totalDiscount }}</div>
+            style="color: #5A8BFF"
+          >{{ totalJoinNum }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">{{ this.$t('seckill.costEffect') }}</div>
+            <div class="titless">成团用户数</div>
             <el-tooltip
               class="item"
               effect="light"
-              :content="this.$t('seckill.costEffectTip')"
+              content="活动已成团用户数"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -82,16 +82,16 @@
           </div>
           <div
             class="num"
-            style="color: #fdb64a;"
-          >{{ total.totalCostEffectivenessRatio }}%</div>
+            style="color: #5A8BFF"
+          >{{ totalSuccessUserNum }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">{{ this.$t('seckill.newUser') }}</div>
+            <div class="titless">拉新用户数</div>
             <el-tooltip
               class="item"
               effect="light"
-              :content="this.$t('seckill.newUser')"
+              content="在店铺没有过访问记录，通过活动首次访问店铺的用户数"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -99,25 +99,8 @@
           </div>
           <div
             class="num"
-            style="color: #3dcf9a;"
-          >{{ total.totalNewUserNumber }}</div>
-        </div>
-        <div class="fromInfo">
-          <div style="display:flex">
-            <div class="titles">{{ this.$t('seckill.oldUser') }}</div>
-            <el-tooltip
-              class="item"
-              effect="light"
-              :content="this.$t('seckill.oldUserTip')"
-              placement="top"
-            >
-              <i class="el-icon-warning-outline icons"></i>
-            </el-tooltip>
-          </div>
-          <div
-            class="num"
-            style="color: #8379f7;"
-          >{{ total.totalOldUserNumber }}</div>
+            style="color: #5A8BFF"
+          >{{ totalNewUser }}</div>
         </div>
       </section>
 
@@ -128,7 +111,7 @@
 </template>
 
 <script>
-// import { effactLotteryList } from '@/api/admin/marketManage/lotteryDraw.js'
+import { effactLotteryList } from '@/api/admin/marketManage/lotteryDraw.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import echarts from 'echarts'
 
@@ -138,12 +121,17 @@ export default {
     return {
       starDate: this.moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
       endDate: this.moment().format('YYYY-MM-DD HH:mm:ss'),
-      total: {}, // 表格
+      totalOrderNumber: 0, // 付款订单数
+      totalJoinNum: 0, // 参与用户数
+      totalSuccessUserNum: 0, // 成团用户数
+      totalNewUser: 0, // 拉新用户数
       echartInit: {
         colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#3dcf9a', '#8379f7'],
         legendData: this.$t('groupBuy.legendData')
       },
-      echartData: {},
+      echartData: {
+        dataList: [] // 日期时间
+      },
       option: {},
       myChart: {}
     }
@@ -161,23 +149,53 @@ export default {
   methods: {
     initEcharts () {
       this.myChart = echarts.init(document.getElementById('charts'))
-      // let params = {
-      //   id: this.$route.query.id,
-      //   startTime: this.starDate,
-      //   endTime: this.endDate
-      // }
+      let params = {
+        groupDrawId: this.$route.query.id,
+        startTime: this.starDate,
+        endTime: this.endDate
+      }
       this.handleEcharts()
-      //   effactLotteryList(params).then((res) => {
-      //     if (res.error === 0) {
-      //       this.total = res.content.total
-      //       this.echartData = res.content
-      //       this.handleEcharts()
-      //       this.myChart.hideLoading()
-      //       this.myChart.dispatchAction({
-      //         type: 'restore'
-      //       })
-      //     }
-      //   })
+      effactLotteryList(params).then((res) => {
+        if (res.error === 0) {
+          this.totalOrderNumber = res.content.totalOrderNumber
+          this.totalJoinNum = res.content.totalJoinNum
+          this.totalSuccessUserNum = res.content.totalSuccessUserNum
+          this.totalNewUser = res.content.totalNewUser
+          // this.echartData = res.content
+          var orderObj = res.content.orderNumber
+          var newObj = res.content.newUser
+          var joinObj = res.content.joinNum
+          var successObj = res.content.successUserNum
+          var dataList = []
+          var orderNumber = []
+          var newUser = []
+          var joinNum = []
+          var successUserNum = []
+          Object.keys(orderObj).forEach(function (key) {
+            dataList.push(key)
+            orderNumber.push(orderObj[key])
+          })
+          Object.keys(newObj).forEach(function (key) {
+            newUser.push(newObj[key])
+          })
+          Object.keys(joinObj).forEach(function (key) {
+            joinNum.push(joinObj[key])
+          })
+          Object.keys(successObj).forEach(function (key) {
+            successUserNum.push(successObj[key])
+          })
+          this.echartData.dataList = dataList
+          this.echartData.orderNumber = orderNumber
+          this.echartData.newUser = newUser
+          this.echartData.joinNum = joinNum
+          this.echartData.successUserNum = successUserNum
+          this.handleEcharts()
+          this.myChart.hideLoading()
+          this.myChart.dispatchAction({
+            type: 'restore'
+          })
+        }
+      })
     },
     handleEcharts () {
       this.option = {
@@ -217,7 +235,7 @@ export default {
             color: this.echartInit.colors[0],
             yAxisIndex: 0,
             stack: '总量',
-            data: this.echartData.paymentAmount
+            data: this.echartData.orderNumber
           },
           {
             name: this.echartInit.legendData[1],
@@ -226,7 +244,7 @@ export default {
 
             type: 'line',
             stack: '总量',
-            data: this.echartData.discountAmount
+            data: this.echartData.newUser
           },
           {
             name: this.echartInit.legendData[2],
@@ -235,7 +253,7 @@ export default {
 
             yAxisIndex: 1,
             stack: '总量',
-            data: this.echartData.costEffectivenessRatio
+            data: this.echartData.joinNum
           },
           {
             name: this.echartInit.legendData[3],
@@ -244,15 +262,7 @@ export default {
 
             yAxisIndex: 0,
             stack: '总量',
-            data: this.echartData.oldUserNumber
-          },
-          {
-            name: this.echartInit.legendData[4],
-            type: 'line',
-            color: this.echartInit.colors[4],
-            yAxisIndex: 0,
-            stack: '总量',
-            data: this.echartData.newUserNumber
+            data: this.echartData.successUserNum
           }
         ]
       }

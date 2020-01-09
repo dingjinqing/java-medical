@@ -247,7 +247,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * 查询商品信息
 	 * @return
 	 */
-	public List<GoodsRecord> getGoodsInfoRecordByOrderSn(String orderSn){
+	public List<GoodsRecord>  getGoodsInfoRecordByOrderSn(String orderSn){
 		return db().select(TABLE.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
@@ -281,6 +281,7 @@ public class OrderGoodsService extends ShopBaseService{
             //TODO 需要考虑
             goodsAttrId(StringUtils.EMPTY).
             goodsImg(goods.getGoodsInfo().getGoodsImg()).
+            //限时降价
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
             //TODO 需要考虑 是否赠品
@@ -430,5 +431,14 @@ public class OrderGoodsService extends ShopBaseService{
             .where(TABLE.CREATE_TIME.greaterThan(local))
             .fetch()
             .getValues(TABLE.GOODS_ID,Integer.class);
+    }
+
+    /**
+     * 是否赠品行
+     * @param recId
+     * @return
+     */
+    public int isGift(int recId){
+	    return db().select(TABLE.IS_GIFT).from(TABLE).where(TABLE.REC_ID.eq(recId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 }
