@@ -272,6 +272,7 @@ public class UserImportService extends ShopBaseService {
 		int totalNum = list.size();
 		for (UserImportPojo userImportPojo : list) {
 			String mobile = userImportPojo.getMobile();
+			logger().info("手机号"+mobile);
 			if (StringUtils.isEmpty(mobile)) {
 				logger().info("手机号为空");
 				userImportPojo.setErrorMsg(UserImportTemplate.MOBILE_NULL.getCode());
@@ -289,7 +290,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String name = userImportPojo.getName();
-
+			logger().info("姓名"+name);
 			if (StringUtils.isNotEmpty(name)) {
 				if (name.length() > 10) {
 					logger().info("姓名限制10个字符");
@@ -298,6 +299,7 @@ public class UserImportService extends ShopBaseService {
 				}
 			}
 			String inviteUserMobile = userImportPojo.getInviteUserMobile();
+			logger().info("邀请人手机"+inviteUserMobile);
 			if (StringUtils.isNotEmpty(inviteUserMobile)) {
 				if (!Pattern.matches(PHONEREG, inviteUserMobile)) {
 					logger().info("邀请人手机号格式错误");
@@ -312,6 +314,7 @@ public class UserImportService extends ShopBaseService {
 				}
 			}
 			Integer score = userImportPojo.getScore();
+			logger().info("积分"+score);
 			if (null == score) {
 				logger().info("积分为空");
 				userImportPojo.setErrorMsg(UserImportTemplate.SCORE_NULL.getCode());
@@ -324,6 +327,7 @@ public class UserImportService extends ShopBaseService {
 			}
 
 			String sex = userImportPojo.getSex();
+			logger().info("性别"+sex);
 			String[] sexs = MemberSexEnum.getArraySexs(lang);
 			if (StringUtils.isNotEmpty(sex) && !checkRule(sexs, sex)) {
 				logger().info("性别仅限男女");
@@ -331,6 +335,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String birthday = userImportPojo.getBirthday();
+			logger().info("生日"+sex);
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
 					// ExcelUtil.DATE_FORMAT
@@ -348,6 +353,7 @@ public class UserImportService extends ShopBaseService {
 			String district = userImportPojo.getDistrict();
 			userImportPojo.setCity(city);
 			userImportPojo.setDistrict(district);
+			logger().info("省市区"+province+city+district);
 			boolean isProvince = StringUtils.isEmpty(province);
 			boolean isCity = StringUtils.isEmpty(city);
 			boolean isDistrict = StringUtils.isEmpty(district);
@@ -383,18 +389,21 @@ public class UserImportService extends ShopBaseService {
 			}
 
 			String idNumber = userImportPojo.getIdNumber();
+			logger().info("身份证"+idNumber);
 			if (!IdentityUtils.isLegalPattern(idNumber)) {
 				logger().info("无效身份证号");
 				userImportPojo.setErrorMsg(UserImportTemplate.ID_ERROR.getCode());
 				continue;
 			}
 			BigDecimal income = userImportPojo.getIncome();
+			logger().info("收入"+income);
 			if (income != null && income.compareTo(ZERO) == -1) {
 				logger().info("无效收入");
 				userImportPojo.setErrorMsg(UserImportTemplate.INCOME_ERROR.getCode());
 				continue;
 			}
 			String marriage = userImportPojo.getMarriage();
+			logger().info("婚姻状况"+marriage);
 			String[] marriages = MemberMarriageEnum.getArrayMarriage(lang);
 			if (StringUtils.isNotEmpty(marriage) && !checkRule(marriages, marriage)) {
 				logger().info("无效婚姻状况");
@@ -402,6 +411,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String education = userImportPojo.getEducation();
+			logger().info("教育状况"+education);
 			String[] educations = MemberEducationEnum.getArrayEduction(lang);
 			if (StringUtils.isNotEmpty(education) && !checkRule(educations, education)) {
 				logger().info("无效教育");
@@ -409,6 +419,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String industry = userImportPojo.getIndustry();
+			logger().info("行业状况"+industry);
 			String[] industrys = MemberIndustryEnum.getArrayIndustryInfo(lang);
 			if (StringUtils.isNotEmpty(industry) && !checkRule(industrys, industry)) {
 				logger().info("无效行业");
@@ -418,13 +429,15 @@ public class UserImportService extends ShopBaseService {
 			successNum++;
 		}
 		// 可能存在id不正确
+		logger().info("准备插入");
 		UserImportRecord newRecord = db().newRecord(USER_IMPORT);
 		newRecord.setSuccessNum(successNum);
 		newRecord.setTotalNum(totalNum);
 		newRecord.setCardId(cardId);
 		newRecord.setTagId(tagId);
 		newRecord.setGroupId(groupId);
-		newRecord.insert();
+		int insert2 = newRecord.insert();
+		logger().info("插入USER_IMPORT"+insert2);
 		for (UserImportPojo userImportPojo2 : list) {
 			UserImportDetailRecord record = db().newRecord(USER_IMPORT_DETAIL);
 			record.setCardId(cardId);
