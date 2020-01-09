@@ -62,11 +62,17 @@
         class="custom"
       >
       </el-date-picker>
-
       <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+      <el-button type="primary" size="small">数据导出</el-button>
     </div>
+    <div v-show="this.param.action===1"><span>筛选时间范围内总打开次数:</span>{{this.totalNum}}</div>
+    <div v-show="this.param.action===2"><span>筛选时间范围内总访问次数:</span>{{this.totalNum}}</div>
+    <div v-show="this.param.action===4"><span>筛选时间范围内总新用户数:</span>{{this.totalNum}}</div>
+    <div v-show="this.param.action===6"><span>筛选时间范围内次均停留时长:</span>{{this.averageNum}}</div>
+    <div v-show="this.param.action===7"><span>筛选时间范围内平均访问深度:</span>{{this.averageNum}}</div>
     <!--    折线图数据-->
-    <div id="charts"></div>
+    <div v-show="this.totalNum" id="allAnalysisCharts"></div>
+    <div class="noData" v-show="this.totalNum===0"><span>暂无相关数据</span></div>
   </div>
 </template>
 
@@ -75,6 +81,8 @@ import echarts from 'echarts'
 import {amountAnalysis} from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
 
 export default {
+  components: {},
+
   data () {
     return {
       custom: true,
@@ -95,14 +103,14 @@ export default {
         { value: 30, label: '最近30天' },
         { value: 0, label: '自定义' }
       ],
-      gradeSelect: 7,
+      gradeSelect: 1,
       gradeRange: [
-        { value: 7, label: '日' },
-        { value: 30, label: '周' },
-        { value: 0, label: '月' }
+        { value: 1, label: '日' },
+        { value: 7, label: '周' },
+        { value: 30, label: '月' }
       ],
       param: {
-        action: '1',
+        action: 1,
         type: '7',
         grading: '1',
         startDate: '',
@@ -124,14 +132,16 @@ export default {
         day: ''
       },
       table: [],
-      originalData: []
+      originalData: [],
+      totalNum: '',
+      averageNum: ''
     }
   },
   created () {
     this.loadData()
   },
   mounted () {
-    this.myChart = echarts.init(document.getElementById('charts'))
+    this.myChart = echarts.init(document.getElementById('allAnalysisCharts'))
   },
   methods: {
     // action下拉框变化
@@ -188,6 +198,8 @@ export default {
     },
     // 数据处理
     handleData (content) {
+      this.totalNum = content.totalNum
+      this.averageNum = content.averageNum
       this.startDate.year = content.startDate.substring(0, 4)
       this.startDate.month = content.startDate.substring(4, 6)
       this.startDate.day = content.startDate.substring(6, 8)
@@ -195,10 +207,12 @@ export default {
       this.endDate.year = content.endDate.substring(0, 4)
       this.endDate.month = content.endDate.substring(4, 6)
       this.endDate.day = content.endDate.substring(6, 8)
-      content.dailyData.map(item => {
-        this.chartChange.date.push(item.date)
-        this.chartChange.number.push(item.number)
-      })
+      // content.dailyData.map(item => {
+      //   this.chartChange.date.push(item.date)
+      //   this.chartChange.number.push(item.number)
+      // })
+      this.chartChange.date = content.date
+      this.chartChange.number = content.list
       // 折线图数据部分
       this.echartsData = {
         tooltip: {
@@ -255,9 +269,14 @@ export default {
         margin: 0 10px 0 2px;
       }
     }
+    .noData{
+      height: 300px;
+      text-align: center;
+      padding-top: 150px;
+    }
   }
 
-  #charts {
+  #allAnalysisCharts {
     width: 90%;
     height: 300px;
   }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
-import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.image.ImageService;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class VersionService extends ShopBaseService {
 
 	@Autowired protected ImageService image;
-	@Autowired protected ShopMpDecorationService mpDecoration;
+	@Autowired protected MpDecorationService mpDecoration;
 
 	String mainConfig = "main_config";
 	String numConfig = "num_config";

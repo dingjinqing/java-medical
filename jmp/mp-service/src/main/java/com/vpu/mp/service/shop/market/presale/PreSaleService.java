@@ -83,6 +83,19 @@ public class PreSaleService extends ShopBaseService {
     public static final Byte PRE_SALE_TYPE_ALL_MONEY = 1;
     /**定金付*/
     public static final Byte PRE_SALE_TYPE_SPLIT = 0;
+    /**只有一个阶段*/
+    public static final Byte PRE_SALE_ONE_PHASE = 1;
+    /**有两个阶段*/
+    public static final Byte PRE_SALE_TWO_PHASE = 2;
+    /**使用优惠券叠加*/
+    public static final Byte PRE_SALE_USE_COUPON = 1;
+    /**自定退订金*/
+    public static final Byte PRE_SALE_RETURN_DEPOSIT= 1;
+    /**展示预售数量*/
+    public static final Integer PRE_SALE_SHOW_SALE_NUM= 1;
+    /**可以原价购买*/
+    public static final Byte PRE_SALE_ORIGINAL_BUY= 1;
+
     /**发货时间类型：1 指定日期*/
     public static final Byte DELIVER_TYPE_TIME = 1;
     /**发货时间类型：2 指定下单后的天数*/

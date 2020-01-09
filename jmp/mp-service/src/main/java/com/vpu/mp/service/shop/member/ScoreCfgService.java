@@ -11,7 +11,7 @@ import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
-import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Record2;
@@ -35,7 +35,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_OFF;
 public class ScoreCfgService extends BaseScoreCfgService {
 
 	@Autowired
-	public ShopMpDecorationService mpDecoration;
+	public MpDecorationService mpDecoration;
 
 	/**
 	 * 购物送积分

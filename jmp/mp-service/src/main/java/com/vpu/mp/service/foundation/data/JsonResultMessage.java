@@ -456,6 +456,7 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_NEED_MOBILE = "excel.need.mobile";
 	public static final String CODE_EXCEL_SORRY = "excel.sorry";
 	public static final String CODE_EXCEL_OK = "excel.ok";
+	public static final String BATCHID_NOT_NULL = "batchId.not.null";
 
 	/**
 	 * 概览

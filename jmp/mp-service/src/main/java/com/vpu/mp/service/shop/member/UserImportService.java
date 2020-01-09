@@ -646,9 +646,9 @@ public class UserImportService extends ShopBaseService {
 			int activateNum = getActivateNum(vo.getId(), ONE);
 			vo.setActivateNum(activateNum);
 			String cardIds = vo.getCardId();
+			List<CardInfoVo> cardList = new ArrayList<CardInfoVo>();
 			if (StringUtils.isNotEmpty(cardIds)) {
 				String[] caStrings = cardIds.split(",");
-				List<CardInfoVo> cardList = new ArrayList<CardInfoVo>();
 				for (String cardId : caStrings) {
 					CardInfoVo cardVo = new CardInfoVo();
 					MemberCardRecord cardInfo = cardDaoService.getInfoByCardId(Integer.parseInt(cardId));
@@ -732,7 +732,7 @@ public class UserImportService extends ShopBaseService {
 		return db().selectFrom(USER_IMPORT_DETAIL)
 				.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))
 						.and(USER_IMPORT_DETAIL.MOBILE.eq(mobile)).and(USER_IMPORT_DETAIL.USER_ACTION.eq(userAction)))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	// 激活用户
@@ -777,6 +777,7 @@ public class UserImportService extends ShopBaseService {
 			param.setDesc("user_activate_score");
 			param.setRemarkCode(RemarkTemplate.ADMIN_USER_IMPORT.code);
 			param.setUserId(userId);
+			param.setRemarkData(score);
 			try {
 				scoreService.updateMemberScore(param, 0, RecordTradeEnum.USER_IMPORT.val(),
 						RecordTradeEnum.UACCOUNT_RECHARGE.val());
@@ -852,6 +853,7 @@ public class UserImportService extends ShopBaseService {
 			param.setDesc("user_activate_score");
 			param.setRemarkCode(RemarkTemplate.ADMIN_USER_ACTIVATE.code);
 			param.setUserId(userId);
+			param.setRemarkData(String.valueOf(score));
 			try {
 				scoreService.updateMemberScore(param, 0, RecordTradeEnum.USER_IMPORT.val(),
 						RecordTradeEnum.UACCOUNT_RECHARGE.val());
@@ -935,6 +937,9 @@ public class UserImportService extends ShopBaseService {
 		if (StringUtils.isNotEmpty(birthday) && birthdayYear == null) {
 			logger().info("更新生日");
 			String[] birthdays = birthday.split("/");
+			if(birthdays.length==1) {
+				birthdays=birthday.split("-");
+			}
 			userDetail.setBirthdayYear(Integer.valueOf(birthdays[0]));
 			userDetail.setBirthdayMonth(Integer.valueOf(birthdays[1]));
 			userDetail.setBirthdayDay(Integer.valueOf(birthdays[2]));
