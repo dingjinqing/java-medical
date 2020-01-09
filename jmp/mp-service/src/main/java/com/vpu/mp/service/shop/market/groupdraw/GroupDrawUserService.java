@@ -68,7 +68,7 @@ public class GroupDrawUserService extends ShopBaseService {
         }
         List<OrderGoodsRecord> orderGoods = getOrderGoods(orderSn);
         // 记录邀请用户
-        GroupDrawInviteRecord availableInviteUser = shop.groupDrawInvite.getAvailableInviteUser(getGroupDrawId(orderSn),
+        GroupDrawInviteRecord availableInviteUser = shop.groupDraw.groupDrawInvite.getAvailableInviteUser(getGroupDrawId(orderSn),
             orderGoods.get(0).getGoodsId(), orderInfo.getUserId());
         Integer inviteUserId = availableInviteUser == null ? 0 : availableInviteUser.getUserId();
         // todo 记录邀请用户

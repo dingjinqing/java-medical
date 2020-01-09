@@ -27,6 +27,7 @@
           <template slot-scope="scope">
             <el-input
               v-model="scope.row.prdPrice"
+              :disabled="isEdit"
               size="small"
               class="small_input"
             ></el-input>
@@ -79,6 +80,10 @@ export default {
     productInfo: {
       type: Object,
       default: null
+    },
+    isEdit: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {

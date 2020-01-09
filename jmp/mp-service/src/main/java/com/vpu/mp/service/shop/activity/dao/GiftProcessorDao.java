@@ -134,7 +134,7 @@ public class GiftProcessorDao extends GiftService {
      */
     private List<OrderGoodsBo> packageAndCheckGift(Integer userId, GiftVo giftVo, BigDecimal price, int number, Map<Integer, Integer> goodsMapCount, List<Byte> orderType, Set<Integer> noJoinRecord) {
         RuleVo rules = giftVo.getRules();
-        if(rules.getFullPrice() != null && !orderType.contains(OrderConstant.GOODS_TYPE_EXCHANG_ORDER) && rules.getFullPrice() <= price.doubleValue()){
+        if(rules.getFullPrice() != null && !orderType.contains(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER) && rules.getFullPrice() <= price.doubleValue()){
             logger().info("赠品：满金额满足,活动id:{}", giftVo.getId());
             return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
         }
@@ -226,8 +226,6 @@ public class GiftProcessorDao extends GiftService {
         for (Map.Entry<Integer, Map<Integer, Integer>> entry : param.entrySet()) {
             for (Map.Entry<Integer, Integer> entry1 : entry.getValue().entrySet()) {
                 GiftProductRecord giftProductRecord = db().newRecord(SUB_TABLE);
-                giftProductRecord.setGiftId(entry.getKey());
-                giftProductRecord.setProductId(entry1.getKey());
                 while (iterator.hasNext()){
                     ProductVo next = iterator.next();
                     if(next.getGiftId().equals(entry.getKey()) && next.getProductId().equals(entry1.getKey())){
@@ -235,6 +233,7 @@ public class GiftProcessorDao extends GiftService {
                             logger().error("下单时赠品已经送完，请重新下单");
                             throw new MpException(JsonResultCode.CODE_ORDER_GIFT_GOODS_ZERO);
                         }
+                        giftProductRecord.setId(next.getId());
                         giftProductRecord.setProductNumber(next.getProductNumber() - entry1.getValue());
                         iterator.remove();
                         break;

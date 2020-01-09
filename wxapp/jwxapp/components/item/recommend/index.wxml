@@ -7,7 +7,7 @@
   <view class="goods_content">
     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
       <block wx:for="{{pageItem}}" wx:for-item="goodsItem" wx:key="itemIndex" wx:for-index="itemIndex">
-        <v-double-col-goods goods-data="{{goodsItem}}" />
+        <v-double-col-goods goods-data="{{goodsItem}}" del-market="{{delMarket}}" show-cart="{{showCart}}"/>
       </block>
     </block>
   </view>

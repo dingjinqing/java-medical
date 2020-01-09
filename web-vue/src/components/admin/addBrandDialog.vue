@@ -287,9 +287,10 @@ export default {
         }
       })
       classificationSelectRequest().then(res => {
+        let that = this
         if (res.error === 0) {
           console.log(res.content)
-          res.content.unshift({ classifyName: this.$t('brandManagement.whole'), classifyId: '' })
+          res.content.unshift({ classifyName: that.$t('brandManagement.whole'), classifyId: '' })
           this.classOptions = res.content
         }
       })

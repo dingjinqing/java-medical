@@ -1,10 +1,44 @@
+<wxs module="filter">
+  includes = function (arr, target) {
+    if (arr.length === 0) return false
+    return arr.indexOf(target) === -1 ? false : true
+  }
+  module.exports = {
+    includes:includes
+  }
+</wxs>
 <view class="body">
   <include src="../common/header.wxml" /> 
   <view class="main-container" wx:if="{{goodsInfo}}">
+
+    <!-- 商品图片 -->
     <view class="goods-image">
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
+
+    <!-- actBar 活动倒计时价格等 -->
     <v-act-content act-bar-info="{{actBarInfo}}"/>
+
+    <!-- 限时降价窗口 -->
+    <view class="reduce-price-act-bar" wx:if="{{filter.includes([6,	98],goodsInfo.activity.activityType)}}" style="background-color:{{somColor}};color:{{comColor}};{{goodsInfo.activity.actState === 3 ? 'justify-content: space-between;' : 'justify-content: center;'}}">
+      <block wx:if="{{goodsInfo.activity.actState === 3}}">
+        <view class="reduce-price-left-info">
+          <text>限时价</text>
+          <text>￥{{reduceActBarPrice}}</text>
+        </view>
+        <view class="reduce-price-right-info">
+          <text>开始时间</text>
+          <text>{{goodsInfo.activity.nextStartTimestamp}}</text>
+        </view>
+      </block>
+      <block wx:if="{{goodsInfo.activity.actState === 0}}">
+        <view class="reduce-end-info" >
+          限时降价结束时间：{{goodsInfo.activity.currentEndTimestamp}}
+        </view>
+      </block>
+    </view>
+
+    <!-- 商品信息 -->
     <view class="goods-info">
       <view class="goods-info_top">
         <view class="goods_name" data-typs="give_gift" bindtap="getNeedTemplateId">
@@ -25,6 +59,8 @@
       <view class="goods_ad" wx:if="{{goodsInfo.goodsAd}}">{{goodsInfo.goodsAd}}</view>
       <view class="goods_price_info">
         <view class="goods_price" style='color:{{comColor}}'>
+        <view class="goods-price-tag" wx:if="{{goodsInfo.activity.activityType === 18}}" style="background-color:{{comColor}};">首单特惠</view>
+        <view class="goods-price-tag" wx:if="{{goodsInfo.activity.activityType === 6}}" style="background-color:{{comColor}};">限时降价</view>
           <text>￥</text><text>{{goodsInfo.prdRealPrice}}</text>
         </view>
         <view class="marking_price">￥<text>{{goodsInfo.prdLinePrice}}</text></view>
@@ -53,10 +89,13 @@
         <view class="item_middle">{{deliverPlace}}</view>
       </view>
     </view>
+
     <!-- 优惠券&促销信息-->
-    <v-coupon-promotion coupon-list="{{couponList}}"/>
+    <v-coupon-promotion coupon-list="{{couponList}}" promotion="{{promotionInfo}}"/>
+
     <!--  选择规格（包含无规格情况）  -->
     <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
+    <!-- 服务规则 -->
       <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">
           服务
@@ -73,6 +112,7 @@
       </view>
       <view class="item_line" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}"></view>
     </v-sel-spec>
+
     <!-- 拼团提示 -->
     <block wx:if="{{specParams.activity.activityType === 1}}">
       <view class="flex_outside_box" wx:if="{{ groupBuyListMpVos.length > 0 }}">
@@ -93,32 +133,19 @@
           <view class="item_line" wx:if="{{groupIndex < specParams.activity.groupBuyListMpVos.length - 1}}"></view>
         </block>
       </view>
-      <view class="flex_outside_box" >
-        <view class="flex_box">
-          <view class="item_left">拼团规则</view>
-          <view class="item_right">详细规则></view>
-        </view>
-      </view>
-      <view class="item_line"></view>
-      <view class="flex_box group">
-        <view><view>1</view><text>选择商品，付款开团/参团</text></view>
-        <view><view>2</view><text>邀请好友,支付参团</text></view>
-        <view><view>3</view><text>满员发货，不满自动退款</text></view>
-      </view>
     </block>
-
-    <block wx:if="{{specParams.activity.activityType === 3}}">
+    
+    <!-- 拼团|砍价规则提示 -->
+    <block wx:if="{{filter.includes([1,3],specParams.activity.activityType)}}">
       <view class="flex_outside_box" >
         <view class="flex_box">
-          <view class="item_left">砍价规则</view>
+          <view class="item_left">{{actRuleText[specParams.activity.activityType].title}}</view>
           <view class="item_right">详细规则></view>
         </view>
       </view>
       <view class="item_line"></view>
       <view class="flex_box group">
-        <view><view>1</view><text>点击下方“砍价拿”按钮开始</text></view>
-        <view><view>2</view><text>邀请好友来砍价</text></view>
-        <view><view>3</view><text>砍价成功，商品低价拿</text></view>
+        <view wx:for="{{actRuleText[specParams.activity.activityType].ruleList}}" wx:key="index" wx:for-item="ruleItem"><view>{{index + 1}}</view><text>{{ruleItem}}</text></view>
       </view>
     </block>
     
@@ -127,11 +154,15 @@
 
     <!-- 商品详情 -->
     <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/>
+
+    <!-- 推荐商品 -->
     <v-recommend id="recommend" pageName="item" />
   </view>
+
   <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" dealt-act="{{dealtAct}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
+
   <include src="../common/footer.wxml" />
 </view>
 
-
+<!-- 分享|下载海报|多图弹窗 -->
 <v-share show="{{showShareDialog}}" share-data="{{shareData}}" shareMoments="onShareAppMessage"/>

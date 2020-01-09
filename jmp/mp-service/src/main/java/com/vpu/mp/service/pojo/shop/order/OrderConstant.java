@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order;
 
 import com.google.common.collect.ImmutableSet;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.Util;
 
@@ -10,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 订单状态order_status;订单类型goods_type常量类
+ * 订单状态order_status;订单类型ACTIVITY_TYPE常量类
  *
  * @author wangshuai
  *
@@ -62,52 +63,6 @@ public class OrderConstant {
 	public final static byte ORDER_PIN_SUCCESSS = 12;
 	/** 礼单(主订单)环节已完成 */
 	public final static byte ORDER_GIVE_GIFT_FINISHED = 13;
-
-	/** 订单类型goods_type常量 */
-	/** 普通商品订单 返利 */
-	public final static byte GOODS_TYPE_GENERAL = 0;
-	/** 拼团商品订单 */
-	public final static byte GOODS_TYPE_PIN_GROUP = 1;
-	/** 返利商品 */
-	public final static byte GOODS_TYPE_REBATE = 2;
-	/** 砍价商品 */
-	public final static byte GOODS_TYPE_BARGAIN = 3;
-	/** 积分兑换商品 */
-	public final static byte GOODS_TYPE_INTEGRAL = 4;
-	/** 秒杀商品 */
-	public final static byte GOODS_TYPE_SECKILL = 5;
-	/** 限时降价 返利 */
-	public final static byte GOODS_TYPE_REDUCE_PRICE = 6;
-	/** 加价购 返利 */
-	public final static byte GOODS_TYPE_PURCHASE_PRICE = 7;
-	/** 拼团抽奖 */
-	public final static byte GOODS_TYPE_GROUP_DRAW = 8;
-	/** 一口价 */
-	public final static byte GOODS_TYPE_PACKAGE_SALE = 9;
-	/** 定金膨胀 */
-	public final static byte GOODS_TYPE_PRE_SALE = 10;
-	/** 赠品 */
-	public final static byte GOODS_TYPE_GIFT = 11;
-	/** 幸运大抽奖 */
-	public final static byte GOODS_TYPE_LOTTERY_PRESENT = 12;
-	/** 限次卡兑换 */
-	public final static byte GOODS_TYPE_EXCHANG_ORDER = 13;
-	/** 好友助力 */
-	public final static byte GOODS_TYPE_PROMOTE_ORDER = 14;
-	/** 满包邮 */
-	public final static byte GOODS_TYPE_FREESHIP_ORDER = 15;
-	/** 测评 */
-	public final static byte GOODS_TYPE_ASSESS_ORDER = 16;
-	/** 送礼 */
-	public final static byte GOODS_TYPE_GIVE_GIFT = 17;
-	/** 首单特惠 */
-	public final static byte GOODS_TYPE_FIRST_SPECIAL = 18;
-	/** 支付有礼 */
-	public final static byte GOODS_TYPE_PAY_AWARD = 19;
-	/** 代付订单 */
-	public final static byte GOODS_TYPE_PAY_FOR_ANOTHER = 99;
-	/** 扫码购订单 */
-	public final static byte GOODS_TYPE_SWEEP_CODE_BUY = 100;
 
 	/**退货状态*/
     /** 退货的默认状态 */
@@ -324,43 +279,43 @@ public class OrderConstant {
     };
 
 	private String[] goodsType = {
-			// GOODS_TYPE_GENERAL
+			// ACTIVITY_TYPE_GENERAL
 			"普通订单",
-			// GOODS_TYPE_PIN_GROUP
+			// ACTIVITY_TYPE_PIN_GROUP
 			"拼团订单",
-			// GOODS_TYPE_REBATE
+			// ACTIVITY_TYPE_REBATE
 			"返利订单",
-			// GOODS_TYPE_BARGAIN
+			// ACTIVITY_TYPE_BARGAIN
 			"砍价订单",
-			// GOODS_TYPE_INTEGRAL
+			// ACTIVITY_TYPE_INTEGRAL
 			"积分兑换订单",
-			// GOODS_TYPE_SECKILL
+			// ACTIVITY_TYPE_SECKILL
 			"秒杀订单",
-			// GOODS_TYPE_REDUCE_PRICE
+			// ACTIVITY_TYPE_REDUCE_PRICE
 			"限时降价订单",
-			// GOODS_TYPE_FIRST_SPECIAL
+			// ACTIVITY_TYPE_FIRST_SPECIAL
 			"首单特惠订单",
-			// GOODS_TYPE_PURCHASE_PRICE
+			// ACTIVITY_TYPE_PURCHASE_PRICE
 			"加价购订单",
-			// GOODS_TYPE_GROUP_DRAW
+			// ACTIVITY_TYPE_GROUP_DRAW
 			"拼团抽奖订单",
-			// GOODS_TYPE_PACKAGE_SALE
+			// ACTIVITY_TYPE_PACKAGE_SALE
 			"一口价订单",
-			// GOODS_TYPE_PRE_SALE
+			// ACTIVITY_TYPE_PRE_SALE
 			"定金膨胀订单",
-			// GOODS_TYPE_GIFT
+			// ACTIVITY_TYPE_GIFT
 			"赠品订单",
-			// GOODS_TYPE_LOTTERY_PRESENT
+			// ACTIVITY_TYPE_LOTTERY_PRESENT
 			"幸运抽奖订单",
-			// GOODS_TYPE_EXCHANG_ORDER
+			// ACTIVITY_TYPE_EXCHANG_ORDER
 			"限次卡兑换订单",
-			// GOODS_TYPE_PROMOTE_ORDER
+			// ACTIVITY_TYPE_PROMOTE_ORDER
 			"好友助力订单",
-			// GOODS_TYPE_FREESHIP_ORDER
+			// ACTIVITY_TYPE_FREESHIP_ORDER
 			"满包邮",
-			// GOODS_TYPE_ASSESS_ORDER
+			// ACTIVITY_TYPE_ASSESS_ORDER
 			"测评订单",
-			// GOODS_TYPE_GIVE_GIFT
+			// ACTIVITY_TYPE_GIVE_GIFT
 			"送礼订单"
 	};
 
@@ -436,10 +391,10 @@ public class OrderConstant {
 
     static{
         AWARD_ORDER = ImmutableSet.<Byte>builder()
-            .add(GOODS_TYPE_LOTTERY_PRESENT)
-            .add(GOODS_TYPE_PROMOTE_ORDER)
-            .add(GOODS_TYPE_PAY_AWARD)
-            .add(GOODS_TYPE_ASSESS_ORDER)
+            .add(BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT)
+            .add(BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER)
+            .add(BaseConstant.ACTIVITY_TYPE_PAY_AWARD)
+            .add(BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER)
             .build();
     }
     /**
@@ -449,7 +404,8 @@ public class OrderConstant {
     public static final Byte D_T_MEMBER_CARD = 0;
     /**优惠卷*/
     public static final Byte D_T_COUPON = 1;
-
+    /**满折满减*/
+    public static final Byte D_T_FULL_REDUCE = 2;
     /**
      * table : b2c_customer_avail_coupons type 1为减价，2为打折
      */

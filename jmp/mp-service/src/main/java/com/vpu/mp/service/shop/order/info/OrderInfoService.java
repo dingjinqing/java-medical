@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -288,13 +289,13 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(TABLE.SCORE_DISCOUNT.greaterThan(BigDecimal.ZERO));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE:
-				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_INTEGRAL})));
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_INTEGRAL})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_COD:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_COD));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE:
-				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_LOTTERY_PRESENT, OrderConstant.GOODS_TYPE_PROMOTE_ORDER, OrderConstant.GOODS_TYPE_ASSESS_ORDER, OrderConstant.GOODS_TYPE_PAY_AWARD})));
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT, BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER, BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER, BaseConstant.ACTIVITY_TYPE_PAY_AWARD})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_WXPAY:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_WX_PAY));
@@ -333,7 +334,7 @@ public class OrderInfoService extends ShopBaseService {
      */
     public static String getGoodsTypeToInsert(List<Byte> orderType) {
         if(CollectionUtils.isEmpty(orderType)){
-            orderType.add(OrderConstant.GOODS_TYPE_GENERAL);
+            orderType.add(BaseConstant.ACTIVITY_TYPE_GENERAL);
         }
         //distinct
         orderType = orderType.stream().distinct().collect(Collectors.toList());
@@ -669,7 +670,7 @@ public class OrderInfoService extends ShopBaseService {
 			/**积分支付*/
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_DISCOUNT);
 		}
-		if(Arrays.asList(order.getGoodsType().split(",")).contains(Byte.valueOf(OrderConstant.GOODS_TYPE_INTEGRAL).toString())) {
+		if(Arrays.asList(order.getGoodsType().split(",")).contains(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_INTEGRAL).toString())) {
 			/**积分兑换*/
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE);
 		}
@@ -759,7 +760,7 @@ public class OrderInfoService extends ShopBaseService {
         //TODO 推广信息
         order.setIsPromote((byte)0);
         //主订单号
-        if(orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)){
+        if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT)){
             order.setMainOrderSn(order.getOrderSn());
         }
         //会员卡
@@ -870,6 +871,24 @@ public class OrderInfoService extends ShopBaseService {
             select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
         }
         return select.where(condition).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 获取预售活动已购买数量
+     * @param userId
+     * @param preSaleId
+     * @return
+     */
+    public Integer getPreSaletUserBuyNumber(Integer userId, Integer preSaleId){
+        return db().select(DSL.count(ORDER_GOODS.GOODS_NUMBER)).from(ORDER_GOODS)
+            .leftJoin(TABLE).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+            .where(TABLE.USER_ID.eq(userId)
+                .and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED))
+                .and(TABLE.BK_ORDER_PAID.gt(OrderConstant.BK_PAY_NO))
+                .and(TABLE.ACTIVITY_ID.eq(preSaleId))
+                .and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
+                .and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_PRE_SALE}))))
+            .fetchAnyInto(Integer.class);
     }
 
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
@@ -1292,7 +1311,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
 				.and(TABLE.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)
 						.and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_FRONT)).and(TABLE.ACTIVITY_ID.eq(pinGroupId)
-								.and(TABLE.GOODS_TYPE.eq(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE)))))).fetch();
+								.and(TABLE.GOODS_TYPE.eq(String.valueOf(BaseConstant.ACTIVITY_TYPE_PRE_SALE)))))).fetch();
 
     }
 

@@ -302,7 +302,7 @@ public class BargainService extends ShopBaseService  {
      *
      */
 	public PageResult<MarketOrderListVo> getBargainOrderList(MarketOrderListParam param) {
-        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,OrderConstant.GOODS_TYPE_BARGAIN);
+        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,BaseConstant.ACTIVITY_TYPE_BARGAIN);
     }
 
     /**

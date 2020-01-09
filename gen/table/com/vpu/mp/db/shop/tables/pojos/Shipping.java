@@ -23,10 +23,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shipping implements Serializable {
 
-    private static final long serialVersionUID = -1134063142;
+    private static final long serialVersionUID = -74196182;
 
     private Byte      shippingId;
     private String    shippingCode;
+    private String    express100Code;
     private String    shippingName;
     private String    shippingDesc;
     private String    insure;
@@ -43,6 +44,7 @@ public class Shipping implements Serializable {
     public Shipping(Shipping value) {
         this.shippingId = value.shippingId;
         this.shippingCode = value.shippingCode;
+        this.express100Code = value.express100Code;
         this.shippingName = value.shippingName;
         this.shippingDesc = value.shippingDesc;
         this.insure = value.insure;
@@ -58,6 +60,7 @@ public class Shipping implements Serializable {
     public Shipping(
         Byte      shippingId,
         String    shippingCode,
+        String    express100Code,
         String    shippingName,
         String    shippingDesc,
         String    insure,
@@ -71,6 +74,7 @@ public class Shipping implements Serializable {
     ) {
         this.shippingId = shippingId;
         this.shippingCode = shippingCode;
+        this.express100Code = express100Code;
         this.shippingName = shippingName;
         this.shippingDesc = shippingDesc;
         this.insure = insure;
@@ -97,6 +101,14 @@ public class Shipping implements Serializable {
 
     public void setShippingCode(String shippingCode) {
         this.shippingCode = shippingCode;
+    }
+
+    public String getExpress100Code() {
+        return this.express100Code;
+    }
+
+    public void setExpress100Code(String express100Code) {
+        this.express100Code = express100Code;
     }
 
     public String getShippingName() {
@@ -185,6 +197,7 @@ public class Shipping implements Serializable {
 
         sb.append(shippingId);
         sb.append(", ").append(shippingCode);
+        sb.append(", ").append(express100Code);
         sb.append(", ").append(shippingName);
         sb.append(", ").append(shippingDesc);
         sb.append(", ").append(insure);

@@ -49,6 +49,7 @@
         >
           <el-input
             size="small"
+            v-model="requestParams.groupId"
             placeholder="请输入团ID"
             clearable
             class="inputWidth"
@@ -89,12 +90,14 @@
           type="primary"
           class="item"
           style="margin-left: 10px;"
+          @click="initDataList"
         >筛选</el-button>
         <el-button
           size="small"
           type="primary"
           class="item"
           style="margin-left: 10px;"
+          @click="resetDataList"
         >重置筛选</el-button>
       </el-form>
     </div>
@@ -176,9 +179,9 @@ export default {
         username: '',
         startTime: '',
         endTime: '',
-        // 团ID
-        mobile: '' // 手机号
-        // 成团状态
+        groupId: '', // 团ID
+        mobile: '', // 手机号
+        grouped: null // 成团状态
       },
       tableData: [] // 表格数据
     }
@@ -192,7 +195,7 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.requestParams.skId = this.$route.query.id
+      this.requestParams.groupDrawId = this.$route.query.id
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       groupLotteryList(this.requestParams).then((res) => {
@@ -202,6 +205,18 @@ export default {
           this.loading = false
         }
       })
+    },
+
+    // 重置筛选
+    resetDataList () {
+      this.requestParams = {
+        username: '',
+        startTime: '',
+        endTime: '',
+        groupId: '',
+        mobile: '',
+        grouped: null
+      }
     }
   }
 

@@ -2,12 +2,9 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuParam;
-import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @author 李晓冰
@@ -22,7 +19,8 @@ public class WxAppGoodsBrandSortController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/sort/init")
     public JsonResult goodsSortPageInit(){
-        return success(shop().goodsMp.goodsBrandSortMp.goodsSortPageInit());
+        Integer userId = wxAppAuth.user().getUserId();
+        return success(shop().goodsMp.goodsBrandSortMp.goodsSortPageInit(userId));
     }
 
     /**
@@ -34,6 +32,7 @@ public class WxAppGoodsBrandSortController extends WxAppBaseController{
         if (param.getMenuType() == null) {
             return fail();
         }
-        return success(shop().goodsMp.goodsBrandSortMp.getGoodsSortMenuContent(param));
+        Integer userId = wxAppAuth.user().getUserId();
+        return success(shop().goodsMp.goodsBrandSortMp.getGoodsSortMenuContent(param,userId));
     }
 }
