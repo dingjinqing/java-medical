@@ -169,8 +169,12 @@ export default {
   },
   watch: {
     cropperFlag_ (obj) {
-      console.log(obj, 111)
+      console.log(obj, 111, this.disabled)
       if (obj === null) return
+      if (!this.disabled) {
+        this.cropperTopInput_one = ''
+        this.cropperTopInput_two = ''
+      }
       this.dialogVisible = true
       // this.option.img = url
       this.imgPath = obj.path
@@ -205,6 +209,8 @@ export default {
           }
 
           this.option.fixedNumber = [newData[0], newData[1]]
+        } else {
+          this.disabled = false
         }
       },
       immediate: true
@@ -300,8 +306,8 @@ export default {
       console.log(this.cropMovingX, this.cropMovingY, this.cropperTopInput_one, this.cropperTopInput_two, this.previews.w, this.previews.h)
       let obj = {
         remoteImgPath: this.imgPath,
-        cropWidth: this.cropperTopInput_one,
-        cropHeight: this.cropperTopInput_two,
+        cropWidth: this.option.autoCropWidth,
+        cropHeight: this.option.autoCropHeight,
         x: this.cropMovingX,
         y: this.cropMovingY,
         w: this.previews.w,
