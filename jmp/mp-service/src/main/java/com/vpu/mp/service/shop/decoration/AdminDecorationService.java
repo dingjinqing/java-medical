@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.decoration;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -178,16 +179,31 @@ public class AdminDecorationService extends ShopBaseService {
      * @param param
      * @return
      */
-    public Map<String, Object> getPage(PageIdParam param) {
-        XcxCustomerPageRecord page = db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()));
-        return processPageContentBeforeGet(page.getPageContent());
-    }
-
-    private Map<String, Object> processPageContentBeforeGet(String pageContent){
-        pageContent = StringUtils.isBlank(pageContent) ? "{}" : pageContent;
-        Map<String, Object> result = new LinkedHashMap<>();
+    public PageVo  getPage(PageIdParam param) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        XcxCustomerPageRecord page = db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()));
+        Map<String, Object> pageContent = processPageContentBeforeGet(page.getPageContent(),objectMapper);
+        PageVo vo = new PageVo();
+        vo.setPageId(page.getPageId());
+        vo.setPageName(page.getPageName());
+        vo.setCatId(page.getCatId());
+        vo.setPageType(page.getPageType());
+        vo.setPageTplType(page.getPageTplType());
+        try {
+            vo.setPageContent(objectMapper.writeValueAsString(pageContent));
+            vo.setPagePublishContent(vo.getPageContent());
+            return vo;
+        } catch (JsonProcessingException e) {
+            logger().error("装修",e);
+            return null;
+        }
+    }
+
+    private Map<String, Object> processPageContentBeforeGet(String pageContent,ObjectMapper objectMapper){
+        pageContent = StringUtils.isBlank(pageContent) ? "{}" : pageContent;
+        Map<String, Object> result = new LinkedHashMap<>();
+
         try {
             JsonNode root = objectMapper.readTree(pageContent);
             Iterator<Map.Entry<String, JsonNode>> elements = root.fields();
