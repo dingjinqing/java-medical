@@ -157,3 +157,12 @@
 .goods-info > .label-content {
   margin-top: 20rpx;
 }
+.reduce-price-act-bar{
+  height: 80rpx;
+  display: flex;
+}
+.reduce-price-left-info,.reduce-price-right-info{
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+}

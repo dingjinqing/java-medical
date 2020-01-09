@@ -19,6 +19,21 @@
     <!-- actBar 活动倒计时价格等 -->
     <v-act-content act-bar-info="{{actBarInfo}}"/>
 
+    <!-- 限时降价窗口 -->
+    <view class="reduce-price-act-bar" style="background-color:{{somColor}};color:{{comColor}};">
+      <block>
+        <view class="reduce-price-left-info">
+          <text>限时价</text>
+          <text></text>
+        </view>
+        <view class="reduce-price-right-info">
+          <text>开始时间</text>
+          <text>01月10日 00:00:00</text>
+        </view>
+      </block>
+      <block></block>
+    </view>
+
     <!-- 商品信息 -->
     <view class="goods-info">
       <view class="goods-info_top">

@@ -446,6 +446,9 @@ global.wxPage({
     let { products, activity } = data
     if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
       products = activity[actBaseInfo[activity.activityType]['prdListName']]
+      if(activity.activityType === 6 && activity.actState != 0){
+      products = data.products
+      }
     }
     let { realPrice, linePrice } = products.reduce((defaultData, val) => {
       if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
