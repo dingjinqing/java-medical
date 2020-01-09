@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
+import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
@@ -270,6 +272,7 @@ public class UserImportService extends ShopBaseService {
 		int totalNum = list.size();
 		for (UserImportPojo userImportPojo : list) {
 			String mobile = userImportPojo.getMobile();
+			logger().info("手机号"+mobile);
 			if (StringUtils.isEmpty(mobile)) {
 				logger().info("手机号为空");
 				userImportPojo.setErrorMsg(UserImportTemplate.MOBILE_NULL.getCode());
@@ -287,7 +290,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String name = userImportPojo.getName();
-
+			logger().info("姓名"+name);
 			if (StringUtils.isNotEmpty(name)) {
 				if (name.length() > 10) {
 					logger().info("姓名限制10个字符");
@@ -296,6 +299,7 @@ public class UserImportService extends ShopBaseService {
 				}
 			}
 			String inviteUserMobile = userImportPojo.getInviteUserMobile();
+			logger().info("邀请人手机"+inviteUserMobile);
 			if (StringUtils.isNotEmpty(inviteUserMobile)) {
 				if (!Pattern.matches(PHONEREG, inviteUserMobile)) {
 					logger().info("邀请人手机号格式错误");
@@ -310,6 +314,7 @@ public class UserImportService extends ShopBaseService {
 				}
 			}
 			Integer score = userImportPojo.getScore();
+			logger().info("积分"+score);
 			if (null == score) {
 				logger().info("积分为空");
 				userImportPojo.setErrorMsg(UserImportTemplate.SCORE_NULL.getCode());
@@ -322,6 +327,7 @@ public class UserImportService extends ShopBaseService {
 			}
 
 			String sex = userImportPojo.getSex();
+			logger().info("性别"+sex);
 			String[] sexs = MemberSexEnum.getArraySexs(lang);
 			if (StringUtils.isNotEmpty(sex) && !checkRule(sexs, sex)) {
 				logger().info("性别仅限男女");
@@ -329,6 +335,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String birthday = userImportPojo.getBirthday();
+			logger().info("生日"+sex);
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
 					// ExcelUtil.DATE_FORMAT
@@ -346,6 +353,7 @@ public class UserImportService extends ShopBaseService {
 			String district = userImportPojo.getDistrict();
 			userImportPojo.setCity(city);
 			userImportPojo.setDistrict(district);
+			logger().info("省市区"+province+city+district);
 			boolean isProvince = StringUtils.isEmpty(province);
 			boolean isCity = StringUtils.isEmpty(city);
 			boolean isDistrict = StringUtils.isEmpty(district);
@@ -381,18 +389,21 @@ public class UserImportService extends ShopBaseService {
 			}
 
 			String idNumber = userImportPojo.getIdNumber();
+			logger().info("身份证"+idNumber);
 			if (!IdentityUtils.isLegalPattern(idNumber)) {
 				logger().info("无效身份证号");
 				userImportPojo.setErrorMsg(UserImportTemplate.ID_ERROR.getCode());
 				continue;
 			}
 			BigDecimal income = userImportPojo.getIncome();
+			logger().info("收入"+income);
 			if (income != null && income.compareTo(ZERO) == -1) {
 				logger().info("无效收入");
 				userImportPojo.setErrorMsg(UserImportTemplate.INCOME_ERROR.getCode());
 				continue;
 			}
 			String marriage = userImportPojo.getMarriage();
+			logger().info("婚姻状况"+marriage);
 			String[] marriages = MemberMarriageEnum.getArrayMarriage(lang);
 			if (StringUtils.isNotEmpty(marriage) && !checkRule(marriages, marriage)) {
 				logger().info("无效婚姻状况");
@@ -400,6 +411,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String education = userImportPojo.getEducation();
+			logger().info("教育状况"+education);
 			String[] educations = MemberEducationEnum.getArrayEduction(lang);
 			if (StringUtils.isNotEmpty(education) && !checkRule(educations, education)) {
 				logger().info("无效教育");
@@ -407,6 +419,7 @@ public class UserImportService extends ShopBaseService {
 				continue;
 			}
 			String industry = userImportPojo.getIndustry();
+			logger().info("行业状况"+industry);
 			String[] industrys = MemberIndustryEnum.getArrayIndustryInfo(lang);
 			if (StringUtils.isNotEmpty(industry) && !checkRule(industrys, industry)) {
 				logger().info("无效行业");
@@ -416,13 +429,15 @@ public class UserImportService extends ShopBaseService {
 			successNum++;
 		}
 		// 可能存在id不正确
+		logger().info("准备插入");
 		UserImportRecord newRecord = db().newRecord(USER_IMPORT);
 		newRecord.setSuccessNum(successNum);
 		newRecord.setTotalNum(totalNum);
 		newRecord.setCardId(cardId);
 		newRecord.setTagId(tagId);
 		newRecord.setGroupId(groupId);
-		newRecord.insert();
+		int insert2 = newRecord.insert();
+		logger().info("插入USER_IMPORT"+insert2);
 		for (UserImportPojo userImportPojo2 : list) {
 			UserImportDetailRecord record = db().newRecord(USER_IMPORT_DETAIL);
 			record.setCardId(cardId);
@@ -631,9 +646,9 @@ public class UserImportService extends ShopBaseService {
 			int activateNum = getActivateNum(vo.getId(), ONE);
 			vo.setActivateNum(activateNum);
 			String cardIds = vo.getCardId();
+			List<CardInfoVo> cardList = new ArrayList<CardInfoVo>();
 			if (StringUtils.isNotEmpty(cardIds)) {
 				String[] caStrings = cardIds.split(",");
-				List<CardInfoVo> cardList = new ArrayList<CardInfoVo>();
 				for (String cardId : caStrings) {
 					CardInfoVo cardVo = new CardInfoVo();
 					MemberCardRecord cardInfo = cardDaoService.getInfoByCardId(Integer.parseInt(cardId));
@@ -717,7 +732,7 @@ public class UserImportService extends ShopBaseService {
 		return db().selectFrom(USER_IMPORT_DETAIL)
 				.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))
 						.and(USER_IMPORT_DETAIL.MOBILE.eq(mobile)).and(USER_IMPORT_DETAIL.USER_ACTION.eq(userAction)))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	// 激活用户
@@ -762,6 +777,7 @@ public class UserImportService extends ShopBaseService {
 			param.setDesc("user_activate_score");
 			param.setRemarkCode(RemarkTemplate.ADMIN_USER_IMPORT.code);
 			param.setUserId(userId);
+			param.setRemarkData(score);
 			try {
 				scoreService.updateMemberScore(param, 0, RecordTradeEnum.USER_IMPORT.val(),
 						RecordTradeEnum.UACCOUNT_RECHARGE.val());
@@ -837,6 +853,7 @@ public class UserImportService extends ShopBaseService {
 			param.setDesc("user_activate_score");
 			param.setRemarkCode(RemarkTemplate.ADMIN_USER_ACTIVATE.code);
 			param.setUserId(userId);
+			param.setRemarkData(String.valueOf(score));
 			try {
 				scoreService.updateMemberScore(param, 0, RecordTradeEnum.USER_IMPORT.val(),
 						RecordTradeEnum.UACCOUNT_RECHARGE.val());
@@ -920,11 +937,51 @@ public class UserImportService extends ShopBaseService {
 		if (StringUtils.isNotEmpty(birthday) && birthdayYear == null) {
 			logger().info("更新生日");
 			String[] birthdays = birthday.split("/");
+			if(birthdays.length==1) {
+				birthdays=birthday.split("-");
+			}
 			userDetail.setBirthdayYear(Integer.valueOf(birthdays[0]));
 			userDetail.setBirthdayMonth(Integer.valueOf(birthdays[1]));
 			userDetail.setBirthdayDay(Integer.valueOf(birthdays[2]));
 		}
-		// TODO 省市区国际化之后不好判断
+		//省市区只判定了中文
+		String provinceName = importUser.getProvince();
+		String cityName = importUser.getCity();
+		String districtName = importUser.getDistrict();
+		logger().info("判断是否更新省市区" + provinceName + cityName + districtName);
+		if (StringUtils.isNotEmpty(provinceName) && StringUtils.isNotEmpty(cityName) && StringUtils.isNotEmpty(districtName)) {
+			logger().info("更新省市区");
+			Integer provinceId=110000;
+			//省
+			DictProvinceRecord provinceRecord = saas.region.province.getProvinceName(provinceName);
+			if (provinceRecord != null) {
+				provinceId = provinceRecord.getProvinceId();
+				if (provinceId < 100000) {
+					DictProvinceRecord provinceName2 = saas.region.province.getProvinceName(provinceName.substring(0, 2));
+					if (provinceName2 != null) {
+						provinceId = provinceName2.getProvinceId();
+						provinceId = provinceId < 100000 ? 110000 : provinceId;
+					}
+				}
+			}
+			//市
+			Integer cityId=110100;
+			DictCityRecord cityRecord = saas.region.city.getCityId(cityName, provinceId);
+			if(cityRecord!=null) {
+				cityId=cityRecord.getCityId();
+			}
+
+			//地区
+			Integer districtId=110101;
+			DictDistrictRecord districtRecord = saas.region.district.getDistrictName(districtName, cityId);
+			if(districtRecord!=null) {
+				districtId=districtRecord.getDistrictId();
+			}
+			userDetail.setProvinceCode(provinceId);
+			userDetail.setCityCode(cityId);
+			userDetail.setDistrictCode(districtId);
+		}
+		
 		BigDecimal income = importUser.getIncome();
 		logger().info("判断收入");
 		if (income != null) {

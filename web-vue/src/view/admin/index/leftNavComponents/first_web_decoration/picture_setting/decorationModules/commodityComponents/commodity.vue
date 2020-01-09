@@ -43,9 +43,10 @@
             {{$t('commodity.noData')}}
           </div>
           <!--有商品-->
-          <ul
+          <div :style="data.goods_module_bg==='1'?`;backgroundColor:${data.goods_bg_color}`:''">
+<ul
             v-if="goodsFlag"
-            :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''+data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:''"
+            :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''"
           >
             <li
               v-for="(item,index) in data.goodsListData"
@@ -220,6 +221,8 @@
               </div>
             </li>
           </ul>
+          </div>
+
         </div>
 
       </div>

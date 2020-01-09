@@ -15,7 +15,7 @@
             <view class='top_title'>
               <view class='van-two-ellipsis'>{{item.goodsName}}</view>
             </view>
-            <view class='title_label_container' style="bottom:104rpx">
+            <view class='title_label_container' style="bottom:100rpx">
               <view style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}" class="{{indexC==0?'title_label':''}}" wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
             {{indexC===0?itemC.text:''}}
             </view>
@@ -26,6 +26,7 @@
               <view class='sale_price' wx:if="{{item.activityType != '10'}}" style='color:{{main_setting.comColor}};'>￥{{item.realPrice===null?"0.00":item.realPrice}}</view>
               <view class='sale_price' wx:if="{{item.activityType == '10'}}" style='color:{{main_setting.comColor}};'>￥{{item.shopPrice}}</view>
             </block>
+            <view wx:if="{{m.hide_price != 1}}"></view>
             <block wx:if='{{ m.other_message===1}}'>
                 <view style="padding-top:12rpx" class='market_price' wx:if="{{item.linePrice && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
             </block>

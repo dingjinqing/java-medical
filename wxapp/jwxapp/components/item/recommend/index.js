@@ -41,6 +41,7 @@ global.wxComponent({
       },{
         pageName:this.data.pageName,
         pageNum:this.data.currentPage,
+        userId:util.getCache('user_id'),
         pageSize:20
       })
     },

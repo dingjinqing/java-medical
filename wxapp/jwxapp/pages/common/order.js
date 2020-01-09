@@ -188,6 +188,7 @@ var order = {
       })
     };
     let operate_info = e.currentTarget.dataset.operate_info;
+    // 查看评价1，评价有礼2，商品评价3
     if (operate_info.indexOf("-") != -1) {
       operate_info = operate_info.substring(0, operate_info.indexOf("-"));
     }

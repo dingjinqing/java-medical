@@ -32,11 +32,14 @@ public class ModuleMagicCube extends ModuleBase {
 	/**
 	 * 魔方块数据
 	 */
-	Map<String,BlockItem> blocksData;
+    @JsonProperty(value = "data")
+	Map<String,BlockItem> data;
 	
 	@Data
 	public static class TableSize{
+        @JsonProperty(value = "rows")
 		Integer rows;
+        @JsonProperty(value = "cols")
 		Integer cols;
 	}
 	
@@ -52,21 +55,25 @@ public class ModuleMagicCube extends ModuleBase {
 		/**
 		 * 魔方块名称x位置
 		 */
+        @JsonProperty(value = "x")
 		Integer x;
 		
 		/**
 		 * 魔方块名称y位置
 		 */
+        @JsonProperty(value = "y")
 		Integer y;
 		
 		/**
 		 * 魔方块覆盖行数
 		 */
+        @JsonProperty(value = "rows")
 		Integer rows;
 		
 		/**
 		 * 魔方块覆盖列数
 		 */
+        @JsonProperty(value = "cols")
 		Integer cols;
 		
 		/**

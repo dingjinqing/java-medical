@@ -36,9 +36,9 @@
         <template v-if="form.judge_status === 1">
           <div>
             自动审核：<el-checkbox
-              v-model="form.examine"
+              v-model="form.activation"
               :true-label='1'
-              :false-label="0"
+              :false-label='0'
             >{{ $t('distribution.reviewedInvitation') }}</el-checkbox>
           </div>
           <div>
@@ -61,28 +61,40 @@
 
           <!-- 审核信息 -->
           <div
-            v-if="form.activation === 1 && form.info_status === 1"
+            v-if="form.info_status === 1"
             style="width: 900px;"
           >
             <el-checkbox-group v-model="form.activation_cfg">
-              <el-checkbox
-                v-for="(item, index) in checkedList"
-                :key="index"
-                :label="item"
-              >{{ item }}</el-checkbox>
+              <div>
+                <el-checkbox
+                  v-for="(item, index) in checkedList1"
+                  :key="index"
+                  :label="item"
+                >{{ item }}</el-checkbox>
+              </div>
+              <div>
+                <el-checkbox
+                  v-for="(item, index) in checkedList2"
+                  :key="index"
+                  :label="item"
+                >{{ item }}</el-checkbox>
+                <!-- <el-checkbox
+                  v-model="form.InvitationCode"
+                  :true-label='1'
+                  :false-label="0"
+                >邀请码</el-checkbox> -->
+                <span
+                  class="text"
+                  style="margin-left: 10px;"
+                >{{ $t('distribution.invitationTip1') }} <a
+                    href="javascript:void(0);"
+                    style="color: red;"
+                  >{{ $t('distribution.invitationTip2') }}</a> {{ $t('distribution.invitationTip3') }}
+                  <a href="javascript:void(0);">{{ $t('distribution.invitationTip4') }}</a> {{ $t('distribution.invitationTip5') }}</span>
+              </div>
+
             </el-checkbox-group>
-            <div>
-              <el-checkbox
-                v-model="form.InvitationCode"
-                :true-label='1'
-                :false-label="0"
-              >邀请码</el-checkbox>
-              <span class="text">{{ $t('distribution.invitationTip1') }} <a
-                  href="javascript:void(0);"
-                  style="color: red;"
-                >{{ $t('distribution.invitationTip2') }}</a> {{ $t('distribution.invitationTip3') }}
-                <a href="javascript:void(0);">{{ $t('distribution.invitationTip4') }}</a> {{ $t('distribution.invitationTip5') }}</span>
-            </div>
+
             <!-- 自定义激活项 -->
             <div>
               <el-button
@@ -554,18 +566,17 @@ export default {
       // 自定义激活项
       customList: [],
       form: {
-        status: 1, // 分销开关
-        judge_status: 1, // 分销员审核开关
+        status: 0, // 分销开关
+        judge_status: 0, // 分销员审核开关
         // 自动审核
-        examine: 1,
+        activation: 0, // 是否需要提交个人信息
         // 信息开关
-        info_status: 1,
+        info_status: 0,
         // 自定义激活项
         // customList: [],
-        invitationCode: 1, // 邀请码
-        activation: 1, // 是否需要提交个人信息
+        // invitationCode: 1, // 邀请码
         activation_cfg: [], // 个人信息内容
-        rank_status: 1, // 分销员排名开关
+        rank_status: 0, // 分销员排名开关
         vaild: 0, // 返利有效期
         protect_date: 0, // 分销员保护期
         desc: '分销中心', // 分销中心页面名称
@@ -580,6 +591,8 @@ export default {
       },
       // 分销员信息
       checkedList: [],
+      checkedList1: [],
+      checkedList2: [],
       // 推荐商品表格
       tableData: [],
       arrorFlag: true, // 展开更多配置
@@ -630,6 +643,8 @@ export default {
   watch: {
     lang () {
       this.checkedList = this.$t('distribution.checkedList')
+      this.checkedList1 = this.checkedList.slice(0, 10)
+      this.checkedList2 = this.checkedList.slice(11)
     }
   },
   mounted () {
@@ -792,6 +807,15 @@ export default {
 
     // 保存分销配置
     addDistribution () {
+      // 个人信息
+      // if (this.customList.length > 0) {
+      //   this.customList.forEach((item, index) => {
+      //     if (item.radio1 === 1) {
+      //       this.form.activation_cfg.push(item.title)
+      //     }
+      //   })
+      // }
+
       // 有效期
       if (this.form.vaild === 1) {
         this.form.vaild = this.vaildDate
