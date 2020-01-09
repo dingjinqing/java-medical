@@ -15,10 +15,9 @@ import java.util.List;
  */
 @Data
 public class VisitDistributionParam {
-
-    @NotBlank(message = JsonResultMessage.MSG_PARAM_ERROR)
+    /** 日期类型 7:最近7天 30:最近30天 0:自定义 */
+    private Integer type = 7;
     private String startDate;
-    @NotBlank(message = JsonResultMessage.MSG_PARAM_ERROR)
     private String endDate;
 
     /**
