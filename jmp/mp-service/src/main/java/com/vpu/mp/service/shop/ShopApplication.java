@@ -8,10 +8,7 @@ import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
-import com.vpu.mp.service.shop.decoration.AppletsJumpService;
-import com.vpu.mp.service.shop.decoration.ChooseLinkService;
-import com.vpu.mp.service.shop.decoration.PageClassificationService;
-import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.decoration.*;
 import com.vpu.mp.service.shop.distribution.*;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
@@ -115,7 +112,10 @@ public class ShopApplication {
 	public VideoService video;
 
 	@Autowired
-	public ShopMpDecorationService mpDecoration;
+	public MpDecorationService mpDecoration;
+    @Autowired
+    public AdminDecorationService adminDecoration;
+
 	/**
 	 * 订单普通查询
 	 */
