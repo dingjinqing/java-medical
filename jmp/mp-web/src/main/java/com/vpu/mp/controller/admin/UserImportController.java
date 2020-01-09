@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,7 +121,7 @@ public class UserImportController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/user/import/list/noActive")
-	public JsonResult listNoActive(@RequestBody UIGetNoActListParam param) {
+	public JsonResult listNoActive(@RequestBody @Valid UIGetNoActListParam param) {
 		param.setIsActivate(ZERO);
 		PageResult<UIGetNoActListVo> addGroupName = shop().member.userImportService.addGroupName(param);
 		return success(addGroupName);
