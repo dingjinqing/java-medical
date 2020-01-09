@@ -2,7 +2,9 @@ package com.vpu.mp.service.pojo.shop.member.userImp;
 
 import java.sql.Timestamp;
 
-import org.springframework.web.multipart.MultipartFile;
+import javax.validation.constraints.NotBlank;
+
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 
@@ -15,6 +17,7 @@ import lombok.Data;
 @Data
 public class UIGetNoActListParam {
 	/** 批次Id */
+	@NotBlank(message = JsonResultMessage.BATCHID_NOT_NULL)
 	private Integer batchId;
 	private Timestamp startTime;
 	private Timestamp endTime;
