@@ -22,6 +22,30 @@ public class DomainConfig {
 	@Value(value = "${domain.image}")
 	protected String imageDomain;
 
+    @Value(value = "${domain.video}")
+    protected String videoDomain;
+
+    /**
+     * 视频路径
+     *
+     * @param relativePath
+     * @return
+     */
+    public String videoUrl(String relativePath) {
+        return this.videoUrl(pathJudge(relativePath), null);
+    }
+
+    /**
+     * 视频路径
+     *
+     * @param relativePath
+     * @return
+     */
+    public String videoUrl(String relativePath, String schema) {
+        schema = StringUtils.isBlank(schema) ? "http" : schema;
+        return String.format("%s://%s/%s", schema, videoDomain, relativePath);
+    }
+
 	/**
 	 * 图片路径
 	 *
