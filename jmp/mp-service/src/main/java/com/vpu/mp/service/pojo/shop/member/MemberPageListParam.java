@@ -22,6 +22,10 @@ public class MemberPageListParam extends BaseMemberPojo {
 	private String username;
 	/** -来源 ： -1 未录入 0后台>0为门店  {@link com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SCAN_QRCODE }*/
 	private Integer source;
+	/** type: 0 微信来源，1微信来源，2渠道页 */
+	private Integer type;
+	/** 邀请来源活动id 渠道 */
+	private Integer channelId;
 	/** - 会员卡id  */
 	private Integer cardId;
 	/** -邀请人*/

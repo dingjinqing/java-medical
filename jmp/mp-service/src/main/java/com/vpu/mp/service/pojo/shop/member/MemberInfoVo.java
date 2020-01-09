@@ -40,6 +40,14 @@ public class MemberInfoVo {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Integer inviteActId;
 	
+	/**
+	 *  用户微信来源 -1搜索、公众号等入口（主动）进入，-2分享（被动）进入，-3扫码进入 -4未获取 
+	 * 	com.vpu.mp.service.pojo.shop.member.SourceNameEnum
+	 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Integer scene;
+	
+	
 	/** 来源名称  如： {@link com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED } */
 	private String sourceName;
 	/** 0：恢复登录 ；1：禁止登录  {@link com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES } */

@@ -98,7 +98,7 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_GET;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
@@ -999,7 +999,7 @@ public class OrderReadService extends ShopBaseService {
                 if(SRC_BACK_STAGE.getCode().equals(order.getUserSource())){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_ADMIN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
-                if(SRC_NOT_ACQUIRED.getCode().equals(order.getUserSource()) && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
+                if(NOT_GET.getCode().equals(order.getUserSource()) && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_UNKNOWN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
                 if(order.getUserSource() != null && order.getUserSource() > SRC_BACK_STAGE.getCode()){
