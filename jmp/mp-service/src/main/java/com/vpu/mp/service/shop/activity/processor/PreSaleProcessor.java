@@ -58,7 +58,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             if (goodsPreSaleListInfo.get(capsule.getGoodsId()) == null) {
                 return;
             }
-            Record3<OrderBeforeParamInteger, Integer, BigDecimal> record3 = goodsPreSaleListInfo.get(capsule.getGoodsId()).get(0);
+            Record3<Integer, Integer, BigDecimal> record3 = goodsPreSaleListInfo.get(capsule.getGoodsId()).get(0);
             capsule.setRealPrice(record3.get(PRESALE_PRODUCT.PRESALE_PRICE));
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
             activity.setActivityId(record3.get(PRESALE.ID));
