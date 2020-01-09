@@ -873,6 +873,24 @@ public class OrderInfoService extends ShopBaseService {
         return select.where(condition).fetchAnyInto(Integer.class);
     }
 
+    /**
+     * 获取预售活动已购买数量
+     * @param userId
+     * @param preSaleId
+     * @return
+     */
+    public Integer getPreSaletUserBuyNumber(Integer userId, Integer preSaleId){
+        return db().select(DSL.count(ORDER_GOODS.GOODS_NUMBER)).from(ORDER_GOODS)
+            .leftJoin(TABLE).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+            .where(TABLE.USER_ID.eq(userId)
+                .and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED))
+                .and(TABLE.BK_ORDER_PAID.gt(OrderConstant.BK_PAY_NO))
+                .and(TABLE.ACTIVITY_ID.eq(preSaleId))
+                .and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
+                .and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_PRE_SALE}))))
+            .fetchAnyInto(Integer.class);
+    }
+
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额

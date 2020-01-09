@@ -223,6 +223,19 @@ public enum JsonResultCode {
      */
     CODE_ORDER_NOT_TO_WAIT_DELIVER(121000, JsonResultMessage.MSG_ORDER_NOT_TO_WAIT_DELIVER),
 
+    /**
+     * 下单活动校验
+     */
+    //活动停用
+    CODE_ORDER_ACTIVITY_DISABLE(122001, JsonResultMessage.MSG_ORDER_ACTIVITY_DISABLE),
+    //活动未开始
+    CODE_ORDER_ACTIVITY_NO_START(122002, JsonResultMessage.MSG_ORDER_ACTIVITY_NO_START),
+    //活动已结束
+    CODE_ORDER_ACTIVITY_END(122003, JsonResultMessage.MSG_ORDER_ACTIVITY_END),
+    //购买数量已达活动上限
+    CODE_ORDER_ACTIVITY_NUMBER_LIMIT(122004, JsonResultMessage.MSG_ORDER_ACTIVITY_NUMBER_LIMIT),
+    //该商品不支持预售
+    CODE_ORDER_GOODS_NOT_SUPORT_PRESALE(122011, JsonResultMessage.MSG_ORDER_GOODS_NOT_SUPORT_PRESALE),
 
     // 商品
     GOODS_ID_IS_NULL(130001,JsonResultMessage.GOODS_ID_IS_NULL),

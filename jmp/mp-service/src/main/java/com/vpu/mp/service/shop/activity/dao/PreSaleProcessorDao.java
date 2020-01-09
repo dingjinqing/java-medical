@@ -4,7 +4,6 @@ import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSaleMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSalePrdMpVo;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
@@ -27,7 +26,7 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
  * @date 2019年11月01日
  */
 @Service
-public class PreSaleProcessorDao extends ShopBaseService {
+public class PreSaleProcessorDao extends PreSaleService {
 
     /**
      * 获取商品集合内的预售信息
