@@ -80,8 +80,8 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/page/get")
-	public JsonResult editPage(@RequestBody @Validated PageIdParam param) {
-		return success(shop().adminDecoration.getPage(param));
+	public JsonResult getPageInfo(@RequestBody @Validated PageIdParam param) {
+		return success(shop().adminDecoration.getPageInfo(param));
 	}
 
 	/**

@@ -179,7 +179,7 @@ public class AdminDecorationService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageVo  getPage(PageIdParam param) {
+    public PageVo getPageInfo(PageIdParam param) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         XcxCustomerPageRecord page = db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()));
@@ -211,10 +211,8 @@ public class AdminDecorationService extends ShopBaseService {
             while (elements.hasNext()) {
                 Map.Entry<String, JsonNode> node = elements.next();
                 String key = node.getKey();
-
                 Object element = this.processModule(objectMapper, node);
                 result.put(key, element);
-
             }
         } catch (Exception e) {
             logger().error("装修转换错误:",e);
@@ -296,7 +294,9 @@ public class AdminDecorationService extends ShopBaseService {
         }
         if(node.getKey().equals("page_cfg")){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
-            pageCfg.getPictorial().setShareImgPath(domainConfig.imageUrl(pageCfg.getPictorial().getShareImgPath()));
+            if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
+                pageCfg.getPictorial().setShareImgPath(domainConfig.imageUrl(pageCfg.getPictorial().getShareImgPath()));
+            }
             return pageCfg;
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);

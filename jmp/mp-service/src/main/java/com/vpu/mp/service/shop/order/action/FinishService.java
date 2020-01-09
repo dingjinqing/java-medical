@@ -65,7 +65,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 		Map<Integer, Integer> returningCount = returnOrder.getOrderCount(new Integer[] {order.getOrderId()}, OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		
 		if (!OrderOperationJudgment.mpIsFinish(order , returningCount.get(order.getOrderId()))) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_FINISH_OPERATION_NOT_SUPPORTED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_FINISH_OPERATION_NOT_SUPPORTED, null);
 		}
 
 		

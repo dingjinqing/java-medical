@@ -1,33 +1,5 @@
 package com.vpu.mp.service.shop.order.action;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.shop.config.ShopReturnConfigService;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.exception.DataAccessException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -39,20 +11,24 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -63,6 +39,25 @@ import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Result;
+import org.jooq.exception.DataAccessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 /**
  * 
  * @author 王帅
@@ -119,17 +114,17 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY).equals(param.getReturnOperate())){
            //非提交物流、非撤销校验
             if(param.getReturnMoney() == null){
-                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY);
+                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY, null);
             }
             if(param.getShippingFee() == null){
-                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE);
+                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE, null);
             }
         }
 		//获取订单详情
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
             logger.error("退款退货执行异常，订单不存在");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		//result
         ExecuteResult result = ExecuteResult.create();
@@ -235,7 +230,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			}
 		} catch (Exception e) {
 			logger.error("退款捕获mp异常", e);
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, null);
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
@@ -583,28 +578,23 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			}
 			if(OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()) {
 				//待发货
-				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
+				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && products.get(rGoods.getProductId()) != null) {
 					//待发货+规格库存
 					GoodsSpecProductRecord product = products.get(rGoods.getProductId());
-					if(product == null){
-                        continue;
-                    }
 					product.setPrdNumber(product.getPrdNumber() + rGoods.getGoodsNumber());
 					//规格库存加入更新数组
 					updateProducts.add(product);
 					//待发货+商品库存
 					GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
 					goods.setGoodsNumber(goods.getGoodsNumber() + rGoods.getGoodsNumber());
+			    }
+                //销量修改
+                GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
+                if(goods != null){
+                    goods.setGoodsSaleNum(goods.getGoodsSaleNum() - rGoods.getGoodsNumber());
+                    updateNormalGoods.add(goods);
+                }
 			}
-			//销量修改
-			GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
-			if(normalGoods == null){
-                continue;
-            }
-			goods.setGoodsSaleNum(goods.getGoodsSaleNum() - rGoods.getGoodsNumber());
-			updateNormalGoods.add(goods);
-			}
-			
 			//订单类型为拼团 且存在拼团id
 			if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_PIN_GROUP)) && order.getActivityId() != null) {
 				//TODO 拼团修改库存和销量
@@ -624,9 +614,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		if(updateNormalGoods.size() > 0) {
 			db().batchUpdate(updateNormalGoods);
 		}
-		
 	}
-	
+
 	/**
 	 * 	非仅退运费生成退款订单及校验
 	 * @param param
