@@ -100,28 +100,34 @@
         <el-table-column
           prop="mobile"
           label="手机号"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="name"
           label="真实姓名"
+          align="center"
         ></el-table-column>
         <el-table-column
           prop="createTime"
           label="导入时间"
+          align="center"
         ></el-table-column>
         <el-table-column
           prop="batchId"
           label="导入批次号"
+          align="center"
         ></el-table-column>
         <el-table-column
           prop="isDistributor"
           label="是否是分销员"
+          align="center"
           :formatter="formatIsDistributor"
         ></el-table-column>
         <el-table-column
           prop="groupName"
           label="分销员分组"
+          align="center"
           :formatter="formatGroupName"
         ></el-table-column>
       </el-table>
