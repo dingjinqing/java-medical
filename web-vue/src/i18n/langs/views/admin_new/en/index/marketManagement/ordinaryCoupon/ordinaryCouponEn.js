@@ -111,6 +111,6 @@ export const en = {
   validateactName1: 'Please enter the activity name',
   validateactName2: 'Cannot be longer than 10 characters at',
   validatereceivePerPerson: 'Please select the limited number of tickets per person',
-  validateNum: 'Please enter 0 or positive integer!',
-  validateDiscount: 'Please enter the correct number!'
+  validateNum: 'Please enter a positive number, two decimal places can be reserved',
+  validateDiscount: 'Please enter the correct number'
 }

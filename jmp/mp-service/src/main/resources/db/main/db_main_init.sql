@@ -1,7 +1,7 @@
 
 
 CREATE TABLE `b2c_activity_statistics` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_date` date NOT NULL COMMENT '2018-09-18',
   `type` tinyint(2) NOT NULL COMMENT '1，7，30',
   `activity_type` tinyint(2) NOT NULL COMMENT '活动类型',
@@ -26,7 +26,7 @@ CREATE TABLE `b2c_activity_statistics` (
 
 
 CREATE TABLE `b2c_ali_mini_agent` (
-  `rec_id` int(11) NOT NULL,
+  `rec_id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL COMMENT '店铺Id',
   `account` varchar(191) DEFAULT '' COMMENT 'isv代操作的商户账号，可以是支付宝账号，也可以是pid（2088开头）',
   `contact_name` varchar(191) DEFAULT '' COMMENT '联系人名称',
@@ -59,7 +59,7 @@ CREATE TABLE `b2c_ali_mini_agent` (
 
 
 CREATE TABLE `b2c_ali_mini_app_version` (
-  `rec_id` int(11) NOT NULL,
+  `rec_id` int(11) NOT NULL AUTO_INCREMENT,
   `app_version` varchar(191) DEFAULT NULL COMMENT '小程序版本号',
   `app_version_desc` varchar(191) DEFAULT NULL COMMENT '小程序版本描述',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -102,7 +102,7 @@ CREATE TABLE `b2c_ali_mini_auth_shop` (
 
 
 CREATE TABLE `b2c_ali_my_order` (
-  `rec_id` int(11) NOT NULL,
+  `rec_id` int(11) NOT NULL AUTO_INCREMENT,
   `commodity_order_id` varchar(191) DEFAULT '' COMMENT '订单编号',
   `order_time` timestamp NULL DEFAULT NULL COMMENT '订购时间',
   `title` varchar(191) DEFAULT '' COMMENT '服务名称',
@@ -124,7 +124,7 @@ CREATE TABLE `b2c_ali_my_order` (
 
 
 CREATE TABLE `b2c_ali_user_token` (
-  `rec_id` int(11) NOT NULL,
+  `rec_id` int(11) NOT NULL AUTO_INCREMENT,
   `app_id` varchar(191) NOT NULL DEFAULT '' COMMENT '应用Id',
   `user_id` varchar(20) NOT NULL COMMENT '支付宝用户Id',
   `access_token` varchar(191) NOT NULL DEFAULT '' COMMENT '支付宝用户访问令牌',
@@ -149,7 +149,7 @@ CREATE TABLE `b2c_app` (
 
 
 CREATE TABLE `b2c_app_auth` (
-  `id` smallint(5) NOT NULL,
+  `id` smallint(5) NOT NULL AUTO_INCREMENT,
   `action` tinyint(1) DEFAULT '1' COMMENT '1：erp 2：pos',
   `sys_id` int(11) NOT NULL DEFAULT '0',
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
@@ -170,18 +170,18 @@ CREATE TABLE `b2c_app_auth` (
 
 
 CREATE TABLE `b2c_article` (
-  `article_id` int(11) NOT NULL,
+  `article_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_id` int(11) NOT NULL DEFAULT '1' COMMENT '文章分类',
   `title` varchar(256) DEFAULT NULL,
   `author` varchar(50) DEFAULT NULL,
   `keyword` varchar(256) DEFAULT NULL COMMENT '标签',
   `desc` varchar(1024) DEFAULT NULL COMMENT '文章描述',
-  `content` text COLLATE utf8mb4_unicode_ci,
+  `content` text,
   `is_recommend` tinyint(1) DEFAULT '0' COMMENT '1:推荐',
   `is_top` tinyint(1) DEFAULT '0' COMMENT '1:置顶',
   `status` tinyint(1) DEFAULT '0' COMMENT '0未发布,1已发布',
   `pub_time` timestamp NULL DEFAULT NULL COMMENT '发布时间',
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `last_visit_time` datetime DEFAULT NULL,
   `pv` int(11) DEFAULT NULL,
@@ -194,18 +194,18 @@ CREATE TABLE `b2c_article` (
 
 
 CREATE TABLE `b2c_article_category` (
-  `category_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_name` varchar(191) NOT NULL DEFAULT '',
   `use_footer_nav` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否用于底部导航',
   `add_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`category_id`)
 )COMMENT='文章分类表';
 
 
 
 CREATE TABLE `b2c_article_record` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `article_id` int(11) NOT NULL COMMENT '阅读文章id',
   `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sys_id` int(11) DEFAULT NULL,
@@ -215,7 +215,7 @@ CREATE TABLE `b2c_article_record` (
 
 
 CREATE TABLE `b2c_back_process` (
-  `rec_id` int(11) NOT NULL,
+  `rec_id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `process_id` int(11) NOT NULL DEFAULT '0' COMMENT '进程ID',
   `job_name` varchar(255) NOT NULL DEFAULT '' COMMENT '任务名称',
@@ -240,9 +240,9 @@ CREATE TABLE `b2c_back_process` (
 
 
 CREATE TABLE `b2c_cache` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `k` varchar(100) DEFAULT '',
-  `v` text COLLATE utf8mb4_unicode_ci,
+  `v` text,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `k` (`k`)
@@ -251,7 +251,7 @@ CREATE TABLE `b2c_cache` (
 
 
 CREATE TABLE `b2c_category` (
-  `cat_id` int(11) NOT NULL,
+  `cat_id` int(11) NOT NULL AUTO_INCREMENT,
   `cat_name` varchar(90) DEFAULT '' COMMENT '分类名称',
   `keywords` varchar(191) DEFAULT '' COMMENT '关键词',
   `cat_desc` varchar(191) DEFAULT '' COMMENT '分类描述',
@@ -268,7 +268,7 @@ CREATE TABLE `b2c_category` (
 
 
 CREATE TABLE `b2c_charge_renew` (
-  `id` int(11) NOT NULL COMMENT '申请ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '申请ID',
   `shop_id` int(11) NOT NULL COMMENT '店铺ID',
   `apply_id` int(11) NOT NULL COMMENT '申请用户的ID',
   `apply_name` varchar(50) DEFAULT '' COMMENT '申请用户名称',
@@ -285,7 +285,7 @@ CREATE TABLE `b2c_charge_renew` (
 
 
 CREATE TABLE `b2c_cron_define` (
-  `id` int(11) NOT NULL COMMENT '主键id',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `class_name` varchar(128) NOT NULL COMMENT '定时任务完整类名',
   `expression` varchar(32) NOT NULL COMMENT 'cron表达式',
   `description` varchar(64) NOT NULL DEFAULT '' COMMENT '任务描述',
@@ -293,34 +293,34 @@ CREATE TABLE `b2c_cron_define` (
   `retries_num` tinyint(1) NOT NULL DEFAULT '0' COMMENT '失败重试次数,默认0不重试',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态,1:启用;0:停用',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `cron_key` (`class_name`)
-)COMMENT='定时任务定义表';
+) COMMENT='定时任务定义表';
 
 
 
 CREATE TABLE `b2c_cron_record` (
-  `id` int(11) NOT NULL COMMENT '主键id',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `cron_id` int(11) NOT NULL COMMENT '定时任务id',
   `execute_num` tinyint(1) NOT NULL DEFAULT '0' COMMENT '执行次数（小于等于失败重试次数）',
   `failed_reason` varchar(512) NOT NULL DEFAULT '' COMMENT '最后一次执行失败原因',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_id` (`cron_id`)
-)COMMENT='定时任务执行结果记录表（只记录执行失败的记录）';
+) COMMENT='定时任务执行结果记录表';
 
 
 
 CREATE TABLE `b2c_db_option_record` (
-  `record_id` int(9) NOT NULL,
+  `record_id` int(9) NOT NULL AUTO_INCREMENT,
   `version` varchar(10) DEFAULT '' COMMENT '版本号',
   `option_rst` longtext COMMENT '执行结果',
   `db_type` varchar(32) DEFAULT '' COMMENT '更新类型：mian主库，shop从库',
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID，单个店铺更新时使用',
   `in_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
-  `up_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `up_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `option_type` varchar(32) DEFAULT '' COMMENT '操作类型：command命令行操作，SQL语句操作',
   `total_num` int(6) DEFAULT '0' COMMENT '总更新条数',
   `success_num` int(6) DEFAULT '0' COMMENT '成功条数',
@@ -330,7 +330,7 @@ CREATE TABLE `b2c_db_option_record` (
 
 
 CREATE TABLE `b2c_decoration_template` (
-  `page_id` int(10) NOT NULL,
+  `page_id` int(10) NOT NULL AUTO_INCREMENT,
   `page_name` varchar(60) NOT NULL DEFAULT '',
   `page_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可用',
   `page_content` longtext COMMENT '页面内容，json格式存储',
@@ -348,7 +348,7 @@ CREATE TABLE `b2c_dict_city` (
   `postcode` varchar(20) NOT NULL DEFAULT '',
   `short_name` varchar(32) NOT NULL DEFAULT '',
   `pinyin` varchar(128) NOT NULL DEFAULT '',
-  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`city_id`),
   KEY `IX_dict_city_modified` (`modified`),
   KEY `province_id` (`province_id`)
@@ -374,7 +374,7 @@ CREATE TABLE `b2c_dict_district` (
   `city_id` int(11) NOT NULL,
   `postcode` varchar(20) NOT NULL DEFAULT '',
   `pinyin` varchar(60) NOT NULL DEFAULT '',
-  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`district_id`),
   KEY `IX_dict_district_modified` (`modified`),
   KEY `city_id` (`city_id`)
@@ -389,7 +389,7 @@ CREATE TABLE `b2c_dict_province` (
   `area_id` int(11) NOT NULL DEFAULT '0',
   `short_name` varchar(45) NOT NULL DEFAULT '',
   `pinyin` varchar(64) NOT NULL DEFAULT '',
-  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`province_id`),
   KEY `IX_dict_province_modified` (`modified`),
   KEY `country_id` (`country_id`)
@@ -398,7 +398,7 @@ CREATE TABLE `b2c_dict_province` (
 
 
 CREATE TABLE `b2c_failed_jobs` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `connection` text NOT NULL,
   `queue` text NOT NULL,
   `payload` longtext NOT NULL,
@@ -410,7 +410,7 @@ CREATE TABLE `b2c_failed_jobs` (
 
 
 CREATE TABLE `b2c_goods` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `goods_id` int(8) NOT NULL,
   `shop_id` int(11) DEFAULT '0' COMMENT '店铺ID',
   `cat_id` int(5) NOT NULL DEFAULT '0',
@@ -423,7 +423,7 @@ CREATE TABLE `b2c_goods` (
   `market_price` decimal(10,2) DEFAULT '0.00',
   `shop_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `cost_price` decimal(10,2) DEFAULT '0.00' COMMENT '成本价',
-  `goods_desc` text COLLATE utf8mb4_unicode_ci,
+  `goods_desc` text,
   `goods_img` varchar(191) DEFAULT '',
   `is_on_sale` tinyint(1) DEFAULT '1' COMMENT '是否在售，1在售，0下架',
   `is_delete` tinyint(1) DEFAULT '0',
@@ -432,7 +432,7 @@ CREATE TABLE `b2c_goods` (
   `goods_sale_num` int(8) DEFAULT '0' COMMENT '销售数量',
   `goods_collect_num` int(8) DEFAULT '0' COMMENT '收藏数量',
   `add_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `state` tinyint(1) DEFAULT '0' COMMENT '审核状态,0待审核 1 审核通过 2 违规下架',
   `reason` text COMMENT '违规下架原因',
   `sub_account_id` int(11) DEFAULT '0' COMMENT '子帐号ID，主要用于官方店铺',
@@ -466,13 +466,13 @@ CREATE TABLE `b2c_goods` (
 
 
 CREATE TABLE `b2c_goods_brand` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `brand_name` varchar(500) NOT NULL COMMENT '品牌名称',
   `e_name` varchar(500) NOT NULL DEFAULT '' COMMENT '品牌英文名称',
   `logo` varchar(255) DEFAULT NULL COMMENT '品牌Logo',
   `first` tinyint(3) NOT NULL DEFAULT '0' COMMENT '优先级',
   `add_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '记录修改时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0为未删除 1为删除',
   `desc` text COMMENT '品牌介绍',
   PRIMARY KEY (`id`)
@@ -481,7 +481,7 @@ CREATE TABLE `b2c_goods_brand` (
 
 
 CREATE TABLE `b2c_goods_img` (
-  `img_id` int(8) NOT NULL,
+  `img_id` int(8) NOT NULL AUTO_INCREMENT,
   `goods_id` int(8) NOT NULL DEFAULT '0',
   `img_url` varchar(191) NOT NULL DEFAULT '',
   `img_desc` varchar(191) NOT NULL DEFAULT '',
@@ -492,7 +492,7 @@ CREATE TABLE `b2c_goods_img` (
 
 
 CREATE TABLE `b2c_goods_spec_product` (
-  `prd_id` int(10) NOT NULL,
+  `prd_id` int(10) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0',
   `goods_id` int(10) NOT NULL DEFAULT '0',
   `prd_price` decimal(10,2) NOT NULL DEFAULT '0.00',
@@ -516,7 +516,7 @@ CREATE TABLE `b2c_goods_spec_product` (
 
 
 CREATE TABLE `b2c_grasp_goods` (
-  `goods_id` int(8) NOT NULL,
+  `goods_id` int(8) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) DEFAULT '0' COMMENT '店铺ID',
   `cat_id` int(5) NOT NULL DEFAULT '0',
   `goods_sn` varchar(60) NOT NULL DEFAULT '',
@@ -528,7 +528,7 @@ CREATE TABLE `b2c_grasp_goods` (
   `market_price` decimal(10,2) DEFAULT '0.00',
   `shop_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `cost_price` decimal(10,2) DEFAULT '0.00' COMMENT '成本价',
-  `goods_desc` text COLLATE utf8mb4_unicode_ci,
+  `goods_desc` text,
   `goods_img` varchar(191) DEFAULT '',
   `is_on_sale` tinyint(1) DEFAULT '1' COMMENT '是否在售，1在售，0下架',
   `is_delete` tinyint(1) DEFAULT '0',
@@ -537,7 +537,7 @@ CREATE TABLE `b2c_grasp_goods` (
   `goods_sale_num` int(8) DEFAULT '0' COMMENT '销售数量',
   `goods_collect_num` int(8) DEFAULT '0' COMMENT '收藏数量',
   `add_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `state` tinyint(1) DEFAULT '0' COMMENT '审核状态,0待审核 1 审核通过 2 违规下架',
   `reason` text COMMENT '违规下架原因',
   `sub_account_id` int(11) DEFAULT '0' COMMENT '子帐号ID，主要用于官方店铺',
@@ -570,7 +570,7 @@ CREATE TABLE `b2c_grasp_goods` (
 
 
 CREATE TABLE `b2c_jobs` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `queue` varchar(191) NOT NULL,
   `payload` longtext NOT NULL,
   `attempts` tinyint(3) NOT NULL,
@@ -584,7 +584,7 @@ CREATE TABLE `b2c_jobs` (
 
 
 CREATE TABLE `b2c_log_manage` (
-  `log_id` bigint(20) NOT NULL,
+  `log_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL COMMENT '店铺ID',
   `error_level` tinyint(2) NOT NULL DEFAULT '0' COMMENT '错误等级：0正常，1debug，2info，3error',
   `error_code` varchar(8) NOT NULL DEFAULT '0' COMMENT '错误编码',
@@ -701,7 +701,7 @@ CREATE TABLE `b2c_mp_daily_visit` (
 
 
 CREATE TABLE `b2c_mp_deploy_history` (
-  `deploy_id` int(11) NOT NULL COMMENT '自增ID',
+  `deploy_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `bind_template_id` int(11) NOT NULL COMMENT '小程序模板Id',
   `app_id` varchar(191) NOT NULL DEFAULT '' COMMENT '小程序app_id',
   `deploy_log` text COMMENT '小程序模板部署日志',
@@ -736,7 +736,7 @@ CREATE TABLE `b2c_mp_distribution_visit` (
 
 
 CREATE TABLE `b2c_mp_jump_version` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` varchar(64) NOT NULL,
   `flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:申请中，1:已提交',
   `add_time` timestamp NULL DEFAULT NULL,
@@ -802,7 +802,7 @@ CREATE TABLE `b2c_mp_official_account` (
 
 
 CREATE TABLE `b2c_mp_official_account_user` (
-  `rec_id` int(11) NOT NULL,
+  `rec_id` int(11) NOT NULL AUTO_INCREMENT,
   `openid` varchar(128) NOT NULL COMMENT '用户的标识，对当前公众号唯一',
   `app_id` varchar(191) NOT NULL COMMENT '授权公众号appId',
   `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '系统账户ID',
@@ -818,14 +818,14 @@ CREATE TABLE `b2c_mp_official_account_user` (
   `unionid` varchar(191) DEFAULT NULL COMMENT '只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段',
   PRIMARY KEY (`rec_id`),
   UNIQUE KEY `openid` (`openid`,`app_id`),
-  KEY `sys_id` (`sys_id`),
+  KEY `bmoau_sys_id` (`sys_id`),
   KEY `unionid` (`unionid`)
 );
 
 
 
 CREATE TABLE `b2c_mp_operate_log` (
-  `operate_id` int(11) NOT NULL COMMENT '自增ID',
+  `operate_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `app_id` varchar(191) NOT NULL DEFAULT '' COMMENT '小程序app_id',
   `template_id` int(11) NOT NULL COMMENT '小程序模板Id',
   `operate_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作类型',
@@ -945,7 +945,7 @@ CREATE TABLE `b2c_mp_weekly_visit` (
 
 
 CREATE TABLE `b2c_order_goods` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `rec_id` mediumint(8) NOT NULL,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `order_id` mediumint(8) NOT NULL DEFAULT '0',
@@ -999,7 +999,7 @@ CREATE TABLE `b2c_order_goods` (
 
 
 CREATE TABLE `b2c_order_info` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `order_id` mediumint(8) NOT NULL COMMENT '订单ID',
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `order_sn` varchar(20) NOT NULL DEFAULT '' COMMENT '订单编号',
@@ -1053,7 +1053,7 @@ CREATE TABLE `b2c_order_info` (
   `return_finish_time` timestamp NULL DEFAULT NULL COMMENT '订单退货完成时间',
   `refund_time` timestamp NULL DEFAULT NULL COMMENT '订单申请退款时间',
   `refund_finish_time` timestamp NULL DEFAULT NULL COMMENT '订单退款完成时间',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单更新时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '订单更新时间',
   `shipping_no` varchar(191) NOT NULL DEFAULT '' COMMENT '快递单号',
   `shipping_type` varchar(60) NOT NULL DEFAULT '' COMMENT '快递类型',
   `is_cod` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否货到付款',
@@ -1138,7 +1138,7 @@ CREATE TABLE `b2c_order_info` (
 
 
 CREATE TABLE `b2c_qf_img` (
-  `img_id` int(8) NOT NULL,
+  `img_id` int(8) NOT NULL AUTO_INCREMENT,
   `question_feedback_id` int(8) NOT NULL DEFAULT '0',
   `img_url` varchar(191) NOT NULL DEFAULT '',
   `img_desc` varchar(191) NOT NULL DEFAULT '',
@@ -1149,7 +1149,7 @@ CREATE TABLE `b2c_qf_img` (
 
 
 CREATE TABLE `b2c_shop` (
-  `shop_id` int(11) NOT NULL COMMENT '店铺ID',
+  `shop_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '店铺ID',
   `sys_id` int(11) NOT NULL,
   `mobile` varchar(32) NOT NULL DEFAULT '',
   `receive_mobile` varchar(32) DEFAULT '' COMMENT ' 接收通知手机号码',
@@ -1213,7 +1213,7 @@ CREATE TABLE `b2c_shop` (
 
 
 CREATE TABLE `b2c_shop_account` (
-  `sys_id` int(11) NOT NULL COMMENT '店铺ID',
+  `sys_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '店铺ID',
   `user_name` varchar(64) NOT NULL DEFAULT '-- dd ##' COMMENT '用户名',
   `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
   `state` tinyint(1) DEFAULT '0' COMMENT '1 入驻申请，2审核通过，3审核不通过,4已禁用',
@@ -1245,7 +1245,7 @@ CREATE TABLE `b2c_shop_account` (
 
 
 CREATE TABLE `b2c_shop_activity` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_date` date NOT NULL COMMENT '2018-09-18',
   `type` tinyint(2) NOT NULL COMMENT '1，7，30',
   `activity_type` tinyint(2) NOT NULL COMMENT '活动类型',
@@ -1260,7 +1260,7 @@ CREATE TABLE `b2c_shop_activity` (
 
 
 CREATE TABLE `b2c_shop_child_account` (
-  `account_id` int(11) NOT NULL,
+  `account_id` int(11) NOT NULL AUTO_INCREMENT,
   `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '主账户ID',
   `account_name` varchar(191) NOT NULL DEFAULT '' COMMENT '子账号用户名',
   `account_pwd` varchar(40) NOT NULL DEFAULT '' COMMENT '子账号密码',
@@ -1277,20 +1277,20 @@ CREATE TABLE `b2c_shop_child_account` (
 
 
 CREATE TABLE `b2c_shop_child_role` (
-  `rec_id` int(11) NOT NULL,
+  `rec_id` int(11) NOT NULL AUTO_INCREMENT,
   `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '主账户ID',
   `account_id` int(11) NOT NULL DEFAULT '0' COMMENT '子账户ID',
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `role_id` int(11) NOT NULL DEFAULT '0' COMMENT '角色ID',
   PRIMARY KEY (`rec_id`),
   UNIQUE KEY `account_id` (`account_id`,`shop_id`),
-  KEY `sys_id` (`sys_id`)
+  KEY `bscr_sys_id` (`sys_id`)
 )COMMENT='商家子帐号与店铺权限关联表';
 
 
 
 CREATE TABLE `b2c_shop_free_experience` (
-  `fe_id` int(11) NOT NULL,
+  `fe_id` int(11) NOT NULL AUTO_INCREMENT,
   `company` varchar(191) NOT NULL DEFAULT '' COMMENT '公司',
   `contact` varchar(191) NOT NULL DEFAULT '' COMMENT '联系人',
   `mobile` varchar(32) DEFAULT '' COMMENT '电话',
@@ -1308,7 +1308,7 @@ CREATE TABLE `b2c_shop_free_experience` (
 
 
 CREATE TABLE `b2c_shop_grade` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_grade` varchar(64) NOT NULL COMMENT '店铺等级',
   `max_sku_num` int(11) NOT NULL COMMENT 'SKU数量',
   `max_shop_num` int(11) NOT NULL COMMENT '店铺数量',
@@ -1322,7 +1322,7 @@ CREATE TABLE `b2c_shop_grade` (
 
 
 CREATE TABLE `b2c_shop_grade_log` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL,
   `shop_grade` varchar(64) NOT NULL COMMENT '店铺等级',
   `max_sku_num` int(11) NOT NULL COMMENT 'SKU数量',
@@ -1337,7 +1337,7 @@ CREATE TABLE `b2c_shop_grade_log` (
 
 
 CREATE TABLE `b2c_shop_operation` (
-  `id` int(11) NOT NULL COMMENT '操作id',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '操作id',
   `shop_id` int(11) NOT NULL COMMENT '店铺ID',
   `operator_id` int(11) NOT NULL COMMENT '操作员id',
   `operator` varchar(50) NOT NULL COMMENT '操作员',
@@ -1351,11 +1351,11 @@ CREATE TABLE `b2c_shop_operation` (
 
 
 CREATE TABLE `b2c_shop_question_feedback` (
-  `question_feedback_id` int(11) NOT NULL,
+  `question_feedback_id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL COMMENT '反馈店铺ID',
   `category_id` int(11) NOT NULL DEFAULT '1' COMMENT '反馈问题分类',
   `mobile` varchar(32) DEFAULT '' COMMENT '填写的手机号',
-  `content` text COLLATE utf8mb4_unicode_ci,
+  `content` text,
   `is_look` tinyint(1) DEFAULT '0' COMMENT '1:已查看',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '反馈时间',
   `qf_img` varchar(191) NOT NULL DEFAULT '' COMMENT '图片',
@@ -1366,7 +1366,7 @@ CREATE TABLE `b2c_shop_question_feedback` (
 
 
 CREATE TABLE `b2c_shop_renew` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL COMMENT '店铺ID',
   `sys_id` int(11) NOT NULL,
   `mobile` varchar(32) DEFAULT '',
@@ -1385,7 +1385,7 @@ CREATE TABLE `b2c_shop_renew` (
 
 
 CREATE TABLE `b2c_shop_role` (
-  `role_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '主账户ID',
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `role_name` varchar(50) NOT NULL DEFAULT '' COMMENT '角色名称',
@@ -1395,13 +1395,13 @@ CREATE TABLE `b2c_shop_role` (
   `role_pass` varchar(50) DEFAULT NULL COMMENT '权限密码',
   PRIMARY KEY (`role_id`),
   KEY `shop_id` (`shop_id`),
-  KEY `sys_id` (`sys_id`)
+  KEY `bsr_sys_id` (`sys_id`)
 )COMMENT='店铺角色表';
 
 
 
 CREATE TABLE `b2c_shop_uploaded_image` (
-  `img_id` int(10) NOT NULL,
+  `img_id` int(10) NOT NULL AUTO_INCREMENT,
   `img_type` varchar(60) NOT NULL DEFAULT '',
   `img_size` int(10) NOT NULL DEFAULT '0',
   `img_name` varchar(191) NOT NULL DEFAULT '' COMMENT '图片名称，用于前端显示',
@@ -1412,7 +1412,7 @@ CREATE TABLE `b2c_shop_uploaded_image` (
   `img_width` int(10) NOT NULL DEFAULT '0',
   `img_height` int(10) NOT NULL DEFAULT '0',
   `is_refer` tinyint(4) DEFAULT '0' COMMENT '是否引用',
-  `upload_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `upload_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '账户ID',
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `del_flag` tinyint(1) NOT NULL DEFAULT '0',
@@ -1425,7 +1425,7 @@ CREATE TABLE `b2c_shop_uploaded_image` (
 
 
 CREATE TABLE `b2c_shop_uploaded_image_category` (
-  `img_cat_id` int(10) NOT NULL,
+  `img_cat_id` int(10) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `img_cat_name` varchar(60) NOT NULL DEFAULT '',
   `img_cat_parent_id` int(10) NOT NULL DEFAULT '0',
@@ -1434,7 +1434,7 @@ CREATE TABLE `b2c_shop_uploaded_image_category` (
   `level` tinyint(4) DEFAULT '0' COMMENT '层级，0开始',
   `sort` int(11) DEFAULT '1' COMMENT '排序优先级',
   `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '账户ID',
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`img_cat_id`),
   KEY `shop_id` (`shop_id`)
 )COMMENT='店铺主账号图片分类';
@@ -1442,7 +1442,7 @@ CREATE TABLE `b2c_shop_uploaded_image_category` (
 
 
 CREATE TABLE `b2c_shop_version` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `version_name` varchar(50) NOT NULL COMMENT '版本名称',
   `level` varchar(50) NOT NULL COMMENT '版本级别',
   `content` text COMMENT '包含功能',
@@ -1457,7 +1457,7 @@ CREATE TABLE `b2c_shop_version` (
 
 
 CREATE TABLE `b2c_sms` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `mobile` varchar(32) NOT NULL DEFAULT '',
   `sms_code` varchar(10) NOT NULL,
   `add_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1472,13 +1472,13 @@ CREATE TABLE `b2c_sms` (
 
 
 CREATE TABLE `b2c_sort` (
-  `sort_id` int(11) NOT NULL,
+  `sort_id` int(11) NOT NULL AUTO_INCREMENT,
   `sort_name` varchar(90) DEFAULT '',
   `parent_id` int(11) NOT NULL,
   `level` smallint(5) NOT NULL DEFAULT '0',
   `has_child` tinyint(1) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录修改时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间',
   `sort_img` varchar(191) NOT NULL DEFAULT '' COMMENT '一级分类是头图 其他为分类图标',
   `img_link` varchar(191) DEFAULT '' COMMENT '图标或者头图链接',
   `first` smallint(2) NOT NULL DEFAULT '0' COMMENT '优先级',
@@ -1491,7 +1491,7 @@ CREATE TABLE `b2c_sort` (
 
 
 CREATE TABLE `b2c_spec` (
-  `spec_id` int(10) NOT NULL,
+  `spec_id` int(10) NOT NULL AUTO_INCREMENT,
   `spec_name` varchar(60) NOT NULL DEFAULT '',
   `del_flag` tinyint(1) NOT NULL DEFAULT '0',
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
@@ -1501,7 +1501,7 @@ CREATE TABLE `b2c_spec` (
 
 
 CREATE TABLE `b2c_spec_vals` (
-  `specvalid` int(10) NOT NULL,
+  `specvalid` int(10) NOT NULL AUTO_INCREMENT,
   `spec_id` int(10) NOT NULL DEFAULT '0',
   `specvalname` varchar(60) NOT NULL DEFAULT '',
   `del_flag` tinyint(1) NOT NULL DEFAULT '0',
@@ -1513,7 +1513,7 @@ CREATE TABLE `b2c_spec_vals` (
 
 
 CREATE TABLE `b2c_statistics_shop` (
-  `id` mediumint(10) NOT NULL,
+  `id` mediumint(10) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `ref_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '统计数据时间',
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '统计类型 1天 7周 30月 3季度',
@@ -1564,18 +1564,18 @@ CREATE TABLE `b2c_statistics_shop` (
 
 
 CREATE TABLE `b2c_system_cfg` (
-  `rec_id` smallint(5) NOT NULL,
+  `rec_id` smallint(5) NOT NULL AUTO_INCREMENT,
   `sys_id` int(11) NOT NULL,
   `k` varchar(191) DEFAULT '',
-  `v` text COLLATE utf8mb4_unicode_ci,
+  `v` text,
   PRIMARY KEY (`rec_id`),
-  KEY `sys_id` (`sys_id`)
+  KEY `bsc_sys_id` (`sys_id`)
 )COMMENT='微信公众号用户表';
 
 
 
 CREATE TABLE `b2c_system_child_account` (
-  `account_id` int(11) NOT NULL,
+  `account_id` int(11) NOT NULL AUTO_INCREMENT,
   `system_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `account_name` varchar(191) NOT NULL DEFAULT '' COMMENT '子账号用户名',
   `account_pwd` varchar(40) NOT NULL DEFAULT '' COMMENT '子账号密码',
@@ -1590,7 +1590,7 @@ CREATE TABLE `b2c_system_child_account` (
 
 
 CREATE TABLE `b2c_system_role` (
-  `role_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `system_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '平台账号ID',
   `role_name` varchar(50) NOT NULL DEFAULT '' COMMENT '角色名称',
   `privilege_list` text COMMENT '权限列表，json数组存储',
@@ -1602,7 +1602,7 @@ CREATE TABLE `b2c_system_role` (
 
 
 CREATE TABLE `b2c_system_user` (
-  `system_user_id` int(11) NOT NULL,
+  `system_user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(60) NOT NULL DEFAULT '',
   `password` varchar(32) NOT NULL DEFAULT '',
   `mobile` varchar(32) NOT NULL DEFAULT '',
@@ -1616,10 +1616,10 @@ CREATE TABLE `b2c_system_user` (
 
 
 CREATE TABLE `b2c_task_job_content` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `content` text COMMENT '消息内容',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `del_flag` tinyint(1) DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
   PRIMARY KEY (`id`)
 )COMMENT='第三方服务提醒';
@@ -1627,7 +1627,7 @@ CREATE TABLE `b2c_task_job_content` (
 
 
 CREATE TABLE `b2c_task_job_main` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) DEFAULT '0' COMMENT '店铺ID',
   `content_id` int(11) DEFAULT '0' COMMENT 'MQ消息内容ID',
   `status` tinyint(3) DEFAULT '0' COMMENT '任务状态：0待执行,1执行中,2已完成',
@@ -1640,7 +1640,7 @@ CREATE TABLE `b2c_task_job_main` (
   `start_time` timestamp NULL DEFAULT NULL COMMENT '周期开始时间',
   `end_time` timestamp NULL DEFAULT NULL COMMENT '周期结束时间',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `del_flag` tinyint(1) DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
   PRIMARY KEY (`id`)
 );
@@ -1662,7 +1662,7 @@ CREATE TABLE `b2c_third_party_services` (
 
 
 CREATE TABLE `b2c_upload_uyun_record` (
-  `record_id` bigint(20) NOT NULL,
+  `record_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL COMMENT '店铺ID',
   `file_size` int(64) NOT NULL COMMENT '文件大小',
   `file_url` varchar(500) NOT NULL DEFAULT '' COMMENT '文件url',
@@ -1680,7 +1680,7 @@ CREATE TABLE `b2c_upload_uyun_record` (
 
 
 CREATE TABLE `b2c_uploaded_image` (
-  `img_id` int(10) NOT NULL,
+  `img_id` int(10) NOT NULL AUTO_INCREMENT,
   `img_type` varchar(60) NOT NULL DEFAULT '',
   `img_size` int(10) NOT NULL DEFAULT '0',
   `img_name` varchar(500) NOT NULL DEFAULT '' COMMENT '图片名称，用于前端显示',
@@ -1696,7 +1696,7 @@ CREATE TABLE `b2c_uploaded_image` (
   `del_flag` tinyint(1) NOT NULL DEFAULT '0',
   `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '账户ID',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`img_id`),
   KEY `shop_id` (`shop_id`),
   KEY `img_orig_fname` (`img_orig_fname`(191))
@@ -1705,7 +1705,7 @@ CREATE TABLE `b2c_uploaded_image` (
 
 
 CREATE TABLE `b2c_uploaded_image_category` (
-  `img_cat_id` int(10) NOT NULL,
+  `img_cat_id` int(10) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `img_cat_name` varchar(60) NOT NULL DEFAULT '',
   `img_cat_parent_id` int(10) NOT NULL DEFAULT '0',
@@ -1713,7 +1713,7 @@ CREATE TABLE `b2c_uploaded_image_category` (
   `level` tinyint(4) DEFAULT '0' COMMENT '层级，0开始',
   `sort` int(11) DEFAULT '1' COMMENT '排序优先级',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`img_cat_id`),
   KEY `shop_id` (`shop_id`)
 )COMMENT='上传图片分类';
@@ -1721,7 +1721,7 @@ CREATE TABLE `b2c_uploaded_image_category` (
 
 
 CREATE TABLE `b2c_user` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL COMMENT '用户名',
@@ -1749,7 +1749,7 @@ CREATE TABLE `b2c_user` (
   `invite_id` int(11) DEFAULT '0' COMMENT '邀请人ID',
   `invite_expiry_date` date DEFAULT NULL COMMENT '邀请失效时间',
   `wx_union_id` varchar(191) NOT NULL DEFAULT '' COMMENT '小程序union_id',
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `is_distributor` tinyint(2) DEFAULT '0' COMMENT '是否是分销员',
   `invite_act_id` int(10) DEFAULT '0' COMMENT '邀请来源活动ID',
   `distributor_level` tinyint(2) DEFAULT '1' COMMENT '用户等级',
@@ -1763,7 +1763,7 @@ CREATE TABLE `b2c_user` (
 
 
 CREATE TABLE `b2c_user_detail` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `username` varchar(100) DEFAULT NULL COMMENT '昵称',
@@ -1794,7 +1794,7 @@ CREATE TABLE `b2c_user_detail` (
 
 
 CREATE TABLE `b2c_user_login_record` (
-  `id` int(20) NOT NULL,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `shop_name` varchar(100) NOT NULL DEFAULT '' COMMENT '店铺名称',
   `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '主账户ID',
@@ -1810,7 +1810,7 @@ CREATE TABLE `b2c_user_login_record` (
 
 
 CREATE TABLE `b2c_user_summary_trend` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `ref_date` date NOT NULL COMMENT '2018-09-04',
   `type` tinyint(2) NOT NULL COMMENT '1，7，30',
@@ -1834,7 +1834,7 @@ CREATE TABLE `b2c_user_summary_trend` (
   `login_pv` int(11) DEFAULT '0' COMMENT '登录pv',
   `order_num` int(11) NOT NULL DEFAULT '0' COMMENT '下单笔数',
   `order_user_num` int(11) DEFAULT '0' COMMENT '下单人数(生成订单就算)',
-  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '统计时间',
+  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '统计时间',
   PRIMARY KEY (`id`),
   KEY `ref_type` (`ref_date`,`type`)
 );

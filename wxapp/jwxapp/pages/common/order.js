@@ -19,23 +19,23 @@ const orderStatusList = [
 var order = {
   // 好友代付
   // 退货中心
-  toReturnCenter (orderSn, isReturn, orderId) {
+  toReturnCenter ({order_sn:orderSn, order_id:orderId,is_return:isReturn}) {
     if (!isReturn) util.jumpLink("/pages1/returnorder/returnorder?order_sn=" + orderSn + "&order_id=" + orderId, "navigateTo");
     if (isReturn) util.jumpLink("/pages1/returnorderlist/returnorderlist?order_sn=" + orderSn + "&order_id=" + orderId, "navigateTo");
   },
   // 查看详情
-  viewInfo (orderSn) {
+  viewInfo ({order_sn:orderSn, order_id:orderId}) {
     util.jumpLink(
       `/pages/orderinfo/orderinfo?orderSn=${orderSn}`,
       "navigateTo"
     );
   },
   // 查看评价
-  viewComment (orderSn) {
+  viewComment ({order_sn:orderSn, order_id:orderId}) {
     util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
   },
   //发货
-  confirmation (orderSn,orderId){
+  confirmation ({order_sn:orderSn, order_id:orderId}){
     util.api(
       "/api/wxapp/order/operation",
       res => {
@@ -54,7 +54,7 @@ var order = {
     )
   },
   // 再次购买
-  addCart (orderSn, orderId) {
+  addCart ({order_sn:orderSn, order_id:orderId}) {
     console.log(orderSn, orderId);
     util.api(
       "/api/wxapp/order/Repurchase",
@@ -73,7 +73,7 @@ var order = {
     );
   },
   // 删除订单
-  delOrder (orderSn, orderId) {
+  delOrder ({order_sn:orderSn, order_id:orderId}) {
     util.showModal(
       "提示",
       "是否删除该订单",
@@ -95,7 +95,7 @@ var order = {
     );
   },
   // 提醒发货
-  remindOrder (orderSn, orderId) {
+  remindOrder ({order_sn:orderSn, order_id:orderId}) {
     util.api(
       "/api/wxapp/order/operation",
       res => {
@@ -113,7 +113,7 @@ var order = {
     );
   },
   // 取消订单
-  cancelOrder (orderSn, orderId) {
+  cancelOrder ({order_sn:orderSn, order_id:orderId}) {
     util.showModal(
       "提示",
       "是否取消该订单",
@@ -158,51 +158,41 @@ var order = {
     let optionList = {
       orderInfo: (() => {
         return this.viewInfo;
-      })(),
+      }),
       isShowCommentType: (() => {
         return this.viewComment;
-      })(),
+      }),
       isCancel: (() => {
         return this.cancelOrder;
-      })(),
+      }),
       isDelete: (() => {
         return this.delOrder;
-      })(),
+      }),
       isExtendReceive: (() => {
         return this.viewComment;
-      })(),
+      }),
       isRemindShip: (() => {
         return this.remindOrder;
-      })(),
+      }),
       isShowAgainBuy: (() => {
         return this.addCart;
-      })(),
+      }),
       isPayEndPayment: (() => {
         return this.viewComment;
-      })(),
+      }),
       confirmation:(()=>{
         return this.confirmation;
-      })(),
+      }),
       returnCenter: (() => {
         return this.toReturnCenter;
-      })()
+      })
     };
     let operate_info = e.currentTarget.dataset.operate_info;
+    // 查看评价1，评价有礼2，商品评价3
     if (operate_info.indexOf("-") != -1) {
       operate_info = operate_info.substring(0, operate_info.indexOf("-"));
     }
-    if (operate_info === "returnCenter") {
-      optionList[operate_info](
-        e.currentTarget.dataset.order_sn,
-        e.currentTarget.dataset.is_return,
-        e.currentTarget.dataset.order_id
-      );
-    } else {
-      optionList[operate_info](
-        e.currentTarget.dataset.order_sn,
-        e.currentTarget.dataset.order_id
-      );
-    }
+    optionList[operate_info]().call(this,e.currentTarget.dataset)
   },
   getOrderStatus (orderData) {
     let typeArray = orderData.orderType;

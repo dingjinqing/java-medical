@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -45,6 +48,10 @@ public class GroupIntegrationService extends ShopBaseService {
 	
 	@Autowired public GroupIntegrationListService groupIntegrationList;
     @Autowired public QrCodeService qrCode;
+
+    /**是否开团24小时自动开奖*/
+    public static final Byte IS_DAY_DIVIDE_Y = 1;
+    public static final Byte IS_DAY_DIVIDE_N = 0;
     
 	
 	/**
@@ -315,8 +322,52 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		return step;
 	}
-	
-	
+
+    /**
+     * 小程序装修瓜分积分模块显示异步调用
+     * @param moduleGroupIntegration
+     * @return
+     */
+    public ModuleGroupIntegration getPageIndexGroupIntegration(ModuleGroupIntegration moduleGroupIntegration,int userId){
+        GroupIntegrationDefineRecord groupIntegrationDefine = db().selectFrom(GROUP_INTEGRATION_DEFINE).where(GROUP_INTEGRATION_DEFINE.ID.eq(moduleGroupIntegration.getActId())).fetchAny();
+        if(groupIntegrationDefine != null){
+            moduleGroupIntegration.setName(groupIntegrationDefine.getName());
+            moduleGroupIntegration.setLimitAmount(groupIntegrationDefine.getLimitAmount());
+            moduleGroupIntegration.setInteTotal(groupIntegrationDefine.getInteTotal());
+            moduleGroupIntegration.setInteGroup(groupIntegrationDefine.getInteGroup());
+            moduleGroupIntegration.setStartTime(groupIntegrationDefine.getStartTime());
+            moduleGroupIntegration.setEndTime(groupIntegrationDefine.getEndTime());
+        }
+        moduleGroupIntegration.setHideTime(moduleGroupIntegration.getHideTime() == null ? 0 :moduleGroupIntegration.getHideTime());
+        moduleGroupIntegration.setHideActive(moduleGroupIntegration.getHideActive() == null ? 0 : moduleGroupIntegration.getHideActive());
+
+        moduleGroupIntegration.setCanPin(canApplyPinInte(groupIntegrationDefine,userId));
+        return moduleGroupIntegration;
+    }
+
+    /**
+     * 校验活动userId可用状态
+     * @param groupIntegrationDefine
+     * @param userId
+     * @return 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
+     */
+    private byte canApplyPinInte(GroupIntegrationDefineRecord groupIntegrationDefine,int userId){
+        if (groupIntegrationDefine == null){
+            return 1;
+        }
+        if (groupIntegrationDefine.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)){
+            return 2;
+        }
+        if (groupIntegrationDefine.getStartTime().after(DateUtil.getLocalDateTime())){
+            return 3;
+        }
+        if (groupIntegrationDefine.getEndTime().before(DateUtil.getLocalDateTime())
+            || (groupIntegrationDefine.getInteRemain() < groupIntegrationDefine.getInteGroup() && groupIntegrationDefine.getInteTotal() > 0 && groupIntegrationDefine.getIsDayDivide().equals(IS_DAY_DIVIDE_N))
+            || (groupIntegrationDefine.getInteRemain() <= 0 && groupIntegrationDefine.getInteTotal() > 0 && groupIntegrationDefine.getIsDayDivide().equals(IS_DAY_DIVIDE_Y) && groupIntegrationList.getExistGroup(userId,groupIntegrationDefine.getId()) == 0)){
+            return 4;
+        }
+        return 0;
+    }
 }
 @Data
 class ActivityInfo{

@@ -10,15 +10,15 @@ public class PrizeConstant {
     /**
      * 奖品来源
      */
-    public final static Byte PRIZE_SOURCE_LOTTERY=0;
+    public final static byte PRIZE_SOURCE_LOTTERY=0;
     /**
      * 奖品来源
      */
-    public final static Byte PRIZE_SOURCE_PAY_AWARD=3;
+    public final static byte PRIZE_SOURCE_PAY_AWARD=3;
     /**
-     * 奖品类型
+     * 奖品类型 todo
      */
-    public final static Byte PRIZE_SOURCE_=1;
+    public final static byte PRIZE_SOURCE=1;
 
 
     //**************状态

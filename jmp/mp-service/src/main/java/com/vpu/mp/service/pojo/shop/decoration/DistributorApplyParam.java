@@ -9,16 +9,20 @@ import lombok.Data;
  */
 @Data
 public class DistributorApplyParam {
-	/**
-	 * 分组id
-	 */
-	private Integer groupId;
-	/**
-	 * 用户ID
-	 */
+    /**
+     * 用户ID
+     */
 	private Integer userId;
-	/**
-	 * 备注
-	 */
-	private String remark;
+    /**
+     * 审核校验
+     */
+	private String activationFields;
+    /**
+     * 审核字段
+     */
+	private String configFields;
+    /**
+     * 邀请码
+     */
+	private String inviteCode;
 }

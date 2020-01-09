@@ -1,6 +1,6 @@
 {
   "component": true,
   "usingComponents": {
-    "v-share":"/components/item/popup/share/index"
+    "v-popup": "../popup/index"
   }
 }

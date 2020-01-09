@@ -17,6 +17,7 @@
 }
 .item_middle {
   flex: 1;
+  min-width: 0;
 }
 .item_right {
   width: auto;

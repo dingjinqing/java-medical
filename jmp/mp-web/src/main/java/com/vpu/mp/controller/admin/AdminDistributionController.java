@@ -312,9 +312,9 @@ public class AdminDistributionController extends AdminBaseController{
 					boolean res = shop().distributorLevel.updateLevel(level);
 					
 					//配置是否有更新
-					boolean noChange = levelInfo.getInviteNumber() == level.getInviteNumber() 
-									&& levelInfo.getTotalBuyMoney() == level.getTotalBuyMoney()
-									&& levelInfo.getTotalDistributionMoney() == level.getTotalDistributionMoney();
+					boolean noChange = levelInfo.getInviteNumber().equals(level.getInviteNumber())
+									&& levelInfo.getTotalBuyMoney().equals(level.getTotalBuyMoney())
+									&& levelInfo.getTotalDistributionMoney().equals(level.getTotalDistributionMoney());
 					
 					//自动升级更改
 					if(res && level.getLevelUpRoute() == 0 && !noChange) {
