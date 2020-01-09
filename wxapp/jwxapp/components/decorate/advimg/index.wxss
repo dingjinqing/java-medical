@@ -79,7 +79,7 @@
 .slide_big .each_big .image {
   width: 300rpx;
   height: 250rpx;
-  vertical-align: top;
+  /* vertical-align: top; */
 }
 
 /*滑动（小） */

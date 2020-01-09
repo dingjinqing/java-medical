@@ -353,6 +353,12 @@ export default {
       this.goodsTextConArr = this.$t('decorationHome.goodsTextConArr')
       this.marketingTextConArr = this.$t('decorationHome.marketingTextConArr')
       this.initLeftModulesShow(this.activeName)
+    },
+    modulesData: {
+      handler (newData, oldData) {
+        console.log(newData, oldData)
+      },
+      deep: true
     }
   },
   updated () {
@@ -762,7 +768,7 @@ export default {
     // 左侧模块拖入中间区域后，中间区域数据处理函数
     handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
-      console.log(insertModulesId, index, this.isAddBottom)
+      console.log(insertModulesId, index)
       if (insertModulesId === -1 || this.isAddBottom) {
         console.log(index)
         this.MoveWhiteFlag = true
@@ -775,7 +781,6 @@ export default {
         console.log(this.nowRightShowIndex, insert, index)
         this.showModulesList.splice(insert, 0, index)
         this.modulesData.splice(insert, 0, this.handleToAddModules(index))
-        console.log(this.modulesData)
         this.$nextTick(() => {
           if (this.nowRightShowIndex === insert) {
             this.handleToModuleHight()

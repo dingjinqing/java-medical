@@ -17,7 +17,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -42,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributorApply extends TableImpl<DistributorApplyRecord> {
 
-    private static final long serialVersionUID = -1978986761;
+    private static final long serialVersionUID = -322044129;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distributor_apply</code>
@@ -60,17 +59,17 @@ public class DistributorApply extends TableImpl<DistributorApplyRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_distributor_apply.id</code>.
      */
-    public final TableField<DistributorApplyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<DistributorApplyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_distributor_apply.user_id</code>.
      */
-    public final TableField<DistributorApplyRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<DistributorApplyRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_distributor_apply.status</code>.
      */
-    public final TableField<DistributorApplyRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<DistributorApplyRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_distributor_apply.msg</code>. 审核内容
@@ -80,7 +79,7 @@ public class DistributorApply extends TableImpl<DistributorApplyRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_distributor_apply.del_flag</code>.
      */
-    public final TableField<DistributorApplyRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<DistributorApplyRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_distributor_apply.activation_fields</code>. 审核校验
@@ -95,12 +94,17 @@ public class DistributorApply extends TableImpl<DistributorApplyRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_distributor_apply.create_time</code>.
      */
-    public final TableField<DistributorApplyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<DistributorApplyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_distributor_apply.update_time</code>. 最后修改时间
      */
-    public final TableField<DistributorApplyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<DistributorApplyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distributor_apply.is_auto_pass</code>. 审核类型 0：手动审核；1"自动审核
+     */
+    public final TableField<DistributorApplyRecord, Byte> IS_AUTO_PASS = createField("is_auto_pass", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "审核类型 0：手动审核；1\"自动审核");
 
     /**
      * Create a <code>mini_shop_471752.b2c_distributor_apply</code> table reference
@@ -149,14 +153,6 @@ public class DistributorApply extends TableImpl<DistributorApplyRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.DISTRIBUTOR_APPLY_PRIMARY, Indexes.DISTRIBUTOR_APPLY_USER_ID);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Identity<DistributorApplyRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_DISTRIBUTOR_APPLY;
     }
 
     /**

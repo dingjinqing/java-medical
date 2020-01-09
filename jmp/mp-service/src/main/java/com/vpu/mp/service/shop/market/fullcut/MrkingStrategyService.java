@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.market.fullcut.*;
 import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -26,6 +27,7 @@ import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_
  * @author: 王兵兵
  * @create: 2019-08-09 18:47
  **/
+@Primary
 @Service
 public class MrkingStrategyService extends ShopBaseService {
 

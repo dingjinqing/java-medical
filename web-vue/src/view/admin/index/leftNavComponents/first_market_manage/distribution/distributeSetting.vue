@@ -11,6 +11,8 @@
           :active-value="1"
           :inactive-value="0"
         ></el-switch>
+        <span v-if="form.status === 1">已开启</span>
+        <span v-if="form.status === 0">已关闭</span>
         <div class="text">
           {{ $t('distribution.switchTip') }}
         </div>
@@ -25,36 +27,41 @@
           :active-value='1'
           :inactive-value='0'
         ></el-switch>
-        <span class="text">({{ $t('distribution.reviewedTip1') }}）
-          <a
-            href="javascript:void(0);"
-            @click="copyWritingHandler"
-          >{{ $t('distribution.reviewedTip2') }}</a></span>
+        <span v-if="form.judge_status === 1">已开启</span>
+        <span v-if="form.judge_status === 0">已关闭</span>
+        <span class="text">({{ $t('distribution.reviewedTip1') }})</span>
         <div class="text">
           {{ $t('distribution.reviewedTip3') }}
         </div>
         <template v-if="form.judge_status === 1">
-          <el-checkbox
-            v-model="form.invitationCode"
-            :true-label='1'
-            :false-label="0"
-          >{{ $t('distribution.reviewedInvitation') }}</el-checkbox>
-          <p>{{ $t('distribution.invitationTip1') }} <a
-              href="javascript:void(0);"
-              style="color: red;"
-            >{{ $t('distribution.invitationTip2') }}</a> {{ $t('distribution.invitationTip3') }}
-            <a
-              href="javascript:void(0);"
-              @click="listClickHandler"
-            >{{ $t('distribution.invitationTip4') }}</a> {{ $t('distribution.invitationTip5') }}</p>
-          <el-checkbox
-            v-model="form.activation"
-            :true-label='1'
-            :false-label="0"
-          >{{ $t('distribution.reviewedInfo') }}</el-checkbox>
+          <div>
+            自动审核：<el-checkbox
+              v-model="form.examine"
+              :true-label='1'
+              :false-label="0"
+            >{{ $t('distribution.reviewedInvitation') }}</el-checkbox>
+          </div>
+          <div>
+            设置推广文案：<el-button
+              size="small"
+              plain
+              @click="copyWritingHandler"
+            >{{ $t('distribution.reviewedTip2') }}</el-button>
+          </div>
+          <div>
+            <el-switch
+              v-model="form.info_status"
+              :active-value='1'
+              :inactive-value='0'
+            ></el-switch>
+            <span v-if="form.info_status === 1">已开启</span>
+            <span v-if="form.info_status === 0">已关闭</span>
+            <span class="text">{{ $t('distribution.reviewedInfo') }}</span>
+          </div>
 
+          <!-- 审核信息 -->
           <div
-            v-if="form.activation === 1"
+            v-if="form.activation === 1 && form.info_status === 1"
             style="width: 900px;"
           >
             <el-checkbox-group v-model="form.activation_cfg">
@@ -64,6 +71,51 @@
                 :label="item"
               >{{ item }}</el-checkbox>
             </el-checkbox-group>
+            <div>
+              <el-checkbox
+                v-model="form.InvitationCode"
+                :true-label='1'
+                :false-label="0"
+              >邀请码</el-checkbox>
+              <span class="text">{{ $t('distribution.invitationTip1') }} <a
+                  href="javascript:void(0);"
+                  style="color: red;"
+                >{{ $t('distribution.invitationTip2') }}</a> {{ $t('distribution.invitationTip3') }}
+                <a href="javascript:void(0);">{{ $t('distribution.invitationTip4') }}</a> {{ $t('distribution.invitationTip5') }}</span>
+            </div>
+            <!-- 自定义激活项 -->
+            <div>
+              <el-button
+                size="small"
+                plain
+                @click="customHandler"
+              >自定义激活项</el-button>
+              <div
+                v-if="customList.length > 0"
+                style="width: 100%; min-height: 20px; border: 1px dashed #ccc;padding: 5px 10px;margin-top: 10px;"
+              >
+                <div
+                  v-for="(item, index) in customList"
+                  :key="index"
+                >
+                  <el-checkbox style="width: 320px;">{{ item.title }}</el-checkbox>
+                  <span
+                    class="el-icon-edit-outline iconStyle"
+                    @click="editCustom(index)"
+                  ></span>
+                  <span
+                    class="el-icon-delete iconStyle"
+                    @click="delCustom(index)"
+                  ></span>
+                  <span
+                    class="text"
+                    v-if="item.checkbox"
+                  >必填</span>
+                </div>
+
+              </div>
+              <p class="text">分销员分组：勾选后，用户申请成为分销员时，需要选择加入的分销员组，默认选项为其邀请人的分组，若邀请人无分组，则默认选择商家在“分销员分组列表”中设置的默认分组</p>
+            </div>
           </div>
         </template>
       </el-form-item>
@@ -77,6 +129,8 @@
           :active-value='1'
           :inactive-value='0'
         ></el-switch>
+        <span v-if="form.rank_status === 1">已开启</span>
+        <span v-if="form.rank_status === 0">已关闭</span>
         <div class="text">
           {{ $t('distribution.rankingTip') }}
         </div>
@@ -89,6 +143,7 @@
         <el-radio-group v-model="form.vaild">
           <el-radio :label="1">
             <el-input
+              size="small"
               style="width: 100px;"
               v-model.number="vaildDate"
               :disabled="form.vaild === 0"
@@ -106,6 +161,7 @@
         <el-radio-group v-model="form.protect_date">
           <el-radio :label="1">
             <el-input
+              size="small"
               style="width: 100px;"
               v-model.number="protectDate"
               :disabled="form.protect_date === 0"
@@ -121,6 +177,7 @@
         v-show="form.status === 1"
       >
         <el-input
+          size="small"
           style="width: 200px"
           v-model="form.desc"
         ></el-input>
@@ -138,7 +195,10 @@
 
         <div v-if="form.distribution_goods_type === 2">
           <p class="text">{{ $t('distribution.recommendTip') }}</p>
-          <el-button @click="hanldeToAddGoodS"><i class="el-icon-plus"></i> {{ $t('distribution.chooseCommodity') }}</el-button>
+          <el-button
+            size="small"
+            @click="hanldeToAddGoodS"
+          ><i class="el-icon-plus"></i> {{ $t('distribution.chooseCommodity') }}</el-button>
           <el-table
             :data="tableData"
             border
@@ -192,7 +252,10 @@
           ></i>
         </div>
 
-        <el-button @click="chooseTemplate"><i class="el-icon-plus"></i> {{ $t('distribution.selectTemplate') }}</el-button>
+        <el-button
+          size="small"
+          @click="chooseTemplate"
+        ><i class="el-icon-plus"></i> {{ $t('distribution.selectTemplate') }}</el-button>
         <a
           href="javascript:void(0);"
           style="margin: 0 20px;"
@@ -232,6 +295,8 @@
             :inactive-value='0'
             style="width: 60px;"
           ></el-switch>
+          <span v-if="form.withdraw_status === 1">已开启</span>
+          <span v-if="form.withdraw_status === 0">已关闭</span>
           <span style="color: red;">{{ $t('distribution.rebateSettingsTip1') }} <a
               href="javascript:void(0);"
               @click="optionHandler"
@@ -262,6 +327,7 @@
 
         <el-form-item :label="$t('distribution.minRebate')">
           <el-input
+            size="small"
             style="width: 100px;"
             v-model="form.withdraw_cash"
           ></el-input> {{ $t('distribution.minUnit') }}
@@ -304,8 +370,9 @@
             <div>
               <span class="rightLabel">{{ $t('distribution.rebateWriting') }}</span>
               <el-input
+                size="small"
                 v-model="form.rebate_center_name"
-                style="width: 300px;"
+                class="inputWidth"
               ></el-input>
             </div>
             <div style="margin-top: 20px;">
@@ -313,6 +380,8 @@
               <div class="defaultBg">
                 <span>{{ $t('distribution.customSelect') }}</span>
                 <el-select
+                  size="small"
+                  class="inputWidth"
                   v-model="defaultValue"
                   @change="selectChange"
                 >
@@ -360,6 +429,87 @@
       >{{ $t('distribution.rebateSave') }}</el-button>
     </div>
 
+    <!-- 自定义激活项弹窗 -->
+    <el-dialog
+      title="自定义激活项"
+      :visible.sync="customDialogVisible"
+      width="30%"
+      center
+      :close-on-click-modal="false"
+    >
+      <div>
+        <el-form
+          ref="customForm"
+          :model="customForm"
+          label-width="21%"
+          :label-position="'right'"
+        >
+          <el-form-item label="选项类型：">
+            <el-radio-group v-model="customForm.radio1">
+              <el-radio :label="0">单选</el-radio>
+              <el-radio :label="1">多选</el-radio>
+              <el-radio :label="2">文本</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="标题：">
+            <el-input
+              size="small"
+              maxlength="20"
+              show-word-limit
+              v-model="customForm.title"
+              class="inputWidth"
+            ></el-input>
+            <span class="text">最多可填写20个字</span>
+          </el-form-item>
+          <div v-if="customForm.radio1 !== 2">
+            <div
+              v-for="(item, index) in customForm.optionList"
+              :key="index"
+            >
+              <el-form-item :label="'选项' + (index + 1) + '：'">
+                <el-input
+                  size="small"
+                  v-model="item.value"
+                  class="inputWidth"
+                ></el-input>
+                <span
+                  v-if="index > 1"
+                  class="el-icon-delete iconStyle"
+                  @click="deleteOption(index)"
+                ></span>
+              </el-form-item>
+            </div>
+            <el-form-item>
+              <el-button
+                size="small"
+                @click="addOption"
+                v-if="customForm.optionList.length < 10"
+              >添加选项</el-button>
+              <span class="text">最多可添加10个选项</span>
+            </el-form-item>
+          </div>
+          <el-form-item label="条件验证：">
+            <el-checkbox
+              v-model="customForm.checkbox"
+              :true-label='1'
+              :false-label="0"
+            >必填</el-checkbox>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer">
+        <el-button
+          size="small"
+          @click="cancelCustomHandler"
+        >取 消</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="sureCustomHandler"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
     <!--选择商品弹窗-->
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
@@ -399,9 +549,19 @@ export default {
       imageHost: 'http://jmpdevimg.weipubao.cn/',
       vaildDate: null, // 有效期天数
       protectDate: null, // 保护期天数
+      isEdit: false, // 自定义激活项弹窗是否编辑状态
+      editIndex: null,
+      // 自定义激活项
+      customList: [],
       form: {
         status: 1, // 分销开关
         judge_status: 1, // 分销员审核开关
+        // 自动审核
+        examine: 1,
+        // 信息开关
+        info_status: 1,
+        // 自定义激活项
+        // customList: [],
         invitationCode: 1, // 邀请码
         activation: 1, // 是否需要提交个人信息
         activation_cfg: [], // 个人信息内容
@@ -452,7 +612,19 @@ export default {
       isAddImgOrChangeFlga: false, // true为添加图片  false为更换列表项中的图片
       tuneUpSelectTemplate: false,
       templateRow: {}, // 模板弹窗回调函数
-      tamplateFlag: false // 模板数据显示
+      tamplateFlag: false, // 模板数据显示
+
+      customDialogVisible: false, // 自定义激活项弹窗
+      customForm: {
+        radio1: 0, // 选项类型
+        title: '', // 标题
+        optionList: [{
+          value: ''
+        }, {
+          value: ''
+        }],
+        checkbox: 1 // 条件验证
+      }
     }
   },
   watch: {
@@ -535,6 +707,87 @@ export default {
           this.templateRow.pageType = res.content.page_type
         }
       })
+    },
+
+    // 自定义激活项
+    customHandler () {
+      this.customDialogVisible = !this.customDialogVisible
+      this.isEdit = false
+    },
+
+    // 添加选项
+    addOption () {
+      this.customForm.optionList.push({
+        value: ''
+      })
+    },
+
+    // 删除选项
+    deleteOption (index) {
+      this.customForm.optionList.splice(index, 1)
+    },
+
+    // 确定自定义激活项
+    sureCustomHandler () {
+      if (!this.isEdit) {
+        // 添加
+        if (!this.customList) {
+          this.customList = []
+        }
+        this.customList.push(this.customForm)
+      } else {
+        // 编辑
+        this.customList.forEach((item, index) => {
+          if (this.editIndex === index) {
+            item = this.customForm
+          }
+        })
+      }
+      this.customDialogVisible = false
+      // 清空弹窗数据
+      this.customForm = {
+        radio1: 0,
+        title: '',
+        optionList: [{
+          value: ''
+        }, {
+          value: ''
+        }],
+        checkbox: 1
+      }
+    },
+
+    // 取消自定义激活项
+    cancelCustomHandler () {
+      this.customDialogVisible = false
+      // 清空弹窗数据
+      this.customForm = {
+        radio1: 0,
+        title: '',
+        optionList: [{
+          value: ''
+        }, {
+          value: ''
+        }],
+        checkbox: 1
+      }
+    },
+
+    // 编辑自定义选项
+    editCustom (index) {
+      this.customDialogVisible = !this.customDialogVisible
+      this.isEdit = true
+      this.editIndex = index
+      this.customList.forEach((val, key) => {
+        if (index === key) {
+          this.customForm = val
+        }
+      })
+    },
+
+    // 删除自定义选项
+    delCustom (index) {
+      this.customList.splice(index, 1)
     },
 
     // 保存分销配置
@@ -817,5 +1070,20 @@ a {
 .rightContent .customBg .custom .customImg {
   width: 100%;
   height: 100%;
+}
+
+.inputWidth {
+  width: 170px;
+}
+
+.iconStyle {
+  font-size: 16px;
+  color: #5a8bff;
+  cursor: pointer;
+}
+
+/deep/ .el-dialog__body {
+  height: 430px;
+  overflow-y: auto;
 }
 </style>

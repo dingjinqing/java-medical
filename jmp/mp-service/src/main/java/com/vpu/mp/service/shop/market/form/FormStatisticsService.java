@@ -1,40 +1,7 @@
 package com.vpu.mp.service.shop.market.form;
 
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.ALL;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.COUPON_ID;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MODULE_NAME;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.M_CHOOSE;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.M_SEX;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.M_SLIDE;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SELECT;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SEND_COUPON_LIST;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SEND_SCORE_NUM;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.SPECIAL;
-import static org.jooq.impl.DSL.countDistinct;
-
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record5;
-import org.jooq.Record6;
-import org.jooq.SelectConditionStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
-import com.vpu.mp.db.shop.tables.FormPage;
-import com.vpu.mp.db.shop.tables.FormSubmitDetails;
-import com.vpu.mp.db.shop.tables.FormSubmitList;
-import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitListRecord;
@@ -45,27 +12,25 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackDetailParam;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackDetailVo;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackInfoParam;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackInnerVo;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackStatisticsVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormAddParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormCopyVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormDetailParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormDetailVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormFeedExportVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormFeedParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormFeedVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormInfoVo;
-import com.vpu.mp.service.pojo.shop.market.form.FormSearchParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormStatusParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record5;
+import org.jooq.Record6;
+import org.jooq.SelectConditionStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.*;
+
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.*;
+import static org.jooq.impl.DSL.countDistinct;
 
 /**
  * @author liufei

@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -15,10 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
-import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
-import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.*;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
@@ -393,7 +391,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
-    public PageResult<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
+    public GoodsSearchContentVo searchGoods(GoodsSearchMpParam param) {
         PageResult<GoodsListMpBo> pageResult = null;
 
         Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
@@ -417,7 +415,18 @@ public class GoodsMpService extends ShopBaseService {
         }
 
         disposeGoodsList(pageResult.dataList, param.getUserId());
-        return pageResult;
+
+        //是否显示划线价开关
+        Byte delMarket = configService.shopCommonConfigService.getDelMarket();
+        //是否显示购买按钮
+        ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
+
+        GoodsSearchContentVo vo =new GoodsSearchContentVo();
+        vo.setDelMarket(delMarket);
+        vo.setShowCart(showCart);
+        vo.setPageResult(pageResult);
+
+        return vo;
     }
 
     /**
@@ -631,5 +640,12 @@ public class GoodsMpService extends ShopBaseService {
         }
     }
 
-
+    /**
+     * 根据商家分类获取对应商品的ID集合
+     * @param sortId 商家分类ID
+     * @return 商品ID集合
+     */
+    public List<Integer> getGoodsIdsBySortIdDao(Integer sortId) {
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
+    }
 }

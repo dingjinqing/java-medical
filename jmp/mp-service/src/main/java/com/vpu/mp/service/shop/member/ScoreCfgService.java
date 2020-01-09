@@ -44,7 +44,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	final public static String BUY_EACH="buy_each";
 
 
-    // 积分国际化信息
+    /** 积分国际化信息 */
 	final public static String SCORE_CFG_TITLE="member.score.cfg.title";
 	final public static Byte ZERO = NumberUtils.BYTE_ZERO;
 	final public static Byte ONE = NumberUtils.BYTE_ONE;
@@ -118,10 +118,10 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	 */
 	private void cfgScoreEffectiveRule(ShopCfgParam param) {
 		Byte type = param.getScoreLimit();
-		assert isEffectiveForever(type) || isEffectiveUtilToYMD(type) ||isEffectiveFromCurrentDay(type)
+		assert isEffectiveForever(type) || isEffectiveUtilToYmd(type) ||isEffectiveFromCurrentDay(type)
 			: "配置积分有效规则错误";
 		setScoreLimit(type);
-		if ( isEffectiveUtilToYMD(type)) {	
+		if ( isEffectiveUtilToYmd(type)) {	
 			setScoreDay(param.getScoreDay());
 			setScoreMonth(param.getScoreMonth());
 			setScoreYear(param.getScoreYear());
@@ -140,7 +140,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	/**
 	 * 是否有效为： 从获得开始至某年某月某日
 	 */
-	private boolean isEffectiveUtilToYMD(Byte effectiveType) {
+	private boolean isEffectiveUtilToYmd(Byte effectiveType) {
 		return NumberUtils.BYTE_ONE.equals(effectiveType);
 	}
 	/**
@@ -159,7 +159,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	
 		String value=null;
 		UserScoreSetValue userScore = null;
-		if(ONE == enable) {
+		if(NumberUtils.BYTE_ONE.equals(enable)) {
 			userScore = new UserScoreSetValue(enable,signScore);
 		}else {
 			userScore = getScoreValueThird(SIGN_IN_SCORE);
