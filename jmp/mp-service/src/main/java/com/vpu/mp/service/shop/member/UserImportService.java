@@ -935,6 +935,9 @@ public class UserImportService extends ShopBaseService {
 		if (StringUtils.isNotEmpty(birthday) && birthdayYear == null) {
 			logger().info("更新生日");
 			String[] birthdays = birthday.split("/");
+			if(birthdays.length==1) {
+				birthdays=birthday.split("-");
+			}
 			userDetail.setBirthdayYear(Integer.valueOf(birthdays[0]));
 			userDetail.setBirthdayMonth(Integer.valueOf(birthdays[1]));
 			userDetail.setBirthdayDay(Integer.valueOf(birthdays[2]));
