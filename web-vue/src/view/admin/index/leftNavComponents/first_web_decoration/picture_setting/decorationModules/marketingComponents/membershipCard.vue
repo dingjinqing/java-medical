@@ -16,7 +16,7 @@
           <div class="card_type">{{carData.card_type===0?'普通卡':carData.card_type===1?'限次卡':'等级卡'}}</div>
           <div class="card_content clearfix">
             <div class="card_shop_icon">
-              <img :src="$imageHost+'/image/admin/shop_def_y.png'">
+              <img :src="shopAvatar">
             </div>
             <div class="card_content_right">
               <div>{{carData.card_name}}</div>
@@ -86,7 +86,8 @@ export default {
       carData: {
         backgroundColor: '#ecc98f',
         bgImgUrl: ''
-      }
+      },
+      shopAvatar: null
     }
   },
   watch: {
@@ -149,6 +150,8 @@ export default {
     this.langDefault()
     // 初始化数据
     this.defaultData()
+    // 初始化获取头像
+    this.shopAvatar = localStorage.getItem('V-shopAvatar') || this.$imageHost + '/image/admin/shop_def_y.png'
   },
   methods: {
     defaultData () {

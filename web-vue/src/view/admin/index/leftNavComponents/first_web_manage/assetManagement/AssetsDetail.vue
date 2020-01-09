@@ -6,12 +6,12 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="现金资产管理"
+          :label="this.$t('assetsManage.cashManage')"
           name="first"
         >
         </el-tab-pane>
         <el-tab-pane
-          label="积分资产管理"
+          :label="this.$t('assetsManage.scoreManage')"
           name="second"
         >
         </el-tab-pane>
@@ -23,15 +23,14 @@
             :gutter="20"
             class="row_style"
           >
-            <el-col :span="1.5">交易单号：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.number')}}：</el-col>
             <el-col :span="4">
               <el-input
-                :placeholder="$t('promoteList.actNamePlaceholder')"
                 size="small"
                 v-model="param.tradeSn"
               ></el-input>
             </el-col>
-            <el-col :span="1.5">交易时间：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.hour')}}：</el-col>
             <el-col :span="8">
               <el-date-picker
                 size="small"
@@ -51,7 +50,7 @@
               >
               </el-date-picker>
             </el-col>
-            <el-col :span="1.5">资金流向：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.flows')}}：</el-col>
             <el-col :span="5">
               <el-select
                 v-model="param.tradeFlow"
@@ -76,20 +75,18 @@
             :gutter="20"
             class="row_style"
           >
-            <el-col :span="1.5">用户昵称：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.Nickname')}}：</el-col>
             <el-col :span="4">
               <el-input
-                :placeholder="$t('promoteList.actNamePlaceholder')"
                 size="small"
                 v-model="param.username"
               ></el-input>
             </el-col>
-            <el-col :span="1.5">交易金额：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.amount')}}：</el-col>
             <el-col :span="8">
               <el-row :gutter="8">
                 <el-col :span="4">
                   <el-input
-                    :placeholder="$t('promoteList.actNamePlaceholder')"
                     size="small"
                     v-model="param.lowerLimit"
                   ></el-input>
@@ -97,19 +94,18 @@
                 <el-col :span="1"><span>{{$t('promoteList.to')}}</span></el-col>
                 <el-col :span="4">
                   <el-input
-                    :placeholder="$t('promoteList.actNamePlaceholder')"
                     size="small"
                     v-model="param.upperLimit"
                   ></el-input>
                 </el-col>
               </el-row>
             </el-col>
-            <el-col :span="1.5">交易类型：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.Type')}}：</el-col>
             <el-col :span="5">
               <template>
                 <el-select
                   v-model="param.tradeType"
-                  placeholder="请选择"
+                  :placeholder="$t('promoteList.all')"
                 >
                   <el-option
                     v-for="item in tradeTypeOptions"
@@ -126,18 +122,16 @@
             :gutter="20"
             class="row_style"
           >
-            <el-col :span="1.5">真实姓名：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.name')}}：</el-col>
             <el-col :span="4">
               <el-input
-                :placeholder="$t('promoteList.actNamePlaceholder')"
                 size="small"
                 v-model="param.realName"
               ></el-input>
             </el-col>
-            <el-col :span="1.5">手机号：</el-col>
+            <el-col :span="1.5">{{$t('assetsManage.phone')}}：</el-col>
             <el-col :span="4">
               <el-input
-                :placeholder="$t('promoteList.actNamePlaceholder')"
                 size="small"
                 v-model="param.mobile"
               ></el-input>
@@ -154,14 +148,14 @@
                 type="primary"
                 size="small"
                 @click="resetParam"
-              >重置</el-button>
+              >{{$t('assetsManage.Reset')}}</el-button>
             </el-col>
             <el-col :span="1">
               <el-button
                 type="primary"
                 size="small"
                 @click="showDownload"
-              >导出</el-button>
+              >{{$t('assetsManage.Export')}}</el-button>
             </el-col>
           </el-row>
         </div>
@@ -175,63 +169,63 @@
           >
             <el-table-column
               prop="tradeTime"
-              label="交易时间"
+              :label="$t('assetsManage.hour')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeSn"
-              label="交易单号"
+              :label="$t('assetsManage.number')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeNum"
-              label="交易金额"
+              :label="$t('assetsManage.amount')"
               align="center"
               v-if="this.flag === 0"
             >
             </el-table-column>
             <el-table-column
               prop="tradeNum"
-              label="交易积分"
+              :label="$t('assetsManage.points')"
               align="center"
               v-if="this.flag === 1"
             >
             </el-table-column>
             <el-table-column
               prop="username"
-              label="交易用户"
+              :label="$t('assetsManage.Nickname')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="realName"
-              label="真实姓名"
+              :label="$t('assetsManage.name')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="mobile"
-              label="手机号"
+              :label="$t('assetsManage.phone')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeType"
-              label="交易类型"
+              :label="$t('assetsManage.Type')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeFlow"
-              label="资金流向"
+              :label="$t('assetsManage.flows')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="tradeStatus"
-              label="交易状态"
+              :label="$t('assetsManage.status')"
               align="center"
             >
             </el-table-column>
@@ -279,83 +273,8 @@ export default {
         value: '0',
         label: '全部'
       }],
-      scoreOptions: [{
-        value: '0',
-        label: '全部'
-      }, {
-        value: '1',
-        label: '积分支付'
-      }, {
-        value: '2',
-        label: '积分兑换'
-      }, {
-        value: '3',
-        label: '幸运大抽奖消耗积分'
-      }, {
-        value: '4',
-        label: '积分充值'
-      }, {
-        value: '5',
-        label: '用户登录送积分'
-      }, {
-        value: '6',
-        label: '用户签到送积分'
-      }, {
-        value: '7',
-        label: '开卡赠送积分'
-      }, {
-        value: '8',
-        label: '买单送积分'
-      }, {
-        value: '9',
-        label: '交易退货退积分'
-      }, {
-        value: '10',
-        label: '组团瓜分积分'
-      }, {
-        value: '11',
-        label: '抽奖获得积分'
-      }, {
-        value: '12',
-        label: '支付有礼'
-      }],
-      cashOptions: [{
-        value: '0',
-        label: '全部'
-      }, {
-        value: '1',
-        label: '微信支付'
-      }, {
-        value: '2',
-        label: '余额支付'
-      }, {
-        value: '3',
-        label: '会员卡支付'
-      }, {
-        value: '4',
-        label: '现金退款'
-      }, {
-        value: '5',
-        label: '用户余额退款'
-      }, {
-        value: '6',
-        label: '用户会员卡余额退款'
-      }, {
-        value: '7',
-        label: '返利'
-      }, {
-        value: '8',
-        label: '抽奖获得余额'
-      }, {
-        value: '9',
-        label: '用户余额充值'
-      }, {
-        value: '10',
-        label: '用户会员卡余额充值'
-      }, {
-        value: '11',
-        label: '支付有礼'
-      }],
+      scoreOptions: this.$t('assetsManage.scoreOptions'),
+      cashOptions: this.$t('assetsManage.cashOptions'),
       assetManage: 'first',
       // 标示是积分还是现金
       flag: this.$route.params.flag,

@@ -532,19 +532,21 @@ export default {
       if (this.img.substr(0, 4) !== 'data') {
         img.crossOrigin = ''
       }
-      console.log(this.img.replace('http:', ''))
-      this.img = this.img.replace('http:', '')
+      // console.log(this.img.replace('http:', ''))
+      // this.img = this.img.replace('http:', '')
+      let nowShowImg = this.img
+      nowShowImg = nowShowImg.replace('http:', '')
       if (this.isIE) {
         var xhr = new XMLHttpRequest()
         xhr.onload = function () {
           var url = URL.createObjectURL(this.response)
           img.src = url + '?time=v.1.0'
         }
-        xhr.open('GET', this.img, true)
+        xhr.open('GET', nowShowImg, true)
         xhr.responseType = 'blob'
         xhr.send()
       } else {
-        img.src = this.img + '?time=v.1.0'
+        img.src = nowShowImg + '?time=v.1.0'
       }
     },
     // 当按下鼠标键
