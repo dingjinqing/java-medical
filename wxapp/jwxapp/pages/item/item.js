@@ -183,6 +183,12 @@ global.wxPage({
                 ...this.getPrice(goodsInfo)
               }
             })
+            // 限时降价状态栏
+            if (res.content.activity && res.content.activity.activityType === 6) { 
+              this.setData({
+                  reduceActBarPrice:this.getActBarPrice(products,activity,'prdRealPrice'),
+              })
+            }
             this.getPromotions(res.content)
             resolve(res.content);
           }
@@ -446,10 +452,16 @@ global.wxPage({
     let { products, activity } = data
     if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
       products = activity[actBaseInfo[activity.activityType]['prdListName']]
+      if(activity.activityType === 6 && activity.actState != 0){
+      products = data.products
+      }
     }
     let { realPrice, linePrice } = products.reduce((defaultData, val) => {
       if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
         var { [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice, [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice } = val
+        if(activity.activityType === 6 && activity.actState != 0){
+        var { prdRealPrice, prdLinePrice } = val
+        }
       } else {
         var { prdRealPrice, prdLinePrice } = val
       }
