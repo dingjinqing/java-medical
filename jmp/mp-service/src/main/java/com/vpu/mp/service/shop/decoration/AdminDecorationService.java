@@ -179,7 +179,7 @@ public class AdminDecorationService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageVo  getPage(PageIdParam param) {
+    public PageVo getPageInfo(PageIdParam param) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         XcxCustomerPageRecord page = db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()));
