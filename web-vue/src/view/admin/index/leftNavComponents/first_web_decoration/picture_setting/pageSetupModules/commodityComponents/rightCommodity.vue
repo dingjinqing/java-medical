@@ -557,7 +557,7 @@ export default {
         'hsva(120, 40, 94, 0.5)',
         'hsl(181, 100%, 37%)',
         'hsla(209, 100%, 56%, 0.73)',
-        '#c7158577'
+        '#FF0000'
       ],
       classFlag: null, // 区分商家分类和平台分类flag
       dialogVisible: false, // 商家分类和平台分类弹窗调起flag
@@ -1510,7 +1510,7 @@ export default {
                 }
                 .specialTips {
                   display: inline-block;
-                  width: 220px;
+                  width: 240px;
                   white-space: pre-wrap;
                   text-align: justify;
                 }
