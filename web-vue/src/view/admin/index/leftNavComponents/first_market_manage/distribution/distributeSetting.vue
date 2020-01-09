@@ -81,7 +81,7 @@
                 <!-- <el-checkbox
                   v-model="form.InvitationCode"
                   :true-label='1'
-                  :false-label="0"
+                  :false-label='0'
                 >邀请码</el-checkbox> -->
                 <span
                   class="text"
@@ -110,7 +110,12 @@
                   v-for="(item, index) in customList"
                   :key="index"
                 >
-                  <el-checkbox style="width: 320px;">{{ item.title }}</el-checkbox>
+                  <el-checkbox
+                    style="width: 320px;"
+                    v-model="item.isChecked"
+                    :true-label='1'
+                    :false-label='0'
+                  >{{ item.title }}</el-checkbox>
                   <span
                     class="el-icon-edit-outline iconStyle"
                     @click="editCustom(index)"
@@ -457,7 +462,10 @@
           :label-position="'right'"
         >
           <el-form-item label="选项类型：">
-            <el-radio-group v-model="customForm.radio1">
+            <el-radio-group
+              v-model="customForm.radio1"
+              @change="typeChange"
+            >
               <el-radio :label="0">单选</el-radio>
               <el-radio :label="1">多选</el-radio>
               <el-radio :label="2">文本</el-radio>
@@ -502,9 +510,10 @@
           </div>
           <el-form-item label="条件验证：">
             <el-checkbox
-              v-model="customForm.checkbox"
+              v-model="customForm.must"
+              :disabled="customForm.radio1 === 0"
               :true-label='1'
-              :false-label="0"
+              :false-label='0'
             >必填</el-checkbox>
           </el-form-item>
         </el-form>
@@ -636,7 +645,8 @@ export default {
         }, {
           value: ''
         }],
-        checkbox: 1 // 条件验证
+        must: 1, // 条件验证
+        isChecked: 1 // 是否选中
       }
     }
   },
@@ -730,6 +740,13 @@ export default {
       this.isEdit = false
     },
 
+    // 选项类型切换
+    typeChange (value) {
+      if (value === 0) {
+        this.customForm.must = 1
+      }
+    },
+
     // 添加选项
     addOption () {
       this.customForm.optionList.push({
@@ -768,7 +785,8 @@ export default {
         }, {
           value: ''
         }],
-        checkbox: 1
+        must: 1,
+        isChecked: 0
       }
     },
 
@@ -784,7 +802,8 @@ export default {
         }, {
           value: ''
         }],
-        checkbox: 1
+        must: 1,
+        isChecked: 0
       }
     },
 

@@ -6,12 +6,10 @@
             <view class='top_word' style='color:{{m.font_color}}' wx:if='{{m.name_set == 0}}'>拼团抽奖</view>
             <view class='top_word' wx:if='{{m.name_set == 1}}'  style='color:{{m.font_color}};margin-bottom:{{m.show_clock == 1?"20rpx":"0"}}'>{{m.group_draw_name}}</view>
             <block wx:if='{{m.show_clock == 1}}'>
-              <!-- <view class='bottom_time' style='color:{{m.font_color}}' wx:if='{{m.surplus_second != undefined && m.tip == ""}}'>距结束仅剩：{{m.times_arr[0]}}</view> -->
-              <view class='bottom_time' style='color:{{m.font_color}}' wx:if='{{m.surplus_second != undefined}}'>距结束仅剩：{{m.times_arr[0]}}</view>
-              <!-- <view class='bottom_time' style='color:{{m.font_color}}' wx:if='{{m.surplus_second == undefined && m.tip == ""}}'>开始时间：{{m.start_time}}</view> -->
-              <view class='bottom_time' style='color:{{m.font_color}}' wx:if='{{m.surplus_second == undefined}}'>开始时间：{{m.start_time}}</view>
+              <view class='bottom_time' style='color:{{m.font_color}}' wx:if='{{m.surplus_second != undefined && m.tip == ""}}'>距结束仅剩：{{m.times_arr[0]}}</view>
+              <view class='bottom_time' style='color:{{m.font_color}}' wx:if='{{m.surplus_second == undefined && m.tip == ""}}'>开始时间：{{m.start_time}}</view>
             </block>
           </view>
-          <!-- <view class='bottom_tip' wx:if='{{m.tip != ""}}'>{{m.tip}}</view> -->
+          <view class='bottom_tip' wx:if='{{m.tip != ""}}'>{{m.tip}}</view>
       </view>
   </view>
