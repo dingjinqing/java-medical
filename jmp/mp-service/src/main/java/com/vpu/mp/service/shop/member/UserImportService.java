@@ -646,9 +646,9 @@ public class UserImportService extends ShopBaseService {
 			int activateNum = getActivateNum(vo.getId(), ONE);
 			vo.setActivateNum(activateNum);
 			String cardIds = vo.getCardId();
+			List<CardInfoVo> cardList = new ArrayList<CardInfoVo>();
 			if (StringUtils.isNotEmpty(cardIds)) {
 				String[] caStrings = cardIds.split(",");
-				List<CardInfoVo> cardList = new ArrayList<CardInfoVo>();
 				for (String cardId : caStrings) {
 					CardInfoVo cardVo = new CardInfoVo();
 					MemberCardRecord cardInfo = cardDaoService.getInfoByCardId(Integer.parseInt(cardId));
@@ -732,7 +732,7 @@ public class UserImportService extends ShopBaseService {
 		return db().selectFrom(USER_IMPORT_DETAIL)
 				.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))
 						.and(USER_IMPORT_DETAIL.MOBILE.eq(mobile)).and(USER_IMPORT_DETAIL.USER_ACTION.eq(userAction)))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	// 激活用户
