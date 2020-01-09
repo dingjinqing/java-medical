@@ -132,7 +132,7 @@ public enum MemberMarriageEnum {
 	public static Integer getByName(String name, String lang) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		int length = MemberMarriageEnum.values().length;
-		for (int i = 0; i < length; i++) {
+		for (int i = 1; i <= length; i++) {
 			map.put(MemberMarriageEnum.getNameByCode(i, lang), i);
 		}
 		Integer integer = map.get(name);

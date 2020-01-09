@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
+import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
@@ -924,7 +926,44 @@ public class UserImportService extends ShopBaseService {
 			userDetail.setBirthdayMonth(Integer.valueOf(birthdays[1]));
 			userDetail.setBirthdayDay(Integer.valueOf(birthdays[2]));
 		}
-		// TODO 省市区国际化之后不好判断
+		//省市区只判定了中文
+		String provinceName = importUser.getProvince();
+		String cityName = importUser.getCity();
+		String districtName = importUser.getDistrict();
+		logger().info("判断是否更新省市区" + provinceName + cityName + districtName);
+		if (StringUtils.isNotEmpty(provinceName) && StringUtils.isNotEmpty(cityName) && StringUtils.isNotEmpty(districtName)) {
+			logger().info("更新省市区");
+			Integer provinceId=110000;
+			//省
+			DictProvinceRecord provinceRecord = saas.region.province.getProvinceName(provinceName);
+			if (provinceRecord != null) {
+				provinceId = provinceRecord.getProvinceId();
+				if (provinceId < 100000) {
+					DictProvinceRecord provinceName2 = saas.region.province.getProvinceName(provinceName.substring(0, 2));
+					if (provinceName2 != null) {
+						provinceId = provinceName2.getProvinceId();
+						provinceId = provinceId < 100000 ? 110000 : provinceId;
+					}
+				}
+			}
+			//市
+			Integer cityId=110100;
+			DictCityRecord cityRecord = saas.region.city.getCityId(cityName, provinceId);
+			if(cityRecord!=null) {
+				cityId=cityRecord.getCityId();
+			}
+
+			//地区
+			Integer districtId=110101;
+			DictDistrictRecord districtRecord = saas.region.district.getDistrictName(districtName, cityId);
+			if(districtRecord!=null) {
+				districtId=districtRecord.getDistrictId();
+			}
+			userDetail.setProvinceCode(provinceId);
+			userDetail.setCityCode(cityId);
+			userDetail.setDistrictCode(districtId);
+		}
+		
 		BigDecimal income = importUser.getIncome();
 		logger().info("判断收入");
 		if (income != null) {

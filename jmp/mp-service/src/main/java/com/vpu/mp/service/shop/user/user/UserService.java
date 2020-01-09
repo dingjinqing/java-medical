@@ -291,6 +291,7 @@ public class UserService extends ShopBaseService {
 
 	public Map<String, String> getInviteSource(PathQuery pathQuery) {
 		String path = pathQuery.getPath();
+		logger().info("登录路径"+path);
 		Map<String, String> map = new HashMap<String, String>();
 		if (path.equals("pages/groupbuyitem/groupbuyitem") || path.equals("pages/groupbuyinfo/groupbuyinfo")) {
 			map.put("invite_source", "groupbuy");// 拼团
