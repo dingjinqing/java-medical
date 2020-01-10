@@ -472,10 +472,11 @@ export default {
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
         this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
         // 检验都通过
+        debugger
+        console.log(this.cardChargeCfgData.valid)
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
           this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid &&
           this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
-          // this.$message.success('成功')
           // 保存数据
           this.prepareCardData()
         } else {
