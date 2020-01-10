@@ -60,6 +60,6 @@ public class ModuleImageGuide extends ModuleBase {
 		 * 图片地址
 		 */
 		@JsonProperty(value = "nav_src")
-		Integer navSrc;
+        String navSrc;
 	}
 }

@@ -70,10 +70,7 @@ public class AdminMemberScoreController extends AdminBaseController {
 			}else {
 				param.setScoreStatus(USED_SCORE_STATUS);
 			}
-			
-			/** 获取语言 用于国际化 */
-			String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
-			
+
 			for(int i=0;i<userNumber;i++) {
 				Integer userId = arrayUserId[i];
 					/** -处理积分变动产生的异常 */

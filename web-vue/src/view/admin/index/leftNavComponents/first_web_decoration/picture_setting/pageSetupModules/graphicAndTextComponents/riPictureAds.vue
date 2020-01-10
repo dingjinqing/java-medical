@@ -94,7 +94,7 @@
             <img
               @click="handleToCallSingleImg(index)"
               style="cursor:pointer"
-              :src="$imageHost+'/'+item.image"
+              :src="item.image"
             >
             <div style="margin-left:10px">
               <div class="textTop">
@@ -334,7 +334,7 @@ export default {
       if (this.isAddImgOrChangeFlga) {
         imgData.forEach((item, index) => {
           let obj = {
-            'image': item.imgPath, // 图片保存路径
+            'image': item.imgUrl, // 图片保存路径
             'width': item.imgWidth, // 图片宽度
             'height': item.imgHeight, // 图片高度
             'title': '', // 文本
@@ -346,9 +346,10 @@ export default {
           this.moduleSaveData.image_list.push(obj)
         })
       } else {
-        console.log(imgData)
-        this.moduleSaveData.image_list[this.changeListImgIndex].image = imgData.imgPath
+        console.log(imgData.imgUrl)
+        this.moduleSaveData.image_list[this.changeListImgIndex].image = imgData.imgUrl
       }
+      console.log(this.moduleSaveData)
     },
     // 点击添加图片
     handleToCallImgDialog () {

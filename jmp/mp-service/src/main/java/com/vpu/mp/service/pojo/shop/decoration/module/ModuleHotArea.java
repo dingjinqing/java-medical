@@ -6,37 +6,51 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
  * @author lixinguo
  *
  */
+@Getter
+@Setter
 public class ModuleHotArea extends ModuleBase {
-	/**
-	 * 背景图片
-	 */
-	@JsonProperty(value = "bg_img_url")
-	String bg_img_url;
-	
-	/**
-	 * 背景图片宽度
-	 */
-	@JsonProperty(value = "bg_img_width")
-	Integer bgImgWidth;
-	
-	/**
-	 * 背景图片高度
-	 */
-	@JsonProperty(value = "bg_img_height")
-	Integer bgImgHeight;
-	
-	/**
-	 * 热区列表
-	 */
-	List<HotRetangle> rectangles = new ArrayList<>();
-	
-	@Data
+
+    @JsonProperty(value = "data")
+    private Data data;
+
+    @Getter
+    @Setter
+    public static class Data{
+        /**
+         * 背景图片
+         */
+        @JsonProperty(value = "bg_img_url")
+        String bgImgUrl;
+
+        /**
+         * 背景图片宽度
+         */
+        @JsonProperty(value = "bg_img_width")
+        Integer bgImgWidth;
+
+        /**
+         * 背景图片高度
+         */
+        @JsonProperty(value = "bg_img_height")
+        Integer bgImgHeight;
+
+        /**
+         * 热区列表
+         */
+        List<HotRetangle> rectangles = new ArrayList<>();
+    }
+
+
+    @Getter
+    @Setter
 	public static class HotRetangle{
 		
 		/**
