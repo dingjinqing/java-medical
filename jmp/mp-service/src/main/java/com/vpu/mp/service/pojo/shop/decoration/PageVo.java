@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.decoration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.wxapp.decorate.PageCfgVo;
 import lombok.Data;
 
 /**
@@ -23,4 +24,6 @@ public class PageVo {
     private String    pagePublishContent;
     @JsonProperty("cat_id")
     private Integer   catId;
+    @JsonProperty("page_cfg")
+    private PageCfgVo pageCfg;
 }

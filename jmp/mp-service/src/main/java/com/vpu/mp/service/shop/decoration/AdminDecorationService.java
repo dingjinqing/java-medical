@@ -191,10 +191,11 @@ public class AdminDecorationService extends ShopBaseService {
         vo.setPageType(page.getPageType());
         vo.setPageTplType(page.getPageTplType());
         try {
+            vo.setPageCfg((PageCfgVo) pageContent.get("page_cfg"));
             vo.setPageContent(objectMapper.writeValueAsString(pageContent));
             vo.setPagePublishContent(vo.getPageContent());
             return vo;
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             logger().error("装修",e);
             return null;
         }
@@ -211,11 +212,10 @@ public class AdminDecorationService extends ShopBaseService {
             while (elements.hasNext()) {
                 Map.Entry<String, JsonNode> node = elements.next();
                 String key = node.getKey();
-
-                Object element = this.processModule(objectMapper, node);
+                Object element = this.processModuleForGet(objectMapper, node);
                 result.put(key, element);
-
             }
+
         } catch (Exception e) {
             logger().error("装修转换错误:",e);
         }
@@ -232,7 +232,7 @@ public class AdminDecorationService extends ShopBaseService {
      * @throws JsonMappingException
      * @throws IOException
      */
-    public Object processModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node)
+    public Object processModuleForGet(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node)
         throws JsonParseException, JsonMappingException, IOException {
         if (node.getKey().startsWith("c_")) {
             String moduleName = node.getValue().get("module_name").asText();
@@ -296,7 +296,9 @@ public class AdminDecorationService extends ShopBaseService {
         }
         if(node.getKey().equals("page_cfg")){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
-            pageCfg.getPictorial().setShareImgPath(domainConfig.imageUrl(pageCfg.getPictorial().getShareImgPath()));
+            if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
+                pageCfg.getPictorial().setShareImgPath(domainConfig.imageUrl(pageCfg.getPictorial().getShareImgPath()));
+            }
             return pageCfg;
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
