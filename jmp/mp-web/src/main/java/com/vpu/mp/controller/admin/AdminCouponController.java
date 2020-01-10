@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -136,4 +137,15 @@ public class AdminCouponController extends AdminBaseController{
 		PageResult<CouponHoldListVo> detail = shop().coupon.getDetail(param);
 		return this.success(detail);
 	}
+
+    /**
+     * 删除用户优惠券
+     * @param id
+     * @return
+     */
+	@GetMapping("/admin/avail/coupon/del")
+	public JsonResult availCouponDel(Integer id){
+        boolean res = shop().coupon.availCouponDel(id);
+        return this.success(res);
+    }
 }
