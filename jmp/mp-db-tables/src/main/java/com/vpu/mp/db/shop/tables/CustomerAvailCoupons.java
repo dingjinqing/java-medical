@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CustomerAvailCoupons extends TableImpl<CustomerAvailCouponsRecord> {
 
-    private static final long serialVersionUID = 1340422448;
+    private static final long serialVersionUID = -1950548090;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_customer_avail_coupons</code>
@@ -66,102 +66,102 @@ public class CustomerAvailCoupons extends TableImpl<CustomerAvailCouponsRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.coupon_sn</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, String> COUPON_SN = createField("coupon_sn", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, String> COUPON_SN = createField("coupon_sn", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.user_id</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.act_type</code>. user_id不为空时1:经销商等级打折,为空时1:首次下单优惠，2减价，3打折
      */
-    public final TableField<CustomerAvailCouponsRecord, Integer> ACT_TYPE = createField("act_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_id不为空时1:经销商等级打折,为空时1:首次下单优惠，2减价，3打折");
+    public final TableField<CustomerAvailCouponsRecord, Integer> ACT_TYPE = createField("act_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_id不为空时1:经销商等级打折,为空时1:首次下单优惠，2减价，3打折");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.act_id</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Integer> ACT_ID = createField("act_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, Integer> ACT_ID = createField("act_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.start_time</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.end_time</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_customer_avail_coupons.type</code>. 1为减价，2为打折
+     * The column <code>mini_shop_471752.b2c_customer_avail_coupons.type</code>. 0为减价，1为打折
      */
-    public final TableField<CustomerAvailCouponsRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为减价，2为打折");
+    public final TableField<CustomerAvailCouponsRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0为减价，1为打折");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.amount</code>. 打折或减价量
      */
-    public final TableField<CustomerAvailCouponsRecord, BigDecimal> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "打折或减价量");
+    public final TableField<CustomerAvailCouponsRecord, BigDecimal> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "打折或减价量");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.act_desc</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, String> ACT_DESC = createField("act_desc", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, String> ACT_DESC = createField("act_desc", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_customer_avail_coupons.limit_order_amount</code>.
+     * The column <code>mini_shop_471752.b2c_customer_avail_coupons.limit_order_amount</code>. 满多少可用
      */
-    public final TableField<CustomerAvailCouponsRecord, Integer> LIMIT_ORDER_AMOUNT = createField("limit_order_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, BigDecimal> LIMIT_ORDER_AMOUNT = createField("limit_order_amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "满多少可用");
 
     /**
-     * The column <code>mini_shop_471752.b2c_customer_avail_coupons.is_used</code>.
+     * The column <code>mini_shop_471752.b2c_customer_avail_coupons.is_used</code>. 0 未使用 1 已使用 
      */
-    public final TableField<CustomerAvailCouponsRecord, Byte> IS_USED = createField("is_used", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, Byte> IS_USED = createField("is_used", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0 未使用 1 已使用 ");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.used_time</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> USED_TIME = createField("used_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> USED_TIME = createField("used_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.access_mode</code>. 获取方式，0：发放，1：领取
      */
-    public final TableField<CustomerAvailCouponsRecord, Byte> ACCESS_MODE = createField("access_mode", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "获取方式，0：发放，1：领取");
+    public final TableField<CustomerAvailCouponsRecord, Byte> ACCESS_MODE = createField("access_mode", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "获取方式，0：发放，1：领取");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.access_id</code>. 发放活动id
      */
-    public final TableField<CustomerAvailCouponsRecord, Integer> ACCESS_ID = createField("access_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发放活动id");
+    public final TableField<CustomerAvailCouponsRecord, Integer> ACCESS_ID = createField("access_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发放活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.notify_time</code>. 通知时间
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> NOTIFY_TIME = createField("notify_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "通知时间");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> NOTIFY_TIME = createField("notify_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "通知时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.order_sn</code>. 优惠订单编号
      */
-    public final TableField<CustomerAvailCouponsRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "优惠订单编号");
+    public final TableField<CustomerAvailCouponsRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "优惠订单编号");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.del_flag</code>. 是否删除,1：删除
      */
-    public final TableField<CustomerAvailCouponsRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否删除,1：删除");
+    public final TableField<CustomerAvailCouponsRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否删除,1：删除");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.get_source</code>. //1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券
      */
-    public final TableField<CustomerAvailCouponsRecord, Byte> GET_SOURCE = createField("get_source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "//1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券");
+    public final TableField<CustomerAvailCouponsRecord, Byte> GET_SOURCE = createField("get_source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "//1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.create_time</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.update_time</code>. 最后修改时间
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_customer_avail_coupons</code> table reference

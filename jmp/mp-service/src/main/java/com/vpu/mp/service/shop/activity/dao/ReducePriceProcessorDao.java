@@ -154,8 +154,10 @@ public class ReducePriceProcessorDao extends ShopBaseService {
                 Timestamp nextActivityStartDate = reducePriceService.getNextActivityStartDate(dayArr, startLocalTime, endLocalTime, periodAction, reducePriceRecord.getStartTime(), reducePriceRecord.getEndTime());
                 // 活动将截止
                 if (nextActivityStartDate == null) {
+                    vo.setActState(BaseConstant.ACTIVITY_STATUS_END);
                     return null;
                 } else {
+                    vo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_START);
                     vo.setNextStartTimestamp(nextActivityStartDate);
                 }
             }

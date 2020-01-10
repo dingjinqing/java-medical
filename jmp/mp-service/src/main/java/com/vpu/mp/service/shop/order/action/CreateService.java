@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -276,7 +277,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderAfterRecord.getOrderSn(), orderAfterRecord.getMoneyPaid(), orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
-            return ExecuteResult.create(e.getErrorCode());
+            return ExecuteResult.create(e.getErrorCode(), null);
         }
     }
 
@@ -319,7 +320,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void checkCreateOrderBo(CreateOrderBo bo, CreateParam param) throws MpException {
         logger().info("校验checkCreateOrderBo,start");
         //非送礼 非门店 校验地址
-        if(bo.getOrderType().contains(OrderConstant.GOODS_TYPE_GIVE_GIFT) && bo.getStore() == null && bo.getAddress() == null){
+        if(bo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT) && bo.getStore() == null && bo.getAddress() == null){
             throw new MpException(JsonResultCode.CODE_ORDER_ADDRESS_NO_NULL);
         }
         //会员卡失效
@@ -821,7 +822,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }
         }
         //订单状态
-        if(orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_PRE_SALE) ||
+        if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_PRE_SALE) ||
             (OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay() && BigDecimalUtil.compareTo(beforeVo.getInsteadPayMoney(), BigDecimal.ZERO) == 1)) {
             //预售、代付（代付金额大于0）->待支付
             logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
@@ -830,7 +831,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             if((orderBo.getPayment() != null && OrderConstant.PAY_CODE_COD.equals(orderBo.getPayment().getPayCode()) ||
                 BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
                 //货到付款 || 待支付=0
-                if(orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_PIN_GROUP) || orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_GROUP_DRAW)) {
+                if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY) || orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW)) {
                     //拼团
                     logger().info("订单状态:{}", OrderConstant.ORDER_PIN_PAYED_GROUPING);
                     order.setOrderStatus(OrderConstant.ORDER_PIN_PAYED_GROUPING);
@@ -846,7 +847,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //设置支付过期时间(默认30minutes)
         Integer cancelTime = tradeCfg.getCancelTime();
         cancelTime = cancelTime < 1 ? OrderConstant.DEFAULT_AUTO_CANCEL_TIME : cancelTime;
-        if(orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_SECKILL)) {
+        if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_SEC_KILL)) {
             //TODO 秒杀 activityid
         }
         if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay()) {
@@ -860,7 +861,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //是否退优惠卷
         order.setIsRefundCoupon(returnCfg.getIsReturnCoupon());
         //order是否支持退款
-        order.setReturnTypeCfg(orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_GIVE_GIFT) ? OrderConstant.CFG_RETURN_TYPE_N : OrderConstant.CFG_RETURN_TYPE_Y);
+        order.setReturnTypeCfg(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT) ? OrderConstant.CFG_RETURN_TYPE_N : OrderConstant.CFG_RETURN_TYPE_Y);
         //发货后自动确认收货时间设置
         order.setReturnDaysCfg(tradeCfg.getDrawbackDays().byteValue());
         //确认收货后order_timeout_days天，订单完成
@@ -955,7 +956,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //货到付款
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_COD);
         }
-        if(vo.getGoodsType() != null &&OrderConstant.GOODS_TYPE_INTEGRAL != vo.getGoodsType() && BigDecimalUtil.compareTo(vo.getScoreDiscount(), BigDecimal.ZERO) == 1 && vo.getIsScorePay() == NO){
+        if(vo.getGoodsType() != null &&BaseConstant.ACTIVITY_TYPE_INTEGRAL != vo.getGoodsType() && BigDecimalUtil.compareTo(vo.getScoreDiscount(), BigDecimal.ZERO) == 1 && vo.getIsScorePay() == NO){
             //积分（非积分兑换）
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
         }

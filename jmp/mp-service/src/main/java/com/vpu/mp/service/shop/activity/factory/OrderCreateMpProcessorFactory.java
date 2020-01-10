@@ -29,19 +29,19 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 一般营销  首单特惠 会员专享  满折满减
+     * 一般营销  首单特惠 会员专享
      */
     private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
-        BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
-        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
-        BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION
+            BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
+            BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
     );
     /**
      * 全局的活动  支付有礼
      */
     private final static List<Byte> GLOBAL_ACTIVITY = Arrays.asList(
         BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
-        BaseConstant.ACTIVITY_TYPE_GIFT
+        BaseConstant.ACTIVITY_TYPE_GIFT,
+        BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION
     );
 
     /**
@@ -51,7 +51,8 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
             BaseConstant.ACTIVITY_TYPE_SEC_KILL,
             BaseConstant.ACTIVITY_TYPE_BARGAIN,
-            BaseConstant.ACTIVITY_TYPE_MY_PRIZE
+            BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
+            BaseConstant.ACTIVITY_TYPE_PRE_SALE
     );
 
     /**
@@ -96,6 +97,11 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * @throws MpException
      */
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        if(param.getActivityType() != null && !SINGLENESS_ACTIVITY.contains(param.getActivityType())) {
+            //因为小程序商品详情页面会带营销type,但是订单模块只接受单一营销type,其他营销自动处理
+            param.setActivityType(null);
+            param.setActivityId(null);
+        }
         if (param.getActivityId() != null && param.getActivityType() != null) {
             //单一营销
             processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);

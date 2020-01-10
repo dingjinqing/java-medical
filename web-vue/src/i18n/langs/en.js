@@ -366,6 +366,10 @@ import {
 } from './views/admin_new/en/index/userManagement/member/membershipIntroductionEn'
 // 会员导入
 import {
+  en as memberIntroductionList
+} from './views/admin_new/en/index/userManagement/member/memberIntroductionListEn'
+// 会员导入
+import {
   en as memberIntroductionDialog
 } from './views/admin_new/en/index/userManagement/member/memberIntroductionDialogEn'
 // 设置激活通知
@@ -904,6 +908,7 @@ const en = {
   router, // 路由信息
 
   membershipIntroduction, // 会员列表
+  memberIntroductionList, // 会员导入列表
   memberIntroductionDialog, // 会员导入
   activationNotificationDialog, // 设置激活通知
   programVersion, // system 后台小程序版本

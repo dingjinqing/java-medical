@@ -41,6 +41,8 @@ public class MemberBasicInfoVo {
 	@JsonProperty("source")
 	private String sourceName;
 	
+	private Integer scene;
+	
 	/** 是否是分销员 0：否，1：是 */
 	private Byte isDistributor;
 	

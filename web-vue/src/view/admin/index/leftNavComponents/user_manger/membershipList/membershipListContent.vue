@@ -1018,21 +1018,22 @@ export default {
       this.options_three = this.$t('membershipIntroduction.options_three')
       this.options_four = this.$t('membershipIntroduction.options_four')
       this.options_five = this.$t('membershipIntroduction.options_five')
+
       let obj = {
         'mobile': String(this.phoneNum).trim(),
         'username': this.vxName,
         'source': this.sourceValue,
         'cardId': this.membershipCardVal,
         'tagName': this.labelVal,
-        'createTime': this.datePickerVal[0],
-        'endTime': this.datePickerVal[1],
+        'createTime': this.datePickerVal ? this.datePickerVal[0] : null,
+        'endTime': this.datePickerVal ? this.datePickerVal[1] : null,
         'inviteUserName': this.inviteUserName,
-        'loginStartTime': this.datePickerVal_one[0],
-        'loginEndTime': this.datePickerVal_one[1],
-        'cartStartTime': this.datePickerVal_two[0],
-        'cartEndTime': this.datePickerVal_two[1],
-        'buyStartTime': this.datePickerVal_three[0],
-        'buyEndTime': this.datePickerVal_three[1],
+        'loginStartTime': this.datePickerVal_one ? this.datePickerVal_one[0] : null,
+        'loginEndTime': this.datePickerVal_one ? this.datePickerVal_one[1] : null,
+        'cartStartTime': this.datePickerVal_two ? this.datePickerVal_two[0] : null,
+        'cartEndTime': this.datePickerVal_two ? this.datePickerVal_two[1] : null,
+        'buyStartTime': this.datePickerVal_three ? this.datePickerVal_three[0] : null,
+        'buyEndTime': this.datePickerVal_three ? this.datePickerVal_three[1] : null,
         'unitPriceLow': this.unitPriceLeft,
         'unitPriceHight': this.unitPriceRight,
         'buyCountLow': this.frequencyLeft,

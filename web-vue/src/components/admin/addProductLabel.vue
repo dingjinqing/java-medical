@@ -141,17 +141,19 @@ export default {
       }
     },
     brandBackData (arr) {
-      console.log(arr)
+      console.log(arr, this.$refs['labelTable'])
       //  labelTable
-      if (arr.length) {
-        arr.forEach(row => {
-          this.$refs.labelTable.toggleRowSelection(row)
-        })
-      } else if (this.callAddProductLabel) {
-        this.$nextTick(() => {
-          this.$refs.labelTable.clearSelection()
-        })
-      }
+      this.$nextTick(() => {
+        if (arr.length && this.$refs['labelTable']) {
+          arr.forEach(row => {
+            this.$refs.labelTable.toggleRowSelection(row)
+          })
+        } else if (this.callAddProductLabel) {
+          this.$nextTick(() => {
+            this.$refs.labelTable.clearSelection()
+          })
+        }
+      })
 
       this.isElection = this.singleElection
     },
@@ -190,7 +192,7 @@ export default {
     },
     changeFun (val) {
       console.log(val)
-      if (val.length > 1) {
+      if (val.length > 1 && this.singleElection) {
         this.$refs.labelTable.clearSelection()
         this.$refs.labelTable.toggleRowSelection(val.pop())
       } else {

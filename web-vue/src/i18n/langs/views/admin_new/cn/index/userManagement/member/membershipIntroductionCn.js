@@ -237,17 +237,20 @@ export const cn = {
   ExchangeFrequency: '兑换商品次数(次)',
   noData: '暂无相关数据',
   userFromSource: [{
-    value: '-2',
+    value: '0',
     label: '全部'
   }, {
     value: '-1',
-    label: '未获取'
+    label: '搜索进入'
   }, {
-    value: '0',
-    label: '后台'
+    value: '-2',
+    label: '分享进入'
   }, {
     value: '-3',
     label: '扫码进入'
+  }, {
+    value: '-4',
+    label: '未获取'
   }],
   allSource: '全部',
   notAcquired: '未获取',

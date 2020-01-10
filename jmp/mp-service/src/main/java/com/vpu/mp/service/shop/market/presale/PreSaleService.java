@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.Presale;
 import com.vpu.mp.db.shop.tables.PresaleProduct;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -30,6 +31,7 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -56,7 +58,6 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOIN
 import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_POSTPONE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_SPECIFIC;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.GOODS_TYPE_PRE_SALE;
 import static java.lang.String.format;
 import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
@@ -67,6 +68,7 @@ import static org.springframework.util.StringUtils.isEmpty;
  * @author 郑保乐
  */
 @Service
+@Primary
 public class PreSaleService extends ShopBaseService {
 
     /**
@@ -81,10 +83,25 @@ public class PreSaleService extends ShopBaseService {
     public static final Byte PRE_SALE_TYPE_ALL_MONEY = 1;
     /**定金付*/
     public static final Byte PRE_SALE_TYPE_SPLIT = 0;
+    /**只有一个阶段*/
+    public static final Byte PRE_SALE_ONE_PHASE = 1;
+    /**有两个阶段*/
+    public static final Byte PRE_SALE_TWO_PHASE = 2;
+    /**使用优惠券叠加*/
+    public static final Byte PRE_SALE_USE_COUPON = 1;
+    /**自定退订金*/
+    public static final Byte PRE_SALE_RETURN_DEPOSIT= 1;
+    /**展示预售数量*/
+    public static final Integer PRE_SALE_SHOW_SALE_NUM= 1;
+    /**可以原价购买*/
+    public static final Byte PRE_SALE_ORIGINAL_BUY= 1;
+
     /**发货时间类型：1 指定日期*/
     public static final Byte DELIVER_TYPE_TIME = 1;
     /**发货时间类型：2 指定下单后的天数*/
     public static final Byte DELIVER_TYPE_DAYS = 2;
+    /**定金期数2*/
+    public static final Byte PRESALE_MONEY_INTERVAL = 2;
 
 
 
@@ -127,7 +144,7 @@ public class PreSaleService extends ShopBaseService {
             )
                 .from(TABLE)
                 .leftJoin(ORDER)
-                .on(ORDER.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {GOODS_TYPE_PRE_SALE}))
+                .on(ORDER.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PRE_SALE}))
                 .and(ORDER.ACTIVITY_ID.eq(TABLE.ID)))
                 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER.ORDER_ID))
                 .where(TABLE.DEL_FLAG.eq(NOT_DELETED));
