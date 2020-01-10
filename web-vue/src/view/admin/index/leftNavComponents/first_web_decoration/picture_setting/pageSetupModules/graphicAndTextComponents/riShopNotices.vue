@@ -60,11 +60,11 @@
           <span :style="columnFlag?'line-height:32px':'line-height:16px'">{{$t('shopNotices.displayPosition')}}：</span>
           <el-radio
             v-model="moduleSaveData.announce_position"
-            label="0"
+            :label="0"
           >{{$t('shopNotices.generalStyle')}}</el-radio>
           <el-radio
             v-model="moduleSaveData.announce_position"
-            label="1"
+            :label="1"
           >{{$t('shopNotices.scrollToTopFixed')}}</el-radio>
         </div>
       </div>

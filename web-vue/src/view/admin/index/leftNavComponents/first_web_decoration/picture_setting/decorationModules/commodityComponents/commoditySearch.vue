@@ -73,8 +73,9 @@
   </div>
 </template>
 <script>
-
+import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
+  mixins: [decMixins],
   props: {
     flag: Number, // 模块公共
     nowRightShowIndex: Number, // 模块公共
@@ -128,7 +129,9 @@ export default {
     backData: { // 模块公共
       handler (newData) {
         if (newData) {
-          this.data = newData
+          let turnToString = this.handleToTurnNumToStr(newData)
+          console.log(turnToString)
+          this.data = turnToString
           console.log(this.data.box_color)
           if (!this.data.box_color) {
             this.data.box_color = ''

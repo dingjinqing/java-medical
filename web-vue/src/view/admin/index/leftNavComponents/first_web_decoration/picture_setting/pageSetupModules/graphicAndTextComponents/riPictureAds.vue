@@ -42,11 +42,11 @@
             <div>
               <el-radio
                 v-model="moduleSaveData.is_preview"
-                label="0"
+                :label="0"
               >{{$t('pictureAds.no')}}</el-radio>
               <el-radio
                 v-model="moduleSaveData.is_preview"
-                label="1"
+                :label="1"
               >{{$t('pictureAds.yes')}}</el-radio>
             </div>
             <div style="color:#999;width:335px;text-align:justify;margin-top:5px;line-height:16px">{{$t('pictureAds.originalGraphTip')}}</div>
@@ -71,7 +71,7 @@
         <!--模块标题-->
         <div
           class="listStyle"
-          v-if="moduleSaveData.image_type==='4'"
+          v-if="moduleSaveData.image_type===4"
         >
           <div class="title pictureGapTitle">{{$t('pictureAds.moduleHeader')}}：</div>
           <div
@@ -145,25 +145,25 @@
                   class="image_adver_set"
                   style="height:auto;white-space: nowrap;"
                   @click="handleToExpand(index)"
-                >{{item.whetherToExpand==='0'?$t('pictureAds.open'):$t('pictureAds.retract')}}{{$t('pictureAds.moreConfiguration')}}</div>
+                >{{item.whetherToExpand===0?$t('pictureAds.open'):$t('pictureAds.retract')}}{{$t('pictureAds.moreConfiguration')}}</div>
               </div>
             </div>
           </div>
           <!--点击展开更多配置隐藏模块-->
           <div
             class="imageListBottom"
-            v-if="item.whetherToExpand==='1'"
+            v-if="item.whetherToExpand===1"
           >
             <div class="content">
               <span>{{$t('pictureAds.displaySettings')}}：</span>
               <div class="radioContent">
                 <el-radio
                   v-model="item.can_show"
-                  label="0"
+                  :label="0"
                 >{{$t('pictureAds.visibleToAllUsers')}}</el-radio>
                 <el-radio
                   v-model="item.can_show"
-                  label="1"
+                  :label="1"
                 >{{$t('pictureAds.notPaidInUsers')}}</el-radio>
               </div>
             </div>
@@ -179,7 +179,7 @@
             + {{$t('pictureAds.addPictures')}}
           </div>
           <div style="color: #999;font-size: 13px;">
-            {{$t('pictureAds.recommendedWidth')}}{{moduleSaveData.image_type==='0'?'750':moduleSaveData.image_type==='1'?'375':moduleSaveData.image_type==='2'?'670':moduleSaveData.image_type==='3'?'305':moduleSaveData.image_type==='4'?'142':''}}px
+            {{$t('pictureAds.recommendedWidth')}}{{moduleSaveData.image_type===0?'750':moduleSaveData.image_type===1?'375':moduleSaveData.image_type===2?'670':moduleSaveData.image_type===3?'305':moduleSaveData.image_type===4?'142':''}}px
           </div>
         </div>
         <!--添加图片占位end-->
@@ -220,7 +220,7 @@ export default {
       listTypeData: [], // 选择模板列表数据
       pictureGapValue: 0, // 图片间隙slider值
       moduleSaveData: {
-        is_preview: '0' //  预览原图radio
+        is_preview: 0 //  预览原图radio
       }
     }
   },
@@ -235,6 +235,11 @@ export default {
             this.listTypeData.forEach((item, index) => {
               item.isChecked = false
             })
+            if (this.modulesData.image_list.length) {
+              this.modulesData.image_list.forEach((item, index) => {
+                item['whetherToExpand'] = 0
+              })
+            }
             this.moduleSaveData = this.modulesData
             this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
             this.pictureGapValue = this.moduleSaveData.image_space
@@ -266,7 +271,7 @@ export default {
         item.isChecked = false
       })
       this.listTypeData[index].isChecked = true
-      this.moduleSaveData.image_type = index.toString()
+      this.moduleSaveData.image_type = index
     },
     // 滑动slider触发事件
     handleToGetSliderValue (value) {
@@ -283,11 +288,12 @@ export default {
     //   处理图片列表展开收起
     handleToExpand (index) {
       let flag = this.moduleSaveData.image_list[index].whetherToExpand
-      if (flag === '0') {
-        this.moduleSaveData.image_list[index].whetherToExpand = '1'
+      if (flag === 0) {
+        this.moduleSaveData.image_list[index].whetherToExpand = 1
       } else {
-        this.moduleSaveData.image_list[index].whetherToExpand = '0'
+        this.moduleSaveData.image_list[index].whetherToExpand = 0
       }
+      this.$forceUpdate()
     },
     // 点击图片列表icon操作统一处理
     handleToOperation (flag, index) {
@@ -339,8 +345,8 @@ export default {
             'height': item.imgHeight, // 图片高度
             'title': '', // 文本
             'link': '', //   链接
-            'can_show': '0', //  显示设置raido
-            'whetherToExpand': '0'
+            'can_show': 0, //  显示设置raido
+            'whetherToExpand': 0
           }
           console.log(this.moduleSaveData)
           this.moduleSaveData.image_list.push(obj)
