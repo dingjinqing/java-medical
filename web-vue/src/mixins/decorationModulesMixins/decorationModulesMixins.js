@@ -321,7 +321,7 @@ export default {
             'fonts_size': 1, // 字体大小
             'fonts_color': '#333333', // 字体颜色
             'bgs_color': '#ffffff', // 背景颜色
-            'show_pos': '1', // 显示位置
+            'show_pos': 1, // 显示位置
             'title_link': '' // 链接
           }
           break
