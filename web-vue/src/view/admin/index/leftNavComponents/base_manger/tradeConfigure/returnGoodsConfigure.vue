@@ -1,39 +1,39 @@
 <template>
   <div class="returnGoodsConfigure">
-    <!--    售后配置-->
+    <!--售后配置-->
     <section class="configureWrapper">
       <div class="title">
         <span></span>{{$t('returnconfiguration.afterconfig')}}
         <el-switch
-          v-model="afterSalesConfiguration"
+          v-model="returnParam.post_sale_status"
           active-color="#13ce66"
           inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
-        {{afterSalesConfiguration?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
+        {{returnParam.post_sale_status?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
         <label class="onText">{{$t('returnconfiguration.activeafterconfig')}}</label>
       </div>
     </section>
     <!-- 退货配置 -->
     <section
       class="returnGoods"
-      v-if="afterSalesConfiguration"
+      v-if="returnParam.post_sale_status"
     >
       <div class='title'>{{$t('returnconfiguration.returnconfig')}}：</div>
       <div class="content">
         <div style="margin-top: 20px">
           <template>
             <!-- `checked` 为 true 或 false -->
-            <el-checkbox v-model="orderCanExchange"><label>{{$t('returnconfiguration.supportreturn')}}</label></el-checkbox>
+            <el-checkbox v-model="returnParam.order_can_exchange"><label>{{$t('returnconfiguration.supportreturn')}}</label></el-checkbox>
           </template>
         </div>
         <el-radio-group
           v-model="returnParam.return_change_goods_status"
           class="requirement"
         >
-          <el-radio :label="2">{{$t('returnconfiguration.allgoods')}}</el-radio>
-          <el-radio :label="1">{{$t('returnconfiguration.cannotreturngoods')}} </el-radio>
-          <el-radio :label="0">{{$t('returnconfiguration.canreturngoods')}}</el-radio>
+          <el-radio :label=2>{{$t('returnconfiguration.allgoods')}}</el-radio>
+          <el-radio :label=1>{{$t('returnconfiguration.cannotreturngoods')}} </el-radio>
+          <el-radio :label=0>{{$t('returnconfiguration.canreturngoods')}}</el-radio>
         </el-radio-group>
         <div
           v-if="returnParam.return_change_goods_status === 1"
@@ -165,8 +165,8 @@
       </div>
       <div class="configureContent baseInfo">
         <el-radio-group v-model="returnParam.is_refund_coupon">
-          <el-radio :label="1">{{$t('returnconfiguration.activated')}}</el-radio>
-          <el-radio :label="0">{{$t('returnconfiguration.inactived')}}</el-radio>
+          <el-radio :label=1>{{$t('returnconfiguration.activated')}}</el-radio>
+          <el-radio :label=0>{{$t('returnconfiguration.inactived')}}</el-radio>
         </el-radio-group>
         <span class="onText">{{$t('returnconfiguration.ordernecessarydesc')}}</span>
       </div>
@@ -183,8 +183,8 @@
           v-model="returnParam.auto_return"
           class="radio"
         >
-          <el-radio :label="1">{{$t('returnconfiguration.activated')}}</el-radio>
-          <el-radio :label="0">{{$t('returnconfiguration.inactived')}}</el-radio>
+          <el-radio :label=1>{{$t('returnconfiguration.activated')}}</el-radio>
+          <el-radio :label=0>{{$t('returnconfiguration.inactived')}}</el-radio>
         </el-radio-group>
         <!-- 开启时的显示内容 -->
         <div
@@ -239,7 +239,7 @@
         </div>
       </div>
     </section>
-    <!--    售后商品库存配置-->
+    <!-- 售后商品库存配置-->
     <section class="configureWrapper">
       <div class="title">
         <span></span>
@@ -247,8 +247,8 @@
       </div>
       <div class="configureContent baseInfo">
         <el-radio-group v-model="returnParam.auto_return_goods_stock">
-          <el-radio :label="1">{{$t('returnconfiguration.addgoodstock')}}</el-radio>
-          <el-radio :label="0">{{$t('returnconfiguration.notaddgoodstock')}}</el-radio>
+          <el-radio :label=1>{{$t('returnconfiguration.addgoodstock')}}</el-radio>
+          <el-radio :label=0>{{$t('returnconfiguration.notaddgoodstock')}}</el-radio>
         </el-radio-group>
       </div>
     </section>
@@ -351,11 +351,11 @@ export default {
   },
   data () {
     return {
-      afterSalesConfiguration: true,
-      orderCanExchange: true,
+      // afterSalesConfiguration: true,
+      // orderCanExchange: true,
       // 商品弹窗回调数据
       goodsInfo: [],
-      goodsInfoRow: [],
+      // goodsInfoRow: [],
       goodsN: 0,
       // 标签弹窗回调数据
       labelInfo: [],
@@ -383,8 +383,8 @@ export default {
       tuneUpProductLabel: false,
       classFlag: 0,
       returnParam: {
-        post_sale_status: 1,
-        order_can_exchange: 1,
+        post_sale_status: true,
+        order_can_exchange: true,
         return_change_goods_status: 0,
         is_refund_coupon: 0,
         auto_return_goods_stock: 1,
@@ -398,7 +398,7 @@ export default {
           add_cate: [],
           add_sort: [],
           add_label: [],
-          add_brand: {}
+          add_brand: []
         },
         business_address: {
           consignee: '',
@@ -426,12 +426,18 @@ export default {
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
       console.log('选择商品弹窗回调显示:', row)
-      this.goodsInfoRow = row
-      this.goodsInfo = []
-      this.goodsInfoRow.map((item, index) => {
+      // this.goodsInfoRow = row
+      // this.goodsInfo = []
+      // this.goodsInfoRow.map((item, index) => {
+      //   this.goodsInfo.push(item.goodsId)
+      // })
+      // console.log(this.goodsInfo)
+      let goodsIdList = row
+      goodsIdList.map(item => {
         this.goodsInfo.push(item.goodsId)
       })
       this.goodsN = this.goodsInfo.length
+      console.log(this.goodsN)
     },
     // 选择商家分类/平台分类弹窗调起
     showBusClassDialog (classFlag) {
@@ -473,11 +479,8 @@ export default {
     // 选择商品标签弹窗回调显示
     busProductLabelResult (row) {
       console.log('选择商品标签弹窗回调显示:', row)
-      this.labelInfoRow = row
-      this.labelInfo = []
-      this.labelInfoRow.map((item, index) => {
-        this.labelInfo.push(item.id)
-      })
+      let labelIdList = row.map(item => item.id)
+      this.labelInfo = labelIdList
       this.labelN = this.labelInfo.length
     },
     // 选择商品品牌弹窗调起
@@ -488,7 +491,7 @@ export default {
     busBrandDialogResult (row) {
       console.log('选择商品品牌弹窗回调显示:', row)
       this.brandRow = row
-      this.brand = []
+      // this.brand = []
       this.brandRow.map((item, index) => {
         this.brand.push(item.id)
       })
@@ -498,48 +501,58 @@ export default {
       returnSelect().then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.returnParam = res.content
+          // this.returnParam = res.content
           this.goodsInfo = this.returnParam.order_return_goods_package.add_goods
-          this.goodsN = this.goodsInfo.length
+          // this.goodsN = this.goodsInfo.length
           this.labelInfo = this.returnParam.order_return_goods_package.add_label
-          this.labelN = this.labelInfo.length
-          this.brand = this.returnParam.order_return_goods_package.add_brand
-          this.brandN = this.brand.length
+          // this.labelN = this.labelInfo.length
+          // this.brand = this.returnParam.order_return_goods_package.add_brand
+          // this.brandN = this.brand.length
           this.busClass = this.returnParam.order_return_goods_package.add_sort
-          this.busClassN = this.busClass.length
+          // this.busClassN = this.busClass.length
           this.platClass = this.returnParam.order_return_goods_package.add_cate
-          this.platN = this.platClass.length
-          this.afterSalesConfiguration = this.number2boolean(this.returnParam.post_sale_status)
-          this.orderCanExchange = this.number2boolean(this.returnParam.order_can_exchange)
+          // this.platN = this.platClass.length
+          // this.afterSalesConfiguration = Boolean(this.returnParam.post_sale_status)
+          // this.orderCanExchange = Boolean(this.returnParam.order_can_exchange)
+          this.returnParam = res.content
+          let data = res.content
+          this.returnParam.post_sale_status = Boolean(data.post_sale_status)
+          this.returnParam.order_can_exchange = Boolean(data.order_can_exchange)
+          this.goodsN = data.order_return_goods_package.add_goods.length
+          this.platN = data.order_return_goods_package.add_cate.length
+          this.busClassN = data.order_return_goods_package.add_sort.length
+          this.labelN = data.order_return_goods_package.add_label.length
+          this.brandN = data.order_return_goods_package.add_brand.length
         } else {
-          this.$message.error('操作失败，请稍后重试！')
+          this.$message.error('请求数据失败，请稍后重试！')
         }
-      })
+      }).catch(err => console.log(err))
     },
-    number2boolean (configValue) {
-      if (configValue === 1) {
-        return true
-      } else if (configValue === 0) {
-        return false
-      }
-    },
-    boolean2number (booleanValue) {
-      if (booleanValue === true) {
-        return 1
-      } else if (booleanValue === false) {
-        return 0
-      }
-    },
+    // number2boolean (configValue) {
+    //   if (configValue === 1) {
+    //     return true
+    //   } else if (configValue === 0) {
+    //     return false
+    //   }
+    // },
+    // boolean2number (booleanValue) {
+    //   if (booleanValue === true) {
+    //     return 1
+    //   } else if (booleanValue === false) {
+    //     return 0
+    //   }
+    // },
     // 更新配置项
     updateConfig () {
       // 设置那几个弹窗的值
+      console.log(this.goodsInfo)
       this.returnParam.order_return_goods_package.add_goods = this.goodsInfo
       this.returnParam.order_return_goods_package.add_label = this.labelInfo
       this.returnParam.order_return_goods_package.add_brand = this.brand
       this.returnParam.order_return_goods_package.add_sort = this.busClass
       this.returnParam.order_return_goods_package.add_cate = this.platClass
-      this.returnParam.post_sale_status = this.boolean2number(this.afterSalesConfiguration)
-      this.returnParam.order_can_exchange = this.boolean2number(this.orderCanExchange)
+      this.returnParam.post_sale_status = Number(this.returnParam.post_sale_status)
+      this.returnParam.order_can_exchange = Number(this.returnParam.order_can_exchange)
       console.log(JSON.parse(JSON.stringify(this.returnParam)))
       retrunUpdate(this.returnParam).then(res => {
         console.log(res)
@@ -549,7 +562,7 @@ export default {
         } else {
           this.$message.error('更新失败！')
         }
-      })
+      }).catch(err => console.log(err))
     }
   }
 }
