@@ -288,10 +288,23 @@ public class AdminDecorationService extends ShopBaseService {
                     ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
                     moduleMap.setImgPath(domainConfig.imageUrl(moduleMap.getImgPath()));
                     return moduleMap;
+                case ModuleConstant.M_GOODS:
+                    ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
+                    if(moduleGoods.getOtherMessage().equals(0)){
+                        if(StringUtil.isNotEmpty(moduleGoods.getImgUrl()) || StringUtil.isNotEmpty(moduleGoods.getTitle())){
+                            moduleGoods.setGoodsModuleTitle((byte)1);
+                        }else{
+                            moduleGoods.setGoodsModuleTitle((byte)0);
+                        }
+                    }
+                    return moduleGoods;
+                case ModuleConstant.M_GOODS_GROUP:
+                    ModuleGoodsGroup moduleGoodsGroup = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
+                    return moduleGoodsGroup;
 
-                /**
-                 * TODO: 添加其他模块
-                 */
+                    /**
+                     * TODO: 添加其他模块
+                     */
             }
         }
         if(node.getKey().equals("page_cfg")){
