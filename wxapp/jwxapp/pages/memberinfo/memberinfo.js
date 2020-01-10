@@ -100,7 +100,6 @@ global.wxPage({
     wx.showLoading({
       title: '加载中',
     })
-    // this.handleToInitDdata()  // 处理初始请求数据
     this.handleToInitDdata()  // 初始化数据
   },
 
