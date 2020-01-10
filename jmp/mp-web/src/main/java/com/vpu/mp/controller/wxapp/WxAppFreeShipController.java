@@ -1,7 +1,9 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import org.springframework.web.bind.annotation.PatchMapping;
+import com.vpu.mp.service.pojo.wxapp.market.freeshipping.FreeShippingGoodsListParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +18,10 @@ public class WxAppFreeShipController extends WxAppBaseController{
 
 
 
-    @PatchMapping("/goods/list")
-    public JsonResult getFreeShippingGoods(){
-        return null;
+    @PostMapping("/goods/list")
+    public JsonResult getFreeShippingGoods(@RequestBody FreeShippingGoodsListParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        return success(shop().freeShipping.freeShipGoods.freeShipGoodsList(param));
     }
 }
