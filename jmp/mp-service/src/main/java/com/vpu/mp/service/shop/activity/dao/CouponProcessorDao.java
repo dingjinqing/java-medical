@@ -66,7 +66,7 @@ public class CouponProcessorDao extends ShopBaseService {
      */
     public List<MrkingVoucherRecord> getGoodsCouponForDetail(Integer goodsId, Integer catId, Integer sortId, Timestamp date) {
 
-        Condition condition =buildCondition(goodsId,catId,sortId,date,true);
+        Condition condition =buildCondition(goodsId,catId,sortId,date,false);
 
         List<MrkingVoucherRecord> mrkingVoucherRecords = db().select()
             .from(MRKING_VOUCHER).where(condition)
@@ -118,10 +118,10 @@ public class CouponProcessorDao extends ShopBaseService {
     public Condition buildCondition(Integer goodsId,Integer catId,Integer sortId,Timestamp date,Boolean limitStartTime){
         // 优惠券使用时间限制，小于指定结束时间或者优惠券是领取后指定天数内生效
         Condition timeCondition;
-        if (!limitStartTime) {
-            timeCondition = MRKING_VOUCHER.END_TIME.gt(date).or(MRKING_VOUCHER.END_TIME.isNull());
-        } else {
+        if (limitStartTime) {
             timeCondition = (MRKING_VOUCHER.START_TIME.le(date).and(MRKING_VOUCHER.END_TIME.gt(date))).or(MRKING_VOUCHER.END_TIME.isNull());
+        } else {
+            timeCondition = MRKING_VOUCHER.END_TIME.gt(date).or(MRKING_VOUCHER.END_TIME.isNull());
         }
         // 优惠券剩余量限制，限量券的剩余数大于0或者是不限量券
         Condition surplusCondition = (MRKING_VOUCHER.TOTAL_AMOUNT.gt(0).and(MRKING_VOUCHER.SURPLUS.gt(0))).or(MRKING_VOUCHER.TOTAL_AMOUNT.eq(0));
