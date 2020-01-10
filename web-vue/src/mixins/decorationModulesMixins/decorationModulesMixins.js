@@ -16,7 +16,7 @@ export default {
             card_type: 0, // 会员卡等级
             legal: '会员折扣9折', // 会员卡描述
             exchang_count_legal: '', // 会员卡折扣描述
-            bg_type: '0', // 背景类型
+            bg_type: 0, // 背景类型
             bg_color: '#ecc98f', // 背景颜色
             bg_img: '', // 背景图片
             is_pay: '2',
@@ -91,7 +91,7 @@ export default {
         case 5: // 秒杀
           obj = {
             module_name: 'm_seckill',
-            list_style: '0', // 列表样式: 双列0，单列1
+            list_style: 0, // 列表样式: 双列0，单列1
             goods_price: true, // 是否显示 商品原价
             goods_count_down: true, // 是否显示活动倒计时
             seckill_goods: [] // 商品列表
@@ -101,11 +101,11 @@ export default {
           obj = {
             module_name: 'm_group_draw',
             group_draw_id: '', // 拼团抽奖活动id
-            name_set: '0', // 是否使用默认活动标题 0 使用 1不使用
+            name_set: 0, // 是否使用默认活动标题 0 使用 1不使用
             group_draw_name: '', // 自定义活动标题
-            show_clock: '1', // 是否显示活动倒计时 0 隐藏 1显示
+            show_clock: 1, // 是否显示活动倒计时 0 隐藏 1显示
             font_color: '#ffffff', // 字体颜色
-            module_bg: '0', // 活动底图 0 默认 1自定义
+            module_bg: 0, // 活动底图 0 默认 1自定义
             module_img: '' // 活动底图路径
           }
           break
@@ -113,7 +113,7 @@ export default {
           obj = {
             'module_name': 'm_pin_integration',
             'act_id': -1, // 活动id
-            'pin_title': '1', // 标题 radio 1 0
+            'pin_title': 1, // 标题 radio 1 0
             'pin_title_text': '', // 标题 自定义内容
             'hide_active': 0, // 隐藏内容 活动内容
             'hide_time': 0, // 隐藏内容 有效期
