@@ -82,6 +82,24 @@ const actBaseInfo = {
       prdRealPrice: 'reducePrice',
       prdLinePrice: 'prdPrice'
     }
+  },
+  97:{
+    actName:'会员价',
+    multiSkuAct:true,
+    prdListName:'gradePrdMpVos',
+    prdPriceName: {
+      prdRealPrice: 'gradePrice',
+      prdLinePrice: 'prdPrice'
+    }
+  },
+  98:{
+    actName:'会员价|限时降价',
+    multiSkuAct:true,
+    prdListName:'gradeReducePrdVos',
+    prdPriceName: {
+      prdRealPrice: 'activityPrice',
+      prdLinePrice: 'prdPrice'
+    }
   }
 }
 global.wxPage({
