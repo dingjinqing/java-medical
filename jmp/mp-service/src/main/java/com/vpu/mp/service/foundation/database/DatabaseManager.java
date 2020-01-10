@@ -1,10 +1,10 @@
 package com.vpu.mp.service.foundation.database;
 
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
+import com.vpu.mp.config.DatabaseConfig;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.foundation.service.QueryFilter;
+import com.vpu.mp.service.foundation.util.Util;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -28,11 +28,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import com.vpu.mp.config.DatabaseConfig;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.service.QueryFilter;
-import com.vpu.mp.service.foundation.util.Util;
-import com.zaxxer.hikari.HikariDataSource;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
 
 /**
  * 数据库管理，单例。需要考虑多线程互斥情况
@@ -91,7 +90,6 @@ public class DatabaseManager {
 				if (dbConfig == null) {
 					throw new RuntimeException("ShopId " + shopId + " Db not found");
 				}
-                dbConfig.host = "127.0.0.1";
                 HikariDataSource ds = datasourceManager.getDatasource(dbConfig);
 				db = getDsl(ds, dbConfig, shopId);
 				shopDsl.remove();
