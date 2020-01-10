@@ -2,8 +2,8 @@
   <view class="flex_box" bindtap="showCouponDialog" wx:if="{{couponList && couponList.length>0}}">
     <view class="item_left">优惠券</view>
     <view class="item_middle goods_coupon_list">
-      <block wx:for="{{couponList}}" wx:key="index">
-        <view wx:if="{{index <= 1}}" class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>{{item.actName}}</view>
+      <block wx:for="{{coupons}}" wx:key="index">
+        <view wx:if="{{index <= 1}}" class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>{{item.text}}</view>
       </block>
     </view>
     <view class="item_right">></view>
