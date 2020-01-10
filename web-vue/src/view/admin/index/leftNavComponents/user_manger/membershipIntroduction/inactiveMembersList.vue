@@ -8,46 +8,46 @@
         label-width="110px"
         size="small"
       >
-        <el-form-item label="手机号：">
+        <el-form-item :label="$t('memberIntroductionList.mobile')+'：'">
           <el-input
             class="filter-input"
-            placeholder="请输入手机号码"
+            :placeholder="$t('memberIntroductionList.piMobile')"
             v-model="queryParams.mobile"
           ></el-input>
         </el-form-item>
-        <el-form-item label="真实姓名：">
+        <el-form-item :label="$t('memberIntroductionList.realName')+'：'">
           <el-input
             class="filter-input"
-            placeholder="请输入真实姓名"
+            :placeholder="$t('memberIntroductionList.piRealName')"
             v-model="queryParams.realName"
           ></el-input>
         </el-form-item>
-        <el-form-item label="是否是分销员：">
+        <el-form-item :label="$t('memberIntroductionList.isDistributor')+'：'">
           <el-select
             class="filter-input"
             v-model="queryParams.isDistributor"
           >
             <el-option
-              label="请选择"
+              :label="$t('memberIntroductionList.pleaseChoose')"
               value=""
             ></el-option>
             <el-option
-              label="是"
+              :label="$t('memberIntroductionList.yes')"
               :value="1"
             ></el-option>
             <el-option
-              label="否"
+              :label="$t('memberIntroductionList.no')"
               :value="0"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分销员分组：">
+        <el-form-item :label="$t('memberIntroductionList.distributorGroup')+'：'">
           <el-select
             class="filter-input"
             v-model="queryParams.groupId"
           >
             <el-option
-              label="未分组"
+              :label="$t('memberIntroductionList.ungroup')"
               value=""
             ></el-option>
             <el-option
@@ -58,12 +58,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="导入时间：">
+        <el-form-item :label="$t('memberIntroductionList.importTime')+'：'">
           <el-date-picker
             class="filter-datetime"
             v-model="queryParams.startTime"
             type="datetime"
-            placeholder="请选择时间"
+            :placeholder="$t('memberIntroductionList.selectTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
@@ -72,23 +72,23 @@
             class="filter-datetime"
             v-model="queryParams.endTime"
             type="datetime"
-            placeholder="请选择时间"
+            :placeholder="$t('memberIntroductionList.selectTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="导入批次号：">
+        <el-form-item :label="$t('memberIntroductionList.importBatchNum')+'：'">
           <el-input
             v-model="queryParams.batchId"
             class="filter-input"
-            placeholder="请输入批次号"
+            :placeholder="$t('memberIntroductionList.piBatchNum')"
           ></el-input>
         </el-form-item>
         <el-button
           type="primary"
           size="small"
           @click="initDataList"
-        >筛选</el-button>
+        >{{$t('memberIntroductionList.filter')}}</el-button>
       </el-form>
     </div>
     <div class="table">
@@ -99,34 +99,34 @@
       >
         <el-table-column
           prop="mobile"
-          label="手机号"
+          :label="$t('memberIntroductionList.mobile')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="name"
-          label="真实姓名"
+          :label="$t('memberIntroductionList.realName')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="createTime"
-          label="导入时间"
+          :label="$t('memberIntroductionList.importTime')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="batchId"
-          label="导入批次号"
+          :label="$t('memberIntroductionList.importBatchNum')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="isDistributor"
-          label="是否是分销员"
+          :label="$t('memberIntroductionList.isDistributor')"
           align="center"
           :formatter="formatIsDistributor"
         ></el-table-column>
         <el-table-column
           prop="groupName"
-          label="分销员分组"
+          :label="$t('memberIntroductionList.distributorGroup')"
           align="center"
           :formatter="formatGroupName"
         ></el-table-column>
@@ -191,14 +191,14 @@ export default {
     // 格式化table
     formatIsDistributor (row, column, value, index) {
       if (value === 0 || value === '0') {
-        return '是'
+        return this.$t('memberIntroductionList.yes')
       } else if (value === 1 || value === '1') {
-        return '否'
+        return this.$t('memberIntroductionList.no')
       }
     },
     formatGroupName (row, column, value, index) {
       if (!value) {
-        return '未分组'
+        return this.$t('memberIntroductionList.ungrouped')
       } else {
         return value
       }

@@ -374,6 +374,9 @@ import {
 } from './views/admin_new/cn/index/userManagement/member/membershipIntroductionCn'
 // 会员导入
 import {
+  cn as memberIntroductionList
+} from './views/admin_new/cn/index/userManagement/member/memberIntroductionListCn'
+import {
   cn as memberIntroductionDialog
 } from './views/admin_new/cn/index/userManagement/member/memberIntroductionDialogCn'
 // 设置激活通知
@@ -910,6 +913,7 @@ const cn = {
   router, // 路由信息
 
   membershipIntroduction, // 会员列表
+  memberIntroductionList, // 会员导入列表
   memberIntroductionDialog, // 会员导入
   activationNotificationDialog, // 设置激活通知
   programVersion, // system 后台小程序版本

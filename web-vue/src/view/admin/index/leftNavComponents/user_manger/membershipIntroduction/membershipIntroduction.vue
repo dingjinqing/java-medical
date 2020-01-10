@@ -1,28 +1,29 @@
 <template>
+  <!-- 会员导入 -->
   <div class="introductionContainer">
     <div class="introductionMain">
       <div class="filter-list">
         <div class="introductionMain_top">
-          <div class="topLeft">说明：会员导入适用于会员迁移得场景，系统会导入增量会员并更新未激活会员得信息，不会更新已激活会员得信息</div>
+          <div class="topLeft">{{$t('memberIntroductionList.description')}}</div>
           <div class="topRight">
             <el-button
               type="primary"
               size="small"
               @click="handleSetAll(0)"
-            >设置激活通知</el-button>
+            >{{$t('memberIntroductionList.setNotify')}}</el-button>
             <el-button
               type="primary"
               size="small"
               @click="handleSetAll(1)"
-            >会员导入</el-button>
+            >{{$t('memberIntroductionList.memberImport')}}</el-button>
           </div>
         </div>
         <div class="introductionMain_middle">
           <div class="batchNumber">
-            <span>导入批次号</span>
+            <span>{{$t('memberIntroductionList.importBatchNum')}}</span>
             <el-input
               v-model="queryParams.batchId"
-              placeholder="请输入内容"
+              :placeholder="$t('memberIntroductionList.piCon')"
               size="small"
             ></el-input>
           </div>
@@ -30,13 +31,13 @@
             class="batchNumber"
             style="margin-right:10px"
           >
-            <span>导入时间</span>
+            <span>{{$t('memberIntroductionList.importTime')}}</span>
             <el-date-picker
               v-model="introducionDate"
               type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('memberIntroductionList.to')"
+              :start-placeholder="$t('memberIntroductionList.startDate')"
+              :end-placeholder="$t('memberIntroductionList.endDate')"
               value-format="yyyy-MM-dd HH:mm:ss"
               :default-time="['00:00:00','23:59:59']"
               size="small"
@@ -47,12 +48,12 @@
             type="primary"
             size="small"
             @click="handleSetAll(2)"
-          >筛选</el-button>
+          >{{$t('memberIntroductionList.filter')}}</el-button>
           <el-button
             type="primary"
             size="small"
             @click="goMemberList"
-          >查看未激活会员</el-button>
+          >{{$t('memberIntroductionList.viewInactive')}}</el-button>
         </div>
       </div>
       <div class="table-list">
@@ -65,20 +66,20 @@
         >
           <el-table-column
             prop="id"
-            label="导入批次号"
+            :label="$t('memberIntroductionList.importBatchNum')"
             align="center"
             width="110px"
           >
           </el-table-column>
           <el-table-column
             prop="createTime"
-            label="导入时间"
+            :label="$t('memberIntroductionList.importTime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             align="center"
-            label="会员卡"
+            :label="$t('memberIntroductionList.memberCard')"
           >
             <template slot-scope="{row}">
               <div
@@ -92,45 +93,45 @@
           <el-table-column
             prop="successNum"
             align="center"
-            label="成功数量"
+            :label="$t('memberIntroductionList.successNum')"
             width="100px"
           >
           </el-table-column>
           <el-table-column
             prop="failNum"
             align="center"
-            label="失败数量"
+            :label="$t('memberIntroductionList.failNum')"
             width="100px"
           >
           </el-table-column>
           <el-table-column
             prop="activateNum"
             align="center"
-            label="激活数量"
+            :label="$t('memberIntroductionList.activeNum')"
             width="100px"
           >
 
           </el-table-column>
           <el-table-column
             align="center"
-            label="操作"
+            :label="$t('memberIntroductionList.operate')"
           >
             <template slot-scope="{row}">
               <div
                 class="num"
                 v-if="row.totalNum - row.successNum > 0"
                 @click="handleClickO(row, 0)"
-              >下载失败数据</div>
+              >{{$t('memberIntroductionList.downFail')}}</div>
               <div
                 v-else-if="row.activateNum > 0"
                 class="num"
                 @click="handleClickO(row, 1)"
-              >下载激活数据</div>
+              >{{$t('memberIntroductionList.downActive')}}</div>
               <div
                 v-else-if="row.successNum - row.activateNum > 0"
                 class="num"
                 @click="handleClickO(row, 2)"
-              >查看未激活成员</div>
+              >{{$t('memberIntroductionList.viewInactive')}}</div>
             </template>
           </el-table-column>
         </el-table>
