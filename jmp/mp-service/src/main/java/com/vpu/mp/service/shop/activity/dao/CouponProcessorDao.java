@@ -38,9 +38,7 @@ public class CouponProcessorDao extends ShopBaseService {
      * @return 最紧密优惠券信息
      */
     public Record5<Integer, String, BigDecimal, Byte, BigDecimal> getGoodsCouponClosestInfo(Integer goodsId, Integer catId, Integer sortId, Timestamp date) {
-
         Condition condition =buildCondition(goodsId,catId,sortId,date,false);
-
         List<Record5<Integer, String, BigDecimal, Byte, BigDecimal>> record5s = new ArrayList<>(db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.USE_CONSUME_RESTRICT, MRKING_VOUCHER.LEAST_CONSUME)
             .from(MRKING_VOUCHER).where(condition)
             .orderBy(MRKING_VOUCHER.ACT_CODE.desc(), MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.CREATE_TIME.desc()).fetch());
@@ -65,9 +63,7 @@ public class CouponProcessorDao extends ShopBaseService {
      * @return 优惠券信息
      */
     public List<MrkingVoucherRecord> getGoodsCouponForDetail(Integer goodsId, Integer catId, Integer sortId, Timestamp date) {
-
         Condition condition =buildCondition(goodsId,catId,sortId,date,false);
-
         List<MrkingVoucherRecord> mrkingVoucherRecords = db().select()
             .from(MRKING_VOUCHER).where(condition)
             .orderBy(MRKING_VOUCHER.ACT_CODE.desc(), MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.CREATE_TIME.desc())
