@@ -13,6 +13,7 @@ import java.util.List;
  */
 @Data
 public class ModuleGoodsGroup extends ModuleBase {
+
     /**
      *菜单样式radio，0顶部展示商品分组，1左侧展示商品分组
      */

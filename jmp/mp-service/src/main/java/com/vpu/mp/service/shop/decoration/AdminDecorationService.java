@@ -1,13 +1,11 @@
 package com.vpu.mp.service.shop.decoration;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -300,6 +298,10 @@ public class AdminDecorationService extends ShopBaseService {
                     return moduleGoods;
                 case ModuleConstant.M_GOODS_GROUP:
                     ModuleGoodsGroup moduleGoodsGroup = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
+                    if(moduleGoodsGroup.getOtherMessage() == null && moduleGoodsGroup.getShowPrice() == 0){
+                        moduleGoodsGroup.setOtherMessage((byte)0);
+                        moduleGoodsGroup.setShowMarket((byte)1);
+                    }
                     return moduleGoodsGroup;
 
                     /**
