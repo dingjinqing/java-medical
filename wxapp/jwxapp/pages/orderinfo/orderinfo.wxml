@@ -29,6 +29,7 @@
           <view>
             <text selectable>{{i18n.$t(localePack,"pages.order.receiver")}}：</text>
             <text selectable>{{orderInfo.consignee}}</text>
+            <text selectable style="margin-left:10rpx;">{{orderInfo.mobile}}</text>
           </view>
           <view>
             <text selectable>{{i18n.$t(localePack,"pages.order.address")}}：</text>
@@ -178,6 +179,9 @@
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
     </view>
     <view class="fixed_footer">
+      <view bindtap="handleOperate" class="footer_item" wx:if="{{orderInfo.orderStatusName === '已发货'}}" data-operate_info="confirmation" data-order_sn="{{orderInfo.orderSn}}" data-order_id="{{orderInfo.orderId}}">
+        确认收货
+      </view>
       <block wx:for="{{orderInfo.operate}}" wx:key="*this" wx:for-item="operateItem" wx:for-index="operateKey">
         <view bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_id="{{orderInfo.orderId}}" data-order_sn="{{orderInfo.orderSn}}" class="footer_item" wx:if="{{operateItem > 0}}">
           {{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}
