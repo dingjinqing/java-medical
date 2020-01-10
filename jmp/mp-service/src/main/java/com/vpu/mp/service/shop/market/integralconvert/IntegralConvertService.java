@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleIntegral;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
@@ -364,4 +365,14 @@ public class IntegralConvertService extends ShopBaseService {
 		return pageResult;
 
 	}
+
+    /**
+     * 小程序装修积分兑换模块显示异步调用
+     * @param moduleIntegral
+     * @return
+     */
+    public ModuleIntegral getPageIndexIntegral(ModuleIntegral moduleIntegral){
+
+        return moduleIntegral;
+    }
 }

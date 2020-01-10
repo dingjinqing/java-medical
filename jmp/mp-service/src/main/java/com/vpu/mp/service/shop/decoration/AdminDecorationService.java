@@ -303,9 +303,25 @@ public class AdminDecorationService extends ShopBaseService {
                         moduleGoodsGroup.setShowMarket((byte)1);
                     }
                     return moduleGoodsGroup;
+                case ModuleConstant.M_BARGAIN:
+                    ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
+                    moduleBargain = saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
+                    return moduleBargain;
+                case ModuleConstant.M_SECKILL:
+                    ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+                    moduleSecKill = saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
+                    return moduleSecKill;
+                case ModuleConstant.M_INTEGRAL:
+                    ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+                    moduleIntegral = saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
+                    return moduleIntegral;
+
 
                     /**
                      * TODO: 添加其他模块
+                     */
+                    /**
+                     * TODO: 基于店铺等级的模块权限校验
                      */
             }
         }
