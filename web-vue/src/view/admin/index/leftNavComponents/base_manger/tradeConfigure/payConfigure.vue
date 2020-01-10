@@ -186,32 +186,36 @@ export default {
       })
     },
     handlerData (data) {
-      this.payConfigure.map((item, index) => {
-        data.v1.map((item1, index1) => {
-          if (item.payCode === item1.payCode) {
-            if (item1.enabled === 1) {
-              item.enabled = true
-            } else {
-              item.enabled = false
+      console.log(data)
+      this.$nextTick(() => {
+        this.payConfigure.map((item, index) => {
+          data.v1.map((item1, index1) => {
+            if (item.payCode === item1.payCode) {
+              if (item1.enabled === 1) {
+                item.enabled = true
+              } else {
+                item.enabled = false
+              }
             }
-          }
+          })
         })
+        if (data.v2.card_first === 1) {
+          this.card_first = true
+        } else {
+          this.card_first = false
+        }
+        if (data.v2.balance_first === 1) {
+          this.balance_first = true
+        } else {
+          this.balance_first = false
+        }
+        if (data.v2.score_first === 1) {
+          this.score_first = true
+        } else {
+          this.score_first = false
+        }
       })
-      if (data.v2.card_first === 1) {
-        this.card_first = true
-      } else {
-        this.card_first = false
-      }
-      if (data.v2.balance_first === 1) {
-        this.balance_first = true
-      } else {
-        this.balance_first = false
-      }
-      if (data.v2.score_first === 1) {
-        this.score_first = true
-      } else {
-        this.score_first = false
-      }
+
       console.log(this.payConfigure)
     },
     // 更新支付配置
