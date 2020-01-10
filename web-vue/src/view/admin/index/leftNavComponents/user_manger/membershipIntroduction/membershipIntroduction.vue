@@ -1,28 +1,29 @@
 <template>
+  <!-- 会员导入 -->
   <div class="introductionContainer">
     <div class="introductionMain">
       <div class="filter-list">
         <div class="introductionMain_top">
-          <div class="topLeft">说明：会员导入适用于会员迁移得场景，系统会导入增量会员并更新未激活会员得信息，不会更新已激活会员得信息</div>
+          <div class="topLeft">{{$t('memberIntroductionList.description')}}</div>
           <div class="topRight">
             <el-button
               type="primary"
               size="small"
               @click="handleSetAll(0)"
-            >设置激活通知</el-button>
+            >{{$t('memberIntroductionList.setNotify')}}</el-button>
             <el-button
               type="primary"
               size="small"
               @click="handleSetAll(1)"
-            >会员导入</el-button>
+            >{{$t('memberIntroductionList.memberImport')}}</el-button>
           </div>
         </div>
         <div class="introductionMain_middle">
           <div class="batchNumber">
-            <span>批次号</span>
+            <span>{{$t('memberIntroductionList.importBatchNum')}}</span>
             <el-input
-              v-model="input"
-              placeholder="请输入内容"
+              v-model="queryParams.batchId"
+              :placeholder="$t('memberIntroductionList.piCon')"
               size="small"
             ></el-input>
           </div>
@@ -30,13 +31,15 @@
             class="batchNumber"
             style="margin-right:10px"
           >
-            <span>操作时间</span>
+            <span>{{$t('memberIntroductionList.importTime')}}</span>
             <el-date-picker
               v-model="introducionDate"
               type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('memberIntroductionList.to')"
+              :start-placeholder="$t('memberIntroductionList.startDate')"
+              :end-placeholder="$t('memberIntroductionList.endDate')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00','23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -45,7 +48,12 @@
             type="primary"
             size="small"
             @click="handleSetAll(2)"
-          >筛选</el-button>
+          >{{$t('memberIntroductionList.filter')}}</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="goMemberList"
+          >{{$t('memberIntroductionList.viewInactive')}}</el-button>
         </div>
       </div>
       <div class="table-list">
@@ -57,70 +65,81 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="versionNum"
-            label="批次号"
+            prop="id"
+            :label="$t('memberIntroductionList.importBatchNum')"
+            align="center"
+            width="110px"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            :label="$t('memberIntroductionList.importTime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="isAuth"
-            label="操作时间"
             align="center"
+            :label="$t('memberIntroductionList.memberCard')"
           >
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="会员卡"
-          >
-            <template slot-scope="scope">
+            <template slot-scope="{row}">
               <div
-                class="num"
-                @click="handleClickMem(scope.row.ispay)"
-              >{{scope.row.ispay}}</div>
+                v-for="(item, index) in row.cardList"
+                :key="index"
+              >
+                <router-link :to="{name: '/admin/home/main/normalCardDetail', query: {cardId: row.cardId}}">{{row.cardName}}</router-link>
+              </div>
             </template>
           </el-table-column>
           <el-table-column
-            prop="status1"
+            prop="successNum"
             align="center"
-            label="成功数量"
+            :label="$t('memberIntroductionList.successNum')"
+            width="100px"
           >
           </el-table-column>
           <el-table-column
-            prop="status2"
+            prop="failNum"
             align="center"
-            label="失败数量"
+            :label="$t('memberIntroductionList.failNum')"
+            width="100px"
           >
           </el-table-column>
           <el-table-column
-            prop="num"
+            prop="activateNum"
             align="center"
-            label="激活数量"
+            :label="$t('memberIntroductionList.activeNum')"
+            width="100px"
           >
 
           </el-table-column>
           <el-table-column
             align="center"
-            label="操作"
+            :label="$t('memberIntroductionList.operate')"
           >
-            <template slot-scope="scope">
+            <template slot-scope="{row}">
               <div
                 class="num"
-                @click="handleClickO(scope.row)"
-              >下载激活数据</div>
+                v-if="row.totalNum - row.successNum > 0"
+                @click="handleClickO(row, 0)"
+              >{{$t('memberIntroductionList.downFail')}}</div>
+              <div
+                v-else-if="row.activateNum > 0"
+                class="num"
+                @click="handleClickO(row, 1)"
+              >{{$t('memberIntroductionList.downActive')}}</div>
+              <div
+                v-else-if="row.successNum - row.activateNum > 0"
+                class="num"
+                @click="handleClickO(row, 2)"
+              >{{$t('memberIntroductionList.viewInactive')}}</div>
             </template>
           </el-table-column>
         </el-table>
-
         <div class="footer">
-          <span>当前页面1/2,总记录3条</span>
-          <el-pagination
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="1"
-            layout="prev, pager, next, jumper"
-            :total="3"
-          >
-          </el-pagination>
+          <pagination
+            :pageParams="pageParams"
+            @pagination="initDataList"
+          ></pagination>
         </div>
       </div>
     </div>
@@ -131,59 +150,109 @@
   </div>
 </template>
 <script>
+import { getImportList, exportActivate, exportFailData } from '@/api/admin/memberManage/membershipIntroduction.js'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: {
     ActivationNotificationDialog: () => import('./activationNotificationDialog'),
-    MemberIntroductionDialog: () => import('./memberIntroductionDialog')
+    MemberIntroductionDialog: () => import('./memberIntroductionDialog'),
+    pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
     return {
-      input: '',
-      introducionDate: '',
-      tableData: [
-        {
-          versionNum: '22',
-          isAuth: '2019-07-30 19:50:05',
-          ispay: '会员卡',
-          status1: '成功数量',
-          status2: '失败数量',
-          num: '2'
-        },
-        {
-          versionNum: '23',
-          isAuth: '2019-07-30 19:50:05',
-          ispay: '会员卡',
-          status1: '成功数量',
-          status2: '失败数量',
-          num: '2'
-        },
-        {
-          versionNum: '23',
-          isAuth: '2019-07-30 19:50:05',
-          ispay: '会员卡',
-          status1: '成功数量',
-          status2: '失败数量',
-          num: '2'
-        }
-      ],
-      currentPage: null,
+      loading: false,
+      introducionDate: '', // 导入时间
+      tableData: [],
+      pageParams: {},
+      queryParams: {
+        batchId: '',
+        startTime: '',
+        endTime: ''
+      },
       activationNotificationVisible: false, // 设置激活通知
       memberIntroductionVisible: false // 会员导入
     }
   },
+  watch: {
+    introducionDate: function (newVal) {
+      if (newVal) {
+        this.$set(this.queryParams, 'startTime', newVal[0])
+        this.$set(this.queryParams, 'endTime', newVal[1])
+      }
+    }
+  },
+  mounted () {
+    this.initDataList()
+  },
   methods: {
+    initDataList () {
+      let that = this
+      let params = Object.assign({}, this.queryParams, this.pageParams)
+      getImportList(params).then(res => {
+        if (res.error === 0) {
+          that.tableData = res.content.dataList
+          that.pageParams = res.content.page
+        }
+      })
+    },
+    // 操作
+    handleClickO (row, mark) {
+      switch (mark) {
+        // 下载失败数据
+        case 0:
+          this.downloadFailData(row)
+          break
+        // 下载激活数据
+        case 1:
+          this.downloadActivateData(row)
+          break
+        // 查看未激活成员
+        case 2:
+          this.$router.push({
+            path: '/admin/home/main/inactiveMembersList',
+            query: {
+              id: row.id
+            }
+          })
+          break
+      }
+    },
     // 下载激活数据
-    handleClickO () {
-
+    downloadActivateData (row) {
+      let params = {
+        batchId: row.id
+      }
+      this.loading = true
+      exportActivate(params).then(res => {
+        this.loading = false
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch((err, data) => {
+        console.error('err:', err)
+        this.loading = false
+      })
     },
-    // 当前页改变
-    handleCurrentChange () {
-
+    // 下载失败数据
+    downloadFailData (row) {
+      let params = {
+        batchId: row.id
+      }
+      this.loading = true
+      exportFailData(params).then(res => {
+        this.loading = false
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch((err, data) => {
+        console.error('err:', err)
+        this.loading = false
+      })
     },
-    // 会员卡项点击
-    handleClickMem (data) {
+    // 查看未激活的会员
+    goMemberList () {
       this.$router.push({
-        name: 'membershipCardDetail'
+        path: '/admin/home/main/inactiveMembersList'
       })
     },
     // 设置激活通知  会员导入  筛选 综合处理
@@ -197,6 +266,7 @@ export default {
           that.memberIntroductionVisible = !that.memberIntroductionVisible
           break
         case 2:
+          that.initDataList()
           break
       }
     }

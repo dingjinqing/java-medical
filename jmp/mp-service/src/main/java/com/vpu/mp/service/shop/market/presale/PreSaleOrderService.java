@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.presale;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -11,9 +12,7 @@ import com.vpu.mp.service.pojo.shop.market.presale.DetailListVo;
 import com.vpu.mp.service.pojo.shop.market.presale.OrderExcelVo;
 import com.vpu.mp.service.pojo.shop.market.presale.OrderListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.OrderListVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record13;
 import org.jooq.SelectConditionStep;
@@ -73,7 +72,7 @@ public class PreSaleOrderService extends ShopBaseService {
             .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
             .leftJoin(ORDER_MUST).on(ORDER_MUST.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
             .leftJoin(USER).on(USER.USER_ID.eq(ORDER_INFO.USER_ID))
-            .where(ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PRE_SALE}))
+            .where(ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PRE_SALE}))
                 .and(ORDER_INFO.ACTIVITY_ID.eq(param.getId())));
         buildOptions(query, param);
         query.orderBy(ORDER_INFO.CREATE_TIME.desc());

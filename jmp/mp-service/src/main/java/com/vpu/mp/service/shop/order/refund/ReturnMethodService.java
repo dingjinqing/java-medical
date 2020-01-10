@@ -13,6 +13,8 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
+
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -203,7 +205,7 @@ public class ReturnMethodService extends ShopBaseService{
 		//资金流量-支出
 		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
 		//积分变动是否来自退款
-		isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
+		isFromRefund(NumberUtils.BYTE_ONE).build();
 		//调用退积分接口
 		recordMemberTrade.updateUserEconomicData(scoreData);
 		//记录

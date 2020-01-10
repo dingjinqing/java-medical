@@ -1,10 +1,21 @@
 package com.vpu.mp.service.shop.task.wechat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.jooq.Result;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -16,10 +27,12 @@ import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.store.service.order.StoreAppointmentRemindVo;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
@@ -37,16 +50,8 @@ import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.user.UserService;
-import lombok.extern.slf4j.Slf4j;
-import org.jooq.Result;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 小程序公众号相关的定时任务
@@ -306,19 +311,30 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			}
 
             if (item.getFailedSendType().equals(TWO)) {
-				UserScoreVo data=new UserScoreVo();
-				//data.setRemark("好友助力失败奖励积分");
-				data.setRemarkCode(RemarkTemplate.FRIENDS_HELP_FAIL.code);
-				data.setIdentityId(String.valueOf(item.getPromoteId()));
-				data.setScore(item.getFailedSendContent());
-				data.setUserId(item.getUserId());
-				Integer addUserScore = scoreService.addUserScore(data,"0", FOUR, ONE);
-				if(addUserScore==1) {
+//				UserScoreVo data=new UserScoreVo();
+//				//data.setRemark("好友助力失败奖励积分");
+//				data.setRemarkCode(RemarkTemplate.FRIENDS_HELP_FAIL.code);
+//				data.setIdentityId(String.valueOf(item.getPromoteId()));
+//				data.setScore(item.getFailedSendContent());
+//				data.setUserId(item.getUserId());
+//				Integer addUserScore = scoreService.addUserScore(data,"0", FOUR, ONE);
+				ScoreParam param=new ScoreParam();
+				param.setRemarkCode(RemarkTemplate.FRIENDS_HELP_FAIL.code);
+				param.setOrderSn(String.valueOf(item.getPromoteId()));
+				param.setScore(item.getFailedSendContent());
+				param.setUserId(item.getUserId());
+				try {
+					scoreService.updateMemberScore(param, 0, RecordTradeEnum.TYPE_SCORE_POWER.val(), ONE);
+				} catch (MpException e) {
+					logger().info("创建用户积分记录失败");
+					continue;
+				}
+//				if(addUserScore==1) {
 					UserRecord user = userService.getUserByUserId(item.getUserId());
 					record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
 							new String[] { String.valueOf(item.getUserId()), user.getUsername(),
 									"+"+String.valueOf(item.getFailedSendContent()) });
-				}
+//				}
 			}
 
         }

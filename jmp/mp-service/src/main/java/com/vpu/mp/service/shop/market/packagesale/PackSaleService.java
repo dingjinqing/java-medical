@@ -1,20 +1,7 @@
 package com.vpu.mp.service.shop.market.packagesale;
 
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
-import static com.vpu.mp.db.shop.tables.User.USER;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.SelectConditionStep;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -32,7 +19,6 @@ import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageParam;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageVo;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleParam;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleShareVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -41,6 +27,19 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.jooq.SelectConditionStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * @author huangronggang
@@ -300,7 +299,7 @@ public class PackSaleService extends ShopBaseService {
 		SelectConditionStep<?> step = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.CREATE_TIME,ORDER_INFO.MONEY_PAID,ORDER_INFO.ACTIVITY_ID,USER.USER_ID,USER.USERNAME,USER.MOBILE)
 				.from(ORDER_INFO)
 				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID))
-				.where(ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE})))
+				.where(ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE})))
 				.and(ORDER_INFO.ACTIVITY_ID.eq(param.getActivityId()))
 				.and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
 		step = buildDetailOptions(step,param);

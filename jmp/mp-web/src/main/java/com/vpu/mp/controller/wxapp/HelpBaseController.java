@@ -1,12 +1,12 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 
 public class HelpBaseController extends BaseController {
 

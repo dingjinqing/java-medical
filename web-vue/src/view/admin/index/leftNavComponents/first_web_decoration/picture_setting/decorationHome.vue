@@ -224,7 +224,7 @@ import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import { saveDecorationPage, editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import { editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 import { pageEdit } from '@/api/admin/decoration/pageSet.js'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
@@ -353,6 +353,12 @@ export default {
       this.goodsTextConArr = this.$t('decorationHome.goodsTextConArr')
       this.marketingTextConArr = this.$t('decorationHome.marketingTextConArr')
       this.initLeftModulesShow(this.activeName)
+    },
+    modulesData: {
+      handler (newData, oldData) {
+        console.log(newData, oldData)
+      },
+      deep: true
     }
   },
   updated () {
@@ -764,7 +770,7 @@ export default {
     // 左侧模块拖入中间区域后，中间区域数据处理函数
     handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
-      console.log(insertModulesId, index, this.isAddBottom)
+      console.log(insertModulesId, index)
       if (insertModulesId === -1 || this.isAddBottom) {
         console.log(index)
         this.MoveWhiteFlag = true
@@ -777,7 +783,6 @@ export default {
         console.log(this.nowRightShowIndex, insert, index)
         this.showModulesList.splice(insert, 0, index)
         this.modulesData.splice(insert, 0, this.handleToAddModules(index))
-        console.log(this.modulesData)
         this.$nextTick(() => {
           if (this.nowRightShowIndex === insert) {
             this.handleToModuleHight()
@@ -1158,50 +1163,31 @@ export default {
       if (flag === 0 || flag === 1) {
         console.log(params)
         console.log(data)
-        if (this.isEditSave || (this.isNewEnterFirstSaveSucess !== -1)) { // 编辑保存
-          let id = ''
-          if ((this.isNewEnterFirstSaveSucess !== -1)) {
-            id = this.isNewEnterFirstSaveSucess
-          } else {
-            id = this.page_id
-          }
-          let editParams = {
-            'pageId': id,
-            'shopId': Number(localStorage.getItem('V-ShopId')),
-            'pageName': this.pageSetData.page_name,
-            'pageType': this.page_type,
-            'pageEnabled': this.page_enabled,
-            'pageTplType': this.page_tpl_type,
-            'pageContent': JSON.stringify(data),
-            'pagePublishContent': JSON.stringify(data),
-            'pageState': pageState,
-            'catId': Number(this.pageSetData.cat_id),
-            'last_cur_idx': this.cur_idx
-          }
-          editSave(editParams).then((res) => {
-            console.log(res)
-
-            if (res.error === 0) {
-              this.$message.success({
-                message: '保存成功',
-                showClose: true,
-                duration: 1000
-              })
-            }
-          })
-        } else if (!this.isEditSave && (this.isNewEnterFirstSaveSucess === -1)) { // 新建保存
-          saveDecorationPage(params).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              this.isNewEnterFirstSaveSucess = res.content
-              this.$message.success({
-                message: '保存成功',
-                showClose: true,
-                duration: 1000
-              })
-            }
-          })
+        // let id = ''
+        // if ((this.isNewEnterFirstSaveSucess !== -1)) {
+        //   id = this.isNewEnterFirstSaveSucess
+        // } else {
+        //   id = this.page_id
+        // }
+        let editParams = {
+          'pageId': this.page_id,
+          'pageName': this.pageSetData.page_name,
+          'pageTplType': this.page_tpl_type,
+          'pageContent': JSON.stringify(data),
+          'pageState': pageState,
+          'catId': Number(this.pageSetData.cat_id)
         }
+        editSave(editParams).then((res) => {
+          console.log(res)
+
+          if (res.error === 0) {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true,
+              duration: 1000
+            })
+          }
+        })
       } else {
         this.$message.success({
           message: '预览测试',

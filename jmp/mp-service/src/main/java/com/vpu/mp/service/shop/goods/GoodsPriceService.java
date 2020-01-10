@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -85,7 +86,7 @@ public class GoodsPriceService extends ShopBaseService {
             Byte goodsType = entry.getKey();
             List<Integer> goodsIds = entry.getValue();
             Timestamp now = DateUtil.getLocalDateTime();
-            if( goodsType.equals(OrderConstant.GOODS_TYPE_PIN_GROUP) ){
+            if( goodsType.equals(BaseConstant.ACTIVITY_TYPE_GROUP_BUY) ){
                 Map<Integer,List<Record2<Integer,BigDecimal>>> resultMap =
                     groupBuyService.getGroupBuyProductByGoodsIds(goodsIds,now);
                 for( Map.Entry<Integer,List<Record2<Integer,BigDecimal>>> recordEntry:resultMap.entrySet() ){
@@ -102,7 +103,7 @@ public class GoodsPriceService extends ShopBaseService {
                     }
                 }
             }
-            if ( goodsType.equals(OrderConstant.GOODS_TYPE_BARGAIN) ){
+            if ( goodsType.equals(BaseConstant.ACTIVITY_TYPE_BARGAIN) ){
                 Map<Integer,List<BargainRecord>> resultMap = bargainService.getBargainRecordByGoodsIds(goodsIds,now);
                 for( Map.Entry<Integer,List<BargainRecord>> recordEntry:resultMap.entrySet() ) {
                     List<BargainRecord> resultList = recordEntry.getValue();
@@ -115,21 +116,21 @@ public class GoodsPriceService extends ShopBaseService {
                     }
                 }
             }
-            if( goodsType.equals(OrderConstant.GOODS_TYPE_SECKILL) ){
+            if( goodsType.equals(BaseConstant.ACTIVITY_TYPE_SEC_KILL) ){
                 Map<Integer,BigDecimal> resultMap = seckillService.getSecKillProductVo(goodsIds,now);
                 if( resultMap.isEmpty() ) {
                     break;
                 }
                 price.putAll(resultMap);
             }
-            if( goodsType.equals(OrderConstant.GOODS_TYPE_REDUCE_PRICE) ){
+            if( goodsType.equals(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE) ){
                 Map<Integer,BigDecimal> resultPrice = reducePriceService.getShowPriceByGoodsIds(goodsIds,now);
                 if( resultPrice.isEmpty() ) {
                     break;
                 }
                 price.putAll(resultPrice);
             }
-            if( goodsType.equals(OrderConstant.GOODS_TYPE_PRE_SALE) ){
+            if( goodsType.equals(BaseConstant.ACTIVITY_TYPE_PRE_SALE) ){
                 Map<Integer,BigDecimal> resultPrice =
                     preSaleService.getPresaleProductRecordByGoodsIds(goodsIds,now);
                 if( resultPrice.isEmpty() ) {

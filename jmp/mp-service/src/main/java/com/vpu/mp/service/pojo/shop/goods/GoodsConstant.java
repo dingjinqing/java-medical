@@ -152,8 +152,7 @@ public class GoodsConstant {
      */
     public static boolean isNeedReturnActivity(Byte goodsType) {
         return BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
-            || BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(goodsType)
-            || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(goodsType);
+            || BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(goodsType);
 
     }
 }
