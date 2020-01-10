@@ -233,7 +233,32 @@ global.wxPage({
       })
       return
     }
-    let couponArray = [{ couponSn: null, actName: '不使用优惠券' }, ...coupons]
+    let couponList = coupons.map(item=>{
+      let newItem = JSON.parse(JSON.stringify(item))
+      if (newItem.type === 0) {
+        if (newItem.useConsumeRestrict === 1) {
+          newItem.text = `${this.$t('components.decorate.full')}${
+            newItem.limitOrderAmount
+          }${this.$t('components.decorate.reduce')}￥${newItem.amount}`;
+        } else {
+          newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
+            'components.decorate.reduce'
+          )}￥${newItem.amount}`;
+        }
+      } else if (newItem.type === 1) {
+        if (newItem.useConsumeRestrict === 1) {
+          newItem.text = `${this.$t('components.decorate.full')}${
+            newItem.limitOrderAmount
+          }${this.$t('components.decorate.hit')}￥${newItem.amount}`;
+        } else {
+          newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
+            'components.decorate.hit'
+          )}￥${newItem.amount}${this.$t('components.decorate.fracture')}`;
+        }
+      }
+      return newItem
+    })
+    let couponArray = [{ couponSn: null, text: '不使用优惠券' }, ...couponList]
     let defaultCouponIndex = defaultCoupon && couponArray.findIndex(item => item.couponSn === defaultCoupon.couponSn) || 0
     this.setData({
       couponArray,

@@ -95,7 +95,7 @@ global.wxComponent({
             } else {
               obj.text = `${this.$t('components.decorate.coupon')}${this.$t(
                 'components.decorate.hit'
-              )}￥${item.denomination}${this.$t('decorate.fracture')}`;
+              )}￥${item.denomination}${this.$t('components.decorate.fracture')}`;
             }
           }
           break;
