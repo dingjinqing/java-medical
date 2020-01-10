@@ -50,18 +50,18 @@
           </div>
           <div>
             <el-switch
-              v-model="form.info_status"
+              v-model="form.auto_examine"
               :active-value='1'
               :inactive-value='0'
             ></el-switch>
-            <span v-if="form.info_status === 1">已开启</span>
-            <span v-if="form.info_status === 0">已关闭</span>
+            <span v-if="form.auto_examine === 1">已开启</span>
+            <span v-if="form.auto_examine === 0">已关闭</span>
             <span class="text">{{ $t('distribution.reviewedInfo') }}</span>
           </div>
 
           <!-- 审核信息 -->
           <div
-            v-if="form.info_status === 1"
+            v-if="form.auto_examine === 1"
             style="width: 900px;"
           >
             <el-checkbox-group v-model="form.activation_cfg">
@@ -81,7 +81,7 @@
                 <!-- <el-checkbox
                   v-model="form.InvitationCode"
                   :true-label='1'
-                  :false-label="0"
+                  :false-label='0'
                 >邀请码</el-checkbox> -->
                 <span
                   class="text"
@@ -110,7 +110,12 @@
                   v-for="(item, index) in customList"
                   :key="index"
                 >
-                  <el-checkbox style="width: 320px;">{{ item.title }}</el-checkbox>
+                  <el-checkbox
+                    style="width: 320px;"
+                    v-model="item.is_checked"
+                    :true-label='1'
+                    :false-label='0'
+                  >{{ item.custom_title }}</el-checkbox>
                   <span
                     class="el-icon-edit-outline iconStyle"
                     @click="editCustom(index)"
@@ -121,7 +126,7 @@
                   ></span>
                   <span
                     class="text"
-                    v-if="item.checkbox"
+                    v-if="item.option_ver"
                   >必填</span>
                 </div>
 
@@ -457,7 +462,10 @@
           :label-position="'right'"
         >
           <el-form-item label="选项类型：">
-            <el-radio-group v-model="customForm.radio1">
+            <el-radio-group
+              v-model="customForm.custom_type"
+              @change="typeChange"
+            >
               <el-radio :label="0">单选</el-radio>
               <el-radio :label="1">多选</el-radio>
               <el-radio :label="2">文本</el-radio>
@@ -468,20 +476,20 @@
               size="small"
               maxlength="20"
               show-word-limit
-              v-model="customForm.title"
+              v-model="customForm.custom_title"
               class="inputWidth"
             ></el-input>
             <span class="text">最多可填写20个字</span>
           </el-form-item>
-          <div v-if="customForm.radio1 !== 2">
+          <div v-if="customForm.custom_type !== 2">
             <div
-              v-for="(item, index) in customForm.optionList"
+              v-for="(item, index) in customForm.option_arr"
               :key="index"
             >
               <el-form-item :label="'选项' + (index + 1) + '：'">
                 <el-input
                   size="small"
-                  v-model="item.value"
+                  v-model="item.option_title"
                   class="inputWidth"
                 ></el-input>
                 <span
@@ -495,16 +503,17 @@
               <el-button
                 size="small"
                 @click="addOption"
-                v-if="customForm.optionList.length < 10"
+                v-if="customForm.option_arr.length < 10"
               >添加选项</el-button>
               <span class="text">最多可添加10个选项</span>
             </el-form-item>
           </div>
           <el-form-item label="条件验证：">
             <el-checkbox
-              v-model="customForm.checkbox"
+              v-model="customForm.option_ver"
+              :disabled="customForm.custom_type === 0"
               :true-label='1'
-              :false-label="0"
+              :false-label='0'
             >必填</el-checkbox>
           </el-form-item>
         </el-form>
@@ -571,9 +580,9 @@ export default {
         // 自动审核
         activation: 0, // 是否需要提交个人信息
         // 信息开关
-        info_status: 0,
+        auto_examine: 0,
         // 自定义激活项
-        // customList: [],
+        custom_options: [],
         // invitationCode: 1, // 邀请码
         activation_cfg: [], // 个人信息内容
         rank_status: 0, // 分销员排名开关
@@ -629,14 +638,15 @@ export default {
 
       customDialogVisible: false, // 自定义激活项弹窗
       customForm: {
-        radio1: 0, // 选项类型
-        title: '', // 标题
-        optionList: [{
-          value: ''
+        custom_type: 0, // 选项类型
+        custom_title: '', // 标题
+        option_arr: [{
+          option_title: ''
         }, {
-          value: ''
+          option_title: ''
         }],
-        checkbox: 1 // 条件验证
+        option_ver: 1, // 条件验证
+        is_checked: 1 // 是否选中
       }
     }
   },
@@ -658,6 +668,9 @@ export default {
       getDistribution().then((res) => {
         if (res.error === 0 && res.content) {
           this.form = res.content
+          // 自定义激活项
+          this.customList = this.form.custom_options
+
           // 有效期
           if (this.form.vaild === 0) {
             this.vaildDate = null
@@ -730,16 +743,23 @@ export default {
       this.isEdit = false
     },
 
+    // 选项类型切换
+    typeChange (value) {
+      if (value === 0) {
+        this.customForm.option_ver = 1
+      }
+    },
+
     // 添加选项
     addOption () {
-      this.customForm.optionList.push({
-        value: ''
+      this.customForm.option_arr.push({
+        option_title: ''
       })
     },
 
     // 删除选项
     deleteOption (index) {
-      this.customForm.optionList.splice(index, 1)
+      this.customForm.option_arr.splice(index, 1)
     },
 
     // 确定自定义激活项
@@ -761,14 +781,15 @@ export default {
       this.customDialogVisible = false
       // 清空弹窗数据
       this.customForm = {
-        radio1: 0,
-        title: '',
-        optionList: [{
-          value: ''
+        custom_type: 0,
+        custom_title: '',
+        option_arr: [{
+          option_title: ''
         }, {
-          value: ''
+          option_title: ''
         }],
-        checkbox: 1
+        option_ver: 1,
+        is_checked: 0
       }
     },
 
@@ -777,14 +798,15 @@ export default {
       this.customDialogVisible = false
       // 清空弹窗数据
       this.customForm = {
-        radio1: 0,
-        title: '',
-        optionList: [{
-          value: ''
+        custom_type: 0,
+        custom_title: '',
+        option_arr: [{
+          option_title: ''
         }, {
-          value: ''
+          option_title: ''
         }],
-        checkbox: 1
+        option_ver: 1,
+        is_checked: 0
       }
     },
 
@@ -807,14 +829,8 @@ export default {
 
     // 保存分销配置
     addDistribution () {
-      // 个人信息
-      // if (this.customList.length > 0) {
-      //   this.customList.forEach((item, index) => {
-      //     if (item.radio1 === 1) {
-      //       this.form.activation_cfg.push(item.title)
-      //     }
-      //   })
-      // }
+      // 自定义激活项
+      this.form.custom_options = this.customList
 
       // 有效期
       if (this.form.vaild === 1) {
