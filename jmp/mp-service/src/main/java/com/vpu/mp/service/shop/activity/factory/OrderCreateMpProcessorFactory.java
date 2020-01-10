@@ -97,6 +97,11 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * @throws MpException
      */
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        if(param.getActivityType() != null && SINGLENESS_ACTIVITY.contains(param.getActivityType())) {
+            //因为小程序商品详情页面会带营销type,但是订单模块只接受单一营销type,其他营销自动处理
+            param.setActivityType(null);
+            param.setActivityId(null);
+        }
         if (param.getActivityId() != null && param.getActivityType() != null) {
             //单一营销
             processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);
