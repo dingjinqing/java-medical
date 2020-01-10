@@ -1,15 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
-import java.util.Arrays;
-
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -19,11 +10,19 @@ import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
+import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * 	收货
@@ -66,10 +65,10 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 	public ExecuteResult execute(OrderOperateQueryParam param) {
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
 		if(!OrderOperationJudgment.isReceive(order)) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED, null);
 		}
 		
 		transaction(()->{

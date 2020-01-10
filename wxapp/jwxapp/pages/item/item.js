@@ -416,11 +416,15 @@ global.wxPage({
       defaultData.linePrice.push(prdLinePrice)
       return defaultData
     }, { realPrice: [], linePrice: [] })
-    return {
-      prdRealPrice: data.defaultPrd ? realPrice[0] : `${this.getMin(realPrice)}~${this.getMax(realPrice)}`,
-      prdLinePrice: data.defaultPrd ? linePrice[0] : `${this.getMin(linePrice)}~${this.getMax(linePrice)}`,
-      singleRealPrice: this.getMin(realPrice),
-      singleLinePrice: this.getMin(linePrice)
+    let realMinPrice = this.getMin(realPrice),
+        realMaxPrice = this.getMax(realPrice),
+        lineMinPrice = this.getMin(linePrice),
+        lineMaxPrice = this.getMax(linePrice)
+    return { 
+      prdRealPrice: data.defaultPrd ? realPrice[0] : realMinPrice === realMaxPrice ?  realMinPrice : `${realMinPrice}~${realMaxPrice}`,
+      prdLinePrice: data.defaultPrd ? linePrice[0] : lineMinPrice === lineMaxPrice ?  lineMinPrice : `${lineMinPrice}~${lineMaxPrice}`,
+      singleRealPrice: lineMinPrice,
+      singleLinePrice: lineMaxPrice
     }
   },
   /**

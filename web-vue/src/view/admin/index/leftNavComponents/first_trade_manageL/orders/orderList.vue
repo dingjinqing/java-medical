@@ -473,7 +473,7 @@
                       {{$t('order.waitReceive')}}
                     </template>
                     <template v-else>
-                      <template v-if="orderItem.orderStatus != 3 && orderItem.partShipFlag != 5">
+                      <template v-if="orderItem.orderStatus != 3 && orderItem.orderStatus != 5">
                         <template v-if="orderItem.orderStatus == 0 && orderItem.goodsTypeArray.indexOf('10') != -1">
                           <template v-if="orderItem.bkOrderPaid == 0">
                             {{$t('order.waitDeposit')}}
@@ -639,7 +639,7 @@
                       :rowspan="childOrder.goods.length"
                     >
                       <template>
-                        <template v-if="childOrder.orderStatus != 3 && childOrder.partShipFlag != 5">
+                        <template v-if="childOrder.orderStatus != 3 && childOrder.orderStatus != 5">
                           {{orderStatusMap.get(childOrder.orderStatus)}}
                         </template>
                         <template v-else>
