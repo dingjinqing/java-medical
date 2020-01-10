@@ -473,11 +473,8 @@ export default {
     // 选择商品标签弹窗回调显示
     busProductLabelResult (row) {
       console.log('选择商品标签弹窗回调显示:', row)
-      this.labelInfoRow = row
-      this.labelInfo = []
-      this.labelInfoRow.map((item, index) => {
-        this.labelInfo.push(item.id)
-      })
+      let labelIdList = row.map(item => item.id)
+      this.labelInfo = labelIdList
       this.labelN = this.labelInfo.length
     },
     // 选择商品品牌弹窗调起
@@ -488,7 +485,7 @@ export default {
     busBrandDialogResult (row) {
       console.log('选择商品品牌弹窗回调显示:', row)
       this.brandRow = row
-      this.brand = []
+      // this.brand = []
       this.brandRow.map((item, index) => {
         this.brand.push(item.id)
       })
