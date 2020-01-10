@@ -1,14 +1,12 @@
 package com.vpu.mp.service.shop.recommend;
 
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 /**
  * 好物圈的一些校验方法
  * @author zhaojianqiang

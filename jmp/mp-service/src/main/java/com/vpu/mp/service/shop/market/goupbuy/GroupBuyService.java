@@ -371,9 +371,9 @@ public class GroupBuyService extends ShopBaseService {
             endDate = DateUtil.getLocalDateTime();
         }
         //获取销售额等金额
-        List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(OrderConstant.GOODS_TYPE_PIN_GROUP, param.getId(), startDate, endDate);
+        List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(BaseConstant.ACTIVITY_TYPE_GROUP_BUY, param.getId(), startDate, endDate);
         //获取参与用户信息
-        ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(OrderConstant.GOODS_TYPE_PIN_GROUP, param.getId(), startDate, endDate);
+        ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(BaseConstant.ACTIVITY_TYPE_GROUP_BUY, param.getId(), startDate, endDate);
 
         while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
             String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate);

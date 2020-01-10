@@ -45,6 +45,7 @@ export function export2Excel (data) {
   return service({
     url: '/api/admin/assetmanagement/export2Excel',
     method: 'post',
-    data: data
+    data: data,
+    responseType: 'blob'
   })
 }

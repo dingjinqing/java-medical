@@ -1,13 +1,5 @@
 package com.vpu.mp.service.shop.config;
 
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.vpu.mp.service.shop.config.message.MessageConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -18,6 +10,13 @@ import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.Setting;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.ShowPoster;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.shop.config.message.MessageConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 

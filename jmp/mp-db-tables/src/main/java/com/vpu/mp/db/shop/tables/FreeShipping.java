@@ -8,13 +8,6 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
-
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -27,6 +20,11 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -42,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreeShipping extends TableImpl<FreeShippingRecord> {
 
-    private static final long serialVersionUID = -1650030935;
+    private static final long serialVersionUID = -1904509332;
 
     /**
      * The reference instance of <code>mini_shop_4748160.b2c_free_shipping</code>
@@ -70,7 +68,7 @@ public class FreeShipping extends TableImpl<FreeShippingRecord> {
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.expire_type</code>. 0:固定日期 1：永久有效
      */
-    public final TableField<FreeShippingRecord, Byte> EXPIRE_TYPE = createField("expire_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:固定日期 1：永久有效");
+    public final TableField<FreeShippingRecord, Byte> EXPIRE_TYPE = createField("expire_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:固定日期 1：永久有效");
 
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.start_time</code>. 开始时间
@@ -83,9 +81,9 @@ public class FreeShipping extends TableImpl<FreeShippingRecord> {
     public final TableField<FreeShippingRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_free_shipping.type</code>. 条件 0全部 1部分
+     * The column <code>mini_shop_4748160.b2c_free_shipping.type</code>. 条件 1全部 0部分
      */
-    public final TableField<FreeShippingRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "条件 0全部 1部分");
+    public final TableField<FreeShippingRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "条件 1全部 0部分");
 
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.recommend_goods_id</code>. 指定商品可用
@@ -105,22 +103,22 @@ public class FreeShipping extends TableImpl<FreeShippingRecord> {
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.status</code>. 1停用
      */
-    public final TableField<FreeShippingRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1停用");
+    public final TableField<FreeShippingRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1停用");
 
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.create_time</code>.
      */
-    public final TableField<FreeShippingRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<FreeShippingRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.update_time</code>. 最后修改时间
      */
-    public final TableField<FreeShippingRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<FreeShippingRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.del_flag</code>. 1删除
      */
-    public final TableField<FreeShippingRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1删除");
+    public final TableField<FreeShippingRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1删除");
 
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.del_time</code>.
@@ -130,7 +128,7 @@ public class FreeShipping extends TableImpl<FreeShippingRecord> {
     /**
      * The column <code>mini_shop_4748160.b2c_free_shipping.level</code>. 优先级 默认0
      */
-    public final TableField<FreeShippingRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优先级 默认0");
+    public final TableField<FreeShippingRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优先级 默认0");
 
     /**
      * Create a <code>mini_shop_4748160.b2c_free_shipping</code> table reference
