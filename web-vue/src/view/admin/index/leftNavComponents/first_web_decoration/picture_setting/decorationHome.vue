@@ -374,26 +374,25 @@ export default {
       pageEdit({ pageId: this.$route.query.pageId }).then((res) => {
         console.log(res)
         if (res.error === 0) {
+          let turnToString = this.handleToTurnNumToStr(res.content.page_cfg)
+          console.log(turnToString)
+          res.content.page_cfg = turnToString
           this.page_id = res.content.page_id
           this.page_type = res.content.page_type
           this.page_enabled = res.content.page_enabled
           this.page_tpl_type = res.content.page_tpl_type
 
           this.isEditSave = true
-          console.log(res.content.page_content)
           let content = JSON.parse(res.content.page_content)
           this.editPageData = content
-          console.log(JSON.parse(res.content.page_content))
+          console.log(content)
           this.pageSetData.page_name = res.content.page_name
           this.pageSetData.cat_id = res.content.cat_id
           content.page_cfg.cat_id = JSON.stringify(content.page_cfg.cat_id)
           this.pageSetData = content.page_cfg
-          console.log(content)
           this.cur_idx = content.page_cfg.last_cur_idx
-          console.log(this.cur_idx)
           let moduleDataCopy = JSON.parse(JSON.stringify(content))
           delete moduleDataCopy.page_cfg
-          console.log(moduleDataCopy)
           let arr = []
           Object.keys(moduleDataCopy).forEach((item, index) => {
             arr.push(moduleDataCopy[item])

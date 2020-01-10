@@ -39,8 +39,8 @@
         <div class="container">
           <span style="display: inline-block;width: 70px;text-align: right;">{{ $t('mapModule.map') }}：</span>
           <el-radio-group v-model="data.map_show">
-            <el-radio label="0">{{ $t('mapModule.mapNotShow') }}</el-radio>
-            <el-radio label="1">{{ $t('mapModule.mapShow') }}</el-radio>
+            <el-radio :label="0">{{ $t('mapModule.mapNotShow') }}</el-radio>
+            <el-radio :label="1">{{ $t('mapModule.mapShow') }}</el-radio>
           </el-radio-group>
         </div>
 
@@ -62,7 +62,7 @@ export default {
     modulesData: Object, // 模块公共
     sortIndex: Number // 模块公共
   },
-  data() {
+  data () {
     return {
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
@@ -100,7 +100,7 @@ export default {
   watch: {
     // 中间模块当前高亮index
     sortIndex: { // 模块公共
-      handler(newData) {
+      handler (newData) {
         console.log(newData, this.modulesData)
         this.data = this.modulesData
         // 初始化地图
@@ -112,7 +112,7 @@ export default {
     },
     // 监听数据变换
     data: { // 模块公共
-      handler(newData) {
+      handler (newData) {
         console.log(newData)
         this.$emit('handleToBackData', newData)
       },
@@ -121,14 +121,14 @@ export default {
   },
   methods: {
     // 省市区
-    handleAreaData(data) {
+    handleAreaData (data) {
       console.log(data)
       // this.data.province_code = data.province
       // this.data.city_code = data.city
       // this.data.area_code = data.district
     },
     // 加载地图
-    initMap(latitude, longitude) {
+    initMap (latitude, longitude) {
       // 定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
       this.map = new qq.maps.Map(document.getElementById('riMapContainer'), {
         center: new qq.maps.LatLng(latitude, longitude), // 地图的中心地理坐标。
@@ -148,14 +148,14 @@ export default {
     },
 
     // 点击查询地址
-    getLocation() {
+    getLocation () {
       var fullAddress = this.data.province + ',' + this.data.city + ',' + this.data.area + ',' + this.data.address
       // 通过getLocation();方法获取位置信息值
       this.geocoder.getLocation(fullAddress)
     },
 
     // 点击重置
-    handleToReset(index) {
+    handleToReset (index) {
       switch (index) {
         case 0:
           this.data.box_color = '#eee'

@@ -18,11 +18,11 @@
           v-for="(item,index) in data.nav_group"
           :key="index"
         >
-          <div :style="'backgroundColor:#eaf2ff;border-radius:'+(data.nav_style==='1'?'50%':'0')">
+          <div :style="'backgroundColor:#eaf2ff;border-radius:'+(data.nav_style===1?'50%':'0')">
             <img
               v-if="item.nav_src"
               :src="item.nav_src"
-              :style="'border-radius:'+(data.nav_style==='1'?'50%':'0')"
+              :style="'border-radius:'+(data.nav_style===1?'50%':'0')"
             >
           </div>
           <p :style="'color:'+data.font_color">{{item.nav_name}}</p>
