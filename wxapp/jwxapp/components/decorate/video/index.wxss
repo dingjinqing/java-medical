@@ -7,7 +7,7 @@
   background: #444;
 }
 
-.video-container image {
+.video-container .video_img {
   width: 710rpx;
   height: 400rpx;
   position: absolute;
