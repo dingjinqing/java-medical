@@ -3,14 +3,14 @@ package com.vpu.mp.service.shop.goods.mp;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandConfig;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuContentVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuParam;
-import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goodssort.*;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.SortGroupByParentParam;
@@ -45,44 +45,44 @@ public class GoodsBrandSortMpService extends ShopBaseService{
      * 商品分类页面初始接口
      * @return
      */
-    public List<GoodsSortMenuVo> goodsSortPageInit() {
+    public List<GoodsSortMenuVo> goodsSortPageInit(Integer userId) {
         GoodsBrandConfig goodsBrandConfig = configService.goodsBrandConfigService.getGoodsBrandConfig();
         GoodsRecommendSortConfig recommendSortConfig = configService.recommendSortConfigService.getRecommendSortConfig();
-        List<GoodsSortMenuVo> menuVo= new ArrayList<>();
+        List<GoodsSortMenuVo> menuVos= new ArrayList<>();
         // 全部品牌
         if (GoodsBrandConfig.SHOW_ALL_BRAND.equals(goodsBrandConfig.getShowAllBrand())) {
             GoodsSortMenuVo item = new GoodsSortMenuVo();
             item.setMenuType(GoodsConstant.ALL_BRAND_TYPE);
             GoodsSortMenuContentVo allBrandContent = getAllBrandContent();
             item.setMenuContent(allBrandContent);
-            menuVo.add(item);
+            menuVos.add(item);
         }
         // 推荐品牌
         if (GoodsBrandConfig.SHOW_RECOMMEND_LIST.equals(goodsBrandConfig.getShowRecommendBrandType())||GoodsBrandConfig.SHOW_RECOMMEND_CLASSIFY.equals(goodsBrandConfig.getShowRecommendBrandType())) {
             GoodsSortMenuVo item =new GoodsSortMenuVo();
             item.setMenuType(GoodsConstant.RECOMMEND_BRAND_TYPE);
             item.setMenuName(goodsBrandConfig.getRecommendTitle());
-            if (menuVo.size()==0) {
+            if (menuVos.size()==0) {
                 GoodsSortMenuContentVo recommendBrandContent = getRecommendBrandContent(goodsBrandConfig);
                 item.setMenuContent(recommendBrandContent);
             }
-            menuVo.add(item);
+            menuVos.add(item);
         }
 
         // 推荐分类设置
         if (GoodsRecommendSortConfig.SHOW_RECOMMEND_SORT.equals(recommendSortConfig.getRecommendSortStatus())) {
             GoodsSortMenuVo item =new GoodsSortMenuVo();
             item.setMenuType(GoodsConstant.RECOMMEND_SORT_TYPE);
-            if (menuVo.size()==0) {
+            if (menuVos.size()==0) {
                 GoodsSortMenuContentVo recommendSortContent = getRecommendSortContent(recommendSortConfig);
                 item.setMenuContent(recommendSortContent);
             }
-            menuVo.add(item);
-            logger().debug(Util.toJson(menuVo));
+            menuVos.add(item);
+            logger().debug(Util.toJson(menuVos));
         }
 
         boolean isFirst = false;
-        if (menuVo.size() == 0) {
+        if (menuVos.size() == 0) {
             isFirst = true;
         }
         // 一级普通分类
@@ -97,13 +97,13 @@ public class GoodsBrandSortMpService extends ShopBaseService{
             item.setMenuName(record.getSortName());
             item.setMenuId(record.getSortId());
             if (isFirst) {
-                item.setMenuContent(getNormalSortContent(record));
+                item.setMenuContent(getNormalSortContent(record,userId));
                 isFirst=false;
             }
-            menuVo.add(item);
+            menuVos.add(item);
         }
 
-        return menuVo;
+        return menuVos;
     }
 
     /**
@@ -111,7 +111,7 @@ public class GoodsBrandSortMpService extends ShopBaseService{
      * @param param
      * @return
      */
-    public GoodsSortMenuContentVo getGoodsSortMenuContent(GoodsSortMenuParam param) {
+    public MenuContentBaseVo getGoodsSortMenuContent(GoodsSortMenuParam param,Integer userId) {
         Byte menuType = param.getMenuType();
         if (GoodsConstant.ALL_BRAND_TYPE.equals(menuType)) {
             return getAllBrandContent();
@@ -123,9 +123,8 @@ public class GoodsBrandSortMpService extends ShopBaseService{
             return getRecommendSortContent();
         }
         if (GoodsConstant.NORMAL_SORT_TYPE.equals(menuType)) {
-            return getNormalSortContent(param.getMenuId());
+            return getNormalSortContent(param.getMenuId(),userId);
         }
-
         return new GoodsSortMenuContentVo();
     }
     /**
@@ -197,37 +196,51 @@ public class GoodsBrandSortMpService extends ShopBaseService{
      * @param sortId
      * @return
      */
-    private GoodsSortMenuContentVo getNormalSortContent(Integer sortId) {
+    private MenuContentBaseVo getNormalSortContent(Integer sortId,Integer userId) {
         SortRecord record = goodsSortService.getSortDao(sortId);
         if (record == null) {
             return null;
         }
-        return getNormalSortContent(record);
+        return getNormalSortContent(record,userId);
     }
     /**
      * 获取普通分类下的集合内容,其返回值可能是普通二级分类,也可能是商品信息
      * @param sort
      * @return
      */
-    private GoodsSortMenuContentVo getNormalSortContent(SortRecord sort) {
-        GoodsSortMenuContentVo content=new GoodsSortMenuContentVo();
-        content.setMenuContentType(GoodsConstant.NORMAL_SORT_TYPE);
-        content.setMenuImg(sort.getSortImg());
-        content.setMenuImgLink(sort.getImgLink());
+    private MenuContentBaseVo getNormalSortContent(SortRecord sort, Integer userId) {
 
         SortGroupByParentParam param = new SortGroupByParentParam();
         param.setIsRecommend(GoodsConstant.NORMAL_SORT);
         param.setSortIds(Collections.singletonList(sort.getSortId()));
         List<GoodsSortParentMpVo> sortGroupByParentMp = goodsSortService.getSortGroupByParentMp(param);
 
-        if (sortGroupByParentMp.size()==0) {
-            content.setContentList(new ArrayList<>());
-        } else {
-            GoodsSortParentMpVo goodsSortParentMpVo = sortGroupByParentMp.get(0);
-            List<GoodsSortMpVo> goodsSorts = goodsSortParentMpVo.getGoodsSorts();
+        GoodsSortParentMpVo goodsSortParentMpVo = sortGroupByParentMp.get(0);
+        List<GoodsSortMpVo> goodsSorts = goodsSortParentMpVo.getGoodsSorts();
+        // 普通分类下没有二级分类
+        if (goodsSorts.size() != 0) {
+            GoodsSortMenuContentVo content=new GoodsSortMenuContentVo();
+            content.setMenuContentType(GoodsConstant.NORMAL_SORT_TYPE);
+            content.setMenuImg(sort.getSortImg());
+            content.setMenuImgLink(sort.getImgLink());
             content.setContentList(goodsSorts);
+            return content;
+        } else {
+            GoodsMenuContentVo content = new GoodsMenuContentVo();
+            List<Integer> goodsIds = goodsMpService.getGoodsIdsBySortIdDao(sort.getSortId());
+            List<? extends GoodsListMpVo> goodsListNormal = goodsMpService.getGoodsListNormal(goodsIds, userId);
+            //是否显示划线价开关
+            Byte delMarket = configService.shopCommonConfigService.getDelMarket();
+            //是否显示购买按钮
+            ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
+
+            // 尝试查询该分类下是否有商品信息
+            content.setMenuContentType(GoodsConstant.GOODS_TYPE);
+            content.setGoodsListMpVos(goodsListNormal);
+            content.setDelMarket(delMarket);
+            content.setShowCart(showCart);
+            return content;
         }
-        return content;
     }
 
     /**

@@ -315,7 +315,7 @@ global.wxPage({
       function (res) {
         if (res.error == 0) {
           util.setCache("mobile", res.content.phoneNumber);
-          mobile = res.content.phoneNumber;
+          mobile = res.content;
           that.setData({
             mobile: mobile
           });
