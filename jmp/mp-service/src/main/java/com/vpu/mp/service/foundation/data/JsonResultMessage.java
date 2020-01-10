@@ -239,6 +239,9 @@ public class JsonResultMessage {
 	 */
 	public static final String MY_PRIZE_ACTIVITY_RECEIVED="my.prize.activity.goods.received";
     public static final String MY_PRIZE_ACTIVITY_EXPIRED="my.prize.activity.goods.expired";
+    /**拼团抽奖活动 */
+    public static final String GROUP_DRAW_FAIL = "group.draw.fail";
+    
 	/**
 	 * 营销- 支付有礼
 	 */
