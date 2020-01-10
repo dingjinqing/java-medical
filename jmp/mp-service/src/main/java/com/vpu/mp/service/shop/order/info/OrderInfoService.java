@@ -908,6 +908,22 @@ public class OrderInfoService extends ShopBaseService {
 	 * 根据用户id获取累计消费金额
 	 */
 	public BigDecimal getAllConsumpAmount(Integer userId) {
+		
+		
+		// 订单
+		//	getConsumeOrder
+		// 虚拟订单
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		BigDecimal totalConsumpAmount = new BigDecimal(0);
 		logger().info("计算会员 " + userId + " 的累积消费金额");
 
@@ -978,6 +994,19 @@ public class OrderInfoService extends ShopBaseService {
 		return totalConsumpAmount;
 	}
 
+	
+	// 订单
+	void getConsumeOrder(Integer userId){
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 会员卡消费余额
 	 * 
@@ -1033,7 +1062,7 @@ public class OrderInfoService extends ShopBaseService {
 				.where(ORDER_INFO.USER_ID.eq(userId))
 				.and(ORDER_INFO.ORDER_STATUS.in(ORDER_FINISHED, ORDER_RETURN_FINISHED, ORDER_REFUND_FINISHED))
 				.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS)).and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
-				.fetchOne().into(BigDecimal.class);
+				.fetchAnyInto(BigDecimal.class);
 		return orderMoney;
 	}
 
