@@ -504,6 +504,7 @@ public class GroupDrawService extends ShopBaseService {
 		GroupDrawRecord groupDraw = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchAny();
 		if (groupDraw == null) {
 			//活动不存在
+			logger().info("活动不存在1");
 			return null;
 		}
 		Timestamp endTime = groupDraw.getEndTime();
@@ -512,12 +513,14 @@ public class GroupDrawService extends ShopBaseService {
 		Timestamp nowTime = DateUtil.getLocalDateTime();
 		if(endTime.before(nowTime)||status.equals(ACTIVITY_STATUS_DISABLE)||delFlag.equals(ONE)) {
 			//活动不存在
+			logger().info("活动不存在2");
 			return null;
 		}
 		Timestamp startTime = groupDraw.getStartTime();
 		GroupDrawVo vo=new GroupDrawVo();
-		if(startTime.before(nowTime)) {
+		if(startTime.after(nowTime)) {
 			//活动还没开始
+			logger().info("活动还没开始");
 			vo.setStartTimeDoc(startTime);
 		}else {
 			vo.setSurplusSecond((endTime.getTime() - nowTime.getTime()) / 1000);
@@ -538,6 +541,7 @@ public class GroupDrawService extends ShopBaseService {
 				goodsSmallVo.setGoodsImg(imageService.imageUrl(goodsSmallVo.getGoodsImg()));
 			}
 			vo.setList(goodsList);
+			logger().info("返回");
 			return vo;
 		}
 		//return 没有可参与的活动商品
