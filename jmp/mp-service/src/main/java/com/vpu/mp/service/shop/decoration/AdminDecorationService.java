@@ -1,13 +1,11 @@
 package com.vpu.mp.service.shop.decoration;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -288,10 +286,43 @@ public class AdminDecorationService extends ShopBaseService {
                     ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
                     moduleMap.setImgPath(domainConfig.imageUrl(moduleMap.getImgPath()));
                     return moduleMap;
+                case ModuleConstant.M_GOODS:
+                    ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
+                    if(moduleGoods.getOtherMessage().equals(0)){
+                        if(StringUtil.isNotEmpty(moduleGoods.getImgUrl()) || StringUtil.isNotEmpty(moduleGoods.getTitle())){
+                            moduleGoods.setGoodsModuleTitle((byte)1);
+                        }else{
+                            moduleGoods.setGoodsModuleTitle((byte)0);
+                        }
+                    }
+                    return moduleGoods;
+                case ModuleConstant.M_GOODS_GROUP:
+                    ModuleGoodsGroup moduleGoodsGroup = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
+                    if(moduleGoodsGroup.getOtherMessage() == null && moduleGoodsGroup.getShowPrice() == 0){
+                        moduleGoodsGroup.setOtherMessage((byte)0);
+                        moduleGoodsGroup.setShowMarket((byte)1);
+                    }
+                    return moduleGoodsGroup;
+                case ModuleConstant.M_BARGAIN:
+                    ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
+                    moduleBargain = saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
+                    return moduleBargain;
+                case ModuleConstant.M_SECKILL:
+                    ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+                    moduleSecKill = saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
+                    return moduleSecKill;
+                case ModuleConstant.M_INTEGRAL:
+                    ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+                    moduleIntegral = saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
+                    return moduleIntegral;
 
-                /**
-                 * TODO: 添加其他模块
-                 */
+
+                    /**
+                     * TODO: 添加其他模块
+                     */
+                    /**
+                     * TODO: 基于店铺等级的模块权限校验
+                     */
             }
         }
         if(node.getKey().equals("page_cfg")){

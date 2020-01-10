@@ -31,8 +31,8 @@ public class ShopDataSourceImp implements ShopDataSource {
 
     private HikariDataSource getShopDataSource(DBConfig dbConfig){
         HikariConfig config = new HikariConfig();
-//        String jdbcUrl = String.format(CONNECTION_TEMPLATE,dbConfig.getHost(),dbConfig.getPort());
-        String jdbcUrl = MessageFormat.format(CONNECTION_TEMPLATE,"127.0.0.1","9910");
+        String jdbcUrl = MessageFormat.format(CONNECTION_TEMPLATE,dbConfig.getHost(),dbConfig.getPort()+"");
+//        String jdbcUrl = MessageFormat.format(CONNECTION_TEMPLATE,"127.0.0.1","9910");
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(dbConfig.getUserName());
         config.setPassword(dbConfig.getPassword());

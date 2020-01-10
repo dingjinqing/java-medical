@@ -6,7 +6,7 @@ package com.vpu.mp.db.shop.tables;
 
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_6797286;
+import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.ShippingRecord;
 
 import java.sql.Timestamp;
@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shipping extends TableImpl<ShippingRecord> {
 
-    private static final long serialVersionUID = -1129900447;
+    private static final long serialVersionUID = -657475804;
 
     /**
-     * The reference instance of <code>mini_shop_6797286.b2c_shipping</code>
+     * The reference instance of <code>mini_shop_471752.b2c_shipping</code>
      */
     public static final Shipping SHIPPING = new Shipping();
 
@@ -58,86 +58,81 @@ public class Shipping extends TableImpl<ShippingRecord> {
     }
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.shipping_id</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.shipping_id</code>.
      */
     public final TableField<ShippingRecord, Byte> SHIPPING_ID = createField("shipping_id", org.jooq.impl.SQLDataType.TINYINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.shipping_code</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.shipping_code</code>.
      */
     public final TableField<ShippingRecord, String> SHIPPING_CODE = createField("shipping_code", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.express100_code</code>. 快递100code
-     */
-    public final TableField<ShippingRecord, String> EXPRESS100_CODE = createField("express100_code", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "快递100code");
-
-    /**
-     * The column <code>mini_shop_6797286.b2c_shipping.shipping_name</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.shipping_name</code>.
      */
     public final TableField<ShippingRecord, String> SHIPPING_NAME = createField("shipping_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.shipping_desc</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.shipping_desc</code>.
      */
     public final TableField<ShippingRecord, String> SHIPPING_DESC = createField("shipping_desc", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.insure</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.insure</code>.
      */
     public final TableField<ShippingRecord, String> INSURE = createField("insure", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.support_cod</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.support_cod</code>.
      */
     public final TableField<ShippingRecord, Byte> SUPPORT_COD = createField("support_cod", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.enabled</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.enabled</code>.
      */
     public final TableField<ShippingRecord, Byte> ENABLED = createField("enabled", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.shipping_print</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.shipping_print</code>.
      */
     public final TableField<ShippingRecord, String> SHIPPING_PRINT = createField("shipping_print", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.print_model</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.print_model</code>.
      */
     public final TableField<ShippingRecord, Byte> PRINT_MODEL = createField("print_model", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.shipping_order</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.shipping_order</code>.
      */
     public final TableField<ShippingRecord, Byte> SHIPPING_ORDER = createField("shipping_order", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_shipping.create_time</code>.
      */
     public final TableField<ShippingRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_shipping.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_shipping.update_time</code>. 最后修改时间
      */
     public final TableField<ShippingRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_6797286.b2c_shipping</code> table reference
+     * Create a <code>mini_shop_471752.b2c_shipping</code> table reference
      */
     public Shipping() {
         this(DSL.name("b2c_shipping"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_6797286.b2c_shipping</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_shipping</code> table reference
      */
     public Shipping(String alias) {
         this(DSL.name(alias), SHIPPING);
     }
 
     /**
-     * Create an aliased <code>mini_shop_6797286.b2c_shipping</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_shipping</code> table reference
      */
     public Shipping(Name alias) {
         this(alias, SHIPPING);
@@ -160,7 +155,7 @@ public class Shipping extends TableImpl<ShippingRecord> {
      */
     @Override
     public Schema getSchema() {
-        return MiniShop_6797286.MINI_SHOP_6797286;
+        return MiniShop_471752.MINI_SHOP_471752;
     }
 
     /**

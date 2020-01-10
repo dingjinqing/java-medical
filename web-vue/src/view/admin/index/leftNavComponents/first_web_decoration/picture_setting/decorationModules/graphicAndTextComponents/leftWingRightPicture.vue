@@ -12,23 +12,23 @@
       <div class="leftWingRightPicture">
         <!--右侧不选择图片占位-->
         <div
-          :style="moduleSaveData.img_style==='0'?'':'height:110px;'"
+          :style="moduleSaveData.img_style===0?'':'height:110px;'"
           class="leftWingRightPictureMain"
         >
           <img
-            :style="moduleSaveData.img_style==='0'?'':'height:90px;width:90px'"
-            v-if="moduleSaveData.ti_type==='0'"
+            :style="moduleSaveData.img_style===0?'':'height:90px;width:90px'"
+            v-if="moduleSaveData.ti_type===0"
             :src="moduleSaveData.img_url?moduleSaveData.img_url:($imageHost+'/image/admin/shop_beautify/decorate_model.png')"
           >
           <div
-            :style="moduleSaveData.img_style==='0'?'':'height:90px'"
+            :style="moduleSaveData.img_style===0?'':'height:90px'"
             class="textContainer"
             v-html="moduleSaveData.rich_text?moduleSaveData.rich_text:$t('leftWingRightPicture.middleZb')"
           >
           </div>
           <img
-            :style="moduleSaveData.img_style==='0'?'':'height:90px;width:90px'"
-            v-if="moduleSaveData.ti_type==='1'"
+            :style="moduleSaveData.img_style===0?'':'height:90px;width:90px'"
+            v-if="moduleSaveData.ti_type===1"
             :src="moduleSaveData.img_url?moduleSaveData.img_url:($imageHost+'/image/admin/shop_beautify/decorate_model.png')"
           >
         </div>
@@ -86,8 +86,8 @@ export default {
       hoverTips: 'hoverTips', // 英文适配  模块公共
       // 模块私有
       moduleSaveData: {
-        'ti_type': '0', // 文本样式类型
-        'img_style': '0', // 图片样式类型
+        'ti_type': 0, // 文本样式类型
+        'img_style': 0, // 图片样式类型
         'img_url': '', // 图片路径
         'title_link': '', // 链接
         'rich_text': '' // 文本内容

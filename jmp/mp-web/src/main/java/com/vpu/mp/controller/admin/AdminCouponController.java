@@ -137,4 +137,15 @@ public class AdminCouponController extends AdminBaseController{
 		PageResult<CouponHoldListVo> detail = shop().coupon.getDetail(param);
 		return this.success(detail);
 	}
+
+    /**
+     * 删除用户优惠券
+     * @param id
+     * @return
+     */
+	@GetMapping("/admin/avail/coupon/del")
+	public JsonResult availCouponDel(Integer id){
+        boolean res = shop().coupon.availCouponDel(id);
+        return this.success(res);
+    }
 }

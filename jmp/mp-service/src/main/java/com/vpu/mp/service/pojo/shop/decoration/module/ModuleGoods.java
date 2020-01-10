@@ -63,7 +63,7 @@ public class ModuleGoods extends ModuleBase {
     private Byte goodsModuleBg;
 
     @JsonProperty("goods_module_title")
-    private String goodsModuleTitle;
+    private Byte goodsModuleTitle;
 
     @JsonProperty("goods_num")
     private Integer goodsNum;

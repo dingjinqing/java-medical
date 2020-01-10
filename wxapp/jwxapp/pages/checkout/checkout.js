@@ -377,15 +377,15 @@ global.wxPage({
             'package': res.content.webPayVo.package,
             'signType': 'MD5',
             'paySign': res.content.webPayVo.paySign,
-            'success': function (res) {
+            'success': (res) => {
               util.toast_success('支付成功');
-              util.jumpLink(`pages/payment/payment${this.getUrlParams({ orderSn, useInfo: JSON.stringify({ ...this.data.usePayInfo }) })}`, 'redirectTo')
+              util.jumpLink(`pages1/payment/payment${this.getUrlParams({ orderSn, useInfo: JSON.stringify({ ...this.data.usePayInfo }) })}`, 'redirectTo')
             },
-            'fail': function (res) {
+            'fail': (res) => {
               console.log(res)
               util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
             },
-            'complete': function (res) { }
+            'complete': (res) => { }
           });
         } else {
           util.jumpLink(`pages1/payment/payment${this.getUrlParams({ orderSn, useInfo: JSON.stringify({ ...this.data.usePayInfo }) })}`, 'redirectTo')
