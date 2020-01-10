@@ -33,11 +33,11 @@
       <div class="settingContent">
         <el-radio-group v-model="tradeProcessConfig.is_lock">
           <div class="topandbottom">
-            <el-radio :label="1"> {{$t('tradeConfiguration.paythensub')}}<label class="onText">{{$t('tradeConfiguration.paythensubnote')}}</label>
+            <el-radio :label=1> {{$t('tradeConfiguration.paythensub')}}<label class="onText">{{$t('tradeConfiguration.paythensubnote')}}</label>
             </el-radio>
           </div>
           <div class="topandbottom">
-            <el-radio :label="0">{{$t('tradeConfiguration.orderthensub')}}  <label class="onText">{{$t('tradeConfiguration.orderthensubnote')}}</label>
+            <el-radio :label=0>{{$t('tradeConfiguration.orderthensub')}} <label class="onText">{{$t('tradeConfiguration.orderthensubnote')}}</label>
             </el-radio>
           </div>
         </el-radio-group>
@@ -184,8 +184,8 @@
       >
         <span>{{$t('tradeConfiguration.firstorderdafauleselected')}}</span>
         <el-radio-group v-model="tradeProcessConfig.service_choose">
-          <el-radio :label="1">{{$t('tradeConfiguration.yes')}}</el-radio>
-          <el-radio :label="0">{{$t('tradeConfiguration.no')}}</el-radio>
+          <el-radio :label=1>{{$t('tradeConfiguration.yes')}}</el-radio>
+          <el-radio :label=0>{{$t('tradeConfiguration.no')}}</el-radio>
         </el-radio-group>
       </div>
     </section>
@@ -561,6 +561,7 @@ export default {
   },
   mounted () {
     this.langDefault()
+    this.initData()
   },
   watch: {
     lang () {
@@ -632,9 +633,9 @@ export default {
       console.log(newData)
     }
   },
-  created () {
-    this.initData()
-  },
+  // created () {
+  //   this.initData()
+  // },
   data () {
     return {
       // 商品弹窗回调数据
@@ -728,6 +729,7 @@ export default {
         consignee_real_name: null,
         consignee_cid: null,
         custom: null,
+        custom_title: null,
         order_require_goods_package: {
           add_goods: [],
           add_cate: [],
@@ -809,37 +811,40 @@ export default {
           this.cancelHour = Math.floor(this.tradeProcessConfig.cancel_time / 60)
           this.cancelMinute = this.tradeProcessConfig.cancel_time % 60
           this.deliverMethods.map((item, index) => {
+            console.log(item, 'item--')
             switch (item.code) {
               case 'express':
-                item.value = this.number2boolean(this.tradeProcessConfig.express)
+                console.log(this.tradeProcessConfig.express)
+                item.value = Boolean(res.content.trade_process_config.express)
+                console.log(item.value, 'get item value')
                 break
               case 'fetch':
-                item.value = this.number2boolean(this.tradeProcessConfig.fetch)
+                item.value = Boolean(res.content.trade_process_config.fetch)
                 break
             }
           })
           this.isRequiredInfo.map((item, index) => {
             switch (item.code) {
               case 'order_real_name':
-                item.value = this.number2boolean(this.tradeProcessConfig.order_real_name)
+                item.value = Boolean(this.tradeProcessConfig.order_real_name)
                 break
               case 'order_cid':
-                item.value = this.number2boolean(this.tradeProcessConfig.order_cid)
+                item.value = Boolean(this.tradeProcessConfig.order_cid)
                 break
               case 'consignee_real_name':
-                item.value = this.number2boolean(this.tradeProcessConfig.consignee_real_name)
+                item.value = Boolean(this.tradeProcessConfig.consignee_real_name)
                 break
               case 'consignee_cid':
-                item.value = this.number2boolean(this.tradeProcessConfig.consignee_cid)
+                item.value = Boolean(this.tradeProcessConfig.consignee_cid)
                 break
               case 'custom':
-                item.value = this.number2boolean(this.tradeProcessConfig.custom)
+                item.value = Boolean(this.tradeProcessConfig.custom)
                 break
             }
-            this.shippingExpress = this.number2boolean(this.tradeProcessConfig.shipping_express)
-            this.extenReceiveGoods = this.number2boolean(this.tradeProcessConfig.extend_receive_goods)
-            this.invoice = this.number2boolean(this.tradeProcessConfig.invoice)
-            this.serviceTerms = this.number2boolean(this.tradeProcessConfig.service_terms)
+            this.shippingExpress = Boolean(this.tradeProcessConfig.shipping_express)
+            this.extenReceiveGoods = Boolean(this.tradeProcessConfig.extend_receive_goods)
+            this.invoice = Boolean(this.tradeProcessConfig.invoice)
+            this.serviceTerms = Boolean(this.tradeProcessConfig.service_terms)
             this.addresssConf = JSON.parse(this.tradeProcessConfig.shop_address)
             this.goodsInfo = this.tradeProcessConfig.order_require_goods_package.add_goods
             this.goodsN = this.goodsInfo.length
@@ -857,20 +862,20 @@ export default {
         }
       })
     },
-    number2boolean (configValue) {
-      if (configValue === 1) {
-        return true
-      } else if (configValue === 0) {
-        return false
-      }
-    },
-    boolean2number (booleanValue) {
-      if (booleanValue === true) {
-        return 1
-      } else if (booleanValue === false) {
-        return 0
-      }
-    },
+    // number2boolean (configValue) {
+    //   if (configValue === 1) {
+    //     return true
+    //   } else if (configValue === 0) {
+    //     return false
+    //   }
+    // },
+    // boolean2number (booleanValue) {
+    //   if (booleanValue === true) {
+    //     return 1
+    //   } else if (booleanValue === false) {
+    //     return 0
+    //   }
+    // },
     // 更新配置项
     updateConfig () {
       console.log(this.addresssConf)
@@ -881,36 +886,36 @@ export default {
       this.deliverMethods.map((item, index) => {
         switch (item.code) {
           case 'express':
-            this.tradeProcessConfig.express = this.boolean2number(item.value)
+            this.tradeProcessConfig.express = Number(item.value)
             break
           case 'fetch':
-            this.tradeProcessConfig.fetch = this.boolean2number(item.value)
+            this.tradeProcessConfig.fetch = Number(item.value)
             break
         }
       })
       this.isRequiredInfo.map((item, index) => {
         switch (item.code) {
           case 'order_real_name':
-            this.tradeProcessConfig.order_real_name = this.boolean2number(item.value)
+            this.tradeProcessConfig.order_real_name = Number(item.value)
             break
           case 'order_cid':
-            this.tradeProcessConfig.order_cid = this.boolean2number(item.value)
+            this.tradeProcessConfig.order_cid = Number(item.value)
             break
           case 'consignee_real_name':
-            this.tradeProcessConfig.consignee_real_name = this.boolean2number(item.value)
+            this.tradeProcessConfig.consignee_real_name = Number(item.value)
             break
           case 'consignee_cid':
-            this.tradeProcessConfig.consignee_cid = this.boolean2number(item.value)
+            this.tradeProcessConfig.consignee_cid = Number(item.value)
             break
           case 'custom':
-            this.tradeProcessConfig.custom = this.boolean2number(item.value)
+            this.tradeProcessConfig.custom = Number(item.value)
             break
         }
       })
-      this.tradeProcessConfig.extend_receive_goods = this.boolean2number(this.extenReceiveGoods)
-      this.tradeProcessConfig.shipping_express = this.boolean2number(this.shippingExpress)
-      this.tradeProcessConfig.invoice = this.boolean2number(this.invoice)
-      this.tradeProcessConfig.service_terms = this.boolean2number(this.serviceTerms)
+      this.tradeProcessConfig.extend_receive_goods = Number(this.extenReceiveGoods)
+      this.tradeProcessConfig.shipping_express = Number(this.shippingExpress)
+      this.tradeProcessConfig.invoice = Number(this.invoice)
+      this.tradeProcessConfig.service_terms = Number(this.serviceTerms)
       // 设置那几个弹窗的值
       this.tradeProcessConfig.order_require_goods_package.add_goods = this.goodsInfo
       this.tradeProcessConfig.order_require_goods_package.add_label = this.labelInfo
@@ -953,7 +958,7 @@ export default {
             } else if (item.businessState === 1) {
               item.businessState = '营业'
             }
-            item.autoPick = this.number2boolean(item.autoPick)
+            item.autoPick = Boolean(item.autoPick)
             item.businessTime = item.openingTime + '-' + item.closeTime
           })
         } else {
@@ -967,7 +972,7 @@ export default {
       const stores = this.storeParamList.map(({ storeId, autoPick }) => ({ storeId, autoPick }))
       updateParam = stores
       updateParam.map((item, index) => {
-        item.autoPick = this.boolean2number(item.autoPick)
+        item.autoPick = Number(item.autoPick)
       })
       console.log(updateParam)
       batchUpdateStore(updateParam).then(res => {
@@ -1131,7 +1136,7 @@ export default {
       color: #666;
 
       .topandbottom {
-        margin-top: 10px;;
+        margin-top: 10px;
         margin-bottom: 10px;
       }
       .inputWidth {
