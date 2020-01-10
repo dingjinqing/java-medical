@@ -152,7 +152,12 @@
             prop="validityTime"
             :label="$t('couponReceive.validDate')"
             align="center"
-          ></el-table-column>
+            width="160px"
+          >
+            <template slot-scope="scope">
+              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="createTime"
             :label="$t('couponReceive.receiveTime')"
@@ -257,7 +262,7 @@ export default {
         } else {
           item.accessMode = '领取'
         }
-        item.validityTime = `${item.startTime} 至  ${item.endTime}`
+        // item.validityTime = `${item.startTime} 至 ${item.endTime}`
       })
       this.tableData = data
     },
@@ -281,8 +286,13 @@ export default {
     },
 
     // 个人信息跳转
-    infoClickHandler () {
-
+    infoClickHandler (id) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: id
+        }
+      })
     },
 
     foramtUseStatus (data) {

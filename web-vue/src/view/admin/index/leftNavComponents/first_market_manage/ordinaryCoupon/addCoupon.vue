@@ -844,7 +844,7 @@ export default {
             this.param.useScore = 0
           }
           // 每人限领
-          this.param.receivePerPerson = data.receivePerson
+          this.param.receivePerPerson = data.receivePerPerson
           // 领券人数
           this.param.receiveNum = data.receiveNum
           if (this.param.receiveNum === 0) {

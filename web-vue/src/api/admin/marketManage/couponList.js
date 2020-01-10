@@ -92,7 +92,7 @@ export function couponGetDetail (data) {
 // 删除明细
 export function deleteCouponDetail (data) {
   return service({
-    url: `couponId=${data}`,
+    url: `/api/admin/coupon/get/couponId=${data}`,
     method: 'get',
     data: data
   })
