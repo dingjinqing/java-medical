@@ -41,7 +41,7 @@
                 <span v-else>{{ $t('ordinaryCoupon.restrictRadio2') }} {{param.leastConsume?param.leastConsume:'0'}}<span v-if="param.leastConsume === ''">X</span> {{ $t('ordinaryCoupon.restrictTip') }}</span>
                 <span
                   class="part"
-                  v-if="param.suitGoods === 1"
+                  v-if="param.availableGoods === 1"
                 >{{ $t('ordinaryCoupon.leftTip1') }}</span>
               </div>
             </div>
@@ -417,13 +417,13 @@
                   <div style="display:flex">
                     <div>
                       <el-radio
-                        v-model="param.enabled"
-                        :label="0"
+                        v-model="param.suitGoods"
+                        :label="1"
                         :disabled="editType"
                       >{{ $t('ordinaryCoupon.enabledRadio1') }}</el-radio>
                       <el-radio
-                        v-model="param.enabled"
-                        :label="1"
+                        v-model="param.suitGoods"
+                        :label="0"
                         :disabled="editType"
                       >{{ $t('ordinaryCoupon.enabledRadio2') }}</el-radio>
                     </div>
@@ -464,36 +464,36 @@
                 </el-form-item>
                 <el-form-item
                   :label="$t('ordinaryCoupon.suitGoods') + '：'"
-                  prop="suitGoods"
-                  :style="{height:param.suitGoods === 1 ? '240px':''}"
+                  prop="availableGoods"
+                  :style="{height:param.availableGoods === 1 ? '240px':''}"
                 >
                   <div>
                     <p>
                       <el-radio
-                        v-model="param.suitGoods"
+                        v-model="param.availableGoods"
                         :label='0'
                         :disabled="editType"
-                        @change="suitGoodsChange"
+                        @change="availableGoodsChange"
                       >{{ $t('ordinaryCoupon.suitGoodsRadio1') }}</el-radio>
                     </p>
                     <p>
                       <el-radio
-                        v-model="param.suitGoods"
+                        v-model="param.availableGoods"
                         :label='1'
                         :disabled="editType"
-                        @change="suitGoodsChange"
+                        @change="availableGoodsChange"
                       >{{ $t('ordinaryCoupon.suitGoodsRadio2') }}</el-radio>
                     </p>
-                    <div v-if="param.suitGoods === 1">
+                    <div v-if="param.availableGoods === 1">
                       <div
                         class="noneBlockList"
                         v-for="(item,index) in noneBlockDiscArr"
                         :key="index"
                       >
+                        <!-- :disabled="editType" -->
                         <el-button
                           size="small"
                           plain
-                          :disabled="editType"
                           @click="hanldeToAddGoodS(index)"
                           style="margin-right: 20px;"
                         >
@@ -573,11 +573,11 @@ export default {
     }
     // 自定义校验初始库存
     var validateSurplus = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^(\+?[1-9][0-9]*)$/
       if (value === 0 && this.param.totalAmount === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateSurplus')))
       } else if (value === 0 && !re.test(this.param.totalAmount)) {
-        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
+        callback(new Error(this.$t('ordinaryCoupon.validateNum1')))
       } else {
         callback()
       }
@@ -641,7 +641,7 @@ export default {
       }
     }
     // 自定义校验可使用商品
-    var validatesuitGoods = (rule, value, callback) => {
+    var validateAvailableGoods = (rule, value, callback) => {
       if (value === 1 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
         callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
       } else {
@@ -681,8 +681,9 @@ export default {
         randomMax: null, // 随机金额2
         couponNum: 0, // 领券人数
         receiveNum: null, // 人数
-        enabled: 1,
-        suitGoods: 0, // 适用商品
+        // enabled: 1, // 隐藏
+        suitGoods: 0, // 隐藏
+        availableGoods: 0, // 适用商品
         useExplain: '',
         denomination: null, // num面额
         denomination2: null,
@@ -705,7 +706,7 @@ export default {
         receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
         couponNum: { required: true, validator: validateCouponNum, trigger: 'change' },
         useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
-        suitGoods: { required: true, validator: validatesuitGoods, trigger: 'change' }
+        availableGoods: { required: true, validator: validateAvailableGoods, trigger: 'change' }
       },
       couponId: '',
       AtreeType: null,
@@ -864,7 +865,8 @@ export default {
           // 领取码
           this.param.validationCode = data.validationCode
           // 是否隐藏
-          this.param.enabled = data.enabled
+          // this.param.enabled = data.enabled
+          this.param.suitGoods = data.suitGoods
           // 使用门槛
           this.param.leastConsume = data.leastConsume
           if (this.param.leastConsume === 0) {
@@ -873,15 +875,22 @@ export default {
             this.param.useConsumeRestrict = 1
           }
           // 可使用商品
-          this.param.suitGoods = data.suitGoods
-          this.goodsInfo = data.recommendGoodsId.split(',')
-          // this.goodsInfo = this.goodsInfo.map(Number)
+          if (data.recommendGoodsId !== '' || data.recommendCatId !== '' || data.recommendSortId !== '') {
+            // 指定商品
+            this.param.availableGoods = 1
+            this.goodsInfo = data.recommendGoodsId.split(',')
+            this.goodsInfo = this.goodsInfo.map(Number)
 
-          this.busClass = data.recommendCatId.split(',')
-          // this.busClass = this.busClass.map(Number)
+            this.busClass = data.recommendCatId.split(',')
+            this.busClass = this.busClass.map(Number)
 
-          this.platClass = data.recommendSortId.split(',')
-          // this.platClass = this.platClass.map(Number)
+            this.platClass = data.recommendSortId.split(',')
+            this.platClass = this.platClass.map(Number)
+          } else {
+            // 全部商品
+            this.param.availableGoods = 0
+          }
+
           // 说明
           this.param.useExplain = data.useExplain
         }
@@ -916,10 +925,19 @@ export default {
           if (this.param.useConsumeRestrict === 0) {
             this.param.leastConsume = 0
           }
+
+          // 可使用商品
+          if (this.param.availableGoods === 0) {
+            this.param.recommendGoodsId = []
+            this.param.recommendCatId = []
+            this.param.recommendSortId = []
+          } else {
+            this.param.recommendGoodsId = this.goodsInfo.toString()
+            this.param.recommendCatId = this.busClass.toString()
+            this.param.recommendSortId = this.platClass.toString()
+          }
+
           this.param.scoreNumber = Number(this.param.scoreNumber)
-          this.param.recommendGoodsId = this.goodsInfo.toString()
-          this.param.recommendCatId = this.busClass.toString()
-          this.param.recommendSortId = this.platClass.toString()
           this.param.startTime = this.param.couponDate[0]
           this.param.endTime = this.param.couponDate[1]
           if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
@@ -1041,8 +1059,13 @@ export default {
     useConsumeRestrictChange (e) {
       this.$refs['param'].validateField('useConsumeRestrict')
     },
-    suitGoodsChange (e) {
-      this.$refs['param'].validateField('suitGoods')
+    availableGoodsChange (e) {
+      if (e === 0) {
+        this.goodsInfo = []
+        this.busClass = []
+        this.platClass = []
+      }
+      this.$refs['param'].validateField('availableGoods')
     }
   },
   computed: {
