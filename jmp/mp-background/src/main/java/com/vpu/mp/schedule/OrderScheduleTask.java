@@ -117,4 +117,16 @@ public class OrderScheduleTask {
             saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.autoReturnOrder();
         });
     }
+
+    /**
+     * 奖品 定时过期
+     * 每分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void closePrizeGoods(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.prizeTaskService.closePrizeGoods();
+        });
+    }
 }

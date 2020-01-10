@@ -330,8 +330,9 @@
   </div>
 </template>
 <script>
-
+import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
+  mixins: [decMixins],
   props: {
     flag: Number,
     nowRightShowIndex: Number,
@@ -382,11 +383,12 @@ export default {
       handler (newData) {
         if (newData) {
           console.log(newData)
-          this.data = newData
+          let turnToString = this.handleToTurnNumToStr(newData)
+          console.log(turnToString)
+          this.data = turnToString
           // 处理初始数据
           this.handleToInit(this.data)
         }
-        console.log(newData)
       },
       immediate: true,
       deep: true

@@ -44,12 +44,14 @@ global.wxPage({
       res => {
         console.log(res)
         if (res.error === 0) {
-          if(res.content.dataList.length < 20){
+          if(res.content.pageResult.dataList.length < 20){
             this.selectComponent('#recommend').resetDataList().resetPage().requestData()
           }
           this.setData({
-            pageParams: res.content.page,
-            ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.dataList
+            pageParams: res.content.pageResult.page,
+            delMarket:res.content.delMarket,
+            showCart:res.content.showCart,
+            ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList
           });
         }
       },

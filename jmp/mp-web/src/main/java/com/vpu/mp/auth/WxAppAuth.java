@@ -1,22 +1,17 @@
 package com.vpu.mp.auth;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
@@ -24,8 +19,14 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.image.ImageService;
-
 import me.chanjar.weixin.common.error.WxErrorException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 
@@ -129,13 +130,25 @@ public class WxAppAuth {
 				data.setUserId(user.getUserId());
 				// php注释掉后面addUserScore中对ScoreDis的处理
 				// data.setScoreDis(shopApp.user.getUserByUserId(user.getUserId()).getScore());
-				data.setScore(Integer.parseInt(scoreNum.getV()));
-				data.setDesc("score_login");
-				data.setRemarkCode(RemarkTemplate.LOGIN_EVERY_DAY_SEND.code);
-				//data.setRemark("每日登录送积分");
-				data.setShopId(shopId);
-				data.setExpireTime(shopApp.member.score.getScoreExpireTime());
-				shopApp.member.score.addUserScore(data, "0", (byte) 5, (byte) 1);
+//				data.setScore(Integer.parseInt(scoreNum.getV()));
+//				data.setDesc("score_login");
+//				data.setRemarkCode(RemarkTemplate.LOGIN_EVERY_DAY_SEND.code);
+//				//data.setRemark("每日登录送积分");
+//				data.setShopId(shopId);
+//				data.setExpireTime(shopApp.member.score.getScoreExpireTime());
+//				shopApp.member.score.addUserScore(data, "0", (byte) 5, (byte) 1);
+				ScoreParam param2=new ScoreParam();
+				param2.setDesc("score_login");
+				param2.setScore(Integer.parseInt(scoreNum.getV()));
+				param2.setRemarkCode(RemarkTemplate.LOGIN_EVERY_DAY_SEND.code);
+				param2.setExpiredTime(shopApp.member.score.getScoreExpireTime());
+				param2.setUserId(user.getUserId());
+				try {
+					shopApp.member.score.updateMemberScore(param2, 0, RecordTradeEnum.TYPE_SCORE_LOGIN.val(), RecordTradeEnum.UACCOUNT_CONSUMPTION.val());
+				} catch (MpException e) {
+					log.info("每日登录送积分失败");
+					log.info(e.getMessage(),e);
+				}
 			}
 		}
 

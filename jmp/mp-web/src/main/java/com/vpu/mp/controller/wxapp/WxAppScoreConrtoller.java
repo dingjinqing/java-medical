@@ -1,16 +1,19 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
@@ -100,16 +103,28 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 			logger().info("签到积分有误");
 			return fail(JsonResultCode.ERR_CODE_CODE_SING_ERRO);
 		}
-		UserScoreVo vo=new UserScoreVo();
-		vo.setUserId(userId);
-		vo.setScore(param.getScore());
-		vo.setStatus((byte)0);
-		vo.setShopId(shopId());
-		vo.setDesc("sign_score");
-		//vo.setRemark("连续签到"+signData.getSignData().getDay()+"天，获得"+param.getScore()+"积分");
-		vo.setRemarkCode(RemarkTemplate.SIGN_SOME_DAY_SEND.code);
-		vo.setRemarkData(signData.getSignData().getDay()+","+param.getScore());
-		shop().userCard.scoreService.addUserScore(vo, "0", (byte) 6, (byte) 1);
+//		UserScoreVo vo=new UserScoreVo();
+//		vo.setUserId(userId);
+//		vo.setScore(param.getScore());
+//		vo.setStatus((byte)0);
+//		vo.setShopId(shopId());
+//		vo.setDesc("sign_score");
+//		//vo.setRemark("连续签到"+signData.getSignData().getDay()+"天，获得"+param.getScore()+"积分");
+//		vo.setRemarkCode(RemarkTemplate.SIGN_SOME_DAY_SEND.code);
+//		vo.setRemarkData(signData.getSignData().getDay()+","+param.getScore());
+		ScoreParam param2=new ScoreParam();
+		param2.setRemarkCode(RemarkTemplate.SIGN_SOME_DAY_SEND.code);
+		param2.setRemarkData(signData.getSignData().getDay()+","+param.getScore());
+		param2.setScore(param.getScore());
+		param2.setScoreStatus((byte)0);
+		param2.setDesc("sign_score");
+		param2.setUserId(userId);
+		try {
+			shop().userCard.scoreService.updateMemberScore(param2, 0, RecordTradeEnum.TYPE_SCORE_SIGN.val(), RecordTradeEnum.TRADE_FLOW_OUT.val());
+		} catch (MpException e) {
+			e.printStackTrace();
+		}
+		//shop().userCard.scoreService.addUserScore(vo, "0", (byte) 6, (byte) 1);
 		CheckSignVo checkSignInScore = shop().userCard.scoreService.checkSignInScore(userId);
 		logger().info("签到完成");
 		return success(checkSignInScore);

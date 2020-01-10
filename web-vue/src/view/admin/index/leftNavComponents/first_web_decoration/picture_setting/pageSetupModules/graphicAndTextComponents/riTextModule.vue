@@ -17,15 +17,15 @@
           <span>{{$t('textModule.fontSize')}}：</span>
           <el-radio
             v-model="moduleSaveData.fonts_size"
-            label="1"
+            :label="1"
           >{{$t('textModule.large')}}</el-radio>
           <el-radio
             v-model="moduleSaveData.fonts_size"
-            label="2"
+            :label="2"
           >{{$t('textModule.middle')}}</el-radio>
           <el-radio
             v-model="moduleSaveData.fonts_size"
-            label="3"
+            :label="3"
           >{{$t('textModule.small')}}</el-radio>
         </div>
         <div class="text">
@@ -58,15 +58,15 @@
           <span>{{$t('textModule.displayPosition')}}：</span>
           <el-radio
             v-model="moduleSaveData.show_pos"
-            label="1"
+            :label="1"
           >{{$t('textModule.beATheLeftSide')}}</el-radio>
           <el-radio
             v-model="moduleSaveData.show_pos"
-            label="2"
+            :label="2"
           >{{$t('textModule.centered')}}</el-radio>
           <el-radio
             v-model="moduleSaveData.show_pos"
-            label="3"
+            :label="3"
           >{{$t('textModule.beAtTheRight')}}</el-radio>
         </div>
         <div class="text">
@@ -120,10 +120,10 @@ export default {
       ],
       moduleSaveData: {
         'title': '', // 文本
-        'fonts_size': '1', // 字体大小
+        'fonts_size': 1, // 字体大小
         'fonts_color': '#333333', // 字体颜色
         'bgs_color': '#ffffff', // 背景颜色
-        'show_pos': '1', // 显示位置
+        'show_pos': 1, // 显示位置
         'title_link': '' // 链接
       }
 

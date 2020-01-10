@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.shop.decoration.AdminDecorationService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
@@ -38,7 +39,7 @@ import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageVo;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelParam;
 import com.vpu.mp.service.pojo.shop.market.channel.QrCodeShareVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 
@@ -58,7 +59,7 @@ public class ChannelService extends ShopBaseService {
 	private static final String DIGIT = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final BigInteger SCALE = new BigInteger("62");
 	@Autowired
-	ShopMpDecorationService shopMpDecoration;
+    AdminDecorationService adminDecoration;
 	@Autowired
 	GoodsService goodsService;
 	@Autowired
@@ -170,7 +171,7 @@ public class ChannelService extends ShopBaseService {
 		}
 
 		if (!StringUtils.isBlank(param.getSourcePage())) {
-			List<Integer> idList = shopMpDecoration.getIdByName(param.getSourcePage());
+			List<Integer> idList = adminDecoration.getIdByName(param.getSourcePage());
 			if (idList == null || idList.isEmpty()) {
 				return;
 			}

@@ -70,7 +70,8 @@ global.wxPage({
   },
 
   toWeb: function () {
-    util.jumpToWeb('/wxapp/score/scoreDocument');
+    console.log(this.data)
+    util.jumpToWeb(`/wxapp/score/scoreDocument?navHeight=${this.data.margin_top_nav}`);
   },
 
   signScore: function (e) {

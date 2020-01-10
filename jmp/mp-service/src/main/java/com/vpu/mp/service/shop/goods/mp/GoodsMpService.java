@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -15,8 +16,10 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchContentVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchParam;
 import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
@@ -31,7 +34,16 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record12;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Result;
+import org.jooq.Select;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStepN;
+import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +55,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
+import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
+import static com.vpu.mp.db.shop.Tables.UPLOADED_VIDEO;
 
 /**
  * @author 李晓冰
@@ -267,6 +283,43 @@ public class GoodsMpService extends ShopBaseService {
     }
 
     /**
+     * 通过条件查询商品列表 如满包邮
+     * @param param 查询条件
+     * @return GoodsListMpBo
+     */
+    public PageResult<GoodsListMpBo> getGoodsListNormal(GoodsSearchParam param){
+        Condition condition = handleSearchCondition(param);
+
+        SelectConditionStep<Record12<Integer, String, Byte, BigDecimal, BigDecimal, Integer, Integer, String, Integer, Integer, Integer, Integer>> select =
+                db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+                        GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
+                        GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID).from(GOODS).where(condition);
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsListMpBo.class);
+    }
+
+    /**
+     * 查询条件
+     * @param param
+     * @return
+     */
+    private Condition handleSearchCondition(GoodsSearchParam param) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        if (param.getShowSoldOut()){
+            condition= condition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+        if (param.getGoodsIds()!=null&&param.getGoodsIds().size()>0){
+            condition= condition.or(GOODS.GOODS_ID.in(param.getGoodsIds()));
+        }
+        if (param.getCatIds()!=null&&param.getCatIds().size()>0){
+            condition=condition.or(GOODS.CAT_ID.in(param.getCatIds()));
+        }
+        if (param.getSortIds()!=null&&param.getSortIds().size()>0){
+            condition=condition.or(GOODS.SORT_ID.in(param.getCatIds()));
+        }
+        return condition;
+    }
+
+    /**
      * 通过商品id集合回去对应的数据信息
      *
      * @param goodsIds 商品id集合
@@ -285,7 +338,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param goodsListCapsules 通过过滤条件获取的商品信息
      * @param userId            用户id 可为null(在admin页面装修的时候传入的就是null)
      */
-    private void disposeGoodsList(List<GoodsListMpBo> goodsListCapsules, Integer userId) {
+    public void disposeGoodsList(List<GoodsListMpBo> goodsListCapsules, Integer userId) {
         GoodsListMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsListMpProcessorFactory.class);
         // 处理规格，评价，标签，活动tag,最终划线价和商品价格
         processorFactory.doProcess(goodsListCapsules, userId);
@@ -393,7 +446,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
-    public PageResult<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
+    public GoodsSearchContentVo searchGoods(GoodsSearchMpParam param) {
         PageResult<GoodsListMpBo> pageResult = null;
 
         Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
@@ -417,7 +470,18 @@ public class GoodsMpService extends ShopBaseService {
         }
 
         disposeGoodsList(pageResult.dataList, param.getUserId());
-        return pageResult;
+
+        //是否显示划线价开关
+        Byte delMarket = configService.shopCommonConfigService.getDelMarket();
+        //是否显示购买按钮
+        ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
+
+        GoodsSearchContentVo vo =new GoodsSearchContentVo();
+        vo.setDelMarket(delMarket);
+        vo.setShowCart(showCart);
+        vo.setPageResult(pageResult);
+
+        return vo;
     }
 
     /**
@@ -478,7 +542,6 @@ public class GoodsMpService extends ShopBaseService {
             if (!allType) {
                 condition = condition.and(GOODS.GOODS_ID.in(gtaGoodsIds));
             }
-
         }
 
         return condition;
@@ -631,5 +694,13 @@ public class GoodsMpService extends ShopBaseService {
         }
     }
 
+    /**
+     * 根据商家分类获取对应商品的ID集合
+     * @param sortId 商家分类ID
+     * @return 商品ID集合
+     */
+    public List<Integer> getGoodsIdsBySortIdDao(Integer sortId) {
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
+    }
 
 }

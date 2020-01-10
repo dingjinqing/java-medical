@@ -8,7 +8,8 @@ import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftConstant;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.sql.Timestamp;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.GiveGiftReceive.GIVE_GIFT_RECEIVE;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * Table:GIVE_GIFT_RECEIVE
