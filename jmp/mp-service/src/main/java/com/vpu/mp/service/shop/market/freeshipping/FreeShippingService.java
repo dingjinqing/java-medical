@@ -51,6 +51,8 @@ public class FreeShippingService extends ShopBaseService {
     @Autowired
     public FreeShippingRuleService ruleService;
     @Autowired
+    public FreeShippingGoodsService freeShipGoods;
+    @Autowired
     QrCodeService qrCodeService;
 
 
