@@ -33,12 +33,15 @@ global.wxComponent({
         if(res.error === 0 && res.content !== null){
           this.setData({
             ['dataList[' + (parseInt(this.data.currentPage) - 1) + ']']: res.content.recommendGoods,
+            delMarket:res.content.delMarket,
+            showCart:res.content.showCart,
             currentPage:++this.data.currentPage
           });
         }
       },{
         pageName:this.data.pageName,
         pageNum:this.data.currentPage,
+        userId:util.getCache('user_id'),
         pageSize:20
       })
     },

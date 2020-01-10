@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -323,7 +324,7 @@ public class OrderOperationJudgment {
 		if(CollectionUtils.isEmpty(order.getOrderType())) {
 			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType())));
 		}
-		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getOrderType().indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1) {
+		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getOrderType().indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT).toString()) == -1) {
 			return true;
 		}
 		return false;

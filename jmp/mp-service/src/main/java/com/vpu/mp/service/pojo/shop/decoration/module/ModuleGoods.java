@@ -63,7 +63,7 @@ public class ModuleGoods extends ModuleBase {
     private Byte goodsModuleBg;
 
     @JsonProperty("goods_module_title")
-    private String goodsModuleTitle;
+    private Byte goodsModuleTitle;
 
     @JsonProperty("goods_num")
     private Integer goodsNum;
@@ -114,6 +114,9 @@ public class ModuleGoods extends ModuleBase {
     @JsonProperty("min_price")
     private BigDecimal minPrice;
 
+    /**
+     * 1展示其他信息
+     */
     @JsonProperty("other_message")
     private Byte otherMessage;
     /**

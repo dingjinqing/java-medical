@@ -64,6 +64,42 @@ const actBaseInfo = {
       3: 'startTime',
       0: 'endTime'
     }
+  },
+  18: {
+    actName: '首单特惠',
+    multiSkuAct: true,
+    prdListName: 'firstSpecialPrdMpVos',
+    prdPriceName: {
+      prdRealPrice: 'firsSpecialPrice',
+      prdLinePrice: 'prdPrice'
+    }
+  },
+  6:{
+    actName:'限时降价',
+    multiSkuAct:true,
+    prdListName:'reducePricePrdMpVos',
+    prdPriceName: {
+      prdRealPrice: 'reducePrice',
+      prdLinePrice: 'prdPrice'
+    }
+  },
+  97:{
+    actName:'会员价',
+    multiSkuAct:true,
+    prdListName:'gradePrdMpVos',
+    prdPriceName: {
+      prdRealPrice: 'gradePrice',
+      prdLinePrice: 'prdPrice'
+    }
+  },
+  98:{
+    actName:'会员价|限时降价',
+    multiSkuAct:true,
+    prdListName:'gradeReducePrdVos',
+    prdPriceName: {
+      prdRealPrice: 'activityPrice',
+      prdLinePrice: 'prdPrice'
+    }
   }
 }
 global.wxPage({
@@ -71,7 +107,25 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    actBarInfo: {}
+    actBarInfo: {},
+    actRuleText: {
+      1: {
+        title: '拼团规则',
+        ruleList: [
+          '选择商品，付款开团/参团',
+          '邀请好友,支付参团',
+          '满员发货，不满自动退款'
+        ]
+      },
+      3: {
+        title: '砍价规则',
+        ruleList: [
+          '点击下方“砍价拿”按钮开始',
+          '邀请好友来砍价',
+          '砍价成功，商品低价拿'
+        ]
+      }
+    }
   },
   /**
    * 生命周期函数--监听页面加载
@@ -97,7 +151,7 @@ global.wxPage({
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
-            this.getActivity(res.content)
+            if (res.content.activity && [1, 3, 5].includes(res.content.activity.activityType)) this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             let { comment, goodsImgs, goodsVideo, goodsVideoImg, coupons, goodsDesc = null, isPageUp = 0, goodsPageId = null, deliverPlace, defaultPrd, activity, goodsNumber, goodsSaleNum, labels, goodsAd, isCollected, products, goodsName, deliverPrice, limitBuyNum,
               limitMaxNum, goodsId } = res.content
             let goodsMediaInfo = {
@@ -147,6 +201,13 @@ global.wxPage({
                 ...this.getPrice(goodsInfo)
               }
             })
+            // 限时降价状态栏
+            if (res.content.activity && res.content.activity.activityType === 6) { 
+              this.setData({
+                  reduceActBarPrice:this.getActBarPrice(products,activity,'prdRealPrice'),
+              })
+            }
+            this.getPromotions(res.content)
             resolve(res.content);
           }
         }, {
@@ -341,6 +402,7 @@ global.wxPage({
       });
     }, 1000)
   },
+  // 格式化时间
   dateformats: function (micro_second) {
     // 秒数
     var second = Math.floor(micro_second);
@@ -352,9 +414,11 @@ global.wxPage({
     var sec = second % 60;
     return `${String(hr).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
   },
+  // 去拼团
   goGroup (e) {
     util.jumpLink(`pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`, 'navigateTo')
   },
+  // 分享弹窗
   share () {
     let activityData = {}
     let { goodsId, singleRealPrice: realPrice, singleLinePrice: linePrice, goodsImgs } = this.data.goodsInfo
@@ -401,14 +465,21 @@ global.wxPage({
   getMax (arr) {
     return Math.max(...arr);
   },
+  // 获取价格
   getPrice (data) {
     let { products, activity } = data
     if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
       products = activity[actBaseInfo[activity.activityType]['prdListName']]
+      if(activity.activityType === 6 && activity.actState != 0){
+      products = data.products
+      }
     }
     let { realPrice, linePrice } = products.reduce((defaultData, val) => {
       if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
         var { [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice, [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice } = val
+        if(activity.activityType === 6 && activity.actState != 0){
+        var { prdRealPrice, prdLinePrice } = val
+        }
       } else {
         var { prdRealPrice, prdLinePrice } = val
       }
@@ -425,6 +496,28 @@ global.wxPage({
       prdLinePrice: data.defaultPrd ? linePrice[0] : lineMinPrice === lineMaxPrice ?  lineMinPrice : `${lineMinPrice}~${lineMaxPrice}`,
       singleRealPrice: lineMinPrice,
       singleLinePrice: lineMaxPrice
+    }
+  },
+  // 获取促销信息
+  getPromotions ({ promotions }) {
+    if (JSON.stringify(promotions) === '{}') return
+    let promotionArr = Object.keys(promotions).map(k => {
+      return promotions[k].map(item => {
+        return { type: k, ...this.getPromotionInfo(k, item) }
+      })
+    })
+    this.setData({
+      promotionInfo: promotionArr.flat(Infinity)
+    })
+  },
+  getPromotionInfo (promotionType, info) {
+    switch (promotionType) {
+      case '18':
+        if (info.isLimit) {
+          return { desc: `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`, id: info.promotionId }
+        } else {
+          return { desc: `新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`, id: info.promotionId }
+        }
     }
   },
   /**

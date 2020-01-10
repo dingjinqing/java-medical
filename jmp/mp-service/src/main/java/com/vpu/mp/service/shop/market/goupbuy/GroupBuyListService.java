@@ -137,7 +137,7 @@ public class GroupBuyListService extends ShopBaseService {
      * @return
      */
     public PageResult<MarketOrderListVo> groupBuyOrderList(MarketOrderListParam param) {
-        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param, OrderConstant.GOODS_TYPE_PIN_GROUP);
+        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
 
     }
 

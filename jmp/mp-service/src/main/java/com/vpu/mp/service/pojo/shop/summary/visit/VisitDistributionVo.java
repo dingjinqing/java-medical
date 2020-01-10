@@ -13,7 +13,8 @@ import java.util.List;
  */
 @Data
 public class VisitDistributionVo {
-
+    private String startDate;
+    private String endDate;
     /**
      * 平均访问深度
      */

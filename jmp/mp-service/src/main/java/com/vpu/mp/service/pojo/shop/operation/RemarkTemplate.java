@@ -87,7 +87,11 @@ public enum RemarkTemplate {
 	/**	管理员操作 - 门店服务次数 */
 	ADMIN_STORE_SERIVICE(6004,RemarkMessage.MSG_ADMIN_STORE_SERIVICE),
 	/**	管理员操作 - 会员卡余额 */
-	ADMIN_CARD_ACCOUNT(6005,RemarkMessage.MSG_ADMIN_CARD_ACCOUNT);
+	ADMIN_CARD_ACCOUNT(6005,RemarkMessage.MSG_ADMIN_CARD_ACCOUNT),
+	/** 用户激活奖励送积分*/
+	ADMIN_USER_IMPORT(6006,RemarkMessage.MSG_ADMIN_USER_IMPORT),
+	/** 用户激活奖励送积分*/
+	ADMIN_USER_ACTIVATE(6007,RemarkMessage.MSG_ADMIN_USER_ACTIVATE);
 	
 	/**	返回码 */
 	public  Integer code;

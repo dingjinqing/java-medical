@@ -1,15 +1,5 @@
 package com.vpu.mp.service.shop.user.message;
 
-import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -27,9 +17,17 @@ import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.Wx
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult.WxOpenSubscribeTemplate;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 /**
  * 小程序订阅消息

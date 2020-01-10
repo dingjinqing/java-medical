@@ -2179,8 +2179,9 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 		if(mCard==null) {
 			return;
 		}
-		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch()))
+		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch())) {
 			return;
+		}
 		List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
 		if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
 			couponGiveService.sendVoucher(userId,sendCouponList,cardId,19,(byte)1);
