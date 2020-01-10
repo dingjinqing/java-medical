@@ -224,7 +224,7 @@ import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import { saveDecorationPage, editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import { editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 import { pageEdit } from '@/api/admin/decoration/pageSet.js'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
@@ -1163,50 +1163,31 @@ export default {
       if (flag === 0 || flag === 1) {
         console.log(params)
         console.log(data)
-        if (this.isEditSave || (this.isNewEnterFirstSaveSucess !== -1)) { // 编辑保存
-          let id = ''
-          if ((this.isNewEnterFirstSaveSucess !== -1)) {
-            id = this.isNewEnterFirstSaveSucess
-          } else {
-            id = this.page_id
-          }
-          let editParams = {
-            'pageId': id,
-            'shopId': Number(localStorage.getItem('V-ShopId')),
-            'pageName': this.pageSetData.page_name,
-            'pageType': this.page_type,
-            'pageEnabled': this.page_enabled,
-            'pageTplType': this.page_tpl_type,
-            'pageContent': JSON.stringify(data),
-            'pagePublishContent': JSON.stringify(data),
-            'pageState': pageState,
-            'catId': Number(this.pageSetData.cat_id),
-            'last_cur_idx': this.cur_idx
-          }
-          editSave(editParams).then((res) => {
-            console.log(res)
-
-            if (res.error === 0) {
-              this.$message.success({
-                message: '保存成功',
-                showClose: true,
-                duration: 1000
-              })
-            }
-          })
-        } else if (!this.isEditSave && (this.isNewEnterFirstSaveSucess === -1)) { // 新建保存
-          saveDecorationPage(params).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              this.isNewEnterFirstSaveSucess = res.content
-              this.$message.success({
-                message: '保存成功',
-                showClose: true,
-                duration: 1000
-              })
-            }
-          })
+        // let id = ''
+        // if ((this.isNewEnterFirstSaveSucess !== -1)) {
+        //   id = this.isNewEnterFirstSaveSucess
+        // } else {
+        //   id = this.page_id
+        // }
+        let editParams = {
+          'pageId': this.page_id,
+          'pageName': this.pageSetData.page_name,
+          'pageTplType': this.page_tpl_type,
+          'pageContent': JSON.stringify(data),
+          'pageState': pageState,
+          'catId': Number(this.pageSetData.cat_id)
         }
+        editSave(editParams).then((res) => {
+          console.log(res)
+
+          if (res.error === 0) {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true,
+              duration: 1000
+            })
+          }
+        })
       } else {
         this.$message.success({
           message: '预览测试',

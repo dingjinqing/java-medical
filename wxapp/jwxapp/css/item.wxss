@@ -1,9 +1,9 @@
 .flex_outside_box {
-  margin-top: 10px;
+  margin-top: 20rpx;
   background: #fff;
 }
 .flex_box {
-  padding: 10px 15px;
+  padding: 30rpx 30rpx;
   color: #353535;
   display: flex;
   align-items: center;
@@ -11,7 +11,7 @@
 }
 .item_left {
   color: #888;
-  margin-right: 5px;
+  margin-right: 10rpx;
   width: auto;
   min-width: 80rpx;
 }

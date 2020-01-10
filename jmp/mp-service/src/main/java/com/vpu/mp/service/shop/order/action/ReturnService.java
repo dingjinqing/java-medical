@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -517,7 +518,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
 		List<String> goodsType = Arrays.asList(order.getGoodsType().split(","));
 		//非货到付款 非拼团抽奖
-		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_GROUP_DRAW))) {
+		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
 			//修改库存-销量
 			updateStockAndSales(returnGoods,order,goodsType);
 		}
@@ -596,15 +597,15 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 }
 			}
 			//订单类型为拼团 且存在拼团id
-			if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_PIN_GROUP)) && order.getActivityId() != null) {
+			if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) && order.getActivityId() != null) {
 				//TODO 拼团修改库存和销量
 			}
             //订单类型为秒杀 且存在秒杀id 且不是赠品行
-            if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_SECKILL)) && order.getActivityId() != null && rGoods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
+            if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_SEC_KILL)) && order.getActivityId() != null && rGoods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
                 saas.getShopApp(getShopId()).seckill.updateSeckillStock(order.getActivityId(),rGoods.getProductId(),- rGoods.getGoodsNumber());
             }
             //订单类型为砍价 且存在砍价id
-            if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_BARGAIN)) && order.getActivityId() != null) {
+            if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_BARGAIN)) && order.getActivityId() != null) {
                 saas.getShopApp(getShopId()).bargain.updateBargainStock(order.getActivityId(),- rGoods.getGoodsNumber());
             }
 		}

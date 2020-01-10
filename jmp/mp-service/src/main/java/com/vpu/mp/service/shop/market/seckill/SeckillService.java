@@ -269,7 +269,7 @@ public class SeckillService extends ShopBaseService{
      *
      */
 	public PageResult<MarketOrderListVo> getSeckillOrderList(MarketOrderListParam param) {
-        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,OrderConstant.GOODS_TYPE_SECKILL);
+        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,BaseConstant.ACTIVITY_TYPE_SEC_KILL);
     }
     /**
      * 获取小程序码
@@ -330,9 +330,9 @@ public class SeckillService extends ShopBaseService{
             endDate = DateUtil.getLocalDateTime();
         }
         //获取销售额等金额
-        List<ActiveDiscountMoney> discountMoneyList = saas.getShopApp(getShopId()).readOrder.getActiveDiscountMoney(OrderConstant.GOODS_TYPE_SECKILL, param.getSkId(), startDate, endDate);
+        List<ActiveDiscountMoney> discountMoneyList = saas.getShopApp(getShopId()).readOrder.getActiveDiscountMoney(BaseConstant.ACTIVITY_TYPE_SEC_KILL, param.getSkId(), startDate, endDate);
         //获取参与用户信息
-        ActiveOrderList activeOrderUserList = saas.getShopApp(getShopId()).readOrder.getActiveOrderList(OrderConstant.GOODS_TYPE_SECKILL, param.getSkId(), startDate, endDate);
+        ActiveOrderList activeOrderUserList = saas.getShopApp(getShopId()).readOrder.getActiveOrderList(BaseConstant.ACTIVITY_TYPE_SEC_KILL, param.getSkId(), startDate, endDate);
 
         while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
             //活动实付金额、付款订单数、付款商品件数

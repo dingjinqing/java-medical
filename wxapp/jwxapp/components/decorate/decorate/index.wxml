@@ -24,9 +24,9 @@
 		<v-seckill wx:elif="{{module.component_name == 'v-seckill'}}" module="{{module}}" />
 		<!--积分兑换-->
 		<v-integral wx:elif="{{module.component_name == 'v-integral'}}" module="{{module}}" />
-	   	<!--拼团抽奖(缺接口)-->
+	   	<!--拼团抽奖-->
 	   	<v-pinlottery wx:elif="{{module.component_name == 'v-pinlottery'}}" module="{{module}}" />
-	   	<!--瓜分积分(缺接口)-->
+	   	<!--瓜分积分(缺跳活动页接口)-->
 	   	<v-pinintegration wx:elif="{{module.component_name == 'v-pinintegration'}}" module="{{module}}" />
 		<!--地图(接口缺字段，需后端处理)-->
 		<v-map wx:elif="{{module.component_name == 'v-map'}}" module="{{module}}" />
@@ -34,6 +34,8 @@
 		<v-official-accounts wx:elif="{{module.component_name == 'v-official-accounts'}}" module="{{module}}" />
 		<!--视频模块-->
 		<v-video wx:elif="{{module.component_name == 'v-video'}}" module="{{module}}" />
+	    <!--标题模块-->
+		<v-title wx:elif="{{module.component_name == 'v-title'}}" module="{{module}}" />
 	</block>
 </view>
 

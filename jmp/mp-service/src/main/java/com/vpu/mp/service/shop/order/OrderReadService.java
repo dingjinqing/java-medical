@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order;
 
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
@@ -593,14 +594,14 @@ public class OrderReadService extends ShopBaseService {
 			order.setVerifierInfo(userInfo.getUsername(), userInfo.getMobile());
 		}
 		//子单
-		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
+		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT).toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
 			//只显示生成订单的子订单
 			order.setSubOrder(getSubOrder(orders.subList(1, orders.size())));
 		}
 		//好物圈
 
 		// 拼团
-		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
+		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY).toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
 			//未退款
 			if (!groupOrder.getStatus().equals(GroupBuyConstant.STATUS_FAILED)&&!groupOrder.getStatus().equals(STATUS_WAIT_PAY)){
@@ -613,7 +614,7 @@ public class OrderReadService extends ShopBaseService {
 				groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
                 order.setGroupBuyInfo(groupOrderVo);
             }
-		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
+		}else if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW).toString()) != -1) {
 
 		}
 		//拼团抽奖

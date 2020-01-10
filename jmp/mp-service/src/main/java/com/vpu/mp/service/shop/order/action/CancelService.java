@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -249,18 +250,18 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
                     normalGoods.get(record.getGoodsId()).setGoodsSaleNum(saleNum);
                     products.get(record.getProductId()).setPrdNumber(prdNum);
                 }
-                if(orderType.contains(Integer.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP))) {
+                if(orderType.contains(Integer.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
                     //拼团库存修改
                 }
 
-                if(orderType.contains(Integer.valueOf(OrderConstant.GOODS_TYPE_SECKILL))) {
+                if(orderType.contains(Integer.valueOf(BaseConstant.ACTIVITY_TYPE_SEC_KILL))) {
                     //秒杀
                 }
             }
-        }else if(orderType.contains(Integer.valueOf(OrderConstant.GOODS_TYPE_SECKILL))){
+        }else if(orderType.contains(Integer.valueOf(BaseConstant.ACTIVITY_TYPE_SEC_KILL))){
             //秒杀库存
             saas.getShopApp(getShopId()).seckill.seckillList.cancelSeckillOrderStock(order,oGoods.get(0));
-        }else if(orderType.contains(Integer.valueOf(OrderConstant.GOODS_TYPE_BARGAIN))){
+        }else if(orderType.contains(Integer.valueOf(BaseConstant.ACTIVITY_TYPE_BARGAIN))){
             //砍价库存
             saas.getShopApp(getShopId()).bargain.bargainRecord.bargainUser.cancelBargainOrderStock(order);
         }

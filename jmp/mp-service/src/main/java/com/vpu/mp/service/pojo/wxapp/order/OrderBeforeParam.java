@@ -70,7 +70,6 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private Map<Integer, Goods> goodsMap;
     @JsonIgnore
     /**方便查找*/
-
     private List<OrderGoodsBo> bos;
 	/**方便查找*/
 	/** 订单业务处理方法*/
@@ -127,8 +126,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private Integer purchasePriceRuleId;
 		private String promoteInfo;
 		/** 拼团的 折后团长优惠价*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private BigDecimal grouperTotalReduce=BigDecimal.ZERO;
 		/** 拼团的 折后团长优惠价单价，逐级计算折扣单价*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private BigDecimal grouperGoodsReduce =BigDecimal.ZERO;
 		/**以下为后台产生逻辑值directPurchase*/
         /** 规格价 */

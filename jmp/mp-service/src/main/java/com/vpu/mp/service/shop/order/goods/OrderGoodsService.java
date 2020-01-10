@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -343,23 +344,23 @@ public class OrderGoodsService extends ShopBaseService{
         for(OrderGoodsBo bo : bos){
             if(bo.getPurchasePriceRuleId() != null){
                 //加价购活动
-                type.add(OrderConstant.GOODS_TYPE_PURCHASE_PRICE);
+                type.add(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
             }
             if(bo.getReducePriceId() != null){
                 //限时降价
-                type.add(OrderConstant.GOODS_TYPE_REDUCE_PRICE);
+                type.add(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
             }
             if(!NumberUtils.INTEGER_ZERO.equals(bo.getFirstSpecialId())){
                 //首单特惠
-                type.add(OrderConstant.GOODS_TYPE_FIRST_SPECIAL);
+                type.add(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
             }
             if(bo.getGiftId() != null){
                 //赠品
-                type.add(OrderConstant.GOODS_TYPE_GIFT);
+                type.add(BaseConstant.ACTIVITY_TYPE_GIFT);
             }
             if(bo.getFreeShip() != null){
                 //满包邮
-                type.add(OrderConstant.GOODS_TYPE_FREESHIP_ORDER);
+                type.add(BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER);
             }
         }
         return type;
