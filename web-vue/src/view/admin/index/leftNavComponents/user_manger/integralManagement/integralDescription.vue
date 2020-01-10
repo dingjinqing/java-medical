@@ -27,12 +27,9 @@
               <TinymceEditor
                 v-model="editMsg"
                 :disabled="disabled"
-                @onClick="onClick"
-                @input="input"
                 ref="editor"
               />
             </div>
-
           </div>
         </div>
       </div>
@@ -40,19 +37,22 @@
     </div>
 
     <!--保存-->
-    <SaveComponent />
+    <div class="footer">
+      <div
+        class="save"
+        @click="handleToSave()"
+      >{{$t('shopStyle.saveText')}}</div>
+    </div>
   </div>
 </template>
 <script>
 import { saveScoreDocumentUpdate, scoreCopywritingRequest } from '@/api/admin/memberManage/scoreManage/scoreCfg.js'
 export default {
   components: {
-    SaveComponent: () => import('./saveComponent'),
     TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
   },
   data () {
     return {
-      example: null, // 展示示例
       editMsg: '',
       disabled: false,
       templateData: null
@@ -62,7 +62,6 @@ export default {
     this.loadDefaultData()
   },
   watch: {
-
     '$store.state.util.integralDataNotice' (newData) {
       let obj = {
         editMsg: this.editMsg
@@ -76,45 +75,34 @@ export default {
   },
   mounted () {
     this.langDefault()
-    this.$http.$on('saveIntegralDescription', res => {
-      console.log('save score description')
+  },
+  methods: {
+    // 初始化数据
+    loadDefaultData () {
+      scoreCopywritingRequest().then(res => {
+        if (res.error === 0) {
+          this.editMsg = res.content.document
+        }
+      })
+    },
 
+    // 清空内容
+    clear () {
+      this.$refs.editor.clear()
+    },
+
+    // 点击使用模板文案
+    handleToUseTemplate () {
+      this.editMsg = this.templateData
+    },
+
+    // 保存
+    handleToSave () {
       saveScoreDocumentUpdate({ document: this.editMsg }).then(res => {
         if (res.error === 0) {
           this.$message.success(this.$t('memberCard.saveSuccess'))
         }
       })
-    })
-  },
-  methods: {
-    // 加载默认数据
-    loadDefaultData () {
-      this.example = this.templateData
-      scoreCopywritingRequest().then(res => {
-        if (res.error === 0) {
-          this.editMsg = res.content.document
-          if (this.editMsg) {
-            this.example = this.editMsg
-          }
-        }
-      })
-    },
-    // 鼠标单击的事件
-    onClick (e, editor) {
-      console.log(e, editor)
-      this.example = this.editMsg
-    },
-    // 清空内容
-    clear () {
-      this.$refs.editor.clear()
-    },
-    // 编辑器输入内容获取
-    input (val) {
-      console.log(val)
-    },
-    // 点击使用模板文案
-    handleToUseTemplate () {
-      this.editMsg = this.templateData
     }
   }
 }
@@ -194,6 +182,28 @@ export default {
         }
       }
     }
+  }
+}
+.footer {
+  background: #f8f8fa;
+  border-top: 1px solid #f2f2f2;
+  text-align: center;
+  position: fixed;
+  z-index: 2;
+  bottom: 0;
+  padding: 10px 0;
+  left: 0;
+  right: 0;
+  margin-right: 1%;
+  .save {
+    width: 70px;
+    height: 30px;
+    line-height: 30px;
+    border: none;
+    background: #5a8bff;
+    color: #fff;
+    margin: auto;
+    cursor: pointer;
   }
 }
 </style>
