@@ -97,5 +97,7 @@ public class AvailCouponDetailVo {
     private long remainHours;
     private long remainMinutes;
     private long remainSeconds;
+    private String useExplain;
+    private String validationCode;
 }
 

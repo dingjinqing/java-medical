@@ -33,5 +33,7 @@ public class CouponDetailsVo {
   /** 优惠券有效小时数 */
   private Integer validityHour;
   /** 优惠券有效分钟数 */
-  private Integer validityMinute;
+    private Integer validityMinute;
+    /** 优惠券满多少元可用 */
+    private BigDecimal leastConsume;
 }
