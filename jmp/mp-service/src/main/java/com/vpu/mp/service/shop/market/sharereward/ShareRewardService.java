@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.AttendShareUser;
 import com.vpu.mp.db.shop.tables.ShareAward;
 import com.vpu.mp.db.shop.tables.ShareAwardReceive;
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
+import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -462,7 +463,7 @@ public class ShareRewardService extends ShopBaseService {
      *
      * @param id the id
      */
-    public void activityAvailable(Integer id, Integer goodId) {
+    public com.vpu.mp.db.shop.tables.records.ShareAwardRecord activityAvailable(Integer id, Integer goodId) {
         Assert.isTrue(activityIsExist(id), JsonResultCode.CODE_DATA_NOT_EXIST, String.format("Activity:%s", id));
         log.info("分享有礼活动 {} 不存在", id);
         com.vpu.mp.db.shop.tables.records.ShareAwardRecord record = getShareReward(id);
@@ -475,22 +476,72 @@ public class ShareRewardService extends ShopBaseService {
         int goodPv = getGoodsPv(goodId);
         Assert.isFalse(BYTE_THREE.equals(record.getCondition()) && goodPv > record.getGoodsPv(), JsonResultCode.CODE_FAIL);
         log.info("分享有礼活动 {} , 该分享商品 {} 的访问量 {} 不符合活动限制 {}！", id, goodId, goodPv, record.getGoodsPv());
+        return record;
     }
 
+    /**
+     * Gets share reward.
+     *
+     * @param id the id
+     * @return the share reward
+     */
     public com.vpu.mp.db.shop.tables.records.ShareAwardRecord getShareReward(Integer id) {
         return db().fetchSingle(sa, sa.ID.eq(id));
     }
 
-    public Map<Byte, ShareRule> getShareRules(Integer id) {
-        com.vpu.mp.db.shop.tables.records.ShareAwardRecord record = getShareReward(id);
-        return new HashMap<Byte, ShareRule>(3) {{
-            put(BYTE_ZERO, Util.json2Object(record.getFirstLevelRule(), ShareRule.class, false));
-            put(BYTE_ONE, Util.json2Object(record.getSecondLevelRule(), ShareRule.class, false));
-            put(BYTE_TWO, Util.json2Object(record.getThirdLevelRule(), ShareRule.class, false));
-        }};
+    /**
+     * Gets share award record.
+     *
+     * @param shareId the share id
+     * @param userId  the user id
+     * @param goodsId the goods id
+     * @return the share award record
+     */
+    public ShareAwardRecordRecord getShareAwardRecord(Integer shareId, Integer userId, Integer goodsId) {
+        return db().fetchSingle(sar, sar.USER_ID.eq(userId).and(sar.SHARE_ID.eq(shareId)).and(sar.GOODS_ID.eq(goodsId)));
     }
 
+    /**
+     * Gets share rules.
+     *
+     * @param id the id
+     * @return the share rules
+     */
+    public ShareRewardInfoVo getShareRules(Integer id) {
+        ShareRewardInfoVo shareReward = db().selectFrom(sa).where(sa.ID.eq(id)).fetchOneInto(ShareRewardInfoVo.class);
+        int sum = INTEGER_ZERO;
+        List<ShareRule> list = new ArrayList<ShareRule>() {{
+            add(Util.json2Object(shareReward.getFirstLevelRule(), ShareRule.class, false));
+            add(Util.json2Object(shareReward.getSecondLevelRule(), ShareRule.class, false));
+            add(Util.json2Object(shareReward.getThirdLevelRule(), ShareRule.class, false));
+        }};
+        list = list.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        for (ShareRule shareRule : list) {
+            sum += shareRule.getInviteNum();
+            shareRule.setInviteNum(sum);
+        }
+        log.info("分享有礼活动 {} 对应的分享规则为：{}！", id, Util.toJson(list));
+        shareReward.setShareRules(list);
+        return shareReward;
+    }
+
+    /**
+     * Gets goods pv.
+     *
+     * @param goodsId the goods id
+     * @return the goods pv
+     */
     public int getGoodsPv(Integer goodsId) {
         return db().select(sum(USER_GR.COUNT)).from(USER_GR).where(USER_GR.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+    }
+
+    /**
+     * Autoincrement user num.
+     *
+     * @param id the id
+     */
+    public int autoincrementUserNum(Integer id) {
+        db().update(sar).set(sar.USER_NUMBER, sar.USER_NUMBER.add(INTEGER_ONE)).where(sar.ID.eq(id)).execute();
+        return db().select(sar.USER_NUMBER).from(sar).where(sar.ID.eq(id)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 }

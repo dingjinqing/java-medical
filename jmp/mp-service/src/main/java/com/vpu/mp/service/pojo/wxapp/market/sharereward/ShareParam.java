@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.market.shareReward;
+package com.vpu.mp.service.pojo.wxapp.market.sharereward;
 
 import lombok.Data;
 

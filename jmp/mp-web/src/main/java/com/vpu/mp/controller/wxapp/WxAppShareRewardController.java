@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.wxapp.market.shareReward.ShareParam;
+import com.vpu.mp.service.pojo.wxapp.market.sharereward.ShareParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
