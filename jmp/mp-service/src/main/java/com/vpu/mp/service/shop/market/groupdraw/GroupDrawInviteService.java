@@ -31,16 +31,36 @@ public class GroupDrawInviteService extends ShopBaseService {
     }
     
     
-    
-    public void createInviteRecord(String path,Map<String, String> query,Byte isNew) {
-    	GroupDrawInviteRecord newRecord = db().newRecord(GROUP_DRAW_INVITE);
-    	newRecord.setIdentityId(Integer.parseInt(query.get("group_draw_id")));
-    	newRecord.setPath(path);
-    	newRecord.setGoodsId(Integer.parseInt(query.get("goods_id")));
-    	newRecord.setGroupId(Integer.parseInt(query.get("group_id")));
-    	newRecord.setInviteUserId(Integer.parseInt(query.get("invite_id")));
-    	newRecord.setUserId(Integer.parseInt(query.get("user_id")));
-    	newRecord.setIsNew(isNew);
-    	newRecord.update();
-    }
+    /**
+     * 创建邀请记录
+     * @param path
+     * @param identityId
+     * @param query
+     * @param isNew
+     */
+	public void createInviteRecord(String path, Integer identityId, Map<String, String> query, Byte isNew) {
+		Integer goodsId = Integer.valueOf(query.get("goods_id"));
+		GroupDrawInviteRecord record = getAvailableInviteUser(identityId, goodsId,Integer.valueOf(query.get("user_id")));
+		Integer groupId = Integer.valueOf(query.get("group_id"));
+		Integer inviteId = Integer.valueOf(query.get("invite_id"));
+		if (record != null) {
+			record.setInviteUserId(inviteId);
+			if (groupId != null) {
+				record.setGroupId(groupId);
+			}
+			int update = record.update();
+			logger().info("更新邀请记录" + update);
+		} else {
+			record = db().newRecord(GROUP_DRAW_INVITE);
+			record.setIdentityId(identityId);
+			record.setPath(path);
+			record.setGoodsId(goodsId);
+			record.setGroupId(groupId);
+			record.setInviteUserId(inviteId);
+			record.setUserId(Integer.parseInt(query.get("user_id")));
+			record.setIsNew(isNew);
+			int insert = record.insert();
+			logger().info("插入邀请记录"+insert);
+		}
+	}
 }
