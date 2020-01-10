@@ -538,7 +538,9 @@ public class AdminDecorationService extends ShopBaseService {
         }
         if(node.getKey().equals("page_cfg")){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
-            pageCfg.getPictorial().setShareImgPath(new URL(pageCfg.getPictorial().getShareImgPath()).getPath());
+            if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
+                pageCfg.getPictorial().setShareImgPath(new URL(pageCfg.getPictorial().getShareImgPath()).getPath());
+            }
             return pageCfg;
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
