@@ -15,8 +15,11 @@
             </view>
             <view class="coupon_list_center">
               <view class="coupon_center_limit" style='color:{{comColor}}'>{{item.consume_text}}</view>
-              <view class="coupon_center_number" style='color:{{borColor}};'>
+              <view class="coupon_center_number" style='color:{{borColor}};' wx:if="{{item.limitSurplusFlag == 0}}">
                 <text>剩余{{item.surplus}}张</text>
+              </view>
+              <view class="coupon_center_number" style='color:{{borColor}};' wx:if="{{item.limitSurplusFlag == 1}}">
+                <text>库存无限制</text>
               </view>
             </view>
             <view class="coupon_list_bottom">
