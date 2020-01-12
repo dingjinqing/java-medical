@@ -16,7 +16,7 @@
     <view class="cou_area">
         <block> 
             <view bindtap="couponDetail" data-couponSn="{{item.couponSn}}" wx:for="{{allCoupon}}" wx:key="index" wx:if="{{allCoupon.length != 0}}"  style="margin-bottom: 20rpx;overflow: hidden;">
-              <view class="left" style="background:{{ this_type != 2 ? comColor :'#ccc' }}">
+              <view class="left" style="background:{{ this_type == 0 ? comColor :'#ccc' }}">
                 <view class="vip_exclusive" wx:if="{{item.is_exclusive == 1}}">会员</view>
                 <view class='coupon_xian'>
                   <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>

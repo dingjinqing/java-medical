@@ -22,7 +22,7 @@ global.wxPage({
   data: {
     imageUrl: "http://miniimg.cn/",
     act_info: {},
-    detailType: 1, // 详情类型(个人中心性情: 0, 装修详情: 1)
+    detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
   },
 
   /**
@@ -74,7 +74,11 @@ global.wxPage({
     if (time_now > res.content.endTime) {
       res.content.is_expire = 1;
     } else if (time_now < res.content.endTime) {
-      res.content.is_expire = 0;
+      if (res.content.isUsed == 1) {
+        res.content.is_expire = 1;
+      } else {
+        res.content.is_expire = 0;
+      }
     }
     // 倒计时
     if (res.content.remainDays == 0) {
@@ -111,6 +115,11 @@ global.wxPage({
       total_micro_second -= 1;
       that.countdown(that);
     }, 1000)
+  },
+
+  // 领取码
+  bindBlur: function (e) {
+    input_vali = e.detail.value;
   },
 
   //立即领取
