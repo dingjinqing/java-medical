@@ -83,10 +83,14 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="actName"
           :label="$t('ordinaryCouponList.couponName')"
           align="center"
         >
+          <template slot-scope="scope">
+            <!-- v-if="scope.row.isExclusive" -->
+            <span class="vip_exclusive">会员专享</span>
+            <span>{{ scope.row.actName }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="typeText"
@@ -539,5 +543,13 @@ export default {
   span {
     cursor: pointer;
   }
+}
+.vip_exclusive {
+  display: inline-block;
+  border: 1px #c5a050 solid;
+  padding: 0px 3px;
+  color: #c5a050;
+  border-radius: 2px;
+  font-size: 12px;
 }
 </style>
