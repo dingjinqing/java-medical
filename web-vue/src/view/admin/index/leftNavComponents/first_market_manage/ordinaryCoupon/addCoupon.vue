@@ -363,15 +363,15 @@
                       <span class="card_links">
                         <span
                           class="member"
-                          @click="refresh()"
+                          @click="editType ? handler() : refresh()"
                         >{{ $t('ordinaryCoupon.memberTip3') }}</span><span> | </span>
                         <span
                           class="member"
-                          @click="addMemberCard()"
+                          @click="editType ? handler() : addMemberCard()"
                         >{{ $t('ordinaryCoupon.memberTip4') }}</span><span> | </span>
                         <span
                           class="member"
-                          @click="manageMemberCard()"
+                          @click="editType ? handler() : manageMemberCard()"
                         >{{ $t('ordinaryCoupon.memberTip5') }}</span>
                       </span>
                     </div>
@@ -860,7 +860,7 @@ export default {
           } else {
             this.param.isExclusive = true
             this.param.cardId = this.param.cardId.split(',')
-            // this.param.cardId = this.param.cardId.map(Number)
+            this.param.cardId = this.param.cardId.map(Number)
           }
           // 领取码
           this.param.validationCode = data.validationCode
@@ -940,7 +940,7 @@ export default {
           this.param.scoreNumber = Number(this.param.scoreNumber)
           this.param.startTime = this.param.couponDate[0]
           this.param.endTime = this.param.couponDate[1]
-          if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
+          if (this.param.cardId) {
             this.param.cardId = this.param.cardId.toString()
           } else {
             this.param.cardId = ''
@@ -1033,6 +1033,10 @@ export default {
       this.$nextTick(() => {
         this.$message.success('刷新成功')
       })
+    },
+
+    handler () {
+
     },
 
     addMemberCard () {
