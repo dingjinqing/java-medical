@@ -928,9 +928,9 @@ export default {
 
           // 可使用商品
           if (this.param.availableGoods === 0) {
-            this.param.recommendGoodsId = []
-            this.param.recommendCatId = []
-            this.param.recommendSortId = []
+            this.param.recommendGoodsId = ''
+            this.param.recommendCatId = ''
+            this.param.recommendSortId = ''
           } else {
             this.param.recommendGoodsId = this.goodsInfo.toString()
             this.param.recommendCatId = this.busClass.toString()
@@ -947,6 +947,7 @@ export default {
           }
 
           if (this.editType === false) {
+            debugger
             // 添加保存
             saveCoupon(this.param).then((res) => {
               if (res.error === 0) {

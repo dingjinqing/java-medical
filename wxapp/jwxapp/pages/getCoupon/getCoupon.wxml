@@ -108,7 +108,7 @@
         <form>
 
           <block wx:if="{{detailType == 1}}">
-            <view class="coupon-vw-int" wx:if="{{act_info.validationCode != null  }}">
+            <view class="coupon-vw-int" wx:if="{{act_info.validationCode != '' }}">
               <input class="coupon-input" placeholder="请输入领取码" bindinput='bindBlur'></input>
             </view> 
             <view class="coupon-vw-btn">
@@ -118,11 +118,11 @@
             </view> 
           </block>
 
-          <!-- <block wx:if="{{act_info.from == 1 && act_info.is_exclusive == 1 && act_info.is_can_buy == 0 && act_info.can_fetch_num > 0 && act_info.have_expired == 0}}">
+          <block wx:if="{{act_info.from == 1 && act_info.is_exclusive == 1 && act_info.is_can_buy == 0 && act_info.can_fetch_num > 0 && act_info.have_expired == 0}}">
             <view class="coupon-vw-btn">
               <button class="coupon-button" style='margin-top:0' bindtap="top_more" style='color:{{comColor}};border-color:{{comColor}}'>开通会员</button>       
             </view> 
-          </block> -->
+          </block>
 
           <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 0}}">
             <view class="coupon-vw-btn">
@@ -141,10 +141,10 @@
       </view> <!--领取明细END  -->
 
       <!--使用说明  --> 
-      <view class="coupon-direct" wx:if="{{act_info.use_explain != null}}">
+      <view class="coupon-direct" wx:if="{{act_info.useExplain != ''}}">
         <text style="color:#888;">使用说明：</text>
         <view class="coupon-direct-btm">
-          <text>{{act_info.use_explain}}</text>
+          <text>{{act_info.useExplain}}</text>
         </view>
       </view> <!--使用说明END  -->
     </block>
