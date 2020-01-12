@@ -108,7 +108,7 @@ export const en = {
   validatesuitGoods2: 'Please select the specified product classification!',
   validatesuitGoods3: 'Please select the specified platform classification!',
   validateType: 'Please select a coupon type',
-  validateactName1: 'Please enter the activity name',
+  validateactName1: 'Please enter the coupon name',
   validateactName2: 'Cannot be longer than 10 characters at',
   validatereceivePerPerson: 'Please select the limited number of tickets per person',
   validateNum: 'Please enter a positive number, two decimal places can be reserved',
