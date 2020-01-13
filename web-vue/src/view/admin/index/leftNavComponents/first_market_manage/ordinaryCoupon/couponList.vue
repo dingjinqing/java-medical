@@ -89,7 +89,7 @@
           <template slot-scope="scope">
             <span
               class="vip_exclusive"
-              v-if="scope.row.recommendGoodsId !== ''"
+              v-if="scope.row.cardId !== ''"
             >会员专享</span>
             <span>{{ scope.row.actName }}</span>
           </template>
