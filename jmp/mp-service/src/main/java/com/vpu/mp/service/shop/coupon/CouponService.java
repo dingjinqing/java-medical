@@ -441,7 +441,7 @@ public class CouponService extends ShopBaseService {
                         .fetchOne();
                     if(!Objects.isNull(record1)){
                         cardStatus = 1;
-                    }else{//没有该会员卡，需要先领取
+                    }else{//没有该会员卡，需要先领取会员卡
                         if(cardInfo.getCardType()!=2){
                             getCard.add(cardId);
                         }
