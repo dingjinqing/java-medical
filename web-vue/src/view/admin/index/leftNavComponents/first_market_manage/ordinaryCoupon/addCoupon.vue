@@ -366,10 +366,10 @@
                           class="member"
                           @click="editType ? handler() : refresh()"
                         >{{ $t('ordinaryCoupon.memberTip3') }}</span><span> | </span>
-                        <span
+                        <!-- <span
                           class="member"
                           @click="editType ? handler() : addMemberCard()"
-                        >{{ $t('ordinaryCoupon.memberTip4') }}</span><span> | </span>
+                        >{{ $t('ordinaryCoupon.memberTip4') }}</span><span> | </span> -->
                         <span
                           class="member"
                           @click="editType ? handler() : manageMemberCard()"

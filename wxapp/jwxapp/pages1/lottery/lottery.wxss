@@ -83,12 +83,12 @@ page {
   overflow: hidden;
 }
 .lottery-item {
+  position: relative;
   width: 174rpx;
   height: 185rpx;
   background: #ff9c80;
   margin-bottom: 14rpx;
   border-radius: 14rpx;
-  position: relative;
   font-weight: bold;
   color: #963a22;
 }
@@ -114,6 +114,15 @@ page {
   margin: 0 auto;
   border-radius: 50rpx;
   margin-bottom: 30rpx;
+}
+.cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 14rpx;
 }
 .lottery-btn {
   position: absolute;
@@ -164,4 +173,42 @@ page {
 }
 .lottery-opportunities {
   margin-bottom: 20rpx;
+}
+.lottery-rules {
+  width: 630rpx;
+  margin: 30rpx auto;
+  padding: 0 27rpx 37rpx;
+  background: #FEEC99;
+  color: #E89A0F;
+  font-size: 24rpx;
+  line-height: 48rpx;
+}
+.l-r-head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20rpx 0;
+  font-size: 30rpx;
+  font-family:Noto Sans S Chinese;
+  font-weight:500;
+}
+.l-r-h-c {
+  font-size: 30rpx;
+  font-weight: bold;
+  padding: 0 20rpx;
+}
+.l-r-h-line {
+  display: inline-block;
+  height: 1px;
+  width: 50rpx;
+  background: #E89A0F;
+  border: none;
+}
+.l-r-h-point {
+  font-size: 20px;
+  line-height: 0;
+}
+.l-r-h-l {
+  display: flex;
+  align-items: center;
 }

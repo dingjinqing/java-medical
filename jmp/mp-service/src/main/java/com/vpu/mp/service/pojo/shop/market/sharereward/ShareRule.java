@@ -51,4 +51,7 @@ public class ShareRule {
     @JsonProperty(value = "lottery_num")
     private Integer lotteryNum;
 
+    // 奖品剩余份数
+    private Integer stock;
+
 }
