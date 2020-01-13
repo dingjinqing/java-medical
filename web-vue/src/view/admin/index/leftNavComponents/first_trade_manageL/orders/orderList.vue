@@ -526,7 +526,10 @@
                     <template v-if="orderItem.refundStatus > 0">
                       <br />
                       <template v-if="[1,2,4].indexOf(orderItem.refundStatus) != -1">
-                        <el-button type="text">{{$t('order.applyRetrunView')}}</el-button>
+                        <el-button
+                          type="text"
+                          @click="goReturnView(orderItem.orderSn)"
+                        >{{$t('order.applyRetrunView')}}</el-button>
                       </template>
                       <template v-else>
                         <el-button type="text">{{$t('order.retrunView')}}</el-button>
@@ -682,7 +685,10 @@
                       <template v-if="childOrder.refundStatus > 0">
                         <br />
                         <template v-if="[1,2,4].indexOf(childOrder.refundStatus) != -1">
-                          <el-button type="text">{{$t('order.applyRetrunView')}}</el-button>
+                          <el-button
+                            type="text"
+                            @click="goReturnView(orderItem.orderSn)"
+                          >{{$t('order.applyRetrunView')}}</el-button>
                         </template>
                         <template v-else>
                           <el-button type="text">{{$t('order.retrunView')}}</el-button>
@@ -923,6 +929,14 @@ export default {
     },
     initDataList () {
       this.search()
+    },
+    goReturnView (orderSn) {
+      this.$router.push({
+        name: 'order_return',
+        query: {
+          orderSn: orderSn
+        }
+      })
     },
     goComment (orderSn) {
       this.$router.push({
