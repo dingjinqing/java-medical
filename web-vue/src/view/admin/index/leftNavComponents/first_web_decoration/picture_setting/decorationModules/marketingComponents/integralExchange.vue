@@ -11,26 +11,26 @@
       <!--模块编辑区-->
       <div class="integralExchange">
         <div class="integralExchangeMain">
-          <ul :style="modulesData.list_styles==='1'?'display:block':'display:flex'">
+          <ul :style="modulesData.list_styles===1?'display:block':'display:flex'">
             <li
               v-for="(item,index) in showData"
               :key="index"
-              :style="((index !==0&&index!==1)?'margin-top:5px;':'')+modulesData.list_styles==='1'?'display:flex;width:100%':'display:block'"
+              :style="((index !==0&&index!==1)?'margin-top:5px;':'')+modulesData.list_styles===1?'display:flex;width:100%':'display:block'"
             >
               <div
                 class="liTop"
-                :style="(!item.goods_img?'background:#eaf2ff url('+$imageHost+'/image/admin/shop_beautify/decorate_model.png) center no-repeat':'backgroundColor:#fff')+(modulesData.list_styles==='1'?';width:100px;height:100px;padding:5px':'')"
+                :style="(!item.goods_img?'background:#eaf2ff url('+$imageHost+'/image/admin/shop_beautify/decorate_model.png) center no-repeat':'backgroundColor:#fff')+(modulesData.list_styles===1?';width:100px;height:100px;padding:5px':'')"
               >
                 <img :src="item.goods_img">
               </div>
               <div
                 class="liBottom"
-                :style="modulesData.list_styles==='1'?'flex:1':''"
+                :style="modulesData.list_styles===1?'flex:1':''"
               >
                 <div class="goodsName">{{item.goods_name}}</div>
                 <div
                   class="integral_info_head "
-                  :style="modulesData.list_styles==='1'?'margin-top:37px':''"
+                  :style="modulesData.list_styles===1?'margin-top:37px':''"
                 >
                   <div class="goodsPrice">
                     <div class="integral_price ">

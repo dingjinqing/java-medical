@@ -344,7 +344,7 @@ public class GoodsCommentService extends ShopBaseService {
           return db().insertInto(
               COMMENT_GOODS,
               COMMENT_GOODS.USER_ID,
-//              COMMENT_GOODS.SHOP_ID,
+              COMMENT_GOODS.SHOP_ID,
               COMMENT_GOODS.GOODS_ID,
               COMMENT_GOODS.BOGUS_USERNAME,
               COMMENT_GOODS.BOGUS_USER_AVATAR,
@@ -358,7 +358,7 @@ public class GoodsCommentService extends ShopBaseService {
               COMMENT_GOODS.FLAG)
               .values(
                   NumberUtils.INTEGER_ZERO,
-//                  getShopId(),
+                  0,
                   goodsCommentAddComm.getGoodsId(),
                   goodsCommentAddComm.getBogusUsername(),
                   goodsCommentAddComm.getBogusUserAvatar(),
@@ -690,7 +690,7 @@ public class GoodsCommentService extends ShopBaseService {
     // 为指定商品添加评论
     db().insertInto(
             COMMENT_GOODS,
-//            COMMENT_GOODS.SHOP_ID,
+            COMMENT_GOODS.SHOP_ID,
             COMMENT_GOODS.USER_ID,
             COMMENT_GOODS.GOODS_ID,
             COMMENT_GOODS.ORDER_SN,
@@ -700,7 +700,7 @@ public class GoodsCommentService extends ShopBaseService {
             COMMENT_GOODS.ANONYMOUSFLAG,
             COMMENT_GOODS.FLAG)
         .values(
-//            getShopId(),
+            0,
             param.getUserId(),
             param.getGoodsId(),
             param.getOrderSn(),

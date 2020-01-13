@@ -22,11 +22,11 @@ public class PayAwardPrizeVo {
     /**
      * 是否已经发送
      */
-    private Byte      status;
+    private Byte status;
     /**
      * 幸运大抽奖
      */
-    private Integer    lotteryId;
+    private Integer lotteryId;
     /**
      * 账号金额
      */
@@ -34,15 +34,19 @@ public class PayAwardPrizeVo {
     /**
      * 积分数量
      */
-    private Integer    scoreNumber;
+    private Integer scoreNumber;
     /**
      * 商品id
      */
-    private Integer    productId;
+    private Integer productId;
+    private Integer prizeId;
     private ProductSmallInfoVo product;
-    private Integer    keepDays;
-    private String     customImage;
-    private String     customLink;
+    private Integer keepDays;
+    /**
+     * 自定义
+     */
+    private String customImage;
+    private String customLink;
     /**
      * 优惠卷
      */

@@ -17,28 +17,28 @@
           <span><i>{{$t('titleModule.titleTemplate')}}：</i></span>
           <el-radio
             v-model="moduleSaveData.title_model"
-            label="1"
+            :label="1"
           >{{$t('titleModule.basicStyle')}}</el-radio>
           <el-radio
             v-model="moduleSaveData.title_model"
-            label="2"
+            :label="2"
           >{{$t('titleModule.newsTemplateStyle')}}</el-radio>
         </div>
         <div class="module">
           <span><i>{{$t('titleModule.displayPosition')}}：</i></span>
           <el-radio
             v-model="moduleSaveData.tit_center"
-            label="1"
+            :label="1"
           >{{$t('titleModule.beAtTheLeftSide')}}</el-radio>
           <el-radio
             v-model="moduleSaveData.tit_center"
-            label="2"
+            :label="2"
           >{{$t('titleModule.centered')}}</el-radio>
         </div>
         <!--模板标题选中基础样式显示模块-->
         <div
           class="hiddenModule"
-          v-if="moduleSaveData.title_model==='1'"
+          v-if="moduleSaveData.title_model===1"
         >
           <div class="module">
             <span>{{$t('titleModule.Icon')}}：</span>
@@ -89,7 +89,7 @@
         <!--模板标题选中新闻标题样式显示模块-->
         <div
           class="hiddenModule"
-          v-if="moduleSaveData.title_model==='2'"
+          v-if="moduleSaveData.title_model===2"
         >
           <div class="module">
             <span>日期：</span>
@@ -179,9 +179,9 @@ export default {
       moduleSaveData: {
         'module_name': 'm_title', // 模块名称
         'title': '啦啦啦', // 标题
-        'title_model': '1', // 标题模板
+        'title_model': 1, // 标题模板
         'title_link': '', // 链接
-        'tit_center': '1', // 显示位置
+        'tit_center': 1, // 显示位置
         'color': '#333333', // 字体颜色
         'bg_color': '#ffffff', // 背景颜色
         'title_date': '', // 日期

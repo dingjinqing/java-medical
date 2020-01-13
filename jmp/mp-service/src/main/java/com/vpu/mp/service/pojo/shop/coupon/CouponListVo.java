@@ -77,4 +77,5 @@ public class CouponListVo {
         private Byte currentState;
 
         private Byte type;
+        private Timestamp expirationDate;
 }

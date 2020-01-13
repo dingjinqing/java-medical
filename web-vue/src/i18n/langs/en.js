@@ -89,6 +89,10 @@ import {
 import {
   en as tradesStatistics
 } from './views/admin_new/en/index/overview/tradesStatistics/tradesStatisticsEn'
+// 资产管理
+import {
+  en as assetsManage
+} from './views/admin_new/en/index/overview/assetsManage/assetsManageEn'
 
 // 用户画像
 import {
@@ -360,6 +364,10 @@ import {
 import {
   en as membershipIntroduction
 } from './views/admin_new/en/index/userManagement/member/membershipIntroductionEn'
+// 会员导入
+import {
+  en as memberIntroductionList
+} from './views/admin_new/en/index/userManagement/member/memberIntroductionListEn'
 // 会员导入
 import {
   en as memberIntroductionDialog
@@ -900,6 +908,7 @@ const en = {
   router, // 路由信息
 
   membershipIntroduction, // 会员列表
+  memberIntroductionList, // 会员导入列表
   memberIntroductionDialog, // 会员导入
   activationNotificationDialog, // 设置激活通知
   programVersion, // system 后台小程序版本
@@ -918,6 +927,7 @@ const en = {
   // 用户画像
   userportrait,
   userStatistics, // 用户统计
+  assetsManage, // 资产管理
 
   // 小程序管理
   pictureSetting,

@@ -16,5 +16,5 @@ public class GoodsSortMenuVo {
     private Integer menuId;
     private String menuName;
     /**该目录下的内容项*/
-    private GoodsSortMenuContentVo menuContent;
+    private MenuContentBaseVo menuContent;
 }

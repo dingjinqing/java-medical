@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 /**
  * @author liufei
  * @date 2019/8/5
- * @description
  */
 @Data
 public class AssetDetailVo {
@@ -20,4 +19,6 @@ public class AssetDetailVo {
     private Byte tradeStatus;
     private String tradeSn;
     private String username;
+    private String realName;
+    private String mobile;
 }

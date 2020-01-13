@@ -29,6 +29,7 @@
         </block>
       </swiper>
     </view>
+
     <view class='dis_top'>
       <view class='dis_info'>
         <view class='dis_top1'>累积获得佣金(元)</view>
@@ -70,6 +71,7 @@
       <view class="top_bg" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
 
     </view>
+    
     <view class="dis_recommend" wx:if='{{dis_info.rebate_goods!=""}}'>
       <view class="dis_recommend_title clearfix">
         <text>推广商品</text>

@@ -34,7 +34,7 @@
           >
             <img
               :style="moduleSavedata.image_type==='0'?'width:378px;height:378px;':moduleSavedata.image_type==='4'?'width:100%;height:70px':(moduleSavedata.image_type==='1'&&index%2===0)?`width:100%;height:100%;padding-bottom:${moduleSavedata.image_space}px;padding-right:${moduleSavedata.image_space/2}px`:(moduleSavedata.image_type==='1'&&index%2!==0)?`width:100%;height:100%;padding-bottom:${moduleSavedata.image_space}px;padding-left:${moduleSavedata.image_space/2}px`:'width:100%;height:100%'"
-              :src="$imageHost+'/'+item.image"
+              :src="item.image"
               v-if="moduleSavedata.image_type==='2'?!(moduleSavedata.image_type==='2'&&index>1):moduleSavedata.image_type==='3'?!(moduleSavedata.image_type==='3'&&index>2):moduleSavedata.image_type==='4'?!(moduleSavedata.image_type==='4'&&index>2):true"
             >
             <p
@@ -79,8 +79,9 @@
   </div>
 </template>
 <script>
-
+import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
+  mixins: [decMixins],
   props: {
     flag: Number,
     nowRightShowIndex: Number,
@@ -129,7 +130,9 @@ export default {
     backData: {
       handler (newData) {
         if (newData) {
-          this.moduleSavedata = newData
+          let turnToString = this.handleToTurnNumToStr(newData)
+          console.log(turnToString)
+          this.moduleSavedata = turnToString
         }
         console.log(newData)
       },

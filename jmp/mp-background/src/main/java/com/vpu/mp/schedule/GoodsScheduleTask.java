@@ -1,9 +1,7 @@
 package com.vpu.mp.schedule;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.saas.SaasApplication;
-import lombok.extern.slf4j.Slf4j;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -11,8 +9,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalTime;
 
 /**
  * 商品相关监控定时任务

@@ -2,8 +2,8 @@ package com.vpu.mp.service.pojo.shop.market.packagesale;
 
 import javax.validation.constraints.NotNull;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Page;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public class PackSaleDetailParam {
 		orderParam.setUserName(userName);
 		orderParam.setMobile(mobile);
 		orderParam.setOrderSn(orderSn);
-		orderParam.setGoodsType(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE});
+		orderParam.setGoodsType(new Byte[] {BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE});
 		orderParam.setCurrentPage(currentPage);
 		orderParam.setPageRows(pageRows);
 		return orderParam;

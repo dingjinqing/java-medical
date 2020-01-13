@@ -12,11 +12,11 @@
           <el-form-item :label="$t('bargain.listStyle') + '：'">
             <el-radio
               v-model="data.list_style"
-              label="0"
+              :label="0"
             >{{$t('bargain.doubleCol')}}</el-radio>
             <el-radio
               v-model="data.list_style"
-              label="1"
+              :label="1"
             >{{$t('bargain.singleCol')}}</el-radio>
           </el-form-item>
           <el-form-item :label="$t('bargain.chooseEvent') + '：'">
@@ -51,7 +51,7 @@
                 <template slot-scope="{row}">
                   <div>
                     <el-image
-                      :src="$imageHost +'/'+ row.goods_img"
+                      :src="row.goods_img"
                       style="width:30px; height:30px;border: 1px solid #eee;"
                     ></el-image>
                     <span>{{row.goods_name}}</span>

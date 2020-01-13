@@ -1,0 +1,36 @@
+// 会员导入
+export const cn = {
+  description: '说明：会员导入适用于会员迁移得场景，系统会导入增量会员并更新未激活会员得信息，不会更新已激活会员得信息',
+  setNotify: '设置激活通知',
+  memberImport: '会员导入',
+  importBatchNum: '导入批次号',
+  piCon: '请输入内容',
+  importTime: '导入时间',
+  to: '至',
+  startDate: '开始日期',
+  endDate: '结束日期',
+  filter: '筛选',
+  viewInactive: '查看未激活会员',
+  memberCard: '会员卡',
+  successNum: '成功数量',
+  failNum: '失败数量',
+  activeNum: '激活数量',
+  operate: '操作',
+  downFail: '下载失败数据',
+  downActive: '下载激活数据',
+
+  // 查看未激活会员
+  mobile: '手机号',
+  piMobile: '请输入手机号码',
+  realName: '真实姓名',
+  piRealName: '请输入真实姓名',
+  isDistributor: '是否是分销员',
+  pleaseChoose: '请选择',
+  yes: '是',
+  no: '否',
+  distributorGroup: '分销员分组',
+  ungroup: '未分组',
+  selectTime: '请选择时间',
+  piBatchNum: '请输入批次号',
+  ungrouped: '未分组'
+}

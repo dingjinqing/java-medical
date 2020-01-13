@@ -116,4 +116,55 @@ public class DistributionParam {
 	 */
 	@JsonProperty(value = "invitation_code")
 	public String invitationCode;
+
+	@JsonProperty(value = "auto_examine")
+    public Byte autoExamine;
+
+    /**
+     * 自定义激活项
+     */
+	@JsonProperty(value = "custom_options")
+    public List<CustomOptions> customOptions;
+
+    @Data
+    public static class CustomOptions{
+        /**
+         * 选项类型 0：单选；1：多选；2：文本
+         */
+	    @JsonProperty(value = "custom_type")
+        public Integer customType;
+
+        /**
+         * 标题
+         */
+	    @JsonProperty(value = "custom_title")
+        public String customTitle;
+
+        /**
+         * 选项值
+         */
+	    @JsonProperty(value = "option_arr")
+        public List<Options> optionArr;
+
+        /**
+         * 条件验证 0：非必填；1：必填
+         */
+	    @JsonProperty(value = "option_ver")
+        public Byte optionVer;
+
+        /**
+         * 选中状态
+         */
+	    @JsonProperty(value = "is_checked")
+        public Byte isChecked;
+
+    }
+
+    @Data
+    public static class Options{
+	    @JsonProperty(value = "option_title")
+        public String optionTitle;
+
+    }
+
 }

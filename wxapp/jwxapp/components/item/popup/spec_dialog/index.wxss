@@ -27,7 +27,7 @@
   flex-direction: column;
   justify-content: space-between;
 }
-.desc-info > .info > .price {
+.desc-info > .info .price {
   font-size: 36rpx;
 }
 .desc-info > .info > .marking-price {
@@ -60,4 +60,14 @@
   border: 2rpx solid #ddd;
   border-radius: 6rpx;
   margin: 20rpx 0 0 20rpx;
+}
+.spec-price-tag{
+  display: inline-block;
+  padding: 6rpx 8rpx;
+  margin-right: 10rpx;
+  border-bottom-left-radius: 22rpx;
+  border-top-right-radius: 22rpx;
+  color: #fff;
+  vertical-align: text-bottom;
+  text-align: center;
 }

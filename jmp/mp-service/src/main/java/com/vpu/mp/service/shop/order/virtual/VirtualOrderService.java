@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,7 +129,7 @@ public class VirtualOrderService extends ShopBaseService {
     				// 资金流量-支出
     				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
     				// 积分变动是否来自退款
-    				isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
+    				isFromRefund(NumberUtils.BYTE_ONE).build();
     				// 调用退积分接口
     				recordMemberTrade.updateUserEconomicData(scoreData);
     			}

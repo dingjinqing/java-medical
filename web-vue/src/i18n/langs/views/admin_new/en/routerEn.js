@@ -21,7 +21,10 @@ export const en = {
   search_summary: ['Overview', 'Search Statistics'],
   // 概况 资产管理
   asset_summary: ['Overview', 'Asset Manage'],
-
+  // 概况 访问分析
+  analysis_visit: ['Overview', 'visit Analysis'],
+  // 概况 来源分析
+  analysis_visit_source: ['Overview', 'source Analysis'],
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],
   // 会员管理 会员卡
@@ -103,6 +106,8 @@ export const en = {
   ],
   // 会员管理 会员导入
   membershipIntroduction: ['Membership management', 'Membership List'],
+  // 会员管理 会员导入 未激活会员
+  inactiveMembersList: ['Membership management', 'Membership List', 'Member not activated'],
   // 会员管理 积分管理
   integralManagement: ['Member ', 'Score MGR'],
   // 会员管理 标签管理

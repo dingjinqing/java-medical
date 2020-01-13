@@ -15,7 +15,7 @@
           <div class="titleWord">{{ $t('mapModule.mapAddress') }}</div>
         </div>
         <div
-          v-show="data.map_show === '1'"
+          v-show="data.map_show === 1"
           class="mapContent"
           id="mapContainer"
         >
