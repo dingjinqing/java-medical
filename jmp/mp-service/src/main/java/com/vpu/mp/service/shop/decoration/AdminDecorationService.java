@@ -258,39 +258,39 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 case ModuleConstant.M_SCROLL_IMAGE:
                     ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
                     for (ModuleScrollImage.ImageItem imageItem : moduleScrollImage.getImgItems()) {
-                        imageItem.setImageUrl(domainConfig.imageUrl(imageItem.getImageUrl()));
+                        imageItem.setImageUrl(imageUrl(imageItem.getImageUrl()));
                     }
                     return moduleScrollImage;
                 case ModuleConstant.M_IMAGE_GUIDE:
                     ModuleImageGuide moduleImageGuide = objectMapper.readValue(node.getValue().toString(), ModuleImageGuide.class);
                     for (ModuleImageGuide.NavItem navItem : moduleImageGuide.getNavGroup()) {
-                        navItem.setNavSrc(domainConfig.imageUrl(navItem.getNavSrc()));
+                        navItem.setNavSrc(imageUrl(navItem.getNavSrc()));
                     }
                     return moduleImageGuide;
                 case ModuleConstant.M_IMAGE_ADVER:
                     ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
                     for (ModuleImageAdver.ImageAdItem item : moduleImageAdver.getImageList()){
-                        item.setImage(domainConfig.imageUrl(item.getImage()));
+                        item.setImage(imageUrl(item.getImage()));
                     }
                     return moduleImageAdver;
                 case ModuleConstant.M_MAGIC_CUBE:
                     ModuleMagicCube moduleMagicCube = objectMapper.readValue(node.getValue().toString(), ModuleMagicCube.class);
                     for(ModuleMagicCube.BlockItem blockItem : moduleMagicCube.getData().values()){
-                        blockItem.setImgUrl(domainConfig.imageUrl(blockItem.getImgUrl()));
+                        blockItem.setImgUrl(imageUrl(blockItem.getImgUrl()));
                     }
                     return moduleMagicCube;
                 case ModuleConstant.M_HOT_AREA:
                     ModuleHotArea moduleHotArea = objectMapper.readValue(node.getValue().toString(), ModuleHotArea.class);
-                    moduleHotArea.getData().setBgImgUrl(domainConfig.imageUrl(moduleHotArea.getData().getBgImgUrl()));
+                    moduleHotArea.getData().setBgImgUrl(imageUrl(moduleHotArea.getData().getBgImgUrl()));
                     return moduleHotArea;
                 case ModuleConstant.M_TEXT_IMAGE:
                     ModuleTextImage moduleTextImage = objectMapper.readValue(node.getValue().toString(), ModuleTextImage.class);
-                    moduleTextImage.setImgUrl(domainConfig.imageUrl(moduleTextImage.getImgUrl()));
+                    moduleTextImage.setImgUrl(imageUrl(moduleTextImage.getImgUrl()));
                     return moduleTextImage;
                 case ModuleConstant.M_TITLE:
                     ModuleTitle moduleTitle = objectMapper.readValue(node.getValue().toString(), ModuleTitle.class);
                     if(StringUtil.isNotEmpty(moduleTitle.getImgUrl())){
-                        moduleTitle.setImgUrl(domainConfig.imageUrl(moduleTitle.getImgUrl()));
+                        moduleTitle.setImgUrl(imageUrl(moduleTitle.getImgUrl()));
                     }
                     return moduleTitle;
                 case ModuleConstant.M_VIDEO:
@@ -299,12 +299,12 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                         moduleVideo.setVideoUrl(domainConfig.videoUrl(moduleVideo.getVideoUrl()));
                         moduleVideo.setVideoImg(domainConfig.videoUrl(moduleVideo.getVideoImg()));
                     }else if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
-                        moduleVideo.setImgUrl(domainConfig.imageUrl(moduleVideo.getImgUrl()));
+                        moduleVideo.setImgUrl(imageUrl(moduleVideo.getImgUrl()));
                     }
                     return moduleVideo;
                 case ModuleConstant.M_MAP:
                     ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
-                    moduleMap.setImgPath(domainConfig.imageUrl(moduleMap.getImgPath()));
+                    moduleMap.setImgPath(imageUrl(moduleMap.getImgPath()));
                     return moduleMap;
                 case ModuleConstant.M_GOODS:
                     ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
@@ -338,7 +338,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 case ModuleConstant.M_CARD:
                     ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
                    if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
-                       moduleCard.setBgImg(domainConfig.imageUrl(moduleCard.getBgImg()));
+                       moduleCard.setBgImg(imageUrl(moduleCard.getBgImg()));
                    }
                     return moduleCard;
 
@@ -354,7 +354,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         if(node.getKey().equals("page_cfg")){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
-                pageCfg.getPictorial().setShareImgPath(domainConfig.imageUrl(pageCfg.getPictorial().getShareImgPath()));
+                pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
             }
             return pageCfg;
         }
@@ -666,10 +666,11 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             String fullFilePath = path + fileName;
             File file = new File(fullFilePath);
             uploadToUpYun(relativePath + fileName,file);
-            //上传完成删除
+            //上传完成删除本地图片
             //file.delete();
         } catch (Exception e) {
             logger().error("图片加载错误",e);
+            return "";
         }
         return relativePath + fileName;
     }

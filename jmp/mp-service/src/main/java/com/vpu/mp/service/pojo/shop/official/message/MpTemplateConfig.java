@@ -53,10 +53,16 @@ public enum MpTemplateConfig {
             "OPENTM412181311",
             "抽奖结果通知",
             "{{first.DATA}}奖品名称：{{keyword1.DATA}}中奖时间：{{keyword2.DATA}}{{remark.DATA}}"),
+
     GROUP_BUY_RESULTS(
             "OPENTM414768654",
             "拼团结果提醒",
-            "{{first.DATA}}拼团状态：{{keyword1.DATA}}商品明细：{{keyword2.DATA}}拼团价格：{{keyword3.DATA}}剩余人数：{{keyword4.DATA}}时间：{{keyword5.DATA}}{{remark.DATA}}");
+            "{{first.DATA}}拼团状态：{{keyword1.DATA}}商品明细：{{keyword2.DATA}}拼团价格：{{keyword3.DATA}}剩余人数：{{keyword4.DATA}}时间：{{keyword5.DATA}}{{remark.DATA}}"),
+
+    SERVICE_ORDER_CANCEL(
+            "OPENTM207847150",
+                "预约取消通知",
+                "{{first.DATA}}预约项目：{{keyword1.DATA}}预约时间：{{keyword2.DATA}}取消原因：{{keyword3.DATA}}{{remark.DATA}}");
 	/**
 	 * 模板编号
 	 */
