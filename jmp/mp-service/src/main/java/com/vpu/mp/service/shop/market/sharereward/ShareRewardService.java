@@ -5,7 +5,9 @@ import com.vpu.mp.db.shop.tables.AttendShareUser;
 import com.vpu.mp.db.shop.tables.ShareAward;
 import com.vpu.mp.db.shop.tables.ShareAwardReceive;
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
+import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -32,11 +34,14 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.*;
+import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
+import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.USER_GR;
+import static org.apache.commons.lang3.math.NumberUtils.*;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * @author liufei
  * @date 2019/8/19
- * @description
  */
 @Slf4j
 @Service
@@ -433,5 +438,122 @@ public class ShareRewardService extends ShopBaseService {
      */
     public String getDailyShareAwardValue() {
         return db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(DAILY_SHARE_AWARD)).fetchOptionalInto(String.class).orElse("0");
+    }
+
+    /**
+     * Activity is exist boolean.活动是否存在
+     *
+     * @param id the id
+     * @return the boolean
+     */
+    public boolean activityIsExist(Integer id) {
+        return db().fetchExists(sa, sa.ID.eq(id));
+    }
+
+    public boolean activityIsExist(Condition condition) {
+        return db().fetchExists(sa, condition);
+    }
+
+    public boolean aRecordIsExist(Condition condition) {
+        return db().fetchExists(sar, condition);
+    }
+
+    /**
+     * Activity available.活动是否可用
+     *
+     * @param id the id
+     */
+    public com.vpu.mp.db.shop.tables.records.ShareAwardRecord activityAvailable(Integer id, Integer goodId) {
+        Assert.isTrue(activityIsExist(id), JsonResultCode.CODE_DATA_NOT_EXIST, String.format("Activity:%s", id));
+        log.info("分享有礼活动 {} 不存在", id);
+        com.vpu.mp.db.shop.tables.records.ShareAwardRecord record = getShareReward(id);
+        Assert.isTrue(BYTE_ZERO.equals(record.getDelFlag()), JsonResultCode.CODE_FAIL);
+        log.info("分享有礼活动 {} 已删除", id);
+        Assert.isTrue(BYTE_ONE.equals(record.getIsForever()) || LocalDateTime.now().isBefore(record.getEndTime().toLocalDateTime()), JsonResultCode.CODE_FAIL);
+        log.info("分享有礼活动 {} 已过期", id);
+        Assert.isFalse(BYTE_TWO.equals(record.getCondition()) && !Util.stringList2IntList(Arrays.asList(record.getGoodsIds().split(","))).contains(goodId), JsonResultCode.CODE_FAIL);
+        log.info("分享有礼活动 {} , 该分享商品 {} 不在活动涉及范围内！", id, goodId);
+        int goodPv = getGoodsPv(goodId);
+        Assert.isFalse(BYTE_THREE.equals(record.getCondition()) && goodPv > record.getGoodsPv(), JsonResultCode.CODE_FAIL);
+        log.info("分享有礼活动 {} , 该分享商品 {} 的访问量 {} 不符合活动限制 {}！", id, goodId, goodPv, record.getGoodsPv());
+        return record;
+    }
+
+    /**
+     * Gets share reward.
+     *
+     * @param id the id
+     * @return the share reward
+     */
+    public com.vpu.mp.db.shop.tables.records.ShareAwardRecord getShareReward(Integer id) {
+        return db().fetchSingle(sa, sa.ID.eq(id));
+    }
+
+    /**
+     * Gets share award record.
+     *
+     * @param shareId the share id
+     * @param userId  the user id
+     * @param goodsId the goods id
+     * @return the share award record
+     */
+    public ShareAwardRecordRecord getShareAwardRecord(Integer shareId, Integer userId, Integer goodsId) {
+        return db().fetchSingle(sar, sar.USER_ID.eq(userId).and(sar.SHARE_ID.eq(shareId)).and(sar.GOODS_ID.eq(goodsId)));
+    }
+
+    /**
+     * Gets share rules.
+     *
+     * @param id the id
+     * @return the share rules
+     */
+    public ShareRewardInfoVo getShareInfo(Integer id) {
+        ShareRewardInfoVo shareReward = db().selectFrom(sa).where(sa.ID.eq(id)).fetchOneInto(ShareRewardInfoVo.class);
+        int sum = INTEGER_ZERO;
+        ShareRule first = Util.json2Object(shareReward.getFirstLevelRule(), ShareRule.class, false);
+        setTheStock(first, shareReward.getFirstAwardNum());
+        ShareRule second = Util.json2Object(shareReward.getSecondLevelRule(), ShareRule.class, false);
+        setTheStock(second, shareReward.getSecondAwardNum());
+        ShareRule third = Util.json2Object(shareReward.getThirdLevelRule(), ShareRule.class, false);
+        setTheStock(third, shareReward.getThirdAwardNum());
+        List<ShareRule> list = new ArrayList<ShareRule>() {{
+            add(first);
+            add(second);
+            add(third);
+        }};
+        list = list.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        for (ShareRule shareRule : list) {
+            sum += shareRule.getInviteNum();
+            shareRule.setInviteNum(sum);
+        }
+        log.info("分享有礼活动 {} 对应的分享规则为：{}！", id, Util.toJson(list));
+        shareReward.setShareRules(list);
+        return shareReward;
+    }
+
+    private void setTheStock(ShareRule rule, int stock) {
+        if (Objects.nonNull(rule)) {
+            rule.setStock(stock);
+        }
+    }
+
+    /**
+     * Gets goods pv.
+     *
+     * @param goodsId the goods id
+     * @return the goods pv
+     */
+    public int getGoodsPv(Integer goodsId) {
+        return db().select(sum(USER_GR.COUNT)).from(USER_GR).where(USER_GR.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+    }
+
+    /**
+     * Autoincrement user num.
+     *
+     * @param id the id
+     */
+    public int autoincrementUserNum(Integer id) {
+        db().update(sar).set(sar.USER_NUMBER, sar.USER_NUMBER.add(INTEGER_ONE)).where(sar.ID.eq(id)).execute();
+        return db().select(sar.USER_NUMBER).from(sar).where(sar.ID.eq(id)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 }

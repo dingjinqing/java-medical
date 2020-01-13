@@ -21,5 +21,7 @@ public class FreeShipPromotion extends PromotionBase {
     /**满包邮条件价格*/
     private BigDecimal  money;
     /**满包邮条件数量*/
-    private BigDecimal num;
+    private Integer num;
+    /**是否全部地区包邮*/
+    private Boolean isFullArea;
 }
