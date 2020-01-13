@@ -24,11 +24,11 @@ global.wxComponent({
               if (newItem.useConsumeRestrict === 1) {
                 newItem.text = `${this.$t('components.decorate.full')}${
                   newItem.leastConsume
-                }${this.$t('components.decorate.hit')}￥${newItem.denomination}`;
+                }${this.$t('components.decorate.hit')}￥${newItem.denomination}${this.$t('components.decorate.fracture')}`;
               } else {
                 newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
                   'components.decorate.hit'
-                )}￥${newItem.denomination}${this.$t('decorate.fracture')}`;
+                )}￥${newItem.denomination}${this.$t('components.decorate.fracture')}`;
               }
             }
             return newItem
