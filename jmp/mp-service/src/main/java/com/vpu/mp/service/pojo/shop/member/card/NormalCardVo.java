@@ -28,47 +28,47 @@ public class NormalCardVo extends BaseCardVo {
 	/**
 	 * 会员有效期类型 0：固定日期；1：自领取多少内有效；2：永久有效
 	 */
-	private Byte expireType;
+	protected Byte expireType;
 	/** 开始时间 */
-	private Timestamp startTime;
+	protected Timestamp startTime;
 	/** 结束时间 */
-	private Timestamp endTime;
+	protected Timestamp endTime;
 	/** 自领取之日内多少时间 */
-	private Integer receiveDay;
+	protected Integer receiveDay;
 	/** 时间类型 */
-	private Byte dateType;
+	protected Byte dateType;
 
 	/**
 	 * 2-会员权益
 	 */
 	/** 会员折扣开关， 0表示关闭，1表示开启 */
-	private Byte powerCount;
+	protected Byte powerCount;
 	/** 会员折扣 值为 0-10之间 */
 	@JsonProperty("disCount")
-	private BigDecimal discount;
+	protected BigDecimal discount;
 
 	/** 会员专享商品 on表示打开 */
 	/** 是否专属购买商品 0不是 1是 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private Byte payOwnGood;
-	private String powerPayOwnGood;
+	protected Byte payOwnGood;
+	protected String powerPayOwnGood;
 
 	/**
 	 * 积分获取开关， 0表示关闭，1表示开启
 	 */
-	private Byte powerScore;
+	protected Byte powerScore;
 	/** 购物送积分策略json序列化对象 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String buyScore;
+	protected String buyScore;
 
 	/** 卡充值开关 0关闭；1开启 */
-	private Byte powerCard;
+	protected Byte powerCard;
 	/** 卡充值送积分策略json数据 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String chargeMoney;
+	protected String chargeMoney;
 
 	/** 1:使用中，2:停止使用 3：过期 */
-	private Byte flag;
+	protected Byte flag;
 
 	/**
 	 * 设置开关及是否过期

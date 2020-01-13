@@ -197,4 +197,8 @@ public class VirtualOrderService extends ShopBaseService {
     	return  db().selectFrom(VIRTUAL_ORDER).where(VIRTUAL_ORDER.CARD_NO.eq(cardNo)).fetchAny();
     }
     
+    
+    
+    
+    
 }

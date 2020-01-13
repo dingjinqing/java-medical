@@ -678,6 +678,7 @@ public class MemberService extends ShopBaseService {
 	/** 获取用户详情关于订单的信息 */
 	private void getOrderInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,
 			MemberBasicInfoVo memberBasicInfoVo) {
+		
 		/** 累计消费金额 */
 		BigDecimal totalConsumpAmount = order.getAllConsumpAmount(userId);
 		memberBasicInfoVo.setTotalConsumpAmount(totalConsumpAmount);
