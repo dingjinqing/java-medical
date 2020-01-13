@@ -1,52 +1,30 @@
+<wxs module="filter">
+  includes = function (arr, target) {
+    if (arr.length === 0) return false
+    return arr.indexOf(target) === -1 ? false : true
+  }
+  module.exports = {
+    includes:includes
+  }
+</wxs>
 <v-popup show="{{show}}" bindtap="bindClose" bind:close="bindClose" horizon="center" vertical="bottom" close_pos="inner">
   <view class="content">
     <view class="title">
       <text>促销</text>
     </view>
     <view class="promotion-content">
-      <view class="promotion-item">
-        <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">首单特惠</view>
-        <view class="promotion-desc">123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456</view>
-        <view>去凑单</view>
-        <view class="right-arrow">
-          <image class="image" src="{{imageUrl}}image/wxapp/right_into.png"></image>
+      <block wx:for="{{promotion}}" wx:for-item="promotionItem" wx:key="index">
+        <view class="promotion-item">
+          <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">首单特惠</view>
+          <view class="promotion-desc">{{promotionItem.desc}}</view>
+          <block wx:if="{{filter.includes([],promotionItem.type)}}">
+            <view>去凑单</view>
+            <view class="right-arrow">
+              <image class="image" src="{{imageUrl}}image/wxapp/right_into.png"></image>
+            </view>
+          </block>
         </view>
-      </view>
-      <view class="promotion-item">
-        <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">满包邮</view>
-        <view class="promotion-desc">购物满XXXX包邮</view>
-        <view class="right-arrow">
-          <image class="image" src="{{imageUrl}}image/wxapp/right_into.png"></image>
-        </view>
-      </view>
-      <view class="promotion-item">
-        <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">首单特惠</view>
-        <view class="promotion-desc">123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456</view>
-        <view class="right-arrow">
-          <image class="image" src="{{imageUrl}}image/wxapp/right_into.png"></image>
-        </view>
-      </view>
-      <view class="promotion-item">
-        <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">满包邮</view>
-        <view class="promotion-desc">购物满XXXX包邮</view>
-        <view class="right-arrow">
-          <image class="image" src="{{imageUrl}}image/wxapp/right_into.png"></image>
-        </view>
-      </view>
-      <view class="promotion-item">
-        <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">首单特惠</view>
-        <view class="promotion-desc">123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456</view>
-        <view class="right-arrow">
-          <image class="image" src="{{imageUrl}}image/wxapp/right_into.png"></image>
-        </view>
-      </view>
-      <view class="promotion-item">
-        <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">满包邮</view>
-        <view class="promotion-desc">购物满XXXX包邮</view>
-        <view class="right-arrow">
-          <image class="image" src="{{imageUrl}}image/wxapp/right_into.png"></image>
-        </view>
-      </view>
+      </block>
     </view>
   </view>
 </v-popup>

@@ -379,7 +379,7 @@
                         ></i></span>
                       <span @click="addNodes(orderItem.orderSn)">{{$t('order.remark')}}</span>
                       <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
-                      <span>{{$t('order.comment')}}</span>
+                      <span @click="goComment(orderItem.orderSn)">{{$t('order.comment')}}</span>
                     </div>
                   </div>
                 </td>
@@ -473,7 +473,7 @@
                       {{$t('order.waitReceive')}}
                     </template>
                     <template v-else>
-                      <template v-if="orderItem.orderStatus != 3 && orderItem.partShipFlag != 5">
+                      <template v-if="orderItem.orderStatus != 3 && orderItem.orderStatus != 5">
                         <template v-if="orderItem.orderStatus == 0 && orderItem.goodsTypeArray.indexOf('10') != -1">
                           <template v-if="orderItem.bkOrderPaid == 0">
                             {{$t('order.waitDeposit')}}
@@ -526,7 +526,10 @@
                     <template v-if="orderItem.refundStatus > 0">
                       <br />
                       <template v-if="[1,2,4].indexOf(orderItem.refundStatus) != -1">
-                        <el-button type="text">{{$t('order.applyRetrunView')}}</el-button>
+                        <el-button
+                          type="text"
+                          @click="goReturnView(orderItem.orderSn)"
+                        >{{$t('order.applyRetrunView')}}</el-button>
                       </template>
                       <template v-else>
                         <el-button type="text">{{$t('order.retrunView')}}</el-button>
@@ -639,7 +642,7 @@
                       :rowspan="childOrder.goods.length"
                     >
                       <template>
-                        <template v-if="childOrder.orderStatus != 3 && childOrder.partShipFlag != 5">
+                        <template v-if="childOrder.orderStatus != 3 && childOrder.orderStatus != 5">
                           {{orderStatusMap.get(childOrder.orderStatus)}}
                         </template>
                         <template v-else>
@@ -682,7 +685,10 @@
                       <template v-if="childOrder.refundStatus > 0">
                         <br />
                         <template v-if="[1,2,4].indexOf(childOrder.refundStatus) != -1">
-                          <el-button type="text">{{$t('order.applyRetrunView')}}</el-button>
+                          <el-button
+                            type="text"
+                            @click="goReturnView(orderItem.orderSn)"
+                          >{{$t('order.applyRetrunView')}}</el-button>
                         </template>
                         <template v-else>
                           <el-button type="text">{{$t('order.retrunView')}}</el-button>
@@ -911,7 +917,7 @@ export default {
       this.searchType = 0
       let obj = {
         ...this.searchParams,
-        orderStatus: this.searchParams.orderStatus ? [this.searchParams.orderStatus] : []
+        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : []
       }
       list(obj).then(res => {
         console.log(res)
@@ -924,7 +930,22 @@ export default {
     initDataList () {
       this.search()
     },
-
+    goReturnView (orderSn) {
+      this.$router.push({
+        name: 'order_return',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    goComment (orderSn) {
+      this.$router.push({
+        name: 'comment',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
     seeDetails (orderSn) {
       console.log(orderSn)
       this.$router.push({

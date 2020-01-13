@@ -116,7 +116,7 @@ public class CouponMpService extends ShopBaseService {
 
     /**
      * 领取优惠券到用户
-     * @param param 0：领取成功；1：优惠券不存在；2：优惠券过期；3：优惠券体用；4：库存为0；5：可用积分不足；
+     * @param param 0：领取成功；1：优惠券不存在；2：优惠券过期；3：优惠券体用；4：库存为0；5：可用积分不足；6：积分更新失败；7；领取次数达上限
      * @return
      */
     public Byte fetchCoupon(mpGetCouponParam param){
@@ -172,6 +172,7 @@ public class CouponMpService extends ShopBaseService {
                 //添加优惠券到用户，调用定向发券通用方法
                 coupon.couponGiveService.handlerCouponGive(couponParam);
             }else{
+                //领取次数达上限
                 fetchCouponStatus = 7;
             }
         }else{

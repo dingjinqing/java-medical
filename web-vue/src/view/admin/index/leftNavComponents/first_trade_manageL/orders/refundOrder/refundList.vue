@@ -306,6 +306,9 @@ export default {
   mounted () {
     console.log('mounted-----------------------')
     // 初始化数据
+    if (this.$route.query.orderSn) {
+      this.$set(this.searchParams, 'orderSn', this.$route.query.orderSn)
+    }
     this.langDefault()
     this.initDataList()
   },

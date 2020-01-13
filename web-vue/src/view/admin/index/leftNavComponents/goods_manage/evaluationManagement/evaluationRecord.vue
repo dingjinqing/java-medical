@@ -361,6 +361,9 @@ export default {
     if (this.$route.query.award_activity_id) {
       this.$set(this.searchParams, 'awardActivityId', this.$route.query.award_activity_id)
     }
+    if (this.$route.query.orderSn) {
+      this.$set(this.searchParams, 'orderSn', this.$route.query.orderSn)
+    }
     this.initDataList()
   },
   methods: {

@@ -1,5 +1,4 @@
 #支付方式
-truncate table `b2c_payment`;
 insert into `b2c_payment` (`id`, pay_name, pay_code, pay_fee, pay_desc, enabled, is_cod, is_online_pay)
 values ('1', '微信支付', 'wxpay', '0', '基于微信账号的支付', '1', '0', '1'),
   ('2', '积分支付', 'score', '0', '积分支付', '1', '1', '0'),
@@ -11,35 +10,31 @@ values ('1', '微信支付', 'wxpay', '0', '基于微信账号的支付', '1', '
 
 
 ## 快递数据
-truncate table `b2c_shipping`;
-insert into `b2c_shipping` values ('14', 'chengshi100', '城市100', '城市100', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping`
-values ('2', 'yto', '圆通速递',
-        '上海圆通物流（速递）有限公司经过多年的网络快速发展，在中国速递行业中一直处于领先地位。为了能更好的发展国际快件市场，加快与国际市场的接轨，强化圆通的整体实力，圆通已在东南亚、欧美、中东、北美洲、非洲等许多城市运作国际快件业务',
-        '0', '1', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('13', 'post_express', '邮政小包/E邮宝', '小包', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('12', 'quanfeng_express', '全峰快递', '全峰', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping`
-values ('1', 'sto_express', '申通快递', '江、浙、沪地区首重为15元/KG，其他地区18元/KG， 续重均为5-6元/KG， 云南地区为8元', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('11', 'debang_express', '德邦物流', '德邦', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('23', 'fpd', '运费到付', '所购商品到达即付运费', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('3', 'yunda', '韵达快运', '韵达快递', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('4', 'zto_express', '中通快递', '中通快递', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('5', 'EMS', 'EMS邮政特快专递', 'EMS邮政特快专递', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('6', 'sf_express', '顺丰速运', '顺丰', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('7', 'best_express', '百世汇通', '汇通', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('8', 'ttk_epxress', '天天快递', '天天', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('9', 'zjs_express', '宅急送', '宅急送', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('10', 'china_post', '邮政包裹/平邮', '邮政包裹/平邮', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('15', 'yufeng_express', '如风达', '凡客如风达', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('16', 'guotong_express', '国通快递', '国通快递', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('17', 'jindong_express', '京东快递', '京东快递', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('18', 'longbang_express', '龙邦快递', '龙邦', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('19', 'nengdao_express', '能达速递', '能达', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('20', 'qianfeng_express', '全峰快递', '全峰', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('21', 'suer_express', '速尔快递', '速尔', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('22', 'uc_express', '优速快递', '优速', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
-insert into `b2c_shipping` values ('24', 'other_express', '其它快递', '其它', '0', '0', '1', '', '0', '0',current_timestamp,current_timestamp);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (1, 'sto_express', 'shentong', '申通快递', '江、浙、沪地区首重为15元/KG，其他地区18元/KG， 续重均为5-6元/KG， 云南地区为8元', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (2, 'yto', 'yuantong', '圆通速递', '上海圆通物流（速递）有限公司经过多年的网络快速发展，在中国速递行业中一直处于领先地位。为了能更好的发展国际快件市场，加快与国际市场的接轨，强化圆通的整体实力，圆通已在东南亚、欧美、中东、北美洲、非洲等许多城市运作国际快件业务', '0', 1, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (3, 'yunda', 'yunda', '韵达快运', '韵达快递', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (4, 'zto_express', 'zhongtong', '中通快递', '中通快递', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (5, 'EMS', 'ems', 'EMS邮政特快专递', 'EMS邮政特快专递', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (6, 'sf_express', 'shunfeng', '顺丰速运', '顺丰', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (7, 'best_express', 'huitongkuaidi', '百世汇通', '汇通', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (8, 'ttk_epxress', 'tiantian', '天天快递', '天天', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (9, 'zjs_express', 'zhaijisong', '宅急送', '宅急送', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (10, 'china_post', 'youzhengguonei', '邮政包裹/平邮', '邮政包裹/平邮', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (11, 'debang_express', 'debangwuliu', '德邦物流', '德邦', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (12, 'quanfeng_express', 'quanfengkuaidi', '全峰快递', '全峰', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (13, 'post_express', '', '邮政小包/E邮宝', '小包', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (14, 'chengshi100', 'city100', '城市100', '城市100', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (15, 'yufeng_express', 'rufengda', '如风达', '凡客如风达', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (16, 'guotong_express', 'guotongkuaidi', '国通快递', '国通快递', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (17, 'jindong_express', 'jd', '京东快递', '京东快递', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (18, 'longbang_express', 'longbanwuliu', '龙邦快递', '龙邦', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (19, 'nengdao_express', 'ganzhongnengda', '能达速递', '能达', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (20, 'qianfeng_express', 'quanfengkuaidi', '全峰快递', '全峰', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (21, 'suer_express', 'sue', '速尔快递', '速尔', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (22, 'uc_express', 'youshuwuliu', '优速快递', '优速', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (23, 'fpd', '', '运费到付', '所购商品到达即付运费', '0', 0, 1, '', 0, 0);
+INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (24, 'other_express', '', '其它快递', '其它', '0', 0, 1, '', 0, 0);
+
 
 #底部导航
 INSERT INTO `b2c_shop_cfg`( k, v) VALUES ('bottom', '[{\"text\":\"首页\",\"btn\":0,\"normal\":\"http://mpimg2.weipubao.cn/image/admin/icon_mp/icon_no_2.png\",\"hover\":\"http://mpimg2.weipubao.cn/image/admin/icon_mp/icon_yes_2.png\",\"page\":\"pages/index/index\"},{\"text\":\"门店\",\"btn\":0,\"normal\":\"http://mpimg2.weipubao.cn/image/admin/icon_mp/icon_no_1.png\",\"hover\":\"http://mpimg2.weipubao.cn/image/admin/icon_mp/icon_yes_1.png\",\"page\":\"pages/store/store\"},{\"text\":\"购物车\",\"btn\":0,\"normal\":\"http://mpimg2.weipubao.cn/image/admin/icon_mp/icon_no_3.png\",\"hover\":\"http://mpimg2.weipubao.cn/image/admin/icon_mp/icon_yes_3.png\",\"page\":\"pages/cart/cart\"},{\"text\":\"个人中心\",\"btn\":0,\"normal\":\"http://mpimg2.weipubao.cn/image/admin/icon_mp/icon_no_4.png\",\"hover\":\"http://mpimg2.weipubao.cn/image/admin/icon_mp/icon_yes_4.png\",\"page\":\"pages/usercenter/usercenter\"}]');

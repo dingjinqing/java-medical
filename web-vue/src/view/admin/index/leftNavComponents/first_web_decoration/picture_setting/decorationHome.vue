@@ -224,7 +224,7 @@ import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import { saveDecorationPage, editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import { editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 import { pageEdit } from '@/api/admin/decoration/pageSet.js'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
@@ -327,7 +327,8 @@ export default {
       isAddBottom: false, // 是否添加到底部flag
       isNewEnterFirstSaveSucess: -1, //  新建进来并且是非第一次保存记录id
       isDragFlag: false,
-      isClickIcon: false
+      isClickIcon: false,
+      isClickModule: false
     }
   },
   watch: {
@@ -374,32 +375,33 @@ export default {
       pageEdit({ pageId: this.$route.query.pageId }).then((res) => {
         console.log(res)
         if (res.error === 0) {
+          let turnToString = this.handleToTurnNumToStr(res.content.page_cfg)
+          console.log(turnToString)
+          res.content.page_cfg = turnToString
           this.page_id = res.content.page_id
           this.page_type = res.content.page_type
           this.page_enabled = res.content.page_enabled
           this.page_tpl_type = res.content.page_tpl_type
 
           this.isEditSave = true
-          console.log(res.content.page_content)
           let content = JSON.parse(res.content.page_content)
           this.editPageData = content
-          console.log(JSON.parse(res.content.page_content))
+          console.log(content)
           this.pageSetData.page_name = res.content.page_name
           this.pageSetData.cat_id = res.content.cat_id
           content.page_cfg.cat_id = JSON.stringify(content.page_cfg.cat_id)
           this.pageSetData = content.page_cfg
-          console.log(content)
           this.cur_idx = content.page_cfg.last_cur_idx
-          console.log(this.cur_idx)
           let moduleDataCopy = JSON.parse(JSON.stringify(content))
           delete moduleDataCopy.page_cfg
-          console.log(moduleDataCopy)
           let arr = []
           Object.keys(moduleDataCopy).forEach((item, index) => {
             arr.push(moduleDataCopy[item])
           })
           console.log(arr)
-          this.modulesData = arr
+          this.$nextTick(() => {
+            this.modulesData = arr
+          })
           this.handleToTurnModulesName(arr)
         }
       })
@@ -408,16 +410,16 @@ export default {
         'is_ok': 1,
         'cat_id': '',
         'page_name': '',
-        'bg_types': '0',
-        'has_bottom': '0',
+        'bg_types': 0,
+        'has_bottom': 0,
         'page_bg_color': '#ffffff',
         'page_bg_image': '',
-        'show_margin': '0',
-        'margin_val': '0',
+        'show_margin': 0,
+        'margin_val': 0,
         'last_cur_idx': this.cur_idx,
         'pictorial': {
-          'is_add': '0',
-          'user_visibility': '0',
+          'is_add': 0,
+          'user_visibility': 0,
           'share_btn_name': '',
           'share_desc': '',
           'share_img_path': '',
@@ -985,7 +987,7 @@ export default {
     },
     // 中间区域拖拽插入数据处理
     middleDragData (res) {
-      console.log(res)
+      // console.log(res)
       this.newIndex = res
     },
     // 顶部滑动
@@ -999,7 +1001,8 @@ export default {
     },
     // 模块点击
     handleToClickModule (index) {
-      console.log(index)
+      console.log(index, this.modulesData)
+      this.isClickModule = true
       this.$http.$emit('modulesClick', index)
       // this.handleToModuleHight()
     },
@@ -1041,6 +1044,11 @@ export default {
         console.log(this.isClickIcon, this.showModulesList, this.modulesData)
         if (this.isClickIcon) { // 如果中部点击的是icon则终止
           this.isClickIcon = false
+          return
+        }
+        console.log(this.isClickModule)
+        if (this.isClickModule) { // 如果是模块点击触发
+          this.isClickModule = false
           return
         }
         console.log(this.oldIndex, this.newIndex, this.modulesData, this.topAreaFlag, this.nowRightShowIndex)
@@ -1161,50 +1169,31 @@ export default {
       if (flag === 0 || flag === 1) {
         console.log(params)
         console.log(data)
-        if (this.isEditSave || (this.isNewEnterFirstSaveSucess !== -1)) { // 编辑保存
-          let id = ''
-          if ((this.isNewEnterFirstSaveSucess !== -1)) {
-            id = this.isNewEnterFirstSaveSucess
-          } else {
-            id = this.page_id
-          }
-          let editParams = {
-            'pageId': id,
-            'shopId': Number(localStorage.getItem('V-ShopId')),
-            'pageName': this.pageSetData.page_name,
-            'pageType': this.page_type,
-            'pageEnabled': this.page_enabled,
-            'pageTplType': this.page_tpl_type,
-            'pageContent': JSON.stringify(data),
-            'pagePublishContent': JSON.stringify(data),
-            'pageState': pageState,
-            'catId': Number(this.pageSetData.cat_id),
-            'last_cur_idx': this.cur_idx
-          }
-          editSave(editParams).then((res) => {
-            console.log(res)
-
-            if (res.error === 0) {
-              this.$message.success({
-                message: '保存成功',
-                showClose: true,
-                duration: 1000
-              })
-            }
-          })
-        } else if (!this.isEditSave && (this.isNewEnterFirstSaveSucess === -1)) { // 新建保存
-          saveDecorationPage(params).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              this.isNewEnterFirstSaveSucess = res.content
-              this.$message.success({
-                message: '保存成功',
-                showClose: true,
-                duration: 1000
-              })
-            }
-          })
+        // let id = ''
+        // if ((this.isNewEnterFirstSaveSucess !== -1)) {
+        //   id = this.isNewEnterFirstSaveSucess
+        // } else {
+        //   id = this.page_id
+        // }
+        let editParams = {
+          'pageId': this.page_id,
+          'pageName': this.pageSetData.page_name,
+          'pageTplType': this.page_tpl_type,
+          'pageContent': JSON.stringify(data),
+          'pageState': pageState,
+          'catId': Number(this.pageSetData.cat_id)
         }
+        editSave(editParams).then((res) => {
+          console.log(res)
+
+          if (res.error === 0) {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true,
+              duration: 1000
+            })
+          }
+        })
       } else {
         this.$message.success({
           message: '预览测试',

@@ -19,23 +19,23 @@ const orderStatusList = [
 var order = {
   // 好友代付
   // 退货中心
-  toReturnCenter ({order_sn:orderSn, order_id:orderId,is_return:isReturn}) {
+  toReturnCenter ({ order_sn: orderSn, order_id: orderId, is_return: isReturn }) {
     if (!isReturn) util.jumpLink("/pages1/returnorder/returnorder?order_sn=" + orderSn + "&order_id=" + orderId, "navigateTo");
     if (isReturn) util.jumpLink("/pages1/returnorderlist/returnorderlist?order_sn=" + orderSn + "&order_id=" + orderId, "navigateTo");
   },
   // 查看详情
-  viewInfo ({order_sn:orderSn, order_id:orderId}) {
+  viewInfo ({ order_sn: orderSn, order_id: orderId }) {
     util.jumpLink(
       `/pages/orderinfo/orderinfo?orderSn=${orderSn}`,
       "navigateTo"
     );
   },
   // 查看评价
-  viewComment ({order_sn:orderSn, order_id:orderId}) {
+  viewComment ({ order_sn: orderSn, order_id: orderId }) {
     util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
   },
   //发货
-  confirmation ({order_sn:orderSn, order_id:orderId}){
+  confirmation ({ order_sn: orderSn, order_id: orderId }) {
     util.api(
       "/api/wxapp/order/operation",
       res => {
@@ -54,7 +54,7 @@ var order = {
     )
   },
   // 再次购买
-  addCart ({order_sn:orderSn, order_id:orderId}) {
+  addCart ({ order_sn: orderSn, order_id: orderId }) {
     console.log(orderSn, orderId);
     util.api(
       "/api/wxapp/order/Repurchase",
@@ -73,7 +73,7 @@ var order = {
     );
   },
   // 删除订单
-  delOrder ({order_sn:orderSn, order_id:orderId}) {
+  delOrder ({ order_sn: orderSn, order_id: orderId }) {
     util.showModal(
       "提示",
       "是否删除该订单",
@@ -95,7 +95,7 @@ var order = {
     );
   },
   // 提醒发货
-  remindOrder ({order_sn:orderSn, order_id:orderId}) {
+  remindOrder ({ order_sn: orderSn, order_id: orderId }) {
     util.api(
       "/api/wxapp/order/operation",
       res => {
@@ -113,7 +113,7 @@ var order = {
     );
   },
   // 取消订单
-  cancelOrder ({order_sn:orderSn, order_id:orderId}) {
+  cancelOrder ({ order_sn: orderSn, order_id: orderId }) {
     util.showModal(
       "提示",
       "是否取消该订单",
@@ -134,6 +134,32 @@ var order = {
       },
       true
     );
+  },
+  // 立即支付
+  payOrder ({ order_sn: orderSn, order_id: orderId }) {
+    util.api('api/wxapp/order/pay', res => {
+      console.log(res)
+      if (res.error === 0) {
+        wx.requestPayment({
+          'timeStamp': res.content.webPayVo.timeStamp,
+          'nonceStr': res.content.webPayVo.nonceStr,
+          'package': res.content.webPayVo.package,
+          'signType': 'MD5',
+          'paySign': res.content.webPayVo.paySign,
+          'success': (res) => {
+            util.toast_success('支付成功');
+          },
+          'fail': (res) => {
+            util.toast_fail('支付失败');
+          },
+          'complete': (res) => { }
+        });
+      }
+    }, {
+      action: 11,
+      orderId,
+      orderSn
+    })
   },
   // 过滤需要的参数
   filterObj (obj, arr) {
@@ -180,11 +206,14 @@ var order = {
       isPayEndPayment: (() => {
         return this.viewComment;
       }),
-      confirmation:(()=>{
+      confirmation: (() => {
         return this.confirmation;
       }),
       returnCenter: (() => {
         return this.toReturnCenter;
+      }),
+      isShowPay: (() => {
+        return this.payOrder;
       })
     };
     let operate_info = e.currentTarget.dataset.operate_info;
@@ -192,7 +221,7 @@ var order = {
     if (operate_info.indexOf("-") != -1) {
       operate_info = operate_info.substring(0, operate_info.indexOf("-"));
     }
-    optionList[operate_info]().call(this,e.currentTarget.dataset)
+    optionList[operate_info]().call(this, e.currentTarget.dataset)
   },
   getOrderStatus (orderData) {
     let typeArray = orderData.orderType;
@@ -203,7 +232,7 @@ var order = {
     ) {
       return "等待领取";
     } else {
-      if (orderData.orderStatus != 3 && orderData.partShipFlag != 5) {
+      if (orderData.orderStatus != 3 && orderData.orderStatus != 5) {
         if (orderData.orderStatus == 0 && typeArray.indexOf("10") != -1) {
           if (orderData.bkOrderPaid == 0) {
             return "代付定金";

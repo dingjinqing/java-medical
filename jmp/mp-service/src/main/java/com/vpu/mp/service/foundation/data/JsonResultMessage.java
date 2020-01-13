@@ -239,6 +239,12 @@ public class JsonResultMessage {
 	 */
 	public static final String MY_PRIZE_ACTIVITY_RECEIVED="my.prize.activity.goods.received";
     public static final String MY_PRIZE_ACTIVITY_EXPIRED="my.prize.activity.goods.expired";
+    /**拼团抽奖活动 */
+    public static final String GROUP_DRAW_FAIL = "group.draw.fail";
+	public static final String ACTIVITY_NOT_EXIST = "activity.not.exist";
+	public static final String PRODUCT_NOT_EXIST = "product.not.exist";
+	public static final String INFORMATION_NOT_EXIST = "information.not.exist";
+    
 	/**
 	 * 营销- 支付有礼
 	 */
@@ -456,6 +462,7 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_NEED_MOBILE = "excel.need.mobile";
 	public static final String CODE_EXCEL_SORRY = "excel.sorry";
 	public static final String CODE_EXCEL_OK = "excel.ok";
+	public static final String BATCHID_NOT_NULL = "batchId.not.null";
 
 	/**
 	 * 概览
@@ -571,6 +578,15 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
     /**订单支付*/
     public static final String MSG_ORDER_NOT_TO_WAIT_DELIVER = "order.not.to.wait.deliver";
+    /**
+     * 下单活动校验
+     */
+    public static final String MSG_ORDER_ACTIVITY_DISABLE = "order.activity.disable";
+    public static final String MSG_ORDER_ACTIVITY_NO_START = "order.activity.no.start";
+    public static final String MSG_ORDER_ACTIVITY_END = "order.activity.end";
+    public static final String MSG_ORDER_ACTIVITY_NUMBER_LIMIT = "order.activity.number.limit";
+    /**商品不支持预售*/
+    public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
     /**订单发货*/
     public static final String MSG_ORDER_SHIPPING_SHIPPINGNO_NOT_NULL = "order.shipping.shippingno.not.null";
     public static final String MSG_ORDER_SHIPPING_SHIPPINGID_NOT_NULL = "order.shipping.shippingid.not.null";

@@ -182,6 +182,7 @@ export default {
             this.isRightPageChangeFlga = false
           } else if (newData.coupon_arr.length === 1) {
             this.isRightPageChangeFlga = true
+            this.data = newData
           } else {
             console.log(0)
             this.isRightPageChangeFlga = false

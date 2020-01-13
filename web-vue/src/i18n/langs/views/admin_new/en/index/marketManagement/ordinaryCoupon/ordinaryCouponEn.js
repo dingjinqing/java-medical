@@ -44,7 +44,7 @@ export const en = {
   couponRule: 'Basic rules',
   receivePerPerson: 'Limit per person',
   member: 'Membership exclusive',
-  memberTip1: 'You can only participate with a membership card',
+  memberTip1: 'Users can only participate in activities with membership card',
   memberTip2: 'Please select a membership card',
   memberTip3: 'Refresh',
   memberTip4: 'New membership card',
@@ -108,9 +108,10 @@ export const en = {
   validatesuitGoods2: 'Please select the specified product classification!',
   validatesuitGoods3: 'Please select the specified platform classification!',
   validateType: 'Please select a coupon type',
-  validateactName1: 'Please enter the activity name',
+  validateactName1: 'Please enter the coupon name',
   validateactName2: 'Cannot be longer than 10 characters at',
   validatereceivePerPerson: 'Please select the limited number of tickets per person',
-  validateNum: 'Please enter 0 or positive integer!',
-  validateDiscount: 'Please enter the correct number!'
+  validateNum: 'Please enter a positive number, two decimal places can be reserved',
+  validateNum1: 'Please enter a positive integer',
+  validateDiscount: 'Please enter the correct number'
 }

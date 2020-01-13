@@ -13,11 +13,11 @@
             <el-radio-group v-model="data.name_set">
               <el-radio
                 class="block"
-                label="0"
+                :label="0"
               >{{$t('fightGroup.default')}}</el-radio>
               <el-radio
                 class="block"
-                label="1"
+                :label="1"
               >{{$t('fightGroup.customize')}}<el-input
                   v-model="data.group_draw_name"
                   :disabled="data.name_set !== '1'"
@@ -29,8 +29,8 @@
           </el-form-item>
           <el-form-item :label="$t('fightGroup.validity')">
             <el-radio-group v-model="data.show_clock">
-              <el-radio label="0">{{$t('fightGroup.hide')}}</el-radio>
-              <el-radio label="1">{{$t('fightGroup.display')}}</el-radio>
+              <el-radio :label="0">{{$t('fightGroup.hide')}}</el-radio>
+              <el-radio :label="1">{{$t('fightGroup.display')}}</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item :label="$t('fightGroup.baseMap')">
@@ -38,11 +38,11 @@
               v-model="data.module_bg"
               @change="moduleBgChange"
             >
-              <el-radio label="0">{{$t('fightGroup.defaultBaseMap')}}</el-radio>
-              <el-radio label="1">{{$t('fightGroup.customize')}}</el-radio>
+              <el-radio :label="0">{{$t('fightGroup.defaultBaseMap')}}</el-radio>
+              <el-radio :label="1">{{$t('fightGroup.customize')}}</el-radio>
             </el-radio-group>
             <div
-              v-if="data.module_bg === '1'"
+              v-if="data.module_bg === 1"
               class="add-bgs"
               @click="tuneUp = !tuneUp"
             >

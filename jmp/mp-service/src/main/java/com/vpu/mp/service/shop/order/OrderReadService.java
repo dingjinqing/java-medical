@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order;
 
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
@@ -12,6 +13,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
@@ -19,14 +21,24 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.member.InviteSourceConstant;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
-import com.vpu.mp.service.pojo.shop.order.refund.*;
+import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -47,6 +59,7 @@ import com.vpu.mp.service.pojo.wxapp.order.refund.AfterSaleServiceVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
@@ -87,14 +100,22 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_GET;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
@@ -153,6 +174,8 @@ public class OrderReadService extends ShopBaseService {
     private FootPrintService footPrintService;
     @Autowired
     private ReturnService returnService;
+    @Autowired
+    private ExpressService expressService;
 	/**
 	 * 订单查询
 	 * @param param
@@ -373,7 +396,7 @@ public class OrderReadService extends ShopBaseService {
             vo.setReturnGoods(goods);
 		}
 		//快递code
-		vo.setShippingCode(returnOrder.getShippingCode(rOrder));
+		vo.setShippingCode(getShippingCode(rOrder));
 		//金额计算
 		setCalculateMoney(vo);
 		//获取该退款订单操作记录
@@ -571,14 +594,14 @@ public class OrderReadService extends ShopBaseService {
 			order.setVerifierInfo(userInfo.getUsername(), userInfo.getMobile());
 		}
 		//子单
-		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
+		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT).toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
 			//只显示生成订单的子订单
 			order.setSubOrder(getSubOrder(orders.subList(1, orders.size())));
 		}
 		//好物圈
 
 		// 拼团
-		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
+		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY).toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
 			//未退款
 			if (!groupOrder.getStatus().equals(GroupBuyConstant.STATUS_FAILED)&&!groupOrder.getStatus().equals(STATUS_WAIT_PAY)){
@@ -591,7 +614,7 @@ public class OrderReadService extends ShopBaseService {
 				groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
                 order.setGroupBuyInfo(groupOrderVo);
             }
-		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
+		}else if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW).toString()) != -1) {
 
 		}
 		//拼团抽奖
@@ -675,7 +698,15 @@ public class OrderReadService extends ShopBaseService {
 		if(CollectionUtils.isEmpty(result)) {
 			return null;
 		}else {
-			result.forEach(x -> {
+            List<Byte> collect = result.stream().map(ShippingInfoVo::getShippingId).collect(Collectors.toList());
+            Map<Byte, ExpressVo> express = expressService.gets(collect);
+            result.forEach(x -> {
+                if(express.get(x.getShippingId()) != null && !StringUtils.isBlank(express.get(x.getShippingId()).getShippingName())){
+                    x.setShippingName(express.get(x.getShippingId()).getShippingName());
+                }else{
+                    //正常情况不会出现这种情况
+                    x.setShippingName(StringUtils.EMPTY);
+                }
 				x.getGoods().forEach(y->{
 					y.setGoodsImg(goods.get(y.getOrderGoodsId()).getGoodsImg());
 					y.setGoodsPrice(goods.get(y.getOrderGoodsId()).getGoodsPrice());
@@ -794,6 +825,19 @@ public class OrderReadService extends ShopBaseService {
     public Integer getGiftOrderCount(Integer giftId, boolean isIncludeReturn){
         List<String> giftOrderSns = orderGoods.getGiftOrderSns(giftId, isIncludeReturn);
         return orderInfo.getGiftOrderCount(giftOrderSns);
+    }
+
+    /**
+     * 	获取该退款订单物流code(快递100对应code)
+     * @param returnOrder
+     * @return
+     */
+    private String getShippingCode(ReturnOrderRecord returnOrder) {
+        if(returnOrder.getReturnType() == OrderConstant.RT_GOODS && returnOrder.getRefundStatus() >= OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
+            return expressService.get(Byte.valueOf(returnOrder.getShippingType())).getShippingCode();
+        }else {
+            return null;
+        }
     }
 
     /*********************************************************************************************************/
@@ -995,7 +1039,7 @@ public class OrderReadService extends ShopBaseService {
                 if(SRC_BACK_STAGE.getCode().equals(order.getUserSource())){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_ADMIN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
-                if(SRC_NOT_ACQUIRED.getCode().equals(order.getUserSource()) && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
+                if(NOT_GET.getCode().equals(order.getUserSource()) && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_UNKNOWN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
                 if(order.getUserSource() != null && order.getUserSource() > SRC_BACK_STAGE.getCode()){

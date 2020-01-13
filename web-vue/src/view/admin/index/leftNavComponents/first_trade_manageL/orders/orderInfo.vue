@@ -189,6 +189,7 @@
                       <el-link
                         type="primary"
                         :underline="false"
+                        @click="goRefundInfo(item.returnOrderSn)"
                       >{{[1,2,4].indexOf(item.refundStatus) == -1 ? $t('order.returnInfo') : $t('order.approval')}}</el-link>
 
                     </td>
@@ -302,7 +303,7 @@
                     </div>
                     <div class="right">
                       <span @click="manualReturn(oneOrder.orderSn,oneOrder.orderId,oneOrder.createTime)">{{$t('order.manualReturnText')}}</span>
-                      <span>{{$t('order.comment')}}</span>
+                      <span @click="goComment(oneOrder.orderSn)">{{$t('order.comment')}}</span>
                     </div>
                   </div>
                 </td>
@@ -352,7 +353,7 @@
                     {{$t('order.waitReceive')}}
                   </template>
                   <template v-else>
-                    <template v-if="oneOrder.orderStatus != 3 && oneOrder.partShipFlag != 5">
+                    <template v-if="oneOrder.orderStatus != 3 && oneOrder.orderStatus != 5">
                       <template v-if="oneOrder.orderStatus == 0 && goodsTypeArray.indexOf('10') != -1">
                         <template v-if="order.bkOrderPaid == 0">
                           {{$t('order.waitDeposit')}}
@@ -405,7 +406,10 @@
                   <template v-if="oneOrder.refundStatus > 0">
                     <br />
                     <template v-if="[1,2,4].indexOf(oneOrder.refundStatus) != -1">
-                      <el-button type="text">{{$t('order.applyRetrunView')}}</el-button>
+                      <el-button
+                        type="text"
+                        @click="goReturnView(oneOrder.orderSn)"
+                      >{{$t('order.applyRetrunView')}}</el-button>
                     </template>
                     <template v-else>
                       <el-button type="text">{{$t('order.retrunView')}}</el-button>
@@ -828,6 +832,30 @@ export default {
         action: 5
       }
       finish(obj).then(res => {
+      })
+    },
+    goReturnView (orderSn) {
+      this.$router.push({
+        name: 'order_return',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    goComment (orderSn) {
+      this.$router.push({
+        name: 'comment',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    goRefundInfo (returnOrderSn) {
+      this.$router.push({
+        name: 'orderRefundInfo',
+        query: {
+          returnOrderSn: returnOrderSn
+        }
       })
     }
   },

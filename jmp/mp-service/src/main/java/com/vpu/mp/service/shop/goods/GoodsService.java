@@ -31,7 +31,7 @@ import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
-import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
@@ -105,7 +105,7 @@ public class GoodsService extends ShopBaseService {
     @Autowired
     protected UpYunConfig upYunConfig;
     @Autowired
-    protected ShopMpDecorationService shopMpDecorationService;
+    protected MpDecorationService mpDecorationService;
     @Autowired
     public GoodsPriceService goodsPrice;
     @Autowired
@@ -1402,7 +1402,7 @@ public class GoodsService extends ShopBaseService {
         goodsVo.setMemberCardIds(cardIds);
 
         //设置模板名称
-        XcxCustomerPageRecord pageDecorate = shopMpDecorationService.getPageById(goodsVo.getGoodsPageId());
+        XcxCustomerPageRecord pageDecorate = mpDecorationService.getPageById(goodsVo.getGoodsPageId());
         if (pageDecorate == null) {
             goodsVo.setGoodsPageName(null);
         } else {
@@ -1902,5 +1902,15 @@ public class GoodsService extends ShopBaseService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Exist boolean.商品是否存在
+     *
+     * @param goodsId the goods id
+     * @return the boolean
+     */
+    public boolean exist(Integer goodsId) {
+        return db().fetchExists(GOODS, GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(BYTE_ZERO)));
     }
 }

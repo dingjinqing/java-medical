@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order.marketing.gift;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -48,7 +49,7 @@ public class OrderGiftProductVo extends ProductVo {
             .goodsWeight(goodsWeight)
             .catId(catId)
             .sortId(sortId)
-            .goodsPriceAction(OrderConstant.GOODS_TYPE_GENERAL)
+            .goodsPriceAction(BaseConstant.ACTIVITY_TYPE_GENERAL)
             .discountedTotalPrice(BigDecimal.ZERO)
             .giftId(getGiftId())
         .build();

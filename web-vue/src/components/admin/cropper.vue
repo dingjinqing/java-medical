@@ -169,8 +169,12 @@ export default {
   },
   watch: {
     cropperFlag_ (obj) {
-      console.log(obj, 111)
+      console.log(obj, 111, this.disabled)
       if (obj === null) return
+      if (!this.disabled) {
+        this.cropperTopInput_one = ''
+        this.cropperTopInput_two = ''
+      }
       this.dialogVisible = true
       // this.option.img = url
       this.imgPath = obj.path
@@ -182,9 +186,15 @@ export default {
       this.orignHeight = obj.imgHeight
       let minWith = Math.min(obj.imgWidth, 150)
       let minHeight = Math.min(obj.imgHeight, 150)
-      console.log(minWith, minHeight)
-      this.option.autoCropWidth = minWith
-      this.option.autoCropHeight = minHeight
+      console.log(minWith, minHeight, this.imageSize)
+      if (this.imageSize.length) {
+        this.option.autoCropWidth = this.imageSize[0]
+        this.option.autoCropHeight = this.imageSize[1]
+      } else {
+        this.option.autoCropWidth = minWith
+        this.option.autoCropHeight = minHeight
+      }
+
       if (obj.imgWidth > 150) {
         this.saveScaleW = 150
       } else {
@@ -205,6 +215,8 @@ export default {
           }
 
           this.option.fixedNumber = [newData[0], newData[1]]
+        } else {
+          this.disabled = false
         }
       },
       immediate: true
@@ -300,8 +312,8 @@ export default {
       console.log(this.cropMovingX, this.cropMovingY, this.cropperTopInput_one, this.cropperTopInput_two, this.previews.w, this.previews.h)
       let obj = {
         remoteImgPath: this.imgPath,
-        cropWidth: this.cropperTopInput_one,
-        cropHeight: this.cropperTopInput_two,
+        cropWidth: this.option.autoCropWidth,
+        cropHeight: this.option.autoCropHeight,
         x: this.cropMovingX,
         y: this.cropMovingY,
         w: this.previews.w,

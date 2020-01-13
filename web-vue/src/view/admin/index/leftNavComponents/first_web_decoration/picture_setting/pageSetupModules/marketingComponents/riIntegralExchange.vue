@@ -8,11 +8,11 @@
           <div class="title">列表样式：</div>
           <el-radio
             v-model="moduleData.list_styles"
-            label="1"
+            :label="1"
           >单列</el-radio>
           <el-radio
             v-model="moduleData.list_styles"
-            label="2"
+            :label="2"
           >双列</el-radio>
         </div>
         <div class="listStyle">
@@ -139,7 +139,7 @@
       </div>
       <!--选择活动弹窗-->
       <el-dialog
-        title="提示"
+        title="选择积分活动"
         :visible.sync="dialogVisible"
         width="60%"
         header-row-class-name="tableClss"
@@ -345,15 +345,13 @@ export default {
         this.tableData.forEach((item, index) => {
           arr.push(item.goods_id)
         })
-        if (!this.moduleData.integral_goods.length) {
-          this.$refs.addActTable.clearSelection()
-        } else {
+        console.log(this.moduleData.integral_goods, arr)
+        this.$refs.addActTable.clearSelection()
+        if (this.moduleData.integral_goods.length) {
           arr.forEach((item, index) => {
             this.moduleData.integral_goods.forEach((itemC, indexC) => {
               if (item === itemC.goods_id) {
                 this.$refs.addActTable.toggleRowSelection(this.tableData[index], true)
-              } else {
-                this.$refs.addActTable.toggleRowSelection(this.tableData[index], false)
               }
             })
           })

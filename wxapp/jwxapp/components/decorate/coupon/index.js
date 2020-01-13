@@ -41,6 +41,10 @@ global.wxComponent({
                 util.toast_fail('优惠券库存为0');
               } else if (res.content == 5) {
                 util.toast_fail('可用积分不足');
+              } else if (res.content == 6) {
+                util.toast_fail('积分更新失败');
+              } else if (res.content == 7) {
+                util.toast_fail('领取次数达上限');
               }
               util.toast_fail(res.content);
               m.isCoupon = 0;
@@ -76,7 +80,7 @@ global.wxComponent({
       var m = this.data.m;
       var _this = this;
 
-      if (d.use_score === 1) {
+      if (d.use_score === 1 || d.exclusive != '') {
         // 积分兑换
         util.jumpLink('/pages/getCoupon/getCoupon?couponId=' + d.coupon_id);
       } else {
@@ -102,6 +106,10 @@ global.wxComponent({
               util.toast_fail('优惠券库存为0');
             } else if (res.content == 5) {
               util.toast_fail('可用积分不足');
+            } else if (res.content == 6) {
+              util.toast_fail('积分更新失败');
+            } else if (res.content == 7) {
+              util.toast_fail('领取次数达上限');
             }
           } else {
             util.toast_fail('领取失败');

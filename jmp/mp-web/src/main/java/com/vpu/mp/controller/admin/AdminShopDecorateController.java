@@ -26,10 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
-//	@Override
-//    protected ShopApplication shop() {
-//        return saas.getShopApp(471752);
-//    }
+
 	/**
 	 * 装修页面列表
 	 *
@@ -38,7 +35,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/list")
 	public JsonResult list(@RequestBody XcxCustomerPageVo param) {
-		PageResult<XcxCustomerPageVo> list = shop().mpDecoration.getPageList(param);
+		PageResult<XcxCustomerPageVo> list = shop().adminDecoration.getPageList(param);
 		return success(list);
 	}
 
@@ -49,7 +46,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/page/add")
 	public JsonResult addPage(@RequestBody XcxCustomerPageVo param) {
-		Integer res = shop().mpDecoration.addPage(param);
+		Integer res = shop().adminDecoration.addPage(param);
 		return res > 0 ? this.success(res) : fail();
 	}
 
@@ -61,7 +58,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/detail")
 	public JsonResult pageDetail(Integer pageId) {
-		XcxCustomerPageRecord detail = shop().mpDecoration.getPageById(pageId);
+		XcxCustomerPageRecord detail = shop().adminDecoration.getPageById(pageId);
 		return success(detail.intoMap());
 	}
 
@@ -72,8 +69,8 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/index/set")
-	public JsonResult setIndex(@RequestBody setIndexParam param) {
-		boolean res = shop().mpDecoration.setIndex(param);
+	public JsonResult setIndex(@RequestBody PageIdParam param) {
+		boolean res = shop().adminDecoration.setIndex(param);
 		return success(res);
 	}
 
@@ -82,10 +79,9 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/page/edit")
-	public JsonResult editPage(@RequestBody setIndexParam param) {
-		XcxCustomerPageRecord info = shop().mpDecoration.editPage(param);
-		return this.success(info.intoMap());
+	@PostMapping(value = "/admin/decorate/page/get")
+	public JsonResult getPageInfo(@RequestBody @Validated PageIdParam param) {
+		return success(shop().adminDecoration.getPageInfo(param));
 	}
 
 	/**
@@ -94,7 +90,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/cate/page")
 	public JsonResult pageCate() {
-		List<PageClassificationVo> pageCateList = shop().mpDecoration.getPageCate();
+		List<PageClassificationVo> pageCateList = shop().adminDecoration.getPageCate();
 		return this.success(pageCateList);
 	}
 
@@ -105,7 +101,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/cate/set")
 	public JsonResult setPageCate(@RequestBody PageClassificationVo param) {
-		int res = shop().mpDecoration.setPageCate(param);
+		int res = shop().adminDecoration.setPageCate(param);
 		if(res > 0) {
 			return this.success();
 		}else {
@@ -120,7 +116,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/cate/batchSet")
 	public JsonResult batchSetPageCate(@RequestBody BatchSetPageCateParam param) {
-		boolean res = shop().mpDecoration.batchSetPageCate(param);
+		boolean res = shop().adminDecoration.batchSetPageCate(param);
 		return this.success(res);
 	}
 
@@ -131,7 +127,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/page/del")
 	public JsonResult delXcxPage(@RequestBody PageClassificationVo param) {
-		int res = shop().mpDecoration.delXcxPage(param);
+		int res = shop().adminDecoration.delXcxPage(param);
 		if(res > 0) {
 			return this.success();
 		}else {
@@ -147,7 +143,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/page/copy")
 	public JsonResult copyDecoration(@RequestBody XcxCustomerPageVo param) {
-		Boolean res = shop().mpDecoration.copyDecoration(param.getPageId());
+		Boolean res = shop().adminDecoration.copyDecoration(param.getPageId());
 		return success(res);
 	}
 
@@ -157,7 +153,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/page/share")
 	public JsonResult getPageShareCode(@RequestBody Integer pageId) throws Exception {
-		return success(shop().mpDecoration.getMpQrCode(pageId));
+		return success(shop().adminDecoration.getMpQrCode(pageId));
 	}
 
 	/**
@@ -168,7 +164,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/page/save")
 	public JsonResult saveDecoration(@RequestBody @Valid PageStoreParam param) {
-		boolean res = shop().mpDecoration.storePage(param);
+		boolean res = shop().adminDecoration.storePage(param);
 		if(res) {
 			return this.success();
 		}else {

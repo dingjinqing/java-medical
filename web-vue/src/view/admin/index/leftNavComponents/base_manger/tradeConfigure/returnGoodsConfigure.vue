@@ -1,36 +1,39 @@
 <template>
   <div class="returnGoodsConfigure">
-    <!--    售后配置-->
+    <!--售后配置-->
     <section class="configureWrapper">
       <div class="title">
         <span></span>{{$t('returnconfiguration.afterconfig')}}
         <el-switch
-          v-model="afterSalesConfiguration"
+          v-model="returnParam.post_sale_status"
           active-color="#13ce66"
           inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
-        {{this.afterSalesConfiguration?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
+        {{returnParam.post_sale_status?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
         <label class="onText">{{$t('returnconfiguration.activeafterconfig')}}</label>
       </div>
     </section>
     <!-- 退货配置 -->
-    <section class="returnGoods" v-if="this.afterSalesConfiguration">
+    <section
+      class="returnGoods"
+      v-if="returnParam.post_sale_status"
+    >
       <div class='title'>{{$t('returnconfiguration.returnconfig')}}：</div>
       <div class="content">
         <div style="margin-top: 20px">
           <template>
             <!-- `checked` 为 true 或 false -->
-            <el-checkbox v-model="orderCanExchange"><label>{{$t('returnconfiguration.supportreturn')}}</label></el-checkbox>
+            <el-checkbox v-model="returnParam.order_can_exchange"><label>{{$t('returnconfiguration.supportreturn')}}</label></el-checkbox>
           </template>
         </div>
         <el-radio-group
           v-model="returnParam.return_change_goods_status"
           class="requirement"
         >
-          <el-radio :label="2">{{$t('returnconfiguration.allgoods')}}</el-radio>
-          <el-radio :label="1">{{$t('returnconfiguration.cannotreturngoods')}} </el-radio>
-          <el-radio :label="0">{{$t('returnconfiguration.canreturngoods')}}</el-radio>
+          <el-radio :label=2>{{$t('returnconfiguration.allgoods')}}</el-radio>
+          <el-radio :label=1>{{$t('returnconfiguration.cannotreturngoods')}} </el-radio>
+          <el-radio :label=0>{{$t('returnconfiguration.canreturngoods')}}</el-radio>
         </el-radio-group>
         <div
           v-if="returnParam.return_change_goods_status === 1"
@@ -49,14 +52,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectgoods')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="goodsN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="goodsN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="goodsN"
-            ></el-input>  件 商品
+            ></el-input> 件 商品
           </div>
         </div>
         <div
@@ -68,14 +74,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectplant')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="platN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="platN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="platN"
-            ></el-input>  个 平台分类
+            ></el-input> 个 平台分类
           </div>
         </div>
         <div
@@ -87,14 +96,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectshop')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="busClassN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="busClassN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="busClassN"
-            ></el-input>  个 商家分类
+            ></el-input> 个 商家分类
           </div>
         </div>
         <div
@@ -106,14 +118,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectlabel')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="labelN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="labelN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="labelN"
-            ></el-input>  个 商品标签
+            ></el-input> 个 商品标签
           </div>
         </div>
         <div
@@ -125,14 +140,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectbrand')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="brandN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="brandN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="brandN"
-            ></el-input>  个 商品品牌
+            ></el-input> 个 商品品牌
           </div>
         </div>
       </div>
@@ -147,8 +165,8 @@
       </div>
       <div class="configureContent baseInfo">
         <el-radio-group v-model="returnParam.is_refund_coupon">
-          <el-radio :label="1">{{$t('returnconfiguration.activated')}}</el-radio>
-          <el-radio :label="0">{{$t('returnconfiguration.inactived')}}</el-radio>
+          <el-radio :label=1>{{$t('returnconfiguration.activated')}}</el-radio>
+          <el-radio :label=0>{{$t('returnconfiguration.inactived')}}</el-radio>
         </el-radio-group>
         <span class="onText">{{$t('returnconfiguration.ordernecessarydesc')}}</span>
       </div>
@@ -165,8 +183,8 @@
           v-model="returnParam.auto_return"
           class="radio"
         >
-          <el-radio :label="1">{{$t('returnconfiguration.activated')}}</el-radio>
-          <el-radio :label="0">{{$t('returnconfiguration.inactived')}}</el-radio>
+          <el-radio :label=1>{{$t('returnconfiguration.activated')}}</el-radio>
+          <el-radio :label=0>{{$t('returnconfiguration.inactived')}}</el-radio>
         </el-radio-group>
         <!-- 开启时的显示内容 -->
         <div
@@ -197,7 +215,7 @@
             <el-input
               size="mini"
               class="inputWidth"
-              v-model="returnParam.return_shopping_days"
+              v-model="returnParam.return_shipping_days"
             ></el-input>
             <span>{{$t('returnconfiguration.note33')}}</span>
           </div>
@@ -221,7 +239,7 @@
         </div>
       </div>
     </section>
-<!--    售后商品库存配置-->
+    <!-- 售后商品库存配置-->
     <section class="configureWrapper">
       <div class="title">
         <span></span>
@@ -229,8 +247,8 @@
       </div>
       <div class="configureContent baseInfo">
         <el-radio-group v-model="returnParam.auto_return_goods_stock">
-          <el-radio :label="1">{{$t('returnconfiguration.addgoodstock')}}</el-radio>
-          <el-radio :label="0">{{$t('returnconfiguration.notaddgoodstock')}}</el-radio>
+          <el-radio :label=1>{{$t('returnconfiguration.addgoodstock')}}</el-radio>
+          <el-radio :label=0>{{$t('returnconfiguration.notaddgoodstock')}}</el-radio>
         </el-radio-group>
       </div>
     </section>
@@ -333,8 +351,6 @@ export default {
   },
   data () {
     return {
-      afterSalesConfiguration: true,
-      orderCanExchange: true,
       // 商品弹窗回调数据
       goodsInfo: [],
       goodsInfoRow: [],
@@ -365,22 +381,22 @@ export default {
       tuneUpProductLabel: false,
       classFlag: 0,
       returnParam: {
-        post_sale_status: 1,
-        order_can_exchange: 1,
+        post_sale_status: true,
+        order_can_exchange: true,
         return_change_goods_status: 0,
         is_refund_coupon: 0,
         auto_return_goods_stock: 1,
         auto_return: 0,
         return_money_days: 7,
         return_address_days: 7,
-        return_shopping_days: 7,
+        return_shipping_days: 7,
         return_pass_days: 7,
         order_return_goods_package: {
           add_goods: [],
           add_cate: [],
           add_sort: [],
           add_label: [],
-          add_brand: {}
+          add_brand: []
         },
         business_address: {
           consignee: '',
@@ -491,37 +507,22 @@ export default {
           this.busClassN = this.busClass.length
           this.platClass = this.returnParam.order_return_goods_package.add_cate
           this.platN = this.platClass.length
-          this.afterSalesConfiguration = this.number2boolean(this.returnParam.post_sale_status)
-          this.orderCanExchange = this.number2boolean(this.returnParam.order_can_exchange)
         } else {
-          this.$message.error('操作失败，请稍后重试！')
+          this.$message.error('请求数据失败，请稍后重试！')
         }
-      })
-    },
-    number2boolean (configValue) {
-      if (configValue === 1) {
-        return true
-      } else if (configValue === 0) {
-        return false
-      }
-    },
-    boolean2number (booleanValue) {
-      if (booleanValue === true) {
-        return 1
-      } else if (booleanValue === false) {
-        return 0
-      }
+      }).catch(err => console.log(err))
     },
     // 更新配置项
     updateConfig () {
       // 设置那几个弹窗的值
+      console.log(this.goodsInfo)
       this.returnParam.order_return_goods_package.add_goods = this.goodsInfo
       this.returnParam.order_return_goods_package.add_label = this.labelInfo
       this.returnParam.order_return_goods_package.add_brand = this.brand
       this.returnParam.order_return_goods_package.add_sort = this.busClass
       this.returnParam.order_return_goods_package.add_cate = this.platClass
-      this.returnParam.post_sale_status = this.boolean2number(this.afterSalesConfiguration)
-      this.returnParam.order_can_exchange = this.boolean2number(this.orderCanExchange)
+      this.returnParam.post_sale_status = Number(this.returnParam.post_sale_status)
+      this.returnParam.order_can_exchange = Number(this.returnParam.order_can_exchange)
       console.log(JSON.parse(JSON.stringify(this.returnParam)))
       retrunUpdate(this.returnParam).then(res => {
         console.log(res)
@@ -531,7 +532,7 @@ export default {
         } else {
           this.$message.error('更新失败！')
         }
-      })
+      }).catch(err => console.log(err))
     }
   }
 }
@@ -542,6 +543,7 @@ export default {
   padding-bottom: 20px;
   .returnGoods {
     display: flex;
+    padding: 0 0 10px;
     .title {
       height: 60px;
       line-height: 60px;

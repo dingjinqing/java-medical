@@ -17,6 +17,13 @@
     "v-pinintegration": "../pinintegration/index",
     "v-map": "../map/index",
     "v-official-accounts": "../official-accounts/index",
-    "v-video": "../video/index"
+    "v-video": "../video/index",
+    "v-title": "../title/index",
+    "v-line": "../line/index",
+    "v-space": "../space/index",
+    "v-rich-text": "../rich-text/index",
+    "v-text": "../text/index",
+    "v-text-image": "../text-image/index",
+    "v-hot-area": "../hot-area/index"
   }
 }

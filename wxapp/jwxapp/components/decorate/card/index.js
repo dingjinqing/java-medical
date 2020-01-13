@@ -8,8 +8,6 @@ global.wxComponent({
 
       // 根据背景类型来判断是采用背景颜色还是背景图片
       console.log(newVal, 'cardData')
-      // 暂时改变字段调试
-      newVal.status = -1
       // 处理背景
       if (newVal.bg_type == 0) {
         newVal.bg = newVal.bg_color = newVal.bg_color || '#e6cb96';

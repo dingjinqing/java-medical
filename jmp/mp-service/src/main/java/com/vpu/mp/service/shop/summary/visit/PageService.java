@@ -5,14 +5,15 @@ import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVo;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVoItem;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 
@@ -25,8 +26,47 @@ import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 public class PageService extends BaseVisitService {
 
     private static final String PAGE_OTHER = "page.other";
+    /** 日期标识符 */
+    private static final Integer CUSTOM_DAYS = 0;
+    /**
+     *得到之前的某一天(字符串类型)
+     *@param days N天前
+     *@return preDay(String)
+     */
+    public String getDate(Integer days) {
+        //格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        //获取当前时间
+        Calendar c = Calendar.getInstance();
+        //计算指定日期
+        c.add(Calendar.DATE, - days);
+        Date time = c.getTime();
+        //返回格式化后的String日期
+        return sdf.format(time);
+    }
 
+    /**
+     * 计算退出率
+     * @param exitNum 退出次数
+     * @param visitNum 访问次数
+     * @return 退出率保留两位小数
+     */
+    public Double getExitRate(Integer exitNum,Integer visitNum){
+        if (exitNum==null||visitNum==null||visitNum==0){
+            return null;
+        }else {
+            Double exitRate = (exitNum*100.00/(double)visitNum);
+            BigDecimal tempAverageNum = new BigDecimal(exitRate);
+            exitRate = tempAverageNum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+            return exitRate;
+        }
+    }
     public PageVisitVo getPageVisit(VisitPageParam param) {
+        //得到时间
+        if (!param.getType().equals(CUSTOM_DAYS)){
+            param.setStartDate(getDate(param.getType()));
+            param.setEndDate(getDate(NumberUtils.INTEGER_ZERO));
+        }
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
         SortField<?> sortField = param.getSortField();
@@ -44,9 +84,12 @@ public class PageService extends BaseVisitService {
             item.setPageVisitUv(String.valueOf(r.getPageVisitUv()));
             item.setPageStayTimePv(r.getPageStaytimePv());
             item.setPageName(pageNameOf(r.getPagePath()));
+            item.setExitRate(getExitRate(r.getExitpagePv(),r.getPageVisitPv()));
             return item;
         });
         vo.setList(items);
+        vo.setStartDate(startDate);
+        vo.setEndDate(endDate);
         return vo;
     }
 

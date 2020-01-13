@@ -19,6 +19,25 @@
     <!-- actBar 活动倒计时价格等 -->
     <v-act-content act-bar-info="{{actBarInfo}}"/>
 
+    <!-- 限时降价窗口 -->
+    <view class="reduce-price-act-bar" wx:if="{{filter.includes([6,	98],goodsInfo.activity.activityType)}}" style="background-color:{{somColor}};color:{{comColor}};{{goodsInfo.activity.actState === 3 ? 'justify-content: space-between;' : 'justify-content: center;'}}">
+      <block wx:if="{{goodsInfo.activity.actState === 3}}">
+        <view class="reduce-price-left-info">
+          <text>限时价</text>
+          <text>￥{{reduceActBarPrice}}</text>
+        </view>
+        <view class="reduce-price-right-info">
+          <text>开始时间</text>
+          <text>{{goodsInfo.activity.nextStartTimestamp}}</text>
+        </view>
+      </block>
+      <block wx:if="{{goodsInfo.activity.actState === 0}}">
+        <view class="reduce-end-info" >
+          限时降价结束时间：{{goodsInfo.activity.currentEndTimestamp}}
+        </view>
+      </block>
+    </view>
+
     <!-- 商品信息 -->
     <view class="goods-info">
       <view class="goods-info_top">
@@ -40,7 +59,9 @@
       <view class="goods_ad" wx:if="{{goodsInfo.goodsAd}}">{{goodsInfo.goodsAd}}</view>
       <view class="goods_price_info">
         <view class="goods_price" style='color:{{comColor}}'>
-        <view class="first-special-tag" wx:if="{{goodsInfo.activity.activityType === 18}}" style="background-color:{{comColor}};">首单特惠</view>
+        <view class="goods-price-tag" wx:if="{{goodsInfo.activity.activityType === 18}}" style="background-color:{{comColor}};">首单特惠</view>
+        <view class="goods-price-tag" wx:if="{{goodsInfo.activity.activityType === 6}}" style="background-color:{{comColor}};">限时降价</view>
+        <view class="goods-price-tag" wx:if="{{filter.includes([97,98],goodsInfo.activity.activityType)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</view>
           <text>￥</text><text>{{goodsInfo.prdRealPrice}}</text>
         </view>
         <view class="marking_price">￥<text>{{goodsInfo.prdLinePrice}}</text></view>
