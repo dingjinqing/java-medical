@@ -401,7 +401,7 @@ export default {
         activityId: '', // 活动id,优惠价或者抽奖
         account: '', // 用户余额
         awardNum: '', // 奖品份数
-        sendNum: '', // 奖品送出数量
+        // sendNum: '', // 奖品送出数量
         awardPath: '', // 设置链接
         awardImg: '', // 活动图片
         firstCommentGoods: 0 // 同一商品仅首次评价送礼
@@ -518,6 +518,10 @@ export default {
         if (valid) {
           let params = Object.assign({}, that.form)
           console.log(params)
+          // 不传奖品送出数量
+          if (params.hasOwnProperty('sendNum')) {
+            delete params.sendNum
+          }
           if (this.id) {
             // 修改
             updateEvaluationGift(params).then(res => {

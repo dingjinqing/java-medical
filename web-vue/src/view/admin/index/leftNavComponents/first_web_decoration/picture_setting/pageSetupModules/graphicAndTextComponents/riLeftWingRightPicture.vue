@@ -18,7 +18,7 @@
               <div class="bottom">
                 <el-radio
                   v-model="moduleSaveData.ti_type"
-                  label="0"
+                  :label="0"
                 >{{$t('leftWingRightPicture.styleFirst')}}</el-radio>
               </div>
             </div>
@@ -35,7 +35,7 @@
               <div class="bottom">
                 <el-radio
                   v-model="moduleSaveData.ti_type"
-                  label="1"
+                  :label="1"
                 >{{$t('leftWingRightPicture.styleSecond')}}</el-radio>
               </div>
             </div>
@@ -47,11 +47,11 @@
             <span>{{$t('leftWingRightPicture.styleSize')}}：</span>
             <el-radio
               v-model="moduleSaveData.img_style"
-              label="0"
+              :label="0"
             >{{$t('leftWingRightPicture.bigPictureStyle')}}</el-radio>
             <el-radio
               v-model="moduleSaveData.img_style"
-              label="1"
+              :label="1"
             >{{$t('leftWingRightPicture.smallGraphStyle')}}</el-radio>
           </div>
           <div class="styleSizeBottom">
@@ -129,8 +129,8 @@ export default {
       tuneUp: false, // 调起添加图片弹窗
       tuneUpSelectLink: false, // 调起选择链接弹窗
       moduleSaveData: {
-        'ti_type': '0', // 文本样式类型
-        'img_style': '0', // 图片样式类型
+        'ti_type': 0, // 文本样式类型
+        'img_style': 0, // 图片样式类型
         'img_url': '', // 图片路径
         'title_link': '', // 链接
         'rich_text': '' // 文本内容

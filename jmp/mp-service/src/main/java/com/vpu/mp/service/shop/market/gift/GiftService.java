@@ -208,7 +208,7 @@ public class GiftService extends ShopBaseService {
      * 获取活动赠品
      */
     protected List<ProductVo> getGiftProduct(Integer... giftId) {
-        return db().select(SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
+        return db().select(SUB_TABLE.ID,SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
                 PRODUCT.PRD_IMG,PRODUCT.PRD_PRICE,PRODUCT.PRD_DESC,GOODS.GOODS_NAME,GOODS.GOODS_IMG)
             .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC)
             .select(GOODS.GOODS_NAME, GOODS.GOODS_IMG)
@@ -396,7 +396,7 @@ public class GiftService extends ShopBaseService {
             .from(TABLE)
             .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1)
                 .and(ORDER_GOODS.ACTIVITY_ID.eq(TABLE.ID)
-                    .and(ORDER_GOODS.ACTIVITY_TYPE.eq(OrderConstant.GOODS_TYPE_GIFT))))
+                    .and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_GIFT))))
             .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
     }
 
@@ -484,7 +484,7 @@ public class GiftService extends ShopBaseService {
         if (isNotEmpty(mobile)) {
             query.and(USER.MOBILE.like(format("%s%%", mobile)));
         }
-        query.and(ORDER_GOODS.ACTIVITY_ID.eq(giftId).and(ORDER_GOODS.ACTIVITY_TYPE.eq(OrderConstant.GOODS_TYPE_GIFT)));
+        query.and(ORDER_GOODS.ACTIVITY_ID.eq(giftId).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_GIFT)));
     }
 
     /**

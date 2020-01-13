@@ -64,6 +64,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/user_manger/membershipList/integralDetail'
       )
   },
+  // 会员导入
   {
     path: '/admin/home/main/membershipIntroduction',
     name: 'user_import',
@@ -75,6 +76,17 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/membershipIntroduction'
       )
+  },
+  // 查看未激活会员
+  {
+    path: '/admin/home/main/inactiveMembersList',
+    name: 'user_inactive',
+    meta: {
+      crumbTitle: 'router.inactiveMembersList',
+      meta: 'user_manager',
+      category: 'user_import'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/inactiveMembersList')
   },
   {
     path: '/admin/home/main/user_card',

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.info;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -111,7 +112,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             where(ORDER_INFO.ACTIVITY_ID.eq(param.getActId())).
             and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
             and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
-            and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_BARGAIN}))).
+            and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_BARGAIN}))).
             groupBy(date(ORDER_INFO.CREATE_TIME)).fetch().intoMap(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number"));
         return map;
     }
@@ -154,7 +155,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     public Integer getPackageSaleGoodsNum(Integer activityId) {
         Integer goodsNum = db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE})))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE})))
             .fetchOneInto(Integer.class);
         return goodsNum;
     }
@@ -166,7 +167,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     public Integer getPackageSaleUserNum(Integer activityId) {
         Integer userNum = db().select(DSL.countDistinct(ORDER_INFO.USER_ID)).from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE})))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE})))
             .fetchOneInto(Integer.class);
         return userNum;
     }
@@ -178,7 +179,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     public Integer getPackageSaleOrderNum(Integer activityId) {
         Integer goodsNum = db().select(DSL.count()).from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE})))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE})))
             .fetchOneInto(Integer.class);
         return goodsNum;
     }
@@ -195,7 +196,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(activityId))
             .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(TABLE.ORDER_STATUS.gt((byte) 2))
-            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_GIVE_GIFT})))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_GIVE_GIFT})))
             .and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN))
             .fetchOne().component1();
     }
@@ -224,7 +225,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
         select.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()))
             .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
-            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_GIVE_GIFT})))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_GIVE_GIFT})))
             .and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN));
 
         if (!StringUtils.isBlank(param.getGoodsName())){

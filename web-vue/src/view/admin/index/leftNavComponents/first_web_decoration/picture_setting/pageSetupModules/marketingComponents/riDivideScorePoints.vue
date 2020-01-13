@@ -13,13 +13,13 @@
             >
               <el-radio
                 v-model="data.pin_title"
-                label="1"
+                :label="1"
               >默认标题：</el-radio>XX积分等你拿,购物可抵现金！
             </div>
             <div class="radio special">
               <el-radio
                 v-model="data.pin_title"
-                label="0"
+                :label="0"
               >自定义</el-radio>
               <el-input
                 :disabled="data.pin_title==='1'?true:false"
@@ -48,11 +48,11 @@
           <div>
             <el-radio
               v-model="data.module_bg"
-              label="0"
+              :label="0"
             >默认底图</el-radio>
             <el-radio
               v-model="data.module_bg"
-              label="1"
+              :label="1"
             >自定义</el-radio>
           </div>
         </div>
@@ -70,8 +70,8 @@
             <div style="color: #5a8bff;margin: 27px 0 5px 0;"><img :src="$imageHost+'/image/admin/icon_jia.png'">添加一个背景图</div>
             <div style="color: #999;font-size: 12px">建议宽度720像素以内，高度300像素以内</div>
             <img
-            v-if="data.module_img"
-            :src="data.module_img"
+              v-if="data.module_img"
+              :src="data.module_img"
               class="pin_ig"
             >
             <div
@@ -252,10 +252,10 @@ export default {
     handleToData (res) {
       let flag = null
       switch (res) {
-        case '1':
+        case 1:
           flag = true
           break
-        case '0':
+        case 0:
           flag = false
           break
         case true:

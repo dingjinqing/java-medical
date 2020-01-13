@@ -51,7 +51,7 @@
               :style="'background-image:url('+ $imageHost +'/image/admin/shop_beautify/decorate_model.png)'"
             >
               <el-image
-                :src="$imageHost + '/' + good.goods_img"
+                :src="good.goods_img"
                 style="width: 100%; height: 150px;"
               ></el-image>
               <div
@@ -127,7 +127,7 @@
               :style="'background-image:url('+ $imageHost +'/image/admin/shop_beautify/decorate_model.png)'"
             >
               <el-image
-                :src="$imageHost+ '/' + good.goods_img"
+                :src="good.goods_img"
                 style="width: 100%; height: 100%;"
               ></el-image>
               <div class="bargain_time_down">

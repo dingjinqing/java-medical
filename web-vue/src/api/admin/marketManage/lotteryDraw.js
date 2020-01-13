@@ -93,8 +93,8 @@ export function groupLotteryList (data) {
 // 分享
 export function shareLotteryDraw (data) {
   return service({
-    url: '',
-    method: 'get',
+    url: '/api/admin/group_draw/share',
+    method: 'post',
     data: data
   })
 }
@@ -102,7 +102,7 @@ export function shareLotteryDraw (data) {
 // 查询活动数据
 export function effactLotteryList (data) {
   return service({
-    url: '',
+    url: '/api/admin/group_draw/effect',
     method: 'post',
     data: data
   })
