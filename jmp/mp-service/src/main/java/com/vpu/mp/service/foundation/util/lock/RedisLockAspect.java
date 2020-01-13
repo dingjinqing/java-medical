@@ -10,7 +10,6 @@ import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.foundation.util.lock.annotation.operation.AddRedisLocks;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.aspectj.lang.JoinPoint;
@@ -264,7 +263,8 @@ public final class RedisLockAspect extends ShopBaseService {
         logger().info("AddRedisLocks,释放redis锁start");
         releaseLocks(currentKeys.get(), currentValue.get());
         //释放锁后清除key
-        currentKeys.get().clear();
+        currentKeys.remove();
+        currentValue.remove();
         logger().info("AddRedisLocks,释放redis锁end");
     }
 }

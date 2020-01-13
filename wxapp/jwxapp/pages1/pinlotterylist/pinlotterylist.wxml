@@ -1,0 +1,27 @@
+<!--pages1/pinlotterylist/pinlotterylist.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class='main-container'>
+    <view class='pl_top' style='background:{{comColor}}'>
+        <view class='time_show' wx:if='{{!list_info.group_draw.surplus_second }}'>开始时间：{{list_info.group_draw.start_time}}</view>
+        <view class='time_show' wx:if='{{list_info.group_draw.surplus_second && list_info.group_draw.surplus_second!=undefined}}'>距结束仅剩：{{clock}}</view>
+    </view>
+    <view class='pl_content clearfix'>
+        <view class='each_goods clearfix' wx:for='{{list_info.list}}' wx:key='key' bindtap='to_item' data-goods_id='{{item.goods_id}}'>
+            <view class='ec_imgs'>
+              <image src='{{item.goods_img}}'></image>
+            </view>
+            <view class='ec_bottom'>
+                <view class='ec_names'>{{item.goods_name}}</view>
+                <view class='left_style clearfix'>
+                    <view class='ec_price'>
+                        <view class='sale_price' style='color:{{comColor}}'>￥{{list_info.group_draw.pay_money}}</view>
+                        <view class='market_price'>￥{{item.shop_price}}</view>
+                    </view>
+                    <view class='ec_btn' style='background:{{comColor}}'>马上抢</view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+<include src="/pages/common/footer.wxml"/>
+

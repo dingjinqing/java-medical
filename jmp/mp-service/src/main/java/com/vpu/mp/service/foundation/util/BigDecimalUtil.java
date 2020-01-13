@@ -25,9 +25,9 @@ public class BigDecimalUtil {
         //减
         subtrac,
         //乘法
-        multiply
+        multiply,
         //除法
-        , Divide
+        divide
     }
 
     /**
@@ -286,7 +286,7 @@ public class BigDecimalUtil {
                 case multiply:
                     value = multiply(value, bigDecimalPlus.value);
                     break;
-                case Divide:
+                case divide:
                     value = divide(value, bigDecimalPlus.value);
                     break;
                 default:
@@ -325,7 +325,7 @@ public class BigDecimalUtil {
         }
 
         public static void main(String[] args) {
-            BigDecimal multiplyOrDivide = multiplyOrDivide(new BigDecimalPlus(new BigDecimal("1"), Operator.Divide),
+            BigDecimal multiplyOrDivide = multiplyOrDivide(new BigDecimalPlus(new BigDecimal("1"), Operator.divide),
                 new BigDecimalPlus(new BigDecimal("3"), Operator.multiply),
                 new BigDecimalPlus(new BigDecimal("3"), null)
             );

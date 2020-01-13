@@ -7,6 +7,8 @@ import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -157,7 +159,7 @@ public class PaymentService extends ShopBaseService {
 		OrderInfoRecord orderInfo = order.getOrderByOrderSn(orderSn);
 		if (orderInfo == null) {
             logger().error("订单统一支付回调,未找到订单sn:{}", orderSn);
-			throw new MpException(null, "orderSn " + orderSn + "not found");
+			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST, "orderSn " + orderSn + "not found");
 		}
 		String[] goodsTypes = OrderInfoService.orderTypeToArray(orderInfo.getGoodsType());
 		BigDecimal totalFee = new BigDecimal(param.getTotalFee());
@@ -186,7 +188,7 @@ public class PaymentService extends ShopBaseService {
         PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
 
 		// 订单状态处理
-		if (Arrays.asList(goodsTypes).contains(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE))) {
+		if (Arrays.asList(goodsTypes).contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_PRE_SALE))) {
 			/**
 			 * 预售单独处理,先支付定金，后支付尾款 1. 未支付时，如果为定金支付，则BK_ORDER_PAID置为1(定金已支付)，
 			 * 否则为全款支付，则直接BK_ORDER_PAID置为2(尾款已支付)，状态变为待发货 最后修改相应预售商品数量销量库存 2.

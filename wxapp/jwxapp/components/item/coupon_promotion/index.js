@@ -5,6 +5,11 @@ global.wxComponent({
   properties: {
     couponList: {
       type: Array,
+<<<<<<< HEAD
+      value: null
+    },
+    promotion:Array
+=======
       value: null,
       observer(newVal){
         if(newVal){
@@ -39,6 +44,7 @@ global.wxComponent({
         }
       }
     }
+>>>>>>> a8f3e09acd7e4ce03ad75633766e9657c4b8c256
   },
 
   /**
@@ -54,6 +60,12 @@ global.wxComponent({
       this.setData({
         show_recommend_coupons: true
       });
+    },
+    showPromotion(){
+      console.log(111)
+      this.setData({
+        showPromotionDialog:true
+      })
     }
   }
 });

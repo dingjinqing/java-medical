@@ -29,11 +29,11 @@
         <span :class="{pageClassification,navigation}">{{$t('pageSetUp.bottomNavigation')}}：</span>
         <el-radio
           v-model="ruleForm.has_bottom"
-          label="1"
+          :label="1"
         >{{$t('pageSetUp.addTo')}}</el-radio>
         <el-radio
           v-model="ruleForm.has_bottom"
-          label="0"
+          :label="0"
         >{{$t('pageSetUp.notAdd')}}</el-radio>
       </div>
       <div
@@ -44,11 +44,11 @@
         <div style="display:block">
           <el-radio
             v-model="ruleForm.show_margin"
-            label="1"
+            :label="1"
           >{{$t('pageSetUp.addTo')}}</el-radio>
           <el-radio
             v-model="ruleForm.show_margin"
-            label="0"
+            :label="0"
           >{{$t('pageSetUp.notAdd')}}</el-radio>
           <div
             class="marginHeight"
@@ -70,11 +70,11 @@
         <span>{{$t('pageSetUp.sharePoster')}}：</span>
         <el-radio
           v-model="ruleForm.pictorial.is_add"
-          label="1"
+          :label="1"
         >{{$t('pageSetUp.addTo')}}</el-radio>
         <el-radio
           v-model="ruleForm.pictorial.is_add"
-          label="0"
+          :label="0"
         >{{$t('pageSetUp.notAdd')}}</el-radio>
         <div class="example">
           <span>{{$t('pageSetUp.viewExamples')}}</span>
@@ -85,7 +85,7 @@
       </div>
       <!--点击添加分享海报后出现的模块-->
       <div
-        v-if="ruleForm.pictorial.is_add==='1'"
+        v-if="ruleForm.pictorial.is_add"
         class="radio"
         :class="pictorialVisibility"
       >
@@ -101,11 +101,11 @@
           >
             <el-radio
               v-model="ruleForm.pictorial.user_visibility"
-              label="1"
+              :label="1"
             >{{$t('pageSetUp.visibleToAllUsers')}}</el-radio>
             <el-radio
               v-model="ruleForm.pictorial.user_visibility"
-              label="0"
+              :label="0"
             >{{$t('pageSetUp.visibleOnlyToDistributors')}}</el-radio>
           </el-form-item>
           <el-form-item
@@ -201,7 +201,7 @@
         >
           <el-radio
             v-model="ruleForm.bg_types"
-            label="0"
+            :label="0"
           >{{$t('pageSetUp.bgColor')}}：</el-radio>
           <span class="colorSelect">
             <el-color-picker
@@ -225,7 +225,7 @@
           <div style="margin-right:5px">
             <el-radio
               v-model="ruleForm.bg_types"
-              label="1"
+              :label="1"
             >{{$t('pageSetUp.bgPic')}}：</el-radio>
           </div>
 
@@ -358,6 +358,8 @@ export default {
     pageSet: {
       handler (newData) {
         console.log(newData, this.classificationOptions)
+        //  let modulesData = JSON.parse(JSON.stringify(newData))
+        //  modulesData.has_bottom = JSON.stringify(modulesData.has_bottom)
         if (JSON.stringify(newData) !== '{}') {
           getClassifyData().then((res) => {
             console.log(res)

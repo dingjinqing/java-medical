@@ -114,6 +114,7 @@ public class BargainService extends ShopBaseService  {
             vo.setSuccessNumber(bargainRecord.getBargainRecordNumberByStatus(vo.getId(), BargainRecordService.STATUS_SUCCESS));
             vo.setBargainUserNumber(bargainRecord.getBargainRecordNumber(vo.getId()));
             vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+            vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
         });
         return page;
 	}
@@ -302,7 +303,7 @@ public class BargainService extends ShopBaseService  {
      *
      */
 	public PageResult<MarketOrderListVo> getBargainOrderList(MarketOrderListParam param) {
-        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,OrderConstant.GOODS_TYPE_BARGAIN);
+        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,BaseConstant.ACTIVITY_TYPE_BARGAIN);
     }
 
     /**

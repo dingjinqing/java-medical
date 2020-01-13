@@ -4,7 +4,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsActivityDetailMp;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -15,7 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 public class FirstSpecialMpVo extends GoodsActivityDetailMp{
-    private Boolean isForever;
     /**是否限购 */
     private Boolean isLimit;
     /**限购数量*/
@@ -24,9 +22,4 @@ public class FirstSpecialMpVo extends GoodsActivityDetailMp{
     private Boolean limitFlag;
     /**规格信息列表*/
     private List<FirstSpecialPrdMpVo> firstSpecialPrdMpVos;
-
-    /**活动开始时间点*/
-    private Timestamp startTimestamp;
-    /**活动结束时间点*/
-    private Timestamp endTimestamp;
 }

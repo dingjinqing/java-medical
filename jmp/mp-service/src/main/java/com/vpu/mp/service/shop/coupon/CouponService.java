@@ -1,10 +1,12 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -14,12 +16,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
@@ -38,9 +35,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.foundation.util.Util.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -316,7 +312,7 @@ public class CouponService extends ShopBaseService {
 
         //根据优惠券使用状态、过期状态条件筛选
         MpBuildOptions(select, param);
-        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId())).and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte)0));
+        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId())).and(MRKING_VOUCHER.DEL_FLAG.eq((byte)0));
         PageResult<AvailCouponVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
             ExpireTimeVo remain = getExpireTime(list.getEndTime());
@@ -420,12 +416,50 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public AvailCouponDetailVo getCouponDetailByScore(AvailCouponDetailParam param){
+        ArrayList getCard = new ArrayList();
         Record record = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.ACT_CODE,MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.VALIDITY_TYPE,MRKING_VOUCHER.VALIDITY,
             MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.END_TIME,MRKING_VOUCHER.RECOMMEND_GOODS_ID,
-            MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.LEAST_CONSUME)
+            MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.LEAST_CONSUME,MRKING_VOUCHER.CARD_ID)
             .from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(param.getCouponId())).fetchOne();
         if(record != null){
-            return record.into(AvailCouponDetailVo.class);
+            AvailCouponDetailVo info = record.into(AvailCouponDetailVo.class);
+            List<Integer> cardIds = stringToList(info.getCardId());
+            int cardStatus = 0; //0：不能直接领取；1：可以直接领取
+            //判断用户-会员卡详情
+            for(Integer cardId : cardIds){
+                MemberCardRecord cardInfo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchOne().into(MemberCardRecord.class);
+                //用户是否拥有该会员卡
+                if(cardInfo.getExamine() == 1){
+                    Record record1 = db().select().from(USER_CARD.leftJoin(CARD_EXAMINE).on(USER_CARD.CARD_ID.eq(CARD_EXAMINE.CARD_ID)))
+                        .where(USER_CARD.USER_ID.eq(param.userId))
+                        .and(USER_CARD.CARD_ID.eq(cardId))
+                        .and(CARD_EXAMINE.STATUS.eq((byte) 2))
+                        .fetchOne();
+                    if(!Objects.isNull(record1)){
+                        cardStatus = 1;
+                    }else{//没有该会员卡，需要先领取会员卡
+                        if(cardInfo.getCardType()!=2){
+                            getCard.add(cardId);
+                        }
+                    }
+                }else{
+                    Record record1 = db().select().from(USER_CARD)
+                        .where(USER_CARD.USER_ID.eq(param.userId))
+                        .and(USER_CARD.CARD_ID.eq(cardId))
+                        .fetchOne();
+                    if(!Objects.isNull(record1)){
+                        cardStatus = 1;
+                    }else{//没有该会员卡，需要先领取
+                        if(cardInfo.getCardType()!=2){
+                            getCard.add(cardId);
+                        }
+                    }
+                }
+            }
+            String needGetCard = listToString(getCard);
+            info.setCardStatus(cardStatus);
+            info.setNeedGetCard(needGetCard);
+            return info;
         }else{
             return null;
         }
@@ -611,7 +645,7 @@ public class CouponService extends ShopBaseService {
                 BigDecimalUtil.multiplyOrDivide(
                     BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
                     BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(BigDecimal.ONE, BigDecimalUtil.Operator.subtrac),
-                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), BigDecimalUtil.Operator.Divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), BigDecimalUtil.Operator.divide),
                             BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)), null)
                     ), null))
             : BigDecimal.ZERO;
@@ -758,4 +792,47 @@ public class CouponService extends ShopBaseService {
             .execute();
 	    return true;
     }
+
+	/**
+	 * 小程序端会员激活使用
+	 * @param couponId
+	 * @return
+	 * @return
+	 */
+	public CouponWxUserImportVo getOneMVById(Integer couponId,String lang) {
+		MrkingVoucherRecord record = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne();
+		if (record == null) {
+			return null;
+		}
+		CouponWxUserImportVo into = record.into(CouponWxUserImportVo.class);
+		Integer day = record.getValidity();
+		Integer hour = record.getValidityHour();
+		Integer minute = record.getValidityMinute();
+		if (day > 0 || hour > 0 || minute > 0) {
+			into.setStartTime(DateUtil.getSqlTimestamp());
+			Timestamp endTime = Timestamp.valueOf(LocalDateTime.now().plus(day, ChronoUnit.DAYS)
+					.plus(hour, ChronoUnit.HOURS).plus(minute, ChronoUnit.MINUTES));
+			into.setEndTime(endTime);
+		}
+		String couponRule = null;
+		if (into.getUseConsumeRestrict().equals(COUPON_TYPE_NORMAL)
+				|| into.getLeastConsume().equals(new BigDecimal("0"))) {
+			couponRule = "无门槛";
+		} else {
+			String actCode = into.getActCode();
+			BigDecimal leastConsume = into.getLeastConsume();
+			BigDecimal denomination = into.getDenomination();
+			BigDecimal randomMax = into.getRandomMax();
+			if (actCode.equals("voucher")) {
+				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_VOUCHER, "excel", new Object[] {leastConsume,denomination});
+			}
+			if (actCode.equals("random")) {
+				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_RANDOM, "excel", new Object[] {leastConsume,randomMax});
+			}else {
+				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_OTHER, "excel", new Object[] {leastConsume,denomination});
+			}
+		}
+		into.setCouponRule(couponRule);
+		return into;
+	}
 }

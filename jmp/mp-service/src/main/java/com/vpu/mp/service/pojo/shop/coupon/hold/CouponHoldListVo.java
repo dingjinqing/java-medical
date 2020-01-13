@@ -13,6 +13,7 @@ public class CouponHoldListVo {
 
     private Integer id;
     private String username;
+    private Integer userId;
     private String mobile;
     private String couponName;
     private Integer delFlag;

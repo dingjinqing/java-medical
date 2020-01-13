@@ -65,8 +65,8 @@
             <text class="text">{{giftInfo.giftType === 4 ? '余额':'积分'}}</text>
             <text class="text">去看看 ></text>
           </view>
-          <view class="gift-name" wx:if="{{giftInfo.giftType === 5}}">台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
-          <image class="gift-image" wx:if="{{giftInfo.giftType === 5}}" src="{{imageUrl}}image/wxapp/img1.jpg"></image>
+          <view class="gift-name" wx:if="{{giftInfo.giftType === 5}}">{{giftInfo.awardInfo.product.goodsName}}台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
+          <image class="gift-image" wx:if="{{giftInfo.giftType === 5}}" src="{{imageUrl}}{{giftInfo.awardInfo.product.goodsImg}}"></image>
           <text class="gift-tips" wx:if="{{giftInfo.giftType === 5}}">已放入“我的奖品”快领取把</text>
         </view>
       </block>
@@ -77,7 +77,7 @@
           </view>
         </block>
       </view>
-      <text wx:if="{{stepInfo}}" class="act-desc" wx:if="{{awardInfo.message}}">{{awardInfo.message}}</text>
+      <text class="act-desc" wx:if="{{awardInfo.message}}">{{awardInfo.message}}</text>
       <view class="btn-ok" bindtap="confirm">{{giftInfo.giftType === 3 ? '立即抽奖':'知道了'}}</view>
     </view>
   

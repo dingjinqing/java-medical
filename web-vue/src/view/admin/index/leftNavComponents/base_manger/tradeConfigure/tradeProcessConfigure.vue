@@ -763,13 +763,6 @@ export default {
         }
       ],
       brandClassify: '',
-      classifyList: [
-        { value: 1, label: '运动品牌' },
-        { value: 2, label: '奢侈品' },
-        { value: 3, label: '电子产品' },
-        { value: 4, label: 'SONY' },
-        { value: 5, label: '商品测试' }
-      ],
       allChecked: false,
       allCheckFlag: false,
       tuneUpChooseGoods: false,
@@ -785,7 +778,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           // 物流助手列表
-          this.expressCompany = res.content.delivery_list
+          this.expressCompany = res.content.delivery_list || []
           this.expressCompany.map((item, index1) => {
             switch (item.status_code) {
               case 0:
@@ -806,7 +799,6 @@ export default {
                 break
             }
           })
-          console.log(res.content)
           this.tradeProcessConfig = res.content.trade_process_config
           this.cancelHour = Math.floor(this.tradeProcessConfig.cancel_time / 60)
           this.cancelMinute = this.tradeProcessConfig.cancel_time % 60
@@ -862,20 +854,6 @@ export default {
         }
       })
     },
-    // number2boolean (configValue) {
-    //   if (configValue === 1) {
-    //     return true
-    //   } else if (configValue === 0) {
-    //     return false
-    //   }
-    // },
-    // boolean2number (booleanValue) {
-    //   if (booleanValue === true) {
-    //     return 1
-    //   } else if (booleanValue === false) {
-    //     return 0
-    //   }
-    // },
     // 更新配置项
     updateConfig () {
       console.log(this.addresssConf)

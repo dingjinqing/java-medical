@@ -1,21 +1,17 @@
 package com.vpu.mp.service.shop.market.integralconvert;
 
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
 import com.vpu.mp.db.shop.tables.IntegralMallProduct;
 import com.vpu.mp.db.shop.tables.IntegralMallRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleIntegral;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertAddParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertConstant;
@@ -32,22 +28,26 @@ import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserPa
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.OrderReadService;
-
-import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_DEFINE;
-import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_RECORD;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_DEFINE;
+import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER;
 
 /**
  * 积分兑换
@@ -334,7 +334,7 @@ public class IntegralConvertService extends ShopBaseService {
 	 */
 	@SuppressWarnings("unchecked")
 	public PageResult<IntegralConvertOrderVo> interalOrderList(MarketOrderListParam param) {
-		PageResult<MarketOrderListVo> pageList = saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,OrderConstant.GOODS_TYPE_INTEGRAL);
+		PageResult<MarketOrderListVo> pageList = saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_INTEGRAL);
 
 		List<IntegralConvertOrderVo> newList = new ArrayList<IntegralConvertOrderVo>(20);
 
@@ -365,4 +365,14 @@ public class IntegralConvertService extends ShopBaseService {
 		return pageResult;
 
 	}
+
+    /**
+     * 小程序装修积分兑换模块显示异步调用
+     * @param moduleIntegral
+     * @return
+     */
+    public ModuleIntegral getPageIndexIntegral(ModuleIntegral moduleIntegral){
+
+        return moduleIntegral;
+    }
 }

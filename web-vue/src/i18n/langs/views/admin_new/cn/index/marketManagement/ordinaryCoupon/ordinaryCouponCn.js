@@ -44,7 +44,7 @@ export const cn = {
   couponRule: '基本规则',
   receivePerPerson: '每人限领',
   member: '会员专享',
-  memberTip1: '会用户持有会员卡才可以参与活动员专享',
+  memberTip1: '用户持有会员卡才可以参与活动',
   memberTip2: '请选择会员卡',
   memberTip3: '刷新',
   memberTip4: '新建会员卡',

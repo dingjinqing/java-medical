@@ -61,6 +61,7 @@
       :hotDialogVisible.sync="hotDialogVisible"
       :imgUrl="modulesSaveData.data.bg_img_url"
       @handleToGetHotData="handleToGetHotData"
+      :hotData='modulesSaveData.data.rectangles'
     />
   </div>
 </template>

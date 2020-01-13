@@ -379,7 +379,7 @@
                         ></i></span>
                       <span @click="addNodes(orderItem.orderSn)">{{$t('order.remark')}}</span>
                       <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
-                      <span>{{$t('order.comment')}}</span>
+                      <span @click="goComment(orderItem.orderSn)">{{$t('order.comment')}}</span>
                     </div>
                   </div>
                 </td>
@@ -432,7 +432,7 @@
                         alt=""
                       >
                       <div class="right_info">
-                        <div class="goods_name">{{goodsItem.goodsName}}</div>
+                        <div class="goods_name"><span>{{goodsItem.goodsName}}</span></div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -613,7 +613,7 @@
                           alt=""
                         >
                         <div class="right_info">
-                          <div class="goods_name">{{childGoods.goodsName}}</div>
+                          <div class="goods_name"><span>{{childGoods.goodsName}}</span></div>
                           <div class="goods_spec">{{childGoods.goodsAttr}}</div>
                         </div>
                       </div>
@@ -911,7 +911,7 @@ export default {
       this.searchType = 0
       let obj = {
         ...this.searchParams,
-        orderStatus: this.searchParams.orderStatus ? [this.searchParams.orderStatus] : []
+        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : []
       }
       list(obj).then(res => {
         console.log(res)
@@ -924,7 +924,14 @@ export default {
     initDataList () {
       this.search()
     },
-
+    goComment (orderSn) {
+      this.$router.push({
+        name: 'comment',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
     seeDetails (orderSn) {
       console.log(orderSn)
       this.$router.push({
@@ -1177,15 +1184,15 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  display: -webkit-box;
-                  -webkit-line-clamp: 2;
-                  overflow: hidden;
-                  /*! autoprefixer: off */
-                  -webkit-box-orient: vertical;
-                  text-align: left;
-                  line-height: 1;
+                  > span {
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    overflow: hidden;
+                    -webkit-box-orient: vertical;
+                    text-align: left;
+                    line-height: 1;
+                  }
                 }
               }
             }

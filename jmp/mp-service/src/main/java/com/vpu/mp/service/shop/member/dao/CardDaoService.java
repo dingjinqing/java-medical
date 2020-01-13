@@ -22,6 +22,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_U
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
@@ -31,7 +32,6 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
