@@ -76,7 +76,7 @@ global.wxComponent({
       var m = this.data.m;
       var _this = this;
 
-      if (d.use_score === 1) {
+      if (d.use_score === 1 || d.exclusive != '') {
         // 积分兑换
         util.jumpLink('/pages/getCoupon/getCoupon?couponId=' + d.coupon_id);
       } else {

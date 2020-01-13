@@ -44,7 +44,7 @@ export const en = {
   couponRule: 'Basic rules',
   receivePerPerson: 'Limit per person',
   member: 'Membership exclusive',
-  memberTip1: 'You can only participate with a membership card',
+  memberTip1: 'Users can only participate in activities with membership card',
   memberTip2: 'Please select a membership card',
   memberTip3: 'Refresh',
   memberTip4: 'New membership card',
