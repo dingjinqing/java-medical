@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
 import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * @author 黄荣刚
@@ -322,4 +323,7 @@ public class GoodsLabelService extends ShopBaseService {
         return condition;
     }
 
+    public boolean exist(Integer id) {
+        return db().fetchExists(GOODS_LABEL, GOODS_LABEL.ID.eq(id).and(GOODS_LABEL.DEL_FLAG.eq(BYTE_ZERO)));
+    }
 }

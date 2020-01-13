@@ -112,5 +112,5 @@ public class OrderProcessParam {
      * The Shop address.发货地址
      */
     @JsonProperty(value = "shop_address")
-    public String shopAddress;
+    public ShopAddress shopAddress;
 }
