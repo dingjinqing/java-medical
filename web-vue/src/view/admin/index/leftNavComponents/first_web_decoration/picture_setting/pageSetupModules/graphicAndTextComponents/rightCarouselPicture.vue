@@ -9,8 +9,8 @@
           <div class="right">
             <div class="right-radios">
               <el-radio-group v-model="data.is_preview">
-                <el-radio label="0">否</el-radio>
-                <el-radio label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+                <el-radio :label="1">是</el-radio>
               </el-radio-group>
             </div>
             <p class="tips">选择是，则在图片没有添加链接时，前端用户点击可以预览原图。选择否，则未添加图片链接时，不可预览原图</p>
@@ -137,7 +137,7 @@ export default {
       nowPathClick: null, // 当前点击的选择链接按钮所在列表的下标
       // 模块保存数据
       data: {
-        is_preview: '0', // 是否可以在小程序中预览原图
+        is_preview: 0, // 是否可以在小程序中预览原图
         img_items: []
       }
     }

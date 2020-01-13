@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
@@ -39,6 +40,11 @@ public class AdminDecorationService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private QrCodeService qrCode;
+
+    /**
+     * 静态图API
+     */
+    public static final String QQ_MAP_API_STATICMAP_URL = "https://apis.map.qq.com/ws/staticmap/v2";
 
     /**
      * 验证格式
@@ -303,9 +309,25 @@ public class AdminDecorationService extends ShopBaseService {
                         moduleGoodsGroup.setShowMarket((byte)1);
                     }
                     return moduleGoodsGroup;
+                case ModuleConstant.M_BARGAIN:
+                    ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
+                    moduleBargain = saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
+                    return moduleBargain;
+                case ModuleConstant.M_SECKILL:
+                    ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+                    moduleSecKill = saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
+                    return moduleSecKill;
+                case ModuleConstant.M_INTEGRAL:
+                    ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+                    moduleIntegral = saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
+                    return moduleIntegral;
+
 
                     /**
                      * TODO: 添加其他模块
+                     */
+                    /**
+                     * TODO: 基于店铺等级的模块权限校验
                      */
             }
         }
@@ -544,10 +566,25 @@ public class AdminDecorationService extends ShopBaseService {
                         moduleVideo.setImgUrl(new URL(moduleVideo.getImgUrl()).getPath());
                     }
                     return moduleVideo;
+                case ModuleConstant.M_SHOP:
+                    ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+                    if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
+                        moduleShop.setShopBgPath(new URL(moduleShop.getShopBgPath()).getPath());
+                    }
+                    if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
+                        moduleShop.setBgUrl(new URL(moduleShop.getBgUrl()).getPath());
+                    }
+                    return moduleShop;
                 case ModuleConstant.M_MAP:
                     ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
                     //TODO 抓取地图图片
                     return moduleMap;
+                case ModuleConstant.M_CARD:
+                    ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
+                    if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
+                        moduleCard.setBgImg(new URL(moduleCard.getBgImg()).getPath());
+                    }
+                    return moduleCard;
 
                 //TODO 其他保存前需要处理的模块
 
@@ -555,6 +592,9 @@ public class AdminDecorationService extends ShopBaseService {
         }
         if(node.getKey().equals("page_cfg")){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+            if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
+                pageCfg.setPageBgImage(new URL(pageCfg.getPageBgImage()).getPath());
+            }
             if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
                 pageCfg.getPictorial().setShareImgPath(new URL(pageCfg.getPictorial().getShareImgPath()).getPath());
             }
@@ -582,5 +622,11 @@ public class AdminDecorationService extends ShopBaseService {
         List<Integer> idList = db().select(XCX_CUSTOMER_PAGE.PAGE_ID).from(XCX_CUSTOMER_PAGE)
             .where(XCX_CUSTOMER_PAGE.PAGE_NAME.like(this.likeValue(sourcePage))).fetchInto(Integer.class);
         return idList;
+    }
+
+    public static String getStaticMapImg(){
+        Map<String, Object> param = new HashMap<>();
+        HttpsUtils.get(QQ_MAP_API_STATICMAP_URL, param, true);
+        return null;
     }
 }

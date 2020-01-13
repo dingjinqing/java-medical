@@ -18,6 +18,8 @@
     "v-map": "../map/index",
     "v-official-accounts": "../official-accounts/index",
     "v-video": "../video/index",
-    "v-title": "../title/index"
+    "v-title": "../title/index",
+    "v-line": "../line/index",
+    "v-space": "../space/index"
   }
 }

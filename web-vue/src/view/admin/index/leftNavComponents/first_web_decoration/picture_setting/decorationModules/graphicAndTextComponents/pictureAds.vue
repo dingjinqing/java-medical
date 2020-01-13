@@ -79,8 +79,9 @@
   </div>
 </template>
 <script>
-
+import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
+  mixins: [decMixins],
   props: {
     flag: Number,
     nowRightShowIndex: Number,
@@ -129,7 +130,9 @@ export default {
     backData: {
       handler (newData) {
         if (newData) {
-          this.moduleSavedata = newData
+          let turnToString = this.handleToTurnNumToStr(newData)
+          console.log(turnToString)
+          this.moduleSavedata = turnToString
         }
         console.log(newData)
       },

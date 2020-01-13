@@ -1,0 +1,12 @@
+.line-container{
+  padding: 20px 0;
+  margin-bottom: 10rpx;
+}
+.line{
+  height: 1px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #cccccc;
+} 
+
+

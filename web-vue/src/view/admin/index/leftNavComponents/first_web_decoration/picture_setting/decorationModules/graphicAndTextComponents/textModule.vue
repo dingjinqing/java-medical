@@ -16,9 +16,9 @@
         <!--右侧无文本输入时占位-->
         <div
           class="textModuleMain"
-          :style="moduleSaveData.show_pos=== '1'?'justify-content: flex-start;':moduleSaveData.show_pos=== '2'?'justify-content: center;':'justify-content: flex-end'"
+          :style="moduleSaveData.show_pos=== 1?'justify-content: flex-start;':moduleSaveData.show_pos=== 2?'justify-content: center;':'justify-content: flex-end'"
         >
-          <span :style="(moduleSaveData.fonts_size==='1'?'font-size:24px':moduleSaveData.fonts_size==='2'?'font-size:20px':'font-size:16px')+(';color:'+moduleSaveData.fonts_color)">
+          <span :style="(moduleSaveData.fonts_size===1?'font-size:24px':moduleSaveData.fonts_size===2?'font-size:20px':'font-size:16px')+(';color:'+moduleSaveData.fonts_color)">
             {{moduleSaveData.title?moduleSaveData.title:$t('textModule.middleTips')}}
           </span>
         </div>

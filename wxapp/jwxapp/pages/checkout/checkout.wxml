@@ -74,8 +74,8 @@
         </view> 
         <view class="pay_list_item" wx:if="{{couponArray}}">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.coupon")}}</text>
-          <picker class="pay_list_content picker" value="{{defaultCouponIndex}}" range="{{couponArray}}" range-key="actName" bindchange="couponChange">
-            <view>{{couponArray[defaultCouponIndex].actName}}</view>
+          <picker class="pay_list_content picker" value="{{defaultCouponIndex}}" range="{{couponArray}}" range-key="text" bindchange="couponChange">
+            <view>{{couponArray[defaultCouponIndex].text}}</view>
           </picker>
           <view class="pay_list_right">
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>

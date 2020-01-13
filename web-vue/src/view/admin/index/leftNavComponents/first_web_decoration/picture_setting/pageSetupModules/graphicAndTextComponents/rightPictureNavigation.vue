@@ -12,8 +12,8 @@
           >
             <div
               class="guide_circle"
-              :style="data.nav_style==='1'?'border: 1px solid #5a8BFF':''"
-              @click="data.nav_style='1'"
+              :style="data.nav_style===1?'border: 1px solid #5a8BFF':''"
+              @click="data.nav_style=1"
               :class="guideCircleClass"
             >
               <div
@@ -28,8 +28,8 @@
             </div>
             <div
               class="guide_circle"
-              :style="data.nav_style==='2'?'border: 1px solid #5a8BFF':''"
-              @click="data.nav_style='2'"
+              :style="data.nav_style===2?'border: 1px solid #5a8BFF':''"
+              @click="data.nav_style=2"
               :class="guideCircleClass"
             >
               <div
@@ -224,7 +224,7 @@ export default {
       guideCircleClass: 'guideCircleClass', // 图片导航导航样式英文适配
       // 模块保存数据
       data: {
-        'nav_style': '1',
+        'nav_style': 1,
         'font_color': '#92b0e4',
         'bg_color': '#ffffff',
         'nav_group': []
