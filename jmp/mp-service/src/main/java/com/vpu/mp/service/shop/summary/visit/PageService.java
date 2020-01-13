@@ -11,6 +11,7 @@ import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -43,6 +44,23 @@ public class PageService extends BaseVisitService {
         //返回格式化后的String日期
         return sdf.format(time);
     }
+
+    /**
+     * 计算退出率
+     * @param exitNum 退出次数
+     * @param visitNum 访问次数
+     * @return 退出率保留两位小数
+     */
+    public Double getExitRate(Integer exitNum,Integer visitNum){
+        if (exitNum==null||visitNum==null||visitNum==0){
+            return null;
+        }else {
+            Double exitRate = (exitNum*100.00/(double)visitNum);
+            BigDecimal tempAverageNum = new BigDecimal(exitRate);
+            exitRate = tempAverageNum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+            return exitRate;
+        }
+    }
     public PageVisitVo getPageVisit(VisitPageParam param) {
         //得到时间
         if (!param.getType().equals(CUSTOM_DAYS)){
@@ -66,6 +84,7 @@ public class PageService extends BaseVisitService {
             item.setPageVisitUv(String.valueOf(r.getPageVisitUv()));
             item.setPageStayTimePv(r.getPageStaytimePv());
             item.setPageName(pageNameOf(r.getPagePath()));
+            item.setExitRate(getExitRate(r.getExitpagePv(),r.getPageVisitPv()));
             return item;
         });
         vo.setList(items);
