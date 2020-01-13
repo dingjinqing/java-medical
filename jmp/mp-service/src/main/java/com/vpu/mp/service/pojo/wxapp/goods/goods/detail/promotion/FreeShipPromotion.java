@@ -24,4 +24,5 @@ public class FreeShipPromotion extends PromotionBase {
     private Integer num;
     /**是否全部地区包邮*/
     private Boolean isFullArea;
+
 }

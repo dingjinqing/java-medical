@@ -34,6 +34,7 @@ public class FreeShipProcessorDao extends ShopBaseService {
      * @param catId 平台分类ID
      * @param sortId 商家分类ID
      * @param now 时间
+     * @return List<FreeShipPromotion>
      */
     public List<FreeShipPromotion> getFreeShipProcessorForDetail(Integer goodsId, Integer catId, Integer sortId, Timestamp now){
 
