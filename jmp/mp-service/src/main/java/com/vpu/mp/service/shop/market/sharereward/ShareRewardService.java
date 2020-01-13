@@ -507,13 +507,19 @@ public class ShareRewardService extends ShopBaseService {
      * @param id the id
      * @return the share rules
      */
-    public ShareRewardInfoVo getShareRules(Integer id) {
+    public ShareRewardInfoVo getShareInfo(Integer id) {
         ShareRewardInfoVo shareReward = db().selectFrom(sa).where(sa.ID.eq(id)).fetchOneInto(ShareRewardInfoVo.class);
         int sum = INTEGER_ZERO;
+        ShareRule first = Util.json2Object(shareReward.getFirstLevelRule(), ShareRule.class, false);
+        setTheStock(first, shareReward.getFirstAwardNum());
+        ShareRule second = Util.json2Object(shareReward.getSecondLevelRule(), ShareRule.class, false);
+        setTheStock(second, shareReward.getSecondAwardNum());
+        ShareRule third = Util.json2Object(shareReward.getThirdLevelRule(), ShareRule.class, false);
+        setTheStock(third, shareReward.getThirdAwardNum());
         List<ShareRule> list = new ArrayList<ShareRule>() {{
-            add(Util.json2Object(shareReward.getFirstLevelRule(), ShareRule.class, false));
-            add(Util.json2Object(shareReward.getSecondLevelRule(), ShareRule.class, false));
-            add(Util.json2Object(shareReward.getThirdLevelRule(), ShareRule.class, false));
+            add(first);
+            add(second);
+            add(third);
         }};
         list = list.stream().filter(Objects::nonNull).collect(Collectors.toList());
         for (ShareRule shareRule : list) {
@@ -523,6 +529,12 @@ public class ShareRewardService extends ShopBaseService {
         log.info("分享有礼活动 {} 对应的分享规则为：{}！", id, Util.toJson(list));
         shareReward.setShareRules(list);
         return shareReward;
+    }
+
+    private void setTheStock(ShareRule rule, int stock) {
+        if (Objects.nonNull(rule)) {
+            rule.setStock(stock);
+        }
     }
 
     /**

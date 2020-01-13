@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import static com.vpu.mp.db.shop.Tables.SHARE_RECORD;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -156,34 +157,18 @@ public class WxShareRewardService extends ShopBaseService {
     }
 
     public void updateProcess(Integer activityId, int count) {
-        ShareRewardInfoVo info = shareReward.getShareRules(activityId);
+        ShareRewardInfoVo info = shareReward.getShareInfo(activityId);
         List<ShareRule> list = info.getShareRules();
+        list.forEach(e -> process(e, count));
 
-        /*if (Objects.nonNull(first)){
-            // 满足一级规则
-            if (count >= first.getInviteNum()){
-                // 一级奖品库存是否充足
-                if (info.getFirstAwardNum() > 0){
-                    // TODO 更新分享进度，发送分享有礼奖品，发送消息模板通知用户奖品已发放
-
-                    try {
-                        // 发送分享有礼奖品， 更新为已领取
-                    }catch (Exception e){
-                        // 发送异常，更新为未领取
-                    }
-                }else {
-                    // TODO 库存不足，直接更新为奖品已过期状态
-                }
-            }
-        }*/
     }
 
-    public void process(ShareRule rule, int count, int stock) {
+    public void process(ShareRule rule, int count) {
         if (Objects.nonNull(rule)) {
             // 满足规则条件
             if (count >= rule.getInviteNum()) {
-                // 奖品库存是否充足
-                if (stock > 0) {
+                // 奖品剩余库存是否充足
+                if (rule.getStock() > 0) {
                     // TODO 更新分享进度，发送分享有礼奖品，发送消息模板通知用户奖品已发放
 
                     try {
@@ -196,6 +181,13 @@ public class WxShareRewardService extends ShopBaseService {
                 }
             }
         }
+    }
+
+    public <T> void sendShareAward(Predicate<T> predicate) {
+/*        T t = null;
+        this.transaction(() -> {
+            predicate.test(t);
+        });*/
     }
 
     /**
