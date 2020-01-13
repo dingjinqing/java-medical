@@ -37,7 +37,7 @@
 
             </div>
 
-            <div>
+            <div style="display:flex;align-items:center">
               <span>{{$t('titleModule.more')}}</span>
               <img :src="$imageHost+'/image/admin/shop_beautify/gt.png'">
             </div>

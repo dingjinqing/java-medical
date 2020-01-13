@@ -11,7 +11,8 @@ import java.util.List;
  */
 @Data
 public class PageVisitVo {
-
+    private String startDate;
+    private String endDate;
     private List<PageVisitVoItem> list;
     private String sum;
 

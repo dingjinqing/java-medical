@@ -8,7 +8,7 @@ module.exports = {
     collarCard: '我要领卡',
     needActivation: '该卡需要在会员卡详情页激活后才可使用',
     moreEquity: '查看更多权益',
-    fracture: '折',  // 优惠卷部分
+    fracture: '折',  // 优惠券部分
     unlimited: '库存无限制',
     memberReceive: '会员领取',
     exchange: '积分 兑换',
@@ -38,7 +38,7 @@ module.exports = {
     firstSpecialOffer: '首单特惠',
     full: '满',
     reduce: '减',
-    coupon: '优惠卷',
+    coupon: '优惠券',
     hit: '打',
     fullReduction: '满减',
     fullMemberDiscount: '会员满减价',

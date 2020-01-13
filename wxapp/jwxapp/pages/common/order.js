@@ -136,7 +136,7 @@ var order = {
     );
   },
   // 立即支付
-  payOrder (orderSn, orderId) {
+  payOrder ({ order_sn: orderSn, order_id: orderId }) {
     util.api('api/wxapp/order/pay', res => {
       console.log(res)
       if (res.error === 0) {
@@ -211,10 +211,10 @@ var order = {
       }),
       returnCenter: (() => {
         return this.toReturnCenter;
-      })(),
+      }),
       isShowPay: (() => {
         return this.payOrder;
-      })()
+      })
     };
     let operate_info = e.currentTarget.dataset.operate_info;
     // 查看评价1，评价有礼2，商品评价3

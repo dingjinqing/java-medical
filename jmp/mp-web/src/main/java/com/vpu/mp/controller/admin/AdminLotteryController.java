@@ -4,10 +4,13 @@ import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryByIdParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryParam;
@@ -114,11 +117,20 @@ public class AdminLotteryController extends AdminBaseController {
      * @return json
      */
     @PostMapping("/get")
-    public JsonResult getLotteryById(@RequestBody LotteryByIdParam param){
+    public JsonResult getLotteryById(@RequestBody @Valid LotteryByIdParam param){
         LotteryRecord lottery = shop().lottery.getLotteryById(param.getId());
         Result<LotteryPrizeRecord> lotteryPrizeList = shop().lottery.getLotteryPrizeById(param.getId());
+        if (lottery==null||lotteryPrizeList.size()==0){
+            return fail(JsonResultCode.CODE_PARAM_ERROR);
+        }
         LotteryVo lotteryVo =lottery.into(LotteryVo.class);
         List<LotteryPrizeVo>  lotteryPrizeVoList =lotteryPrizeList.into(LotteryPrizeVo.class);
+        lotteryPrizeVoList.forEach( lotteryPrizeVo -> {
+            if (lotteryPrizeVo.getLotteryType().equals(LotteryConstant.LOTTERY_TYPE_GOODS)){
+                ProductSmallInfoVo product =  shop().goods.getProductVoInfoByProductId(lotteryPrizeVo.getPrdId());
+                lotteryPrizeVo.setProduct(product);
+            }
+        });
         lotteryVo.setPrizeList(lotteryPrizeVoList);
         return success(lotteryVo);
     }
@@ -129,7 +141,7 @@ public class AdminLotteryController extends AdminBaseController {
      * @return json
      */
     @PostMapping("/record/list")
-    public JsonResult getLotteryRecordList(@RequestBody LotteryRecordPageListParam param){
+    public JsonResult getLotteryRecordList(@RequestBody @Valid LotteryRecordPageListParam param){
         PageResult<LotteryRecordPageListVo> result = shop().lottery.getLotteryRecordList(param);
         return success(result);
     }
@@ -139,7 +151,7 @@ public class AdminLotteryController extends AdminBaseController {
      * @return json
      */
     @PostMapping("/user/list")
-    public JsonResult getLotteryUserList(@RequestBody MarketSourceUserListParam param){
+    public JsonResult getLotteryUserList(@RequestBody @Valid MarketSourceUserListParam param){
         return success(shop().lottery.getLotteryUserList(param));
     }
 
