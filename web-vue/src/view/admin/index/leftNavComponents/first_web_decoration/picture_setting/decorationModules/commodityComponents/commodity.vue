@@ -44,183 +44,183 @@
           </div>
           <!--有商品-->
           <div :style="data.goods_module_bg==='1'?`;backgroundColor:${data.goods_bg_color}`:''">
-<ul
-            v-if="goodsFlag"
-            :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''"
-          >
-            <li
-              v-for="(item,index) in data.goodsListData"
-              :key="index"
-              :style="data.col_type==='2'?'width:33%;':data.col_type==='0'?'width:100%':data.col_type==='4'?'width:100%;':''"
+            <ul
+              v-if="goodsFlag"
+              :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''"
             >
-              <div
-                class="listClass"
-                :style="data.if_radius==='1'?'border-radius:8px;':''+data.goods_module_style==='0'?'':data.goods_module_style==='1'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':'border: 1px solid #eee !important;'"
+              <li
+                v-for="(item,index) in data.goodsListData"
+                :key="index"
+                :style="data.col_type==='2'?'width:33%;':data.col_type==='0'?'width:100%':data.col_type==='4'?'width:100%;':''"
               >
                 <div
-                  class="containter"
-                  :style="(data.col_type==='1' || data.col_type==='2')?'display:block;height:auto':(data.col_type==='3' || data.col_type==='0')?'display: flex;flex-direction: column;height:auto':''"
+                  class="listClass"
+                  :style="data.if_radius==='1'?'border-radius:8px;':''+data.goods_module_style==='0'?'':data.goods_module_style==='1'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':'border: 1px solid #eee !important;'"
                 >
                   <div
-                    class="commodityTop"
-                    :style="data.col_type==='2'?'height:auto':data.col_type==='0'?'max-height:163px;height:auto;overflow:hidden':data.col_type==='4'?'margin-right:5px;max-height:145px':''"
+                    class="containter"
+                    :style="(data.col_type==='1' || data.col_type==='2')?'display:block;height:auto':(data.col_type==='3' || data.col_type==='0')?'display: flex;flex-direction: column;height:auto':''"
                   >
-                    <div class="label">
-                      <!--左上角图形-->
-                      <!--限时降价图形-->
-                      <div
-                        class="labelStyle1"
-                        style="height:auto;width:44px"
-                        v-if="(item.label?item.label.listPattern:-1)===1&&data.hide_label==='1'"
-                      >
-                        <span style="display: block;word-break: break-all;width: 34px;white-space: pre-wrap;">{{item.label.name}}</span>
-                      </div>
-                      <div
-                        class="labelStyle2"
-                        v-if="(item.label?item.label.listPattern:-1)===2&&data.hide_label==='1'"
-                        :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
-                      >
-                        <span style="display: inline;">{{item.label.name}}</span>
-                      </div>
-                      <div
-                        class="label newGoods"
-                        v-if="(item.label?item.label.listPattern:-1)===3&&data.hide_label==='1'"
-                      >
-                        <span>{{item.label.name}}</span>
-                      </div>
-                      <div
-                        class="labelStyle3"
-                        v-if="(item.label?item.label.listPattern:-1)===4&&data.hide_label==='1'"
-                        :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
-                      >
-                        <span style="display: inline-block;">{{item.label.name}}</span>
-                      </div>
-                    </div>
-                    <!--活动类型标签-->
                     <div
-                      class="goodsActivities"
-                      :style="data.col_type==='2'?'width:100%':data.col_type==='0'?'width:100%;':data.col_type==='4'?'width:145px':data.col_type==='1'?'width:163px':data.col_type==='3'?'width:128px':''"
+                      class="commodityTop"
+                      :style="data.col_type==='2'?'height:auto':data.col_type==='0'?'max-height:163px;height:auto;overflow:hidden':data.col_type==='4'?'margin-right:5px;max-height:145px':''"
                     >
-                      <!--多人开团`````````````````-->
-                      <div
-                        class="activity"
-                        v-if="item.noShowActFlag === 1"
-                      >
-                        {{$t('commodity.setuProvince')}}{{item.discountPrice}}{{$t('commodity.element')}}
-                      </div>
-                      <!---->
-                      <!--砍价````````````````````-->
-                      <div
-                        class="activity"
-                        style="width:85px"
-                        v-if="item.noShowActFlag === 3"
-                      >
-                        {{item.realPrice}}{{$t('commodity.yuanChopAway')}}
-                      </div>
-                      <!--限时降价`````````````````-->
-                      <div
-                        class="activity"
-                        style="width:100%;border-radius:0"
-                        v-if="item.noShowActFlag === 6"
-                      >
-                        {{$t('commodity.timeLimitedPrice')}}
-                      </div>
-                      <!--首单特惠-->
-                      <div
-                        class="activity"
-                        style="width:100%;border-radius:0"
-                        v-if="item.noShowActFlag === 18"
-                      >
-                        {{$t('commodity.newRecruitsExclusive')}}
-                      </div>
-                      <!--会员专享-->
-                      <div
-                        class="activity"
-                        style="width:100%;border-radius:0;background: -webkit-linear-gradient(left,#eed9ad,#e7c38a)"
-                        v-if="item.noShowActFlag === 22"
-                      >
-                        {{$t('commodity.memberExclusive')}}
-                      </div>
-                    </div>
-                    <!--end-->
-                    <img
-                      :style="data.col_type==='2'?'width:100%;height:auto':data.col_type==='0'?'width:100%;height:auto;':data.col_type==='4'?'width:145px;height:145px;max-height:145px':data.col_type==='1'?'width:163px;height:163px;max-height:163px':data.col_type==='3'?'width:128px':''"
-                      :src="item.goodsImg"
-                    >
-                  </div>
-                  <div
-                    class="commodityBottom"
-                    :style="data.col_type!=='4'?'padding-top:0':''"
-                  >
-                    <div class="bottomHead">
-                      <div
-                        class="goodsNameClass"
-                        v-if="data.hide_name==='1'"
-                      >{{item.goodsName}}</div>
-                      <div
-                        class="activityContainer"
-                        :style="data.col_type==='4'?'display:flex':data.col_type==='1'?'display:flex;margin-top:0':(data.col_type==='2'||data.col_type==='3')?'margin-top:0;height:37px;':'display:flex;margin-top:0'"
-                      >
+                      <div class="label">
+                        <!--左上角图形-->
+                        <!--限时降价图形-->
                         <div
-                          :style="((data.col_type==='4'||data.col_type==='1'||data.col_type==='0')&&indexC===1)?'margin-left:5px':'margin-top:5px'"
-                          v-for="(itemC,indexC) in item.goodsActivities"
-                          :key="indexC"
-                          class="activitySpan"
+                          class="labelStyle1"
+                          style="height:auto;width:44px"
+                          v-if="(item.label?item.label.listPattern:-1)===1&&data.hide_label==='1'"
                         >
-                          <span :style="((data.col_type==='2'||data.col_type==='0')?'max-width:100%':data.col_type==='4'?'max-width:145px':data.col_type==='1'?'max-width:163px':data.col_type==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):itemC.activityType===19?'支付有礼':(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===21?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===22?$t('commodity.membershipPrice'):itemC.activityType===23?$t('commodity.membershipExclusive'):''}}</span>
+                          <span style="display: block;word-break: break-all;width: 34px;white-space: pre-wrap;">{{item.label.name}}</span>
+                        </div>
+                        <div
+                          class="labelStyle2"
+                          v-if="(item.label?item.label.listPattern:-1)===2&&data.hide_label==='1'"
+                          :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
+                        >
+                          <span style="display: inline;">{{item.label.name}}</span>
+                        </div>
+                        <div
+                          class="label newGoods"
+                          v-if="(item.label?item.label.listPattern:-1)===3&&data.hide_label==='1'"
+                        >
+                          <span>{{item.label.name}}</span>
+                        </div>
+                        <div
+                          class="labelStyle3"
+                          v-if="(item.label?item.label.listPattern:-1)===4&&data.hide_label==='1'"
+                          :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
+                        >
+                          <span style="display: inline-block;">{{item.label.name}}</span>
                         </div>
                       </div>
-
+                      <!--活动类型标签-->
+                      <div
+                        class="goodsActivities"
+                        :style="data.col_type==='2'?'width:100%':data.col_type==='0'?'width:100%;':data.col_type==='4'?'width:145px':data.col_type==='1'?'width:163px':data.col_type==='3'?'width:128px':''"
+                      >
+                        <!--多人开团`````````````````-->
+                        <div
+                          class="activity"
+                          v-if="item.noShowActFlag === 1"
+                        >
+                          {{$t('commodity.setuProvince')}}{{item.discountPrice}}{{$t('commodity.element')}}
+                        </div>
+                        <!---->
+                        <!--砍价````````````````````-->
+                        <div
+                          class="activity"
+                          style="width:85px"
+                          v-if="item.noShowActFlag === 3"
+                        >
+                          {{item.realPrice}}{{$t('commodity.yuanChopAway')}}
+                        </div>
+                        <!--限时降价`````````````````-->
+                        <div
+                          class="activity"
+                          style="width:100%;border-radius:0"
+                          v-if="item.noShowActFlag === 6"
+                        >
+                          {{$t('commodity.timeLimitedPrice')}}
+                        </div>
+                        <!--首单特惠-->
+                        <div
+                          class="activity"
+                          style="width:100%;border-radius:0"
+                          v-if="item.noShowActFlag === 18"
+                        >
+                          {{$t('commodity.newRecruitsExclusive')}}
+                        </div>
+                        <!--会员专享-->
+                        <div
+                          class="activity"
+                          style="width:100%;border-radius:0;background: -webkit-linear-gradient(left,#eed9ad,#e7c38a)"
+                          v-if="item.noShowActFlag === 22"
+                        >
+                          {{$t('commodity.memberExclusive')}}
+                        </div>
+                      </div>
+                      <!--end-->
+                      <img
+                        :style="data.col_type==='2'?'width:100%;height:auto':data.col_type==='0'?'width:100%;height:auto;':data.col_type==='4'?'width:145px;height:145px;max-height:145px':data.col_type==='1'?'width:163px;height:163px;max-height:163px':data.col_type==='3'?'width:128px':''"
+                        :src="item.goodsImg"
+                      >
                     </div>
                     <div
-                      class="bottomFooter"
-                      :style="data.col_type!=='4' ?'display:flex;flex-direction: row;height:auto':''"
+                      class="commodityBottom"
+                      :style="data.col_type!=='4'?'padding-top:0':''"
                     >
-                      <span
-                        :style="`color:${bgColor}`"
-                        v-if="data.hide_price === '1'"
-                      >￥{{Number(item.realPrice).toFixed(2)}}</span>
-                      <span
-                        style="text-decoration: line-through;color: #c0c0c0"
-                        v-if="data.show_market==='1'&&data.col_type!=='2'&&data.other_message==='1'"
-                      >{{Number(item.linePrice).toFixed(2)}}</span>
-                      <span
-                        style="text-decoration: line-through;color: #c0c0c0"
-                        v-if="data.show_market==='2'&&data.other_message==='1'"
-                      >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
-                      <span
-                        style="text-decoration: line-through;color: #c0c0c0"
-                        v-if="data.show_market==='3'&&data.other_message==='1'"
-                      >{{Number(item.goodsNumber).toFixed(2)}}</span>
-                      <!--购买按钮-->
-                      <i
-                        class="iconfont icontianjia icon_font_size new_class"
-                        :style="`color:${bgColor}`"
-                        v-if="data.cart_btn === '1'&&data.cart_btn_choose==='0'"
-                      ></i>
-                      <i
-                        class="iconfont icongouwuche1 icon_font_size new_class"
-                        :style="`color:${bgColor}`"
-                        v-if="data.cart_btn === '1'&&data.cart_btn_choose==='1'"
-                      ></i>
-                      <i
-                        class="right_buy new_back"
-                        :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor}`"
-                        v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'"
+                      <div class="bottomHead">
+                        <div
+                          class="goodsNameClass"
+                          v-if="data.hide_name==='1'"
+                        >{{item.goodsName}}</div>
+                        <div
+                          class="activityContainer"
+                          :style="data.col_type==='4'?'display:flex':data.col_type==='1'?'display:flex;margin-top:0':(data.col_type==='2'||data.col_type==='3')?'margin-top:0;height:37px;':'display:flex;margin-top:0'"
+                        >
+                          <div
+                            :style="((data.col_type==='4'||data.col_type==='1'||data.col_type==='0')&&indexC===1)?'margin-left:5px':'margin-top:5px'"
+                            v-for="(itemC,indexC) in item.goodsActivities"
+                            :key="indexC"
+                            class="activitySpan"
+                          >
+                            <span :style="((data.col_type==='2'||data.col_type==='0')?'max-width:100%':data.col_type==='4'?'max-width:145px':data.col_type==='1'?'max-width:163px':data.col_type==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):itemC.activityType===19?'支付有礼':(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===21?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===22?$t('commodity.membershipPrice'):itemC.activityType===23?$t('commodity.membershipExclusive'):''}}</span>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div
+                        class="bottomFooter"
+                        :style="data.col_type!=='4' ?'display:flex;flex-direction: row;height:auto':''"
                       >
-                        {{$t('commodity.grabAtOnce')}}
-                      </i>
-                      <i
-                        class="cart_buy"
-                        :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor}`"
-                        v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'"
-                      >{{$t('commodity.purchase')}}</i>
+                        <span
+                          :style="`color:${bgColor}`"
+                          v-if="data.hide_price === '1'"
+                        >￥{{Number(item.realPrice).toFixed(2)}}</span>
+                        <span
+                          style="text-decoration: line-through;color: #c0c0c0"
+                          v-if="data.show_market==='1'&&data.col_type!=='2'&&data.other_message==='1'"
+                        >{{Number(item.linePrice).toFixed(2)}}</span>
+                        <span
+                          style="text-decoration: line-through;color: #c0c0c0"
+                          v-if="data.show_market==='2'&&data.other_message==='1'"
+                        >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                        <span
+                          style="text-decoration: line-through;color: #c0c0c0"
+                          v-if="data.show_market==='3'&&data.other_message==='1'"
+                        >{{Number(item.goodsNumber).toFixed(2)}}</span>
+                        <!--购买按钮-->
+                        <i
+                          class="iconfont icontianjia icon_font_size new_class"
+                          :style="`color:${bgColor}`"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='0'"
+                        ></i>
+                        <i
+                          class="iconfont icongouwuche1 icon_font_size new_class"
+                          :style="`color:${bgColor}`"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='1'"
+                        ></i>
+                        <i
+                          class="right_buy new_back"
+                          :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor}`"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'"
+                        >
+                          {{$t('commodity.grabAtOnce')}}
+                        </i>
+                        <i
+                          class="cart_buy"
+                          :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor}`"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'"
+                        >{{$t('commodity.purchase')}}</i>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
           </div>
 
         </div>
@@ -261,8 +261,9 @@
   </div>
 </template>
 <script>
-
+import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
+  mixins: [decMixins],
   props: {
     flag: Number,
     nowRightShowIndex: Number,
@@ -346,13 +347,15 @@ export default {
       handler (newData) {
         console.log(newData)
         if (newData) {
-          this.data = newData
+          let turnToString = this.handleToTurnNumToStr(newData)
+          console.log(turnToString)
+          this.data = turnToString
           this.$nextTick(() => {
-            let arr = JSON.parse(JSON.stringify(newData.goodsListData))
+            let arr = JSON.parse(JSON.stringify(turnToString.goodsListData))
             if (arr.length) {
               this.goodsFlag = true
               // 处理显示活动
-              this.handleToActivity(newData)
+              this.handleToActivity(turnToString)
             } else {
               this.goodsFlag = false
             }

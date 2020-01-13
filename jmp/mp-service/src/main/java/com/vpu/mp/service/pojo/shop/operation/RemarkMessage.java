@@ -73,5 +73,7 @@ public class RemarkMessage {
 	public static final String MSG_ADMIN_STORE_SERIVICE = "admin.store.serivice";
 	/**	管理员操作 - 会员卡余额 */
 	public static final String MSG_ADMIN_CARD_ACCOUNT = "admin.card.account";
+	public static final String MSG_ADMIN_USER_IMPORT = "admin.user.import";
+	public static final String MSG_ADMIN_USER_ACTIVATE = "admin.user.activate";
 	
 }

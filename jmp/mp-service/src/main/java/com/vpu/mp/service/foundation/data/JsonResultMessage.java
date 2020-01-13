@@ -234,8 +234,21 @@ public class JsonResultMessage {
     public static final String BARGAIN_NOT_YET_SUCCESSFUL="bargain.not.yet.successful";
     public static final String BARGAIN_RECORD_ORDERED="bargain.record.ordered";
 
-
-    public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
+	/**
+	 *营销-我的奖品
+	 */
+	public static final String MY_PRIZE_ACTIVITY_RECEIVED="my.prize.activity.goods.received";
+    public static final String MY_PRIZE_ACTIVITY_EXPIRED="my.prize.activity.goods.expired";
+    /**拼团抽奖活动 */
+    public static final String GROUP_DRAW_FAIL = "group.draw.fail";
+	public static final String ACTIVITY_NOT_EXIST = "activity.not.exist";
+	public static final String PRODUCT_NOT_EXIST = "product.not.exist";
+	public static final String INFORMATION_NOT_EXIST = "information.not.exist";
+    
+	/**
+	 * 营销- 支付有礼
+	 */
+	public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL = "pay.award.activity.message.multiple.conditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_UNCONDITIONAL = "pay.award.activity.message.multiple.finally.unconditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL = "pay.award.activity.message.multiple.finally.conditional";
@@ -428,7 +441,7 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
 	public static final String CODE_CARD_NO = "code.card.no";
-	
+
 	//会员导入
 	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
 	public static final String CODE_NEED_ONE = "code.need.one";
@@ -443,7 +456,14 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_EXAMPLE_DISTRICT = "example.district";
 	public static final String CODE_EXCEL_EXAMPLE_MARRIAGE = "example.marriage";
 	public static final String CODE_EXCEL_EXAMPLE_ADDRESS = "example.address";
-	
+	public static final String CODE_EXCEL_VOUCHER = "example.voucher";
+	public static final String CODE_EXCEL_RANDOM = "example.random";
+	public static final String CODE_EXCEL_OTHER = "example.other";
+	public static final String CODE_EXCEL_NEED_MOBILE = "excel.need.mobile";
+	public static final String CODE_EXCEL_SORRY = "excel.sorry";
+	public static final String CODE_EXCEL_OK = "excel.ok";
+	public static final String BATCHID_NOT_NULL = "batchId.not.null";
+
 	/**
 	 * 概览
 	 */
@@ -452,8 +472,19 @@ public class JsonResultMessage {
 	public static final String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
 	public static final String OVERVIEW_USER_ANALYSIS_RFM_NULL = "overview.user.analysis.rfm.null";
 	public static final String OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL = "overview.yesterday.analysis.data.null";
+    // 资产明细导出
+    public static final String ASSETS_EXPORT_FILE_NAME = "assets.export.file_name";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_TIME = "overview.asset.management.trade_time";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_NUM = "overview.asset.management.trade_num";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_TYPE = "overview.asset.management.trade_type";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_FLOW = "overview.asset.management.trade_flow";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_STATUS = "overview.asset.management.trade_status";
+    public static final String ASSETS_EXPORT_COLUMN_TRADE_SN = "overview.asset.management.trade_sn";
+    public static final String ASSETS_EXPORT_COLUMN_USERNAME = "overview.asset.management.username";
+    public static final String ASSETS_EXPORT_COLUMN_REAL_NAME = "overview.asset.management.real_name";
+    public static final String ASSETS_EXPORT_COLUMN_MOBILE = "overview.asset.management.mobile";
 
-	/**
+    /**
 	 * 订单
 	 */
     public static final String MSG_ORDER = "order";
@@ -547,6 +578,15 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
     /**订单支付*/
     public static final String MSG_ORDER_NOT_TO_WAIT_DELIVER = "order.not.to.wait.deliver";
+    /**
+     * 下单活动校验
+     */
+    public static final String MSG_ORDER_ACTIVITY_DISABLE = "order.activity.disable";
+    public static final String MSG_ORDER_ACTIVITY_NO_START = "order.activity.no.start";
+    public static final String MSG_ORDER_ACTIVITY_END = "order.activity.end";
+    public static final String MSG_ORDER_ACTIVITY_NUMBER_LIMIT = "order.activity.number.limit";
+    /**商品不支持预售*/
+    public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
     /**订单发货*/
     public static final String MSG_ORDER_SHIPPING_SHIPPINGNO_NOT_NULL = "order.shipping.shippingno.not.null";
     public static final String MSG_ORDER_SHIPPING_SHIPPINGID_NOT_NULL = "order.shipping.shippingid.not.null";

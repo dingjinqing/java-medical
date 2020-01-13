@@ -50,6 +50,11 @@ public class GoodsConstant {
      */
     public final static Byte ACTIVITY_FULL_REDUCTION_PRIORITY = 45;
 
+    /**
+     * 满包邮
+     */
+    public final static Byte ACTIVITY_FREE_SHIP_PRIORITY = 47;
+
     /**************** 结束 *****************/
 
     /**************** 小程序-装修商品-手动推荐或自动推荐 *****************/
@@ -152,8 +157,7 @@ public class GoodsConstant {
      */
     public static boolean isNeedReturnActivity(Byte goodsType) {
         return BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
-            || BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(goodsType)
-            || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(goodsType);
+            || BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(goodsType);
 
     }
 }

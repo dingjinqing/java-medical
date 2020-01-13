@@ -1,0 +1,67 @@
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <view class='fs_top'>
+    <view class="fs_top_image" wx:if="{{to_activation == 0}}">
+      <image src='{{imageUrl}}/image/wxapp/form_success.png'></image>
+      <view class='top_word'>激活成功</view>
+    </view>
+    <view class="fs_top_title" wx:if="{{success_info.explain != null && success_info.explain != ''}}">
+      <text>激活说明</text>
+      <text>{{success_info.explain}}</text>
+    </view>
+  </view>
+  <view class='fs_title' wx:if='{{(success_info.send_score != null && success_info.send_score != 0) || success_info.send_couponList}}'>
+    <view class='heng'></view>
+    <view class='zi'>激活奖励</view>
+    <view class='heng'></view>
+  </view>
+  <view class='fs_content'>
+    <view class='jifen' bindtap='{{to_activation == 0 ? "to_integral" : ""}}' wx:if='{{success_info.score != null && success_info.score != 0}}'>
+      <view>积分奖励</view>
+      <view style='color:{{comColor}}'>获得 {{success_info.score}} 积分 </view>
+    </view>
+    <view class='coupon' bindtap='{{to_activation == 0 ? "to_coupon" : ""}}' wx:if='{{success_info.couponList}}'>
+      <view>优惠券奖励</view>
+      <view style='color:{{comColor}}'>获得 {{success_info.couponList.length}} 张优惠券</view>
+    </view>
+  </view>
+  <view class='couponList'>
+    <view class='each_coupon clearfix' wx:for='{{success_info.couponList}}' wx:key='key'>
+      <view class="left" style='background:{{comColor}}'>
+        <view class='coupon_xian'>
+          <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
+        </view>
+        <view class="price" wx:if="{{item.actCode == 'voucher'}}">￥<text>{{item.denomination}}</text></view>
+        <view class="price" wx:if="{{item.actCode == 'discount'}}"> <text>{{item.denomination}}折</text></view>
+         <view class="price" wx:if="{{item.actCode == 'random'}}">￥<text>{{item.randomMax}}</text>最高</view>
+        <view class='name'>{{item.actName}}</view>
+      </view>
+      <view class="right">
+        <view class="case">
+          <block wx:if="{{item.couponRule != '' && item.couponRule != null}}">
+          {{item.couponRule}}
+          </block>
+        </view>
+        <view class="click_to_detail" wx:if='{{item.recommendCatId == null && item.recommendGoodsId == null && item.recommendSortId == null}}'>全部商品可用</view>
+        <view class="click_to_detail" wx:else>部分商品可用</view>
+        <view class="time_canuse">{{item.startTime}} - {{item.endTime}}</view>
+      </view>
+    </view>
+  </view>
+  <view class='btn_to_index' bindtap='activation' wx:if="{{to_activation == 1}}" style='background:{{comColor}}'>去激活</view> 
+  <view class="btn_to_index" bindtap="to_index" wx:if="{{to_activation == 0}}" style='background:{{comColor}}'>回到首页</view>
+</view>
+  
+
+<!-- 绑定手机号弹窗 -->
+<v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以激活" />
+
+<view class="activation_fail" wx:if="{{is_fail == 1}}" catchtap="close_fail">
+  <view class="fail_content">
+    <image src='{{imageUrl}}/image/wxapp/activation_fail.png'></image>
+    <text>激活失败</text>
+    <text style="text-align:left;">{{fail_msg}}</text>
+    <view class='fail_button' catchtap='close_fail' style='background:{{comColor}}'>知道啦</view>
+  </view>
+</view>
+<include src="../common/footer.wxml" />

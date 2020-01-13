@@ -40,11 +40,11 @@
           >
             <el-radio
               v-model="moduleSaveData.video_poster"
-              label="1"
+              :label="1"
             >{{$t('titleModule.originalCover')}}</el-radio>
             <el-radio
               v-model="moduleSaveData.video_poster"
-              label="2"
+              :label="2"
             >{{$t('titleModule.customCover')}}</el-radio>
           </div>
         </div>
@@ -52,7 +52,7 @@
         <div
           class="video"
           style="margin-top:20px"
-          v-show="moduleSaveData.video_poster==='2'"
+          v-show="moduleSaveData.video_poster===2"
         >
           <span>{{$t('titleModule.uploadCover')}}：</span>
           <div class="imgDiv">
@@ -143,10 +143,10 @@ export default {
     // 选中视频后回传事件
     handleToAddVideo (res) {
       console.log(res)
-      this.moduleSaveData.video_showurl = res.videoUrl
-      this.moduleSaveData.video_url = res.videoPath
-      this.moduleSaveData.video_showpath = res.snapshotUrl
-      this.moduleSaveData.video_img = res.videoSnapPath
+      // this.moduleSaveData.video_showurl = res.videoUrl
+      this.moduleSaveData.video_url = res.videoUrl
+      // this.moduleSaveData.video_showpath = res.snapshotUrl
+      this.moduleSaveData.video_img = res.snapshotUrl
       this.moduleSaveData.video_size = res.videoSize
       this.moduleSaveData.video_width = res.videoWidth
       this.moduleSaveData.video_height = res.videoHeight

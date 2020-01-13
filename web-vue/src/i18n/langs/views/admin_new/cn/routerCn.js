@@ -16,7 +16,10 @@ export const cn = {
   search_summary: ['概况', '搜索统计'],
   // 概况 资产管理
   asset_summary: ['概况', '资产管理'],
-
+  // 概况 访问分析
+  analysis_visit: ['概况', '访问分析'],
+  // 概况 来源分析
+  analysis_visit_source: ['概况', '来源分析'],
   // 概况 用户画像
   analysis_portrait: ['概况', '用户画像'],
 
@@ -74,6 +77,8 @@ export const cn = {
   integralDetail: ['会员管理', '会员列表', '积分明细'],
   // 会员管理 会员导入
   membershipIntroduction: ['会员管理', '会员导入'],
+  // 会员管理 会员导入 未激活会员
+  inactiveMembersList: ['会员管理', '会员导入', '未激活会员'],
   // 会员管理 会员卡
   userCard: ['会员管理', '普通会员卡'],
   // 会员管理 限次

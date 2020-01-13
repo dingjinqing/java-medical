@@ -1,5 +1,4 @@
 #支付方式
-truncate table `b2c_payment`;
 insert into `b2c_payment` (`id`, pay_name, pay_code, pay_fee, pay_desc, enabled, is_cod, is_online_pay)
 values ('1', '微信支付', 'wxpay', '0', '基于微信账号的支付', '1', '0', '1'),
   ('2', '积分支付', 'score', '0', '积分支付', '1', '1', '0'),
@@ -11,7 +10,6 @@ values ('1', '微信支付', 'wxpay', '0', '基于微信账号的支付', '1', '
 
 
 ## 快递数据
-truncate table `b2c_shipping`;
 INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (1, 'sto_express', 'shentong', '申通快递', '江、浙、沪地区首重为15元/KG，其他地区18元/KG， 续重均为5-6元/KG， 云南地区为8元', '0', 0, 1, '', 0, 0);
 INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (2, 'yto', 'yuantong', '圆通速递', '上海圆通物流（速递）有限公司经过多年的网络快速发展，在中国速递行业中一直处于领先地位。为了能更好的发展国际快件市场，加快与国际市场的接轨，强化圆通的整体实力，圆通已在东南亚、欧美、中东、北美洲、非洲等许多城市运作国际快件业务', '0', 1, 1, '', 0, 0);
 INSERT INTO `b2c_shipping`(`shipping_id`, `shipping_code`, `express100_code`, `shipping_name`, `shipping_desc`, `insure`, `support_cod`, `enabled`, `shipping_print`, `print_model`, `shipping_order`) VALUES (3, 'yunda', 'yunda', '韵达快运', '韵达快递', '0', 0, 1, '', 0, 0);

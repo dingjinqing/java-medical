@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -203,7 +204,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         //微信支付记录(全部)
         tradesRecord.addRecord(orderInfo.getMoneyPaid(),orderInfo.getOrderSn(),orderInfo.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CRASH_WX_PAY.val(),RecordTradeEnum.TRADE_FLOW_IN.val(),TradesRecordService.TRADE_CONTENT_MONEY);
         //状态转化
-        if(goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP)) || goodsTypes.contains(String.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW))){
+        if(goodsTypes.contains(String.valueOf(ACTIVITY_TYPE_GROUP_BUY)) || goodsTypes.contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW))){
             //拼团类型
             orderInfo.setOrderStatus(OrderConstant.ORDER_PIN_PAYED_GROUPING);
         }else{
