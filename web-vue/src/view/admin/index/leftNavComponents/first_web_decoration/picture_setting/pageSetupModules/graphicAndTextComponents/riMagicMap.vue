@@ -988,7 +988,7 @@ export default {
   },
   methods: {
     // 点击选择模板子项触发事件
-    handleToClickTemplate (index) {
+    handleToClickTemplate (index, flag) {
       this.$t('magicMap.selectTemplateList')[0].list.forEach((item, index) => {
         item.isChecked = false
       })
@@ -1001,7 +1001,10 @@ export default {
       console.log(this.nowTemplateClickIndex)
       this.$t('magicMap.selectTemplateList')[0].list[index].isChecked = true
       this.moduleSaveData.table_type = index + 1
-      this.moduleSaveData.data = {}
+      if (!flag) {
+        this.moduleSaveData.data = {}
+      }
+
       // this.handleToSaveDataImgInfo(index, true)
       // 处理保存数据中 table_size 字段
       this.handleToTableSize(index)
@@ -1230,7 +1233,7 @@ export default {
         }
         this.customModulesBackData = backData.data
       }
-      this.handleToClickTemplate((this.modulesData.table_type - 1))
+      this.handleToClickTemplate((this.modulesData.table_type - 1), true)
     }
   }
 }

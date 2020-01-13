@@ -327,7 +327,8 @@ export default {
       isAddBottom: false, // 是否添加到底部flag
       isNewEnterFirstSaveSucess: -1, //  新建进来并且是非第一次保存记录id
       isDragFlag: false,
-      isClickIcon: false
+      isClickIcon: false,
+      isClickModule: false
     }
   },
   watch: {
@@ -986,7 +987,7 @@ export default {
     },
     // 中间区域拖拽插入数据处理
     middleDragData (res) {
-      console.log(res)
+      // console.log(res)
       this.newIndex = res
     },
     // 顶部滑动
@@ -1000,7 +1001,8 @@ export default {
     },
     // 模块点击
     handleToClickModule (index) {
-      console.log(index)
+      console.log(index, this.modulesData)
+      this.isClickModule = true
       this.$http.$emit('modulesClick', index)
       // this.handleToModuleHight()
     },
@@ -1042,6 +1044,11 @@ export default {
         console.log(this.isClickIcon, this.showModulesList, this.modulesData)
         if (this.isClickIcon) { // 如果中部点击的是icon则终止
           this.isClickIcon = false
+          return
+        }
+        console.log(this.isClickModule)
+        if (this.isClickModule) { // 如果是模块点击触发
+          this.isClickModule = false
           return
         }
         console.log(this.oldIndex, this.newIndex, this.modulesData, this.topAreaFlag, this.nowRightShowIndex)
