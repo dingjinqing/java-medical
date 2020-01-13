@@ -3,7 +3,7 @@
     <wrapper>
       <section class="newuserDetailContent">
         <div>
-          <span>{{$t('luckyDraw.mobile')}}</span>
+          <span>{{$t('luckyDraw.mobile')}}：</span>
           <el-input
             class="inputWidth"
             size="small"
@@ -12,7 +12,7 @@
           ></el-input>
         </div>
         <div>
-          <span>{{$t('luckyDraw.userNickname')}}</span>
+          <span>{{$t('luckyDraw.userNickname')}}：</span>
           <el-input
             class="inputWidth"
             size="small"
@@ -21,7 +21,7 @@
           ></el-input>
         </div>
         <div>
-          <span>{{$t('luckyDraw.invitePeople')}}</span>
+          <span>{{$t('luckyDraw.invitePeople')}}：</span>
           <el-input
             class="inputWidth"
             size="small"
@@ -90,8 +90,8 @@
         </el-table>
       </div>
       <pagination
-              :page-params.sync="pageParams"
-              @pagination="initDataList"
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
       />
     </wrapper>
 
@@ -100,20 +100,21 @@
 
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import {getLotteryUserList} from '@/api/admin/marketManage/luckyDraw.js'
+import { getLotteryUserList } from '@/api/admin/marketManage/luckyDraw.js'
 export default {
-  components: { wrapper,
+  components: {
+    wrapper,
     pagination: () => import('@/components/admin/pagination/pagination')
 
   },
   data () {
     return {
       requestParams: {
-        activityId: this.$route.query.id,
-        activityName: this.$route.query.activityName,
-        mobile: null,
-        userName: null,
-        inviteUserName: null,
+        activityId: this.$route.query.id, // 活动id
+        activityName: this.$route.query.activityName, // 活动名称
+        mobile: null, // 电话
+        userName: null, // 昵称
+        inviteUserName: null, // 邀请人
         currentPage: null,
         pageRows: null
       },
@@ -122,17 +123,19 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$route)
     // 初始化语言
     this.langDefault()
     this.initDataList()
   },
   methods: {
     initDataList () {
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      getLotteryUserList(this.requestParams).then(res => {
-        this.pageParams = res.content.page
-        this.tableData = res.content.dataList
+      let params = Object.assign({}, this.requestParams, this.pageParams)
+      getLotteryUserList(params).then(res => {
+        if (res.error === 0) {
+          this.pageParams = res.content.page
+          this.tableData = res.content.dataList
+        }
       })
     }
   }
@@ -146,6 +149,7 @@ export default {
     margin-right: 10px;
     span {
       margin-right: 10px;
+      font-size: 14px;
     }
     .inputWidth {
       width: 150px;

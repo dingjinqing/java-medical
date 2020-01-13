@@ -49,10 +49,16 @@
         </el-table-column>
 
         <el-table-column
-          prop="dateValidity"
           :label="$t('luckyDraw.dateValidity')"
           align="center"
         >
+          <template slot-scope="{row}">
+            <div style="line-height:1;">
+              <div>{{row.startTime}}</div>
+              <div>{{$t('luckyDraw.to')}}</div>
+              <div>{{row.endTime}}</div>
+            </div>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -82,7 +88,9 @@
         >
           <template slot-scope="scope">
             <div class="opt">
+              <!-- 设置 -->
               <el-tooltip
+                v-if="scope.row.currentState == 1 || scope.row.currentState == 2"
                 :content="$t('luckyDraw.edit')"
                 placement="top"
               >
@@ -91,13 +99,17 @@
                   @click="editActivity(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <!-- 分享 -->
               <el-tooltip
+                v-if="scope.row.currentState == 1 || scope.row.currentState == 2"
                 :content="$t('luckyDraw.share')"
                 placement="top"
               >
                 <span class="el-icon-share"></span>
               </el-tooltip>
+              <!-- 停用 -->
               <el-tooltip
+                v-if="scope.row.currentState == 1 || scope.row.currentState == 2"
                 :content="$t('luckyDraw.disable')"
                 placement="top"
               >
@@ -107,7 +119,9 @@
                   v-if="scope.row.status==1"
                 ></span>
               </el-tooltip>
+              <!-- 启用 -->
               <el-tooltip
+                v-if="scope.row.currentState == 4"
                 :content="$t('luckyDraw.enabled')"
                 placement="top"
               >
@@ -117,7 +131,9 @@
                   v-if="scope.row.status==0"
                 ></span>
               </el-tooltip>
+              <!-- 删除 -->
               <el-tooltip
+                v-if="scope.row.currentState == 3 || scope.row.currentState == 4"
                 :content="$t('luckyDraw.delete')"
                 placement="top"
               >
@@ -126,7 +142,9 @@
                   @click="deleteluckyDraw(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <!-- 抽奖明细 -->
               <el-tooltip
+                v-if="scope.row.currentState != 2"
                 :content="$t('luckyDraw.detailList')"
                 placement="top"
               >
@@ -135,7 +153,9 @@
                   @click="luckyDrawDetailList(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <!-- 获取新用户明细 -->
               <el-tooltip
+                v-if="scope.row.currentState != 2"
                 :content="$t('luckyDraw.newUserList')"
                 placement="top"
               >
@@ -233,7 +253,6 @@ export default {
     },
     resDataFilter (data) {
       data.map((item, index) => {
-        item.dateValidity = item.startTime + '~' + item.endTime
         item.statusText = this.getActStatusString(item.currentState)
       })
     },
@@ -249,6 +268,7 @@ export default {
     addActivity () {
       console.log('addActivity', 'lottery')
       // 改变flag
+      this.isEdite = false
       this.isShowAddFlag = true
       // 增加tab页--添加抽奖活动
       this.tabInfo.push({
@@ -264,7 +284,16 @@ export default {
       console.log('editActivity', 'lottery', id)
       this.lotteryId = id
       this.isEdite = true
-      this.addActivity()
+      // 改变flag
+      this.isShowAddFlag = true
+      // 增加tab页--添加抽奖活动
+      this.tabInfo.push({
+        title: '添加抽奖活动',
+        name: '6'
+      })
+      this.tabSwitch = `6`
+      // 跳转到路由添加抽奖界面
+      this.currentComponent = luckyDrawAdd
     },
     changeStatus (id) {
       console.log('changeStatus', id)
@@ -318,7 +347,7 @@ export default {
     },
     newUserDetail (id, activityName) {
       console.log('跳转到获取新用户列表页面 id = ', id, 'activityName: ', activityName)
-      this.$router.push({ path: `/admin/home/main/luckyDraw/newUserList/${id}/${activityName}` })
+      this.$router.push({ path: '/admin/home/main/luckyDraw/newUserList', query: { id: id, activityName: activityName } })
     },
     // 关闭新增幸运大抽奖标签页
     closeTabAddGroup () {
