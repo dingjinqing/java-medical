@@ -335,6 +335,7 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.member') + '：'"
                   v-if="param.type===0"
+                  prop="isExclusive"
                 >
                   <div>
                     <p>
@@ -628,6 +629,14 @@ export default {
         callback()
       }
     }
+    // 自定义会员专享
+    var validateIsExclusive = (rule, value, callback) => {
+      if (value === true && this.param.cardId.length === 0) {
+        callback(new Error('请选择会员卡'))
+      } else {
+        callback()
+      }
+    }
     // 自定义校验使用门槛
     var validateuseConsumeRestrict = (rule, value, callback) => {
       var re = /^[1-9]\d*(\.\d{1,2})?$/
@@ -705,6 +714,7 @@ export default {
         useScore: { required: true, validator: validateisRandom, trigger: 'change' },
         receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
         couponNum: { required: true, validator: validateCouponNum, trigger: 'change' },
+        isExclusive: { validator: validateIsExclusive, trigger: 'change' },
         useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
         availableGoods: { required: true, validator: validateAvailableGoods, trigger: 'change' }
       },
@@ -940,14 +950,14 @@ export default {
           this.param.scoreNumber = Number(this.param.scoreNumber)
           this.param.startTime = this.param.couponDate[0]
           this.param.endTime = this.param.couponDate[1]
-          if (this.param.cardId) {
+          // 会员专享
+          if (this.param.isExclusive === true) {
             this.param.cardId = this.param.cardId.toString()
           } else {
             this.param.cardId = ''
           }
 
           if (this.editType === false) {
-            debugger
             // 添加保存
             saveCoupon(this.param).then((res) => {
               if (res.error === 0) {
