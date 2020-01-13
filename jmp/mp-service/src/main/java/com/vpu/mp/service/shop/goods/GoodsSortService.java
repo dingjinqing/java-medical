@@ -580,4 +580,8 @@ public class GoodsSortService extends ShopBaseService {
             where(SORT.PARENT_ID.eq(sortId)).
             fetch(SORT.SORT_ID);
     }
+
+    public boolean exist(Integer id) {
+        return db().fetchExists(SORT, SORT.SORT_ID.eq(id));
+    }
 }

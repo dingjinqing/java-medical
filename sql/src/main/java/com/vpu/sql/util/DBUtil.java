@@ -2,6 +2,7 @@ package com.vpu.sql.util;
 
 import com.vpu.sql.exception.DuplicateColumnException;
 import com.vpu.sql.exception.DuplicateIndexException;
+import com.vpu.sql.exception.SQLRunTimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -19,6 +20,9 @@ public class DBUtil {
 
     public static volatile AtomicInteger errorNumbers = new AtomicInteger(0);
 
+
+
+
     /**
      * 执行sql
      * @param con 连接
@@ -26,7 +30,9 @@ public class DBUtil {
      */
     public static void executeSQL(Connection con, String sql){
         try {
+            con.setAutoCommit(false);
             con.prepareStatement(sql).executeUpdate();
+            con.commit();
         } catch (SQLException e) {
             try {
                 con.rollback();
@@ -41,8 +47,9 @@ public class DBUtil {
             }else if( !StringUtils.isEmpty(index) ){
                 throw new DuplicateIndexException(index);
             }else{
-                e.printStackTrace();
                 errorNumbers.getAndIncrement();
+                throw new SQLRunTimeException(e.getMessage());
+
             }
 
         }
@@ -113,7 +120,6 @@ public class DBUtil {
     public static void deleteTable(Connection con, String tableName){
 
         try {
-            log.info("删除Table---{}",tableName);
             con.prepareStatement(DELETE_TABLE_SQL+tableName).execute();
         } catch (SQLException e) {
             e.printStackTrace();

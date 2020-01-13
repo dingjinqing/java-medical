@@ -1,14 +1,23 @@
 package com.vpu.mp.service.shop.decoration;
 
+import com.UpYun;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.upyun.UpException;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.StorageConfig;
+import com.vpu.mp.config.TxMapLBSConfig;
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
+import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -22,7 +31,7 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
@@ -34,11 +43,22 @@ import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
  * @create: 2020-01-09 15:09
  **/
 @Service
-public class AdminDecorationService extends ShopBaseService {
+public class AdminDecorationService extends ShopBaseService implements ImageDefault {
     @Autowired
     private DomainConfig domainConfig;
     @Autowired
     private QrCodeService qrCode;
+    @Autowired
+    private TxMapLBSConfig txMapLBSConfig;
+    @Autowired
+    private UpYunConfig upYunConfig;
+    @Autowired
+    private StorageConfig storageConfig;
+
+    /**
+     * 静态图API
+     */
+    public static final String QQ_MAP_API_STATICMAP_URL = "https://apis.map.qq.com/ws/staticmap/v2";
 
     /**
      * 验证格式
@@ -315,6 +335,12 @@ public class AdminDecorationService extends ShopBaseService {
                     ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
                     moduleIntegral = saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
                     return moduleIntegral;
+                case ModuleConstant.M_CARD:
+                    ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
+                   if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
+                       moduleCard.setBgImg(domainConfig.imageUrl(moduleCard.getBgImg()));
+                   }
+                    return moduleCard;
 
 
                     /**
@@ -560,10 +586,26 @@ public class AdminDecorationService extends ShopBaseService {
                         moduleVideo.setImgUrl(new URL(moduleVideo.getImgUrl()).getPath());
                     }
                     return moduleVideo;
+                case ModuleConstant.M_SHOP:
+                    ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+                    if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
+                        moduleShop.setShopBgPath(new URL(moduleShop.getShopBgPath()).getPath());
+                    }
+                    if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
+                        moduleShop.setBgUrl(new URL(moduleShop.getBgUrl()).getPath());
+                    }
+                    return moduleShop;
                 case ModuleConstant.M_MAP:
                     ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
-                    //TODO 抓取地图图片
+                    String imgPath = getStaticMapImg(moduleMap.getLatitude(),moduleMap.getLongitude());
+                    moduleMap.setImgPath(imgPath);
                     return moduleMap;
+                case ModuleConstant.M_CARD:
+                    ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
+                    if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
+                        moduleCard.setBgImg(new URL(moduleCard.getBgImg()).getPath());
+                    }
+                    return moduleCard;
 
                 //TODO 其他保存前需要处理的模块
 
@@ -571,6 +613,9 @@ public class AdminDecorationService extends ShopBaseService {
         }
         if(node.getKey().equals("page_cfg")){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+            if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
+                pageCfg.setPageBgImage(new URL(pageCfg.getPageBgImage()).getPath());
+            }
             if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
                 pageCfg.getPictorial().setShareImgPath(new URL(pageCfg.getPictorial().getShareImgPath()).getPath());
             }
@@ -598,5 +643,49 @@ public class AdminDecorationService extends ShopBaseService {
         List<Integer> idList = db().select(XCX_CUSTOMER_PAGE.PAGE_ID).from(XCX_CUSTOMER_PAGE)
             .where(XCX_CUSTOMER_PAGE.PAGE_NAME.like(this.likeValue(sourcePage))).fetchInto(Integer.class);
         return idList;
+    }
+
+    protected String getStaticMapImg(String latitude,String longitude){
+        Map<String, Object> param = new HashMap<>();
+        param.put("size","375*150");
+        param.put("key",txMapLBSConfig.getKey());
+        param.put("center",latitude + "," + longitude);
+        param.put("zoom",16);
+        param.put("format","png");
+        param.put("scale",2);
+        param.put("maptype","roadmap");
+        param.put("markers","size:large|color:blue|label:A|" + latitude + "," + longitude);
+
+        String relativePath = "upload/" + this.getShopId() + "/map/" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT) + "/";
+        String path = fullPath(relativePath);
+        String fileName = "map_" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) + "_" + Math.round((Math.random()+1) * 1000) + ".png";
+        mkdir(path);
+        HttpsUtils.get(QQ_MAP_API_STATICMAP_URL,param,true,path,fileName);
+
+        try {
+            String fullFilePath = path + fileName;
+            File file = new File(fullFilePath);
+            uploadToUpYun(relativePath + fileName,file);
+            //上传完成删除
+            //file.delete();
+        } catch (Exception e) {
+            logger().error("图片加载错误",e);
+        }
+        return relativePath + fileName;
+    }
+
+    @Override
+    public String imageUrl(String relativePath) {
+        return domainConfig.imageUrl(relativePath);
+    }
+
+    @Override
+    public String fullPath(String relativePath) {
+        return storageConfig.storagePath(relativePath);
+    }
+
+    @Override
+    public UpYun getUpYunClient() {
+        return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
     }
 }

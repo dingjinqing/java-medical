@@ -13,7 +13,7 @@
     </view>
     <!--评价页面列表  -->
     <view class="comment_main">
-      <view class="mocomm_list" wx:for="{{order_completed}}" wx:key="goodsId" wx:if="{{order_completed != ''}}">
+      <view class="mocomm_list" wx:for="{{order_completed}}" wx:key="index" wx:if="{{order_completed != ''}}">
         <view class="comment_list">
           <view class="comment_gift clearfix" wx:if="{{item.commentFlag === 0 && item.id}}">
             <image src='{{imageUrl}}image/wxapp/comment_gift_tips.png'></image>
@@ -39,7 +39,7 @@
             <!-- 幸运大抽奖 -->
             <text wx:elif="{{item.awardType === 4}}">{{item.award}}</text>
             <!-- 自定义奖励 -->
-            <text wx:elif="{{item.awardType === 5}}">{{item.award}}</text>
+            <text wx:elif="{{item.awardType === 5}}">“{{i18n.$t(localePack,"page1.comment.mysteryReward")}}”</text>
           </view>
           <view class="commm_goods clearfix">
             <view class="left">
@@ -50,7 +50,7 @@
               <view class="goods_time clearfix">{{item.createTime}}
                 <!-- 发表评价 -->
                 <block>
-                  <view class="right" bindtap="show_com_info" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}">
+                  <view class="right" bindtap="show_com_info" data-index="{{item.index}}" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}">
                     <text wx:if="{{item.commentFlag == 1}}">{{i18n.$t(localePack,"page1.comment.viewEvaluation")}}</text>
                     <text wx:else>{{i18n.$t(localePack,"page1.comment.publishEvaluation")}}</text>
                     <image src="{{ item.src }}" style="width:10px;height:5px;margin-left:5rpx;" />
@@ -109,16 +109,15 @@
                   </view>
                   <text class="shai_num">{{info.comm_img.length}}/9</text>
                 </view>
-                <view class="shaidan" wx:elif="{{item.commentFlag == 1 && item.comm_img}}">
+                <!-- 已评价 -->
+                <view class="shaidan" wx:elif="{{item.commentFlag == 1 && item.comm_img && item.comm_img.length > 0}}">
                   <view class="shai_left">
                     <text style='color:#fff;'>*</text>{{i18n.$t(localePack,"page1.comment.sunSingle")}}:</view>
                   <view class="shai_content">
-                    <block>
-                      <block wx:for="{{item.comm_img}}" wx:key="index" wx:for-item="imgitem">
-                        <view class='shai_view'>
-                          <image src="{{imgitem}}" data-idx="{{index}}"></image>
-                        </view>
-                      </block>
+                    <block wx:for="{{item.comm_img}}" wx:key="index" wx:for-item="imgitem">
+                      <view class='shai_view'>
+                        <image src="{{imgitem}}" data-idx="{{index}}"></image>
+                      </view>
                     </block>
                   </view>
                   <text class="shai_num">{{item.comm_img.length}}/9</text>
@@ -142,13 +141,13 @@
               <view class="gift_content">
                 <view class="comment_footer_gift_h">{{i18n.$t(localePack,"page1.comment.evaluationReward")}}</view>
                 <!-- 多种奖励模式渲染 -->
-                <view>
+                <view class="comment_footer_gift_b">
                   <text>{{i18n.$t(localePack,"page1.comment.obtained")}}</text>
-                  <text>{{item.awardType == 1 ? award + i18n.$t(localePack,"page1.comment.integral") : ( item.awardType == 2 ? i18n.$t(localePack,"page1.comment.coupon") : (item.awardType == 3 ? award + i18n.$t(localePack,"page1.comment.yuanBalance") : (item.awardType == 4 ? i18n.$t(localePack,"page1.comment.sweepstakes") : i18n.$t(localePack,"page1.comment.mysteryReward"))) )}}</text>
+                  <text>{{item.awardType == 1 ? item.award + i18n.$t(localePack,"page1.comment.integral") : ( item.awardType == 2 ? i18n.$t(localePack,"page1.comment.coupon") : (item.awardType == 3 ? item.award + i18n.$t(localePack,"page1.comment.yuanBalance") : (item.awardType == 4 ? i18n.$t(localePack,"page1.comment.sweepstakes") : i18n.$t(localePack,"page1.comment.mysteryReward"))) )}}</text>
                   <text>{{i18n.$t(localePack,"page1.comment.reward")}}</text>
                 </view>
               </view>
-              <form report-submit="true" bindsubmit="giftInfo" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}" data-id="{{item.id}}" data-itemid="{{index}}">
+              <form report-submit="true" bindsubmit="giftInfo" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}" data-id="{{item.id}}" data-itemid="{{index}}" data-awardtype="{{item.awardType}}" data-award="{{item.award}}">
                 <button class="gift_info_button" formType="submit" style="border-color:{{comColor}};color:{{comColor}}">{{i18n.$t(localePack,"page1.comment.view")}}</button>
               </form>
             </view>

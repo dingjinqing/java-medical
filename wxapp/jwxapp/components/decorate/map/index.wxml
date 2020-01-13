@@ -1,9 +1,9 @@
-<view class="map-container" bindtap='bindShowMap' data-idx="{{m.idx}}" style='margin-bottom:{{m.margin_bot}}rpx;'>
+<view class="map-container" bindtap='bindShowMap' data-idx="{{m.cur_idx}}" style='margin-bottom:{{m.margin_bot}}rpx;'>
   <view class='map_title'>
     <image class="image" src='{{m.imageUrl}}image/wxapp/map_position.png' style='width:30rpx;height:40rpx;position:relative;top:2rpx;'></image>
     <text style='width:640rpx'> {{m.province}}{{m.city}}{{m.area}}{{m.address}}</text>
   </view>
   <view class='map_content' wx:if="{{m.map_show == 1}}">
-    <image class="image" src='{{m.imageUrl}}{{m.img_path}}'></image>
+    <image class="image" src='{{m.img_path}}'></image>
   </view>
 </view>

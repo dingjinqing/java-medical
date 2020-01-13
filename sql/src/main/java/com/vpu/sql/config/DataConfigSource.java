@@ -68,7 +68,8 @@ public class DataConfigSource {
                 allShop = mainDataSource.getShopDbConfig(shopIds);
             }
             if( CollectionUtils.isEmpty(allShop) ){
-                throw new NullPointerException("can't find shop");
+                log.warn("can't find shop");
+                return ;
             }
             List<DBConfig> configs = allShop.stream().
                     map(x->JsonUtil.toEntityAndIgnoreExtraFields(x,DBConfig.class)).
@@ -95,6 +96,7 @@ public class DataConfigSource {
         log.info("开始执行SQL...");
         for( DBSource source: dbSources ){
             try (Connection con = source.getDataSource().getConnection()){
+
                 if( Scope.main.equals(source.getScope()) ){
                     log.info("主库执行:");
                     sqlSource.forEach(x->{

@@ -202,7 +202,7 @@ public class SysCateService extends MainBaseService {
             goodsPageListVo.setCatName(catIdNameMap.get(catId));
         }
     }
-    
+
     /**
      * 根据分类id获取单条信息
      * @param catId
@@ -213,7 +213,7 @@ public class SysCateService extends MainBaseService {
     			.where(CATEGORY.CAT_ID.eq(catId)).fetchOne().into(SysCatevo.class);
     	return cateInfo;
     }
-    
+
     /**
      * 得到商品层级类目
      * @param catId
@@ -231,7 +231,7 @@ public class SysCateService extends MainBaseService {
     	}
     	Collections.reverse(list);
     	return list;
-    	
+
     }
 
     /**
@@ -272,5 +272,9 @@ public class SysCateService extends MainBaseService {
             childIds = childIds.stream().distinct().collect(Collectors.toList());
         }
         return childIds;
+    }
+
+    public boolean exist(Integer id) {
+        return db().fetchExists(CATEGORY, CATEGORY.CAT_ID.eq(id));
     }
 }

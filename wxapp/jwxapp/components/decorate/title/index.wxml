@@ -1,5 +1,5 @@
 <block wx:if="{{m.title_model == '1'}}">
-  <view class="title-container" catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.idx}}' style="background-color: {{m.bg_color}};margin-bottom:{{m.margin_bot}}rpx;">
+  <view class="title-container" catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.cur_idx}}' style="background-color: {{m.bg_color}};margin-bottom:{{m.margin_bot}}rpx;">
     <view class="main-titles" style="text-align:{{m.pos}};">
       <image src='{{m.img_url}}' wx:if="{{m.img_url}}" style='width:50rpx;height:50rpx'></image>
       <text style='color:{{m.color}};padding-right:40rpx;'>{{m.title}}</text>
@@ -11,7 +11,7 @@
   </view>
 </block>
 <block wx:if="{{m.title_model == '2'}}">
-  <view class="new-container" catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.idx}}' style="margin-bottom:{{m.margin_bot}}rpx;">
+  <view class="new-container" catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.cur_idx}}' style="margin-bottom:{{m.margin_bot}}rpx;">
     <view class="new-titles" style="text-align:{{m.pos}};">
       <view class='head-title'>{{m.title}}</view>
       <view class='new_content'  wx:if='{{m.title_date !="" || m.title_author != "" || m.link_title != "" }}'>

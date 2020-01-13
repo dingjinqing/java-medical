@@ -40,7 +40,7 @@ public class CouponHoldService extends ShopBaseService {
         SelectJoinStep<? extends Record> select =
             db().select(u.USERNAME, u.MOBILE,
                         m.ACT_NAME.as("coupon_name"),m.USE_SCORE,m.SCORE_NUMBER,
-                        h.ID,h.ACCESS_MODE, h.IS_USED,h.ORDER_SN, h.START_TIME, h.END_TIME, h.CREATE_TIME, h.USED_TIME,h.DEL_FLAG)
+                        h.ID,h.ACCESS_MODE, h.IS_USED,h.ORDER_SN, h.START_TIME, h.END_TIME, h.CREATE_TIME, h.USED_TIME,h.DEL_FLAG,h.USER_ID)
                 .from(h)
                 .leftJoin(m).on(h.ACT_ID.eq(m.ID))
                 .leftJoin(u).on(h.USER_ID.eq(u.USER_ID));

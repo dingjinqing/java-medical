@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.coupon;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 import lombok.Data;
 
@@ -99,5 +100,8 @@ public class AvailCouponDetailVo {
     private long remainSeconds;
     private String useExplain;
     private String validationCode;
+    private String cardId;
+    private Integer cardStatus;
+    private String needGetCard;
 }
 

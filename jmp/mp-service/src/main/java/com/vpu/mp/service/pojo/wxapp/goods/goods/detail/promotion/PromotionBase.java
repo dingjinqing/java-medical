@@ -9,6 +9,6 @@ import lombok.Data;
  */
 @Data
 public class PromotionBase {
-    private Integer promotionId;
-    private Byte promotionType;
+    protected Integer promotionId;
+    protected Byte promotionType;
 }

@@ -51,8 +51,10 @@ public class DistributionService extends BaseVisitService {
             param.setEndDate(getDate(NumberUtils.INTEGER_ZERO));
         }
         VisitDistributionVo vo = new VisitDistributionVo();
-        /* 访问来源 */
-        Map<String, Integer> sourceMap = new TreeMap<>();
+        /* 访问人数来源 */
+        Map<String, Integer> sourceUvMap = new TreeMap<>();
+        /* 访问次数来源 */
+        Map<String, Integer> sourcePvMap = new TreeMap<>();
         /* 停留时长 */
         Map<String, Integer> stayTimeMap = new TreeMap<>();
         /*  平均访问深度 */
@@ -64,32 +66,34 @@ public class DistributionService extends BaseVisitService {
         for (MpDistributionVisitRecord record : result) {
             String list = record.getList();
             /* 转换统计 JSON */
-            List<DistributionIndex> indexes = Util.json2Object(list, new TypeReference<List<DistributionIndex>>() {
-            },false);
-            for (DistributionIndex index : Objects.requireNonNull(indexes)) {
-                String indexName = index.getIndex();
+            Map<String,Map<Integer,Integer>> indexes = Util.parseJson(list, new TypeReference<Map<String,Map<Integer,Integer>>>() {});
+            for (Map.Entry<String,Map<Integer,Integer>> item : Objects.requireNonNull(indexes).entrySet()) {
+                String indexName = item.getKey();
                 switch (indexName) {
+                    case ACCESS_SOURCE_UV:
+                        groupingIndex(sourceUvMap, item.getValue(), AccessSource.values());
+                        break;
                     case ACCESS_SOURCE_PV:
-                        groupingIndex(sourceMap, index, AccessSource.values());
+                        groupingIndex(sourcePvMap, item.getValue(), AccessSource.values());
                         break;
                     case VISIT_DURATION:
-                        groupingIndex(stayTimeMap, index, VisitDuration.values());
+                        groupingIndex(stayTimeMap, item.getValue(), VisitDuration.values());
                         break;
                     case VISIT_DEPTH:
-                        groupingIndex(depthMap, index, AccessDepth.values());
+                        groupingIndex(depthMap, item.getValue(), AccessDepth.values());
                         break;
                     default:
                 }
             }
         }
-        /* 移除参数中忽略的访问来源 */
-        cancelSources.forEach(s -> sourceMap.remove(AccessSource.findByIndex(s).getSource()));
+        // 移除参数中忽略的访问来源
+        cancelSources.forEach(s -> sourcePvMap.remove(AccessSource.findByIndex(s).getSource()));
         vo.setStartDate(startDate);
         vo.setEndDate(endDate);
-        vo.setVisitSource(keyValueChart(sourceMap));
+        vo.setVisitSource(keyValueChart(sourcePvMap));
         vo.setVisitDepth(valueKeyChart(depthMap));
         vo.setVisitStayTime(valueKeyChart(stayTimeMap));
-        vo.setAccessSourceSessionCnt(getInfoDict(sourceMap, AccessSource.values()));
+        vo.setAccessSourceSessionCnt(getInfoDict(sourcePvMap, AccessSource.values()));
         vo.setAccessDepthInfo(getInfoDict(depthMap, AccessDepth.values()));
         vo.setAccessStayTimeInfo(getInfoDict(stayTimeMap, VisitDuration.values()));
         return vo;
@@ -130,8 +134,14 @@ public class DistributionService extends BaseVisitService {
     /**
      * 将统计数据分组
      */
-    private void groupingIndex(Map<String, Integer> map, DistributionIndex index, ChartInfo[] info) {
-        List<DistributionIndexItem> items = index.getItem_list();
+    private void groupingIndex(Map<String, Integer> map, Map<Integer, Integer> item ,ChartInfo[] info) {
+        List<DistributionIndexItem> items = new ArrayList<>();
+        for (Map.Entry<Integer,Integer> tempMap : item.entrySet()){
+            items.add(new DistributionIndexItem(){{
+                setKey(tempMap.getKey());
+                setValue(tempMap.getValue());
+            }});
+        }
         items.forEach(i -> {
             Integer key = i.getKey();
             ChartInfo kv = Arrays.stream(info)

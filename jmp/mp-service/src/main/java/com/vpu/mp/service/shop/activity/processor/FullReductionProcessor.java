@@ -10,8 +10,11 @@ import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FullReductionPromotion;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
@@ -43,7 +46,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class FullReductionProcessor implements Processor,ActivityGoodsListProcessor, CreateOrderProcessor {
+public class FullReductionProcessor implements Processor,ActivityGoodsListProcessor, CreateOrderProcessor,GoodsDetailProcessor {
 
     @Autowired
     FullReductionProcessorDao fullReductionProcessorDao;
@@ -77,6 +80,15 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
                 capsule.getGoodsActivities().add(activity);
             }
         });
+    }
+
+    /*****************商品详情处理******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        List<FullReductionPromotion> promotions = fullReductionProcessorDao.getFullReductionInfoForDetail(capsule.getGoodsId(), capsule.getCatId(), capsule.getBrandId(), capsule.getSortId(), DateUtil.getLocalDateTime());
+        if (promotions != null && promotions.size() > 0) {
+            capsule.getPromotions().put(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,promotions);
+        }
     }
 
     /**订单处理start**/
@@ -203,5 +215,6 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
         }
         return result;
     }
+
     /**订单处理end**/
 }

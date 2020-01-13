@@ -20,7 +20,11 @@ public class RegexUtil {
      */
     private static final Pattern UPDATE_PATTERN =
             Pattern.compile("(?<=`).*?(?=`)",Pattern.CASE_INSENSITIVE);
-
+    /**
+     * init data sql 的tableName的正则匹配
+     */
+    private static final Pattern DATA_PATTERN =
+            Pattern.compile("(?<=`).*?(?=`\\()",Pattern.CASE_INSENSITIVE);
 
     /**
      * 字段重复的exception的正则匹配
@@ -86,6 +90,26 @@ public class RegexUtil {
         }
         sqlAttribute.setDbOperator(DBOperator.getDBOperator(sqlArray[0]));
         sqlAttribute.setTableName(sqlArray[2]);
+        return sqlAttribute;
+    }
+
+    public static SqlAttribute getTableNameByDataSql(String sql){
+        SqlAttribute sqlAttribute = new SqlAttribute();
+        String tableName = "";
+        Matcher m = DATA_PATTERN.matcher(sql.replaceAll(" ",""));
+        if( m.find() ){
+            tableName =  m.group();
+        }
+        sql = sql.toLowerCase().replaceAll(" +"," ").replaceAll("`","").trim();
+        String[] sqlArray = sql.split(" ");
+
+        if( DBOperator.UPDATE.getOperator().equals(sqlArray[0]) ){
+            sqlAttribute.setTableName(sqlArray[1].replaceAll("\\(",""));
+        }else{
+            sqlAttribute.setTableName(tableName);
+        }
+        sqlAttribute.setDbOperator(DBOperator.getDBOperator(sqlArray[0]));
+
         return sqlAttribute;
     }
 }
