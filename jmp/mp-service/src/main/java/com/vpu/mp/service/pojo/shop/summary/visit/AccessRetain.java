@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.summary.visit;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 留存统计
@@ -14,10 +15,5 @@ public class AccessRetain {
 
     private String refDate;
     private Integer sum;
-    private List<RetainItem> list;
-
-    public void setList(List<RetainItem> list) {
-        this.list = list;
-        setSum(list.stream().mapToInt(RetainItem::getValue).sum());
-    }
+    private Map<Integer,Integer> data;
 }
