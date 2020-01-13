@@ -28,7 +28,7 @@
               <view class="right">
                   <view class="case">
                     <block wx:if="{{item.limitOrderAmount != 0 && item.limitOrderAmount != null}}">
-                      使用条件:满{{item.limitOrderAmount}}可用(不含运费)
+                      使用条件:满{{item.limitOrderAmount}}元可用(不含运费)
                     </block> 
                     <block wx:else> 
                       使用条件:无门槛(不含运费)

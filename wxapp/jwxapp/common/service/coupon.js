@@ -23,6 +23,12 @@ var coupon = {
         } else if (res.content == 5) {
           util.toast_fail('可用积分不足');
           cb('可用积分不足');
+        } else if (res.content == 6) {
+          util.toast_fail('积分更新失败');
+          cb('积分更新失败');
+        } else if (res.content == 7) {
+          util.toast_fail('领取次数达上限');
+          cb('领取次数达上限');
         }
       } else {
         util.toast_fail('领取失败');
