@@ -5,7 +5,6 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
@@ -13,12 +12,6 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DUR
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.ADMIN_OPTION;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.EXCHANGE_GOODS_NUM;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.MEMBER_MONEY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEND;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.STORE_SERVICE_TIMES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SYSTEM_UPGRADE;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
@@ -176,9 +169,7 @@ public class UserCardService extends ShopBaseService {
 	
 	public static final String DEFAULT_ADMIN = "0";
 
-	public static final String OPTIONINFO = OPEN_CARD_SEND;
 	public static final String DESC = "score_open_card";
-	public static final String SYSTEM_UP_GRADE = SYSTEM_UPGRADE;
 
 	/**
 	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回默认最低等级
@@ -516,17 +507,20 @@ public class UserCardService extends ShopBaseService {
 		ChargeMoneyRecordBuilder builder = ChargeMoneyRecordBuilder.create(db().newRecord(CHARGE_MONEY))
 				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
 				.cardNo(userCard.getCardNo()).payment("store.payment").createTime(DateUtil.getLocalDateTime());
+		
 		// TODO 门店支付国际化
 		if (isNormalCard(card) && card.getSendMoney() != null) {
-			// TODO 管理员发卡
-			builder.charge(new BigDecimal(card.getSendMoney())).reason("member.card.admin.send.card").build().insert();
+			//  管理员发卡
+			builder.charge(new BigDecimal(card.getSendMoney())).reasonId(String.valueOf(RemarkTemplate.ADMIN_SEND_CARD.code)).build().insert();
 
 		}
 		if (isLimitCard(card)) {
-			builder.count(card.getCount().shortValue()).reason("member.card.charge.money.reason").build().insert();
+			// 管理员发卡 - 门店服务次数
+			builder.count(card.getCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.SEND_CARD_REASON.code)).build().insert();
 		}
 		if (isLimitCard(card) && card.getIsExchang() != null) {
-			builder.exchangCount(card.getExchangCount().shortValue()).reason("charge.money.reason.exchange").build()
+			// 管理员发卡 - 兑换商品数量
+			builder.exchangCount(card.getExchangCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code)).build()
 					.insert();
 		}
 
