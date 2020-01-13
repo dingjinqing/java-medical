@@ -205,7 +205,15 @@ public class QrCodeService extends ShopBaseService {
     	Integer bgWidth = 600,bgHeight = 208;
     	if(CardUtil.isBgColorType(bgType)) {
     		logger().info("设置会员卡颜色");
+    		
+    		if(StringUtils.isBlank(card.getBgColor())) {
+    			// 默认背景色
+    			card.setBgColor("#e6cb96");
+    		}
+    		
 	    	Color color = Color.decode(card.getBgColor());
+	    	
+	    	
 	    	Graphics2D graph = bgImg.createGraphics();
 	    	graph.setPaint(color);
 	    	graph.fillRect(0, 0, bgWidth, bgHeight);
