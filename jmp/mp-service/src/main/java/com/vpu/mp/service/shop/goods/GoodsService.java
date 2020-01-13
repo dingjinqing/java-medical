@@ -1903,4 +1903,14 @@ public class GoodsService extends ShopBaseService {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Exist boolean.商品是否存在
+     *
+     * @param goodsId the goods id
+     * @return the boolean
+     */
+    public boolean exist(Integer goodsId) {
+        return db().fetchExists(GOODS, GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(BYTE_ZERO)));
+    }
 }
