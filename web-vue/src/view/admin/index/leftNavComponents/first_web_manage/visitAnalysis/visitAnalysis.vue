@@ -2,14 +2,16 @@
   <div class="total-content">
     <div class="container">
       <allAnalysis class="distance" />
+      <visitPage class="distance" />
     </div>
   </div>
 </template>
 <script>
 import allAnalysis from './allAnalysis'
+import visitPage from './visitPage'
 
 export default {
-  components: {allAnalysis},
+  components: {allAnalysis, visitPage},
   data () {
     return {}
   }
