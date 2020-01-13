@@ -95,6 +95,7 @@ public class DataConfigSource {
         log.info("开始执行SQL...");
         for( DBSource source: dbSources ){
             try (Connection con = source.getDataSource().getConnection()){
+
                 if( Scope.main.equals(source.getScope()) ){
                     log.info("主库执行:");
                     sqlSource.forEach(x->{
