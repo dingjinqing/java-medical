@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WxAppShareRewardController extends WxAppBaseController {
 
-    @PostMapping("/api/wxapp/share/add")
+    @PostMapping("/api/wxapp/shareaward/execute")
     public JsonResult addShareRecord(@RequestBody @Validated ShareParam param) {
         return success();
     }
