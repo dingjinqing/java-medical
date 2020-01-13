@@ -40,6 +40,14 @@
 		<v-line wx:elif="{{module.component_name == 'v-line'}}" module="{{module}}" />
 		<!--辅助空白-->
 		<v-space wx:elif="{{module.component_name == 'v-space'}}" module="{{module}}" />
+		<!--富文本-->
+		<v-rich-text wx:elif="{{module.component_name == 'v-rich-text'}}" module="{{module}}" />
+		<!--文本模块-->
+		<v-text wx:elif="{{module.component_name == 'v-text'}}" module="{{module}}" />
+		<!--左图右文-->
+		<v-text-image wx:elif="{{module.component_name == 'v-text-image'}}" module="{{module}}" />
+		<!--图片热区-->
+		<v-hot-area wx:elif="{{module.component_name == 'v-hot-area'}}" module="{{module}}" />
 	</block>
 </view>
 

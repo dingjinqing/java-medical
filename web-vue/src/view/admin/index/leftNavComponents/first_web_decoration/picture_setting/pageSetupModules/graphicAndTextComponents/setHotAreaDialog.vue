@@ -101,7 +101,7 @@ export default {
     hotDialogVisible (newVal) {
       if (!newVal) {
         this.modelFlag = false
-        this.$emit('update:hotDialogVisible', false)
+        // this.$emit('update:hotDialogVisible', false)
       } else {
         this.modelFlag = true
       }
