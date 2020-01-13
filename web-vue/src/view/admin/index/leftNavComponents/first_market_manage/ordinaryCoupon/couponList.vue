@@ -87,8 +87,10 @@
           align="center"
         >
           <template slot-scope="scope">
-            <!-- v-if="scope.row.isExclusive" -->
-            <span class="vip_exclusive">会员专享</span>
+            <span
+              class="vip_exclusive"
+              v-if="scope.row.recommendGoodsId !== ''"
+            >会员专享</span>
             <span>{{ scope.row.actName }}</span>
           </template>
         </el-table-column>
