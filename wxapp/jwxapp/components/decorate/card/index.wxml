@@ -30,7 +30,7 @@
       <view class="card_type" wx:if="{{m.card_type==1}}">{{i18n.$t(localePack,'components.decorate.limitCard')}}</view>
       <view class="card_content clearfix">
         <view class="card_shop_icon">
-          <image class="image" src='{{m.shop_img}}' />
+          <image class="image" src='{{m.shipImg}}' />
         </view>
         <view class="card_content_right">
           <view style='font-size:28rpx;'>{{m.card_name}}</view>

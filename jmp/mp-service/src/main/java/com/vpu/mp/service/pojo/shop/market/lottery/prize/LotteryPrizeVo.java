@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.lottery.prize;
 
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import lombok.Data;
 
 /**
@@ -10,8 +11,8 @@ import lombok.Data;
 public class LotteryPrizeVo {
 
 
-    private Integer   id;
-    private Integer   lotteryId;
+    private Integer id;
+    private Integer lotteryId;
     /**
      * 中奖率
      */
@@ -20,11 +21,11 @@ public class LotteryPrizeVo {
     /**
      * 中奖等级
      */
-    private Byte    lotteryGrade;
+    private Byte lotteryGrade;
     /**
      * 中奖类型
      */
-    private Byte    lotteryType;
+    private Byte lotteryType;
     /**
      * 奖品份数
      */
@@ -44,26 +45,30 @@ public class LotteryPrizeVo {
     /**
      * 优惠券id
      */
-    private Byte    couponId;
+    private Byte couponId;
     /**
      * 赠品规格id
      */
-    private Byte    prdId;
+    private Integer prdId;
+    /**
+     * 赠品信息 (页面回显)
+     */
+    private ProductSmallInfoVo product;
     /**
      * 赠品有效期
      */
-    private Byte    prdKeepDays;
+    private Byte prdKeepDays;
     /**
      * 奖品信息
      */
-    private String  lotteryDetail;
+    private String lotteryDetail;
     /**
      * 中奖图片
      */
-    private String  iconImgsImage;
+    private String iconImgsImage;
     /**
      * 中奖提示
      */
-    private String  iconImgs;
+    private String iconImgs;
 
 }

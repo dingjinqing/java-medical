@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.market.lottery.record;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author 孔德成
  * @date 2019/8/5 15:28
@@ -19,6 +21,7 @@ public class LotteryRecordPageListParam {
     /**
      * 抽奖活动id
      */
+    @NotNull
     private Integer lotteryId;
     /**
      * 用户电话

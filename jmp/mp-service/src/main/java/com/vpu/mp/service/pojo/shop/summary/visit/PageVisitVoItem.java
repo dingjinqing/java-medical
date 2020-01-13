@@ -34,6 +34,11 @@ public class PageVisitVoItem {
     private String exitPagePv;
 
     /**
+     * 退出页面次数
+     */
+    private Double exitRate;
+
+    /**
      * 分享次数
      */
     private String pageSharePv;
