@@ -31,7 +31,7 @@ export function getSelectGoods (data) {
 // 查询模板
 export function getSelectTemplate (data) {
   return service({
-    url: '/api/admin/decorate/page/edit',
+    url: '/api/admin/decorate/page/get',
     method: 'post',
     data: data
   })

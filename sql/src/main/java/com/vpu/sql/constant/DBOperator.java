@@ -7,7 +7,7 @@ package com.vpu.sql.constant;
  *
 */
 public enum DBOperator {
-    DROP("drop"),CREATE("create"),ALTER("alter");
+    DROP("drop"),CREATE("create"),ALTER("alter"),UPDATE("update"),INSERT("insert"),TRUNCATE("truncate");
 
 
     private String operator;

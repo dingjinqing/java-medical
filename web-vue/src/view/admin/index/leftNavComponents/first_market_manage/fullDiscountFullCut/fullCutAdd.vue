@@ -391,7 +391,7 @@
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
-                    v-model="conditionAddParams3[index].fullMoney"
+                    v-model="conditionAddParams3[index].amount"
                     :disabled="fullDeduction == 1"
                   ></el-input>&nbsp;件，
                   <span>打</span>
@@ -406,7 +406,7 @@
                     v-else
                     class="form_input"
                     size="small "
-                    v-model="conditionAddParams3[index].reduceMoney"
+                    v-model="conditionAddParams3[index].discount"
                     :disabled="fullDeduction == 1"
                   ></el-input>&nbsp;
                   <span>折</span>

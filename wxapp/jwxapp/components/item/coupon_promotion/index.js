@@ -6,15 +6,15 @@ global.wxComponent({
     couponList: {
       type: Array,
       value: null,
-      observer(newVal){
-        if(newVal){
-          let newList =  newVal.map(item=>{
+      observer(newVal) {
+        if (newVal) {
+          let newList = newVal.map(item => {
             let newItem = JSON.parse(JSON.stringify(item))
             if (newItem.actCode === 'voucher') {
               if (newItem.useConsumeRestrict === 1) { 
                 newItem.text = `${this.$t('components.decorate.full')}${
                   newItem.leastConsume
-                }${this.$t('components.decorate.reduce')}￥${newItem.denomination}`;
+                  }${this.$t('components.decorate.reduce')}￥${newItem.denomination}`;
               } else {
                 newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
                   'components.decorate.reduce'
@@ -24,7 +24,7 @@ global.wxComponent({
               if (newItem.useConsumeRestrict === 1) {
                 newItem.text = `${this.$t('components.decorate.full')}${
                   newItem.leastConsume
-                }${this.$t('components.decorate.hit')}￥${newItem.denomination}`;
+                  }${this.$t('components.decorate.hit')}￥${newItem.denomination}`;
               } else {
                 newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
                   'components.decorate.hit'
@@ -34,7 +34,7 @@ global.wxComponent({
             return newItem
           })
           this.setData({
-            coupons:newList
+            coupons: newList
           })
         }
       }
@@ -55,10 +55,10 @@ global.wxComponent({
         show_recommend_coupons: true
       });
     },
-    showPromotion(){
+    showPromotion() {
       console.log(111)
       this.setData({
-        showPromotionDialog:true
+        showPromotionDialog: true
       })
     }
   }

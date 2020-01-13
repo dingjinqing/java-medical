@@ -8,6 +8,8 @@ import com.vpu.sql.entity.SqlAttribute;
 import com.vpu.sql.entity.UpdateSql;
 import com.vpu.sql.exception.DuplicateColumnException;
 import com.vpu.sql.exception.DuplicateIndexException;
+import com.vpu.sql.exception.SQLRunTimeException;
+import com.vpu.sql.template.SQLErrorMessageTemplate;
 import com.vpu.sql.util.DBUtil;
 import com.vpu.sql.util.FileUtil;
 import com.vpu.sql.util.RegexUtil;
@@ -21,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,46 +88,62 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
     private void checkShop(String generalPath) {
         List<String> createSqlList = FileUtil.readSqlFile(generalPath+SHOP_TABLE_INIT_FILE);
         List<String> updateSqlList = FileUtil.readSqlFile(generalPath+SHOP_TABLE_UPDATE_FILE);
+        List<String> dataSqlList = FileUtil.readSqlFile(generalPath+SHOP_DATA_INIT_FILE);
+
         Map<String,String> shopTableMap = assemblyTableSql(createSqlList);
 
-        Map<String,UpdateSql> shopUpdateMap = assemblyUpdateSqlMap(updateSqlList);
+        Map<String,UpdateSql> shopUpdateMap = assemblyUpdateSqlMap(updateSqlList,dataSqlList);
         try(Connection con = h2DataSource.getShopDataSource().getConnection()) {
+            log.info("开始检查【db_shop_init.sql】...");
             checkTable(shopTableMap,con);
-
+            log.info("【db_main_shop.sql】检查结束");
+            log.info("开始检查【db_shop_data.sql】和【shop_update.sql】...");
             checkUpdateSql(shopTableMap,shopUpdateMap,con);
+            log.info("【db_shop_data.sql】和【main_shop.sql】检查结束");
+
         } catch (SQLException e) {
-            e.setNextException(new SQLException(e.getMessage(),e.getSQLState(),2));
+            e.printStackTrace();
         }
     }
+
+
 
     /**
      * 封装处理updateSQL,同一张表的sql放在一起
      * @param updateSqlList Files.readAllLine()返回的List
      * @return TableName --> update SQL List
      */
-    private Map<String, UpdateSql> assemblyUpdateSqlMap(List<String> updateSqlList) {
+    private Map<String, UpdateSql> assemblyUpdateSqlMap(List<String> updateSqlList,List<String> dataSqlList) {
         Map<String,UpdateSql> resultMap = Maps.newHashMap();
         for( String sql: updateSqlList ){
             SqlAttribute sqlAttribute = RegexUtil.getTableNameByUpdateSql(sql);
-            String tableName = sqlAttribute.getTableName();
-            UpdateSql updateSql;
-            if ( resultMap.containsKey(tableName) ){
-                updateSql = resultMap.get(tableName);
-                updateSql.getSqlOperatorMap().put(sql,sqlAttribute.getDbOperator());
-            }else{
-                updateSql = new UpdateSql(tableName);
-                LinkedList<String> sqlList = Lists.newLinkedList();
-                sqlList.add(sql);
-                updateSql.setSql(sqlList);
-                Map<String, DBOperator> sqlOperatorMap = Maps.newLinkedHashMap();
-                sqlOperatorMap.put(sql,sqlAttribute.getDbOperator());
-                updateSql.setSqlOperatorMap(sqlOperatorMap);
-            }
-            resultMap.put(tableName,updateSql);
+            assemblyUpdateSqlDataMap(resultMap,sqlAttribute,sql);
+        }
+        for(String sql:dataSqlList){
+            SqlAttribute sqlAttribute = RegexUtil.getTableNameByDataSql(sql);
+            assemblyUpdateSqlDataMap(resultMap,sqlAttribute,sql);
         }
         return resultMap;
     }
 
+
+    private void assemblyUpdateSqlDataMap(Map<String,UpdateSql> resultMap,SqlAttribute sqlAttribute,String sql  ){
+        String tableName = sqlAttribute.getTableName();
+        UpdateSql updateSql;
+        if ( resultMap.containsKey(tableName) ){
+            updateSql = resultMap.get(tableName);
+            updateSql.getSqlOperatorMap().put(sql,sqlAttribute.getDbOperator());
+        }else{
+            updateSql = new UpdateSql(tableName);
+            LinkedList<String> sqlList = Lists.newLinkedList();
+            sqlList.add(sql);
+            updateSql.setSql(sqlList);
+            Map<String, DBOperator> sqlOperatorMap = Maps.newLinkedHashMap();
+            sqlOperatorMap.put(sql,sqlAttribute.getDbOperator());
+            updateSql.setSqlOperatorMap(sqlOperatorMap);
+        }
+        resultMap.put(tableName,updateSql);
+    }
     /**
      * 主库的sql校验
      * @param generalPath 通用的sql文件目录
@@ -134,12 +153,17 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
 
         List<String> updateSqlList = FileUtil.readSqlFile(generalPath+MAIN_TABLE_UPDATE_FILE);
 
-        Map<String, UpdateSql> updateSqlMap = assemblyUpdateSqlMap(updateSqlList);
+        List<String> dataSqlList = FileUtil.readSqlFile(generalPath+MAIN_DATA_INIT_FILE);
+
+        Map<String, UpdateSql> updateSqlMap = assemblyUpdateSqlMap(updateSqlList,dataSqlList);
         Map<String,String> mainTableMap = assemblyTableSql(createSqlList);
         try(Connection con = h2DataSource.getMainDataSource().getConnection()) {
+            log.info("开始检查【db_main_init.sql】...");
             checkTable(mainTableMap,con);
-
+            log.info("【db_main_init.sql】检查结束");
+            log.info("开始检查【db_main_data.sql】和【main_update.sql】...");
             checkUpdateSql(mainTableMap,updateSqlMap,con);
+            log.info("【db_main_data.sql】和【main_update.sql】检查结束");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -167,14 +191,15 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
      * @param con 和数据库的连接
      */
     private void checkTable(Map<String,String> sqlMap,Connection con){
-        log.info("检查根sql文件的createTable的sql...");
+
         for(Map.Entry<String,String> entry : sqlMap.entrySet() ){
-            log.info("检查【{}】的create SQL--->{}",entry.getKey(),entry.getValue());
+            log.debug("检查【{}】的create SQL--->{}",entry.getKey(),entry.getValue());
             DBUtil.executeSQL(con,entry.getValue());
             if(entry.getValue().toUpperCase().indexOf("DROP")!=0) {
                 DBUtil.deleteTable(con, entry.getKey());
             }
         }
+
     }
 
     /**
@@ -184,11 +209,16 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
      * @param con 和数据库的连接
      */
     private void checkUpdateSql(Map<String,String> sqlMap,Map<String,UpdateSql> updateSqlMap,Connection con){
-        StringBuilder duplicateError = new StringBuilder("\n");
+        /* update sql执行时重复字段导致的异常统计输出 */
+        StringBuilder duplicateError = new StringBuilder();
+
+        StringBuilder executeError = new StringBuilder();
+
+
         for(Map.Entry<String,UpdateSql> entry : updateSqlMap.entrySet() ){
             UpdateSql updateSql = entry.getValue();
             boolean existTable =  false;
-            log.info("开始对表【{}】的update语句进行校验...",updateSql.getTableName());
+            log.debug("开始对表【{}】的update语句进行校验...",updateSql.getTableName());
 
 
             for (Map.Entry<String,DBOperator> sqlEntry: updateSql.getSqlOperatorMap().entrySet()){
@@ -196,7 +226,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
                 if( !existTable && !sqlEntry.getValue().equals(DBOperator.CREATE) ){
                     /*校验updateSQL首先需要创建对应的table*/
                     if( sqlMap.containsKey(updateSql.getTableName()) ){
-                        log.info("表【{}】的创建语句在update中不存在，在根sql文件里获取创建语句...",updateSql.getTableName());
+                        log.debug("表【{}】的创建语句在update中不存在，在根sql文件里获取创建语句...",updateSql.getTableName());
                         DBUtil.executeSQL(con,sqlMap.get(entry.getKey()));
                         existTable = true;
                     }else{
@@ -206,32 +236,45 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
                 if( sqlEntry.getValue().equals(DBOperator.CREATE) ){
                     existTable = true;
                 }
-                log.info("执行【{}】update的语句--->\n{}",sqlEntry.getValue().getOperator(),sqlEntry.getKey());
+                log.debug("执行【{}】update的语句--->\n{}",sqlEntry.getValue().getOperator(),sqlEntry.getKey());
                 try{
                     DBUtil.executeSQL(con,sqlEntry.getKey());
                 }catch (DuplicateColumnException e){
-                    duplicateError.append("表【").
-                            append(updateSql.getTableName()).
-                            append("】的【").
-                            append(e.getMessage()).
-                            append("】字段已存在").
-                            append("\n");
+                    duplicateError.append(
+                            MessageFormat.format(
+                                    SQLErrorMessageTemplate.DUPLICATE_COLUMN_ERROR_MESSAGE,
+                                    updateSql.getTableName(),
+                                    e.getMessage()
+                            )
+                    );
                 }catch(DuplicateIndexException e){
-                    duplicateError.append("表【").
-                            append(updateSql.getTableName()).
-                            append("】的【").
-                            append(e.getMessage()).
-                            append("】索引已存在").
-                            append("\n");
+                    duplicateError.append(
+                            MessageFormat.format(
+                                    SQLErrorMessageTemplate.DUPLICATE_INDEX_ERROR_MESSAGE,
+                                    updateSql.getTableName(),
+                                    e.getMessage()
+                            )
+                    );
+                }catch (SQLRunTimeException e){
+                    executeError.append(
+                            MessageFormat.format(
+                                    SQLErrorMessageTemplate.EXECUTE_SQL_ERROR_MESSAGE,
+                                    updateSql.getTableName(),
+                                    e.getMessage()
+                            )
+                    );
                 }
 
             }
             DBUtil.deleteTable(con, updateSql.getTableName());
 
-            log.info("表【{}】的update语句校验成功...",updateSql.getTableName());
+            log.debug("表【{}】的update语句校验结束...",updateSql.getTableName());
         }
-        if( !StringUtils.isEmpty(duplicateError.toString().replaceAll("\n","")) ){
+        if( !StringUtils.isEmpty(duplicateError.toString()) ){
             log.error(duplicateError.toString());
+        }
+        if( !StringUtils.isEmpty(executeError.toString()) ){
+            log.error(executeError.toString());
         }
     }
 
