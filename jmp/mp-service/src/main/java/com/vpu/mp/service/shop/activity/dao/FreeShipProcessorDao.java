@@ -4,7 +4,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FullShipPromotion;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FreeShipPromotion;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -33,18 +33,18 @@ public class FreeShipProcessorDao extends ShopBaseService {
      * @param sortId 商家分类ID
      * @param now 时间
      */
-    public List<FullShipPromotion> getFreeShipProcessorForDetail(Integer goodsId, Integer catId, Integer sortId, Timestamp now){
+    public List<FreeShipPromotion> getFreeShipProcessorForDetail(Integer goodsId, Integer catId, Integer sortId, Timestamp now){
 
         Condition timeCondition = FREE_SHIPPING.EXPIRE_TYPE.eq(BaseConstant.ACTIVITY_IS_FOREVER).or(FREE_SHIPPING.EXPIRE_TYPE.eq(BaseConstant.ACTIVITY_NOT_FOREVER)
             .and(FREE_SHIPPING.START_TIME.le(now).and(FREE_SHIPPING.END_TIME.ge(now))));
 
         Condition pointCondition = buildCondition(goodsId,catId,sortId);
 
-        Map<Integer, List<FullShipPromotion>> fullShipMap = db().select(FREE_SHIPPING.ID, FREE_SHIPPING_RULE.SHIPPING_ID.as("promotion_id"),
+        Map<Integer, List<FreeShipPromotion>> fullShipMap = db().select(FREE_SHIPPING.ID, FREE_SHIPPING_RULE.SHIPPING_ID.as("promotion_id"),
             FREE_SHIPPING_RULE.CON_TYPE, FREE_SHIPPING_RULE.MONEY, FREE_SHIPPING_RULE.NUM).from(FREE_SHIPPING).innerJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
             .where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FREE_SHIPPING.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(timeCondition).and(pointCondition))
             .orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.CREATE_TIME.desc())
-            .fetchGroups(FREE_SHIPPING.ID, FullShipPromotion.class);
+            .fetchGroups(FREE_SHIPPING.ID, FreeShipPromotion.class);
 
         return fullShipMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }

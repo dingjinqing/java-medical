@@ -11,9 +11,9 @@ import java.math.BigDecimal;
  * @date 2020年01月13日
  */
 @Data
-public class FullShipPromotion extends PromotionBase {
+public class FreeShipPromotion extends PromotionBase {
 
-    public FullShipPromotion() {
+    public FreeShipPromotion() {
         super.promotionType = BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER;
     }
     /**满包邮条件类型*/
