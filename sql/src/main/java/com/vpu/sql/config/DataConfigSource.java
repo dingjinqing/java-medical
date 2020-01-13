@@ -68,7 +68,8 @@ public class DataConfigSource {
                 allShop = mainDataSource.getShopDbConfig(shopIds);
             }
             if( CollectionUtils.isEmpty(allShop) ){
-                throw new NullPointerException("can't find shop");
+                log.warn("can't find shop");
+                return ;
             }
             List<DBConfig> configs = allShop.stream().
                     map(x->JsonUtil.toEntityAndIgnoreExtraFields(x,DBConfig.class)).
