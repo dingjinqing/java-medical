@@ -642,7 +642,7 @@ const routes = [
   },
   // 幸运大抽奖活动 -- 获取新用户明细
   {
-    path: '/admin/home/main/luckyDraw/newUserList/:id/:activityName',
+    path: '/admin/home/main/luckyDraw/newUserList',
     name: 'lottery_activity_newUserList',
     meta: {
       crumbTitle: 'router.lottery_activity_newUserList',

@@ -11,17 +11,18 @@
       <image src='{{imageUrl}}/image/wxapp/lo_coin2.png' mode='widthFix' class='coin2 coin'></image>
       <image src='{{imageUrl}}/image/wxapp/lo_coin3.png' mode='widthFix' class='coin3 coin'></image>
       <view class="lottery-bg">
-        <view class="lottery-item" wx:for="123456789">
+        <view class="lottery-item" wx:for="{{rawards}}" wx:for-index="index" wx:key="index">
           <view class="limiande">
-            <image class="limiande-img" src="{{defaultGiftIcon}}"></image>
-            <view class="limiande-text">四等奖</view>
+            <image class="limiande-img" src="{{item.path}}"></image>
+            <view class="limiande-text">{{item.name}}</view>
           </view>
+          <view class="cover" hidden="{{!(isCover && index != winIndex)}}"></view>
         </view>
       </view>
       <view class="lottery-broadcast">
         <image class="lottery-broadcast-img" src="{{broadcastIcon}}" mode="widthFix"></image>
         <swiper class="lottery-broadcast-swiper" autoplay="true" circular="false" vertical="true" interval="1500">
-          <block wx:for="{{lotteryInfo.resentRecord}}"></block>
+          <block wx:for="{{lotteryInfo.resentRecord}}" wx:key="index"></block>
           <swiper-item>
             <view class="lo-words clearfix">
               {{item.username}}获得
@@ -46,6 +47,26 @@
       <view class="lottery-opportunities">消耗200积分可获得额外一次抽奖机会哦</view>
       <view class="lottery-opportunities">分享给好友可获得额外一次抽奖机会哦</view>
       <view class="lottery-opportunities">您有10次抽奖机会</view>
+    </view>
+    <view class="lottery-rules">
+      <view class="l-r-head">
+        <view class="l-r-h-l">
+          <text class="l-r-h-line"></text>
+          <text class="l-r-h-point">·</text>
+        </view>
+        <view class="l-r-h-c">活动规则</view>
+        <view class="l-r-h-l">
+          <text class="l-r-h-point">·</text>
+          <text class="l-r-h-line"></text>      
+        </view>
+      </view>
+      <view class="l-r-content">
+        <view>活动有效期：</view>
+        <view>2020-1-13 09:45:10 至 2020-1-30 23:59:59</view>
+        <view>活动说明：</view>
+        <view>1.用户没有免费抽奖次数和分享获取抽奖机会时，但是 拥有付费获取次数机会，则按钮展示消耗N积分抽奖， 按钮底部显示“消耗N积分获取额外一次抽奖机会奥” 点击则默认扣减用户积分，同时直接抽奖，若用户积分 不足，需要toast提示用户积分不足。</view>
+        <view>2.若用户付费次数用完，则不再展示该内容。</view>
+      </view>
     </view>
   </view>
 </view>
