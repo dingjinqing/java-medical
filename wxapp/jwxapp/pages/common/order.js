@@ -136,7 +136,11 @@ var order = {
     );
   },
   // 立即支付
+<<<<<<< HEAD
+  payOrder (orderSn, orderId) {
+=======
   payOrder ({ order_sn: orderSn, order_id: orderId }) {
+>>>>>>> 3671db10c328b529991d4c28cbd67559134d71b8
     util.api('api/wxapp/order/pay', res => {
       console.log(res)
       if (res.error === 0) {
@@ -211,10 +215,17 @@ var order = {
       }),
       returnCenter: (() => {
         return this.toReturnCenter;
+<<<<<<< HEAD
+      })(),
+      isShowPay: (() => {
+        return this.payOrder;
+      })()
+=======
       }),
       isShowPay: (() => {
         return this.payOrder;
       })
+>>>>>>> 3671db10c328b529991d4c28cbd67559134d71b8
     };
     let operate_info = e.currentTarget.dataset.operate_info;
     // 查看评价1，评价有礼2，商品评价3

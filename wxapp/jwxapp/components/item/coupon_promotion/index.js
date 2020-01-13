@@ -5,6 +5,14 @@ global.wxComponent({
   properties: {
     couponList: {
       type: Array,
+<<<<<<< HEAD
+<<<<<<< HEAD
+      value: null
+    },
+    promotion:Array
+=======
+=======
+>>>>>>> 3671db10c328b529991d4c28cbd67559134d71b8
       value: null,
       observer (newVal) {
         if (newVal) {
@@ -38,8 +46,13 @@ global.wxComponent({
           })
         }
       }
+<<<<<<< HEAD
+    }
+>>>>>>> a8f3e09acd7e4ce03ad75633766e9657c4b8c256
+=======
     },
     promotion: Array
+>>>>>>> 3671db10c328b529991d4c28cbd67559134d71b8
   },
   /**
    * 组件的初始数据
