@@ -50,6 +50,11 @@ public class GoodsConstant {
      */
     public final static Byte ACTIVITY_FULL_REDUCTION_PRIORITY = 45;
 
+    /**
+     * 满包邮
+     */
+    public final static Byte ACTIVITY_FREE_SHIP_PRIORITY = 47;
+
     /**************** 结束 *****************/
 
     /**************** 小程序-装修商品-手动推荐或自动推荐 *****************/

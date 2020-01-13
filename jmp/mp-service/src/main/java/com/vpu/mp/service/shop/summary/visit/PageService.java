@@ -5,14 +5,14 @@ import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVo;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVoItem;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 
@@ -25,8 +25,30 @@ import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 public class PageService extends BaseVisitService {
 
     private static final String PAGE_OTHER = "page.other";
-
+    /** 日期标识符 */
+    private static final Integer CUSTOM_DAYS = 0;
+    /**
+     *得到之前的某一天(字符串类型)
+     *@param days N天前
+     *@return preDay(String)
+     */
+    public String getDate(Integer days) {
+        //格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        //获取当前时间
+        Calendar c = Calendar.getInstance();
+        //计算指定日期
+        c.add(Calendar.DATE, - days);
+        Date time = c.getTime();
+        //返回格式化后的String日期
+        return sdf.format(time);
+    }
     public PageVisitVo getPageVisit(VisitPageParam param) {
+        //得到时间
+        if (!param.getType().equals(CUSTOM_DAYS)){
+            param.setStartDate(getDate(param.getType()));
+            param.setEndDate(getDate(NumberUtils.INTEGER_ZERO));
+        }
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
         SortField<?> sortField = param.getSortField();
@@ -47,6 +69,8 @@ public class PageService extends BaseVisitService {
             return item;
         });
         vo.setList(items);
+        vo.setStartDate(startDate);
+        vo.setEndDate(endDate);
         return vo;
     }
 

@@ -12,7 +12,7 @@
       <div class="shopRecruit">
         <div class="shop_bg">
           <img
-            :src="imageHost + data.bg_url"
+            :src="data.bg_url"
             alt=""
           >
         </div>
