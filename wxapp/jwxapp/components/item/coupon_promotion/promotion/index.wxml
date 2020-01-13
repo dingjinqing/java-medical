@@ -1,3 +1,4 @@
+<wxs src="../../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <wxs module="filter">
   includes = function (arr, target) {
     if (arr.length === 0) return false
@@ -15,7 +16,7 @@
     <view class="promotion-content">
       <block wx:for="{{promotion}}" wx:for-item="promotionItem" wx:key="index">
         <view class="promotion-item">
-          <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">首单特惠</view>
+          <view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">{{i18n.$t(localePack,"pages.item.promotions."+promotionItem.type)}}</view>
           <view class="promotion-desc">{{promotionItem.desc}}</view>
           <block wx:if="{{filter.includes([],promotionItem.type)}}">
             <view>去凑单</view>
