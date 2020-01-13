@@ -1,11 +1,11 @@
 package com.vpu.mp.service.pojo.shop.operation;
 /**
- * 
+ *
  * @author 黄壮壮
  * 	积分备注内容消息
  */
 public class RemarkMessage {
-	
+
 	/**
 	 * 登录
 	 */
@@ -30,7 +30,7 @@ public class RemarkMessage {
 	public static final String MSG_ORDER_MAKE_CARD_ACCOUNT_PAY = "order.make.card.account.pay";
 	public static final String MSG_ORDER_RETURN_CARD_ACCOUNT = "order.return.card.account";
 	public static final String MSG_ORDER_VIRTUAL_RETURN_DEFAULT = "order.virtual.return.default";
-	
+
 	/**
 	 * 会员卡
 	 */
@@ -38,15 +38,14 @@ public class RemarkMessage {
 	public static final String MSG_CARD_RECEIVE_SEND = "card.receive.send";
 	/** 卡升级赠送积分 */
 	public static final String MSG_CARD_UPGRADE = "card.upgrade.send";
-	
+
 	/**
 	 * 登录
 	 */
-	
-	
-	
-	/**
-	 * 营销 
+
+
+    /**
+     * 营销
 	 */
 	/** 支付有礼 */
 	public static final String MSG_PAY_HAS_GIFT = "pay.has.gift";
@@ -60,7 +59,11 @@ public class RemarkMessage {
 	public static final String MSG_RECEIVE_COUPON = "receive.coupon";
 	/** 好友助力失败奖励 */
 	public static final String MSG_FRIENDS_HELP_FAIL = "friends.help.fail";
-	
+    /**
+     * 分享有礼
+     */
+    public static final String MSG_SHARE_HAS_GIFT = "share.has.gift";
+
 	/**
 	 * 管理员
 	 */
@@ -75,5 +78,5 @@ public class RemarkMessage {
 	public static final String MSG_ADMIN_CARD_ACCOUNT = "admin.card.account";
 	public static final String MSG_ADMIN_USER_IMPORT = "admin.user.import";
 	public static final String MSG_ADMIN_USER_ACTIVATE = "admin.user.activate";
-	
+
 }
