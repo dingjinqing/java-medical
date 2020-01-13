@@ -297,7 +297,7 @@ export default {
                 //   'h': 115,
                 //   'link_url': 'pages/searchs/search?is_from=integral',
                 //   'link_text': '积分商品列表'
-                // }
+                // },
               ],
               'bg_img_width': '533',
               'bg_img_height': '533'
