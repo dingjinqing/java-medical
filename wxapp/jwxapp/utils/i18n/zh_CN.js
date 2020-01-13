@@ -8,6 +8,7 @@ var fight = require('./page1/fight.js') // 拼团
 var reserve = require('./page1/reserve.js') // 预约
 var usercenter = require('./page1/usercenter.js') // 个人中心
 var decorate = require('./components/decorate/decorate.js')
+var item = require('./pages/item.js')
 var zh_CN = {
   "common": {
     "info": {
@@ -50,7 +51,8 @@ var zh_CN = {
       "leftMenuC": "推荐分类"
     }, store),
     "order": order,
-    "checkout": checkout
+    "checkout": checkout,
+    "item":item
   },
   "page1": {
     "comment": comment,
