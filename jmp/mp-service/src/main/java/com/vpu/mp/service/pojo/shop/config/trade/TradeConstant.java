@@ -1,5 +1,8 @@
 package com.vpu.mp.service.pojo.shop.config.trade;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The type Trade constant.
  *
@@ -72,4 +75,9 @@ public class TradeConstant {
      * The constant DELIVERY_LIST.
      */
     public static final String DELIVERY_LIST = "delivery_list";
+
+    /**
+     * The constant EMPTY_LIST.
+     */
+    public static final List<Integer> EMPTY_LIST = new ArrayList<>();
 }

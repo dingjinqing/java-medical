@@ -23,6 +23,7 @@ import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static com.vpu.mp.service.shop.config.TradeService.DEFAULT_LOGISTICS;
 
 /**
  * @author liufei
@@ -110,7 +111,7 @@ public class AdminTradeController extends AdminBaseController {
             result.put(DELIVERY_LIST, deliveryList);
         } catch (BusinessException e) {
             log.error("微信物流助手api调用失败，获取支持物流公司列表失败：{}", e.getMessage());
-            result.put(DELIVERY_LIST, null);
+            result.put(DELIVERY_LIST, DEFAULT_LOGISTICS);
         }
         return success(result);
     }
