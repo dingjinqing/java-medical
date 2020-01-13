@@ -785,7 +785,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           // 物流助手列表
-          this.expressCompany = res.content.delivery_list
+          this.expressCompany = res.content.delivery_list || []
           this.expressCompany.map((item, index1) => {
             switch (item.status_code) {
               case 0:

@@ -130,11 +130,11 @@
 <script>
 import { paySelect, payUpdate, wechatPaySelect, wechatPayUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 export default {
-  mounted() {
+  mounted () {
     this.langDefault()
   },
   watch: {
-    lang() {
+    lang () {
       this.payConfigure = [
         { payName: '微信支付', payCode: 'wxpay', title: this.$t('payConfiguration.wedesc'), enabled: false },
         { payName: '积分支付', payCode: 'score', title: this.$t('payConfiguration.scoredesc'), enabled: false },
@@ -143,10 +143,10 @@ export default {
       ]
     }
   },
-  created() {
+  created () {
     this.initData()
   },
-  data() {
+  data () {
     return {
       // 微信支付配置
       wechatpayconf: {
@@ -175,7 +175,7 @@ export default {
   },
   methods: {
     // 初始化配置信息
-    initData() {
+    initData () {
       paySelect().then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -185,7 +185,7 @@ export default {
         }
       })
     },
-    handlerData(data) {
+    handlerData (data) {
       console.log(data)
       this.$nextTick(() => {
         this.payConfigure.map((item, index) => {
@@ -219,7 +219,7 @@ export default {
       console.log(this.payConfigure)
     },
     // 更新支付配置
-    updateConfig() {
+    updateConfig () {
       let basicconf = {
         wxpay: null,
         score: null,
@@ -293,7 +293,7 @@ export default {
       })
     },
     // 微信支付配置事件
-    handleSetting() {
+    handleSetting () {
       wechatPaySelect().then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -305,10 +305,10 @@ export default {
       this.showSettingDialog = true
     },
     // 配置弹出保存、取消事件
-    cancle() {
+    cancle () {
       this.showSettingDialog = false
     },
-    save() {
+    save () {
       wechatPayUpdate(this.wechatpayconf).then(res => {
         console.log(res)
         if (res.error === 0) {
