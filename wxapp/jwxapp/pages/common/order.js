@@ -135,6 +135,32 @@ var order = {
       true
     );
   },
+  // 立即支付
+  payOrder ({ orderSn, orderId }) {
+    util.api('api/wxapp/order/pay', res => {
+      console.log(res)
+      if (res.error === 0) {
+        wx.requestPayment({
+          'timeStamp': res.content.webPayVo.timeStamp,
+          'nonceStr': res.content.webPayVo.nonceStr,
+          'package': res.content.webPayVo.package,
+          'signType': 'MD5',
+          'paySign': res.content.webPayVo.paySign,
+          'success': (res) => {
+            util.toast_success('支付成功');
+          },
+          'fail': (res) => {
+            util.toast_fail('支付失败');
+          },
+          'complete': (res) => { }
+        });
+      }
+    }, {
+      action: 11,
+      orderId,
+      orderSn
+    })
+  },
   // 过滤需要的参数
   filterObj (obj, arr) {
     if (typeof obj !== "object" || !Array.isArray(arr)) {
@@ -185,6 +211,9 @@ var order = {
       }),
       returnCenter: (() => {
         return this.toReturnCenter;
+      }),
+      isShowPay: (() => {
+        return this.payOrder;
       })
     };
     let operate_info = e.currentTarget.dataset.operate_info;
