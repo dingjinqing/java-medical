@@ -29,7 +29,7 @@ global.wxPage({
     allCoupon:[],
     page: 1,
     last_page: 1,
-    pageRows: 5,
+    pageRows: 20,
   },
  
   /**
