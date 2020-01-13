@@ -94,7 +94,7 @@ export const cn = {
   save: '保存',
   addSuccess: '添加成功!',
   editSuccess: '编辑成功!',
-  addDefault: '编辑成功!',
+  addDefault: '添加失败!',
   editDefault: '编辑失败!',
 
   validateTime1: '请选择固定日期!',
@@ -108,9 +108,10 @@ export const cn = {
   validatesuitGoods2: '请选择指定商品分类!',
   validatesuitGoods3: '请选择指定平台分类!',
   validateType: '请选择优惠券类型',
-  validateactName1: '请输入活动名称',
+  validateactName1: '请输入优惠券名称',
   validateactName2: '长度在不能超过10个字符',
   validatereceivePerPerson: '请选择每人限领张数',
   validateNum: '请输入正数, 可以保留两位小数',
+  validateNum1: '请输入正整数',
   validateDiscount: '请输入正确的数字'
 }

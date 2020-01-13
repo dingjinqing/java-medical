@@ -379,7 +379,7 @@
                         ></i></span>
                       <span @click="addNodes(orderItem.orderSn)">{{$t('order.remark')}}</span>
                       <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
-                      <span>{{$t('order.comment')}}</span>
+                      <span @click="goComment(orderItem.orderSn)">{{$t('order.comment')}}</span>
                     </div>
                   </div>
                 </td>
@@ -911,7 +911,7 @@ export default {
       this.searchType = 0
       let obj = {
         ...this.searchParams,
-        orderStatus: this.searchParams.orderStatus ? [this.searchParams.orderStatus] : []
+        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : []
       }
       list(obj).then(res => {
         console.log(res)
@@ -924,7 +924,14 @@ export default {
     initDataList () {
       this.search()
     },
-
+    goComment (orderSn) {
+      this.$router.push({
+        name: 'comment',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
     seeDetails (orderSn) {
       console.log(orderSn)
       this.$router.push({

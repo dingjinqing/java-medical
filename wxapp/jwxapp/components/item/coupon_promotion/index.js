@@ -1,4 +1,3 @@
-// components/item/coupon&promotion/index.js
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -6,9 +5,46 @@ global.wxComponent({
   properties: {
     couponList: {
       type: Array,
+<<<<<<< HEAD
       value: null
     },
     promotion:Array
+=======
+      value: null,
+      observer(newVal){
+        if(newVal){
+          let newList =  newVal.map(item=>{
+            let newItem = JSON.parse(JSON.stringify(item))
+            if (newItem.actCode === 'voucher') {
+              if (newItem.useConsumeRestrict === 1) {
+                newItem.text = `${this.$t('components.decorate.full')}${
+                  newItem.leastConsume
+                }${this.$t('components.decorate.reduce')}￥${newItem.denomination}`;
+              } else {
+                newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
+                  'components.decorate.reduce'
+                )}￥${newItem.denomination}`;
+              }
+            } else if (newItem.actCode === 'discount') {
+              if (newItem.useConsumeRestrict === 1) {
+                newItem.text = `${this.$t('components.decorate.full')}${
+                  newItem.leastConsume
+                }${this.$t('components.decorate.hit')}￥${newItem.denomination}`;
+              } else {
+                newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
+                  'components.decorate.hit'
+                )}￥${newItem.denomination}${this.$t('decorate.fracture')}`;
+              }
+            }
+            return newItem
+          })
+          this.setData({
+            coupons:newList
+          })
+        }
+      }
+    }
+>>>>>>> a8f3e09acd7e4ce03ad75633766e9657c4b8c256
   },
 
   /**
