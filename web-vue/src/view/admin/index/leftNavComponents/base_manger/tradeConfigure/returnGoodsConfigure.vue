@@ -351,11 +351,9 @@ export default {
   },
   data () {
     return {
-      // afterSalesConfiguration: true,
-      // orderCanExchange: true,
       // 商品弹窗回调数据
       goodsInfo: [],
-      // goodsInfoRow: [],
+      goodsInfoRow: [],
       goodsN: 0,
       // 标签弹窗回调数据
       labelInfo: [],
@@ -426,18 +424,12 @@ export default {
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
       console.log('选择商品弹窗回调显示:', row)
-      // this.goodsInfoRow = row
-      // this.goodsInfo = []
-      // this.goodsInfoRow.map((item, index) => {
-      //   this.goodsInfo.push(item.goodsId)
-      // })
-      // console.log(this.goodsInfo)
-      let goodsIdList = row
-      goodsIdList.map(item => {
+      this.goodsInfoRow = row
+      this.goodsInfo = []
+      this.goodsInfoRow.map((item, index) => {
         this.goodsInfo.push(item.goodsId)
       })
       this.goodsN = this.goodsInfo.length
-      console.log(this.goodsN)
     },
     // 选择商家分类/平台分类弹窗调起
     showBusClassDialog (classFlag) {
@@ -479,8 +471,11 @@ export default {
     // 选择商品标签弹窗回调显示
     busProductLabelResult (row) {
       console.log('选择商品标签弹窗回调显示:', row)
-      let labelIdList = row.map(item => item.id)
-      this.labelInfo = labelIdList
+      this.labelInfoRow = row
+      this.labelInfo = []
+      this.labelInfoRow.map((item, index) => {
+        this.labelInfo.push(item.id)
+      })
       this.labelN = this.labelInfo.length
     },
     // 选择商品品牌弹窗调起
@@ -491,7 +486,7 @@ export default {
     busBrandDialogResult (row) {
       console.log('选择商品品牌弹窗回调显示:', row)
       this.brandRow = row
-      // this.brand = []
+      this.brand = []
       this.brandRow.map((item, index) => {
         this.brand.push(item.id)
       })
@@ -501,47 +496,22 @@ export default {
       returnSelect().then(res => {
         console.log(res)
         if (res.error === 0) {
-          // this.returnParam = res.content
-          this.goodsInfo = this.returnParam.order_return_goods_package.add_goods
-          // this.goodsN = this.goodsInfo.length
-          this.labelInfo = this.returnParam.order_return_goods_package.add_label
-          // this.labelN = this.labelInfo.length
-          // this.brand = this.returnParam.order_return_goods_package.add_brand
-          // this.brandN = this.brand.length
-          this.busClass = this.returnParam.order_return_goods_package.add_sort
-          // this.busClassN = this.busClass.length
-          this.platClass = this.returnParam.order_return_goods_package.add_cate
-          // this.platN = this.platClass.length
-          // this.afterSalesConfiguration = Boolean(this.returnParam.post_sale_status)
-          // this.orderCanExchange = Boolean(this.returnParam.order_can_exchange)
           this.returnParam = res.content
-          let data = res.content
-          this.returnParam.post_sale_status = Boolean(data.post_sale_status)
-          this.returnParam.order_can_exchange = Boolean(data.order_can_exchange)
-          this.goodsN = data.order_return_goods_package.add_goods.length
-          this.platN = data.order_return_goods_package.add_cate.length
-          this.busClassN = data.order_return_goods_package.add_sort.length
-          this.labelN = data.order_return_goods_package.add_label.length
-          this.brandN = data.order_return_goods_package.add_brand.length
+          this.goodsInfo = this.returnParam.order_return_goods_package.add_goods
+          this.goodsN = this.goodsInfo.length
+          this.labelInfo = this.returnParam.order_return_goods_package.add_label
+          this.labelN = this.labelInfo.length
+          this.brand = this.returnParam.order_return_goods_package.add_brand
+          this.brandN = this.brand.length
+          this.busClass = this.returnParam.order_return_goods_package.add_sort
+          this.busClassN = this.busClass.length
+          this.platClass = this.returnParam.order_return_goods_package.add_cate
+          this.platN = this.platClass.length
         } else {
           this.$message.error('请求数据失败，请稍后重试！')
         }
       }).catch(err => console.log(err))
     },
-    // number2boolean (configValue) {
-    //   if (configValue === 1) {
-    //     return true
-    //   } else if (configValue === 0) {
-    //     return false
-    //   }
-    // },
-    // boolean2number (booleanValue) {
-    //   if (booleanValue === true) {
-    //     return 1
-    //   } else if (booleanValue === false) {
-    //     return 0
-    //   }
-    // },
     // 更新配置项
     updateConfig () {
       // 设置那几个弹窗的值
@@ -573,6 +543,7 @@ export default {
   padding-bottom: 20px;
   .returnGoods {
     display: flex;
+    padding: 0 0 10px;
     .title {
       height: 60px;
       line-height: 60px;

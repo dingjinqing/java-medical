@@ -1,6 +1,6 @@
 <template>
   <section class="label">
-    <div class="labelItem">营收概况及趋势 <el-button type="text" @click="toDetail()">查看明细</el-button></div>
+    <div class="labelItem">{{$t('assetsManage.overviewTrends')}} <el-button type="text" @click="toDetail()">{{$t('assetsManage.details')}}</el-button></div>
     <el-select
       v-model="timeSelect"
       size="small"
@@ -58,8 +58,8 @@
         <div
           class="num"
           style="color: #5A8BFF"
-        >{{item.number}}  积分</div>
-        <div>较前一周期 {{item.rate}}</div>
+        >{{item.number}}  {{$t('assetsManage.integral')}}</div>
+        <div>{{$t('assetsManage.previous')}} {{item.rate}}</div>
       </div>
     </div>
     <!-- echarts图表部分 -->
@@ -223,19 +223,19 @@ export default {
 
       this.table = [
         {
-          name: '净收入',
+          name: this.$t('assetsManage.income'),
           content: this.$t('userStatistics.content1'),
           number: this.originalData.incomeRealScore,
           rate: this.originalData.incomeRealScorePer
         },
         {
-          name: '总收入',
+          name: this.$t('assetsManage.revenue'),
           content: this.$t('userStatistics.content2'),
           number: this.originalData.incomeTotalScore,
           rate: this.originalData.incomeTotalScorePer
         },
         {
-          name: '总支出',
+          name: this.$t('assetsManage.expenses'),
           content: this.$t('userStatistics.content3'),
           number: this.originalData.outgoScore,
           rate: this.originalData.outgoScorePer
@@ -267,17 +267,17 @@ export default {
         },
         series: [
           {
-            name: '净收入',
+            name: this.$t('assetsManage.income'),
             type: 'line',
             data: this.chartChange.incomeRealScore
           },
           {
-            name: '总收入',
+            name: this.$t('assetsManage.revenue'),
             type: 'line',
             data: this.chartChange.incomeTotalScore
           },
           {
-            name: '总支出',
+            name: this.$t('assetsManage.expenses'),
             type: 'line',
             data: this.chartChange.outgoScore
           }

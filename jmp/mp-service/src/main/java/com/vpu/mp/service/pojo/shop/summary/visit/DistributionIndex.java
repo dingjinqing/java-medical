@@ -11,11 +11,14 @@ import java.util.List;
  */
 @Data
 public class DistributionIndex {
-
     /**
-     * 访问来源
+     * 访问人数来源
      */
-    public static final String ACCESS_SOURCE = "access_source_session_cnt";
+    public static final String ACCESS_SOURCE_UV = "access_source_visit_uv";
+    /**
+     * 访问次数来源
+     */
+    public static final String ACCESS_SOURCE_PV = "access_source_session_cnt";
 
     /**
      * 停留时间

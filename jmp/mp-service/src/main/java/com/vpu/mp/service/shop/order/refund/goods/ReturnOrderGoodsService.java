@@ -96,10 +96,8 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 	 * @param successStatus
 	 */
 	public void updateSuccess(List<ReturnOrderGoodsRecord> returnGoods, byte successStatus) {
-		returnGoods.forEach(rGoods -> {
-			rGoods.setSuccess(successStatus);
-		});
-		db().batchUpdate(returnGoods).execute();
+        List<Integer> ids =  returnGoods.stream().map(ReturnOrderGoodsRecord::getId).collect(Collectors.toList());
+        db().update(TABLE).set(TABLE.SUCCESS,successStatus).where(TABLE.ID.in(ids)).execute();
 	}
 	
 	/**
@@ -233,7 +231,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 					currentGoodsReturnMoney = BigDecimalUtil.multiplyOrDivide(
 							BigDecimalPlus.create(returnOrder.getMoney(),Operator.multiply),
 							BigDecimalPlus.create(goods.getDiscountedGoodsPrice(),Operator.multiply),
-							BigDecimalPlus.create(BigDecimal.valueOf(goods.getGoodsNumber()),Operator.Divide),
+							BigDecimalPlus.create(BigDecimal.valueOf(goods.getGoodsNumber()),Operator.divide),
 							BigDecimalPlus.create(totalCanReturnMoney,null));
 				}
 			}

@@ -17,20 +17,31 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.grade.GradeCardMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.grade.GradePrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.grade.GradeReduceMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.grade.GradeReducePrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePriceMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePricePrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Record2;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
@@ -41,7 +52,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMB
  */
 @Service
 @Slf4j
-public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor, GoodsDetailProcessor, ActivityCartListStrategy,CreateOrderProcessor {
+public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor, GoodsDetailProcessor, ActivityCartListStrategy, CreateOrderProcessor {
 
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
@@ -101,26 +112,92 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
 
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
-        List<GoodsDetailMpBo.GradePrd> gradeCards = goodsDetailMpBo.getGradeCardPrice();
-        if (!goodsDetailMpBo.getIsDisposedByEs()) {
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+
+        // 被其它活动处理过，但不是限时降价
+        if (capsule.getActivity() != null && !BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(capsule.getActivity().getActivityType())) {
+            return;
+        }
+        // 获取用户等级卡
+        Record2<Integer, String> userGradeCard = memberCardProcessorDao.getUserGradeCard(param.getUserId());
+        // 没有等级卡，直接退出
+        if (userGradeCard == null) {
+            return;
+        }
+        // 用户等级
+        String grade = userGradeCard.get(MEMBER_CARD.GRADE);
+
+        // 处理商品对应的等级价
+        List<GradePrdMpVo> gradePrdMpVos = null;
+        Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
+        List<GoodsDetailMpBo.GradePrd> gradeCards = capsule.getGradeCardPrice();
+        if (!capsule.getIsDisposedByEs()) {
             log.debug("小程序-会员价格查询");
             List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
-            gradeCards = goodsGradeGradePrice.stream().map(x -> x.into(GoodsDetailMpBo.GradePrd.class)).collect(Collectors.toList());
-            goodsDetailMpBo.setGradeCardPrice(gradeCards);
+            gradePrdMpVos = goodsGradeGradePrice.stream().map(x -> {
+                GradePrdMpVo prd = new GradePrdMpVo();
+                prd.setProductId(x.getPrdId());
+                prd.setGradePrice(x.getGradePrice());
+                prd.setPrdPrice(prdMap.get(x.getPrdId()).getPrdRealPrice());
+                return prd;
+            }).collect(Collectors.toList());
+        } else {
+            // 过滤符合用户等级的规格，es获取的是所有等级的价格，而不是针对用户等级的
+            gradePrdMpVos = gradeCards.stream().filter(gradePrd -> grade.equals(gradePrd.getGrade())).sorted(Comparator.comparing(GoodsDetailMpBo.GradePrd::getGradePrice)).map(x -> {
+                GradePrdMpVo prd = new GradePrdMpVo();
+                prd.setGradePrice(x.getGradePrice());
+                prd.setProductId(x.getPrdId());
+                prd.setPrdPrice(prdMap.get(x.getPrdId()).getPrdRealPrice());
+                return prd;
+            }).collect(Collectors.toList());
         }
 
-        Map<Integer, BigDecimal> gradePriceMap = gradeCards.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice, (x1, x2) -> x1));
+        // 用户所拥有的等级卡在本商品上没有对应的等级会员价
+        if (gradePrdMpVos == null || gradePrdMpVos.size() == 0) {
+            return;
+        }
+        // 等级卡对应的规格数据和商品的规格数据应该一直一致，除非商品修改部分有bug,此处不用过滤有效规格
 
-        List<GoodsPrdMpVo> products = goodsDetailMpBo.getProducts();
-        products.forEach(prd -> {
-            if (gradePriceMap.get(prd.getPrdId()) != null) {
-                prd.setPrdLinePrice(prd.getPrdRealPrice());
-                prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId()));
-            }
-        });
+        // 没有限时降价
+        if (capsule.getActivity() == null) {
+            GradeCardMpVo vo = new GradeCardMpVo();
+            vo.setActState(BaseConstant.ACTIVITY_STATUS_CAN_USE);
+            vo.setActivityType(BaseConstant.ACTIVITY_TYPE_GRADE_PRICE);
+            vo.setGradePrdMpVos(gradePrdMpVos);
+            capsule.setActivity(vo);
+        } else {
+            // 限时降价和会员价共存
+            ReducePriceMpVo reduceMpVo = (ReducePriceMpVo) capsule.getActivity();
+            Map<Integer, ReducePricePrdMpVo> reducePrdMap = reduceMpVo.getReducePricePrdMpVos().stream().collect(Collectors.toMap(ReducePricePrdMpVo::getProductId, Function.identity()));
+            List<GradeReducePrdMpVo> gradeReducePrdMpVos=new ArrayList<>(reducePrdMap.size());
 
-        log.debug("商品会员价：{}", gradeCards.toString());
+            gradePrdMpVos.forEach(gradePrd->{
+                GradeReducePrdMpVo prdMpVo = new GradeReducePrdMpVo();
+                prdMpVo.setProductId(gradePrd.getProductId());
+                prdMpVo.setPrdPrice(gradePrd.getPrdPrice());
+                ReducePricePrdMpVo reducePricePrdMpVo = reducePrdMap.get(gradePrd.getProductId());
+
+                if (reducePricePrdMpVo.getReducePrice().compareTo(gradePrd.getGradePrice()) < 0) {
+                    prdMpVo.setIsGradePrice(false);
+                    prdMpVo.setActivityPrice(reducePricePrdMpVo.getReducePrice());
+                } else {
+                    prdMpVo.setIsGradePrice(true);
+                    prdMpVo.setActivityPrice(gradePrd.getGradePrice());
+                }
+                gradeReducePrdMpVos.add(prdMpVo);
+            });
+
+            GradeReduceMpVo gradeReduceMpVo =new GradeReduceMpVo();
+            gradeReduceMpVo.setActivityType(BaseConstant.ACTIVITY_TYPE_GRADE_REDUCE_PRICE);
+            gradeReduceMpVo.setActState(reduceMpVo.getActState());
+            gradeReduceMpVo.setNextStartTimestamp(reduceMpVo.getNextStartTimestamp());
+            gradeReduceMpVo.setCurrentEndTimestamp(reduceMpVo.getCurrentEndTimestamp());
+            gradeReduceMpVo.setIsLimit(reduceMpVo.getIsLimit());
+            gradeReduceMpVo.setLimitAmount(reduceMpVo.getLimitAmount());
+            gradeReduceMpVo.setLimitFlag(reduceMpVo.getLimitFlag());
+            gradeReduceMpVo.setGradeReducePrdVos(gradeReducePrdMpVos);
+            capsule.setActivity(gradeReduceMpVo);
+        }
     }
 
     //*****************购物车处理************************
@@ -149,7 +226,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
     public void doOrderOperation(OrderCartProductBo productBo) {
         log.info("会员价计算start");
         String grade = userCardService.getUserGrade(productBo.getUserId());
-        if(grade.equals(CardConstant.LOWEST_GRADE)) {
+        if (grade.equals(CardConstant.LOWEST_GRADE)) {
             return;
         }
         List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(grade, productBo.getProductIds());
@@ -157,11 +234,11 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
             // 会员等级
             userCartGradePrice.forEach(gradePrice -> {
                 if (goods.getProductId().equals(gradePrice.getPrdId())) {
-                    log.info("规格：{},会员价 ：{}",gradePrice.getPrdId(), gradePrice.getGradePrice());
+                    log.info("规格：{},会员价 ：{}", gradePrice.getPrdId(), gradePrice.getGradePrice());
                     GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
                     goodsActivityInfo.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
                     goodsActivityInfo.setMemberPrice(gradePrice.getGradePrice());
-                    goods.getActivityInfo().put(ACTIVITY_TYPE_MEMBER_GRADE,goodsActivityInfo);
+                    goods.getActivityInfo().put(ACTIVITY_TYPE_MEMBER_GRADE, goodsActivityInfo);
                 }
             });
         });
@@ -180,7 +257,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
 
 
     @Override
-    public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
 
     }
 }

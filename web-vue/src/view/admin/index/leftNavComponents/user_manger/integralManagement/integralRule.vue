@@ -674,12 +674,11 @@ export default {
           this.form.scoreLimitNumber = data.scoreLimitNumber
           this.form.scorePeriod = data.scorePeriod
 
-          if (data.scorePayLimit === null) {
+          if (!data.scorePayLimit === null) {
             this.form.scorePayLimit = '0'
           } else {
             this.form.scorePayLimit = data.scorePayLimit
           }
-
           this.form.scorePayNum = data.scorePayNum
           this.form.scoreDiscountRatio = data.scoreDiscountRatio
 

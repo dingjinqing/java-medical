@@ -1,6 +1,14 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -21,15 +29,11 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
-import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
-import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -145,7 +149,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		cardId(order.getCardId()).
 		cardNo(order.getCardNo()).
 		money(money).
-		reason("订单关闭，订单会员卡余额支付退款").
+        reasonId(RemarkTemplate.ORDER_CLOSE_RETURN_CARD_ACCOUNT.code).
 		//普通会员卡
 		type(CardConstant.MCARD_TP_NORMAL).
 		orderSn(order.getOrderSn()).
@@ -217,7 +221,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		//资金流量-支出
 		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
 		//积分变动是否来自退款
-		isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
+		isFromRefund(NumberUtils.BYTE_ONE).build();
 		//调用退积分接口
 		recordMemberTrade.updateUserEconomicData(scoreData);
 	}

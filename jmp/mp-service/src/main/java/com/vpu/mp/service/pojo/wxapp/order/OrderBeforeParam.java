@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -43,7 +42,6 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_ADDRESS_NO_NULL)
 	private Integer addressId;
-    @Valid
 	private List<Goods> goods;
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_DELIVER_TYPE_NO_NULL)
     private Byte deliverType;
@@ -72,7 +70,6 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private Map<Integer, Goods> goodsMap;
     @JsonIgnore
     /**方便查找*/
-
     private List<OrderGoodsBo> bos;
 	/**方便查找*/
 	/** 订单业务处理方法*/
@@ -80,7 +77,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private OrderCartProductBo orderCartProductBo;
 	/**下单时间*/
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	private Timestamp date = DateUtil.getLocalDateTime();
+	private Timestamp date = DateUtil.getSqlTimestamp();
 
     /**
      * 指定可用的支付方式
@@ -123,10 +120,17 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         /**营销活动类型*/
         private Byte goodsPriceAction;
 		/**以下为后台产生逻辑值initGoods*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private Integer straId;
 		private Integer purchasePriceId;
 		private Integer purchasePriceRuleId;
 		private String promoteInfo;
+		/** 拼团的 折后团长优惠价*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+		private BigDecimal grouperTotalReduce=BigDecimal.ZERO;
+		/** 拼团的 折后团长优惠价单价，逐级计算折扣单价*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+		private BigDecimal grouperGoodsReduce =BigDecimal.ZERO;
 		/**以下为后台产生逻辑值directPurchase*/
         /** 规格价 */
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)

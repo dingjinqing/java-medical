@@ -106,7 +106,7 @@ export default {
       }
     },
     module_name: function () {
-      if (this.data.name_set === '1') {
+      if (this.data.name_set === 1) {
         if (this.data.group_draw_name) {
           return this.data.group_draw_name
         }

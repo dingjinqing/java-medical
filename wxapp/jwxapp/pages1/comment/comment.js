@@ -15,8 +15,8 @@ var userId = util.getCache('user_id')
 global.wxPage({
   data: {
     navbar: [
-      i18n.trans('page1.comment.comment'),
-      i18n.trans('page1.comment.reviewed')
+      i18n.trans('page1.comment.comment'),// 待评价
+      i18n.trans('page1.comment.reviewed')// 已评价
     ],
     page: 1,
     last_page: 1,
@@ -76,7 +76,7 @@ global.wxPage({
   onLoad: function (opt) {
     if (!util.check_setting(opt)) return;
     var that = this;
-    order_sn = opt.order_sn;
+    order_sn = opt.order_sn || opt.orderSn;
     wx.hideShareMenu(); // 隐藏转发按钮
     this.get_comment(that, 0);
   },
@@ -372,6 +372,7 @@ global.wxPage({
     if (i || i === 0) {
       comment_flag = i
     }
+    console.log(order_sn)
     util.api('/api/wxapp/comment/list', function (res) {
       var order_completed = [];
       if (res.content && res.content.length > 0) {
@@ -380,7 +381,7 @@ global.wxPage({
           item.show = false;
           item.src = src_down;
           item.commstar = item.commstar ? Number(item.commstar) : 5;
-          if (item.commentFlag === 1 && i == 0) {
+          if (item.commentFlag === 1 || i == 0) {
             item.show = true;
             item.src = src_up;
           }

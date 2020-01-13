@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -17,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
@@ -214,7 +216,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				} catch (DataAccessException e) {
 					Throwable cause = e.getCause();
 					if (cause instanceof MpException) {
-						throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
+						throw cause;
 					} else {
 						throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, e.getMessage());
 					}
@@ -510,19 +512,22 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 */
 	public void finishUpdateInfo(OrderInfoVo order , ReturnOrderRecord returnOrderRecord , RefundParam param) throws MpException{
         logger.info("退款完成变更相关信息start");
-		Result<ReturnOrderGoodsRecord> returnGoods = returnOrderGoods.getReturnGoods(returnOrderRecord.getOrderSn(),returnOrderRecord.getRetId());
+        Result<ReturnOrderGoodsRecord> returnGoodsRecord = returnOrderGoods.getReturnGoods(returnOrderRecord.getOrderSn(),returnOrderRecord.getRetId());
+        List<OrderReturnGoodsVo> returnGoods = returnGoodsRecord.into(OrderReturnGoodsVo.class);
+        returnGoods.forEach(g->g.setIsGift(orderGoods.isGift(g.getRecId())));
+
 		List<String> goodsType = Arrays.asList(order.getGoodsType().split(","));
 		//非货到付款 非拼团抽奖
-		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_GROUP_DRAW))) {
+		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
 			//修改库存-销量
 			updateStockAndSales(returnGoods,order,goodsType);
 		}
 		//退款退货订单完成更新
 		returnOrder.finishReturn(returnOrderRecord);
 		//更新ReturnOrderGoods-success
-		returnOrderGoods.updateSucess(returnOrderRecord.getRefundStatus(), returnGoods);
+		returnOrderGoods.updateSucess(returnOrderRecord.getRefundStatus(), returnGoodsRecord);
 		//更新orderGoods表
-		orderGoods.updateInReturn(order.getOrderSn(), returnGoods, returnOrderRecord);
+		orderGoods.updateInReturn(order.getOrderSn(), returnGoodsRecord, returnOrderRecord);
 		//可退款退货商品数量是否为0(有状态依赖于ordergoods表的商品数量与已经退货退款数量)
 		boolean canReturnGoodsNumber = orderGoods.canReturnGoodsNumber(order.getOrderSn());
 		//更新orderinfo主表信息
@@ -551,11 +556,11 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 * @param order
 	 * @param goodsType
 	 */
-	public void updateStockAndSales(Result<ReturnOrderGoodsRecord> returnGoods , OrderInfoVo order , List<String> goodsType) {
+	public void updateStockAndSales(List<OrderReturnGoodsVo> returnGoods , OrderInfoVo order , List<String> goodsType) {
 		//TODO 对接pos erp未完成
 		
-		List<Integer> goodsIds = returnGoods.stream().map(ReturnOrderGoodsRecord::getGoodsId).collect(Collectors.toList());
-		List<Integer> proIds = returnGoods.stream().map(ReturnOrderGoodsRecord::getProductId).collect(Collectors.toList());
+		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
+		List<Integer> proIds = returnGoods.stream().map(OrderReturnGoodsVo::getProductId).collect(Collectors.toList());
 		//查询规格
 		Map<Integer, GoodsSpecProductRecord> products = null;
 		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
@@ -568,7 +573,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		Map<Integer, GoodsRecord> normalGoods = goods.getGoodsByIds(goodsIds);
 		//更新商品数组
 		ArrayList<GoodsRecord> updateNormalGoods = new ArrayList<GoodsRecord>(normalGoods.size());
-		for (ReturnOrderGoodsRecord rGoods : returnGoods) {
+		for (OrderReturnGoodsVo rGoods : returnGoods) {
 			if(rGoods.getGoodsNumber() == 0 ) {
 				continue;
 			}
@@ -592,9 +597,17 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 }
 			}
 			//订单类型为拼团 且存在拼团id
-			if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_PIN_GROUP)) && order.getActivityId() != null) {
+			if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) && order.getActivityId() != null) {
 				//TODO 拼团修改库存和销量
 			}
+            //订单类型为秒杀 且存在秒杀id 且不是赠品行
+            if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_SEC_KILL)) && order.getActivityId() != null && rGoods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
+                saas.getShopApp(getShopId()).seckill.updateSeckillStock(order.getActivityId(),rGoods.getProductId(),- rGoods.getGoodsNumber());
+            }
+            //订单类型为砍价 且存在砍价id
+            if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_BARGAIN)) && order.getActivityId() != null) {
+                saas.getShopApp(getShopId()).bargain.updateBargainStock(order.getActivityId(),- rGoods.getGoodsNumber());
+            }
 		}
 		if(updateProducts.size() > 0) {
 			db().batchUpdate(updateProducts);

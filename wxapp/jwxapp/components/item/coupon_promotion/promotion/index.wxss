@@ -1,0 +1,44 @@
+.content{
+  height: 600rpx;
+  background-color: #fff;
+  position: relative;
+  width:750rpx;
+}
+.title{
+  line-height: 80rpx;
+  text-align: center;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #eee;
+}
+.promotion-content{
+  padding:0 20rpx;
+  max-height: 519rpx;
+  overflow-y: scroll;
+}
+.promotion-item{
+  display: flex;
+  padding: 20rpx 0;
+  border-bottom:1rpx solid #eee;
+  align-items: center;
+  color: #666;
+}
+.promotion-tag{
+  margin-right: 10rpx;
+  border: 1rpx solid;
+  padding: 4rpx 6rpx;
+  line-height: 1;
+  align-self: flex-start;
+}
+.promotion-desc{
+  flex: 1;
+  word-break: break-all;
+}
+.right-arrow{
+  width: 20rpx;
+  height: 30rpx;
+  margin-left: 8rpx;
+}
+.right-arrow > .image{
+  width: 100%;
+  height: 100%;
+}

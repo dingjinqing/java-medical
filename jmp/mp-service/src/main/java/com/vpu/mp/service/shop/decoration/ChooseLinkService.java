@@ -9,7 +9,6 @@ import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import org.jooq.Record;
 import org.jooq.Record3;
-import org.jooq.Record4;
 import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ import static com.vpu.mp.db.shop.Tables.*;
 public class ChooseLinkService extends ShopBaseService {
 	
 	@Autowired
-	public ShopMpDecorationService mpDecoration;
+	public AdminDecorationService adminDecoration;
 	
 //	常用链接
 	public Boolean commonLink() {
@@ -74,7 +73,7 @@ public class ChooseLinkService extends ShopBaseService {
 		xcx.setPageRows(param.getPageRows());
 		xcx.setPageName(param.getPageName());
 		xcx.setCatId(param.getCatId());
-		PageResult<XcxCustomerPageVo> list = mpDecoration.getPageList(xcx);
+		PageResult<XcxCustomerPageVo> list = adminDecoration.getPageList(xcx);
 		return list;
 	}
 	
