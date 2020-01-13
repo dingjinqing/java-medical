@@ -11,7 +11,7 @@ global.wxComponent({
           let newList = newVal.map(item => {
             let newItem = JSON.parse(JSON.stringify(item))
             if (newItem.actCode === 'voucher') {
-              if (newItem.useConsumeRestrict === 1) {
+              if (newItem.useConsumeRestrict === 1) { 
                 newItem.text = `${this.$t('components.decorate.full')}${
                   newItem.leastConsume
                   }${this.$t('components.decorate.reduce')}￥${newItem.denomination}`;
