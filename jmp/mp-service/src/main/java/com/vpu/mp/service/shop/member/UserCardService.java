@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1460,27 +1461,40 @@ public class UserCardService extends ShopBaseService {
 			}
 		}
 	}
-
+	
+	/**
+	 * 领取会员卡
+	 * @param param
+	 * @return 带有卡号的卡信息
+	 * @throws MpException
+	 */
 	public CardReceiveVo getCard(UserIdAndCardIdParam param) throws MpException {
 		if(param.getCardId()==null) {
 			return null;
 		}
 		CardReceiveVo vo = new CardReceiveVo();
 		MemberCardRecord gCard = getGradeCard(param);
+		// 第一次领取
+		boolean firstGet = true;
 		if (param.getCardId() != null) {
 			if (gCard == null) {
+				// 领取的卡为非等级卡
 				MemberCardRecord mCard = memberCardService.getCardById(param.getCardId());
 				if(mCard == null) {
 					return null;
 				}
+				// 判断是否需要购买
 				if (NumberUtils.BYTE_ZERO.equals(mCard.getIsPay())) {
 					int hasSendUser = userCardDao.getHasSendUser(param);
 					int hasSend = userCardDao.getHasSend(param.getCardId());
+					// 处理限次卡
 					if (CardUtil.isLimitCard(mCard.getCardType())) {
-						if (mCard.getLimit() > 0 && hasSendUser >= hasSendUser) {
+						// 每人领取次数
+						if (mCard.getLimit() > 0 && hasSendUser >= mCard.getLimit()) {
 							logger().info("达到领取上限");
 							throw new LimitCardAvailSendNoneException();
 						}
+						// 限次卡能够领取的总次数
 						if (mCard.getStock() > 0 && hasSend >= mCard.getStock()) {
 							logger().info("会员卡已领光");
 							throw new LimitCardAvailSendNoneException(JsonResultCode.CODE_LIMIT_CARD_AVAIL_SEND_ALL);
@@ -1490,11 +1504,26 @@ public class UserCardService extends ShopBaseService {
 					List<String> cardNoList = null;
 					// 普通卡只能领一张
 					if(CardUtil.isNormalCard(mCard.getCardType())) {
-						
-						cardNoList = addUserCard(param.getUserId(), param.getCardId());
+						// 判断是否有此卡，或者有此卡，但是卡已被废除
+						Condition condition = DSL.noCondition();
+						condition = condition.and(USER_CARD.USER_ID.eq(param.getUserId()))
+									.and(USER_CARD.CARD_ID.eq(param.getCardId()))
+									.and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING));
+						 UserCardRecord res = db().selectFrom(USER_CARD).where(condition).fetchAnyInto(USER_CARD);
+						 if(res == null) {
+							 // 没有此会员卡
+							 cardNoList = addUserCard(param.getUserId(), param.getCardId());
+						 }else {
+							 // 已经拥有此会员卡
+							cardNoList = new ArrayList<String>();
+							cardNoList.add(res.getCardNo());
+							firstGet = false;
+						 }
 					}else {
+						// 限次卡
 						cardNoList = addUserCard(param.getUserId(), param.getCardId());
 					}
+					
 					if (cardNoList == null || cardNoList.size() < 1) {
 						logger().info("领取失败");
 						throw new CardReceiveFailException();
@@ -1510,9 +1539,12 @@ public class UserCardService extends ShopBaseService {
 						vo.setCardNo(cardNoList.get(0));
 						return vo;
 					} else {
-						if (NumberUtils.BYTE_ZERO.equals(mCard.getActivation())
-								&& CardUtil.isNormalCard(mCard.getCardType())) {
-							memberCardService.sendCoupon(param.getUserId(), param.getCardId());
+						if(firstGet) {
+							// 第一次领取
+							if (NumberUtils.BYTE_ZERO.equals(mCard.getActivation())
+									&& CardUtil.isNormalCard(mCard.getCardType())) {
+								memberCardService.sendCoupon(param.getUserId(), param.getCardId());
+							}
 						}
 						vo.setCardNo(cardNoList.get(0));
 						return vo;
@@ -1552,6 +1584,11 @@ public class UserCardService extends ShopBaseService {
 		return vo;
 	}
 
+	/**
+	 * 获取用户的等级卡
+	 * @param param
+	 * @return
+	 */
 	public MemberCardRecord getGradeCard(UserIdAndCardIdParam param) {
 		MemberCardRecord card = cardDao.getCardById(param.getCardId());
 		if (card == null || !CardUtil.isGradeCard(card.getCardType())) {
