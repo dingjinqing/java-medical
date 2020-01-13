@@ -1,5 +1,5 @@
 <template>
-  <div class="visitTrendStatistics">
+  <div class="allAnalysis">
     <!--    下拉框-->
     <div class="top">
       <!--      选择活动-->
@@ -71,7 +71,7 @@
     <div v-show="this.param.action===6"><span>筛选时间范围内次均停留时长:</span>{{this.averageNum}}</div>
     <div v-show="this.param.action===7"><span>筛选时间范围内平均访问深度:</span>{{this.averageNum}}</div>
     <!--    折线图数据-->
-    <div v-show="this.totalNum" id="allAnalysisCharts"></div>
+    <div v-show="this.controlShow" id="allAnalysisCharts"></div>
     <div class="noData" v-show="this.totalNum===0"><span>暂无相关数据</span></div>
   </div>
 </template>
@@ -134,7 +134,8 @@ export default {
       table: [],
       originalData: [],
       totalNum: '',
-      averageNum: ''
+      averageNum: '',
+      controlShow: true
     }
   },
   created () {
@@ -199,6 +200,11 @@ export default {
     // 数据处理
     handleData (content) {
       this.totalNum = content.totalNum
+      if (this.totalNum === 0) {
+        this.controlShow = false
+      } else {
+        this.controlShow = true
+      }
       this.averageNum = content.averageNum
       this.startDate.year = content.startDate.substring(0, 4)
       this.startDate.month = content.startDate.substring(4, 6)
@@ -248,7 +254,7 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-  .visitTrendStatistics {
+  .allAnalysis {
     padding: 10px;
     background: #fff;
 

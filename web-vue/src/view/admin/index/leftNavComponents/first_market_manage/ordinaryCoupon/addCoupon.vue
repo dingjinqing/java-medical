@@ -948,8 +948,16 @@ export default {
           }
 
           this.param.scoreNumber = Number(this.param.scoreNumber)
-          this.param.startTime = this.param.couponDate[0]
-          this.param.endTime = this.param.couponDate[1]
+
+          // 有效期
+          if (this.param.validityType === 0) {
+            this.param.startTime = this.param.couponDate[0]
+            this.param.endTime = this.param.couponDate[1]
+          } else {
+            this.param.startTime = ''
+            this.param.endTime = ''
+          }
+
           // 会员专享
           if (this.param.isExclusive === true) {
             this.param.cardId = this.param.cardId.toString()
