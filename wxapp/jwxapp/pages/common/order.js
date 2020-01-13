@@ -136,7 +136,7 @@ var order = {
     );
   },
   // 立即支付
-  payOrder ({ orderSn, orderId }) {
+  payOrder ({ order_sn: orderSn, order_id: orderId }) {
     util.api('api/wxapp/order/pay', res => {
       console.log(res)
       if (res.error === 0) {
