@@ -241,6 +241,9 @@ public class JsonResultMessage {
     public static final String MY_PRIZE_ACTIVITY_EXPIRED="my.prize.activity.goods.expired";
     /**拼团抽奖活动 */
     public static final String GROUP_DRAW_FAIL = "group.draw.fail";
+	public static final String ACTIVITY_NOT_EXIST = "activity.not.exist";
+	public static final String PRODUCT_NOT_EXIST = "product.not.exist";
+	public static final String INFORMATION_NOT_EXIST = "information.not.exist";
     
 	/**
 	 * 营销- 支付有礼

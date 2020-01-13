@@ -74,7 +74,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private GoodsActivityBaseMp activity;
 
     /**商品促销活动列表*/
-    Map<Byte,List<PromotionBase>> promotions = new HashMap<>();
+    Map<Byte,List<? extends PromotionBase>> promotions = new HashMap<>();
     //**********服务承诺
     /**
      * 服务承诺是否开启

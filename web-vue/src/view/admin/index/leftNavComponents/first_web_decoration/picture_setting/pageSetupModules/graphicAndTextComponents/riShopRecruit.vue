@@ -50,7 +50,7 @@
               >
               <img
                 v-if="data.bg_url !== ''"
-                :src="imageHost + data.bg_url"
+                :src="data.bg_url"
                 alt=""
                 style="width: 200px; height: 100px;"
               >
@@ -87,10 +87,10 @@
     </div>
     <!--选择图片弹窗-->
     <ImageDalog
-      pageIndex='imageDalog'
+      pageIndex='pictureSpace'
       :tuneUp='tuneUp'
       :isDraggable='isDraggable'
-      :imageSize='imageSize'
+      :imageSize='[640,300]'
       @handleSelectImg='handleSelectImg'
     />
   </div>
@@ -119,7 +119,7 @@ export default {
       // imageHost: this.$imageHost,
       imageHost: 'http://jmpdevimg.weipubao.cn/',
       tuneUp: false, //  调起添加图片弹窗flag
-      imageSize: [200, 200], // 调起添加图片宽高
+      imageSize: [640, 300], // 调起添加图片宽高
       isDraggable: false, // 添加商品弹窗是否开启多选底部可拖拽状态
       isAddImgOrChangeFlga: false, // true为添加图片  false为更换列表项中的图片
       moduleSaveData: {
@@ -189,7 +189,7 @@ export default {
     // 添加图片弹窗选中图片数据回传
     handleSelectImg (imgData) {
       console.log(imgData)
-      this.data.bg_url = imgData.imgPath
+      this.data.bg_url = imgData.imgUrl
       // if (this.isAddImgOrChangeFlga) {
       //   imgData.forEach((item, index) => {
       //     let obj = {
