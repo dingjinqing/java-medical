@@ -208,7 +208,7 @@ public class QrCodeService extends ShopBaseService {
     		
     		if(StringUtils.isBlank(card.getBgColor())) {
     			// 默认背景色
-    			card.setBgColor("#e6cb96");
+    			card.setBgColor(CardUtil.getDefaultBgColor());
     		}
     		
 	    	Color color = Color.decode(card.getBgColor());

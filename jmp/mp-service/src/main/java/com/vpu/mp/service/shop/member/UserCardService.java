@@ -780,6 +780,18 @@ public class UserCardService extends ShopBaseService {
 		card.calcUsageTime();
 		card.setAvatar(avatar);
 		card.calcCash();
+		// 背景图
+		if(CardUtil.isBgImgType(card.getBgType())) {
+			// 全路径
+			if(!StringUtils.isBlank(card.getBgImg())) {
+				card.setBgImg(saas().getShopApp(getShopId()).image.imageUrl(card.getBgImg()));
+			}
+		}else {
+			if(StringUtils.isBlank(card.getBgColor())) {
+				// 默认背景色
+				card.setBgColor(CardUtil.getDefaultBgColor());
+			}
+		}
 	}
 
 	/**
@@ -789,7 +801,11 @@ public class UserCardService extends ShopBaseService {
 	 */
 	public String getCardAvatar() {
 		String relativePath = saas().shop.getShopAvatarById(this.getShopId());
-		return saas().getShopApp(getShopId()).image.imageUrl(relativePath);
+		if(StringUtils.isBlank(relativePath)) {
+			return null;
+		}else {
+			return saas().getShopApp(getShopId()).image.imageUrl(relativePath);
+		}
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException {
@@ -803,11 +819,18 @@ public class UserCardService extends ShopBaseService {
 		if (card == null) {
 			throw new UserCardNullException();
 		}
+		
 		// 背景图片
 		if(CardUtil.isBgImgType(card.getBgType())) {
 			if(!StringUtils.isBlank(card.getBgImg())) {
 				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(card.getBgImg());
 				card.setBgImg(imageUrl);
+			}
+		}else {
+			// 背景色
+			if(StringUtils.isBlank(card.getBgColor())) {
+				// 默认背景色
+				card.setBgColor(CardUtil.getDefaultBgColor());
 			}
 		}
 		
