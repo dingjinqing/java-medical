@@ -4,6 +4,6 @@
     <text style='width:640rpx'> {{m.province}}{{m.city}}{{m.area}}{{m.address}}</text>
   </view>
   <view class='map_content' wx:if="{{m.map_show == 1}}">
-    <image class="image" src='{{m.imageUrl}}{{m.img_path}}'></image>
+    <image class="image" src='{{m.img_path}}'></image>
   </view>
 </view>
