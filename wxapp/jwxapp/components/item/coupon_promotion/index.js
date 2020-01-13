@@ -6,7 +6,7 @@ global.wxComponent({
     couponList: {
       type: Array,
       value: null,
-      observer (newVal) {
+      observer(newVal) {
         if (newVal) {
           let newList = newVal.map(item => {
             let newItem = JSON.parse(JSON.stringify(item))
@@ -50,12 +50,12 @@ global.wxComponent({
    * 组件的方法列表
    */
   methods: {
-    showCouponDialog () {
+    showCouponDialog() {
       this.setData({
         show_recommend_coupons: true
       });
     },
-    showPromotion () {
+    showPromotion() {
       console.log(111)
       this.setData({
         showPromotionDialog: true

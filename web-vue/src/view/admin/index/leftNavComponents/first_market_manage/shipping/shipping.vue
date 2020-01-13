@@ -62,8 +62,8 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div v-if="scope.row.type === 0">{{ $t('shipping.typeAll') }}</div>
-            <div v-if="scope.row.type === 1">{{ $t('shipping.typeNum') }}</div>
+            <div v-if="scope.row.type === 1">{{ $t('shipping.typeAll') }}</div>
+            <div v-if="scope.row.type === 0">{{ $t('shipping.typeNum') }}</div>
           </template>
         </el-table-column>
         <el-table-column
