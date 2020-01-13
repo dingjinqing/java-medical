@@ -186,9 +186,15 @@ export default {
       this.orignHeight = obj.imgHeight
       let minWith = Math.min(obj.imgWidth, 150)
       let minHeight = Math.min(obj.imgHeight, 150)
-      console.log(minWith, minHeight)
-      this.option.autoCropWidth = minWith
-      this.option.autoCropHeight = minHeight
+      console.log(minWith, minHeight, this.imageSize)
+      if (this.imageSize.length) {
+        this.option.autoCropWidth = this.imageSize[0]
+        this.option.autoCropHeight = this.imageSize[1]
+      } else {
+        this.option.autoCropWidth = minWith
+        this.option.autoCropHeight = minHeight
+      }
+
       if (obj.imgWidth > 150) {
         this.saveScaleW = 150
       } else {
