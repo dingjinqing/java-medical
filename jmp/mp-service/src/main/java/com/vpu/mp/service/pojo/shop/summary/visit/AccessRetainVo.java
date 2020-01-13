@@ -21,6 +21,7 @@ public class AccessRetainVo {
      * 活跃留存
      */
     public static final int ACTION_RETAIN = 2;
-
+    private String startDate;
+    private String endDate;
     private List<AccessRetain> data;
 }

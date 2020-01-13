@@ -86,10 +86,10 @@ public class FreeShippingGoodsService extends ShopBaseService {
             if (!freeShip.getRecommendCatId().trim().isEmpty()){
                 catIds = new ArrayList<>(Util.splitValueToList(freeShip.getRecommendCatId()));
             }
-            if (freeShip.getRecommendSortId().trim().isEmpty()){
+            if (!freeShip.getRecommendSortId().trim().isEmpty()){
                 sortIds = new ArrayList<>(Util.splitValueToList(freeShip.getRecommendCatId()));
             }
-            if (freeShip.getRecommendGoodsId().trim().isEmpty()){
+            if (!freeShip.getRecommendGoodsId().trim().isEmpty()){
                 goodsIds = new ArrayList<>(Util.splitValueToList(freeShip.getRecommendCatId()));
             }
         }

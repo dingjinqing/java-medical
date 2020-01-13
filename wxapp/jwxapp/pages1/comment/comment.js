@@ -206,8 +206,10 @@ global.wxPage({
   // 展示评价
   show_com_info: function (e) {
     var gid = e.currentTarget.dataset.gid;
+    var index = e.currentTarget.dataset.index;
+    var orderSn = e.currentTarget.dataset.osn;
     var order = this.data.order_completed.map(function (item, index) {
-      if (item.goodsId == gid) {
+      if (item.orderSn == orderSn && item.goodsId == gid) {
         item.show = !item.show;
         if (item.show) {
           item.src = src_up
@@ -315,29 +317,30 @@ global.wxPage({
   },
   // 查看活动奖励
   giftInfo(e) {
-    // var form_id = e.detail.formId;
-    // var open_id = util.getCache('openid');
-    // util.api('/api/wxapp/common/saveformid', function (res) { }, {
-    //   form_id: form_id,
-    //   open_id: open_id
-    // });
     let data = e.currentTarget.dataset;
     let commentInfo = this.data.order_completed[data.itemid];
     if (commentInfo.awardType != 5) {
       const url = new Map([
-        [1, ['pages/integral/integral']],
-        [2, ['pages/couponlist/couponlist']],
-        [3, ['pages/account/account']],
-        [4, ['pages/lottery/lottery?lottery_id=' + commentInfo.award]]
+        [1, ['pages1/integral/integral']], // 积分详情页
+        [2, ['pages/coupon/coupon']], // 优惠券列表
+        [3, ['pages/account/account']], // 余额详情页
+        [4, ['pages1/lottery/lottery?lottery_id=' + commentInfo.award]] // 幸运大抽奖 活动链接
       ])
       let action = url.get(commentInfo.awardType)
       util.jumpLink(action[0], 'navigateTo')
     } else {
-      let custom = {}
-      let linkStr = commentInfo.award.match(/(path:)\S*(,)/ig)[0];
-      custom.link = linkStr.substring(5, linkStr.length - 1);
-      let imgSrcStr = commentInfo.award.match(/(img:)S*/ig)[0];
-      custom.img_str = imgSrcStr.substring(4);
+      // let custom = {}
+      // let linkStr = commentInfo.award.match(/(path:)\S*(,)/ig)[0];
+      // custom.link = linkStr.substring(5, linkStr.length - 1);
+      // let imgSrcStr = commentInfo.award.match(/(img:)S*/ig)[0];
+      // custom.img_str = imgSrcStr.substring(4);
+      let link = commentInfo.award.split(',')
+      let path = link[0].slice(5, link[0].length)
+      let img = link[1].slice(4, link[1].length)
+      let custom = {
+        img_src: img,
+        link: path
+      }
       this.setData({
         show_act_custom: true,
         custom: custom
@@ -358,6 +361,7 @@ global.wxPage({
       })
     }
   },
+  // 关闭自定义奖励弹窗
   resetShow() {
     this.setData({
       show_act_custom: false,
@@ -381,7 +385,7 @@ global.wxPage({
           item.show = false;
           item.src = src_down;
           item.commstar = item.commstar ? Number(item.commstar) : 5;
-          if (item.commentFlag === 1 || i == 0) {
+          if (i == 0) {
             item.show = true;
             item.src = src_up;
           }
