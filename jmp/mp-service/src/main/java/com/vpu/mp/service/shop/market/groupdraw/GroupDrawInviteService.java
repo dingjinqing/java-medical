@@ -39,6 +39,7 @@ public class GroupDrawInviteService extends ShopBaseService {
      * @param isNew
      */
 	public void createInviteRecord(String path, Integer identityId, Map<String, String> query, Byte isNew) {
+		logger().info("创建邀请记录");
 		Integer goodsId = Integer.valueOf(query.get("goods_id"));
 		GroupDrawInviteRecord record = getAvailableInviteUser(identityId, goodsId,Integer.valueOf(query.get("user_id")));
 		Integer groupId = Integer.valueOf(query.get("group_id"));

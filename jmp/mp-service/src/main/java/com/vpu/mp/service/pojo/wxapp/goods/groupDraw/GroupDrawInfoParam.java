@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.wxapp.goods.groupDraw;
 
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -14,14 +16,15 @@ import lombok.Data;
  */
 @Data
 public class GroupDrawInfoParam {
+	@NotNull
 	@JsonProperty(value = "group_draw_id")
 	private Integer groupDrawId;
-	
+	@NotNull
 	@JsonProperty(value = "goods_id")
 	private Integer goodsId;
-	
+	@NotNull
 	@JsonProperty(value = "group_id")
 	private Integer groupId;
-	
+	@NotNull
 	private Map<String, String> options;
 }

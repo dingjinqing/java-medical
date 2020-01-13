@@ -620,14 +620,16 @@ public class GroupDrawService extends ShopBaseService {
 			result.setCode(JsonResultCode.INFORMATION_NOT_EXIST);
 			return result;
 		}
-
+		logger().info("options处理");
 		Map<String, String> options = param.getOptions();
 		if (!options.isEmpty() && StringUtils.isNotEmpty(options.get("group_draw_id"))
-				&& StringUtils.isNotEmpty(options.get("goods_id")) && StringUtils.isNotEmpty(options.get("goods_id"))) {
+				&& StringUtils.isNotEmpty(options.get("goods_id")) && StringUtils.isNotEmpty(options.get("invite_id"))) {
+			options.put("user_id", String.valueOf(userId));
 			groupDrawInvite.createInviteRecord("pages1/pinlotteryinfo/pinlotteryinfo",
 					Integer.valueOf(options.get("group_draw_id")), options, ZERO);
 		}
 		String orderSn = groupInfo.getOrderSn();
+		logger().info("获取订单信息");
 		OrderGoodsRecord orderGoods = db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn)).fetchAny();
 		Integer productId = orderGoods.getProductId();
 		groupDraw.setProductId(productId == null ? 0 : productId);
@@ -644,6 +646,7 @@ public class GroupDrawService extends ShopBaseService {
 		} else {
 			groupDraw.setStatus(TWO);
 		}
+		logger().info("参团详情");
 		GroupJoinDetailVo groupJoinDetail = getGroupJoinDetail(userId, groupDrawId, groupId);
 		List<GoodsSmallVo> drawGoods = new ArrayList<GoodsSmallVo>();
 		String goodsId2 = groupDraw.getGoodsId();

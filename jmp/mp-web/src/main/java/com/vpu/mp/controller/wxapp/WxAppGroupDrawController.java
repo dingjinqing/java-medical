@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +44,7 @@ public class WxAppGroupDrawController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/api/wxapp/groupdraw/info")
-	public JsonResult getGroupDrawInfo(@RequestBody GroupDrawInfoParam param) {
+	public JsonResult getGroupDrawInfo(@RequestBody @Valid GroupDrawInfoParam param) {
 		GroupDrawReturn checkGroupDraw = shop().groupDraw.checkGroupDraw(param, wxAppAuth.user().getUserId());
 		JsonResultCode code = checkGroupDraw.getCode();
 		if (code != null && code.equals(JsonResultCode.CODE_SUCCESS)) {
