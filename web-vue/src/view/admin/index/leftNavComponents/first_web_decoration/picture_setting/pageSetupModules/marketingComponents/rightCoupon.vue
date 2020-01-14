@@ -147,6 +147,7 @@ export default {
       this.available = this.$t('coupon.available')
       this.surplus = this.$t('coupon.surplus')
       this.zhang = this.$t('coupon.zhang')
+      this.unlimitedInventory = this.$t('coupon.unlimitedInventory')
     }
   },
   mounted () {
@@ -196,7 +197,7 @@ export default {
           'act_code': item.actCode, // 是否是打折卷  discount：打折卷   voucher不是打折卷
           'denomination': item.denomination, // 面额
           'consume_text': useConsumeRestrict, // 使用门槛
-          'receive_text': `${this.surplus}${item.surplus}${this.zhang}`, // 卡卷剩余数
+          'receive_text': item.limitSurplusFlag === 0 ? `${this.surplus}${item.surplus}${this.zhang}` : this.unlimitedInventory, // 卡卷剩余数
           'coupon_id': item.id, // 优惠券id
           'use_score': item.useScore, // 是否可以积分兑换
           'score_number': item.scoreNumber, // 需要积分数

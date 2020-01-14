@@ -14,18 +14,18 @@ global.wxComponent({
   methods: {
     onPropChange (newVal, oldVal, changedPath) {
       console.log(newVal, 'group+++++++++++++')
-      // newVal.group_nav_index = 0;
-      // newVal.navlen = newVal.group_names.length;
-      // newVal.page_num = 1;
-      // newVal.fixed = false;
-      // newVal.scr_height = wx.getSystemInfoSync().windowHeight;
-      // if (newVal.position_style == 1) {
-      //   newVal.show_style = 6;
-      // } else if (newVal.shop_style != 4) {
-      //   newVal.show_style = parseInt(newVal.shop_style) - 1;
-      // } else {
-      //   newVal.show_style = newVal.shop_style;
-      // }
+      newVal.group_nav_index = 0;
+      newVal.navlen = newVal.group_names.length;
+      newVal.page_num = 1;
+      newVal.fixed = false;
+      newVal.scr_height = wx.getSystemInfoSync().windowHeight;
+      if (newVal.position_style == 1) {
+        newVal.show_style = 6;
+      } else if (newVal.shop_style != 4) {
+        newVal.show_style = parseInt(newVal.shop_style) - 1;
+      } else {
+        newVal.show_style = newVal.shop_style;
+      }
     },
     // bindMenuClick(e) {
     //   var d = this.eventData(e);
