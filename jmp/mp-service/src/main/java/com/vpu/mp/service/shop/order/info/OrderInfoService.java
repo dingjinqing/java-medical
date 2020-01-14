@@ -930,11 +930,6 @@ public class OrderInfoService extends ShopBaseService {
 		
 		
 		
-		
-		
-		
-		
-		
 		BigDecimal totalConsumpAmount = new BigDecimal(0);
 		logger().info("计算会员 " + userId + " 的累积消费金额");
 

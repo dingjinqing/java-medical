@@ -245,6 +245,8 @@ export default {
             })
           }
         })
+      } else {
+        this.ruleForm.valid = true
       }
     })
   },

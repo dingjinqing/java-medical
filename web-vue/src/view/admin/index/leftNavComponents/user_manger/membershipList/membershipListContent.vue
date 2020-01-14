@@ -499,7 +499,7 @@
             style="overflow-y: auto;height: 500px"
           >
             <div class="setUpcommon">
-              <span>普通会员卡</span>
+              <span class="cardTypeName">普通会员卡</span>
               <div class="setUpContainer">
                 <div
                   class="hy_common selectDataClass"
@@ -557,7 +557,7 @@
 
             </div>
             <div class="setUpcommon">
-              <span>限次会员卡</span>
+              <span class="cardTypeName">限次会员卡</span>
               <div class="setUpContainer">
                 <div
                   class="hy_common selectDataClass"
@@ -614,7 +614,7 @@
 
             </div>
             <div class="setUpcommon setUpBottomDiv">
-              <span>等级会员卡</span>
+              <span class="cardTypeName">等级会员卡</span>
               <div class="setUpContainer">
                 <div
                   class="hy_common selectDataClass"
@@ -1927,6 +1927,12 @@ img {
   /* height: 30px; */
   line-height: 30px;
   display: flex;
+}
+.cardTypeName{
+  width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .setUpBottomDiv {
   margin-bottom: 130px;
