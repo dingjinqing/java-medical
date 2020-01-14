@@ -33,12 +33,12 @@ global.wxPage({
     var _this = this;
     goods_ids = options.goods_id;
 
-    if (options.couponSn) {
-      couponSn = options.couponSn
-      // 个人中心查看详情
-      util.api("api/wxapp/coupon/detail",function(res){
-        if(res.error == 0){
-          _this.initHandler(res, 0)
+    if (options.couponId) {
+      couponId = options.couponId
+      // 装修界面查看详情
+      util.api("api/wxapp/coupon/detail/byScore", function (res) {
+        if (res.error == 0) {
+          _this.initHandler(res, 1)
         } else {
           util.toast_fail('操作失败');
           setTimeout(function () {
@@ -47,12 +47,12 @@ global.wxPage({
             })
           }, 2000);
         }
-      },{couponSn:options.couponSn})
-    } 
+      }, { couponId: options.couponId })
+    }
   },
 
   // 优化数据
-  initHandler: function(res, type) {
+  initHandler: function (res, type) {
     var _this = this;
     // 是否过期
     var time_now = util.formatTime(new Date);
@@ -155,9 +155,9 @@ global.wxPage({
           } else {
             util.toast_fail('领取失败');
           }
-        }, { 
-          couponId: d.coupon_id,
-        })
+        }, {
+            couponId: d.coupon_id,
+          })
       }
     } else {
       var that = this;
@@ -229,6 +229,14 @@ global.wxPage({
     util.navigateTo({
       url: '/pages/index/index',
     })
+  },
+
+  // 开通会员卡
+  top_more: function (e) {
+    var coupon_id = this.data.act_info.id;
+    util.navigateTo({
+      url: '/pages/buycardlist/buycardlist?coupon_id=' + coupon_id + '&code=' + code,
+    })
   }
-  
+
 })
