@@ -591,6 +591,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_ACTIVITY_NO_START = "order.activity.no.start";
     public static final String MSG_ORDER_ACTIVITY_END = "order.activity.end";
     public static final String MSG_ORDER_ACTIVITY_NUMBER_LIMIT = "order.activity.number.limit";
+    public static final String MSG_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK = "order.activity.goods.out.of.stock";
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
     /**订单发货*/

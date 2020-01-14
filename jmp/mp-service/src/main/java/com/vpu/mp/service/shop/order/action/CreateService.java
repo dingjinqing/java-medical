@@ -25,6 +25,7 @@ import com.vpu.mp.service.pojo.wxapp.order.*;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -32,6 +33,7 @@ import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -239,7 +241,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 orderBo.setOrderId(order.getOrderId());
                 if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
-                    (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
+                    (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0) ||
+                    (BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && order.getBkOrderPaid() > OrderConstant.BK_PAY_NO)
+                ) {
                     //加锁
                     atomicOperation.addLock(orderBo.getOrderGoodsBo());
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
@@ -655,6 +659,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         BigDecimal cardBalance = param.getCardBalance();
         //总价、总数量
         BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos, null, null);
+        //预售处理
+        OrderPreSale orderPreSale = calculate.calculatePreSale(param, bos, tolalNumberAndPrice, vo);
+        BigDecimal preSaleDiscount = calculate.calculateOrderGoodsDiscount(orderPreSale, bos, OrderConstant.D_T_FULL_PRE_SALE);
         //满折满减特殊处理
         List<OrderFullReduce> orderFullReduces = calculate.calculateFullReduce(param, bos);
         BigDecimal fullReduceDiscount = BigDecimal.ZERO;
@@ -688,8 +695,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(memberDiscount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(couponDiscount, BigDecimalUtil.Operator.subtrac),
-            BigDecimalUtil.BigDecimalPlus.create(fullReduceDiscount, BigDecimalUtil.Operator.subtrac)
-
+            BigDecimalUtil.BigDecimalPlus.create(fullReduceDiscount, BigDecimalUtil.Operator.subtrac),
+            BigDecimalUtil.BigDecimalPlus.create(preSaleDiscount, null)
         );
         //折扣金额(使用大额优惠券，支付金额不为负的，等于运费金额)
         if(BigDecimalUtil.compareTo(tolalDiscountAfterPrice, BigDecimal.ZERO) < 0){
@@ -704,6 +711,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             BigDecimalUtil.BigDecimalPlus.create(useAccount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(cardBalance, null)
         );
+        //预售处理
+        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PreSaleService.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
+            vo.setOrderPayWay(OrderConstant.PAY_WAY_DEPOSIT);
+            if(BigDecimalUtil.compareTo(moneyPaid, orderPreSale.getTotalPreSaleMoney()) > 0) {
+                vo.setBkOrderMoney(BigDecimalUtil.subtrac(moneyPaid, orderPreSale.getTotalPreSaleMoney()));
+                moneyPaid = orderPreSale.getTotalPreSaleMoney();
+            }
+        }
         //支付金额(使用大额优惠券，支付金额不为负的，等于运费金额)
         if(BigDecimalUtil.compareTo(moneyPaid, BigDecimal.ZERO) < 0){
             moneyPaid = BigDecimal.ZERO;
@@ -736,8 +751,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setUserAccount(user.getAccount());
         vo.setMemberCardMoney(vo.getDefaultMemberCard() == null ? BigDecimal.ZERO : vo.getDefaultMemberCard().getMoney());
         vo.setMoneyAfterDiscount(moneyAfterDiscount);
-        //TODO
-        vo.setOrderPayWay(param.getOrderPayWay());
         vo.setExchang(vo.getDefaultMemberCard() == null ? NO : (CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()) ? YES : NO));
         vo.setScoreMaxDiscount(scoreMaxDiscount);
         vo.setInvoiceSwitch(tradeCfg.getInvoice());
@@ -822,9 +835,17 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }
         }
         //订单状态
-        if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_PRE_SALE) ||
-            (OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay() && BigDecimalUtil.compareTo(beforeVo.getInsteadPayMoney(), BigDecimal.ZERO) == 1)) {
-            //预售、代付（代付金额大于0）->待支付
+        if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_PRE_SALE)) {
+            //预售
+            if(order.getBkOrderPaid() != null && order.getBkOrderPaid().equals(OrderConstant.BK_PAY_FINISH)) {
+                logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
+                order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+            }else {
+                logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
+                order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);
+            }
+        }else if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay() && BigDecimalUtil.compareTo(beforeVo.getInsteadPayMoney(), BigDecimal.ZERO) == 1) {
+            //代付（代付金额大于0）->待支付
             logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
             order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);
         }else {

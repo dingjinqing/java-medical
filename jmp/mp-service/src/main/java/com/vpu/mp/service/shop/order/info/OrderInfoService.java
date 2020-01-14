@@ -1,40 +1,5 @@
 package com.vpu.mp.service.shop.order.info;
 
-import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
-import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -76,6 +41,41 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
+import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * Table:order_info
@@ -344,6 +344,9 @@ public class OrderInfoService extends ShopBaseService {
         }
         //distinct
         orderType = orderType.stream().distinct().collect(Collectors.toList());
+        if(orderType.size() > 1) {
+            orderType.remove(BaseConstant.ACTIVITY_TYPE_GENERAL);
+        }
         //sort A->Z
         orderType.sort(Byte::compareTo);
         StringBuilder sbr = new StringBuilder();
@@ -778,8 +781,8 @@ public class OrderInfoService extends ShopBaseService {
         orderBo.intoRecord(order);
         //订单类型
         order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
-        //TODO 补款状态
-        order.setBkOrderPaid((byte)0);
+        //补款状态
+        order.setBkOrderPaid(beforeVo.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0 ? OrderConstant.BK_PAY_NO : (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ? OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
         //TODO 代付人数
         order.setInsteadPayNum((short)0);
         //TODO 推广信息

@@ -4,8 +4,11 @@ import com.google.common.collect.Maps;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
@@ -23,7 +26,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class GiftProcessor implements CreateOrderProcessor{
+public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor{
 
     @Autowired
     private GiftProcessorDao giftDao;
@@ -36,6 +39,14 @@ public class GiftProcessor implements CreateOrderProcessor{
     public Byte getActivityType() {
         return BaseConstant.ACTIVITY_TYPE_GIFT;
     }
+
+    /*****************商品详情处理*******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        List<GoodsGiftMpVo> goodsGift = giftDao.getGoodsGiftInfoForDetail(capsule.getGoodsId(), DateUtil.getLocalDateTime());
+        capsule.setGoodsGifts(goodsGift);
+    }
+
 
     public void getGifts(Integer userId, List<OrderGoodsBo> goodsBo, List<Byte> orderType){
         giftDao.getGifts( userId, goodsBo, orderType);
@@ -63,4 +74,5 @@ public class GiftProcessor implements CreateOrderProcessor{
             giftDao.updateStockAndSales(updateparam);
         }
     }
+
 }

@@ -14,14 +14,10 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchContentVo;
-import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
-import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchParam;
-import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
-import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.*;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
@@ -34,16 +30,7 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record12;
-import org.jooq.Record2;
-import org.jooq.Record3;
-import org.jooq.Result;
-import org.jooq.Select;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectSeekStepN;
-import org.jooq.SortField;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,11 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
-import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
-import static com.vpu.mp.db.shop.Tables.UPLOADED_VIDEO;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author 李晓冰
@@ -709,6 +692,30 @@ public class GoodsMpService extends ShopBaseService {
      */
     public List<Integer> getGoodsIdsByCondition( Condition condition){
         return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchInto(Integer.class);
+    }
+
+    /**
+     * 小程序-商品详情-获取对应增品规格信息，规格数量大于0
+     * @param prdIds 要取的规格ID
+     * @return 增品规格信息
+     */
+    public List<GoodsGiftPrdMpVo> getGoodsDetailGiftPrdsInfoDao(List<Integer> prdIds) {
+        Result<Record6<String, String, Integer, String, BigDecimal, String>> prdResults = db().select(GOODS.GOODS_IMG, GOODS.GOODS_NAME, GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_IMG).from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS_SPEC_PRODUCT.PRD_NUMBER.gt(0)).and(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds)))
+            .fetch();
+
+        List<GoodsGiftPrdMpVo> giftPrds = new ArrayList<>(prdResults.size());
+
+        for (Record6<String, String, Integer, String, BigDecimal, String> prdResult : prdResults) {
+            GoodsGiftPrdMpVo prd =new GoodsGiftPrdMpVo();
+            prd.setProductId(prdResult.get(GOODS_SPEC_PRODUCT.PRD_ID));
+            prd.setPrdImg(StringUtils.isBlank(prdResult.get(GOODS_SPEC_PRODUCT.PRD_IMG))?prdResult.get(GOODS.GOODS_IMG):prdResult.get(GOODS_SPEC_PRODUCT.PRD_IMG));
+            prd.setPrdPrice(prdResult.get(GOODS_SPEC_PRODUCT.PRD_PRICE));
+            prd.setGoodsName(prdResult.get(GOODS.GOODS_NAME));
+            prd.setPrdDesc(prdResult.get(GOODS_SPEC_PRODUCT.PRD_DESC));
+            giftPrds.add(prd);
+        }
+        return giftPrds;
     }
 
 }

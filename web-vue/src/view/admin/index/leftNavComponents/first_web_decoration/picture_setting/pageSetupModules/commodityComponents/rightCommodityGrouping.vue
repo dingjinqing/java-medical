@@ -8,10 +8,10 @@
           商品分组菜单：<span style="color:#999">最多可选择10个分组</span>
         </div>
         <!--添加商家分类、商品标签、商品品牌数据后显示的隐藏模块-->
-        <div v-if='linkageData.goodsItems.length'>
+        <div v-if='linkageData.sort_group_arr.length'>
           <div
             class="hiddenGoodsModules"
-            v-for="(item,index) in linkageData.goodsItems"
+            v-for="(item,index) in linkageData.sort_group_arr"
             :key="index"
           >
             <div>
@@ -373,21 +373,21 @@ export default {
       backDataArr: [], // 商家分类弹窗回显数据
       defaultBgColor: '#f5f5f5', // 背景自定义颜色默认
       linkageData: {
-        menu_style: '0', // 菜单样式radio
-        goods_module_bg: '0', // 背景颜色radio
-        goods_bg_color: '', // 背景自定义颜色
-        group_display: '1', // 全部分组radio
-        position_style: '0', // 菜单位置radio
-        shop_style: '1', // 商品列表样式radio
-        module_style: '1', // 模块样式radio
-        if_radius: '0', // 模块角度radio
-        show_name: false, // 商品名称
-        show_price: false, // 商品价格
-        cart_btn: false, // 购买按钮checkbox
-        cart_btn_choose: '0', // 购买按钮选中显示模块radio
-        other_message: false, // 其他信息按钮
-        show_market: '1', // 其它信息按钮下隐藏模块radio
-        goodsItems: [] // 商品分组菜单隐藏模块数据列表
+        // menu_style: '0', // 菜单样式radio
+        // goods_module_bg: '0', // 背景颜色radio
+        // goods_bg_color: '', // 背景自定义颜色
+        // group_display: '1', // 全部分组radio
+        // position_style: '0', // 菜单位置radio
+        // shop_style: '1', // 商品列表样式radio
+        // module_style: '1', // 模块样式radio
+        // if_radius: '0', // 模块角度radio
+        // show_name: false, // 商品名称
+        // show_price: false, // 商品价格
+        // cart_btn: false, // 购买按钮checkbox
+        // cart_btn_choose: '0', // 购买按钮选中显示模块radio
+        // other_message: false, // 其他信息按钮
+        // show_market: '1', // 其它信息按钮下隐藏模块radio
+        // sort_group_arr: [] // 商品分组菜单隐藏模块数据列表
       },
       clickEditBtn: false, // 是否点击修改按钮
       editIndex: null, // 当前修改的index
@@ -405,8 +405,12 @@ export default {
         console.log(newData, this.modulesData)
         let turnToString = this.handleToTurnNumToStr(this.modulesData)
         console.log(turnToString)
-        if (turnToString) {
-          this.linkageData = turnToString
+        // 转换checkbox字段
+        let moduleData = this.handleToTurnCheckbox(turnToString, true)
+        console.log(moduleData)
+        if (moduleData) {
+          this.linkageData = moduleData
+          this.$forceUpdate()
         }
       },
       immediate: true
@@ -416,7 +420,7 @@ export default {
       handler (newData) {
         console.log(newData)
         // 测试数据
-        newData['sort_length'] = newData.goodsItems.length
+        newData['sort_length'] = newData.sort_group_arr.length
         newData['goods_img'] = [
           'http://mpdevimg2.weipubao.cn/upload/0/image/20191018/crop_KXCyQS7bFi7w4RgL.jpeg',
           'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191218/SQzKExx7QTSH1kzu.jpeg'
@@ -456,7 +460,9 @@ export default {
             'new_label_img': ''
           }
         ]
-        this.$emit('handleToBackData', newData)
+        console.log(newData)
+        let moduleData = this.handleToTurnCheckbox(newData, false)
+        this.$emit('handleToBackData', moduleData)
       },
       deep: true
     },
@@ -474,6 +480,33 @@ export default {
     }
   },
   methods: {
+    // 转换checkbox字段
+    handleToTurnCheckbox (data, flag) {
+      console.log(data)
+      let newData = JSON.parse(JSON.stringify(data))
+      let arr = ['show_name', 'show_price', 'cart_btn', 'other_message']
+      Object.keys(newData).forEach((item, index) => {
+        console.log(item)
+        if (arr.indexOf(item) !== -1) {
+          console.log(flag, newData[item])
+          if (flag) {
+            if (newData[item] === '1') {
+              newData[item] = true
+            } else if (newData[item] === '0') {
+              newData[item] = false
+            }
+          } else {
+            if (newData[item]) {
+              newData[item] = '1'
+            } else {
+              newData[item] = '0'
+            }
+          }
+        }
+      })
+      console.log(newData, flag)
+      return newData
+    },
     // 背景颜色自定义点击重置
     handleToReset () {
       this.linkageData.goods_bg_color = this.defaultBgColor
@@ -508,13 +541,13 @@ export default {
       })
       console.log(this.clickEditBtn, this.editIndex, arr)
       if (this.clickEditBtn) {
-        this.linkageData.goodsItems[this.editIndex] = arr[0]
+        this.linkageData.sort_group_arr[this.editIndex] = arr[0]
       } else {
-        let newArr = this.linkageData.goodsItems.concat(arr)
-        this.linkageData.goodsItems = newArr
+        let newArr = this.linkageData.sort_group_arr.concat(arr)
+        this.linkageData.sort_group_arr = newArr
       }
       this.clickEditBtn = false
-      console.log(this.linkageData.goodsItems, arr)
+      console.log(this.linkageData.sort_group_arr, arr)
     },
     // 商品标签弹窗选中回传数据
     handleToGetBackData (data) {
@@ -531,10 +564,10 @@ export default {
       })
       console.log(this.clickEditBtn, this.editIndex, arr)
       if (this.clickEditBtn) {
-        this.linkageData.goodsItems[this.editIndex] = arr[0]
+        this.linkageData.sort_group_arr[this.editIndex] = arr[0]
       } else {
-        let newArr = this.linkageData.goodsItems.concat(arr)
-        this.linkageData.goodsItems = newArr
+        let newArr = this.linkageData.sort_group_arr.concat(arr)
+        this.linkageData.sort_group_arr = newArr
       }
       this.clickEditBtn = false
     },
@@ -551,21 +584,21 @@ export default {
         arr.push(obj)
       })
       if (this.clickEditBtn) {
-        this.linkageData.goodsItems[this.editIndex] = arr[0]
+        this.linkageData.sort_group_arr[this.editIndex] = arr[0]
       } else {
-        let newArr = this.linkageData.goodsItems.concat(arr)
-        this.linkageData.goodsItems = newArr
+        let newArr = this.linkageData.sort_group_arr.concat(arr)
+        this.linkageData.sort_group_arr = newArr
       }
       this.clickEditBtn = false
     },
     handleToEditData (index) { // 点击修改
       this.clickEditBtn = true
       this.editIndex = index
-      let flag = this.linkageData.goodsItems[index].type
+      let flag = this.linkageData.sort_group_arr[index].type
       this.handleToCallDialog(flag, true)
     },
     handleToClickTopIcon (flag, index) { // 顶部icon点击统一处理
-      let arr = JSON.parse(JSON.stringify(this.linkageData.goodsItems))
+      let arr = JSON.parse(JSON.stringify(this.linkageData.sort_group_arr))
       let pre, next, temp
       if ((index - 1) < 0) {
         pre = -1
@@ -597,24 +630,24 @@ export default {
           break
       }
       console.log(arr)
-      this.linkageData.goodsItems = arr
+      this.linkageData.sort_group_arr = arr
     },
     // 删除框确认
     handleToDel () {
-      this.linkageData.goodsItems.splice(this.delIndex, 1)
+      this.linkageData.sort_group_arr.splice(this.delIndex, 1)
       this.delVisible = false
     },
     // 点击指定商品
     handleToClickShowNumRadio (index) {
       this.nowClickAppointIndex = index
-      console.log(index, this.linkageData.goodsItems[index].radio)
-      if (this.linkageData.goodsItems[index].radio === '2') {
+      console.log(index, this.linkageData.sort_group_arr[index].radio)
+      if (this.linkageData.sort_group_arr[index].radio === '2') {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
       }
     },
     // 选择商品弹窗数据回传
     resultGoodsDatas (res) {
-      console.log(res, this.linkageData.goodsItems, this.nowClickAppointIndex)
+      console.log(res, this.linkageData.sort_group_arr, this.nowClickAppointIndex)
     }
   }
 }

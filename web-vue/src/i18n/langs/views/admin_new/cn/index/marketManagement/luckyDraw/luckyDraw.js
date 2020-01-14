@@ -163,5 +163,11 @@ export const cn = {
   validScore: '请填写赠送积分',
   validBounsAmount: '请填写赠送金额',
   validCoupon: '请选择优惠券',
-  validGivea: '请选择赠品'
+  validGivea: '请选择赠品',
+  dataLoadFail: '数据加载失败',
+  addSweepstakes: '添加抽奖活动',
+  jumpRaffleDetails: '跳转到抽奖详情页面',
+  jumpGetUserList: '跳转到获取新用户列表页面',
+  consumed: '为空表示不消耗积分',
+  fetchDataFail: '获取数据失败'
 }

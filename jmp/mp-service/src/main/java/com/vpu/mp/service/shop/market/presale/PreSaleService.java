@@ -87,7 +87,7 @@ public class PreSaleService extends ShopBaseService {
     public static final Byte PRE_SALE_ONE_PHASE = 1;
     /**有两个阶段*/
     public static final Byte PRE_SALE_TWO_PHASE = 2;
-    /**使用优惠券叠加*/
+    /**使用优惠券、会员卡折扣叠加*/
     public static final Byte PRE_SALE_USE_COUPON = 1;
     /**自定退订金*/
     public static final Byte PRE_SALE_RETURN_DEPOSIT= 1;
@@ -96,17 +96,17 @@ public class PreSaleService extends ShopBaseService {
     /**可以原价购买*/
     public static final Byte PRE_SALE_ORIGINAL_BUY= 1;
 
-    /**发货时间类型：1 指定日期*/
-    public static final Byte DELIVER_TYPE_TIME = 1;
-    /**发货时间类型：2 指定下单后的天数*/
-    public static final Byte DELIVER_TYPE_DAYS = 2;
+    /**发货时间类型：0 指定日期*/
+    public static final Byte DELIVER_TYPE_TIME = 0;
+    /**发货时间类型：1 指定下单后的天数*/
+    public static final Byte DELIVER_TYPE_DAYS = 1;
     /**定金期数2*/
     public static final Byte PRESALE_MONEY_INTERVAL = 2;
 
 
 
-    private static final Presale TABLE = PRESALE;
-    private static final PresaleProduct SUB_TABLE = PRESALE_PRODUCT;
+    public static final Presale TABLE = PRESALE;
+    public static final PresaleProduct SUB_TABLE = PRESALE_PRODUCT;
     private static final OrderInfo ORDER = ORDER_INFO;
     private static final OrderGoods ORDER_GOODS = OrderGoods.ORDER_GOODS;
 

@@ -18,7 +18,7 @@ public interface CreateOrderProcessor extends Processor {
     void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException;
 
     /**
-     * 保存信息（订单入库前）
+     * 保存信息（订单入库前,订单信息已经计算完成）
      * @param param
      * @param order
      * @throws MpException
