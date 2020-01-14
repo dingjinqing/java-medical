@@ -762,7 +762,11 @@ public class CouponGiveService extends ShopBaseService {
      * @param param
      */
     private void popWindowsBuildOptions(SelectWhereStep<? extends Record> select, CouponGivePopParam param) {
-        select.where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        select.where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(MRKING_VOUCHER.ENABLED.eq(CouponConstant.ENABLED))
+                .and(MRKING_VOUCHER.VALIDITY_TYPE.eq(CouponConstant.AFTER_RECEIVING)
+                    .or(MRKING_VOUCHER.VALIDITY_TYPE.eq(CouponConstant.FIXED_TIME)
+                        .and(MRKING_VOUCHER.END_TIME.greaterThan(Util.currentTimeStamp()))));
         if (StringUtil.isNotEmpty(param.getActName())) {
             select.where(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
         }
