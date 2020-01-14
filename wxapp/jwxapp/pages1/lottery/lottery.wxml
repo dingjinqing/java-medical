@@ -41,7 +41,7 @@
       </view>
     </view>
     <view class="lottery-opera">
-      <button class="lottery-btn">立即抽奖</button>
+      <button class="lottery-btn" bindtap="drawNow">立即抽奖</button>
     </view>
     <view class="lottery-intro">
       <view class="lottery-opportunities">消耗200积分可获得额外一次抽奖机会哦</view>
@@ -70,4 +70,6 @@
     </view>
   </view>
 </view>
-<include src="/pages/common/footer.wxml"/>
+<!-- 中奖弹窗 -->
+<v-lottery-award-dialog show="{{awardDialogVisible}}"/>
+<!-- <include src="/pages/common/footer.wxml"/> -->

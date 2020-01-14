@@ -1,0 +1,82 @@
+/* components/popup/lottery-award-dialog/index.wxss */
+.lottery-award-page {
+
+}
+.l-a-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+.l-a-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 492rpx;
+  height: auto;
+  border-radius: 8rpx;
+  background: #FFDFBB;
+  z-index: 2000;
+  text-align: center;
+}
+.l-a-top {
+  position: absolute;
+  z-index: 9000;
+  width: 570rpx;
+  height: 288rpx;
+  top: -244rpx;
+  left: -34rpx;
+}
+.l-a-top-img {
+  width: 100%;
+  height: 100%;
+}
+.l-a-top-title {
+  font-size: 42rpx;
+  font-weight: bold;
+  color: #fff;
+  position: relative;
+  top: -120rpx;
+  letter-spacing: 6rpx;
+}
+.l-a-center {
+  padding-top: 80rpx;
+  padding-bottom: 34rpx;
+}
+.l-a-close {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  bottom: -100rpx;
+}
+.l-a-close-img {
+  width: 50rpx;
+}
+.l-a-c-top {
+  font-size: 36rpx;
+  line-height: 56rpx;
+  color: #E97600;
+}
+.l-a-c-go {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 56rpx;
+}
+.l-a-c-btns {
+  text-align: center;
+  margin-top: 12rpx;
+}
+.l-a-c-btn {
+  width:240rpx;
+  height:70rpx;
+  line-height: 70rpx;
+  background:linear-gradient(0deg,rgba(252,204,82,1),rgba(254,184,60,1));
+  box-shadow: 0 8rpx 8rpx #fdc247;
+  border-radius:35rpx;
+  font-size: 32rpx;
+  color: #fff;
+}
