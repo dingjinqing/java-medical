@@ -766,7 +766,10 @@ public class CouponGiveService extends ShopBaseService {
                 .and(MRKING_VOUCHER.ENABLED.eq(CouponConstant.ENABLED))
                 .and(MRKING_VOUCHER.VALIDITY_TYPE.eq(CouponConstant.AFTER_RECEIVING)
                     .or(MRKING_VOUCHER.VALIDITY_TYPE.eq(CouponConstant.FIXED_TIME)
-                        .and(MRKING_VOUCHER.END_TIME.greaterThan(Util.currentTimeStamp()))));
+                        .and(MRKING_VOUCHER.END_TIME.greaterThan(Util.currentTimeStamp()))))
+                .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq(CouponConstant.NOT_LIMIT_SURPLUS)
+                    .or(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq(CouponConstant.LIMIT_SURPLUS)
+                        .and(MRKING_VOUCHER.SURPLUS.greaterThan(CouponConstant.SURPLUS))));
         if (StringUtil.isNotEmpty(param.getActName())) {
             select.where(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
         }

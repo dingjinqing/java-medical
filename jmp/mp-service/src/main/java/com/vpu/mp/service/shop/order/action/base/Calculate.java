@@ -21,11 +21,9 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.base.BaseMarketingBaseVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
-import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.shop.activity.processor.FullReductionProcessor;
-import com.vpu.mp.service.shop.activity.processor.PreSaleProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -78,8 +76,7 @@ public class Calculate extends ShopBaseService {
     private ShopReturnConfigService returnCfg;
     @Autowired
     private FullReductionProcessor fullReductionProcessor;
-    @Autowired
-    private PreSaleProcessor preSaleProcessor;
+
     /**
      * 计算订单商品折扣金额
      *
@@ -668,20 +665,5 @@ public class Calculate extends ShopBaseService {
      */
     public List<OrderFullReduce> calculateFullReduce(OrderBeforeParam param, List<OrderGoodsBo> bos) {
         return fullReductionProcessor.calculate(param, bos);
-    }
-
-    /**
-     * 计算预售
-     * @param param
-     * @param bos
-     * @param tolalNumberAndPrice
-     * @param vo
-     * @return
-     */
-    public OrderPreSale calculatePreSale(OrderBeforeParam param, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice, OrderBeforeVo vo) {
-        if(!BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType())){
-            return null;
-        }
-        return preSaleProcessor.calculate(param, bos, tolalNumberAndPrice, vo);
     }
 }
