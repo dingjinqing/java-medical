@@ -48,6 +48,8 @@
 		<v-text-image wx:elif="{{module.component_name == 'v-text-image'}}" module="{{module}}" />
 		<!--图片热区-->
 		<v-hot-area wx:elif="{{module.component_name == 'v-hot-area'}}" module="{{module}}" />
+		<!--魔方多图-->
+		<v-window wx:elif="{{module.component_name == 'v-window'}}" module="{{module}}" />
 	</block>
 </view>
 
