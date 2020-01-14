@@ -176,6 +176,9 @@ export default {
       handler (newData) {
         this.$nextTick(() => {
           console.log(newData)
+          if (!newData.coupon_arr) {
+            newData.coupon_arr = []
+          }
           if (newData.coupon_arr.length > 1) {
             console.log(1)
             this.data = newData
