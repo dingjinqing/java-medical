@@ -51,8 +51,9 @@ public class WxAppUserCardVo extends UserCardParam {
 	public void calcCardIsExpired(){
 		if(isExpire()) {
 			this.expire = ALREADY_EXPIRED;
+		}else {
+			this.expire = NOT_EXPIRED;
 		}
-		this.expire = NOT_EXPIRED;
 	}
 	public void calcRenewal() {
 		if(isPermanent()) {
