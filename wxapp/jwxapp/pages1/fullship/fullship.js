@@ -5,7 +5,8 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    pageParams: null
+    pageParams: null,
+    searchText: null
   },
 
   /**
@@ -32,10 +33,19 @@ global.wxPage({
         });
       }
     },{
-      ruleId:61,
+      searchText:this.data.searchText,
+      ruleId:62,
       currentPage: currentPage,
       pageRows: 20,
     })
+  },
+  getSearchText(data){
+    this.setData({
+      searchText:data.detail,
+      'pageParams.currentPage':1,
+      dataList:null
+    })
+    this.requestGoodsList()
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
