@@ -23,7 +23,16 @@ public class CouponConstant {
      * 支付送券
      */
     public static final byte COUPON_GIVE_SOURCE_PAY_AWARD=2;
-
-
-
+    /**
+     * 优惠券状态 0停用 1启用
+     */
+    public static final Byte ENABLED = 1;
+    /**
+     * 指定时间段生效
+     */
+    public static final Byte FIXED_TIME = 0;
+    /**
+     * 领取后开始生效
+     */
+    public static final Byte AFTER_RECEIVING = 1;
 }
