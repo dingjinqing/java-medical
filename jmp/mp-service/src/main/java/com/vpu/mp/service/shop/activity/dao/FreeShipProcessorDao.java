@@ -43,7 +43,7 @@ public class FreeShipProcessorDao extends ShopBaseService {
 
         Condition pointCondition = buildCondition(goodsId,catId,sortId);
 
-        Result<Record5<Integer, String, Integer, BigDecimal, Integer>> result = db().select(FREE_SHIPPING.ID, FREE_SHIPPING_RULE.AREA,
+        Result<Record5<Integer, String, Integer, BigDecimal, Integer>> result = db().select(FREE_SHIPPING_RULE.ID, FREE_SHIPPING_RULE.AREA,
             FREE_SHIPPING_RULE.CON_TYPE, FREE_SHIPPING_RULE.MONEY, FREE_SHIPPING_RULE.NUM).from(FREE_SHIPPING).innerJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
             .where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FREE_SHIPPING.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(timeCondition).and(pointCondition))
             .orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.CREATE_TIME.desc()).fetch();
@@ -53,7 +53,7 @@ public class FreeShipProcessorDao extends ShopBaseService {
         for (int i = 0; i < result.size(); i++) {
             Record5<Integer, String, Integer, BigDecimal, Integer> record5 = result.get(i);
             FreeShipPromotion promotion =new FreeShipPromotion();
-            promotion.setPromotionId(record5.get(FREE_SHIPPING.ID));
+            promotion.setPromotionId(record5.get(FREE_SHIPPING_RULE.ID));
             promotion.setConType(record5.get(FREE_SHIPPING_RULE.CON_TYPE));
             promotion.setMoney(record5.get(FREE_SHIPPING_RULE.MONEY));
             promotion.setNum(record5.get(FREE_SHIPPING_RULE.NUM));
