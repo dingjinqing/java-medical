@@ -28,6 +28,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -179,7 +180,7 @@ public class UserCardDaoService extends ShopBaseService{
 
 	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte[] cardType,Byte type) {
 		logger().info("获取有效会员卡");
-		assert cardType != null : "card type should not be null";
+		Assert.isTrue(cardType != null,"card type should not be null");
 		if(cardType.length==1 && MCARD_TP_ALL.equals(cardType[0])) {
 			// 所有可用卡
             return getAllValidCardList(userId);

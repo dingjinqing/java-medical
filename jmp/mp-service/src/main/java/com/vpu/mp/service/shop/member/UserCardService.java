@@ -39,6 +39,7 @@ import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
@@ -246,7 +247,7 @@ public class UserCardService extends ShopBaseService {
 	 * @return cardId（当type为0时为检测可升级的卡id,type为1时为领取后的卡id),0为没有可升级的卡
 	 */
 	public Integer updateGrade(Integer userId, Integer cardId, Byte type) throws MpException {
-		assert userId != null : "userId required";
+		Assert.isTrue(userId != null, "userId required");
 
 		if (cardId != null) {
 			// 直接升级
@@ -582,7 +583,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	private Timestamp calcCardExpireTime(MemberCardRecord card) {
-		assert card != null : "card should not be null";
+		Assert.isTrue(card != null,"card should not be null");
 		LocalDateTime expireTime = null;
 		LocalDateTime now = LocalDateTime.now();
 		if (isFixDate(card)) {

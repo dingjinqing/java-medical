@@ -44,23 +44,23 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
 
 	@Override
 	public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-		//拼团抽奖的判断
+		// 拼团抽奖的判断
 		log.info("拼团抽奖的判断processSaveOrderInfo");
 		String orderSn = order.getOrderSn();
 		JoinGroupListRecord groupInfo = groupDrawService.getGroupInfoByOrderSn(orderSn);
 		GroupDrawReturn result = groupDrawService.canCreateGroupOrder(groupInfo.getUserId(), groupInfo.getGroupDrawId(),
 				groupInfo.getGoodsId(), groupInfo.getGroupId(), false);
 		JsonResultCode code = result.getCode();
-		log.info("拼团抽奖的判断的code"+code);
+		log.info("拼团抽奖的判断的code" + code);
 		if (!code.equals(JsonResultCode.CODE_SUCCESS)) {
 			throw new MpException(code, null);
 		}
+		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) 0);
 	}
 
 	@Override
 	public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-		// TODO Auto-generated method stub
-
+		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) -1);
 	}
 
 }

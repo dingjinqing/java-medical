@@ -1053,8 +1053,12 @@ public class GroupDrawService extends ShopBaseService {
 		}
 	}
 
+
 	/**
 	 * 生成团记录
+	 * @param order
+	 * @param groupId
+	 * @param status
 	 */
 	public void generateGroupRecord(OrderInfoRecord order, Integer groupId, Byte status) {
 		OrderGoodsRecord orderGoods = db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(order.getOrderSn()))
