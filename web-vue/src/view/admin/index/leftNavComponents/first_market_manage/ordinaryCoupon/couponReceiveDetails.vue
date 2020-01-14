@@ -177,6 +177,7 @@
                 style="font-size: 22px;color: #5a8bff;"
                 class="el-icon-delete"
                 @click="deleteCoupon(scope.row.id)"
+                v-if="scope.row.delFlag === 0"
               ></span>
             </template>
           </el-table-column>

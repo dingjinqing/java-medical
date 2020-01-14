@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import lombok.extern.slf4j.Slf4j;
@@ -99,18 +98,18 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
         log.debug("WxAppCartBo:"+ Util.toJson(cartBo));
         //秒杀商品
         List<Integer> secProductList = cartBo.getCartGoodsList().stream()
-                .filter(goods -> BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goods.getGoodsType()))
-                .map(WxAppCartGoods::getPrdId).collect(Collectors.toList());
+                .filter(goods -> BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goods.getGoodsRecord().getGoodsType()))
+                .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
         //查询商品的秒杀活动,获取活动id
         Result<? extends Record> secKillInfoList = secKillProcessorDao.getSecKillInfoList(secProductList, cartBo.getDate());
         if (secKillInfoList!=null&&secKillInfoList.size()>0){
             Map<Integer, SeckillProductBo> seckillProductBoMap = secKillInfoList.intoMap(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SeckillProductBo.class);
             cartBo.getCartGoodsList().forEach(goods->{
-                SeckillProductBo productBo = seckillProductBoMap.get(goods.getPrdId());
+                SeckillProductBo seckillPrd = seckillProductBoMap.get(goods.getProductId());
                 CartActivityInfo seckillProductInfo =new CartActivityInfo();
                 seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
-                seckillProductInfo.setActivityId(productBo.getSkId());
-                seckillProductInfo.setSecKillPrice(productBo.getSecKillPrice());
+                seckillProductInfo.setActivityId(seckillPrd.getSkId());
+                seckillProductInfo.setSecKillPrice(seckillPrd.getSecKillPrice());
                 goods.getCartActivityInfos().add(seckillProductInfo);
             });
         }
@@ -123,11 +122,13 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) {
         secKillProcessorDao.setOrderPrdSeckillPrice(param);
-        //秒杀不允许使用积分支付和货到付款
+        //秒杀不允许使用积分支付、优惠券、会员卡、货到付款
         if(param.getPaymentList() != null){
             param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
             param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
         }
+        param.setCouponSn("");
+        param.setMemberCardNo("");
     }
 
     /**

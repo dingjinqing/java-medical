@@ -91,7 +91,6 @@ public class CouponHoldService extends ShopBaseService {
         else if (param.getGetSource()!=null){
             select.where(CUSTOMER_AVAIL_COUPONS.GET_SOURCE.eq(param.getGetSource()));
         }
-        select.where(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte)0));
         return select;
 
     }

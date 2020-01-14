@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 import com.vpu.mp.auth.AdminAuth;
 import com.vpu.mp.controller.BaseController;
@@ -26,7 +27,7 @@ public class AdminBaseController extends BaseController {
 	 */
 	protected ShopApplication shop() {
 		AdminTokenAuthInfo user = adminAuth.user();
-		assert(user!=null && user.isShopLogin());
+		Assert.isTrue(user!=null && user.isShopLogin(),"shop is null");
 		return saas.getShopApp(user.getLoginShopId());
 	}
 	
@@ -36,7 +37,7 @@ public class AdminBaseController extends BaseController {
 	 */
 	protected Integer shopId() {
 		AdminTokenAuthInfo user = adminAuth.user();
-		assert(user!=null && user.isShopLogin());
+		Assert.isTrue(user!=null && user.isShopLogin(),"shop is null");
 		return user.getLoginShopId();
 	}
 	

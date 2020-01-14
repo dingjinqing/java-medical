@@ -8,6 +8,8 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.util.Assert;
+
 /**
 * @author 黄壮壮
 * @Date: 2019年10月25日
@@ -66,7 +68,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	//-------------------------------------------------------
 	
 	public void setScoreLimit(Byte value){
-		assert(value==(byte)0 || value==(byte)1 || value == (byte)2):"积分有效期类型错误";
+		Assert.isTrue(value==(byte)0 || value==(byte)1 || value == (byte)2,"积分有效期类型错误");
 		set(SCORE_LIMIT, value,Byte.class);
 	}
 	
@@ -110,7 +112,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	}
 	
 	public void setScorePayLimit(Byte value){
-		assert(value==(byte)0 || value==(byte)1 ):"积分支付限制类型错误";
+		Assert.isTrue(value==(byte)0 || value==(byte)1,"积分支付限制类型错误");
 		set(SCORE_PAY_LIMIT, value,Byte.class);
 	}
 	
@@ -139,7 +141,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	}
 	
 	public void setShoppingScore(Byte value){
-		assert(value==(byte)0 || value==(byte)1 ):"购物送积分开关错误";
+		Assert.isTrue(value==(byte)0 || value==(byte)1 ,"购物送积分开关错误");
 		set(SHOPPING_SCORE, value,Byte.class);
 	}
 	public Byte getShoppingScore(){
@@ -147,7 +149,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	}
 	
 	public void setScoreType(Byte value){
-		assert(value==(byte)0 || value==(byte)1 ):"购物送积分类型错误";
+		Assert.isTrue(value==(byte)0 || value==(byte)1,"购物送积分类型错误");
 		set(SCORE_TYPE, value,Byte.class);
 	}
 	
@@ -156,7 +158,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	}
 	
 	public void setStoreScore(Byte value){
-		assert(value==(byte)0 || value==(byte)1 ):"门店买单送积分开关类型错误";
+		Assert.isTrue(value==(byte)0 || value==(byte)1 ,"门店买单送积分开关类型错误");
 		set(STORE_SCORE, value,Byte.class);
 	}
 	public Byte getStoreScore(){
@@ -164,7 +166,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	}
 	
 	public void setLoginScore(Byte value){
-		assert(value==(byte)0 || value==(byte)1 ):"登录送积分开关类型错误";
+		Assert.isTrue(value==(byte)0 || value==(byte)1 ,"登录送积分开关类型错误");
 		set(LOGIN_SCORE, value,Byte.class);
 	}
 	

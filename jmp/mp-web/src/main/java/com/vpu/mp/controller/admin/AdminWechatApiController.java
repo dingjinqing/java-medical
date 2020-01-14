@@ -8,6 +8,7 @@ import org.jooq.Result;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -251,7 +252,7 @@ public class AdminWechatApiController extends AdminBaseController {
 			return false;
 		}
 		AdminTokenAuthInfo user = adminAuth.user();
-		assert (user != null && user.isShopLogin());
+		Assert.isTrue(user != null && user.isShopLogin(),"user is null");
 		if (!sendSysId.equals(user.sysId)) {
 			// 没有权限
 			return false;

@@ -9,12 +9,15 @@ import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchParam;
 import com.vpu.mp.service.pojo.wxapp.market.freeshipping.FreeShipGoodsSearchVo;
 import com.vpu.mp.service.pojo.wxapp.market.freeshipping.FreeShippingGoodsListParam;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.user.cart.CartService;
+import org.jooq.Condition;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +43,8 @@ public class FreeShippingGoodsService extends ShopBaseService {
     private GoodsMpService goodsMpService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private CartService cartService;
     /**
      * 满包邮商品列表
      * @param param
@@ -56,8 +61,6 @@ public class FreeShippingGoodsService extends ShopBaseService {
         }
         //包邮规则
         Result<FreeShippingRuleRecord> freeShippingRule = freeShipRuleService.getRuleListByFreeShippingId(freeShip.getId());
-        FreeShippingVo freeShippingVo = freeShip.into(FreeShippingVo.class);
-        freeShippingVo.setRuleList(freeShippingRule.into(FreeShippingRuleVo.class));
 
         //查询参数
         GoodsSearchParam goodsSearchParam = handleSearchParam(param, freeShip);
@@ -70,6 +73,8 @@ public class FreeShippingGoodsService extends ShopBaseService {
         //是否显示购买按钮
         ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
         FreeShipGoodsSearchVo vo =new FreeShipGoodsSearchVo();
+        FreeShippingVo freeShippingVo = freeShip.into(FreeShippingVo.class);
+        freeShippingVo.setRuleList(freeShippingRule.into(FreeShippingRuleVo.class));
         vo.setDelMarket(delMarket);
         vo.setShowCart(showCart);
         vo.setPageResult(goodsListNormal);
@@ -106,5 +111,23 @@ public class FreeShippingGoodsService extends ShopBaseService {
         goodsSearchParam.setUserId(param.getUserId());
         goodsSearchParam.setShowSoldOut(soldOutGoods);
         return goodsSearchParam;
+    }
+
+    /**
+     * 获取购物车满包邮商品
+     * @param userId
+     * @param ruleId
+     * @return
+     */
+    public WxAppCartBo getCartGoodsList(Integer userId, Integer ruleId) {
+        FreeShippingRecord freeShip = freeShipService.getFreeShippingByRuleId(ruleId);
+        //活动商品范围
+        FreeShippingGoodsListParam param =new FreeShippingGoodsListParam();
+        //查询参数
+        GoodsSearchParam goodsSearchParam = handleSearchParam(param, freeShip);
+        //查询条件拼接
+        Condition condition = goodsMpService.handleSearchCondition(goodsSearchParam);
+        List<Integer> goodsIds = goodsMpService.getGoodsIdsByCondition(condition);
+        return  cartService.getCartList(userId, goodsIds);
     }
 }

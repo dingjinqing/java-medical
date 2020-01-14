@@ -90,6 +90,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
@@ -299,8 +300,8 @@ public class MemberCardService extends ShopBaseService {
 	private void initReceiveCardCondition(CardParam param, MemberCardRecordBuilder cardBuilder) {
 		logger().info("设置是否会员卡需要购买： 直接领取；需要购买；领取码");
 		Byte isPay = param.getIsPay();
-		assert MCARD_ISP_DEFAULT.equals(isPay) || MCARD_ISP_BUY.equals(isPay)
-				|| MCARD_ISP_CODE.equals(isPay) : "领取设置类型参数错误";
+		Assert.isTrue(MCARD_ISP_DEFAULT.equals(isPay) || MCARD_ISP_BUY.equals(isPay)
+				|| MCARD_ISP_CODE.equals(isPay), "领取设置类型参数错误");
 
 		cardBuilder.isPay(isPay);
 		if (MCARD_ISP_BUY.equals(isPay)) {
@@ -327,7 +328,7 @@ public class MemberCardService extends ShopBaseService {
 	private void initCardStoreList(CardParam param, MemberCardRecordBuilder cardBuilder) {
 		logger().info("初始化会员卡门店列表");
 		Byte storeListType = param.getStoreListType();
-		assert isAllStore(storeListType) || isPartStore(storeListType) || isNonStore(storeListType) : "选择使用的门店范围类型错误";
+		Assert.isTrue(isAllStore(storeListType) || isPartStore(storeListType) || isNonStore(storeListType), "选择使用的门店范围类型错误");
 
 		String fmt = "[%s]", storeList = null;
 		Byte storeUseSwitch = null;
@@ -696,8 +697,8 @@ public class MemberCardService extends ShopBaseService {
 	private void initCardApplicableGoodsCfg(CardParam card, MemberCardRecordBuilder cardBuilder) {
 		logger().info("初始化适用商品配置");
 		Byte isExchange = card.getIsExchange();
-		assert (isExchangNonGoods(isExchange) || isExchangPartGoods(isExchange)
-				|| isExchangAllGoods(isExchange)) : "适用商品类型参数";
+		Assert.isTrue(isExchangNonGoods(isExchange) || isExchangPartGoods(isExchange)
+				|| isExchangAllGoods(isExchange),"适用商品类型参数");
 
 		if (isExchangNonGoods(isExchange)) {
 			cardBuilder.isExchang(isExchange);

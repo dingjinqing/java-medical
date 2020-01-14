@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * @author: 王兵兵
@@ -27,7 +28,7 @@ public class FirstSpecialConfigService extends BaseShopConfigService {
      * @return
      */
     public int setFirstLimitGoods(int value) {
-        assert(value >= 0);
+    	Assert.isTrue(value >= 0,"value need >=0");
         return this.set(K_FIRST_LIMIT_GOODS,  value, Integer.class);
     }
 }

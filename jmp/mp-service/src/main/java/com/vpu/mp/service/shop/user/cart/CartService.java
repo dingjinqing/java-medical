@@ -10,7 +10,6 @@ import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
-import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.factory.CartProcessorContext;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -26,10 +25,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.Cart.CART;
 
@@ -62,32 +61,55 @@ public class CartService extends ShopBaseService {
      * @param userId 用户id
      * @return 购物车列表
      */
-    public WxAppCartListVo getCartList(Integer userId) {
-        WxAppCartListVo cartListVo;
+    public WxAppCartBo getCartList(Integer userId) {
+        return getCartList(userId,null);
+    }
+
+    /**
+     * 购物车列表
+     * @param userId userId 用户ID
+     * @param goodsIds goodsId 活动商品
+     * @return null
+     */
+    public WxAppCartBo getCartList(Integer userId, List<Integer> goodsIds){
+        List<Integer> productIdList;
+        List<Integer> goodsIdList;
         // 查询购物车记录
-        Result<? extends Record> records = db().select(
-                CART.CART_ID,CART.IS_CHECKED, CART.GOODS_NAME,  CART.GOODS_SPECS, CART.GOODS_PRICE, CART.EXTEND_ID, CART.CART_NUMBER,
-                GOODS.GOODS_ID, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS.GOODS_IMG, GOODS.LIMIT_BUY_NUM,
-                GOODS.LIMIT_MAX_NUM, GOODS.GOODS_TYPE, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.IS_CARD_EXCLUSIVE,
-                GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_IMG
-        ,GOODS_SPEC_PRODUCT.PRD_DESC)
-                .from(CART)
-                .innerJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
-                .innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(CART.PRODUCT_ID))
-                .where(CART.USER_ID.eq(userId)).orderBy(CART.CART_ID.desc()).fetch();
-        List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
-        List<Integer> productIdList = records.getValues(GOODS_SPEC_PRODUCT.PRD_ID);
-        List<Integer> goodsIdList = records.getValues(GOODS.GOODS_ID).stream().distinct().collect(Collectors.toList());
+        Result<CartRecord> cartRecords = getCartRecordsByUserId(userId);
+        List<WxAppCartGoods> appCartGoods = cartRecords.into(WxAppCartGoods.class);
+        //商品
+        goodsIdList =cartRecords.getValues(CART.GOODS_ID).stream().distinct().collect(Collectors.toList());
+        if (goodsIds!=null){
+            goodsIdList.retainAll(goodsIds);
+        }
+        Map<Integer, GoodsRecord> goodsRecordMap = goodsService.getGoodsRecordByIds(goodsIdList);
+        //规格
+        productIdList =cartRecords.getValues(CART.PRODUCT_ID);
+        Map<Integer, GoodsSpecProductRecord> productRecordMap = goodsSpecProductService.goodsSpecProductByIds(productIdList);
+        //初始化购物车数据
+        appCartGoods.forEach(cartGoods->{
+            cartGoods.setGoodsRecord(goodsRecordMap.get(cartGoods.getGoodsId()));
+            cartGoods.setProductRecord(productRecordMap.get(cartGoods.getProductId()));
+        });
+        //购物车业务数据
         WxAppCartBo cartBo = WxAppCartBo.builder()
                 .userId(userId).date(DateUtil.getLocalDateTime())
                 .productIdList(productIdList).goodsIdList(goodsIdList)
-                .cartGoodsList(cartGoodsList).invalidCartList(new ArrayList<>()).build();
-        if (0 == cartGoodsList.size()) {
+                .cartGoodsList(appCartGoods).invalidCartList(new ArrayList<>()).build();
+        if (0 == appCartGoods.size()) {
             return null;
         }
         cartProcessor.executeCart(cartBo);
-        return cartBo.getCartListVo();
+        return cartBo;
+    }
 
+    /**
+     * 获取购物车记录
+     * @param userId
+     * @return
+     */
+    private Result<CartRecord> getCartRecordsByUserId(Integer userId) {
+        return db().selectFrom(CART).where(CART.USER_ID.eq(userId)).orderBy(CART.CART_ID.desc()).fetch();
     }
 
 
@@ -170,7 +192,7 @@ public class CartService extends ShopBaseService {
             cartRecord.setCartNumber(goodsNumber.shortValue());
             cartRecord.setGoodsId(goodsRecord.getGoodsId());
             cartRecord.setGoodsName(goodsRecord.getGoodsName());
-            cartRecord.setGoodsSpecs(productRecord.getPrdSpecs());
+            cartRecord.setPrdDesc(productRecord.getPrdDesc());
             cartRecord.setProductId(prdId);
             cartRecord.setGoodsPrice(productRecord.getPrdPrice());
             cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);

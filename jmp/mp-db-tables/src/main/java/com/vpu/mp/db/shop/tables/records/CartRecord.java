@@ -5,17 +5,15 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Cart;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record17;
 import org.jooq.Row17;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -31,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Record17<Integer, Integer, Integer, Integer, String, String, String, Integer, String, BigDecimal, Byte, Short, BigDecimal, Byte, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 835569268;
+    private static final long serialVersionUID = 34143292;
 
     /**
      * Setter for <code>mini_shop_4748160.b2c_cart.cart_id</code>.
@@ -118,16 +116,16 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Recor
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_cart.goods_specs</code>. 例如,颜色:黑色
+     * Setter for <code>mini_shop_4748160.b2c_cart.prd_desc</code>. 规格描述，格式例子：颜色:红色 尺码:s
      */
-    public void setGoodsSpecs(String value) {
+    public void setPrdDesc(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_cart.goods_specs</code>. 例如,颜色:黑色
+     * Getter for <code>mini_shop_4748160.b2c_cart.prd_desc</code>. 规格描述，格式例子：颜色:红色 尺码:s
      */
-    public String getGoodsSpecs() {
+    public String getPrdDesc() {
         return (String) get(6);
     }
 
@@ -216,28 +214,28 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Recor
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_cart.type</code>. 类型 0 普通 
+     * Setter for <code>mini_shop_4748160.b2c_cart.type</code>. 类型 0 普通
      */
     public void setType(Byte value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_cart.type</code>. 类型 0 普通 
+     * Getter for <code>mini_shop_4748160.b2c_cart.type</code>. 类型 0 普通
      */
     public Byte getType() {
         return (Byte) get(13);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_cart.extend_id</code>. 扩展字段:对应type的类型 
+     * Setter for <code>mini_shop_4748160.b2c_cart.extend_id</code>. 扩展字段:对应type的类型
      */
     public void setExtendId(Integer value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_cart.extend_id</code>. 扩展字段:对应type的类型 
+     * Getter for <code>mini_shop_4748160.b2c_cart.extend_id</code>. 扩展字段:对应type的类型
      */
     public Integer getExtendId() {
         return (Integer) get(14);
@@ -356,7 +354,7 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Recor
      */
     @Override
     public Field<String> field7() {
-        return Cart.CART.GOODS_SPECS;
+        return Cart.CART.PRD_DESC;
     }
 
     /**
@@ -492,7 +490,7 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Recor
      */
     @Override
     public String component7() {
-        return getGoodsSpecs();
+        return getPrdDesc();
     }
 
     /**
@@ -628,7 +626,7 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Recor
      */
     @Override
     public String value7() {
-        return getGoodsSpecs();
+        return getPrdDesc();
     }
 
     /**
@@ -770,7 +768,7 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Recor
      */
     @Override
     public CartRecord value7(String value) {
-        setGoodsSpecs(value);
+        setPrdDesc(value);
         return this;
     }
 
@@ -903,7 +901,7 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Recor
     /**
      * Create a detached, initialised CartRecord
      */
-    public CartRecord(Integer cartId, Integer storeId, Integer userId, Integer goodsId, String goodsSn, String goodsName, String goodsSpecs, Integer productId, String prdSn, BigDecimal goodsPrice, Byte isChecked, Short cartNumber, BigDecimal originalPrice, Byte type, Integer extendId, Timestamp createTime, Timestamp updateTime) {
+    public CartRecord(Integer cartId, Integer storeId, Integer userId, Integer goodsId, String goodsSn, String goodsName, String prdDesc, Integer productId, String prdSn, BigDecimal goodsPrice, Byte isChecked, Short cartNumber, BigDecimal originalPrice, Byte type, Integer extendId, Timestamp createTime, Timestamp updateTime) {
         super(Cart.CART);
 
         set(0, cartId);
@@ -912,7 +910,7 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> implements Recor
         set(3, goodsId);
         set(4, goodsSn);
         set(5, goodsName);
-        set(6, goodsSpecs);
+        set(6, prdDesc);
         set(7, productId);
         set(8, prdSn);
         set(9, goodsPrice);
