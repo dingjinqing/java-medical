@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
@@ -145,11 +144,13 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.debug("WxAppCartBo:"+Util.toJson(cartBo));
         BigDecimal totalPrice  =new BigDecimal(0);
         byte isAllCheck  = 1;
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+                if (goods.getPrdPrice()==null){
+                    goods.setPrdPrice(goods.getGoodsPrice());
+                }
                 totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
             }else {
                 isAllCheck=0;
@@ -157,6 +158,8 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         }
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
+
+
     }
 
 

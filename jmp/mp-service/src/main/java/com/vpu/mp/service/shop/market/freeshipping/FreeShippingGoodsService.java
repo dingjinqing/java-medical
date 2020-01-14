@@ -72,6 +72,7 @@ public class FreeShippingGoodsService extends ShopBaseService {
         Byte delMarket = configService.shopCommonConfigService.getDelMarket();
         //是否显示购买按钮
         ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
+        showCart.setShowCart((byte) 1);
         FreeShipGoodsSearchVo vo =new FreeShipGoodsSearchVo();
         FreeShippingVo freeShippingVo = freeShip.into(FreeShippingVo.class);
         freeShippingVo.setRuleList(freeShippingRule.into(FreeShippingRuleVo.class));
@@ -92,10 +93,10 @@ public class FreeShippingGoodsService extends ShopBaseService {
                 catIds = new ArrayList<>(Util.splitValueToList(freeShip.getRecommendCatId()));
             }
             if (!freeShip.getRecommendSortId().trim().isEmpty()){
-                sortIds = new ArrayList<>(Util.splitValueToList(freeShip.getRecommendCatId()));
+                sortIds = new ArrayList<>(Util.splitValueToList(freeShip.getRecommendSortId()));
             }
             if (!freeShip.getRecommendGoodsId().trim().isEmpty()){
-                goodsIds = new ArrayList<>(Util.splitValueToList(freeShip.getRecommendCatId()));
+                goodsIds = new ArrayList<>(Util.splitValueToList(freeShip.getRecommendGoodsId()));
             }
         }
         //售罄是否显示
