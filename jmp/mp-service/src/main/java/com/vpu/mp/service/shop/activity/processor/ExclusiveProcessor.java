@@ -192,7 +192,6 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.debug("WxAppCartBo:"+ Util.toJson(cartBo));
         //会员卡绑定商品
         Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
         log.debug("会员绑定的商品[userCardExclusive:{"+Util.toJson(userCardExclusive)+"}]");

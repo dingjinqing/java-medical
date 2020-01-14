@@ -21,11 +21,9 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.base.BaseMarketingBaseVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
-import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.shop.activity.processor.FullReductionProcessor;
-import com.vpu.mp.service.shop.activity.processor.PreSaleProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -78,8 +76,7 @@ public class Calculate extends ShopBaseService {
     private ShopReturnConfigService returnCfg;
     @Autowired
     private FullReductionProcessor fullReductionProcessor;
-    @Autowired
-    private PreSaleProcessor preSaleProcessor;
+
     /**
      * 计算订单商品折扣金额
      *
@@ -285,7 +282,7 @@ public class Calculate extends ShopBaseService {
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
             if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())) {
                 //限次卡
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), card == null ? null : Lists.newArrayList(card));
                 vo.setDefaultMemberCard(card);
                 vo.setMemberCards(validCardList);
             } else {
@@ -294,7 +291,7 @@ public class Calculate extends ShopBaseService {
                 if (OrderConstant.DEFAULT_COUPON_OR_ORDER_SN.equals(param.getMemberCardNo())) {
                     defaultCard = userCard.userCardDao.getOrderGradeCard(param.getWxUserInfo().getUserId());
                 }
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), null);
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), defaultCard == null ? null : Lists.newArrayList(defaultCard));
                 defaultCard = defaultCard != null ? defaultCard : (CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0));
                 vo.setDefaultMemberCard(defaultCard);
                 vo.setMemberCards(validCardList);
@@ -668,20 +665,5 @@ public class Calculate extends ShopBaseService {
      */
     public List<OrderFullReduce> calculateFullReduce(OrderBeforeParam param, List<OrderGoodsBo> bos) {
         return fullReductionProcessor.calculate(param, bos);
-    }
-
-    /**
-     * 计算预售
-     * @param param
-     * @param bos
-     * @param tolalNumberAndPrice
-     * @param vo
-     * @return
-     */
-    public OrderPreSale calculatePreSale(OrderBeforeParam param, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice, OrderBeforeVo vo) {
-        if(!BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType())){
-            return null;
-        }
-        return preSaleProcessor.calculate(param, bos, tolalNumberAndPrice, vo);
     }
 }

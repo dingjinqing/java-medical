@@ -72,7 +72,7 @@ public class CartService extends ShopBaseService {
      * @return null
      */
     public WxAppCartBo getCartList(Integer userId, List<Integer> goodsIds){
-        List<Integer> productIdList;
+        List<Integer> productIdList ;
         List<Integer> goodsIdList;
         // 查询购物车记录
         Result<CartRecord> cartRecords = getCartRecordsByUserId(userId);
@@ -81,10 +81,18 @@ public class CartService extends ShopBaseService {
         goodsIdList =cartRecords.getValues(CART.GOODS_ID).stream().distinct().collect(Collectors.toList());
         if (goodsIds!=null){
             goodsIdList.retainAll(goodsIds);
+            productIdList =new ArrayList<>(goodsIdList.size());
+            cartRecords.forEach(cartRecord -> {
+                if (goodsIdList.contains(cartRecord.getGoodsId())){
+                    productIdList.add(cartRecord.getProductId());
+                }
+            });
+            appCartGoods = appCartGoods.stream().filter(cartGoods -> goodsIdList.contains(cartGoods.getGoodsId())).collect(Collectors.toList());
+        }else {
+            productIdList =cartRecords.getValues(CART.PRODUCT_ID);
         }
         Map<Integer, GoodsRecord> goodsRecordMap = goodsService.getGoodsRecordByIds(goodsIdList);
         //规格
-        productIdList =cartRecords.getValues(CART.PRODUCT_ID);
         Map<Integer, GoodsSpecProductRecord> productRecordMap = goodsSpecProductService.goodsSpecProductByIds(productIdList);
         //初始化购物车数据
         appCartGoods.forEach(cartGoods->{
@@ -195,6 +203,7 @@ public class CartService extends ShopBaseService {
             cartRecord.setPrdDesc(productRecord.getPrdDesc());
             cartRecord.setProductId(prdId);
             cartRecord.setGoodsPrice(productRecord.getPrdPrice());
+            cartRecord.setOriginalPrice(productRecord.getPrdPrice());
             cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
             cartRecord.insert();
         } else {
@@ -335,6 +344,16 @@ public class CartService extends ShopBaseService {
         return db().select(DSL.sum(CART.CART_NUMBER)).from(CART)
                 .where(CART.USER_ID.eq(userId))
                 .and(CART.GOODS_ID.eq(goodsId)).fetchOneInto(Integer.class);
+    }
+
+    /**
+     * 购物车商品数量
+     * @param userId 用户ID
+     * @return 商品数量
+     */
+    public Integer cartGoodsNum(Integer userId){
+        return db().select(DSL.sum(CART.CART_NUMBER)).from(CART)
+                .where(CART.USER_ID.eq(userId)).fetchOneInto(Integer.class);
     }
 
     /**

@@ -313,7 +313,7 @@ public class CouponService extends ShopBaseService {
 
         //根据优惠券使用状态、过期状态条件筛选
         MpBuildOptions(select, param);
-        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId())).and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte)0));
+        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
         PageResult<AvailCouponVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
             ExpireTimeVo remain = getExpireTime(list.getEndTime());
@@ -375,9 +375,13 @@ public class CouponService extends ShopBaseService {
     	Timestamp now = Timestamp.valueOf(LocalDateTime.now());
     	if(isUsed == 0 || isUsed == 1) {  //未使用、已使用状态
     		select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq(isUsed).and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(now)));
+    		if(isUsed == 0){
+                select.where(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte)0));
+            }
     	}else {  //已过期状态
     		//根据有效 开始时间、结束时间判断
             select.where(CUSTOMER_AVAIL_COUPONS.END_TIME.le(now));
+            select.where(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte)0));
     	}
     	select.orderBy(CUSTOMER_AVAIL_COUPONS.ID.desc());
     }
@@ -475,7 +479,7 @@ public class CouponService extends ShopBaseService {
         System.out.println(userId);
         //未使用
         Integer unused = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)
-                .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(now))))
+                .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(now)))).and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte)0))
                 .fetch().get(0).into(Integer.class);
         //已使用
         Integer used = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1)
@@ -483,7 +487,8 @@ public class CouponService extends ShopBaseService {
                 .fetch().get(0).into(Integer.class);
         //已过期
         Integer expire = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.END_TIME.le(now)))
-                .fetch().get(0).into(Integer.class);
+            .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte)0))
+            .fetch().get(0).into(Integer.class);
 
         red.setUnusedNum(unused);
         red.setUsedNum(used);

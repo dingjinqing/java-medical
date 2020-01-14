@@ -43,7 +43,7 @@ import com.vpu.mp.service.shop.market.gift.GiftService;
 import com.vpu.mp.service.shop.market.givegift.GiveGiftService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import com.vpu.mp.service.shop.market.groupdraw.*;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
@@ -57,6 +57,7 @@ import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
+import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
@@ -494,4 +495,9 @@ public class ShopApplication {
 
     @Autowired
     public EnterPolitelyService enterPolitelyService;
+
+    /**
+     * 小程序端分享有礼
+     */
+    public WxShareRewardService wxShareReward;
 }
