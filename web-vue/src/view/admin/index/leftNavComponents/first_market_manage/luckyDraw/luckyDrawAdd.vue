@@ -252,7 +252,7 @@
                     {{$t('luckyDraw.payLuckyDrawTips2')}}：
                     <el-input
                       size="small"
-                      placeholder="为空表示不消耗积分"
+                      :placeholder="$t('luckyDraw.consumed')"
                       style="width:125px"
                       v-model="requestParam.scorePerChance"
                     ></el-input>
@@ -845,7 +845,7 @@ export default {
             console.log('数据回显', res, this.requestParam)
             this.$forceUpdate()
           } else {
-            this.$message.error('获取数据失败!')
+            this.$message.error(this.$t('luckyDraw.fetchDataFail'))
             console.error(res)
           }
         })
