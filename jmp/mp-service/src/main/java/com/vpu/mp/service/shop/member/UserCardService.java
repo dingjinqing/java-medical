@@ -1,47 +1,5 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEND;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SYSTEM_UPGRADE;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -112,8 +70,47 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
 
 /**
  * @author 黄壮壮
@@ -172,9 +169,7 @@ public class UserCardService extends ShopBaseService {
 
 	public static final String DEFAULT_ADMIN = "0";
 
-	public static final String OPTIONINFO = OPEN_CARD_SEND;
 	public static final String DESC = "score_open_card";
-	public static final String SYSTEM_UP_GRADE = SYSTEM_UPGRADE;
 
 	/**
 	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回默认最低等级
@@ -250,7 +245,7 @@ public class UserCardService extends ShopBaseService {
 	 * @return cardId（当type为0时为检测可升级的卡id,type为1时为领取后的卡id),0为没有可升级的卡
 	 */
 	public Integer updateGrade(Integer userId, Integer cardId, Byte type) throws MpException {
-		assert userId != null : "userId required";
+		Assert.isTrue(userId != null, "userId required");
 
 		if (cardId != null) {
 			// 直接升级
@@ -512,17 +507,20 @@ public class UserCardService extends ShopBaseService {
 		ChargeMoneyRecordBuilder builder = ChargeMoneyRecordBuilder.create(db().newRecord(CHARGE_MONEY))
 				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
 				.cardNo(userCard.getCardNo()).payment("store.payment").createTime(DateUtil.getLocalDateTime());
+
 		// TODO 门店支付国际化
 		if (isNormalCard(card) && card.getSendMoney() != null) {
-			// TODO 管理员发卡
-			builder.charge(new BigDecimal(card.getSendMoney())).reason("member.card.admin.send.card").build().insert();
+			//  管理员发卡
+			builder.charge(new BigDecimal(card.getSendMoney())).reasonId(String.valueOf(RemarkTemplate.ADMIN_SEND_CARD.code)).build().insert();
 
 		}
 		if (isLimitCard(card)) {
-			builder.count(card.getCount().shortValue()).reason("member.card.charge.money.reason").build().insert();
+			// 管理员发卡 - 门店服务次数
+			builder.count(card.getCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.SEND_CARD_REASON.code)).build().insert();
 		}
 		if (isLimitCard(card) && card.getIsExchang() != null) {
-			builder.exchangCount(card.getExchangCount().shortValue()).reason("charge.money.reason.exchange").build()
+			// 管理员发卡 - 兑换商品数量
+			builder.exchangCount(card.getExchangCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code)).build()
 					.insert();
 		}
 
@@ -583,7 +581,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	private Timestamp calcCardExpireTime(MemberCardRecord card) {
-		assert card != null : "card should not be null";
+		Assert.isTrue(card != null,"card should not be null");
 		LocalDateTime expireTime = null;
 		LocalDateTime now = LocalDateTime.now();
 		if (isFixDate(card)) {
@@ -781,6 +779,18 @@ public class UserCardService extends ShopBaseService {
 		card.calcUsageTime();
 		card.setAvatar(avatar);
 		card.calcCash();
+		// 背景图
+		if(CardUtil.isBgImgType(card.getBgType())) {
+			// 全路径
+			if(!StringUtils.isBlank(card.getBgImg())) {
+				card.setBgImg(saas().getShopApp(getShopId()).image.imageUrl(card.getBgImg()));
+			}
+		}else {
+			if(StringUtils.isBlank(card.getBgColor())) {
+				// 默认背景色
+				card.setBgColor(CardUtil.getDefaultBgColor());
+			}
+		}
 	}
 
 	/**
@@ -790,7 +800,11 @@ public class UserCardService extends ShopBaseService {
 	 */
 	public String getCardAvatar() {
 		String relativePath = saas().shop.getShopAvatarById(this.getShopId());
-		return saas().getShopApp(getShopId()).image.imageUrl(relativePath);
+		if(StringUtils.isBlank(relativePath)) {
+			return null;
+		}else {
+			return saas().getShopApp(getShopId()).image.imageUrl(relativePath);
+		}
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException {
@@ -804,11 +818,18 @@ public class UserCardService extends ShopBaseService {
 		if (card == null) {
 			throw new UserCardNullException();
 		}
+
 		// 背景图片
 		if(CardUtil.isBgImgType(card.getBgType())) {
 			if(!StringUtils.isBlank(card.getBgImg())) {
 				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(card.getBgImg());
 				card.setBgImg(imageUrl);
+			}
+		}else {
+			// 背景色
+			if(StringUtils.isBlank(card.getBgColor())) {
+				// 默认背景色
+				card.setBgColor(CardUtil.getDefaultBgColor());
 			}
 		}
 
@@ -1463,26 +1484,39 @@ public class UserCardService extends ShopBaseService {
 		}
 	}
 
+	/**
+	 * 领取会员卡
+	 * @param param
+	 * @return 带有卡号的卡信息
+	 * @throws MpException
+	 */
 	public CardReceiveVo getCard(UserIdAndCardIdParam param) throws MpException {
 		if(param.getCardId()==null) {
 			return null;
 		}
 		CardReceiveVo vo = new CardReceiveVo();
 		MemberCardRecord gCard = getGradeCard(param);
+		// 第一次领取
+		boolean firstGet = true;
 		if (param.getCardId() != null) {
 			if (gCard == null) {
+				// 领取的卡为非等级卡
 				MemberCardRecord mCard = memberCardService.getCardById(param.getCardId());
 				if(mCard == null) {
 					return null;
 				}
+				// 判断是否需要购买
 				if (NumberUtils.BYTE_ZERO.equals(mCard.getIsPay())) {
 					int hasSendUser = userCardDao.getHasSendUser(param);
 					int hasSend = userCardDao.getHasSend(param.getCardId());
+					// 处理限次卡
 					if (CardUtil.isLimitCard(mCard.getCardType())) {
-						if (mCard.getLimit() > 0 && hasSendUser >= hasSendUser) {
+						// 每人领取次数
+						if (mCard.getLimit() > 0 && hasSendUser >= mCard.getLimit()) {
 							logger().info("达到领取上限");
 							throw new LimitCardAvailSendNoneException();
 						}
+						// 限次卡能够领取的总次数
 						if (mCard.getStock() > 0 && hasSend >= mCard.getStock()) {
 							logger().info("会员卡已领光");
 							throw new LimitCardAvailSendNoneException(JsonResultCode.CODE_LIMIT_CARD_AVAIL_SEND_ALL);
@@ -1492,11 +1526,26 @@ public class UserCardService extends ShopBaseService {
 					List<String> cardNoList = null;
 					// 普通卡只能领一张
 					if(CardUtil.isNormalCard(mCard.getCardType())) {
-
-						cardNoList = addUserCard(param.getUserId(), param.getCardId());
+						// 判断是否有此卡，或者有此卡，但是卡已被废除
+						Condition condition = DSL.noCondition();
+						condition = condition.and(USER_CARD.USER_ID.eq(param.getUserId()))
+									.and(USER_CARD.CARD_ID.eq(param.getCardId()))
+									.and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING));
+						 UserCardRecord res = db().selectFrom(USER_CARD).where(condition).fetchAnyInto(USER_CARD);
+						 if(res == null) {
+							 // 没有此会员卡
+							 cardNoList = addUserCard(param.getUserId(), param.getCardId());
+						 }else {
+							 // 已经拥有此会员卡
+							cardNoList = new ArrayList<String>();
+							cardNoList.add(res.getCardNo());
+							firstGet = false;
+						 }
 					}else {
+						// 限次卡
 						cardNoList = addUserCard(param.getUserId(), param.getCardId());
 					}
+
 					if (cardNoList == null || cardNoList.size() < 1) {
 						logger().info("领取失败");
 						throw new CardReceiveFailException();
@@ -1512,9 +1561,12 @@ public class UserCardService extends ShopBaseService {
 						vo.setCardNo(cardNoList.get(0));
 						return vo;
 					} else {
-						if (NumberUtils.BYTE_ZERO.equals(mCard.getActivation())
-								&& CardUtil.isNormalCard(mCard.getCardType())) {
-							memberCardService.sendCoupon(param.getUserId(), param.getCardId());
+						if(firstGet) {
+							// 第一次领取
+							if (NumberUtils.BYTE_ZERO.equals(mCard.getActivation())
+									&& CardUtil.isNormalCard(mCard.getCardType())) {
+								memberCardService.sendCoupon(param.getUserId(), param.getCardId());
+							}
 						}
 						vo.setCardNo(cardNoList.get(0));
 						return vo;
@@ -1554,6 +1606,11 @@ public class UserCardService extends ShopBaseService {
 		return vo;
 	}
 
+	/**
+	 * 获取用户的等级卡
+	 * @param param
+	 * @return
+	 */
 	public MemberCardRecord getGradeCard(UserIdAndCardIdParam param) {
 		MemberCardRecord card = cardDao.getCardById(param.getCardId());
 		if (card == null || !CardUtil.isGradeCard(card.getCardType())) {
@@ -1645,7 +1702,6 @@ public class UserCardService extends ShopBaseService {
 		});
 	}
 
-
 	/**
 	 * 检查用户等级升级
 	 * @param userId
@@ -1671,4 +1727,7 @@ public class UserCardService extends ShopBaseService {
 		return true;
 	}
 
+
+
 }
+
