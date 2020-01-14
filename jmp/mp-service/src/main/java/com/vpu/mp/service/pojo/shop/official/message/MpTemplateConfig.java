@@ -62,7 +62,11 @@ public enum MpTemplateConfig {
     SERVICE_ORDER_CANCEL(
             "OPENTM207847150",
                 "预约取消通知",
-                "{{first.DATA}}预约项目：{{keyword1.DATA}}预约时间：{{keyword2.DATA}}取消原因：{{keyword3.DATA}}{{remark.DATA}}");
+                "{{first.DATA}}预约项目：{{keyword1.DATA}}预约时间：{{keyword2.DATA}}取消原因：{{keyword3.DATA}}{{remark.DATA}}"),
+    GROUP_SUCCESS(
+            "OPENTM400932513",
+            "拼团成功通知",
+            "{{first.DATA}}商品名称：{{keyword1.DATA}}团长：{{keyword2.DATA}}成团人数：{{keyword3.DATA}}{{remark.DATA}}");
 	/**
 	 * 模板编号
 	 */

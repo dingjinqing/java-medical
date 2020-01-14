@@ -7,6 +7,8 @@ import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
@@ -54,6 +56,7 @@ import com.vpu.mp.db.shop.tables.records.JoinDrawListRecord;
 import com.vpu.mp.db.shop.tables.records.JoinGroupListRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -61,6 +64,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupDraw;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
@@ -75,8 +79,13 @@ import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisM
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisStatus;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisVo;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.DrawUser;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawBotton;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoParam;
@@ -89,6 +98,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupJoinDetailVo;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -1113,8 +1123,77 @@ public class GroupDrawService extends ShopBaseService {
 					.execute();
 			logger().info("修改参团状态" + execute2);
 			// 发送模板消息
-
+			sendMsg(groupDrawUserList, groupDraw);
 		}
 	}
 
+	public void sendMsg(List<GroupDrawList> groupDrawUserList, GroupDrawRecord groupDraw) {
+		log.info("发送模板消息");
+		String first = "您好，您有新的拼团成功订单";
+		for (GroupDrawList groupDrawList : groupDrawUserList) {
+			Integer userId = groupDrawList.getUserId();
+			Integer goodsId = groupDrawList.getGoodsId();
+			GoodsRecord goodsInfo = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
+			log.info("获取商品信息：" + goodsInfo);
+			String page = "pages1/pinlotteryinfo/pinlotteryinfo?group_id=" + groupDrawList.getGroupId()
+					+ "&group_draw_id=" + groupDrawList.getGroupDrawId() + "&goods_id=" + goodsId;
+			JoinGroupListRecord groupInfo = getGroupInfo(groupDrawList.getGroupDrawId(), groupDrawList.getGroupId());
+			UserRecord grouper = db().selectFrom(USER).where(USER.USER_ID.eq(groupInfo.getUserId())).fetchAny();
+			List<Integer> userIdList = new ArrayList<Integer>();
+			userIdList.add(userId);
+			logger().info("userIdList" + userIdList);
+			sendMp(groupDraw, first, userId, goodsInfo, page, grouper, userIdList);
+			sendMa(groupDraw, first, userId, goodsInfo, page, grouper, userIdList);
+		}
+	}
+
+	/**
+	 * 发送公众号
+	 * 
+	 * @param groupDraw
+	 * @param first
+	 * @param userId
+	 * @param goodsInfo
+	 * @param page
+	 * @param grouper
+	 * @param userIdList
+	 */
+	private void sendMp(GroupDrawRecord groupDraw, String first, Integer userId, GoodsRecord goodsInfo, String page,
+			UserRecord grouper, List<Integer> userIdList) {
+		String[][] data = new String[][] { { first, "#173177" }, { goodsInfo.getGoodsName(), "#173177" },
+				{ grouper.getUsername(), "#173177" }, { String.valueOf(groupDraw.getLimitAmount()), "#173177" },
+				{ "", "#173177" } };
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(data).build())
+				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+				.build();
+		logger().info("userId：" + userId + "mp准备发拼团成功订单");
+		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+				TaskJobEnum.SEND_MESSAGE.getExecutionType());
+	}
+
+	/**
+	 * 发送小程序
+	 * 
+	 * @param groupDraw
+	 * @param first
+	 * @param userId
+	 * @param goodsInfo
+	 * @param page
+	 * @param grouper
+	 * @param userIdList
+	 */
+	private void sendMa(GroupDrawRecord groupDraw, String first, Integer userId, GoodsRecord goodsInfo, String page,
+			UserRecord grouper, List<Integer> userIdList) {
+		String prizeName = "已成团，等待开奖";
+		String[][] data = new String[][] { { groupDraw.getName() }, { prizeName },
+				{ Util.getdate("yyyy-MM-dd HH:mm:ss") } };
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.maTemplateData(
+						MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(data).build())
+				.page(page).shopId(getShopId()).userIdList(userIdList)
+				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+				TaskJobEnum.SEND_MESSAGE.getExecutionType());
+	}
 }
