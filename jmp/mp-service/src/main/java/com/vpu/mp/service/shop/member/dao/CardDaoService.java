@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
 import org.jooq.Record1;
@@ -64,13 +65,13 @@ public class CardDaoService extends ShopBaseService {
 		User invitedUser = USER.as("a");
 		SelectJoinStep<?> select = db()
 				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
-						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME)
+						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME)
 				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 
 				).on(USER_CARD.USER_ID.eq(USER.USER_ID)));
 
 		buildOptions(param, select);
-		select.where(USER_CARD.CARD_ID.eq(param.getCardId()));
+		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.USER_ID.desc());
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardHolderVo.class);
 	}
 
@@ -87,24 +88,34 @@ public class CardDaoService extends ShopBaseService {
 		}
 		/** - 昵称 */
 		if (!StringUtils.isBlank(param.getUsername())) {
-			String likeValue = likeValue(param.getUsername());
+			String likeValue = likeValue(param.getUsername().trim());
 			select.where(USER.USERNAME.like(likeValue));
 		}
 		/** -手机号 */
 		if (!StringUtils.isBlank(param.getMobile())) {
-			select.where(USER.MOBILE.eq(param.getMobile()));
+			String likeValue = likeValue(param.getMobile().trim());
+			select.where(USER.MOBILE.like(likeValue));
 		}
 		/** - 会员卡号 */
 		if (!StringUtils.isBlank(param.getCardNo())) {
-			select.where(USER_CARD.CARD_NO.eq(param.getCardNo()));
+			String likeValue = likeValue(param.getCardNo().trim());
+			select.where(USER_CARD.CARD_NO.like(likeValue));
 		}
 		/** - 卡状态 */
 		if (param.getFlag() != null) {
 			/** - 状态为过期 */
+			Condition condition = DSL.noCondition();
 			if (param.getFlag().equals(UCARD_FG_EXPIRED)) {
-				select.where(USER_CARD.EXPIRE_TIME.le(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()));
-			} else if (param.getFlag().equals(UCARD_FG_USING) || param.getFlag().equals(UCARD_FG_STOP)) {
-				select.where(USER_CARD.FLAG.eq(param.getFlag()));
+				
+				condition = condition.and(USER_CARD.EXPIRE_TIME.le(DateUtil.getLocalDateTime()));
+				select.where(condition);
+			} else if (param.getFlag().equals(UCARD_FG_USING)) {
+				condition = condition.and(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
+									.and(USER_CARD.FLAG.eq(param.getFlag()));
+				select.where(condition);
+			}else if(param.getFlag().equals(UCARD_FG_STOP)) {
+				condition = condition.and(USER_CARD.FLAG.eq(param.getFlag()));
+				select.where(condition);
 			}
 		}
 		/** - 领卡时间 开始范围 */

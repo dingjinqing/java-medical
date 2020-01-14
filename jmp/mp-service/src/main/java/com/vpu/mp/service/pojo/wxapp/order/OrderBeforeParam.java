@@ -49,11 +49,11 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Byte isCart;
 	private Integer storeId;
     /**
-     * 0:默认选第一张；null：不选；其他：卡号
+     * 0:默认选第一张；null：小程序不选；""不可使用;其他：卡号
      */
 	private String memberCardNo;
     /**
-     * 0:默认选第一张；null：不选；其他：卡号
+     * 0:默认选第一张；null：不选；""不可使用；其他：卡号
      */
     private String couponSn;
     /**积分抵扣*/

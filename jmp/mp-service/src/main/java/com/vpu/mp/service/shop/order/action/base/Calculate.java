@@ -181,6 +181,10 @@ public class Calculate extends ShopBaseService {
      */
     public void calculateCoupon(OrderBeforeParam param, OrderBeforeVo vo) {
         logger().info("获取可用优惠卷start");
+        if(StringUtils.EMPTY.equals(param.getCouponSn())){
+            logger().info("不可使用优惠券，end");
+            return;
+        }
         if (vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType())) {
             logger().info("该次下单可以用优惠卷，准备获取优惠卷");
             //可用优惠卷
@@ -268,8 +272,12 @@ public class Calculate extends ShopBaseService {
      */
     public void calculateCardInfo(OrderBeforeParam param, OrderBeforeVo vo) {
         logger().info("获取可用会员卡列表start");
+        if(StringUtils.EMPTY.equals(param.getMemberCardNo())){
+            logger().info("不可使用会员卡，end");
+            return;
+        }
         //会员卡折扣
-        if (!StringUtils.isBlank(param.getMemberCardNo())) {
+        if (param.getMemberCardNo() != null) {
             /**使用会员卡，其中cardNo==0为使用默认会员卡*/
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
             if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())) {
@@ -282,7 +290,7 @@ public class Calculate extends ShopBaseService {
                 if (OrderConstant.DEFAULT_COUPON_OR_ORDER_SN.equals(param.getMemberCardNo())) {
                     defaultCard = userCard.userCardDao.getOrderGradeCard(param.getWxUserInfo().getUserId());
                 }
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), defaultCard == null ? Lists.newArrayList() : Lists.newArrayList(defaultCard));
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), defaultCard == null ? Lists.newArrayList() : null);
                 defaultCard = defaultCard != null ? defaultCard : (CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0));
                 vo.setDefaultMemberCard(defaultCard);
                 vo.setMemberCards(validCardList);

@@ -5,6 +5,8 @@ export const en = {
   leftTip2: 'Please enter the claim code',
   leftTip3: 'Immediate use',
   leftTip4: 'Share immediately',
+  leftTip5: 'All products available',
+  leftTip6: 'No threshold',
 
   couponType: 'Coupon Type',
   generalCoupons: 'General Coupons',
@@ -60,7 +62,7 @@ export const en = {
   enabledTip: 'Hidden is not displayed on the front product details page. Otherwise, it will be displayed on the front-end product details page for users to collect.',
   restrict: 'Using threshold',
   restrict2: 'Usage restriction',
-  restrictRadio1: 'No restriction',
+  restrictRadio1: 'No threshold (excluding freight)',
   restrictRadio2: 'full',
   restrictTip: 'available',
   suitGoods: 'Available goods',
