@@ -40,6 +40,7 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -61,6 +62,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import org.apache.commons.collections4.CollectionUtils;
+import org.aspectj.apache.bcel.generic.IINC;
 import org.jooq.Condition;
 import org.jooq.DatePart;
 import org.jooq.Record;
@@ -1371,6 +1373,25 @@ public class OrderInfoService extends ShopBaseService {
      */
     public Integer getOrderIdBySn(String orderSn){
         return db().select(TABLE.ORDER_ID).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOptionalInto(Integer.class).orElse(null);
+    }
+    
+    /**
+     * 获得待付款活动订单
+     * @param userId
+     * @param goodsId
+     * @param goodsType
+     * @param activityId
+     * @return
+     */
+    public OrderInfoRecord getWaitPayOrderByActivityId(Integer userId,Integer goodsId,Byte goodsType,Integer activityId) {
+		return  db().select(TABLE.asterisk()).from(TABLE, ORDER_GOODS)
+				.where(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)
+						.and(TABLE.ACTIVITY_ID.eq(activityId)
+								.and(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
+										.and(TABLE.USER_ID.eq(userId)
+												.and(ORDER_GOODS.GOODS_ID.eq(goodsId)
+														.and(DslPlus.findInSet(goodsType, TABLE.GOODS_TYPE)))))))
+				.fetchAnyInto(TABLE);
     }
 
 }
