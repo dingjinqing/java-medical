@@ -38,6 +38,7 @@ global.wxPage({
   onLoad: function (options) {
     var _this = this;
     _this.dataList()
+    clearTimeout(set_time_out);
   },
 
   /**
@@ -163,6 +164,35 @@ global.wxPage({
   },
 
   /**
+   * 优惠券删除
+   */
+  coupon_del: function (e) {
+    var that = this;
+    var coupon_sn = e.currentTarget.dataset.couponSn;
+    util.showModal('', '您确定要删除该优惠券？', function () {
+      var animate = '';
+      var Coupon = that.data.cou_list;
+      // util.api('/api/wxapp/coupon/del', function (res) {
+      //   if (res.error === 0) {
+      //     for (let i = 0; i < Coupon.length; i++) {
+      //       Coupon[i].right = 0;
+      //       if (coupon_sn == Coupon[i].coupon_sn) {
+      //         Coupon.splice(i, 1)
+      //         i--;
+      //       }
+      //     }
+      //     clearTimeout(set_time_out);
+      //     cou_request(that, this_type);
+      //     that.setData({
+      //       cou_list: Coupon,
+      //       animate: animate
+      //     })
+      //   }
+      // }, { coupon_sn: coupon_sn })
+    }, true, '取消', '确定')
+  },
+
+  /**
    * 优惠券状态tab切换
    */
   change: function (e) {
@@ -184,8 +214,9 @@ global.wxPage({
         this_type: 2,
       })
     }
-    _this.dataList()
     _this.data.page = 1;
+    clearTimeout(set_time_out);
+    _this.dataList()
   },
 
   /**
