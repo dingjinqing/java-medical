@@ -29,7 +29,7 @@
         </div>
         <ul
           v-if="data.goodsItems.length"
-          :style="((data.shop_style==='1' || data.shop_style==='2')?'display: flex;flex-wrap: wrap;':data.shop_style==='4'?'display:flex':'')+(data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:'')"
+          :style="((data.shop_style==='1' || data.shop_style==='2')?'display: flex;flex-wrap: wrap;':data.shop_style==='4'?'display:flex':'')+(data.goods_module_bg==='1'?`;background:${data.goods_bg_color}`:'')"
         >
           <li
             v-for="(item,index) in data.goods_img"
