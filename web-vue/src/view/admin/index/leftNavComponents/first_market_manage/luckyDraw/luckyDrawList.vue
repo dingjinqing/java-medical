@@ -248,7 +248,7 @@ export default {
         this.resDataFilter(res.content.dataList)
         this.tableData = res.content.dataList
       }).catch(() => {
-        this.$message.error('数据加载失败')
+        this.$message.error(this.$t('luckyDraw.dataLoadFail'))
       })
     },
     resDataFilter (data) {
@@ -272,7 +272,7 @@ export default {
       this.isShowAddFlag = true
       // 增加tab页--添加抽奖活动
       this.tabInfo.push({
-        title: '添加抽奖活动',
+        title: this.$t('luckyDraw.addSweepstakes'),
         name: '6'
       })
       this.tabSwitch = `6`
@@ -288,7 +288,7 @@ export default {
       this.isShowAddFlag = true
       // 增加tab页--添加抽奖活动
       this.tabInfo.push({
-        title: '添加抽奖活动',
+        title: this.$t('luckyDraw.addSweepstakes'),
         name: '6'
       })
       this.tabSwitch = `6`
@@ -361,7 +361,7 @@ export default {
 
         this.isShowAddFlag = false
         this.tabInfo.pop({
-          title: '添加抽奖活动',
+          title: this.$t('luckyDraw.addSweepstakes'),
           name: '6'
         })
       }

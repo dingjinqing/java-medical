@@ -114,19 +114,17 @@ public class OrderBeforeVo {
     /**???*/
     @Builder.Default
     private BigDecimal packageDiscount = BigDecimalUtil.BIGDECIMAL_ZERO;
-    /**???*/
+    /***/
     @Builder.Default
     private BigDecimal grouperCheapReduce = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**???*/
     @Builder.Default
     private BigDecimal preSaleDiscount = BigDecimalUtil.BIGDECIMAL_ZERO;
-    /**???*/
-    @Builder.Default
-    private BigDecimal bkOrderMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
-    /**???*/
-    @Builder.Default
+    /**补款金额*/
+    private BigDecimal bkOrderMoney;
+    /**补款订单发货开始时间*/
     private Timestamp bkShippingTime;
-    /**???*/
+    /**补款是否自动退定金*/
     private Byte bkReturnType;
     /*TODO 代付金额*/
     @Builder.Default
@@ -166,11 +164,18 @@ public class OrderBeforeVo {
         orderRecord.setPackageDiscount(getPackageDiscount());
         orderRecord.setPreSaleDiscount(getPreSaleDiscount());
         orderRecord.setOrderPayWay(getOrderPayWay());
-        orderRecord.setBkOrderMoney(getBkOrderMoney());
-        orderRecord.setBkShippingTime(getBkShippingTime());
-        orderRecord.setBkReturnType(getBkReturnType());
+        if(getBkOrderMoney() != null){
+            orderRecord.setBkOrderMoney(getBkOrderMoney());
+        }
+        if(getBkShippingTime() != null){
+            orderRecord.setBkShippingTime(getBkShippingTime());
+        }
+        if(getBkReturnType() != null){
+            orderRecord.setReturnTypeCfg(getBkReturnType());
+        }
         orderRecord.setInsteadPayMoney(getInsteadPayMoney());
         orderRecord.setExchang(getExchang());
+
         //orderRecord.setFreeShip(getFreeShip());
         //orderRecord.setFreeDetail(getFreeDetail());
         //orderRecord.setPosOrderAction(getPosOrderAction());

@@ -464,6 +464,9 @@ export default {
     // 图片分组查询数据处理函数
     handleToQueryImgsData (currentPage3, width, height, flag) {
       let obj = ''
+      if (this.firstNodeId === '') {
+        this.firstNodeId = 0
+      }
       obj = {
         'page': currentPage3,
         'imgCatId': this.firstNodeId,
