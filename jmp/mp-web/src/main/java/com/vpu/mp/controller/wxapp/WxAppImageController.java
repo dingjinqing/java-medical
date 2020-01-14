@@ -32,12 +32,15 @@ public class WxAppImageController extends WxAppBaseController {
    */
   @PostMapping("/upload")
   protected JsonResult upload(UploadImageParam param, Part file) throws IOException, Exception {
+      logger().info("上传单张图片"+file);
     // 校验
     ResultMessage jsonResultCode = shop().image.validImageParam(param, file);
     if (!jsonResultCode.getFlag()) {
       return this.fail(jsonResultCode);
     }
+      logger().info("校验结束");
     UploadPath uploadPath = shop().image.getImageWritableUploadPath(file.getContentType());
+      logger().info("开始上传又拍云");
     // 上传又拍云
     boolean ret =
         shop().image.uploadToUpYunBySteam(uploadPath.relativeFilePath, file.getInputStream());
@@ -45,6 +48,7 @@ public class WxAppImageController extends WxAppBaseController {
       // 保存记录
       UploadedImageVo uploadedImageVo =
           shop().image.addImageToDb(param, file, uploadPath).into(UploadedImageVo.class);
+      logger().info("上传完成");
       return this.success(uploadedImageVo);
     }
     return fail(JsonResultCode.CODE_IMGAE_UPLOAD_FAILED);
