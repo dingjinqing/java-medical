@@ -19,12 +19,12 @@
     word-break: break-all;
     height: 180rpx;
 }
-.textimg_container .small_text > view{
+/* .textimg_container .small_text > view{
     overflow: hidden;
 }
 .textimg_container .big_text > view{
     overflow: hidden;
-}
+} */
 .textimg_container .big_text{
     overflow: hidden;
     word-break: break-word;
