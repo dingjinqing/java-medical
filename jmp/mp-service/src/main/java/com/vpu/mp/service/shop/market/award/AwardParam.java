@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.award;
 
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRule;
+import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,9 +10,14 @@ import org.apache.commons.lang3.StringUtils;
  * @date 1/13/20
  */
 @Data
+@Builder
 public class AwardParam {
-    Integer activityId;
-    Integer userId;
-    ShareRule rule;
-    String orderSn = StringUtils.EMPTY;
+    public Integer activityId;
+    public Integer userId;
+    public ShareRule rule;
+    public String orderSn = StringUtils.EMPTY;
+    /**
+     * 积分来源
+     */
+    public Integer changeWay;
 }

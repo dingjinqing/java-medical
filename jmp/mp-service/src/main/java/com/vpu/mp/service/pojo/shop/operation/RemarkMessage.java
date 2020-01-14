@@ -63,6 +63,7 @@ public class RemarkMessage {
      * 分享有礼
      */
     public static final String MSG_SHARE_HAS_GIFT = "share.has.gift";
+    public static final String MSG_ENTER_HAS_GIFT = "enter.has.gift";
 
 	/**
 	 * 管理员

@@ -30,9 +30,8 @@ public class ScoreAward implements Award {
         scoreParam.setScore(param.getRule().getScore());
         scoreParam.setUserId(param.getUserId());
         scoreParam.setOrderSn(param.getOrderSn());
-        scoreParam.setChangeWay(55);
+        scoreParam.setChangeWay(param.getChangeWay());
         scoreParam.setRemarkCode(RemarkTemplate.SHARE_HAS_GIFT.code);
-        scoreParam.setRemarkData(RemarkTemplate.SHARE_HAS_GIFT.name());
         scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
         try {
             scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());

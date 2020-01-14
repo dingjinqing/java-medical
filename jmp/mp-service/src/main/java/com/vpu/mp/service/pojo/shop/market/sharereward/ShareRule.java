@@ -54,4 +54,7 @@ public class ShareRule {
     // 奖品剩余份数
     private Integer stock;
 
+    // 活动规则等级
+    private Byte ruleLevel;
+
 }

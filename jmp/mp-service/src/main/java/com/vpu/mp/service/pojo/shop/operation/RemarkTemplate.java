@@ -78,6 +78,10 @@ public enum RemarkTemplate {
      * 分享有礼
      */
     SHARE_HAS_GIFT(4007, RemarkMessage.MSG_SHARE_HAS_GIFT),
+    /**
+     * 开屏有礼
+     */
+    ENTER_HAS_GIFT(4008, RemarkMessage.MSG_ENTER_HAS_GIFT),
 
     /**
      * 管理员

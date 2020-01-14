@@ -522,9 +522,11 @@ public class ShareRewardService extends ShopBaseService {
             add(third);
         }};
         list = list.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        Byte ruleLevel = BYTE_ONE;
         for (ShareRule shareRule : list) {
             sum += shareRule.getInviteNum();
             shareRule.setInviteNum(sum);
+            shareRule.setRuleLevel(ruleLevel++);
         }
         log.info("分享有礼活动 {} 对应的分享规则为：{}！", id, Util.toJson(list));
         shareReward.setShareRules(list);
