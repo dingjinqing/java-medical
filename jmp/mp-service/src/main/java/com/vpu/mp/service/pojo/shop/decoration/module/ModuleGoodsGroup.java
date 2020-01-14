@@ -15,6 +15,12 @@ import java.util.List;
 public class ModuleGoodsGroup extends ModuleBase {
 
     /**
+     * 分组内容
+     */
+    @JsonProperty("sort_group_arr")
+    private List<SortGroup> sortGroupArr;
+
+    /**
      *菜单样式radio，0顶部展示商品分组，1左侧展示商品分组
      */
     @JsonProperty("menu_style")
@@ -165,5 +171,57 @@ public class ModuleGoodsGroup extends ModuleBase {
          */
         @JsonProperty("new_label_img")
         private String newLabelImg;
+    }
+
+    @Data
+    public static class SortGroup{
+
+        /**
+         *
+         */
+        @JsonProperty("sort_name")
+        private String sortName;
+
+        /**
+         *
+         */
+        @JsonProperty("group_name")
+        private String groupName;
+
+        /**
+         *
+         */
+        @JsonProperty("sort_id")
+        private Integer sortId;
+
+        /**
+         *
+         */
+        @JsonProperty("sort_type")
+        private Byte sortType;
+
+        /**
+         *
+         */
+        @JsonProperty("group_goods_id")
+        private Integer groupGoodsId;
+
+        /**
+         *
+         */
+        @JsonProperty("group_goods_num")
+        private Integer groupGoodsNum;
+
+        /**
+         *
+         */
+        @JsonProperty("is_all")
+        private Byte isAll;
+
+        /**
+         *
+         */
+        @JsonProperty("sort_goods_num")
+        private Integer sortGoodsNum;
     }
 }
