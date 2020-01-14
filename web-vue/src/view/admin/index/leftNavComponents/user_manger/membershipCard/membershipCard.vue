@@ -86,7 +86,7 @@
                       </el-tooltip>
                     </div>
 
-                    <div @click="handleToTips(2,item,index,0)">
+                    <div v-if="item.flag !== 3"   @click="handleToTips(2,item,index,0)">
                       <el-tooltip
                         class="item"
                         effect="dark"
