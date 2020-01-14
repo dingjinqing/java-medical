@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import lombok.Data;
@@ -72,16 +73,17 @@ public class WxAppCartGoods {
      * 商品状态 1 在售 2 下架 3 删除 4 售罄 5
      */
     private Byte goodsStatus =GOODS_STATUS_ON_SALE;
-    private Integer limitBuyNum;
-    private Integer limitMaxNum;
+
     //***** 商品属性 *************
     /**
      * 商品
      */
+    @JsonIgnore
     GoodsRecord goodsRecord;
     /**
      * 规格
      */
+    @JsonIgnore
     GoodsSpecProductRecord productRecord;
     //***** 活动属性 **************
     /**

@@ -15,7 +15,7 @@
             <li
               v-for="(item,index) in showData"
               :key="index"
-              :style="((index !==0&&index!==1)?'margin-top:5px;':'')+modulesData.list_styles===1?'display:flex;width:100%':'display:block'"
+              :style="(modulesData.list_styles===1?'display:flex;width:100%;':'display:block;')+((index !==0&&index!==1)?'margin-top:5px;':'')"
             >
               <div
                 class="liTop"
