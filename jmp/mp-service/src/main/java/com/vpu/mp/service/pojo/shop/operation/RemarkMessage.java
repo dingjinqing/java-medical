@@ -38,6 +38,16 @@ public class RemarkMessage {
 	public static final String MSG_CARD_RECEIVE_SEND = "card.receive.send";
 	/** 卡升级赠送积分 */
 	public static final String MSG_CARD_UPGRADE = "card.upgrade.send";
+	/** 发卡原因： 管理员发卡 - 门店服务次数  */
+	public static final String SEND_CARD_REASON = "member.card.charge.money.reason";
+	/** 管理发卡 */
+	public static final String ADMIN_SEND_CARD = "member.card.admin.send.card";
+	/** 开卡赠送 */
+	public static final String OPEN_CARD_SEND = "member.card.open.send";
+	/** 系统检测升级 */
+	public static final String SYSTEM_UPGRADE = "member.card.system.upgrade";
+	
+	
 	
 	/**
 	 * 登录
@@ -60,6 +70,9 @@ public class RemarkMessage {
 	public static final String MSG_RECEIVE_COUPON = "receive.coupon";
 	/** 好友助力失败奖励 */
 	public static final String MSG_FRIENDS_HELP_FAIL = "friends.help.fail";
+	/** 门店支付 */
+	public static final String STORE_PAYMEMBT = "member.card.charge.money.payment";
+	
 	
 	/**
 	 * 管理员

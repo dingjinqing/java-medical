@@ -344,6 +344,10 @@ export default {
     },
     prepareCardData () {
       this.dealWithDynamicArrayData()
+      let pullPath = this.$imageHost + '/'
+      if (this.cardNameAndBg.bgImg) {
+        this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
+      }
       let obj = {
         'flag': this.cardAvailableCfgData.flag,
         'id': this.cardId,

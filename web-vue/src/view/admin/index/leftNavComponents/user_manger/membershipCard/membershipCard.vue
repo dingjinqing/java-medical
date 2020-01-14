@@ -919,7 +919,7 @@ export default {
       min-width: 1000px;
       padding-right: 0;
       .firstListDiv {
-        width: 272px;
+        width: 270px;
         float: left;
         margin-right: 1%;
         margin-bottom: 20px;

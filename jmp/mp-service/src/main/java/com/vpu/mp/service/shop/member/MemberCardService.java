@@ -904,9 +904,16 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 		if (result != null) {
-			// 获取头像
+			
 			String avatar = saas().shop.getShopAvatarById(this.getShopId());
-			result.dataList.stream().forEach(item -> item.setAvatar(avatar));
+			result.dataList.stream().forEach(item -> {
+				// 获取头像
+				item.setAvatar(avatar);
+				// 背景图片全路径
+				if(!StringUtils.isBlank(item.getBgImg())) {
+					item.setBgImg(domainConfig.imageUrl(item.getBgImg()));
+				}
+			});
 
 		}
 		return result;
