@@ -25,6 +25,7 @@
     "v-text": "../text/index",
     "v-text-image": "../text-image/index",
     "v-hot-area": "../hot-area/index",
-    "v-window": "../window/index"
+    "v-window": "../window/index",
+    "v-goods-group": "../goods-group/index"
   }
 }

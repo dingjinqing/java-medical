@@ -199,7 +199,7 @@ export default {
         this.pageParams = res.content.page
         this.tableData = this.resDataFilter(res.content.dataList)
       }).catch(() => {
-        this.$message.error('数据加载失败')
+        this.$message.error(this.$t('luckyDraw.fetchDataFail'))
       })
     },
     resDataFilter (data) {
