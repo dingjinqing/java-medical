@@ -533,8 +533,8 @@
                   <span>
                     {{
                        (goodsTypeArray.indexOf($t('goodsTypeList')[5][0] == -1)) ?
-                       ($t('order.scoreDiscount') +'-'+ currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2)) :
-                       ($t('order.scoreExchange') +'-'+ currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2))
+                       ($t('order.scoreDiscount') +'-'+ currencyPool[order.currency][lang][1] + order.scoreDiscount.toFixed(2)) :
+                       ($t('order.scoreExchange') +'-'+ currencyPool[order.currency][lang][1] + order.scoreDiscount.toFixed(2))
                     }}
                   </span>
                 </p>
