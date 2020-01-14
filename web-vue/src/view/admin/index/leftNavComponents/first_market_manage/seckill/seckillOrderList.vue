@@ -129,7 +129,7 @@ export default {
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       // 订单状态
-      if (this.requestParams.selectedOrderStatus !== '') {
+      if (this.requestParams.selectedOrderStatus) {
         this.requestParams.orderStatus = []
         this.requestParams.orderStatus.push(this.requestParams.selectedOrderStatus)
       }
