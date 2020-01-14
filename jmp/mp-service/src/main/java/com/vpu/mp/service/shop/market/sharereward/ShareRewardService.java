@@ -8,12 +8,12 @@ import com.vpu.mp.db.shop.tables.ShareAwardRecord;
 import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.sharereward.*;
+import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
@@ -45,7 +44,7 @@ import static org.jooq.impl.DSL.sum;
  */
 @Slf4j
 @Service
-public class ShareRewardService extends ShopBaseService {
+public class ShareRewardService extends BaseShopConfigService {
     @Autowired
     private CouponService couponService;
 
@@ -428,7 +427,7 @@ public class ShareRewardService extends ShopBaseService {
      * @param value 每日用户可分享次数上限值
      */
     public void updateDailyShareAward(Integer value) {
-        db().update(SHOP_CFG).set(SHOP_CFG.V, String.valueOf(value)).where(SHOP_CFG.K.eq(DAILY_SHARE_AWARD)).execute();
+        this.set(DAILY_SHARE_AWARD, String.valueOf(value));
     }
 
     /**
@@ -436,8 +435,8 @@ public class ShareRewardService extends ShopBaseService {
      *
      * @return 每日用户可分享次数上限值
      */
-    public String getDailyShareAwardValue() {
-        return db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(DAILY_SHARE_AWARD)).fetchOptionalInto(String.class).orElse("0");
+    public Integer getDailyShareAwardValue() {
+        return this.get(DAILY_SHARE_AWARD, Integer.class, 0);
     }
 
     /**

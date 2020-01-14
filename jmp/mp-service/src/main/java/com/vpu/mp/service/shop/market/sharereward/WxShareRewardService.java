@@ -11,8 +11,10 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.sharereward.GoodsShareDetail;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardInfoVo;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRule;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.market.enterpolitely.ExtBo;
 import com.vpu.mp.service.pojo.wxapp.market.sharereward.ShareParam;
 import com.vpu.mp.service.shop.market.award.Award;
@@ -28,6 +30,7 @@ import org.jooq.TableField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,12 +61,12 @@ public class WxShareRewardService extends ShopBaseService {
      *
      * @param param the param
      */
-    public void addShareRecord(ShareParam param) {
+    public void shareAward(ShareParam param) {
         // 添加分享记录
         ShareRecordRecord recordRecord = shareRecord(param);
         int activityId = param.getActivityId();
         int userId = param.getUserId();
-        int goodId = param.getGoodId();
+        int goodId = param.getGoodsId();
         // 活动可用性校验/分享的商品有效性校验
         shareReward.activityAvailable(activityId, goodId);
         // 添加分享有礼活动记录
@@ -129,6 +132,44 @@ public class WxShareRewardService extends ShopBaseService {
      */
     public boolean recordIsExist(Condition condition) {
         return db().fetchExists(SHARE_RECORD, condition);
+    }
+
+    /**
+     * Gets share info.商品详情页点击分享按钮弹出分享有礼详情
+     *
+     * @param userId     the user id
+     * @param goodsId    the goods id
+     * @param activityId the activity id
+     * @return the share info
+     */
+    public GoodsShareDetail getShareInfo(Integer userId, Integer goodsId, Integer activityId) {
+        // 活动可用性校验/分享的商品有效性校验
+        shareReward.activityAvailable(activityId, goodsId);
+        // 获取活动信息详情
+        ShareRewardInfoVo info = shareReward.getShareInfo(activityId);
+        List<ShareRule> rules = info.getShareRules();
+        rules.forEach(rule -> {
+            rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel())));
+        });
+        // 获取每日用户可分享次数上限参数
+        int limitNum = shareReward.getDailyShareAwardValue();
+
+        return GoodsShareDetail.builder().dailyShareLimit(limitNum).infoVo(info).build();
+    }
+
+    public List<Integer> getAttendUserList(Integer userId, Integer goodsId, Integer activityId, Byte level) {
+        return db().select(ATTEND.USER_ID).from(ATTEND)
+            .where(ATTEND.SHARE_ID.eq(activityId).and(ATTEND.LAUNCH_USER_ID.eq(userId))
+                .and(ATTEND.GOODS_ID.eq(goodsId))).and(ATTEND.LEVEL.eq(level))
+            .fetchInto(Integer.class);
+    }
+
+    public List<UserInfo> getBatchUserList(List<Integer> userIds) {
+        return new ArrayList<UserInfo>(8) {{
+            userIds.forEach(id -> {
+                add(userService.getUserInfo(id));
+            });
+        }};
     }
 
     /**
