@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -292,16 +293,13 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(TABLE.SCORE_DISCOUNT.greaterThan(BigDecimal.ZERO));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE:
-				select.where(ORDER_INFO.GOODS_TYPE
-						.likeRegex(getGoodsTypeToSearch(new Byte[] { OrderConstant.GOODS_TYPE_INTEGRAL })));
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_INTEGRAL})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_COD:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_COD));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE:
-				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(
-						new Byte[] { OrderConstant.GOODS_TYPE_LOTTERY_PRESENT, OrderConstant.GOODS_TYPE_PROMOTE_ORDER,
-								OrderConstant.GOODS_TYPE_ASSESS_ORDER, OrderConstant.GOODS_TYPE_PAY_AWARD })));
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT, BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER, BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER, BaseConstant.ACTIVITY_TYPE_PAY_AWARD})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_WXPAY:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_WX_PAY));
@@ -334,41 +332,38 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return sbr.deleteCharAt(sbr.length() - 1).toString();
 	}
+    /**
+     * 订单goodsType insert构造
+     * @param orderType 订单类型
+     */
+    public static String getGoodsTypeToInsert(List<Byte> orderType) {
+        if(CollectionUtils.isEmpty(orderType)){
+            orderType.add(BaseConstant.ACTIVITY_TYPE_GENERAL);
+        }
+        //distinct
+        orderType = orderType.stream().distinct().collect(Collectors.toList());
+        //sort A->Z
+        orderType.sort(Byte::compareTo);
+        StringBuilder sbr = new StringBuilder();
+        for (Byte one : orderType) {
+            //Prefix
+            sbr.append("[");
+            //查找条件
+            sbr.append(one);
+            //suffix
+            sbr.append("]");
+        }
+        return sbr.toString();
+    }
 
-	/**
-	 * 订单goodsType insert构造
-	 * 
-	 * @param orderType 订单类型
-	 */
-	public static String getGoodsTypeToInsert(List<Byte> orderType) {
-		if (CollectionUtils.isEmpty(orderType)) {
-			orderType.add(OrderConstant.GOODS_TYPE_GENERAL);
-		}
-		// distinct
-		orderType = orderType.stream().distinct().collect(Collectors.toList());
-		// sort A->Z
-		orderType.sort(Byte::compareTo);
-		StringBuilder sbr = new StringBuilder();
-		for (Byte one : orderType) {
-			// Prefix
-			sbr.append("[");
-			// 查找条件
-			sbr.append(one);
-			// suffix
-			sbr.append("]");
-		}
-		return sbr.toString();
-	}
-
-	/**
-	 * 转化订单类型
-	 * 
-	 * @param orderType
-	 * @return
-	 */
-	public static String[] orderTypeToArray(String orderType) {
-		return orderType.substring(1, orderType.length() - 1).split("\\]\\[");
-	}
+    /**
+     * 转化订单类型
+     * @param orderType
+     * @return
+     */
+    public static String[] orderTypeToArray(String orderType) {
+        return orderType.substring(1, orderType.length() - 1 ).split("\\]\\[");
+    }
 
 	/**
 	 * 构造营销订查询条件
@@ -698,9 +693,8 @@ public class OrderInfoService extends ShopBaseService {
 			/** 积分支付 */
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_DISCOUNT);
 		}
-		if (Arrays.asList(order.getGoodsType().split(","))
-				.contains(Byte.valueOf(OrderConstant.GOODS_TYPE_INTEGRAL).toString())) {
-			/** 积分兑换 */
+		if(Arrays.asList(order.getGoodsType().split(",")).contains(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_INTEGRAL).toString())) {
+			/**积分兑换*/
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE);
 		}
 		if (OrderConstant.PAY_CODE_COD.equals(order.getPayCode())) {
@@ -757,153 +751,170 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return UserAddressVo
 	 */
 	public UserAddressVo getLastOrderAddress(Integer userId) {
-		return db()
-				.select(TABLE.CONSIGNEE, TABLE.PROVINCE_NAME, TABLE.PROVINCE_CODE, TABLE.CITY_NAME, TABLE.CITY_CODE,
-						TABLE.DISTRICT_NAME, TABLE.DISTRICT_CODE, TABLE.CONSIGNEE, TABLE.ADDRESS, TABLE.MOBILE,
-						TABLE.ADDRESS_ID)
-				.from(TABLE).where(TABLE.USER_ID.eq(userId)).orderBy(TABLE.ORDER_ID.desc()).limit(1)
-				.fetchAnyInto(UserAddressVo.class);
+		return db().
+				select(TABLE.CONSIGNEE, TABLE.PROVINCE_NAME, TABLE.PROVINCE_CODE, TABLE.CITY_NAME, TABLE.CITY_CODE, TABLE.DISTRICT_NAME, TABLE.DISTRICT_CODE, TABLE.CONSIGNEE, TABLE.ADDRESS, TABLE.MOBILE, TABLE.ADDRESS_ID).
+				from(TABLE).
+				where(TABLE.USER_ID.eq(userId)).
+				orderBy(TABLE.ORDER_ID.desc()).
+				limit(1).
+				fetchAnyInto(UserAddressVo.class);
 	}
 
-	/**
-	 * 创建订单
-	 */
-	public OrderInfoRecord addRecord(String orderSn, CreateParam param, CreateOrderBo orderBo,
-			List<OrderGoodsBo> goodsBos, OrderBeforeVo beforeVo) {
-		OrderInfoRecord order = db().newRecord(TABLE);
-		// 基础信息
-		order.setOrderSn(orderSn);
-		order.setShopId(getShopId());
-		// param赋值
-		param.intoRecord(order);
-		// before order赋值
-		beforeVo.intoRecord(order);
-		// orderBo赋值
-		orderBo.intoRecord(order);
-		// 订单类型
-		order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
-		// TODO 补款状态
-		order.setBkOrderPaid((byte) 0);
-		// TODO 代付人数
-		order.setInsteadPayNum((short) 0);
-		// TODO 推广信息
-		order.setIsPromote((byte) 0);
-		// 主订单号
-		if (orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)) {
-			order.setMainOrderSn(order.getOrderSn());
-		}
-		// 会员卡
-		if (beforeVo.getDefaultMemberCard() != null) {
-			order.setMemberCardId(beforeVo.getDefaultMemberCard().getCardId());
-			order.setCardNo(beforeVo.getDefaultMemberCard().getCardNo());
-		}
-		// 门店
-		if (orderBo.getStore() != null) {
-			order.setStoreId(orderBo.getStore().getStoreId());
-			order.setStoreName(orderBo.getStore().getStoreName());
-			// TODO
-			order.setVerifyCode("");
-		}
-		// 支付方式
+    /**
+     * 创建订单
+     */
+	public OrderInfoRecord addRecord(String orderSn, CreateParam param, CreateOrderBo orderBo, List<OrderGoodsBo> goodsBos, OrderBeforeVo beforeVo){
+        OrderInfoRecord order = db().newRecord(TABLE);
+        //基础信息
+        order.setOrderSn(orderSn);
+        order.setShopId(getShopId());
+        //param赋值
+        param.intoRecord(order);
+        //before order赋值
+        beforeVo.intoRecord(order);
+        //orderBo赋值
+        orderBo.intoRecord(order);
+        //订单类型
+        order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
+        //TODO 补款状态
+        order.setBkOrderPaid((byte)0);
+        //TODO 代付人数
+        order.setInsteadPayNum((short)0);
+        //TODO 推广信息
+        order.setIsPromote((byte)0);
+        //主订单号
+        if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT)){
+            order.setMainOrderSn(order.getOrderSn());
+        }
+        //会员卡
+        if(beforeVo.getDefaultMemberCard() != null){
+            order.setMemberCardId(beforeVo.getDefaultMemberCard().getCardId());
+            order.setCardNo(beforeVo.getDefaultMemberCard().getCardNo());
+        }
+        //门店
+        if (orderBo.getStore() != null) {
+            order.setStoreId(orderBo.getStore().getStoreId());
+            order.setStoreName(orderBo.getStore().getStoreName());
+            //TODO
+            order.setVerifyCode("");
+        }
+        //支付方式
 
-		if (Boolean.FALSE) {
+        if(Boolean.FALSE){
 
-		}
-		return order;
-	}
+        }
+        return order;
+    }
 
-	/**
-	 * 微信支付完成支付数据更新到订单
-	 * 
-	 * @param prepayId 预支付id
-	 * @param orderId  订单id
-	 * @param orderSn  bk特殊
-	 */
-	public void updatePrepayId(String prepayId, Integer orderId, String orderSn) {
-		if (orderSn.endsWith(OrderConstant.BK_SN_SUFFIX)) {
-			db().update(TABLE).set(TABLE.BK_PREPAY_ID, prepayId).set(TABLE.BK_ORDER_SN, orderSn)
-					.where(TABLE.ORDER_ID.eq(orderId)).execute();
-		} else {
-			db().update(TABLE).set(TABLE.PREPAY_ID, prepayId).where(TABLE.ORDER_ID.eq(orderId)).execute();
-		}
-	}
+    /**
+     * 微信支付完成支付数据更新到订单
+     * @param prepayId 预支付id
+     * @param orderId 订单id
+     * @param orderSn bk特殊
+     */
+    public void updatePrepayId(String prepayId, Integer orderId, String orderSn){
+	    if(orderSn.endsWith(OrderConstant.BK_SN_SUFFIX)) {
+            db().update(TABLE).set(TABLE.BK_PREPAY_ID, prepayId)
+                .set(TABLE.BK_ORDER_SN, orderSn)
+                .where(TABLE.ORDER_ID.eq(orderId)).execute();
+        }else {
+            db().update(TABLE).set(TABLE.PREPAY_ID, prepayId).where(TABLE.ORDER_ID.eq(orderId)).execute();
+        }
+    }
 
-	/**
-	 * 自动任务获取可关闭订单(过滤定金未支付订单)
-	 */
-	public Result<OrderInfoRecord> getCanAutoCloseOrders() {
-		return db().selectFrom(TABLE)
-				.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
-						.and(TABLE.EXPIRE_TIME.le(DateUtil.getSqlTimestamp()))
-						.and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL))
-						.and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO)))
-				.fetch();
-	}
+    /**
+     * 自动任务获取可关闭订单(过滤定金未支付订单)
+     */
+    public Result<OrderInfoRecord> getCanAutoCloseOrders( ){
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
+            and(TABLE.EXPIRE_TIME.le(DateUtil.getSqlTimestamp())).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))).
+            fetch();
+    }
 
-	/**
-	 * 自动任务获取可收货订单
-	 */
-	public Result<OrderInfoRecord> getCanAutoReceiveOrders() {
-		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED)
-				.and(TABLE.DELIVER_TYPE.in(OrderConstant.DELIVER_TYPE_COURIER, OrderConstant.CITY_EXPRESS_SERVICE))
-				.and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL))
-				.and(DSL.timestampAdd(TABLE.SHIPPING_TIME, TABLE.RETURN_DAYS_CFG, DatePart.DAY).le(DSL.now()))).fetch();
-	}
+    /**
+     * 自动任务获取可收货订单
+     */
+    public Result<OrderInfoRecord> getCanAutoReceiveOrders( ){
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED).
+            and(TABLE.DELIVER_TYPE.in(OrderConstant.DELIVER_TYPE_COURIER, OrderConstant.CITY_EXPRESS_SERVICE)).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(DSL.timestampAdd(TABLE.SHIPPING_TIME, TABLE.RETURN_DAYS_CFG, DatePart.DAY).le(DSL.now()))).
+            fetch();
+    }
 
-	/**
-	 * 自动任务获取可完成订单
-	 */
-	public Result<OrderInfoRecord> autoFinishOrders() {
-		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_RECEIVED)
-				.and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL))
-				.and(DSL.timestampAdd(TABLE.SHIPPING_TIME, TABLE.ORDER_TIMEOUT_DAYS, DatePart.DAY).le(DSL.now())))
-				.fetch();
-	}
+    /**
+     * 自动任务获取可完成订单
+     */
+    public Result<OrderInfoRecord> autoFinishOrders( ){
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_RECEIVED).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(DSL.timestampAdd(TABLE.SHIPPING_TIME, TABLE.ORDER_TIMEOUT_DAYS, DatePart.DAY).le(DSL.now()))).
+            fetch();
+    }
 
-	/**
-	 * 得到即将过期未支付的订单列表。每1分钟执行一次，取还有10分钟就要过期未支付的订单列表
-	 */
-	public Result<OrderInfoRecord> getExpiringNoPayOrderList() {
-		Instant now = Instant.now();
-		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
-				.and(TABLE.EXPIRE_TIME.between(Timestamp.from(now.plusSeconds(10 * 60)),
-						Timestamp.from(now.plusSeconds(11 * 60))))
-				.and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))
-				.and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
-				.fetch();
-	}
+    /**
+     * 得到即将过期未支付的订单列表。每1分钟执行一次，取还有10分钟就要过期未支付的订单列表
+     */
+    public Result<OrderInfoRecord> getExpiringNoPayOrderList(){
+        Instant now = Instant.now();
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
+            and(TABLE.EXPIRE_TIME.between(
+                Timestamp.from(now.plusSeconds(10 * 60)),
+                Timestamp.from(now.plusSeconds(11 * 60)))).
+            and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO)).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).
+            fetch();
+    }
 
-	/**
-	 * 获取赠品订单数
-	 * 
-	 * @param orderSns sns
-	 */
-	public Integer getGiftOrderCount(List<String> orderSns) {
-		return db().selectCount().from(TABLE).where(TABLE.ORDER_SN.in(orderSns)
-				// TODO
-				// 待付款锁库存.and(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.i))
-				.and(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))).fetchAnyInto(Integer.class);
-	}
+    /**
+     * 获取赠品订单数
+     * @param orderSns sns
+     */
+    public Integer getGiftOrderCount(List<String> orderSns){
+        return db().selectCount().from(TABLE).where(
+            TABLE.ORDER_SN.in(orderSns)
+                //TODO 待付款锁库存.and(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.i))
+                .and(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+        ).fetchAnyInto(Integer.class);
+    }
 
-	/**
-	 * 获取活动指定商品当前用户购买次数
-	 * 
-	 * @param userId  userid
-	 * @param goodsId goodsId
-	 * @return count
-	 */
-	public Integer getGoodsBuyNum(Integer userId, List<Integer> goodsId) {
-		Condition condition = TABLE.USER_ID.eq(userId).and(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY));
-		SelectJoinStep<Record1<Integer>> select = db().selectCount().from(TABLE);
-		if (CollectionUtils.isNotEmpty(goodsId)) {
-			select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
-		}
-		return select.where(condition).fetchAnyInto(Integer.class);
-	}
+    /**
+     * 获取活动指定商品当前用户购买次数
+     * @param userId userid
+     * @param goodsId goodsId
+     * @return count
+     */
+    public Integer getGoodsBuyNum(Integer userId, List<Integer> goodsId){
+        Condition condition = TABLE.USER_ID.eq(userId).and(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY));
+        SelectJoinStep<Record1<Integer>> select = db().selectCount().from(TABLE);
+        if(CollectionUtils.isNotEmpty(goodsId)){
+            select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
+        }
+        return select.where(condition).fetchAnyInto(Integer.class);
+    }
 
-	/******************************************
-	 * 分割线以下与订单模块没有*直接*联系
-	 *********************************************/
+    /**
+     * 获取预售活动已购买数量
+     * @param userId
+     * @param preSaleId
+     * @return
+     */
+    public Integer getPreSaletUserBuyNumber(Integer userId, Integer preSaleId){
+        return db().select(DSL.count(ORDER_GOODS.GOODS_NUMBER)).from(ORDER_GOODS)
+            .leftJoin(TABLE).on(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+            .where(TABLE.USER_ID.eq(userId)
+                .and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED))
+                .and(TABLE.BK_ORDER_PAID.gt(OrderConstant.BK_PAY_NO))
+                .and(TABLE.ACTIVITY_ID.eq(preSaleId))
+                .and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
+                .and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_PRE_SALE}))))
+            .fetchAnyInto(Integer.class);
+    }
+
+    /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
 	 */
@@ -1306,71 +1317,60 @@ public class OrderInfoService extends ShopBaseService {
 	public List<Integer> getUserIdHasBuyTheGoods(List<Integer> goodsIdList) {
 		return db().select(TABLE.USER_ID).from(ORDER_GOODS.leftJoin(TABLE).on(ORDER_GOODS.ORDER_SN.eq(TABLE.ORDER_SN)))
 				.where(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY)).and(ORDER_GOODS.GOODS_ID.in(goodsIdList))
-				.groupBy(TABLE.USER_ID).fetchInto(Integer.class);
-		
+				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID, Integer.class);
 	}
 
-	/**
-	 * 批量改为待发货
-	 * 
-	 * @param orderSnList
-	 */
-	public void batchChangeToWaitDeliver(List<String> orderSnList) {
-		if (orderSnList != null && orderSnList.size() > 0) {
-			db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_WAIT_DELIVERY).where(TABLE.ORDER_SN.in(orderSnList))
-					.execute();
-		}
-	}
+    /**
+     * 批量改为待发货
+     * @param orderSnList
+     */
+	public void batchChangeToWaitDeliver(List<String> orderSnList){
+	    if(orderSnList != null && orderSnList.size() > 0){
+	        db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_WAIT_DELIVERY).where(TABLE.ORDER_SN.in(orderSnList)).execute();
+        }
+    }
 
-	/**
-	 * 批量改为拼团成功
-	 * 
-	 * @param orderSnList
-	 */
-	public void batchChangeToGroupBuySuccess(List<String> orderSnList) {
-		if (orderSnList != null && orderSnList.size() > 0) {
-			db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_PIN_SUCCESSS).where(TABLE.ORDER_SN.in(orderSnList))
-					.execute();
-		}
-	}
+    /**
+     * 批量改为拼团成功
+     * @param orderSnList
+     */
+	public void batchChangeToGroupBuySuccess(List<String> orderSnList){
+	    if(orderSnList != null && orderSnList.size() > 0){
+	        db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_PIN_SUCCESSS).where(TABLE.ORDER_SN.in(orderSnList)).execute();
+        }
+    }
 
-	/**
-	 * Overdue delivery integer.发货逾期
-	 *
-	 * @param nDays the n days
-	 * @return the integer
-	 */
-	public Integer overdueDelivery(Integer nDays) {
-		return db().fetchCount(TABLE, TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
-				.and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
-	}
+    /**
+     * Overdue delivery integer.发货逾期
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Integer overdueDelivery(Integer nDays) {
+        return db().fetchCount(TABLE, TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
 
-	/**
-	 * 获得待支付尾款的订单
-	 * 
-	 * @param pinGroupId
-	 * @return
-	 */
-	public Result<OrderInfoRecord> getNoPayOrderByIdentityId(Integer pinGroupId) {
-		return db().selectFrom(TABLE)
-				.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
-						.and(TABLE.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)
-								.and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_FRONT))
-								.and(TABLE.ACTIVITY_ID.eq(pinGroupId)
-										.and(TABLE.GOODS_TYPE.eq(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE))))))
-				.fetch();
+    /**
+     * 获得待支付尾款的订单
+     * @param pinGroupId
+     * @return
+     */
+    public Result<OrderInfoRecord> getNoPayOrderByIdentityId(Integer pinGroupId) {
+		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
+				.and(TABLE.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)
+						.and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_FRONT)).and(TABLE.ACTIVITY_ID.eq(pinGroupId)
+								.and(TABLE.GOODS_TYPE.eq(String.valueOf(BaseConstant.ACTIVITY_TYPE_PRE_SALE)))))).fetch();
 
-	}
+    }
 
-	/**
-	 * 取orderId
-	 * 
-	 * @param orderSn
-	 * @return
-	 */
-	public Integer getOrderIdBySn(String orderSn) {
-		return db().select(TABLE.ORDER_ID).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn))
-				.fetchOptionalInto(Integer.class).orElse(null);
-	}
+    /**
+     * 取orderId
+     * @param orderSn
+     * @return
+     */
+    public Integer getOrderIdBySn(String orderSn){
+        return db().select(TABLE.ORDER_ID).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOptionalInto(Integer.class).orElse(null);
+    }
 
 }

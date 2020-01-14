@@ -4,6 +4,6 @@
       <image src='{{imageUrl}}image/wxapp/split_btn1.png' />
     </view>
     <view class='yishu'></view>
-    <image src='{{custom_info.img_src}}' bindtap='jumpLink' data-link="{{custom_info.link}}"></image>
+    <image wx:if="{{custom_info.img_src}}" src='{{imageUrl + custom_info.img_src}}' bindtap='jumpLink' data-link="{{ custom_info.link}}"></image>
   </view>
 </v-popup>

@@ -95,16 +95,31 @@ export default {
       type: Boolean,
       default: false
     },
-    imgUrl: String // 图片路径
+    imgUrl: String, // 图片路径
+    hotData: { // 回显热区数据
+      type: Array,
+      default: () => []
+    }
   },
   watch: {
     hotDialogVisible (newVal) {
       if (!newVal) {
         this.modelFlag = false
-        this.$emit('update:hotDialogVisible', false)
+        // this.$emit('update:hotDialogVisible', false)
       } else {
         this.modelFlag = true
       }
+      console.log(this.hotAreaData)
+    },
+    hotData: {
+      handler (newVal) {
+        if (newVal.length) {
+          this.hotAreaData = newVal
+        }
+        console.log(this.hotAreaData)
+      },
+      deep: true,
+      immediate: true
     }
   },
   data () {

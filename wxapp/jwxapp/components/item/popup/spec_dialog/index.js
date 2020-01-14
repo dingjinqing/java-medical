@@ -2,7 +2,11 @@ const base = require("../../../popup/base/base.js");
 const actPrdType = {
   1:{prdListName:"groupBuyPrdMpVos",prdRealPrice:'groupPrice',prdLinePrice:'prdPrice',multiSkuAct:true},
   3:{prdRealPrice:'bargainPrice',multiSkuAct:false},
-  5:{prdListName:"actProducts",prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice',multiSkuAct:true}
+  5:{prdListName:"actProducts",prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice',multiSkuAct:true},
+  6:{prdListName:"reducePricePrdMpVos",prdRealPrice:"reducePrice",prdLinePrice:'prdPrice',multiSkuAct:true},
+  18:{prdListName:"firstSpecialPrdMpVos",prdRealPrice:'firsSpecialPrice',prdLinePrice:'prdPrice',multiSkuAct:true},
+  97:{prdListName:"gradePrdMpVos",prdRealPrice:'gradePrice',prdLinePrice:'prdPrice',multiSkuAct:true},
+  98:{prdListName:"gradeReducePrdVos",prdRealPrice:'activityPrice',prdLinePrice:'prdPrice',multiSkuAct:true}
 }
 global.wxComponent({
   mixins: [base],
@@ -39,8 +43,8 @@ global.wxComponent({
         } else {
           if(val.activity){
             if(actPrdType[val.activity.activityType].multiSkuAct){
-              let activityPrds = val.activity[actPrdType[val.activity.activityType]['prdListName']].map(({productId:prdId,stock:prdNumber,[actPrdType[val.activity.activityType].prdRealPrice]:prdRealPrice,[actPrdType[val.activity.activityType].prdLinePrice]:prdLinePrice }) => {
-                return {prdId,prdNumber,prdRealPrice,prdLinePrice}
+              let activityPrds = val.activity[actPrdType[val.activity.activityType]['prdListName']].map(({productId:prdId,stock:prdNumber,[actPrdType[val.activity.activityType].prdRealPrice]:prdRealPrice,[actPrdType[val.activity.activityType].prdLinePrice]:prdLinePrice,isGradePrice=null}) => {
+                return {prdId,prdNumber,prdRealPrice,prdLinePrice,isGradePrice}
               })
               this.setData({
                 activityPrds

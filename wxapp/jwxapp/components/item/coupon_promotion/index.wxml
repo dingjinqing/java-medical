@@ -2,17 +2,19 @@
   <view class="flex_box" bindtap="showCouponDialog" wx:if="{{couponList && couponList.length>0}}">
     <view class="item_left">优惠券</view>
     <view class="item_middle goods_coupon_list">
-      <block wx:for="{{couponList}}" wx:key="index">
-        <view wx:if="{{index <= 1}}" class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>{{item.actName}}</view>
+      <block wx:for="{{coupons}}" wx:key="index">
+        <view wx:if="{{index <= 1}}" class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>{{item.text}}</view>
       </block>
     </view>
     <view class="item_right">></view>
   </view>
-  <view class="item_line"></view>
-  <view class="flex_box">
-    <view class="item_left">促销</view>
-    <view class="item_middle">
-      TODO
+  <view class="item_line" wx:if="{{promotion.length>0}}"></view>
+  <view class="flex_box" wx:if="{{promotion.length>0}}">
+    <view class="item_left align-top">促销</view>
+    <view class="item_middle" bindtap="showPromotion">
+      <block wx:for="{{promotion}}" wx:for-item="promotionItem" wx:key="index">
+        <view class="promotion-item"><view class="promotion-tag" style="border-color:{{main_setting.comColor}};color:{{main_setting.comColor}};">首单特惠</view><view class="promotion-desc">{{promotionItem.desc}}</view></view>
+      </block>
     </view>
     <view class="item_right">></view>
   </view>
@@ -21,4 +23,4 @@
 
 <!-- 优惠券选择弹窗 -->
 <v-popup-coupon show="{{show_recommend_coupons}}" coupon_list="{{couponList}}" />
-
+<v-popup-promotion show="{{showPromotionDialog}}" promotion="{{promotion}}"/>

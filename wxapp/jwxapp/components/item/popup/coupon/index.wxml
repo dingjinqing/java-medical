@@ -20,7 +20,7 @@
             </view>
 
             <view class="coupon_right">
-              <text class="coupon_condition" wx:if="{{item.leastConsume}}">使用条件：无门槛</text>
+              <text class="coupon_condition" wx:if="{{!item.leastConsume}}">使用条件：无门槛</text>
               <text class="coupon_condition" wx:else>使用条件：满{{item.leastConsume}}元可用</text>
               <block wx:if="{{ item.validityType === 0 }}">
                 <view class="coupon_time">有效时间：

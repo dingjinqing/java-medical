@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1165,7 +1165,7 @@ public class UserCardService extends ShopBaseService {
 									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN,
 											BigDecimalUtil.Operator.subtrac),
 									BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), null)),
-							BigDecimalUtil.Operator.Divide),
+							BigDecimalUtil.Operator.divide),
 					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)));
 		}
 		return card.getTotalDiscount();
@@ -1703,8 +1703,32 @@ public class UserCardService extends ShopBaseService {
 		});
 	}
 	
-	
+	/**
+	 * 检查用户等级升级
+	 * @param userId
+	 * @param grade
+	 * @return
+	 */
+	public boolean checkUserGradeCard(Integer userId,String grade) {
+		String userGrade = getUserGrade(userId);
+		if(Objects.equals(userGrade, grade)) {
+			return true;
+		}
+		MemberCardRecord cardByGrade = getGradeCardByGrade(grade);
+		if(cardByGrade==null) {
+			return false;
+		}
+		try {
+			updateGrade(userId, cardByGrade.getId(), TP_CHECK);
+		} catch (MpException e) {
+			logger().info("升级错误");
+			logger().info(e.getMessage(),e);
+			return false;
+		}
+		return true;
+	}
 	
 	
 	
 }
+

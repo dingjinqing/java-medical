@@ -17,4 +17,6 @@ public class AvailCouponDetailParam {
      * 优惠券活动ID
      */
 	public Integer couponId;
+
+	public Integer userId;
 }

@@ -28,6 +28,8 @@ global.wxPage({
     this_type: 0,
     allCoupon:[],
     page: 1,
+    last_page: 1,
+    pageRows: 20,
   },
  
   /**
@@ -49,6 +51,7 @@ global.wxPage({
     clearTimeout(set_time_out);
     util.api('/api/wxapp/coupon/list', function (res) {
       if (res.error == 0) {
+        _this.data.last_page = res.content.couponList.page.lastPage; 
         _this.setData({
           unusedNum: res.content.unusedNum,
           usedNum: res.content.usedNum,
@@ -80,7 +83,11 @@ global.wxPage({
         }, false);
         return false;
       }
-    }, { nav: _this.data.this_type });
+    }, { 
+      nav: _this.data.this_type,
+      currentPage: _this.data.page,
+      pageRows: _this.data.pageRows
+    });
   },
 
   /**
@@ -106,6 +113,56 @@ global.wxPage({
   },
 
   /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function () {
+    var that = this;
+    if (that.data.page == that.data.last_page) { return false };
+    that.data.page = that.data.page + 1;
+    clearTimeout(set_time_out);
+    wx.showLoading({
+      title: '加载中···',
+    })
+    util.api('/api/wxapp/coupon/list', function (res) {
+      if (res.error == 0) {
+        var cou_listL = res.content.couponList.dataList;
+        var cou_list = [];
+        that.data.last_page = res.content.couponList.page.lastPage;
+        if (cou_listL.length > 0) {
+          cou_list = cou_listL;
+          cou_list = that.data.allCoupon.concat(cou_list);
+          // 格式化时间
+          cou_listL.forEach(function (item) {
+            if (item.startTime && item.endTime) {
+              item.startTime = item.startTime.toString().slice(0, 10)
+              item.endTime = item.endTime.toString().slice(0, 10)
+            }
+            item.remain_seconds_all = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
+          })
+          that.countdown(that, cou_list);
+        }
+        wx.hideLoading();
+        that.setData({
+          // info: res.content,
+          // cou_list: cou_list,
+          allCoupon: cou_list,
+          this_type: this_type
+        })
+      } else {
+        util.showModal("提示", res.message, function () {
+          util.jumpLink("pages/index/index", 'redirectTo');
+        }, false);
+        return false;
+      }
+    }, {
+        nav: that.data.this_type,
+        currentPage: that.data.page,
+        pageRows: that.data.pageRows
+    });
+    console.log(this.data)
+  },
+
+  /**
    * 优惠券状态tab切换
    */
   change: function (e) {
@@ -128,7 +185,7 @@ global.wxPage({
       })
     }
     _this.dataList()
-    // _this.data.page = 1;
+    _this.data.page = 1;
   },
 
   /**

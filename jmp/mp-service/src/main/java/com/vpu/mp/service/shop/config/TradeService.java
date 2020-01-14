@@ -7,6 +7,11 @@ import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.pojo.shop.config.trade.*;
+import com.vpu.mp.service.saas.categroy.SysCateService;
+import com.vpu.mp.service.shop.goods.GoodsBrandService;
+import com.vpu.mp.service.shop.goods.GoodsLabelService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.logistics.LogisticsParam;
 import com.vpu.mp.service.shop.logistics.LogisticsService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -24,14 +30,14 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 
 /**
  * The type Trade service.
@@ -45,6 +51,26 @@ public class TradeService extends BaseShopConfigService {
 
     @Autowired
     LogisticsService logisticsService;
+    @Autowired
+    GoodsService goodsService;
+    @Autowired
+    GoodsSortService goodsSortService;
+    @Autowired
+    GoodsBrandService goodsBrandService;
+    @Autowired
+    GoodsLabelService goodsLabelService;
+    @Autowired
+    SysCateService sysCateService;
+
+
+    /**
+     * The constant DEFAULT_LOGISTICS.
+     *
+     * @value
+     */
+    public static final List<LogisticsAccountInfo> DEFAULT_LOGISTICS = new ArrayList<LogisticsAccountInfo>(INTEGER_ONE) {{
+        add(new LogisticsAccountInfo());
+    }};
 
     /**
      * 支付配置项
@@ -603,8 +629,12 @@ public class TradeService extends BaseShopConfigService {
      * @return the order requeire goods package
      */
     public GoodsPackageParam getOrderRequireGoodsPackage() {
-        return this.getJsonObject(K_ORDER_REQUIRE_GOODS_PACKAGE, new TypeReference<GoodsPackageParam>() {
+        GoodsPackageParam temp = this.getJsonObject(K_ORDER_REQUIRE_GOODS_PACKAGE, new TypeReference<GoodsPackageParam>() {
         }, new GoodsPackageParam());
+        // 校验商品相关弹窗内容是否存在
+        checkExist(temp);
+        setOrderRequireGoodsPackage(temp);
+        return temp;
     }
 
     /**
@@ -643,8 +673,9 @@ public class TradeService extends BaseShopConfigService {
      *
      * @return the shop address
      */
-    public String getShopAddress() {
-        return this.get(K_SHOP_ADDRESS, String.class, "");
+    public ShopAddress getShopAddress() {
+        return this.getJsonObject(K_SHOP_ADDRESS, new TypeReference<ShopAddress>() {
+        }, new ShopAddress());
     }
 
     /**
@@ -653,9 +684,9 @@ public class TradeService extends BaseShopConfigService {
      * @param shopAddress the shop address
      * @return the shop address
      */
-    public int setShopAddress(String shopAddress) {
+    public int setShopAddress(ShopAddress shopAddress) {
         assert (shopAddress != null);
-        return this.set(K_SHOP_ADDRESS, shopAddress, String.class);
+        return this.setJsonObject(K_SHOP_ADDRESS, shopAddress);
     }
 
 
@@ -806,6 +837,35 @@ public class TradeService extends BaseShopConfigService {
             log.error("内省获取bean[{}]信息失败：{}", param, e.getMessage());
         }
         return param;
+    }
+
+    /**
+     * Check exist goods package param.商品，平台分类，商家分类，商品品牌，商品标签验存
+     *
+     * @param param the param
+     * @return the goods package param
+     */
+    public GoodsPackageParam checkExist(GoodsPackageParam param) {
+        param.setAddGoods(exist(param.getAddGoods(), goodsService::exist));
+        param.setAddSort(exist(param.getAddSort(), goodsSortService::exist));
+        param.setAddBrand(exist(param.getAddBrand(), goodsBrandService::exist));
+        param.setAddLabel(exist(param.getAddLabel(), goodsLabelService::exist));
+        param.setAddCate(exist(param.getAddCate(), sysCateService::exist));
+        return param;
+    }
+
+    /**
+     * Exist list.
+     *
+     * @param list      the list
+     * @param predicate the predicate
+     * @return the list
+     */
+    public List<Integer> exist(List<Integer> list, Predicate<Integer> predicate) {
+        if (CollectionUtils.isEmpty(list)) {
+            return EMPTY_LIST;
+        }
+        return list.stream().filter(predicate).collect(Collectors.toList());
     }
 
     /**

@@ -412,30 +412,35 @@ public class GoodsSortService extends ShopBaseService {
 
     /**
      * 获取所有有效分类作为父分类，并查询这些有效分类的子分类，将子分类按照父分类进行组织
+     * 本方法用于组织推荐分类和普通分类
      * @param param 查询父分类需要的条件
      * @return 按照父分类进行组织的结果集合
      */
     public List<GoodsSortParentMpVo> getSortGroupByParentMp(SortGroupByParentParam param){
 
         Condition sortParentCondition = buildSortGroupByParentCondition(param);
-
+        // 先根据条件查询出当父分类的对象
         List<GoodsSortParentMpVo> sortParent = db().selectFrom(SORT).where(sortParentCondition)
             .orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc())
             .fetchInto(GoodsSortParentMpVo.class);
 
         List<Integer> parentIds =sortParent.stream().map(GoodsSortParentMpVo::getSortId).collect(Collectors.toList());
 
+        // 查询所有父分类的子分类，并根据父分类进行分组
         Map<Integer, List<GoodsSortMpVo>> sortMap = db().selectFrom(SORT).where(SORT.PARENT_ID.in(parentIds))
             .orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc())
             .fetchGroups(SORT.PARENT_ID, GoodsSortMpVo.class);
 
-        for (GoodsSortParentMpVo goodsRecommendSortMpVo : sortParent) {
-            goodsRecommendSortMpVo.setImgLink(getImgFullUrlUtil(goodsRecommendSortMpVo.getImgLink()));
-            List<GoodsSortMpVo> goodsSortMpVos = sortMap.get(goodsRecommendSortMpVo.getSortId());
+        for (GoodsSortParentMpVo goodsSortMpVo : sortParent) {
+            // 父分类图标设置
+            goodsSortMpVo.setSortImg(getImgFullUrlUtil(goodsSortMpVo.getSortImg()));
+            List<GoodsSortMpVo> goodsSortMpVos = sortMap.get(goodsSortMpVo.getSortId());
+            // 无子分类
             if (goodsSortMpVos == null) {
-                goodsRecommendSortMpVo.setGoodsSorts(new ArrayList<>());
+                goodsSortMpVo.setGoodsSorts(new ArrayList<>());
             } else {
-                goodsRecommendSortMpVo.setGoodsSorts(goodsSortMpVos);
+                // 有子分类
+                goodsSortMpVo.setGoodsSorts(goodsSortMpVos);
                 goodsSortMpVos.forEach(sort-> sort.setSortImg(getImgFullUrlUtil(sort.getSortImg())));
             }
         }
@@ -574,5 +579,9 @@ public class GoodsSortService extends ShopBaseService {
             from(SORT).
             where(SORT.PARENT_ID.eq(sortId)).
             fetch(SORT.SORT_ID);
+    }
+
+    public boolean exist(Integer id) {
+        return db().fetchExists(SORT, SORT.SORT_ID.eq(id));
     }
 }

@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.order;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -41,7 +42,7 @@ public class CreateOrderBo {
     private Integer orderId;
 
     public void intoRecord(OrderInfoRecord orderRecord){
-        if(address != null && !orderType.contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)){
+        if(address != null && !orderType.contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT)){
             //非送礼地址信息赋值
             orderRecord.setConsignee(address.getConsignee());
             orderRecord.setAddressId(address.getAddressId());

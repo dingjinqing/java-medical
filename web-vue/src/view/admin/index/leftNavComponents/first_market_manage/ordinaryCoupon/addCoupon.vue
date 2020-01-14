@@ -41,7 +41,7 @@
                 <span v-else>{{ $t('ordinaryCoupon.restrictRadio2') }} {{param.leastConsume?param.leastConsume:'0'}}<span v-if="param.leastConsume === ''">X</span> {{ $t('ordinaryCoupon.restrictTip') }}</span>
                 <span
                   class="part"
-                  v-if="param.suitGoods === 1"
+                  v-if="param.availableGoods === 1"
                 >{{ $t('ordinaryCoupon.leftTip1') }}</span>
               </div>
             </div>
@@ -130,62 +130,56 @@
                   :label="$t('ordinaryCoupon.validityType') + '：'"
                   prop="validityType"
                 >
-                  <div>
-                    <p>
-                      <el-radio
-                        v-model="param.validityType"
-                        :label='0'
-                        :disabled="editType"
-                        @change="validityTypeChange"
-                      >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
-                    </p>
-                    <p style="margin:15px 0;">
-
-                      <el-date-picker
-                        :disabled="param.validityType === 0 && !editType ? false : true"
-                        v-model="param.couponDate"
-                        type="datetimerange"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        format="yyyy-MM-dd HH:mm:ss"
-                        :range-separator="$t('seckill.to')"
-                        :start-placeholder="$t('ordinaryCoupon.startTime')"
-                        :end-placeholder="$t('ordinaryCoupon.endTime')"
-                        :default-time="['00:00:00','23:59:59']"
-                        size="small"
-                      >
-                      </el-date-picker>
-                    </p>
-                    <p>
-                      <el-radio
-                        v-model="param.validityType"
-                        :label='1'
-                        :disabled="editType"
-                        @change="validityTypeChange"
-                        style="margin-right: 25px;"
-                      >{{ $t('ordinaryCoupon.appoint') }}</el-radio>
-                      <span>
-                        <el-input
-                          :disabled="param.validityType===1 && !editType ?false:true"
-                          v-model="param.validity"
-                          size="small"
-                          class="small_input"
-                        ></el-input> {{ $t('ordinaryCoupon.appointDay') }}
-                        <el-input
-                          :disabled="param.validityType===1 && !editType ?false:true"
-                          v-model="param.validityHour"
-                          size="small"
-                          class="small_input"
-                        ></el-input> {{ $t('ordinaryCoupon.appointHour') }}
-                        <el-input
-                          :disabled="param.validityType===1 && !editType ?false:true"
-                          v-model="param.validityMinute"
-                          size="small"
-                          class="small_input"
-                        ></el-input> {{ $t('ordinaryCoupon.appointMinute') }}
-                      </span>
-                    </p>
-                  </div>
+                  <el-radio
+                    v-model="param.validityType"
+                    :label='0'
+                    :disabled="editType"
+                    @change="validityTypeChange"
+                  >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
+                  <el-date-picker
+                    v-model="param.couponDate"
+                    :disabled="param.validityType === 0 && !editType ? false : true"
+                    type="datetimerange"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    :range-separator="$t('seckill.to')"
+                    :start-placeholder="$t('ordinaryCoupon.startTime')"
+                    :end-placeholder="$t('ordinaryCoupon.endTime')"
+                    :default-time="['00:00:00','23:59:59']"
+                    size="small"
+                  >
+                  </el-date-picker>
                 </el-form-item>
+                <el-form-item prop="validityType1">
+                  <el-radio
+                    v-model="param.validityType"
+                    :label='1'
+                    :disabled="editType"
+                    @change="validityTypeChange"
+                    style="margin-right: 25px;"
+                  >{{ $t('ordinaryCoupon.appoint') }}</el-radio>
+                  <span>
+                    <el-input
+                      :disabled="param.validityType===1 && !editType ?false:true"
+                      v-model="param.validity"
+                      size="small"
+                      class="small_input"
+                    ></el-input> {{ $t('ordinaryCoupon.appointDay') }}
+                    <el-input
+                      :disabled="param.validityType===1 && !editType ?false:true"
+                      v-model="param.validityHour"
+                      size="small"
+                      class="small_input"
+                    ></el-input> {{ $t('ordinaryCoupon.appointHour') }}
+                    <el-input
+                      :disabled="param.validityType===1 && !editType ?false:true"
+                      v-model="param.validityMinute"
+                      size="small"
+                      class="small_input"
+                    ></el-input> {{ $t('ordinaryCoupon.appointMinute') }}
+                  </span>
+                </el-form-item>
+
                 <el-form-item
                   :label="$t('ordinaryCoupon.surplus') + '：'"
                   prop="limitSurplusFlag"
@@ -341,6 +335,7 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.member') + '：'"
                   v-if="param.type===0"
+                  prop="isExclusive"
                 >
                   <div>
                     <p>
@@ -369,15 +364,15 @@
                       <span class="card_links">
                         <span
                           class="member"
-                          @click="refresh()"
+                          @click="editType ? handler() : refresh()"
                         >{{ $t('ordinaryCoupon.memberTip3') }}</span><span> | </span>
+                        <!-- <span
+                          class="member"
+                          @click="editType ? handler() : addMemberCard()"
+                        >{{ $t('ordinaryCoupon.memberTip4') }}</span><span> | </span> -->
                         <span
                           class="member"
-                          @click="addMemberCard()"
-                        >{{ $t('ordinaryCoupon.memberTip4') }}</span><span> | </span>
-                        <span
-                          class="member"
-                          @click="manageMemberCard()"
+                          @click="editType ? handler() : manageMemberCard()"
                         >{{ $t('ordinaryCoupon.memberTip5') }}</span>
                       </span>
                     </div>
@@ -423,13 +418,13 @@
                   <div style="display:flex">
                     <div>
                       <el-radio
-                        v-model="param.enabled"
-                        :label="0"
+                        v-model="param.suitGoods"
+                        :label="1"
                         :disabled="editType"
                       >{{ $t('ordinaryCoupon.enabledRadio1') }}</el-radio>
                       <el-radio
-                        v-model="param.enabled"
-                        :label="1"
+                        v-model="param.suitGoods"
+                        :label="0"
                         :disabled="editType"
                       >{{ $t('ordinaryCoupon.enabledRadio2') }}</el-radio>
                     </div>
@@ -470,36 +465,36 @@
                 </el-form-item>
                 <el-form-item
                   :label="$t('ordinaryCoupon.suitGoods') + '：'"
-                  prop="suitGoods"
-                  :style="{height:param.suitGoods === 1 ? '240px':''}"
+                  prop="availableGoods"
+                  :style="{height:param.availableGoods === 1 ? '240px':''}"
                 >
                   <div>
                     <p>
                       <el-radio
-                        v-model="param.suitGoods"
+                        v-model="param.availableGoods"
                         :label='0'
                         :disabled="editType"
-                        @change="suitGoodsChange"
+                        @change="availableGoodsChange"
                       >{{ $t('ordinaryCoupon.suitGoodsRadio1') }}</el-radio>
                     </p>
                     <p>
                       <el-radio
-                        v-model="param.suitGoods"
+                        v-model="param.availableGoods"
                         :label='1'
                         :disabled="editType"
-                        @change="suitGoodsChange"
+                        @change="availableGoodsChange"
                       >{{ $t('ordinaryCoupon.suitGoodsRadio2') }}</el-radio>
                     </p>
-                    <div v-if="param.suitGoods === 1">
+                    <div v-if="param.availableGoods === 1">
                       <div
                         class="noneBlockList"
                         v-for="(item,index) in noneBlockDiscArr"
                         :key="index"
                       >
+                        <!-- :disabled="editType" -->
                         <el-button
                           size="small"
                           plain
-                          :disabled="editType"
                           @click="hanldeToAddGoodS(index)"
                           style="margin-right: 20px;"
                         >
@@ -561,12 +556,17 @@ export default {
   data () {
     // 自定义校验有效期
     var validateTime = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
       if (value === 0 && this.param.couponDate === '') {
         callback(new Error(this.$t('ordinaryCoupon.validateTime1')))
-      } else if (value === 1 && (this.param.validity === '' || this.param.validityHour === '' || this.param.validityMinute === '')) {
+      } else {
+        callback()
+      }
+    }
+    var validateTime1 = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (this.param.validityType === 1 && (this.param.validity === '' || this.param.validityHour === '' || this.param.validityMinute === '')) {
         callback(new Error(this.$t('ordinaryCoupon.validateTime2')))
-      } else if (value === 1 && (!re.test(this.param.validity) || !re.test(this.param.validityHour) || !re.test(this.param.validityMinute))) {
+      } else if (this.param.validityType === 1 && (!re.test(this.param.validity) || !re.test(this.param.validityHour) || !re.test(this.param.validityMinute))) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
@@ -574,11 +574,11 @@ export default {
     }
     // 自定义校验初始库存
     var validateSurplus = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^(\+?[1-9][0-9]*)$/
       if (value === 0 && this.param.totalAmount === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateSurplus')))
       } else if (value === 0 && !re.test(this.param.totalAmount)) {
-        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
+        callback(new Error(this.$t('ordinaryCoupon.validateNum1')))
       } else {
         callback()
       }
@@ -586,11 +586,12 @@ export default {
     // 自定义校验优惠类型
     var validatePreferentialType = (rule, value, callback) => {
       // 金额 (正数,保留两位小数)
-      var re = /^\+?(\d*\.\d{1,2})$/
+      var re = /^[1-9]\d*(\.\d{1,2})?$/
+      var re1 = /^0\.\d{1,2}$/
       var re2 = /^((0\.[1-9]{1})|(([1-9]{1})(\.\d{1})?))$/
       if (value === 0 && this.param.denomination === null) {
         callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType1')))
-      } else if (value === 0 && !re.test(this.param.denomination)) {
+      } else if (value === 0 && !re.test(this.param.denomination) && !re1.test(this.param.denomination)) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else if (value === 1 && this.param.denomination2 === null) {
         callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType2')))
@@ -598,7 +599,7 @@ export default {
         callback(new Error(this.$t('ordinaryCoupon.validateDiscount')))
       } else if (value === 2 && (this.param.randomMin === null || this.param.randomMax === null)) {
         callback(new Error('请填写随机金额'))
-      } else if (value === 2 && (!re.test(this.param.randomMin) || !re.test(this.param.randomMax))) {
+      } else if (value === 2 && ((!re.test(this.param.randomMin) && !re1.test(this.param.randomMin)) || (!re.test(this.param.randomMax) && !re1.test(this.param.randomMax)))) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else if (this.param.randomMin > this.param.randomMax) {
         callback(new Error('最大金额不能比最小金额小'))
@@ -628,19 +629,28 @@ export default {
         callback()
       }
     }
+    // 自定义会员专享
+    var validateIsExclusive = (rule, value, callback) => {
+      if (value === true && this.param.cardId.length === 0) {
+        callback(new Error('请选择会员卡'))
+      } else {
+        callback()
+      }
+    }
     // 自定义校验使用门槛
     var validateuseConsumeRestrict = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*(\.\d{1,2})?$/
+      var re1 = /^0\.\d{1,2}$/
       if (value === 1 && this.param.leastConsume === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateuseConsumeRestrict')))
-      } else if (value === 1 && !re.test(this.param.leastConsume)) {
+      } else if (value === 1 && !re.test(this.param.leastConsume) && !re1.test(this.param.leastConsume)) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
       }
     }
     // 自定义校验可使用商品
-    var validatesuitGoods = (rule, value, callback) => {
+    var validateAvailableGoods = (rule, value, callback) => {
       if (value === 1 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
         callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
       } else {
@@ -680,8 +690,9 @@ export default {
         randomMax: null, // 随机金额2
         couponNum: 0, // 领券人数
         receiveNum: null, // 人数
-        enabled: 1,
-        suitGoods: 0, // 适用商品
+        // enabled: 1, // 隐藏
+        suitGoods: 0, // 隐藏
+        availableGoods: 0, // 适用商品
         useExplain: '',
         denomination: null, // num面额
         denomination2: null,
@@ -697,13 +708,15 @@ export default {
           { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'blur' }
         ],
         validityType: { required: true, validator: validateTime, trigger: 'change' },
+        validityType1: { validator: validateTime1, trigger: 'change' },
         limitSurplusFlag: { required: true, validator: validateSurplus, trigger: 'change' },
         preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
         useScore: { required: true, validator: validateisRandom, trigger: 'change' },
         receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
         couponNum: { required: true, validator: validateCouponNum, trigger: 'change' },
+        isExclusive: { validator: validateIsExclusive, trigger: 'change' },
         useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
-        suitGoods: { required: true, validator: validatesuitGoods, trigger: 'change' }
+        availableGoods: { required: true, validator: validateAvailableGoods, trigger: 'change' }
       },
       couponId: '',
       AtreeType: null,
@@ -842,7 +855,7 @@ export default {
             this.param.useScore = 0
           }
           // 每人限领
-          this.param.receivePerPerson = data.receivePerson
+          this.param.receivePerPerson = data.receivePerPerson
           // 领券人数
           this.param.receiveNum = data.receiveNum
           if (this.param.receiveNum === 0) {
@@ -857,12 +870,13 @@ export default {
           } else {
             this.param.isExclusive = true
             this.param.cardId = this.param.cardId.split(',')
-            // this.param.cardId = this.param.cardId.map(Number)
+            this.param.cardId = this.param.cardId.map(Number)
           }
           // 领取码
           this.param.validationCode = data.validationCode
           // 是否隐藏
-          this.param.enabled = data.enabled
+          // this.param.enabled = data.enabled
+          this.param.suitGoods = data.suitGoods
           // 使用门槛
           this.param.leastConsume = data.leastConsume
           if (this.param.leastConsume === 0) {
@@ -871,15 +885,22 @@ export default {
             this.param.useConsumeRestrict = 1
           }
           // 可使用商品
-          this.param.suitGoods = data.suitGoods
-          this.goodsInfo = data.recommendGoodsId.split(',')
-          // this.goodsInfo = this.goodsInfo.map(Number)
+          if (data.recommendGoodsId !== '' || data.recommendCatId !== '' || data.recommendSortId !== '') {
+            // 指定商品
+            this.param.availableGoods = 1
+            this.goodsInfo = data.recommendGoodsId.split(',')
+            this.goodsInfo = this.goodsInfo.map(Number)
 
-          this.busClass = data.recommendCatId.split(',')
-          // this.busClass = this.busClass.map(Number)
+            this.busClass = data.recommendCatId.split(',')
+            this.busClass = this.busClass.map(Number)
 
-          this.platClass = data.recommendSortId.split(',')
-          // this.platClass = this.platClass.map(Number)
+            this.platClass = data.recommendSortId.split(',')
+            this.platClass = this.platClass.map(Number)
+          } else {
+            // 全部商品
+            this.param.availableGoods = 0
+          }
+
           // 说明
           this.param.useExplain = data.useExplain
         }
@@ -914,13 +935,31 @@ export default {
           if (this.param.useConsumeRestrict === 0) {
             this.param.leastConsume = 0
           }
+
+          // 可使用商品
+          if (this.param.availableGoods === 0) {
+            this.param.recommendGoodsId = ''
+            this.param.recommendCatId = ''
+            this.param.recommendSortId = ''
+          } else {
+            this.param.recommendGoodsId = this.goodsInfo.toString()
+            this.param.recommendCatId = this.busClass.toString()
+            this.param.recommendSortId = this.platClass.toString()
+          }
+
           this.param.scoreNumber = Number(this.param.scoreNumber)
-          this.param.recommendGoodsId = this.goodsInfo.toString()
-          this.param.recommendCatId = this.busClass.toString()
-          this.param.recommendSortId = this.platClass.toString()
-          this.param.startTime = this.param.couponDate[0]
-          this.param.endTime = this.param.couponDate[1]
-          if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
+
+          // 有效期
+          if (this.param.validityType === 0) {
+            this.param.startTime = this.param.couponDate[0]
+            this.param.endTime = this.param.couponDate[1]
+          } else {
+            this.param.startTime = ''
+            this.param.endTime = ''
+          }
+
+          // 会员专享
+          if (this.param.isExclusive === true) {
             this.param.cardId = this.param.cardId.toString()
           } else {
             this.param.cardId = ''
@@ -1014,6 +1053,10 @@ export default {
       })
     },
 
+    handler () {
+
+    },
+
     addMemberCard () {
       window.open('/admin/home/main/normalCardDetail')
     },
@@ -1023,8 +1066,9 @@ export default {
     },
 
     // 切换触发校验
-    validityTypeChange (e) {
+    validityTypeChange (value) {
       this.$refs['param'].validateField('validityType')
+      this.$refs['param'].validateField('validityType1')
     },
     limitSurplusFlagChange (e) {
       this.$refs['param'].validateField('limitSurplusFlag')
@@ -1038,8 +1082,13 @@ export default {
     useConsumeRestrictChange (e) {
       this.$refs['param'].validateField('useConsumeRestrict')
     },
-    suitGoodsChange (e) {
-      this.$refs['param'].validateField('suitGoods')
+    availableGoodsChange (e) {
+      if (e === 0) {
+        this.goodsInfo = []
+        this.busClass = []
+        this.platClass = []
+      }
+      this.$refs['param'].validateField('availableGoods')
     }
   },
   computed: {

@@ -336,7 +336,9 @@
   </div>
 </template>
 <script>
+import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
+  mixins: [decMixins],
   components: {
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'), // 选择商家分类标签弹窗
     AddProductLabel: () => import('@/components/admin/addProductLabel'), // 选择商品标签弹窗
@@ -400,8 +402,10 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        if (this.modulesData) {
-          this.linkageData = this.modulesData
+        let turnToString = this.handleToTurnNumToStr(this.modulesData)
+        console.log(turnToString)
+        if (turnToString) {
+          this.linkageData = turnToString
         }
       },
       immediate: true

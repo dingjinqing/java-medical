@@ -14,7 +14,10 @@ import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.ImageService;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record8;
+import org.jooq.SelectSeekStep2;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * 商品品牌
@@ -534,5 +538,9 @@ public class GoodsBrandService extends ShopBaseService {
         } else {
             return imageService.imageUrl(relativePath);
         }
+    }
+
+    public boolean exist(Integer id) {
+        return db().fetchExists(GOODS_BRAND, GOODS_BRAND.ID.eq(id).and(GOODS_BRAND.DEL_FLAG.eq(BYTE_ZERO)));
     }
 }

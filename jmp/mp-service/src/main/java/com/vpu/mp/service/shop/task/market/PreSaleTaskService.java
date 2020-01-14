@@ -123,7 +123,7 @@ public class PreSaleTaskService extends ShopBaseService {
      */
     private List<OrderInfoRecord> getExpiredPreSaleOrders(){
         return db().select(ORDER_INFO.asterisk()).from(ORDER_INFO.leftJoin(PRESALE).on(ORDER_INFO.ACTIVITY_ID.eq(PRESALE.ID))).where(
-            ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PRE_SALE}))
+            ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PRE_SALE}))
             .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY))
             .and(ORDER_INFO.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT))
             .and(PRESALE.END_TIME.lt(DateUtil.getLocalDateTime()))

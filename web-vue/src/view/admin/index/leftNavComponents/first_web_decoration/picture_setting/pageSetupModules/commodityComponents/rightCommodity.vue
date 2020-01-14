@@ -526,9 +526,11 @@
 <script>
 import vcolorpicker from 'vcolorpicker'
 import Vue from 'vue'
+import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 import { queryDataList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 Vue.use(vcolorpicker)
 export default {
+  mixins: [decMixins],
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'), // 图片弹窗组件
     SelectLinks: () => import('@/components/admin/selectLinks'), // 选择链接弹窗
@@ -788,38 +790,41 @@ export default {
             flag = true
           })
           if (flag) {
-            if (this.modulesData.recommend_type === '1') {
-              this.temporaryStorageGoods = this.modulesData.goods_items
+            let turnToString = this.handleToTurnNumToStr(this.modulesData)
+            console.log(turnToString)
+            // this.modulesData = turnToString
+            if (turnToString.recommend_type === '1') {
+              this.temporaryStorageGoods = turnToString.goods_items
             }
             console.log(this.modulesData)
             // 需要转换的checkbox字段数组集合
-            let getModulesData = JSON.parse(JSON.stringify(this.modulesData))
+            let getModulesData = JSON.parse(JSON.stringify(turnToString))
             this.needToSwitchData.forEach(itemC => {
-              let m = this.handleToTurnModulesData(this.modulesData[itemC]) // 将数据种checkbox的值由stying数字转为Boolean
+              let m = this.handleToTurnModulesData(turnToString[itemC]) // 将数据种checkbox的值由stying数字转为Boolean
               getModulesData[itemC] = m
             })
             console.log(getModulesData)
             // 转换列表样式
             this.handleToChangeStyle(0, getModulesData)
             // 转换商品范围字段数据
-            let d = this.handleToTransformationRangeData(this.modulesData.goods_area)
+            let d = this.handleToTransformationRangeData(turnToString.goods_area)
             getModulesData.goods_area = d
             // 赋值
-            Object.keys(this.modulesData).forEach((item, index) => { // 将数据赋值给当前页面数据池
+            Object.keys(turnToString).forEach((item, index) => { // 将数据赋值给当前页面数据池
               this.$set(this.data, item, getModulesData[item])
             })
 
             // 初始化调取模块推荐接口
-            if (!this.modulesData.goodsListData.length) {
+            if (!turnToString.goodsListData.length) {
               this.initRequestFlag = true
-              this.handleToGetModulesGoods(this.modulesData)
+              this.handleToGetModulesGoods(turnToString)
             } else {
               this.initRequestFlag = false
             }
           }
           console.log(this.data)
         }
-        console.log(newData, this.modulesData, this.data)
+        console.log(newData, this.data)
       },
       immediate: true
     },

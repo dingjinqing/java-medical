@@ -77,4 +77,18 @@ public class CouponListVo {
         private Byte currentState;
 
         private Byte type;
+        private Timestamp expirationDate;
+        private  String cardId;
+        /**
+         * 指定商品可用
+         */
+        private String     recommendGoodsId;
+        /**
+         * 指定品牌可用
+         */
+        private String     recommendCatId;
+        /**
+         * 指定商家分类可用
+         */
+        private String     recommendSortId;
 }

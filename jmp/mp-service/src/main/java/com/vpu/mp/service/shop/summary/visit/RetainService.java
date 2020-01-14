@@ -9,13 +9,13 @@ import com.vpu.mp.service.pojo.shop.summary.visit.AccessRetain;
 import com.vpu.mp.service.pojo.shop.summary.visit.AccessRetainVo;
 import com.vpu.mp.service.pojo.shop.summary.visit.RetainItem;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.jooq.TableField;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.MpDailyRetain.MP_DAILY_RETAIN;
 import static com.vpu.mp.db.shop.tables.MpMonthlyRetain.MP_MONTHLY_RETAIN;
@@ -34,8 +34,30 @@ public class RetainService extends BaseVisitService {
     private static final int GRADING_DAY = 1;
     private static final int GRADING_WEEK = 7;
     private static final int GRADING_MONTH = 30;
-
+    /** 日期标识符 */
+    private static final Integer CUSTOM_DAYS = 0;
+    /**
+     *得到之前的某一天(字符串类型)
+     *@param days N天前
+     *@return preDay(String)
+     */
+    public String getDate(Integer days) {
+        //格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        //获取当前时间
+        Calendar c = Calendar.getInstance();
+        //计算指定日期
+        c.add(Calendar.DATE, - days);
+        Date time = c.getTime();
+        //返回格式化后的String日期
+        return sdf.format(time);
+    }
     public AccessRetainVo getAccessRetain(VisitStatisticsParam param) {
+        //得到时间
+        if (!param.getType().equals(CUSTOM_DAYS)){
+            param.setStartDate(getDate(param.getType()));
+            param.setEndDate(getDate(NumberUtils.INTEGER_ZERO));
+        }
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
         int action = param.getAction();
@@ -56,6 +78,8 @@ public class RetainService extends BaseVisitService {
                 throw new IllegalStateException("Unexpected action: " + action);
         }
         vo.setData(retains);
+        vo.setStartDate(startDate);
+        vo.setEndDate(endDate);
         return vo;
     }
 
@@ -66,10 +90,15 @@ public class RetainService extends BaseVisitService {
             /* one day */
             String refDate = r.get(MP_DAILY_RETAIN.REF_DATE);
             String itemsString = r.get(field);
-            List<RetainItem> items = Util.parseJson(itemsString, new TypeReference<List<RetainItem>>() {});
+            Map<Integer,Integer> items = Util.parseJson(itemsString, new TypeReference<Map<Integer,Integer>>() {});
+            Integer sum = 0;
+            for (Integer value : items.values()){
+                sum += value;
+            }
             AccessRetain day = new AccessRetain();
             day.setRefDate(refDate);
-            day.setList(Objects.requireNonNull(items));
+            day.setData(Objects.requireNonNull(items));
+            day.setSum(sum);
             retains.add(day);
         });
         return retains;

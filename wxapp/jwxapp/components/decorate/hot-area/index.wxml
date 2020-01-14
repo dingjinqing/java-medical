@@ -1,0 +1,3 @@
+<view class="hot-area-container" style='margin-bottom:{{m.margin_bot}}rpx;'>
+  <image src="{{m.data.bg_img_url}}" bindtap="bindHotAreaTap" class='hot-area-image hot-image-{{m.cur_idx}}' lazy-load="{{true}}" mode='widthFix'></image>
+</view>

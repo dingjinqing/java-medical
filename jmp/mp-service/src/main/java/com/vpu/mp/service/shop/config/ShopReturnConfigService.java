@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
 import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
 import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.beans.BeanInfo;
@@ -31,6 +32,8 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 @Slf4j
 @Service
 public class ShopReturnConfigService extends BaseShopConfigService {
+    @Autowired
+    TradeService tradeService;
 
     /**
      * 自动退款退货设置开关，默认为0关闭，1开启
@@ -156,7 +159,8 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public ReturnBusinessAddressParam getBusinessAddress() {
-        return this.getJsonObject(K_BUSINESS_ADDRESS, ReturnBusinessAddressParam.class, null);
+        return this.getJsonObject(K_BUSINESS_ADDRESS, new TypeReference<ReturnBusinessAddressParam>() {
+        }, new ReturnBusinessAddressParam());
     }
 
     public int setBusinessAddress(ReturnBusinessAddressParam businessAddress) {
@@ -173,8 +177,12 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public GoodsPackageParam getOrderReturnGoodsPackage() {
-        return this.getJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, new TypeReference<GoodsPackageParam>() {
+        GoodsPackageParam temp = this.getJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, new TypeReference<GoodsPackageParam>() {
         }, new GoodsPackageParam());
+        // 校验商品相关弹窗内容是否存在
+        tradeService.checkExist(temp);
+        setOrderReturnGoodsPackage(temp);
+        return temp;
     }
 
     public int setOrderReturnGoodsPackage(GoodsPackageParam orderReturnGoodsPackage) {

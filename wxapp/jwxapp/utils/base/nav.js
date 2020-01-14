@@ -3,18 +3,18 @@ var cache = require('./cache.js');
 var pathConfig = require('./path.js');
 
 var nav = {
-  getUrl(path) {
+  getUrl (path) {
     path = path || "";
     path = path.indexOf("/") === 0 ? path.substr(1) : path;
     var schema = config.schema ? config.schema : "https";
     return schema + "://" + config.main_host + "/" + path;
   },
-  getImageUrl(path) {
+  getImageUrl (path) {
     path = path || "";
     path = path.indexOf("/") === 0 ? path.substr(1) : path;
     return "http://" + config.image_host + "/" + path;
   },
-  toMiniProgram(appId, path = '', extraData = {}, envVersion = '') {
+  toMiniProgram (appId, path = '', extraData = {}, envVersion = '') {
     util.jumpLink({
       appId: appId,
       path: path,
@@ -22,19 +22,19 @@ var nav = {
       envVersion: envVersion
     });
   },
-  switchTab(o) {
+  switchTab (o) {
     return this.jumpLink(o, "switchTab");
   },
-  reLaunch(o) {
+  reLaunch (o) {
     return this.jumpLink(o, "reLaunch");
   },
-  redirectTo(o) {
+  redirectTo (o) {
     return this.jumpLink(o, "redirectTo");
   },
-  navigateTo(o) {
+  navigateTo (o) {
     return this.jumpLink(o, "navigateTo");
   },
-  jumpLink(url, linkType, success, fail, complete) {
+  jumpLink (url, linkType, success, fail, complete) {
     var o = {};
     if (typeof url == "string" && url.indexOf("{") === 0) {
       var linkObj = JSON.parse(url);
@@ -67,11 +67,11 @@ var nav = {
     if (complete) o.complete = complete;
     return wx[linkType](o);
   },
-  getCurrentPage() {
+  getCurrentPage () {
     var pages = getCurrentPages();
     return pages.length > 0 ? pages[pages.length - 1] : null;
   },
-  getPath(path, query) {
+  getPath (path, query) {
     path = path.indexOf("/") === 0 ? path : "/" + path;
     var params = [];
     for (var i in query) {
@@ -79,20 +79,20 @@ var nav = {
     }
     return path + (params.length > 0 ? "?" + params.join("&") : "");
   },
-  getCurrentPath(options) {
+  getCurrentPath (options) {
     var pages = getCurrentPages();
     var path = pages.length > 0 ? pages[pages.length - 1].route : null;
     return this.getPath(path, options);
   },
 
-  absolutePageUrl(url) {
+  absolutePageUrl (url) {
     url = url || "";
     if (url && url.indexOf("../../") === 0) url = url.substr(5);
     if (url && url.indexOf("../") === 0) url = "/pages/" + url.substr(3);
     if (url && url.indexOf("/") !== 0) url = "/" + url;
     return url;
   },
-  validUrl(url) {
+  validUrl (url) {
     url = this.absolutePageUrl(url);
     var o = this.parseUrl(url);
     var arr = o.path.split("/");
@@ -104,7 +104,7 @@ var nav = {
 
     return url;
   },
-  parseUrl(url) {
+  parseUrl (url) {
     url = this.absolutePageUrl(url);
     var url_arr = url.split("?");
     var params = !url_arr[1] ? [] : url_arr[1].split("&");
@@ -118,7 +118,7 @@ var nav = {
       query: query
     }
   },
-  equalUrl(url1, url2, fullCompare) {
+  equalUrl (url1, url2, fullCompare) {
     if (typeof url1 == 'string' && typeof url2 == 'string') {
       url1 = this.parseUrl(url1);
       url2 = this.parseUrl(url2);
@@ -142,7 +142,7 @@ var nav = {
     return true;
   },
 
-  matchParams(query1, query2, mustKeys) {
+  matchParams (query1, query2, mustKeys) {
     var matchNumber = 0;
     var matcheKeys = 0;
     for (var key in query1) {
@@ -153,7 +153,7 @@ var nav = {
     }
     return mustKeys.length == matcheKeys ? matchNumber : -1;
   },
-  inPaths(url, paths) {
+  inPaths (url, paths) {
     for (var i in paths) {
       if (this.equalUrl(paths[i], url, false)) {
         return i;
@@ -162,7 +162,7 @@ var nav = {
     return -1;
   },
 
-  jumpToWeb(path, param) {
+  jumpToWeb (path, param) {
     if (typeof param == 'object') {
       let paramStr = '';
       for (let k in param) {
@@ -170,10 +170,14 @@ var nav = {
       }
       param = paramStr;
     }
-    if (typeof param == 'undefined'){
-      param='';
+    if (typeof param == 'undefined') {
+      param = '';
     }
-    var url = this.getUrl(path) + "?shop_id=" + config.shop_id + "&user_id=" + cache.getCache('user_id') + param;
+    let reg = /navHeight/
+    let flag = reg.test(this.getUrl(path))
+    console.log(this.getUrl(path), flag)
+    let params = flag ? '&' : '?'
+    var url = this.getUrl(path) + params + "shop_id=" + config.shop_id + "&user_id=" + cache.getCache('user_id') + param;
     this.navigateTo({
       url: '/pages/webview/webview?url=' + encodeURIComponent(url),
     })

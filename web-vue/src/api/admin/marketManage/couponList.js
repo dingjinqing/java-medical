@@ -63,24 +63,6 @@ export function updateSaveCoupon (data) {
   })
 }
 
-// 优惠券领取明细
-export function couponGetDetail (data) {
-  return service({
-    url: '/api/admin/coupon/get/detail',
-    method: 'post',
-    data: data
-  })
-}
-
-// 删除明细
-export function deleteCouponDetail (data) {
-  return service({
-    url: `couponId=${data}`,
-    method: 'get',
-    data: data
-  })
-}
-
 // 编辑获取单条记录信息
 export function updateCoupon (data) {
   return service({
@@ -95,5 +77,23 @@ export function coupondetail (data) {
   return service({
     url: `/api/admin/coupon/update/info?couponId=${data}`,
     method: 'get'
+  })
+}
+
+// 优惠券领取明细
+export function couponGetDetail (data) {
+  return service({
+    url: '/api/admin/coupon/get/detail',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除明细
+export function deleteCouponDetail (data) {
+  return service({
+    url: `/api/admin/avail/coupon/del?id=${data}`,
+    method: 'get',
+    data: data
   })
 }

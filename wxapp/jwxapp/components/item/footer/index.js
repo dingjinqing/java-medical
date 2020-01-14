@@ -12,14 +12,14 @@ global.wxComponent({
     productInfo: {
       type: Object,
       value: null,
-      observer (newVal, oldVal) {
+      observer(newVal, oldVal) {
         if (newVal.goodsId && !oldVal) this.getCartNum()
       }
     },
     triggerButton: {
       type: String,
       value: '',
-      observer (val) {
+      observer(val) {
         console.log(val)
         if (val === 'left') {
           this.setData({
@@ -44,14 +44,14 @@ global.wxComponent({
     activity: {
       type: Object,
       value: null,
-      observer (val) {
+      observer(val) {
         console.log(val)
       }
     },
     dealtAct: {
       type: Object,
       value: null,
-      observer (val) {
+      observer(val) {
       }
     }
   },
@@ -71,16 +71,16 @@ global.wxComponent({
    * 组件的方法列表
    */
   methods: {
-    leftClick () {
+    leftClick() {
       if (this.checkOrigin('left')) return //判断商品详情页点击 底部footer按钮
       this.addCart()
     },
-    rightClick () {
+    rightClick() {
       if (this.checkOrigin('right')) return
       // if (!this.data.dealtAct) util.showModal('提示','失败',()=>{},'','','确认')
       this.toCheckOut()
     },
-    getCartNum () {
+    getCartNum() {
       let { goodsId } = this.data.productInfo
       util.api('/api/wxapp/cart/goods/num', res => {
         if (res.error === 0) {
@@ -91,7 +91,7 @@ global.wxComponent({
       }, { goodsId })
     },
     // 添加购物车
-    addCart () {
+    addCart() {
       let { goodsNum: goodsNumber, prdId } = this.data.productInfo
       util.api(
         "/api/wxapp/cart/add",
@@ -110,29 +110,29 @@ global.wxComponent({
         }
       );
     },
-    checkOrigin (trigger) {
+    checkOrigin(trigger) {
       if (this.data.origin === 'item' && !this.data.isDefaultPrd) {
         this.triggerEvent('showSpecDialog', trigger)
         return true
       }
       return false
     },
-    toCheckOut () {
+    toCheckOut() {
       util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]), activityType: this.data.activity ? this.data.activity.activityType : null, activityId: this.data.activity ? this.data.activity.activityId : null })}`, "navigateTo")
       this.triggerEvent('close')
     },
     //整合参数
-    getUrlParams (obj) {
+    getUrlParams(obj) {
       return Object.keys(obj).reduce((UrlStr, item, index) => {
         if (index !== 0) UrlStr += `&`
         return UrlStr += `${item}=${obj[item]}`
       }, '?')
     },
     // 返回首页
-    backHome () {
+    backHome() {
       util.jumpLink("pages/index/index", "redirectTo")
     },
-    toCartList () {
+    toCartList() {
       util.jumpLink("pages/cart/cart", "navigateTo")
     }
   }

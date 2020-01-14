@@ -66,7 +66,7 @@ public class PemToPkcs12 {
 				"-----BEGIN PRIVATE KEY-----\n", "")
 				.replace("-----END PRIVATE KEY-----", "")
 				.replaceAll("\n", "");
-		byte privateKeyDer[] = Base64.getDecoder().decode(privateKeyPem);
+		byte[] privateKeyDer = Base64.getDecoder().decode(privateKeyPem);
 
 		// Used to read User_privkey.pem file to get private key
 		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyDer);

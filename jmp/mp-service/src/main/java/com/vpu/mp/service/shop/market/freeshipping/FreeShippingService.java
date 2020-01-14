@@ -1,17 +1,18 @@
 package com.vpu.mp.service.shop.market.freeshipping;
 
-import static com.vpu.mp.db.main.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
-import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.db.main.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
+import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShipQueryParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingGoodsRuleVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import org.jooq.Record;
@@ -21,17 +22,22 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.main.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
-import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShipQueryParam;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingGoodsRuleVo;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.db.main.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
+import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_ALL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
 
 /**
  * 免邮费
@@ -44,6 +50,8 @@ public class FreeShippingService extends ShopBaseService {
 
     @Autowired
     public FreeShippingRuleService ruleService;
+    @Autowired
+    public FreeShippingGoodsService freeShipGoods;
     @Autowired
     QrCodeService qrCodeService;
 
@@ -69,7 +77,7 @@ public class FreeShippingService extends ShopBaseService {
                 .fetch();
         freeShippingList.forEach(freeShip -> {
             Result<FreeShippingRuleRecord> ruleList = ruleService.getFreeShippingRule(freeShip.getId());
-            if (freeShip.getType().equals(0)) {
+            if (freeShip.getType().equals(GOODS_AREA_TYPE_ALL)) {
                 ruleList.forEach(freeShipRule -> {
                     FreeShippingGoodsRuleVo ruleVo = new FreeShippingGoodsRuleVo();
                     ruleVo.setAction(5);
@@ -214,6 +222,14 @@ public class FreeShippingService extends ShopBaseService {
                 default:
             }
         }
+    }
+
+    public FreeShippingRecord getFreeShippingByRuleId(Integer ruleId) {
+        return db().select(FREE_SHIPPING.asterisk()).from(FREE_SHIPPING)
+                .leftJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
+                .where(FREE_SHIPPING_RULE.ID.eq(ruleId))
+                .orderBy(FREE_SHIPPING.LEVEL.desc(),FREE_SHIPPING_RULE.CREATE_TIME.desc())
+                .fetchOneInto(FreeShippingRecord.class);
     }
 
     public FreeShippingRecord getFreeShippingById(Integer id) {
