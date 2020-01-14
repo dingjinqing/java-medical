@@ -851,10 +851,11 @@ public class ServiceOrderService extends ShopBaseService {
         updateParam = db().select().from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_ID.eq(updateParam.getOrderId())).fetchOptionalInto(ServiceOrderUpdateParam.class).orElse(null);
         UserRecord wxUserInfo = userService.getUserByUnionId(wxUnionId);
         String serviceName = db().select(STORE_SERVICE.SERVICE_NAME).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(updateParam.getServiceId())).fetchOptionalInto(String.class).orElse(null);
+        logger().info("预约取消消息推送1");
         if(wxUnionId == null || officeAppId == null || wxUserInfo == null || updateParam == null || serviceName == null){
             return;
         }
-
+        logger().info("预约取消消息推送2");
         String page = "pages/appointinfo/appointinfo?order_sn=" + updateParam.getOrderSn();
         String keyword1 = "您预约的";
         String keyword11 = "已取消";
@@ -869,6 +870,7 @@ public class ServiceOrderService extends ShopBaseService {
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.SERVICE_ORDER_CANCEL).data(data).build())
             .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
             .build();
+        logger().info("预约取消消息推送3");
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
             TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
