@@ -605,9 +605,9 @@ public class AdminStoreController extends AdminBaseController{
         updateParam.setOrderStatus(ORDER_STATUS_CANCELED);
         updateParam.setOrderStatusName(ORDER_STATUS_NAME_CANCELED);
 		if(shop().store.serviceOrder.serviceOrderUpdate(updateParam)) {
-
-            /** TODO:队列发送模板消息，通知用户预约取消 */
-
+            logger().info("预约取消消息推送0");
+		    //模板消息通知
+            shop().store.serviceOrder.serviceOrderCancelNotify(updateParam,param.getCancelReason());
             return success();
     	}else {
     		return fail();
