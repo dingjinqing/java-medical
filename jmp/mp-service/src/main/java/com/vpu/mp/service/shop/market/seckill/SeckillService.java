@@ -374,7 +374,7 @@ public class SeckillService extends ShopBaseService{
         SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();
         total.setTotalPayment(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
         total.setTotalDiscount(analysisVo.getDiscountAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
-        total.setTotalCostEffectivenessRatio(analysisVo.getCostEffectivenessRatio().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
+        total.setTotalCostEffectivenessRatio(total.getTotalPayment().compareTo(BigDecimal.ZERO) > 0 ? total.getTotalDiscount().divide(total.getTotalPayment()) : BigDecimal.ZERO);
         total.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
         total.setTotalPaidGoodsNumber(analysisVo.getPaidGoodsNumber().stream().mapToInt(Integer::intValue).sum());
         total.setTotalOldUserNumber(analysisVo.getOldUserNumber().stream().mapToInt(Integer::intValue).sum());
