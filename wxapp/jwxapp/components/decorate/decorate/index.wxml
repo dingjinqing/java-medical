@@ -28,7 +28,7 @@
 	   	<v-pinlottery wx:elif="{{module.component_name == 'v-pinlottery'}}" module="{{module}}" />
 	   	<!--瓜分积分(缺跳活动页接口)-->
 	   	<v-pinintegration wx:elif="{{module.component_name == 'v-pinintegration'}}" module="{{module}}" />
-		<!--地图(接口缺字段，需后端处理)-->
+		<!--地图-->
 		<v-map wx:elif="{{module.component_name == 'v-map'}}" module="{{module}}" />
 		<!--公众号-->
 		<v-official-accounts wx:elif="{{module.component_name == 'v-official-accounts'}}" module="{{module}}" />
@@ -50,6 +50,7 @@
 		<v-hot-area wx:elif="{{module.component_name == 'v-hot-area'}}" module="{{module}}" />
 		<!--魔方多图-->
 		<v-window wx:elif="{{module.component_name == 'v-window'}}" module="{{module}}" />
+		<!--商品分组 <v-goods-group class="v-goods-group" wx:elif="{{module.component_name == 'v-goods-group'}}" module="{{module}}" />-->
 	</block>
 </view>
 
