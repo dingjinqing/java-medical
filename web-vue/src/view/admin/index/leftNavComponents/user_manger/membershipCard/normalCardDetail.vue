@@ -133,7 +133,7 @@ export default {
       valid: false
     }
     let cardChargeCfgDataTmp = {
-      powerCard: true,
+      powerCard: null,
       sendMoney: undefined,
       offset: '2',
       chargeInputLeft: 100,
@@ -317,8 +317,8 @@ export default {
       this.cardScoreCfgData.shopingInputLeftM = data.scoreJson.perGoodsMoney
       this.cardScoreCfgData.shopingInputRightM = data.scoreJson.perGetScores
       // 充值
-      this.cardChargeCfgData.powerCard = data.powerCard ? data.powerCard === 1 : true
-      this.cardChargeCfgData.sendMoney = data.sendMoney
+      this.cardChargeCfgData.powerCard = data.powerCard ? data.powerCard === 1 : false
+      this.cardChargeCfgData.sendMoney = data.sendMoney ? data.sendMoney : undefined
       this.cardChargeCfgData.offSet = data.powerCardJson ? String(data.powerCardJson.offsetMoney) : '2'
       this.cardChargeCfgData.chargeInputLeftM = data.powerCardJson ? data.powerCardJson.perMoney : 100
       this.cardChargeCfgData.chargeInputRightM = data.powerCardJson ? data.powerCardJson.perGetMoney : 100
@@ -472,10 +472,10 @@ export default {
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
         this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
         // 检验都通过
+        console.log(this.cardChargeCfgData.valid)
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
           this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid &&
           this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
-          // this.$message.success('成功')
           // 保存数据
           this.prepareCardData()
         } else {
@@ -487,6 +487,10 @@ export default {
     },
     prepareCardData () {
       this.dealWithDynamicArrayData()
+      let pullPath = this.$imageHost + '/'
+      if (this.cardNameAndBg.bgImg) {
+        this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
+      }
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,

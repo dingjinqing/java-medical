@@ -58,6 +58,17 @@ public enum RemarkTemplate {
 	CARD_RECEIVE_SEND(3001,RemarkMessage.MSG_CARD_RECEIVE_SEND),
 	/**	卡升级赠送 */
 	CARD_UPGRADE(3002,RemarkMessage.MSG_CARD_UPGRADE),
+	/** 发卡原因： 管理员发卡 - 门店服务次数  */
+	SEND_CARD_REASON(3003,RemarkMessage.SEND_CARD_REASON),
+	/** 管理员发卡 */
+	ADMIN_SEND_CARD(3004,RemarkMessage.ADMIN_SEND_CARD),
+	/** 开卡赠送 */
+	OPEN_CARD_SEND(3005,RemarkMessage.OPEN_CARD_SEND),
+	/**	系统检测升级 */
+	SYSTEM_UPGRADE(3006,RemarkMessage.SYSTEM_UPGRADE),
+	
+	
+	
 	
 	/**
 	 * 营销
@@ -73,7 +84,9 @@ public enum RemarkTemplate {
 	/**	领取优惠券 */
 	RECEIVE_COUPON(4005,RemarkMessage.MSG_RECEIVE_COUPON),
 	/**	好友助力失败 */
-	FRIENDS_HELP_FAIL(4006,RemarkMessage.MSG_FRIENDS_HELP_FAIL), 
+	FRIENDS_HELP_FAIL(4006,RemarkMessage.MSG_FRIENDS_HELP_FAIL),
+	/** 门店支付 */
+	STORE_PAYMEMBT(4007,RemarkMessage.STORE_PAYMEMBT),
 	
 	/** 
 	 * 管理员

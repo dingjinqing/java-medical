@@ -518,6 +518,46 @@ global.wxPage({
         } else {
           return { desc: `新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`, id: info.promotionId }
         }
+      case '15':
+        var data = {id: info.promotionId}
+        if(info.conType === 0){
+          data.desc = `满${info.money}元，`
+        }
+        if(info.conType === 1){
+          data.desc = `满${info.num}件，`
+        }
+        if(info.conType === 2){
+          data.desc = `满${info.money}元或${info.num}件，`
+        }
+        data.desc += `部分地区包邮`
+        return data
+      case '21':
+        var data = {id: info.promotionId}
+        if(info.type === 1){
+          if(info.amount > 0){
+            data.desc = `每满${info.amount}件`
+          } else {
+            data.desc = `每满${info.fullMoney}元`
+          }
+        } else if(info.type === 2 || info.type === 3) {
+          if(info.amount > 0){
+            data.desc = `满${info.amount}件`
+          } else {
+            data.desc = `满${info.fullMoney}元`
+          }
+        } else if(info.type === 4) {
+          data.desc = `第${info.amount}件`
+        }
+        if(info.type === 1 || info.type === 2){
+          data.desc += `，减${info.reduceMoney}元`
+        } else (
+          data.desc += `，打${info.discount}折`
+        )
+        return data
+      case '19':
+        var data = {id: info.promotionId}
+        data.desc = `待实现`
+        return data
     }
   },
   /**

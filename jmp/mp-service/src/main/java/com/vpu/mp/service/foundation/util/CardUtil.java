@@ -211,4 +211,12 @@ public class CardUtil {
 	public static boolean isCardExamine(Byte type) {
 		return CardConstant.MCARD_EXAMINE_ON.equals(type);
 	}
+	
+	/**
+	 * 获取会员卡默认背景色
+	 * @return 
+	 */
+	public static String getDefaultBgColor() {
+		return "#e6cb96";
+	}
 }
