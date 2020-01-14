@@ -302,7 +302,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param param
      * @return
      */
-    private Condition handleSearchCondition(GoodsSearchParam param) {
+    public Condition handleSearchCondition(GoodsSearchParam param) {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
         if (param.getShowSoldOut()){
             condition= condition.and(GOODS.GOODS_NUMBER.gt(0));
@@ -701,6 +701,14 @@ public class GoodsMpService extends ShopBaseService {
      */
     public List<Integer> getGoodsIdsBySortIdDao(Integer sortId) {
         return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
+    }
+
+    /**
+     * 根据条件放回查询goodsId
+     * @return
+     */
+    public List<Integer> getGoodsIdsByCondition( Condition condition){
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchInto(Integer.class);
     }
 
 }

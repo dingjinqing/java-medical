@@ -1881,6 +1881,13 @@ public class GoodsService extends ShopBaseService {
     public GoodsRecord getGoodsRecordById(int goodsId){
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(GoodsRecord.class).orElse(null);
     }
+    /**
+     * 取多个完整Goods
+     * @return
+     */
+    public Map<Integer, GoodsRecord> getGoodsRecordByIds(List<Integer> goodsIds){
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetchMap(Tables.GOODS.GOODS_ID);
+    }
 
     /**
      * 更新商品和规格的库存和销量，减少number个库存，增加number个销量，number可以是负数

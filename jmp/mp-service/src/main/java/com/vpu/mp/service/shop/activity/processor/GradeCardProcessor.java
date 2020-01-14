@@ -214,7 +214,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
         cartBo.getCartGoodsList().forEach(goods -> {
             // 会员等级
             userCartGradePrice.forEach(gradePrice -> {
-                if (goods.getPrdId().equals(gradePrice.getPrdId())) {
+                if (goods.getProductId().equals(gradePrice.getPrdId())) {
                     CartActivityInfo gradePriceInfo = new CartActivityInfo();
                     gradePriceInfo.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
                     gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
