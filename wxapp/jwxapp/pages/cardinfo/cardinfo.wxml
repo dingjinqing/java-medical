@@ -11,7 +11,7 @@
             <view class="card_exp" wx:if="{{cardInfo.cardType !== 2}}">有效期：{{cardInfo.cardExpireTime}}</view>
           </view>
         </view>
-        <view class="card_surface_bottom">
+        <view class="card_surface_bottom" >
           <view class="surface_bottom_left">
             <view class="surface_bottom_item">
               <view wx:if="{{cardInfo.cardType === 0 && cardInfo.chargeMoney && cardInfo.money>=0}}">余额：￥{{cardInfo.money}}</view>
@@ -21,10 +21,13 @@
               </block>
             </view>
           </view>
-          <view class="surface_bottom_right">
+          <view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
             <!-- ￥10000 -->
             <image mode="widthFix" class="qrcode" bindtap="showQrCode" src="{{imageUrl}}image/wxapp/erweima1.png"></image>
           </view> 
+        </view>
+        <view class="card_status" wx:if="{{cardInfo.cardStopImg}}">
+          <image mode="widthFix" src="{{cardInfo.cardStopImg}}"></image>
         </view>
       </view>
     </view>
