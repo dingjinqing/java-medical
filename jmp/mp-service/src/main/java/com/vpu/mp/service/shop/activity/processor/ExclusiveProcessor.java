@@ -196,7 +196,7 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
         //会员卡绑定商品
         Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
         log.debug("会员绑定的商品[userCardExclusive:{"+Util.toJson(userCardExclusive)+"}]");
-        cartBo.getCartGoodsList().stream().filter(goods -> GoodsConstant.CARD_EXCLUSIVE.equals(goods.getIsCardExclusive())).forEach(goods -> {
+        cartBo.getCartGoodsList().stream().filter(goods -> GoodsConstant.CARD_EXCLUSIVE.equals(goods.getGoodsRecord().getIsCardExclusive())).forEach(goods -> {
             // 会员专享商品
             if (!userCardExclusive.contains(goods.getGoodsId())) {
                 //没有资格0

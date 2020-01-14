@@ -80,6 +80,14 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
+     * 根据 =规格id获取规格信息
+     * @param prdIds
+     * @return
+     */
+    public Map<Integer, GoodsSpecProductRecord> goodsSpecProductByIds(List<Integer> prdIds){
+        return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
+    }
+    /**
      * 根据处理后的商品规格名值数据插入规格项（sku）,在插入前动态计算其prdSpec
      *
      * @param goodsSpecProducts sku
