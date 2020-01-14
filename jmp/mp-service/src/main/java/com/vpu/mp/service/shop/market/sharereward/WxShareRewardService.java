@@ -134,6 +134,11 @@ public class WxShareRewardService extends ShopBaseService {
         return db().fetchExists(SHARE_RECORD, condition);
     }
 
+    public void getAvailableShareAward(int userId, int goodsId) {
+//        shareReward.activityAvailable(activityId, goodsId);
+        // TODO 验证分享 次数是否 超过当天的分享限制
+    }
+
     /**
      * Gets share info.商品详情页点击分享按钮弹出分享有礼详情
      *

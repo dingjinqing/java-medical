@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -539,13 +540,15 @@ public class ShareRewardService extends BaseShopConfigService {
     }
 
     /**
-     * Gets goods pv.
+     * Gets goods pv.获取商品最近七天访问量
      *
      * @param goodsId the goods id
      * @return the goods pv
      */
     public int getGoodsPv(Integer goodsId) {
-        return db().select(sum(USER_GR.COUNT)).from(USER_GR).where(USER_GR.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+        return db().select(sum(USER_GR.COUNT)).from(USER_GR).where(USER_GR.GOODS_ID.eq(goodsId))
+            .and(USER_GR.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(LocalDate.now().minusDays(7).atStartOfDay())))
+            .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 
     /**
