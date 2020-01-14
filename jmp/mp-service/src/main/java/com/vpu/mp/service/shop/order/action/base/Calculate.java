@@ -8,7 +8,6 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -34,7 +33,6 @@ import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
@@ -45,7 +43,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -277,8 +274,7 @@ public class Calculate extends ShopBaseService {
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
             if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())) {
                 //限次卡
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
-                vo.setDefaultMemberCard(card);
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), card == null ? null : Lists.newArrayList(card));                vo.setDefaultMemberCard(card);
                 vo.setMemberCards(validCardList);
             } else {
                 //普通卡、等级卡（或者没有传入cardNo）
