@@ -20,7 +20,17 @@ global.wxPage({
       ? this.data.pageParams.currentPage
       : 1;
     util.api('/api/wxapp/freeship/goods/list',res=>{
-      
+      if(res.error === 0){
+        this.setData({
+          pageParams: res.content.pageResult.page,
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList,
+          delMarket:res.content.delMarket,
+          showCart:{
+            ...res.content.showCart,
+            show_cart:1
+          }
+        });
+      }
     },{
       ruleId:61,
       currentPage: currentPage,

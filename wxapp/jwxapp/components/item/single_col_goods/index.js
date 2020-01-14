@@ -11,6 +11,23 @@ global.wxComponent({
     enableNumEdit:{
       type:Boolean,
       value:false
+    },
+    goodsData: {
+      type: Object,
+      value: null
+    },
+    delMarket: {
+      type: Number,
+      value: null
+    },
+    showCart: {
+      type: Object,
+      value: null,
+      observer(val){
+        let typeClass = {
+          
+        }
+      }
     }
   },
 

@@ -2,8 +2,8 @@
 <v-container>
   <view slot="goods-content" class="goods-content">
     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
-      <block wx:for="{{pageItem}}" wx:key="cardNo" wx:for-index="itemIndex">
-        <v-single-col-goods />
+      <block wx:for="{{pageItem}}" wx:key="goodsId" wx:for-index="itemIndex">
+        <v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" />
       </block>
     </block>
   </view>
