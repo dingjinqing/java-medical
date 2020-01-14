@@ -394,7 +394,8 @@ export default {
       delVisible: false, // 删除提示框flag
       delIndex: null, // 删除下标
       tuneUpChooseGoods: false, // 选择商品弹窗调起
-      chooseGoodsBack: [] // 选择商品弹窗回显
+      chooseGoodsBack: [], // 选择商品弹窗回显
+      nowClickAppointIndex: null
     }
   },
   watch: {
@@ -605,6 +606,7 @@ export default {
     },
     // 点击指定商品
     handleToClickShowNumRadio (index) {
+      this.nowClickAppointIndex = index
       console.log(index, this.linkageData.goodsItems[index].radio)
       if (this.linkageData.goodsItems[index].radio === '2') {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
@@ -612,7 +614,7 @@ export default {
     },
     // 选择商品弹窗数据回传
     resultGoodsDatas (res) {
-      console.log(res)
+      console.log(res, this.linkageData.goodsItems, this.nowClickAppointIndex)
     }
   }
 }
