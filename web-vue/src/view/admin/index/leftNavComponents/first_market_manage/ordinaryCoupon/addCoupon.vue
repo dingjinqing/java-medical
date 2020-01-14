@@ -651,7 +651,7 @@ export default {
     }
     // 自定义校验可使用商品
     var validateAvailableGoods = (rule, value, callback) => {
-      if (value === 1 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
+      if (value === 1 && (this.goodsInfo.length === 0 || this.busClass.length === 0)) {
         callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
       } else {
         callback()
@@ -1024,6 +1024,7 @@ export default {
       this.goodsInfoRow.map((item, index) => {
         this.goodsInfo.push(item.goodsId)
       })
+      this.$refs['param'].validateField('availableGoods')
     },
 
     // 选择商家分类/平台分类弹窗回调显示
@@ -1043,6 +1044,7 @@ export default {
           this.platClass.push(item.catId)
         })
       }
+      this.$refs['param'].validateField('availableGoods')
     },
 
     // 刷新

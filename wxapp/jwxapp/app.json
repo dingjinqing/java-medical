@@ -16,6 +16,8 @@
     "pages/sort/sort",
     "pages/coupon/coupon",
     "pages/getCoupon/getCoupon",
+    "pages/receiveCoupon/receiveCoupon",
+    "pages/buycardlist/buycardlist",
     "pages/usercenter/usercenter",
     "pages/collect/collect",
     "pages/item/item",
