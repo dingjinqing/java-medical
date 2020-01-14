@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -158,7 +159,66 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        doOrderOperation(cartBo.getOrderCartProductBo());
+        boolean isNewUser = orderInfoService.isNewUser(cartBo.getUserId());
+        if (isNewUser) {
+            List<Integer> productIds = cartBo.getProductIdList();
+            List<FirstSpecialProductBo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(productIds, cartBo.getDate()).into(FirstSpecialProductBo.class);
+            if (specialPrdIdList != null && specialPrdIdList.size() > 0) {
+                log.debug("新用户触发首单特惠活动FirstSpecialProductBo:" + Util.toJson(specialPrdIdList));
+                // 活动商品数量
+                AtomicReference<Integer> goodsNum = new AtomicReference<>(0);
+                // 选中的商品数量
+                AtomicReference<Integer> checkedGoodsNum = new AtomicReference<>(0);
+                cartBo.getCartGoodsList().forEach(cartGoods -> {
+                    specialPrdIdList.forEach(firstSpecial -> {
+                        if (firstSpecial.getPrdId().equals(cartGoods.getProductId())) {
+                            log.debug("首单特惠商品[getPrdId:" + firstSpecial.getPrdId() + "]");
+                            CartActivityInfo firstActivityInfo = new CartActivityInfo();
+                            firstActivityInfo.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
+                            firstActivityInfo.setFirstSpecialPrice(firstSpecial.getPrdPrice());
+                            firstActivityInfo.setActivityId(firstSpecial.getId());
+                            firstActivityInfo.setFirstSpecialNumber(firstSpecial.getLimitAmount());
+                            if (firstSpecial.getLimitAmount() > 0 && cartGoods.getCartNumber() > firstSpecial.getLimitAmount()) {
+                                //超出限购数量后，买家可继续添加购买该商品
+                                if (firstSpecial.getLimitFlag().equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONTINUE)) {
+                                    firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                                } else {
+                                    //不可继续添加
+                                    log.debug("商品数量超过活动数量限制,不可选中[getCartNumber:" + cartGoods.getCartNumber() + ",getLimitAmount:" + firstSpecial.getLimitAmount() + "]");
+                                    cartGoods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                                    cartService.switchCheckedByProductId(cartBo.getUserId(), cartGoods.getProductId(), CartConstant.CART_NO_CHECKED);
+                                    firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                                }
+                            }
+                            goodsNum.updateAndGet(v -> v + 1);
+                            cartGoods.getCartActivityInfos().add(firstActivityInfo);
+                        }
+                    });
+                });
+                // 全局限制
+                Integer limitGoodsNum = firstSpecialConfigService.getFirstLimitGoods();
+                log.debug("首单特惠全局限制商品种类[limitGoodsNum:" + limitGoodsNum + "]");
+                if (goodsNum.get() >= limitGoodsNum) {
+                    log.debug("选中商品过多,触发首单特惠商品数(种类)限制[goodsNum:" + goodsNum + "checkedGoodsNum:" + checkedGoodsNum + ",limitGoodsNum:" + limitGoodsNum + "]");
+                    cartBo.getCartGoodsList().forEach(cartGoods -> {
+                        CartActivityInfo actInfo = cartGoods.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
+                        if (actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
+                            if (Objects.equals(cartGoods.getIsChecked(), CartConstant.CART_IS_CHECKED)) {
+                                checkedGoodsNum.updateAndGet(v -> v + 1);
+                                if (checkedGoodsNum.get() > limitGoodsNum) {
+                                    log.debug("超过限制的商品首单特惠不生效,商品价格为原价[" + "product:" + cartGoods.getProductId() + "]");
+                                    actInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                                    cartGoods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                                }
+                            } else {
+                                actInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                            }
+                        }
+                    });
+                }
+
+            }
+        }
     }
 
     /**
@@ -220,7 +280,6 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                 actInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                             }
                         }
-
                     });
                 }
 

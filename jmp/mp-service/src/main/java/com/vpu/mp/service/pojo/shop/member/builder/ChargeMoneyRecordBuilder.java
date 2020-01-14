@@ -65,6 +65,11 @@ public class ChargeMoneyRecordBuilder {
 		record.setType(type);
 		return this;
 	}
+	
+	public ChargeMoneyRecordBuilder reasonId(String reasonId) {
+		record.setReasonId(reasonId);
+		return this;
+	}
 
 	public ChargeMoneyRecordBuilder reason(String reason) {
 		record.setReason(reason);

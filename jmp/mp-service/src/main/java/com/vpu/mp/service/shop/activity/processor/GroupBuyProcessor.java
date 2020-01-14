@@ -28,6 +28,7 @@ import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -162,8 +163,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         //拼团不使用优惠券和会员卡
-        param.setMemberCardNo(null);
-        param.setCouponSn(null);
+        param.setMemberCardNo(StringUtils.EMPTY);
+        param.setCouponSn(StringUtils.EMPTY);
         //团长,团id
         Byte isGrouper = param.getGroupId() == null ? IS_GROUPER_Y : IS_GROUPER_N;
         log.debug("拼团订单");

@@ -20,6 +20,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     private Byte status = CartConstant.ACTIVITY_STATUS_VALID;
     /**
+     * 显示位置 0显示,1标签,2上方 3选择内容
+     */
+    private Byte type ;
+    /**
      * 专享会员等级
      */
     private Integer exclusiveGrade;
@@ -28,6 +32,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      * 首单特惠价格
      */
     private BigDecimal firstSpecialPrice;
+    /**
+     * 首单特惠限购数量
+     */
+    private Integer firstSpecialNumber;
     /**
      * 会员价格
      */

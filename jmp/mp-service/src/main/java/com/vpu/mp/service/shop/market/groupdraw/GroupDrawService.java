@@ -1,12 +1,14 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
 import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
 import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
@@ -33,7 +35,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -45,12 +46,17 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Objects;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.GroupDrawInviteRecord;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
+import com.vpu.mp.db.shop.tables.records.JoinDrawListRecord;
 import com.vpu.mp.db.shop.tables.records.JoinGroupListRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -58,6 +64,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupDraw;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
@@ -72,8 +79,13 @@ import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisM
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisStatus;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisVo;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.DrawUser;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawBotton;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoParam;
@@ -86,6 +98,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupJoinDetailVo;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -116,7 +129,9 @@ public class GroupDrawService extends ShopBaseService {
 	private final QrCodeService qrCode;
 
 	@Autowired
-	protected ImageService imageService;
+	private ImageService imageService;
+	@Autowired
+	private OrderInfoService orderInfoService;
 
 	public GroupDrawService(QrCodeService qrCode) {
 		this.qrCode = qrCode;
@@ -548,7 +563,7 @@ public class GroupDrawService extends ShopBaseService {
 		Timestamp nowTime = DateUtil.getLocalDateTime();
 		if (endTime.before(nowTime) || status.equals(ACTIVITY_STATUS_DISABLE) || delFlag.equals(ONE)) {
 			// 活动不存在
-			logger().info("活动不存在2");
+			logger().info("活动已结束，活动不存在");
 			return null;
 		}
 		Timestamp startTime = groupDraw.getStartTime();
@@ -623,7 +638,8 @@ public class GroupDrawService extends ShopBaseService {
 		logger().info("options处理");
 		Map<String, String> options = param.getOptions();
 		if (!options.isEmpty() && StringUtils.isNotEmpty(options.get("group_draw_id"))
-				&& StringUtils.isNotEmpty(options.get("goods_id")) && StringUtils.isNotEmpty(options.get("invite_id"))) {
+				&& StringUtils.isNotEmpty(options.get("goods_id"))
+				&& StringUtils.isNotEmpty(options.get("invite_id"))) {
 			options.put("user_id", String.valueOf(userId));
 			groupDrawInvite.createInviteRecord("pages1/pinlotteryinfo/pinlotteryinfo",
 					Integer.valueOf(options.get("group_draw_id")), options, ZERO);
@@ -658,7 +674,7 @@ public class GroupDrawService extends ShopBaseService {
 			}
 			drawGoods = saas.getShopApp(getShopId()).goods.getGoodsList(idList, true);
 		}
-		JoinGroupListRecord userGroupInfoRecord = getUserJoinGroupInfo(userId, groupDrawId, groupId);
+		JoinGroupListRecord userGroupInfoRecord = getUserJoinGroupInfo(userId, groupDrawId, groupId, true);
 		GroupDrawList userGroupInfo = new GroupDrawList();
 		if (userGroupInfoRecord != null) {
 			userGroupInfo = userGroupInfoRecord.into(GroupDrawList.class);
@@ -703,7 +719,7 @@ public class GroupDrawService extends ShopBaseService {
 		GroupDrawRecord groupDraw = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchAny();
 		JoinGroupListRecord groupInfo = getGroupInfo(groupDrawId, groupId);
 		List<GroupDrawList> groupList = getGroupList(groupDrawId, groupId, ZERO);
-		JoinGroupListRecord userJoinGroup = getUserJoinGroupInfo(userId, groupDrawId, groupId);
+		JoinGroupListRecord userJoinGroup = getUserJoinGroupInfo(userId, groupDrawId, groupId, true);
 		GroupDrawBotton botton = new GroupDrawBotton(ZERO, ONE, ONE);
 		if (userJoinGroup != null) {
 			botton.setIsJoinDraw(ZERO);
@@ -789,13 +805,71 @@ public class GroupDrawService extends ShopBaseService {
 	 * @param userId
 	 * @param groupDrawId
 	 * @param groupId
-	 * @param isHasNotPay
+	 * @param isHasNotPay 0:true; 1:false php不传时候输入true
 	 * @return
 	 */
-	public JoinGroupListRecord getUserJoinGroupInfo(Integer userId, Integer groupDrawId, Integer groupId) {
+	public JoinGroupListRecord getUserJoinGroupInfo(Integer userId, Integer groupDrawId, Integer groupId,
+			Boolean isHasNotPay) {
 		SelectConditionStep<JoinGroupListRecord> selectConditionStep = db().selectFrom(JOIN_GROUP_LIST)
 				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
 						.and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId).and(JOIN_GROUP_LIST.USER_ID.eq(userId))));
+		if (isHasNotPay) {
+			selectConditionStep.and(JOIN_GROUP_LIST.STATUS.ge(ZERO));
+		}
+		return selectConditionStep.fetchOne();
+	}
+
+	/**
+	 * 获得参团数量
+	 * 
+	 * @param userId
+	 * @param groupDrawId
+	 * @return
+	 */
+	public int getJoinGroupNumber(Integer userId, Integer groupDrawId) {
+		Result<JoinGroupListRecord> fetch = db().selectFrom(JOIN_GROUP_LIST)
+				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+						.and(JOIN_GROUP_LIST.USER_ID.eq(userId)
+								.and(JOIN_GROUP_LIST.STATUS.eq(ZERO).and(JOIN_GROUP_LIST.IS_GROUPER.eq(ZERO)))))
+				.fetch();
+		if (fetch != null) {
+			return fetch.size();
+		}
+		return 0;
+	}
+
+	/**
+	 * 获得开团数量
+	 * 
+	 * @param userId
+	 * @param groupDrawId
+	 * @return
+	 */
+	public int getOpenGroupNumber(Integer userId, Integer groupDrawId) {
+		Result<JoinGroupListRecord> fetch = db()
+				.selectFrom(JOIN_GROUP_LIST).where(
+						JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+								.and(JOIN_GROUP_LIST.USER_ID.eq(userId)
+										.and(JOIN_GROUP_LIST.STATUS.eq(ZERO).and(JOIN_GROUP_LIST.IS_GROUPER.eq(ONE)))))
+				.fetch();
+		if (fetch != null) {
+			return fetch.size();
+		}
+		return 0;
+	}
+
+	/**
+	 * 通过商品获得用户参团信息
+	 * 
+	 * @param userId
+	 * @param groupDrawId
+	 * @param goodsId
+	 * @return
+	 */
+	public JoinGroupListRecord getUserJoinGroupInfoByGoodsId(Integer userId, Integer groupDrawId, Integer goodsId) {
+		SelectConditionStep<JoinGroupListRecord> selectConditionStep = db().selectFrom(JOIN_GROUP_LIST)
+				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+						.and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId).and(JOIN_GROUP_LIST.USER_ID.eq(userId))));
 		selectConditionStep.and(JOIN_GROUP_LIST.STATUS.ge(ZERO));
 		return selectConditionStep.fetchOne();
 	}
@@ -833,4 +907,297 @@ public class GroupDrawService extends ShopBaseService {
 		return list;
 	}
 
+	/**
+	 * 检查是否可创建拼团抽奖订单
+	 * 
+	 * @param userId
+	 * @param groupDrawId
+	 * @param goodsId
+	 * @param groupId
+	 * @param isFromNotPay 0 true;1 false
+	 * @return
+	 */
+	public GroupDrawReturn canCreateGroupOrder(Integer userId, Integer groupDrawId, Integer goodsId, Integer groupId,
+			Boolean isFromNotPay) {
+		GroupDrawRecord groupDraw = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchAny();
+		GroupDrawReturn vo = new GroupDrawReturn();
+		if (groupDraw == null) {
+			// 活动不存在
+			logger().info("活动不存在");
+			vo.setCode(JsonResultCode.ACTIVITY_NOT_EXIST);
+			return vo;
+		}
+		Timestamp endTime = groupDraw.getEndTime();
+		Byte status = groupDraw.getStatus();
+		Byte delFlag = groupDraw.getDelFlag();
+		Timestamp nowTime = DateUtil.getLocalDateTime();
+		if (endTime.before(nowTime) || status.equals(ACTIVITY_STATUS_DISABLE) || delFlag.equals(ONE)) {
+			// 活动不存在
+			logger().info("活动已结束");
+			vo.setCode(JsonResultCode.EVENT_IS_OVER);
+			return vo;
+		}
+		Timestamp startTime = groupDraw.getStartTime();
+		if (startTime.after(nowTime)) {
+			// 活动还没开始
+			logger().info("活动还没开始");
+			vo.setCode(JsonResultCode.EVENT_NOT_STARTED);
+			return vo;
+		}
+		if (isFromNotPay) {
+			OrderInfoRecord orderInfo = orderInfoService.getWaitPayOrderByActivityId(userId, goodsId,
+					BaseConstant.ACTIVITY_TYPE_GROUP_DRAW, groupDrawId);
+			if (orderInfo != null) {
+				logger().info("存在未支付订单");
+				vo.setCode(JsonResultCode.HAVE_UNPAID_ORDERS);
+				return vo;
+			}
+		}
+
+		JoinGroupListRecord joinGroupInfo = getUserJoinGroupInfoByGoodsId(userId, groupDrawId, goodsId);
+		if (joinGroupInfo != null) {
+			logger().info("已参与该活动");
+			vo.setCode(JsonResultCode.PARTICIPATED_IN_EVENT);
+			return vo;
+		}
+		JoinGroupListRecord userJoinGroupInfo = getUserJoinGroupInfo(userId, groupDrawId, groupId, false);
+		// 不是团长
+		if (userJoinGroupInfo != null && userJoinGroupInfo.getIsGrouper().equals(ZERO)) {
+			int joinGroupNumber = getJoinGroupNumber(userId, groupDrawId);
+			Short joinLimit = groupDraw.getJoinLimit();
+			if (joinGroupNumber >= Integer.valueOf(String.valueOf(joinLimit))) {
+				logger().info("参团已达上限");
+				vo.setCode(JsonResultCode.PARTICIPANTS_IS_MAX);
+				return vo;
+			}
+		}
+		if (userJoinGroupInfo != null && userJoinGroupInfo.getIsGrouper().equals(ONE)) {
+			int openGroupNumber = getOpenGroupNumber(userId, groupDrawId);
+			Short openLimit = groupDraw.getOpenLimit();
+			if (openGroupNumber >= Integer.valueOf(String.valueOf(openLimit))) {
+				logger().info("开团已达上限");
+				vo.setCode(JsonResultCode.GROUP_UPPER_LIMIT);
+				return vo;
+			}
+		}
+		logger().info("成功");
+		vo.setCode(JsonResultCode.CODE_SUCCESS);
+		GroupDrawInfoReturnVo vo2 = new GroupDrawInfoReturnVo();
+		vo2.setGroupDraw(groupDraw.into(GroupDrawInfoVo.class));
+		vo.setVo(vo2);
+		return vo;
+
+	}
+
+	public JoinGroupListRecord getGroupInfoByOrderSn(String orderSn) {
+		return db().selectFrom(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.ORDER_SN.eq(orderSn)).fetchAny();
+	}
+
+	/**
+	 * 生成团分组Id
+	 * 
+	 * @return
+	 */
+	public int generateGroupId() {
+		return db().select(DSL.max(JOIN_GROUP_LIST.GROUP_ID)).from(JOIN_GROUP_LIST).fetchAnyInto(Integer.class) + 1;
+	}
+
+	/**
+	 * 生成抽奖码
+	 * 
+	 * @param groupDrawId
+	 * @param goodsId
+	 * @return
+	 */
+	public int generateGroupId(Integer groupDrawId, Integer goodsId) {
+		return db().select(DSL.max(JOIN_DRAW_LIST.DRAW_ID)).from(JOIN_DRAW_LIST)
+				.where(JOIN_DRAW_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_DRAW_LIST.GOODS_ID.eq(goodsId)))
+				.fetchAnyInto(Integer.class) + 1;
+	}
+
+	/**
+	 * 生成抽奖码记录
+	 * 
+	 * @param userId
+	 * @param groupDrawId
+	 * @param goodsId
+	 * @param groupId
+	 */
+	public void generateDrawRecord(Integer userId, Integer groupDrawId, Integer goodsId, Integer groupId) {
+		JoinDrawListRecord newRecord = db().newRecord(JOIN_DRAW_LIST);
+		newRecord.setUserId(userId);
+		newRecord.setGroupDrawId(groupDrawId);
+		newRecord.setGoodsId(goodsId);
+		newRecord.setGroupId(groupId);
+		newRecord.setDrawId(generateGroupId(groupDrawId, goodsId));
+		int insert = newRecord.insert();
+		log.info("生成抽奖码记录" + insert);
+
+	}
+
+	/**
+	 * 增加邀请用户数
+	 * 
+	 * @param userId
+	 * @param groupDrawId
+	 * @param groupId
+	 */
+	public void increaseUserNum(Integer userId, Integer groupDrawId, Integer groupId) {
+		JoinGroupListRecord record = db().selectFrom(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID
+				.eq(groupDrawId).and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId).and(JOIN_GROUP_LIST.USER_ID.eq(userId))))
+				.fetchAny();
+		if (record != null) {
+			record.setInviteUserNum(record.getInviteUserNum() + 1);
+			int update = record.update();
+			log.info("增加邀请用户数" + update);
+		}
+	}
+
+
+	/**
+	 * 生成团记录
+	 * @param order
+	 * @param groupId
+	 * @param status
+	 */
+	public void generateGroupRecord(OrderInfoRecord order, Integer groupId, Byte status) {
+		OrderGoodsRecord orderGoods = db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(order.getOrderSn()))
+				.fetchAny();
+		Byte isGrouper = groupId == null ? ONE : ZERO;
+		groupId = groupId == null ? generateGroupId() : groupId;
+		Integer groupDrawId = order.getActivityId();
+		// 记录邀请用户
+		GroupDrawInviteRecord inviteUserInfo = groupDrawInvite.getAvailableInviteUser(groupDrawId,
+				orderGoods.getGoodsId(), order.getUserId());
+		Integer inviteUserId = inviteUserInfo.getInviteUserId();
+		inviteUserId = inviteUserId == null ? 0 : inviteUserId;
+
+		Integer goodsId = orderGoods.getGoodsId();
+		Integer userId = order.getUserId();
+
+		JoinGroupListRecord newRecord = db().newRecord(JOIN_GROUP_LIST);
+		newRecord.setGroupDrawId(groupDrawId);
+		newRecord.setGoodsId(goodsId);
+		newRecord.setGroupId(groupId);
+		newRecord.setUserId(userId);
+		newRecord.setIsGrouper(isGrouper);
+		newRecord.setInviteUserId(inviteUserId);
+		newRecord.setOrderSn(order.getOrderSn());
+		newRecord.setStatus(status);
+
+		int insert = newRecord.insert();
+		log.info("插入结果" + insert);
+		if (status.equals(ZERO)) {
+			generateDrawRecord(userId, groupDrawId, goodsId, groupId);
+			if (inviteUserId != 0) {
+				generateDrawRecord(inviteUserId, groupDrawId, goodsId, groupId);
+				Byte isNew = inviteUserInfo.getIsNew();
+				if (Objects.equal(ONE, isNew)) {
+					generateDrawRecord(userId, groupDrawId, goodsId, groupId);
+					generateDrawRecord(inviteUserId, groupDrawId, goodsId, groupId);
+				}
+				groupDrawInvite.updateRow(inviteUserInfo.getId(), ONE);
+				increaseUserNum(userId, groupDrawId, groupId);
+			}
+		}
+	}
+
+	public void successGroupDraw(Integer groupDrawId, Integer groupId) {
+		GroupDrawRecord groupDraw = db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchAny();
+		List<GroupDrawList> groupDrawUserList = getGroupList(groupDrawId, groupId, null);
+		int size = groupDrawUserList.size();
+		Short limitAmount = groupDraw.getLimitAmount();
+		if (size >= Integer.valueOf(String.valueOf(limitAmount))) {
+			// 修改订单状态
+			List<GroupDrawList> groupUserList = getGroupList(groupDrawId, groupId, ZERO);
+			String[] s = new String[] {};
+			for (int i = 0; i < groupUserList.size(); i++) {
+				String orderSn = groupUserList.get(i).getOrderSn();
+				s[i] = orderSn;
+			}
+			// order_info
+			int execute = db().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, OrderConstant.ORDER_PIN_SUCCESSS)
+					.set(ORDER_INFO.ORDER_STATUS_NAME, "已成团").where(ORDER_INFO.ORDER_SN.in(s)).execute();
+			log.info("已成团" + s + "结果" + execute);
+			// 修改参团状态
+			int execute2 = db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, ONE)
+					.set(JOIN_GROUP_LIST.END_TIME, DateUtil.getLocalDateTime())
+					.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+							.and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId).and(JOIN_GROUP_LIST.STATUS.eq(ZERO))))
+					.execute();
+			logger().info("修改参团状态" + execute2);
+			// 发送模板消息
+			sendMsg(groupDrawUserList, groupDraw);
+		}
+	}
+
+	public void sendMsg(List<GroupDrawList> groupDrawUserList, GroupDrawRecord groupDraw) {
+		log.info("发送模板消息");
+		String first = "您好，您有新的拼团成功订单";
+		for (GroupDrawList groupDrawList : groupDrawUserList) {
+			Integer userId = groupDrawList.getUserId();
+			Integer goodsId = groupDrawList.getGoodsId();
+			GoodsRecord goodsInfo = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
+			log.info("获取商品信息：" + goodsInfo);
+			String page = "pages1/pinlotteryinfo/pinlotteryinfo?group_id=" + groupDrawList.getGroupId()
+					+ "&group_draw_id=" + groupDrawList.getGroupDrawId() + "&goods_id=" + goodsId;
+			JoinGroupListRecord groupInfo = getGroupInfo(groupDrawList.getGroupDrawId(), groupDrawList.getGroupId());
+			UserRecord grouper = db().selectFrom(USER).where(USER.USER_ID.eq(groupInfo.getUserId())).fetchAny();
+			List<Integer> userIdList = new ArrayList<Integer>();
+			userIdList.add(userId);
+			logger().info("userIdList" + userIdList);
+			sendMp(groupDraw, first, userId, goodsInfo, page, grouper, userIdList);
+			sendMa(groupDraw, first, userId, goodsInfo, page, grouper, userIdList);
+		}
+	}
+
+	/**
+	 * 发送公众号
+	 * 
+	 * @param groupDraw
+	 * @param first
+	 * @param userId
+	 * @param goodsInfo
+	 * @param page
+	 * @param grouper
+	 * @param userIdList
+	 */
+	private void sendMp(GroupDrawRecord groupDraw, String first, Integer userId, GoodsRecord goodsInfo, String page,
+			UserRecord grouper, List<Integer> userIdList) {
+		String[][] data = new String[][] { { first, "#173177" }, { goodsInfo.getGoodsName(), "#173177" },
+				{ grouper.getUsername(), "#173177" }, { String.valueOf(groupDraw.getLimitAmount()), "#173177" },
+				{ "", "#173177" } };
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(data).build())
+				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+				.build();
+		logger().info("userId：" + userId + "mp准备发拼团成功订单");
+		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+				TaskJobEnum.SEND_MESSAGE.getExecutionType());
+	}
+
+	/**
+	 * 发送小程序
+	 * 
+	 * @param groupDraw
+	 * @param first
+	 * @param userId
+	 * @param goodsInfo
+	 * @param page
+	 * @param grouper
+	 * @param userIdList
+	 */
+	private void sendMa(GroupDrawRecord groupDraw, String first, Integer userId, GoodsRecord goodsInfo, String page,
+			UserRecord grouper, List<Integer> userIdList) {
+		String prizeName = "已成团，等待开奖";
+		String[][] data = new String[][] { { groupDraw.getName() }, { prizeName },
+				{ Util.getdate("yyyy-MM-dd HH:mm:ss") } };
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.maTemplateData(
+						MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(data).build())
+				.page(page).shopId(getShopId()).userIdList(userIdList)
+				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+				TaskJobEnum.SEND_MESSAGE.getExecutionType());
+	}
 }

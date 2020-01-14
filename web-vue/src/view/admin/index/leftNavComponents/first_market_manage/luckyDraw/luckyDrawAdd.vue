@@ -20,6 +20,7 @@
                     <ul class="picWrapper">
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[3].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
                           alt=""
                         >
@@ -27,6 +28,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.noAwardImage"
                           :src="$imageHost+requestParam.noAwardImage"
                           alt=""
                         >
@@ -34,6 +36,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[2].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
                           alt=""
                         >
@@ -41,6 +44,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[0].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[0].iconImgsImage "
                           alt=""
                         >
@@ -48,6 +52,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[1].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
                           alt=""
                         >
@@ -55,6 +60,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[3].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
                           alt=""
                         >
@@ -62,6 +68,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[2].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
                           alt=""
                         >
@@ -69,6 +76,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[3].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
                           alt=""
                         >
@@ -76,7 +84,8 @@
                       </li>
                       <li class="picItems">
                         <img
-                          :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
+                          v-if="requestParam.prizeList[1].iconImgsImage"
+                          :src="$imageHost + requestParam.prizeList[1].iconImgsImage"
                           alt=""
                         >
                         <div>{{requestParam.prizeList[1].iconImgs}}</div>
@@ -85,7 +94,7 @@
                   </div>
                   <div class="winningTips">
                     <img
-                      src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_words.png"
+                      :src="$imageHost + '/image/admin/icon_lottery/lo_words.png'"
                       alt=""
                     >
                     张三{{$t('luckyDraw.get')}}
@@ -99,20 +108,15 @@
               </div>
               <div class="actRule">
                 <div class="ruleInfo">
-                  <img
-                    src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_l.png"
-                    alt=""
-                  >
+                  <img :src="$imageHost+'/image/admin/icon_lottery/lo_rule_l.png'">
                   <span>{{$t('luckyDraw.activityRules')}}</span>
-                  <img
-                    src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_r.png"
-                    alt=""
-                  >
+                  <img :src="$imageHost+'/image/admin/icon_lottery/lo_rule_r.png'">
                 </div>
                 <div class="ruleContent">
                   <div class="timeRange">{{$t('luckyDraw.activityValidity')}}：</div>
-                  <div>{{$t('luckyDraw.to')}}：</div>
+                  <div>{{requestParam.startTime}} {{$t('luckyDraw.to')}}： {{requestParam.endTime}}</div>
                   <div>{{$t('luckyDraw.activityDescription')}}：</div>
+                  <div>{{requestParam.lotteryExplain}}</div>
                 </div>
               </div>
             </div>
@@ -248,7 +252,7 @@
                     {{$t('luckyDraw.payLuckyDrawTips2')}}：
                     <el-input
                       size="small"
-                      placeholder="为空表示不消耗积分"
+                      :placeholder="$t('luckyDraw.consumed')"
                       style="width:125px"
                       v-model="requestParam.scorePerChance"
                     ></el-input>
@@ -279,8 +283,8 @@
                   <div class="upIcons">
                     <div class="leftContent">
                       <img
-                        :src="this.$imageHost + this.requestParam.noAwardImage"
-                        alt=""
+                        v-if="requestParam.noAwardImage"
+                        :src="$imageHost + requestParam.noAwardImage"
                       >
                     </div>
                     <div class="rightContent">
@@ -293,7 +297,10 @@
                         >
                           {{$t('luckyDraw.uploadChartForNoWinning')}}
                         </span>
-                        <span class="operateBtn">{{$t('luckyDraw.empty')}}</span>
+                        <span
+                          class="operateBtn"
+                          @click="clearImgHandler"
+                        >{{$t('luckyDraw.empty')}}</span>
                       </div>
                       <p>{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
                     </div>
@@ -476,6 +483,7 @@
                                     href="##"
                                     item="5410"
                                     class="change_goods_del"
+                                    @click="deleteGoodsHandle(item)"
                                   >
                                     {{$t('luckyDraw.goodsRemove')}}
                                   </a>
@@ -531,6 +539,7 @@
                   <div class="upIcons">
                     <div class="leftContent">
                       <img
+                        v-if="requestParam.prizeList[tabSwitch - 1].iconImgsImage"
                         :src="this.$imageHost + this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage "
                         alt=""
                       >
@@ -546,7 +555,7 @@
                         </span>
                         <span
                           class="operateBtn"
-                          @click="handleClear()"
+                          @click="handleClear"
                         >{{$t('luckyDraw.empty')}}
                         </span>
                       </div>
@@ -595,6 +604,7 @@
         :isDraggable='false'
         @handleSelectImg='imgDialogSelectedCallback'
       />
+      <!-- 修改图标dialog -->
       <lotteryImageDialog
         :tuneUp="lotteryImgDialogShow"
         @handleSelectImg='imgDialogSelectedCallback'
@@ -652,10 +662,10 @@ export default {
         noAwardIcon: this.$t('luckyDraw.thanksParticipation'),
         noAwardImage: '/image/admin/icon_lottery/thank.png',
         prizeList: [
-          { iconImgs: this.$t('luckyDraw.firstPrize'), lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png' },
-          { iconImgs: this.$t('luckyDraw.secondPrize'), lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png' },
-          { iconImgs: this.$t('luckyDraw.thirdPrize'), lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png' },
-          { iconImgs: this.$t('luckyDraw.fourthPrize'), lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png' }
+          { iconImgs: this.$t('luckyDraw.firstPrize'), lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png', lotteryType: 1 },
+          { iconImgs: this.$t('luckyDraw.secondPrize'), lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png', lotteryType: 1 },
+          { iconImgs: this.$t('luckyDraw.thirdPrize'), lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png', lotteryType: 1 },
+          { iconImgs: this.$t('luckyDraw.fourthPrize'), lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png', lotteryType: 1 }
         ]
       },
       times: 1,
@@ -729,8 +739,14 @@ export default {
       })
       this.submitStatus = false
     },
+    // 清空未中奖的图片地址
+    clearImgHandler () {
+      this.requestParam.noAwardImage = ''
+    },
+    // 清空中奖图标
     handleClear () {
       console.log(1111)
+      this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage = ''
     },
     handleTabClick (tab, event) {
       console.log(tab, event)
@@ -749,6 +765,14 @@ export default {
       this.requestParam.prizeList[this.tabSwitch - 1].goodsPrice = res.prdPrice
       this.requestParam.prizeList[this.tabSwitch - 1].goodsNumber = res.prdNumber
       this.$forceUpdate()
+    },
+    // 删除商品
+    deleteGoodsHandle (item) {
+      item.goodsName = ''
+      item.goodsImage = ''
+      item.goodsPrice = ''
+      item.goodsNumber = ''
+      item.goodsShow = false
     },
     // 显示图片弹窗
     changeImgHandler (index) {
@@ -804,13 +828,26 @@ export default {
       console.log('isEditeShowData', this.isEdite)
       if (this.isEdite) {
         getLottery({ id: this.id }).then(res => {
-          res.content.prizeList.map((item, index) => {
-            item.lotteryGrade = item.lotteryGrade.toString()
-            item.chance = 100 * item.chanceNumerator / item.chanceDenominator
-          })
-          this.requestParam = res.content
-          console.log('数据回显', res, this.requestParam)
-          this.$forceUpdate()
+          if (res.error === 0) {
+            res.content.prizeList.map((item, index) => {
+              item.lotteryGrade = item.lotteryGrade.toString()
+              item.chance = 100 * item.chanceNumerator / item.chanceDenominator
+              // 如果奖励是赠品，那么回显赠品数据
+              if (item.lotteryType === 4) {
+                item.goodsName = item.product.goodsName
+                item.goodsImage = this.$imageHost + '/' + item.product.goodsImg
+                item.goodsPrice = item.product.prdPrice
+                item.goodsNumber = item.product.prdNumber
+                item.goodsShow = true
+              }
+            })
+            this.requestParam = res.content
+            console.log('数据回显', res, this.requestParam)
+            this.$forceUpdate()
+          } else {
+            this.$message.error(this.$t('luckyDraw.fetchDataFail'))
+            console.error(res)
+          }
         })
       }
     },

@@ -1,10 +1,6 @@
 package com.vpu.mp.service.shop.market.payaward;
 
-import com.vpu.mp.db.shop.tables.records.LotteryRecord;
-import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
-import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
-import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
-import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -14,52 +10,28 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardIdParam;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListParam;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListVo;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardOrderVo;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardParam;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardPrizeParam;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardPrizeVo;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
+import com.vpu.mp.service.pojo.shop.market.payaward.*;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PayAwardPromotion;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD;
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_PRIZE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_GOODS;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_LOTTERY;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_NO_PRIZE;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SCORE;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SPLIT_COUPON;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.REDIS_PAY_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.REDIS_PAY_AWARD_JOIN_COUNT;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.*;
 
 /**
  * 支付有礼
@@ -70,7 +42,7 @@ import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.REDI
  */
 @Service
 public class PayAwardService extends ShopBaseService {
-    private static final String MESSAGE="messages";
+    private static final String MESSAGE = "messages";
 
 
     @Autowired
@@ -85,6 +57,13 @@ public class PayAwardService extends ShopBaseService {
     private JedisManager jedisManager;
     @Autowired
     private PrizeRecordService prizeRecordService;
+
+    /**指定时间段*/
+    private static final Byte POINT_TIME = 0;
+    /**永久时间*/
+    private static final Byte FOREVER_TIME = 1;
+    /**全部商品*/
+    private static final Integer ALL_GOODS = 1;
 
     /**
      * 添加
@@ -146,7 +125,7 @@ public class PayAwardService extends ShopBaseService {
             if (awardBo.getAwardNumber() != null) {
                 payAwardPrizeRecord.setAwardNumber(Optional.ofNullable(awardBo.getAwardNumber()).orElse(0));
             }
-            if (addFlag||awardBo.getId()==null) {
+            if (addFlag || awardBo.getId() == null) {
                 payAwardPrizeRecord.setId(null);
                 payAwardPrizeRecord.store();
             } else {
@@ -166,10 +145,10 @@ public class PayAwardService extends ShopBaseService {
     public PayAwardRecord getNowPayAward() {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
         PayAwardRecord record = db().selectFrom(PAY_AWARD)
-                .where(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                .and(PAY_AWARD.START_TIME.ge(nowTime))
-                .and(PAY_AWARD.END_TIME.le(nowTime))
-                .fetchOne();
+            .where(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
+            .and(PAY_AWARD.START_TIME.ge(nowTime))
+            .and(PAY_AWARD.END_TIME.le(nowTime))
+            .fetchOne();
         return record;
     }
 
@@ -262,28 +241,28 @@ public class PayAwardService extends ShopBaseService {
     public PageResult<PayAwardListVo> getPayAwardList(PayAwardListParam param) {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
         SelectConditionStep<? extends Record> select = db()
-                .select(PAY_AWARD.ID, PAY_AWARD.ACTIVITY_NAMES, PAY_AWARD.TIME_TYPE, PAY_AWARD.START_TIME,
-                        PAY_AWARD.END_TIME, PAY_AWARD.ACT_FIRST, PAY_AWARD.STATUS, PAY_AWARD.AWARD_LIST,
-                        PAY_AWARD.GOODS_AREA_TYPE, PAY_AWARD.MIN_PAY_MONEY)
-                .from(PAY_AWARD)
-                .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+            .select(PAY_AWARD.ID, PAY_AWARD.ACTIVITY_NAMES, PAY_AWARD.TIME_TYPE, PAY_AWARD.START_TIME,
+                PAY_AWARD.END_TIME, PAY_AWARD.ACT_FIRST, PAY_AWARD.STATUS, PAY_AWARD.AWARD_LIST,
+                PAY_AWARD.GOODS_AREA_TYPE, PAY_AWARD.MIN_PAY_MONEY)
+            .from(PAY_AWARD)
+            .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         switch (param.getNavType()) {
             case BaseConstant.NAVBAR_TYPE_ONGOING:
                 select.and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_IS_FOREVER).or(
-                        PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER)
-                                .and(PAY_AWARD.START_TIME.lt(nowTime))
-                                .and(PAY_AWARD.END_TIME.gt(nowTime))))
-                        .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
+                    PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER)
+                        .and(PAY_AWARD.START_TIME.lt(nowTime))
+                        .and(PAY_AWARD.END_TIME.gt(nowTime))))
+                    .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                 break;
             case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                        .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
-                        .and(PAY_AWARD.START_TIME.gt(nowTime));
+                    .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
+                    .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_FINISHED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                        .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
-                        .and(PAY_AWARD.END_TIME.lt(nowTime));
+                    .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
+                    .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_DISABLED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_DISABLE));
@@ -336,18 +315,18 @@ public class PayAwardService extends ShopBaseService {
      */
     public PayAwardVo getGoingPayAward(Timestamp date) {
         PayAwardRecord record = db().selectFrom(PAY_AWARD)
-                .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                .and(
-                        PAY_AWARD.TIME_TYPE.eq(ACTIVITY_IS_FOREVER)
-                                .or(
-                                        PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER)
-                                                .and(PAY_AWARD.START_TIME.le(date))
-                                                .and(PAY_AWARD.END_TIME.gt(date))
-                                )
-                ).orderBy(PAY_AWARD.ACT_FIRST.desc(), PAY_AWARD.CREATE_TIME.desc())
-                .limit(0, 1)
-                .fetchOne();
+            .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
+            .and(
+                PAY_AWARD.TIME_TYPE.eq(ACTIVITY_IS_FOREVER)
+                    .or(
+                        PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER)
+                            .and(PAY_AWARD.START_TIME.le(date))
+                            .and(PAY_AWARD.END_TIME.gt(date))
+                    )
+            ).orderBy(PAY_AWARD.ACT_FIRST.desc(), PAY_AWARD.CREATE_TIME.desc())
+            .limit(0, 1)
+            .fetchOne();
         return recordToPayAwardVo(record);
     }
 
@@ -379,12 +358,12 @@ public class PayAwardService extends ShopBaseService {
         PayAwardRecord payAward = db().selectFrom(PAY_AWARD).where(PAY_AWARD.ID.eq(payAwardRecord.getAwardId())).fetchOne();
         Result<PayAwardPrizeRecord> payAwardPrizeRecords = db().selectFrom(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardRecord.getAwardId())).fetch();
         PayAwardPrizeRecord payAwardPrizeRecord = payAwardPrizeRecords.get(payAwardRecord.getAwardTimes());
-        PayAwardPrizeVo prizeVo =new PayAwardPrizeVo();
+        PayAwardPrizeVo prizeVo = new PayAwardPrizeVo();
         prizeVo.setGiftType(payAwardRecord.getGiftType());
-        if (payAwardRecord.getSendData()==null){
+        if (payAwardRecord.getSendData() == null) {
 
         }
-        switch (payAwardRecord.getGiftType()){
+        switch (payAwardRecord.getGiftType()) {
             case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
                 break;
@@ -394,7 +373,7 @@ public class PayAwardService extends ShopBaseService {
                 logger().info("分裂优惠卷");
                 //已发的优惠卷
                 List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringToList(payAwardRecord.getSendData()));
-                if (couponViews.size()>0){
+                if (couponViews.size() > 0) {
                     prizeVo.setCouponView(couponViews);
                 }
                 break;
@@ -421,15 +400,15 @@ public class PayAwardService extends ShopBaseService {
                 break;
             case GIVE_TYPE_CUSTOM:
                 logger().info("自定义");
-                PayAwardContentBo payAwardContentBo =Util.parseJson(payAwardRecord.getAwardData(),PayAwardContentBo.class);
-                if (payAwardContentBo!=null){
+                PayAwardContentBo payAwardContentBo = Util.parseJson(payAwardRecord.getAwardData(), PayAwardContentBo.class);
+                if (payAwardContentBo != null) {
                     prizeVo.setCustomImage(payAwardContentBo.getCustomImage());
                     prizeVo.setCustomLink(payAwardContentBo.getCustomLink());
                 }
                 break;
-           default:
+            default:
         }
-        String payAwardMessage = getPayAwardMessage(payAward, payAwardPrizeRecords,payAwardRecord, lang);
+        String payAwardMessage = getPayAwardMessage(payAward, payAwardPrizeRecords, payAwardRecord, lang);
         PayAwardOrderVo payAwardOrderVo = new PayAwardOrderVo();
         payAwardOrderVo.setPayAwardPrize(prizeVo);
         payAwardOrderVo.setPayAwardSize(payAwardPrizeRecords.size());
@@ -439,116 +418,115 @@ public class PayAwardService extends ShopBaseService {
     }
 
     /**
-     *
      * @param payAward
      * @param payAwardPrizeList
      * @return
      */
-    public String getPayAwardMessage(PayAwardRecord payAward,List<PayAwardPrizeRecord> payAwardPrizeList,PayAwardRecordRecord payAwardRecord ,String lang){
+    public String getPayAwardMessage(PayAwardRecord payAward, List<PayAwardPrizeRecord> payAwardPrizeList, PayAwardRecordRecord payAwardRecord, String lang) {
         int size = payAwardPrizeList.size();
-        Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+payAwardRecord.getUserId(), 60000,
-                () -> payAwardRecordService.getJoinAwardCount(payAwardRecord.getUserId(), payAward.getId()).toString()).intValue();
+        Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT + payAward.getId() + "," + payAwardRecord.getUserId(), 60000,
+            () -> payAwardRecordService.getJoinAwardCount(payAwardRecord.getUserId(), payAward.getId()).toString()).intValue();
         logger().info("用户:{},参与次数:{}", payAwardRecord.getUserId(), joinAwardCount);
-        int circleTimes = (joinAwardCount+1) / size;
+        int circleTimes = (joinAwardCount + 1) / size;
         logger().info("循环次数:{}", circleTimes);
         if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes() <= circleTimes) {
-            jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+payAwardRecord.getUserId());
+            jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT + payAward.getId() + "," + payAwardRecord.getUserId());
             logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
             return "";
         }
-        if (size==1){
+        if (size == 1) {
             logger().debug("单次");
             String payAwardPrizeName = getPayAwardPrizeName(payAwardPrizeList.get(0), lang);
-            if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())){
-                if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO)==0){
+            if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())) {
+                if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
                     logger().debug("单次不限制");
-                    return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_ONCE_UNCONDITIONAL,MESSAGE,  new Object[]{payAwardPrizeName});
-                }else {
+                    return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_ONCE_UNCONDITIONAL, MESSAGE, new Object[]{payAwardPrizeName});
+                } else {
                     logger().debug("单次限制-最少金额");
-                    String limitAmount =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS,MESSAGE, new Object[]{payAward.getMinPayMoney()});
-                    return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_ONCE_CONDITIONAL,MESSAGE, new Object[]{limitAmount,payAwardPrizeName});
+                    String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, new Object[]{payAward.getMinPayMoney()});
+                    return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_ONCE_CONDITIONAL, MESSAGE, new Object[]{limitAmount, payAwardPrizeName});
                 }
-            }else {
+            } else {
                 logger().debug("单次限制");
-                String limitGoods =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS,MESSAGE);
-                if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO)==0){
+                String limitGoods = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS, MESSAGE);
+                if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
                     logger().debug("单次限制-指定商品");
-                    return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_ONCE_CONDITIONAL,MESSAGE, new Object[]{limitGoods,payAwardPrizeName});
-                }else {
-                    String limitAmount =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS,MESSAGE, new Object[]{payAward.getMinPayMoney()});
+                    return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_ONCE_CONDITIONAL, MESSAGE, new Object[]{limitGoods, payAwardPrizeName});
+                } else {
+                    String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, new Object[]{payAward.getMinPayMoney()});
                     logger().debug("单次限制-指定商品,最少金额");
-                    limitGoods =limitGoods+Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL,MESSAGE);
-                    limitGoods =limitGoods+limitAmount;
-                    return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_ONCE_CONDITIONAL,MESSAGE, new Object[]{limitGoods,payAwardPrizeName});
+                    limitGoods = limitGoods + Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL, MESSAGE);
+                    limitGoods = limitGoods + limitAmount;
+                    return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_ONCE_CONDITIONAL, MESSAGE, new Object[]{limitGoods, payAwardPrizeName});
                 }
             }
-        }else  if (size>1){
+        } else if (size > 1) {
             logger().debug("多次");
-            int count  =0;
-            for (PayAwardPrizeRecord payAwardPrize:payAwardPrizeList){
+            int count = 0;
+            for (PayAwardPrizeRecord payAwardPrize : payAwardPrizeList) {
                 count++;
-                if (payAwardPrize.getGiftType()!=GIVE_TYPE_NO_PRIZE){
+                if (payAwardPrize.getGiftType() != GIVE_TYPE_NO_PRIZE) {
 
                     break;
                 }
             }
-            if (count==size){
-                String payAwardPrizeName = getPayAwardPrizeName(payAwardPrizeList.get(count-1), lang);
+            if (count == size) {
+                String payAwardPrizeName = getPayAwardPrizeName(payAwardPrizeList.get(count - 1), lang);
                 logger().debug("最后一次奖励");
-                if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())){
-                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO)==0){
+                if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())) {
+                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
                         logger().debug("多次不限制");
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_UNCONDITIONAL,MESSAGE, new Object[]{size,payAwardPrizeName});
-                    }else {
-                        String limitAmount =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS,MESSAGE, new Object[]{payAward.getMinPayMoney()});
+                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_UNCONDITIONAL, MESSAGE, new Object[]{size, payAwardPrizeName});
+                    } else {
+                        String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, new Object[]{payAward.getMinPayMoney()});
                         logger().debug("多次限制-最少金额");
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL,MESSAGE, new Object[]{size,limitAmount,payAwardPrizeName});
+                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitAmount, payAwardPrizeName});
                     }
-                }else {
+                } else {
                     logger().debug("多次限制");
-                    String limitGoods =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS,MESSAGE);
-                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO)==0){
+                    String limitGoods = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS, MESSAGE);
+                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
                         logger().debug("多次限制-指定商品");
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL,MESSAGE, new Object[]{size,limitGoods,payAwardPrizeName});
-                    }else {
+                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitGoods, payAwardPrizeName});
+                    } else {
                         logger().debug("多次限制-指定商品,最少金额");
-                        String limitAmount =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS,MESSAGE, new Object[]{payAward.getMinPayMoney()});
-                        limitGoods =limitGoods+Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL,MESSAGE)+limitAmount;
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL,MESSAGE, new Object[]{size,limitGoods,payAwardPrizeName});
+                        String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, new Object[]{payAward.getMinPayMoney()});
+                        limitGoods = limitGoods + Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL, MESSAGE) + limitAmount;
+                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitGoods, payAwardPrizeName});
                     }
                 }
-            }else {
-                if ((payAwardRecord.getAwardTimes()+1) >=count){
+            } else {
+                if ((payAwardRecord.getAwardTimes() + 1) >= count) {
                     //最近下一次奖品
-                    count=0;
-                    for (PayAwardPrizeRecord payAwardPrize:payAwardPrizeList){
+                    count = 0;
+                    for (PayAwardPrizeRecord payAwardPrize : payAwardPrizeList) {
                         count++;
-                        if (payAwardPrize.getGiftType()!=GIVE_TYPE_NO_PRIZE&&count> (payAwardRecord.getAwardTimes()+1)){
+                        if (payAwardPrize.getGiftType() != GIVE_TYPE_NO_PRIZE && count > (payAwardRecord.getAwardTimes() + 1)) {
                             break;
                         }
                     }
                 }
-                String payAwardPrizeName = getPayAwardPrizeName(payAwardPrizeList.get(count-1), lang);
-                if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())){
-                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO)==0){
+                String payAwardPrizeName = getPayAwardPrizeName(payAwardPrizeList.get(count - 1), lang);
+                if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())) {
+                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
                         logger().debug("多次不限制");
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL,MESSAGE, new Object[]{count,payAwardPrizeName});
-                    }else {
+                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL, MESSAGE, new Object[]{count, payAwardPrizeName});
+                    } else {
                         logger().debug("多次限制-最少金额");
-                        String limitAmount =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS,MESSAGE,payAward.getMinPayMoney());
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE, new Object[]{count,limitAmount,payAwardPrizeName});
+                        String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, payAward.getMinPayMoney());
+                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL, MESSAGE, new Object[]{count, limitAmount, payAwardPrizeName});
                     }
-                }else {
+                } else {
                     logger().debug("多次限制");
-                    String limitGoods =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS,MESSAGE);
-                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO)==0){
+                    String limitGoods = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS, MESSAGE);
+                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
                         logger().debug("多次限制-指定商品");
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE, new Object[]{count,limitGoods,payAwardPrizeName});
-                    }else {
+                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL, MESSAGE, new Object[]{count, limitGoods, payAwardPrizeName});
+                    } else {
                         logger().debug("多次限制-指定商品,最少金额");
-                        String limitAmount =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS,MESSAGE,payAward.getMinPayMoney());
-                        limitGoods =limitGoods+Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL,MESSAGE)+limitAmount;
-                        return Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL,MESSAGE, new Object[]{count,limitGoods,payAwardPrizeName});
+                        String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, payAward.getMinPayMoney());
+                        limitGoods = limitGoods + Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL, MESSAGE) + limitAmount;
+                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL, MESSAGE, new Object[]{count, limitGoods, payAwardPrizeName});
                     }
                 }
             }
@@ -557,14 +535,13 @@ public class PayAwardService extends ShopBaseService {
     }
 
     /**
-     *
      * @param payAwardPrize
      * @param lang
      * @return
      */
-    public String getPayAwardPrizeName(PayAwardPrizeRecord payAwardPrize, String lang){
-        String prizeName ="";
-        switch (payAwardPrize.getGiftType()){
+    public String getPayAwardPrizeName(PayAwardPrizeRecord payAwardPrize, String lang) {
+        String prizeName = "";
+        switch (payAwardPrize.getGiftType()) {
             case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
                 break;
@@ -578,30 +555,66 @@ public class PayAwardService extends ShopBaseService {
             case GIVE_TYPE_LOTTERY:
                 logger().info("幸运大抽奖");
                 LotteryRecord lottery = lotteryService.getLotteryById(payAwardPrize.getLotteryId());
-                prizeName =lottery.getLotteryName();
+                prizeName = lottery.getLotteryName();
                 break;
             case GIVE_TYPE_BALANCE:
                 logger().info("余额");
-                prizeName =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_BALANCE,MESSAGE);
-                prizeName+= payAwardPrize.getAccount().toString();
+                prizeName = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_BALANCE, MESSAGE);
+                prizeName += payAwardPrize.getAccount().toString();
                 break;
             case GIVE_TYPE_GOODS:
                 logger().info("奖品");
                 ProductSmallInfoVo productSmallInfoVo = goodsService.getProductVoInfoByProductId(payAwardPrize.getProductId());
-                prizeName =productSmallInfoVo.getGoodsName();
+                prizeName = productSmallInfoVo.getGoodsName();
                 break;
             case GIVE_TYPE_SCORE:
                 logger().info("积分");
-                prizeName =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_SCORE,MESSAGE);
-                prizeName+=payAwardPrize.getScoreNumber();
+                prizeName = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_SCORE, MESSAGE);
+                prizeName += payAwardPrize.getScoreNumber();
                 break;
             case GIVE_TYPE_CUSTOM:
                 logger().info("自定义");
-                prizeName =Util.translateMessage(lang,JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_CUSTOM,MESSAGE);
+                prizeName = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_CUSTOM, MESSAGE);
                 break;
             default:
         }
         return prizeName;
+    }
+
+    /**
+     * 小程序-商品详情-支付有礼促销信息
+     * @param goodsId 商品ID
+     * @param catId 平台分类ID
+     * @param sortId 商家分类ID
+     * @param now 限制时间
+     * @return 支付有礼促销信息 null:无有效活动
+     */
+    public PayAwardPromotion getPayAwardPromotionInfo(Integer goodsId, Integer catId, Integer sortId,Timestamp now) {
+        Condition condition = PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PAY_AWARD.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(PAY_AWARD.TIME_TYPE.eq(FOREVER_TIME).or(PAY_AWARD.TIME_TYPE.eq(POINT_TIME).and(PAY_AWARD.START_TIME.le(now)).and(PAY_AWARD.END_TIME.ge(now))));
+
+        Record6<Integer, Integer, BigDecimal, String, String, String> record6 = db().select(PAY_AWARD.ID, PAY_AWARD.GOODS_AREA_TYPE, PAY_AWARD.MIN_PAY_MONEY, PAY_AWARD.GOODS_IDS, PAY_AWARD.GOODS_SORT_IDS, PAY_AWARD.GOODS_CAT_IDS)
+            .from(PAY_AWARD).where(condition).orderBy(PAY_AWARD.ACT_FIRST.desc(), PAY_AWARD.CREATE_TIME.desc()).fetchAny();
+
+        if (record6 == null) {
+            return null;
+        }
+
+        Boolean isAll = ALL_GOODS.equals(record6.get(PAY_AWARD.GOODS_AREA_TYPE));
+        if (!isAll) {
+            List<Integer> goodsIds=StringUtils.isBlank(record6.get(PAY_AWARD.GOODS_IDS))?new ArrayList<>(0):Arrays.stream(record6.get(PAY_AWARD.GOODS_IDS).split(",")).map(Integer::parseInt).collect(Collectors.toList());
+            List<Integer> catIds=StringUtils.isBlank(record6.get(PAY_AWARD.GOODS_CAT_IDS))?new ArrayList<>(0):Arrays.stream(record6.get(PAY_AWARD.GOODS_CAT_IDS).split(",")).map(Integer::parseInt).collect(Collectors.toList());
+            List<Integer> sortIds=StringUtils.isBlank(record6.get(PAY_AWARD.GOODS_SORT_IDS))?new ArrayList<>(0):Arrays.stream(record6.get(PAY_AWARD.GOODS_SORT_IDS).split(",")).map(Integer::parseInt).collect(Collectors.toList());
+            if (!goodsIds.contains(goodsId) && !catIds.contains(catId) && !sortIds.contains(sortId)) {
+                return null;
+            }
+        }
+
+        PayAwardPromotion promotion = new PayAwardPromotion();
+        promotion.setPromotionId(record6.get(PAY_AWARD.ID));
+        promotion.setGoodsAreaType(record6.get(PAY_AWARD.GOODS_AREA_TYPE));
+        promotion.setMinPayMoney(record6.get(PAY_AWARD.MIN_PAY_MONEY));
+        return promotion;
     }
 
 }

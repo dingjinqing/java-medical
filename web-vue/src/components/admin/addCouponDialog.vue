@@ -57,7 +57,10 @@
             </div>
             <div class="coupon_list_center">
               <div class="coupon_center_limit">{{item.useConsumeRestrict > 0 ?`满${item.leastConsume}使用`:'不限制'}}</div>
-              <div class="coupon_center_number">剩余<span>{{item.surplus}}</span>张</div>
+              <div class="coupon_center_number">
+                <span v-if="item.limitSurplusFlag === 0">剩余<span>{{item.surplus}}</span>张</span>
+                <span v-else>库存不限制</span>
+              </div>
               <div
                 class="coupon_list_bottom"
                 :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"

@@ -396,6 +396,10 @@ export default {
       }
     },
     prepareCardData () {
+      let pullPath = this.$imageHost + '/'
+      if (this.cardNameAndBg.bgImg) {
+        this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
+      }
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,

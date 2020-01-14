@@ -5,6 +5,8 @@ export const cn = {
   leftTip2: '请输入领取码',
   leftTip3: '立即使用',
   leftTip4: '立即分享',
+  leftTip5: '全部商品可用',
+  leftTip6: '无门槛',
 
   couponType: '优惠券类型',
   generalCoupons: '普通优惠券',
@@ -60,7 +62,7 @@ export const cn = {
   enabledTip: '隐藏则不显示在前端商品详情页。否则显示到前端商品详情页可以供用户领取。',
   restrict: '使用门槛',
   restrict2: '使用限制',
-  restrictRadio1: '不限制',
+  restrictRadio1: '无门槛(不含运费)',
   restrictRadio2: '满',
   restrictTip: '元可用',
   suitGoods: '可使用商品',

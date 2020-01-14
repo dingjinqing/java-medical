@@ -45,8 +45,8 @@ export const cn = {
   save: '保存',
   modification: '修改',
   empty: '清空',
-  uploadChartForNoWinning: '上传未中奖图表',
-  uploadChartForWinning: '上传中奖图表',
+  uploadChartForNoWinning: '上传未中奖图标',
+  uploadChartForWinning: '上传中奖图标',
   uploadChartForNoWinningTips: '仅支持jpg/png/尺寸80*80 不超过1M',
   iconDescribe: 'icon描述',
   iconDescribeTips: '最多可填写4个字',
@@ -163,5 +163,11 @@ export const cn = {
   validScore: '请填写赠送积分',
   validBounsAmount: '请填写赠送金额',
   validCoupon: '请选择优惠券',
-  validGivea: '请选择赠品'
+  validGivea: '请选择赠品',
+  dataLoadFail: '数据加载失败',
+  addSweepstakes: '添加抽奖活动',
+  jumpRaffleDetails: '跳转到抽奖详情页面',
+  jumpGetUserList: '跳转到获取新用户列表页面',
+  consumed: '为空表示不消耗积分',
+  fetchDataFail: '获取数据失败'
 }

@@ -244,6 +244,12 @@ public class JsonResultMessage {
 	public static final String ACTIVITY_NOT_EXIST = "activity.not.exist";
 	public static final String PRODUCT_NOT_EXIST = "product.not.exist";
 	public static final String INFORMATION_NOT_EXIST = "information.not.exist";
+	public static final String EVENT_IS_OVER = "event.is.over";
+	public static final String EVENT_NOT_STARTED = "event_not_started";
+	public static final String HAVE_UNPAID_ORDERS = "have.unpaid.orders";
+	public static final String PARTICIPATED_IN_EVENT = "participated.in.event";
+	public static final String PARTICIPANTS_IS_MAX = "participated.is.max";
+	public static final String GROUP_UPPER_LIMIT = "group.upper.limit";
     
 	/**
 	 * 营销- 支付有礼
@@ -585,6 +591,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_ACTIVITY_NO_START = "order.activity.no.start";
     public static final String MSG_ORDER_ACTIVITY_END = "order.activity.end";
     public static final String MSG_ORDER_ACTIVITY_NUMBER_LIMIT = "order.activity.number.limit";
+    public static final String MSG_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK = "order.activity.goods.out.of.stock";
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
     /**订单发货*/

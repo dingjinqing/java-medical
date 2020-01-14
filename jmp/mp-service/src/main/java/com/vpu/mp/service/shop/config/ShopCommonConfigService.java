@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * @author 王兵兵
@@ -171,7 +172,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setShowLogo(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setShowLogo need value equal zero or one");
 		return this.set(K_SHOW_LOGO, value,Byte.class);
 	}
 
@@ -189,7 +190,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setLogoLink(String value) {
-		assert(!"".equals(value));
+		Assert.isTrue(!"".equals(value),"setLogoLink need value not equal empty");
 		return this.set(K_LOGO_LINK, value);
 	}
 
@@ -207,7 +208,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setCancelTime(Integer value) {
-		assert(value >= 0);
+		Assert.isTrue(value >= 0,"setCancelTime value need >=0");
 		return this.set(K_CANCEL_TIME, value,Integer.class);
 	}
 
@@ -225,7 +226,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setInvoice(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setInvoice need value equal zero or one");
 		return this.set(K_INVOICE, value,Byte.class);
 	}
 
@@ -243,7 +244,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setBindMobile(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setBindMobile need value equal zero or one");
 		return this.set(K_BIND_MOBILE, value,Byte.class);
 	}
 
@@ -261,7 +262,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setSalesNumber(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setSalesNumber need value equal zero or one");
 		return this.set(K_SALES_NUMBER, value,Byte.class);
 	}
 
@@ -278,7 +279,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @return
      */
     public int setSoldOutGoods(Byte value){
-        assert(value ==(byte)0 || value == (byte)1);
+    	Assert.isTrue(value ==(byte)0 || value == (byte)1,"setSoldOutGoods need value equal zero or one");
         return this.set(K_SOLD_OUT_GOODS, value,Byte.class);
     }
 
@@ -296,7 +297,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setOrderRealName(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setOrderRealName need value equal zero or one");
 		return this.set(K_ORDER_REAL_NAME, value,Byte.class);
 	}
 
@@ -314,7 +315,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setOrderCid(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setOrderCid need value equal zero or one");
 		return this.set(K_ORDER_CID, value,Byte.class);
 	}
 
@@ -332,7 +333,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setConsigneeRealName(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setConsigneeRealName need value equal zero or one");
 		return this.set(K_CONSIGNEE_REAL_NAME, value,Byte.class);
 	}
 
@@ -350,7 +351,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setConsigneeCid(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setConsigneeCid need value equal zero or one");
 		return this.set(K_CONSIGNEE_CID, value,Byte.class);
 	}
 
@@ -368,7 +369,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setCustom(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setCustom need value equal zero or one");
 		return this.set(K_CUSTOM, value,Byte.class);
 	}
 
@@ -386,7 +387,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setCustomTitle(String value) {
-		assert(!"".equals(value));
+		Assert.isTrue(!"".equals(value),"setCustomTitle need value not empty");
 		return this.set(K_CUSTOM_TITLE, value);
 	}
 
@@ -403,7 +404,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * 取值：0关闭，1显示市场价，2显示销量，3显示评价数
      */
 	public int setDelMarket(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1 || value == (byte)2 || value == (byte)3);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1 || value == (byte)2 || value == (byte)3,"setDelMarket need value equal zero or one or two or three");
 		return this.set(K_DEL_MARKET, value,Byte.class);
 	}
 
@@ -421,7 +422,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setCustomService(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setCustomService need value equal zero or one");
 		return this.set(K_CUSTOM_SERVICE, value,Byte.class);
 	}
 
@@ -436,7 +437,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @param value 0 或者 1
      */
     public int setReturnService(Byte value) {
-        assert (value == (byte) 0 || value == (byte) 1);
+    	Assert.isTrue(value == (byte) 0 || value == (byte) 1,"setReturnService need value equal zero or one");
         return this.set(K_RETURN_SERVICE, value, Byte.class);
     }
 
@@ -454,7 +455,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setShowCart(ShowCartConfig value) {
-		assert(value != null);
+		Assert.isTrue(value != null,"setShowCart need value not null");
 		return this.setJsonObject(K_SHOW_CART, value);
 	}
 
@@ -472,7 +473,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setServiceName(String value) {
-		assert(!"".equals(value));
+		Assert.isTrue(!"".equals(value),"setServiceName need value not empty");
 		return this.set(K_SERVICE_NAME, value);
 	}
 
@@ -490,7 +491,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setServiceChoose(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setServiceChoose need value equal zero or one");
 		return this.set(K_SERVICE_CHOSE, value,Byte.class);
 	}
 
@@ -508,7 +509,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setServiceTerms(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setServiceTerms need value equal zero or one");
 		return this.set(K_SERVICE_TERMS, value,Byte.class);
 	}
 
@@ -526,7 +527,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setShareConfig(ShopShareConfig value) {
-		assert(value != null);
+		Assert.isTrue(value != null,"setShareConfig need value not null");
 		return this.setJsonObject(K_SHARE_CONFIG, value);
 	}
 
@@ -544,7 +545,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setShopStyle(ShopStyleConfig value) {
-		assert(value != null);
+		Assert.isTrue(value != null,"setShopStyle need value not null");
 		return this.setJsonObject(K_SHOP_STYLE, value);
 	}
 
@@ -563,7 +564,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setGeoLocation(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setGeoLocation need value equal zero or one ");
 		return this.set(K_GEO_LOCATION, value,Byte.class);
 	}
 
@@ -583,7 +584,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * pv 按照商品访问次数倒序排列，7天内访问次数最多的商品将排在商品列表最上方
      */
     public int setGoodsSort(String value) {
-        assert(StringUtil.isNotEmpty(value));
+    	Assert.isTrue(StringUtil.isNotEmpty(value),"setGoodsSort need value isNotEmpty");
         return this.set(K_GOODS_SORT, value,String.class);
     }
 
@@ -601,7 +602,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @return
      */
     public int setGoodsRecord(Byte value) {
-        assert(value ==(byte)0 || value == (byte)1);
+    	Assert.isTrue(value ==(byte)0 || value == (byte)1,"setGoodsRecord need value equal zero or one");
         return this.set(K_GOODS_RECORD, value,Byte.class);
     }
 
@@ -618,7 +619,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @return
      */
     public int setDefaultSort(Integer value) {
-        assert(value > 0);
+    	Assert.isTrue(value > 0,"setDefaultSort need value >=0");
         return this.set(K_DEFAULT_SORT, value,Integer.class);
     }
 

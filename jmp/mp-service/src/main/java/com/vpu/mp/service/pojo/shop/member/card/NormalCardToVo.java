@@ -148,7 +148,7 @@ public class NormalCardToVo extends NormalCardVo {
 
 		/** 卡充值策略 */
 		String chargeMoney = this.getChargeMoney();
-		if (chargeMoney != null && !chargeMoney.equals("")) {
+		if (!StringUtils.isBlank(chargeMoney)) {
 	
 			try {
 				powerCardJson = MAPPER.readValue(chargeMoney, PowerCardJson.class);
@@ -157,6 +157,12 @@ public class NormalCardToVo extends NormalCardVo {
 			}
 		}
 		
+		// 充值开关
+		if(sendMoney==null) {
+			this.powerCard = 0;
+		}else {
+			this.powerCard = 1;
+		}
 		
 		/** 门店策略处理 */
 		if (storeList != null) {

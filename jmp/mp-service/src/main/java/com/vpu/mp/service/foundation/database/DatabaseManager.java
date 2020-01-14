@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
@@ -108,7 +109,7 @@ public class DatabaseManager {
 	 */
 	public Integer getCurrentShopId() {
 		MpDefaultDslContext db = shopDsl.get();
-		assert (db != null) : "DB NULL";
+		Assert.isTrue(db != null, "DB NULL");
 		return db.getShopId();
 	}
 
@@ -117,7 +118,7 @@ public class DatabaseManager {
 	 */
 	public MpDefaultDslContext currentShopDb() {
 		MpDefaultDslContext db = shopDsl.get();
-		assert (db != null);
+		Assert.isTrue(db != null,"db null");
 		return db;
 	}
 

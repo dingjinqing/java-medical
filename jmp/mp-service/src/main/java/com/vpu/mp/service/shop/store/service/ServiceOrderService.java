@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
@@ -11,11 +12,16 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.*;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
@@ -837,6 +843,33 @@ public class ServiceOrderService extends ShopBaseService {
         log.info("预约支付回调成功，发送预约成功消息模板！");
         //发送模板消息
         reservation.sendAppointmentSuccess(orderRecord);
+    }
+
+    public void serviceOrderCancelNotify(ServiceOrderUpdateParam updateParam,String cancelReason){
+        String wxUnionId = db().select(USER.WX_UNION_ID).from(SERVICE_ORDER,USER).where(SERVICE_ORDER.USER_ID.eq(USER.USER_ID).and(SERVICE_ORDER.ORDER_ID.eq(updateParam.getOrderId()))).fetchOptionalInto(String.class).orElse(null);
+        String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
+        updateParam = db().select().from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_ID.eq(updateParam.getOrderId())).fetchOptionalInto(ServiceOrderUpdateParam.class).orElse(null);
+        UserRecord wxUserInfo = userService.getUserByUnionId(wxUnionId);
+        String serviceName = db().select(STORE_SERVICE.SERVICE_NAME).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(updateParam.getServiceId())).fetchOptionalInto(String.class).orElse(null);
+        if(wxUnionId == null || officeAppId == null || wxUserInfo == null || updateParam == null || serviceName == null){
+            return;
+        }
+        String page = "pages/appointinfo/appointinfo?order_sn=" + updateParam.getOrderSn();
+        String keyword1 = "您预约的";
+        String keyword11 = "已取消";
+        List<Integer> userIdList = new ArrayList<>();
+        userIdList.add(wxUserInfo.getUserId());
+
+        String[][] data = new String[][] { { keyword1 + serviceName + keyword11, "#173177" }, { serviceName, "#173177" },
+            { updateParam.getServiceDate(), "#173177" },
+            { cancelReason, "#173177" },
+            { "欢迎再次使用我们的服务", "#173177" } };
+        RabbitMessageParam param = RabbitMessageParam.builder()
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.SERVICE_ORDER_CANCEL).data(data).build())
+            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+            .build();
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+            TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
 
 }

@@ -32,17 +32,14 @@
                   <span v-if="param.validityType === 1">{{ $t('ordinaryCoupon.appoint') }} {{param.validity}}<span v-if="param.validity === ''">X</span> {{ $t('ordinaryCoupon.appointDay') }} {{param.validityHour}}<span v-if="param.validityHour === ''">X</span> {{ $t('ordinaryCoupon.appointHour') }} {{param.validityMinute}}<span v-if="param.validityMinute === ''">X</span> {{ $t('ordinaryCoupon.appointMinute') }}</span>
                 </span>
               </div>
-              <div>
-                <span class="sub_title">{{ $t('ordinaryCoupon.restrict2') }}</span>
-                <span
-                  class="all"
-                  v-if="param.useConsumeRestrict===0"
-                >{{ $t('ordinaryCoupon.restrictRadio1') }}</span>
-                <span v-else>{{ $t('ordinaryCoupon.restrictRadio2') }} {{param.leastConsume?param.leastConsume:'0'}}<span v-if="param.leastConsume === ''">X</span> {{ $t('ordinaryCoupon.restrictTip') }}</span>
-                <span
-                  class="part"
-                  v-if="param.availableGoods === 1"
-                >{{ $t('ordinaryCoupon.leftTip1') }}</span>
+              <div style="height: 60px;">
+                <div class="sub_title leftTitle">{{ $t('ordinaryCoupon.restrict2') }}</div>
+                <div class="rightTitle">
+                  <p v-if="param.useConsumeRestrict===0">{{ $t('ordinaryCoupon.restrictRadio1') }}</p>
+                  <p v-if="param.useConsumeRestrict===1">{{ $t('ordinaryCoupon.restrictRadio2') }} {{param.leastConsume?param.leastConsume:'0'}}<span v-if="param.leastConsume === ''">X</span> {{ $t('ordinaryCoupon.restrictTip') }}({{ $t('ordinaryCoupon.leftTip6') }})</p>
+                  <p v-if="param.availableGoods === 0">{{ $t('ordinaryCoupon.leftTip5') }}</p>
+                  <p v-if="param.availableGoods === 1">{{ $t('ordinaryCoupon.leftTip1') }}</p>
+                </div>
               </div>
             </div>
             <div class="info_bot">
@@ -366,10 +363,10 @@
                           class="member"
                           @click="editType ? handler() : refresh()"
                         >{{ $t('ordinaryCoupon.memberTip3') }}</span><span> | </span>
-                        <span
+                        <!-- <span
                           class="member"
                           @click="editType ? handler() : addMemberCard()"
-                        >{{ $t('ordinaryCoupon.memberTip4') }}</span><span> | </span>
+                        >{{ $t('ordinaryCoupon.memberTip4') }}</span><span> | </span> -->
                         <span
                           class="member"
                           @click="editType ? handler() : manageMemberCard()"
@@ -651,7 +648,7 @@ export default {
     }
     // 自定义校验可使用商品
     var validateAvailableGoods = (rule, value, callback) => {
-      if (value === 1 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
+      if (value === 1 && (this.goodsInfo.length === 0 || this.busClass.length === 0)) {
         callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
       } else {
         callback()
@@ -1024,6 +1021,7 @@ export default {
       this.goodsInfoRow.map((item, index) => {
         this.goodsInfo.push(item.goodsId)
       })
+      this.$refs['param'].validateField('availableGoods')
     },
 
     // 选择商家分类/平台分类弹窗回调显示
@@ -1043,6 +1041,7 @@ export default {
           this.platClass.push(item.catId)
         })
       }
+      this.$refs['param'].validateField('availableGoods')
     },
 
     // 刷新
@@ -1229,6 +1228,20 @@ export default {
 }
 .sub_title {
   color: #aaa;
+}
+.leftTitle {
+  width: 25%;
+  height: 100%;
+  padding: 0 !important;
+  float: left;
+  border: none !important;
+}
+.rightTitle {
+  width: 75%;
+  height: 100%;
+  padding: 0 !important;
+  float: right;
+  border: none !important;
 }
 .date {
   width: 75%;

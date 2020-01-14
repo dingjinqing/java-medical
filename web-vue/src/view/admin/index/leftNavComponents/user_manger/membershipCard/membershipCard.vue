@@ -86,7 +86,7 @@
                       </el-tooltip>
                     </div>
 
-                    <div @click="handleToTips(2,item,index,0)">
+                    <div v-if="item.flag !== 3"   @click="handleToTips(2,item,index,0)">
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -919,7 +919,7 @@ export default {
       min-width: 1000px;
       padding-right: 0;
       .firstListDiv {
-        width: 272px;
+        width: 267px;
         float: left;
         margin-right: 1%;
         margin-bottom: 20px;

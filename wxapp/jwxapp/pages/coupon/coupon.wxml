@@ -35,8 +35,8 @@
                     </block> 
                   </view>
                   <!-- <view class="click_to_detail">{{item.is_all_goods}}</view> -->
-                  <view class="click_to_detail" wx:if="{{item.isUsed == 0}}">全部商品可用</view>
-                  <view class="click_to_detail" wx:else>部分商品可用</view>
+                  <view class="click_to_detail" wx:if="{{item.recommendGoodsId == ''}}">全部商品可用</view>
+                  <view class="click_to_detail" wx:if="{{item.recommendGoodsId != ''}}">部分商品可用</view>
                   <view class="time_canuse" wx:if='{{item.remainDays != 0 || item.remain_seconds_all <= 0}}'>{{item.startTime}} - {{item.endTime}}</view>
                   <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0 && item.remain_seconds_all > 0}}'>
                     <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
@@ -45,9 +45,8 @@
                     <text style='color:#666'>后失效</text>
                   </view>
               </view>  
-              <view class="go_use" wx:if="{{ this_type == 0 }}" catchtap="to_search" data-coupon_sn="{{item.coupon_sn}}" style='color:{{comColor}}'>
-                去使用
-              </view>  
+              <!-- <view class="del_btn" wx:if="{{ this_type != 0 }}" catchtap='coupon_del' data-coupon_sn="{{item.couponSn}}" data-type='{{ this_type }}' style='background:{{comColor}}'>删除</view> -->
+              <view class="go_use" wx:if="{{ this_type == 0 }}" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>去使用</view>  
             </view>
             <view class="no_cou" wx:if="{{allCoupon.length == 0}}">
               <view class="icon_no"><image src='{{imageUrl}}image/wxapp/coupo-no.png' mode='widthFix'/></view>

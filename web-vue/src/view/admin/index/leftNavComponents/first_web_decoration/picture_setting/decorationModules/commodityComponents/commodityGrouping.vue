@@ -28,8 +28,8 @@
 
         </div>
         <ul
-          v-if="data.goodsItems.length"
-          :style="((data.shop_style==='1' || data.shop_style==='2')?'display: flex;flex-wrap: wrap;':'')+(data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:data.shop_style==='4'?'display:flex':'')"
+          v-if="data.sort_group_arr.length"
+          :style="((data.shop_style==='1' || data.shop_style==='2')?'display: flex;flex-wrap: wrap;':data.shop_style==='4'?'display:flex':'')+(data.goods_module_bg==='1'?`;background:${data.goods_bg_color}`:'')"
         >
           <li
             v-for="(item,index) in data.goods_img"
@@ -91,9 +91,9 @@
                   <div class="bottomHead">
                     <div
                       class="goodsNameClass"
-                      v-if="data.show_name"
+                      v-if="data.show_name === '1'"
                     >{{data.goods_name[index]}}</div>
-                    <div :style="!data.show_name?'height:14px':''"></div>
+                    <div :style="!data.show_name==='1'?'height:14px':''"></div>
                     <div
                       class="activityContainer"
                       :style="(data.shop_style==='0')?'display:flex;margin-top:0':data.shop_style==='1'?'display:flex;margin-top:0':data.shop_style==='2'?'display:flex':data.shop_style==='3'?'margin-top:50px;display:flex':'display:flex'"
@@ -115,34 +115,34 @@
                   >
                     <span
                       :style="`color:${bgColor};`"
-                      v-if="data.show_price"
+                      v-if="data.show_price==='1'"
                     >￥{{Number(data.goods_price[index]).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.shop_style!=='2'&&data.other_message"
+                      v-if="data.shop_style!=='2'&&data.other_message==='1'"
                     >{{data.show_market==='1'?'￥0.00':data.show_market==='2'?'0人付款':'0人评价'}}</span>
                     <!--购买按钮-->
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
                       :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn&&data.cart_btn_choose === '0'"
+                      v-if="data.cart_btn==='1'&&data.cart_btn_choose === '0'"
                     ></i>
                     <i
                       class="iconfont icongouwuche1 icon_font_size new_class"
                       :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn&&data.cart_btn_choose === '1'"
+                      v-if="data.cart_btn==='1'&&data.cart_btn_choose === '1'"
                     ></i>
                     <i
                       class="right_buy new_back"
                       :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn&&data.cart_btn_choose==='2'"
+                      v-if="data.cart_btn==='1'&&data.cart_btn_choose==='2'"
                     >
                       {{$t('commodity.grabAtOnce')}}
                     </i>
                     <i
                       class="cart_buy"
                       :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn&&data.cart_btn_choose==='3'"
+                      v-if="data.cart_btn==='1'&&data.cart_btn_choose==='3'"
                     >{{$t('commodity.purchase')}}</i>
                   </div>
                 </div>
@@ -173,7 +173,7 @@
             {{showNav.filter((item,index)=>index!==0)[0]}}
           </div>
           <ul
-            v-if="data.goodsItems.length"
+            v-if="data.sort_group_arr.length"
             :style="(data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:'')+';padding: 10px;overflow: hidden;'"
           >
             <li
@@ -233,12 +233,12 @@
                     <div class="bottomHead">
                       <div
                         class="goodsNameClass"
-                        v-if="data.show_name"
+                        v-if="data.show_name==='1'"
                       >{{data.goods_name[index]}}</div>
-                      <div :style="!data.show_name?'height:14px':''"></div>
+                      <div :style="!data.show_name ==='1'?'height:14px':''"></div>
                       <div
                         class="activityContainer"
-                        :style="'display:flex;'+(!data.show_name?'margin: 10px 0 50px;':'margin-top:50px;')"
+                        :style="'display:flex;'+(!data.show_name==='1'?'margin: 10px 0 50px;':'margin-top:50px;')"
                       >
                         <div
                           :style="indexC===0?'margin-right:5px;':'margin-top:0px;'"
@@ -257,35 +257,35 @@
                     >
                       <span
                         :style="`color:${bgColor};position:static;padding-top:3px`"
-                        v-if="data.show_price"
+                        v-if="data.show_price==='1'"
                       >￥{{Number(data.goods_price[index]).toFixed(2)}}</span>
-                      <span v-if="!data.show_price"></span>
+                      <span v-if="!data.show_price==='1'"></span>
                       <span
-                        :style="'text-decoration: line-through;color: #c0c0c0;position:static'+(data.other_message?'width: 50px;padding-top: 3px;':'')"
-                        v-if="data.shop_style!=='2'&&data.other_message"
+                        :style="'text-decoration: line-through;color: #c0c0c0;position:static'+(data.other_message==='1'?'width: 50px;padding-top: 3px;':'')"
+                        v-if="data.shop_style!=='2'&&data.other_message==='1'"
                       >{{data.show_market==='1'?'￥0.00':data.show_market==='2'?'0人付款':'0人评价'}}</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn&&data.cart_btn_choose === '0'"
+                        v-if="data.cart_btn==='1'&&data.cart_btn_choose === '0'"
                       ></i>
                       <i
                         class="iconfont icongouwuche1 icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn&&data.cart_btn_choose === '1'"
+                        v-if="data.cart_btn==='1'&&data.cart_btn_choose === '1'"
                       ></i>
                       <i
                         class="right_buy new_back"
                         style="`position:static;backgroundColor:${bgColor};`"
-                        v-if="data.cart_btn&&data.cart_btn_choose==='2'"
+                        v-if="data.cart_btn==='1'&&data.cart_btn_choose==='2'"
                       >
                         {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
                         :style="`position:static;color:${bgColor};border-color:${bgColor};`"
-                        v-if="data.cart_btn&&data.cart_btn_choose==='3'"
+                        v-if="data.cart_btn==='1'&&data.cart_btn_choose==='3'"
                       >{{$t('commodity.purchase')}}</i>
                     </div>
                   </div>
@@ -345,6 +345,7 @@ export default {
       activeSetHere: false,
       // 模块私有
       data: {
+        sort_group_arr: []
       },
       groupTextData: ['全部', '分组一', '分组二', '分组三', '分组四'],
       showNav: [],
@@ -385,7 +386,10 @@ export default {
           console.log(newData)
           let turnToString = this.handleToTurnNumToStr(newData)
           console.log(turnToString)
-          this.data = turnToString
+          this.$nextTick(() => {
+            this.data = turnToString
+          })
+
           // 处理初始数据
           this.handleToInit(this.data)
         }
@@ -403,13 +407,13 @@ export default {
   methods: {
     // 处理初始数据
     handleToInit (data) {
-      let { goodsItems } = data
-      console.log(goodsItems, data)
-      let length = goodsItems.length || null
+      let sortGroupArr = data.sort_group_arr
+      console.log(sortGroupArr, data)
+      let length = sortGroupArr.length
       if (length) {
         let arr = [this.groupTextData[0]]
         console.log(this.groupTextData[0])
-        goodsItems.forEach((item, index) => {
+        sortGroupArr.forEach((item, index) => {
           arr.push(item.customName)
         })
         this.showNav = arr

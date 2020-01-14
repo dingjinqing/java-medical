@@ -518,6 +518,54 @@ global.wxPage({
         } else {
           return { desc: `新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`, id: info.promotionId }
         }
+      case '15':
+        var data = {id: info.promotionId}
+        if(info.conType === 0){
+          data.desc = `满${info.money}元，`
+        }
+        if(info.conType === 1){
+          data.desc = `满${info.num}件，`
+        }
+        if(info.conType === 2){
+          data.desc = `满${info.money}元或${info.num}件，`
+        }
+        data.desc += `部分地区包邮`
+        return data
+      case '21':
+        var data = {id: info.promotionId}
+        if(info.type === 1){
+          if(info.amount > 0){
+            data.desc = `每满${info.amount}件`
+          } else {
+            data.desc = `每满${info.fullMoney}元`
+          }
+        } else if(info.type === 2 || info.type === 3) {
+          if(info.amount > 0){
+            data.desc = `满${info.amount}件`
+          } else {
+            data.desc = `满${info.fullMoney}元`
+          }
+        } else if(info.type === 4) {
+          data.desc = `第${info.amount}件`
+        }
+        if(info.type === 1 || info.type === 2){
+          data.desc += `，减${info.reduceMoney}元`
+        } else (
+          data.desc += `，打${info.discount}折`
+        )
+        return data
+      case '19':
+        var data = {id: info.promotionId}
+        if(info.goodsAreaType === 1){
+          data.desc = `购买“指定商品”`
+        } else {
+          data.desc = `购买“全部商品”`
+        }
+        if(info.minPayMoney > 0){
+          data.desc += `且“订单金额满${info.minPayMoney}元”`
+        }
+        data.desc += `可获得活动奖励`
+        return data
     }
   },
   /**

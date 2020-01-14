@@ -7,7 +7,7 @@
           <view class="card_list_item" style="{{item.cardBgStyle}}">
             <view class="card_type">{{item.cardTypeName}}</view>
             <view class="card_item_info">
-              <image mode="widthFix" class="shop_img" src="{{imageUrl}}{{item.avatar}}"></image>
+              <image mode="widthFix" class="shop_img" src="{{item.avatar}}"></image>
               <view class="info_item">
                 <view class="item_row card_name">{{item.cardName}}</view>
                 <view class="item_row" wx:if="{{item.cardType !== 1 && item.discount}}">折扣：{{item.discount}}折</view>

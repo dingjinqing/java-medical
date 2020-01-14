@@ -318,14 +318,17 @@ export default {
       this.queryImgs()
       this.dialogTableVisible = true
     },
-    imageSize (newData) {
-      if (newData.length) {
-        this.sizeW = newData[0]
-        this.sizeH = newData[1]
-      } else {
-        this.sizeW = ''
-        this.sizeH = ''
-      }
+    imageSize: {
+      handler: function (newData) {
+        if (newData.length) {
+          this.sizeW = newData[0]
+          this.sizeH = newData[1]
+        } else {
+          this.sizeW = ''
+          this.sizeH = ''
+        }
+      },
+      immediate: true
     },
     checked (newData) {
       this.queryImgs()
@@ -461,6 +464,9 @@ export default {
     // 图片分组查询数据处理函数
     handleToQueryImgsData (currentPage3, width, height, flag) {
       let obj = ''
+      if (this.firstNodeId === '') {
+        this.firstNodeId = 0
+      }
       obj = {
         'page': currentPage3,
         'imgCatId': this.firstNodeId,

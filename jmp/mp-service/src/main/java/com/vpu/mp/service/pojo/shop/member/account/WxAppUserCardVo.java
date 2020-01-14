@@ -26,7 +26,7 @@ public class WxAppUserCardVo extends UserCardParam {
 	final static Byte AVAILABLE_RENEWAL = 1;
 	// 过期状态
 	private Integer status;
-	// 是否过期
+	// 是否过期 
 	protected Byte expire;
 	// 是否可续费
 	protected Byte renewal;
@@ -51,8 +51,9 @@ public class WxAppUserCardVo extends UserCardParam {
 	public void calcCardIsExpired(){
 		if(isExpire()) {
 			this.expire = ALREADY_EXPIRED;
+		}else {
+			this.expire = NOT_EXPIRED;
 		}
-		this.expire = NOT_EXPIRED;
 	}
 	public void calcRenewal() {
 		if(isPermanent()) {

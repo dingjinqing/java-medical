@@ -51,9 +51,17 @@ global.wxPage({
       util.api('/api/card/detail', res => {
         console.log(res)
         let cardInfo = res.content
-        if (cardInfo.activation) {
+        if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime) ) {
           that.setData({
             carStatus: "已领取"
+          })
+        } else if (cardInfo.examine && cardInfo.isExamine.status === 'TODO') {
+          that.setData({
+            carStatus: "审核中"
+          })
+        } else if (cardInfo.examine && cardInfo.isExamine.status === 'TODO') {
+          that.setData({
+            carStatus: "审核失败"
           })
         } else {
           that.setData({
@@ -63,6 +71,7 @@ global.wxPage({
         cardInfo.cardExpireTime = that.getCardExpireTime(cardInfo);
         cardInfo.cardBgStyle = that.getCardBg(cardInfo);
         cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
+        cardInfo.cardStopImg = this.getCardStopImage(cardInfo);
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
         cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
@@ -155,8 +164,17 @@ global.wxPage({
   getCardExpireTime (cardItem) {
     if (cardItem.cardType === 2) return null
     if (cardItem.expireType === 2) return `永久有效`
-    if (cardItem.expire === 1) return `此卡已过期，如需继续使用请联系商家`
     return `${cardItem.startDate} 至 ${cardItem.endDate}`
+  },
+  // 获取会员卡停用/删除状态图片
+  getCardStopImage(cardItem) {
+    if (cardItem.cardType === 2 && cardItem.flag === 2) {
+      return `${this.data.imageUrl}image/wxapp/card_stop.png`
+    }
+    if (cardItem.expire === 1) {
+      return `${this.data.imageUrl}image/wxapp/card_out_time.png`
+    }
+    return ``
   },
   // 获取会员卡背景
   getCardBg (cardItem) {

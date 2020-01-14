@@ -48,22 +48,7 @@ global.wxPage({
           }, 2000);
         }
       },{couponSn:options.couponSn})
-    } else {
-      couponId = options.couponId
-      // 装修界面查看详情
-      util.api("api/wxapp/coupon/detail/byScore",function(res){
-        if(res.error == 0){
-          _this.initHandler(res, 1)
-        } else {
-          util.toast_fail('操作失败');
-          setTimeout(function () {
-            util.reLaunch({
-              url: '/pages/index/index',
-            })
-          }, 2000);
-        }
-      }, {couponId:options.couponId})
-    }
+    } 
   },
 
   // 优化数据
@@ -244,23 +229,6 @@ global.wxPage({
     util.navigateTo({
       url: '/pages/index/index',
     })
-  },
-
-  top_more: function (e) {
-    var coupon_id = this.data.act_info.id;
-    if (this.data.act_info.is_exclusive == 1 && this.data.act_info.card_list.length == 1 && this.data.act_info.card_list[0].card_type == 2) {
-      util.showModal('提示', '您当前的会员等级不满足，仅拥有“' + this.data.act_info.card_list[0].card_name + '”等级卡用户可购买此商品。可在“个人中心”查看会员卡权益');
-      return false;
-    }
-    if (this.data.act_info.card_list != 'undefined' && this.data.act_info.card_list.length == 1) {
-      util.navigateTo({
-        url: '/pages/usercardinfo/usercardinfo?card_list=1&card_id=' + this.data.act_info.card_list[0].id + '&code=' + code + '&coupon_id=' + coupon_id,
-      })
-    } else {
-      util.navigateTo({
-        url: '/pages/buycardlist/buycardlist?coupon_id=' + coupon_id + '&code=' + code,
-      })
-    }
   }
-
+  
 })

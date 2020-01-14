@@ -239,21 +239,21 @@ global.wxPage({
         if (newItem.useConsumeRestrict === 1) {
           newItem.text = `${this.$t('components.decorate.full')}${
             newItem.limitOrderAmount
-          }${this.$t('components.decorate.reduce')}￥${newItem.amount}`;
+          }${this.$t('components.decorate.reduce')}${newItem.amount}`;
         } else {
           newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
             'components.decorate.reduce'
-          )}￥${newItem.amount}`;
+          )}${newItem.amount}`;
         }
       } else if (newItem.type === 1) {
         if (newItem.useConsumeRestrict === 1) {
           newItem.text = `${this.$t('components.decorate.full')}${
             newItem.limitOrderAmount
-          }${this.$t('components.decorate.hit')}￥${newItem.amount}`;
+          }${this.$t('components.decorate.hit')}${newItem.amount}${this.$t('components.decorate.fracture')}`;
         } else {
           newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
             'components.decorate.hit'
-          )}￥${newItem.amount}${this.$t('components.decorate.fracture')}`;
+          )}${newItem.amount}${this.$t('components.decorate.fracture')}`;
         }
       }
       return newItem

@@ -86,10 +86,9 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setLimitAmount(secKill.getLimitAmount());
         seckillVo.setLimitPaytime(secKill.getLimitPaytime());
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(seckillVo.getActState())) {
-            seckillVo.setStartTime(secKill.getStartTime().getTime()- DateUtil.getLocalDateTime().getTime());
-            seckillVo.setEndTime(secKill.getEndTime().getTime()-DateUtil.getLocalDateTime().getTime());
+            seckillVo.setStartTime((secKill.getStartTime().getTime()- DateUtil.getLocalDateTime().getTime())/1000);
         }
-        seckillVo.setEndTime(secKill.getEndTime().getTime()-DateUtil.getLocalDateTime().getTime());
+        seckillVo.setEndTime((secKill.getEndTime().getTime()-DateUtil.getLocalDateTime().getTime())/1000);
 
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));

@@ -183,6 +183,7 @@ public class FreeShippingService extends ShopBaseService {
                 .leftJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
                 .where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOption(select, param);
+        select.orderBy(FREE_SHIPPING.LEVEL.desc(),FREE_SHIPPING.ID.desc());
         PageResult<FreeShippingVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), FreeShippingVo.class);
         result.getDataList().forEach(freeShipping -> {
             List<FreeShippingRuleVo> ruleVoList = ruleService.getRuleListByFreeShippingId(freeShipping.getId()).into(FreeShippingRuleVo.class);

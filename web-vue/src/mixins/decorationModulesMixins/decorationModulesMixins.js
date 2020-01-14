@@ -175,21 +175,21 @@ export default {
           obj = {
             module_name: 'm_goods_group',
             menu_style: '0', // 菜单样式radio
-            position_style: '0',
-            shop_style: '1',
-            if_radius: '0',
+            position_style: '0', // 菜单位置radio
+            shop_style: '1', // 商品列表样式radio
+            if_radius: '0', // 模块角度radio
             sort_length: 1,
-            module_style: '1',
-            group_display: '1',
-            show_market: '1',
-            goods_module_bg: '0',
-            goods_bg_color: '#f5f5f5',
-            show_name: true,
-            show_price: true,
-            cart_btn: true,
-            cart_btn_choose: '0',
-            other_message: false,
-            goodsItems: []
+            module_style: '1', // 模块样式radio
+            group_display: '1', // 全部分组radio
+            show_market: '1', // 其它信息按钮下隐藏模块radio
+            goods_module_bg: '0', // 背景颜色radio
+            goods_bg_color: '#f5f5f5', // 背景自定义颜色
+            show_name: '1', // 商品名称
+            show_price: '1', // 商品价格
+            cart_btn: '1', // 购买按钮checkbox
+            cart_btn_choose: '0', // 购买按钮选中显示模块radio
+            other_message: '0', // 其他信息按钮
+            sort_group_arr: []// 商品分组菜单隐藏模块数据列表
           }
           break
         case 11: // 轮播图模块

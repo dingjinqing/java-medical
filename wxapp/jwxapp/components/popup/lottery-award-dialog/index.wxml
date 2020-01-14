@@ -1,0 +1,22 @@
+<!-- 幸运大抽奖奖品弹窗：components/popup/lottery-award-dialog/index.wxml-->
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<view class="lottery-award-page" wx:if="{{show}}">
+  <view class="l-a-cover" bindtap="bindClose"></view>
+  <view class="l-a-content">
+    <view class="l-a-top">
+      <image class="l-a-top-img" src="{{imageUrl + '/image/wxapp/is_award1.png'}}" mode="scaleToFill"></image>
+      <text class="l-a-top-title">中奖啦！</text>
+    </view>
+    <view class="l-a-center">
+      <view class="l-a-c-top">恭喜您获得</view>
+      <view class="l-a-c-top">1元</view>
+      <view class="l-a-c-go">已存入您的余额，快去查看吧</view>
+      <view class="l-a-c-btns">
+        <button class="l-a-c-btn">立即查看</button>
+      </view>
+    </view>
+    <view class="l-a-close" bindtap="bindClose">
+      <image class="l-a-close-img" mode="widthFix" src="{{imageUrl + '/image/wxapp/split_btn1.png'}}" role="img"></image>
+    </view>
+  </view>
+</view>

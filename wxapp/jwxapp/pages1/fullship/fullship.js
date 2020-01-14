@@ -1,20 +1,32 @@
-// pages1/fullship/fullship.js
+var util = require('../../utils/util.js')
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    pageParams: null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.requestGoodsList()
   },
 
+  requestGoodsList(){
+    let currentPage = this.data.pageParams
+      ? this.data.pageParams.currentPage
+      : 1;
+    util.api('/api/wxapp/freeship/goods/list',res=>{
+      
+    },{
+      ruleId:61,
+      currentPage: currentPage,
+      pageRows: 20,
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -54,7 +66,15 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (
+      this.data.pageParams &&
+      this.data.pageParams.currentPage === this.data.pageParams.lastPage
+    )
+      return;
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestGoodsList();
   },
 
   /**

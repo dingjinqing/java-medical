@@ -11,7 +11,7 @@
             <text class="iconfont {{cardItem.isChecked ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{cardItem.isChecked ? main_setting.comColor : ''}}"></text>
           </view>
           <view class="card_info" style="{{cardItem.cardBgStyle}}">
-            <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
+            <image src="{{cardItem.avatar}}"></image>
             <view class="card_right">
               <text class="card_name">{{cardItem.cardName}}</text>
               <text class="card_no">卡号：{{cardItem.cardNo}}</text>
