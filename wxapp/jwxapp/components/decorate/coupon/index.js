@@ -82,7 +82,7 @@ global.wxComponent({
 
       if (d.use_score === 1 || d.exclusive != '') {
         // 积分兑换
-        util.jumpLink('/pages/getCoupon/getCoupon?couponId=' + d.coupon_id);
+        util.jumpLink('/pages/receiveCoupon/receiveCoupon?couponId=' + d.coupon_id);
       } else {
         // 直接领取
         wx.showLoading({
