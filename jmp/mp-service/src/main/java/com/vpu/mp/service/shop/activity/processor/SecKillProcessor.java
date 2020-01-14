@@ -123,11 +123,13 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) {
         secKillProcessorDao.setOrderPrdSeckillPrice(param);
-        //秒杀不允许使用积分支付和货到付款
+        //秒杀不允许使用积分支付、优惠券、会员卡、货到付款
         if(param.getPaymentList() != null){
             param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
             param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
         }
+        param.setCouponSn("");
+        param.setMemberCardNo("");
     }
 
     /**
