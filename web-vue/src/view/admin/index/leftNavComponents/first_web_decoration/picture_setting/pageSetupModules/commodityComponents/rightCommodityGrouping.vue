@@ -15,8 +15,8 @@
             :key="index"
           >
             <div>
-              <span>{{item.type===0?'商家分类':item.type===1?'商家标签':'商家品牌'}}：</span>
-              <span style="display:inline-block;width:100px">{{item.typeName}}</span>
+              <span>{{item.sort_type===0?'商家分类':item.sort_type===1?'商家标签':'商家品牌'}}：</span>
+              <span style="display:inline-block;width:100px">{{item.sort_name}}</span>
               <span
                 @click="handleToEditData(index)"
                 style="padding-left: 20px;color: #5A8BFF;cursor: pointer;"
@@ -25,7 +25,7 @@
             <div class="nameContainer">
               <span>自定义分组名称：</span>
               <el-input
-                v-model="item.customName"
+                v-model="item.group_name"
                 size="small"
               ></el-input>
             </div>
@@ -35,7 +35,7 @@
                 v-model="item.radio"
                 @change="handleToClickShowNumRadio(index)"
                 label="1"
-              >全部{{item.goodsNum}}件</el-radio>
+              >全部{{item.sort_goods_num}}件</el-radio>
               <el-radio
                 v-model="item.radio"
                 @change="handleToClickShowNumRadio(index)"
@@ -530,12 +530,15 @@ export default {
       let arr = []
       data.forEach((item, index) => {
         //  obj
-        let obj = { type: 0, radio: '1' }
+        let obj = { sort_type: 0, radio: '1' }
         console.log(item.goodsSumNum)
         if (item.goodsSumNum !== undefined) {
-          obj.typeName = item.sortName
+          obj.sort_name = item.sortName
           obj.customName = item.sortName
-          obj.goodsNum = item.goodsSumNum
+          obj.sort_goods_num = item.goodsSumNum
+          obj.group_goods_num = item.goodsSumNum
+          obj.sort_id = item.sortId
+
           arr.push(obj)
         }
       })
