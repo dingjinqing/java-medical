@@ -1073,7 +1073,16 @@ public class UserCardService extends ShopBaseService {
 			defaultCards = userCardDao.getOrderMembers(userId,
 					new Byte[] { CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE },
 					OrderConstant.MEMBER_CARD_ONLINE);
-		}
+		}else {
+            List<OrderMemberVo> temp = userCardDao.getOrderMembers(userId,
+                new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE},
+                OrderConstant.MEMBER_CARD_ONLINE);
+            for (OrderMemberVo orderMemberVo : temp) {
+               if(!defaultCards.get(0).getCardId().equals(orderMemberVo.getCardId())) {
+                   defaultCards.add(orderMemberVo);
+               }
+            }
+        }
 		if (CollectionUtils.isEmpty(defaultCards)) {
 			// 校验
 			return Lists.newArrayList();
