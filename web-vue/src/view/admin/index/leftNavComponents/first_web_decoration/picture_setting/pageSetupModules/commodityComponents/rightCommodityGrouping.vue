@@ -534,11 +534,12 @@ export default {
         console.log(item.goodsSumNum)
         if (item.goodsSumNum !== undefined) {
           obj.sort_name = item.sortName
-          obj.customName = item.sortName
+          obj.group_name = item.sortName
           obj.sort_goods_num = item.goodsSumNum
-          obj.group_goods_num = item.goodsSumNum
           obj.sort_id = item.sortId
-
+          obj.group_goods_num = ''
+          obj.group_goods_id = ''
+          obj.is_all = 1
           arr.push(obj)
         }
       })
@@ -560,9 +561,13 @@ export default {
         //  obj
         let obj = { type: 1, radio: '1' }
         console.log(item.goodsSumNum)
-        obj.typeName = item.name
-        obj.customName = item.name
-        obj.goodsNum = item.goodsNum
+        obj.sort_name = item.name
+        obj.group_name = item.name
+        obj.sort_goods_num = item.goodsNum
+        obj.sort_id = item.id
+        obj.group_goods_num = ''
+        obj.group_goods_id = ''
+        obj.is_all = 1
         arr.push(obj)
       })
       console.log(this.clickEditBtn, this.editIndex, arr)
@@ -581,9 +586,13 @@ export default {
         //  obj
         let obj = { type: 2, radio: '1' }
         console.log(item.goodsSumNum)
-        obj.typeName = item.brandName
-        obj.customName = item.brandName
-        obj.goodsNum = item.goodsNum
+        obj.sort_name = item.brandName
+        obj.group_name = item.brandName
+        obj.sort_goods_num = item.goodsNum
+        obj.sort_id = item.id
+        obj.group_goods_num = ''
+        obj.group_goods_id = ''
+        obj.is_all = 1
         arr.push(obj)
       })
       if (this.clickEditBtn) {
