@@ -252,4 +252,34 @@ public class GiftProcessorDao extends GiftService {
         }
         db().batchUpdate(result).execute();
     }
+
+    /**
+     * 支付接口校验赠品
+     * @param giftId 赠品活动id
+     * @param productId 赠品规格id
+     * @param number 商品数量
+     */
+    public boolean toPayCheck(Integer giftId, Integer productId, Integer number){
+        GiftVo info = getGiftDetail(giftId);
+        if(info == null || info.getEndTime().before(DateUtil.getSqlTimestamp()) || BaseConstant.ACTIVITY_STATUS_DISABLE.equals(info.getStatus()) || !checkStock(info, productId, number)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 赠品校验库存
+     * @param info
+     * @param productId
+     * @param number
+     * @return
+     */
+    private boolean checkStock(GiftVo info, Integer productId,  Integer number){
+        for (ProductVo productVo : info.getGifts()) {
+            if(productVo.getProductId().equals(productId) && productVo.getProductNumber() >= number){
+                return true;
+            }
+        }
+        return false;
+    }
 }

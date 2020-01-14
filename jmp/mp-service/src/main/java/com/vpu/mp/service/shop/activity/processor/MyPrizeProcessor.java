@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,8 +51,8 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         logger().info("我的奖品>>>>{}", param.getGoods().get(0).getGoodsInfo().getGoodsName());
         //不使用优惠券和会员卡
-        param.setMemberCardNo(null);
-        param.setCouponSn(null);
+        param.setMemberCardNo(StringUtils.EMPTY);
+        param.setCouponSn(StringUtils.EMPTY);
         PrizeRecordRecord prizeRecord = prizeRecordService.getById(param.getActivityId());
         if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_RECEIVED)) {
             logger().info("奖品已经领取过了");
