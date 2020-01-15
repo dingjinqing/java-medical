@@ -9,9 +9,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
 /**
 * @author 黄壮壮
 * @Date: 2019年11月28日
@@ -256,7 +256,7 @@ public class CardUtil {
 	 * @param card 卡信息
 	 * @return 卡的有效期对象
 	 */
-	public static EffectTimeBean getUserCardEffectTime(UserCardParam card) {
+	public static EffectTimeBean getUserCardEffectTime(EffectTimeParam card) {
 		EffectTimeBean bean = new EffectTimeBean();
 		// 按照领卡的时间快照将进行设置
 		if(isCardFixTime(card.getExpireType()) && 
@@ -274,9 +274,9 @@ public class CardUtil {
 				(isCardTimeForever(card.getExpireType()) &&
 						card.getExpireTime() != null) ) {
 			// 自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
-			if(card.getUserCardCreateTime() != null) {
-				bean.setStartDate(card.getUserCardCreateTime().toLocalDateTime().toLocalDate());
-				bean.setStartTime(card.getUserCardCreateTime());
+			if(card.getCreateTime() != null) {
+				bean.setStartDate(card.getCreateTime().toLocalDateTime().toLocalDate());
+				bean.setStartTime(card.getCreateTime());
 			}
 			
 			if(card.getExpireTime() != null) {
@@ -290,6 +290,7 @@ public class CardUtil {
 			// 取快照
 			card.setExpireType(CardConstant.MCARD_ET_FIX);
 		}
+		bean.setExpireType(card.getExpireType());
 		return bean;
 	}
 

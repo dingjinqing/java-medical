@@ -48,6 +48,8 @@ public class OrderMemberVo extends BaseMarketingBaseVo {
     private String storeList;
     private String grade;
     private Byte storeUseSwitch;
+    // 头像
+    String avatar;
 
     /**
      * 使用pojo初始化自己

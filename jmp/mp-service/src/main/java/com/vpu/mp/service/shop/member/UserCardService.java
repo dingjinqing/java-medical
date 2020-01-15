@@ -81,6 +81,7 @@ import com.vpu.mp.service.pojo.shop.member.builder.UserScoreVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
@@ -783,18 +784,20 @@ public class UserCardService extends ShopBaseService {
 		card.calcRenewal();
 		card.setAvatar(avatar);
 		card.calcCash();
-		// 背景图
-		if(CardUtil.isBgImgType(card.getBgType())) {
-			// 全路径
-			if(!StringUtils.isBlank(card.getBgImg())) {
-				card.setBgImg(saas().getShopApp(getShopId()).image.imageUrl(card.getBgImg()));
-			}
-		}else {
-			if(StringUtils.isBlank(card.getBgColor())) {
-				// 默认背景色
-				card.setBgColor(CardUtil.getDefaultBgColor());
-			}
-		}
+		
+		// 背景
+		CardBgBean bg = memberCardService.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+		BeanUtils.copyProperties(bg, card);
+
+		// 用户卡的有效时间
+		EffectTimeParam etParam = new EffectTimeParam();
+		BeanUtils.copyProperties(card, etParam);
+		etParam.setCreateTime(card.getUserCardCreateTime());
+		EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+		BeanUtils.copyProperties(etBean, card);
+		
+		// 设置卡是否过期状态
+		card.setStatus(CardUtil.getStatus(card.getExpireType(), card.getEndTime()));
 	}
 
 	/**
@@ -822,19 +825,7 @@ public class UserCardService extends ShopBaseService {
 		if (card == null) {
 			throw new UserCardNullException();
 		}
-		
 
-		// 卡背景
-		CardBgBean cardBg = memberCardService.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-		BeanUtils.copyProperties(cardBg, card);
-		
-		// 用户卡的有效时间
-		EffectTimeBean etBean = CardUtil.getUserCardEffectTime(card);
-		BeanUtils.copyProperties(etBean, card);
-		
-		// 设置卡是否过期状态
-		card.setStatus(CardUtil.getStatus(card.getExpireType(), card.getEndTime()));
-		
 		dealWithUserCardDetailInfo(card);
 		
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
