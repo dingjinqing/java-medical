@@ -90,6 +90,7 @@
   padding: 6rpx 4rpx;
   margin-right: 10rpx;
   border-radius: 6rpx;
+  white-space: nowrap;
 }
 .goods-price-tag{
   display: inline-block;
