@@ -97,7 +97,7 @@
         </view>
         <view class="pay_list_item" wx:if="{{orderInfo.paymentList.score}}" bindtap="scoreTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useScore / 100})}}</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:useScoreMoney})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{scoreStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{scoreStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
