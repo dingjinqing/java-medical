@@ -398,7 +398,7 @@ public class SeckillService extends ShopBaseService{
     //用户数
     private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
         for (OrderActivityUserNum activityUserNum : list) {
-            if (activityUserNum.getDate().equals(timestamp)) {
+            if (activityUserNum.getDate().equals(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,timestamp))) {
                 return activityUserNum;
             }
         }
