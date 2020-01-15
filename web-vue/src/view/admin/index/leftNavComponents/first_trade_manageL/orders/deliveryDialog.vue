@@ -140,10 +140,20 @@ export default {
       deliveryInfo(obj).then(res => {
         if (res.error === 0) {
           this.deliveryInfo = res.content
+          this.$refs.multipleTable.toggleAllSelection()
         }
       })
     },
     goodsDelivery () {
+      if (this.$refs.multipleTable.selection.length === 0) {
+        this.$message.error('请选择要发货的商品')
+        return
+      }
+      if (!this.shippingNo) {
+        this.$message.error('请输入快递单号')
+        return
+      }
+
       let obj = {
         orderId: this.orderData.orderId,
         orderSn: this.orderData.orderSn,
