@@ -1058,7 +1058,16 @@ public class UserCardService extends ShopBaseService {
 			defaultCards = userCardDao.getOrderMembers(userId,
 					new Byte[] { CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE },
 					OrderConstant.MEMBER_CARD_ONLINE);
-		}
+		}else {
+            List<OrderMemberVo> temp = userCardDao.getOrderMembers(userId,
+                    new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE},
+                    OrderConstant.MEMBER_CARD_ONLINE);
+                for (OrderMemberVo orderMemberVo : temp) {
+                   if(!defaultCards.get(0).getCardId().equals(orderMemberVo.getCardId())) {
+                       defaultCards.add(orderMemberVo);
+                   }
+                }
+            }
 		if (CollectionUtils.isEmpty(defaultCards)) {
 			// 校验
 			return Lists.newArrayList();
@@ -1087,6 +1096,8 @@ public class UserCardService extends ShopBaseService {
 				// TODO 删除判断
 				continue;
 			}
+			
+			
 			card.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
 			card.setTotalGoodsNumber(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
 			card.setTotalDiscount(discountAmount);
@@ -1111,22 +1122,22 @@ public class UserCardService extends ShopBaseService {
 		if (CardConstant.MCARD_DIS_ALL.equals(card.getDiscountIsAll())) {
 			return true;
 		}
-		if (StringUtil.isNotBlank(card.getDiscountGoodsId())) {
-			// 商品id
-			return Arrays.asList(card.getDiscountGoodsId().split(",")).contains(bo.getGoodsId());
-		}
-		if (StringUtil.isNotBlank(card.getDiscountCatId())) {
-			// 平台分类id
-			return Arrays.asList(card.getDiscountCatId().split(",")).contains(bo.getCatId());
-		}
-		if (StringUtil.isNotBlank(card.getDiscountSortId())) {
-			// 商家分类id
-			return Arrays.asList(card.getDiscountSortId().split(",")).contains(bo.getSortId());
-		}
-		if (StringUtil.isNotBlank(card.getDiscountBrandId())) {
-			// 商品品牌id
-			return Arrays.asList(card.getDiscountBrandId().split(",")).contains(bo.getBrandId());
-		}
+		if (StringUtil.isNotBlank(card.getDiscountGoodsId()) && Arrays.asList(card.getDiscountGoodsId().split(",")).contains(bo.getGoodsId().toString())) {
+            // 商品id
+            return true;
+        }
+        if (StringUtil.isNotBlank(card.getDiscountCatId()) && Arrays.asList(card.getDiscountCatId().split(",")).contains(bo.getCatId().toString())) {
+            // 平台分类id
+            return true;
+        }
+        if (StringUtil.isNotBlank(card.getDiscountSortId()) && Arrays.asList(card.getDiscountSortId().split(",")).contains(bo.getSortId().toString())) {
+            // 商家分类id
+            return true;
+        }
+        if (StringUtil.isNotBlank(card.getDiscountBrandId()) && Arrays.asList(card.getDiscountBrandId().split(",")).contains(bo.getBrandId().toString())) {
+            // 商品品牌id
+            return true;
+        }
 		return false;
 	}
 
