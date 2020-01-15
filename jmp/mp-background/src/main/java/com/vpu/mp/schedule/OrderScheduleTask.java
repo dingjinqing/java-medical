@@ -41,6 +41,8 @@ public class OrderScheduleTask {
             //订单处理时间可能较长，加锁防止重入
             if( jedisManager.addLock(key,uuid,1000*90) ){
                 saas.getShopApp(r.getShopId()).shopTaskService.groupBuyTaskService.monitorOrder();
+                /** 处理拼团抽奖*/
+                saas.getShopApp(r.getShopId()).groupDraw.groupDrawUser.dealOpenGroupDraw();
                 jedisManager.releaseLock(key,uuid);
             }
         });

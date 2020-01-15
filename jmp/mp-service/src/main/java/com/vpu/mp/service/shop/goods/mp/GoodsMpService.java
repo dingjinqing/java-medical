@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
 
 /**
  * @author 李晓冰
@@ -290,26 +291,31 @@ public class GoodsMpService extends ShopBaseService {
         if (param.getShowSoldOut()){
             condition= condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
-        Condition  conditionor=null;
-        if (param.getGoodsIds()!=null&&param.getGoodsIds().size()>0){
-             conditionor=GOODS.GOODS_ID.in(param.getGoodsIds());
-        }
-        if (param.getCatIds()!=null&&param.getCatIds().size()>0){
-            if (conditionor==null){
-                conditionor=GOODS.CAT_ID.in(param.getCatIds());
-            }else {
-                conditionor=   conditionor.or(GOODS.CAT_ID.in(param.getCatIds()));
+        if (param.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION)){
+            Condition  conditionor=null;
+            if (param.getGoodsIds()!=null&&param.getGoodsIds().size()>0){
+                conditionor=GOODS.GOODS_ID.in(param.getGoodsIds());
+            }
+            if (param.getCatIds()!=null&&param.getCatIds().size()>0){
+                if (conditionor==null){
+                    conditionor=GOODS.CAT_ID.in(param.getCatIds());
+                }else {
+                    conditionor=   conditionor.or(GOODS.CAT_ID.in(param.getCatIds()));
+                }
+            }
+            if (param.getSortIds()!=null&&param.getSortIds().size()>0){
+                if (conditionor==null){
+                    conditionor=GOODS.SORT_ID.in(param.getSortIds());
+                }else {
+                    conditionor= conditionor.or(GOODS.SORT_ID.in(param.getSortIds()));
+                }
+            }
+            if (conditionor!=null){
+                condition = condition.and(conditionor);
             }
         }
-        if (param.getSortIds()!=null&&param.getSortIds().size()>0){
-            if (conditionor==null){
-                conditionor=GOODS.SORT_ID.in(param.getSortIds());
-            }else {
-                conditionor= conditionor.or(GOODS.SORT_ID.in(param.getSortIds()));
-            }
-        }
-        if (conditionor!=null){
-            condition = condition.and(conditionor);
+        if (param.getKeyWords()!=null&&!param.getKeyWords().isEmpty()){
+            condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
         }
         return condition;
     }

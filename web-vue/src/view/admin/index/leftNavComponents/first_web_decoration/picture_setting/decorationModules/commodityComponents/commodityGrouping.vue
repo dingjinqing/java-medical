@@ -388,10 +388,10 @@ export default {
           console.log(turnToString)
           this.$nextTick(() => {
             this.data = turnToString
+            this.handleToInit(this.data)
           })
 
           // 处理初始数据
-          this.handleToInit(this.data)
         }
       },
       immediate: true,
@@ -414,7 +414,7 @@ export default {
         let arr = [this.groupTextData[0]]
         console.log(this.groupTextData[0])
         sortGroupArr.forEach((item, index) => {
-          arr.push(item.customName)
+          arr.push(item.sort_name)
         })
         this.showNav = arr
       } else {
