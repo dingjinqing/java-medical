@@ -1,6 +1,7 @@
 <template>
+  <!-- 用户留存 -->
   <div class="visitRetain">
-    <!--    下拉框-->
+    <!-- 下拉框 -->
     <div class="top">
       <!--      选择活动-->
       <el-select
@@ -64,12 +65,41 @@
       </el-date-picker>
       <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
     </div>
-    <!--    折线图数据-->
+    <!-- 表格 -->
+    <table class="visitretain-table">
+      <thead class="visitretain-thead">
+        <tr>
+          <th>时间</th>
+          <th>新增用户数</th>
+          <th>1天后</th>
+          <th>2天后</th>
+          <th>3天后</th>
+          <th>4天后</th>
+          <th>5天后</th>
+          <th>6天后</th>
+        </tr>
+      </thead>
+      <tbody class="visitretain-tbody">
+        <tr
+          v-for="(item, index) in tableData"
+          :key="index"
+        >
+          <td style="text-align:left;">{{item.refDate}}</td>
+          <td>{{item.data[0]}}</td>
+          <td
+            v-for="(percent, percentIndex) in item.percents"
+            :key="percentIndex"
+            class="noborder"
+            :class="{green: percent !== '', 'deep-green': percent > 0}"
+          >{{percent}}%</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
-import {retainAnalysis} from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
+import { retainAnalysis } from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
 
 export default {
   components: {},
@@ -112,7 +142,7 @@ export default {
         month: '',
         day: ''
       },
-      table: []
+      tableData: []
     }
   },
   created () {
@@ -166,38 +196,99 @@ export default {
       this.endDate.year = content.endDate.substring(0, 4)
       this.endDate.month = content.endDate.substring(4, 6)
       this.endDate.day = content.endDate.substring(6, 8)
+
+      console.log('content', content)
+      this.tableData = content.data
+      let datas = content.data
+      datas.forEach((item, index) => {
+        let percents = []
+        let data = item.data
+        for (const key in data) {
+          if (data.hasOwnProperty(key) && key !== '0') {
+            let first = data[0]
+            const value = data[key]
+            let percent = ''
+            if (first === 0 || first === '0') {
+              percent = parseFloat(0).toFixed(2)
+            } else {
+              percent = parseFloat(value / first * 100).toFixed(2)
+            }
+            percents.push(percent)
+          }
+        }
+        item.percents = percents
+      })
     }
   }
 }
 
 </script>
 <style lang="scss" scoped>
-  .visitRetain {
-    padding: 10px;
-    background: #fff;
+.visitRetain {
+  padding: 10px;
+  background: #fff;
 
-    .top {
-      height: 50px;
-      line-height: 50px;
-      color: #333;
-      .actionSelect {
-        width: 140px;
-        margin: 0 10px 0 2px;
-      }
-      .timeSelect {
-        width: 140px;
-        margin: 0 10px 0 2px;
-      }
-      .gradeSelect {
-        width: 140px;
-        margin: 0 10px 0 2px;
-      }
+  .top {
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+    .actionSelect {
+      width: 140px;
+      margin: 0 10px 0 2px;
     }
-    .noData{
-      height: 300px;
-      text-align: center;
-      padding-top: 150px;
+    .timeSelect {
+      width: 140px;
+      margin: 0 10px 0 2px;
+    }
+    .gradeSelect {
+      width: 140px;
+      margin: 0 10px 0 2px;
     }
   }
-
+  .noData {
+    height: 300px;
+    text-align: center;
+    padding-top: 150px;
+  }
+}
+.visitretain-table {
+  width: 100%;
+  margin: 0 5px;
+  background-color: #fff;
+  color: #666;
+  border: 1px solid #e6e6e6;
+  .visitretain-thead {
+    background-color: #f2f2f2;
+    th {
+      position: relative;
+      padding: 9px 15px;
+      min-height: 20px;
+      line-height: 20px;
+      font-size: 14px;
+      border: 1px solid #e6e6e6;
+    }
+  }
+  .visitretain-tbody {
+    tr {
+      td {
+        position: relative;
+        padding: 9px 15px;
+        min-height: 20px;
+        line-height: 20px;
+        font-size: 14px;
+        border: 1px solid #e6e6e6;
+        text-align: center;
+      }
+      .noborder {
+        border: none;
+      }
+      .green {
+        background-color: #d1efd1;
+      }
+      .deep-green {
+        background-color: #76ce75 !important;
+      }
+    }
+  }
+}
 </style>
