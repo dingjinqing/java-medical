@@ -39,6 +39,12 @@ public class RegexUtil {
             Pattern.compile("(?<=index).*?(?=already exists;)",Pattern.CASE_INSENSITIVE);
 
     /**
+     * 根据数据库名称获取到当前数据库对应的shopId
+     */
+    private static final Pattern NUMBER =
+            Pattern.compile("(?=[0-9]).*?(?<=[0-9]$)",Pattern.CASE_INSENSITIVE);
+
+    /**
      * 根据create table的sql获取到创建的table的名称
      * @param sql create table的sql
      * @return table name
@@ -111,5 +117,20 @@ public class RegexUtil {
         sqlAttribute.setDbOperator(DBOperator.getDBOperator(sqlArray[0]));
 
         return sqlAttribute;
+    }
+
+    public static String getCompressionSQL(String old){
+        return old.replaceAll(" ","").replaceAll("`","").toLowerCase();
+    }
+
+
+    public static int getShopIdByTableName(String tableName){
+        int  result = 0;
+
+        Matcher m = NUMBER.matcher(tableName);
+        while (m.find()){
+            result = Integer.parseInt(m.group());
+        }
+        return result;
     }
 }

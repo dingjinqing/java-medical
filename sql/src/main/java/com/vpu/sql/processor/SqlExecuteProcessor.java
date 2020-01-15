@@ -13,8 +13,12 @@ public class SqlExecuteProcessor  implements ApplicationListener<ContextRefreshe
 
     final DataConfigSource dataConfigSource;
 
+
+
+
     public SqlExecuteProcessor(DataConfigSource dataConfigSource) {
         this.dataConfigSource = dataConfigSource;
+
     }
 
     @Override
@@ -22,6 +26,10 @@ public class SqlExecuteProcessor  implements ApplicationListener<ContextRefreshe
 
         dataConfigSource.execute();
     }
+
+
+
+
 
     @Override
     public int getOrder() {
