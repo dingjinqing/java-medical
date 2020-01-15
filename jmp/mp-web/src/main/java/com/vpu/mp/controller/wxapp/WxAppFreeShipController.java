@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * 满包邮
  * @author 孔德成
@@ -24,7 +26,7 @@ public class WxAppFreeShipController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/goods/list")
-    public JsonResult getFreeShippingGoods(@RequestBody FreeShippingGoodsListParam param){
+    public JsonResult getFreeShippingGoods(@RequestBody @Valid FreeShippingGoodsListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
         return success(shop().freeShipping.freeShipGoods.freeShipGoodsList(param));
@@ -35,7 +37,7 @@ public class WxAppFreeShipController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/cart/goods/list")
-    public JsonResult getCartGoodsList(@RequestBody FreeShippingGoodsListParam param){
+    public JsonResult getCartGoodsList(@RequestBody @Valid  FreeShippingGoodsListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         WxAppCartBo cartGoodsList = shop().freeShipping.freeShipGoods.getCartGoodsList(userId, param.getRuleId());
         return success(cartGoodsList);

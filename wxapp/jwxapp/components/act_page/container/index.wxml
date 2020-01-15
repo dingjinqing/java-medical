@@ -4,7 +4,7 @@
       <view>
       <icon size="13" type="search" role="img"></icon>
       </view>
-      <input placeholder="请输入搜索关键字"></input>
+      <input placeholder="请输入搜索关键字" bindconfirm="handleSearch"></input>
     </view>
   </view>
   <slot name="goods-content" />

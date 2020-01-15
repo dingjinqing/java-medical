@@ -2,6 +2,8 @@
   <div class="total-content">
     <div class="container">
       <allAnalysis class="distance" />
+      <distribution class="distance" />
+      <visitRetain class="distance" />
       <visitPage class="distance" />
     </div>
   </div>
@@ -9,9 +11,11 @@
 <script>
 import allAnalysis from './allAnalysis'
 import visitPage from './visitPage'
+import distribution from './distribution'
+import visitRetain from './visitRetain'
 
 export default {
-  components: {allAnalysis, visitPage},
+  components: {allAnalysis, visitPage, distribution, visitRetain},
   data () {
     return {}
   }

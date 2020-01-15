@@ -703,7 +703,7 @@ export default {
     },
     handleReturn (target = null) {
       let returnOperate = null
-      if (this.returnInfo.returnType !== 1 && this.returnInfo.refundStatus === 6 && target) {
+      if (this.returnInfo.refundStatus === 4 && target) {
         returnOperate = 2
       } else if (this.returnInfo.returnType === 1 && this.returnInfo.refundStatus === 1 && !target) {
         returnOperate = 3
