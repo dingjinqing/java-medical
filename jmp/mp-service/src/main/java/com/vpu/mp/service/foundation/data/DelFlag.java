@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * 删除标识枚举类
  * 
- * @author wangshuai1
+ * @author wangshuai2
  */
 @Getter
 public enum DelFlag {
@@ -34,5 +34,4 @@ public enum DelFlag {
 	 */
 	public static final Byte NORMAL_VALUE = 0;
 	public static final Byte DISABLE_VALUE = 1;
-
 }
