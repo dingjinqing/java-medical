@@ -5,7 +5,8 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    pageParams: null
+    pageParams: null,
+    searchText: null
   },
 
   /**
@@ -20,12 +21,31 @@ global.wxPage({
       ? this.data.pageParams.currentPage
       : 1;
     util.api('/api/wxapp/freeship/goods/list',res=>{
-      
+      if(res.error === 0){
+        this.setData({
+          pageParams: res.content.pageResult.page,
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList,
+          delMarket:res.content.delMarket,
+          showCart:{
+            ...res.content.showCart,
+            show_cart:1
+          }
+        });
+      }
     },{
-      ruleId:61,
+      searchText:this.data.searchText,
+      ruleId:62,
       currentPage: currentPage,
       pageRows: 20,
     })
+  },
+  getSearchText(data){
+    this.setData({
+      searchText:data.detail,
+      'pageParams.currentPage':1,
+      dataList:null
+    })
+    this.requestGoodsList()
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

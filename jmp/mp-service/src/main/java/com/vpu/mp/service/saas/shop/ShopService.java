@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import jodd.util.StringUtil;
 import org.jooq.DatePart;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -377,7 +378,9 @@ public class ShopService extends MainBaseService {
         this.transaction(() -> {
             db().executeUpdate(record);
             saas.getShopApp(shopId).config.shopCommonConfigService.setShowLogo(shop.getShowLogo());
-            saas.getShopApp(shopId).config.shopCommonConfigService.setLogoLink(shop.getLogoLink());
+            if(StringUtil.isNotEmpty(shop.getLogoLink())){
+                saas.getShopApp(shopId).config.shopCommonConfigService.setLogoLink(shop.getLogoLink());
+            }
         });
 	}
 	public List<ShopSelectInnerResp> getShopList(AdminTokenAuthInfo info,
