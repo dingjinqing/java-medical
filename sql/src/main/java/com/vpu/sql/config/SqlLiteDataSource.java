@@ -9,6 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 
+/**
+ * sqlite数据源配置类
+ * @author 卢光耀
+ * @date 2020-01-15 11:16
+ *
+*/
 @Configuration
 public class SqlLiteDataSource {
 
