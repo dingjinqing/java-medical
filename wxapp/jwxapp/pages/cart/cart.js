@@ -7,7 +7,11 @@ global.wxPage({
   data: {
     canBuyGoodsList: null,
     invalidGoodsList:null,
-    totalPrice:0
+    totalPrice:0,
+    proMode: true,
+    // 切换活动弹框要用到的数组
+    activityType: null, // 正在参与的活动类型
+    proPurchaseInfo: []
   },
 
   /**
@@ -73,17 +77,20 @@ global.wxPage({
   // 校验商品数量
   checkNumber(e) {
     var value = Number(e.detail.value)
-    var prdId = e.target.dataset.prd_id
+    var cartId = e.target.dataset.cart_id
     var limit_min = e.target.dataset.limit_min
     var limit_max = e.target.dataset.limit_max
     this.data.canBuyGoodsList.forEach((item, index) => {
-      if (item.prdId == prdId) {
-        if ((value >= limit_min) && (value <= limit_max)) {
-          item.cartNumber = value
-        } else {
-          item.cartNumber = limit_min
-        }
+      if (item.cartId == cartId) {
+        item.cartNumber = value
       }
+      // if (item.prdId == prdId) {
+      //   if ((value >= limit_min) && (value <= limit_max)) {
+      //     item.cartNumber = value
+      //   } else {
+      //     item.cartNumber = limit_min
+      //   }
+      // }
     })
     this.setData({
       canBuyGoodsList: this.data.canBuyGoodsList,
@@ -159,4 +166,61 @@ global.wxPage({
   onReachBottom: function () {
     this.selectComponent('#recommend').requestData()
   },
+
+  // 显示促销活动
+  proClcik: function (e) {
+    var that = this;
+    var cartId = e.currentTarget.dataset.cart_id;
+    var activityType = e.currentTarget.dataset.activity_type;
+    that.setData({
+      activityType: activityType
+    })
+    that.data.canBuyGoodsList.forEach((item, index) => {
+      if (item.cartId == cartId) {
+        that.setData({
+          proPurchaseInfo: item.cartActivityInfos
+        })
+      }
+    })
+    console.log(that.data.proPurchaseInfo)
+    // 显示促销弹窗
+    that.setData({
+      proMode: false,
+    })
+  },
+  // 隐藏促销弹窗
+  proCancel: function () {
+    this.setData({
+      proMode: true
+    })
+  },
+  proActionSheetChange: function () {
+    this.setData({
+      proMode: true
+    })
+  },
+
+  // 切换促销活动
+  choose_acts: function (e) {
+    var that = this;
+    var activityType = e.currentTarget.dataset.activity_type;
+    for (var i in pro_purchase_info) {
+      pro_purchase_info[i].is_che = 0;
+      pro_purchase_info[i].rec_id = this_rec_id;
+    }
+    pro_purchase_info[this_indexs].is_che = 1;
+    that.setData({
+      pro_purchase_info: pro_purchase_info,
+    })
+    // var cart_data = {};
+    // cart_data.action = this_actx;
+    // cart_data.identity_id = this_iden_id;
+    // cart_data.product_id = this_prd_id;
+    // cart_data.rec_id = this_rec_id;
+    // that.data.gd_actoins = this_actx;
+    // that.data.post_act = 'switch_goods_action';
+    // that.data.cart_datas = JSON.stringify(cart_data);
+    // cart_request(that);
+  },
+
 })
