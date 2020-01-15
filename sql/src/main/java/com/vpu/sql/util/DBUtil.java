@@ -136,4 +136,8 @@ public class DBUtil {
         List<String> sqlList = FileUtil.readSqlFile(path);
         sqlList.forEach(x-> executeSQL(con,x));
     }
+    public static void executeSQLFileByJar(Connection con, String path){
+        List<String> sqlList = FileUtil.readSqlFileByJar(path);
+        sqlList.forEach(x-> executeSQL(con,x));
+    }
 }

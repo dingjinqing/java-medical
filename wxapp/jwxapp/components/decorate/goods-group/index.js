@@ -14,18 +14,18 @@ global.wxComponent({
   methods: {
     onPropChange (newVal, oldVal, changedPath) {
       console.log(newVal, 'group+++++++++++++')
-      newVal.group_nav_index = 0;
-      newVal.navlen = newVal.group_names.length;
-      newVal.page_num = 1;
-      newVal.fixed = false;
-      newVal.scr_height = wx.getSystemInfoSync().windowHeight;
-      if (newVal.position_style == 1) {
-        newVal.show_style = 6;
-      } else if (newVal.shop_style != 4) {
-        newVal.show_style = parseInt(newVal.shop_style) - 1;
-      } else {
-        newVal.show_style = newVal.shop_style;
-      }
+      // newVal.group_nav_index = 0;
+      // newVal.navlen = newVal.group_names.length;
+      // newVal.page_num = 1;
+      // newVal.fixed = false;
+      // newVal.scr_height = wx.getSystemInfoSync().windowHeight;
+      // if (newVal.position_style == 1) {
+      //   newVal.show_style = 6;
+      // } else if (newVal.shop_style != 4) {
+      //   newVal.show_style = parseInt(newVal.shop_style) - 1;
+      // } else {
+      //   newVal.show_style = newVal.shop_style;
+      // }
     },
     // bindMenuClick(e) {
     //   var d = this.eventData(e);
@@ -52,28 +52,28 @@ global.wxComponent({
     //     });
     //   }
     // },
-    // onPageScroll(e) {
-    //   var _this = this; 
-    //   var m = this.data.m;
-    //   if(m.menu_style == 1){
-    //     this.getRect("#" + m.idx).then(function (rect) {
-    //       _this._nav_height = _this._nav_height || 0;
-    //       var top = _this.getFixeTop();
-    //       if (!m.fixed && (rect.top <= top && rect.bottom > top + _this._nav_height)) {
-    //         m.fixed = true;
-    //         m.fix_height = rect.height;
-    //         m.top = top;
-    //         _this.startFixed(_this.nav_height);
-    //         _this.$set();
-    //       } else {
-    //         if (m.fixed && (rect.top > top || rect.bottom <= top + _this._nav_height)) {
-    //           m.fixed = false;
-    //           _this.stopFixed();
-    //           _this.$set();
-    //         }
-    //       }
-    //     });
-    //   }
-    // }
+    onPageScroll (e) {
+      var _this = this;
+      var m = this.data.m;
+      if (m.menu_style == 1) {
+        this.getRect(`#${m.cur_idx}`).then(function (rect) {
+          _this._nav_height = _this._nav_height || 0;
+          var top = _this.getFixeTop();
+          if (!m.fixed && (rect.top <= top && rect.bottom > top + _this._nav_height)) {
+            m.fixed = true;
+            m.fix_height = rect.height;
+            m.top = top;
+            _this.startFixed(_this.nav_height);
+            _this.$set();
+          } else {
+            if (m.fixed && (rect.top > top || rect.bottom <= top + _this._nav_height)) {
+              m.fixed = false;
+              _this.stopFixed();
+              _this.$set();
+            }
+          }
+        });
+      }
+    }
   }
 });

@@ -511,15 +511,23 @@ global.wxPage({
     })
   },
   getPromotionInfo (promotionType, info) {
+    let data = {id: info.promotionId}
     switch (promotionType) {
-      case '18':
-        if (info.isLimit) {
-          return { desc: `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`, id: info.promotionId }
-        } else {
-          return { desc: `新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`, id: info.promotionId }
-        }
+      case '7':
+          if(Array.isArray(info.purchasePriceRules) && info.purchasePriceRules.length > 0){
+            data.desc = ''
+            info.purchasePriceRules.forEach((item,index)=>{
+              if(index > 0){
+                data.desc += '，或'
+              }
+              data.desc += `满${item.fullPrice}元另加${item.purchasePrice}元`
+              if(index === info.purchasePriceRules.length - 1){
+                data.desc += `即可换购商品`
+              }
+            })
+          }
+          return data
       case '15':
-        var data = {id: info.promotionId}
         if(info.conType === 0){
           data.desc = `满${info.money}元，`
         }
@@ -531,8 +539,25 @@ global.wxPage({
         }
         data.desc += `部分地区包邮`
         return data
+      case '18':
+        if (info.isLimit) {
+          data.desc = `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`
+        } else {
+          data.desc = `新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`
+        }
+        return data
+      case '19':
+        if(info.goodsAreaType === 1){
+          data.desc = `购买“指定商品”`
+        } else {
+          data.desc = `购买“全部商品”`
+        }
+        if(info.minPayMoney > 0){
+          data.desc += `且“订单金额满${info.minPayMoney}元”`
+        }
+        data.desc += `可获得活动奖励`
+        return data
       case '21':
-        var data = {id: info.promotionId}
         if(info.type === 1){
           if(info.amount > 0){
             data.desc = `每满${info.amount}件`
@@ -553,18 +578,6 @@ global.wxPage({
         } else (
           data.desc += `，打${info.discount}折`
         )
-        return data
-      case '19':
-        var data = {id: info.promotionId}
-        if(info.goodsAreaType === 1){
-          data.desc = `购买“指定商品”`
-        } else {
-          data.desc = `购买“全部商品”`
-        }
-        if(info.minPayMoney > 0){
-          data.desc += `且“订单金额满${info.minPayMoney}元”`
-        }
-        data.desc += `可获得活动奖励`
         return data
     }
   },

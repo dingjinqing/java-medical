@@ -6,7 +6,7 @@ create table if not exists main_sql (
     `add_time` timestamp NOT NULL default current_timestamp ,
     PRIMARY KEY (`id`)
 );
-CREATE INDEX if not exists `ms_id_md5` ON `shop_sql` (`shop_id`,`sql_md5`);
+CREATE INDEX if not exists `ms_id_md5` ON `main_sql` (`shop_id`,`sql_md5`);
 
 create table if not exists shop_sql (
     `id` bigint(18) NOT NULL,
