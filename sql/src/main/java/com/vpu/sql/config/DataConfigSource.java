@@ -12,12 +12,14 @@ import com.vpu.sql.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ResourceUtils;
 
 import javax.sql.DataSource;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -148,7 +150,6 @@ public class DataConfigSource {
      */
     private boolean checkRepeatSQL(String md5SqlStr,int shopId,String tableName){
         try ( Connection con = sqlLiteDataSource.getConnection()){
-
             PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(String.format(SqlTemplate.GET_EXECUTED_SQL,tableName));
             ps.setString(1, md5SqlStr);
             ps.setInt(2,shopId);
@@ -187,9 +188,10 @@ public class DataConfigSource {
     private void initSourceTable(){
         try( Connection con = sqlLiteDataSource.getConnection()) {
             if( con != null ){
-                DBUtil.executeSQLFile(con, ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX+"db/init.sql").getPath());
+
+                DBUtil.executeSQLFileByJar(con, "db/init.sql");
             }
-        } catch (FileNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
