@@ -292,7 +292,7 @@ public class Calculate extends ShopBaseService {
                     defaultCard = userCard.userCardDao.getOrderGradeCard(param.getWxUserInfo().getUserId());
                 }
                 List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), defaultCard == null ? null : Lists.newArrayList(defaultCard));
-                defaultCard = defaultCard != null ? defaultCard : (CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0));
+                defaultCard = CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0);
                 vo.setDefaultMemberCard(defaultCard);
                 vo.setMemberCards(validCardList);
             }
