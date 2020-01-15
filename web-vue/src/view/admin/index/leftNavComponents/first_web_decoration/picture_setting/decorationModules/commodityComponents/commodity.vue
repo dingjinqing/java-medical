@@ -261,6 +261,7 @@
   </div>
 </template>
 <script>
+import { queryDataList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
   mixins: [decMixins],
@@ -311,7 +312,8 @@ export default {
       // 显示数据
       data: {
         goodsListData: []
-      }
+      },
+      initLoad: true //  是否首次加载
 
     }
   },
@@ -358,6 +360,43 @@ export default {
               this.handleToActivity(turnToString)
             } else {
               this.goodsFlag = false
+            }
+          })
+          if (!this.initLoad) return
+          let obj = {}
+          let goodsId = []
+          this.data.goodsListData.forEach(item => {
+            goodsId.push(item.goodsId)
+          })
+
+          if (this.data.recommend_type === '1') {
+            obj['goods_num'] = this.data.goods_num
+            obj['recommend_type'] = '1'
+            obj['goods_items'] = goodsId
+          } else {
+            obj = {
+              'recommend_type': this.data.recommend_type, // 商品显示方式 0自动推荐 1手动推荐
+              'goods_num': this.data.goods_num, // 商品数量
+              'min_price': this.data.min_price, // 商品最低价格
+              'max_price': this.data.max_price, // 商品最高价格
+              'keywords': this.data.keywords, // 关键词
+              'goods_area': this.data.goods_area, // 商品范围
+              'goods_area_data': this.data.goods_area_data, // 商品范围选定后弹窗选定的数据
+              'goods_type': Number(this.data.goods_type), // 活动类型
+              'sort_type': Number(this.data.sort_type), // 排序规则
+              'goods_items': goodsId // 商品列表数据
+            }
+          }
+          queryDataList(obj).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              if (this.data.recommend_type === '1') {
+                this.data.goodsListData = res.content
+                this.data.goods_items = res.content
+              } else {
+                this.data.goodsListData = res.content
+              }
+              this.initLoad = false
             }
           })
         }
