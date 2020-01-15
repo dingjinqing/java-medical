@@ -349,6 +349,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
       return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_GT_5M).build();
     }
     if (!validImageType(fileType)) {
+        logger().info("图片类型为："+fileType);
       return ResultMessage.builder()
           .jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID)
           .build();
@@ -357,10 +358,12 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     try {
       bufferImage = ImageIO.read(fileStream);
     } catch (Exception e) {
+        logger().info("文件读取失败");
       return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
     }
     int type = bufferImage.getType();
     if (bufferImage == null || bufferImage.getWidth(null) <= 0 || bufferImage.getHeight(null) <= 0) {
+        logger().info("文件读取为空，"+"宽："+bufferImage.getWidth(null)+"，高："+bufferImage.getHeight(null));
       return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
     }
     if (param.needImgWidth != null || param.needImgHeight != null) {
