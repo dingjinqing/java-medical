@@ -42,8 +42,8 @@
     <view class="goods-info">
       <view class="goods-info_top">
         <view class="goods_name" data-typs="give_gift" bindtap="getNeedTemplateId">
-        <view class="goods-tag" wx:if="{{goodsInfo.activity.activityType === 1}}" style="border-color:{{comColor}};color:{{comColor}};background:{{somColor}};">{{goodsInfo.activity.limitAmount}}人团</view>
         <view class="name">
+          <view class="goods-tag" wx:if="{{goodsInfo.activity.activityType === 1}}" style="border-color:{{comColor}};color:{{comColor}};background:{{somColor}};">{{goodsInfo.activity.limitAmount}}人团</view>
           {{goodsInfo.goodsName}}
         </view>
         </view>
