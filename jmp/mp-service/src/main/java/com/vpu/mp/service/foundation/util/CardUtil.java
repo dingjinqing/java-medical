@@ -9,7 +9,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
 /**
 * @author 黄壮壮
 * @Date: 2019年11月28日
@@ -85,15 +87,26 @@ public class CardUtil {
 	}
 	
 	/**
-	 * 卡是否永久有效
-	 * @return true: 需要 ; false: 不需要
+	 * 	卡是否永久有效
+	 * @return true: 是，false: 不是
 	 */
 	public static boolean isCardTimeForever(Byte expireType) {
 		return CardConstant.MCARD_ET_FOREVER.equals(expireType);
 	}
 	
 	/**
-	 * 卡固定日期有效
+	 * 卡是否为自领取之日起
+	 * @param expireType
+	 * @return true: 是，false: 不是
+	 */
+	public static boolean isCardTimeStartFrom(Byte expireType) {
+		return CardConstant.MCARD_ET_DURING.equals(expireType);
+	}
+	
+	
+	/**
+	 * 	卡固定日期有效
+	 * @return true: 是，false: 不是
 	 */
 	public static boolean isCardFixTime(Byte expireType) {
 		return CardConstant.MCARD_ET_FIX.equals(expireType);
@@ -219,4 +232,54 @@ public class CardUtil {
 	public static String getDefaultBgColor() {
 		return "#e6cb96";
 	}
+	
+	
+	/**
+	 * 获取卡的过期状态
+	 * @param expireType 时间类型  0:固定日期 1：自领取之日起 2:不过期
+	 * @param endTime 终止时间
+	 * @return Integer 卡状态  -1 已过期，1未过期
+	 */
+	public static Integer getExpireStatus(Byte expireType,Timestamp endTime) {
+		Integer status = 1;
+		if(!isCardTimeForever(expireType) && isCardExpired(endTime)) {
+			status = -1;
+		}
+		return status;
+	}
+	
+	
+	/**
+	 * 用户卡的有效时间
+	 * @param card 卡信息
+	 * @return 卡的有效期对象
+	 */
+	public static EffectTimeBean getUserCardEffectTime(UserCardParam card) {
+		EffectTimeBean bean = new EffectTimeBean();
+		if(isCardFixTime(card.getExpireType()) && 
+				card.getExpireTime() != null) {
+			// 固定时间 取会员卡的时间
+			if(card.getStartTime() != null) {
+				bean.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
+				bean.setStartTime(card.getStartTime());
+			}
+			if(card.getEndTime() != null) {
+				bean.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
+				bean.setEndTime(card.getEndTime());
+			}
+		}else if(isCardTimeStartFrom(card.getExpireType())) {
+			// 自领取之日起 取用户领卡的时间
+			if(card.getUserCardCreateTime() != null) {
+				bean.setStartDate(card.getUserCardCreateTime().toLocalDateTime().toLocalDate());
+				bean.setStartTime(card.getUserCardCreateTime());
+			}
+			
+			if(card.getExpireTime() != null) {
+				bean.setEndDate(card.getExpireTime().toLocalDateTime().toLocalDate());
+				bean.setEndTime(card.getExpireTime());
+			}
+		}
+		return bean;
+	}
+
 }

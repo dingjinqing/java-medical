@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,7 +78,9 @@ import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserScoreVoBuilder;
+import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
@@ -820,48 +824,24 @@ public class UserCardService extends ShopBaseService {
 			throw new UserCardNullException();
 		}
 		
-		// 背景图片
-		if(CardUtil.isBgImgType(card.getBgType())) {
-			if(!StringUtils.isBlank(card.getBgImg())) {
-				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(card.getBgImg());
-				card.setBgImg(imageUrl);
-			}
-		}else {
-			// 背景色
-			if(StringUtils.isBlank(card.getBgColor())) {
-				// 默认背景色
-				card.setBgColor(CardUtil.getDefaultBgColor());
-			}
-		}
-		
-		if(card.getExpireTime()!=null) {
-			card.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
-			card.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
-			card.setExpireType(NumberUtils.BYTE_ZERO);
-		}else {
-			card.setExpireType(CardConstant.MCARD_ET_FOREVER);
-		}
-		if (!CardUtil.isCardTimeForever(card.getExpireType())) {
-			if (CardUtil.isCardFixTime(card.getExpireType()) && CardUtil.isCardExpired(card.getEndTime())) {
-				logger().info("卡过期");
-				card.setStatus(-1);
-			} else {
-				card.setStatus(1);
-			}
 
-			if (CardUtil.isCardFixTime(card.getExpireType())) {
-				card.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
-				card.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
-			}
-		} else {
-			card.setStatus(1);
-		}
+		// 卡背景
+		CardBgBean cardBg = memberCardService.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+		BeanUtils.copyProperties(cardBg, card);
 		
+		// 用户卡的有效时间
+		EffectTimeBean etBean = CardUtil.getUserCardEffectTime(card);
+		BeanUtils.copyProperties(etBean, card);
+		
+		// 设置卡是否过期状态
+		card.setStatus(CardUtil.getExpireStatus(card.getExpireType(), card.getEndTime()));
 		
 		dealWithUserCardDetailInfo(card);
+		
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
+		
 		logger().info("卡的校验状态");
 		CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(param.getCardNo());
 		if(cardExamine != null) {
@@ -934,9 +914,25 @@ public class UserCardService extends ShopBaseService {
 
 	public void dealWithUserCardAvailableStore(WxAppUserCardVo card) {
 		logger().info("正在处理会员卡门店列表信息");
+		card.setStoreInfoList(Collections.emptyList());
+		card.setStoreIdList(Collections.emptyList());
+		
+		
 		if (card.isStoreAvailable()) {
-			List<StoreBasicVo> storeBasicVo = storeService.getStoreListByStoreIds(card.retrieveStoreList());
-			card.setStoreInfoList(storeBasicVo);
+			List<Integer> storeIdList = card.retrieveStoreList();
+			if(storeIdList != null && storeIdList.size()>0 && storeIdList.get(0) != 0) {
+				// 部分门店
+				card.setStoreIdList(card.retrieveStoreList());
+				List<StoreBasicVo> storeBasicVo = storeService.getStoreListByStoreIds(card.retrieveStoreList());
+				card.setStoreInfoList(storeBasicVo);
+				card.setStoreUseSwitch(CardConstant.MCARD_STP_PART);
+			}else {
+				// 全部门店
+				card.setStoreUseSwitch(CardConstant.MCARD_STP_ALL);
+			}
+		}else {
+			// 不可在门店使用
+			card.setStoreUseSwitch(CardConstant.MCARD_STP_BAN);
 		}
 	}
 

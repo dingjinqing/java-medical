@@ -87,7 +87,6 @@ import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -124,6 +123,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
@@ -156,6 +156,7 @@ import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -199,6 +200,8 @@ public class MemberCardService extends ShopBaseService {
 	private GradeCardService gradeCardService;
     @Autowired
     protected DomainConfig domainConfig;
+    @Autowired
+    protected ImageService imageService;
 
 	/**
 	 * 添加会员卡
@@ -2203,5 +2206,37 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	public List<String> getAllNoDeleteCardGrade(){
 		return gradeCardService.getAllNoDeleteCardGrade();
 	}
+	
+	
+	
+	/**
+	 * 获取处理背景色与背景图片
+	 * @param type 卡背景类型 
+	 * @param bgColor 背景颜色
+	 * @param bgImg 背景图片
+	 * @return CardBgBean背景信息
+	 */
+	public  CardBgBean getBackground(Byte type,String bgColor,String bgImg) {
+		CardBgBean bean = new CardBgBean();
+		if(CardUtil.isBgImgType(type)) {
+			// 背景图片
+			if(!StringUtils.isBlank(bgImg)) {
+				String imageUrl = imageService.imageUrl(bgImg);
+				bean.setBgImg(imageUrl);
+			}
+		}
+		// 背景色
+		if(StringUtils.isBlank(bgColor)) {
+			// 默认背景色
+			bgColor = CardUtil.getDefaultBgColor();
+		}
+		bean.setBgColor(bgColor);
+		return bean;
+	}
+	
+	
+	
+	
+	
 	
 }
