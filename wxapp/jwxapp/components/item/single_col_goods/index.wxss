@@ -37,10 +37,12 @@
 .goods-info-bottom > .goods-price{
   flex: 1;
 }
-.goods-price > .gray-text{
-  margin-left: 20rpx;
+.gray-text{
   font-size: 24rpx;
   color: #999;
+}
+.goods-price > .gray-text{
+  margin-left: 20rpx;
 }
 .goods-price > .gray-text.line-through{
   text-decoration:line-through;

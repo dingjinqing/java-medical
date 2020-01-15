@@ -7,4 +7,11 @@
       </block>
     </block>
   </view>
+  <view class="footer" slot="footer">
+    <view class="selected-price">已选<text style="color:{{comColor}};">￥{{cartData.totalPrice}}</text></view>
+    <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">查看已选商品</view>
+    <view class="cart" style="background-color:{{comColor}}">去购物车</view>
+  </view>
 </v-container>
+
+<v-selected show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}"/>

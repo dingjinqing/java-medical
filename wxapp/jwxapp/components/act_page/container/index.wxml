@@ -8,12 +8,5 @@
     </view>
   </view>
   <slot name="goods-content" />
-  <view class="footer">
-    <view class="selected-price">已选<text style="color:{{main_setting.comColor}};">￥0.00</text></view>
-    <view class="selected" style="background-color:{{main_setting.commonColor}}" bindtap="showSelected">查看已选商品</view>
-    <view class="cart" style="background-color:{{main_setting.comColor}}">去购物车</view>
-  </view>
+  <slot name="footer" />
 </view>
-
-
-<v-selected show="{{showSelectedDialog}}" />
