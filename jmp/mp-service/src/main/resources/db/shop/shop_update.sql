@@ -4,7 +4,7 @@ ALTER TABLE `b2c_customer_avail_coupons` MODIFY `limit_order_amount` decimal(10,
 
 
 -- 更正错误备注
-ALTER TABLE `b2c_member_card` MODIFY COLUMN `store_use_switch` tinyint(1) NOT NULL DEFAULT 0 COMMENT '可否在门店使用  0不可以 1可以' AFTER `is_exchang`;
+ALTER TABLE `b2c_member_card` MODIFY COLUMN `store_use_switch` tinyint(1) NOT NULL DEFAULT 0 COMMENT '可否在门店使用  0不可以 1可以';
 /***********************2.7*********************END*/
 
 
