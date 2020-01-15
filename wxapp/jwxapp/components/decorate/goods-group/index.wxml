@@ -1,4 +1,4 @@
-<view class="goods-group-container" id="{{m.idx}}" style="min-height:{{m.fix_height}}px">
+<view class="goods-group-container" id="{{m.cur_idx}}" style="min-height:{{m.fix_height}}px">
 	<!-- 顶部分组 -->
 	<block wx:if="{{m.position_style == '0' }}">
 		<view class='content_scroll_view'>
