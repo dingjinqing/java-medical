@@ -114,24 +114,27 @@ public class DataConfigSource {
                     for( String sql :sqlSource ){
                         String md5SQL = Md5Util.md5(RegexUtil.getCompressionSQL(sql));
                         if( checkRepeatSQL(md5SQL,0,"main_sql_temp") ){
-                            continue;
+                            insertIntoDB(sql,0,md5SQL,"main_sql");
+                        }else{
+                            DBUtil.executeSQL(con,sql);
+                            insertIntoDB(sql,0,md5SQL,"main_sql");
                         }
-                        DBUtil.executeSQL(con,sql);
-                        insertIntoDB(sql,0,md5SQL,"main_sql");
+
+
                     }
                 }else{
                     for( String db: source.getDataBases() ){
                         log.info("shop执行:{}",db);
                         int shopId = RegexUtil.getShopIdByTableName(db);
                         DBUtil.executeSQL(con,initSQL+db);
-
                         for( String sql : sqlSource ){
                             String md5SQL = Md5Util.md5(RegexUtil.getCompressionSQL(sql));
                             if( checkRepeatSQL(md5SQL,shopId,"shop_sql_temp") ){
-                                continue;
+                                insertIntoDB(sql,shopId,md5SQL,"shop_sql");
+                            }else{
+                                DBUtil.executeSQL(con,sql);
+                                insertIntoDB(sql,shopId,md5SQL,"shop_sql");
                             }
-                            DBUtil.executeSQL(con,sql);
-                            insertIntoDB(sql,shopId,md5SQL,"shop_sql");
                         }
 
                     }
