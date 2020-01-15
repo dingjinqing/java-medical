@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.award;
 
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRule;
@@ -10,9 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -33,9 +32,10 @@ public class CouponAward implements Award {
     @Override
     public void sendAward(AwardParam param) {
         ShareRule rule = param.getRule();
-        List<CouponView> couponViews = couponService.getCouponViewByIds(new ArrayList<Integer>() {{
+        // 发放的优惠券详情
+/*        List<CouponView> couponViews = couponService.getCouponViewByIds(new ArrayList<Integer>() {{
             add(rule.getCoupon());
-        }});
+        }});*/
         CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
         couponGive.setUserIds(Collections.singletonList(param.getUserId()));
         couponGive.setCouponArray(new String[]{String.valueOf(rule.getCoupon())});
@@ -47,6 +47,7 @@ public class CouponAward implements Award {
         // 一张都没发成功
         if (sendData.getSuccessSize().compareTo(INTEGER_ZERO) <= INTEGER_ZERO) {
             log.debug("优惠券发送全部失败");
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
     }
 }

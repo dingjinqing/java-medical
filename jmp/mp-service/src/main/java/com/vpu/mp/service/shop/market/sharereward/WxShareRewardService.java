@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.ShareAward;
 import com.vpu.mp.db.shop.tables.ShareAwardReceive;
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
 import com.vpu.mp.db.shop.tables.records.AttendShareUserRecord;
+import com.vpu.mp.db.shop.tables.records.ShareAwardReceiveRecord;
 import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ShareRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -44,16 +45,30 @@ import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
+ * The type Wx share reward service.
+ *
  * @author liufei
- * @date 1/9/20
+ * @date 1 /9/20
  */
 @Slf4j
 @Service
 public class WxShareRewardService extends ShopBaseService {
-    public static ShareAward AWARD = ShareAward.SHARE_AWARD.as("AWARD");
-    public static ShareAwardRecord AWARD_RECORD = ShareAwardRecord.SHARE_AWARD_RECORD.as("AWARD_RECORD");
-    public static ShareAwardReceive AWARD_RECEIVE = ShareAwardReceive.SHARE_AWARD_RECEIVE.as("AWARD_RECEIVE");
-    public static AttendShareUser ATTEND = AttendShareUser.ATTEND_SHARE_USER.as("ATTEND");
+    /**
+     * The constant AWARD.
+     */
+    private static ShareAward AWARD = ShareAward.SHARE_AWARD.as("AWARD");
+    /**
+     * The constant AWARD_RECORD.
+     */
+    private static ShareAwardRecord AWARD_RECORD = ShareAwardRecord.SHARE_AWARD_RECORD.as("AWARD_RECORD");
+    /**
+     * The constant AWARD_RECEIVE.
+     */
+    private static ShareAwardReceive AWARD_RECEIVE = ShareAwardReceive.SHARE_AWARD_RECEIVE.as("AWARD_RECEIVE");
+    /**
+     * The constant ATTEND.
+     */
+    private static AttendShareUser ATTEND = AttendShareUser.ATTEND_SHARE_USER.as("ATTEND");
 
     @Autowired
     private ShareRewardService shareReward;
@@ -67,7 +82,7 @@ public class WxShareRewardService extends ShopBaseService {
      */
     public void shareAward(ShareParam param) {
         // 添加分享记录
-        ShareRecordRecord recordRecord = shareRecord(param);
+        shareRecord(param);
         int activityId = param.getActivityId();
         int userId = param.getUserId();
         int goodId = param.getGoodsId();
@@ -80,6 +95,7 @@ public class WxShareRewardService extends ShopBaseService {
             record.setShareId(activityId);
             record.setUserId(userId);
             record.setGoodsId(goodId);
+            record.setStatus(BYTE_ONE);
             record.insert();
         }
     }
@@ -113,7 +129,7 @@ public class WxShareRewardService extends ShopBaseService {
      *
      * @param condition the condition
      */
-    public void autoincrementCount(Condition condition) {
+    private void autoincrementCount(Condition condition) {
         db().update(SHARE_RECORD).set(SHARE_RECORD.COUNT, SHARE_RECORD.COUNT.add(INTEGER_ONE)).where(condition).execute();
     }
 
@@ -123,7 +139,7 @@ public class WxShareRewardService extends ShopBaseService {
      * @param condition the condition
      * @return the record record
      */
-    public ShareRecordRecord getRecordRecord(Condition condition) {
+    private ShareRecordRecord getRecordRecord(Condition condition) {
         return db().selectFrom(SHARE_RECORD).where(condition).fetchOne();
     }
 
@@ -134,7 +150,7 @@ public class WxShareRewardService extends ShopBaseService {
      * @param condition the condition
      * @return the boolean
      */
-    public boolean recordIsExist(Condition condition) {
+    private boolean recordIsExist(Condition condition) {
         return db().fetchExists(SHARE_RECORD, condition);
     }
 
@@ -190,27 +206,22 @@ public class WxShareRewardService extends ShopBaseService {
         // 获取活动信息详情
         ShareRewardInfoVo info = shareReward.getShareInfo(activityId);
         List<ShareRule> rules = info.getShareRules();
-        rules.forEach(rule -> {
-            rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel())));
-        });
+        rules.forEach(rule -> rule.setUserInfoList(getBatchUserList(getAttendUserList(userId, goodsId, activityId, rule.getRuleLevel()))));
         // 获取每日用户可分享次数上限参数
         int limitNum = shareReward.getDailyShareAwardValue();
-
         return GoodsShareDetail.builder().dailyShareLimit(limitNum).infoVo(info).build();
     }
 
-    public List<Integer> getAttendUserList(Integer userId, Integer goodsId, Integer activityId, Byte level) {
+    private List<Integer> getAttendUserList(Integer userId, Integer goodsId, Integer activityId, Byte level) {
         return db().select(ATTEND.USER_ID).from(ATTEND)
             .where(ATTEND.SHARE_ID.eq(activityId).and(ATTEND.LAUNCH_USER_ID.eq(userId))
                 .and(ATTEND.GOODS_ID.eq(goodsId))).and(ATTEND.LEVEL.eq(level))
             .fetchInto(Integer.class);
     }
 
-    public List<UserInfo> getBatchUserList(List<Integer> userIds) {
+    private List<UserInfo> getBatchUserList(List<Integer> userIds) {
         return new ArrayList<UserInfo>(8) {{
-            userIds.forEach(id -> {
-                add(userService.getUserInfo(id));
-            });
+            userIds.forEach(id -> add(userService.getUserInfo(id)));
         }};
     }
 
@@ -235,7 +246,7 @@ public class WxShareRewardService extends ShopBaseService {
             return;
         }
         // 查询分享活动的发起用户的分享记录
-        ShareAwardRecordRecord awardRecord = shareReward.getShareAwardRecord(activityId, userId, goodsId);
+        ShareAwardRecordRecord awardRecord = shareReward.getShareAwardRecord(activityId, launchUserId, goodsId);
         // 参与用户添加参与分享活动记录
         AttendShareUserRecord attendRecord = db().newRecord(ATTEND);
         attendRecord.setRecordId(awardRecord.getId());
@@ -256,13 +267,14 @@ public class WxShareRewardService extends ShopBaseService {
         updateProcess(activityId, count, ExtBo.builder().userId(launchUserId).changeWay(55).goodsId(goodsId).build());
     }
 
-    public void updateProcess(Integer activityId, int count, ExtBo ext) {
+    private void updateProcess(Integer activityId, int count, ExtBo ext) {
         int userId = ext.getUserId();
         int goodsId = ext.getGoodsId();
         // 获取活动信息详情
         ShareRewardInfoVo info = shareReward.getShareInfo(activityId);
         List<ShareRule> list = info.getShareRules();
         // 遍历活动规则
+        log.info("用户已分享次数：{}", count);
         list.forEach(rule -> {
             if (Objects.nonNull(rule)) {
                 // 满足规则条件
@@ -273,18 +285,22 @@ public class WxShareRewardService extends ShopBaseService {
                     if (rule.getStock() > 0) {
                         try {
                             this.transaction(() -> {
+                                byte level = rule.getRuleLevel();
+                                log.info("{} 级分享有礼活动规则完成，开始发放奖品", level);
                                 // 更新对应等级的奖品为已领取状态
-                                updateAwardRecord(userId, activityId, goodsId, getField(rule.getRuleLevel()), BYTE_TWO);
+                                updateAwardRecord(userId, activityId, goodsId, getField(level), BYTE_TWO);
                                 // 奖品库存扣减(库存扣减控制不能为负数)
-                                Field<Integer> field = getAwardField(rule.getRuleLevel());
+                                Field<Integer> field = getAwardField(level);
                                 updateAward(activityId, field, field.sub(INTEGER_ONE), field.sub(INTEGER_ONE).greaterOrEqual(INTEGER_ZERO));
                                 // 发送分享有礼奖品
                                 sendAward(rule.getRewardType(), AwardParam.builder()
                                     .activityId(info.getId()).rule(rule).changeWay(ext.getChangeWay()).orderSn(ext.getOrderSn()).userId(ext.getUserId()).build());
                                 // 添加领奖记录
-                                addShareReceive(userId, activityId, goodsId, rule.getRuleLevel());
+                                addShareReceive(userId, activityId, goodsId, level);
+                                log.info("{} 级分享有礼活动规则下的奖品发放完成！", level);
                             });
                             // todo 发送消息模板通知用户奖品已发放
+                            log.info("发送消息模板通知用户奖品已发放");
                         } catch (Exception e) {
                             log.info("分享有礼发送奖品异常，更新对应等级的奖品为未领取状态！当前活动规则信息：{}！报错信息：{}", Util.toJson(rule), ExceptionUtils.getStackTrace(e));
                             // 发送奖品异常，更新对应等级的奖品为未领取状态
@@ -301,11 +317,23 @@ public class WxShareRewardService extends ShopBaseService {
 
     }
 
-    public void sendShareAward(AwardParam param, Award award) {
+    /**
+     * Send share award.
+     *
+     * @param param the param
+     * @param award the award
+     */
+    private void sendShareAward(AwardParam param, Award award) {
         SendAwardImpl.builder().setAwardParam(param).build().send(award);
     }
 
-    public void sendAward(Byte awardType, AwardParam param) {
+    /**
+     * Send award.
+     *
+     * @param awardType the award type
+     * @param param     the param
+     */
+    private void sendAward(Byte awardType, AwardParam param) {
         Award award = AwardFactory.getAward(awardType);
         sendShareAward(param, award);
     }
@@ -318,11 +346,13 @@ public class WxShareRewardService extends ShopBaseService {
      * @param goodsId the goods id
      * @param level   the level
      */
-    public void addShareReceive(int userId, int shareId, int goodsId, byte level) {
-        db().insertInto(AWARD_RECEIVE)
-            .columns(AWARD_RECEIVE.USER_ID, AWARD_RECEIVE.GOODS_ID, AWARD_RECEIVE.SHARE_ID, AWARD_RECEIVE.AWARD_LEVEL)
-            .values(userId, goodsId, shareId, level)
-            .execute();
+    private void addShareReceive(int userId, int shareId, int goodsId, byte level) {
+        ShareAwardReceiveRecord record = db().newRecord(AWARD_RECEIVE);
+        record.setUserId(userId);
+        record.setShareId(shareId);
+        record.setGoodsId(goodsId);
+        record.setAwardLevel(level);
+        record.insert();
     }
 
     /**
@@ -332,8 +362,9 @@ public class WxShareRewardService extends ShopBaseService {
      * @param userId       the user id
      * @param goodId       the good id
      * @param activityId   the activity id
+     * @return the boolean
      */
-    public boolean isAttend(Integer launchUserId, Integer userId, Integer goodId, Integer activityId) {
+    private boolean isAttend(Integer launchUserId, Integer userId, Integer goodId, Integer activityId) {
         return db().fetchExists(ATTEND, ATTEND.SHARE_ID.eq(activityId).and(ATTEND.USER_ID.eq(userId)).and(ATTEND.LAUNCH_USER_ID.eq(launchUserId)).and(ATTEND.GOODS_ID.eq(goodId)));
     }
 
@@ -342,7 +373,7 @@ public class WxShareRewardService extends ShopBaseService {
      *
      * @param record the record
      */
-    public void addAttend(AttendShareUserRecord record) {
+    private void addAttend(AttendShareUserRecord record) {
         db().executeInsert(record);
     }
 
@@ -356,9 +387,9 @@ public class WxShareRewardService extends ShopBaseService {
      * @param field      the field
      * @param value      the value
      */
-    public <T> void updateAwardRecord(int userId, int activityId, int goodsId, Field<T> field, Field<T> value) {
+    private <T> void updateAwardRecord(int userId, int activityId, int goodsId, Field<T> field, Field<T> value) {
         db().update(AWARD_RECORD).set(field, value)
-            .where(AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.ID.eq(activityId)).and(AWARD_RECORD.GOODS_ID.eq(goodsId)))
+            .where(AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.SHARE_ID.eq(activityId)).and(AWARD_RECORD.GOODS_ID.eq(goodsId)))
             .execute();
     }
 
@@ -372,9 +403,9 @@ public class WxShareRewardService extends ShopBaseService {
      * @param field      the field
      * @param value      the value
      */
-    public <T> void updateAwardRecord(int userId, int activityId, int goodsId, Field<T> field, T value) {
+    private <T> void updateAwardRecord(int userId, int activityId, int goodsId, Field<T> field, T value) {
         db().update(AWARD_RECORD).set(field, value)
-            .where(AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.ID.eq(activityId)).and(AWARD_RECORD.GOODS_ID.eq(goodsId)))
+            .where(AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.SHARE_ID.eq(activityId)).and(AWARD_RECORD.GOODS_ID.eq(goodsId)))
             .execute();
     }
 
@@ -385,8 +416,9 @@ public class WxShareRewardService extends ShopBaseService {
      * @param activityId the activity id
      * @param field      the field
      * @param value      the value
+     * @param condition  the condition
      */
-    public <T> void updateAward(int activityId, Field<T> field, Field<T> value, Condition condition) {
+    private <T> void updateAward(int activityId, Field<T> field, Field<T> value, Condition condition) {
         int result = db().update(AWARD).set(field, value).where(AWARD.ID.eq(activityId)).and(condition).execute();
         Assert.isTrue(result > 0, JsonResultCode.CODE_FAIL);
     }

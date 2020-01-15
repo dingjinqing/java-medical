@@ -7,7 +7,7 @@ import com.vpu.mp.db.shop.tables.ShareAwardReceive;
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
 import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.Assert;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -40,8 +40,10 @@ import static org.apache.commons.lang3.math.NumberUtils.*;
 import static org.jooq.impl.DSL.sum;
 
 /**
+ * The type Share reward service.
+ *
  * @author liufei
- * @date 2019/8/19
+ * @date 2019 /8/19
  */
 @Slf4j
 @Service
@@ -58,7 +60,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * 分页查询分享有礼活动信息
      *
      * @param param 查询条件
-     * @return 分页数据
+     * @return 分页数据 page result
      */
     public PageResult<ShareRewardShowVo> selectByPage(ShareRewardShowParam param) {
         //已删除的分享有礼活动不参与查询
@@ -83,7 +85,7 @@ public class ShareRewardService extends BaseShopConfigService {
             default:
                 categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq(FLAG_ONE)).
                     or(sa.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))
-                    .and(sa.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))));
+                        .and(sa.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))));
                 break;
         }
         Table<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
@@ -195,6 +197,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * 获取分享有礼活动详情
      *
      * @param shareId 分享有礼活动id
+     * @return the share reward info
      */
     public ShareRewardInfoVo getShareRewardInfo(Integer shareId) {
         ShareRewardInfoVo shareRewardInfoVo = db().selectFrom(sa).where(sa.ID.eq(shareId)).fetchOneInto(ShareRewardInfoVo.class);
@@ -269,25 +272,26 @@ public class ShareRewardService extends BaseShopConfigService {
         FieldsUtil.assignNotNull(param, awardRecord);
         return awardRecord;
     }
+
     // ShareRule奖励规则数据清洗
-    private ShareRule dataClean(ShareRule shareRule){
+    private ShareRule dataClean(ShareRule shareRule) {
         if (Objects.isNull(shareRule)) {
             return null;
         }
-        switch (shareRule.getRewardType()){
-            case CONDITION_ONE :
+        switch (shareRule.getRewardType()) {
+            case CONDITION_ONE:
                 shareRule.setCoupon(null);
                 shareRule.setCouponNum(null);
                 shareRule.setLottery(null);
                 shareRule.setLotteryNum(null);
                 break;
-            case CONDITION_TWO :
+            case CONDITION_TWO:
                 shareRule.setScore(null);
                 shareRule.setScoreNum(null);
                 shareRule.setLottery(null);
                 shareRule.setLotteryNum(null);
                 break;
-            case CONDITION_THREE :
+            case CONDITION_THREE:
                 shareRule.setCoupon(null);
                 shareRule.setCouponNum(null);
                 shareRule.setScore(null);
@@ -298,25 +302,26 @@ public class ShareRewardService extends BaseShopConfigService {
         }
         return shareRule;
     }
-    private Integer getAwardNum(ShareRule shareRule){
+
+    private Integer getAwardNum(ShareRule shareRule) {
         if (Objects.isNull(shareRule)) {
             return 0;
         }
-        switch (shareRule.getRewardType()){
-            case CONDITION_ONE :
+        switch (shareRule.getRewardType()) {
+            case CONDITION_ONE:
                 return shareRule.getScoreNum();
-            case CONDITION_TWO :
+            case CONDITION_TWO:
                 CouponView couponView = couponService.getCouponViewById(shareRule.getCoupon());
                 // 校验优惠券是否存在
                 com.vpu.mp.service.foundation.exception.Assert.notNull(couponView, JsonResultCode.CODE_DATA_NOT_EXIST, "优惠券 " + shareRule.getCoupon());
                 log.debug("分享有礼活动奖励规则，奖励奖项优惠券[id:{}]所剩库存为：{}", shareRule.getCoupon(), couponView.getSurplus());
                 // 校验活动定义的奖励数量是否满足奖品的库存数量
-                if(couponView.getSurplus() < shareRule.getCouponNum()){
+                if (couponView.getSurplus() < shareRule.getCouponNum()) {
                     log.error("优惠券[id:{}]库存数量 {} 小于分享有礼活动定义的奖励数量 {}！", couponView.getId(), couponView.getSurplus(), shareRule.getCouponNum());
                     com.vpu.mp.service.foundation.exception.Assert.isTrue(false, JsonResultCode.SHARE_REWARD_COUPON_NUM_LIMIT);
                 }
                 return shareRule.getCouponNum();
-            case CONDITION_THREE :
+            case CONDITION_THREE:
                 return shareRule.getLotteryNum();
             default:
                 return 0;
@@ -326,8 +331,7 @@ public class ShareRewardService extends BaseShopConfigService {
     /**
      * 停用/启用/删除
      *
-     * @param param 活动状态/删除标识
-     *              0启用，1停用，2删除
+     * @param param 活动状态/删除标识              0启用，1停用，2删除
      */
     public void changeActivity(ShareRewardStatusParam param) {
         switch (param.getStatus()) {
@@ -352,7 +356,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * 分享有礼活动奖励领取明细查询
      *
      * @param param 活动id和筛选条件
-     * @return 分页数据
+     * @return 分页数据 page result
      */
     public PageResult<ShareReceiveDetailVo> shareReceiveDetail(ShareReceiveDetailParam param) {
         SelectConditionStep<Record11<Integer, Integer, String, String, Integer, String, Byte, String, String, String, Timestamp>> conditionStep = db().select(sare.SHARE_ID, sare.USER_ID, USER.USERNAME, USER.MOBILE, sare.GOODS_ID, GOODS.GOODS_NAME, sare.AWARD_LEVEL, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sare.CREATE_TIME).from(sare).leftJoin(sa).on(sare.SHARE_ID.eq(sa.ID)).leftJoin(GOODS).on(sare.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(USER).on(sare.USER_ID.eq(USER.USER_ID)).where(sare.SHARE_ID.eq(param.getShareId()));
@@ -434,7 +438,7 @@ public class ShareRewardService extends BaseShopConfigService {
     /**
      * 获取每日用户可分享次数上限参数
      *
-     * @return 每日用户可分享次数上限值
+     * @return 每日用户可分享次数上限值 daily share award value
      */
     public int getDailyShareAwardValue() {
         return this.get(DAILY_SHARE_AWARD, Integer.class, 0);
@@ -446,36 +450,60 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param id the id
      * @return the boolean
      */
-    public boolean activityIsExist(Integer id) {
+    private boolean activityIsExist(Integer id) {
         return db().fetchExists(sa, sa.ID.eq(id));
     }
 
+    /**
+     * Activity is exist boolean.
+     *
+     * @param condition the condition
+     * @return the boolean
+     */
     public boolean activityIsExist(Condition condition) {
         return db().fetchExists(sa, condition);
     }
 
-    public boolean aRecordIsExist(Condition condition) {
+    /**
+     * A record is exist boolean.
+     *
+     * @param condition the condition
+     * @return the boolean
+     */
+    boolean aRecordIsExist(Condition condition) {
         return db().fetchExists(sar, condition);
     }
 
     /**
      * Activity available.活动是否可用
      *
-     * @param id the id
+     * @param id     the id
+     * @param goodId the good id
+     * @return the com . vpu . mp . db . shop . tables . records . share award record
      */
-    public com.vpu.mp.db.shop.tables.records.ShareAwardRecord activityAvailable(Integer id, Integer goodId) {
-        Assert.isTrue(activityIsExist(id), JsonResultCode.CODE_DATA_NOT_EXIST, String.format("Activity:%s", id));
-        log.info("分享有礼活动 {} 不存在", id);
+    com.vpu.mp.db.shop.tables.records.ShareAwardRecord activityAvailable(Integer id, Integer goodId) {
+        if (!activityIsExist(id)) {
+            log.info("分享有礼活动 {} 不存在", id);
+            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, String.format("Activity:%s", id));
+        }
         com.vpu.mp.db.shop.tables.records.ShareAwardRecord record = getShareReward(id);
-        Assert.isTrue(BYTE_ZERO.equals(record.getDelFlag()), JsonResultCode.CODE_FAIL);
-        log.info("分享有礼活动 {} 已删除", id);
-        Assert.isTrue(BYTE_ONE.equals(record.getIsForever()) || LocalDateTime.now().isBefore(record.getEndTime().toLocalDateTime()), JsonResultCode.CODE_FAIL);
-        log.info("分享有礼活动 {} 已过期", id);
-        Assert.isFalse(BYTE_TWO.equals(record.getCondition()) && !Util.stringList2IntList(Arrays.asList(record.getGoodsIds().split(","))).contains(goodId), JsonResultCode.CODE_FAIL);
-        log.info("分享有礼活动 {} , 该分享商品 {} 不在活动涉及范围内！", id, goodId);
+        if (BYTE_ONE.equals(record.getDelFlag())) {
+            log.info("分享有礼活动 {} 已删除", id);
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
+        if (BYTE_ZERO.equals(record.getIsForever()) && LocalDateTime.now().isAfter(record.getEndTime().toLocalDateTime())) {
+            log.info("分享有礼活动 {} 已过期", id);
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
+        if (BYTE_TWO.equals(record.getCondition()) && !Util.stringList2IntList(Arrays.asList(record.getGoodsIds().split(","))).contains(goodId)) {
+            log.info("分享有礼活动 {} , 该分享商品 {} 不在活动涉及范围内！", id, goodId);
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
         int goodPv = getGoodsPv(goodId);
-        Assert.isFalse(BYTE_THREE.equals(record.getCondition()) && goodPv > record.getGoodsPv(), JsonResultCode.CODE_FAIL);
-        log.info("分享有礼活动 {} , 该分享商品 {} 的访问量 {} 不符合活动限制 {}！", id, goodId, goodPv, record.getGoodsPv());
+        if (BYTE_THREE.equals(record.getCondition()) && goodPv > record.getGoodsPv()) {
+            log.info("分享有礼活动 {} , 该分享商品 {} 的访问量 {} 不符合活动限制 {}！", id, goodId, goodPv, record.getGoodsPv());
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
         return record;
     }
 
@@ -485,7 +513,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param id the id
      * @return the share reward
      */
-    public com.vpu.mp.db.shop.tables.records.ShareAwardRecord getShareReward(Integer id) {
+    private com.vpu.mp.db.shop.tables.records.ShareAwardRecord getShareReward(Integer id) {
         return db().fetchSingle(sa, sa.ID.eq(id));
     }
 
@@ -497,8 +525,8 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param goodsId the goods id
      * @return the share award record
      */
-    public ShareAwardRecordRecord getShareAwardRecord(Integer shareId, Integer userId, Integer goodsId) {
-        return db().fetchSingle(sar, sar.USER_ID.eq(userId).and(sar.SHARE_ID.eq(shareId)).and(sar.GOODS_ID.eq(goodsId)));
+    ShareAwardRecordRecord getShareAwardRecord(Integer shareId, Integer userId, Integer goodsId) {
+        return db().fetchOne(sar, sar.USER_ID.eq(userId).and(sar.SHARE_ID.eq(shareId)).and(sar.GOODS_ID.eq(goodsId)));
     }
 
     /**
@@ -507,7 +535,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param id the id
      * @return the share rules
      */
-    public ShareRewardInfoVo getShareInfo(Integer id) {
+    ShareRewardInfoVo getShareInfo(Integer id) {
         ShareRewardInfoVo shareReward = db().selectFrom(sa).where(sa.ID.eq(id)).fetchOneInto(ShareRewardInfoVo.class);
         int sum = INTEGER_ZERO;
         ShareRule first = Util.json2Object(shareReward.getFirstLevelRule(), ShareRule.class, false);
@@ -545,7 +573,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param goodsId the goods id
      * @return the goods pv
      */
-    public int getGoodsPv(Integer goodsId) {
+    int getGoodsPv(Integer goodsId) {
         return db().select(sum(USER_GR.COUNT)).from(USER_GR).where(USER_GR.GOODS_ID.eq(goodsId))
             .and(USER_GR.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(LocalDate.now().minusDays(7).atStartOfDay())))
             .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
@@ -555,8 +583,9 @@ public class ShareRewardService extends BaseShopConfigService {
      * Autoincrement user num.
      *
      * @param id the id
+     * @return the int
      */
-    public int autoincrementUserNum(Integer id) {
+    int autoincrementUserNum(Integer id) {
         db().update(sar).set(sar.USER_NUMBER, sar.USER_NUMBER.add(INTEGER_ONE)).where(sar.ID.eq(id)).execute();
         return db().select(sar.USER_NUMBER).from(sar).where(sar.ID.eq(id)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }

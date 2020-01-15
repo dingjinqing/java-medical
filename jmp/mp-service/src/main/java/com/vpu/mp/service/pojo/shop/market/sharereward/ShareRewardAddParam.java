@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 /**
  * @author liufei
  * @date 2019/8/20
- * @description
  */
 @Data
 public class ShareRewardAddParam {

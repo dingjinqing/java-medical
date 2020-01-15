@@ -55,6 +55,4 @@ public class WxAppShareRewardController extends WxAppBaseController {
         shop().wxShareReward.fromShare2GoodsDetail(param.getLaunchUserId(), param.getUserId(), param.getGoodsId(), param.getActivityId());
         return success();
     }
-
-
 }

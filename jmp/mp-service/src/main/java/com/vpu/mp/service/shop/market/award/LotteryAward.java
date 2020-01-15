@@ -1,9 +1,12 @@
 package com.vpu.mp.service.shop.market.award;
 
+import org.springframework.stereotype.Service;
+
 /**
  * @author liufei
  * @date 1/13/20
  */
+@Service
 public class LotteryAward implements Award {
     @Override
     public void sendAward(AwardParam param) {
