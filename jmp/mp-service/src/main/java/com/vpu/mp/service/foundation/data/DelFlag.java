@@ -36,3 +36,4 @@ public enum DelFlag {
 	public static final Byte NORMAL_VALUE = 0;
 	public static final Byte DISABLE_VALUE = 1;
 }
+
