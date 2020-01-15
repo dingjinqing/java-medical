@@ -78,7 +78,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	/**下单时间*/
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Timestamp date = DateUtil.getSqlTimestamp();
-
+    /**活动免运费*/
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Byte isFreeShippingAct;
     /**
      * 指定可用的支付方式
      */
