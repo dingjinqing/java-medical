@@ -33,7 +33,7 @@
             class="item"
           >
             <el-select
-              v-model="searchData.useStatus"
+              v-model="searchData.isUsed"
               size="small"
               class="inputWidth"
             >
@@ -78,7 +78,7 @@
         <div class="filters_item">
           <div>{{$t('couponReceive.useState')}}：</div>
           <el-select
-            v-model="searchData.useStatus"
+            v-model="searchData.isUsed"
             size="small"
             class="inputWidth"
           >
@@ -208,7 +208,7 @@ export default {
       searchData: {
         mobile: '',
         userName: '',
-        useStatus: -1
+        isUsed: -1
       },
       get_type_option: [
         { value: -1, label: '全部' },
@@ -245,7 +245,11 @@ export default {
       this.requestParams.pageRows = this.pageParams.pageRows
       this.requestParams.mobile = this.searchData.mobile
       this.requestParams.userName = this.searchData.userName
-      this.requestParams.useStatus = this.searchData.useStatus
+      if (this.searchData.isUsed === -1) {
+        this.requestParams.isUsed = null
+      } else {
+        this.requestParams.isUsed = this.searchData.isUsed
+      }
       couponGetDetail(this.requestParams).then(res => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
