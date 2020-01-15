@@ -322,8 +322,11 @@ global.wxPage({
     let moneyPaid = this.data.orderInfo.moneyPaid, useScore = this.data.usePayInfo.useScore, useBalance = this.data.usePayInfo.useBalance, useCardBalance = this.data.usePayInfo.useCardBalance
     let floatNum = parseFloat(moneyPaid - useCardBalance - useBalance - useScore / 100).toFixed(3)
     floatNum = parseFloat(floatNum.substring(0, floatNum.length - 1))
+    let floatScoreMoney = (useScore / 100).toFixed(3)
+    floatScoreMoney = parseFloat(floatScoreMoney.substring(0, floatScoreMoney.length - 1))
     this.setData({
-      'usePayInfo.moneyPaid': floatNum
+      'usePayInfo.moneyPaid': floatNum,
+      useScoreMoney:floatScoreMoney
     })
   },
   // 获取门店改变
