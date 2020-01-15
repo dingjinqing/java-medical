@@ -20,9 +20,20 @@
               size="small"
             >+ {{$t('bargain.addEvent')}}</el-button>
             <el-tooltip effect="light">
-              <img :src="$imageHost+ '/image/admin/analysis_tishi.png'">
-              <div slot="content">
-                {{$t('bargain.addEventTip')}}
+              <img
+                :src="$imageHost+ '/image/admin/analysis_tishi.png'"
+                style="position:relative;top:3px;"
+              >
+              <div
+                slot="content"
+                style="width: 250px;
+                  line-height: 30px;
+                  font-size: 14px;
+                  word-wrap: break-word;
+                  word-break: break-all;
+                  background: #fff;"
+              >
+                {{$t('spike.addEventTip')}}
               </div>
             </el-tooltip>
           </el-form-item>
