@@ -13,7 +13,7 @@ public enum DelFlag {
     NORMAL((byte) 0),
     // 删除状态
     DISABLE((byte) 1);
-
+     
     private byte code;
 
     private DelFlag(byte code) {
