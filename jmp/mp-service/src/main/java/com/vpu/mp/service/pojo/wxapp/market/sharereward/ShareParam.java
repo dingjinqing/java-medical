@@ -22,5 +22,5 @@ public class ShareParam {
     /**
      * 分享商品id
      */
-    private Integer goodId;
+    private Integer goodsId;
 }

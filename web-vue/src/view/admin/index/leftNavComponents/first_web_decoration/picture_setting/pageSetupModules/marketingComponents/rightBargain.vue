@@ -141,7 +141,7 @@ export default {
     return {
       data: {
         module_name: 'm_bargain',
-        list_style: '0',
+        list_style: 0,
         goods_price: true,
         goods_count_down: true,
         free_btn: true,

@@ -191,7 +191,8 @@ global.wxPage({
       retId: orderInfo.retId,
       orderSn: orderInfo.orderSn,
       action: 1,
-      returnoperate: 1
+      returnoperate: 1,
+      returnType: orderInfo.returnType
     }
     util.showModal(that.$t('page1.afterSale.prompt'), that.$t('page1.afterSale.isCancelApplication'), function () {
       util.api('/api/wxapp/order/refund', function (res) {

@@ -32,14 +32,14 @@
             <div>
               <span>展示商品数量：</span>
               <el-radio
-                v-model="item.radio"
+                v-model="item.is_all"
                 @change="handleToClickShowNumRadio(index)"
-                label="1"
+                :label="1"
               >全部{{item.sort_goods_num}}件</el-radio>
               <el-radio
-                v-model="item.radio"
+                v-model="item.is_all"
                 @change="handleToClickShowNumRadio(index)"
-                label="2"
+                :label="2"
               >指定商品</el-radio>
             </div>
             <div class="groupItemOperation">
@@ -513,6 +513,7 @@ export default {
     },
     // 调起弹窗
     handleToCallDialog (flag) {
+      console.log(flag)
       switch (flag) {
         case 0:
           this.classificationDialogVisible = true
@@ -534,11 +535,12 @@ export default {
         console.log(item.goodsSumNum)
         if (item.goodsSumNum !== undefined) {
           obj.sort_name = item.sortName
-          obj.customName = item.sortName
+          obj.group_name = item.sortName
           obj.sort_goods_num = item.goodsSumNum
-          obj.group_goods_num = item.goodsSumNum
           obj.sort_id = item.sortId
-
+          obj.group_goods_num = ''
+          obj.group_goods_id = ''
+          obj.is_all = 1
           arr.push(obj)
         }
       })
@@ -558,11 +560,15 @@ export default {
       let arr = []
       data.forEach((item, index) => {
         //  obj
-        let obj = { type: 1, radio: '1' }
+        let obj = { sort_type: 1 }
         console.log(item.goodsSumNum)
-        obj.typeName = item.name
-        obj.customName = item.name
-        obj.goodsNum = item.goodsNum
+        obj.sort_name = item.name
+        obj.group_name = item.name
+        obj.sort_goods_num = item.goodsNum
+        obj.sort_id = item.id
+        obj.group_goods_num = ''
+        obj.group_goods_id = ''
+        obj.is_all = 1
         arr.push(obj)
       })
       console.log(this.clickEditBtn, this.editIndex, arr)
@@ -579,11 +585,15 @@ export default {
       let arr = []
       data.forEach((item, index) => {
         //  obj
-        let obj = { type: 2, radio: '1' }
+        let obj = { sort_type: 2 }
         console.log(item.goodsSumNum)
-        obj.typeName = item.brandName
-        obj.customName = item.brandName
-        obj.goodsNum = item.goodsNum
+        obj.sort_name = item.brandName
+        obj.group_name = item.brandName
+        obj.sort_goods_num = item.goodsNum
+        obj.sort_id = item.id
+        obj.group_goods_num = ''
+        obj.group_goods_id = ''
+        obj.is_all = 1
         arr.push(obj)
       })
       if (this.clickEditBtn) {
@@ -595,9 +605,10 @@ export default {
       this.clickEditBtn = false
     },
     handleToEditData (index) { // 点击修改
+      console.log()
       this.clickEditBtn = true
       this.editIndex = index
-      let flag = this.linkageData.sort_group_arr[index].type
+      let flag = this.linkageData.sort_group_arr[index].sort_type
       this.handleToCallDialog(flag, true)
     },
     handleToClickTopIcon (flag, index) { // 顶部icon点击统一处理
@@ -643,8 +654,8 @@ export default {
     // 点击指定商品
     handleToClickShowNumRadio (index) {
       this.nowClickAppointIndex = index
-      console.log(index, this.linkageData.sort_group_arr[index].radio)
-      if (this.linkageData.sort_group_arr[index].radio === '2') {
+      console.log(index, this.linkageData.sort_group_arr[index].is_all)
+      if (this.linkageData.sort_group_arr[index].is_all === 2) {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
       }
     },

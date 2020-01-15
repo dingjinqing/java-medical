@@ -37,10 +37,13 @@
 .goods-info-bottom > .goods-price{
   flex: 1;
 }
-.goods-price > .linePrice{
+.goods-price > .gray-text{
+  margin-left: 20rpx;
   font-size: 24rpx;
   color: #999;
-  text-decoration: line-through;
+}
+.goods-price > .gray-text.line-through{
+  text-decoration:line-through;
 }
 .goods-info-bottom > .iconfont{
   font-size: 60rpx;
@@ -66,4 +69,9 @@
 }
 .num-cfg > text.num-plus{
   border-left: 1rpx solid #eee;
+}
+.boder-button{
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid;
 }

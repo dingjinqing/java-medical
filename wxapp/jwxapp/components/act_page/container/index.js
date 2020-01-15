@@ -23,6 +23,9 @@ global.wxComponent({
       this.setData({
         showSelectedDialog:true
       })
+    },
+    handleSearch(e){
+      this.triggerEvent('search',e.detail.value)
     }
   }
 })

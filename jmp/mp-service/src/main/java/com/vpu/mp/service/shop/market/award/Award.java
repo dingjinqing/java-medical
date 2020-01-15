@@ -9,6 +9,8 @@ package com.vpu.mp.service.shop.market.award;
 public interface Award {
     /**
      * Send award.
+     *
+     * @param param the param
      */
-    void sendAward();
+    void sendAward(AwardParam param);
 }

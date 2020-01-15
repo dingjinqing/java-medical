@@ -20,7 +20,11 @@ public class GoodsSearchParam extends BasePageParam {
 
     /**搜索输入的关键字*/
     private String keyWords;
-
+    /**
+     * GOODS_AREA_TYPE_SECTION
+     * 范围 1全部 2 范围
+     */
+    private Byte goodsAreaType;
     /**
      * 商品id
      */

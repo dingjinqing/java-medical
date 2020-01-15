@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -28,9 +27,9 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("doCartOperation->WxAppCartBo:"+ Util.toJson(cartBo));
         //删除的,下架的--移动到失效列表
         List<WxAppCartGoods> invalidGoodsList = cartBo.getCartGoodsList().stream().filter(goods -> {
+            goods.setGoodsImg(goods.getGoodsRecord().getGoodsImg());
             if (goods.getGoodsId() == null || goods.getProductId() == null|| goods.getGoodsRecord().getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
                 log.debug("商品删除的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+ goods.getGoodsRecord().getDelFlag()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DELETE);
@@ -47,8 +46,8 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
 
         //售罄-- 取消选中
         cartBo.getCartGoodsList().forEach(goods->{
-            if (goods.getProductRecord().getPrdNumber() < goods.getLimitBuyNum() || goods.getProductRecord().getPrdNumber() <= 0) {
-                log.debug("商品售罄"+"[getGoodsName:"+goods.getGoodsName()+".getPrdNumber: "+goods.getProductRecord().getPrdNumber()+",getLimitBuyNum:"+goods.getLimitBuyNum()+"]");
+            if (goods.getProductRecord().getPrdNumber() < goods.getGoodsRecord().getLimitBuyNum() || goods.getProductRecord().getPrdNumber() <= 0) {
+                log.debug("商品售罄"+"[getGoodsName:"+goods.getGoodsName()+".getPrdNumber: "+goods.getProductRecord().getPrdNumber()+",getLimitBuyNum:"+goods.getGoodsRecord().getLimitBuyNum()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_SOLD_OUT);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
             }
