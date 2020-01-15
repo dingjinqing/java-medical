@@ -781,7 +781,6 @@ public class UserCardService extends ShopBaseService {
 	private void dealWithWxUserCard(WxAppUserCardVo card, String avatar) {
 		card.calcCardIsExpired();
 		card.calcRenewal();
-		card.calcUsageTime();
 		card.setAvatar(avatar);
 		card.calcCash();
 		// 背景图
@@ -834,7 +833,7 @@ public class UserCardService extends ShopBaseService {
 		BeanUtils.copyProperties(etBean, card);
 		
 		// 设置卡是否过期状态
-		card.setStatus(CardUtil.getExpireStatus(card.getExpireType(), card.getEndTime()));
+		card.setStatus(CardUtil.getStatus(card.getExpireType(), card.getEndTime()));
 		
 		dealWithUserCardDetailInfo(card);
 		

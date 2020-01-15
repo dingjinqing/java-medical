@@ -235,18 +235,20 @@ public class CardUtil {
 	
 	
 	/**
-	 * 获取卡的过期状态
+	 * 获取卡的是否有效
 	 * @param expireType 时间类型  0:固定日期 1：自领取之日起 2:不过期
 	 * @param endTime 终止时间
-	 * @return Integer 卡状态  -1 已过期，1未过期
+	 * @return Integer 卡状态  -1 无效，1 有效
 	 */
-	public static Integer getExpireStatus(Byte expireType,Timestamp endTime) {
+	public static Integer getStatus(Byte expireType,Timestamp endTime) {
 		Integer status = 1;
 		if(!isCardTimeForever(expireType) && isCardExpired(endTime)) {
 			status = -1;
 		}
 		return status;
 	}
+	
+	
 	
 	
 	/**
@@ -256,19 +258,22 @@ public class CardUtil {
 	 */
 	public static EffectTimeBean getUserCardEffectTime(UserCardParam card) {
 		EffectTimeBean bean = new EffectTimeBean();
+		// 按照领卡的时间快照将进行设置
 		if(isCardFixTime(card.getExpireType()) && 
 				card.getExpireTime() != null) {
-			// 固定时间 取会员卡的时间
+			// 固定时间 取会员卡的设置的起始时间，以及领卡时设置的过期时间
 			if(card.getStartTime() != null) {
 				bean.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
 				bean.setStartTime(card.getStartTime());
 			}
-			if(card.getEndTime() != null) {
-				bean.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
-				bean.setEndTime(card.getEndTime());
+			if(card.getExpireTime() != null) {
+				bean.setEndDate(card.getExpireTime().toLocalDateTime().toLocalDate());
+				bean.setEndTime(card.getExpireTime());
 			}
-		}else if(isCardTimeStartFrom(card.getExpireType())) {
-			// 自领取之日起 取用户领卡的时间
+		}else if(isCardTimeStartFrom(card.getExpireType()) || 
+				(isCardTimeForever(card.getExpireType()) &&
+						card.getExpireTime() != null) ) {
+			// 自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
 			if(card.getUserCardCreateTime() != null) {
 				bean.setStartDate(card.getUserCardCreateTime().toLocalDateTime().toLocalDate());
 				bean.setStartTime(card.getUserCardCreateTime());
@@ -278,6 +283,12 @@ public class CardUtil {
 				bean.setEndDate(card.getExpireTime().toLocalDateTime().toLocalDate());
 				bean.setEndTime(card.getExpireTime());
 			}
+		}
+		
+		if(isCardTimeForever(card.getExpireType()) &&
+					card.getExpireTime() != null) {
+			// 取快照
+			card.setExpireType(CardConstant.MCARD_ET_FIX);
 		}
 		return bean;
 	}
