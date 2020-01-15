@@ -436,7 +436,7 @@ public class ShareRewardService extends BaseShopConfigService {
      *
      * @return 每日用户可分享次数上限值
      */
-    public Integer getDailyShareAwardValue() {
+    public int getDailyShareAwardValue() {
         return this.get(DAILY_SHARE_AWARD, Integer.class, 0);
     }
 

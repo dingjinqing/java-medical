@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.records.AttendShareUserRecord;
 import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ShareRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
@@ -30,6 +31,9 @@ import org.jooq.TableField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -134,9 +138,42 @@ public class WxShareRewardService extends ShopBaseService {
         return db().fetchExists(SHARE_RECORD, condition);
     }
 
-    public void getAvailableShareAward(int userId, int goodsId) {
-//        shareReward.activityAvailable(activityId, goodsId);
-        // TODO 验证分享 次数是否 超过当天的分享限制
+    /**
+     * Gets available share award.获取指定用户，指定商品的可用分享有礼活动
+     *
+     * @param userId  the user id
+     * @param goodsId the goods id
+     * @return the available share award 返回 0 表示无可用的分享有礼活动
+     */
+    public Integer getAvailableShareAward(int userId, int goodsId) {
+//     获取指定商品可用的分享有礼活动
+        int goodsPv = shareReward.getGoodsPv(goodsId);
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        Condition condition = AWARD.DEL_FLAG.eq(BYTE_ZERO)
+            .and(AWARD.STATUS.eq(BYTE_ZERO))
+            .and(AWARD.IS_FOREVER.eq(BYTE_ONE).or(AWARD.START_TIME.lessThan(now).and(AWARD.END_TIME.greaterThan(now))));
+        Condition condition1 = AWARD.CONDITION.eq(BYTE_ONE);
+        Condition condition2 = AWARD.CONDITION.eq(BYTE_TWO).and(DslPlus.findInSet(goodsId, AWARD.GOODS_IDS));
+        Condition condition3 = AWARD.CONDITION.eq(BYTE_THREE).and(AWARD.GOODS_PV.greaterThan(goodsPv));
+        Integer shareId = db().select(AWARD.ID).from(AWARD).where(condition).and(condition1.or(condition2).or(condition3)).orderBy(AWARD.PRIORITY).limit(INTEGER_ONE).fetchOneInto(Integer.class);
+        if (Objects.isNull(shareId)) {
+            log.info("无可用的分享有礼活动！");
+            return INTEGER_ZERO;
+        }
+        // 是否参加过当前商品分享有礼活动
+        int count = db().fetchCount(ATTEND, AWARD_RECORD.USER_ID.eq(userId)
+            .and(AWARD_RECORD.GOODS_ID.eq(goodsId))
+            .and(AWARD_RECORD.CREATE_TIME.greaterThan(Timestamp.valueOf(LocalDate.now().atStartOfDay()))));
+        if (count == 0) {
+            return shareId;
+        }
+        // 校验每日的分享次数上限
+        int limit = shareReward.getDailyShareAwardValue();
+        if (count >= limit) {
+            log.info("分享有礼活动已达到每日分享次数上限{}！", limit);
+            return INTEGER_ZERO;
+        }
+        return shareId;
     }
 
     /**
@@ -238,12 +275,14 @@ public class WxShareRewardService extends ShopBaseService {
                             this.transaction(() -> {
                                 // 更新对应等级的奖品为已领取状态
                                 updateAwardRecord(userId, activityId, goodsId, getField(rule.getRuleLevel()), BYTE_TWO);
-                                // 发送分享有礼奖品
-                                sendAward(rule.getRewardType(), AwardParam.builder()
-                                    .activityId(info.getId()).rule(rule).changeWay(ext.getChangeWay()).orderSn(ext.getOrderSn()).userId(ext.getUserId()).build());
                                 // 奖品库存扣减(库存扣减控制不能为负数)
                                 Field<Integer> field = getAwardField(rule.getRuleLevel());
                                 updateAward(activityId, field, field.sub(INTEGER_ONE), field.sub(INTEGER_ONE).greaterOrEqual(INTEGER_ZERO));
+                                // 发送分享有礼奖品
+                                sendAward(rule.getRewardType(), AwardParam.builder()
+                                    .activityId(info.getId()).rule(rule).changeWay(ext.getChangeWay()).orderSn(ext.getOrderSn()).userId(ext.getUserId()).build());
+                                // 添加领奖记录
+                                addShareReceive(userId, activityId, goodsId, rule.getRuleLevel());
                             });
                             // todo 发送消息模板通知用户奖品已发放
                         } catch (Exception e) {
@@ -269,6 +308,21 @@ public class WxShareRewardService extends ShopBaseService {
     public void sendAward(Byte awardType, AwardParam param) {
         Award award = AwardFactory.getAward(awardType);
         sendShareAward(param, award);
+    }
+
+    /**
+     * Add share receive.添加领奖记录
+     *
+     * @param userId  the user id
+     * @param shareId the share id
+     * @param goodsId the goods id
+     * @param level   the level
+     */
+    public void addShareReceive(int userId, int shareId, int goodsId, byte level) {
+        db().insertInto(AWARD_RECEIVE)
+            .columns(AWARD_RECEIVE.USER_ID, AWARD_RECEIVE.GOODS_ID, AWARD_RECEIVE.SHARE_ID, AWARD_RECEIVE.AWARD_LEVEL)
+            .values(userId, goodsId, shareId, level)
+            .execute();
     }
 
     /**
