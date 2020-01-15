@@ -7,11 +7,11 @@
           <el-form-item :label="$t('bargain.listStyle') + '：'">
             <el-radio
               v-model="data.list_style"
-              label="0"
+              :label="0"
             >{{$t('bargain.doubleCol')}}</el-radio>
             <el-radio
               v-model="data.list_style"
-              label="1"
+              :label="1"
             >{{$t('bargain.singleCol')}}</el-radio>
           </el-form-item>
           <el-form-item :label="$t('bargain.chooseEvent') + '：'">
