@@ -180,6 +180,9 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             throw new MpException(resultMessage.getJsonResultCode(), null, resultMessage.getMessages().toArray(new String[0]));
         }
         GroupBuyDefineRecord groupBuyRecord = groupBuyProcessorDao.getGroupBuyRecord(param.getActivityId());
+        if (groupBuyRecord.getShippingType().equals(OrderConstant.YES)){
+            param.setIsFreeShippingAct(OrderConstant.YES);
+        }
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             //拼团规格库存校验
             GroupBuyProductDefineRecord groupBuyProduct = groupBuyProcessorDao.getGroupBuyProduct(param.getActivityId(), goods.getProductId());
@@ -199,7 +202,6 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 //拼团价-团长价
                 goods.setGrouperGoodsReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()));
             }
-
         }
     }
 
@@ -212,9 +214,6 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        Integer groupId =0;
-        String goodsName="";
-        BigDecimal goodsPrice =BigDecimal.ZERO;
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GroupBuyListRecord groupBuyProductList = db().newRecord(GROUP_BUY_LIST);
             groupBuyProductList.setActivityId(param.getActivityId());
@@ -239,9 +238,6 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 groupBuyProductList.setGroupId(groupBuyProductList.getId());
                 groupBuyProductList.update();
             }
-            groupId =groupBuyProductList.getGroupId();
-            goodsName =goods.getGoodsInfo().getGoodsName();
-            goodsPrice =goods.getProductPrice();
         }
     }
 
@@ -255,14 +251,11 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 }
             }
         }
-
-        List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
+        List<OrderGoodsBo> orderGoodsBos = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
         ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
         if (goodsTypes.contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
             GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
-            String goodsName =goods.get(0).getGoodsName();
-            String goodsPrice =goods.get(0).getGoodsPrice().toString();
-            groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
+            groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),orderGoodsBos.get(0).getGoodsName());
         }
 
     }

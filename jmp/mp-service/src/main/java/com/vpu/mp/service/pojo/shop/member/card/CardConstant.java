@@ -170,9 +170,9 @@ public class CardConstant {
 
 
 
-	/** 可否在门店使用  0可以 1不可以 */
-	public static final Byte AVAILABLE_IN_STORE = 0;
-	public static final Byte UNAVAILABLE_IN_STORE = 1;
+	/** 可否在门店使用  0不可以 1可以 */
+	public static final Byte UNAVAILABLE_IN_STORE = 0;
+	public static final Byte AVAILABLE_IN_STORE = 1;
 
 
 	/** 国际化语言前缀 */

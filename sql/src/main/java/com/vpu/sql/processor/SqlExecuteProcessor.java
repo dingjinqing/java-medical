@@ -1,6 +1,7 @@
 package com.vpu.sql.processor;
 
 import com.vpu.sql.config.DataConfigSource;
+import com.vpu.sql.util.DBUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -25,6 +26,7 @@ public class SqlExecuteProcessor  implements ApplicationListener<ContextRefreshe
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
         dataConfigSource.execute();
+        log.info("一共有{}条重复执行的修改表字段的sql", DBUtil.changeColumnNumbers.intValue());
     }
 
 

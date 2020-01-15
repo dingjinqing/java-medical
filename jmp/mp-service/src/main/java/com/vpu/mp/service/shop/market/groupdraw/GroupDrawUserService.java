@@ -29,6 +29,7 @@ import com.vpu.mp.db.shop.tables.records.JoinGroupListRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -38,8 +39,16 @@ import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
+import com.vpu.mp.service.shop.order.action.ReturnService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 
 /**
@@ -66,6 +75,12 @@ public class GroupDrawUserService extends ShopBaseService {
 	private static final byte WIN_DRAW = 1;
 	@Autowired
 	private CouponMpService couponMpService;
+	@Autowired
+	private ReturnService returnService;
+	@Autowired
+	private AtomicOperation optOperation;
+	@Autowired
+	private OrderGoodsService orderGoodsService;
 
 	private static final byte ZERO = 0;
 	private static final byte ONE = 0;
@@ -116,10 +131,10 @@ public class GroupDrawUserService extends ShopBaseService {
 					String couponIds = goodsGroupDraw.getRewardCouponId();
 					groupUserList.forEach(groupUser -> {
 						if (WIN_DRAW == groupUser.getIsWinDraw()) {
+							// 更新库存
 							updateProductNumber(groupUser.getOrderSn());
 						} else {
-							// TODO 未中奖退款
-
+							refundMoney(groupUser.getOrderSn());
 							if (!couponIds.isEmpty()) {
 								couponUserIds.add(groupUser.getUserId());
 							}
@@ -134,26 +149,42 @@ public class GroupDrawUserService extends ShopBaseService {
 		});
 	}
 
-	/**
-	 * 更新库存
-	 */
-	private void updateProductNumber(String orderSn) {
-		List<OrderGoodsRecord> orderGoods = getOrderGoods(orderSn);
-		OrderGoodsRecord goods = orderGoods.get(0);
-		Integer productId = goods.getProductId();
-		GoodsSpecProductRecord goodsSpecProduct = getGoodsSpecProduct(productId);
-		Integer productNumber = goodsSpecProduct.getPrdNumber();
-		if (0 < productNumber) {
-			OrderInfoRecord orderInfo = getOrderInfo(orderSn);
-			updateGoodsSkuAfterWaitDeliver(orderInfo);
+	private void refundMoney(String orderSn) {
+		logger().info("订单号" + orderSn + "未中奖退款");
+		RefundParam param = new RefundParam();
+		param.setReturnType(OrderConstant.RT_ONLY_MONEY);
+		param.setAction((byte) OrderServiceCode.RETURN.ordinal());// 1是退款
+		param.setOrderSn(orderSn);
+		OrderInfoRecord orderInfo = db().selectFrom(ORDER_INFO).where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchAny();
+		if (null == orderInfo) {
+			return;
+		}
+		param.setOrderId(orderInfo.getOrderId());
+		param.setIsMp(OrderConstant.IS_MP_AUTO);
+		param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount())
+				.add(orderInfo.getMemberCardBalance()));
+		ExecuteResult execute = returnService.execute(param);
+		if (null == execute || !execute.isSuccess()) {
+			logger().info("订单号" + orderSn + "退款失败");
 		}
 	}
 
 	/**
-	 * todo 更新库存
+	 * 更新库存
 	 */
-	private void updateGoodsSkuAfterWaitDeliver(OrderInfoRecord orderInfo) {
-
+	private void updateProductNumber(String orderSn) {
+		logger().info("订单号" + orderSn + "更新库存");
+		OrderInfoRecord orderInfo = db().selectFrom(ORDER_INFO).where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchAny();
+		if (null == orderInfo) {
+			return;
+		}
+		List<OrderGoodsBo> goodsBo = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
+		try {
+			optOperation.updateStockandSales(orderInfo, goodsBo, false);
+		} catch (MpException e) {
+			logger().info("订单号" + orderSn + "更新库存失败");
+			logger().info(e.getMessage(), e);
+		}
 	}
 
 	/**

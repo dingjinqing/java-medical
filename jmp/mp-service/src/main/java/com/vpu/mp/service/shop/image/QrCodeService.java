@@ -273,7 +273,11 @@ public class QrCodeService extends ShopBaseService {
      * 获取 会员卡头像
      */
 	private BufferedImage getCardVatar() {
-		String cardAvatarAddress = imageService.imageUrl(saas().shop.getShopAvatarById(this.getShopId()));
+		String shopAvatar = saas().shop.getShopAvatarById(this.getShopId());
+		if(StringUtils.isBlank(shopAvatar)) {
+			return null;
+		}
+		String cardAvatarAddress = imageService.imageUrl(shopAvatar);
 		
     	if(StringUtils.isBlank(cardAvatarAddress)) {
     		return null;

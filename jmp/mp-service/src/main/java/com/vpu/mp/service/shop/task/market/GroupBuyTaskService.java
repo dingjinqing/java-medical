@@ -282,7 +282,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
             param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()));
             param.setShippingFee(orderInfo.getShippingFee());
             ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
-            if(executeResult != null && !executeResult.isSuccess()){
+            if(executeResult == null || !executeResult.isSuccess()){
                 throw new BusinessException(executeResult.getErrorCode());
                 //退款失败
                 //TODO log记录或其他处理

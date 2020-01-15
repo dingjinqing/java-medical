@@ -23,4 +23,6 @@ public class ShareParam {
      * 分享商品id
      */
     private Integer goodsId;
+
+    Integer launchUserId;
 }

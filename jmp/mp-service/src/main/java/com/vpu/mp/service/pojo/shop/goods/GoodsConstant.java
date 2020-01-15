@@ -54,8 +54,11 @@ public class GoodsConstant {
      * 满包邮
      */
     public final static Byte ACTIVITY_FREE_SHIP_PRIORITY = 47;
-
     /**************** 结束 *****************/
+
+    /**************** 小程序、装修-商品分组- 顶部展示分组，展示全部商品栏*****************/
+    public final static Byte GOODS_GROUP_LIST_TOP_POSITION = 0;
+    public final static Byte GOODS_GROUP_LIST_SHOW_ALL_COLUMN = 1;
 
     /**************** 小程序-装修商品-手动推荐或自动推荐 *****************/
     public final static Byte AUTO_RECOMMEND = 0;
