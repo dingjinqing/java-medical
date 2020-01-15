@@ -350,6 +350,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     }
     if (!validImageType(fileType)) {
         logger().info("图片类型为："+fileType);
+        logger().info("是否为jpg类型图片："+"image/jpg".equals(fileType));
       return ResultMessage.builder()
           .jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID)
           .build();

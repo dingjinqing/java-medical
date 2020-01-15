@@ -14,7 +14,9 @@ global.wxPage({
    */
   onLoad: function (options) {
     this.requestGoodsList()
+    this.requestCartGoodsList()
   },
+  
 
   requestGoodsList(){
     let currentPage = this.data.pageParams
@@ -39,6 +41,17 @@ global.wxPage({
       pageRows: 20,
     })
   },
+  requestCartGoodsList(){
+    util.api('/api/wxapp/freeship/cart/goods/list',res=>{
+      if(res.error === 0){
+        this.setData({
+          cartData:res.content
+        })
+      }
+    },{
+      ruleId:62,
+    })
+  },
   getSearchText(data){
     this.setData({
       searchText:data.detail,
@@ -46,6 +59,11 @@ global.wxPage({
       dataList:null
     })
     this.requestGoodsList()
+  },
+  showSelected(){
+    this.setData({
+      showSelectedDialog:true
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

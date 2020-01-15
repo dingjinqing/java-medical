@@ -5,16 +5,9 @@
       <text class="edit" bindtap="editToogle">{{isEdit ? '完成':'编辑'}}</text>
     </view>
     <view class="goods-content">
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
-      <v-single-col-goods is-edit="{{isEdit}}" enable-num-edit/>
+      <block wx:for="{{goodsData}}" wx:for-item="goodsItem" wx:key="cartId">
+        <v-single-col-goods goods-data="{{goodsItem}}" is-edit="{{isEdit}}" enable-num-edit/>
+      </block>
     </view>
     <view class="footer">
       <view>已选：1</view>
