@@ -35,4 +35,16 @@ public class CouponConstant {
      * 领取后开始生效
      */
     public static final Byte AFTER_RECEIVING = 1;
+    /**
+     * 限制库存
+     */
+    public static final Byte LIMIT_SURPLUS = 0;
+    /**
+     * 不限制库存
+     */
+    public static final Byte NOT_LIMIT_SURPLUS = 1;
+    /**
+     * 默认库存为0
+     */
+    public static final Integer SURPLUS = 0;
 }

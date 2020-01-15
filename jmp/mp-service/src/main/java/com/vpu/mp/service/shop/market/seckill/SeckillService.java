@@ -25,7 +25,6 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
@@ -34,7 +33,10 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record3;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -374,7 +376,7 @@ public class SeckillService extends ShopBaseService{
         SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();
         total.setTotalPayment(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
         total.setTotalDiscount(analysisVo.getDiscountAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
-        total.setTotalCostEffectivenessRatio(total.getTotalPayment().compareTo(BigDecimal.ZERO) > 0 ? total.getTotalDiscount().divide(total.getTotalPayment()) : BigDecimal.ZERO);
+        total.setTotalCostEffectivenessRatio(total.getTotalPayment().compareTo(BigDecimal.ZERO) > 0 ? total.getTotalDiscount().divide(total.getTotalPayment(),3, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO);
         total.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
         total.setTotalPaidGoodsNumber(analysisVo.getPaidGoodsNumber().stream().mapToInt(Integer::intValue).sum());
         total.setTotalOldUserNumber(analysisVo.getOldUserNumber().stream().mapToInt(Integer::intValue).sum());
@@ -395,7 +397,7 @@ public class SeckillService extends ShopBaseService{
     //用户数
     private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
         for (OrderActivityUserNum activityUserNum : list) {
-            if (activityUserNum.getDate().equals(timestamp)) {
+            if (activityUserNum.getDate().equals(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,timestamp))) {
                 return activityUserNum;
             }
         }

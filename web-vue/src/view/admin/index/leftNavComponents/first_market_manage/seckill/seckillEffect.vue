@@ -83,7 +83,7 @@
           <div
             class="num"
             style="color: #fdb64a;"
-          >{{ total.totalCostEffectivenessRatio }}%</div>
+          >{{ total.totalCostEffectivenessRatio * 100 }}%</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
