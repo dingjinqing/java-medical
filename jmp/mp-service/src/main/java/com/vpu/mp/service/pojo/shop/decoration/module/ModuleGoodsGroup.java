@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.decoration.module;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class ModuleGoodsGroup extends ModuleBase {
     private Byte menuStyle;
 
     /**
-     *菜单位置radio，0一般样式，1滚动至顶部固定
+     *菜单位置radio，0 顶部固定，1左侧固定
      */
     @JsonProperty("position_style")
     private Byte positionStyle;
@@ -57,7 +56,7 @@ public class ModuleGoodsGroup extends ModuleBase {
     private Byte moduleStyle;
 
     /**
-     *
+     * 是否展示"全部商品"栏位 1展示 0不展示
      */
     @JsonProperty("group_display")
     private Byte groupDisplay;
@@ -105,122 +104,37 @@ public class ModuleGoodsGroup extends ModuleBase {
     private Byte cartBtnChoose;
 
     /**
-     *
+     * 是否展示其它信息0展示 1不展示
      */
     @JsonProperty("other_message")
     private Byte otherMessage;
 
-    /**
-     *
-     */
-    @JsonProperty("goods_img")
-    private List<String> goodsImg;
-
-    /**
-     *
-     */
-    @JsonProperty("goods_name")
-    private List<String> goodsName;
-
-    /**
-     *
-     */
-    @JsonProperty("goods_price")
-    private List<BigDecimal> goodsPrice;
-
-    /**
-     *
-     */
-    @JsonProperty("market_price")
-    private List<BigDecimal> marketPrice;
-
-    /**
-     *
-     */
-    @JsonProperty("goods_tag")
-    private List<List<String>> goodsTag;
-
-    /**
-     *
-     */
-    @JsonProperty("label")
-    private List<Label> label;
-
-    @Data
-    public static class Label{
-        /**
-         *
-         */
-        @JsonProperty("label_class")
-        private String labelClass;
-
-        /**
-         *
-         */
-        @JsonProperty("label_parttern")
-        private Byte labelParttern;
-
-        /**
-         *
-         */
-        @JsonProperty("label_name")
-        private String labelName;
-
-        /**
-         *
-         */
-        @JsonProperty("new_label_img")
-        private String newLabelImg;
-    }
+    private List<?> goodsListData;
 
     @Data
     public static class SortGroup{
-
-        /**
-         *
-         */
+        /**选择分组筛查条件名*/
         @JsonProperty("sort_name")
         private String sortName;
-
-        /**
-         *
-         */
+        /**设置的分组名称*/
         @JsonProperty("group_name")
         private String groupName;
-
-        /**
-         *
-         */
+        /**选择的分组筛选条件id*/
         @JsonProperty("sort_id")
         private Integer sortId;
-
-        /**
-         *
-         */
+        /**选择的分组筛选条件类型,为了兼容php数据类型，空字符串:商家分类，"1":商品标签，"2":商品品牌*/
         @JsonProperty("sort_type")
-        private Byte sortType;
-
-        /**
-         *
-         */
+        private String sortType;
+        /**分组指定的商品id字符串集合，逗号分隔*/
         @JsonProperty("group_goods_id")
-        private Integer groupGoodsId;
-
-        /**
-         *
-         */
+        private String groupGoodsId;
+        /**分组指定的商品的数量*/
         @JsonProperty("group_goods_num")
         private Integer groupGoodsNum;
-
-        /**
-         *
-         */
+        /**是展示全部商品：1，还是指定商品：2*/
         @JsonProperty("is_all")
         private Byte isAll;
-
-        /**
-         *
-         */
+        /**展示全部商品时的商品数量*/
         @JsonProperty("sort_goods_num")
         private Integer sortGoodsNum;
     }
