@@ -499,5 +499,6 @@ public class ShopApplication {
     /**
      * 小程序端分享有礼
      */
+    @Autowired
     public WxShareRewardService wxShareReward;
 }
