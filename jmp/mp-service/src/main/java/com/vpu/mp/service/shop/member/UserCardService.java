@@ -1,47 +1,5 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.impl.DSL;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -115,8 +73,48 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
 
 /**
  * @author 黄壮壮
@@ -1072,6 +1070,10 @@ public class UserCardService extends ShopBaseService {
 			BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos,
 					OrderConstant.D_T_MEMBER_CARD,
 					DefaultMarketingProcess.builder().card(card).type(OrderConstant.D_T_MEMBER_CARD).build());
+			if(CollectionUtils.isEmpty(card.getBos())) {
+			    iterator.remove();
+			    continue;
+            }
 			// 折扣金额
 			BigDecimal discountAmount;
 			// 判断门店（无门店||全部门店||部分门店）
