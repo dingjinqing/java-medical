@@ -308,7 +308,7 @@ global.wxPage({
     activityType
   }, actBarInfo) {
     if (!activityType) return null
-    if (activityType === 1) return `开团省${actBarInfo.prdLinePrice - actBarInfo.prdRealPrice}元`
+    if (activityType === 1) return `开团省${(actBarInfo.prdLinePrice - actBarInfo.prdRealPrice).toFixed(2)}元`
     return actBaseInfo[activityType].actName
   },
   // 获取actBar活动状态
