@@ -19,9 +19,7 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.JoinGroupListInfo;
 import com.vpu.mp.service.shop.goods.GoodsSpecService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
@@ -323,28 +321,12 @@ public class GroupBuyListService extends ShopBaseService {
      * @return
      */
     public List<GroupBuyUserInfo> getGroupUserList(Integer groupId){
-
-        List<GroupBuyUserInfo> groupBuyUserInfos = db().select(GROUP_BUY_LIST.STATUS,GROUP_BUY_LIST.USER_ID, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
-                .from(GROUP_BUY_LIST)
-                .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(GROUP_BUY_LIST.USER_ID))
-                .where(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS, STATUS_DEFAULT_SUCCESS, STATUS_ONGOING))
-                .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
-                .orderBy(GROUP_BUY_LIST.IS_GROUPER.desc(), GROUP_BUY_LIST.CREATE_TIME.desc())
-                .fetchInto(GroupBuyUserInfo.class);
-        return groupBuyUserInfos;
-    }
-    /**
-     * 拼团用户信息
-     * @param groupId 拼团id
-     * @return
-     */
-    public List<JoinGroupListInfo> getGroupList(Integer groupId){
         return db().select(GROUP_BUY_LIST.ORDER_SN,GROUP_BUY_LIST.STATUS,GROUP_BUY_LIST.USER_ID, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
                 .from(GROUP_BUY_LIST)
                 .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(GROUP_BUY_LIST.USER_ID))
                 .where(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS, STATUS_DEFAULT_SUCCESS, STATUS_ONGOING))
                 .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
                 .orderBy(GROUP_BUY_LIST.IS_GROUPER.desc(), GROUP_BUY_LIST.CREATE_TIME.desc())
-                .fetchInto(JoinGroupListInfo.class);
+                .fetchInto(GroupBuyUserInfo.class);
     }
 }
