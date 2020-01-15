@@ -5,10 +5,8 @@ import com.vpu.sql.entity.ColumnOperator;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +20,19 @@ public class FileUtil {
      */
     public static List<String> readSqlFile(String sqlPath){
         List<String>  results = getSqlLines(sqlPath);
+        if( !CollectionUtils.isEmpty(results) ){
+            return substringSql(results);
+        }else{
+            return results;
+        }
+    }
+    /**
+     * 读取sql文件的sql语句，并返回sql文件里的所有的sql语句的List集合
+     * @param sqlPath sql文件的绝对路径
+     * @return sql语句的List集合
+     */
+    public static List<String> readSqlFileByJar(String sqlPath){
+        List<String>  results = getJarSqlLines(sqlPath);
         if( !CollectionUtils.isEmpty(results) ){
             return substringSql(results);
         }else{
@@ -43,6 +54,19 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return results;
+    }
+    /**
+     * 读取文件的内容
+     * @param url 文件的路径
+     * @return List文件每一行的内容
+     */
+    private static List<String> getJarSqlLines(String url){
+        Objects.requireNonNull(url);
+        List<String> results = Lists.newArrayList();
+        InputStream inputStream = FileUtil.class.getClassLoader().getResourceAsStream(url);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        reader.lines().forEach(results::add);
         return results;
     }
     /**

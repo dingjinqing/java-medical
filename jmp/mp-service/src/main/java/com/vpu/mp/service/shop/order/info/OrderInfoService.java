@@ -27,7 +27,6 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import org.apache.commons.collections4.CollectionUtils;
-import org.aspectj.apache.bcel.generic.IINC;
 import org.jooq.Condition;
 import org.jooq.DatePart;
 import org.jooq.Record;
@@ -779,6 +778,8 @@ public class OrderInfoService extends ShopBaseService {
         beforeVo.intoRecord(order);
         //orderBo赋值
         orderBo.intoRecord(order);
+        //订单付款方式，0全款 1定金 2好友代付(此处只是设置默认值，后续可能修改)
+        order.setOrderPayWay(OrderConstant.PAY_WAY_FULL);
         //订单类型
         order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
         //补款状态

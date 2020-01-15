@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
@@ -40,6 +41,9 @@ public class WxAppUserCardVo extends UserCardParam {
 	
 	// 使用商品列表
 	protected List<GoodsSmallVo> goodsList;
+	// 门店id 
+	@JsonProperty("storeList")
+	protected List<Integer> storeIdList;
 	// 门店信息
 	protected List<StoreBasicVo> storeInfoList;
 	// 累积积分

@@ -277,7 +277,7 @@ public class OrderGoodsService extends ShopBaseService{
             productSn(goods.getProductInfo().getPrdSn()).
             goodsNumber(goods.getGoodsNumber()).
             marketPrice(goods.getProductInfo().getPrdMarketPrice()).
-            goodsPrice(goods.getProductPrice()).
+            goodsPrice(goods.getProductInfo().getPrdPrice()).
             goodsAttr(goods.getProductInfo().getPrdDesc()).
             //TODO 需要考虑
             goodsAttrId(StringUtils.EMPTY).

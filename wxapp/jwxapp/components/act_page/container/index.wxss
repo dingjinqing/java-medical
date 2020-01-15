@@ -25,25 +25,3 @@
 .input_box > input {
   flex: 1;
 }
-.footer{
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  display: flex;
-}
-.footer > view{
-  flex: 1;
-  line-height: 100rpx;
-  text-align: center;
-  color: #fff;
-  background-color:#fff;
-}
-.footer > .selected-price{
-  flex: 1.5;
-  text-align: left;
-  padding-left: 20rpx;
-  color: #666;
-}
-.footer > .selected-price > text{
-  font-weight: 600;
-}

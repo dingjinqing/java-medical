@@ -871,7 +871,7 @@ export default {
         console.log(this.goodsListData, this.data.goods_items)
         console.log(this.initRequestFlag, judgeChangeFlag, callBackData)
         // 若模块推荐中数据改变处理函数
-        if (this.initRequestFlag) {
+        if (this.initRequestFlag || judgeChangeFlag) {
           console.log(judgeChangeFlag, callBackData)
           if (judgeChangeFlag && callBackData.recommend_type === '0') {
             this.handleToGetModulesGoods(callBackData, false)

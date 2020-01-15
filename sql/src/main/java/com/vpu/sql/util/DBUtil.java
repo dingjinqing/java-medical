@@ -20,6 +20,10 @@ public class DBUtil {
 
     public static volatile AtomicInteger errorNumbers = new AtomicInteger(0);
 
+    public static volatile AtomicInteger executeNumbers = new AtomicInteger(0);
+
+    public static volatile AtomicInteger changeColumnNumbers = new AtomicInteger(0);
+
 
 
 
@@ -33,6 +37,7 @@ public class DBUtil {
             con.setAutoCommit(false);
             con.prepareStatement(sql).executeUpdate();
             con.commit();
+            executeNumbers.getAndIncrement();
         } catch (SQLException e) {
             try {
                 con.rollback();
@@ -46,6 +51,9 @@ public class DBUtil {
                 throw new DuplicateColumnException(column);
             }else if( !StringUtils.isEmpty(index) ){
                 throw new DuplicateIndexException(index);
+            }else if( RegexUtil.isChangColumnException(sql,e.getMessage()) ){
+                changeColumnNumbers.getAndIncrement();
+                log.warn("重复执行的修改表字段的sql-->{}",sql);
             }else{
                 errorNumbers.getAndIncrement();
                 throw new SQLRunTimeException(e.getMessage());
@@ -130,5 +138,14 @@ public class DBUtil {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public static void executeSQLFile(Connection con, String path){
+        List<String> sqlList = FileUtil.readSqlFile(path);
+        sqlList.forEach(x-> executeSQL(con,x));
+    }
+    public static void executeSQLFileByJar(Connection con, String path){
+        List<String> sqlList = FileUtil.readSqlFileByJar(path);
+        sqlList.forEach(x-> executeSQL(con,x));
     }
 }

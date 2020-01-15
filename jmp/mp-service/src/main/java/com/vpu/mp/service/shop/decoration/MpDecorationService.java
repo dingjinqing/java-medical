@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
@@ -25,6 +26,7 @@ import com.vpu.mp.service.pojo.wxapp.decorate.PageCfgVo;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
@@ -359,7 +361,7 @@ public class MpDecorationService extends ShopBaseService {
      */
     public ModuleGoodsGroup convertGoodsGroupForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleGoodsGroup element = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
-        // TODO: 转换实时信息
+        element.setNeedRequest(true);
         return element;
     }
 
@@ -686,6 +688,8 @@ public class MpDecorationService extends ShopBaseService {
                     switch (moduleName) {
                         case ModuleConstant.M_GOODS:
                             return this.convertGoodsForModule(objectMapper, node, user);
+                        case ModuleConstant.M_GOODS_GROUP:
+                            return this.convertGoodsGroupForModule(objectMapper,node,user);
                         case ModuleConstant.M_COUPON:
                             return this.convertCouponForModule(objectMapper, node, user);
                         case ModuleConstant.M_CARD:
@@ -733,6 +737,7 @@ public class MpDecorationService extends ShopBaseService {
         param.setMinPrice(moduleGoods.getMinPrice());
         param.setMaxPrice(moduleGoods.getMaxPrice());
         param.setGoodsArea(moduleGoods.getGoodsArea());
+        param.setGoodsAreaData(moduleGoods.getGoodsAreaData());
         param.setGoodsType(moduleGoods.getGoodsType());
         param.setSortType(moduleGoods.getSortType());
         param.setGoodsNum(moduleGoods.getGoodsNum());
@@ -742,6 +747,29 @@ public class MpDecorationService extends ShopBaseService {
         moduleGoods.setGoodsListData(pageIndexGoodsList);
 
         return moduleGoods;
+    }
+
+    /**
+     * 商品分组模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGoodsGroup convertGoodsGroupForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException{
+        ModuleGoodsGroup moduleGoodsGroup = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
+        Integer userId = user.getUserId();
+        GoodsGroupListMpParam param = new GoodsGroupListMpParam();
+        param.setUserId(userId);
+
+        if (!GoodsConstant.GOODS_GROUP_LIST_TOP_POSITION.equals(moduleGoodsGroup.getPositionStyle()) || !GoodsConstant.GOODS_GROUP_LIST_SHOW_ALL_COLUMN.equals(moduleGoodsGroup.getGroupDisplay())) {
+            param.setSortGroupArr(moduleGoodsGroup.getSortGroupArr().subList(0,1));
+        }
+        // 转换实时信息
+        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getGoodsGroupList(param);
+        moduleGoodsGroup.setGoodsListData(pageIndexGoodsList);
+        return moduleGoodsGroup;
     }
 
     /**

@@ -256,7 +256,7 @@ public interface ImageDefault {
 	 * @return
 	 */
 	public default boolean validImageType(String contentType) {
-		String[] types = { "image/jpeg", "image/gif", "image/png", "image/bmp" };
+		String[] types = { "image/jpg","image/jpeg", "image/gif", "image/png", "image/bmp" };
 		return Arrays.asList(types).contains(contentType);
 	}
 
