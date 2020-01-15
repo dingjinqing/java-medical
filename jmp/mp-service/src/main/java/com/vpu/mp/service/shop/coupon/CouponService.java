@@ -5,7 +5,6 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,16 +12,34 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.coupon.*;
+import com.vpu.mp.service.pojo.shop.coupon.CouponAllVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.coupon.*;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.ExpireTimeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import jodd.util.StringUtil;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record6;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +50,22 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.foundation.util.Util.*;
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.foundation.util.Util.listToString;
+import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -618,18 +647,18 @@ public class CouponService extends ShopBaseService {
         if(StringUtils.isBlank(new StringBuilder().append(coupon.getRecommendGoodsId()).append(coupon.getRecommendCatId()).append(coupon.getRecommendSortId()).append(coupon.getRecommendProductId()).toString())){
             return true;
         }
-        if(StringUtil.isNotBlank(coupon.getRecommendGoodsId())){
-            return Arrays.asList(coupon.getRecommendGoodsId().split(",")).contains(bo.getGoodsId().toString());
+        if(StringUtil.isNotBlank(coupon.getRecommendGoodsId()) && Arrays.asList(coupon.getRecommendGoodsId().split(",")).contains(bo.getGoodsId().toString())){
+            return true;
         }
-        if(StringUtil.isNotBlank(coupon.getRecommendCatId())){
-            return Arrays.asList(coupon.getRecommendCatId().split(",")).contains(bo.getCatId().toString());
+        if(StringUtil.isNotBlank(coupon.getRecommendCatId()) && Arrays.asList(coupon.getRecommendCatId().split(",")).contains(bo.getCatId().toString())){
+            return true;
         }
-        if(StringUtil.isNotBlank(coupon.getRecommendSortId())){
-            return Arrays.asList(coupon.getRecommendSortId().split(",")).contains(bo.getSortId().toString());
+        if(StringUtil.isNotBlank(coupon.getRecommendSortId()) && Arrays.asList(coupon.getRecommendSortId().split(",")).contains(bo.getSortId().toString())){
+            return true;
         }
         //crm相关
-        if(StringUtil.isNotBlank(coupon.getRecommendProductId())){
-            return Arrays.asList(coupon.getRecommendProductId().split(",")).contains(bo.getProductId().toString());
+        if(StringUtil.isNotBlank(coupon.getRecommendProductId()) && Arrays.asList(coupon.getRecommendProductId().split(",")).contains(bo.getProductId().toString())){
+            return true;
         }
         return true;
     }
