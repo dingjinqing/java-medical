@@ -76,11 +76,11 @@
           <span>菜单样式</span>
           <el-radio
             v-model="linkageData.menu_style"
-            :label="0"
+            label="0"
           >顶部展示商品分组</el-radio>
           <el-radio
             v-model="linkageData.menu_style"
-            :label="1"
+            label="1"
           >左侧展示商品分组</el-radio>
         </div>
         <div class="mainList bgContainer">
@@ -88,18 +88,18 @@
           <div class="bgDiv">
             <el-radio
               v-model="linkageData.goods_module_bg"
-              :label="0"
+              label="0"
             >与页面背景颜色一致</el-radio>
             <div class="customBgColor">
               <el-radio
                 v-model="linkageData.goods_module_bg"
-                :label="1"
+                label="1"
               >自定义</el-radio>
               <span>
                 <el-color-picker
                   v-model="linkageData.goods_bg_color"
                   show-alpha
-                  :disabled="linkageData.goods_module_bg===0?true:false"
+                  :disabled="linkageData.goods_module_bg==='0'?true:false"
                   :predefine="predefineColors"
                 >
                 </el-color-picker>
@@ -115,7 +115,7 @@
           </div>
 
         </div>
-        <div v-if="linkageData.menu_style === 0">
+        <div v-if="linkageData.menu_style === '0'">
           <div class="mainList allGroup">
             <span>全部分组</span>
             <div>
@@ -123,11 +123,11 @@
               <div>
                 <el-radio
                   v-model="linkageData.group_display"
-                  :label="1"
+                  label="1"
                 >展示</el-radio>
                 <el-radio
                   v-model="linkageData.group_display"
-                  :label="0"
+                  label="0"
                 >不展示</el-radio>
               </div>
             </div>
@@ -137,11 +137,11 @@
             <span>菜单位置</span>
             <el-radio
               v-model="linkageData.position_style"
-              :label="0"
+              label="0"
             >一般样式</el-radio>
             <el-radio
               v-model="linkageData.position_style"
-              :label="1"
+              label="1"
             >滚动至顶部固定</el-radio>
           </div>
           <div class="mainList listStyle">
@@ -150,25 +150,25 @@
               <div class="listStyleFirstDiv">
                 <el-radio
                   v-model="linkageData.shop_style"
-                  :label="0"
+                  label="0"
                 >大图展示</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
-                  :label="1"
+                  label="1"
                 >一行两个</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
-                  :label="2"
+                  label="2"
                 >一行三个</el-radio>
               </div>
               <div>
                 <el-radio
                   v-model="linkageData.shop_style"
-                  :label="3"
+                  label="3"
                 >商品列表</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
-                  :label="4"
+                  label="4"
                 >一行横滑</el-radio>
               </div>
             </div>
@@ -182,26 +182,26 @@
             <span>模块样式</span>
             <el-radio
               v-model="linkageData.module_style"
-              :label="1"
+              label="1"
             >白底无边框</el-radio>
             <el-radio
               v-model="linkageData.module_style"
-              :label="2"
+              label="2"
             >边框投影</el-radio>
             <el-radio
               v-model="linkageData.module_style"
-              :label="3"
+              label="3"
             >白底有边框</el-radio>
           </div>
           <div style="margin:10px 0">
             <span>模块角度</span>
             <el-radio
               v-model="linkageData.if_radius"
-              :label="0"
+              label="0"
             >直角</el-radio>
             <el-radio
               v-model="linkageData.if_radius"
-              :label="1"
+              label="1"
             >圆角</el-radio>
           </div>
           <div class="endDiv">
@@ -222,7 +222,7 @@
               >
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
-                  :label="0"
+                  label="0"
                 >
                   <i
                     class="iconfont icontianjia icon_font_size new_class"
@@ -231,14 +231,14 @@
                 </el-radio>
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
-                  :label="1"
+                  label="1"
                 ><i
                     class="iconfont icongouwuche1 icon_font_size new_class"
                     style="color: rgb(177, 78, 105);"
                   ></i></el-radio>
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
-                  :label="2"
+                  label="2"
                 >
                   <i
                     class="right_buy new_back"
@@ -249,7 +249,7 @@
                 </el-radio>
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
-                  :label="3"
+                  label="3"
                 >
                   <i
                     class="cart_buy"
@@ -266,15 +266,15 @@
               <div v-if="linkageData.other_message">
                 <el-radio
                   v-model="linkageData.show_market"
-                  :label="1"
+                  label="1"
                 >市场价</el-radio>
                 <el-radio
                   v-model="linkageData.show_market"
-                  :label="2"
+                  label="2"
                 >销量</el-radio>
                 <el-radio
                   v-model="linkageData.show_market"
-                  :label="3"
+                  label="3"
                 >评价数</el-radio>
               </div>
               <!--end-->
@@ -490,16 +490,16 @@ export default {
         if (arr.indexOf(item) !== -1) {
           console.log(flag, newData[item])
           if (flag) {
-            if (newData[item] === 1) {
+            if (newData[item] === '1') {
               newData[item] = true
-            } else if (newData[item] === 0) {
+            } else if (newData[item] === '0') {
               newData[item] = false
             }
           } else {
             if (newData[item]) {
-              newData[item] = 1
+              newData[item] = '1'
             } else {
-              newData[item] = 0
+              newData[item] = '0'
             }
           }
         }
@@ -531,7 +531,7 @@ export default {
       let arr = []
       data.forEach((item, index) => {
         //  obj
-        let obj = { sort_type: 0 }
+        let obj = { sort_type: 0, radio: '1' }
         console.log(item.goodsSumNum)
         if (item.goodsSumNum !== undefined) {
           obj.sort_name = item.sortName
@@ -654,8 +654,8 @@ export default {
     // 点击指定商品
     handleToClickShowNumRadio (index) {
       this.nowClickAppointIndex = index
-      console.log(index, this.linkageData.sort_group_arr[index].radio)
-      if (this.linkageData.sort_group_arr[index].radio === '2') {
+      console.log(index, this.linkageData.sort_group_arr[index].is_all)
+      if (this.linkageData.sort_group_arr[index].is_all === 2) {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
       }
     },
