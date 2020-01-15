@@ -28,7 +28,14 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo
 @RestController
 @RequestMapping("/api/admin/market/integration")
 public class AdminGroupIntegrationController extends AdminBaseController {
-
+    /**
+     * 瓜分积分下拉框
+     * @return id name
+     */
+    @GetMapping("/selectlist")
+    public JsonResult getSelectList(){
+        return success(shop().groupIntegration.getActSelectList());
+    }
 	/**
 	 * 分页查询瓜分积分活动
 	 * @param param

@@ -12,12 +12,12 @@
       <!--菜单样式为顶部展示商品分组-->
       <div
         class="commodityGrouping"
-        v-if="data.menu_style===0"
+        v-if="data.menu_style==='0'"
       >
         <div class="commodityGroupingMain">
           <div
             class="groupList"
-            v-for="(item,index) in showNav.filter((item,index)=>data.group_display===0?index!==0:index!==-1)"
+            v-for="(item,index) in showNav.filter((item,index)=>data.group_display==='0'?index!==0:index!==-1)"
             :class="index===4?'greater':''"
             :key="index"
             :style="index===0?'border-bottom: 1px solid rgb(177, 78, 105);color:rgb(177, 78, 105)':index>4?'display:none':''"
@@ -29,24 +29,24 @@
         </div>
         <ul
           v-if="data.sort_group_arr.length"
-          :style="((data.shop_style===1 || data.shop_style===2)?'display: flex;flex-wrap: wrap;':data.shop_style===4?'display:flex':'')+(data.goods_module_bg===1?`;background:${data.goods_bg_color}`:'')"
+          :style="((data.shop_style==='1' || data.shop_style==='2')?'display: flex;flex-wrap: wrap;':data.shop_style==='4'?'display:flex':'')+(data.goods_module_bg==='1'?`;background:${data.goods_bg_color}`:'')"
         >
           <li
             v-for="(item,index) in data.goods_img"
             :key="index"
-            :style="data.shop_style===2?'width:33.33%;':data.shop_style===4?'width:158px':data.shop_style===0?'width:100%;':data.shop_style===3?'width:100%':''"
+            :style="data.shop_style==='2'?'width:33.33%;':data.shop_style==='4'?'width:158px':data.shop_style==='0'?'width:100%;':data.shop_style==='3'?'width:100%':''"
           >
             <div
               class="listClass"
-              :style="(data.module_style===2?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':data.module_style===3?'border: 1px solid #eee !important;':'')+(data.if_radius===1?'border-radius:8px;':'')"
+              :style="(data.module_style==='2'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':data.module_style==='3'?'border: 1px solid #eee !important;':'')+(data.if_radius==='1'?'border-radius:8px;':'')"
             >
               <div
                 class="containter"
-                :style="(data.shop_style===1 || data.shop_style===2)?'display:block;height:auto': data.shop_style===0?'display: flex;flex-direction: column;height:auto':data.shop_style===3?'display:flex':data.shop_style==='4'?'display: flex;flex-direction: column;height:auto':''"
+                :style="(data.shop_style==='1' || data.shop_style==='2')?'display:block;height:auto': data.shop_style==='0'?'display: flex;flex-direction: column;height:auto':data.shop_style==='3'?'display:flex':data.shop_style==='4'?'display: flex;flex-direction: column;height:auto':''"
               >
                 <div
                   class="commodityTop"
-                  :style="data.shop_style===2?'height:auto':data.shop_style===4?'width:140px;height:140px;':data.shop_style==='1'?'margin-right:5px;':''"
+                  :style="data.shop_style==='2'?'height:auto':data.shop_style==='4'?'width:140px;height:140px;':data.shop_style==='1'?'margin-right:5px;':''"
                 >
                   <div class="label">
                     <!--左上角图形-->
@@ -80,69 +80,69 @@
                     </div>
                   </div>
                   <img
-                    :style="data.shop_style===0?'width:100%;height:auto':data.shop_style===4?'width:100%;height:auto;':data.shop_style===2?'width:102px;height:102px;':data.shop_style===1?'width:163px;height:163px;max-height:163px':data.shop_style===3?'width:128px':''"
+                    :style="data.shop_style==='0'?'width:100%;height:auto':data.shop_style==='4'?'width:100%;height:auto;':data.shop_style==='2'?'width:102px;height:102px;':data.shop_style==='1'?'width:163px;height:163px;max-height:163px':data.shop_style==='3'?'width:128px':''"
                     :src="data.goods_img[index]"
                   >
                 </div>
                 <div
                   class="commodityBottom"
-                  :style="data.shop_style===3?'padding-left:10px':data.shop_style!==1?'padding-top:0':''"
+                  :style="data.shop_style==='3'?'padding-left:10px':data.shop_style!=='1'?'padding-top:0':''"
                 >
                   <div class="bottomHead">
                     <div
                       class="goodsNameClass"
-                      v-if="data.show_name === 1"
+                      v-if="data.show_name === '1'"
                     >{{data.goods_name[index]}}</div>
-                    <div :style="!data.show_name===1?'height:14px':''"></div>
+                    <div :style="!data.show_name==='1'?'height:14px':''"></div>
                     <div
                       class="activityContainer"
-                      :style="(data.shop_style===0)?'display:flex;margin-top:0':data.shop_style===1?'display:flex;margin-top:0':data.shop_style===2?'display:flex':data.shop_style===3?'margin-top:50px;display:flex':'display:flex'"
+                      :style="(data.shop_style==='0')?'display:flex;margin-top:0':data.shop_style==='1'?'display:flex;margin-top:0':data.shop_style==='2'?'display:flex':data.shop_style==='3'?'margin-top:50px;display:flex':'display:flex'"
                     >
                       <div
-                        :style="indexC===0?'':'margin-top:0'+((data.shop_style===0||data.shop_style===1)&&indexC===1)?'margin-left:5px':data.shop_style!==3?'margin-top:5px;margin-top:0':''"
+                        :style="indexC===0?'':'margin-top:0'+((data.shop_style==='0'||data.shop_style==='1')&&indexC===1)?'margin-left:5px':data.shop_style!=='3'?'margin-top:5px;margin-top:0':''"
                         v-for="(itemC,indexC) in data.goods_tag[index]"
                         :key="indexC"
                         class="activitySpan"
                       >
-                        <span :style="((data.shop_style===2||data.shop_style===4)?'max-width:100%;white-space: nowrap;margin-top:0;':data.shop_style===1?'max-width:145px':data.shop_style===1?'max-width:163px':data.shop_style===3?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC}}</span>
+                        <span :style="((data.shop_style==='2'||data.shop_style==='4')?'max-width:100%;white-space: nowrap;margin-top:0;':data.shop_style==='1'?'max-width:145px':data.shop_style==='1'?'max-width:163px':data.shop_style==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC}}</span>
                       </div>
                     </div>
 
                   </div>
                   <div
                     class="bottomFooter"
-                    :style="data.shop_style===3?'display:flex;flex-direction:column':data.shop_style!==0 ?'display:flex;flex-direction: row;height:auto':'height:20px'"
+                    :style="data.shop_style==='3'?'display:flex;flex-direction:column':data.shop_style!=='0' ?'display:flex;flex-direction: row;height:auto':'height:20px'"
                   >
                     <span
                       :style="`color:${bgColor};`"
-                      v-if="data.show_price===1"
+                      v-if="data.show_price==='1'"
                     >￥{{Number(data.goods_price[index]).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.shop_style!==2&&data.other_message===1"
-                    >{{data.show_market===1?'￥0.00':data.show_market===2?'0人付款':'0人评价'}}</span>
+                      v-if="data.shop_style!=='2'&&data.other_message==='1'"
+                    >{{data.show_market==='1'?'￥0.00':data.show_market==='2'?'0人付款':'0人评价'}}</span>
                     <!--购买按钮-->
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
-                      :style="`color:${bgColor};`+`${data.shop_style===3?'position:static':''}`"
-                      v-if="data.cart_btn===1&&data.cart_btn_choose === 0"
+                      :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
+                      v-if="data.cart_btn==='1'&&data.cart_btn_choose === '0'"
                     ></i>
                     <i
                       class="iconfont icongouwuche1 icon_font_size new_class"
-                      :style="`color:${bgColor};`+`${data.shop_style===3?'position:static':''}`"
-                      v-if="data.cart_btn===1&&data.cart_btn_choose === 1"
+                      :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
+                      v-if="data.cart_btn==='1'&&data.cart_btn_choose === '1'"
                     ></i>
                     <i
                       class="right_buy new_back"
-                      :style="data.shop_style===2?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor};`+`${data.shop_style===3?'position:static':''}`"
-                      v-if="data.cart_btn===1&&data.cart_btn_choose===2"
+                      :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
+                      v-if="data.cart_btn==='1'&&data.cart_btn_choose==='2'"
                     >
                       {{$t('commodity.grabAtOnce')}}
                     </i>
                     <i
                       class="cart_buy"
-                      :style="data.shop_style===2?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor};`+`${data.shop_style===3?'position:static':''}`"
-                      v-if="data.cart_btn===1&&data.cart_btn_choose===3"
+                      :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
+                      v-if="data.cart_btn==='1'&&data.cart_btn_choose==='3'"
                     >{{$t('commodity.purchase')}}</i>
                   </div>
                 </div>
@@ -174,7 +174,7 @@
           </div>
           <ul
             v-if="data.sort_group_arr.length"
-            :style="(data.goods_module_bg===1?`background:${data.goods_bg_color}`:'')+';padding: 10px;overflow: hidden;'"
+            :style="(data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:'')+';padding: 10px;overflow: hidden;'"
           >
             <li
               v-for="(item,index) in data.goods_img"
@@ -183,7 +183,7 @@
             >
               <div
                 class="listClass"
-                :style="(data.module_style===2?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':data.module_style===3?'border: 1px solid #eee !important;':'')+(data.if_radius===1?'border-radius:8px;':'')+';overflow:hidden'"
+                :style="(data.module_style==='2'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':data.module_style==='3'?'border: 1px solid #eee !important;':'')+(data.if_radius==='1'?'border-radius:8px;':'')+';overflow:hidden'"
               >
                 <div
                   class="containter"
@@ -233,12 +233,12 @@
                     <div class="bottomHead">
                       <div
                         class="goodsNameClass"
-                        v-if="data.show_name===1"
+                        v-if="data.show_name==='1'"
                       >{{data.goods_name[index]}}</div>
-                      <div :style="!data.show_name ===1?'height:14px':''"></div>
+                      <div :style="!data.show_name ==='1'?'height:14px':''"></div>
                       <div
                         class="activityContainer"
-                        :style="'display:flex;'+(!data.show_name===1?'margin: 10px 0 50px;':'margin-top:50px;')"
+                        :style="'display:flex;'+(!data.show_name==='1'?'margin: 10px 0 50px;':'margin-top:50px;')"
                       >
                         <div
                           :style="indexC===0?'margin-right:5px;':'margin-top:0px;'"
@@ -257,35 +257,35 @@
                     >
                       <span
                         :style="`color:${bgColor};position:static;padding-top:3px`"
-                        v-if="data.show_price===1"
+                        v-if="data.show_price==='1'"
                       >￥{{Number(data.goods_price[index]).toFixed(2)}}</span>
-                      <span v-if="!data.show_price===1"></span>
+                      <span v-if="!data.show_price==='1'"></span>
                       <span
-                        :style="'text-decoration: line-through;color: #c0c0c0;position:static'+(data.other_message===1?'width: 50px;padding-top: 3px;':'')"
-                        v-if="data.shop_style!==2&&data.other_message===1"
-                      >{{data.show_market===1?'￥0.00':data.show_market===2?'0人付款':'0人评价'}}</span>
+                        :style="'text-decoration: line-through;color: #c0c0c0;position:static'+(data.other_message==='1'?'width: 50px;padding-top: 3px;':'')"
+                        v-if="data.shop_style!=='2'&&data.other_message==='1'"
+                      >{{data.show_market==='1'?'￥0.00':data.show_market==='2'?'0人付款':'0人评价'}}</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn===1&&data.cart_btn_choose === 0"
+                        v-if="data.cart_btn==='1'&&data.cart_btn_choose === '0'"
                       ></i>
                       <i
                         class="iconfont icongouwuche1 icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn===1&&data.cart_btn_choose === 1"
+                        v-if="data.cart_btn==='1'&&data.cart_btn_choose === '1'"
                       ></i>
                       <i
                         class="right_buy new_back"
                         style="`position:static;backgroundColor:${bgColor};`"
-                        v-if="data.cart_btn===1&&data.cart_btn_choose===2"
+                        v-if="data.cart_btn==='1'&&data.cart_btn_choose==='2'"
                       >
                         {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
                         :style="`position:static;color:${bgColor};border-color:${bgColor};`"
-                        v-if="data.cart_btn===1&&data.cart_btn_choose===3"
+                        v-if="data.cart_btn==='1'&&data.cart_btn_choose==='3'"
                       >{{$t('commodity.purchase')}}</i>
                     </div>
                   </div>
@@ -388,10 +388,10 @@ export default {
           console.log(turnToString)
           this.$nextTick(() => {
             this.data = turnToString
+            this.handleToInit(this.data)
           })
 
           // 处理初始数据
-          this.handleToInit(this.data)
         }
       },
       immediate: true,
@@ -414,7 +414,7 @@ export default {
         let arr = [this.groupTextData[0]]
         console.log(this.groupTextData[0])
         sortGroupArr.forEach((item, index) => {
-          arr.push(item.customName)
+          arr.push(item.sort_name)
         })
         this.showNav = arr
       } else {

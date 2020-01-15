@@ -184,11 +184,11 @@ export default {
             show_market: 1, // 其它信息按钮下隐藏模块radio
             goods_module_bg: 0, // 背景颜色radio
             goods_bg_color: '#f5f5f5', // 背景自定义颜色
-            show_name: '1', // 商品名称
-            show_price: '1', // 商品价格
-            cart_btn: '1', // 购买按钮checkbox
+            show_name: 1, // 商品名称
+            show_price: 1, // 商品价格
+            cart_btn: 1, // 购买按钮checkbox
             cart_btn_choose: 0, // 购买按钮选中显示模块radio
-            other_message: '0', // 其他信息按钮
+            other_message: 0, // 其他信息按钮
             sort_group_arr: []// 商品分组菜单隐藏模块数据列表
           }
           break
