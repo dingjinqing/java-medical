@@ -194,8 +194,8 @@ public class SecKillProcessorDao extends ShopBaseService {
             }
 
             //修改库存
-            db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,seckillStock - goods.getGoodsNumber()).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
-            db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,seckillPrdStock - goods.getGoodsNumber()).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
+            db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,seckillStock - goods.getGoodsNumber()).set(SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
+            db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,seckillPrdStock - goods.getGoodsNumber()).set(SEC_KILL_PRODUCT_DEFINE.SALE_NUM,SEC_KILL_PRODUCT_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
 
             //秒杀记录
             seckillService.seckillList.addSecRecord(order,param.getGoods().get(0).getGoodsId());

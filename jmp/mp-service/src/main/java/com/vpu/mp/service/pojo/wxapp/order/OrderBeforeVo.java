@@ -163,7 +163,6 @@ public class OrderBeforeVo {
         orderRecord.setMemberCardBalance(getMemberCardDiscount());
         orderRecord.setPackageDiscount(getPackageDiscount());
         orderRecord.setPreSaleDiscount(getPreSaleDiscount());
-        orderRecord.setOrderPayWay(getOrderPayWay());
         if(getBkOrderMoney() != null){
             orderRecord.setBkOrderMoney(getBkOrderMoney());
         }

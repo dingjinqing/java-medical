@@ -1053,9 +1053,9 @@ public class GroupDrawService extends ShopBaseService {
 		}
 	}
 
-
 	/**
 	 * 生成团记录
+	 * 
 	 * @param order
 	 * @param groupId
 	 * @param status
@@ -1099,6 +1099,7 @@ public class GroupDrawService extends ShopBaseService {
 				groupDrawInvite.updateRow(inviteUserInfo.getId(), ONE);
 				increaseUserNum(userId, groupDrawId, groupId);
 			}
+			successGroupDraw(groupDrawId, groupId);
 		}
 	}
 
@@ -1137,7 +1138,7 @@ public class GroupDrawService extends ShopBaseService {
 		for (GroupDrawList groupDrawList : groupDrawUserList) {
 			Integer userId = groupDrawList.getUserId();
 			Integer goodsId = groupDrawList.getGoodsId();
-			GoodsRecord goodsInfo = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
+			GoodsRecord goodsInfo = getGood(goodsId);
 			log.info("获取商品信息：" + goodsInfo);
 			String page = "pages1/pinlotteryinfo/pinlotteryinfo?group_id=" + groupDrawList.getGroupId()
 					+ "&group_draw_id=" + groupDrawList.getGroupDrawId() + "&goods_id=" + goodsId;
@@ -1149,6 +1150,10 @@ public class GroupDrawService extends ShopBaseService {
 			sendMp(groupDraw, first, userId, goodsInfo, page, grouper, userIdList);
 			sendMa(groupDraw, first, userId, goodsInfo, page, grouper, userIdList);
 		}
+	}
+
+	protected GoodsRecord getGood(Integer goodsId) {
+		return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
 	}
 
 	/**
@@ -1200,4 +1205,39 @@ public class GroupDrawService extends ShopBaseService {
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
 	}
+
+	/**
+	 * 通过订单号更新团信息
+	 * 
+	 * @param orderSn
+	 * @param status
+	 */
+	public void updateGroupInfoByOrderSn(String orderSn, Byte status) {
+		log.info("orderSn"+orderSn+"通过订单号更新团信息");
+		int execute = db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, status)
+				.where(JOIN_GROUP_LIST.ORDER_SN.eq(orderSn)).execute();
+		log.info("订单号：" + orderSn + "；更新状态为：" + status + "；结果：" + execute);
+		if (status.equals(ZERO)) {
+			JoinGroupListRecord groupInfo = getGroupInfoByOrderSn(orderSn);
+			Integer groupDrawId = groupInfo.getGroupDrawId();
+			Integer goodsId = groupInfo.getGoodsId();
+			Integer userId = groupInfo.getUserId();
+			Integer groupId = groupInfo.getGroupId();
+			GroupDrawInviteRecord inviteUserInfo = groupDrawInvite.getAvailableInviteUser(groupDrawId, goodsId, userId);
+			generateDrawRecord(userId, groupDrawId, goodsId, groupId);
+			Integer inviteUserId = inviteUserInfo.getInviteUserId();
+			if (groupDrawId != null && inviteUserId != null) {
+				generateDrawRecord(inviteUserId, groupDrawId, goodsId, groupId);
+				Byte isNew = inviteUserInfo.getIsNew();
+				if (Objects.equal(ONE, isNew)) {
+					generateDrawRecord(userId, groupDrawId, goodsId, groupId);
+					generateDrawRecord(inviteUserId, groupDrawId, goodsId, groupId);
+				}
+				groupDrawInvite.updateRow(inviteUserInfo.getId(), ONE);
+				increaseUserNum(userId, groupDrawId, groupId);
+			}
+			successGroupDraw(groupDrawId, groupId);
+		}
+	}
+	
 }

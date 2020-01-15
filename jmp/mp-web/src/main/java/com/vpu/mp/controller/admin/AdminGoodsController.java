@@ -6,10 +6,12 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -565,6 +567,24 @@ public class AdminGoodsController extends AdminBaseController {
         goodsListMpParam.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
         List<? extends GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam, null);
         return success(goodsList);
+    }
+
+    /**
+     * 装修-商品分组-获取数据接口
+     * @param param 分组过滤条件
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/goods/mp/group/list")
+    public JsonResult getGoodsGroupList(@RequestBody GoodsGroupListMpParam param) {
+        if (param.getSortGroupArr() == null || param.getSortGroupArr().size() == 0) {
+            return fail();
+        }
+        param.setUserId(null);
+        if (!GoodsConstant.GOODS_GROUP_LIST_TOP_POSITION.equals(param.getPositionStyle())||!GoodsConstant.GOODS_GROUP_LIST_SHOW_ALL_COLUMN.equals(param.getGroupDisplay())) {
+            param.setSortGroupArr(param.getSortGroupArr().subList(0,1));
+        }
+
+        return success(shop().goodsMp.getGoodsGroupList(param));
     }
 
     /**

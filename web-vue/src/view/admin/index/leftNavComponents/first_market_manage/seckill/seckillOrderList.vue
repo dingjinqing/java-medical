@@ -109,6 +109,7 @@ export default {
         11: '退款完成',
         12: '送礼完成'
       },
+      orderStatusMap: {},
       createTime: '' // 创建时间
     }
   },
@@ -120,6 +121,7 @@ export default {
   mounted () {
     if (this.$route.query.id > 0) {
       this.initDataList()
+      this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
     }
   },
   methods: {
@@ -147,7 +149,7 @@ export default {
       console.log('订单状态', this.orderStatusArr)
 
       data.forEach(item => {
-        item.orderStatusText = this.orderStatusArr[item.orderStatus]
+        item.orderStatusText = this.orderStatusMap.get(item.orderStatus)
         item.name = this.$route.query.name
         item.goods.forEach(val => {
           item.goodsPrice = val.goodsPrice

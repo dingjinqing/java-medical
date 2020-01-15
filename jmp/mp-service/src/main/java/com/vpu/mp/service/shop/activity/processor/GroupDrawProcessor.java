@@ -55,12 +55,12 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
 		if (!code.equals(JsonResultCode.CODE_SUCCESS)) {
 			throw new MpException(code, null);
 		}
-		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) 0);
+		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) -1);
 	}
 
 	@Override
 	public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) -1);
+		groupDrawService.updateGroupInfoByOrderSn(order.getOrderSn(), (byte) 0);
 	}
 
 }

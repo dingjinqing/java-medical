@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.groupbuy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,16 @@ import lombok.Setter;
 public class GroupBuyUserInfo {
 
     private Integer userId;
+    /**
+     * 用户名称
+     */
+    @JsonIgnore
+    private String username;
+    /**
+     * 订单
+     */
+    @JsonIgnore
+    private String orderSn;
     /**
      * 头像
      */

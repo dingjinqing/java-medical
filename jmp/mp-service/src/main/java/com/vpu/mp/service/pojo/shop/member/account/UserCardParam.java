@@ -66,6 +66,7 @@ public class UserCardParam {
 	protected Integer sendMoney;
 	protected String chargeMoney;
 	protected Integer useTime;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected String storeList;
 	protected Integer count;
 	protected Byte delFlag;
@@ -84,6 +85,7 @@ public class UserCardParam {
 	protected Byte payOwnGood;
 	protected Byte receiveAction;
 	protected Byte isExchang;
+	/**	可否在门店使用  0可以 1不可以 */
 	protected Byte storeUseSwitch;
 	protected String exchangGoods;
 	protected Byte exchangFreight;
