@@ -177,7 +177,7 @@
                 style="font-size: 22px;color: #5a8bff;"
                 class="el-icon-delete"
                 @click="deleteCoupon(scope.row.id)"
-                v-if="scope.row.delFlag === 0"
+                v-if="scope.row.delFlag === 0 && scope.row.isUsed === 0 && scope.row.expireFlag === 0 "
               ></span>
             </template>
           </el-table-column>
@@ -257,13 +257,21 @@ export default {
 
     // 表格处理数据
     handleData (data) {
+      var timestamp = new Date().getTime()
       data.map((item, index) => {
+        item.expireTime = new Date(item.endTime).getTime()
+        if (timestamp <= item.expireTime) {
+          // 未过期
+          item.expireFlag = 0
+        } else {
+          // 已过期
+          item.expireFlag = 1
+        }
         if (item.accessMode === 0) {
           item.accessMode = '发放'
         } else {
           item.accessMode = '领取'
         }
-        // item.validityTime = `${item.startTime} 至 ${item.endTime}`
       })
       this.tableData = data
     },

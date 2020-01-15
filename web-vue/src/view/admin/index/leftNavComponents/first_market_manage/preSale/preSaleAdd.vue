@@ -5,218 +5,473 @@
 -->
 <template>
   <div>
-    <wrapper>
-        <el-row style="margin-bottom:20px">
-          <el-col :span="8">
-            <el-form label-width="100px" >
-              <el-form-item label="活动类型">
-                <el-radio v-for="(item, index) in presaleTypes" :key="index"
-                    v-model="param.presaleType" :label="index" >{{item}}</el-radio>
-              </el-form-item>
-              <el-form-item label="活动名称">
-                <el-input v-model="param.presaleName"></el-input>
-              </el-form-item>
-              <!-- 定金膨胀 -->
-              <el-form-item v-show="!isFullPay" label="活动时间">
-                <template>
-                  <el-row></el-row>
-                  <el-form label-width="100px" >
-                    <el-form-item label="定金支付时间">
-                      <el-date-picker
-                        v-model="preTime1Range"
-                        type="datetimerange"
-                        range-separator="至"
-                        start-placeholder="开始时间"
-                        end-placeholder="结束时间">
-                      </el-date-picker>
-                      <el-button size="mini" v-show="!twoSteps"
-                      @click="param.prePayStep=2">添加定金支付时段</el-button>
-                    </el-form-item>
-                    <el-form-item label="定金支付时间" v-show="twoSteps">
-                      <el-date-picker
-                        v-model="preTime2Range"
-                        type="datetimerange"
-                        range-separator="至"
-                        start-placeholder="开始时间"
-                        end-placeholder="结束时间">
-                      </el-date-picker>
-                      <el-button size="mini" @click="param.prePayStep=1">删除</el-button>
-                    </el-form-item>
-                    <el-form-item label="尾款支付时间">
-                      <el-date-picker
-                        v-model="tailPayTimeRange"
-                        type="datetimerange"
-                        range-separator="至"
-                        start-placeholder="开始时间"
-                        end-placeholder="结束时间">
-                      </el-date-picker>
-                    </el-form-item>
-                  </el-form>
-                </template>
-              </el-form-item>
-              <!-- 全款预售 -->
-              <el-form-item v-show="isFullPay" label="定金支付时间">
+    <!-- <wrapper> -->
+    <div class="wrapper">
+      <el-form label-width="120px">
+        <el-form-item label="活动类型：">
+          <el-radio
+            v-for="(item, index) in presaleTypes"
+            :key="index"
+            v-model="param.presaleType"
+            :label="index"
+          >{{item}}</el-radio>
+        </el-form-item>
+        <el-form-item label="活动名称：">
+          <el-input
+            v-model="param.presaleName"
+            size="small"
+            style="width:180px"
+          ></el-input>
+          <span style="color:#999;margin-left:10px;">只作为商家记录使用，用户不会看到这个名称</span>
+        </el-form-item>
+        <!-- 定金膨胀 -->
+        <el-form-item
+          v-show="!isFullPay"
+          label="活动时间："
+        >
+          <template>
+            <div style="color:#999">请设置定金支付时间以及尾款支付时间，最多可配置两个支付定金时段，定金支付的截止时间不能大于尾款支付的截止时间</div>
+            <el-form label-width="120px">
+              <el-form-item label="定金支付时间：">
                 <el-date-picker
                   v-model="preTime1Range"
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始时间"
-                  end-placeholder="结束时间">
+                  end-placeholder="结束时间"
+                  size="small"
+                  :default-time="['00:00:00', '23:59:59']"
+                >
+                  >
                 </el-date-picker>
+                <el-button
+                  size="small"
+                  v-show="!twoSteps"
+                  @click="param.prePayStep=2"
+                >添加定金支付时段</el-button>
               </el-form-item>
-              <el-form-item label="活动商品">
-                <span>{{goodsName}}</span>
-                <el-button v-show="this.param.products.length<1" @click="showChoosingGoods">选择商品</el-button>
-                <el-button v-show="this.param.products.length>0" @click="showChoosingGoods">修改</el-button>
-              </el-form-item>
-              <el-form-item label="发货时间">
-                <el-radio v-model="param.deliverType" :label="1">&nbsp;指定发货开始时间</el-radio>
-                <el-date-picker v-model="deliverTime" type="datetime">
+              <el-form-item
+                label="定金支付时间："
+                v-show="twoSteps"
+              >
+                <el-date-picker
+                  v-model="preTime2Range"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始时间"
+                  size="small"
+                  end-placeholder="结束时间"
+                >
                 </el-date-picker>
-                <el-radio v-model="param.deliverType" :label="2" >&nbsp;</el-radio>
-                尾款支付完成<el-input v-model="param.deliverDays" type="number"/>天后发货
+                <el-button
+                  size="small"
+                  @click="param.prePayStep=1"
+                >删除</el-button>
               </el-form-item>
-              <el-form-item label="优惠叠加策略">
-                <el-radio v-model="param.discountType" v-for="(item, index) in discountTypes"
-                 :key="index" :label="index" >{{item}}</el-radio>
-              </el-form-item>
-              <el-form-item label="定金退款策略">
-                <el-radio v-model="param.returnType" v-for="(item, index) in returnTypes"
-                 :key="index" :label="index" >{{item}}</el-radio>
-              </el-form-item>
-              <el-form-item label="预售数量展示">
-                <el-radio v-model="param.showSaleNumber" v-for="(item, index) in showSaleNumberTypes"
-                 :key="index" :label="index" >{{item}}</el-radio>
-              </el-form-item>
-              <el-form-item label="商品购买方式">
-                <el-radio v-model="param.buyType" v-for="(item, index) in buyTypes" :key="index"
-                :label="index" >{{item}}</el-radio>
+              <el-form-item label="尾款支付时间：">
+                <el-date-picker
+                  v-model="tailPayTimeRange"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  size="small"
+                  :default-time="['00:00:00', '23:59:59']"
+                >
+                </el-date-picker>
               </el-form-item>
             </el-form>
-          </el-col>
-          <el-table
-            class="version-manage-table"
-            header-row-class-name="tableHeader"
-            :data="param.products"
-            border
-            style="width: 100%"
+          </template>
+        </el-form-item>
+        <!-- 全款预售 -->
+        <el-form-item
+          v-show="isFullPay"
+          label="定金支付时间"
+        >
+          <el-date-picker
+            v-model="preTime1Range"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
           >
-            <el-table-column
-              prop="prdDesc"
-              label="规格"
-              align="center"
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="活动商品：">
+          <span>{{goodsName}}</span>
+          <el-button
+            :disabled="isEdite"
+            size="small"
+            @click="showChoosingGoods"
+          >选择商品
+          </el-button>
+        </el-form-item>
+        <el-form-item label="发货时间：">
+          <div>
+            <el-radio
+              v-model="param.deliverType"
+              :label="1"
+            >&nbsp;指定发货开始时间</el-radio>
+            <el-date-picker
+              v-model="deliverTime"
+              type="datetime"
+              size="small"
+              style="width:190px"
             >
-            </el-table-column>
-            <el-table-column
-              prop="prdPrice"
-              label="商品原价"
-              align="center"
+            </el-date-picker>
+          </div>
+          <div style="display:inline-block">
+            <el-radio
+              v-model="param.deliverType"
+              :label="2"
+            >&nbsp;尾款支付完成</el-radio>
+            <el-input
+              v-model="param.deliverDays"
+              type="number"
+              size="small"
+              style="width:180px"
+            />
+            <span style="margin-left:10px">天后发货</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="优惠叠加策略：">
+          <el-radio
+            v-model="param.discountType"
+            v-for="(item, index) in discountTypes"
+            :key="index"
+            :label="index"
+          >{{item}}</el-radio>
+          <span class="textColor">预售商品结算时是否可与会员卡折扣、优惠券叠加使用</span>
+        </el-form-item>
+        <el-form-item label="定金退款策略：">
+          <el-radio
+            v-model="param.returnType"
+            v-for="(item, index) in returnTypes"
+            :key="index"
+            :label="index"
+          >{{item}}</el-radio>
+          <span class="textColor">选择自动退回定金，则在指定时间内未支付尾款的订单，将退回定金到原支付账户</span>
+        </el-form-item>
+        <el-form-item label="预售数量展示：">
+          <el-radio
+            v-model="param.showSaleNumber"
+            v-for="(item, index) in showSaleNumberTypes"
+            :key="index"
+            :label="index"
+          >{{item}}</el-radio>
+          <span class="textColor">当前活动商品的预售数量是否展示在商品详情页</span>
+        </el-form-item>
+        <el-form-item label="商品购买方式：">
+          <el-radio
+            v-model="param.buyType"
+            v-for="(item, index) in buyTypes"
+            :key="index"
+            :label="index"
+          >{{item}}</el-radio>
+          <span class="textColor">活动进行中是否可直接以原价购买此商品</span>
+        </el-form-item>
+      </el-form>
+      <el-table
+        class="version-manage-table"
+        header-row-class-name="tableHeader"
+        :data="param.products"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="prdDesc"
+          label="规格"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="prdPrice"
+          label="商品原价(元)"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="prdNumber"
+          label="商品库存"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          align="center"
+          label="新增拼团价格"
+        >
+          <template slot="append">
+            <span>新增拼团价格</span>
+            <el-button
+              @click="setCurrent(1)"
+              size="small"
+              icon="el-icon-edit"
+            >批量设置
+            </el-button>
+          </template>
+          <template slot-scope="scope">
+            <el-form-item
+              :prop="'product.' +  scope.$index+ '.presalePrice'"
+              :rules="[
+                    { required: true, message: '价格不能为空', trigger: 'blur' },
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                  ]"
+              style="height: 56px;line-height: 56px;"
             >
-            </el-table-column>
-            <el-table-column
-              prop="prdNumber"
-              label="商品库存"
-              align="center"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="presalePrice"
-              label="活动价格(元)"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <el-input type="number" v-model="scope.row.presalePrice"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="presaleNumber"
-              label="活动库存"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <el-input type="number" v-model="scope.row.presaleNumber"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="presaleMoney"
-              label="定金(元)"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <el-input type="number" v-model="scope.row.presaleMoney"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="preDiscountMoney1"
-              label="1阶段定金可抵扣金额"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <el-input type="number" v-model="scope.row.preDiscountMoney1"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="preDiscountMoney2"
-              label="2阶段定金可抵扣金额"
-              align="center"
-              v-if="twoSteps"
-            >
-              <template slot-scope="scope">
-                <el-input type="number" v-model="scope.row.preDiscountMoney2"></el-input>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-form label-width="100px" >
-            <el-form-item label="批量设置">
-              <el-button @click="batchSetPrice" size="mini">活动价格</el-button>
-              <el-button @click="batchSetNumber" size="mini">活动库存</el-button>
-              <el-button @click="batchSetMoney" size="mini">定金</el-button>
-              <el-button @click="batchSetMoney1" size="mini">1段定金可抵扣金额</el-button>
-              <el-button @click="batchSetMoney2" size="mini">2段定金可抵扣金额</el-button>
+              <el-input
+                v-model="scope.row.presalePrice"
+                size="small"
+              />
             </el-form-item>
-          </el-form>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-button @click="showMore=!showMore">展开更多配置</el-button>
-            <el-form label-width="100px" v-show="showMore">
-              <el-form-item label="购买数量限制">
-                <template>单用户最多可以购买
-                  <el-input type="number" v-model="param.buyNumber"></el-input>件该商品
-                </template>
-              </el-form-item>
-              <el-form-item label="活动分享">
-                <el-radio v-model="param.shareType" v-for="(item, index) in shareTypes"
-                 :key="index" :label="index">{{item}}</el-radio>
-                 <el-row v-show="param.shareType===1">
-                   <el-col>
-                     <el-form label-width="80px">
-                       <el-form-item label="文案">
-                         <el-input v-model="param.shareText"></el-input>
-                       </el-form-item>
-                       <el-form-item label="分享图">
-                         <el-radio v-model="param.shareImgType" v-for="(item, index) in shareImgTypes"
-                          :key="index" :label="index">{{item}}</el-radio>
-                       </el-form-item>
-                       <el-form-item>
-                         <el-button>选择图片</el-button>
-                       </el-form-item>
-                     </el-form>
-                   </el-col>
-                 </el-row>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
-        <div style="margin-top:20px">
-          <el-row>
-            <el-col>
-              <el-button type="primary" @click="add">保存</el-button>
-            </el-col>
-          </el-row>
-        </div>
-        <choosingGoods/>
-    </wrapper>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="presalePrice"
+          label="活动价格(元)"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-input
+              type="number"
+              v-model="scope.row.presalePrice"
+            ></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="presaleNumber"
+          label="活动库存"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-input
+              type="number"
+              v-model="scope.row.presaleNumber"
+            ></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="presaleMoney"
+          label="定金(元)"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-input
+              type="number"
+              v-model="scope.row.presaleMoney"
+            ></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="preDiscountMoney1"
+          label="1阶段定金可抵扣金额"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-input
+              type="number"
+              v-model="scope.row.preDiscountMoney1"
+            ></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="preDiscountMoney2"
+          label="2阶段定金可抵扣金额"
+          align="center"
+          v-if="twoSteps"
+        >
+          <template slot-scope="scope">
+            <el-input
+              type="number"
+              v-model="scope.row.preDiscountMoney2"
+            ></el-input>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-form label-width="100px">
+        <el-form-item label="批量设置">
+          <el-button
+            @click="batchSetPrice"
+            size="mini"
+          >活动价格</el-button>
+          <el-button
+            @click="batchSetNumber"
+            size="mini"
+          >活动库存</el-button>
+          <el-button
+            @click="batchSetMoney"
+            size="mini"
+          >定金</el-button>
+          <el-button
+            @click="batchSetMoney1"
+            size="mini"
+          >1段定金可抵扣金额</el-button>
+          <el-button
+            @click="batchSetMoney2"
+            size="mini"
+          >2段定金可抵扣金额</el-button>
+        </el-form-item>
+      </el-form>
+
+      <!-- 收起、展开更多配置 -->
+      <div
+        @click="handleToChangeArror()"
+        style="margin: 0 0 10px 33px"
+      >
+        <div
+          v-if="arrorFlag"
+          style="color:rgb(90, 139, 255);cursor:pointer"
+        >{{$t('groupBuy.moreConfigure')}}&nbsp;<img :src="ArrowArr[0].img_1"></div>
+        <div
+          v-if="!arrorFlag"
+          style="color:rgb(90, 139, 255);cursor:pointer"
+        >{{$t('groupBuy.packUpConfigure')}}&nbsp;<img :src="ArrowArr[1].img_2"></div>
+      </div>
+      <!-- <el-row> -->
+      <div v-if="!arrorFlag">
+        <!-- @click="showMore=!showMore" -->
+        <!-- <el-button>展开更多配置</el-button> -->
+        <el-form
+          label-width="120px"
+          v-show="showMore"
+        >
+          <el-form-item label="购买数量限制：">
+            <div style="display:flex">
+              <span>单用户最多可以购买</span>
+              <el-input
+                type="number"
+                v-model="param.buyNumber"
+                size="small"
+                style="width:180px;margin:0 10px;"
+              ></el-input>
+              <span>件该商品</span>
+              <span
+                class="textColor"
+                style="margin-left:20px;"
+              >单用户可购买活动商品的数量，不填或填写0表示不限制</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="活动分享：">
+            <div>
+              <el-radio
+                v-model="shareAction"
+                :label=0
+              >默认样式</el-radio>
+              <el-popover
+                placement="right-start"
+                width="220"
+                trigger="hover"
+              >
+                <el-image :src="srcList.src1"></el-image>
+                <el-button
+                  slot="reference"
+                  type="text"
+                  style="margin: 0 20px"
+                >查看示例</el-button>
+              </el-popover>
+              <el-popover
+                placement="right-start"
+                width="220"
+                trigger="hover"
+              >
+                <el-image :src="srcList.src2"></el-image>
+                <el-button
+                  slot="reference"
+                  type="text"
+                >下载海报</el-button>
+              </el-popover>
+            </div>
+            <div>
+              <el-radio
+                v-model="shareAction"
+                :label=1
+              >自定义样式</el-radio>
+              <div
+                v-if="shareAction === 1"
+                style="margin-left: 25px"
+              >
+                <span>文案：</span>
+                <el-input
+                  v-model="shareDoc"
+                  size="small"
+                  style="width:150px"
+                ></el-input>
+              </div>
+              <div
+                v-if="shareAction === 1"
+                style="margin-left: 25px"
+              >
+                <!-- <span>分享图：</span> -->
+                <span>分享图：</span>
+                <el-radio
+                  v-model="shareImgAction"
+                  :label=0
+                >活动商品信息图</el-radio>
+                <div style="margin-left: 60px;">
+                  <el-radio
+                    v-model="shareImgAction"
+                    :label=1
+                  >自定义图片</el-radio>
+                </div>
+
+                <div
+                  style="display: flex"
+                  v-if="shareImgAction === 1"
+                >
+                  <div
+                    class="imgContent"
+                    @click="addGoodsImg"
+                  >
+                    <div>
+                      <img
+                        v-if="shareImg === '' || shareImg === null"
+                        :src="$imageHost + '/image/admin/btn_add.png'"
+                        alt=""
+                      >
+                      <img
+                        v-if="shareImg !== ''"
+                        :src="$imageHost + '/' + shareImg"
+                        alt=""
+                        class="shareImg"
+                      >
+                    </div>
+                  </div>
+                  <span class="picSizeTips">建议尺寸：800*800像素</span>
+                </div>
+
+              </div>
+            </div>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <div class="footer">
+        <el-button
+          size="small"
+          type="primary"
+          @click="add"
+        >保存
+        </el-button>
+      </div>
+
+      <!--添加商品弹窗-->
+      <choosingGoods
+        @resultGoodsRow="choosingGoodsResult"
+        :tuneUpChooseGoods="isShowChoosingGoodsDialog"
+        :singleElection="true"
+        :showTips="true"
+      />
+
+      <!-- 选择图片弹框 -->
+      <ImageDalog
+        pageIndex='pictureSpace'
+        :tuneUp="showImageDialog"
+        @handleSelectImg='handleSelectImg'
+        :imageSize="[800, 800]"
+      />
+    </div>
+
+    <!-- </wrapper> -->
   </div>
 </template>
 <script>
@@ -224,6 +479,7 @@ import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
+import ImageDalog from '@/components/admin/imageDalog'
 import status from '@/components/admin/marketManage/status/status'
 import { format } from '@/util/date'
 import { createPreSale, updatePreSale, getDetail } from '@/api/admin/marketManage/preSale'
@@ -232,15 +488,17 @@ export default {
   components: {
     wrapper,
     inputEdit,
-    choosingGoods
+    choosingGoods,
+    ImageDalog
   },
+  props: ['isEdite', 'editData'],
   data () {
     return {
       id: null,
       // 当前页为编辑页
       update: false,
       // 显示更多配置
-      showMore: false,
+      showMore: true,
       // 活动状态,
       status: null,
       // 1段定金时间
@@ -262,6 +520,22 @@ export default {
       buyTypes: ['不可原价购买', '可原价购买'],
       shareTypes: ['默认样式', '自定义样式'],
       shareImgTypes: ['活动商品信息图', '自定义图片'],
+      isShowChoosingGoodsDialog: false,
+      showImageDialog: false,
+      props: ['isEdite'],
+      srcList: {
+        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+      },
+      ArrowArr: [
+        { img_1: this.$imageHost + '/image/admin/show_more.png' },
+        { img_2: this.$imageHost + '/image/admin/hid_some.png' }
+      ],
+      shareAction: 0,
+      shareDoc: '',
+      shareImgAction: 0,
+      shareImg: '',
+      arrorFlag: true,
       /**
        * 请求参数
        */
@@ -288,26 +562,7 @@ export default {
         shareText: '',
         shareImgType: 0,
         shareImg: '',
-        products: [
-          {
-            goodsId: 1,
-            productId: 1,
-            presalePrice: 1800,
-            presaleNumber: 100,
-            presaleMoney: 100,
-            preDiscountMoney1: 200,
-            preDiscountMoney2: 300
-          },
-          {
-            goodsId: 1,
-            productId: 2,
-            presalePrice: 1850,
-            presaleNumber: 100,
-            presaleMoney: 100,
-            preDiscountMoney1: 200,
-            preDiscountMoney2: 300
-          }
-        ]
+        products: []
       }
     }
   },
@@ -406,7 +661,7 @@ export default {
       })
     },
     showChoosingGoods () {
-      this.$http.$emit('choosingGoodsFlag', true)
+      this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
     addProductRows (goodsId) {
       // todo 调用查询商品接口获取 goodsId 下所有 product，返回结果填入表格
@@ -443,6 +698,24 @@ export default {
     },
     gotoHome () {
       this.$router.replace('/admin/home/main/presale')
+    },
+    // 改变"收起、展开更多配置"事件
+    handleToChangeArror () {
+      this.arrorFlag = !this.arrorFlag
+    },
+    // 获取商品ids
+    choosingGoodsResult (row) {
+      console.log(row, 'goodsInfo')
+    },
+    // 调起图片弹窗
+    addGoodsImg () {
+      this.showImageDialog = !this.showImageDialog
+    },
+    // 图片点击回调函数
+    handleSelectImg (res) {
+      if (res != null) {
+        this.shareImg = res.imgPath
+      }
     }
   },
   watch: {
@@ -457,29 +730,52 @@ export default {
       this.loadData()
     }
     this.listenGoodsResult()
+    this.langDefault()
+    if (this.isEdite) {
+      this.arrorFlag = false
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
-  .label {
-    line-height: 40px
-  }
-  .input {
-    margin-right: 10px;
-    width: 70px;
-  }
-  .name_cell {
-    display: flex;
-    div {
-      line-height: 45px;
-      margin-left: 10px;
-    }
-  }
-  .goods_img {
-    width: 45px;
-    height: 45px;
-  }
-  .description {
-    color: #999;
-  }
+.wrapper {
+  margin: 10px;
+  padding: 20px;
+  margin-bottom: 80px;
+  background: #fff;
+}
+.textColor {
+  color: #999;
+}
+.imgContent {
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  line-height: 65px;
+  margin-left: 60px;
+  cursor: pointer;
+}
+.imgContent .shareImg {
+  width: 100%;
+  height: 100%;
+}
+.picSizeTips {
+  display: block;
+  line-height: 80px;
+  margin-left: 20px;
+  color: rgb(153, 153, 153);
+}
+.label {
+  line-height: 40px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 27px;
+  left: 160px;
+  height: 52px;
+  padding: 10px 0;
+  background-color: #fff;
+  text-align: center;
+}
 </style>
