@@ -302,6 +302,7 @@ public class Calculate extends ShopBaseService {
             vo.setMemberCards(validCardList);
         }
         logger().info("获取可用会员卡列表end,列表：{}，此次选择：{}", vo.getMemberCards(), vo.getDefaultMemberCard());
+            
     }
 
     /**
