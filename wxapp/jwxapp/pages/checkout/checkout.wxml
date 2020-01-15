@@ -48,7 +48,7 @@
             <text class="spec">{{goodsItem.goodsAttr}}</text>
           </view>
           <view class="goods_price">
-            <text class="price" style="color:{{comColor}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.goodsPrice || '0'})}}</text>
+            <text class="price" style="color:{{comColor}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.discountedGoodsPrice || '0'})}}</text>
             <text class="num">x{{goodsItem.goodsNumber}}</text>
           </view>
         </view>
