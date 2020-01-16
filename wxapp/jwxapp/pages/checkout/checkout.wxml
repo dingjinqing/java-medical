@@ -131,7 +131,7 @@
         </view>
         <view class="detail_item" wx:if="{{scoreStatus}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:usePayInfo.useScore / 100})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:useScoreMoney})}}</text>
         </view>
       </view>
 
