@@ -365,7 +365,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     int type = bufferImage.getType();
     if (bufferImage == null || bufferImage.getWidth(null) <= 0 || bufferImage.getHeight(null) <= 0) {
         logger().info("文件读取为空，"+"宽："+bufferImage.getWidth(null)+"，高："+bufferImage.getHeight(null));
-      return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
+        return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
     }
     if (param.needImgWidth != null || param.needImgHeight != null) {
       if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
