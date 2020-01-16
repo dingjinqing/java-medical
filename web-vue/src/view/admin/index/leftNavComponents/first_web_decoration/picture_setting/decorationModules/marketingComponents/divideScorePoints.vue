@@ -14,9 +14,18 @@
           <img :src="data.module_img?data.module_img:`${$imageHost}/image/admin/pin_background.png`">
           <!--图片上浮动模块-->
           <div class="floatModule">
-            <div class="title" :style="data.font_color?`color:${data.font_color}`:''">{{data.pin_title==='0'?data.pin_title_text:zbTitle}}</div>
-            <div class="content" :style="data.font_color?`color:${data.font_color}`:''">{{data.hide_active==='0'?'3人瓜分333积分':''}}</div>
-            <div class="date" :style="data.font_color?`color:${data.font_color}`:''">{{data.hide_time==='0'?'2020-01-01 17:15:12至2020-01-24 17:15:15':''}}</div>
+            <div
+              class="title"
+              :style="data.font_color?`color:${data.font_color}`:''"
+            >{{data.pin_title===0&&data.act_id!==-1?data.pin_title_text:zbTitle}}</div>
+            <div
+              class="content"
+              :style="data.font_color?`color:${data.font_color}`:''"
+            >{{data.hide_active===0&&data.act_id!==-1?'3人瓜分333积分':''}}</div>
+            <div
+              class="date"
+              :style="data.font_color?`color:${data.font_color}`:''"
+            >{{(data.hide_time===0&&data.act_id===-1)?'2020-01-01 17:15:12至2020-01-24 17:15:15':''}}</div>
           </div>
         </div>
       </div>
@@ -185,8 +194,8 @@ export default {
         font-size: 18px;
         width: 100%;
         height: 60px;
-        width:128px;
-        line-height:26px
+        width: 128px;
+        line-height: 26px;
       }
       .content {
         margin-left: 30px;
