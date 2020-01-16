@@ -16,6 +16,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.BYTE_SEVEN;
@@ -274,6 +275,8 @@ public class ShopReturnConfigService extends BaseShopConfigService {
             param.setReturnPassDays(BYTE_ZERO);
             param.setReturnShippingDays(BYTE_ZERO);
         } else {
+            // 记录退换货开关配置开启时间
+            param.setAutoReturnTime(Timestamp.valueOf(LocalDateTime.now()));
             param.setReturnAddressDays(BYTE_ZERO.equals(param.getReturnAddressDays()) ? BYTE_SEVEN : param.getReturnAddressDays());
             param.setReturnMoneyDays(BYTE_ZERO.equals(param.getReturnMoneyDays()) ? BYTE_SEVEN : param.getReturnMoneyDays());
             param.setReturnPassDays(BYTE_ZERO.equals(param.getReturnPassDays()) ? BYTE_SEVEN : param.getReturnPassDays());

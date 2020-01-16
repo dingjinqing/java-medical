@@ -22,7 +22,7 @@ public class GoodsSearchParam extends BasePageParam {
     private String keyWords;
     /**
      * GOODS_AREA_TYPE_SECTION
-     * 范围 1全部 2 范围
+     * 0范围 1全部
      */
     private Byte goodsAreaType;
     /**
