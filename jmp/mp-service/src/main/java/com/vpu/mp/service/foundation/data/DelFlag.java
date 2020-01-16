@@ -6,7 +6,6 @@ import lombok.Getter;
  * 删除标识枚举类
  * 
  * @author wangshuai1
- *
  */
 @Getter
 public enum DelFlag {
