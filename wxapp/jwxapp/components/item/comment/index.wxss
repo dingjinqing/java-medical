@@ -9,3 +9,13 @@
   padding: 0;
   text-align: center;
 }
+.answer{
+  border-radius: 6rpx;
+  background-color: #f8f8f8;
+  color: #666;
+  width: 690rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+  padding: 6rpx 6rpx;
+  margin: 0 auto 14rpx;
+}
