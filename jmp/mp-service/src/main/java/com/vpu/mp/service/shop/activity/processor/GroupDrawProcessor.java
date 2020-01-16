@@ -63,6 +63,17 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
 			log.info("不是团长");
 			param.setIsGrouper(IS_GROUPER_N);
 		}
+		log.info("开始校验");
+		Goods goods = check(param);
+		log.info("校验结束");
+		GroupDrawRecord groupDraw = groupDrawService.getById(param.getActivityId());
+		BigDecimal payMoney = groupDraw.getPayMoney();
+		log.info("价格改为" + payMoney);
+		goods.setProductPrice(payMoney);
+		log.info("processInitCheckedOrderCreate结束");
+	}
+
+	private Goods check(OrderBeforeParam param) throws MpException {
 		List<Goods> goodsList = param.getGoods();
 		if (goodsList.size() > 1) {
 			// 只能买一个商品
@@ -72,35 +83,30 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
 		GroupDrawReturn result = groupDrawService.canCreateGroupOrder(param.getWxUserInfo().getUserId(),
 				param.getActivityId(), goods.getGoodsId(), param.getGroupId(), true);
 		JsonResultCode code = result.getCode();
-		log.info("拼团抽奖的processInitCheckedOrderCreate判断的code" + code);
+		log.info("拼团抽奖的判断的code" + code);
 		if (!code.equals(JsonResultCode.CODE_SUCCESS)) {
 			throw new MpException(code, null);
 		}
-		GroupDrawRecord groupDraw = groupDrawService.getById(param.getActivityId());
-		BigDecimal payMoney = groupDraw.getPayMoney();
-		log.info("价格改为"+payMoney);
-		goods.setProductPrice(payMoney);
+		return goods;
 	}
 
 	@Override
 	public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
 		// 拼团抽奖的判断
 		log.info("拼团抽奖的判断processSaveOrderInfo");
-		String orderSn = order.getOrderSn();
-		JoinGroupListRecord groupInfo = groupDrawService.getGroupInfoByOrderSn(orderSn);
-		GroupDrawReturn result = groupDrawService.canCreateGroupOrder(groupInfo.getUserId(), groupInfo.getGroupDrawId(),
-				groupInfo.getGoodsId(), groupInfo.getGroupId(), false);
-		JsonResultCode code = result.getCode();
-		log.info("拼团抽奖的判断的code" + code);
-		if (!code.equals(JsonResultCode.CODE_SUCCESS)) {
-			throw new MpException(code, null);
-		}
+		check(param);
+		log.info("processSaveOrderInfo校验完");
 		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) -1);
+		log.info("processSaveOrderInfo结束");
 	}
 
 	@Override
 	public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+		log.info("拼团抽奖的判断processOrderEffective");
+		check(param);
+		log.info("processOrderEffective校验完");
 		groupDrawService.updateGroupInfoByOrderSn(order.getOrderSn(), (byte) 0);
+		log.info("processOrderEffective结束");
 	}
 
 }
