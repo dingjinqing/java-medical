@@ -183,7 +183,7 @@ export default {
       },
       rules: {
         act_id: [
-          { validator: validatePass, trigger: 'change' }
+          { required: true, validator: validatePass, trigger: 'change' }
         ]
       },
       options: [{
@@ -266,10 +266,10 @@ export default {
           flag = false
           break
         case true:
-          flag = '1'
+          flag = 1
           break
         case false:
-          flag = '0'
+          flag = 0
           break
       }
       return flag
