@@ -19,6 +19,9 @@
     </view>
   </view>
   <view class="flex_box">
-    {{comment.commentInfo.commNote}}
+    {{comment.commentInfo.commNote || '此用户没有填写用户心得'}}
+  </view>
+  <view class="flex_box answer" wx:if="{{comment.commentInfo.answer}}">
+    回复：{{comment.commentInfo.answer}}
   </view>
 </view>

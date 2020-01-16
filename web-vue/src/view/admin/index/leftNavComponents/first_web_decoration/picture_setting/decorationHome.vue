@@ -1116,6 +1116,10 @@ export default {
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
       console.log(this.modulesData, data)
+
+      data['cur_idx'] = this.modulesData[this.nowRightShowIndex].cur_idx
+      data['module_name'] = this.modulesData[this.nowRightShowIndex].module_name
+
       this.modulesData[this.nowRightShowIndex] = data
       console.log(this.modulesData)
       this.$forceUpdate()

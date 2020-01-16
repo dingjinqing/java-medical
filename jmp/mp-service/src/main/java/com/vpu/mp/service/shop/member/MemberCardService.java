@@ -157,6 +157,8 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 
+import jodd.util.StringUtil;
+
 
 /**
  *
@@ -2088,8 +2090,15 @@ public class MemberCardService extends ShopBaseService {
         }
 
         //图片域名
-        vo.setShipImg(domainConfig.imageUrl(saas().shop.getShopAvatarById(getShopId())));
-        vo.setBgImg(domainConfig.imageUrl(vo.getBgImg()));
+        String shopAvatar = saas().shop.getShopAvatarById(getShopId());
+        if(StringUtil.isNotEmpty(shopAvatar)){
+            vo.setShipImg(domainConfig.imageUrl(shopAvatar));
+        }else{
+            vo.setShipImg(domainConfig.imageUrl("image/admin/shop_logo_default.png"));
+        }
+        if(StringUtil.isNotEmpty(vo.getBgImg())){
+            vo.setBgImg(domainConfig.imageUrl(vo.getBgImg()));
+        }
 
         return vo;
     }
