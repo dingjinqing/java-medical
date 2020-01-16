@@ -254,7 +254,7 @@
             <el-tooltip
               :content="$t('evaluation.pass')"
               placement="top"
-              v-if="target === 'Record' && scope.row.flag === 0"
+              v-if="target === 'Record' && (scope.row.flag === 0 || scope.row.flag === 2)"
             >
               <span
                 class="el-icon-success operateSpan"
@@ -264,7 +264,7 @@
             <el-tooltip
               :content="$t('evaluation.refuse')"
               placement="top"
-              v-if="target === 'Record' && scope.row.flag === 0"
+              v-if="target === 'Record' && (scope.row.flag === 0 || scope.row.flag === 1)"
             >
               <span
                 class="el-icon-error operateSpan"
