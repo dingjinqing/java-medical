@@ -23,7 +23,7 @@ global.wxPage({
       ? this.data.pageParams.currentPage
       : 1;
     util.api('/api/wxapp/freeship/goods/list',res=>{
-      if(res.error === 0){
+      if(res.error === 0 && res.content !== null){
         this.setData({
           pageParams: res.content.pageResult.page,
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList,
@@ -64,6 +64,9 @@ global.wxPage({
     this.setData({
       showSelectedDialog:true
     })
+  },
+  goCart(){	
+    util.jumpLink('pages/cart/cart','navigateTo')	
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

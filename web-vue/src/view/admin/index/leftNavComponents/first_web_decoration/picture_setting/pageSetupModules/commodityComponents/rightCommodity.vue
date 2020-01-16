@@ -504,6 +504,7 @@
     <ChoosingGoods
       @resultGoodsDatas='handleToGetGoods'
       :tuneUpChooseGoods='tuneUpChooseGoods'
+      :chooseGoodsBack="GoodsBack"
     />
     <!--添加商家分类、平台分类弹窗-->
     <AddingBusClassDialog
@@ -776,7 +777,10 @@ export default {
       },
       initRequestFlag: false, // 初始化接收的数据是否已存在商品数据
       temporaryStorageGoods: [], // 手动推荐暂存商品信息
-      temporaryRightGoods: []
+      temporaryRightGoods: [],
+      isToChangeData: false, // 是否需要转换goods_items字段
+      GoodsBack: [], // 选择商品弹窗回显数据
+      zbGoodsBack: []
     }
   },
   watch: {
@@ -813,7 +817,12 @@ export default {
             Object.keys(turnToString).forEach((item, index) => { // 将数据赋值给当前页面数据池
               this.$set(this.data, item, getModulesData[item])
             })
-
+            console.log(turnToString)
+            // 如果是初次回显则处理自动推荐数据
+            if (turnToString.recommend_type === '1') {
+              this.isToChangeData = true
+              this.handleToGetModulesGoods(turnToString, true, true)
+            }
             // 初始化调取模块推荐接口
             if (!turnToString.goodsListData.length) {
               this.initRequestFlag = true
@@ -844,6 +853,17 @@ export default {
         console.log(this.data)
         // this.data.goodsListData = []
         this.handleToGetModulesGoods(this.data, true)
+      }
+    },
+    'data.goods_items' (newData) {
+      if (newData.length) {
+        let arr = []
+        newData.forEach((item, index) => {
+          arr.push(item.goodsId)
+        })
+        this.GoodsBack = arr
+      } else {
+        this.GoodsBack = []
       }
     },
     // 监控该模块右边数据操作
@@ -928,7 +948,7 @@ export default {
   methods: {
     // 调取模块推荐中商品数据
     handleToGetModulesGoods (initData, flag, clickFlag) {
-      console.log(initData, flag)
+      console.log(initData, flag, clickFlag)
       let goodsId = []
       let num = null
       let obj = {}
@@ -939,22 +959,32 @@ export default {
         // goodsId.push(item.goodsId)
         // })
         // } else {
-        if (clickFlag) {
+        if (this.isToChangeData) {
+          console.log(initData.goods_items)
           initData.goods_items.forEach(item => {
             goodsId.push(item.goodsId)
           })
+          this.zbGoodsBack = goodsId
+          console.log(this.GoodsBack)
         } else {
-          this.temporaryStorageGoods.forEach(item => {
-            goodsId.push(item.goodsId)
-          })
+          if (clickFlag) {
+            initData.goods_items.forEach(item => {
+              goodsId.push(item.goodsId)
+            })
+          } else {
+            this.temporaryStorageGoods.forEach(item => {
+              goodsId.push(item.goodsId)
+            })
+          }
         }
+
         // if (initData.goods_items.length) {
         //   initData.goods_items.forEach(item => {
         //     goodsId.push(item.goodsId)
         //   })
         // }
         // }
-
+        console.log(goodsId)
         obj = {
           'goods_num': goodsId.length,
           'recommend_type': '1',
@@ -990,7 +1020,7 @@ export default {
         }
       }
 
-      console.log(goodsId)
+      console.log(obj)
       // 初始化接口传递参数
       queryDataList(obj).then((res) => {
         console.log(res)
@@ -1003,6 +1033,10 @@ export default {
             this.temporaryStorageGoods = res.content
           } else {
             this.temporaryRightGoods = res.content
+          }
+          if (this.isToChangeData) {
+            this.data.goods_items = res.content
+            console.log(this.data.goods_items, res.content)
           }
           this.$emit('handleToBackData', this.data)
         }
@@ -1225,30 +1259,37 @@ export default {
           arr.splice(index, 1)
           break
       }
+      console.log(arr)
       this.data.goods_items = arr
-      this.handleToGetModulesGoods(this.data, true, true)
+      this.data.goodsListData = arr
+      this.$next(() => {
+        this.handleToGetModulesGoods(this.data, true, true)
+      })
     },
     //  添加商品点击
     handleToAddGoods () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+      this.GoodsBack = []
+      this.GoodsBack = this.zbGoodsBack
+      console.log(this.GoodsBack)
     },
     // 选中商品信息回传
     handleToGetGoods (res) {
       console.log(res)
       let resCopy = JSON.parse(JSON.stringify(res))
       // 过滤
-      res.forEach((item, index) => {
-        this.data.goods_items.forEach((itemC, indexC) => {
-          if (item.goodsId === itemC.goodsId) {
-            resCopy.splice(index, 1, -1)
-          }
-        })
-      })
-
+      // res.forEach((item, index) => {
+      //   this.data.goods_items.forEach((itemC, indexC) => {
+      //     if (item.goodsId === itemC.goodsId) {
+      //       resCopy.splice(index, 1, -1)
+      //     }
+      //   })
+      // })
+      this.data.goods_items = res
       console.log(resCopy, this.data.goods_items)
-      resCopy.forEach((item, index) => {
-        this.data.goods_items.push(item)
-      })
+      // resCopy.forEach((item, index) => {
+      //   this.data.goods_items.push(item)
+      // })
       // 添加
       this.handleToGetModulesGoods(this.data, true, true)
       console.log(this.data)

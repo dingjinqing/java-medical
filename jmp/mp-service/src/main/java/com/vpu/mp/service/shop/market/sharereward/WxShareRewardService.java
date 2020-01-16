@@ -56,19 +56,19 @@ public class WxShareRewardService extends ShopBaseService {
     /**
      * The constant AWARD.
      */
-    private static ShareAward AWARD = ShareAward.SHARE_AWARD.as("AWARD");
+    public static ShareAward AWARD = ShareAward.SHARE_AWARD.as("AWARD");
     /**
      * The constant AWARD_RECORD.
      */
-    private static ShareAwardRecord AWARD_RECORD = ShareAwardRecord.SHARE_AWARD_RECORD.as("AWARD_RECORD");
+    public static ShareAwardRecord AWARD_RECORD = ShareAwardRecord.SHARE_AWARD_RECORD.as("AWARD_RECORD");
     /**
      * The constant AWARD_RECEIVE.
      */
-    private static ShareAwardReceive AWARD_RECEIVE = ShareAwardReceive.SHARE_AWARD_RECEIVE.as("AWARD_RECEIVE");
+    public static ShareAwardReceive AWARD_RECEIVE = ShareAwardReceive.SHARE_AWARD_RECEIVE.as("AWARD_RECEIVE");
     /**
      * The constant ATTEND.
      */
-    private static AttendShareUser ATTEND = AttendShareUser.ATTEND_SHARE_USER.as("ATTEND");
+    public static AttendShareUser ATTEND = AttendShareUser.ATTEND_SHARE_USER.as("ATTEND");
 
     @Autowired
     private ShareRewardService shareReward;

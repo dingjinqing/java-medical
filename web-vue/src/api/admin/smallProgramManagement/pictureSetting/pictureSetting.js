@@ -68,3 +68,11 @@ export function getModulesJusList () {
     method: 'get'
   })
 }
+
+// 瓜分积分下拉框
+export function getDropDownBox () {
+  return service({
+    url: '/api/admin/market/integration/selectlist',
+    method: 'get'
+  })
+}

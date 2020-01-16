@@ -22,7 +22,7 @@
                 :label="0"
               >自定义</el-radio>
               <el-input
-                :disabled="data.pin_title==='1'?true:false"
+                :disabled="data.pin_title===1?true:false"
                 v-model="data.pin_title_text"
                 :maxlength="14"
                 size="small"
@@ -60,7 +60,7 @@
         <div
           class="list"
           style="margin-top:20px"
-          v-if="data.module_bg==='1'"
+          v-if="data.module_bg===1"
         >
           <span></span>
           <div
@@ -119,9 +119,9 @@
               >
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
@@ -140,6 +140,7 @@
   </div>
 </template>
 <script>
+import { getDropDownBox } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 export default {
   props: {
     modulesData: Object, // 模块公共
@@ -186,11 +187,8 @@ export default {
         ]
       },
       options: [{
-        value: -1,
-        label: '请选择'
-      }, {
-        value: '1',
-        label: '腾飞测试'
+        id: -1,
+        name: '请选择'
       }],
       data: {
 
@@ -245,6 +243,15 @@ export default {
           return false
         }
       })
+    })
+    // 初始化下拉框数据
+    getDropDownBox().then((res) => {
+      console.log(res)
+      if (res.error === 0) {
+        this.options = [...this.options, ...res.content]
+        console.log(this.options)
+        this.$forceUpdate()
+      }
     })
   },
   methods: {
