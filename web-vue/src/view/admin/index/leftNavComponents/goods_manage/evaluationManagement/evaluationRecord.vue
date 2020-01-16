@@ -167,7 +167,7 @@
               <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote}}</span></div>
               <div
                 class="evaluation-info_item"
-                v-if="scope.row.commImg !== ''"
+                v-if="scope.row.commImg.length > 0"
               >
                 <div class="evaluation-pic">
                   <template v-for="(picItem,picIndex) in scope.row.commImg">
@@ -383,11 +383,13 @@ export default {
         if (res.error === 0) {
           this.pageParams = res.content.page
           this.dataList = res.content.dataList.map(item => {
-            let comment = JSON.parse(JSON.stringify(item))
-            if (comment.commImg !== '' && comment.commImg !== null) {
-              comment.commImg = comment.commImg.split(',').map(item => this.$imageHost + '/' + item)
+            let commImg = JSON.parse(item.commImg)
+            if (commImg.length > 0) {
+              commImg = commImg.map(item => {
+                return this.$imageHost + '/' + item
+              })
             }
-            return comment
+            return { ...item, commImg }
           })
           // this.dataList = res.content.dataList
           console.log(this.dataList)

@@ -21,4 +21,7 @@
   <view class="flex_box">
     {{comment.commentInfo.commNote}}
   </view>
+  <view class="flex_box answer" wx:if="{{comment.commentInfo.answer}}">
+    回复：{{comment.commentInfo.answer}}
+  </view>
 </view>
