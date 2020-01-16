@@ -144,6 +144,48 @@
 }
 /* 活动类型 */
 
+/* 秒杀部分 */
+.sec_kill_area{
+  margin-left: 60rpx;
+  width: 610rpx;
+  background-color: #fff1f0;
+  color: #666;
+  padding: 0 20rpx;
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+}
+.sec_kill_area>view{
+  flex: 1.25;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center
+}
+.sec_left .sec_icon{
+  padding: 0rpx 10rpx;
+  background-color: #f66;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 22rpx;
+  margin-right: 10rpx;
+}
+.sec_kill_area .sec_right{
+  justify-content: flex-end;
+  color: #f66;
+  flex: 0.75
+}
+.sec_right image{
+  width: 15rpx;
+  margin-left: 10rpx;
+}
+.enen{
+  width:720rpx;
+  overflow-x: hidden;
+}
+/* 秒杀活动 */
+
 /* 促销活动 */
 .change_fullact{
   margin-top: 20rpx;
@@ -182,6 +224,25 @@
   margin-left: 10rpx;
 }
 /* 促销活动 */
+
+/* 限时降价 */
+.ng_goods_jiang {
+  font-size:22rpx;
+  margin-top: 25rpx;
+}
+.reduce_icon{
+   padding: 0rpx 12rpx;
+  color: #fff;
+  background: linear-gradient(left,#fe4848 ,#fe7248);
+  background: -webkit-linear-gradient(left,#fe4848,#fe7248);
+  background: -moz-linear-gradient(left,#fe4848,#fe7248);
+  border-bottom-left-radius: 18rpx;
+  border-top-right-radius: 18rpx;
+  margin-right: 10rpx;
+  font-size: 20rpx;
+  line-height: 38rpx;
+}
+/* 限时降价 */
 
 /* 切换活动的弹框 */
 .promotion{

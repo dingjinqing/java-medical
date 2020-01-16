@@ -5,7 +5,7 @@
         <view class="list_box" wx:if="{{canBuyGoodsList.length > 0}}">
             <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index">
               <!-- 活动类型 -->
-              <view class='act_info clearfix' wx:if="{{item.activityType != null}}">
+              <view class='act_info clearfix' wx:if="{{item.activityType == 7 || item.activityType == 21}}">
                 <view class='ai_left'>
                   <view class='full_member_icon'>会员</view>
                   <view class='full_icon' wx:if="{{item.activityType == 5}}" style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
@@ -15,6 +15,18 @@
                 </view>
                 <view class='go_full clearfix'>
                   <view style='color:{{comColor}}'>去凑单</view>
+                  <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+                </view>
+              </view>
+
+              <!-- 秒杀活动 -->
+              <view class='sec_kill_area' wx:if="{{item.activityType == 5}}" style='background:{{somColor}};'>
+                <view class='sec_left'>
+                  <view class='sec_icon' style='background:{{comColor}};'>秒杀</view>
+                  <view class='sec_tips'>该商品正在参与秒杀</view>
+                </view>
+                <view class='sec_right'>
+                  <view class='go_kill' style='color:{{comColor}}'>去抢购</view>
                   <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
                 </view>
               </view>
@@ -43,8 +55,13 @@
                                         {{item.prdDesc}}
                                     </view>
                                 </view>
+                                <view class="ng_goods_jiang" wx:if="{{item.activityType == 18}}" style="color:{{comColor}}">比加入时降了9.00元</view>
                                 <view class="goods_price">
-                                    <view class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
+                                    <!-- 首单特惠标签 -->
+                                    <view style="display: flex;">
+                                      <view class='reduce_icon' wx:if="{{item.activityType == 18}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
+                                      <view class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
+                                    </view>
                                     <view class="num_cfg">
                                       <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.prdId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
                                       <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-cart_id="{{item.cartId}}" data-prd_id="{{item.prdId}}" data-limit_min="{{item.limitBuyNum}}" data-limit_max="{{item.limitMaxNum}}"></input>
@@ -62,7 +79,7 @@
               </view> 
 
               <!-- 促销活动 -->
-              <view class='change_fullact' bindtap='proClcik' wx:if="{{item.cartActivityInfos.length > 0}}" data-cart_id="{{item.cartId}}" data-activity_type="{{item.activityType}}">
+              <view class='change_fullact' bindtap='proClcik' wx:if="{{(item.activityType == 7 || item.activityType == 21) && item.cartActivityInfos.length > 0}}" data-cart_id="{{item.cartId}}" data-activity_type="{{item.activityType}}">
                 <view class='cf_left'>
                   <view>促销</view>
                   <view wx:if="{{item.activityType == null}}">不参与促销活动</view>
