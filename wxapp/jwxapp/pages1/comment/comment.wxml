@@ -43,7 +43,7 @@
           </view>
           <view class="commm_goods clearfix">
             <view class="left">
-              <image src="{{imageUrl + item.goodsImg}}"></image>
+              <image wx:if="{{item.goodsImg}}" src="{{imageUrl + item.goodsImg}}"></image>
             </view>
             <view class="middle">
               <view class="goods_name">{{item.goodsName}}</view>
@@ -97,7 +97,7 @@
                       <block wx:for="{{info.comm_img}}" wx:key="index" wx:for-item="imgitem">
                         <view class='shai_view'>
                           <image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
-                          <image src="{{imageUrl + imgitem}}" data-idx="{{index}}"></image>
+                          <image wx:if="{{imgitem}}" src="{{imageUrl + imgitem}}" data-idx="{{index}}"></image>
                         </view>
                       </block>
                     </block>
