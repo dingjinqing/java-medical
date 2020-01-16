@@ -396,7 +396,7 @@ export default {
       }
       callback()
     }
-    let validBusinessTime = function(rule, value, callback) {
+    let validBusinessTime = function (rule, value, callback) {
       if (!that.storeFormInfo.openingTime || !that.storeFormInfo.closeTime) {
         callback(new Error(that.$t('addStore.enterHours')))
       }
@@ -439,10 +439,10 @@ export default {
         storeName: [{ required: true, message: this.$t('addStore.enterStoreName'), trigger: 'blur' }],
         manager: [{ required: true, message: this.$t('addStore.enterPersoninCharge'), trigger: 'blur' }],
         mobile: [{ required: true, message: this.$t('addStore.enterphone'), trigger: 'blur' }],
-        businessType: [{ required: true,validator: validBusinessTime, trigger: 'change' }],
+        businessType: [{ required: true, validator: validBusinessTime, trigger: 'change' }],
         posShopId: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { type: 'number', message: '门店编码必须为数字值' }],
         provinceCode: [{ required: true, message: this.$t('addStore.selectArea') }, { validator: validateArea, trigger: 'blur' }],
-        address: [{ required: true, message: this.$t('addStore.enterArea'), trigger: 'blur' }, { validator: validateAddress }],
+        address: [{ required: true, message: this.$t('addStore.enterArea'), trigger: 'blur' }, { validator: validateAddress, trigger: 'change' }],
         storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto') }]
       },
       selfImgDialogShow: false,
