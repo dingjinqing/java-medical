@@ -348,7 +348,7 @@ public class ReturnOrderService extends ShopBaseService{
 			/**商家操作*/
 			switch (param.getReturnOperate()) {
 			case OrderConstant.RETURN_OPERATE_ADMIN_REFUSE:
-				//商家拒绝退款退货（退货为提交物流后的拒绝）
+				//商家拒绝退款退货
 				refuseReturn(returnOrder, param);
 				break;
 			case OrderConstant.RETURN_OPERATE_ADMIN_AGREE_RETURN:
@@ -430,7 +430,7 @@ public class ReturnOrderService extends ShopBaseService{
 	public void refuseReturn(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
         logger().info("拒绝退款/退货start");
 		//校验
-		if(returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
+		if((returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_AUDIT_PASS && returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
 		}
 		returnOrder.setRefundRefuseTime(DateUtil.getSqlTimestamp());
