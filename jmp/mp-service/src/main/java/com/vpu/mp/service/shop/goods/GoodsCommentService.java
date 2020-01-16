@@ -599,6 +599,7 @@ public class GoodsCommentService extends ShopBaseService {
                   .from(COMMENT_GOODS)
                   .where(COMMENT_GOODS.GOODS_ID.eq(forGoodsId.getGoodsId()))
                   .and(COMMENT_GOODS.ORDER_SN.eq(forGoodsId.getOrderSn()))
+                  .and(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                   .fetchOptionalInto(Integer.class)
                   .orElse(NumberUtils.INTEGER_ZERO);
           if (actId.equals(NumberUtils.INTEGER_ZERO)) {

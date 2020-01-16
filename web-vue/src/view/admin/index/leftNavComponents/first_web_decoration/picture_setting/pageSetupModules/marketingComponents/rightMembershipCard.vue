@@ -445,13 +445,13 @@ export default {
     },
     checked (newData) {
       // 如果已经有选中数据则直接改变数据里的isHidden项，若果没有则等待弹窗选中确认后，将是否隐藏卡片checked值赋予选中的数据中的isHidden.
-      if (this.nowChecked.id) {
+      console.log(this.nowChecked)
+      if (this.nowChecked.card_id) {
         if (newData) { // 将checked得值转化为0 1
           this.nowChecked.hidden_card = 1
         } else {
           this.nowChecked.hidden_card = 0
         }
-
         console.log(this.nowChecked)
         this.$emit('handleToBackData', this.nowChecked)
       }

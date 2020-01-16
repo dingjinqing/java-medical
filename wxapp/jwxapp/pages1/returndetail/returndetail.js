@@ -28,6 +28,7 @@ global.wxPage({
     return: i18n.trans("page1.afterSale.return"), // 售后类型
     reasone: i18n.trans("page1.afterSale.reasone"), // 退货退款原因
     reasone_huan: i18n.trans("page1.afterSale.reasone_huan"), // 换货原因
+    totalMicroSecond: totalMicroSecond
   },
 
   /**
@@ -112,7 +113,8 @@ global.wxPage({
           voucherImages: voucherImages,
           returnGoods: orderInfo.returnGoods,
           applicationTime: applicationTime,
-          activityName: activityName
+          activityName: activityName,
+          totalMicroSecond: totalMicroSecond
         })
         that.countdown()
       }

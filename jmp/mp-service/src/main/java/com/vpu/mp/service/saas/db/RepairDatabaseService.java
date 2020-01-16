@@ -1,18 +1,5 @@
 package com.vpu.mp.service.saas.db;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.exception.DataAccessException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.database.DatabaseManager;
 import com.vpu.mp.service.foundation.database.MpDefaultDslContext;
@@ -21,9 +8,19 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.db.Column;
 import com.vpu.mp.service.pojo.saas.db.Index;
 import com.vpu.mp.service.pojo.saas.db.Table;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.exception.DataAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 
@@ -301,7 +298,6 @@ public class RepairDatabaseService extends MainBaseService {
 		String keyProp = "";
 		String primary = "PRIMARY";
 		String unique = "0";
-		String dropKey = "";
 
 		StringBuffer buf = new StringBuffer();
 		int size = index.getColumnNames().size();

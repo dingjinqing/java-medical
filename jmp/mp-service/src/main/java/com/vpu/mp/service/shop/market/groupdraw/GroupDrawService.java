@@ -1069,8 +1069,8 @@ public class GroupDrawService extends ShopBaseService {
 		// 记录邀请用户
 		GroupDrawInviteRecord inviteUserInfo = groupDrawInvite.getAvailableInviteUser(groupDrawId,
 				orderGoods.getGoodsId(), order.getUserId());
-		Integer inviteUserId = inviteUserInfo.getInviteUserId();
-		inviteUserId = inviteUserId == null ? 0 : inviteUserId;
+		Integer inviteUserId = 0;
+		inviteUserId = inviteUserInfo == null ? 0 : inviteUserInfo.getInviteUserId();
 
 		Integer goodsId = orderGoods.getGoodsId();
 		Integer userId = order.getUserId();
@@ -1217,6 +1217,10 @@ public class GroupDrawService extends ShopBaseService {
 			}
 			successGroupDraw(groupDrawId, groupId);
 		}
+	}
+	
+	public GroupDrawRecord getById(Integer id) {
+		return db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(id)).fetchAny();
 	}
 
 }
