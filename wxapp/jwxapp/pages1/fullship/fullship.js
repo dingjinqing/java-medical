@@ -13,6 +13,10 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let {ruleId} = options
+    this.setData({
+      ruleId
+    })
     this.requestGoodsList()
     this.requestCartGoodsList()
   },
@@ -36,7 +40,7 @@ global.wxPage({
       }
     },{
       searchText:this.data.searchText,
-      ruleId:62,
+      ruleId:this.data.ruleId,
       currentPage: currentPage,
       pageRows: 20,
     })
@@ -49,7 +53,7 @@ global.wxPage({
         })
       }
     },{
-      ruleId:62,
+      ruleId:this.data.ruleId,
     })
   },
   getSearchText(data){
