@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop.order;
 
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -9,7 +13,6 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -114,8 +117,8 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_GET;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
@@ -419,11 +422,10 @@ public class OrderReadService extends ShopBaseService {
 	 * @param rOrder
 	 */
 	public void setReturnCfg(ReturnOrderInfoVo vo , ReturnOrderRecord rOrder) {
-		if(shopReturnConfig.getAutoReturn() == null || shopReturnConfig.getAutoReturn() == 0) {
+		if(shopReturnConfig.getAutoReturn() == 0) {
 			return;
 		}
-		if (shopReturnConfig.getAutoReturnTime() == null
-				|| shopReturnConfig.getAutoReturnTime().after(DateUtil.getSqlTimestamp())) {
+		if (shopReturnConfig.getAutoReturn() == 1 && shopReturnConfig.getAutoReturnTime().after(rOrder.getCreateTime())) {
 			return;
 		}
         long currentTimeMillis = System.currentTimeMillis();
