@@ -9,8 +9,9 @@
       >
       <el-dialog
         title="领取码"
-        :visible.sync="dialogVisible"
+        :visible="dialogVisibleFlag"
         width="30%"
+        @close="closeDialog"
         v-if="receiveAction===1"
       >
         <div class="top">
@@ -281,6 +282,7 @@ export default {
     }
 
     return {
+      dialogVisibleFlag: false,
       action: '1',
       fileList: [],
       fileName: '',
@@ -309,9 +311,7 @@ export default {
   watch: {
     dialogVisible (data) {
       this.clearData()
-      console.log(data)
-      console.log(this.batchName)
-      console.log(this.batchId)
+      this.dialogVisibleFlag = data
       if (data) {
         if (this.batchId) {
           this.getBatch(this.batchId)
@@ -390,6 +390,9 @@ export default {
         this.$emit('update:dialogVisible', false)
         this.clearData()
       })
+    },
+    closeDialog () {
+      this.$emit('update:dialogVisible', false)
     }
 
   }

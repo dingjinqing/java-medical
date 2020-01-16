@@ -1100,6 +1100,8 @@ public class UserCardService extends ShopBaseService {
 				// TODO 删除判断
 				continue;
 			}
+			
+			
 			card.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
 			card.setTotalGoodsNumber(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
 			card.setTotalDiscount(discountAmount);
