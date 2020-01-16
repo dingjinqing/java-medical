@@ -558,6 +558,7 @@ global.wxPage({
         data.desc += `可获得活动奖励`
         return data
       case '21':
+        data.isExclusive = info.isExclusive
         if(info.type === 1){
           if(info.amount > 0){
             data.desc = `每满${info.amount}件`

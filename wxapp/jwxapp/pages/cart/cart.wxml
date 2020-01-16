@@ -63,9 +63,9 @@
                                       <view class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
                                     </view>
                                     <view class="num_cfg">
-                                      <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.prdId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
-                                      <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-cart_id="{{item.cartId}}" data-prd_id="{{item.prdId}}" data-limit_min="{{item.limitBuyNum}}" data-limit_max="{{item.limitMaxNum}}"></input>
-                                      <view class="num_plus {{item.cartNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.cartNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.prdId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
+                                      <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
+                                      <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-limit_min="{{item.limitBuyNum}}" data-limit_max="{{item.limitMaxNum}}"></input>
+                                      <view class="num_plus {{item.cartNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.cartNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
                                     </view>
                                 </view>
                             </view>

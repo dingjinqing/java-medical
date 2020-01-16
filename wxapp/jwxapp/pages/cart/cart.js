@@ -76,11 +76,12 @@ global.wxPage({
 
   // 校验商品数量
   checkNumber(e) {
+    var that = this;
     var value = Number(e.detail.value)
     var cartId = e.target.dataset.cart_id
     var limit_min = e.target.dataset.limit_min
     var limit_max = e.target.dataset.limit_max
-    this.data.canBuyGoodsList.forEach((item, index) => {
+    that.data.canBuyGoodsList.forEach((item, index) => {
       if (item.cartId == cartId) {
         item.cartNumber = value
       }
@@ -92,8 +93,8 @@ global.wxPage({
       //   }
       // }
     })
-    this.setData({
-      canBuyGoodsList: this.data.canBuyGoodsList,
+    that.setData({
+      canBuyGoodsList: that.data.canBuyGoodsList,
     })
   },
 

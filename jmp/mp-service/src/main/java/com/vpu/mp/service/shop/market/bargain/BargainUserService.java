@@ -205,7 +205,6 @@ public class BargainUserService extends ShopBaseService{
                 String goodsName = saas.getShopApp(getShopId()).goods.getGoodsRecordById(bargainRecord.getGoodsId()).getGoodsName();
                 bargainSuccessSubscribeNotify(bargainRecord.getUserId(),bargain.getBargainName(),goodsName);
                 bargainSuccessTemplateNotify(bargainRecord.getUserId(),bargain.getExpectationPrice(),goodsName,bargainRecord.getId());
-                //TODO 向用户bargainRecord.getUserId发送砍价成功的消息
             }else {
                 //砍价record的状态更新
                 db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();

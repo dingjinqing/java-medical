@@ -8,12 +8,21 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.*;
+import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
+import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListVo;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.AggregateFunction;
 import org.jooq.Record7;
@@ -28,7 +37,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.LOTTERY;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
@@ -52,6 +63,8 @@ public class LotteryService extends ShopBaseService {
     private LotteryPrizeService lotteryPrize;
     @Autowired
     private MemberService member;
+    @Autowired
+    private GoodsService goodsService;
 
     /**
      * 添加幸运抽奖
@@ -183,6 +196,29 @@ public class LotteryService extends ShopBaseService {
      */
     public LotteryRecord getLotteryById(Integer id) {
         return db().selectFrom(LOTTERY).where(LOTTERY.ID.eq(id)).fetchOne();
+    }
+
+    /**
+     * 获取活动及奖品初始化
+     * @param id 活动id
+     * @return LotteryVo or null
+     */
+    public LotteryVo getLotteryVo(Integer id){
+        LotteryRecord lottery = getLotteryById(id);
+        Result<LotteryPrizeRecord> lotteryPrizeList = getLotteryPrizeById(id);
+        if (lottery==null||lotteryPrizeList.size()==0){
+            return null;
+        }
+        LotteryVo lotteryVo =lottery.into(LotteryVo.class);
+        List<LotteryPrizeVo>  lotteryPrizeVoList =lotteryPrizeList.into(LotteryPrizeVo.class);
+        lotteryPrizeVoList.forEach( lotteryPrizeVo -> {
+            if (lotteryPrizeVo.getLotteryType().equals(LotteryConstant.LOTTERY_TYPE_GOODS)){
+                ProductSmallInfoVo product =  goodsService.getProductVoInfoByProductId(lotteryPrizeVo.getPrdId());
+                lotteryPrizeVo.setProduct(product);
+            }
+        });
+        lotteryVo.setPrizeList(lotteryPrizeVoList);
+        return lotteryVo;
     }
 
     /**

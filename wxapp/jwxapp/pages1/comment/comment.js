@@ -271,12 +271,14 @@ global.wxPage({
    * award // 评价有礼奖励内容
    */
   good_commtag: function (e) {
-
+    // 防抖函数
+    util.throttle(this.evaluate, 1000)(e)
+  },
+  evaluate: function(e) {
     var that = this;
     var info = this.data.info;
     var item = e.detail.target.dataset.item
     let params = {
-      form_id: e.detail.formId,
       goodsId: item.goodsId,
       userId: userId,
       orderSn: item.orderSn,
@@ -295,7 +297,6 @@ global.wxPage({
         params.award = JSON.stringify(item.award)
       }
     }
-
     info.open_id = util.getCache('openid');
     if (parseInt(params.commstar) === 0) {
       util.showModal(i18n.trans('common.tip'), i18n.trans('page1.comment.selectRating'));
@@ -307,7 +308,6 @@ global.wxPage({
       info.commImg = info.commImg.toString();
     }
     console.log(params);
-    // console.log(info)
     util.api('/api/wxapp/comment/add', function (res) {
       if (res.error === 0) {
         util.toast_success(that.$t('page1.comment.reviewSuccess'));

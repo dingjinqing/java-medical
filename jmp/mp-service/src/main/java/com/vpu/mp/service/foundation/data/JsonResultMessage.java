@@ -250,6 +250,7 @@ public class JsonResultMessage {
 	public static final String PARTICIPATED_IN_EVENT = "participated.in.event";
 	public static final String PARTICIPANTS_IS_MAX = "participated.is.max";
 	public static final String GROUP_UPPER_LIMIT = "group.upper.limit";
+	public static final String GROUP_ONLY_ONE = "group.only.one";
     
 	/**
 	 * 营销- 支付有礼
