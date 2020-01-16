@@ -257,6 +257,5 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
             groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),orderGoodsBos.get(0).getGoodsName());
         }
-
     }
 }

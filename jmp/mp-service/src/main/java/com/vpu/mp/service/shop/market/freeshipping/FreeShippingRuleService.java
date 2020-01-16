@@ -18,6 +18,9 @@ import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
  */
 @Service
 public class FreeShippingRuleService extends ShopBaseService {
+    public final static Integer CONTYPE_NUM=0;
+    public final static Integer CONTYPE_MONEY=1;
+    public final static Integer CONTYPE_NUM_MONEY=2;
 
 
     @Autowired
