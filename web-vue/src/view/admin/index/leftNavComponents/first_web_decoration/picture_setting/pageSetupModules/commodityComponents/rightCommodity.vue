@@ -504,7 +504,6 @@
     <ChoosingGoods
       @resultGoodsDatas='handleToGetGoods'
       :tuneUpChooseGoods='tuneUpChooseGoods'
-      :chooseGoodsBack="GoodsBack"
     />
     <!--添加商家分类、平台分类弹窗-->
     <AddingBusClassDialog
@@ -778,9 +777,7 @@ export default {
       initRequestFlag: false, // 初始化接收的数据是否已存在商品数据
       temporaryStorageGoods: [], // 手动推荐暂存商品信息
       temporaryRightGoods: [],
-      isToChangeData: false, // 是否需要转换goods_items字段
-      GoodsBack: [], // 选择商品弹窗回显数据
-      zbGoodsBack: []
+      isToChangeData: false // 是否需要转换goods_items字段
     }
   },
   watch: {
@@ -853,17 +850,6 @@ export default {
         console.log(this.data)
         // this.data.goodsListData = []
         this.handleToGetModulesGoods(this.data, true)
-      }
-    },
-    'data.goods_items' (newData) {
-      if (newData.length) {
-        let arr = []
-        newData.forEach((item, index) => {
-          arr.push(item.goodsId)
-        })
-        this.GoodsBack = arr
-      } else {
-        this.GoodsBack = []
       }
     },
     // 监控该模块右边数据操作
@@ -964,8 +950,6 @@ export default {
           initData.goods_items.forEach(item => {
             goodsId.push(item.goodsId)
           })
-          this.zbGoodsBack = goodsId
-          console.log(this.GoodsBack)
         } else {
           if (clickFlag) {
             initData.goods_items.forEach(item => {
@@ -1269,27 +1253,24 @@ export default {
     //  添加商品点击
     handleToAddGoods () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-      this.GoodsBack = []
-      this.GoodsBack = this.zbGoodsBack
-      console.log(this.GoodsBack)
     },
     // 选中商品信息回传
     handleToGetGoods (res) {
       console.log(res)
       let resCopy = JSON.parse(JSON.stringify(res))
       // 过滤
-      // res.forEach((item, index) => {
-      //   this.data.goods_items.forEach((itemC, indexC) => {
-      //     if (item.goodsId === itemC.goodsId) {
-      //       resCopy.splice(index, 1, -1)
-      //     }
-      //   })
-      // })
-      this.data.goods_items = res
+      res.forEach((item, index) => {
+        this.data.goods_items.forEach((itemC, indexC) => {
+          if (item.goodsId === itemC.goodsId) {
+            resCopy.splice(index, 1, -1)
+          }
+        })
+      })
+
       console.log(resCopy, this.data.goods_items)
-      // resCopy.forEach((item, index) => {
-      //   this.data.goods_items.push(item)
-      // })
+      resCopy.forEach((item, index) => {
+        this.data.goods_items.push(item)
+      })
       // 添加
       this.handleToGetModulesGoods(this.data, true, true)
       console.log(this.data)

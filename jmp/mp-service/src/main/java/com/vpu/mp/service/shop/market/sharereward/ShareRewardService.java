@@ -1,10 +1,6 @@
 package com.vpu.mp.service.shop.market.sharereward;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vpu.mp.db.shop.tables.AttendShareUser;
-import com.vpu.mp.db.shop.tables.ShareAward;
-import com.vpu.mp.db.shop.tables.ShareAwardReceive;
-import com.vpu.mp.db.shop.tables.ShareAwardRecord;
 import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
@@ -34,6 +30,7 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.*;
+import static com.vpu.mp.service.shop.market.sharereward.WxShareRewardService.*;
 import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
 import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.USER_GR;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -51,11 +48,6 @@ public class ShareRewardService extends BaseShopConfigService {
     @Autowired
     private CouponService couponService;
 
-    private static ShareAward sa = ShareAward.SHARE_AWARD.as("sa");
-    private static ShareAwardRecord sar = ShareAwardRecord.SHARE_AWARD_RECORD.as("sar");
-    private static ShareAwardReceive sare = ShareAwardReceive.SHARE_AWARD_RECEIVE.as("sare");
-    private static AttendShareUser asu = AttendShareUser.ATTEND_SHARE_USER.as("asu");
-
     /**
      * 分页查询分享有礼活动信息
      *
@@ -64,38 +56,41 @@ public class ShareRewardService extends BaseShopConfigService {
      */
     public PageResult<ShareRewardShowVo> selectByPage(ShareRewardShowParam param) {
         //已删除的分享有礼活动不参与查询
-        Condition categoryConditon = sa.DEL_FLAG.eq(FLAG_ZERO);
+        Condition categoryConditon = AWARD.DEL_FLAG.eq(FLAG_ZERO);
         switch (param.getCategory()) {
             // 所有0
             case PURCHASE_ALL:
                 break;
             // 已停用4
             case PURCHASE_TERMINATED:
-                categoryConditon = categoryConditon.and(sa.STATUS.eq(FLAG_ONE));
+                categoryConditon = categoryConditon.and(AWARD.STATUS.eq(FLAG_ONE));
                 break;
             // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(sa.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(sa.IS_FOREVER.eq(FLAG_ZERO));
+                categoryConditon = categoryConditon.and(AWARD.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(AWARD.IS_FOREVER.eq(FLAG_ZERO));
                 break;
             // 未开始2
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(sa.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(sa.IS_FOREVER.eq(FLAG_ZERO));
+                categoryConditon = categoryConditon.and(AWARD.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(AWARD.IS_FOREVER.eq(FLAG_ZERO));
                 break;
             // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq(FLAG_ONE)).
-                    or(sa.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))
-                        .and(sa.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))));
+                categoryConditon = categoryConditon.and(AWARD.IS_FOREVER.eq(FLAG_ONE)).
+                    or(AWARD.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))
+                        .and(AWARD.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))));
                 break;
         }
         Table<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
-            select(sa.ID, sa.NAME, sa.CONDITION, sa.GOODS_PV, sa.IS_FOREVER, sa.START_TIME, sa.END_TIME, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sa.PRIORITY, sa.STATUS).from(sa).where(categoryConditon).asTable("sa");
+            select(AWARD.ID, AWARD.NAME, AWARD.CONDITION, AWARD.GOODS_PV, AWARD.IS_FOREVER, AWARD.START_TIME
+                , AWARD.END_TIME, AWARD.FIRST_LEVEL_RULE, AWARD.SECOND_LEVEL_RULE, AWARD.THIRD_LEVEL_RULE, AWARD.PRIORITY, AWARD.STATUS)
+            .from(AWARD).where(categoryConditon).asTable("AWARD");
 
-        Condition selectConditon = sa.ID.isNotNull();
+        Condition selectConditon = AWARD.ID.isNotNull();
         // TODO 页面筛选条件待定，此处省略筛选condition
 
         SelectConditionStep<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> resultStep = db().
-            select(sa.ID, sa.NAME, sa.CONDITION, sa.GOODS_PV, sa.IS_FOREVER, sa.START_TIME, sa.END_TIME, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sa.PRIORITY, sa.STATUS).from(conditionStep).where(selectConditon);
+            select(AWARD.ID, AWARD.NAME, AWARD.CONDITION, AWARD.GOODS_PV, AWARD.IS_FOREVER, AWARD.START_TIME, AWARD.END_TIME, AWARD.FIRST_LEVEL_RULE
+                , AWARD.SECOND_LEVEL_RULE, AWARD.THIRD_LEVEL_RULE, AWARD.PRIORITY, AWARD.STATUS).from(conditionStep).where(selectConditon);
         PageResult<ShareRewardShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), ShareRewardShowVo.class);
 
         for (ShareRewardShowVo vo : pageResult.getDataList()) {
@@ -170,7 +165,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param shareId 分享活动id
      */
     private Integer getShareNum(Integer shareId) {
-        return db().selectCount().from(sar).where(sar.SHARE_ID.eq(shareId)).fetchOptionalInto(Integer.class).orElse(0);
+        return db().selectCount().from(AWARD_RECORD).where(AWARD_RECORD.SHARE_ID.eq(shareId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
@@ -179,7 +174,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param shareId 分享活动id
      */
     private Integer getInviteNum(Integer shareId) {
-        return db().selectCount().from(asu).where(asu.SHARE_ID.eq(shareId)).fetchOptionalInto(Integer.class).orElse(0);
+        return db().selectCount().from(ATTEND).where(ATTEND.SHARE_ID.eq(shareId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
@@ -200,7 +195,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return the share reward info
      */
     public ShareRewardInfoVo getShareRewardInfo(Integer shareId) {
-        ShareRewardInfoVo shareRewardInfoVo = db().selectFrom(sa).where(sa.ID.eq(shareId)).fetchOneInto(ShareRewardInfoVo.class);
+        ShareRewardInfoVo shareRewardInfoVo = db().selectFrom(AWARD).where(AWARD.ID.eq(shareId)).fetchOneInto(ShareRewardInfoVo.class);
         List<ShareRule> shareRules = new ArrayList<>();
         try {
             if (StringUtils.isNotEmpty(shareRewardInfoVo.getFirstLevelRule())) {
@@ -337,15 +332,15 @@ public class ShareRewardService extends BaseShopConfigService {
         switch (param.getStatus()) {
             case CONDITION_ZERO:
                 //启用
-                db().update(sa).set(sa.STATUS, FLAG_ZERO).where(sa.ID.eq(param.getShareId())).execute();
+                db().update(AWARD).set(AWARD.STATUS, FLAG_ZERO).where(AWARD.ID.eq(param.getShareId())).execute();
                 break;
             case CONDITION_ONE:
                 //停用
-                db().update(sa).set(sa.STATUS, FLAG_ONE).where(sa.ID.eq(param.getShareId())).execute();
+                db().update(AWARD).set(AWARD.STATUS, FLAG_ONE).where(AWARD.ID.eq(param.getShareId())).execute();
                 break;
             case CONDITION_TWO:
                 //删除
-                db().update(sa).set(sa.DEL_FLAG, FLAG_ONE).where(sa.ID.eq(param.getShareId())).execute();
+                db().update(AWARD).set(AWARD.DEL_FLAG, FLAG_ONE).where(AWARD.ID.eq(param.getShareId())).execute();
                 break;
             default:
                 break;
@@ -359,7 +354,10 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return 分页数据 page result
      */
     public PageResult<ShareReceiveDetailVo> shareReceiveDetail(ShareReceiveDetailParam param) {
-        SelectConditionStep<Record11<Integer, Integer, String, String, Integer, String, Byte, String, String, String, Timestamp>> conditionStep = db().select(sare.SHARE_ID, sare.USER_ID, USER.USERNAME, USER.MOBILE, sare.GOODS_ID, GOODS.GOODS_NAME, sare.AWARD_LEVEL, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sare.CREATE_TIME).from(sare).leftJoin(sa).on(sare.SHARE_ID.eq(sa.ID)).leftJoin(GOODS).on(sare.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(USER).on(sare.USER_ID.eq(USER.USER_ID)).where(sare.SHARE_ID.eq(param.getShareId()));
+        SelectConditionStep<Record11<Integer, Integer, String, String, Integer, String, Byte, String, String, String, Timestamp>> conditionStep = db()
+            .select(AWARD_RECEIVE.SHARE_ID, AWARD_RECEIVE.USER_ID, USER.USERNAME, USER.MOBILE, AWARD_RECEIVE.GOODS_ID, GOODS.GOODS_NAME, AWARD_RECEIVE.AWARD_LEVEL, AWARD.FIRST_LEVEL_RULE
+                , AWARD.SECOND_LEVEL_RULE, AWARD.THIRD_LEVEL_RULE, AWARD_RECEIVE.CREATE_TIME)
+            .from(AWARD_RECEIVE).leftJoin(AWARD).on(AWARD_RECEIVE.SHARE_ID.eq(AWARD.ID)).leftJoin(GOODS).on(AWARD_RECEIVE.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(USER).on(AWARD_RECEIVE.USER_ID.eq(USER.USER_ID)).where(AWARD_RECEIVE.SHARE_ID.eq(param.getShareId()));
 
         if (StringUtils.isNotEmpty(param.getGoodsName())) {
             conditionStep = conditionStep.and(GOODS.GOODS_NAME.like(this.likeReplace(param.getGoodsName())));
@@ -371,7 +369,7 @@ public class ShareRewardService extends BaseShopConfigService {
             conditionStep = conditionStep.and(USER.USERNAME.like(this.likeReplace(param.getUsername())));
         }
         if (param.getRewardLevel() != null) {
-            conditionStep = conditionStep.and(sare.AWARD_LEVEL.eq(param.getRewardLevel()));
+            conditionStep = conditionStep.and(AWARD_RECEIVE.AWARD_LEVEL.eq(param.getRewardLevel()));
         }
 
         PageResult<ShareReceiveDetailVo> pageResult = this.getPageResult(conditionStep, param.getCurrentPage(), param.getPageRows(), ShareReceiveDetailVo.class);
@@ -414,7 +412,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param shareId 分享活动id
      */
     private Integer getInviteUserNum(Integer shareId) {
-        return db().select(DSL.countDistinct(asu.USER_ID)).from(asu).where(asu.SHARE_ID.eq(shareId)).fetchOptionalInto(Integer.class).orElse(0);
+        return db().select(DSL.countDistinct(ATTEND.USER_ID)).from(ATTEND).where(ATTEND.SHARE_ID.eq(shareId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
@@ -423,7 +421,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @param shareId 分享活动id
      */
     private Integer getInviteNewUserNum(Integer shareId) {
-        return db().select(DSL.countDistinct(asu.USER_ID)).from(asu).where(asu.SHARE_ID.eq(shareId)).and(asu.IS_NEW.eq(CONDITION_ONE)).fetchOptionalInto(Integer.class).orElse(0);
+        return db().select(DSL.countDistinct(ATTEND.USER_ID)).from(ATTEND).where(ATTEND.SHARE_ID.eq(shareId)).and(ATTEND.IS_NEW.eq(CONDITION_ONE)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
@@ -451,7 +449,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return the boolean
      */
     private boolean activityIsExist(Integer id) {
-        return db().fetchExists(sa, sa.ID.eq(id));
+        return db().fetchExists(AWARD, AWARD.ID.eq(id));
     }
 
     /**
@@ -461,7 +459,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return the boolean
      */
     public boolean activityIsExist(Condition condition) {
-        return db().fetchExists(sa, condition);
+        return db().fetchExists(AWARD, condition);
     }
 
     /**
@@ -471,7 +469,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return the boolean
      */
     boolean aRecordIsExist(Condition condition) {
-        return db().fetchExists(sar, condition);
+        return db().fetchExists(AWARD_RECORD, condition);
     }
 
     /**
@@ -514,7 +512,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return the share reward
      */
     private com.vpu.mp.db.shop.tables.records.ShareAwardRecord getShareReward(Integer id) {
-        return db().fetchSingle(sa, sa.ID.eq(id));
+        return db().fetchSingle(AWARD, AWARD.ID.eq(id));
     }
 
     /**
@@ -526,7 +524,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return the share award record
      */
     ShareAwardRecordRecord getShareAwardRecord(Integer shareId, Integer userId, Integer goodsId) {
-        return db().fetchOne(sar, sar.USER_ID.eq(userId).and(sar.SHARE_ID.eq(shareId)).and(sar.GOODS_ID.eq(goodsId)));
+        return db().fetchOne(AWARD_RECORD, AWARD_RECORD.USER_ID.eq(userId).and(AWARD_RECORD.SHARE_ID.eq(shareId)).and(AWARD_RECORD.GOODS_ID.eq(goodsId)));
     }
 
     /**
@@ -536,7 +534,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return the share rules
      */
     ShareRewardInfoVo getShareInfo(Integer id) {
-        ShareRewardInfoVo shareReward = db().selectFrom(sa).where(sa.ID.eq(id)).fetchOneInto(ShareRewardInfoVo.class);
+        ShareRewardInfoVo shareReward = db().selectFrom(AWARD).where(AWARD.ID.eq(id)).fetchOneInto(ShareRewardInfoVo.class);
         int sum = INTEGER_ZERO;
         ShareRule first = Util.json2Object(shareReward.getFirstLevelRule(), ShareRule.class, false);
         setTheStock(first, shareReward.getFirstAwardNum());
@@ -586,7 +584,7 @@ public class ShareRewardService extends BaseShopConfigService {
      * @return the int
      */
     int autoincrementUserNum(Integer id) {
-        db().update(sar).set(sar.USER_NUMBER, sar.USER_NUMBER.add(INTEGER_ONE)).where(sar.ID.eq(id)).execute();
-        return db().select(sar.USER_NUMBER).from(sar).where(sar.ID.eq(id)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+        db().update(AWARD_RECORD).set(AWARD_RECORD.USER_NUMBER, AWARD_RECORD.USER_NUMBER.add(INTEGER_ONE)).where(AWARD_RECORD.ID.eq(id)).execute();
+        return db().select(AWARD_RECORD.USER_NUMBER).from(AWARD_RECORD).where(AWARD_RECORD.ID.eq(id)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 }

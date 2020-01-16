@@ -1,6 +1,6 @@
 <view class="goods-item">
   <view class="edit" wx:if="{{isEdit}}">
-    <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" bindtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
+    <text class="iconfont iconshanchu1" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
   </view>
   <view class="all-image">
     <image class="goods-image" src="{{!enableNumEdit ? goodsData.goodsImg : imageUrl+goodsData.goodsImg}}"></image>
@@ -24,9 +24,9 @@
       </block>
       <block wx:else>
         <view class="num-cfg">
-          <text class="num-minus" data-type="minus" bindtap="changeGoodsNum">-</text>
+          <text class="num-minus">-</text>
           <input type="number" value="{{goodsData.cartNumber}}"></input>
-          <text class="num-plus" data-type="plus" bindtap="changeGoodsNum">+</text>
+          <text class="num-plus">+</text>
         </view>
       </block>
    </view>

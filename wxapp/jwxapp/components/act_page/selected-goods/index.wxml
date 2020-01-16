@@ -4,18 +4,14 @@
       <text>已选商品</text>
       <text class="edit" bindtap="editToogle">{{isEdit ? '完成':'编辑'}}</text>
     </view>
-    <view class="goods-content" wx:if="{{goodsData.length > 0}}">
+    <view class="goods-content">
       <block wx:for="{{goodsData}}" wx:for-item="goodsItem" wx:key="cartId">
-        <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-edit="{{isEdit}}" enable-num-edit/>
+        <v-single-col-goods goods-data="{{goodsItem}}" is-edit="{{isEdit}}" enable-num-edit/>
       </block>
     </view>
-    <view class="is-null" wx:else>
-      <image src="{{imageUrl}}/image/wxapp/no_result.png"></image>
-      <text>还没有已选商品，快去选购吧！</text>
-    </view>
     <view class="footer">
-      <view>已选：{{goodsData.length}}</view>
-      <view class="confirm" style="background-color:{{main_setting.comColor}}" bindtap="bindClose">确定</view>
+      <view>已选：1</view>
+      <view class="confirm" style="background-color:{{main_setting.comColor}}">确定</view>
     </view>
   </view>
 </v-popup>

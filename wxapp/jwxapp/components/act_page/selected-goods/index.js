@@ -30,9 +30,6 @@ global.wxComponent({
         show:false,
         isEdit:false
       })
-    },
-    cartChange(){
-      this.triggerEvent('cartChange')
     }
   }
 })
