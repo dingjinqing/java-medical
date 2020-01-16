@@ -87,6 +87,7 @@ import org.springframework.util.Assert;
 
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -1157,15 +1158,16 @@ public class UserCardService extends ShopBaseService {
 			card.setTotalDiscount(BigDecimal.ZERO);
 		} else {
 			// 正常打折(价格 * （10 - 折扣（eg:6.66） / 10）)
-			card.setTotalDiscount(BigDecimalUtil.multiplyOrDivide(
+			card.setTotalDiscount(
+			    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
 					BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
 					BigDecimalUtil.BigDecimalPlus.create(
 							BigDecimalUtil.addOrSubtrac(
-									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN,
-											BigDecimalUtil.Operator.subtrac),
+									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac),
 									BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), null)),
 							BigDecimalUtil.Operator.divide),
-					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)));
+					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
+            );
 		}
 		return card.getTotalDiscount();
 	}
