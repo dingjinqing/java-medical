@@ -558,8 +558,22 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     /**
+     * 根据条件获取商品数量
+     * @param param 商品数量获取条件
+     * @return 商品数量
+     */
+    @PostMapping("/api/admin/goods/num")
+    public JsonResult getGoodsNumByCondition(@RequestBody GoodsNumCountParam param){
+        return success(shop().goods.getGoodsNum(param));
+    }
+
+    @PostMapping("/api/admin/goods/nums")
+    public JsonResult getGoodsNumByCondition(@RequestBody GoodsNumCountParamModel param) {
+        return success(shop().goods.getGoodsNum(param.getGoodsNumCountParams()));
+    }
+
+    /**
      * 小程序装修商品列表模块数据接口
-     *
      * @param goodsListMpParam
      */
     @PostMapping("/api/admin/goods/mp/list")

@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
@@ -224,5 +223,16 @@ public class GoodsLabelCoupleService extends ShopBaseService {
             .from(GOODS_LABEL_COUPLE)
             .where(param)
             .fetchInto(GoodsLabelCouple.class);
+    }
+    /**
+     * 根据标签id 和 对应类型获取相关链的目标id集合
+     * @param labelIds 标签id集合
+     * @param type 标签关联的类型
+     * @return 相关联的目标id集合
+     */
+    public List<Integer> getGoodsLabelCouple(List<Integer> labelIds,Byte type) {
+        List<Integer> gtaIds = db().select(GOODS_LABEL_COUPLE.GTA_ID).from(GOODS_LABEL_COUPLE)
+            .where(GOODS_LABEL_COUPLE.LABEL_ID.in(labelIds)).and(GOODS_LABEL_COUPLE.TYPE.eq(type)).fetchInto(Integer.class);
+        return gtaIds;
     }
 }
