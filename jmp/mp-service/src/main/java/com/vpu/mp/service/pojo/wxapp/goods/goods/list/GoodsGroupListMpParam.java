@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 public class GoodsGroupListMpParam {
-    public static final Byte SECTION_SHOW_ALL = 1;
+    public static final Byte SECTION_POINT_GOODS = 2;
     /**分组是商家分类*/
     public static final String SORT_TYPE = "";
     /**分组是标签*/

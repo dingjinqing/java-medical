@@ -689,8 +689,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         calculate.calculateCoupon(param, vo);
         //处理当前优惠卷
         BigDecimal couponDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultCoupon(), bos, OrderConstant.D_T_COUPON);
-        //TODO 包邮策略         if (!$deliverType && in_array($goodsType, [0, 6])) {
-        if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER)&&param.getActivityType()==null||param.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)){
+        //包邮策略
+        if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER)&& BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType())){
             List<Integer> goodsIds = fullPackage(vo.getAddress(), bos, tolalNumberAndPrice, param.getDate());
             bos.forEach(bo->{
                 if (goodsIds.contains(bo.getGoodsId())){

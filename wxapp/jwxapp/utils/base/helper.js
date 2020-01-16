@@ -1,5 +1,6 @@
 var cache = require('./cache.js');
 var config = require('../config.js');
+var timer = null;
 
 var helper = {
   getShopId () {
@@ -343,6 +344,39 @@ var helper = {
       speColor: helper.colorRgb(mainColor, 0.1), //预售背景色,
     }
     return colors;
+  },
+
+  /**
+   * 防抖函数
+   * params(函数，间隔，是否立即执行一次)
+   * util.debouce(func, delay)(arguments)
+   */
+  debouce (func, delay) {
+    return function() {
+      var context = this;
+      var args = arguments;
+      console.log(timer);
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(function() {
+        func.apply(context, args);
+      }, delay);
+    }
+  },
+  /**
+   * 节流函数
+   * util.throttle(func, delay)(arguments)
+   */
+  throttle (func, delay) {
+    return function () {
+      var context = this;
+      var args = arguments;
+      if (!timer) {
+        timer = setTimeout(function () {
+          func.apply(context, args);
+          timer = null;
+        }, delay);
+      }
+    }
   }
 }
 
