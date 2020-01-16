@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import org.jooq.Record;
 import org.jooq.Record3;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -272,9 +273,9 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<StoreVo> store(StoreListQueryParam param) {
-		SelectJoinStep<Record3<String,Byte,Integer>> select = db()
-				.select(STORE.STORE_NAME,STORE.BUSINESS_STATE,STORE.STORE_ID)
-				.from(STORE);
+        SelectConditionStep<Record3<String, Byte, Integer>> select = db()
+            .select(STORE.STORE_NAME, STORE.BUSINESS_STATE, STORE.STORE_ID)
+            .from(STORE).where(STORE.DEL_FLAG.eq((byte) 0));
 		select.orderBy(STORE.STORE_ID.desc());
 		PageResult<StoreVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreVo.class);
 		return pageResult;
