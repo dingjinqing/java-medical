@@ -1070,7 +1070,7 @@ public class GroupDrawService extends ShopBaseService {
 		GroupDrawInviteRecord inviteUserInfo = groupDrawInvite.getAvailableInviteUser(groupDrawId,
 				orderGoods.getGoodsId(), order.getUserId());
 		Integer inviteUserId = 0;
-		inviteUserId = inviteUserId == null ? 0 : inviteUserInfo.getInviteUserId();
+		inviteUserId = inviteUserInfo == null ? 0 : inviteUserInfo.getInviteUserId();
 
 		Integer goodsId = orderGoods.getGoodsId();
 		Integer userId = order.getUserId();
