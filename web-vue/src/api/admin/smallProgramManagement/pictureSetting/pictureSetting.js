@@ -85,3 +85,21 @@ export function getIntegralExchange (data) {
     data: data
   })
 }
+
+// 商品分组模块接口
+export function getGoodsGroupData (data) {
+  return service({
+    url: '/api/admin/goods/mp/group/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 商品分组-根据条件获取商品数量
+export function getGoodsNum (data) {
+  return service({
+    url: '/api/admin/goods/nums',
+    method: 'post',
+    data: data
+  })
+}
