@@ -594,7 +594,7 @@ public class GoodsMpService extends ShopBaseService {
         List<Integer> labelIds = new ArrayList<>(6);
 
         for (GoodsGroupListMpParam.SortGroup sortGroup : sortGroupArr) {
-            if (GoodsGroupListMpParam.SECTION_SHOW_ALL.equals(sortGroup.getIsAll())) {
+            if (GoodsGroupListMpParam.SECTION_POINT_GOODS.equals(sortGroup.getIsAll())) {
                 goodsIds.addAll(Stream.of(sortGroup.getGroupGoodsId().split(",")).map(Integer::parseInt).collect(Collectors.toList()));
             } else {
                 GoodsListMpParam goodsListMpParam = new GoodsListMpParam();
