@@ -1,4 +1,6 @@
 package com.vpu.mp.service.foundation.util;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -252,7 +254,7 @@ public class CardUtil {
 	
 	
 	/**
-	 * 用户卡的有效时间
+	 * 	用户卡的有效时间
 	 * @param card 卡信息
 	 * @return 卡的有效期对象
 	 */
@@ -294,4 +296,12 @@ public class CardUtil {
 		return bean;
 	}
 
+	/**
+	 * 	是否需要激活
+	 * @return true 需要 false 不需要
+	 */
+	public static boolean isNeedActive(Byte activte) {
+		return CardConstant.MCARD_ACT_YES.equals(activte);
+	}
+	
 }
