@@ -360,6 +360,9 @@ export default {
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
 
+      // 使用须知
+      this.cardUsageCfgData.desc = data.desc
+      this.cardUsageCfgData.mobile = data.mobile
       // 领取设置
       this.cardReceiveCfgData.isPay = String(data.isPay)
       this.cardReceiveCfgData.payType = String(data.payType)

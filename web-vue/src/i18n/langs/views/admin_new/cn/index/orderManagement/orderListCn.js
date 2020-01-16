@@ -164,7 +164,7 @@ export const cn = {
   returnSuccessNote: '注：退款将在3个工作日内到达买家账户，本次维权结束。',
   passReturnApplyNote: '您已同意退货退款，请等待买家处理',
   passReturnApplyNote1:
-    '退货地址：{{returnAddress}}； 联系人：{{consignee}}； 电话：{{merchantTelephone}}',
+    '退货地址：{returnAddress}； 联系人：{consignee}； 电话：{merchantTelephone}',
   refusedReturngoodsApply: '您已拒绝退货退款',
   autoCancelNote:
     '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
