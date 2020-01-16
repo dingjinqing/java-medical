@@ -164,7 +164,7 @@
                     v-for="index in scope.row.commstar"
                     :key="index"
                   ></i></span></div>
-              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote}}</span></div>
+              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote || $t('evaluation.noExperience')}}</span></div>
               <div
                 class="evaluation-info_item"
                 v-if="scope.row.commImg.length > 0"
