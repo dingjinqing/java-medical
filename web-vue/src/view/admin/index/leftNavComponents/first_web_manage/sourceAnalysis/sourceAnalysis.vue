@@ -31,11 +31,14 @@
     </el-date-picker>
     <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
     <!--来源标签-->
+    <div   style="display:flex">
     <div class="label_style"
          v-for="(item, index) in this.span_data"
          :key="index"
+
     >
-      <span :id="item.name" :class="spanStyle" @click="changeData(item.name, index)">{{item.name}}</span>
+      <div :id="item.name" :class="spanStyle" @click="changeData(item.name, index)">{{item.name}}</div>
+    </div>
     </div>
     <!-- 柱状图部分 -->
     <div class="charts"><ve-histogram :data="chartData"></ve-histogram></div>
