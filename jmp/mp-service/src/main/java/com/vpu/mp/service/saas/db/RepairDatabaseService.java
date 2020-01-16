@@ -301,7 +301,6 @@ public class RepairDatabaseService extends MainBaseService {
 		String keyProp = "";
 		String primary = "PRIMARY";
 		String unique = "0";
-		String dropKey = "";
 
 		StringBuffer buf = new StringBuffer();
 		int size = index.getColumnNames().size();
