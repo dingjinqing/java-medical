@@ -61,7 +61,11 @@ public enum MpTemplateConfig {
     GROUP_SUCCESS(
             "OPENTM400932513",
             "拼团成功通知",
-            "{{first.DATA}}商品名称：{{keyword1.DATA}}团长：{{keyword2.DATA}}成团人数：{{keyword3.DATA}}{{remark.DATA}}");
+            "{{first.DATA}}商品名称：{{keyword1.DATA}}团长：{{keyword2.DATA}}成团人数：{{keyword3.DATA}}{{remark.DATA}}"),
+    BARGAIN_SUCCESS(
+        "OPENTM410292733",
+        "砍价成功提醒",
+        "{{first.DATA}}商品名称：{{keyword1.DATA}}底价：{{keyword2.DATA}}{{remark.DATA}}");
 	/**
 	 * 模板编号
 	 */
