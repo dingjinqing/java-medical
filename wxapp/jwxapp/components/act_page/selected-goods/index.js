@@ -31,8 +31,8 @@ global.wxComponent({
         isEdit:false
       })
     },
-    cartChange(){
-      this.triggerEvent('cartChange')
+    cartChange(){	
+      this.triggerEvent('cartChange')	
     }
   }
 })

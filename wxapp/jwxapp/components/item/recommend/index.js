@@ -1,3 +1,4 @@
+
 const util = require("../../../utils/util.js");
 global.wxComponent({
   /**

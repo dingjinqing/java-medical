@@ -52,7 +52,7 @@ global.wxComponent({
           styleName:`color:${data.main_setting.comColor}`
         },
         1:{
-          className: 'iconfont icongouwuche5',
+          className: 'iconfont icongouwuche1',
           styleName:`color:${data.main_setting.comColor}`
         },
         2:{
@@ -91,28 +91,28 @@ global.wxComponent({
         delMarketData:delMarketType[this.data.delMarket]
       })
     },
-    // 删除购物车
-    delCartGoods(e){
-      console.log(e.currentTarget.dataset.cartId)
-      util.api('/api/wxapp/cart/remove', (res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.triggerEvent('cartChange') //购物车改变触发
-        }
-      }, { recId: e.currentTarget.dataset.cartId })
+    // 删除购物车	
+    delCartGoods(e){	
+      console.log(e.currentTarget.dataset.cartId)	
+      util.api('/api/wxapp/cart/remove', (res) => {	
+        console.log(res)	
+        if (res.error === 0) {	
+          this.triggerEvent('cartChange') //购物车改变触发	
+        }	
+      }, { recId: e.currentTarget.dataset.cartId })	
     },
-    // 更改购物车商品数量
-    changeGoodsNum(e){
-      let {type} = e.currentTarget.dataset
-      let {cartNumber,productId} = this.data.goodsData
-      util.api('/api/wxapp/cart/change', res => {
-        if (res.error == 0) {
-          this.triggerEvent('cartChange') //购物车改变触发
-        }
-      }, {
-          productId: productId,
-          cartNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1
-        })
+    // 更改购物车商品数量	
+    changeGoodsNum(e){	
+      let {type} = e.currentTarget.dataset	
+      let {cartNumber,productId} = this.data.goodsData	
+      util.api('/api/wxapp/cart/change', res => {	
+        if (res.error == 0) {	
+          this.triggerEvent('cartChange') //购物车改变触发	
+        }	
+      }, {	
+          productId: productId,	
+          cartNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1	
+        })	
     }
   }
 })

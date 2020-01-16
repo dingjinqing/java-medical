@@ -9,9 +9,9 @@
         <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-edit="{{isEdit}}" enable-num-edit/>
       </block>
     </view>
-    <view class="is-null" wx:else>
-      <image src="{{imageUrl}}/image/wxapp/no_result.png"></image>
-      <text>还没有已选商品，快去选购吧！</text>
+    <view class="is-null" wx:else>	
+      <image src="{{imageUrl}}/image/wxapp/no_result.png"></image>	
+      <text>还没有已选商品，快去选购吧！</text>	
     </view>
     <view class="footer">
       <view>已选：{{goodsData.length}}</view>

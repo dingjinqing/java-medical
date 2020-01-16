@@ -31,7 +31,7 @@
             data-goods="{{item.goods_id}}">原价购买</view>
         </view>
         <view class='bottom_bottom'>
-          <text class='original_price' wx:if="{{m.goods_price}}">￥{{item.max_price}}</text>
+          <text wx:if="{{m.goods_price}}" class='original_price'>￥{{item.max_price}}</text>
 
           <text class='seckill_progess2' wx:if="{{item.time_state == 2&&item.goods_is_delete==0&&item.act_del_flag == 0 || item.act_del_flag == 1 || item.percent == 100}}">
                   <text class='progess2' style='width:{{item.percent}}%'></text>

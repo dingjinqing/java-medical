@@ -446,9 +446,7 @@ export default {
       }
     },
     showReceivePwdDiaglog (index) {
-      debugger
       if (!this.ruleForm.codeAddDivArrBottom[index].pwdName) {
-        debugger
         this.$message.warning('请填写批次名称')
         return
       }
@@ -480,7 +478,6 @@ export default {
     },
 
     showReceiveCodeDiaglog (index) {
-      debugger
       if (!this.ruleForm.codeAddDivArr[index].batchName) {
         this.$message.warning('请填写批次名称')
         return
