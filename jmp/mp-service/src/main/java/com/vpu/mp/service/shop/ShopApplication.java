@@ -77,6 +77,7 @@ import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.user.cart.CartService;
+import com.vpu.mp.service.shop.user.message.MessageRecordService;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
@@ -499,5 +500,12 @@ public class ShopApplication {
     /**
      * 小程序端分享有礼
      */
+    @Autowired
     public WxShareRewardService wxShareReward;
+    
+    /**
+     * 小程序公众号短信发送记录表
+     */
+    @Autowired
+    public MessageRecordService msgRecordService;
 }

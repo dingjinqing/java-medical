@@ -64,6 +64,10 @@ public class WxAppCartGoods {
      */
     private String goodsName;
     /**
+     * 商品
+     */
+    private String goodsImg;
+    /**
      * 商品规格名
      */
     private String prdDesc;

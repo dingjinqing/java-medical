@@ -1,32 +1,29 @@
 package com.vpu.mp.service.shop.market.bargain;
 
-import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
-import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
-import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static org.jooq.impl.DSL.*;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.util.List;
-import java.util.Map;
-
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.*;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
+import com.vpu.mp.service.shop.image.postertraits.BargainPictorialService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -36,17 +33,21 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
+import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
+import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
 
 /**
  * @author 王兵兵
@@ -70,6 +71,8 @@ public class BargainRecordService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private OrderInfoService orderInfo;
+    @Autowired
+    private BargainPictorialService shareImgService;
 	
 	/**
 	 * 状态：正在砍价 
@@ -361,7 +364,9 @@ public class BargainRecordService extends ShopBaseService {
                     vo.getRecordShareImg().setShareImg(recordInfo.getGoodsImg());
                     vo.getRecordShareImg().setShareImgFullUrl(domainConfig.imageUrl(recordInfo.getGoodsImg()));
                 }else{
-                    //TODO 生成砍价分享图
+                    String shareImgPath = shareImgService.getBargainInfoShareImg(recordInfo);
+                    vo.getRecordShareImg().setShareImg(shareImgPath);
+                    vo.getRecordShareImg().setShareImgFullUrl(domainConfig.imageUrl(shareImgPath));
                 }
             }
             vo.setRecordInfo(recordInfo);

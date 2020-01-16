@@ -336,6 +336,7 @@ public enum JsonResultCode {
     PARTICIPATED_IN_EVENT(147012, JsonResultMessage.PARTICIPATED_IN_EVENT),
     PARTICIPANTS_IS_MAX(147013, JsonResultMessage.PARTICIPANTS_IS_MAX),
     GROUP_UPPER_LIMIT(147014, JsonResultMessage.GROUP_UPPER_LIMIT),
+    GROUP_ONLY_ONE(147015, JsonResultMessage.GROUP_ONLY_ONE),
     
 	
 	//会员用户

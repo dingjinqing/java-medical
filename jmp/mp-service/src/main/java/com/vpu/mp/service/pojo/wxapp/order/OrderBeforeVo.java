@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author 王帅
  *
  */
@@ -30,6 +30,7 @@ import java.util.Map;
 public class OrderBeforeVo {
     /**商品*/
     private List<OrderGoodsBo> orderGoods;
+
 
     /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.foundation.data.BaseConstant} 下的ACTIVITY_TYPE**/
     private Byte activityType;
@@ -40,6 +41,10 @@ public class OrderBeforeVo {
     private List<Byte> orderType = Lists.newArrayList();
 	private UserAddressVo address;
 	private Byte[] expressList;
+    /**
+     * 1.自提:根据前端传的经纬度排序（当前门店、距离
+     * 2.同城配送：根据vo.getAddress()地址排序（当前门店、距离）
+     */
 	private Byte deliverType;
 	private String memberCardNo;
     private String couponSn;
@@ -163,7 +168,6 @@ public class OrderBeforeVo {
         orderRecord.setMemberCardBalance(getMemberCardDiscount());
         orderRecord.setPackageDiscount(getPackageDiscount());
         orderRecord.setPreSaleDiscount(getPreSaleDiscount());
-        orderRecord.setOrderPayWay(getOrderPayWay());
         if(getBkOrderMoney() != null){
             orderRecord.setBkOrderMoney(getBkOrderMoney());
         }

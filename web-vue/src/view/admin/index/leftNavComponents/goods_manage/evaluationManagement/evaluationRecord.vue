@@ -164,10 +164,10 @@
                     v-for="index in scope.row.commstar"
                     :key="index"
                   ></i></span></div>
-              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote}}</span></div>
+              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote || $t('evaluation.noExperience')}}</span></div>
               <div
                 class="evaluation-info_item"
-                v-if="scope.row.commImg !== ''"
+                v-if="scope.row.commImg.length > 0"
               >
                 <div class="evaluation-pic">
                   <template v-for="(picItem,picIndex) in scope.row.commImg">
@@ -254,20 +254,20 @@
             <el-tooltip
               :content="$t('evaluation.pass')"
               placement="top"
-              v-if="target === 'Record' && scope.row.flag === 0"
+              v-if="target === 'Record' && (scope.row.flag === 0 || scope.row.flag === 2)"
             >
               <span
-                class="el-icon-remove-outline operateSpan"
-                @click="evaluationRefuse(scope.row.id)"
+                class="el-icon-success operateSpan"
+                @click="evaluationPass(scope.row.id)"
               ></span>
             </el-tooltip>
             <el-tooltip
               :content="$t('evaluation.refuse')"
               placement="top"
-              v-if="target === 'Record' && scope.row.flag === 0"
+              v-if="target === 'Record' && (scope.row.flag === 0 || scope.row.flag === 1)"
             >
               <span
-                class="el-icon-circle-plus-outline operateSpan"
+                class="el-icon-error operateSpan"
                 @click="evaluationRefuse(scope.row.id)"
               ></span>
             </el-tooltip>
@@ -383,11 +383,13 @@ export default {
         if (res.error === 0) {
           this.pageParams = res.content.page
           this.dataList = res.content.dataList.map(item => {
-            let comment = JSON.parse(JSON.stringify(item))
-            if (comment.commImg !== '' && comment.commImg !== null) {
-              comment.commImg = comment.commImg.split(',').map(item => this.$imageHost + '/' + item)
+            let commImg = JSON.parse(item.commImg)
+            if (commImg.length > 0) {
+              commImg = commImg.map(item => {
+                return this.$imageHost + '/' + item
+              })
             }
-            return comment
+            return { ...item, commImg }
           })
           // this.dataList = res.content.dataList
           console.log(this.dataList)
@@ -497,6 +499,11 @@ export default {
 }
 .mini_select {
   width: 170px !important;
+}
+.filters_item {
+  > span {
+    font-size: 14px;
+  }
 }
 .goods_info {
   display: flex;

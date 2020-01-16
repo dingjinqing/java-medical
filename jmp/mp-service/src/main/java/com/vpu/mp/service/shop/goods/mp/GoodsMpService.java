@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.*;
@@ -41,8 +42,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
 
 /**
  * @author 李晓冰
@@ -79,6 +82,7 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     public MPGoodsRecommendService mpGoodsRecommendService;
 
+
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
      *
@@ -99,8 +103,8 @@ public class GoodsMpService extends ShopBaseService {
         if (esUtilSearchService.esState()) {
             try {
                 /*如果商品范围选择的是商品标签，先查询商品标签的es，获得商品标签对应的goodsIds*/
-                if( StringUtils.isNotBlank(param.getGoodsArea()) &&
-                    param.getGoodsArea().equals(GoodsListMpParam.LABEL_AREA) ){
+                if (StringUtils.isNotBlank(param.getGoodsArea()) &&
+                    param.getGoodsArea().equals(GoodsListMpParam.LABEL_AREA)) {
                     List<Integer> goodIds = esGoodsLabelSearchService.
                         getGoodsIdsByLabelIds(param.getGoodsAreaData(), EsGoodsConstant.GENERAL_PAGE);
                     param.setGoodsItems(goodIds);
@@ -108,16 +112,16 @@ public class GoodsMpService extends ShopBaseService {
                 // 从es获取
                 log.debug("小程序-es-搜索商品列表");
                 goodsListCapsules = getPageIndexGoodsListFromEs(param);
-                log.debug("小程序-es-搜索商品列表结果:{}",goodsListCapsules);
+                log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsules);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
                 goodsListCapsules = getPageIndexGoodsListFromDb(param);
-                log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
+                log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
             goodsListCapsules = getPageIndexGoodsListFromDb(param);
-            log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
+            log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
         }
 
         disposeGoodsList(goodsListCapsules, userId);
@@ -161,7 +165,7 @@ public class GoodsMpService extends ShopBaseService {
             } else {
                 orderFields.add(GOODS.GOODS_ID.desc());
             }
-            goodsListCapsules = findActivityGoodsListCapsulesDao(condition, orderFields, 0, param.getGoodsNum(), null);
+            goodsListCapsules = findActivityGoodsListCapsulesDao(condition, orderFields, param.getCurrentPage() - 1, param.getGoodsNum(), null);
         }
         logger().debug("商品列表数据信息：" + goodsListCapsules.toString());
         return goodsListCapsules;
@@ -248,16 +252,16 @@ public class GoodsMpService extends ShopBaseService {
                 // 从es获取
                 log.debug("小程序-es-搜索商品列表");
                 goodsListCapsules = getPageIndexGoodsListFromEs(param);
-                log.debug("小程序-es-搜索商品列表结果:{}",goodsListCapsules);
+                log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsules);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
                 goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
-                log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
+                log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
             goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
-            log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
+            log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
         }
 
         disposeGoodsList(goodsListCapsules, userId);
@@ -267,49 +271,56 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 通过条件查询商品列表 如满包邮
+     *
      * @param param 查询条件
      * @return GoodsListMpBo
      */
-    public PageResult<GoodsListMpBo> getGoodsListNormal(GoodsSearchParam param){
+    public PageResult<GoodsListMpBo> getGoodsListNormal(GoodsSearchParam param) {
         Condition condition = handleSearchCondition(param);
 
         SelectConditionStep<Record12<Integer, String, Byte, BigDecimal, BigDecimal, Integer, Integer, String, Integer, Integer, Integer, Integer>> select =
-                db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
-                        GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
-                        GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID).from(GOODS).where(condition);
+            db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+                GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
+                GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID).from(GOODS).where(condition);
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsListMpBo.class);
     }
 
     /**
      * 查询条件
+     *
      * @param param
      * @return
      */
     public Condition handleSearchCondition(GoodsSearchParam param) {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-        if (param.getShowSoldOut()){
-            condition= condition.and(GOODS.GOODS_NUMBER.gt(0));
+        if (param.getShowSoldOut()) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
-        Condition  conditionor=null;
-        if (param.getGoodsIds()!=null&&param.getGoodsIds().size()>0){
-             conditionor=GOODS.GOODS_ID.in(param.getGoodsIds());
-        }
-        if (param.getCatIds()!=null&&param.getCatIds().size()>0){
-            if (conditionor==null){
-                conditionor=GOODS.CAT_ID.in(param.getCatIds());
-            }else {
-                conditionor=   conditionor.or(GOODS.CAT_ID.in(param.getCatIds()));
+        if (param.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION)) {
+            Condition conditionor = null;
+            if (param.getGoodsIds() != null && param.getGoodsIds().size() > 0) {
+                conditionor = GOODS.GOODS_ID.in(param.getGoodsIds());
+            }
+            if (param.getCatIds() != null && param.getCatIds().size() > 0) {
+                if (conditionor == null) {
+                    conditionor = GOODS.CAT_ID.in(param.getCatIds());
+                } else {
+                    conditionor = conditionor.or(GOODS.CAT_ID.in(param.getCatIds()));
+                }
+            }
+            if (param.getSortIds() != null && param.getSortIds().size() > 0) {
+                if (conditionor == null) {
+                    conditionor = GOODS.SORT_ID.in(param.getSortIds());
+                } else {
+                    conditionor = conditionor.or(GOODS.SORT_ID.in(param.getSortIds()));
+                }
+            }
+            if (conditionor != null) {
+                condition = condition.and(conditionor);
             }
         }
-        if (param.getSortIds()!=null&&param.getSortIds().size()>0){
-            if (conditionor==null){
-                conditionor=GOODS.SORT_ID.in(param.getSortIds());
-            }else {
-                conditionor= conditionor.or(GOODS.SORT_ID.in(param.getSortIds()));
-            }
-        }
-        if (conditionor!=null){
-            condition = condition.and(conditionor);
+        if (param.getGoodsName() != null && !param.getGoodsName().isEmpty()) {
+            condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
         }
         return condition;
     }
@@ -395,9 +406,10 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 创建一个处于删除状态的vo
+     *
      * @return {@link GoodsDetailMpVo}
      */
-    private GoodsDetailMpVo createDeletedGoodsDetailMpVo(){
+    private GoodsDetailMpVo createDeletedGoodsDetailMpVo() {
         GoodsDetailMpBo goodsDetailMpBo = new GoodsDetailMpBo();
         goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
         return goodsDetailMpBo;
@@ -410,7 +422,7 @@ public class GoodsMpService extends ShopBaseService {
      * @return {@link GoodsSearchFilterConditionMpVo}
      */
     public GoodsSearchFilterConditionMpVo getGoodsSearchFilterCondition() {
-        if (esUtilSearchService.esState()){
+        if (esUtilSearchService.esState()) {
             try {
                 log.debug("小程序-es-商品搜索条件反推");
                 return esGoodsSearchMpService.getGoodsParam();
@@ -426,9 +438,10 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 从数据库反小程序端商品搜索条件
+     *
      * @return {@link GoodsSearchFilterConditionMpVo}
      */
-    private GoodsSearchFilterConditionMpVo getGoodsSearchFilterConditionFromDb(){
+    private GoodsSearchFilterConditionMpVo getGoodsSearchFilterConditionFromDb() {
         GoodsSearchFilterConditionMpVo vo = new GoodsSearchFilterConditionMpVo();
         vo.setGoodsBrands(goodsBrandSortMp.getGoodsSearchFilterCondition());
         vo.setGoodsLabels(goodsLabelMpService.getGoodsSearchFilterCondition());
@@ -471,7 +484,7 @@ public class GoodsMpService extends ShopBaseService {
         //是否显示购买按钮
         ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
 
-        GoodsSearchContentVo vo =new GoodsSearchContentVo();
+        GoodsSearchContentVo vo = new GoodsSearchContentVo();
         vo.setDelMarket(delMarket);
         vo.setShowCart(showCart);
         vo.setPageResult(pageResult);
@@ -564,6 +577,83 @@ public class GoodsMpService extends ShopBaseService {
             }
         }
 
+    }
+
+
+    /**
+     * 商品分组组件获取数据,会将满足{@link GoodsGroupListMpParam#getSortGroupArr()}列表内的过滤条的所有数据都取出
+     * 调用此方法前应先将需要使用的过滤条件筛选出来
+     * @param param 需要满的过滤条件集合
+     * @return 满足条件的商品信息
+     */
+    public List<? extends GoodsListMpVo> getGoodsGroupList(GoodsGroupListMpParam param) {
+        List<GoodsGroupListMpParam.SortGroup> sortGroupArr = param.getSortGroupArr();
+        List<Integer> goodsIds = new ArrayList<>(6);
+        List<Integer> sortIds = new ArrayList<>(6);
+        List<Integer> brandIds = new ArrayList<>(6);
+        List<Integer> labelIds = new ArrayList<>(6);
+
+        for (GoodsGroupListMpParam.SortGroup sortGroup : sortGroupArr) {
+            if (GoodsGroupListMpParam.SECTION_POINT_GOODS.equals(sortGroup.getIsAll())) {
+                goodsIds.addAll(Stream.of(sortGroup.getGroupGoodsId().split(",")).map(Integer::parseInt).collect(Collectors.toList()));
+            } else {
+                GoodsListMpParam goodsListMpParam = new GoodsListMpParam();
+                goodsListMpParam.setRecommendType(GoodsConstant.AUTO_RECOMMEND);
+                goodsListMpParam.setPageRows(GoodsGroupListMpParam.NUM_TO_SHOW);
+                // 标签
+                if (GoodsGroupListMpParam.LABEL_TYPE.equals(sortGroup.getSortType())) {
+                    labelIds.add(sortGroup.getSortId());
+                } else if (GoodsGroupListMpParam.BRAND_TYPE.equals(sortGroup.getSortType())) {
+                    // 品牌
+                    brandIds.add(sortGroup.getSortId());
+                } else {
+                    // 商家分类
+                    List<Integer> targetIds = goodsBrandSortMp.getChildrenIds(sortGroup.getSortId());
+                    sortIds.addAll(targetIds);
+                }
+            }
+        }
+
+        // 获取在售商品
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        // 是否展示售罄
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        // 不展示售罄
+        if (!GoodsConstant.SOLD_OUT_GOODS_SHOW.equals(soldOutGoods)) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+
+        List<Integer> catIds = new ArrayList<>(0);
+        // 判断是否有关联全部商品的标签
+        if (labelIds.size() > 0) {
+            List<Integer> allIds = goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+            if (allIds.size() == 0) {
+                sortIds.addAll(goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()));
+                goodsIds.addAll(goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
+                catIds.addAll(goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.CATTYPE.getCode()));
+            } else {
+                return findActivityGoodsListCapsulesDao(condition,null,0,GoodsGroupListMpParam.NUM_TO_SHOW,null);
+            }
+        }
+        Condition idCondition = DSL.noCondition();
+        if (goodsIds.size() > 0) {
+            // 拼凑最终条件
+            if (goodsIds.size() > GoodsGroupListMpParam.NUM_TO_SHOW) {
+                goodsIds = goodsIds.subList(0, GoodsGroupListMpParam.NUM_TO_SHOW);
+            }
+            idCondition = idCondition.or(GOODS.GOODS_ID.in(goodsIds));
+        }
+        if (sortIds.size() > 0) {
+            idCondition = idCondition.or(GOODS.SORT_ID.in(sortIds));
+        }
+        if (brandIds.size() > 0) {
+            idCondition = idCondition.or(GOODS.BRAND_ID.in(brandIds));
+        }
+
+        condition = condition.and(idCondition);
+        List<GoodsListMpBo> goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, 0, GoodsGroupListMpParam.NUM_TO_SHOW, null);
+        disposeGoodsList(goodsListCapsules, null);
+        return goodsListCapsules;
     }
 
     /**
@@ -676,8 +766,9 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 增加商品的收藏数量
+     *
      * @param goodsId 商品id
-     * @param flag true 增加 false 减少
+     * @param flag    true 增加 false 减少
      */
     public void incOrDecGoodsCollectionNumDao(Integer goodsId, boolean flag) {
         if (flag) {
@@ -691,6 +782,7 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 根据商家分类获取对应商品的ID集合
+     *
      * @param sortId 商家分类ID
      * @return 商品ID集合
      */
@@ -700,14 +792,16 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 根据条件放回查询goodsId
+     *
      * @return
      */
-    public List<Integer> getGoodsIdsByCondition( Condition condition){
+    public List<Integer> getGoodsIdsByCondition(Condition condition) {
         return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchInto(Integer.class);
     }
 
     /**
      * 小程序-商品详情-获取对应增品规格信息，规格数量大于0
+     *
      * @param prdIds 要取的规格ID
      * @return 增品规格信息
      */
@@ -719,9 +813,9 @@ public class GoodsMpService extends ShopBaseService {
         List<GoodsGiftPrdMpVo> giftPrds = new ArrayList<>(prdResults.size());
 
         for (Record6<String, String, Integer, String, BigDecimal, String> prdResult : prdResults) {
-            GoodsGiftPrdMpVo prd =new GoodsGiftPrdMpVo();
+            GoodsGiftPrdMpVo prd = new GoodsGiftPrdMpVo();
             prd.setProductId(prdResult.get(GOODS_SPEC_PRODUCT.PRD_ID));
-            prd.setPrdImg(StringUtils.isBlank(prdResult.get(GOODS_SPEC_PRODUCT.PRD_IMG))?prdResult.get(GOODS.GOODS_IMG):prdResult.get(GOODS_SPEC_PRODUCT.PRD_IMG));
+            prd.setPrdImg(StringUtils.isBlank(prdResult.get(GOODS_SPEC_PRODUCT.PRD_IMG)) ? prdResult.get(GOODS.GOODS_IMG) : prdResult.get(GOODS_SPEC_PRODUCT.PRD_IMG));
             prd.setPrdPrice(prdResult.get(GOODS_SPEC_PRODUCT.PRD_PRICE));
             prd.setGoodsName(prdResult.get(GOODS.GOODS_NAME));
             prd.setPrdDesc(prdResult.get(GOODS_SPEC_PRODUCT.PRD_DESC));

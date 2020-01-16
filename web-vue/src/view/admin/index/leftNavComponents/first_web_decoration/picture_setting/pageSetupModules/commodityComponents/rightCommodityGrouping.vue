@@ -32,14 +32,14 @@
             <div>
               <span>展示商品数量：</span>
               <el-radio
-                v-model="item.radio"
+                v-model="item.is_all"
                 @change="handleToClickShowNumRadio(index)"
-                label="1"
+                :label="1"
               >全部{{item.sort_goods_num}}件</el-radio>
               <el-radio
-                v-model="item.radio"
+                v-model="item.is_all"
                 @change="handleToClickShowNumRadio(index)"
-                label="2"
+                :label="2"
               >指定商品</el-radio>
             </div>
             <div class="groupItemOperation">
@@ -336,7 +336,9 @@
   </div>
 </template>
 <script>
+// getGoodsNum
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
+import { } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 export default {
   mixins: [decMixins],
   components: {
@@ -420,46 +422,46 @@ export default {
       handler (newData) {
         console.log(newData)
         // 测试数据
-        newData['sort_length'] = newData.sort_group_arr.length
-        newData['goods_img'] = [
-          'http://mpdevimg2.weipubao.cn/upload/0/image/20191018/crop_KXCyQS7bFi7w4RgL.jpeg',
-          'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191218/SQzKExx7QTSH1kzu.jpeg'
-        ]
-        newData['goods_name'] = [
-          '海阔跳的高',
-          '门店商品8--勿动'
-        ]
-        newData['goods_price'] = [
-          '200.00',
-          '100.00'
-        ]
-        newData['market_price'] = [
-          '500.00',
-          null
-        ]
-        newData['goods_tag'] = [
-          [
-            '满减'
-          ],
-          [
-            '满减',
-            '领券减￥1'
-          ]
-        ]
-        newData['label'] = [
-          {
-            'label_class': 'label-style1',
-            'label_parttern': 1,
-            'label_name': '特价商品',
-            'new_label_img': ''
-          },
-          {
-            'label_class': 'label-style4',
-            'label_parttern': 4,
-            'label_name': '新品首发',
-            'new_label_img': ''
-          }
-        ]
+        // newData['sort_length'] = newData.sort_group_arr.length
+        // newData['goods_img'] = [
+        //   'http://mpdevimg2.weipubao.cn/upload/0/image/20191018/crop_KXCyQS7bFi7w4RgL.jpeg',
+        //   'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191218/SQzKExx7QTSH1kzu.jpeg'
+        // ]
+        // newData['goods_name'] = [
+        //   '海阔跳的高',
+        //   '门店商品8--勿动'
+        // ]
+        // newData['goods_price'] = [
+        //   '200.00',
+        //   '100.00'
+        // ]
+        // newData['market_price'] = [
+        //   '500.00',
+        //   null
+        // ]
+        // newData['goods_tag'] = [
+        //   [
+        //     '满减'
+        //   ],
+        //   [
+        //     '满减',
+        //     '领券减￥1'
+        //   ]
+        // ]
+        // newData['label'] = [
+        //   {
+        //     'label_class': 'label-style1',
+        //     'label_parttern': 1,
+        //     'label_name': '特价商品',
+        //     'new_label_img': ''
+        //   },
+        //   {
+        //     'label_class': 'label-style4',
+        //     'label_parttern': 4,
+        //     'label_name': '新品首发',
+        //     'new_label_img': ''
+        //   }
+        // ]
         console.log(newData)
         let moduleData = this.handleToTurnCheckbox(newData, false)
         this.$emit('handleToBackData', moduleData)
@@ -480,6 +482,10 @@ export default {
     }
   },
   methods: {
+    // 商品数据获取
+    handleToRequestGoodsData () {
+
+    },
     // 转换checkbox字段
     handleToTurnCheckbox (data, flag) {
       console.log(data)
@@ -513,6 +519,7 @@ export default {
     },
     // 调起弹窗
     handleToCallDialog (flag) {
+      console.log(flag)
       switch (flag) {
         case 0:
           this.classificationDialogVisible = true
@@ -530,7 +537,7 @@ export default {
       let arr = []
       data.forEach((item, index) => {
         //  obj
-        let obj = { sort_type: 0, radio: '1' }
+        let obj = { sort_type: 0 }
         console.log(item.goodsSumNum)
         if (item.goodsSumNum !== undefined) {
           obj.sort_name = item.sortName
@@ -552,6 +559,7 @@ export default {
       }
       this.clickEditBtn = false
       console.log(this.linkageData.sort_group_arr, arr)
+      this.handleToRequestGoodsData()
     },
     // 商品标签弹窗选中回传数据
     handleToGetBackData (data) {
@@ -559,7 +567,7 @@ export default {
       let arr = []
       data.forEach((item, index) => {
         //  obj
-        let obj = { type: 1, radio: '1' }
+        let obj = { sort_type: 1 }
         console.log(item.goodsSumNum)
         obj.sort_name = item.name
         obj.group_name = item.name
@@ -584,7 +592,7 @@ export default {
       let arr = []
       data.forEach((item, index) => {
         //  obj
-        let obj = { type: 2, radio: '1' }
+        let obj = { sort_type: 2 }
         console.log(item.goodsSumNum)
         obj.sort_name = item.brandName
         obj.group_name = item.brandName
@@ -604,9 +612,10 @@ export default {
       this.clickEditBtn = false
     },
     handleToEditData (index) { // 点击修改
+      console.log()
       this.clickEditBtn = true
       this.editIndex = index
-      let flag = this.linkageData.sort_group_arr[index].type
+      let flag = this.linkageData.sort_group_arr[index].sort_type
       this.handleToCallDialog(flag, true)
     },
     handleToClickTopIcon (flag, index) { // 顶部icon点击统一处理
@@ -652,8 +661,8 @@ export default {
     // 点击指定商品
     handleToClickShowNumRadio (index) {
       this.nowClickAppointIndex = index
-      console.log(index, this.linkageData.sort_group_arr[index].radio)
-      if (this.linkageData.sort_group_arr[index].radio === '2') {
+      console.log(index, this.linkageData.sort_group_arr[index].is_all)
+      if (this.linkageData.sort_group_arr[index].is_all === 2) {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
       }
     },

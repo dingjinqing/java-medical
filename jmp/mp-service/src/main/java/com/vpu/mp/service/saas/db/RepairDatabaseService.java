@@ -1,18 +1,5 @@
 package com.vpu.mp.service.saas.db;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.exception.DataAccessException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.database.DatabaseManager;
 import com.vpu.mp.service.foundation.database.MpDefaultDslContext;
@@ -21,9 +8,19 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.db.Column;
 import com.vpu.mp.service.pojo.saas.db.Index;
 import com.vpu.mp.service.pojo.saas.db.Table;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.exception.DataAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 
@@ -99,8 +96,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 */
 	public void repairDb(List<Table> tables, MpDefaultDslContext db) {
 		for (Table table : tables) {
-			//if (table.getTableName().equals("`b2c_mrking_voucher`")) 
-			{
+			if (table.getTableName().equals("`b2c_cart`")) {
 				table.setDatabseName(db.getDbConfig().getDatabase());
 				table.setFullTableName(table.getDatabseName() + "." + table.getTableName());
 				this.processTable(table, db);
@@ -201,7 +197,7 @@ public class RepairDatabaseService extends MainBaseService {
 	public String processColumn(Table table, int colIdx, Result<Record> records, MpDefaultDslContext db) {
 		Column col = table.columns.get(colIdx);
 		boolean found = false;
-		String regex0 = "(\\w+)\\((\\d+),(\\d+)\\)\\s+unsigned";
+		String regex0 = "(\\w+)\\((\\d+)\\)\\s+unsigned";
 		String regex1 = "(\\w+)\\((\\d+),(\\d+)\\)";
 		String regex2 = "(\\w+)\\((\\d+)\\)";
 		String regex3 = "(\\w+)";
@@ -218,7 +214,6 @@ public class RepairDatabaseService extends MainBaseService {
 				if ((m = Pattern.compile(regex0, Pattern.CASE_INSENSITIVE).matcher(type)).find()) {
 					colFromDb.setType(m.group(1));
 					colFromDb.setTypeRange1(m.group(2));
-					colFromDb.setTypeRange2(m.group(3));
 					colFromDb.setTypeUnsigned("unsigned");
 				} else if ((m = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE).matcher(type)).find()) {
 					colFromDb.setType(m.group(1));
@@ -299,18 +294,30 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @return
 	 */
 	protected String indexSql(Index index, String tableName, boolean modify) {
-		String format = "%s alter table %s add %s key %s (%s)";
+		String format = "alter table " + tableName + " add %s key %s (%s)";
 		String keyProp = "";
 		String primary = "PRIMARY";
 		String unique = "0";
-		String dropKey = "";
-		String cols = StringUtils.join(index.getColumnNames(), ",");
+
+		StringBuffer buf = new StringBuffer();
+		int size = index.getColumnNames().size();
+		for (int i = 0; i < size; i++) {
+			buf.append(index.getColumnNames().get(i));
+			String subPart = index.getColumnSubPart().get(i);
+			if (subPart != null) {
+				buf.append("(").append(subPart).append(")");
+			}
+			if (i != size - 1) {
+				buf.append(",");
+			}
+		}
+		String cols = buf.toString();
 
 		if (modify) {
 			if (primary.equals(index.getKeyName())) {
-				dropKey = "alter table " + tableName + " drop primary key ;";
+				format = "alter table " + tableName + " drop primary key , add %s key %s (%s)";
 			} else {
-				dropKey = "alter table " + tableName + " drop index " + index.getKeyName() + ";";
+				format = "alter table " + tableName + " drop index " + index.getKeyName() + ", add %s key %s (%s)";
 			}
 		}
 
@@ -321,7 +328,7 @@ public class RepairDatabaseService extends MainBaseService {
 		} else if (unique.equals(index.getNonUnique())) {
 			keyProp = "unique";
 		}
-		return String.format(format, dropKey, tableName, keyProp, keyName, cols);
+		return String.format(format, keyProp, keyName, cols);
 	}
 
 	/**
@@ -332,9 +339,8 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @return
 	 */
 	public boolean isTableExists(Table table, MpDefaultDslContext db) {
-		Result<Record> tables = db
-				.fetch("show tables from " + table.getDatabseName() + " like '"
-						+ getNoQuotStr(table.getTableName(), "`") + "'");
+		Result<Record> tables = db.fetch("show tables from " + table.getDatabseName() + " like '"
+				+ getNoQuotStr(table.getTableName(), "`") + "'");
 		return tables.size() > 0;
 	}
 
@@ -349,38 +355,96 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @return
 	 */
 	public List<Table> parseSql(String sql) {
-		List<Table> tables = new ArrayList<Table>();
-//		sql = sql.replaceAll("`", "");
-		String createTableRegex = "create\\s+table\\s+(.*?)\\s*\\((.*?)\n\\s*\\)[^\\)]*?;";
-		Pattern pattern = Pattern.compile(createTableRegex,
-				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-		Matcher matcher = pattern.matcher(sql);
-		while (matcher.find()) {
-			Table table = new Table();
-			table.tableName = matcher.group(1);
-//			if(!"b2c_presale".equals(table.tableName)) {
-//				continue;
+		return this.parseSql2(sql);
+//		
+//		List<Table> tables = new ArrayList<Table>();
+////		sql = sql.replaceAll("`", "");
+//		String createTableRegex = "create\\s+table\\s+(.*?)\\s*\\((.*?)\n\\s*\\)[^\\)]*?;";
+//		Pattern pattern = Pattern.compile(createTableRegex,
+//				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+//		Matcher matcher = pattern.matcher(sql);
+//		while (matcher.find()) {
+//			Table table = new Table();
+//			table.tableName = matcher.group(1);
+////			if(!"b2c_presale".equals(table.tableName)) {
+////				continue;
+////			}
+//			table.createSql = String.format("create table %s(%s)", matcher.group(1), matcher.group(2));
+//			String[] columns = matcher.group(2).split(",\\s*\n");
+//			for (String col : columns) {
+//				if (StringUtils.isBlank(col.trim())) {
+//					continue;
+//				}
+//				String[] tokens = this.parseTokens(col).toArray(new String[0]);
+//				if (tokens.length == 0) {
+//					logger().error("tokens.length == 0");
+//					continue;
+//				}
+//				if (isIndex(tokens[0])) {
+//					this.parseIndex(tokens, table, col.trim());
+//				} else {
+//					this.parseColumn(tokens, table, col.trim());
+//				}
 //			}
-			table.createSql = String.format("create table %s(%s)", matcher.group(1), matcher.group(2));
-			String[] columns = matcher.group(2).split(",\\s*\n");
-			for (String col : columns) {
-				if (StringUtils.isBlank(col.trim())) {
-					continue;
-				}
-				String[] tokens = this.parseTokens(col).toArray(new String[0]);
-				if (tokens.length == 0) {
-					logger().error("tokens.length == 0");
-					continue;
-				}
-				if (isIndex(tokens[0])) {
-					this.parseIndex(tokens, table, col.trim());
-				} else {
-					this.parseColumn(tokens, table, col.trim());
-				}
-			}
-			tables.add(table);
-		}
+//			tables.add(table);
+//		}
+//
+//		return tables;
+	}
 
+	public List<Table> parseSql2(String sql) {
+		List<Table> tables = new ArrayList<Table>();
+		String[] lines = sql.split("\n");
+
+		String createTableRegex = "create\\s+table\\s+(.*?)\\s*\\(";
+		int i = 0;
+		int count = lines.length;
+		while (i < count) {
+			String line = lines[i];
+			Pattern pattern = Pattern.compile(createTableRegex, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(line);
+			if (matcher.find()) {
+				Table table = new Table();
+				table.tableName = matcher.group(1);
+				StringBuffer buf = new StringBuffer();
+				buf.append(line).append("\n");
+				i++;
+				List<String> columns = new ArrayList<>();
+				while (i < count) {
+					buf.append(lines[i]).append("\n");
+					line = lines[i].trim();
+					i++;
+					if (line.endsWith(";")) {
+						break;
+					} else {
+						if (line.endsWith(",")) {
+							line = line.substring(0, line.length() - 1);
+						}
+						columns.add(line);
+					}
+				}
+				table.createSql = buf.toString();
+				for (String col : columns) {
+					if (StringUtils.isBlank(col.trim())) {
+						continue;
+					}
+					String[] tokens = this.parseTokens(col).toArray(new String[0]);
+					if (tokens.length == 0) {
+						logger().error("tokens.length == 0");
+						continue;
+					}
+					if (isIndex(tokens[0])) {
+						this.parseIndex(tokens, table, col.trim());
+					} else {
+						this.parseColumn(tokens, table, col.trim());
+					}
+				}
+				tables.add(table);
+			} else {
+				i++;
+			}
+
+		}
 		return tables;
 	}
 
@@ -397,10 +461,19 @@ public class RepairDatabaseService extends MainBaseService {
 				char lastCh = ch == '(' ? ')' : ch;
 				buf.append(ch);
 				i++;
+				int leftBracketCount = 0;
 				while (i < str.length()) {
+					if (ch == '(' && str.charAt(i) == '(') {
+						leftBracketCount++;
+					}
 					buf.append(str.charAt(i));
 					if (str.charAt(i) == lastCh) {
-						break;
+						if (leftBracketCount == 0) {
+							break;
+						}
+						if (leftBracketCount > 0) {
+							leftBracketCount--;
+						}
 					}
 					i++;
 				}
@@ -559,7 +632,16 @@ public class RepairDatabaseService extends MainBaseService {
 					if (StringUtils.isBlank(index.getKeyName())) {
 						index.setKeyName(cols[0]);
 					}
-					index.setColumnNames(Arrays.asList(cols));
+					for (int j = 0; j < cols.length; j++) {
+						int p = cols[j].indexOf('(');
+						if (p != -1) {
+							index.getColumnNames().add(cols[j].substring(0, p));
+							index.getColumnSubPart().add(cols[j].substring(p + 1, cols[j].length() - 1));
+						} else {
+							index.getColumnNames().add(cols[j]);
+							index.getColumnSubPart().add(null);
+						}
+					}
 					i++;
 				}
 				break;

@@ -227,6 +227,24 @@ public class BigDecimalUtil {
     }
 
     /**
+     * 支持按照bigDecimals数组顺序进行乘除运算，精度保留小数点后两位，采取四舍五入
+     *
+     * @param bigDecimals BigDecimalPlus类属性为value（值）与operator（该值与其后一位的运算符）
+     * @return value
+     */
+    static public BigDecimal multiplyOrDivideByMode(RoundingMode mode, BigDecimalPlus... bigDecimals) {
+        if (bigDecimals == null || bigDecimals.length < DEFAULT_SCALE) {
+            throw new IllegalArgumentException("method param Illegal,The parameter length should be greater than or equal to two.");
+        }
+        BigDecimalPlus left = bigDecimals[0];
+
+        for (int i = 1, n = bigDecimals.length; i < n; i++) {
+            left.toOperator(bigDecimals[i]);
+        }
+        return left.getValue().setScale(DEFAULT_SCALE, mode);
+    }
+
+    /**
      * 将Double对象设置为指定的小数位数
      * @param target 待处理数据对象
      * @param scale 指定的小数位数

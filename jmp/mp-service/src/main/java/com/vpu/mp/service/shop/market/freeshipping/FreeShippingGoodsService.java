@@ -108,7 +108,8 @@ public class FreeShippingGoodsService extends ShopBaseService {
         goodsSearchParam.setCatIds(catIds);
         goodsSearchParam.setGoodsIds(goodsIds);
         goodsSearchParam.setSortIds(sortIds);
-        goodsSearchParam.setKeyWords(param.getSearchText());
+        goodsSearchParam.setGoodsAreaType(freeShip.getType());
+        goodsSearchParam.setGoodsName(param.getSearchText());
         goodsSearchParam.setUserId(param.getUserId());
         goodsSearchParam.setShowSoldOut(soldOutGoods);
         return goodsSearchParam;

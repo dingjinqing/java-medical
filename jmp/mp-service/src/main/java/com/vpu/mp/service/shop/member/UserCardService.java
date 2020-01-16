@@ -36,7 +36,10 @@ import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserScoreVoBuilder;
+import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
@@ -77,17 +80,21 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -166,7 +173,6 @@ public class UserCardService extends ShopBaseService {
 	private CouponPackService couponPackService;
 	@Autowired
 	private VirtualOrderService virtualOrderService;
-
 	public static final String DEFAULT_ADMIN = "0";
 
 	public static final String DESC = "score_open_card";
@@ -240,7 +246,6 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 会员卡升级检测并升级
-	 *
 	 * @param type 是否领取 1领取 0只是检测
 	 * @return cardId（当type为0时为检测可升级的卡id,type为1时为领取后的卡id),0为没有可升级的卡
 	 */
@@ -269,7 +274,6 @@ public class UserCardService extends ShopBaseService {
 			}else {
 				return cardId;
 			}
-
 		}
 	}
 
@@ -278,7 +282,6 @@ public class UserCardService extends ShopBaseService {
 		// 获取用户累积获得积分和累积消费总额
 		Integer userTotalScore = scoreService.getAccumulationScore(userId);
 		BigDecimal amount = getUserTotalSpendAmount(userId);
-
 		// 获取等级卡列表等级升序
 		List<MemberCardRecord> gCardList = getAvailGradeCard();
 
@@ -407,7 +410,11 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 添加会员卡
+<<<<<<< HEAD
 	 *
+=======
+	 * 
+>>>>>>> bugfix-2.7-1003441
 	 * @return
 	 */
 	public List<String> addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate)
@@ -438,7 +445,11 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 检测限次卡是否能发放
+<<<<<<< HEAD
 	 *
+=======
+	 * 
+>>>>>>> bugfix-2.7-1003441
 	 * @return true: 能,false：不可以
 	 */
 	private boolean canSendLimitCard(Integer userId, MemberCardRecord mCard) {
@@ -507,7 +518,6 @@ public class UserCardService extends ShopBaseService {
 		ChargeMoneyRecordBuilder builder = ChargeMoneyRecordBuilder.create(db().newRecord(CHARGE_MONEY))
 				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
 				.cardNo(userCard.getCardNo()).payment("store.payment").createTime(DateUtil.getLocalDateTime());
-
 		// TODO 门店支付国际化
 		if (isNormalCard(card) && card.getSendMoney() != null) {
 			//  管理员发卡
@@ -662,7 +672,6 @@ public class UserCardService extends ShopBaseService {
 		// 生成新的充值记录
 		// 验证现有积分跟提交的积分是否一致
 		UserCardParam userInfo = userCardDao.getUserCardInfo(data.getCardNo());
-
 		if (CardUtil.isLimitCard(data.getType())) {
 			// 限次卡
 			if (NumberUtils.BYTE_ONE.equals(type)) {
@@ -688,7 +697,6 @@ public class UserCardService extends ShopBaseService {
 		if (StringUtils.isBlank(data.getReason())) {
 			data.setReasonId(String.valueOf(RemarkTemplate.ADMIN_OPERATION.code));
 		}
-
 		if (CardUtil.isLimitCard(data.getType())) {
 			if (NumberUtils.BYTE_ONE.equals(type)) {
 				// 兑换商品次数
@@ -756,7 +764,11 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 获取用户所有的会员卡列表
+<<<<<<< HEAD
 	 *
+=======
+	 * 
+>>>>>>> bugfix-2.7-1003441
 	 * @return
 	 */
 	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param) {
@@ -776,21 +788,22 @@ public class UserCardService extends ShopBaseService {
 	private void dealWithWxUserCard(WxAppUserCardVo card, String avatar) {
 		card.calcCardIsExpired();
 		card.calcRenewal();
-		card.calcUsageTime();
 		card.setAvatar(avatar);
 		card.calcCash();
-		// 背景图
-		if(CardUtil.isBgImgType(card.getBgType())) {
-			// 全路径
-			if(!StringUtils.isBlank(card.getBgImg())) {
-				card.setBgImg(saas().getShopApp(getShopId()).image.imageUrl(card.getBgImg()));
-			}
-		}else {
-			if(StringUtils.isBlank(card.getBgColor())) {
-				// 默认背景色
-				card.setBgColor(CardUtil.getDefaultBgColor());
-			}
-		}
+		
+		// 背景
+		CardBgBean bg = memberCardService.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+		BeanUtils.copyProperties(bg, card);
+
+		// 用户卡的有效时间
+		EffectTimeParam etParam = new EffectTimeParam();
+		BeanUtils.copyProperties(card, etParam);
+		etParam.setCreateTime(card.getUserCardCreateTime());
+		EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+		BeanUtils.copyProperties(etBean, card);
+		
+		// 设置卡是否过期状态
+		card.setStatus(CardUtil.getStatus(card.getExpireType(), card.getEndTime()));
 	}
 
 	/**
@@ -819,45 +832,8 @@ public class UserCardService extends ShopBaseService {
 			throw new UserCardNullException();
 		}
 
-		// 背景图片
-		if(CardUtil.isBgImgType(card.getBgType())) {
-			if(!StringUtils.isBlank(card.getBgImg())) {
-				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(card.getBgImg());
-				card.setBgImg(imageUrl);
-			}
-		}else {
-			// 背景色
-			if(StringUtils.isBlank(card.getBgColor())) {
-				// 默认背景色
-				card.setBgColor(CardUtil.getDefaultBgColor());
-			}
-		}
-
-		if(card.getExpireTime()!=null) {
-			card.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
-			card.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
-			card.setExpireType(NumberUtils.BYTE_ZERO);
-		}else {
-			card.setExpireType(CardConstant.MCARD_ET_FOREVER);
-		}
-		if (!CardUtil.isCardTimeForever(card.getExpireType())) {
-			if (CardUtil.isCardFixTime(card.getExpireType()) && CardUtil.isCardExpired(card.getEndTime())) {
-				logger().info("卡过期");
-				card.setStatus(-1);
-			} else {
-				card.setStatus(1);
-			}
-
-			if (CardUtil.isCardFixTime(card.getExpireType())) {
-				card.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
-				card.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
-			}
-		} else {
-			card.setStatus(1);
-		}
-
-
 		dealWithUserCardDetailInfo(card);
+		
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
@@ -871,7 +847,6 @@ public class UserCardService extends ShopBaseService {
 			cardExamineVo.setStatus(cardExamine.getStatus());
 			card.setIsExamine(cardExamineVo);
 		}
-
 		// TODO 开卡送卷
 		setQrCode(card);
 
@@ -913,7 +888,6 @@ public class UserCardService extends ShopBaseService {
 		return null;
 	}
 
-
 	public MemberCardRecord getGradeCardByGrade(String grade) {
 		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.GRADE.eq(grade)).fetchAny();
 	}
@@ -933,9 +907,25 @@ public class UserCardService extends ShopBaseService {
 
 	public void dealWithUserCardAvailableStore(WxAppUserCardVo card) {
 		logger().info("正在处理会员卡门店列表信息");
+		card.setStoreInfoList(Collections.emptyList());
+		card.setStoreIdList(Collections.emptyList());
+		
+		
 		if (card.isStoreAvailable()) {
-			List<StoreBasicVo> storeBasicVo = storeService.getStoreListByStoreIds(card.retrieveStoreList());
-			card.setStoreInfoList(storeBasicVo);
+			List<Integer> storeIdList = card.retrieveStoreList();
+			if(storeIdList != null && storeIdList.size()>0 && storeIdList.get(0) != 0) {
+				// 部分门店
+				card.setStoreIdList(card.retrieveStoreList());
+				List<StoreBasicVo> storeBasicVo = storeService.getStoreListByStoreIds(card.retrieveStoreList());
+				card.setStoreInfoList(storeBasicVo);
+				card.setStoreUseSwitch(CardConstant.MCARD_STP_PART);
+			}else {
+				// 全部门店
+				card.setStoreUseSwitch(CardConstant.MCARD_STP_ALL);
+			}
+		}else {
+			// 不可在门店使用
+			card.setStoreUseSwitch(CardConstant.MCARD_STP_BAN);
 		}
 	}
 
@@ -1017,7 +1007,6 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 筛选会员专享商品
-	 *
 	 * @param userId        用户id
 	 * @param cartGoodsList 需要筛选的商品
 	 * @return 反回会员卡绑定商品
@@ -1058,7 +1047,6 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 王帅 得到订单下的用户可用会员卡
-	 *
 	 * @param userId
 	 * @param bos
 	 * @param storeId
@@ -1083,6 +1071,7 @@ public class UserCardService extends ShopBaseService {
                }
             }
         }
+
 		if (CollectionUtils.isEmpty(defaultCards)) {
 			// 校验
 			return Lists.newArrayList();
@@ -1094,6 +1083,11 @@ public class UserCardService extends ShopBaseService {
 			BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos,
 					OrderConstant.D_T_MEMBER_CARD,
 					DefaultMarketingProcess.builder().card(card).type(OrderConstant.D_T_MEMBER_CARD).build());
+			if(CollectionUtils.isEmpty(card.getBos())) {
+			    iterator.remove();
+			    continue;
+            }
+
 			// 折扣金额
 			BigDecimal discountAmount;
 			// 判断门店（无门店||全部门店||部分门店）
@@ -1118,7 +1112,6 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 王帅 校验该商品是否可以打折
-	 *
 	 * @param cardId 卡
 	 * @param bo     商品
 	 * @return boolean
@@ -1131,28 +1124,27 @@ public class UserCardService extends ShopBaseService {
 		if (CardConstant.MCARD_DIS_ALL.equals(card.getDiscountIsAll())) {
 			return true;
 		}
-		if (StringUtil.isNotBlank(card.getDiscountGoodsId())) {
-			// 商品id
-			return Arrays.asList(card.getDiscountGoodsId().split(",")).contains(bo.getGoodsId());
-		}
-		if (StringUtil.isNotBlank(card.getDiscountCatId())) {
-			// 平台分类id
-			return Arrays.asList(card.getDiscountCatId().split(",")).contains(bo.getCatId());
-		}
-		if (StringUtil.isNotBlank(card.getDiscountSortId())) {
-			// 商家分类id
-			return Arrays.asList(card.getDiscountSortId().split(",")).contains(bo.getSortId());
-		}
-		if (StringUtil.isNotBlank(card.getDiscountBrandId())) {
-			// 商品品牌id
-			return Arrays.asList(card.getDiscountBrandId().split(",")).contains(bo.getBrandId());
-		}
+        if (StringUtil.isNotBlank(card.getDiscountGoodsId()) && Arrays.asList(card.getDiscountGoodsId().split(",")).contains(bo.getGoodsId().toString())) {
+            // 商品id
+            return true;
+        }
+        if (StringUtil.isNotBlank(card.getDiscountCatId()) && Arrays.asList(card.getDiscountCatId().split(",")).contains(bo.getCatId().toString())) {
+            // 平台分类id
+            return true;
+        }
+        if (StringUtil.isNotBlank(card.getDiscountSortId()) && Arrays.asList(card.getDiscountSortId().split(",")).contains(bo.getSortId().toString())) {
+            // 商家分类id
+            return true;
+        }
+        if (StringUtil.isNotBlank(card.getDiscountBrandId()) && Arrays.asList(card.getDiscountBrandId().split(",")).contains(bo.getBrandId().toString())) {
+            // 商品品牌id
+            return true;
+        }
 		return false;
 	}
 
 	/**
 	 * 王帅 获取该卡打折金额
-	 *
 	 * @param card       会员卡
 	 * @param totalPrice 折前总价
 	 * @return 折后总价
@@ -1166,22 +1158,22 @@ public class UserCardService extends ShopBaseService {
 			card.setTotalDiscount(BigDecimal.ZERO);
 		} else {
 			// 正常打折(价格 * （10 - 折扣（eg:6.66） / 10）)
-			card.setTotalDiscount(BigDecimalUtil.multiplyOrDivide(
+			card.setTotalDiscount(
+			    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
 					BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
 					BigDecimalUtil.BigDecimalPlus.create(
 							BigDecimalUtil.addOrSubtrac(
-									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN,
-											BigDecimalUtil.Operator.subtrac),
+									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac),
 									BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), null)),
 							BigDecimalUtil.Operator.divide),
-					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)));
+					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
+            );
 		}
 		return card.getTotalDiscount();
 	}
 
 	/**
 	 * 获取用户累积消费总额
-	 *
 	 * @return 消费总额,默认为0
 	 */
 	private BigDecimal getUserTotalSpendAmount(Integer userId) {
@@ -1236,7 +1228,7 @@ public class UserCardService extends ShopBaseService {
 		}
 		return userCard;
 	}
-
+	
 	public UserCardJudgeVo userCardJudgement(UserIdAndCardIdParam param,String lang) {
 		UserCardVo userCard = getUserCardJudge(param);
 		MemberCardRecord mCard = cardDao.getCardById(param.getCardId());
@@ -1271,7 +1263,7 @@ public class UserCardService extends ShopBaseService {
 					} else {
 						userCard.setStatus(1);
 					}
-
+				
 					if (CardUtil.isCardFixTime(userCard.getExpireType())) {
 						userCard.setStartDate(userCard.getStartTime().toLocalDateTime().toLocalDate());
 						userCard.setEndDate(userCard.getEndTime().toLocalDateTime().toLocalDate());
@@ -1402,7 +1394,6 @@ public class UserCardService extends ShopBaseService {
 				cardExamineVo.setStatus(cardExamine.getStatus());
 				uCard.setIsExamine(cardExamineVo);
 			}
-
 			if(CardUtil.isLimitCard(uCard.getCardType()) && CardUtil.canExchangGoods(uCard.getIsExchang())) {
 				logger().info("处理限次卡兑换的商品");
 				if(!StringUtils.isBlank(uCard.getExchangGoods())) {
@@ -1492,7 +1483,7 @@ public class UserCardService extends ShopBaseService {
 			}
 		}
 	}
-
+	
 	/**
 	 * 领取会员卡
 	 * @param param
@@ -1531,7 +1522,6 @@ public class UserCardService extends ShopBaseService {
 							throw new LimitCardAvailSendNoneException(JsonResultCode.CODE_LIMIT_CARD_AVAIL_SEND_ALL);
 						}
 					}
-
 					List<String> cardNoList = null;
 					// 普通卡只能领一张
 					if(CardUtil.isNormalCard(mCard.getCardType())) {
@@ -1554,7 +1544,6 @@ public class UserCardService extends ShopBaseService {
 						// 限次卡
 						cardNoList = addUserCard(param.getUserId(), param.getCardId());
 					}
-
 					if (cardNoList == null || cardNoList.size() < 1) {
 						logger().info("领取失败");
 						throw new CardReceiveFailException();
@@ -1676,7 +1665,6 @@ public class UserCardService extends ShopBaseService {
 				.where(USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId))).fetchAny();
 		return rec != null ? rec.getCardNo() : null;
 	}
-
 	public UserCardVo getUserCardByCardNo(String cardNo){
 		UserCardVo userCard = userCardDao.getUserCardByCardNo(cardNo);
 		if(userCard != null && CardUtil.isBgImgType(userCard.getBgType())) {
@@ -1687,7 +1675,7 @@ public class UserCardService extends ShopBaseService {
 		}
 		return userCard;
 	}
-
+	
 	public void updateActivationTime(String cardNo,Timestamp time) {
 		if(time==null) {
 			time = DateUtil.getLocalDateTime();
@@ -1710,7 +1698,7 @@ public class UserCardService extends ShopBaseService {
 			userCardDao.updateIsDefault(condition,NumberUtils.BYTE_ONE);
 		});
 	}
-
+	
 	/**
 	 * 检查用户等级升级
 	 * @param userId

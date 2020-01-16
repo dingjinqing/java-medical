@@ -1,25 +1,32 @@
 <view class="goods-item">
   <view class="edit" wx:if="{{isEdit}}">
-    <text class="iconfont iconshanchu1" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
+    <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" bindtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
   </view>
   <view class="all-image">
-    <image class="goods-image" src="{{goodsData.goodsImg}}"></image>
+    <image class="goods-image" src="{{!enableNumEdit ? goodsData.goodsImg : imageUrl+goodsData.goodsImg}}"></image>
   </view>
   <view class="goods-info">
    <text class="goods-name">{{goodsData.goodsName}}</text>
+   <text class="gray-text" wx:if="{{enableNumEdit && goodsData.prdDesc}}">{{goodsData.prdDesc}}</text>
    <view class="goods-info-bottom">
       <view class="goods-price">
-        <text class="realPrice" style="color:{{main_setting.comColor}}">￥<text style="font-size:36rpx;">{{goodsData.realPrice}}</text></text>
-        <text class="{{delMarketData.className}}">{{delMarketData.text}}</text>
+        <block wx:if="{{!enableNumEdit}}">
+          <text class="realPrice" style="color:{{main_setting.comColor}}">￥<text style="font-size:36rpx;font-weight:600;">{{goodsData.realPrice}}</text></text>
+          <text class="{{delMarketData.className}}">{{delMarketData.text}}</text>
+        </block>
+        <block wx:else>
+          <text class="realPrice" style="color:{{main_setting.comColor}}">￥<text style="font-size:36rpx;font-weight:600;">{{goodsData.prdPrice}}</text></text>
+          <text class="gray-text line-through">{{goodsData.originalPrice}}</text>
+        </block>
       </view>
       <block wx:if="{{!enableNumEdit}}">
         <text wx:if="{{showCart.show_cart === 1}}" class="{{cartData.className}}" style="{{cartData.styleName}}">{{cartData.text}}</text>
       </block>
       <block wx:else>
         <view class="num-cfg">
-          <text class="num-minus">-</text>
-          <input type="number"></input>
-          <text class="num-plus">+</text>
+          <text class="num-minus" data-type="minus" bindtap="changeGoodsNum">-</text>
+          <input type="number" value="{{goodsData.cartNumber}}"></input>
+          <text class="num-plus" data-type="plus" bindtap="changeGoodsNum">+</text>
         </view>
       </block>
    </view>

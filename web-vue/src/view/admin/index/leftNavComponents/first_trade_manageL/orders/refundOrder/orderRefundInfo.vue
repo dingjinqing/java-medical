@@ -456,7 +456,7 @@
                 </template>
                 <template v-else-if="record.logicStatus == 4">
                   <li>{{$t('order.passReturnApplyNote')}}</li>
-                  <li>{{$t('order.passReturnApplyNote1',returnInfo.returnAddress,returnInfo.consignee,returnInfo.merchantTelephone)}}</li>
+                  <li>{{$t('order.passReturnApplyNote1',{ returnAddress: returnInfo.returnAddress, consignee:returnInfo.consignee,merchantTelephone:returnInfo.merchantTelephone})}}</li>
                 </template>
                 <template v-else-if="record.logicStatus == 5">
                   <li>{{$t('order.refusedReturngoodsApply')}}</li>
@@ -555,28 +555,28 @@
             </el-form-item>
             <el-form-item
               :label="$t('order.shippingAddress')"
-              prop="return_address"
+              prop="returnAddress"
             >
               <el-input
-                v-model="returnAddressInfo.return_address"
+                v-model="returnAddressInfo.returnAddress"
                 size="small"
               ></el-input>
             </el-form-item>
             <el-form-item
               :label="$t('order.phone')"
-              prop="mobile"
+              prop="merchantTelephone"
             >
               <el-input
-                v-model="returnAddressInfo.mobile"
+                v-model="returnAddressInfo.merchantTelephone"
                 size="small"
               ></el-input>
             </el-form-item>
             <el-form-item
               label="邮编"
-              prop="zip_code"
+              prop="zipCode"
             >
               <el-input
-                v-model="returnAddressInfo.zip_code"
+                v-model="returnAddressInfo.zipCode"
                 size="small"
               ></el-input>
             </el-form-item>
@@ -643,9 +643,9 @@ export default {
       refundDialog: false,
       returnAddressInfo: {
         consignee: null,
-        return_address: null,
-        mobile: null,
-        zip_code: null
+        returnAddress: null,
+        merchantTelephone: null,
+        zipCode: null
       },
       returnMoney: 0,
       shippingFee: 0,
@@ -668,24 +668,27 @@ export default {
   },
   mounted: function () {
     this.langDefault()
-    this.timer = setInterval(() => {
-      this.countdown()
-    }, 1000)
   },
   destroyed () {
     clearInterval(this.timer)
   },
   methods: {
-    countdown: function () {
-      const interval = this.autoTime
-      let day = Math.floor(interval / (24 * 3600 * 1000))
-      let hoursInterval = interval % (24 * 3600 * 1000)
-      let hours = Math.floor(hoursInterval / (3600 * 1000))
-      let minutesInterval = hoursInterval % (3600 * 1000)
-      let minutes = Math.floor(minutesInterval / (60 * 1000))
-      let secondsInterval = minutesInterval % (60 * 1000)
-      let seconds = Math.round(secondsInterval / 1000)
-      this.showCountdown = `${day}${this.$t('order.day')}${hours}${this.$t('order.hours')}${minutes}${this.$t('order.minutes')}${seconds}${this.$t('order.seconds')}`
+    countdown: function (interval) {
+      this.timer = setInterval(() => {
+        interval -= 1000
+        if (interval <= 0) interval = 0
+        let day = Math.floor(interval / (24 * 3600 * 1000))
+        let hoursInterval = interval % (24 * 3600 * 1000)
+        let hours = Math.floor(hoursInterval / (3600 * 1000))
+        let minutesInterval = hoursInterval % (3600 * 1000)
+        let minutes = Math.floor(minutesInterval / (60 * 1000))
+        let secondsInterval = minutesInterval % (60 * 1000)
+        let seconds = Math.round(secondsInterval / 1000)
+        this.showCountdown = `${day}${this.$t('order.day')}${hours}${this.$t('order.hours')}${minutes}${this.$t('order.minutes')}${seconds}${this.$t('order.seconds')}`
+        console.log(interval)
+        console.log(seconds)
+        console.log(this.showCountdown)
+      }, 1000)
     },
     showRefund () {
       this.refundDialog = true
@@ -703,12 +706,16 @@ export default {
     },
     handleReturn (target = null) {
       let returnOperate = null
-      if (this.returnInfo.returnType !== 1 && this.returnInfo.refundStatus === 6 && target) {
+      if ((this.returnInfo.refundStatus === 4 || this.returnInfo.refundStatus === 2) && target) {
         returnOperate = 2
       } else if (this.returnInfo.returnType === 1 && this.returnInfo.refundStatus === 1 && !target) {
         returnOperate = 3
       } else if (this.returnInfo.returnType === 1 && this.returnInfo.refundStatus === 1 && target) {
         returnOperate = 4
+      }
+      if (this.returnInfo.refundStatus === 1 && !(this.returnAddressInfo.consignee && this.returnAddressInfo.returnAddress && this.returnAddressInfo.merchantTelephone && this.returnAddressInfo.zipCode)) {
+        this.$message.error('请输入卖家收货所需内容')
+        return
       }
       let obj = {
         orderId: this.returnInfo.orderId,
@@ -776,20 +783,17 @@ export default {
     setAutoTime () {
       if (this.returnInfo.returnMoneyDays != null) {
         this.autoTime = this.returnInfo.returnMoneyDays
-        return
       }
       if (this.returnInfo.returnAddressDays != null) {
         this.autoTime = this.returnInfo.returnAddressDays
-        return
       }
       if (this.returnInfo.returnShoppingDays != null) {
         this.autoTime = this.returnInfo.returnShoppingDays
-        return
       }
       if (this.returnInfo.returnAuditPassNotShoppingDays != null) {
         this.autoTime = this.returnInfo.returnAuditPassNotShoppingDays
       }
-      clearInterval(this.timer)
+      this.countdown(this.autoTime)
     },
     submit () {
 

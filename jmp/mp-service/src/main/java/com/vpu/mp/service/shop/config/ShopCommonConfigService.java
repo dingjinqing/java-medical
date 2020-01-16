@@ -661,7 +661,9 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 			this.setGoodsRecord(commonCfg.getGoodsRecord());
 			this.setCustomService(commonCfg.getCustomService());
 			this.setReturnService(commonCfg.getReturnService());
-			this.setDefaultSort(commonCfg.getDefaultSort());
+			if(commonCfg.getDefaultSort() != null && commonCfg.getDefaultSort() > 0){
+                this.setDefaultSort(commonCfg.getDefaultSort());
+            }
 			this.setShareConfig(commonCfg.getShareConfig());
 			this.setBindMobile(commonCfg.getBindMobile());
 			this.setGeoLocation(commonCfg.getGeographicLocation());

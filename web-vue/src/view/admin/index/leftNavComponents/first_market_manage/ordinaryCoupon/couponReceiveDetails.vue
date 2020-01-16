@@ -33,7 +33,7 @@
             class="item"
           >
             <el-select
-              v-model="searchData.useStatus"
+              v-model="searchData.isUsed"
               size="small"
               class="inputWidth"
             >
@@ -78,7 +78,7 @@
         <div class="filters_item">
           <div>{{$t('couponReceive.useState')}}：</div>
           <el-select
-            v-model="searchData.useStatus"
+            v-model="searchData.isUsed"
             size="small"
             class="inputWidth"
           >
@@ -177,7 +177,7 @@
                 style="font-size: 22px;color: #5a8bff;"
                 class="el-icon-delete"
                 @click="deleteCoupon(scope.row.id)"
-                v-if="scope.row.delFlag === 0"
+                v-if="scope.row.delFlag === 0 && scope.row.isUsed === 0 && scope.row.expireFlag === 0 "
               ></span>
             </template>
           </el-table-column>
@@ -208,7 +208,7 @@ export default {
       searchData: {
         mobile: '',
         userName: '',
-        useStatus: -1
+        isUsed: -1
       },
       get_type_option: [
         { value: -1, label: '全部' },
@@ -245,7 +245,11 @@ export default {
       this.requestParams.pageRows = this.pageParams.pageRows
       this.requestParams.mobile = this.searchData.mobile
       this.requestParams.userName = this.searchData.userName
-      this.requestParams.useStatus = this.searchData.useStatus
+      if (this.searchData.isUsed === -1) {
+        this.requestParams.isUsed = null
+      } else {
+        this.requestParams.isUsed = this.searchData.isUsed
+      }
       couponGetDetail(this.requestParams).then(res => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -257,13 +261,21 @@ export default {
 
     // 表格处理数据
     handleData (data) {
+      var timestamp = new Date().getTime()
       data.map((item, index) => {
+        item.expireTime = new Date(item.endTime).getTime()
+        if (timestamp <= item.expireTime) {
+          // 未过期
+          item.expireFlag = 0
+        } else {
+          // 已过期
+          item.expireFlag = 1
+        }
         if (item.accessMode === 0) {
           item.accessMode = '发放'
         } else {
           item.accessMode = '领取'
         }
-        // item.validityTime = `${item.startTime} 至 ${item.endTime}`
       })
       this.tableData = data
     },

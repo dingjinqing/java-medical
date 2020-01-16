@@ -48,7 +48,7 @@
               :style="'background-image:url(' + $imageHost+ '/image/admin/shop_beautify/decorate_model.png)'"
             >
               <el-image
-                :src="$imageHost+ '/' + good.goods_img"
+                :src="good.goods_img"
                 style="width:100%;height:100%;"
                 mode="contain"
               ></el-image>
@@ -56,8 +56,14 @@
                 v-if="data.goods_count_down"
                 class="spike_countdown"
               >
-                <p>{{$t('bargain.endOfLeft')}}</p>
-                <p>{{good.act_end_time | endTimeFmt}}</p>
+                <div v-if="new Date(good.act_begin_time) < new Date()">
+                  <p>{{$t('spike.endOfLeft')}}</p>
+                  <p>{{good.act_end_time | endTimeFmt}}</p>
+                </div>
+                <div v-else>
+                  <p>{{$t('spike.beginTime')}}</p>
+                  <p>{{good.act_begin_time}}</p>
+                </div>
               </div>
             </div>
             <div class="spike_bottom">
@@ -132,16 +138,22 @@
               :style="'background-image:url(' + $imageHost+ '/image/admin/shop_beautify/decorate_model.png)'"
             >
               <el-image
-                :src="$imageHost+ '/' + good.goods_img"
-                style="width:100%;height:100%;"
+                :src="good.goods_img"
+                style="width:100%; height:100%;"
                 mode="contain"
               ></el-image>
               <div
                 v-if="data.goods_count_down"
                 class="spike_countdown"
               >
-                <p>距结束还剩</p>
-                <p>{{good.act_end_time | endTimeFmt}}</p>
+                <div v-if="new Date(good.act_begin_time) < new Date()">
+                  <p>{{$t('spike.endOfLeft')}}</p>
+                  <p>{{good.act_end_time | endTimeFmt}}</p>
+                </div>
+                <div v-else>
+                  <p>{{$t('spike.beginTime')}}</p>
+                  <p>{{good.act_begin_time}}</p>
+                </div>
               </div>
             </div>
             <div class="spike_right">
@@ -298,7 +310,7 @@ export default {
               if (!Number(item.seckill_num)) {
                 item.salePercent = 0
               } else {
-                item.salePercent = Number(Number(item.sale_num) / Number(item.seckill_num)).toFixed(2) || 0
+                item.salePercent = Number(Number(item.sale_num) / Number(item.seckill_num)) || 0
               }
             })
           }
@@ -441,6 +453,7 @@ export default {
         background-repeat: no-repeat;
         background-size: 24%;
         position: relative;
+        flex: none;
         .spike_countdown {
           position: absolute;
           width: 100%;
@@ -459,6 +472,7 @@ export default {
         justify-content: space-between;
         padding-left: 5px;
         position: relative;
+        overflow: hidden;
         h3 {
           margin-bottom: 5px;
           white-space: nowrap;
@@ -497,7 +511,7 @@ export default {
           position: absolute;
           bottom: 0;
           right: 0;
-          width: 120px;
+          width: 125px;
           .spike_to {
             display: block;
             float: right;
@@ -524,10 +538,11 @@ export default {
               color: #999;
               font-size: 12px;
               margin-right: 5px;
+              text-align: right;
             }
             .spike_progress {
               width: 60px;
-              flex: 1;
+              flex: none;
             }
           }
         }

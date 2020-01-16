@@ -88,7 +88,7 @@ global.wxComponent({
             cartNum: res.content.goodsNum
           })
         }
-      }, { goodsId })
+      }, { })
     },
     // 添加购物车
     addCart() {

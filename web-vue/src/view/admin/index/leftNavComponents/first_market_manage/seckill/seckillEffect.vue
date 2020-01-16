@@ -83,7 +83,7 @@
           <div
             class="num"
             style="color: #fdb64a;"
-          >{{ total.totalCostEffectivenessRatio }}%</div>
+          >{{ total.totalCostEffectivenessRatio === 0 ? 0 : ((total.totalDiscount / total.totalPayment) * 100).toFixed(2) }}%</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">

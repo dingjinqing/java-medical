@@ -129,7 +129,7 @@ global.wxComponent({
           styleName:`color:${data.main_setting.comColor}`
         }, //开启购物车按钮-样式 
         '1-1': {
-          className: 'iconfont icongouwuche5',
+          className: 'iconfont icongouwuche1',
           styleName:`color:${data.main_setting.comColor}`
         },
         '1-2': {

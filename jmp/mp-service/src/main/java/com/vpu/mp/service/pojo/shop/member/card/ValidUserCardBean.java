@@ -44,4 +44,7 @@ public class ValidUserCardBean {
 	private String storeList;
 	private String grade;
 	
+	// 头像
+	private String avatar;
+	
 }

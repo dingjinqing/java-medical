@@ -35,7 +35,8 @@ public class WxAppShareRewardController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/shareaward/goods/share")
     public JsonResult share(@RequestBody @Validated ShareParam param) {
-        return success(shop().wxShareReward.shareRecord(param));
+        shop().wxShareReward.shareRecord(param);
+        return success();
     }
 
     /**
@@ -47,6 +48,12 @@ public class WxAppShareRewardController extends WxAppBaseController {
     @PostMapping("/api/wxapp/shareaward/goods/shareaward")
     public JsonResult shareAward(@RequestBody @Validated ShareParam param) {
         shop().wxShareReward.shareAward(param);
+        return success();
+    }
+
+    @PostMapping("/api/wxapp/shareaward/goods/test")
+    public JsonResult test(@RequestBody @Validated ShareParam param) {
+        shop().wxShareReward.fromShare2GoodsDetail(param.getLaunchUserId(), param.getUserId(), param.getGoodsId(), param.getActivityId());
         return success();
     }
 }

@@ -280,7 +280,10 @@ export default {
     // 跳转到会员详情页
     handleToUserDetail (row) {
       this.$router.push({
-        name: 'membershipInformation'
+        name: 'membershipInformation',
+        query: {
+          userId: row.userId
+        }
       })
     }
 
