@@ -319,8 +319,8 @@ public class GoodsMpService extends ShopBaseService {
                 condition = condition.and(conditionor);
             }
         }
-        if (param.getKeyWords() != null && !param.getKeyWords().isEmpty()) {
-            condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
+        if (param.getGoodsName() != null && !param.getGoodsName().isEmpty()) {
+            condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
         }
         return condition;
     }
