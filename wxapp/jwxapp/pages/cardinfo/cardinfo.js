@@ -51,7 +51,7 @@ global.wxPage({
       util.api('/api/card/detail', res => {
         console.log(res)
         let cardInfo = res.content
-        if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime) ) {
+        if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
           that.setData({
             carStatus: "已领取"
           })
@@ -74,7 +74,6 @@ global.wxPage({
         cardInfo.cardStopImg = this.getCardStopImage(cardInfo);
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
-        cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
         if (cardInfo.activation) {
           card_activation = card_info.activation;
         }
@@ -167,7 +166,7 @@ global.wxPage({
     return `${cardItem.startDate} 至 ${cardItem.endDate}`
   },
   // 获取会员卡停用/删除状态图片
-  getCardStopImage(cardItem) {
+  getCardStopImage (cardItem) {
     if (cardItem.cardType === 2 && cardItem.flag === 2) {
       return `${this.data.imageUrl}image/wxapp/card_stop.png`
     }

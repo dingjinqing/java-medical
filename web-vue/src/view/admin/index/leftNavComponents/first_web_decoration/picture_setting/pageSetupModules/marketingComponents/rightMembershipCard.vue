@@ -451,7 +451,7 @@ export default {
         } else {
           this.nowChecked.hidden_card = 0
         }
-
+        this.nowChecked['cur_idx'] = this.modulesData.cur_idx
         console.log(this.nowChecked)
         this.$emit('handleToBackData', this.nowChecked)
       }
