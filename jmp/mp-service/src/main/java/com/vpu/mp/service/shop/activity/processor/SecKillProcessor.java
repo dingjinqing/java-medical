@@ -4,7 +4,6 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductBo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -110,6 +109,8 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
                 seckillProductInfo.setActivityId(seckillPrd.getSkId());
                 seckillProductInfo.setSecKillPrice(seckillPrd.getSecKillPrice());
                 goods.getCartActivityInfos().add(seckillProductInfo);
+                goods.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+                goods.setActivityId(seckillPrd.getSkId());
             });
         }
     }

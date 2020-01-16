@@ -330,6 +330,7 @@
   </div>
 </template>
 <script>
+import { getGoodsGroupData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
   mixins: [decMixins],
@@ -349,7 +350,8 @@ export default {
       },
       groupTextData: ['全部', '分组一', '分组二', '分组三', '分组四'],
       showNav: [],
-      bgColor: ''
+      bgColor: '',
+      goodsData: [] // 商品信息
     }
   },
   watch: {
@@ -420,7 +422,35 @@ export default {
       } else {
         this.showNav = this.groupTextData
       }
+      // 商品数据获取
+      this.handleToRequestGoodsData(data)
       console.log(this.showNav)
+    },
+    // 商品数据请求
+    handleToRequestGoodsData (data) {
+      console.log(data)
+      let groupData = JSON.parse(JSON.stringify(data.sort_group_arr))
+      let arr = []
+      groupData.forEach((item, idnex) => {
+        let obj = {}
+        obj['sort_id'] = item.sort_id
+        obj['sort_type'] = JSON.stringify(item.sort_type)
+        obj['group_goods_id'] = item.group_goods_id ? item.group_goods_id : null
+        obj['is_all'] = item.is_all
+        arr.push(obj)
+      })
+      console.log(arr)
+      let obj = {
+        'position_style': Number(data.position_style),
+        'group_display': Number(data.group_display),
+        'sort_group_arr': arr
+      }
+      getGoodsGroupData(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+
+        }
+      })
     },
     defaultData () {
       // 点击各模块触发事件

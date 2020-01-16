@@ -68,3 +68,38 @@ export function getModulesJusList () {
     method: 'get'
   })
 }
+
+// 瓜分积分下拉框
+export function getDropDownBox () {
+  return service({
+    url: '/api/admin/market/integration/selectlist',
+    method: 'get'
+  })
+}
+
+// 积分兑换活动弹窗
+export function getIntegralExchange (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/pop',
+    method: 'post',
+    data: data
+  })
+}
+
+// 商品分组模块接口
+export function getGoodsGroupData (data) {
+  return service({
+    url: '/api/admin/goods/mp/group/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 商品分组-根据条件获取商品数量
+export function getGoodsNum (data) {
+  return service({
+    url: '/api/admin/goods/nums',
+    method: 'post',
+    data: data
+  })
+}

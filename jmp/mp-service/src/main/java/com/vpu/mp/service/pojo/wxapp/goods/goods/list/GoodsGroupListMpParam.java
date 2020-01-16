@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoodsGroup;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @Data
 public class GoodsGroupListMpParam {
-    public static final Byte SECTION_SHOW_ALL = 1;
+    public static final Byte SECTION_POINT_GOODS = 2;
     /**分组是商家分类*/
     public static final String SORT_TYPE = "";
     /**分组是标签*/
@@ -35,8 +36,25 @@ public class GoodsGroupListMpParam {
 
     /**筛选条件*/
     @JsonProperty("sort_group_arr")
-    private List<ModuleGoodsGroup.SortGroup> sortGroupArr;
+    private List<SortGroup> sortGroupArr;
 
     /**用户id controller层设置*/
     private Integer userId;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SortGroup{
+        @JsonProperty("sort_id")
+        private Integer sortId;
+        /**选择的分组筛选条件类型,为了兼容php数据类型，空字符串:商家分类，"1":商品标签，"2":商品品牌*/
+        @JsonProperty("sort_type")
+        private String sortType;
+        /**分组指定的商品id字符串集合，逗号分隔*/
+        @JsonProperty("group_goods_id")
+        private String groupGoodsId;
+        /**是展示全部商品：1，还是指定商品：2*/
+        @JsonProperty("is_all")
+        private Byte isAll;
+    }
 }

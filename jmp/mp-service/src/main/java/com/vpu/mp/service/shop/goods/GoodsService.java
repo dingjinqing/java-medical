@@ -1912,6 +1912,77 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 获取满足条件的商品数量
+     * @param param 条件
+     * @return 商品数量
+     */
+    public Integer getGoodsNum(GoodsNumCountParam param) {
+        return getGoodsNum(Collections.singletonList(param)).get(0);
+    }
+    /**
+     * 获取满足过滤条件的商品数量集合
+     * @param params 过滤条件集合
+     * @return 商品数量集合
+     */
+    public List<Integer> getGoodsNum(List<GoodsNumCountParam> params) {
+        Condition baseCondition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (!GoodsConstant.SOLD_OUT_GOODS_SHOW.equals(soldOutGoods)) {
+            baseCondition = baseCondition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+        List<Integer> goodsNums = new ArrayList<>();
+
+        for (GoodsNumCountParam param : params) {
+            Condition condition = baseCondition;
+            if (param.getLabelId() != null) {
+                List<Integer> allIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+                if (allIds.size() == 0) {
+                    List<Integer> sortIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
+                    List<Integer> goodsIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
+                    List<Integer> catIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
+                    Condition idCondition = DSL.noCondition();
+                    if (sortIds.size() > 0) {
+                        idCondition = idCondition.or(GOODS.SORT_ID.in(sortIds));
+                    }
+                    if (goodsIds.size() > 0) {
+                        idCondition = idCondition.or(GOODS.GOODS_ID.in(goodsIds));
+                    }
+                    if (catIds.size() > 0) {
+                        idCondition = idCondition.or(GOODS.CAT_ID.in(catIds));
+                    }
+                    condition = condition.and(idCondition);
+                } else {
+                    // 存在全部商品行标签
+                    goodsNums.add(getGoodsNumDao(condition));
+                    continue;
+                }
+            }
+
+            if (param.getSortId() != null) {
+                condition = condition.and(GOODS.SORT_ID.eq(param.getSortId()));
+            }
+
+            if (param.getBrandId() != null) {
+                condition = condition.and(GOODS.BRAND_ID.eq(param.getBrandId()));
+            }
+
+            if (param.getCatId() != null) {
+                condition = condition.and(GOODS.CAT_ID.eq(param.getCatId()));
+            }
+            goodsNums.add(getGoodsNumDao(condition));
+        }
+        return goodsNums;
+    }
+
+    /**
+     * 获取指定条件的商品的数量
+     * @param condition 指定的条件
+     * @return 商品的数量
+     */
+    public Integer getGoodsNumDao(Condition condition) {
+        return db().fetchCount(GOODS, condition);
+    }
+    /**
      * Exist boolean.商品是否存在
      *
      * @param goodsId the goods id

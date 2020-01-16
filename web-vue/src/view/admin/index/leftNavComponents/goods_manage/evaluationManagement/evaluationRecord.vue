@@ -254,20 +254,20 @@
             <el-tooltip
               :content="$t('evaluation.pass')"
               placement="top"
-              v-if="target === 'Record' && scope.row.flag === 0"
+              v-if="target === 'Record' && (scope.row.flag === 0 || scope.row.flag === 2)"
             >
               <span
-                class="el-icon-remove-outline operateSpan"
-                @click="evaluationRefuse(scope.row.id)"
+                class="el-icon-success operateSpan"
+                @click="evaluationPass(scope.row.id)"
               ></span>
             </el-tooltip>
             <el-tooltip
               :content="$t('evaluation.refuse')"
               placement="top"
-              v-if="target === 'Record' && scope.row.flag === 0"
+              v-if="target === 'Record' && (scope.row.flag === 0 || scope.row.flag === 1)"
             >
               <span
-                class="el-icon-circle-plus-outline operateSpan"
+                class="el-icon-error operateSpan"
                 @click="evaluationRefuse(scope.row.id)"
               ></span>
             </el-tooltip>
@@ -497,6 +497,11 @@ export default {
 }
 .mini_select {
   width: 170px !important;
+}
+.filters_item {
+  > span {
+    font-size: 14px;
+  }
 }
 .goods_info {
   display: flex;

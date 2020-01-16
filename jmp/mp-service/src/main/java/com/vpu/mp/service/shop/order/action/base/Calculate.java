@@ -296,7 +296,7 @@ public class Calculate extends ShopBaseService {
                     defaultCard = userCard.userCardDao.getOrderGradeCard(param.getWxUserInfo().getUserId());
                 }
                 List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), defaultCard == null ? null : Lists.newArrayList(defaultCard));
-                defaultCard = defaultCard != null ? defaultCard : (CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0));
+                defaultCard = CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0);
                 vo.setDefaultMemberCard(defaultCard);
                 vo.setMemberCards(validCardList);
             }
@@ -362,10 +362,9 @@ public class Calculate extends ShopBaseService {
      * @param districtCode     区县编号
      * @param bos              bos
      * @param storeId          门店id
-     * @param noCalculateGoods 不参与计算的商品
      * @return 运费
      */
-    public BigDecimal calculateShippingFee(Integer districtCode, List<OrderGoodsBo> bos, Integer storeId, List<Integer> noCalculateGoods) {
+    public BigDecimal calculateShippingFee(Integer districtCode, List<OrderGoodsBo> bos, Integer storeId) {
         logger().info("计算运费start");
         BigDecimal result = BigDecimal.ZERO;
         //处理过程中局部内部类
@@ -380,8 +379,12 @@ public class Calculate extends ShopBaseService {
         }
         Map<Integer, Total> totalMaps = Maps.newHashMap();
         for (OrderGoodsBo bo : bos) {
+            //过滤不参与计算的商品
+            if(bo.getFreeShip() != null && bo.getFreeShip() == OrderConstant.YES) {
+                bo.setIsShipping(OrderConstant.YES);
+                continue;
+            }
             //TODO 检查加价购换购商品是否走运费计算
-
             if (totalMaps.get(bo.getDeliverTemplateId()) == null) {
                 totalMaps.put(bo.getDeliverTemplateId(), new Total());
             }
@@ -390,14 +393,13 @@ public class Calculate extends ShopBaseService {
             total.setTotalNumber(total.getTotalNumber() + bo.getGoodsNumber());
             total.setTotalPrice(total.getTotalPrice().add(bo.getDiscountedTotalPrice()));
             total.setTotalWeight(total.getTotalWeight().add(BigDecimalUtil.multiply(bo.getGoodsWeight(), new BigDecimal(bo.getGoodsNumber()))));
-            bo.getDeliverTemplateId();
         }
 
         for (Map.Entry<Integer, Total> entry : totalMaps.entrySet()) {
             Integer templateId = entry.getKey();
             Total total = entry.getValue();
             logger().info("计算运费模板id:{},参数:{}", templateId, total);
-            BigDecimal shippingFeeByTemplate = null;
+            BigDecimal shippingFeeByTemplate;
             try {
                 if (districtCode == null || districtCode.equals(0)) {
                     total.getBos().forEach(x -> {

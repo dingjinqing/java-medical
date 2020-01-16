@@ -7,7 +7,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoodsGroup;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -588,14 +587,14 @@ public class GoodsMpService extends ShopBaseService {
      * @return 满足条件的商品信息
      */
     public List<? extends GoodsListMpVo> getGoodsGroupList(GoodsGroupListMpParam param) {
-        List<ModuleGoodsGroup.SortGroup> sortGroupArr = param.getSortGroupArr();
+        List<GoodsGroupListMpParam.SortGroup> sortGroupArr = param.getSortGroupArr();
         List<Integer> goodsIds = new ArrayList<>(6);
         List<Integer> sortIds = new ArrayList<>(6);
         List<Integer> brandIds = new ArrayList<>(6);
         List<Integer> labelIds = new ArrayList<>(6);
 
-        for (ModuleGoodsGroup.SortGroup sortGroup : sortGroupArr) {
-            if (GoodsGroupListMpParam.SECTION_SHOW_ALL.equals(sortGroup.getIsAll())) {
+        for (GoodsGroupListMpParam.SortGroup sortGroup : sortGroupArr) {
+            if (GoodsGroupListMpParam.SECTION_POINT_GOODS.equals(sortGroup.getIsAll())) {
                 goodsIds.addAll(Stream.of(sortGroup.getGroupGoodsId().split(",")).map(Integer::parseInt).collect(Collectors.toList()));
             } else {
                 GoodsListMpParam goodsListMpParam = new GoodsListMpParam();
@@ -624,12 +623,14 @@ public class GoodsMpService extends ShopBaseService {
             condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
 
+        List<Integer> catIds = new ArrayList<>(0);
         // 判断是否有关联全部商品的标签
         if (labelIds.size() > 0) {
             List<Integer> allIds = goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
             if (allIds.size() == 0) {
                 sortIds.addAll(goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()));
                 goodsIds.addAll(goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
+                catIds.addAll(goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.CATTYPE.getCode()));
             } else {
                 return findActivityGoodsListCapsulesDao(condition,null,0,GoodsGroupListMpParam.NUM_TO_SHOW,null);
             }

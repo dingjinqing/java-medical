@@ -13,6 +13,10 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let {ruleId} = options
+    this.setData({
+      ruleId
+    })
     this.requestGoodsList()
     this.requestCartGoodsList()
   },
@@ -23,7 +27,7 @@ global.wxPage({
       ? this.data.pageParams.currentPage
       : 1;
     util.api('/api/wxapp/freeship/goods/list',res=>{
-      if(res.error === 0){
+      if(res.error === 0 && res.content !== null){
         this.setData({
           pageParams: res.content.pageResult.page,
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList,
@@ -36,7 +40,7 @@ global.wxPage({
       }
     },{
       searchText:this.data.searchText,
-      ruleId:62,
+      ruleId:this.data.ruleId,
       currentPage: currentPage,
       pageRows: 20,
     })
@@ -49,7 +53,7 @@ global.wxPage({
         })
       }
     },{
-      ruleId:62,
+      ruleId:this.data.ruleId,
     })
   },
   getSearchText(data){
@@ -64,6 +68,9 @@ global.wxPage({
     this.setData({
       showSelectedDialog:true
     })
+  },
+  goCart(){	
+    util.jumpLink('pages/cart/cart','navigateTo')	
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

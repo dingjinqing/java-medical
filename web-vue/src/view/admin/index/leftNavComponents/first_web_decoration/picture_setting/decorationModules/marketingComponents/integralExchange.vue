@@ -19,15 +19,15 @@
             >
               <div
                 class="liTop"
-                :style="(!item.goods_img?'background:#eaf2ff url('+$imageHost+'/image/admin/shop_beautify/decorate_model.png) center no-repeat':'backgroundColor:#fff')+(modulesData.list_styles===1?';width:100px;height:100px;padding:5px':'')"
+                :style="(!item.goodsImg?'background:#eaf2ff url('+$imageHost+'/image/admin/shop_beautify/decorate_model.png) center no-repeat':'backgroundColor:#fff')+(modulesData.list_styles===1?';width:100px;height:100px;padding:5px':'')"
               >
-                <img :src="item.goods_img">
+                <img :src="item.goodsImg">
               </div>
               <div
                 class="liBottom"
                 :style="modulesData.list_styles===1?'flex:1':''"
               >
-                <div class="goodsName">{{item.goods_name}}</div>
+                <div class="goodsName">{{item.goodsName}}</div>
                 <div
                   class="integral_info_head "
                   :style="modulesData.list_styles===1?'margin-top:37px':''"
@@ -42,7 +42,7 @@
                   <div
                     class="orignakl_orice"
                     v-if="modulesData.show_goods_price"
-                  >￥{{item.prd_price}}</div>
+                  >￥{{item.prdPrice}}</div>
                   <div
                     v-else
                     style="height:25px"
@@ -107,16 +107,16 @@ export default {
       hoverTips: 'hoverTips', // 英文适配  模块公共
       occupyingData: [ // 占位数据
         {
-          'goods_img': '',
-          'goods_name': '积分商城名称-1',
-          'prd_price': '1000.00',
+          'goodsImg': '',
+          'goodsName': '积分商城名称-1',
+          'prdPrice': '1000.00',
           'money': '200.00',
           'score': '400000'
         },
         {
-          'goods_img': '',
-          'goods_name': '积分商城名称-2',
-          'prd_price': '1000.00',
+          'goodsImg': '',
+          'goodsName': '积分商城名称-2',
+          'prdPrice': '1000.00',
           'money': '200.00',
           'score': '400000'
         }
