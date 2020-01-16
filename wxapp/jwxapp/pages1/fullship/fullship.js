@@ -65,6 +65,9 @@ global.wxPage({
       showSelectedDialog:true
     })
   },
+  goCart(){
+    util.jumpLink('pages/cart/cart','navigateTo')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
