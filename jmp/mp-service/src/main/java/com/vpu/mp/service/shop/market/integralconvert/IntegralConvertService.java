@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.integralconvert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
 import com.vpu.mp.db.shop.tables.IntegralMallProduct;
 import com.vpu.mp.db.shop.tables.IntegralMallRecord;
@@ -58,6 +59,8 @@ public class IntegralConvertService extends ShopBaseService {
 	private OrderReadService orderReadService;
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 积分兑换弹窗
@@ -82,6 +85,9 @@ public class IntegralConvertService extends ShopBaseService {
         }
 	    //整合分页信息
         PageResult<PopListVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),PopListVo.class);
+	    for (PopListVo vo :result.dataList){
+	        vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
+        }
 	    return result;
     }
 
