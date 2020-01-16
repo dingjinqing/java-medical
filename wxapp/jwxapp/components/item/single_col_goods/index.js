@@ -52,7 +52,7 @@ global.wxComponent({
           styleName:`color:${data.main_setting.comColor}`
         },
         1:{
-          className: 'iconfont icongouwuche5',
+          className: 'iconfont icongouwuche1',
           styleName:`color:${data.main_setting.comColor}`
         },
         2:{
