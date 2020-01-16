@@ -1218,5 +1218,9 @@ public class GroupDrawService extends ShopBaseService {
 			successGroupDraw(groupDrawId, groupId);
 		}
 	}
+	
+	public GroupDrawRecord getById(Integer id) {
+		return db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(id)).fetchAny();
+	}
 
 }
