@@ -267,7 +267,8 @@ export default {
       if (this.ruleForm.offSet === '1' && this.ruleForm.powerScore) {
         if (this.checkScoreSendEach()) {
           callback(new Error('请输入积分'))
-        } else if (!isSixNumberWithTwoDecimal(value)) {
+        } else if (!(isSixNumberWithTwoDecimal(this.ruleForm.shopingInputLeftM) &&
+            isSixNumberWithTwoDecimal(this.ruleForm.shopingInputRightM))) {
           callback(new Error('请输入大于0的数字'))
         } else {
           callback()
