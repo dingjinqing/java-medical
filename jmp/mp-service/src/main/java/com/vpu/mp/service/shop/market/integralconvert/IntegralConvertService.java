@@ -65,8 +65,8 @@ public class IntegralConvertService extends ShopBaseService {
      * @return 活动商品信息
      */
 	public PageResult<PopListVo> getPopList(PopListParam param){
-	    SelectConditionStep<? extends Record> select = db().select(imd.ID,GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
-        GOODS.SHOP_PRICE,imp.STOCK,imp.MONEY,imp.SCORE,imd.START_TIME,imd.END_TIME)
+	    SelectConditionStep<? extends Record> select = db().select(imd.ID.as("integral_goods_id"),GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+        GOODS.SHOP_PRICE.as("prd_price"),imp.STOCK.as("stock_sum"),imp.MONEY,imp.SCORE,imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
             .from(imd)
             .leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID))
             .leftJoin(imp).on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID))

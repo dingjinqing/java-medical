@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Data
 public class PopListVo {
     /** 活动id */
-    private Integer id;
+    private Integer integralGoodsId;
     /** 商品id */
     private Integer goodsId;
     /** 商品名称 */
@@ -21,9 +21,9 @@ public class PopListVo {
     /** 商品图片 */
     private String goodsImg;
     /** 商品价格 */
-    private BigDecimal shopPrice;
+    private BigDecimal prdPrice;
     /** 活动库存 */
-    private Short stock;
+    private Short stockSum;
     /** 活动价格 */
     private BigDecimal money;
     /** 活动积分 */
@@ -32,4 +32,8 @@ public class PopListVo {
     private Timestamp startTime;
     /** 结束时间 */
     private Timestamp endTime;
+    /** 是否在售 */
+    private Byte isOnSale;
+    /** 是否删除 */
+    private Byte isDelete;
 }
