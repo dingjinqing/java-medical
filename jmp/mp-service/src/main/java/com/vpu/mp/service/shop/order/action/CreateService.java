@@ -191,7 +191,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //order goods
         List<OrderGoodsBo> orderGoodsBos;
         //OrderBeforeVo
-        OrderBeforeVo orderBeforeVo = OrderBeforeVo.builder().build();
+        OrderBeforeVo orderBeforeVo = OrderBeforeVo.builder().deliverType(param.getDeliverType()).build();
         //订单入库后数据
         OrderInfoRecord orderAfterRecord = null;
 
