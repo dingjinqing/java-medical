@@ -764,7 +764,16 @@ public class MpDecorationService extends ShopBaseService {
         param.setUserId(userId);
 
         if (!GoodsConstant.GOODS_GROUP_LIST_TOP_POSITION.equals(moduleGoodsGroup.getPositionStyle()) || !GoodsConstant.GOODS_GROUP_LIST_SHOW_ALL_COLUMN.equals(moduleGoodsGroup.getGroupDisplay())) {
-            param.setSortGroupArr(moduleGoodsGroup.getSortGroupArr().subList(0,1));
+            ModuleGoodsGroup.SortGroup sortGroup = moduleGoodsGroup.getSortGroupArr().get(0);
+            GoodsGroupListMpParam.SortGroup paramGroup = new GoodsGroupListMpParam.SortGroup(sortGroup.getSortId(),sortGroup.getSortType(),sortGroup.getGroupGoodsId(),sortGroup.getIsAll());
+            param.setSortGroupArr(Collections.singletonList(paramGroup));
+        } else {
+            List< GoodsGroupListMpParam.SortGroup> groups = new ArrayList<>();
+            for (ModuleGoodsGroup.SortGroup sortGroup : moduleGoodsGroup.getSortGroupArr()) {
+                GoodsGroupListMpParam.SortGroup paramGroup = new GoodsGroupListMpParam.SortGroup(sortGroup.getSortId(),sortGroup.getSortType(),sortGroup.getGroupGoodsId(),sortGroup.getIsAll());
+                groups.add(paramGroup);
+            }
+            param.setSortGroupArr(groups);
         }
         // 转换实时信息
         List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getGoodsGroupList(param);
