@@ -13,7 +13,7 @@ public enum DelFlag {
     NORMAL((byte) 0),
     // 删除状态
     DISABLE((byte) 1);
-     
+
     private byte code;
 
     private DelFlag(byte code) {
@@ -30,7 +30,7 @@ public enum DelFlag {
     /**
      * 数据库假删除标志，jooq中该字段设置值的时候使用枚举会报错。
      *
-     * @author 李晓冰
+     * @author 李晓冰ret
      */
     public static final Byte NORMAL_VALUE = 0;
     public static final Byte DISABLE_VALUE = 1;
