@@ -8,7 +8,6 @@ import lombok.Getter;
  */
 @Getter
 public enum DelFlag {
-<<<<<<< HEAD
 	//正常状态
 	NORMAL((byte)0),
 	//删除状态
@@ -16,20 +15,11 @@ public enum DelFlag {
 	
 	private byte code;
 
-=======
-	// 正常状态
-	NORMAL((byte) 0),
-	// 删除状态
-	DISABLE((byte) 1);
 
-	private byte code;
-
->>>>>>> 18762aa216709f4254f48b37d3389570e1a3b9be
 	private DelFlag(byte code) {
 		this.code = code;
 	}
 
-<<<<<<< HEAD
     /**
      *  数据库记录假删除时，在记录唯一字段添加的前缀值
      * @author 李晓冰
@@ -42,20 +32,5 @@ public enum DelFlag {
      */
     public static final Byte NORMAL_VALUE=0;
 	public static final Byte DISABLE_VALUE=1;
-=======
-	/**
-	 * 数据库记录假删除时，在记录唯一字段添加的前缀值
-	 *
-	 * @author 李晓冰
-	 */
-	public static final String DEL_ITEM_SPLITER = "_";
-	public static final String DEL_ITEM_PREFIX = "del" + DEL_ITEM_SPLITER;
-	/**
-	 * 数据库假删除标志，jooq中该字段设置值的时候使用枚举会报错。
-	 *
-	 * @author 李晓冰
-	 */
-	public static final Byte NORMAL_VALUE = 0;
-	public static final Byte DISABLE_VALUE = 1;
->>>>>>> 18762aa216709f4254f48b37d3389570e1a3b9be
+
 }
