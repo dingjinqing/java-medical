@@ -17,15 +17,20 @@
             <div
               class="title"
               :style="data.font_color?`color:${data.font_color}`:''"
-            >{{data.pin_title===0&&data.act_id!==-1?data.pin_title_text:zbTitle}}</div>
+            >{{data.pin_title===0?data.pin_title_text:zbTitle}}</div>
             <div
               class="content"
               :style="data.font_color?`color:${data.font_color}`:''"
-            >{{data.hide_active===0&&data.act_id!==-1?'3人瓜分333积分':''}}</div>
+              v-if="data.hide_active===0"
+            >{{data.hide_active===0?content:''}}</div>
+            <div
+              style="height:14px"
+              v-if="data.hide_active!==0"
+            ></div>
             <div
               class="date"
               :style="data.font_color?`color:${data.font_color}`:''"
-            >{{(data.hide_time===0&&data.act_id===-1)?'2020-01-01 17:15:12至2020-01-24 17:15:15':''}}</div>
+            >{{(data.hide_time===0)?date:''}}</div>
           </div>
         </div>
       </div>
@@ -67,7 +72,7 @@
   </div>
 </template>
 <script>
-
+import { selectGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
 export default {
   props: {
     flag: Number, // 模块公共
@@ -81,9 +86,19 @@ export default {
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
       zbTitle: 'xx积分等你拿,购物可抵现金！', // title占位
+      content: 'x人瓜分xxx积分', // 内容
+      date: 'xx至xx', // 时间
       // 模块私有
       data: {
-
+        'module_name': 'm_pin_integration',
+        'act_id': -1, // 活动id
+        'pin_title': 1, // 标题 radio 1 0
+        'pin_title_text': '', // 标题 自定义内容
+        'hide_active': 0, // 隐藏内容 活动内容
+        'hide_time': 0, // 隐藏内容 有效期
+        'module_bg': 0, // 活动地图radio 0 1
+        'module_img': '', // 自定义活动地图
+        'font_color': '#fff'
       }
     }
   },
@@ -118,7 +133,17 @@ export default {
     backData: { // 模块公共
       handler (newData) {
         if (newData) {
-          this.data = newData
+          if (newData.act_id !== -1) {
+            selectGroupIntegration(newData.act_id).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                let content = res.content
+                this.content = `${content.limitAmount}瓜分${content.inteTotal}`
+                this.date = `${content.startTime}至${content.endTime}`
+              }
+            })
+            this.data = newData
+          }
         }
         console.log(newData)
       },

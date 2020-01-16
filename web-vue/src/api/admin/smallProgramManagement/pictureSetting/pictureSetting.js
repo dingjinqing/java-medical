@@ -76,3 +76,12 @@ export function getDropDownBox () {
     method: 'get'
   })
 }
+
+// 积分兑换活动弹窗
+export function getIntegralExchange (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/pop',
+    method: 'post',
+    data: data
+  })
+}

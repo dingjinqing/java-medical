@@ -679,7 +679,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //计算运费
         if(vo.getAddress() != null){
             //没有可用地址的用户
-            vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId(), null));
+            vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId()));
             //判断是否可以发货
             vo.setCanShipping(isShipping(bos));
         }else{

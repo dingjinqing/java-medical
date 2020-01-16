@@ -1,16 +1,14 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.refund;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 

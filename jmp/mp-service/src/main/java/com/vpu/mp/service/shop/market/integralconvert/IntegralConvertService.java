@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.integralconvert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
 import com.vpu.mp.db.shop.tables.IntegralMallProduct;
 import com.vpu.mp.db.shop.tables.IntegralMallRecord;
@@ -58,6 +59,8 @@ public class IntegralConvertService extends ShopBaseService {
 	private OrderReadService orderReadService;
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 积分兑换弹窗
@@ -65,8 +68,8 @@ public class IntegralConvertService extends ShopBaseService {
      * @return 活动商品信息
      */
 	public PageResult<PopListVo> getPopList(PopListParam param){
-	    SelectConditionStep<? extends Record> select = db().select(imd.ID,GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
-        GOODS.SHOP_PRICE,imp.STOCK,imp.MONEY,imp.SCORE,imd.START_TIME,imd.END_TIME)
+	    SelectConditionStep<? extends Record> select = db().select(imd.ID.as("integral_goods_id"),GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+        GOODS.SHOP_PRICE.as("prd_price"),imp.STOCK.as("stock_sum"),imp.MONEY,imp.SCORE,imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
             .from(imd)
             .leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID))
             .leftJoin(imp).on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID))
@@ -82,6 +85,9 @@ public class IntegralConvertService extends ShopBaseService {
         }
 	    //整合分页信息
         PageResult<PopListVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),PopListVo.class);
+	    for (PopListVo vo :result.dataList){
+	        vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
+        }
 	    return result;
     }
 

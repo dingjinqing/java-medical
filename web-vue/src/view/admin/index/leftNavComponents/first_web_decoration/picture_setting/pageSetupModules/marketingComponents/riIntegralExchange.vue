@@ -21,10 +21,7 @@
             class="choose_goods"
             @click="handleToAddAct()"
           >
-            <img
-              src="http://mpdevimg2.weipubao.cn/image/admin/icon_jia.png"
-              alt=""
-            >
+            <img :src="$imageHost+'/image/admin/icon_jia.png'">
             添加活动
           </div>
           <div class="question">
@@ -58,13 +55,13 @@
             >
               <template slot-scope="scope">
                 <div class="goodsInfo">
-                  <img :src="scope.row.goods_img">
-                  <div>{{scope.row.goods_name}}</div>
+                  <img :src="scope.row.goodsImg">
+                  <div>{{scope.row.goodsName}}</div>
                 </div>
               </template>
             </el-table-column>
             <el-table-column
-              prop="stock_sum"
+              prop="stockSum"
               label="库存"
               width="80"
             >
@@ -83,7 +80,7 @@
               width="80"
             >
               <template slot-scope="scope">
-                {{scope.row.is_on_sale==='1'?'正常操作':'异常操作'}}
+                {{scope.row.isOnSale==='1'?'正常操作':'异常操作'}}
               </template>
             </el-table-column>
             <el-table-column
@@ -191,19 +188,19 @@
               >
                 <template slot-scope="scope">
                   <div class="goodsInfo">
-                    <img :src="scope.row.goods_img">
-                    <div>{{scope.row.goods_name}}</div>
+                    <img :src="scope.row.goodsImg">
+                    <div>{{scope.row.goodsName}}</div>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
-                prop="stock_sum"
+                prop="stockSum"
                 label="库存"
                 width="80"
               >
               </el-table-column>
               <el-table-column
-                prop="prd_price"
+                prop="prdPrice"
                 label="价格"
                 width="80"
               >
@@ -221,16 +218,28 @@
               >
               </el-table-column>
               <el-table-column
-                prop="start_time"
+                prop="startTime"
                 label="开始时间"
               >
               </el-table-column>
               <el-table-column
-                prop="end_time"
+                prop="endTime"
                 label="结束时间"
               >
               </el-table-column>
             </el-table>
+            <div class="pagination">
+              <div>当前页面{{currentPage}}/{{pageCount}}，总记录{{total}}条</div>
+              <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-size="20"
+                layout="prev, pager, next, jumper"
+                :total="total"
+              >
+              </el-pagination>
+            </div>
+
           </div>
         </div>
         <span
@@ -249,6 +258,7 @@
   </div>
 </template>
 <script>
+import { getIntegralExchange } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 export default {
   props: {
     modulesData: Object, // 模块公共
@@ -259,16 +269,16 @@ export default {
       dialogVisible: false, //  选择活动弹窗flag
       keyInput: '', // 关键词输入框
       options: [{
-        value: '0',
+        value: -1,
         label: '请选择上下架'
       }, {
-        value: '1',
+        value: 1,
         label: '上架'
       }, {
-        value: '2',
+        value: 2,
         label: '下架'
       }],
-      value: '0',
+      value: -1,
       tableData: [ // 模拟数据
         {
           'goods_id': '1139',
@@ -303,7 +313,10 @@ export default {
       selectData: [], // 添加活动弹窗选中数据
       moduleData: {
         integral_goods: []
-      }
+      },
+      currentPage: 1, // 当前页
+      total: 0, // 总条数
+      pageCount: 1 // 总页数
     }
   },
   watch: {
@@ -317,7 +330,10 @@ export default {
               if (this.modulesData.integral_goods.length) {
                 this.isShowTable = true
               }
+              this.tableData = this.modulesData.integral_goods
               this.moduleData = this.modulesData
+              // 初始请求弹窗数据
+              this.handleToRequestData()
             })
           }
         }
@@ -335,6 +351,26 @@ export default {
   },
 
   methods: {
+    // 初始化请求弹窗数据
+    handleToRequestData () {
+      let obj = {
+        goodsName: this.keyInput,
+        isOnSale: this.value,
+        page: this.currentPage
+      }
+      getIntegralExchange(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.total = res.content.page.totalRows
+          this.pageCount = res.content.page.pageCount
+        }
+      })
+    },
+    // 当前页发生变化
+    handleCurrentChange () {
+      this.handleToRequestData()
+    },
     // 点击添加活动
     handleToAddAct () {
       this.dialogVisible = true
@@ -343,14 +379,14 @@ export default {
         console.log(this.tableData, this.moduleData.integral_goods)
         let arr = []
         this.tableData.forEach((item, index) => {
-          arr.push(item.goods_id)
+          arr.push(item.goodsId)
         })
         console.log(this.moduleData.integral_goods, arr)
         this.$refs.addActTable.clearSelection()
         if (this.moduleData.integral_goods.length) {
           arr.forEach((item, index) => {
             this.moduleData.integral_goods.forEach((itemC, indexC) => {
-              if (item === itemC.goods_id) {
+              if (item === itemC.goodsId) {
                 this.$refs.addActTable.toggleRowSelection(this.tableData[index], true)
               }
             })
@@ -376,7 +412,7 @@ export default {
     },
     // 搜索点击
     handleToSearch () {
-
+      this.handleToRequestData()
     },
     // 表格操作点击综合处理
     handleToClickOperation (flag, index) {
@@ -553,5 +589,12 @@ export default {
       -webkit-box-orient: vertical;
     }
   }
+}
+.pagination {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 </style>
