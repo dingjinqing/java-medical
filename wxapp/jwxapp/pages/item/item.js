@@ -202,7 +202,7 @@ global.wxPage({
               }
             })
             // 限时降价状态栏
-            if (res.content.activity && res.content.activity.activityType === 6) { 
+            if (res.content.activity && [6,98].includes(res.content.activity.activityType) ) { 
               this.setData({
                   reduceActBarPrice:this.getActBarPrice(products,activity,'prdRealPrice'),
               })
