@@ -147,7 +147,10 @@
         >
           <template slot-scope="scope">
             <div class="user_info">
-              <p class="user_name">{{$t('evaluation.userName')}}：<span>{{scope.row.bogusUsername ? scope.row.bogusUsername : scope.row.username }}</span></p>
+              <p
+                :class="scope.row.bogusUsername ? 'fake_user' : 'user_name'"
+                @click="!scope.row.bogusUsername && goUserCenter(scope.row.userId)"
+              >{{$t('evaluation.userName')}}：<span>{{scope.row.bogusUsername || scope.row.username }}</span></p>
               <p v-if="!scope.row.bogusUsername">{{$t('evaluation.mobile')}}：{{scope.row.mobile}}</p>
             </div>
           </template>
@@ -383,7 +386,12 @@ export default {
         if (res.error === 0) {
           this.pageParams = res.content.page
           this.dataList = res.content.dataList.map(item => {
-            let commImg = JSON.parse(item.commImg)
+            let commImg = null
+            try {
+              commImg = JSON.parse(item.commImg)
+            } catch (error) {
+              commImg = item.commImg ? item.commImg.split(',') : []
+            }
             if (commImg.length > 0) {
               commImg = commImg.map(item => {
                 return this.$imageHost + '/' + item
@@ -465,6 +473,15 @@ export default {
           targetData.content = null
         }
       })
+    },
+    // 去用户中心
+    goUserCenter (id) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId: id
+        }
+      })
     }
   },
   filters: {
@@ -542,6 +559,12 @@ export default {
   .user_name {
     > span {
       color: #409eff;
+      cursor: pointer;
+    }
+  }
+  .fake_user {
+    > span {
+      color: #666;
     }
   }
 }
