@@ -100,14 +100,15 @@
       <div class="table_list">
         <el-table
           class="version-manage-table"
-          header-row-class-name="tableClss"
+          header-row-class-name="tableClass"
           :data="storeParamList"
-          border
           style="width: 100%"
           ref="multipleTable"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection">
+          <el-table-column
+            type="selection"
+            align="right">
           </el-table-column>
           <el-table-column
             prop="storeName"
@@ -478,10 +479,10 @@ export default {
     width: 100%;
     margin-top: 30px;
   }
-  /deep/ .tableClss th {
+  .tableClass th {
     background-color: #f5f5f5;
-    border: none;
     height: 36px;
+    font-weight: bold;
     padding: 8px 10px;
     color: #333;
   }
