@@ -147,7 +147,10 @@
         >
           <template slot-scope="scope">
             <div class="user_info">
-              <p class="user_name">{{$t('evaluation.userName')}}：<span>{{scope.row.bogusUsername ? scope.row.bogusUsername : scope.row.username }}</span></p>
+              <p
+                :class="scope.row.bogusUsername ? 'fake_user' : 'user_name'"
+                @click="!scope.row.bogusUsername && goUserCenter(scope.row.userId)"
+              >{{$t('evaluation.userName')}}：<span>{{scope.row.bogusUsername || scope.row.username }}</span></p>
               <p v-if="!scope.row.bogusUsername">{{$t('evaluation.mobile')}}：{{scope.row.mobile}}</p>
             </div>
           </template>
@@ -164,10 +167,10 @@
                     v-for="index in scope.row.commstar"
                     :key="index"
                   ></i></span></div>
-              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote}}</span></div>
+              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote || $t('evaluation.noExperience')}}</span></div>
               <div
                 class="evaluation-info_item"
-                v-if="scope.row.commImg !== ''"
+                v-if="scope.row.commImg.length > 0"
               >
                 <div class="evaluation-pic">
                   <template v-for="(picItem,picIndex) in scope.row.commImg">
@@ -383,11 +386,18 @@ export default {
         if (res.error === 0) {
           this.pageParams = res.content.page
           this.dataList = res.content.dataList.map(item => {
-            let comment = JSON.parse(JSON.stringify(item))
-            if (comment.commImg !== '' && comment.commImg !== null) {
-              comment.commImg = comment.commImg.split(',').map(item => this.$imageHost + '/' + item)
+            let commImg = null
+            try {
+              commImg = JSON.parse(item.commImg)
+            } catch (error) {
+              commImg = item.commImg ? item.commImg.split(',') : []
             }
-            return comment
+            if (commImg.length > 0) {
+              commImg = commImg.map(item => {
+                return this.$imageHost + '/' + item
+              })
+            }
+            return { ...item, commImg }
           })
           // this.dataList = res.content.dataList
           console.log(this.dataList)
@@ -461,6 +471,15 @@ export default {
           })
           let targetData = this.dataList.find(item => item.id === id)
           targetData.content = null
+        }
+      })
+    },
+    // 去用户中心
+    goUserCenter (id) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId: id
         }
       })
     }
@@ -540,6 +559,12 @@ export default {
   .user_name {
     > span {
       color: #409eff;
+      cursor: pointer;
+    }
+  }
+  .fake_user {
+    > span {
+      color: #666;
     }
   }
 }

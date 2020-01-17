@@ -29,7 +29,12 @@ public class Index {
 	 * 索引列
 	 */
 	List<String> columnNames = new ArrayList<String>();
-
+	
+	/**
+	 * 索引列subPart
+	 */
+	List<String> columnSubPart = new ArrayList<String>();
+	
 	/**
 	 * 当前索引SQL语句
 	 */
@@ -54,6 +59,9 @@ public class Index {
 		if (result) {
 			for (int i = 0; i < i1.getColumnNames().size(); i++) {
 				if (!StringUtils.equalsIgnoreCase(i1.getColumnNames().get(i), i2.getColumnNames().get(i))) {
+					return false;
+				}
+				if (!StringUtils.equalsIgnoreCase(i1.getColumnSubPart().get(i), i2.getColumnSubPart().get(i))) {
 					return false;
 				}
 			}
