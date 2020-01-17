@@ -238,7 +238,7 @@ global.wxPage({
   // textarea 输入
   comm_note: function (e) {
     var info = this.data.info;
-    info.commNote = e.detail.value;
+    info.commNote = e.detail.value.trim();
     this.setData({
       info: info
     })
