@@ -1010,9 +1010,13 @@ public class GroupDrawService extends ShopBaseService {
 	 * @return
 	 */
 	public int generateGroupId(Integer groupDrawId, Integer goodsId) {
-		return db().select(DSL.max(JOIN_DRAW_LIST.DRAW_ID)).from(JOIN_DRAW_LIST)
+		 Integer value = db().select(DSL.max(JOIN_DRAW_LIST.DRAW_ID)).from(JOIN_DRAW_LIST)
 				.where(JOIN_DRAW_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_DRAW_LIST.GOODS_ID.eq(goodsId)))
-				.fetchAnyInto(Integer.class) + 1;
+				.fetchAnyInto(Integer.class);
+		 if(null==value) {
+			 return 1;
+		 }
+		 return value + 1;
 	}
 
 	/**
@@ -1053,26 +1057,32 @@ public class GroupDrawService extends ShopBaseService {
 		}
 	}
 
+
 	/**
 	 * 生成团记录
-	 * 
 	 * @param order
 	 * @param groupId
 	 * @param status
+	 * @param sendGoodsId ORDER_GOODS有数据时候sendGoodsId传null
 	 */
-	public void generateGroupRecord(OrderInfoRecord order, Integer groupId, Byte status) {
-		OrderGoodsRecord orderGoods = db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(order.getOrderSn()))
-				.fetchAny();
+	public void generateGroupRecord(OrderInfoRecord order, Integer groupId, Byte status,Integer sendGoodsId) {
+		log.info("进入generateGroupRecord"+sendGoodsId);
+		Integer goodsId=sendGoodsId;
+		if(null==sendGoodsId) {
+			OrderGoodsRecord orderGoods = db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(order.getOrderSn()))
+					.fetchAny();
+			logger().info("orderGoods"+orderGoods);
+			goodsId = orderGoods.getGoodsId();			
+		}
 		Byte isGrouper = groupId == null ? ONE : ZERO;
 		groupId = groupId == null ? generateGroupId() : groupId;
 		Integer groupDrawId = order.getActivityId();
 		// 记录邀请用户
 		GroupDrawInviteRecord inviteUserInfo = groupDrawInvite.getAvailableInviteUser(groupDrawId,
-				orderGoods.getGoodsId(), order.getUserId());
+				goodsId, order.getUserId());
 		Integer inviteUserId = 0;
 		inviteUserId = inviteUserInfo == null ? 0 : inviteUserInfo.getInviteUserId();
 
-		Integer goodsId = orderGoods.getGoodsId();
 		Integer userId = order.getUserId();
 
 		JoinGroupListRecord newRecord = db().newRecord(JOIN_GROUP_LIST);

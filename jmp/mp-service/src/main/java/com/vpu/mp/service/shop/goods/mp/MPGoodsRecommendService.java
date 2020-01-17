@@ -110,9 +110,9 @@ public class MPGoodsRecommendService extends ShopBaseService {
             param.setRecommendGoodsIds(getRecommendGoodsIds(param.getPageName(), param.getUserId()));
         }
         //判断赋值是否成功
-        if (param.getRecommendGoodsIds() == null) {
-            throw new BusinessException(JsonResultCode.GOODS_RECOMMEND_NO_RECOMMENDED_GOODS);
-        }
+//        if (param.getRecommendGoodsIds() == null) {
+//            throw new BusinessException(JsonResultCode.GOODS_RECOMMEND_NO_RECOMMENDED_GOODS);
+//        }
         //对接门店
         if (param.getStoreId()!=null){
             //获取商品规格id

@@ -1757,6 +1757,5 @@ public class UserCardService extends ShopBaseService {
 	}
 	
 	
-	
 }
 
