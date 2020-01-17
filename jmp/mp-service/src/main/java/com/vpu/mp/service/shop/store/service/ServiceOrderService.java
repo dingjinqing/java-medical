@@ -602,16 +602,16 @@ public class ServiceOrderService extends ShopBaseService {
      * @return
      */
     public StoreUserCertVo getUserLastOrderInfo(Integer userId) {
-        Result<Record> fetch = db().select(SERVICE_ORDER.asterisk(), STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE,
+        Record fetch = db().select(SERVICE_ORDER.asterisk(), STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE,
             STORE_SERVICE.SERVICE_SUBSIST, STORE_SERVICE.SERVICE_IMG, STORE.STORE_NAME, STORE.LATITUDE,
             STORE.LONGITUDE, STORE.ADDRESS, STORE.DISTRICT_CODE).from(SERVICE_ORDER).leftJoin(STORE_SERVICE)
             .on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).leftJoin(STORE)
             .on(SERVICE_ORDER.STORE_ID.eq(STORE.STORE_ID)).where(SERVICE_ORDER.USER_ID.eq(userId))
-            .and(SERVICE_ORDER.DEL_FLAG.eq((byte) 0)).orderBy(SERVICE_ORDER.ORDER_ID.desc()).fetch();
+            .and(SERVICE_ORDER.DEL_FLAG.eq((byte) 0)).orderBy(SERVICE_ORDER.ORDER_ID.desc()).fetchAny();
         if (fetch.size() == 0) {
             return null;
         } else {
-            return fetch.get(0).into(StoreUserCertVo.class);
+            return fetch.into(StoreUserCertVo.class);
         }
     }
 
