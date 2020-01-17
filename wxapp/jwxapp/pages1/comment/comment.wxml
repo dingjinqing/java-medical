@@ -47,6 +47,7 @@
             </view>
             <view class="middle">
               <view class="goods_name">{{item.goodsName}}</view>
+              <view class="goods_specific" wx:if="{{item.prdDesc}}">{{item.prdDesc}}</view>
               <view class="goods_time clearfix">{{item.createTime}}
                 <!-- 发表评价 -->
                 <block>
