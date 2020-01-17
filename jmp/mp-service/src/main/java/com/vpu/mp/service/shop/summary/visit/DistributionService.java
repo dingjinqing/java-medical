@@ -8,7 +8,6 @@ import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
 import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.ValueKeyChart;
 import com.vpu.mp.service.pojo.shop.summary.visit.*;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpDistributionVisit.MP_DISTRIBUTION_VISIT;
+import static com.vpu.mp.service.pojo.shop.summary.visit.AccessSource.MP_HISTORY_LIST;
 import static com.vpu.mp.service.pojo.shop.summary.visit.DistributionIndex.*;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * 访问分布
@@ -44,11 +45,46 @@ public class DistributionService extends BaseVisitService {
         //返回格式化后的String日期
         return sdf.format(time);
     }
+
+    public List<VisitInfoItem> getSelectOption() {
+        return new ArrayList<VisitInfoItem>() {{
+            Arrays.stream(AccessSource.values()).forEach(e -> add(VisitInfoItem.builder().key(e.getKey()).name(e.getName()).build()));
+        }};
+    }
+
+    public SourceAnalysisVo getSourceAnalysis(VisitDistributionParam param) {
+        param.setSourceId(Objects.isNull(param.getSourceId()) ? MP_HISTORY_LIST.getIndex() : param.getSourceId());
+        if (!param.getType().equals(CUSTOM_DAYS)) {
+            param.setStartDate(getDate(param.getType()));
+            param.setEndDate(getDate(INTEGER_ZERO));
+        }
+        String startDate = param.getStartDate();
+        String endDate = param.getEndDate();
+        Result<MpDistributionVisitRecord> result = getDistributionRecord(startDate, endDate);
+        Map<String, Integer> chartsData = new HashMap<>();
+        Integer sourceId = param.getSourceId();
+        for (MpDistributionVisitRecord record : result) {
+            String refDate = record.getRefDate();
+            String list = record.getList();
+            /* 转换统计 JSON */
+            Map<String, Map<Integer, Integer>> indexes = Util.parseJson(list, new TypeReference<Map<String, Map<Integer, Integer>>>() {
+            });
+            for (Map.Entry<String, Map<Integer, Integer>> item : Objects.requireNonNull(indexes).entrySet()) {
+                String indexName = item.getKey();
+                if (ACCESS_SOURCE_PV.equals(indexName)) {
+                    Map<Integer, Integer> values = item.getValue();
+                    Integer v = values.get(sourceId);
+                    chartsData.put(refDate, Objects.isNull(v) ? INTEGER_ZERO : v);
+                }
+            }
+        }
+        return SourceAnalysisVo.builder().chartsData(chartsData).build();
+    }
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {
         //得到时间
         if (!param.getType().equals(CUSTOM_DAYS)){
             param.setStartDate(getDate(param.getType()));
-            param.setEndDate(getDate(NumberUtils.INTEGER_ZERO));
+            param.setEndDate(getDate(INTEGER_ZERO));
         }
         VisitDistributionVo vo = new VisitDistributionVo();
         /* 访问人数来源 */
@@ -160,13 +196,8 @@ public class DistributionService extends BaseVisitService {
      */
     private <T extends ChartInfo> List<VisitInfoItem> getInfoDict(Map<String, Integer> map, T[] chartInfo) {
         return Arrays.stream(chartInfo)
-                .map(s -> {
-                    VisitInfoItem item = new VisitInfoItem();
-                    item.setName(s.getName());
-                    item.setKey(s.getKey());
-                    item.setValue(map.get(s.getName()));
-                    return item;
-                }).filter(i -> null != i.getValue()).collect(Collectors.toList());
+            .map(s -> VisitInfoItem.builder().name(s.getName()).key(s.getKey()).value(map.get(s.getName())).build())
+            .filter(i -> null != i.getValue()).collect(Collectors.toList());
     }
 
     private Result<MpDistributionVisitRecord> getDistributionRecord(String startDate, String endDate) {

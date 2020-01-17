@@ -2,10 +2,6 @@ package com.vpu.mp.service.pojo.shop.summary.visit;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-
 import java.util.List;
 
 /**
@@ -24,4 +20,5 @@ public class VisitDistributionParam {
      * 忽略哪些访问来源
      */
     private List<Integer> cancelBtn;
+    private Integer sourceId;
 }

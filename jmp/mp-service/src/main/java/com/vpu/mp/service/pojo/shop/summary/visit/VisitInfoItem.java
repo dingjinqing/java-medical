@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
 import com.vpu.mp.service.foundation.util.I18N;
-
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,6 +10,7 @@ import lombok.Data;
  * @author 郑保乐
  */
 @Data
+@Builder
 public class VisitInfoItem {
 
     /**
