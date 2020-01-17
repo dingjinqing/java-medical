@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -113,11 +113,10 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         }
 
         // 获取分享码
-//        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsVo.getGoodsId(),null,null));
+        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsVo.getGoodsId(),null,null));
         BufferedImage qrCodeImage;
         try {
-            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
-//            qrCodeImage = ImageIO.read(new URL(mpQrCode));
+            qrCodeImage = ImageIO.read(new URL(mpQrCode));
         } catch (IOException e) {
             log("pictorial", "获取二维码失败");
             return null;
@@ -126,12 +125,6 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc,goodsVo.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,false);
-
-        try {
-            ImageIO.write(bgBufferedImage,"jpg",new File("E:/a.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         return ImageUtil.toBase64(bgBufferedImage);
     }
