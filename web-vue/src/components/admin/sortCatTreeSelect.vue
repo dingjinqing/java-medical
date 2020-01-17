@@ -1,40 +1,55 @@
 <template>
-    <div style="display: inline-block;">
-      <el-form ref="treeSelect" :inline="true"  :label-width="treeStyle.labelWidth">
-        <el-form-item :label="selectLabelName+'：'">
-          <el-select :style="treeStyle.selectStyle" :size="treeStyle.selectSize"  v-model="selectedId" @change="selectChange">
+  <div style="display: inline-block;">
+    <el-form
+      ref="treeSelect"
+      :inline="true"
+      :label-width="treeStyle.labelWidth"
+    >
+      <el-form-item :label="selectLabelName+'：'">
+        <el-select
+          :style="treeStyle.selectStyle"
+          :size="treeStyle.selectSize"
+          v-model="selectedId"
+          @change="selectChange"
+        >
 
-            <template  v-if="treeType === 'sort'">
-              <el-option :label="$t('allGoods.allGoodsHeaderData.chooseSort')" :value="null" />
-              <el-option
-                v-for="(item,index) in selectOptions"
-                :label="filterGoodsInfo.needGoodsNum?item.sortName+' ('+item.goodsSumNum+')':item.sortName"
-                :value="item.sortId"
-                :key="index"
-                :style="{paddingLeft: (item.level+1)*20+'px'}"
-              />
-            </template>
-            <template v-else>
-              <el-option :label="$t('allGoods.allGoodsHeaderData.chooseCategory')" :value="null" />
-              <el-option
-                v-for="(item,index) in selectOptions"
-                :label="filterGoodsInfo.needGoodsNum?item.catName+' ('+item.goodsSumNum+')':item.catName"
-                :value="item.catId"
-                :key="index"
-                :style="{paddingLeft: (item.level+1)*20+'px'}"
-              />
-            </template>
-          </el-select>
-        </el-form-item>
-      </el-form>
-    </div>
+          <template v-if="treeType === 'sort'">
+            <el-option
+              :label="$t('allGoods.allGoodsHeaderData.chooseSort')"
+              :value="null"
+            />
+            <el-option
+              v-for="(item,index) in selectOptions"
+              :label="filterGoodsInfo.needGoodsNum?item.sortName+' ('+item.goodsSumNum+')':item.sortName"
+              :value="item.sortId"
+              :key="index"
+              :style="{paddingLeft: (item.level+1)*20+'px'}"
+            />
+          </template>
+          <template v-else>
+            <el-option
+              :label="$t('allGoods.allGoodsHeaderData.chooseCategory')"
+              :value="null"
+            />
+            <el-option
+              v-for="(item,index) in selectOptions"
+              :label="filterGoodsInfo.needGoodsNum?item.catName+' ('+item.goodsSumNum+')':item.catName"
+              :value="item.catId"
+              :key="index"
+              :style="{paddingLeft: (item.level+1)*20+'px'}"
+            />
+          </template>
+        </el-select>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
 // api导入
-import {getGoodsFilterItem} from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 // util导入
-import {autoConvertDataFromArrayToTreeOrderArray} from '@/util/goodsSortCatUtil'
+import { autoConvertDataFromArrayToTreeOrderArray } from '@/util/goodsSortCatUtil'
 export default {
   name: 'sortCatTreeSelect',
   watch: {
@@ -82,6 +97,10 @@ export default {
     autoLoad: {
       type: Boolean,
       default: true
+    },
+    selectedId: {
+      type: Number,
+      default: () => null
     }
   },
   computed: {
@@ -107,8 +126,7 @@ export default {
     return {
       /* 下拉树左侧显示的文字 */
       selectLabelName: this.$t('allGoods.allGoodsHeaderData.chooseSort'),
-      selectOptions: [],
-      selectedId: null
+      selectOptions: []
     }
   },
   methods: {
@@ -169,5 +187,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

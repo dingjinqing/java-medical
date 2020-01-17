@@ -104,7 +104,7 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
 			throw new MpException(JsonResultCode.GROUP_ONLY_ONE, null);
 		}
 		OrderGoodsBo orderGoodsBo = bos.get(0);
-		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) -1,orderGoodsBo.getGoodsId());
+		groupDrawService.generateGroupRecord(order, param.getGroupId(), (byte) -1,orderGoodsBo.getGoodsId());
 		log.info("processSaveOrderInfo结束");
 	}
 

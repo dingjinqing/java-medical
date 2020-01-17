@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -45,7 +46,7 @@ public class WxAppLotteryController extends WxAppBaseController{
     public JsonResult JoinLottery(@RequestBody @Valid JoinLotteryParam param){
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
-        shop().lottery.joinLottery(param);
-        return success();
+        JoinLottery joinLottery = shop().lottery.joinLottery(param);
+        return success(joinLottery);
     }
 }

@@ -93,6 +93,18 @@ public final  class  BaseConstant {
     public final static byte FIRST_SPECIAL_LIMIT_FLAG_CONFINE =1;
 
 
+    //******************普通标识********************************
+
+    /**
+     * 肯定
+     */
+    public static final Byte YES = 1;
+
+    /**
+     * 否定
+     */
+    public static final Byte NO = 0;
+
     //*************************优惠券*****************************
     //状态 1启用 0停用
     /**

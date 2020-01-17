@@ -289,6 +289,11 @@ export default {
       default () {
         return []
       }
+    },
+    // 初始条件渲染
+    initialConditionRender: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -358,7 +363,35 @@ export default {
       this.checkedIdList = this.chooseGoodsBack
     },
     tuneUpChooseGoods () {
-      console.log('tuneUpChooseGoods', this.chooseGoodsBack)
+      console.log('tuneUpChooseGoods', this.chooseGoodsBack, this.initialConditionRender)
+      // 如果外部有初始渲染条件传入
+      if (this.initialConditionRender.length) {
+        this.requestParam = {
+          currentPage: 1,
+          pageRows: 3,
+          isOnSale: 1,
+          isSaleOut: false,
+          catId: null,
+          sortId: null,
+          labelId: null,
+          lowShopPrice: null,
+          highShopPrice: null,
+          goodsName: null,
+          goodsSn: null,
+          brandId: null
+        }
+        switch (this.initialConditionRender[0]) {
+          case 0:
+            this.requestParam.sortId = this.initialConditionRender[1]
+            break
+          case 1:
+            this.requestParam.labelId = this.initialConditionRender[1]
+            break
+          case 2:
+            this.requestParam.brandId = this.initialConditionRender[1]
+            break
+        }
+      }
       this.choiseGooddialogVisible = true
       this.selectGoodsData()
       if (this.loadProduct) {
@@ -396,8 +429,11 @@ export default {
       return getGoodsFilterItem({ needGoodsLabel: true, needGoodsBrand: true }).then((res) => {
         if (!res) return
         if (res.error === 0) {
-          this.goodsLabelOptions = res.content.goodsLabels
-          this.goodsBrandOptions = res.content.goodsBrands
+          console.log(res)
+          let arr1 = [{ id: null, name: '请选择商品标签' }]
+          let arr2 = [{ id: null, brandName: '请选择商品标签' }]
+          this.goodsLabelOptions = arr1.concat(res.content.goodsLabels)
+          this.goodsBrandOptions = arr2.concat(res.content.goodsBrands)
         }
       })
     },

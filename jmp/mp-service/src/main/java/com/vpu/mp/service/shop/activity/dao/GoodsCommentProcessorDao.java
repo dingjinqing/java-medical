@@ -105,7 +105,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
         Record11<Integer, Byte, String, Byte, String, Timestamp, String, String, String, String, String> record = db().select(COMMENT_GOODS.ID, COMMENT_GOODS.ANONYMOUSFLAG, COMMENT_GOODS.COMM_NOTE, COMMENT_GOODS.COMMSTAR, COMMENT_GOODS.COMM_IMG,
             COMMENT_GOODS.CREATE_TIME, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR,
             COMMENT_GOODS.BOGUS_USERNAME, COMMENT_GOODS.BOGUS_USER_AVATAR, ORDER_GOODS.GOODS_ATTR)
-            .from(COMMENT_GOODS).leftJoin(ORDER_GOODS).on(COMMENT_GOODS.REC_ID.eq(ORDER_GOODS.REC_ID))
+            .from(COMMENT_GOODS).leftJoin(ORDER_GOODS).on(COMMENT_GOODS.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
             .leftJoin(USER_DETAIL).on(COMMENT_GOODS.USER_ID.eq(USER_DETAIL.USER_ID))
             .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(COMMENT_GOODS.GOODS_ID.eq(goodsId)).and(condition).orderBy(COMMENT_GOODS.CREATE_TIME.desc())

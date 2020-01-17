@@ -5,7 +5,6 @@ import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
 import org.jooq.Result;
-import org.jooq.SelectField;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -20,15 +19,15 @@ import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
 public class LotteryPrizeService  extends ShopBaseService {
 
     private static final Random RANDOM = new Random();
+
     /**
-     * 根据lotteryId获取列
-     * @param lotteryId 活动id
-     * @param field 列
-     * @param <T> 列类型
-     * @return T
+     * 根据lotteryId获取最大分母
+     * @param lotteryId
+     * @return
      */
-    public <T> T getFieldById(Integer lotteryId, SelectField<T> field){
-       return db().select(field).from(LOTTERY_PRIZE).where(LOTTERY_PRIZE.LOTTERY_ID.eq(lotteryId)).fetchOne().component1();
+    public Integer getLotteryMaxDenominatorById(Integer lotteryId){
+        return db().select(LOTTERY_PRIZE.CHANCE_DENOMINATOR).from(LOTTERY_PRIZE).where(LOTTERY_PRIZE.LOTTERY_ID.eq(lotteryId))
+                .orderBy(LOTTERY_PRIZE.CHANCE_DENOMINATOR.desc()).fetchAnyInto(Integer.class);
     }
 
 
@@ -44,18 +43,19 @@ public class LotteryPrizeService  extends ShopBaseService {
 
 
     /**
-     * 抽奖核心
+     * 抽奖核心逻辑
      *
      * @param joinValid  抽奖校验
      */
     void joinLotteryAction(JoinLottery joinValid) {
         LotteryRecord lottery = joinValid.getLottery();
-        //取分母
-        Integer maxChance = getFieldById(lottery.getId(), LOTTERY_PRIZE.CHANCE_DENOMINATOR);
+        //取最大的分母
+        Integer maxChance = getLotteryMaxDenominatorById(lottery.getId());
         Integer randNumber = RANDOM.nextInt(maxChance);
         Result<LotteryPrizeRecord> prizeRecords = getPrizeByLotteryId(lottery.getId());
         for (LotteryPrizeRecord record : prizeRecords) {
-            if (randNumber < record.getChanceNumerator()) {
+            Integer chanceNumerator = record.getChanceNumerator()*maxChance/record.getChanceDenominator();
+            if (randNumber <chanceNumerator) {
                 //中奖了
                 if (record.getAwardTimes() >= record.getLotteryNumber()) {
                     //奖品发完了
@@ -66,7 +66,7 @@ public class LotteryPrizeService  extends ShopBaseService {
                 joinValid.setLotteryPrize(record);
                 return;
             }
-            randNumber -= record.getChanceNumerator();
+            randNumber -= chanceNumerator;
         }
         if (lottery.getNoAwardScore()!=null&&lottery.getNoAwardScore()>0){
             //未中奖励积分（安慰奖）
