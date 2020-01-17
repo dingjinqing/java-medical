@@ -1062,8 +1062,9 @@ public class GroupDrawService extends ShopBaseService {
 	 * @param sendGoodsId ORDER_GOODS有数据时候sendGoodsId传null
 	 */
 	public void generateGroupRecord(OrderInfoRecord order, Integer groupId, Byte status,Integer sendGoodsId) {
+		log.info("进入generateGroupRecord"+sendGoodsId);
 		Integer goodsId=sendGoodsId;
-		if(null!=sendGoodsId) {
+		if(null==sendGoodsId) {
 			OrderGoodsRecord orderGoods = db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(order.getOrderSn()))
 					.fetchAny();
 			logger().info("orderGoods"+orderGoods);
