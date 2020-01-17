@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.jedis.data.SortDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -16,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.*;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
@@ -58,6 +60,8 @@ public class EsAssemblyDataService extends ShopBaseService {
     @Autowired
     private GoodsLabelService goodsLabelService;
     @Autowired
+    private SortDataHelper sortDataHelper;
+    @Autowired
     private ImageService imageService;
 
 
@@ -86,7 +90,7 @@ public class EsAssemblyDataService extends ShopBaseService {
         Map<Integer, BigDecimal> goodsShowPriceMap = goodsPriceService.getShowPriceByIdAndType(goodsTypeMap);
         Map<Integer, Result<GoodsSpecProductRecord>> goodsProductMap = goodsSpecProductService.selectByGoodsIds(goodsIds);
         Map<Integer, List<SysCatevo>> goodsCatInfoMap = getCatInfoByGoodsIds(goodsCatMap);
-        Map<Integer, Sort> sortMap = batchAssemblySortInfo(goodsSortIdSet);
+        Map<Integer, GoodsSortCacheInfo> sortMap = sortDataHelper.getAllSortByIds(Lists.newArrayList(goodsSortIdSet));
         Map<Integer, GoodsBrandSelectListVo> brandMap = batchAssemblyBrandAndSale(goodsBrandIdSet);
         Map<Integer, Map<Byte, List<Integer>>> goodsLabelFilterMap = new HashMap<>(goodsIds.size());
         for (Integer goodsId : goodsIds) {
@@ -143,10 +147,10 @@ public class EsAssemblyDataService extends ShopBaseService {
                 batchAssemblyCatInfoImp(esGoods, list);
             }
             if (validationMap(sortMap, esGoods.getSortId())) {
-                List<Sort> allSort = new ArrayList<>(3);
+                List<GoodsSortCacheInfo> allSort = new ArrayList<>(3);
                 getSort(esGoods.getSortId(), allSort, sortMap);
                 goodsLabelFilter.put(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode(),
-                    allSort.stream().map(Sort::getSortId).collect(Collectors.toList()));
+                    allSort.stream().map(GoodsSortCacheInfo::getSortId).collect(Collectors.toList()));
                 assemblySortInfoImp(esGoods, allSort);
             }
             if (validationMap(brandMap, esGoods.getBrandId())) {
@@ -178,11 +182,11 @@ public class EsAssemblyDataService extends ShopBaseService {
         return goodsSortService.getParentSortsByChildId(new ArrayList<>(sortIds));
     }
 
-    private void getSort(Integer sortId, List<Sort> result, Map<Integer, Sort> allSortMap) {
+    private void getSort(Integer sortId, List<GoodsSortCacheInfo> result, Map<Integer, GoodsSortCacheInfo> allSortMap) {
         if (!allSortMap.containsKey(sortId)) {
             return;
         }
-        Sort sort = allSortMap.get(sortId);
+        GoodsSortCacheInfo sort = allSortMap.get(sortId);
         result.add(sort);
         if (sort.getParentId() == 0) {
             return;
@@ -208,9 +212,9 @@ public class EsAssemblyDataService extends ShopBaseService {
      * @param esGoods
      * @param list
      */
-    private void assemblySortInfoImp(EsGoods esGoods, List<Sort> list) {
+    private void assemblySortInfoImp(EsGoods esGoods, List<GoodsSortCacheInfo> list) {
         StringBuilder sortName = new StringBuilder();
-        for (Sort sort : list) {
+        for (GoodsSortCacheInfo sort : list) {
             if (sort != null) {
                 sortName.append(sort.getSortName()).append(" ");
                 if (sort.getLevel() == 0) {
@@ -297,26 +301,12 @@ public class EsAssemblyDataService extends ShopBaseService {
         log.error("{}商品【{}】是{}类型但没找到相关活动", now, goodsId, goodsType);
     }
 
-
-    public static void main(String[] args) {
-        EsGoods goods = new EsGoods();
-        goods.setV1("123");
-        try {
-            Field v = EsGoods.class.getDeclaredField("v1");
-            v.setAccessible(true);
-            v.set(goods,"321");
-            System.out.println(v.get(goods).toString());
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void assemblyGoodsLabelMap(Map<Integer, List<GoodsLabelCoupleRecord>> sortForLabelMap) {
 
     }
 
     private Map<Integer, List<Integer>> assemblyGoodsLabel(Map<Integer, Map< Byte, List<Integer>>> goodsLabelFilterMap, List<Integer> goodsIds,
-                                                           Map<Integer, List<SysCatevo>> categoryMap, Map<Integer, Sort> sortMap) {
+                                                           Map<Integer, List<SysCatevo>> categoryMap, Map<Integer, GoodsSortCacheInfo> sortMap) {
         Map<Integer, List<Integer>> resultMap = new HashMap<>();
         Set<Integer> categoryIdSet = new HashSet<>(categoryMap.size() * 3);
         categoryMap.values()
