@@ -1,5 +1,47 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -22,6 +64,7 @@ import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
 import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.account.GradeCardData;
 import com.vpu.mp.service.pojo.shop.member.account.NextGradeCardVo;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardCoupon;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
@@ -51,6 +94,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -87,6 +131,7 @@ import org.springframework.util.Assert;
 
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -102,21 +147,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
+import jodd.util.StringUtil;
 
 /**
  * @author 黄壮壮
@@ -172,7 +203,6 @@ public class UserCardService extends ShopBaseService {
 	private CouponPackService couponPackService;
 	@Autowired
 	private VirtualOrderService virtualOrderService;
-	public static final String DEFAULT_ADMIN = "0";
 
 	public static final String DESC = "score_open_card";
 
@@ -228,19 +258,24 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 赠送积分
+	 *  开卡赠送积分
 	 */
-	private void addUserCardScore(Integer userId, MemberCardRecord card) {
+	public void addUserCardScore(Integer userId, MemberCardRecord card) {
 		if (card.getSorce() == null || card.getSorce() <= 0) {
 			return;
+		}		
+		ScoreParam scoreParam = new ScoreParam();
+		scoreParam.setUserId(userId);
+		scoreParam.setScore(card.getSorce());
+		scoreParam.setDesc("score_open_card");
+		scoreParam.setRemarkCode(RemarkTemplate.CARD_UPGRADE.code);
+		scoreParam.setExpiredTime(scoreService.getScoreExpireTime());
+		
+		try {
+			scoreService.updateMemberScore(scoreParam, Integer.valueOf(DEFAULT_ADMIN.val()), TYPE_SCORE_CREATE_CARD.val(), TRADE_FLOW_IN.val());
+		} catch (MpException e) {
+			logger().info("卡赠送积分失败");
 		}
-		logger().info("卡升级赠送积分");
-		// TODO 国际化
-		UserScoreVo userScore = UserScoreVoBuilder.create().userId(userId).score(card.getSorce())
-				.scoreDis(memberService.getUserScore(userId)).desc("score_open_card").remarkCode(RemarkTemplate.CARD_UPGRADE.code)
-				.expireTime(scoreService.getScoreExpireTime()).shopId(getShopId()).build();
-
-		scoreService.addUserScore(userScore, DEFAULT_ADMIN, TYPE_SCORE_CREATE_CARD.val(), TRADE_FLOW_IN.val());
 	}
 
 	/**
@@ -409,11 +444,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 添加会员卡
-<<<<<<< HEAD
 	 *
-=======
-	 * 
->>>>>>> bugfix-2.7-1003441
 	 * @return
 	 */
 	public List<String> addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate)
@@ -444,11 +475,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 检测限次卡是否能发放
-<<<<<<< HEAD
 	 *
-=======
-	 * 
->>>>>>> bugfix-2.7-1003441
 	 * @return true: 能,false：不可以
 	 */
 	private boolean canSendLimitCard(Integer userId, MemberCardRecord mCard) {
@@ -488,9 +515,9 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 发送模板消息
+	 * 	发送模板消息
 	 */
-	private void sendScoreTemplateMsg(MemberCardRecord card) {
+	public void sendScoreTemplateMsg(MemberCardRecord card) {
 		StringBuilder content = new StringBuilder();
 		if (isLimitCard(card)) {
 			// TODO 国际化
@@ -511,9 +538,13 @@ public class UserCardService extends ShopBaseService {
 		}
 		// TODO 消息队列
 	}
-
-	private void addChargeMoney(MemberCardRecord card, UserCardRecord userCard) {
-		logger().info("正在充值卡数据");
+	
+	/**
+	 * 	会员卡余额，门店，商品兑换次数记录
+	 * @param card
+	 * @param userCard
+	 */
+	public void addChargeMoney(MemberCardRecord card, UserCardRecord userCard) {
 		ChargeMoneyRecordBuilder builder = ChargeMoneyRecordBuilder.create(db().newRecord(CHARGE_MONEY))
 				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
 				.cardNo(userCard.getCardNo()).payment("store.payment").createTime(DateUtil.getLocalDateTime());
@@ -589,7 +620,7 @@ public class UserCardService extends ShopBaseService {
 		return MCARD_ACT_NO.equals(card.getActivation());
 	}
 
-	private Timestamp calcCardExpireTime(MemberCardRecord card) {
+	public Timestamp calcCardExpireTime(MemberCardRecord card) {
 		Assert.isTrue(card != null,"card should not be null");
 		LocalDateTime expireTime = null;
 		LocalDateTime now = LocalDateTime.now();
@@ -763,11 +794,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 获取用户所有的会员卡列表
-<<<<<<< HEAD
 	 *
-=======
-	 * 
->>>>>>> bugfix-2.7-1003441
 	 * @return
 	 */
 	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param) {
@@ -1157,15 +1184,16 @@ public class UserCardService extends ShopBaseService {
 			card.setTotalDiscount(BigDecimal.ZERO);
 		} else {
 			// 正常打折(价格 * （10 - 折扣（eg:6.66） / 10）)
-			card.setTotalDiscount(BigDecimalUtil.multiplyOrDivide(
+			card.setTotalDiscount(
+			    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
 					BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
 					BigDecimalUtil.BigDecimalPlus.create(
 							BigDecimalUtil.addOrSubtrac(
-									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN,
-											BigDecimalUtil.Operator.subtrac),
+									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac),
 									BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), null)),
 							BigDecimalUtil.Operator.divide),
-					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)));
+					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
+            );
 		}
 		return card.getTotalDiscount();
 	}
@@ -1721,8 +1749,12 @@ public class UserCardService extends ShopBaseService {
 		}
 		return true;
 	}
+	
 
-
-
+	public Integer insertRow(UserCardRecord record) {
+		return db().executeInsert(record);
+	}
+	
+	
 }
 

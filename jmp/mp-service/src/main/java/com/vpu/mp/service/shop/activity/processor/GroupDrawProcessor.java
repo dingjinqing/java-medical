@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoParam;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawReturn;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -96,7 +97,14 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
 		log.info("拼团抽奖的判断processSaveOrderInfo");
 		check(param);
 		log.info("processSaveOrderInfo校验完");
-		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) -1);
+		List<OrderGoodsBo> bos = param.getBos();
+		log.info("bos大小"+bos.size());
+		if (bos.size() > 1) {
+			// 只能买一个商品
+			throw new MpException(JsonResultCode.GROUP_ONLY_ONE, null);
+		}
+		OrderGoodsBo orderGoodsBo = bos.get(0);
+		groupDrawService.generateGroupRecord(order, order.getActivityId(), (byte) -1,orderGoodsBo.getGoodsId());
 		log.info("processSaveOrderInfo结束");
 	}
 
