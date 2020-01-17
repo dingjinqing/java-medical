@@ -155,6 +155,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-edit-outline"
+                  @click="gotoEdit(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -165,6 +166,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-share"
+                  @click="share(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -175,12 +177,14 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-circle-close"
+                  @click="disable(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 :content="$t('ordinaryCouponList.enableUse')"
                 placement="top"
                 v-if="scope.row.status === 3"
+                @click="enable(scope.row.id)"
               >
                 <span
                   style="font-size: 22px;"
@@ -205,6 +209,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-delete"
+                  @click="deleteActivity(scope.row.id)"
                 ></span>
               </el-tooltip>
             </div>
@@ -222,7 +227,7 @@
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination.vue'
 // import { couldEdit, couldStop, couldStart, couldDelete, getNameById } from '@/components/admin/marketManage/status/status'
-import { getPageList, disablePreSale } from '@/api/admin/marketManage/preSale'
+import { getPageList, disablePreSale, sharePreSale, enablePreSale, deletePreSale } from '@/api/admin/marketManage/preSale'
 
 export default {
 
@@ -268,15 +273,38 @@ export default {
         }
       }).catch(err => console.log(err))
     },
+    gotoAdd () {
+      this.$router.push('/admin/home/main/presale/add')
+    },
+    gotoEdit (id) {
+      console.log(12345)
+      console.log(id, 'get id')
+      this.$router.push(`/admin/home/main/presale/edit/${id}`)
+    },
+    share (id) {
+      sharePreSale(id).then(r => {
+        // todo share
+      })
+    },
     // 停用活动
     disable (id) {
       disablePreSale(id).then(r => {
-        this.initDataList()
-        this.success('停用成功')
+        this.$message.success('停用成功')
       })
     },
-    gotoAdd () {
-      this.$router.push('/admin/home/main/presale/add')
+    // 启用活动
+    enable (id) {
+      enablePreSale(id).then(r => {
+        this.$message.success('启用成功')
+      })
+    },
+    // 删除活动
+    deleteActivity (id) {
+      deletePreSale(id).then(res => {
+        if (res.error === 0) {
+          this.$message.success('删除成功')
+        }
+      })
     }
   }
 }
