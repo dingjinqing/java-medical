@@ -364,6 +364,14 @@ global.wxPage({
     util.api('/api/wxapp/comment/add', function (res) {
       if (res.error === 0) {
         util.toast_success(that.$t('page1.comment.reviewSuccess'));
+        that.setData({
+          info: {
+            anonymousflag: 0,
+            comm_img: [],
+            commstar: 5,
+            commNote: ''
+          }
+        })
         that.get_comment(that, 0);
       }
     }, params);
