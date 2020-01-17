@@ -378,15 +378,13 @@
           <div class="addressContent">
             <span class="address">{{$t('tradeConfiguration.selectaddress')}}</span>
             <areaLinkage
-              :provinceCode="addresssConf.province_code"
-              :cityCode="addresssConf.city_code"
-              :districtCode="addresssConf.district_code"
+              :areaCode="areaLinkage"
               @areaData="handleAreaData"
             />
             <el-input
               size="small"
               style="width:180px"
-              v-model="addresssConf.address"
+              v-model="areaLinkage.address"
             ></el-input>
           </div>
           <!-- 快递表格数据部分 -->
@@ -717,7 +715,12 @@ export default {
         extend_receive_goods: false,
         extend_receive_days: null,
         shipping_express: false,
-        shop_address: null,
+        shop_address: {
+          province_code: '',
+          city_code: '',
+          district_code: '',
+          address: ''
+        },
         express: null,
         fetch: null,
         invoice: null,
@@ -769,7 +772,15 @@ export default {
       tuneUpBusClassDialog: false,
       tuneUpBrandDialog: false,
       tuneUpProductLabel: false,
-      classFlag: 0
+      classFlag: 0,
+
+      // 省市区数据回显
+      areaLinkage: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: '',
+        address: ''
+      }
     }
   },
   methods: {
@@ -777,6 +788,11 @@ export default {
       tradeSelect().then(res => {
         console.log(res)
         if (res.error === 0) {
+          // 省市区数据回显
+          this.areaLinkage.provinceCode = res.content.trade_process_config.shop_address.province_code
+          this.areaLinkage.cityCode = res.content.trade_process_config.shop_address.city_code
+          this.areaLinkage.districtCode = res.content.trade_process_config.shop_address.district_code
+          this.areaLinkage.address = res.content.trade_process_config.shop_address.address
           // 物流助手列表
           this.expressCompany = res.content.delivery_list || []
           this.expressCompany.map((item, index1) => {
@@ -837,7 +853,6 @@ export default {
             this.extenReceiveGoods = Boolean(this.tradeProcessConfig.extend_receive_goods)
             this.invoice = Boolean(this.tradeProcessConfig.invoice)
             this.serviceTerms = Boolean(this.tradeProcessConfig.service_terms)
-            this.addresssConf = JSON.parse(this.tradeProcessConfig.shop_address)
             this.goodsInfo = this.tradeProcessConfig.order_require_goods_package.add_goods
             this.goodsN = this.goodsInfo.length
             this.labelInfo = this.tradeProcessConfig.order_require_goods_package.add_label
@@ -856,11 +871,14 @@ export default {
     },
     // 更新配置项
     updateConfig () {
-      console.log(this.addresssConf)
-      console.log(this.tradeProcessConfig.shop_address)
+      // 省市区数据
+      // this.addresssConf.province_code = this.areaLinkage.provinceCode
+      // this.addresssConf.city_code = this.areaLinkage.cityCode
+      // this.addresssConf.district_code = this.areaLinkage.districtCode
+      // this.addresssConf.address = this.areaLinkage.address
 
       this.tradeProcessConfig.cancel_time = this.cancelHour * 60 + this.cancelMinute
-      this.tradeProcessConfig.shop_address = JSON.stringify(this.addresssConf)
+      // this.tradeProcessConfig.shop_address = this.addresssConf
       this.deliverMethods.map((item, index) => {
         switch (item.code) {
           case 'express':
@@ -967,11 +985,9 @@ export default {
       this.showStoreDialog = true
     },
     handleAreaData (val) {
-      this.addresssConf.province_code = val.province
-      this.addresssConf.city_code = val.city
-      this.addresssConf.district_code = val.district
-
-      this.province = val['province']
+      this.tradeProcessConfig.shop_address.province_code = val.province
+      this.tradeProcessConfig.shop_address.city_code = val.city
+      this.tradeProcessConfig.shop_address.district_code = val.district
     },
     // 配置弹出取消按钮点击
     cancle () {
