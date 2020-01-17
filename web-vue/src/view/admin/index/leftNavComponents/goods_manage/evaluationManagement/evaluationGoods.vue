@@ -153,7 +153,7 @@
         <el-input
           type="textarea"
           resize="none"
-          v-model="sendParams.commNote"
+          v-model.trim="sendParams.commNote"
           :rows="5"
           style="width:300px;"
         ></el-input>
@@ -278,7 +278,8 @@ export default {
           let obj = {
             ...this.sendParams,
             anonymousFlag: this.sendParams.anonymousFlag ? '1' : '0',
-            commImg: this.sendParams.commImg.length ? this.sendParams.commImg.join(',') : ''
+            commImg: this.sendParams.commImg.length ? this.sendParams.commImg.join(',') : '',
+            commNote: this.sendParams.commNote || null
           }
           goodsAddComment(obj).then(res => {
             console.log(res)
