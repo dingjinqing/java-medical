@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.lottery.prize;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -13,18 +14,20 @@ public class LotteryPrizeParam {
 
     private Integer id;
     private Integer lotteryId;
+    @NotNull
     private Integer chanceNumerator;
+    @NotNull
     private Integer chanceDenominator;
-    private Byte    lotteryGrade;
-    private Byte    lotteryType;
+    private Byte lotteryGrade;
+    private Byte lotteryType;
     private Integer lotteryNumber;
     private Integer awardTimes;
     private Integer integralScore;
     private BigDecimal account;
-    private Integer    couponId;
-    private Integer    prdId;
-    private Short    prdKeepDays;
-    private String  lotteryDetail;
-    private String  iconImgsImage;
-    private String  iconImgs;
+    private Integer couponId;
+    private Integer prdId;
+    private Short prdKeepDays;
+    private String lotteryDetail;
+    private String iconImgsImage;
+    private String iconImgs;
 }

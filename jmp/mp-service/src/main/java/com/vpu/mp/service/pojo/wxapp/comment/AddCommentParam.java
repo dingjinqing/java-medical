@@ -9,6 +9,10 @@ import lombok.Data;
  */
 @Data
 public class AddCommentParam {
+    /** order_goods rec_id */
+    private Integer recId;
+    /** 规格id */
+    private Integer prdId;
   /** 商品id */
   private Integer goodsId;
   /** 用户id */

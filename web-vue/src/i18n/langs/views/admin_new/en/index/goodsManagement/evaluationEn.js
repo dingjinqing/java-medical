@@ -48,5 +48,6 @@ export const en = {
   evaluationTime: 'Evaluation time',
   experience: 'Experience',
   anonymous: 'anonymous',
-  select: 'select{0}'
+  select: 'select{0}',
+  noExperience: 'This user did not fill in the user experience'
 }

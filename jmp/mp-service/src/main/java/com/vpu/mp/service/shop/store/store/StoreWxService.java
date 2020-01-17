@@ -53,6 +53,7 @@ import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.*;
+import static java.util.Collections.EMPTY_LIST;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -240,12 +241,8 @@ public class StoreWxService extends ShopBaseService {
                 throw new BusinessException("缺少商品参数 商品规格");
             }
         }
-        // 查询开启“扫码购”功能的门店ID列表配置，逗号分隔
-        String storeScanValue = storeConfigService.getStoreScanIds();
-        log.debug("cfg配置表中store_scan_ids值为:{}", storeScanValue);
-        List<Integer> storeScanIds = Util.json2Object(storeScanValue, new TypeReference<List<Integer>>() {
-        }, false);
-        log.debug("开启“扫码购”功能的门店ID列表配置项:{}", storeScanIds.toString());
+        // 查询开启“扫码购”功能的门店ID列表配置
+        List<Integer> storeScanIds = getStoreScanIds();
         // 筛掉不支持扫码购的门店或者添加是否支持扫码购的标示位
         if (param.getScanStores().equals(BYTE_ONE)) {
             storeList = storeList.stream().filter(s -> storeScanIds.contains(s.getStoreId())).collect(toList());
@@ -281,6 +278,17 @@ public class StoreWxService extends ShopBaseService {
         // 结果按照距离 从小到大排序
         Collections.sort(storeList);
         return storeList;
+    }
+
+    /**
+     * Gets store scan ids.查询开启“扫码购”功能的门店ID列表配置
+     */
+    public List<Integer> getStoreScanIds() {
+        String storeScanValue = storeConfigService.getStoreScanIds();
+        log.debug("cfg配置表中store_scan_ids（开启“扫码购”功能的门店ID列表）值为:{}", storeScanValue);
+        List<Integer> storeScanIds = Util.json2Object(storeScanValue, new TypeReference<List<Integer>>() {
+        }, false);
+        return CollectionUtils.isEmpty(storeScanIds) ? EMPTY_LIST : storeScanIds;
     }
 
     /**

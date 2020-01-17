@@ -17,13 +17,18 @@ public class CommentListVo {
   public CommentListVo(Integer goodsId) {
     this.goodsId = goodsId;
   }
-
+  /** order_goods rec_id */
+  private Integer recId;
   /** 商品id */
   private Integer goodsId;
   /** 商品名称 */
   private String goodsName;
   /** 商品图片 */
   private String goodsImg;
+  /** 规格id */
+  private Integer prdId;
+  /** 规格描述 */
+  private String prdDesc;
   /** 订单提交时间 */
   private Timestamp createTime;
   /** 订单编号 */

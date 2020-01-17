@@ -555,7 +555,7 @@ public class ScoreService extends ShopBaseService {
 	
 	
 	/**
-	 * 获取积分过期时间
+	 * 	获取积分过期时间
 	 * @return
 	 */
 	public Timestamp getScoreExpireTime() {

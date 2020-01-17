@@ -5,6 +5,8 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,5 +51,23 @@ public class WxAppGoodsController extends WxAppBaseController {
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
         return success(shop().goodsMp.getGoodsGroupList(param));
+    }
+
+    @PostMapping("/api/wxapp/goods/share/info")
+    public JsonResult getShareImage(@RequestBody GoodsShareBaseParam param) {
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        return success(shop().pictorialIntegrationService.getNormalGoodsShareInfo(param));
+    }
+
+    /**
+     * 下载海报
+     * @return
+     */
+    @PostMapping("/api/wxapp/goods/pictorial/info")
+    public JsonResult sharaToWx(@RequestBody GoodsShareBaseParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        return success(shop().pictorialIntegrationService.getNormalPictorialInfo(param));
     }
 }

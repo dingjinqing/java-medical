@@ -331,14 +331,15 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="chooseGoodsBack"
-      @resultGoodsDatas="resultGoodsDatas"
+      @resultGoodsIds="resultGoodsDatas"
+      :initialConditionRender="initialConditionRender"
     />
   </div>
 </template>
 <script>
 // getGoodsNum
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import { } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
+import { getGoodsNum } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 export default {
   mixins: [decMixins],
   components: {
@@ -397,7 +398,9 @@ export default {
       delIndex: null, // 删除下标
       tuneUpChooseGoods: false, // 选择商品弹窗调起
       chooseGoodsBack: [], // 选择商品弹窗回显
-      nowClickAppointIndex: null
+      nowClickAppointIndex: null,
+      initialConditionRender: [], // 选择商品弹窗初始渲染条件
+      reLoad: true
     }
   },
   watch: {
@@ -484,7 +487,33 @@ export default {
   methods: {
     // 商品数据获取
     handleToRequestGoodsData () {
-
+      let arr = []
+      console.log(this.linkageData.sort_group_arr)
+      this.linkageData.sort_group_arr.forEach((item, index) => {
+        let obj = {}
+        switch (item.sort_type) {
+          case 0:
+            obj['sortId'] = item.sort_id
+            break
+          case 1:
+            obj['labelId'] = item.sort_id
+            break
+          case 2:
+            obj['brandId'] = item.sort_id
+        }
+        arr.push(obj)
+      })
+      let params = {
+        'goodsNumCountParams': arr
+      }
+      getGoodsNum(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          res.content.forEach((item, index) => {
+            this.linkageData.sort_group_arr[index].sort_goods_num = item
+          })
+        }
+      })
     },
     // 转换checkbox字段
     handleToTurnCheckbox (data, flag) {
@@ -559,7 +588,7 @@ export default {
       }
       this.clickEditBtn = false
       console.log(this.linkageData.sort_group_arr, arr)
-      this.handleToRequestGoodsData()
+      this.handleToRequestGoodsData() // 查包含商品数量
     },
     // 商品标签弹窗选中回传数据
     handleToGetBackData (data) {
@@ -586,6 +615,7 @@ export default {
         this.linkageData.sort_group_arr = newArr
       }
       this.clickEditBtn = false
+      this.handleToRequestGoodsData()
     },
     handleToGetBrandBackData (data) { // 商品品牌弹窗数据回传
       console.log(data)
@@ -610,6 +640,7 @@ export default {
         this.linkageData.sort_group_arr = newArr
       }
       this.clickEditBtn = false
+      this.handleToRequestGoodsData()
     },
     handleToEditData (index) { // 点击修改
       console.log()
@@ -652,23 +683,34 @@ export default {
       }
       console.log(arr)
       this.linkageData.sort_group_arr = arr
+      this.handleToRequestGoodsData()
     },
     // 删除框确认
     handleToDel () {
       this.linkageData.sort_group_arr.splice(this.delIndex, 1)
       this.delVisible = false
+      this.handleToRequestGoodsData()
     },
     // 点击指定商品
     handleToClickShowNumRadio (index) {
+      this.reLoad = false
+      console.log(this.linkageData.sort_group_arr[index])
       this.nowClickAppointIndex = index
       console.log(index, this.linkageData.sort_group_arr[index].is_all)
       if (this.linkageData.sort_group_arr[index].is_all === 2) {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+        let arr = []
+        arr[0] = this.linkageData.sort_group_arr[index].sort_type
+        arr[1] = this.linkageData.sort_group_arr[index].sort_id
+        this.initialConditionRender = arr
       }
     },
     // 选择商品弹窗数据回传
     resultGoodsDatas (res) {
+      // group_goods_id
       console.log(res, this.linkageData.sort_group_arr, this.nowClickAppointIndex)
+      console.log(res.join(','))
+      this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id = res.join(',')
     }
   }
 }

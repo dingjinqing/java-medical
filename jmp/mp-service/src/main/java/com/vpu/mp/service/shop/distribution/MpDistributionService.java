@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.distribution;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
@@ -71,39 +72,54 @@ public class MpDistributionService extends ShopBaseService{
         Integer state = 0;
         if(cfg.getJudgeStatus() == 0){//自动审核
             //校验申请提交的邀请码是否有效
-            Integer ret = sentInviteCodeVerify(param.getInviteCode());
+            Integer ret = sentInviteCodeVerify(param.getActivationFields().getInvitationCode());
             if(ret == 0){
                 //邀请码不存在
                state = -1;
             }else{//自动审核通过
-                param.setInviteCode(null);
+                String checkInfo = Util.toJson(param.getActivationFields());
                 assign(param, record);
+                record.setActivationFields(checkInfo);
                 db().executeInsert(record);
                 DistributorApplyDetailParam res = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId())).
                     orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc()).limit(1).fetchOne().into(DistributorApplyDetailParam.class);
+                //更新申请表数据
                 db().update(DISTRIBUTOR_APPLY)
                     .set(DISTRIBUTOR_APPLY.STATUS, (byte) 1)
                     .set(DISTRIBUTOR_APPLY.IS_AUTO_PASS,(byte)1)
                     .where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
+
                 //邀请保护时间
                 Timestamp inviteProtectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
                 Date pd = new Date(inviteProtectDate.getTime());
                 //邀请失效时间
                 Timestamp inviteExpiryDate = DateUtil.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
                 Date ed = new Date(inviteExpiryDate.getTime());
+                //分销分组
+                Integer inviteGroup = 0;
+                if(param.getActivationFields().getRebateGroup() != null){
+                    inviteGroup = param.getActivationFields().getRebateGroup();
+                }
+                //邀请人id
+                Integer inviteUserId = db().select(USER.USER_ID).from(USER)
+                    .where(USER.INVITATION_CODE.eq(param.getActivationFields().getInvitationCode())).fetchOne().into(Integer.class);
                 //更新用户信息
                 db().update(USER)
                     .set(USER.IS_DISTRIBUTOR, (byte) 1)
                     .set(USER.INVITATION_CODE,inviteCode)
                     .set(USER.INVITE_EXPIRY_DATE,ed)
                     .set(USER.INVITE_PROTECT_DATE,pd)
+                    .set(USER.INVITE_GROUP,inviteGroup)
+                    .set(USER.INVITE_ID,inviteUserId)
+                    .set(USER.INVITE_TIME,DateUtil.getLocalDateTime())
                     .where(USER.USER_ID.eq(res.getUserId())).execute();
                 //审核通过
                 state = 1;
             }
         }else{//后台手动审核
-            param.setInviteCode(null);
+            String checkInfo = Util.toJsonNotNull(param.getActivationFields());
             assign(param, record);
+            record.setActivationFields(checkInfo);
             db().executeInsert(record);
         }
         return state;
@@ -144,7 +160,7 @@ public class MpDistributionService extends ShopBaseService{
      * @return
      */
     public Integer sentInviteCodeVerify(String sentCode){
-        Record record = db().selectCount().from(USER).where(USER.INVITATION_CODE.equalIgnoreCase(sentCode)).fetchOne();
+        Record record = db().selectCount().from(USER).where(USER.INVITATION_CODE.eq(sentCode)).fetchOne();
         if(record != null){
             return record.into(Integer.class);
         }else{
