@@ -154,16 +154,21 @@ view{
   text-overflow:ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   overflow: hidden;
   font-size: 26rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.goods_specific {
+  margin-top: 40rpx;
+  color: #999;
 }
 .commm_goods .middle .goods_time{
   position: absolute;
   bottom: 0;
   color: #999;
   display:inline-block;
-width:100%;
+  width:100%;
 }
 .commm_goods .right{
   display:inline-block;

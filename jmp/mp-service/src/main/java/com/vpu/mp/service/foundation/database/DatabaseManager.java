@@ -138,26 +138,27 @@ public class DatabaseManager {
 	/**
 	 * 安装店铺数据库
 	 */
-	public boolean installShopDb(DbConfig dbConfig) {
-		try {
-			String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
-			HikariDataSource ds = datasourceManager.getToCreateShopDbDatasource();
-			getDsl(ds, dbConfig, 0).execute(sql);
-		} catch (DataAccessException e) {
-			e.printStackTrace();
-			return false;
-		}
+    public boolean installShopDb(DbConfig dbConfig) {
+        try {
+            String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
+            HikariDataSource ds = datasourceManager.getToCreateShopDbDatasource();
+            getDsl(ds, dbConfig, 0).execute(sql);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return false;
+        }
 
-		boolean ret = execScript(dbConfig, "db/shop/db_shop.sql");
-		// 测试用，测完删log
-		loger.debug("db_shop.sql执行结果" + ret);
-		if (ret) {
-			loger.debug("准备执行db_shop.sql的dbConfig" + dbConfig);
-			ret = execScript(dbConfig, "db/shop/db_shop_data.sql");
-			loger.debug("db_shop_data.sql执行结果" + ret);
-		}
-		return ret;
-	}
+        boolean ret = execScript(dbConfig, "db/shop/db_shop_init.sql");
+        boolean updateRet = execScript(dbConfig, "db/shop/shop_update.sql");;
+        // 测试用，测完删log
+        loger.debug("db_shop_init执行结果{}\nshop_update.sql执行结果{}",ret,updateRet);
+        if (ret && updateRet) {
+            loger.debug("准备执行db_shop_data.sql的dbConfig" + dbConfig);
+            ret = execScript(dbConfig, "db/shop/db_shop_data.sql");
+            loger.debug("db_shop_data.sql执行结果" + ret);
+        }
+        return ret;
+    }
 
 	/**
 	 * 执行SQL脚本

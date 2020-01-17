@@ -16,12 +16,8 @@ import lombok.Data;
  */
 @Data
 public class GroupDrawVo {
-	@JsonProperty(value = "start_time_doc")
-	private Timestamp startTimeDoc;
-
-	@JsonProperty(value = "surplus_second")
-	private Long surplusSecond;
-
 	private List<GoodsSmallVo> list;
+	
+	private GroupDrawInfoVo groupDraw;
 
 }

@@ -134,7 +134,7 @@ public class GiftProcessorDao extends GiftService {
         //googsBo转map,聚合相同规格(k->prdId;v->数量)
         Map<Integer, Integer> goodsMapCount = goodsBo.stream().collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber, (ov, nv) -> ov + nv));
         //商品未参与赠品记录
-        Set<Integer> noJoinRecord = goodsMapCount.keySet();
+        Set<Integer> noJoinRecord = goodsBo.stream().map(OrderGoodsBo::getGoodsId).collect(Collectors.toSet());
         //0：赠送满足赠品条件的所有赠品;1：只赠送其中优先级最高的活动赠品
         Byte cfg = giftConfig.getCfg();
         //所有进行中的活动
