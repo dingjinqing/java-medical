@@ -17,7 +17,6 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAUL
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -42,7 +41,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
@@ -80,6 +78,7 @@ import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
+import com.vpu.mp.service.pojo.shop.member.builder.UserScoreVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
@@ -93,7 +92,9 @@ import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
 import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneException;
 import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -116,6 +117,35 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import jodd.util.StringUtil;
 
@@ -173,7 +203,6 @@ public class UserCardService extends ShopBaseService {
 	private CouponPackService couponPackService;
 	@Autowired
 	private VirtualOrderService virtualOrderService;
-
 
 	public static final String DESC = "score_open_card";
 
@@ -415,11 +444,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 添加会员卡
-<<<<<<< HEAD
 	 *
-=======
-	 * 
->>>>>>> bugfix-2.7-1003441
 	 * @return
 	 */
 	public List<String> addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate)
@@ -450,11 +475,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 检测限次卡是否能发放
-<<<<<<< HEAD
 	 *
-=======
-	 * 
->>>>>>> bugfix-2.7-1003441
 	 * @return true: 能,false：不可以
 	 */
 	private boolean canSendLimitCard(Integer userId, MemberCardRecord mCard) {
@@ -773,11 +794,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 获取用户所有的会员卡列表
-<<<<<<< HEAD
 	 *
-=======
-	 * 
->>>>>>> bugfix-2.7-1003441
 	 * @return
 	 */
 	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param) {
@@ -1732,10 +1749,12 @@ public class UserCardService extends ShopBaseService {
 		}
 		return true;
 	}
+	
 
 	public Integer insertRow(UserCardRecord record) {
 		return db().executeInsert(record);
 	}
-
+	
+	
 }
 

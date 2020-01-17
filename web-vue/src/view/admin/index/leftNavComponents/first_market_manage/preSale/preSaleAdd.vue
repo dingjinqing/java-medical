@@ -329,6 +329,37 @@
             <!-- </el-form-item> -->
           </template>
         </el-table-column>
+        <el-table-column
+          align="center"
+          prop="preDiscountMoney2"
+          label="2阶段定金可抵扣金额"
+          v-if="twoSteps"
+        >
+          <template slot="append">
+            <span>2阶段定金可抵扣金额</span>
+            <el-button
+              @click="setCurrent(5)"
+              size="mini"
+              icon="el-icon-edit"
+            >2阶段可以抵扣的金额
+            </el-button>
+          </template>
+          <template slot-scope="scope">
+            <!-- <el-form-item
+              :prop="'products.' +  scope.$index+ '.preDiscountMoney2'"
+              :rules="[
+                { required: true, message: '定金不能为空', trigger: 'blur' },
+                { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.preDiscountMoney2)}, trigger: ['blur', 'change'] }
+              ]"
+              style="height: 56px;line-height: 56px;"
+            > -->
+            <el-input
+              v-model="scope.row.preDiscountMoney2"
+              size="small"
+            />
+            <!-- </el-form-item> -->
+          </template>
+        </el-table-column>
         <template
           slot="empty"
           style="height：0"
@@ -359,13 +390,19 @@
             @click="setCurrent(4)"
           >1阶段定金可抵扣金额
           </a>
+          <a
+            :class="activeIndex === 5 ? '' : 'settings'"
+            @click="setCurrent(5)"
+          >2阶段定金可抵扣金额
+          </a>
+
         </div>
       </el-table>
 
       <!-- 收起、展开更多配置 -->
       <div
         @click="handleToChangeArror()"
-        style="margin: 0 0 10px 33px"
+        style="margin: 20px 0 10px"
       >
         <div
           v-if="arrorFlag"
@@ -755,6 +792,12 @@ export default {
           })
           this.activeIndex = 4
           break
+        case 5:
+          price.forEach(row => {
+            row.preDiscountMoney2 = Number(price[0].preDiscountMoney2)
+          })
+          this.activeIndex = 5
+          break
       }
       // console.log(price, 'setCurrent')
 
@@ -856,6 +899,11 @@ export default {
   padding: 10px 0;
   background-color: #fff;
   text-align: center;
+}
+.moreSetUp {
+  height: 40px;
+  line-height: 40px;
+  margin-left: 15px;
 }
 .moreSetUp a {
   margin-right: 10px;

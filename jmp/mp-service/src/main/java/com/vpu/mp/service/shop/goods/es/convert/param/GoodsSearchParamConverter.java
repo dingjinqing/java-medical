@@ -5,7 +5,6 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
-import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchParam;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

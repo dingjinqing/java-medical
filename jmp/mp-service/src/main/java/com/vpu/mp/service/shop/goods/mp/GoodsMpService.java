@@ -635,7 +635,7 @@ public class GoodsMpService extends ShopBaseService {
                 return findActivityGoodsListCapsulesDao(condition,null,0,GoodsGroupListMpParam.NUM_TO_SHOW,null);
             }
         }
-        Condition idCondition = DSL.noCondition();
+        Condition idCondition = DSL.falseCondition();
         if (goodsIds.size() > 0) {
             // 拼凑最终条件
             if (goodsIds.size() > GoodsGroupListMpParam.NUM_TO_SHOW) {

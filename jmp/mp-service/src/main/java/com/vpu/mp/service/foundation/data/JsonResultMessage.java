@@ -801,6 +801,8 @@ public class JsonResultMessage {
     public static final String WX_MA_DOT = "wx.ma.dot";
     /** 元 */
     public static final String WX_MA_PICTORIAL_MONEY = "wx.ma.pictorial.money";
+    /**普通商品*/
+    public static final String WX_MA_NORMAL_GOODS_INFO = "wx.ma.normal.goods.info";
     /** 拼团相关 */
     /** 开团省 */
     public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
