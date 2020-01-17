@@ -1213,9 +1213,10 @@ public class GroupDrawService extends ShopBaseService {
 			Integer userId = groupInfo.getUserId();
 			Integer groupId = groupInfo.getGroupId();
 			GroupDrawInviteRecord inviteUserInfo = groupDrawInvite.getAvailableInviteUser(groupDrawId, goodsId, userId);
+			log.info("inviteUserInfo"+inviteUserInfo);
 			generateDrawRecord(userId, groupDrawId, goodsId, groupId);
-			Integer inviteUserId = inviteUserInfo.getInviteUserId();
-			if (groupDrawId != null && inviteUserId != null) {
+			if (groupDrawId != null && inviteUserInfo != null) {
+				Integer inviteUserId = inviteUserInfo.getInviteUserId();
 				generateDrawRecord(inviteUserId, groupDrawId, goodsId, groupId);
 				Byte isNew = inviteUserInfo.getIsNew();
 				if (Objects.equal(ONE, isNew)) {
