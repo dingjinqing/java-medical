@@ -2,7 +2,7 @@
 var util = require('../../utils/util');
 var app = getApp();
 
-Page({
+global.wxPage({
   /**
    * 页面的初始数据
    */
@@ -19,7 +19,7 @@ Page({
   // 请求门店列表
   listRequest: function (that) {
     util.getUserLocation(function (location) {
-      console.log(location)
+      console.log('location:', location)
       util.api('/api/wxapp/store/list', function (res) {
         that.setData({
           list: res.content

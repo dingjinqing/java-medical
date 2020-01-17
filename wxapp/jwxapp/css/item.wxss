@@ -1,6 +1,7 @@
 .flex_outside_box {
   margin-top: 20rpx;
   background: #fff;
+  overflow: hidden;
 }
 .flex_box {
   padding: 30rpx 30rpx;
