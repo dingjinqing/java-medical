@@ -339,6 +339,7 @@
                   <el-form-item
                     :label="$t('luckyDraw.prizeRate')+':'"
                     label-width="80px"
+                    prop="prizeList"
                   >
                     <el-input
                       size="small"
@@ -362,7 +363,7 @@
                       <el-radio :label="4">{{$t('luckyDraw.prizeType')[3][1]}}</el-radio>
                       <el-radio :label="5">{{$t('luckyDraw.prizeType')[4][1]}}</el-radio>
                     </el-radio-group>
-                    <section>
+                    <section v-if="Number(tabSwitch) === Number(index) + 1">
                       <el-form-item
                         v-if="item.lotteryType===1"
                         required
@@ -646,6 +647,23 @@ export default {
       }
       callback()
     }
+    // 填写中奖概率
+    function validChance (rule, value, callback) {
+      let prizeList = that.requestParam.prizeList
+      // 规则一：一等奖必须填写
+      if (prizeList[0].chanceNumerator === '' || prizeList[0].chanceNumerator === undefined) {
+        callback(new Error('请填写中奖概率!'))
+      }
+      // 规则二：当填写了奖品后，没有填写中奖概率则报错
+      for (let i = 0; i < prizeList.length; i++) {
+        let prize = prizeList[i]
+        if ((prize.chanceNumerator === '' || prize.chanceNumerator === undefined) && (prize.integralScore || prize.couponId || prize.goodsName || prize.lotteryDetail)) {
+          callback(new Error('请填写中奖概率!'))
+          break
+        }
+      }
+      callback()
+    }
     return {
       requestParam: {
         lotteryName: '',
@@ -691,7 +709,8 @@ export default {
           { required: true, message: that.$t('luckyDraw.validEndTime'), trigger: 'blur' },
           { validator: validTime, trigger: 'blur' }
         ],
-        lotteryExplain: [{ required: true, message: that.$t('luckyDraw.validDesc'), trigger: 'blur' }]
+        lotteryExplain: [{ required: true, message: that.$t('luckyDraw.validDesc'), trigger: 'blur' }],
+        prizeList: [{ validator: validChance, trigger: 'change' }]
       }
     }
   },
