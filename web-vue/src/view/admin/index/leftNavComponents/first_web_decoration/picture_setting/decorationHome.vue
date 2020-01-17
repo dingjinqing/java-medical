@@ -944,26 +944,7 @@ export default {
     handleToSureDelete (flag) {
       console.log(this.modulesData)
       let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
-      console.log(this.nowRightShowIndex)
-      console.log(this.nowRightShowIndex, flag)
-
-      console.log(this.nowRightShowIndex)
-
-      console.log(newArr3, flag)
       newArr3.splice(flag, 1)
-      console.log(this.modulesData[flag])
-      // if (this.modulesData[flag].module_name === 'm_image_guide') {
-      //   this.modulesData[flag].nav_group.forEach((item, index) => {
-      //     item.nav_link = ''
-      //     item.nav_src = ''
-      //   })
-      // }
-
-      // this.modulesData.splice(flag, 1)
-      console.log(flag)
-
-      // this.modulesData = modulesData
-      console.log(this.modulesData)
       // 如果数组为空就重置当前插入模块id
       if (!newArr3.length) {
         this.insertModulesId = -1
@@ -1116,7 +1097,7 @@ export default {
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
       console.log(this.modulesData, data)
-
+      console.log(this.modulesData[this.nowRightShowIndex])
       data['cur_idx'] = this.modulesData[this.nowRightShowIndex].cur_idx
       data['module_name'] = this.modulesData[this.nowRightShowIndex].module_name
 

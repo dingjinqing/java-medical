@@ -50,8 +50,8 @@
 		<v-hot-area wx:elif="{{module.component_name == 'v-hot-area'}}" module="{{module}}" />
 		<!--魔方多图-->
 		<v-window wx:elif="{{module.component_name == 'v-window'}}" module="{{module}}" />
-		<!--商品分组 <v-goods-group class="v-goods-group" wx:elif="{{module.component_name == 'v-goods-group'}}" module="{{module}}" />-->
-		
+		<!--商品分组-->
+		<v-goods-group class="v-goods-group" wx:elif="{{module.component_name == 'v-goods-group'}}" module="{{module}}" />
 	</block>
 </view>
 

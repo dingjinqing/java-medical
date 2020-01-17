@@ -449,7 +449,7 @@ export default {
       groupData.forEach((item, idnex) => {
         let obj = {}
         obj['sort_id'] = item.sort_id
-        obj['sort_type'] = JSON.stringify(item.sort_type)
+        obj['sort_type'] = item.sort_type
         obj['group_goods_id'] = item.group_goods_id ? item.group_goods_id : null
         obj['is_all'] = item.is_all
         arr.push(obj)
