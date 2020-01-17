@@ -1053,27 +1053,31 @@ public class GroupDrawService extends ShopBaseService {
 		}
 	}
 
+
 	/**
 	 * 生成团记录
-	 * 
 	 * @param order
 	 * @param groupId
 	 * @param status
+	 * @param sendGoodsId ORDER_GOODS有数据时候sendGoodsId传null
 	 */
-	public void generateGroupRecord(OrderInfoRecord order, Integer groupId, Byte status) {
-		OrderGoodsRecord orderGoods = db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(order.getOrderSn()))
-				.fetchAny();
-		logger().info("orderGoods"+orderGoods);
+	public void generateGroupRecord(OrderInfoRecord order, Integer groupId, Byte status,Integer sendGoodsId) {
+		Integer goodsId=sendGoodsId;
+		if(null!=sendGoodsId) {
+			OrderGoodsRecord orderGoods = db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(order.getOrderSn()))
+					.fetchAny();
+			logger().info("orderGoods"+orderGoods);
+			goodsId = orderGoods.getGoodsId();			
+		}
 		Byte isGrouper = groupId == null ? ONE : ZERO;
 		groupId = groupId == null ? generateGroupId() : groupId;
 		Integer groupDrawId = order.getActivityId();
 		// 记录邀请用户
 		GroupDrawInviteRecord inviteUserInfo = groupDrawInvite.getAvailableInviteUser(groupDrawId,
-				orderGoods.getGoodsId(), order.getUserId());
+				goodsId, order.getUserId());
 		Integer inviteUserId = 0;
 		inviteUserId = inviteUserInfo == null ? 0 : inviteUserInfo.getInviteUserId();
 
-		Integer goodsId = orderGoods.getGoodsId();
 		Integer userId = order.getUserId();
 
 		JoinGroupListRecord newRecord = db().newRecord(JOIN_GROUP_LIST);
