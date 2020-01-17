@@ -957,7 +957,6 @@ public class MemberCardService extends ShopBaseService {
 	public MemberCardRecord getCardById(Integer cardId) {
 		logger().info("获取会员卡基本信息");
 		MemberCardRecord card = cardDao.getCardById(cardId);
-		//return card != null ? card : new MemberCardRecord();
 		return card;
 	}
 	
@@ -1298,7 +1297,7 @@ public class MemberCardService extends ShopBaseService {
 			MemberCardRecord card = this.getCardById(cardId);
 			CardOpt cardOpt = getCardOpt(card.getCardType());
 			for(Integer userId: userIdList) {
-				cardOpt.sendCard(userId, cardId, true);
+				cardOpt.handleSendCard(userId, cardId, true);
 			}
 		}
 	}

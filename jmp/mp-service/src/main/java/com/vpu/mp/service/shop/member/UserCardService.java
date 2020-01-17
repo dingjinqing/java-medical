@@ -187,7 +187,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 用户是否有等级卡
+	 * 	用户是否有等级卡
 	 */
 	private boolean isHasAvailableGradeCard(Integer userId) {
 		return !StringUtils.isBlank(userCardDao.calcUserGrade(userId));
@@ -418,7 +418,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 添加会员卡
+	 * 	添加会员卡
 	 * 
 	 * @return
 	 */
@@ -524,22 +524,23 @@ public class UserCardService extends ShopBaseService {
 				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
 				.cardNo(userCard.getCardNo()).payment("store.payment").createTime(DateUtil.getLocalDateTime());
 		
-		// TODO 门店支付国际化
 		if (isNormalCard(card) && card.getSendMoney() != null) {
 			//  管理员发卡
 			builder.charge(new BigDecimal(card.getSendMoney())).reasonId(String.valueOf(RemarkTemplate.ADMIN_SEND_CARD.code)).build().insert();
 
 		}
 		if (isLimitCard(card)) {
-			// 管理员发卡 - 门店服务次数
-			builder.count(card.getCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.SEND_CARD_REASON.code)).build().insert();
+			if(CardUtil.canUseInStore(card.getStoreUseSwitch())) {
+				// 管理员发卡 - 门店服务次数
+				builder.count(card.getCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.SEND_CARD_REASON.code));
+			}
+			
+			if (CardUtil.canExchangGoods(card.getIsExchang())) {
+				// 管理员发卡 - 兑换商品数量
+				builder.exchangCount(card.getExchangCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code));
+			}
+			builder.build().insert();
 		}
-		if (isLimitCard(card) && card.getIsExchang() != null) {
-			// 管理员发卡 - 兑换商品数量
-			builder.exchangCount(card.getExchangCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code)).build()
-					.insert();
-		}
-
 	}
 
 	private UserCardRecord createNewUserCard(Integer userId, MemberCardRecord card, boolean isActivate) {

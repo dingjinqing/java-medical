@@ -203,8 +203,9 @@ public class ScoreService extends ShopBaseService {
 				NumberUtils.BYTE_ZERO.equals(param.getIsFromCrm())) {
 			// TODO CRM
 		}else {
-			userScoreRecord.setExpireTime(param.getExpiredTime());
+			userScoreRecord.setExpireTime(getScoreExpireTime());
 		}
+		
 		userScoreRecord.setScore(param.getScore());
 		userScoreRecord.setUserId(param.getUserId());
 		userScoreRecord.setRemarkId(String.valueOf(param.getRemarkCode()));
