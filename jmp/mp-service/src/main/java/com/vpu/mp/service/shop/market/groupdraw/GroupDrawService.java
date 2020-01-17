@@ -1010,9 +1010,13 @@ public class GroupDrawService extends ShopBaseService {
 	 * @return
 	 */
 	public int generateGroupId(Integer groupDrawId, Integer goodsId) {
-		return db().select(DSL.max(JOIN_DRAW_LIST.DRAW_ID)).from(JOIN_DRAW_LIST)
+		 Integer value = db().select(DSL.max(JOIN_DRAW_LIST.DRAW_ID)).from(JOIN_DRAW_LIST)
 				.where(JOIN_DRAW_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_DRAW_LIST.GOODS_ID.eq(goodsId)))
-				.fetchAnyInto(Integer.class) + 1;
+				.fetchAnyInto(Integer.class);
+		 if(null==value) {
+			 return 1;
+		 }
+		 return value + 1;
 	}
 
 	/**
