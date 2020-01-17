@@ -1,5 +1,6 @@
 <template>
   <div class="div_style">
+    <div class="labelItem">整体来源分析</div>
     <!--下拉-->
     <el-select
       v-model="timeSelect"
@@ -181,8 +182,17 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+  .labelItem {
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+    margin-left: 20px;
+  }
   .div_style {
+    margin-left: 10px;
+    margin-top: 10px;
     background: #fff;
+    border: #9f9f9f;
     padding: 10px;
     .labelItem {
       height: 50px;

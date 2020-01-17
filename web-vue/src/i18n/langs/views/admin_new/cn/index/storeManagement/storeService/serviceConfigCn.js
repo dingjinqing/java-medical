@@ -11,5 +11,5 @@ export const cn = {
   pleasechoose: '请选择门店',
   alreadychoose: '已选择',
   home: '家',
-  choosestore: '请选择开启"扫码购"动能的门店'
+  choosestore: '请选择开启"扫码购"功能的门店'
 }
