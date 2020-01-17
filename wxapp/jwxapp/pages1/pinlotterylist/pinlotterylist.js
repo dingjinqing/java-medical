@@ -1,4 +1,4 @@
-// pages1/pinlotterylist/pinlotterylist.js
+// pages/pinlotterylist/pinlotterylist.js
 var util = require('../../utils/util.js')
 var app = getApp()
 var imageUrl = app.globalData.imageUrl;
@@ -24,29 +24,29 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    group_draw_id = Number(options.group_draw_id);
+    group_draw_id = options.group_draw_id;
     clearTimeout(set_time_out);
-    util.api('/api/wxapp/groupbuy/info', function (res) {
+    util.api('/api/wxapp/groupdraw/list', function (res) {
       if (res.error == 0) {
-        // list_info = res.content;
-        // if (res.content) {
-        //   util.api('/api/wxapp/user_goods/record', function (res1) {
+        list_info = res.content;
+        if (res.content) {
+          util.api('/api/wxapp/user_goods/record', function (res1) {
 
-        //   }, { goods_id: 0, active_id: list_info.group_draw.id, active_type: 8, type: 1 })
-        // }
-        // if (list_info.group_draw.surplus_second && list_info.group_draw.surplus_second != undefined) {
-        //   total_micro_second = list_info.group_draw.surplus_second;
-        //   if (total_micro_second > 0) {
-        //     that.countdown(that);
-        //     that.setData({
-        //       act_open: 1
-        //     });
-        //   }
-        // }
+          }, { goods_id: 0, active_id: list_info.group_draw.id, active_type: 8, type: 1 })
+        }
+        if (list_info.surplus_second && list_info.surplus_second != undefined) {
+          total_micro_second = list_info.surplus_second;
+          if (total_micro_second > 0) {
+            that.countdown(that);
+            that.setData({
+              act_open: 1
+            });
+          }
+        }
         // list_info.group_draw.start_time = list_info.group_draw.start_time.substring(0, list_info.group_draw.start_time.length - 3);
-        // that.setData({
-        //   list_info: list_info
-        // })
+        that.setData({
+          list_info: list_info
+        })
       } else {
         util.showModal("提示", res.message, function () {
           util.redirectTo({
@@ -55,16 +55,17 @@ global.wxPage({
         });
         return false;
       }
-    }, { groupId: group_draw_id })
+    }, { group_draw_id: group_draw_id })
   },
+
   // 去商品详情
   to_item: function (e) {
     var goods_id = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      // url: '/pages/pinlotteryitem/pinlotteryitem?good_id=' + goods_id + "&group_draw_id=" + group_draw_id,
-      url: 'pages/item/item?activityId=' + group_draw_id + '&&activityType=1&&goodsId=' + good_id,
+      url: 'pages/item/item?activityId=' + group_draw_id + '&&activityType=1&&goodsId=' + good_id
     })
   },
+
   //倒计时
   countdown: function (that) {
     that.setData({
@@ -82,6 +83,7 @@ global.wxPage({
       that.countdown(that);
     }, 1000)
   },
+
   // 时间格式化输出，如3:25:19 86。每10ms都会调用一次
   dateformat: function (micro_second) {
     // 秒数
@@ -105,6 +107,7 @@ global.wxPage({
     }
     return date + "天" + hr + '时' + min + "分" + sec + "秒";
   },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
