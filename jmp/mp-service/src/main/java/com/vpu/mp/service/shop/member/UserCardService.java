@@ -203,7 +203,6 @@ public class UserCardService extends ShopBaseService {
 	private CouponPackService couponPackService;
 	@Autowired
 	private VirtualOrderService virtualOrderService;
-	public static final String DEFAULT_ADMIN = "0";
 
 	public static final String DESC = "score_open_card";
 
@@ -621,7 +620,7 @@ public class UserCardService extends ShopBaseService {
 		return MCARD_ACT_NO.equals(card.getActivation());
 	}
 
-	private Timestamp calcCardExpireTime(MemberCardRecord card) {
+	public Timestamp calcCardExpireTime(MemberCardRecord card) {
 		Assert.isTrue(card != null,"card should not be null");
 		LocalDateTime expireTime = null;
 		LocalDateTime now = LocalDateTime.now();
