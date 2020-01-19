@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.member.card;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.util.CardUtil;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.shop.member.MemberCardService;
  * @author 黄壮壮
  *
  */
+@Service
 public class CardUserOpt extends CardOpt {
 	@Autowired
 	private MemberCardService mCardSvc;
@@ -18,12 +20,13 @@ public class CardUserOpt extends CardOpt {
 	private CardOpt decorate;
 	
 	
-	public CardUserOpt(Byte _type) {
-		super(_type);
+	public CardUserOpt() {
+		super(null);
 	}
 
-	public CardUserOpt(CardOpt _cardOpt) {
-		super(_cardOpt.getType());
+	
+	public void setDecorate(CardOpt _cardOpt) {
+		this.setType(_cardOpt.getType());
 		this.decorate = _cardOpt;
 	}
 	

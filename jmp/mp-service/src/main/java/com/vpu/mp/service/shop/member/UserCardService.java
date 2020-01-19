@@ -179,7 +179,8 @@ public class UserCardService extends ShopBaseService {
 	private LimitCardOpt limitCardOpt;
 	@Autowired
 	private NormalCardOpt normalCardOpt;
-
+	@Autowired 
+	private CardUserOpt cardUserOpt;
 	public static final String DESC = "score_open_card";
 
 	/**
@@ -677,7 +678,7 @@ public class UserCardService extends ShopBaseService {
 		} else {
 			// 普通卡
 			if (adminUser != null
-					&& BigDecimalUtil.subtrac(userInfo.getMoney(), data.getMoneyDis()).floatValue() != 0.00) {
+					&& BigDecimalUtil.subtrac(userInfo.getMoney(), userInfo.getMoney()).floatValue() != 0.00) {
 				return -1;
 			}
 		}
@@ -722,7 +723,6 @@ public class UserCardService extends ShopBaseService {
 			}
 		} else {
 			if (data.getMoney().intValue() < 0) {
-				data.setMoney(data.getMoney().abs());
 				userCardDao.insertConsume(data);
 			} else {
 				data.setCharge(data.getMoney());
@@ -1499,8 +1499,8 @@ public class UserCardService extends ShopBaseService {
 				return null;
 			}
 			if(CardUtil.isLimitCard(mCard.getCardType())) {
-				CardUserOpt opt = new CardUserOpt(limitCardOpt);
-				String cardNo = opt.handleSendCard(param.getUserId(), param.getCardId(), false);
+				cardUserOpt.setDecorate(limitCardOpt);
+				String cardNo = cardUserOpt.handleSendCard(param.getUserId(), param.getCardId(), false);
 				
 				if(StringUtils.isBlank(cardNo)) {
 					logger().info("领取失败");
@@ -1514,8 +1514,8 @@ public class UserCardService extends ShopBaseService {
 				}
 			}else if(CardUtil.isNormalCard(mCard.getCardType())) {
 				
-				CardUserOpt opt = new CardUserOpt(normalCardOpt);
-				String cardNo = opt.handleSendCard(param.getUserId(), param.getCardId(), false);
+				cardUserOpt.setDecorate(normalCardOpt);
+				String cardNo = cardUserOpt.handleSendCard(param.getUserId(), param.getCardId(), false);
 				//	如果已经领取了该普通卡，不再次领取，返回拥有的会员卡号
 				if(StringUtil.isNotBlank(cardNo)) {
 					vo.setCardNo(cardNo);
