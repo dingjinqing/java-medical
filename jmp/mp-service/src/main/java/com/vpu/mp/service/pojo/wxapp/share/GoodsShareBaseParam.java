@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 public class GoodsShareBaseParam {
     /** 活动Id */
     private Integer activityId;
+    /**商品id或规格id*/
+    private Integer targetId;
     /** 活动分享图片中需要显示的拼团价格 */
     private BigDecimal realPrice;
     /** 活动分享图片中需要显示的划线价格 */

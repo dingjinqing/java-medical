@@ -7,12 +7,14 @@ global.wxComponent({
     onPropChange (newVal, oldVal, changedPath) {
 
       // 根据背景类型来判断是采用背景颜色还是背景图片
-      console.log(newVal, 'cardData')
+      console.log(newVal, 'cardData', newVal.bgImg)
       // 处理背景
       if (newVal.bg_type == 0) {
         newVal.bg = newVal.bg_color = newVal.bg_color || '#e6cb96';
       }
       if (newVal.bg_type == 1) {
+        let flag = newVal.bgImg
+        if (!flag) return
         newVal.bg = 'url(' + newVal.bgImg + ')';
       }
       console.log(newVal)

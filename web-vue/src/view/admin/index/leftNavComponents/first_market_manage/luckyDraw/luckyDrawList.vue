@@ -360,10 +360,7 @@ export default {
         this.currentComponent = luckyDrawAdd
 
         this.isShowAddFlag = false
-        this.tabInfo.pop({
-          title: this.$t('luckyDraw.addSweepstakes'),
-          name: '6'
-        })
+        this.tabInfo.pop()
       }
       return true
     }

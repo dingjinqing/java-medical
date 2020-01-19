@@ -10,7 +10,7 @@ var order_sn = ''; // 如果是从单个商品跳转过来，订单编号
 var src_down = imageUrl + 'image/wxapp/down_normal.png';
 var src_up = imageUrl + 'image/wxapp/up_normal.png';
 var order_completed = [];
-var comment_flag = 0; // 待评论Or已评论
+var comment_flag = 0; // 待评论0,已评论1
 var userId = util.getCache('user_id')
 global.wxPage({
   data: {
@@ -80,12 +80,71 @@ global.wxPage({
     wx.hideShareMenu(); // 隐藏转发按钮
     this.get_comment(that, 0);
   },
+  // 初始化数据
+  get_comment: function (that, i) {
+    if (i || i === 0) {
+      comment_flag = i
+    }
+    util.api('/api/wxapp/comment/list', function (res) {
+      var order_completed = [];
+      if (res.content && res.content.length > 0) {
+        order_completed = res.content;
+        order_completed.forEach(function (item, i) {
+          item.show = false;
+          item.src = src_down;
+          item.commstar = item.commstar ? Number(item.commstar) : 5;
+          if (i == 0) {
+            item.show = true;
+            item.src = src_up;
+          }
+          item.star = JSON.parse(JSON.stringify(that.data.star))
+          if (item.commstar && item.commstar < 6) {
+            for (var i = 4; i > 0; i--) {
+              if (i >= item.commstar) {
+                item.star[i].show = false
+              }
+            }
+          }
+          item.anonymousflag = 0
+          // 如果有评价有奖，优惠券id:xxx,name:xxx 格式化
+          if (item.id && item.awardType == 2) {
+            item.award = that.stringToObj(item.award)
+          }
+          if (item.commentFlag) {
+            if (item.commImg) {
+              var imgs = []
+              if (item.commImg.indexOf('[') > -1) {
+                imgs = JSON.parse(item.commImg)
+              } else {
+                imgs.push(item.commImg)
+              }
+              console.log('imgs:', imgs)
+              item.comm_img = imgs
+            }
+          }
+        })
+      }
+      that.setData({
+        order_completed: order_completed
+      })
+    }, { userId: userId, commentFlag: comment_flag, orderSn: order_sn, page_no: that.data.page });
+  },
+  // string 转 obj
+  stringToObj (str) {
+    let string = str.trim()
+    let strArr = string.split(',')
+    let result = {}
+    strArr.forEach(function (item, i) {
+      let itemArr = item.split(':')
+      console.log(itemArr)
+      result[itemArr[0]] = itemArr[1]
+    })
+    return result;
+  },
   /**
    *  生命周期函数--监听页面显示
    */
   onShow: function () {
-    // var that = this;
-    // this.get_comment(that, 0);
   },
   //选择评分
   choose_star: function (e) {
@@ -179,7 +238,7 @@ global.wxPage({
   // textarea 输入
   comm_note: function (e) {
     var info = this.data.info;
-    info.commNote = e.detail.value;
+    info.commNote = e.detail.value.trim();
     this.setData({
       info: info
     })
@@ -259,22 +318,13 @@ global.wxPage({
   },
   /**
    * 评价并继续，发表评价
-   * goodsId // 商品id
-   * userId // 用户id
-   * orderSn // 订单号
-   * commstar// 几星
-   * commNote// 评价心得
-   * commImg // 晒单图片数组转string
-   * anonymousflag // 是否匿名
-   * id // 评价有礼活动id
-   * awardType // 评价有礼奖励类型
-   * award // 评价有礼奖励内容
    */
   good_commtag: function (e) {
     // 防抖函数
     util.throttle(this.evaluate, 1000)(e)
   },
-  evaluate: function(e) {
+  // 发表评价
+  evaluate: function (e) {
     var that = this;
     var info = this.data.info;
     var item = e.detail.target.dataset.item
@@ -288,7 +338,10 @@ global.wxPage({
       anonymousflag: item.anonymousflag,
       id: item.id, // 有奖活动id
       awardType: item.awardType, // 有奖活动类型
-      award: item.award // 有奖活动内容
+      award: item.award, // 有奖活动内容
+      recId: item.recId,
+      prdId: item.prdId,
+      prdDesc: item.prdDesc
     }
     if (item.id) {
       if (item.awardType === 2) {
@@ -311,12 +364,20 @@ global.wxPage({
     util.api('/api/wxapp/comment/add', function (res) {
       if (res.error === 0) {
         util.toast_success(that.$t('page1.comment.reviewSuccess'));
+        that.setData({
+          info: {
+            anonymousflag: 0,
+            comm_img: [],
+            commstar: 5,
+            commNote: ''
+          }
+        })
         that.get_comment(that, 0);
       }
     }, params);
   },
   // 查看活动奖励
-  giftInfo(e) {
+  giftInfo (e) {
     let data = e.currentTarget.dataset;
     let commentInfo = this.data.order_completed[data.itemid];
     if (commentInfo.awardType != 5) {
@@ -329,11 +390,6 @@ global.wxPage({
       let action = url.get(commentInfo.awardType)
       util.jumpLink(action[0], 'navigateTo')
     } else {
-      // let custom = {}
-      // let linkStr = commentInfo.award.match(/(path:)\S*(,)/ig)[0];
-      // custom.link = linkStr.substring(5, linkStr.length - 1);
-      // let imgSrcStr = commentInfo.award.match(/(img:)S*/ig)[0];
-      // custom.img_str = imgSrcStr.substring(4);
       let link = commentInfo.award.split(',')
       let path = link[0].slice(5, link[0].length)
       let img = link[1].slice(4, link[1].length)
@@ -347,7 +403,8 @@ global.wxPage({
       })
     }
   },
-  bindPreviewImage(e) {
+  // 预览图片
+  bindPreviewImage (e) {
     let src = e.currentTarget.dataset.src;
     let srcarr = e.currentTarget.dataset.srcarr;
     let arrs = [];
@@ -362,7 +419,7 @@ global.wxPage({
     }
   },
   // 关闭自定义奖励弹窗
-  resetShow() {
+  resetShow () {
     this.setData({
       show_act_custom: false,
     })
@@ -370,66 +427,6 @@ global.wxPage({
   // 页面上拉触底事件的处理函数
   onReachBottom: function () {
     console.log('reachBottom....')
-  },
-  // 初始化数据
-  get_comment: function (that, i) {
-    if (i || i === 0) {
-      comment_flag = i
-    }
-    console.log(order_sn)
-    util.api('/api/wxapp/comment/list', function (res) {
-      var order_completed = [];
-      if (res.content && res.content.length > 0) {
-        order_completed = res.content;
-        order_completed.forEach(function (item, i) {
-          item.show = false;
-          item.src = src_down;
-          item.commstar = item.commstar ? Number(item.commstar) : 5;
-          if (i == 0) {
-            item.show = true;
-            item.src = src_up;
-          }
-          item.star = JSON.parse(JSON.stringify(that.data.star))
-          if (item.commstar && item.commstar < 6) {
-            for (var i = 4; i > 0; i--) {
-              if (i >= item.commstar) {
-                item.star[i].show = false
-              }
-            }
-          }
-          item.anonymousflag = 0
-          // 如果有评价有奖，优惠券id:xxx,name:xxx 格式化
-          if (item.id && item.awardType == 2) {
-            // let award = item.award;
-            // console.log('award...', that.stringToObj(award))
-            item.award = that.stringToObj(item.award)
-          }
-          if (item.commentFlag) {
-            if (item.commImg) {
-              var imgs = JSON.parse(item.commImg)
-              console.log('imgs:', imgs)
-              item.comm_img = imgs
-            }
-          }
-        })
-      }
-      that.setData({
-        order_completed: order_completed,
-      })
-      console.log(order_completed)
-    }, { userId: userId, commentFlag: comment_flag, orderSn: order_sn, page_no: that.data.page });
-  },
-  // string 转 obj
-  stringToObj(str) {
-    let string = str.trim()
-    let strArr = string.split(',')
-    let result = {}
-    strArr.forEach(function (item, i) {
-      let itemArr = item.split(':')
-      console.log(itemArr)
-      result[itemArr[0]] = itemArr[1]
-    })
-    return result;
   }
 })
 

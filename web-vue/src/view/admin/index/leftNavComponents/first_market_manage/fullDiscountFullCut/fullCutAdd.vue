@@ -110,17 +110,20 @@
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams2[index].fullMoney"
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2 || !!params.id"
                   ></el-input>&nbsp;元，
                   <span>减</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams2[index].reduceMoney"
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;
                   <span>元</span>
-                  <div class="iconAdd">
+                  <div
+                    class="iconAdd"
+                    v-if="!params.id"
+                  >
                     <img
                       v-if="index === 0"
                       :src="$imageHost + '/image/admin/sign_jia.png'"
@@ -142,16 +145,19 @@
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;元，
                   <span>减</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;
                   <span>元</span>
-                  <div class="iconAdd">
+                  <div
+                    class="iconAdd"
+                    v-if="!params.id"
+                  >
                     <img :src="$imageHost + '/image/admin/sign_jia.png'">
                   </div>
                 </div>
@@ -175,24 +181,27 @@
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams2[index].amount"
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;件，
                   <span>减</span>
                   &nbsp;<el-input
                     v-if="fullDeduction == 1"
                     class="form_input"
                     size="small"
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>
                   <el-input
                     v-else
                     class="form_input"
                     size="small "
                     v-model="conditionAddParams2[index].reduceMoney"
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;
                   <span>元</span>
-                  <div class="iconAdd">
+                  <div
+                    class="iconAdd"
+                    v-if="!params.id"
+                  >
                     <img
                       v-if="index === 0"
                       :src="$imageHost + '/image/admin/sign_jia.png'"
@@ -214,17 +223,20 @@
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;件，
                   <span>减</span>
                   &nbsp;
                   <el-input
                     class="form_input"
                     size="small "
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;
                   <span>元</span>
-                  <div class="iconAdd">
+                  <div
+                    class="iconAdd"
+                    v-if="!params.id"
+                  >
                     <img :src="$imageHost + '/image/admin/sign_jia.png'">
                   </div>
                 </div>
@@ -234,6 +246,7 @@
               <el-radio
                 label="1"
                 v-model="fullDeduction"
+                :disabled="!!params.id"
               >满金额</el-radio>
               <div class="flex-block">
                 <span>满</span>
@@ -241,27 +254,28 @@
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams1[0].fullMoney"
-                  :disabled="fullDeduction == 2"
+                  :disabled="fullDeduction == 2  || !!params.id"
                 ></el-input>&nbsp;元，
                 <span>减</span>
                 &nbsp;<el-input
                   v-if="fullDeduction == 2"
                   class="form_input"
                   size="small"
-                  :disabled="fullDeduction == 2"
+                  :disabled="fullDeduction == 2  || !!params.id"
                 ></el-input>
                 <el-input
                   v-else
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams1[0].reduceMoney"
-                  :disabled="fullDeduction == 2"
+                  :disabled="fullDeduction == 2  || !!params.id"
                 ></el-input>&nbsp;
                 <span>元</span>
               </div>
               <el-radio
                 label="2"
                 v-model="fullDeduction"
+                :disabled="!!params.id"
               >满件数</el-radio>
               <div class="flex-block">
                 <span>满</span>
@@ -269,21 +283,21 @@
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams1[0].amount"
-                  :disabled="fullDeduction == 1"
+                  :disabled="fullDeduction == 1  || !!params.id"
                 ></el-input>&nbsp;件，
                 <span>减</span>
                 &nbsp;<el-input
                   v-if="fullDeduction == 1"
                   class="form_input"
                   size="small"
-                  :disabled="fullDeduction == 1"
+                  :disabled="fullDeduction == 1  || !!params.id"
                 ></el-input>
                 <el-input
                   v-else
                   class="form_input"
                   size="small "
                   v-model="conditionAddParams1[0].reduceMoney"
-                  :disabled="fullDeduction == 1"
+                  :disabled="fullDeduction == 1  || !!params.id"
                 ></el-input>&nbsp;
                 <span>元</span>
               </div>
@@ -304,6 +318,7 @@
               <el-radio
                 label="1"
                 v-model="fullDeduction"
+                :disabled="!!params.id"
               >满金额</el-radio>
               <div
                 v-show="fullDeduction == '1'"
@@ -319,7 +334,7 @@
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams3[index].fullMoney"
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;元，
                   <span>打</span>
                   &nbsp;
@@ -327,17 +342,20 @@
                     v-if="fullDeduction == 2"
                     class="form_input"
                     size="small"
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>
                   <el-input
                     v-else
                     class="form_input"
                     size="small "
                     v-model="conditionAddParams3[index].discount"
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;
                   <span>折</span>
-                  <div class="iconAdd">
+                  <div
+                    class="iconAdd"
+                    v-if="!params.id"
+                  >
                     <img
                       v-if="index === 0"
                       :src="$imageHost + '/image/admin/sign_jia.png'"
@@ -359,17 +377,20 @@
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;元，
                   <span>打</span>
                   &nbsp;
                   <el-input
                     class="form_input"
                     size="small "
-                    :disabled="fullDeduction == 2"
+                    :disabled="fullDeduction == 2  || !!params.id"
                   ></el-input>&nbsp;
                   <span>折</span>
-                  <div class="iconAdd">
+                  <div
+                    class="iconAdd"
+                    v-if="!params.id"
+                  >
                     <img :src="$imageHost + '/image/admin/sign_jia.png'">
                   </div>
                 </div>
@@ -377,6 +398,7 @@
               <el-radio
                 label="2"
                 v-model="fullDeduction"
+                :disabled="!!params.id"
               >满件数</el-radio>
               <div
                 v-show="fullDeduction == '2'"
@@ -392,7 +414,7 @@
                     class="form_input"
                     size="small"
                     v-model="conditionAddParams3[index].amount"
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;件，
                   <span>打</span>
                   &nbsp;
@@ -400,17 +422,20 @@
                     v-if="fullDeduction == 1"
                     class="form_input"
                     size="small"
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>
                   <el-input
                     v-else
                     class="form_input"
                     size="small "
                     v-model="conditionAddParams3[index].discount"
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;
                   <span>折</span>
-                  <div class="iconAdd">
+                  <div
+                    class="iconAdd"
+                    v-if="!params.id"
+                  >
                     <img
                       v-if="index === 0"
                       :src="$imageHost + '/image/admin/sign_jia.png'"
@@ -432,17 +457,20 @@
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;件，
                   <span>打</span>
                   &nbsp;
                   <el-input
                     class="form_input"
                     size="small "
-                    :disabled="fullDeduction == 1"
+                    :disabled="fullDeduction == 1  || !!params.id"
                   ></el-input>&nbsp;
                   <span>折</span>
-                  <div class="iconAdd">
+                  <div
+                    class="iconAdd"
+                    v-if="!params.id"
+                  >
                     <img :src="$imageHost + '/image/admin/sign_jia.png'">
                   </div>
                 </div>
@@ -454,11 +482,13 @@
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams4[0].amount"
+                  :disabled="!!params.id"
                 ></el-input>&nbsp;件，
                 打&nbsp;<el-input
                   class="form_input"
                   size="small"
                   v-model="conditionAddParams4[0].discount"
+                  :disabled="!!params.id"
                 ></el-input>&nbsp;折
               </div>
             </div>
@@ -479,6 +509,7 @@
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
               :default-time="['00:00:00', '23:59:59']"
+              :disabled="!!params.id"
             ></el-date-picker>
           </el-form-item>
 
@@ -490,17 +521,20 @@
             <el-radio
               v-model="params.actType"
               label="0"
+              :disabled="!!params.id"
             >全部商品</el-radio>
             <br>
             <el-radio
               v-model="params.actType"
               label="1"
+              :disabled="!!params.id"
             >指定商品</el-radio>
 
             <div v-if="params.actType === '1'">
               <div
                 class="add_goods_btn"
                 @click="chooseGoodsHandler"
+                v-if="!params.id"
               > + 选择商品</div>
               <div
                 class="goods_area"
@@ -536,7 +570,12 @@
                       </td>
                       <td>￥{{item.shopPrice}}</td>
                       <td>{{item.goodsNumber}}</td>
-                      <td @click="deleteGoods(index)"><span class="edit-icon">删除</span></td>
+                      <td @click="deleteGoods(index)">
+                        <span
+                          v-if="!params.id"
+                          class="edit-icon"
+                        >删除</span>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -545,6 +584,7 @@
               <div
                 class="add_goods_btn"
                 @click="selectPlatform"
+                v-if="!params.id"
               > + 选择平台分类</div>
               <table
                 class="brand_table"
@@ -561,10 +601,12 @@
                         <span
                           class="edit-icon edit"
                           @click="editPlateformClassification"
+                          v-if="!params.id"
                         >编辑</span>
                         <span
                           class="delete"
                           @click="deletePlateformClassfication"
+                          v-if="!params.id"
                         >删除</span>
                       </div>
                     </th>
@@ -590,6 +632,7 @@
               <div
                 class="add_goods_btn"
                 @click="selectBussiness"
+                v-if="!params.id"
               > + 选择商家分类</div>
               <table
                 class="brand_table"
@@ -606,10 +649,12 @@
                         <span
                           class="edit"
                           @click="editBussinessClassification"
+                          v-if="!params.id"
                         >编辑</span>
                         <span
                           class="delete"
                           @click="deleteBussinessClassfication"
+                          v-if="!params.id"
                         >删除</span>
                       </div>
                     </th>
@@ -632,10 +677,11 @@
                 </tbody>
               </table>
 
-              <div
+              <!-- <div
                 class="add_goods_btn"
                 @click="selectGoodsLabel"
-              > + 选择商品标签</div>
+                v-if="!params.id"
+              > + 选择商品标签</div> -->
               <table
                 class="brand_table"
                 v-if="labelNameList && labelNameList.length > 0"
@@ -651,10 +697,12 @@
                         <span
                           class="edit"
                           @click="editSelectedLabel"
+                          v-if="!params.id"
                         >编辑</span>
                         <span
                           class="delete"
                           @click="deleteSelectedLabel"
+                          v-if="!params.id"
                         >删除</span>
                       </div>
                     </th>
@@ -674,6 +722,7 @@
               <div
                 class="add_goods_btn"
                 @click="seclectGoodsBrand"
+                v-if="!params.id"
               > + 选择商品品牌</div>
               <table
                 class="brand_table"
@@ -690,10 +739,12 @@
                         <span
                           class="edit"
                           @click="editSelectedBrand"
+                          v-if="!params.id"
                         >编辑</span>
                         <span
                           class="delete"
                           @click="deleteSelectedBrand"
+                          v-if="!params.id"
                         >删除</span>
                       </div>
                     </th>
@@ -714,7 +765,10 @@
 
           <!-- 会员专享活动 -->
           <el-form-item label="会员专享活动：">
-            <el-checkbox v-model="checkCard">用户持会员卡可以参与活动</el-checkbox>
+            <el-checkbox
+              v-model="checkCard"
+              :disabled="!!params.id"
+            >用户持会员卡可以参与活动</el-checkbox>
             <br>
             <el-form-item
               v-if="checkCard"
@@ -727,6 +781,7 @@
                 :multiple='true'
                 @change="getMemberCardName"
                 style="float:left;"
+                :disabled="!!params.id"
               >
                 <el-option
                   v-for="item in memberCardNameList"

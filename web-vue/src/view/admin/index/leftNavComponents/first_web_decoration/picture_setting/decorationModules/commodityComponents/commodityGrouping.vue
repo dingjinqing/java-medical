@@ -32,7 +32,7 @@
           :style="((data.shop_style==='1' || data.shop_style==='2')?'display: flex;flex-wrap: wrap;':data.shop_style==='4'?'display:flex':'')+(data.goods_module_bg==='1'?`;background:${data.goods_bg_color}`:'')"
         >
           <li
-            v-for="(item,index) in data.goods_img"
+            v-for="(item,index) in goodsData"
             :key="index"
             :style="data.shop_style==='2'?'width:33.33%;':data.shop_style==='4'?'width:158px':data.shop_style==='0'?'width:100%;':data.shop_style==='3'?'width:100%':''"
           >
@@ -54,34 +54,34 @@
                     <div
                       class="labelStyle1"
                       style="height:auto;width:44px"
-                      v-if="(data.label[index]?data.label[index].label_parttern:-1)===1"
+                      v-if="(item.label?item.label.listPattern:-1)===1"
                     >
-                      <span style="display: block;word-break: break-all;width: 34px;white-space: pre-wrap;">{{data.label[index].label_name}}</span>
+                      <span style="display: block;word-break: break-all;width: 34px;white-space: pre-wrap;">{{item.label.name}}</span>
                     </div>
                     <div
                       class="labelStyle2"
-                      v-if="(data.label[index]?data.label[index].label_parttern:-1)===2"
+                      v-if="(item.label?item.label.listPattern:-1)===2"
                       :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
                     >
-                      <span style="display: inline;">{{data.label[index].label_name}}</span>
+                      <span style="display: inline;">{{item.label.name}}</span>
                     </div>
                     <div
                       class="label newGoods"
-                      v-if="(data.label[index]?data.label[index].label_parttern:-1)===3"
+                      v-if="(item.label?item.label.listPattern:-1)===3"
                     >
-                      <span>{{data.label[index].label_name}}</span>
+                      <span>{{item.label.name}}</span>
                     </div>
                     <div
                       class="labelStyle3"
-                      v-if="(data.label[index]?data.label[index].label_parttern:-1)===4"
+                      v-if="(item.label?item.label.listPattern:-1)===4"
                       :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
                     >
-                      <span style="display: inline-block;">{{data.label[index].label_name}}</span>
+                      <span style="display: inline-block;">{{item.label.name}}</span>
                     </div>
                   </div>
                   <img
                     :style="data.shop_style==='0'?'width:100%;height:auto':data.shop_style==='4'?'width:100%;height:auto;':data.shop_style==='2'?'width:102px;height:102px;':data.shop_style==='1'?'width:163px;height:163px;max-height:163px':data.shop_style==='3'?'width:128px':''"
-                    :src="data.goods_img[index]"
+                    :src="item.goodsImg"
                   >
                 </div>
                 <div
@@ -92,7 +92,7 @@
                     <div
                       class="goodsNameClass"
                       v-if="data.show_name === '1'"
-                    >{{data.goods_name[index]}}</div>
+                    >{{item.goodsName}}</div>
                     <div :style="!data.show_name==='1'?'height:14px':''"></div>
                     <div
                       class="activityContainer"
@@ -100,27 +100,35 @@
                     >
                       <div
                         :style="indexC===0?'':'margin-top:0'+((data.shop_style==='0'||data.shop_style==='1')&&indexC===1)?'margin-left:5px':data.shop_style!=='3'?'margin-top:5px;margin-top:0':''"
-                        v-for="(itemC,indexC) in data.goods_tag[index]"
+                        v-for="(itemC,indexC) in item.goodsActivities"
                         :key="indexC"
                         class="activitySpan"
                       >
-                        <span :style="((data.shop_style==='2'||data.shop_style==='4')?'max-width:100%;white-space: nowrap;margin-top:0;':data.shop_style==='1'?'max-width:145px':data.shop_style==='1'?'max-width:163px':data.shop_style==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC}}</span>
+                        <span :style="((data.shop_style==='2'||data.shop_style==='4')?'max-width:100%;white-space: nowrap;margin-top:0;':data.shop_style==='1'?'max-width:145px':data.shop_style==='1'?'max-width:163px':data.shop_style==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):itemC.activityType===19?'支付有礼':(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===21?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===22?$t('commodity.membershipPrice'):itemC.activityType===23?$t('commodity.membershipExclusive'):''}}</span>
                       </div>
                     </div>
 
                   </div>
                   <div
                     class="bottomFooter"
-                    :style="data.shop_style==='3'?'display:flex;flex-direction:column':data.shop_style!=='0' ?'display:flex;flex-direction: row;height:auto':'height:20px'"
+                    :style="data.shop_style==='3'?'display:flex;flex-direction: row;':'display:flex;flex-direction: row;height:auto'"
                   >
                     <span
                       :style="`color:${bgColor};`"
                       v-if="data.show_price==='1'"
-                    >￥{{Number(data.goods_price[index]).toFixed(2)}}</span>
+                    >￥{{Number(item.realPrice).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.shop_style!=='2'&&data.other_message==='1'"
-                    >{{data.show_market==='1'?'￥0.00':data.show_market==='2'?'0人付款':'0人评价'}}</span>
+                      v-if="data.show_market==='1'&&data.other_message==='1'"
+                    >{{Number(item.linePrice).toFixed(2)}}</span>
+                    <span
+                      style="text-decoration: line-through;color: #c0c0c0"
+                      v-if="data.show_market==='2'&&data.other_message==='1'"
+                    >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                    <span
+                      style="text-decoration: line-through;color: #c0c0c0"
+                      v-if="data.show_market==='3'&&data.other_message==='1'"
+                    >{{Number(item.goodsNumber).toFixed(2)}}</span>
                     <!--购买按钮-->
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
@@ -177,7 +185,7 @@
             :style="(data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:'')+';padding: 10px;overflow: hidden;'"
           >
             <li
-              v-for="(item,index) in data.goods_img"
+              v-for="(item,index) in goodsData"
               :key="index"
               style="width:100%"
             >
@@ -196,34 +204,34 @@
                       <div
                         class="labelStyle1"
                         style="height:auto;width:44px"
-                        v-if="(data.label[index]?data.label[index].label_parttern:-1)===1"
+                        v-if="(item.label?item.label.listPattern:-1)===1"
                       >
-                        <span style="display: block;word-break: break-all;width: 34px;white-space: pre-wrap;">{{data.label[index].label_name}}</span>
+                        <span style="display: block;word-break: break-all;width: 34px;white-space: pre-wrap;">{{item.label.name}}</span>
                       </div>
                       <div
                         class="labelStyle2"
-                        v-if="(data.label[index]?data.label[index].label_parttern:-1)===2"
+                        v-if="(item.label?item.label.listPattern:-1)===2"
                         :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
                       >
-                        <span style="display: inline;">{{data.label[index].label_name}}</span>
+                        <span style="display: inline;">{{item.label.name}}</span>
                       </div>
                       <div
                         class="label newGoods"
-                        v-if="(data.label[index]?data.label[index].label_parttern:-1)===3"
+                        v-if="(item.label?item.label.listPattern:-1)===3"
                       >
-                        <span>{{data.label[index].label_name}}</span>
+                        <span>{{item.label.name}}</span>
                       </div>
                       <div
                         class="labelStyle3"
-                        v-if="(data.label[index]?data.label[index].label_parttern:-1)===4"
+                        v-if="(item.label?item.label.listPattern:-1)===4"
                         :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
                       >
-                        <span style="display: inline-block;">{{data.label[index].label_name}}</span>
+                        <span style="display: inline-block;">{{item.label.name}}</span>
                       </div>
                     </div>
                     <img
                       style="width:128px"
-                      :src="data.goods_img[index]"
+                      :src="item.goodsImg"
                     >
                   </div>
                   <div
@@ -234,7 +242,7 @@
                       <div
                         class="goodsNameClass"
                         v-if="data.show_name==='1'"
-                      >{{data.goods_name[index]}}</div>
+                      >{{item.goodsName}}</div>
                       <div :style="!data.show_name ==='1'?'height:14px':''"></div>
                       <div
                         class="activityContainer"
@@ -242,7 +250,7 @@
                       >
                         <div
                           :style="indexC===0?'margin-right:5px;':'margin-top:0px;'"
-                          v-for="(itemC,indexC) in data.goods_tag[index]"
+                          v-for="(itemC,indexC) in item.goodsActivities"
                           :key="indexC"
                           class="activitySpan"
                         >
@@ -256,14 +264,21 @@
                       style="display:flex;width:100%;flex-direction:row;width:123px"
                     >
                       <span
-                        :style="`color:${bgColor};position:static;padding-top:3px`"
+                        :style="`color:${bgColor};`"
                         v-if="data.show_price==='1'"
-                      >￥{{Number(data.goods_price[index]).toFixed(2)}}</span>
-                      <span v-if="!data.show_price==='1'"></span>
+                      >￥{{Number(item.realPrice).toFixed(2)}}</span>
                       <span
-                        :style="'text-decoration: line-through;color: #c0c0c0;position:static'+(data.other_message==='1'?'width: 50px;padding-top: 3px;':'')"
-                        v-if="data.shop_style!=='2'&&data.other_message==='1'"
-                      >{{data.show_market==='1'?'￥0.00':data.show_market==='2'?'0人付款':'0人评价'}}</span>
+                        style="text-decoration: line-through;color: #c0c0c0"
+                        v-if="data.show_market==='1'&&data.other_message==='1'"
+                      >{{Number(item.linePrice).toFixed(2)}}</span>
+                      <span
+                        style="text-decoration: line-through;color: #c0c0c0"
+                        v-if="data.show_market==='2'&&data.other_message==='1'"
+                      >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                      <span
+                        style="text-decoration: line-through;color: #c0c0c0"
+                        v-if="data.show_market==='3'&&data.other_message==='1'"
+                      >{{Number(item.goodsNumber).toFixed(2)}}</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"
@@ -434,12 +449,13 @@ export default {
       groupData.forEach((item, idnex) => {
         let obj = {}
         obj['sort_id'] = item.sort_id
-        obj['sort_type'] = JSON.stringify(item.sort_type)
+        obj['sort_type'] = item.sort_type
         obj['group_goods_id'] = item.group_goods_id ? item.group_goods_id : null
         obj['is_all'] = item.is_all
         arr.push(obj)
       })
       console.log(arr)
+      if (!arr.length) return
       let obj = {
         'position_style': Number(data.position_style),
         'group_display': Number(data.group_display),
@@ -448,7 +464,43 @@ export default {
       getGoodsGroupData(obj).then(res => {
         console.log(res)
         if (res.error === 0) {
-
+          this.goodsData = res.content
+          // 处理活动
+          res.content.forEach((item, index) => {
+            console.log(item)
+            // 处理每一个商品当前要显示的活动
+            let arr = []
+            if (item.goodsActivities.length > 2) {
+              console.log(item)
+              arr[0] = item.goodsActivities[0]
+              arr[1] = item.goodsActivities[1]
+              item.goodsActivities = arr
+            }
+            this.handleToActivities(item, index)
+          })
+        }
+      })
+    },
+    // 处理活动
+    handleToActivities (item, index) {
+      item.goodsActivities.forEach((itemC, indeC) => {
+        console.log(itemC)
+        switch (itemC.activityType) {
+          case 1:
+            this.goodsData[index]['noShowActFlag'] = 1
+            break
+          case 3:
+            this.goodsData[index]['noShowActFlag'] = 3
+            break
+          case 6:
+            this.goodsData[index]['noShowActFlag'] = 6
+            break
+          case 18:
+            this.goodsData[index]['noShowActFlag'] = 18
+            break
+          case 23:
+            this.goodsData[index]['noShowActFlag'] = 23
+            break
         }
       })
     },

@@ -14,6 +14,7 @@ global.wxComponent({
         0: m.surplus_second
       });
     },
+    // 拼团抽奖列表
     bindToGroupList (e) {
       var d = this.eventData(e);
       if (d.tips == "" || !d.tips) {

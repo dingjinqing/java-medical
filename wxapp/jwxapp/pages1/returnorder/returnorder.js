@@ -254,7 +254,7 @@ global.wxPage({
       shippingFee: returnShippingFee,// 退运费金额
       reasonType: that.data.reasoneIndex, // 申请原因
       reasonDesc: that.data.reasonDesc, // 申请说明
-      voucherImages: JSON.stringify(uploadedImgs),// 凭证图片
+      goodsImages: JSON.stringify(uploadedImgs),// 退款退货凭证图片
       returnGoods: selectGoods
     }
     console.log(params)

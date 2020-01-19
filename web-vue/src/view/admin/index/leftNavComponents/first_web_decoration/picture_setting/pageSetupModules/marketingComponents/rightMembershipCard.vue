@@ -453,6 +453,8 @@ export default {
           this.nowChecked.hidden_card = 0
         }
         console.log(this.nowChecked)
+        this.nowChecked['cur_idx'] = this.modulesData.cur_idx
+        this.nowChecked['module_name'] = this.modulesData.module_name
         this.$emit('handleToBackData', this.nowChecked)
       }
     }
@@ -597,7 +599,7 @@ export default {
     },
     //  点击添加会员卡
     handleToAddCard () {
-      let obj = { query: { 'cardType': Number(this.radio) } }
+      let obj = { query: { 'cardType': (Number(this.radio) - 1) } }
       switch (this.radio) {
         case '1':
           obj.name = 'normalCardDetail'

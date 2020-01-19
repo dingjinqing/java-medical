@@ -158,7 +158,7 @@ export default {
       if (this.ruleForm.expiredType === '1') {
         if (this.checkReceiveError(value)) {
           callback(new Error('请输入有效期'))
-        } else if (Number(value) < 0) {
+        } else if (Number(value) <= 0) {
           callback(new Error('请输入有效期'))
         } else {
           callback()

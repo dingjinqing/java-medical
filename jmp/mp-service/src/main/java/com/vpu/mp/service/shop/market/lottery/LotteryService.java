@@ -43,6 +43,9 @@ import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam.FREE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam.SCORE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam.SHARE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -312,6 +315,7 @@ public class LotteryService extends ShopBaseService {
             join.setStatus(JoinLottery.ACTIVITY_NULL);
             return join;
         }
+        join.setLottery(lottery);
         //活动停止
         if (lottery.getStatus().equals(ACTIVITY_STATUS_DISABLE)) {
             join.setStatus(JoinLottery.ACTIVITY_STOP);
@@ -329,7 +333,7 @@ public class LotteryService extends ShopBaseService {
             return join;
         }
         //活动免费
-        Integer freeTimes = lotteryRecord.getJoinLotteryNumber(userId, lotteryId, (byte) 0);
+        Integer freeTimes = lotteryRecord.getJoinLotteryNumber(userId, lotteryId,FREE);
         if (lottery.getFreeChances() == null || lottery.getFreeChances() > freeTimes) {
             join.setStatus(JoinLottery.FREE_PRIZE);
             join.setFlag(true);
@@ -340,17 +344,20 @@ public class LotteryService extends ShopBaseService {
         }
 
         //分享抽奖
-        if (lottery.getCanShare() != null && lottery.getCanShare() == (byte) 1) {
-            LotteryShareRecord share = lotteryShare.getLotteryShareByUser(userId, lotteryId);
-            Integer useShareTimes = lotteryRecord.getJoinLotteryNumber(userId, lotteryId, (byte) 1);
-            Integer shareTimes = share != null ? share.getShareTimes() : 0;
+        if (lottery.getCanShare() != null && lottery.getCanShare().equals(BaseConstant.YES)) {
+            LotteryShareRecord shareRecord = lotteryShare.getLotteryShareByUser(userId, lotteryId);
+            Integer useShareTimes = lotteryRecord.getJoinLotteryNumber(userId, lotteryId, SHARE);
+            //分享次数
+            Integer shareTimes = shareRecord != null ? shareRecord.getShareTimes() : 0;
             if (shareTimes > useShareTimes) {
+                //分享抽奖
                 join.setStatus(JoinLottery.SHARE_PRIZE);
                 join.setChanges(shareTimes - useShareTimes);
                 join.setFlag(true);
                 return join;
             }
             if (lottery.getShareChances() == null || shareTimes < lottery.getShareChances()) {
+                // 去分享
                 join.setStatus(JoinLottery.SHARE_PRIZE_FINISH);
                 if (lottery.getScoreChances() != null) {
                     join.setChanges(lottery.getShareChances() - shareTimes);
@@ -359,8 +366,8 @@ public class LotteryService extends ShopBaseService {
             }
         }
         //积分抽奖
-        if (lottery.getCanUseScore() == (byte) 1) {
-            Integer userScoreTimes = lotteryRecord.getJoinLotteryNumber(userId, lotteryId, (byte) 2);
+        if (lottery.getCanUseScore().equals(BaseConstant.YES)) {
+            Integer userScoreTimes = lotteryRecord.getJoinLotteryNumber(userId, lotteryId, SCORE);
             if (lottery.getScoreChances() == null || userScoreTimes < lottery.getScoreChances()) {
                 join.setStatus(JoinLottery.SCORE_PRIZE);
                 join.setFlag(true);
@@ -381,6 +388,7 @@ public class LotteryService extends ShopBaseService {
             join.setStatus(JoinLottery.SCORE_PRIZE_FINISH);
             return join;
         }
+        join.setFlag(false);
         join.setStatus(JoinLottery.PRIZE_FINISH);
         return join;
     }

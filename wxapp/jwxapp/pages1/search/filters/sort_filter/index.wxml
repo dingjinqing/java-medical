@@ -6,134 +6,21 @@
       </view>
       <view class="center-title">更多分类</view>
     </view>
-    <view class="sort-item" bindtap="toogleChange">
-      <view class="sort-name">服装(10)</view>
-      <view class="arrow">
-        <image src="/images/comment_down.png" class="{{ changeStatus ? 'up' : '' }} arrow-image"></image>
+    <block wx:for="{{sorts}}" wx:for-item="parentItem" wx:for-index="parentIndex" wx:key="sortId">
+      <view class="sort-item" bindtap="toogleChange" data-sort-id="{{parentItem.sortId}}">
+        <view class="sort-name">{{parentItem.sortName}}({{parentItem.goodsNum || '0'}})</view>
+        <view class="arrow">
+          <image src="/images/comment_down.png" class="{{parentItem.sortId === showParentId ? 'up' : ''}} arrow-image"></image>
+        </view>
       </view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
-    <view class="sort-item" wx:if="{{changeStatus}}">
-      <view class="sort-name second">服装(10)</view>
-    </view>
+      <view class="sort-item" data-sort-id="{{parentItem.sortId}}" bindtap="chooseSort" wx:if="{{parentItem.sortId === showParentId}}">
+        <view class="sort-name second" style="{{parentItem.sortId === selectedSort ? 'color:'+main_setting.comColor : ''}}">全部</view>
+      </view>
+      <block wx:for="{{parentItem.children}}" wx:for-item="childItem" wx:for-index="childIndex" wx:key="sortId">
+        <view class="sort-item" bindtap="chooseSort" data-sort-id="{{childItem.sortId}}" wx:if="{{parentItem.sortId === showParentId}}">
+          <view class="sort-name second" style="{{childItem.sortId === selectedSort ? 'color:'+main_setting.comColor : ''}}">{{childItem.sortName}}({{childItem.goodsNum || '0'}})</view>
+        </view>
+      </block>
+    </block>
   </view>
 </v-popup>

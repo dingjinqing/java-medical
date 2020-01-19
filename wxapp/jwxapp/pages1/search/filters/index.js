@@ -85,7 +85,13 @@ global.wxComponent({
     },
     // 选择分类
     chooseSort(e){
-      let { sortId: selectedSort } = e.currentTarget.dataset
+      let { sortId } = e.detail.sortId ? e.detail : e.currentTarget.dataset
+      let selectedSort = this.data.selectedSort
+      if(sortId === selectedSort){
+        selectedSort = null
+      } else {
+        selectedSort = sortId
+      }
       this.setData({
         selectedSort
       })

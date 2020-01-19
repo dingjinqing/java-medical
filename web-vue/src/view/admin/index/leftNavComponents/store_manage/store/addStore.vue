@@ -139,10 +139,6 @@
               :areaCode="areaLinkage"
               @areaData="handleAreaData"
             />
-            <!-- :provinceCode="storeFormInfo.provinceCode" -->
-            <!-- :cityCode="storeFormInfo.cityCode" -->
-            <!-- :districtCode="storeFormInfo.districtCode" -->
-            <!-- @areaChange="areaLinkage" -->
           </div>
         </el-form-item>
         <el-form-item
@@ -443,7 +439,7 @@ export default {
         posShopId: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { type: 'number', message: '门店编码必须为数字值' }],
         provinceCode: [{ required: true, message: this.$t('addStore.selectArea') }, { validator: validateArea, trigger: 'blur' }],
         address: [{ required: true, message: this.$t('addStore.enterArea'), trigger: 'blur' }, { validator: validateAddress, trigger: 'change' }],
-        storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto') }]
+        storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto'), trigger: ['blur', 'change'] }]
       },
       selfImgDialogShow: false,
       storeGroups: [],
@@ -736,10 +732,12 @@ export default {
       }
       let imgs = imgObj.map(item => item.imgPath)
       this.storeFormInfo.storeImgs = this.storeFormInfo.storeImgs.concat(imgs)
+      this.$refs.storeForm.validateField('storeImgs')
     },
     // 删除店面图片
     deleteStoreImg (index) {
       this.storeFormInfo.storeImgs.splice(index, 1)
+      this.$refs.storeForm.validateField('storeImgs')
     },
     // 下一步
     nextClickHandler () {

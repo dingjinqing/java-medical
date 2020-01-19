@@ -6,7 +6,7 @@
 				<scroll-view class='goods_group_scroll' scroll-x='true'>
 					<view class='goods_group_nav'>
 						<block
-						 wx:for="{{m.group_names}}"
+						 wx:for="{{m.sort_group_arr}}"
 						 wx:key="key"
 						 wx:for-item="item"
 						 wx:for-index='index'
@@ -16,9 +16,9 @@
 								 class='group_nav_single_content'
 								 bindtap='bindMenuClick'
 								 data-index="{{index}}"
-								 data-idx="{{m.idx}}"
+								 data-idx="{{m.cur_idx}}"
 								>
-									<view class='group_nav_title {{index == m.group_nav_index ? "color_red":" "}}' style='color:{{index == m.group_nav_index ?comColor:""}}'>{{item}}</view>
+									<view class='group_nav_title {{index == m.group_nav_index ? "color_red":" "}}' style='color:{{index == m.group_nav_index ?comColor:""}}'>{{item.group_name}}</view>
 								</view>
 								<view class='nav_bottom_select' style='border-color:{{comColor}}' wx:if="{{index == m.group_nav_index }}" />
 							</view>
@@ -32,7 +32,7 @@
 			<view class='group_big_module' wx:if="{{m.shop_style == 1}}">
 				<block
 				 data-idx="{{m.idx}}"
-				 wx:for="{{m.first_group_goods}}"
+				 wx:for="{{m.goodsListData}}"
 				 wx:key='key'
 				 wx:for-item="item"
 				 wx:for-index='index'
@@ -40,14 +40,13 @@
 					<!-- 普通商品 -->
 					<view
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
-					 catchtap="{{item.goods_type == 10 ? 'bindTopre' : 'bindJumpLink'}}"
+					 catchtap="{{item.activityType == 10 ? 'bindTopre' : 'bindJumpLink'}}"
 					 data-is_first_touch="{{m.is_first_touch}}"
 					 data-idx='{{m.cur_idx}}'
-					 data-presale_id='{{item.presale_id}}'
-					 data-goods_type='{{item.goods_type}}'
-					 data-url="pages/item/item?good_id={{item.goods_id}}"
-					 wx:if='{{item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'
+					 data-url="pages/item/item?goodId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{activityType}}"
+					 wx:if='{{item.activityType !=3 && item.activityType !=1 && item.activityType !=5}}'
 					>
+					
 						<view class='module_img'>
 							<include src="../product/goodscommon/labelcommon.wxml" />
 							<view class='group_delete' wx:if='{{item.is_delete == 1}}'>商品已删除</view>

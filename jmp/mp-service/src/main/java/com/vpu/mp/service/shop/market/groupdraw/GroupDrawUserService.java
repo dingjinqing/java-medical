@@ -96,6 +96,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	 * 处理拼团抽奖
 	 */
 	public void dealOpenGroupDraw() {
+		logger().info("处理拼团抽奖");
 		List<GroupDrawRecord> goodsGroupDrawList = getOpenGroupDrawList();
 		goodsGroupDrawList.forEach(goodsGroupDraw -> {
 			Integer goodsGroupDrawId = goodsGroupDraw.getId();
@@ -233,6 +234,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	 * 不满足开奖条件，更新状态
 	 */
 	private void updateGroupDrawStatus(Integer goodsGroupDrawId, Integer goodsId) {
+		logger().info("不满足开奖条件，更新开奖状态");
 		db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.DRAW_STATUS, DRAW_FAIL)
 				.set(JOIN_GROUP_LIST.DRAW_TIME, currentTimeStamp())
 				.where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(goodsGroupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)))
@@ -273,6 +275,7 @@ public class GroupDrawUserService extends ShopBaseService {
 	 * 开奖
 	 */
 	private void startDraw(Integer groupDrawId, Integer goodsId) {
+		logger().info("开奖");
 		// 该商品的已成团
 		List<Integer> groupIds = getGroupListByGoodsId(groupDrawId, goodsId, GROUPED).stream()
 				.map(JoinGroupListRecord::getGroupId).collect(Collectors.toList());

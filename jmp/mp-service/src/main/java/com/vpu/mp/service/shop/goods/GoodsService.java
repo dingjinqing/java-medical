@@ -1361,14 +1361,15 @@ public class GoodsService extends ShopBaseService {
      * @return 商品信息
      */
     public GoodsVo select(Integer goodsId) {
-        GoodsVo goodsVo = db().select()
+        Record record = db().select()
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
-            .where(GOODS.GOODS_ID.eq(goodsId)).fetchOne().into(GoodsVo.class);
-
-        if (goodsVo == null) {
+            .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
+        if (record == null) {
             return null;
         }
+
+        GoodsVo goodsVo=record.into(GoodsVo.class);
 
         //设置主绝对路径图片,都是全路径
         goodsVo.setGoodsImgPath(goodsVo.getGoodsImg());
@@ -1972,6 +1973,28 @@ public class GoodsService extends ShopBaseService {
             goodsNums.add(getGoodsNumDao(condition));
         }
         return goodsNums;
+    }
+
+    /**
+     * 查询普通商品分享时使用的分享信息
+     * @param goodsId 商品id
+     * @return 商品分享信息
+     */
+    public GoodsVo selectGoodsShareInfo(Integer goodsId) {
+        Record3<String,String,String> record = db().select(GOODS.GOODS_NAME,GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
+            .from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchAny();
+
+        if (record == null) {
+            return null;
+        }
+        GoodsVo goodsVo = record.into(GoodsVo.class);
+
+        // 反序列化商品海报分享信息
+        GoodsSharePostConfig goodsSharePostConfig = Util.parseJson(goodsVo.getShareConfig(), GoodsSharePostConfig.class);
+        goodsSharePostConfig.setShareImgPath(goodsSharePostConfig.getShareImgUrl());
+        goodsVo.setGoodsSharePostConfig(goodsSharePostConfig);
+        return goodsVo;
     }
 
     /**
