@@ -11,5 +11,8 @@ export const en = {
   successAddToast: 'Add service classification is successful',
   successDeleteToast: 'successfully deleted',
   updateCompleted: 'update completed',
-  updateFaild: 'Update failed'
+  updateFaild: 'Update failed',
+  addCategory: 'Add Category',
+  categoryName2: 'Category Name',
+  cancel: 'Cancel'
 }
