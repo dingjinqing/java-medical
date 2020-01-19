@@ -1,5 +1,5 @@
 <wxs src="../../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
-<block wx:if="{{item.label && m.hide_label == 1}}">
+<block wx:if="{{item.label && m.hide_label == 1 || item.label && item.isGroup}}">
   <block wx:if="{{item.label.listPattern == 1}}">
     <view class="label-style1" style='background:url({{m.imageUrl}}image/wxapp/label-three.png) no-repeat ; background-size:100%;'>
       <text class="text">{{item.label.name}}</text>
@@ -29,7 +29,7 @@
   </block>
 </block>
 <image class="sell_out image" wx:if='{{item.goodsNumber == 0}}' src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
-<image src='{{item.goodsImg}}' class="image" style="width:100%;height:100%"   lazy-load="{{true}}" class="item_img"></image>
+<image src='{{item.goodsImg}}' class="image"  lazy-load="{{true}}" class="item_img"></image>
 <!--会员专享商品图片tip-->
 <view wx:if="{{item.isMembershipExclusive}}" class='exclusive'>{{i18n.$t(localePack,'components.decorate.membershipExclusive')}}</view>
 <!--首单特惠商品图片tip-->

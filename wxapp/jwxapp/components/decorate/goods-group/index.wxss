@@ -479,8 +479,12 @@
   font-weight: bold;
   padding: 8rpx 10rpx;
   height: 74rpx;
+  display: flex;
+  flex-direction: column;
 }
-
+.group_list_module .module_text .module_goods_price .market_price{
+  margin-left: 4rpx!important;
+}
 .group_list_module .module_text .module_goods_price .sale_price {
   font-size: 30rpx;
   margin-top: -3rpx;
@@ -651,6 +655,7 @@
 
 .group_double_module .pin_flag {
   margin-top: 4rpx;
+  border: 1px solid #408080;
 }
 
 .group_big_module .grade, .group_list_module .grade {
@@ -717,7 +722,16 @@
   display: inline-block;
   height: 34rpx;
 }
+.title_box{
+  display: flex;
+}
 .title_label{
   display: flex;
   align-items: center;
+  color:#fff;
+  /* border:none */
+}
+.pin_flagThree {
+  margin-left: 0!important;
+  border: 1px solid #408080;
 }

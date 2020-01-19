@@ -17,8 +17,6 @@ global.wxComponent({
       if (!newVal.goodsListData) return
       // 初始数据处理
       this.handleToInitData(newVal)
-
-
       newVal.page_num = 1;
       newVal.fixed = false;
       newVal.scr_height = wx.getSystemInfoSync().windowHeight;
@@ -38,37 +36,41 @@ global.wxComponent({
       }
       initData.navlen = initData.sort_group_arr.length;
       initData.group_nav_index = 0;
-      // initData['group_names'] = []
-
-      // initData.goodsListData.forEach((item,index)=>{
-      //   initData['group_names'].push(item.goodsImg)
-      // })
-
+      // 处理label标签、从商品分组引入特殊处理
+      this.handleToLabel(initData.goodsListData)
+      // 处理活动
+      this.handleToGoodsActivities(initData.goodsListData)
+    },
+    handleToLabel (goodsListData) {
+      goodsListData.forEach((item, index) => {
+        item.isGroup = 1
+      })
     },
     bindMenuClick (e) {
-      // var d = this.eventData(e);
-      // var _this = this;
-      // var m = this.data.m;
-      // if (d.click == 1) {
-      //   util.jumpLink('/pages/searchs/search?cur_idx=' + m.idx + '&group_idx=' + m.group_nav_index + '&page_id=' + m.page_id);
-      // } else {
-      //   m.group_nav_index = d.index;
-      //   m.page_num = 1;
-      //   util.api('/api/wxapp/get/group/goods', function(res) {
-      //     if (res.error == 0) {
-      //       var data = res.content;
-      //       m.first_group_goods = data.goods_list;
-      //       m.pin_group_goods = data.pin_group_goods;
-      //       m.more_flag = data.more_flag;
-      //       _this.$set();
-      //     }
-      //   }, {
-      //     cur_idx: m.idx,
-      //     group_idx: m.group_nav_index,
-      //     page: m.page_id,
-      //     page_num: m.page_num,
-      //   });
-      // }
+      var d = this.eventData(e);
+      console.log(d)
+      var _this = this;
+      var m = this.data.m;
+      if (d.click == 1) {
+        util.jumpLink('/pages/searchs/search?cur_idx=' + m.idx + '&group_idx=' + m.group_nav_index + '&page_id=' + m.page_id);
+      } else {
+        m.group_nav_index = d.index;
+        m.page_num = 1;
+        // util.api('/api/wxapp/get/group/goods', function (res) {
+        //   if (res.error == 0) {
+        //     var data = res.content;
+        //     m.first_group_goods = data.goods_list;
+        //     m.pin_group_goods = data.pin_group_goods;
+        //     m.more_flag = data.more_flag;
+        //     _this.$set();
+        //   }
+        // }, {
+        //   cur_idx: m.idx,
+        //   group_idx: m.group_nav_index,
+        //   page: m.page_id,
+        //   page_num: m.page_num,
+        // });
+      }
     },
     onPageScroll (e) {
       var _this = this;
