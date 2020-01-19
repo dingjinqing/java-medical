@@ -1,9 +1,6 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.sql.Timestamp;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import lombok.Data;
 
@@ -26,15 +23,33 @@ public class DistributorCheckListVo {
      * 审核字段
      */
     private String configFields;
-
+    /**
+     * 后台审核字段
+     */
     private DistributorApplyParam.InfoField checkField;
-
+    /**
+     * 用户昵称
+     */
     private String username;
-
+    /**
+     *手机号
+     */
     private String mobile;
-
+    /**
+     * 审核状态 0：审核中；1：审核通过；2：审核拒绝
+     */
+    private Integer status;
+    /**
+     * 是否删除 0：为删除；1：删除
+     */
+    private Integer delFlag;
+    /**
+     * 创建时间
+     */
     private Timestamp createTime;
-
+    /**
+     * 更新时间
+     */
     private Timestamp updateTime;
 
 }
