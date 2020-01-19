@@ -483,7 +483,7 @@ export default {
           })
           this.form.serviceImg = JSON.stringify(serviceImg)
           // 初始化服务时长
-          this.serviceHour = Math.ceil(Number(this.form.serviceDuration) / 60)
+          this.serviceHour = Math.floor(Number(this.form.serviceDuration) / 60)
           this.serviceMinute = Math.ceil(Number(this.form.serviceDuration) % 60)
         })
       }
