@@ -1,7 +1,10 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.sql.Timestamp;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import lombok.Data;
 
 /**
@@ -11,84 +14,27 @@ import lombok.Data;
  */
 @Data
 public class DistributorCheckListVo {
-	private Integer id;
     /**
      * 用户ID
      */
-	private Integer userId;
+    private Integer userId;
     /**
-     * 审核状态 0：审核中；1：审核功过；2：未通过
+     * 审核校验
      */
-	private Integer status;
+    private String activationFields;
     /**
-     *审核内容（不通过原因）
+     * 审核字段
      */
-	private String msg;
-	private Integer delFlag;
-	private String activationFields;
-	private Timestamp createTime;
-    /**
-     * 用户名
-     */
-	private String username;
-    /**
-     * 手机号
-     */
-	private String mobile;
+    private String configFields;
 
-	private Integer inviteId;
-    /**
-     * 真实姓名
-     */
-	private String realName;
-    /**
-     * 性别 f:女 m：男
-     */
-	private String sex;
-    /**
-     * 身份证号
-     */
-	private String cid;
-    /**
-     * 出生年
-     */
-	private Integer birthdayYear;
-    /**
-     * 出生月
-     */
-	private Integer birthdayMonth;
-    /**
-     * 出生日
-     */
-	private Integer birthdayDay;
-    /**
-     * 婚姻状况 1：未婚；2：已婚
-     */
-	private Byte maritalStatus;
-    /**
-     * 教育程度
-     */
-	private Byte education;
-    /**
-     * 所在行业
-     */
-	private Byte industryInfo;
-    /**
-     * 所在地
-     */
-	private String address;
-    /**
-     * 行业名称
-     */
-	private String industryName;
-    /**
-     * 教育程度名称
-     */
-	private String educationName;
+    private DistributorApplyParam.InfoField checkField;
 
-    /**
-     * 审核时间
-     */
-	private Timestamp updateTime;
+    private String username;
+
+    private String mobile;
+
+    private Timestamp createTime;
+
+    private Timestamp updateTime;
 
 }
