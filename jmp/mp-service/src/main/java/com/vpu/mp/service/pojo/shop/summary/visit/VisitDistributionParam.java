@@ -20,5 +20,5 @@ public class VisitDistributionParam {
      * 忽略哪些访问来源
      */
     private List<Integer> cancelBtn;
-    private Integer sourceId;
+    private Integer sourceId = 1;
 }
