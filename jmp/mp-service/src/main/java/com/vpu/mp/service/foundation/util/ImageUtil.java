@@ -180,7 +180,7 @@ public final class ImageUtil {
     public static String toBase64(BufferedImage image) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            ImageIO.write(image, "jpg", os);
+            ImageIO.write(image, "png", os);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             return null;
