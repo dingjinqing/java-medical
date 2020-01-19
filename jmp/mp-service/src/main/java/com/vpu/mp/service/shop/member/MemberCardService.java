@@ -1276,7 +1276,18 @@ public class MemberCardService extends ShopBaseService {
 
 	private Condition getCondition(CardParam param) {
 		Condition condition = DSL.noCondition();
-		if(isNotNull(param.getCardType())) {
+
+		//	有效时间
+		
+		condition = condition.and(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_DURING)
+				.or(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_FOREVER))
+				.or(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_FIX)
+						.and(MEMBER_CARD.END_TIME.gt(DateUtil.getLocalDateTime()))));
+		
+		condition = condition.and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO));
+		condition = condition.and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING));
+		
+		if(null != param.getCardType()) {
 			condition = condition.and(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
 		}
 		if(isNotBlank(param.getCardName())) {
