@@ -257,6 +257,7 @@ public class PreSaleService extends ShopBaseService {
                     .or(TABLE.PRE_END_TIME.le(now).and(TABLE.START_TIME.gt(now)).or(TABLE.END_TIME.gt(now)));
                 break;
             case NAVBAR_TYPE_DISABLED:
+                query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected status: " + status);
