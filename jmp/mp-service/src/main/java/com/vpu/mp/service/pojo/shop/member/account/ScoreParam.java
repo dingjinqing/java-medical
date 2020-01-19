@@ -2,12 +2,6 @@ package com.vpu.mp.service.pojo.shop.member.account;
 
 import java.sql.Timestamp;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-
 import lombok.Data;
 
 /**

@@ -55,6 +55,6 @@ public abstract class CardOpt {
 	 * @param cardId
 	 * @return true 可以 false 不可以
 	 */
-	protected abstract boolean canSendCard(Integer userId,Integer cardId);
+	public abstract boolean canSendCard(Integer userId,Integer cardId);
 
 }

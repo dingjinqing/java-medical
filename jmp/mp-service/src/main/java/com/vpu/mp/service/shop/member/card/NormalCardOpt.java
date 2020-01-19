@@ -79,7 +79,7 @@ public class NormalCardOpt extends CardOpt {
 	}
 
 	@Override
-	protected boolean canSendCard(Integer userId, Integer cardId) {
+	public boolean canSendCard(Integer userId, Integer cardId) {
 		//	用户目前是否拥有该类型会员卡
 		UserCardRecord card = userCardDao.getUsableUserCard(userId, cardId);
 		return card !=null;

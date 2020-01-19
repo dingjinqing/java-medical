@@ -60,7 +60,8 @@ public class CardUtil {
 	}
 	
 	/**
-	 * 卡是否需要购买
+	 * 	卡是否需要购买
+	 * @return true 需要，false不需要
 	 */
 	public static boolean isNeedToBuy(Byte isPay) {
 		return CardConstant.MCARD_ISP_BUY.equals(isPay);

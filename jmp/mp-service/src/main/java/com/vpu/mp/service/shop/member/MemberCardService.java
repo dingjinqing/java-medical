@@ -31,6 +31,7 @@ import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.card.CardOpt;
+import com.vpu.mp.service.shop.member.card.GradeCardOpt;
 import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.card.NormalCardOpt;
@@ -105,6 +106,8 @@ public class MemberCardService extends ShopBaseService {
 	private NormalCardOpt normalCardOpt;
 	@Autowired
 	private LimitCardOpt limitCardOpt;
+	@Autowired
+	private GradeCardOpt gradeCardOpt;
 
     
 	/**
@@ -152,11 +155,11 @@ public class MemberCardService extends ShopBaseService {
 	private MemberCardRecord initMembercardRecordByCfgData(CardParam param) {
 		logger().info("开始初始化会员卡");
 		MemberCardRecordBuilder cardBuilder = MemberCardRecordBuilder.create();
-		if (isNormalCard(param.getCardType())) {
+		if (CardUtil.isNormalCard(param.getCardType())) {
 			initNormalCardCfg(param, cardBuilder);
-		} else if (isLimitCard(param.getCardType())) {
+		} else if (CardUtil.isLimitCard(param.getCardType())) {
 			initLimitCardCfg(param, cardBuilder);
-		} else if (isGradeCard(param.getCardType())) {
+		} else if (CardUtil.isGradeCard(param.getCardType())) {
 			initGradeCardCfg(param, cardBuilder);
 		}
 		return cardBuilder.build();
@@ -179,11 +182,12 @@ public class MemberCardService extends ShopBaseService {
 	private void initReceiveCardCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
 		logger().info("正在初始化领取需要的条件");
 
-		if (isNormalOrLimitCard(param.getCardType())) {
+		if (CardUtil.isNormalCard(param.getCardType()) || 
+				CardUtil.isLimitCard(param.getCardType())) {
 			initReceiveCardCondition(param, cardBuilder);
 		}
 
-		if (isLimitCard(param.getCardType())) {
+		if (CardUtil.isLimitCard(param.getCardType())) {
 			initReceiveAndSendNumLimitCfg(param, cardBuilder);
 		}
 
@@ -257,7 +261,7 @@ public class MemberCardService extends ShopBaseService {
 		}
 		cardBuilder.storeList(storeList).storeUseSwitch(storeUseSwitch);
 
-		if (isLimitCard(param.getCardType())) {
+		if (CardUtil.isLimitCard(param.getCardType())) {
 
 			if (isAllStore(storeListType) || isPartStore(storeListType)) {
 				// 1. 使用时间 2.卡总次数
@@ -300,7 +304,9 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	private void initOwncfg(CardParam card) {
 
-		if (isNormalOrGradeCard(card.getCardType()) && isAllowPayOwnGoods(card)) {
+		if ((CardUtil.isNormalCard(card.getCardType()) || 
+				CardUtil.isGradeCard(card.getCardType())) && 
+				isAllowPayOwnGoods(card)) {
 			logger().info("正在处理会员卡的专享商品");
 
 			if (isNotNull(card.getOwnGoodsId())) {
@@ -874,11 +880,11 @@ public class MemberCardService extends ShopBaseService {
 	public BaseCardVo getCardDetailById(CardIdParam param) {
 		MemberCardRecord card = getCardById(param.getId());
 
-		if (isNormalCard(card.getCardType())) {
+		if (CardUtil.isNormalCard(card.getCardType())) {
 			return changeToNormalCardDetail(card);
-		} else if (isLimitCard(card.getCardType())) {
+		} else if (CardUtil.isLimitCard(card.getCardType())) {
 			return changeToLimitCardDetail(card);
-		} else if (isGradeCard(card.getCardType())) {
+		} else if (CardUtil.isGradeCard(card.getCardType())) {
 			return changeToGradeCardDetail(card);
 		}
 		return null;
@@ -890,7 +896,8 @@ public class MemberCardService extends ShopBaseService {
 	 * @param card
 	 */
 	private void assignCardBatch(BaseCardVo card) {
-		if (isNormalOrLimitCard(card.getCardType())) {
+		if (CardUtil.isNormalCard(card.getCardType()) || 
+				CardUtil.isLimitCard(card.getCardType())) {
 			logger().info("正在获取批次信息");
 			List<CardBatchRecord> batchList = cardReceiveCode.getAvailableCardBatchByCardId(card.getId());
 			List<CardBatchVo> res = new ArrayList<>();
@@ -905,7 +912,8 @@ public class MemberCardService extends ShopBaseService {
 	 * 装配专享商品
 	 */
 	private void assignPayOwnGoods(BaseCardVo card) {
-		if (isNormalOrGradeCard(card.getCardType())) {
+		if (CardUtil.isNormalCard(card.getCardType()) ||
+				CardUtil.isGradeCard(card.getCardType())) {
 			logger().info("正在获取专享商品");
 			card.setOwnGoodsId(getOwnGoodsId(card.getId()));
 			card.setOwnStoreCategoryIds(getOwnStoreCategory(card.getId()));
@@ -1077,7 +1085,7 @@ public class MemberCardService extends ShopBaseService {
 			List<String> legal = new ArrayList<>();
 			List<String> exchangCountLegal = new ArrayList<>();
 			Integer legalFlag = 0;
-			if(isNormalCard(cardType) || isGradeCard(cardType)) {
+			if(CardUtil.isNormalCard(cardType) || CardUtil.isGradeCard(cardType)) {
 				if(isNotNull(card.getDiscount())) {
 					logger().info("积分打折");
 					legal.add(""+card.getDiscount());
@@ -1124,7 +1132,7 @@ public class MemberCardService extends ShopBaseService {
 						legalFlag = 8;
 					}
 				}
-			}else if(isLimitCard(cardType)) {
+			}else if(CardUtil.isLimitCard(cardType)) {
 				if(isNotNull(card.getCount())) {
 					logger().info("开卡赠送门店服务机会");
 					legal.add(""+card.getCount());
@@ -1224,13 +1232,9 @@ public class MemberCardService extends ShopBaseService {
 		}else if(CardUtil.isLimitCard(type)) {
 			return limitCardOpt;
 		}else {
-			// todo 等级卡
-			return null;
+			return gradeCardOpt;
 		}
 	}
-	
-	
-	
 
 	/**
 	 * 生成会员卡号
@@ -1914,25 +1918,6 @@ public class MemberCardService extends ShopBaseService {
 		return cardDao.getCardIdByType(type);
 	}
 
-	public boolean isNormalCard(Byte cardType) {
-		return MCARD_TP_NORMAL.equals(cardType);
-	}
-
-	public boolean isLimitCard(Byte cardType) {
-		return MCARD_TP_LIMIT.equals(cardType);
-	}
-
-	public boolean isGradeCard(Byte cardType) {
-		return MCARD_TP_GRADE.equals(cardType);
-	}
-
-	public boolean isNormalOrLimitCard(Byte cardType) {
-		return isNormalCard(cardType) || isLimitCard(cardType);
-	}
-
-	public boolean isNormalOrGradeCard(Byte cardType) {
-		return isNormalCard(cardType) || isGradeCard(cardType);
-	}
 
 	private boolean isNotNull(Object obj) {
 		return !isNull(obj);
