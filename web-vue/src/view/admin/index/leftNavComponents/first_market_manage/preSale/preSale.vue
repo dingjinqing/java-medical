@@ -26,7 +26,7 @@
           <div class="money_paytime">
             <span class="info_title">定金支付时间：</span>
             <el-date-picker
-              v-model="param.preStartTime"
+              v-model="param.startTime"
               type="datetime"
               placeholder="选择开始日期"
               size="small"
@@ -36,7 +36,7 @@
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
             <el-date-picker
-              v-model="param.preEndTime"
+              v-model="param.endTime"
               type="datetime"
               placeholder="选择结束日期"
               size="small"
@@ -50,7 +50,7 @@
           <div>
             <span class="info_title">尾款支付时间：</span>
             <el-date-picker
-              v-model="param.startTime"
+              v-model="param.preStartTime"
               type="datetime"
               placeholder="选择开始日期"
               size="small"
@@ -60,7 +60,7 @@
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
             <el-date-picker
-              v-model="param.endTime"
+              v-model="param.preEndTime"
               type="datetime"
               placeholder="选择结束日期"
               size="small"

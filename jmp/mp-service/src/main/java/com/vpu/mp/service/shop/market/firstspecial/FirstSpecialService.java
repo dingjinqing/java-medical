@@ -139,7 +139,7 @@ public class FirstSpecialService extends ShopBaseService {
     public FirstSpecialVo getFirstSpecialById(Integer id){
         FirstSpecialRecord record = db().select(FIRST_SPECIAL.ID,FIRST_SPECIAL.NAME,FIRST_SPECIAL.FIRST,FIRST_SPECIAL.IS_FOREVER,FIRST_SPECIAL.START_TIME,FIRST_SPECIAL.END_TIME,
             FIRST_SPECIAL.LIMIT_AMOUNT,FIRST_SPECIAL.LIMIT_FLAG,FIRST_SPECIAL.SHARE_CONFIG).
-            from(FIRST_SPECIAL).where(FIRST_SPECIAL.ID.eq(id)).fetchOne().into(FirstSpecialRecord.class);
+            from(FIRST_SPECIAL).where(FIRST_SPECIAL.ID.eq(id)).fetchOneInto(FirstSpecialRecord.class);
         FirstSpecialVo res = record.into(FirstSpecialVo.class);
         res.setShopShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
         res.setFirstSpecialGoods(getFirstSpecialGoodsVoList(id));
@@ -212,19 +212,19 @@ public class FirstSpecialService extends ShopBaseService {
     }
 
     private int getFirstSpecialActGoodsAmount(int id){
-        return db().selectCount().from(FIRST_SPECIAL_GOODS).where(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(id)).fetchOne().into(Integer.class);
+        return db().selectCount().from(FIRST_SPECIAL_GOODS).where(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(id)).fetchOneInto(Integer.class);
     }
 
     private int getFirstSpecialActOrderAmount(int id){
-        return db().select(countDistinct(ORDER_GOODS.ORDER_SN)).from(ORDER_GOODS).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).fetchOne().into(Integer.class);
+        return db().select(countDistinct(ORDER_GOODS.ORDER_SN)).from(ORDER_GOODS).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).fetchOneInto(Integer.class);
     }
 
     private int getFirstSpecialActUserAmount(int id){
-        return db().select(countDistinct(ORDER_INFO.USER_ID)).from(ORDER_GOODS).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).fetchOne().into(Integer.class);
+        return db().select(countDistinct(ORDER_INFO.USER_ID)).from(ORDER_GOODS).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).fetchOneInto(Integer.class);
     }
 
     private BigDecimal getFirstSpecialPaymentTotalAmount(int id){
-        BigDecimal res =  db().select(sum(ORDER_GOODS.DISCOUNTED_GOODS_PRICE)).from(ORDER_GOODS).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_WAIT_DELIVERY)).fetchOne().into(BigDecimal.class);
+        BigDecimal res =  db().select(sum(ORDER_GOODS.DISCOUNTED_GOODS_PRICE)).from(ORDER_GOODS).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_WAIT_DELIVERY)).fetchOneInto(BigDecimal.class);
         return res == null ? BigDecimal.ZERO : res;
     }
 

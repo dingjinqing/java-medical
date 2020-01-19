@@ -3,15 +3,15 @@
 <view class='main_container'>
     <!-- 拼团商品信息 -->
     <view class='goods_info clearfix'>
-        <view class='goods_img'><image src='{{group_info.goods.goods_img}}'></image></view>
+        <view class='goods_img'><image src='{{group_info.goods.goodsImg}}'></image></view>
         <view class='goods_content'>
             <view class='goods_name'>
                 <text style='color:{{comColor}};border-color:{{comColor}}'>拼团抽奖</text>
-                {{group_info.goods.goods_name}}
+                {{group_info.goods.goodsName}}
             </view>
             <view class='price_info'>
-              <view class='shop_prices' style='color:{{comColor}};'>￥<text>{{group_info.group_draw.pay_money}}</text></view>
-              <view class='market_prices'>￥{{group_info.goods.shop_price }}</view>
+              <view class='shop_prices' style='color:{{comColor}};'>￥<text>{{group_info.groupDraw.payMoney}}</text></view>
+              <view class='market_prices'>￥{{group_info.goods.shopPrice }}</view>
             </view>
             <view class='buy_tips'>如未中奖，将全额退款至原支付账户</view>
         </view>
@@ -19,36 +19,36 @@
 
     <!-- 拼团详情信息 -->
     <view class='pinlo_info'>
-        <!--   进行中，未成团 -->
-        <block wx:if='{{group_info.group_join_detail.group_status == 0}}'>
-          <view class='renshu_info'>还差<text style='color:{{comColor}};'>{{group_info.group_join_detail.surplus_group_num}}</text>人，即可成团参与抽奖</view>
+        <!-- 进行中，未成团 -->
+        <block wx:if='{{group_info.groupJoinDetail.groupStatus == 0}}'>
+          <view class='renshu_info'>还差<text style='color:{{comColor}};'> {{group_info.groupJoinDetail.surplusGroupNum}}</text>人，即可成团参与抽奖</view>
           <view class='time_info' style='color:{{comColor}}'>距结束仅剩 <text style='color:{{comColor}};'>{{clock}}</text></view>
         </block>
         <!-- 进行中，已成团 -->
-        <block wx:if='{{group_info.group_join_detail.group_status == 10}}'>
+        <block wx:if='{{group_info.groupJoinDetail.groupStatus == 10}}'>
           <view class='renshu_info renshu_info1'>已成团，邀请更多用户参与，可增加中奖机会</view>
           <view class='time_info time_info1'>邀请好友参与，将会增加中奖机会</view>
           <view class='open_time' style='color:{{comColor}}'>距结束仅剩 <text>{{clock}}</text></view>
         </block>
         <!-- 未成团，活动结束 -->
-        <block wx:if='{{group_info.group_join_detail.group_status == 2}}'>
+        <block wx:if='{{group_info.groupJoinDetail.groupStatus == 2}}'>
           <view class='renshu_info renshu_info1'>未满员，拼团失败</view>
           <view class='time_info' style='color:{{comColor}}' bindtap='to_orderinfos'>将即刻退款到原支付账户，查看退款详情<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
         </block>
         <!-- 已成团，自己未中奖 -->
-        <block wx:if='{{group_info.group_join_detail.group_status == 12}}'>
+        <block wx:if='{{group_info.groupJoinDetail.groupStatus == 12}}'>
           <view class='renshu_info renshu_info1'>很遗憾，本次活动未中奖</view>
           <view class='time_info' style='color:{{comColor}}'  bindtap='to_orderinfos'>将即刻退款到原支付账户，查看退款详情<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
           <view class='lucky_person' style='background:url({{imageUrl}}/image/wxapp/pl_item3.png);background-size:100% 100%;'>
               <view>本次中奖用户</view>
               <view class='luck_info'>
-                  <image src='{{group_info.group_join_detail.draw_user.user_avatar}}'></image>
-                  {{group_info.group_join_detail.draw_user.username}}
+                  <image src='{{group_info.groupJoinDetail.drawUser.userAvatar}}'></image>
+                  {{group_info.groupJoinDetail.drawUser.username}}
               </view>
           </view>
         </block>
         <!-- 全体都未中奖 -->
-        <block wx:if='{{group_info.group_join_detail.group_status == 13}}'>
+        <block wx:if='{{group_info.groupJoinDetail.groupStatus == 13}}'>
           <view class='renshu_info renshu_info1'>很遗憾，本次活动未中奖</view>
           <view class='time_info'  style='color:{{comColor}}' bindtap='to_orderinfos'>将即刻退款到原支付账户，查看退款详情<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
           <view class='no_one_luck' style='background:url({{imageUrl}}/image/wxapp/pl_item2.png);background-size:100% 100%;'>
@@ -57,121 +57,81 @@
           </view>
         </block>
         <!-- 自己中奖状态 -->
-        <block wx:if='{{group_info.group_join_detail.group_status == 11}}'>
+        <block wx:if='{{group_info.groupJoinDetail.groupStatus == 11}}'>
           <view class='luck_self'>恭喜您已中奖</view>
           <view class='award_tips'>奖品将即刻发货</view>
         </block>
 
-
-        <view class='person_avater clearfix' wx:if='{{group_info.group_join_detail.user_list!=""}}'>
+        <!-- 团员信息 -->
+        <view class='person_avater clearfix' wx:if='{{group_info.groupJoinDetail.userList!=""}}'>
             <view class='first_avater'>
               <view class='captian' style='background:{{comColor}}'>团长</view>
-              <image src='{{group_info.group_join_detail.user_list[0].user_avatar}}' style='border-color:{{comColor}}'></image>
-              <view class='user_name'>{{group_info.group_join_detail.user_list[0].username}}</view>
+              <image src='{{group_info.groupJoinDetail.userList[0].userAvatar}}' style='border-color:{{comColor}}'></image>
+              <view class='user_name'>{{group_info.groupJoinDetail.userList[0].username}}</view>
             </view>
             <view class='other_avater' wx:for="{{user_arr}}" wx:if='{{user_arr!=""}}' wx:key='key'>
-              <image src='{{item.user_avatar}}'></image>
+              <image src='{{item.userAvatar}}'></image>
               <view class='user_name'>{{item.username}}</view>
             </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 1}}'>
+            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum < 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum}}">
               <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
               <view class='user_name'>待邀请</view>
             </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 2 }}'>
+            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum >= 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum - 1}}" >
               <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
               <view class='user_name'>待邀请</view>
             </view>
-            <view class='other_avater' wx:if='{{ group_info.group_join_detail.surplus_group_num >= 3}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 4}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 5}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 6}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 7}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 8}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 9}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 10}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 11}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 12}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' wx:if='{{group_info.group_join_detail.surplus_group_num >= 13}}'>
-              <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
-            </view>
-            <view class='other_avater' style='color:#fff' wx:if='{{group_info.group_join_detail.surplus_group_num >= 14 || user_arr.length>13}}'>
+            <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum >= 14}}">
               <image src='{{imageUrl}}/image/wxapp/icon_group1.png'></image>
-              <view class='user_name' style='color:#fff'>待邀请</view>
+              <view class='user_name'>待邀请</view>
             </view>
         </view>
-        <view class='btn_invites' wx:if='{{(group_info.group_join_detail.group_status == 0 && group_info.group_join_detail.button.is_to_invite == 1) ||  (group_info.group_join_detail.group_status == 10 && group_info.group_join_detail.button.is_to_invite == 1)}}' >
+
+        <!-- 拼团结果 -->
+        <view class='btn_invites' wx:if='{{(group_info.groupJoinDetail.groupStatus == 0 && group_info.groupJoinDetail.button.isToInvite == 1) || (group_info.groupJoinDetail.group_status == 10 && group_info.groupJoinDetail.button.isToInvite == 1)}}'>
           <block wx:if="{{getsq == true || click_num == true}}">
-          <button open-type='share' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>邀请好友参与抽奖</button>
+            <button open-type='share' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>邀请好友参与抽奖</button>
           </block>
           <block wx:else>
-          <button  open-type="getUserInfo" bindgetuserinfo="getUserInfo" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>邀请好友参与抽奖</button>
+            <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>邀请好友参与抽奖</button>
           </block>
         </view>
-        <view class='two_btn' wx:if='{{(group_info.group_join_detail.group_status == 0 && group_info.group_join_detail.button.is_to_invite != 1) || (group_info.group_join_detail.group_status == 10 && group_info.group_join_detail.button.is_to_invite != 1)}}'>
+        <view class='two_btn' wx:if='{{(group_info.groupJoinDetail.groupStatus == 0 && group_info.groupJoinDetail.button.isToInvite != 1) || (group_info.groupJoinDetail.groupStatus == 10 && group_info.groupJoinDetail.button.isToInvite != 1)}}'>
          <block wx:if="{{getsq == true || click_num == true}}">
-            <view class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' bindtap='to_join' wx:if="{{group_info.group_join_detail.button.is_join_draw == 1}}">￥{{group_info.group_draw.pay_money}}参与拼团抽奖</view>
-             <view class='btn_open' bindtap='to_open' wx:if='{{group_info.group_join_detail.button.is_open_draw == 1}}'>
-              ￥{{group_info.group_draw.pay_money}}发起拼团抽奖
+            <view class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' bindtap='to_join' wx:if="{{group_info.groupJoinDetail.button.isJoinDraw == 1}}">￥{{group_info.groupDraw.payMoney}}参与拼团抽奖</view>
+             <view class='btn_open' bindtap='to_open' wx:if='{{group_info.groupJoinDetail.button.isOpenDraw == 1}}'>
+              ￥{{group_info.groupDraw.payMoney}}发起拼团抽奖
               <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
             </view>
          </block>
          <block wx:else>
-          <button class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if="{{group_info.group_join_detail.button.is_join_draw == 1}}" data-join="{{1}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">￥{{group_info.group_draw.pay_money}}参与拼团抽奖</button>
-             <button class='btn_open'  wx:if='{{group_info.group_join_detail.button.is_open_draw == 1}}' data-open="{{1}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">
-              ￥{{group_info.group_draw.pay_money}}发起拼团抽奖
+          <button class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if="{{group_info.groupJoinDetail.button.isJoinDraw == 1}}" data-join="{{1}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">￥{{group_info.groupDraw.payMoney}}参与拼团抽奖</button>
+             <button class='btn_open'  wx:if='{{group_info.groupJoinDetail.button.isOpenDraw == 1}}' data-open="{{1}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+              ￥{{group_info.groupDraw.payMoney}}发起拼团抽奖
               <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
             </button>
          </block>
 
         </view>
-        <view class='btn_invites ' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{ group_info.group_join_detail.group_status == 2 || group_info.group_join_detail.group_status == 11}}' bindtap='to_orderinfo'>
-          <block wx:if='{{group_info.group_draw.status == 2}}'>回到首页</block>
-          <block wx:if='{{group_info.group_draw.status != 2}}'>查看订单详情</block>
+        <view class='btn_invites ' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{ group_info.groupJoinDetail.groupStatus == 2 || group_info.groupJoinDetail.groupStatus == 11}}' bindtap='to_orderinfo'>
+          <block wx:if='{{group_info.groupDraw.status == 2}}'>回到首页</block>
+          <block wx:if='{{group_info.groupDraw.status != 2}}'>查看订单详情</block>
         </view>
-        <view class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{ group_info.group_join_detail.group_status == 12 || group_info.group_join_detail.group_status == 13}}' bindtap='to_lists'>
-          <block wx:if='{{group_info.group_draw.status == 2}}'>回到首页</block>
-          <block wx:if='{{group_info.group_draw.status != 2}}'>查看更多抽奖活动</block>
+        <view class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{ group_info.groupJoinDetail.groupStatus == 12 || group_info.groupJoinDetail.groupStatus == 13}}' bindtap='to_lists'>
+          <block wx:if='{{group_info.groupDraw.status == 2}}'>回到首页</block>
+          <block wx:if='{{group_info.groupDraw.status != 2}}'>查看更多抽奖活动</block>
         </view>
     </view>
 
-    <view class="group_fail_reward" style='color:{{comColor}};' wx:if='{{group_info.group_join_detail.group_status == 2 || group_info.group_join_detail.group_status == 12 || group_info.group_join_detail.group_status == 13}}' bindtap="to_coupon_list">
+    <!-- 拼团鼓励奖 -->
+    <view class="group_fail_reward" style='color:{{comColor}};' wx:if='{{group_info.groupJoinDetail.groupStatus == 2 || group_info.groupJoinDetail.groupStatus == 12 || group_info.groupJoinDetail.groupStatus == 13}}' bindtap="to_coupon_list">
       <view>感谢您的参与，获得{{group_info.group_draw.reward_num}}张优惠券</view>
       <view class="reward-right">
         去看看
         <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
       </view>
     </view>
+
     <!-- 拼团抽奖规则 -->
     <view class='pinlo_rule' data-oo='{{is_show_modal}}'>
       <view class='pr_top' bindtap='to_rule'>
@@ -209,7 +169,7 @@
     </view>
 
     <!-- 更多抽奖活动 -->
-    <view class='more_goods' wx:if='{{group_info.draw_goods && group_info.draw_goods!="" && group_info.group_draw.status != 2}}'>
+    <view class='more_goods' wx:if='{{group_info.drawGoods && group_info.drawGoods!="" && group_info.groupDraw.status != 2}}'>
         <view class='mg_title'>
             <view class='title_img'><image src='{{imageUrl}}/image/wxapp/pl_item1.png'></image></view>
             <view class='title_img1'><image src='{{imageUrl}}/image/wxapp/pl_item4.png'></image></view>
@@ -217,15 +177,15 @@
             <view class='title_word'>更多抽奖</view>
         </view>
         <view class='mg_content clearfix'>
-            <view class='each_goods' wx:for='{{group_info.draw_goods}}' wx:key='key' bindtap='to_group' data-goods_id='{{item.goods_id}}' data-draw_id='{{group_info.group_draw.id}}'>
+            <view class='each_goods' wx:for='{{group_info.drawGoods}}' wx:key='key' bindtap='to_group' data-goods_id='{{item.goodsId}}' data-draw_id='{{group_info.groupDraw.id}}'>
               <view class='ec_imgs'>
-                <image src='{{item.goods_img}}'></image>
+                <image src='{{imageUrl}}/{{item.goodsImg}}'></image>
               </view>
               <view class='ec_bottom'>
-                  <view class='ec_names'>{{item.goods_name}}</view>
+                  <view class='ec_names'>{{item.goodsName}}</view>
                   <view class='ec_price'>
-                      <view class='sale_price' style='color:{{comColor}}'>￥{{group_info.group_draw.pay_money}}</view>
-                      <view class='market_price'>￥{{item.shop_price}}</view>
+                      <view class='sale_price' style='color:{{comColor}}'>￥{{group_info.groupDraw.payMoney}}</view>
+                      <view class='market_price'>￥{{item.shopPrice}}</view>
                   </view>
                   <view class='ec_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' >马上抢</view>
               </view>
@@ -246,8 +206,8 @@
     <view class='btn_close_modal' wx:if='{{is_show_modal == 1}}' bindtap='close_this'><image src='{{imageUrl}}/image/wxapp/kanjia_close.png'></image></view>
 
     <!-- 获取用户信息的框 -->
-    <view class='zhezhao' wx:if='{{show_user_modal == 1 && group_info.group_join_detail.group_status == 0}}'></view>
-    <view class='get_user_info' wx:if='{{show_user_modal == 1 && group_info.group_join_detail.group_status == 0}}'>
+    <view class='zhezhao' wx:if='{{show_user_modal == 1 && group_info.groupJoinDetail.groupStatus == 0}}'></view>
+    <view class='get_user_info' wx:if='{{show_user_modal == 1 && group_info.groupJoinDetail.groupStatus == 0}}'>
         <view class='user_tip_word'>
           参与拼团将获得更多抽奖机会
         </view>

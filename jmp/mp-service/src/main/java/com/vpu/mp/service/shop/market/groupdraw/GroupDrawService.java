@@ -187,7 +187,7 @@ public class GroupDrawService extends ShopBaseService {
 		param.setId(id);
 		SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer>> select = createSelect(
 				param);
-		GroupDrawListVo vo = select.fetchOne().into(GroupDrawListVo.class);
+		GroupDrawListVo vo = select.fetchOneInto(GroupDrawListVo.class);
 		transformStatus(vo);
 		return vo;
 	}

@@ -17,10 +17,10 @@
             <text>{{useCard.cardName}}</text>
           </view>
         </view>
-        <view class="pay_li clearfix">
+        <view class="pay_li clearfix" wx:if="{{useCard.money && Math.fround(useCard.money) > 0}}">
           <text class="score_fl">{{i18n.$t(localePack,"pages.store.memberCardPayment")}}</text>
           <view class="score">
-            <input type="digit" value="{{payInfo.cardAmount?payInfo.cardAmount:''}}" bindblur='card_discount' placeholder="{{i18n.$t(localePack,'pages.store.cardhas')}}{{useCard.money}}{{i18n.$t(localePack,'pages.store.yuanBalance')}}" placeholder-style="#ccc" />
+            <input type="digit" value="{{payInfo.cardAmount?payInfo.cardAmount:''}}" bindblur='card_discount' placeholder="{{i18n.$t(localePack,'pages.store.cardhas')}}{{useCard.money?useCard.money:0}}{{i18n.$t(localePack,'pages.store.yuanBalance')}}" placeholder-style="#ccc" />
           </view>
           <view class="fr">
             <text>{{i18n.$t(localePack,"pages.store.less")}}{{payInfo.cardAmount}}{{i18n.$t(localePack,"pages.store.yuan")}}</text>

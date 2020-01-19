@@ -59,9 +59,12 @@ global.wxPage({
   },
   // 去商品详情
   to_item: function (e) {
+    console.log(e)
     var goods_id = e.currentTarget.dataset.goods_id;
+    var group_id = e.currentTarget.dataset.group_id;
     util.navigateTo({
-      url: 'pages/item/item?activityId=' + group_draw_id + '&&activityType=1&&goodsId=' + goods_id
+      // url: 'pages/item/item?activityId=' + group_draw_id + '&&activityType=1&&goodsId=' + goods_id
+      url: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=3"
     })
   },
   //倒计时
