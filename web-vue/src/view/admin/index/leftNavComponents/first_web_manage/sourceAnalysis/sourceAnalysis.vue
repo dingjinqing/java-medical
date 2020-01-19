@@ -2,7 +2,7 @@
   <div>
     <!--上半部分-->
     <div class="div_style">
-      <div class="labelItem">整体来源分析</div>
+      <div class="labelItem">{{$t('assetsManage.sourceAnalysis')}}</div>
       <!--下拉-->
       <el-select
         v-model="timeSelect"
@@ -27,8 +27,8 @@
         @change="customDate"
         value-format="yyyyMMdd"
         range-separator="-"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        :start-placeholder="$t('tradesStatistics.startTime')"
+        :end-placeholder="$t('tradesStatistics.endTime')"
         class="custom"
       >
       </el-date-picker>
@@ -88,8 +88,8 @@
         @change="customDate1"
         value-format="yyyyMMdd"
         range-separator="-"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        :start-placeholder="$t('tradesStatistics.startTime')"
+        :end-placeholder="$t('tradesStatistics.endTime')"
         class="custom"
       >
       </el-date-picker>
