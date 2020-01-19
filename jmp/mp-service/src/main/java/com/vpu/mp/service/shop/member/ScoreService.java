@@ -200,7 +200,7 @@ public class ScoreService extends ShopBaseService {
 		// userScoreRecord.setScoreProportion(this.saas.getShopApp(getShopId()).score.getScoreProportion());
 		
 		if(param.getIsFromCrm()!=null && 
-				NumberUtils.BYTE_ZERO.equals(param.getIsFromCrm())) {
+				!NumberUtils.BYTE_ZERO.equals(param.getIsFromCrm())) {
 			// TODO CRM
 		}else {
 			userScoreRecord.setExpireTime(getScoreExpireTime());

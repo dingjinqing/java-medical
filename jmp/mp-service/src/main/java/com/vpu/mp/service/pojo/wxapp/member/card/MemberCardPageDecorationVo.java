@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 public class MemberCardPageDecorationVo {
     /**
      * 会员卡状态：
-     *未领取-1 已领取1 过期2  停用3
+     *-1未领取， 1已领取， 2过期= ， 3停用,4已达到领取上限，5无库存
      */
     private Byte status = 1;
 

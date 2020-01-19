@@ -45,6 +45,7 @@ export const en = {
   servicePeriodValid: 'The service period cannot be empty',
   validInterval: 'Please select a service date',
   validateDuration: 'Service duration cannot be 0',
+  validServiceNum: 'Reservations cannot be empty',
 
   successTip: 'Successfully saved',
   updateTip: 'update completed'

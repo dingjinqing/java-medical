@@ -117,6 +117,8 @@ global.wxPage({
         // 发票开关
         if (info.invoiceSwitch) {
         }
+        // 积分转换成100的整数倍
+        info.score = Math.floor(info.score/100)*100
         that.setData({
           orderInfo: info,
           useCard: useCard,
@@ -288,7 +290,7 @@ global.wxPage({
         return false
       }
       let amount = parseFloat(Number(value) / 100).toFixed(2)
-      if (amount > this.data.payInfo.moneyPaid) {
+      if (Math.fround(amount) > Math.fround(this.data.payInfo.moneyPaid)) {
         util.showModal('', this.$t('pages.store.scoreLimit'))
         this.setData({
           'payInfo.inputScore': '',

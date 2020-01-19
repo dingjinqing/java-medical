@@ -596,7 +596,7 @@ export default {
     },
     //  点击添加会员卡
     handleToAddCard () {
-      let obj = { query: { 'cardType': Number(this.radio) } }
+      let obj = { query: { 'cardType': (Number(this.radio) - 1) } }
       switch (this.radio) {
         case '1':
           obj.name = 'normalCardDetail'

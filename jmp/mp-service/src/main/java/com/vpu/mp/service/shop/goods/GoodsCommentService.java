@@ -355,10 +355,11 @@ public class GoodsCommentService extends ShopBaseService {
               COMMENT_GOODS.ANONYMOUSFLAG,
               COMMENT_GOODS.IS_SHOP_ADD,
               COMMENT_GOODS.PRD_ID,
-              COMMENT_GOODS.FLAG)
+              COMMENT_GOODS.FLAG,
+              COMMENT_GOODS.ORDER_SN)
               .values(
                   NumberUtils.INTEGER_ZERO,
-                  0,
+                  NumberUtils.INTEGER_ZERO,
                   goodsCommentAddComm.getGoodsId(),
                   goodsCommentAddComm.getBogusUsername(),
                   goodsCommentAddComm.getBogusUserAvatar(),
@@ -369,7 +370,8 @@ public class GoodsCommentService extends ShopBaseService {
                   goodsCommentAddComm.getAnonymousFlag(),
                   NumberUtils.BYTE_ONE,
                   goodsCommentAddComm.getPrdId(),
-                  flag)
+                  flag,
+                  NumberUtils.INTEGER_ZERO.toString())
               .execute();
       }
       //没有权限
@@ -415,6 +417,9 @@ public class GoodsCommentService extends ShopBaseService {
       for (String orderSnTemp : orderSn) {
         List<CommentListVo> tempCommentList =
             db().select(
+                    ORDER_GOODS.REC_ID,
+                    ORDER_GOODS.PRODUCT_ID.as("prd_id"),
+                    GOODS_SPEC_PRODUCT.PRD_DESC,
                     ORDER_GOODS.GOODS_ID,
                     ORDER_GOODS.GOODS_NAME,
                     ORDER_GOODS.GOODS_IMG,
@@ -424,6 +429,8 @@ public class GoodsCommentService extends ShopBaseService {
                 .from(ORDER_GOODS)
                 .leftJoin(ORDER_INFO)
                 .on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+                .leftJoin(GOODS_SPEC_PRODUCT)
+                .on(ORDER_GOODS.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
                 .where(ORDER_GOODS.ORDER_SN.eq(orderSnTemp))
 //                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
                 .and(ORDER_GOODS.COMMENT_FLAG.eq(param.getCommentFlag()))
@@ -438,6 +445,9 @@ public class GoodsCommentService extends ShopBaseService {
       for (String orderSnTemp : orderSn) {
         List<CommentListVo> tempCommentList =
             db().select(
+                    ORDER_GOODS.REC_ID,
+                    ORDER_GOODS.PRODUCT_ID.as("prd_id"),
+                    GOODS_SPEC_PRODUCT.PRD_DESC,
                     ORDER_GOODS.GOODS_ID,
                     ORDER_GOODS.GOODS_NAME,
                     ORDER_GOODS.GOODS_IMG,
@@ -449,6 +459,8 @@ public class GoodsCommentService extends ShopBaseService {
                     COMMENT_GOODS_ANSWER.CONTENT,
                     ORDER_GOODS.COMMENT_FLAG)
                 .from(ORDER_GOODS)
+                .leftJoin(GOODS_SPEC_PRODUCT)
+                .on(ORDER_GOODS.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
                 .leftJoin(ORDER_INFO)
                 .on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
                 .leftJoin(COMMENT_GOODS)
@@ -456,7 +468,8 @@ public class GoodsCommentService extends ShopBaseService {
                     ORDER_GOODS
                         .ORDER_SN
                         .eq(COMMENT_GOODS.ORDER_SN)
-                        .and(ORDER_GOODS.GOODS_ID.eq(COMMENT_GOODS.GOODS_ID)))
+                        .and(ORDER_GOODS.GOODS_ID.eq(COMMENT_GOODS.GOODS_ID))
+                        .and(ORDER_GOODS.REC_ID.eq(COMMENT_GOODS.REC_ID)))
                 .leftJoin(COMMENT_GOODS_ANSWER)
                 .on(
                     COMMENT_GOODS
@@ -597,8 +610,7 @@ public class GoodsCommentService extends ShopBaseService {
           actId =
               db().select(COMMENT_GOODS.COMMENT_AWARD_ID)
                   .from(COMMENT_GOODS)
-                  .where(COMMENT_GOODS.GOODS_ID.eq(forGoodsId.getGoodsId()))
-                  .and(COMMENT_GOODS.ORDER_SN.eq(forGoodsId.getOrderSn()))
+                  .where(COMMENT_GOODS.REC_ID.eq(forGoodsId.getRecId()))
                   .and(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                   .fetchOptionalInto(Integer.class)
                   .orElse(NumberUtils.INTEGER_ZERO);
@@ -699,7 +711,9 @@ public class GoodsCommentService extends ShopBaseService {
             COMMENT_GOODS.COMM_NOTE,
             COMMENT_GOODS.COMM_IMG,
             COMMENT_GOODS.ANONYMOUSFLAG,
-            COMMENT_GOODS.FLAG)
+            COMMENT_GOODS.FLAG,
+            COMMENT_GOODS.REC_ID,
+            COMMENT_GOODS.PRD_ID)
         .values(
             0,
             param.getUserId(),
@@ -709,13 +723,14 @@ public class GoodsCommentService extends ShopBaseService {
             param.getCommNote(),
             param.getCommImg(),
             param.getAnonymousflag(),
-            flag)
+            flag,
+            param.getRecId(),
+            param.getPrdId())
         .execute();
     // 添加评论后将order_goods表中comment_flag置为1
     db().update(ORDER_GOODS)
         .set(ORDER_GOODS.COMMENT_FLAG, NumberUtils.BYTE_ONE)
-        .where(ORDER_GOODS.ORDER_SN.eq(param.getOrderSn()))
-        .and(ORDER_GOODS.GOODS_ID.eq(param.getGoodsId()))
+        .where(ORDER_GOODS.REC_ID.eq(param.getRecId()))
         .execute();
     // order表中的comment_flag也置为1
     db().update(ORDER_INFO)
@@ -753,8 +768,7 @@ public class GoodsCommentService extends ShopBaseService {
       // 为参与评价有礼活动的商品设置活动id 此时已经经过满足评价条件的校验了
       db().update(COMMENT_GOODS)
           .set(COMMENT_GOODS.COMMENT_AWARD_ID, param.getId())
-          .where(COMMENT_GOODS.GOODS_ID.eq(param.getGoodsId()))
-          .and(COMMENT_GOODS.ORDER_SN.eq(param.getOrderSn()))
+          .where(COMMENT_GOODS.REC_ID.eq(param.getRecId()))
           .and(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO))
           .execute();
       // 活动奖励1：赠送积分

@@ -67,4 +67,5 @@ public class ServiceOrderDetailVo {
 
     private Integer serviceId;
     private Integer storeId;
+    private String storeName;
 }
