@@ -246,6 +246,7 @@ public class ServiceOrderService extends ShopBaseService {
         ServiceOrderDetailVo vo =
             db().select(
                 SERVICE_ORDER.ORDER_ID, SERVICE_ORDER.SERVICE_ID, SERVICE_ORDER.STORE_ID
+                , STORE.STORE_NAME
                 , SERVICE_ORDER.DISCOUNT, SERVICE_ORDER.USE_ACCOUNT, SERVICE_ORDER.MEMBER_CARD_BALANCE
                 , SERVICE_ORDER.ORDER_SN, SERVICE_ORDER.ORDER_STATUS, SERVICE_ORDER.ORDER_STATUS_NAME, SERVICE_ORDER.SUBSCRIBER,
                 SERVICE_ORDER.MOBILE, SERVICE_ORDER.TECHNICIAN_NAME, SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.ADD_MESSAGE,
@@ -253,8 +254,9 @@ public class ServiceOrderService extends ShopBaseService {
                 SERVICE_ORDER.VERIFY_CODE, SERVICE_ORDER.VERIFY_ADMIN, SERVICE_ORDER.TYPE, SERVICE_ORDER.VERIFY_PAY, SERVICE_ORDER.CREATE_TIME,
                 STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE, STORE_SERVICE.SERVICE_SUBSIST, STORE_SERVICE.SERVICE_IMG
             ).
-                from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).
-                where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).limit(INTEGER_ONE).fetchOneInto(ServiceOrderDetailVo.class);
+                from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID))
+                .leftJoin(STORE).on(STORE.STORE_ID.eq(SERVICE_ORDER.STORE_ID))
+                .where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).limit(INTEGER_ONE).fetchOneInto(ServiceOrderDetailVo.class);
         vo.setServiceImg(imgDomain(vo.getServiceImg()));
 //        imgList.stream().findFirst().orElse(org.apache.commons.lang3.StringUtils.EMPTY)
         return vo;

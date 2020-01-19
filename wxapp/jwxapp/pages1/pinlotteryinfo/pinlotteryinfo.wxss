@@ -338,7 +338,7 @@ page{
 }
 .first_avater .captian{
   position: absolute;
-  top: 0rpx;
+  top: 10rpx;
   font-size: 20rpx;
   background: #f66;
   color: #fff;

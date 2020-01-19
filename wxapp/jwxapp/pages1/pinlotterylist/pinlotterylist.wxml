@@ -6,7 +6,7 @@
         <view class='time_show' wx:if='{{list_info.groupDraw.surplusSecond && list_info.groupDraw.surplusSecond!=undefined}}'>距结束仅剩：{{clock}}</view>
     </view>
     <view class='pl_content clearfix'>
-        <view class='each_goods clearfix' wx:for='{{list_info.list}}' wx:key='key' bindtap='to_item' data-goods_id='{{item.goodsId}}'>
+        <view class='each_goods clearfix' wx:for='{{list_info.list}}' wx:key='key' bindtap='to_item' data-goods_id='{{item.goodsId}}' data-group_id='{{list_info.groupDraw.groupId}}'>
             <view class='ec_imgs'>
               <image src='{{item.goodsImg}}'></image>
             </view>
