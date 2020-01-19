@@ -223,7 +223,7 @@ public class PreSaleService extends ShopBaseService {
         if (null != endTime) {
             query.and(TABLE.END_TIME.le(endTime));
         }
-        if (null != status) {
+        if (null != status && status > 0) {
             andStatus(query, status);
         }
     }
