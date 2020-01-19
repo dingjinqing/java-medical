@@ -372,7 +372,7 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
   },
-  data() {
+  data () {
     let that = this
     let validateArea = function (rule, value, callback) {
       if (!value) {
@@ -439,7 +439,7 @@ export default {
         posShopId: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { type: 'number', message: '门店编码必须为数字值' }],
         provinceCode: [{ required: true, message: this.$t('addStore.selectArea') }, { validator: validateArea, trigger: 'blur' }],
         address: [{ required: true, message: this.$t('addStore.enterArea'), trigger: 'blur' }, { validator: validateAddress, trigger: 'change' }],
-        storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto') }]
+        storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto'), trigger: ['blur', 'change'] }]
       },
       selfImgDialogShow: false,
       storeGroups: [],
@@ -514,7 +514,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     if (this.$route.query.id) {
       this.id = this.$route.query.id
       this.initStore(this.id)
@@ -525,7 +525,7 @@ export default {
     this.langDefault()
   },
   methods: {
-    initData() {
+    initData () {
       this.storeFormInfo = {
         storeName: '',
         manager: '',
@@ -548,7 +548,7 @@ export default {
         autoPick: 0 // 设定自提
       }
     },
-    initStore(id) {
+    initStore (id) {
       let that = this
       let params = {
         storeId: id
@@ -580,7 +580,7 @@ export default {
         }
       })
     },
-    initGroup() {
+    initGroup () {
       let that = this
       allStoreGroup().then(res => {
         if (res.error === 0) {
@@ -589,15 +589,15 @@ export default {
       })
     },
     // 刷新分组
-    refreshGroups() {
+    refreshGroups () {
       this.initGroup()
     },
     // 添加新分组
-    addGroups() {
+    addGroups () {
       this.$router.push({ name: 'group_manage' })
     },
     // 添加特色服务
-    addServeHandler() {
+    addServeHandler () {
       if (this.addService === '') {
         this.$message.error({
           message: this.$t('addStore.enterValidCharacter')
@@ -616,7 +616,7 @@ export default {
       this.addService = ''
     },
     // 数组对象去重
-    uniqObj(items) {
+    uniqObj (items) {
       var temp = [];
       items.forEach((item, i) => {
         var tag = temp.find(el => {
@@ -629,7 +629,7 @@ export default {
       return temp;
     },
     // 区域选择
-    areaChangeHandle(data) {
+    areaChangeHandle (data) {
       let address = ''
       if (data.province) {
         for (const key in data) {
@@ -647,7 +647,7 @@ export default {
       this.storeFormInfo = this.storeFormInfo
       this.address = address
     },
-    handleAreaData(val) {
+    handleAreaData (val) {
       this.storeFormInfo.provinceCode = val.province
       this.storeFormInfo.cityCode = val.city
       this.storeFormInfo.districtCode = val.district
@@ -664,7 +664,7 @@ export default {
       this.address = address
     },
     // 初始化地图
-    initMap(latitude, longitude) {
+    initMap (latitude, longitude) {
       let that = this
       let center = new qq.maps.LatLng(39.916527, 116.397128)
       this.map = new qq.maps.Map(this.$refs.storemap, {
@@ -708,7 +708,7 @@ export default {
       }
     },
     // 点击地图定位
-    codeAddress() {
+    codeAddress () {
       if (!this.address) {
         this.$message.warning(this.$t('addStore.selectRegion'))
         return false
@@ -720,25 +720,27 @@ export default {
       this.geocoder.getLocation(address)
     },
     //  添加图片点击事件，弹出图片选择组件
-    addStoreImg() {
+    addStoreImg () {
       this.selfImgDialogShow = !this.selfImgDialogShow
       this.$nextTick(() => this.$http.$emit('dtVisible'))
     },
     // 商品图片点击回调函数
-    imgDialogSelectedCallback(imgObj) {
+    imgDialogSelectedCallback (imgObj) {
       if (this.storeFormInfo.storeImgs.length + imgObj.length > 5) {
         this.$message.warning(this.$t('addStore.max5'))
         return
       }
       let imgs = imgObj.map(item => item.imgPath)
       this.storeFormInfo.storeImgs = this.storeFormInfo.storeImgs.concat(imgs)
+      this.$refs.storeForm.validateField('storeImgs')
     },
     // 删除店面图片
-    deleteStoreImg(index) {
+    deleteStoreImg (index) {
       this.storeFormInfo.storeImgs.splice(index, 1)
+      this.$refs.storeForm.validateField('storeImgs')
     },
     // 下一步
-    nextClickHandler() {
+    nextClickHandler () {
       let that = this
       // 校验 form
       this.$refs.storeForm.validate(function (valid) {
@@ -748,11 +750,11 @@ export default {
       })
     },
     // 上一步
-    prevClickHandler() {
+    prevClickHandler () {
       this.stepData.currentStep = 0
     },
     // 保存
-    saveClickHandler() {
+    saveClickHandler () {
       let params = Object.assign({}, this.storeFormInfo, this.deliveryMessage)
       params.storeImgs = params.storeImgs.map(item => {
         if (item.indexOf('//') > -1) {
