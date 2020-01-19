@@ -18,6 +18,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAUL
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -42,6 +43,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
@@ -118,35 +120,6 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-import jodd.util.StringUtil;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.impl.DSL;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import jodd.util.StringUtil;
 
@@ -208,8 +181,8 @@ public class UserCardService extends ShopBaseService {
 	private LimitCardOpt limitCardOpt;
 	@Autowired
 	private NormalCardOpt normalCardOpt;
-
-
+	@Autowired 
+	private CardUserOpt cardUserOpt;
 	public static final String DESC = "score_open_card";
 
 	/**
@@ -714,7 +687,7 @@ public class UserCardService extends ShopBaseService {
 		} else {
 			// 普通卡
 			if (adminUser != null
-					&& BigDecimalUtil.subtrac(userInfo.getMoney(), data.getMoneyDis()).floatValue() != 0.00) {
+					&& BigDecimalUtil.subtrac(userInfo.getMoney(), userInfo.getMoney()).floatValue() != 0.00) {
 				return -1;
 			}
 		}
@@ -758,7 +731,6 @@ public class UserCardService extends ShopBaseService {
 			}
 		} else {
 			if (data.getMoney().intValue() < 0) {
-				data.setMoney(data.getMoney().abs());
 				userCardDao.insertConsume(data);
 			} else {
 				data.setCharge(data.getMoney());
@@ -1528,8 +1500,8 @@ public class UserCardService extends ShopBaseService {
 				return null;
 			}
 			if(CardUtil.isLimitCard(mCard.getCardType())) {
-				CardUserOpt opt = new CardUserOpt(limitCardOpt);
-				String cardNo = opt.handleSendCard(param.getUserId(), param.getCardId(), false);
+				cardUserOpt.setDecorate(limitCardOpt);
+				String cardNo = cardUserOpt.handleSendCard(param.getUserId(), param.getCardId(), false);
 				
 				if(StringUtils.isBlank(cardNo)) {
 					logger().info("领取失败");
@@ -1543,8 +1515,8 @@ public class UserCardService extends ShopBaseService {
 				}
 			}else if(CardUtil.isNormalCard(mCard.getCardType())) {
 				
-				CardUserOpt opt = new CardUserOpt(normalCardOpt);
-				String cardNo = opt.handleSendCard(param.getUserId(), param.getCardId(), false);
+				cardUserOpt.setDecorate(normalCardOpt);
+				String cardNo = cardUserOpt.handleSendCard(param.getUserId(), param.getCardId(), false);
 				//	如果已经领取了该普通卡，不再次领取，返回拥有的会员卡号
 				if(StringUtil.isNotBlank(cardNo)) {
 					vo.setCardNo(cardNo);

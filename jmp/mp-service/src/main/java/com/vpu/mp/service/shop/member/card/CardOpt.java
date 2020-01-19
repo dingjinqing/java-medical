@@ -19,6 +19,9 @@ public abstract class CardOpt {
 	public Byte getType() {
 		return this.type;
 	}
+	public void setType(Byte _type) {
+		this.type = _type;
+	}
 	
 	public Logger logger() {
 		return LoggerFactory.getLogger(getClass());
