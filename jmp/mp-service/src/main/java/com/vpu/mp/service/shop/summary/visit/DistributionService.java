@@ -46,13 +46,25 @@ public class DistributionService extends BaseVisitService {
         return sdf.format(time);
     }
 
+    /**
+     * Gets select option.来源分析-来源下拉框
+     *
+     * @return the select option
+     */
     public List<VisitInfoItem> getSelectOption() {
         return new ArrayList<VisitInfoItem>() {{
             Arrays.stream(AccessSource.values()).forEach(e -> add(VisitInfoItem.builder().key(e.getKey()).name(e.getName()).build()));
         }};
     }
 
-    public SourceAnalysisVo getSourceAnalysis(VisitDistributionParam param) {
+    /**
+     * Gets source analysis.来源分析折线图
+     *
+     * @param param the param
+     * @return the source analysis
+     */
+    public SourceAnalysisVo querySourceAnalysis(VisitDistributionParam param) {
+        logger().info("获取来源分析折线图数据");
         param.setSourceId(Objects.isNull(param.getSourceId()) ? MP_HISTORY_LIST.getIndex() : param.getSourceId());
         if (!param.getType().equals(CUSTOM_DAYS)) {
             param.setStartDate(getDate(param.getType()));
@@ -60,9 +72,10 @@ public class DistributionService extends BaseVisitService {
         }
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
+        logger().info("日期转换完成：startDate：{}， endDate：{}", startDate, endDate);
         Result<MpDistributionVisitRecord> result = getDistributionRecord(startDate, endDate);
-        Map<String, Integer> chartsData = new HashMap<>();
         Integer sourceId = param.getSourceId();
+        List<LineChartVo> lineChart = new ArrayList<>();
         for (MpDistributionVisitRecord record : result) {
             String refDate = record.getRefDate();
             String list = record.getList();
@@ -74,11 +87,12 @@ public class DistributionService extends BaseVisitService {
                 if (ACCESS_SOURCE_PV.equals(indexName)) {
                     Map<Integer, Integer> values = item.getValue();
                     Integer v = values.get(sourceId);
-                    chartsData.put(refDate, Objects.isNull(v) ? INTEGER_ZERO : v);
+                    lineChart.add(LineChartVo.builder().refDate(refDate).openTimes(Objects.isNull(v) ? INTEGER_ZERO : v).build());
                 }
             }
         }
-        return SourceAnalysisVo.builder().chartsData(chartsData).build();
+        logger().info("数据获取完成");
+        return SourceAnalysisVo.builder().lineChart(lineChart).startDate(startDate).endDate(endDate).build();
     }
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {
         //得到时间
@@ -204,6 +218,7 @@ public class DistributionService extends BaseVisitService {
         return db().select(MP_DISTRIBUTION_VISIT.REF_DATE, MP_DISTRIBUTION_VISIT.LIST)
                 .from(MP_DISTRIBUTION_VISIT)
                 .where(MP_DISTRIBUTION_VISIT.REF_DATE.between(startDate).and(endDate))
+            .orderBy(MP_DISTRIBUTION_VISIT.REF_DATE)
                 .fetch().into(MP_DISTRIBUTION_VISIT);
     }
 }

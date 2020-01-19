@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.Setting;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.ShowPoster;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.config.message.MessageConfigService;
+import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,8 @@ public class ConfigService extends ShopBaseService {
     public GiftConfigService giftConfigService;
     @Autowired
     public OrderExportConfigService orderExportCfg;
+    @Autowired
+    public DomainConfig domainConfig;
 	/**
 	 * 得到店铺配置
 	 * 
@@ -83,6 +87,9 @@ public class ConfigService extends ShopBaseService {
 				.hideBottom(shop.getHidBottom()).build();
 		config.setBottomNavigateMenuList(bottomCfg.getBottomNavigatorConfig());
 		config.setShowLogo(showLogo);
+		if(StringUtil.isNotEmpty(shop.getLogo())){
+            config.setLogo(domainConfig.imageUrl(shop.getLogo()));
+        }
 		config.setLogoLink(shopCommonConfigService.getLogoLink());
 		config.setSetting(setting);
 		config.setStatus(getStatus(user!=null?user.getUserId():null));

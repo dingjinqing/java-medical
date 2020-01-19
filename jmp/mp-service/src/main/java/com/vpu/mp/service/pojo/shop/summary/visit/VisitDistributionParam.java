@@ -12,13 +12,13 @@ import java.util.List;
 @Data
 public class VisitDistributionParam {
     /** 日期类型 7:最近7天 30:最近30天 0:自定义 */
-    private Integer type = 7;
-    private String startDate;
-    private String endDate;
+    public Integer type = 7;
+    public String startDate;
+    public String endDate;
 
     /**
      * 忽略哪些访问来源
      */
-    private List<Integer> cancelBtn;
-    private Integer sourceId;
+    public List<Integer> cancelBtn;
+    public Integer sourceId = 1;
 }

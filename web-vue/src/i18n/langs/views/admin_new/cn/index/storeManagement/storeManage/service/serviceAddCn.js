@@ -45,6 +45,7 @@ export const cn = {
   servicePeriodValid: '服务时段不能为空',
   validInterval: '请选择可服务日期',
   validateDuration: '服务时长不能为0',
+  validServiceNum: '技师可预约人数不能为空',
 
   successTip: '保存成功',
   updateTip: '更新成功'

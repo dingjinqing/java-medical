@@ -60,7 +60,7 @@
         </view>
       </view>
       <!-- 门店服务 -->
-      <view class='store-service' wx:if="{{info.service}}">
+      <view class='store-service' wx:if="{{info.service && info.service.length > 0}}">
         <view class="title">
           <text class="title-text">{{i18n.$t(localePack,"pages.store.service")}}</text>
         </view>
@@ -80,7 +80,7 @@
         </view>
       </view>
       <!-- 门店预约 -->
-      <view class='store-appointment' wx:if="{{info.serviceCat}}">
+      <view class='store-appointment' wx:if="{{info.serviceCat && info.serviceCat.length > 0}}">
         <view class="title">
           <text class="title-text">{{i18n.$t(localePack,"pages.store.storeAppointment")}}</text>
         </view>
@@ -93,7 +93,7 @@
             </block>
           </scroll-view>
         </view>
-        <block wx:for="{{info.serviceCat}}" wx:key="catName">
+        <block wx:for="{{info.serviceCat}}" wx:key="id">
           <view hidden='{{currentTabsIndex != index}}'>
             <block wx:for="{{item.serviceList}}" wx:key="id" wx:for-item="serv">
               <view class="store-nav-list" wx:if="{{serv.serviceShelf == 1}}" bindtap='nowappoint' data-id="{{serv.id}}">
@@ -107,9 +107,9 @@
                   </view>
                   <view class="list-rt-top">
                     <view class='leftlisyt'>
-                      <block wx:if="{{serv.service_subsist>0}}">
+                      <block wx:if="{{serv.serviceSubsist>0}}">
                         <text class="list-rt-text" style="color:{{linColor}};border-color:{{linColor}}">{{i18n.$t(localePack,"pages.store.deposit")}}</text>
-                        <text style="color:{{comColor}};">￥{{serv.service_subsist}}</text>
+                        <text style="color:{{comColor}};">￥{{serv.serviceSubsist}}</text>
                       </block>
                       <block wx:else>
                         <text style="color:{{comColor}};" wx:if='{{serv.servicePrice!=0}}'><text class="list-rt-text" style="color:{{comColor}};border-color:{{comColor}}">{{i18n.$t(localePack,"pages.store.totalPrice")}}</text>￥{{serv.servicePrice}}</text>

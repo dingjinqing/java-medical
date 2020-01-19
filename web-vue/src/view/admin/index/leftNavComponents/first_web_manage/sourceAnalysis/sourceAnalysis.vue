@@ -1,54 +1,108 @@
 <template>
-  <div class="div_style">
-    <div class="labelItem">整体来源分析</div>
-    <!--下拉-->
-    <el-select
-      v-model="timeSelect"
-      size="small"
-      clearable
-      @change="dateChangeHandler"
-      class="timeSelect"
-    >
-      <el-option
-        v-for="item in timeRange"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
-      ></el-option>
-    </el-select>
-    <!--自定义时间-->
-    <el-date-picker
-      v-if="timeSelect===0"
-      v-model="timeValue"
-      type="daterange"
-      size="small"
-      @change="customDate"
-      value-format="yyyyMMdd"
-      range-separator="-"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
-      class="custom"
-    >
-    </el-date-picker>
-    <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
-    <!--来源标签-->
-    <div   style="display:flex">
-    <div class="label_style"
-         v-for="(item, index) in this.span_data"
-         :key="index"
+  <div>
+    <!--上半部分-->
+    <div class="div_style">
+      <div class="labelItem">{{$t('assetsManage.sourceAnalysis')}}</div>
+      <!--下拉-->
+      <el-select
+        v-model="timeSelect"
+        size="small"
+        clearable
+        @change="dateChangeHandler"
+        class="timeSelect"
+      >
+        <el-option
+          v-for="item in timeRange"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        ></el-option>
+      </el-select>
+      <!--自定义时间-->
+      <el-date-picker
+        v-if="timeSelect===0"
+        v-model="timeValue"
+        type="daterange"
+        size="small"
+        @change="customDate"
+        value-format="yyyyMMdd"
+        range-separator="-"
+        :start-placeholder="$t('tradesStatistics.startTime')"
+        :end-placeholder="$t('tradesStatistics.endTime')"
+        class="custom"
+      >
+      </el-date-picker>
+      <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
+      <!--来源标签-->
+      <div   style="display:flex">
+      <div class="label_style"
+           v-for="(item, index) in this.span_data"
+           :key="index"
 
-    >
-      <div :id="item.name" :class="spanStyle" @click="changeData(item.name, index)">{{item.name}}</div>
-    </div>
-    </div>
-    <!-- 柱状图部分 -->
-    <div class="charts"><ve-histogram :data="chartData"></ve-histogram></div>
+      >
+        <div :id="item.name" :class="spanStyle" @click="changeData(item.name, index)">{{item.name}}</div>
+      </div>
+      </div>
+      <!-- 柱状图部分 -->
+      <div class="charts"><ve-histogram :data="chartData"></ve-histogram></div>
 
+    </div>
+    <!--下半部分-->
+    <div class="div_style">
+      <!--来源下拉-->
+      <el-select
+        v-model="param1.sourceId"
+        size="small"
+        clearable
+        @change="sourceChangeHandler"
+        class="timeSelect"
+      >
+        <el-option
+          v-for="item in selectData"
+          :key="item.key"
+          :label="item.name"
+          :value="item.key"
+        ></el-option>
+      </el-select>
+      <!--时间下拉-->
+      <el-select
+        v-model="timeSelect1"
+        size="small"
+        clearable
+        @change="dateChangeHandler1"
+        class="timeSelect"
+      >
+        <el-option
+          v-for="item in timeRange"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        ></el-option>
+      </el-select>
+      <!--自定义时间-->
+      <el-date-picker
+        v-if="timeSelect1===0"
+        v-model="timeValue1"
+        type="daterange"
+        size="small"
+        @change="customDate1"
+        value-format="yyyyMMdd"
+        range-separator="-"
+        :start-placeholder="$t('tradesStatistics.startTime')"
+        :end-placeholder="$t('tradesStatistics.endTime')"
+        class="custom"
+      >
+      </el-date-picker>
+      <span>{{this.startDate1.year}}{{$t('userStatistics.year')}}{{this.startDate1.month}}{{$t('userStatistics.month')}}{{this.startDate1.day}}{{$t('userStatistics.day')}} - {{this.endDate1.year}}{{$t('userStatistics.year')}}{{this.endDate1.month}}{{$t('userStatistics.month')}}{{this.endDate1.day}}{{$t('userStatistics.day')}}</span>
+      <!-- 折线图部分 -->
+      <div class="charts"><ve-line :data="lineData" :settings="chartSettings"></ve-line></div>
+
+    </div>
   </div>
 </template>
 
 <script>
-import {distributionAnalysis} from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
+import {distributionAnalysis, sourceSelect, sourceAnalysis} from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
 
 export default {
   watch: {
@@ -57,7 +111,8 @@ export default {
     }
   },
   created () {
-    this.initData()
+    this.initPageData()
+    this.getSourceSelect()
   },
 
   mounted () {
@@ -65,22 +120,35 @@ export default {
   },
 
   data () {
+    this.chartSettings = {
+      xAxisType: 'time'
+    }
     return {
+      selectData: [],
+      chartSettings: {},
       arrayData: -1,
       isChange: true,
       timeSelect: 1,
+      timeSelect1: 1,
       timeValue: [],
+      timeValue1: [],
       timeRange: this.$t('tradesStatistics.timeRange'),
       value: 1,
       screeningTime: '1',
       spanStyle: 'span_normal',
       // 请求入参
       param: {
-        type: 7,
+        type: 1,
         startDate: '',
         endDate: '',
         // 需要忽略的访问来源id
         cancelBtn: []
+      },
+      param1: {
+        type: 1,
+        startDate: '',
+        endDate: '',
+        sourceId: 1
       },
       startDate: {
         year: '',
@@ -92,6 +160,16 @@ export default {
         month: '',
         day: ''
       },
+      startDate1: {
+        year: '',
+        month: '',
+        day: ''
+      },
+      endDate1: {
+        year: '',
+        month: '',
+        day: ''
+      },
       span_data: [],
       histogram_data: [{'name': '小程序', 'value': 0}],
       histogram: Object,
@@ -99,15 +177,52 @@ export default {
       chartData: {
         columns: ['name', 'value'],
         rows: [
-          {'name': '2020-01-16', 'value': 1393},
-          {'name': '2020-01-17', 'value': 3530}
+          {'name': '2020-01-01', 'value': 0}
+        ]
+      },
+      lineData: {
+        columns: ['refDate', 'openTimes'],
+        rows: [
+          { 'refDate': '2020-01-01', 'openTimes': 0 }
         ]
       }
     }
   },
 
   methods: {
-    // 自定义时间
+    // 初始化上下数据
+    initPageData () {
+      this.initData()
+      this.getSourceAnalysis()
+    },
+    // 获取折线图数据
+    getSourceAnalysis () {
+      this.param1.type = this.screeningTime
+      sourceAnalysis(this.param1).then(res => {
+        if (res.error === 0) {
+          this.startDate1.year = res.content.startDate.substring(0, 4)
+          this.startDate1.month = res.content.startDate.substring(4, 6)
+          this.startDate1.day = res.content.startDate.substring(6, 8)
+          this.endDate1.year = res.content.endDate.substring(0, 4)
+          this.endDate1.month = res.content.endDate.substring(4, 6)
+          this.endDate1.day = res.content.endDate.substring(6, 8)
+          this.lineData.rows = res.content.lineChart
+        }
+      }).catch(err => console.log(err))
+    },
+    // 来源下拉更改
+    sourceChangeHandler () {
+      this.getSourceAnalysis()
+    },
+    // 来源下拉
+    getSourceSelect () {
+      sourceSelect(this.param).then(res => {
+        if (res.error === 0) {
+          this.selectData = res.content
+        }
+      }).catch(err => console.log(err))
+    },
+    // 自定义时间-上
     customDate () {
       this.screeningTime = 0
       this.param.startDate = this.timeValue[0].substring(0, 4) + this.timeValue[0].substring(4, 6) + this.timeValue[0].substring(6, 8)
@@ -118,12 +233,20 @@ export default {
       this.cancelStyle()
       this.initData()
     },
+    // 自定义时间-下
+    customDate1 () {
+      this.screeningTime = 0
+      this.param1.startDate = this.timeValue1[0].substring(0, 4) + this.timeValue1[0].substring(4, 6) + this.timeValue1[0].substring(6, 8)
+      this.param1.endDate = this.timeValue1[1].substring(0, 4) + this.timeValue1[1].substring(4, 6) + this.timeValue1[1].substring(6, 8)
+      console.log('选择器的时间：', this.param)
+      this.getSourceAnalysis()
+    },
     cancelStyle () {
       this.span_data.map((item, index) => {
         document.getElementById(item.name).setAttribute('class', 'span_normal')
       })
     },
-    // 指定时间段
+    // 指定时间段-上
     dateChangeHandler (time) {
       if (time !== 0) {
         this.screeningTime = time
@@ -131,6 +254,13 @@ export default {
         this.param.cancelBtn = []
         this.cancelStyle()
         this.initData()
+      }
+    },
+    // 指定时间段-下
+    dateChangeHandler1 (time) {
+      if (time !== 0) {
+        this.screeningTime = time
+        this.getSourceAnalysis()
       }
     },
 

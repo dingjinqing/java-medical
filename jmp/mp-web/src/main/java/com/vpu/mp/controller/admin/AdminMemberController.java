@@ -200,28 +200,4 @@ public class AdminMemberController extends AdminBaseController{
 		return success(allUserCardDetail);
 	}
 	
-	//----------------------------test------------------------------------
-	
-	@PostMapping(value="/api/card/list/test")
-	public JsonResult getUserCard(@RequestBody SearchCardParam param) {
-		logger().info("wxapp request for card list of person.");
-		PageResult<WxAppUserCardVo> cardList = shop().user.userCard.getAllCardsOfUser(param);
-		return success(cardList);
-	}
-	
-	@PostMapping(value="/api/card/test/detail")
-	public JsonResult getUserCardDetail(@RequestBody UserCardParam param) {
-		logger().info("WxAppCardController: request for card detail");
-//		shop().cardVerifyService.passCardVerify(param.getUserId(), "");
-//		return success("");
-		
-		WxAppUserCardVo userCardDetail;
-		try {
-			userCardDetail = shop().user.userCard.getUserCardDetail(param);
-		} catch (UserCardNullException e) {
-			return fail(e.getErrorCode());
-		}
-		return success(userCardDetail);
-		
-	}
 }
