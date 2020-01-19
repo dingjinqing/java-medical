@@ -63,7 +63,7 @@ public class DistributionService extends BaseVisitService {
      * @param param the param
      * @return the source analysis
      */
-    public SourceAnalysisVo getSourceAnalysis(VisitDistributionParam param) {
+    public SourceAnalysisVo querySourceAnalysis(VisitDistributionParam param) {
         logger().info("获取来源分析折线图数据");
         param.setSourceId(Objects.isNull(param.getSourceId()) ? MP_HISTORY_LIST.getIndex() : param.getSourceId());
         if (!param.getType().equals(CUSTOM_DAYS)) {

@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
@@ -10,8 +9,7 @@ import java.util.List;
  *
  * @author 郑保乐
  */
-@Getter
-@Setter
+@Data
 public class VisitDistributionParam {
     /** 日期类型 7:最近7天 30:最近30天 0:自定义 */
     public Integer type = 7;
