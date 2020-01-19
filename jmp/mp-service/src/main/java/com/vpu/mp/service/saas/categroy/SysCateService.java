@@ -210,7 +210,7 @@ public class SysCateService extends MainBaseService {
      */
     public SysCatevo getOneCateInfo(Integer catId) {
     	SysCatevo cateInfo = db().select().from(CATEGORY)
-    			.where(CATEGORY.CAT_ID.eq(catId)).fetchOne().into(SysCatevo.class);
+    			.where(CATEGORY.CAT_ID.eq(catId)).fetchOneInto(SysCatevo.class);
     	return cateInfo;
     }
 

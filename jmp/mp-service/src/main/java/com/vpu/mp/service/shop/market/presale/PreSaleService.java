@@ -71,14 +71,6 @@ import static org.springframework.util.StringUtils.isEmpty;
 @Primary
 public class PreSaleService extends ShopBaseService {
 
-    /**
-     * 启用状态
-     */
-    public static final Byte STATUS_NORMAL = 1;
-    /**
-     * 停用状态
-     */
-    public static final Byte STATUS_DISABLED = 0;
     /**全款付*/
     public static final Byte PRE_SALE_TYPE_ALL_MONEY = 1;
     /**定金付*/
@@ -244,17 +236,20 @@ public class PreSaleService extends ShopBaseService {
         Timestamp now = Util.currentTimeStamp();
         switch (status) {
             case NAVBAR_TYPE_ONGOING:
-                query.and((TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now)))
-                        .or(TABLE.START_TIME.ge(now).and(TABLE.END_TIME.gt(now)))
-                        .or(TABLE.PRE_START_TIME_2.le(now).and(TABLE.PRE_END_TIME_2.gt(now)))).and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
+                query.and(
+                    (TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME_2.gt(now))))
+                    .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now))))
+                ).and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
             case NAVBAR_TYPE_NOT_STARTED:
                 query.and(TABLE.PRE_START_TIME.gt(now)).and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
             case NAVBAR_TYPE_FINISHED:
-                query.and((TABLE.PRE_END_TIME.le(now).and(TABLE.PRE_START_TIME_2.gt(now))
-                    .and(TABLE.PRE_END_TIME_2.le(now).and(TABLE.START_TIME.gt(now))))
-                    .or(TABLE.PRE_END_TIME.le(now).and(TABLE.START_TIME.gt(now)).or(TABLE.END_TIME.gt(now)))).and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
+                query.and(
+                    ((TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_END_TIME_2.le(now)))
+                        .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_END_TIME.lt(now)))
+                    )
+                    .and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)));
                 break;
             case NAVBAR_TYPE_DISABLED:
                 query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));

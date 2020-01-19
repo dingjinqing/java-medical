@@ -311,7 +311,7 @@ public class ServiceOrderService extends ShopBaseService {
     }
 
     public BigDecimal getServiceMoneyPaid(Integer serviceId) {
-        StoreServiceParam storeService = db().select(STORE_SERVICE.SERVICE_PRICE, STORE_SERVICE.SERVICE_SUBSIST).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(serviceId)).fetchOne().into(StoreServiceParam.class);
+        StoreServiceParam storeService = db().select(STORE_SERVICE.SERVICE_PRICE, STORE_SERVICE.SERVICE_SUBSIST).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(serviceId)).fetchOneInto(StoreServiceParam.class);
         return storeService.getServicePrice().subtract(storeService.getServiceSubsist());
     }
 
@@ -501,7 +501,7 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public Boolean checkVerifyCode(String orderSn, String verifyCode) {
         if (!StringUtils.isBlank(orderSn) && !StringUtils.isBlank(verifyCode)) {
-            String trueCode = db().select(SERVICE_ORDER.VERIFY_CODE).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne().into(String.class);
+            String trueCode = db().select(SERVICE_ORDER.VERIFY_CODE).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOneInto(String.class);
             return verifyCode.equals(trueCode);
         }
         return false;
