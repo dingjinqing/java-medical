@@ -1,34 +1,27 @@
 <template>
   <div>
     <div class="sevice_classify_page">
-      <div class="list-info service_class_info">
-        <div>
+      <div class="list-info">
+        <label>
+          <span style="font-size: 14px;">{{$t('serviceClassify.categoryName2')}}：</span>
           <el-input
-            v-model="catName"
-            :placeholder="$t('serviceClassify.enterCategoryTips')"
+            v-model="queryParams.catName"
+            :placeholder="$t('serviceClassify.queryPl')"
             style="width: 188px;"
+            prefix-icon="el-icon-search"
             size="small"
           ></el-input>
-          <el-button
-            type="primary"
-            size="small"
-            @click="addCatHandle"
-          >{{$t('serviceClassify.save')}}</el-button>
-        </div>
-        <div>
           <el-button
             type="primary"
             size="small"
             @click="initDataList"
           >{{$t('serviceClassify.inquire')}}</el-button>
-          <el-input
-            v-model="queryParams.catName"
-            :placeholder="$t('serviceClassify.queryPl')"
-            style="width: 188px;"
-            suffix-icon="el-icon-search"
-            size="small"
-          ></el-input>
-        </div>
+        </label>
+        <el-button
+          type="primary"
+          size="small"
+          @click="showAddCategory = true"
+        >{{$t('serviceClassify.addCategory')}}</el-button>
       </div>
       <div class="list-table">
         <el-table
@@ -87,6 +80,32 @@
         </el-table>
       </div>
     </div>
+    <el-dialog
+      :title="$t('serviceClassify.addCategory')"
+      :visible.sync="showAddCategory"
+      width="500px"
+    >
+      <label>
+        <span>{{$t('serviceClassify.categoryName2')}}：</span>
+        <el-input
+          v-model="catName"
+          :placeholder="$t('serviceClassify.enterCategoryTips')"
+          style="width: 188px;"
+          size="small"
+        ></el-input>
+      </label>
+      <div slot="footer">
+        <el-button
+          size="small"
+          @click="showAddCategory = false"
+        >{{$t('serviceClassify.cancel')}}</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="addCatHandle"
+        >{{$t('serviceClassify.save')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -103,7 +122,8 @@ export default {
       },
       tableData: [],
       pageParams: {},
-      oldCatName: ''
+      oldCatName: '',
+      showAddCategory: false
     }
   },
   created () {
@@ -132,6 +152,7 @@ export default {
         if (res.error === 0) {
           this.$message.success(this.$t('serviceClassify.successAddToast'))
           this.initDataList()
+          this.showAddCategory = false
         }
       })
     },

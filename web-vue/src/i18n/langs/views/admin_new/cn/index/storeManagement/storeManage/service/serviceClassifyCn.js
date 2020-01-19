@@ -11,5 +11,8 @@ export const cn = {
   successAddToast: '添加服务分类成功',
   successDeleteToast: '删除成功',
   updateCompleted: '更新成功',
-  updateFaild: '更新失败'
+  updateFaild: '更新失败',
+  addCategory: '添加分类',
+  categoryName2: '分类名称',
+  cancel: '取消'
 }
