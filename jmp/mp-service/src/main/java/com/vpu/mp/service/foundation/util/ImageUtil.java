@@ -3,10 +3,15 @@ package com.vpu.mp.service.foundation.util;
 import com.thoughtworks.xstream.core.util.Base64Encoder;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -237,6 +242,43 @@ public final class ImageUtil {
         }
         return width;
     }
-
+    
+    
+	public static String reduceQualityToBase64(BufferedImage bufferedImage, float qality) {
+		ImageWriter imgWrier;
+		ImageWriteParam imgWriteParams;
+		imgWrier = ImageIO.getImageWritersByFormatName("jpg").next();
+		imgWriteParams = new javax.imageio.plugins.jpeg.JPEGImageWriteParam(null);
+		imgWriteParams.setCompressionMode(imgWriteParams.MODE_EXPLICIT);
+		imgWriteParams.setCompressionQuality(qality);
+		imgWriteParams.setProgressiveMode(imgWriteParams.MODE_DISABLED);
+		ColorModel colorModel = bufferedImage.getColorModel();// ColorModel.getRGBdefault();
+		imgWriteParams.setDestinationType(
+				new javax.imageio.ImageTypeSpecifier(colorModel, colorModel.createCompatibleSampleModel(32, 32)));
+		imgWrier.reset();
+		// 必須先指定 out值，才能呼叫write方法, ImageOutputStream可以通過任何
+		// OutputStream構造
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		//ImageIO.write(bufferedImage, "png", os);
+		try {
+			imgWrier.setOutput(ImageIO.createImageOutputStream(os));
+			imgWrier.write(null, new IIOImage(bufferedImage, null, null), imgWriteParams);
+			os.flush();
+		} catch (IOException e) {
+			log.info(e.getMessage(),e);
+		}finally {
+			if(os!=null) {
+				try {
+					os.close();
+				} catch (IOException e) {
+					log.info(e.getMessage(),e);
+				}
+			}
+		}
+        byte[] byteArray = os.toByteArray();
+        Base64Encoder encoder = new Base64Encoder();
+        String encode = encoder.encode(byteArray);
+        return "data:image/png;base64," + encode;
+	}
 
 }

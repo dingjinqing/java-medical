@@ -124,7 +124,8 @@ public class UserCenterTraitService extends ShopBaseService {
 		ImageUtil.addTwoImage(backgroundImage, qrCodeImage, 100, 260);
 
 		logger().info("开始转换成base64");
-		String base64 = ImageUtil.toBase64(backgroundImage);
+		//String base64 = ImageUtil.toBase64(backgroundImage);
+		String base64 = ImageUtil.reduceQualityToBase64(backgroundImage, 0.8f);
 		vo.setImage(base64);
 		vo.setStatus(PSTATUS_ONE);
 		return vo;
