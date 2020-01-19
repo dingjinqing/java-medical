@@ -238,7 +238,7 @@ global.wxPage({
   // textarea 输入
   comm_note: function (e) {
     var info = this.data.info;
-    info.commNote = e.detail.value;
+    info.commNote = e.detail.value.trim();
     this.setData({
       info: info
     })
@@ -364,6 +364,14 @@ global.wxPage({
     util.api('/api/wxapp/comment/add', function (res) {
       if (res.error === 0) {
         util.toast_success(that.$t('page1.comment.reviewSuccess'));
+        that.setData({
+          info: {
+            anonymousflag: 0,
+            comm_img: [],
+            commstar: 5,
+            commNote: ''
+          }
+        })
         that.get_comment(that, 0);
       }
     }, params);
