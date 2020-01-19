@@ -63,7 +63,7 @@ public class DistributionService extends BaseVisitService {
      * @param param the param
      * @return the source analysis
      */
-    public List<LineChartVo> getSourceAnalysis(VisitDistributionParam param) {
+    public SourceAnalysisVo getSourceAnalysis(VisitDistributionParam param) {
         param.setSourceId(Objects.isNull(param.getSourceId()) ? MP_HISTORY_LIST.getIndex() : param.getSourceId());
         if (!param.getType().equals(CUSTOM_DAYS)) {
             param.setStartDate(getDate(param.getType()));
@@ -73,7 +73,7 @@ public class DistributionService extends BaseVisitService {
         String endDate = param.getEndDate();
         Result<MpDistributionVisitRecord> result = getDistributionRecord(startDate, endDate);
         Integer sourceId = param.getSourceId();
-        List<LineChartVo> vos = new ArrayList<>();
+        List<LineChartVo> lineChart = new ArrayList<>();
         for (MpDistributionVisitRecord record : result) {
             String refDate = record.getRefDate();
             String list = record.getList();
@@ -85,11 +85,11 @@ public class DistributionService extends BaseVisitService {
                 if (ACCESS_SOURCE_PV.equals(indexName)) {
                     Map<Integer, Integer> values = item.getValue();
                     Integer v = values.get(sourceId);
-                    vos.add(LineChartVo.builder().refDate(refDate).openTimes(Objects.isNull(v) ? INTEGER_ZERO : v).build());
+                    lineChart.add(LineChartVo.builder().refDate(refDate).openTimes(Objects.isNull(v) ? INTEGER_ZERO : v).build());
                 }
             }
         }
-        return vos;
+        return SourceAnalysisVo.builder().lineChart(lineChart).startDate(startDate).endDate(endDate).build();
     }
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {
         //得到时间
