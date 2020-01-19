@@ -204,7 +204,7 @@
                   v-model="form.startPeriod"
                   value-format="HH:mm"
                   :picker-options="{
-                  selectableRange: '00:00:00 - 23:59:59',
+                  selectableRange: timeInterval,
                   format:'HH:mm'
                 }"
                 ></el-time-picker>
@@ -220,7 +220,7 @@
                   v-model="form.endPeriod"
                   value-format="HH:mm"
                   :picker-options="{
-                  selectableRange: '00:00:00 - 23:59:59',
+                  selectableRange: timeInterval,
                   format: 'HH:mm'
                 }"
                 ></el-time-picker>
@@ -253,7 +253,7 @@
             </el-form-item>
             <el-form-item
               :label="form.serviceType===0?$t('serviceAdd.serviceType1'):$t('serviceAdd.serviceType2')"
-              required
+              prop="servicesNumber"
             >
               <el-input-number
                 v-model="form.servicesNumber"
@@ -338,6 +338,12 @@ export default {
       }
       callback()
     }
+    function validServiceNum (rule, value, callback) {
+      if (value === '' || value === 0) {
+        callback(new Error(that.$t('servieAdd.validServiceNum')))
+      }
+      callback()
+    }
     return {
       activeStep: 1, // 步骤条
       storeId: '',
@@ -348,6 +354,7 @@ export default {
       isDraggable: true, // 是否支持多选
       serviceHour: '', // 服务时长-时
       serviceMinute: '', // 服务时长-分
+      timeInterval: '00:00:00 - 23:59:59',
       form: {
         dateInterval: [],
         id: '', // 编辑时传
@@ -392,12 +399,9 @@ export default {
         endPeriod: [
           { required: true, message: this.$t('serviceAdd.servicePeriodValid'), trigger: 'blur' }
         ],
-        dateInterval: [
-          { validator: validInterval }
-        ],
-        serviceDuration: [
-          { validator: validateDuration }
-        ]
+        dateInterval: [{ validator: validInterval, trigger: 'change' }],
+        serviceDuration: [{ validator: validateDuration, trigger: 'change' }],
+        servicesNumber: [{ required: true, validator: validServiceNum, trigger: 'change' }]
       }
     }
   },
@@ -428,6 +432,7 @@ export default {
         const endTime = this.businessHours.split(' ')[2]
         this.$set(this.form, 'startPeriod', startTime)
         this.$set(this.form, 'endPeriod', endTime)
+        this.timeInterval = `${startTime}:00-${endTime}:59`
       }
       // 初始化服务分类
       this.initServiceCats()
