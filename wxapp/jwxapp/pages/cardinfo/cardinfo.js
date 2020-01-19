@@ -157,7 +157,6 @@ global.wxPage({
         }
       }, { cardId: cardId })
     }
-
   },
   // 获取会员卡过期时间
   getCardExpireTime (cardItem) {

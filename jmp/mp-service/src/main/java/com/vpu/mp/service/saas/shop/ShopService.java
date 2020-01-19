@@ -352,7 +352,7 @@ public class ShopService extends MainBaseService {
      */
 	public ShopBaseConfig getShopBaseInfoById(Integer shopId) {
         ShopPojo shop = db().select(SHOP.SHOP_AVATAR, SHOP.SHOP_NAME, SHOP.BUSINESS_STATE, SHOP.CREATED, SHOP.BUSINESS_STATE,SHOP.LOGO)
-            .from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(ShopPojo.class);
+            .from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOneInto(ShopPojo.class);
         ShopBaseConfig shopBaseCfgInfo = new ShopBaseConfig();
         shopBaseCfgInfo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(shopId));
         shopBaseCfgInfo.setShopName(shop.getShopName());

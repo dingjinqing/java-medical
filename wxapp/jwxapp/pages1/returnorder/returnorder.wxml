@@ -30,14 +30,14 @@
           </view>
           <view class="goods-wrap">
             <view class="goods-name">
-              <text class="activity-type-mark" wx:if="{{item.isGift}}" style='color:{{comColor}};border-color:{{comColor}}'>赠品</text>
+              <text class="activity-type-mark" wx:if="{{item.isGift}}" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"page1.afterSale.gift")}}</text>
               {{item.goodsName}}
             </view>
             <view class="goods-spec" style="opacity:{{item.goodsAttr?1:0}}">
               {{item.goodsAttr}}
             </view>
             <view class="goods-price">
-              <text wx:if="{{goodsType == 4}}">{{i18n.$t(localePack,"page1.afterSale.integral")}}：{{ item.goodsScore }}<text wx:if="{{item.money > 0}}" style="margin-left:20rpx">现金：￥{{ item.money }}</text></text>
+              <text wx:if="{{goodsType == 4}}">{{i18n.$t(localePack,"page1.afterSale.integral")}}：{{ item.goodsScore }}<text wx:if="{{item.money > 0}}" style="margin-left:20rpx">{{i18n.$t(localePack,"page1.afterSale.cash")}}：￥{{ item.money }}</text></text>
               <text wx:else>{{i18n.$t(localePack,"page1.afterSale.price")}}：￥{{item.goodsPrice}}</text>
               <text>{{i18n.$t(localePack,"page1.afterSale.returnableNum")}}：{{item.returnable}}</text>
             </view>
@@ -72,7 +72,7 @@
     </view>
     <view class="order-info" wx:if="{{selectGoodIds.length && isRefund && orderInfo.returnShippingFee}}">
       <block>
-        <text><text class="order-place">*</text>运费退款金额：</text>
+        <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.freightRefundAmount")}}：</text>
         <text style="color:{{comColor}}">￥{{orderInfo.returnShippingFee}}</text>
       </block>
     </view>

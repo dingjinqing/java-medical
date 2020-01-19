@@ -191,14 +191,27 @@
                   class="el-icon-circle-check"
                 ></span>
               </el-tooltip>
+              <!-- hello world  -->
               <el-tooltip
-                :content="$t('ordinaryCouponList.reveiveDetails')"
+                content="查看活动订单"
                 placement="top"
                 v-if="scope.row.status !== 1"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-tickets"
+                  @click="receiveDetails(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="活动明细"
+                placement="top"
+                v-if="scope.row.status !== 1"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-document"
+                  @click="activityDetails(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -250,7 +263,7 @@ export default {
       activityName: '定金膨胀',
       startTime: '',
       param: {
-        status: 0,
+        status: 3,
         presaleName: '',
         startTime: null,
         endTime: null,
@@ -303,6 +316,20 @@ export default {
       deletePreSale(id).then(res => {
         if (res.error === 0) {
           this.$message.success('删除成功')
+        }
+      })
+    },
+    // 领取明细
+    receiveDetails (id) {
+      console.log(id)
+      this.$router.push(`/admin/home/main/presale/order_detail/${id}`)
+    },
+    // 活动明细
+    activityDetails (id) {
+      this.$router.push({
+        path: `/admin/home/main/presale/detail/${id}`,
+        query: {
+          id: id
         }
       })
     }

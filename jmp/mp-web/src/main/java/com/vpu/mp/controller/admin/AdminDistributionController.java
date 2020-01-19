@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
@@ -585,14 +586,14 @@ public class AdminDistributionController extends AdminBaseController{
         System.out.print(distributorCheckList.dataList);
         for(DistributorCheckListVo list:distributorCheckList.dataList){
             //转换行业码对应的名称
-            if(list.getIndustryInfo() != null){
-                String industryInfo = MemberIndustryEnum.getNameByCode(list.getIndustryInfo(),getLang());
-                list.setIndustryName(industryInfo);
+            if(list.getCheckField().getIndustryInfo() != null){
+                String industryInfo = MemberIndustryEnum.getNameByCode(list.getCheckField().getIndustryInfo(),getLang());
+                list.getCheckField().setIndustryName(industryInfo);
             }
-            if(list.getEducation() != null){
+            if(list.getCheckField().getEducation() != null){
                 //教育程度
-                String education = MemberEducationEnum.getNameByCode(list.getEducation(),getLang());
-                list.setEducationName(education);
+                String education = MemberEducationEnum.getNameByCode(list.getCheckField().getEducation(),getLang());
+                list.getCheckField().setEducationName(education);
             }
         }
         return this.success(distributorCheckList);

@@ -356,8 +356,6 @@ export default {
             let arr = JSON.parse(JSON.stringify(turnToString.goodsListData))
             if (arr.length) {
               this.goodsFlag = true
-              // 处理显示活动
-              this.handleToActivity(turnToString)
             } else {
               this.goodsFlag = false
             }
@@ -396,6 +394,8 @@ export default {
               } else {
                 this.data.goodsListData = res.content
               }
+              // 处理显示活动
+              this.handleToActivity(res.content)
               this.initLoad = false
             }
           })
@@ -454,8 +454,7 @@ export default {
     // 处理显示活动
     handleToActivity (newData) {
       console.log(newData)
-      let goodSData = newData.goodsListData
-      goodSData.forEach((item, index) => {
+      newData.forEach((item, index) => {
         console.log(item)
         // 处理每一个商品当前要显示的活动
         let arr = []
@@ -464,12 +463,13 @@ export default {
           arr[0] = item.goodsActivities[0]
           arr[1] = item.goodsActivities[1]
           item.goodsActivities = arr
+          this.data.goodsListData[index].goodsActivities = arr
         }
-        this.handleToEveryGoods(item, index, goodSData)
+        this.handleToEveryGoods(item, index)
       })
     },
     // 处理每一个商品中要显示的活动
-    handleToEveryGoods (item, index, goodSData) {
+    handleToEveryGoods (item, index) {
       // 秒杀 、一口价、支付有礼、加价购均不显示
       item.goodsActivities.forEach((itemC, indeC) => {
         console.log(itemC)

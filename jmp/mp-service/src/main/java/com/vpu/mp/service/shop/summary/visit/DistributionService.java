@@ -63,7 +63,8 @@ public class DistributionService extends BaseVisitService {
      * @param param the param
      * @return the source analysis
      */
-    public List<LineChartVo> getSourceAnalysis(VisitDistributionParam param) {
+    public SourceAnalysisVo querySourceAnalysis(VisitDistributionParam param) {
+        logger().info("获取来源分析折线图数据");
         param.setSourceId(Objects.isNull(param.getSourceId()) ? MP_HISTORY_LIST.getIndex() : param.getSourceId());
         if (!param.getType().equals(CUSTOM_DAYS)) {
             param.setStartDate(getDate(param.getType()));
@@ -71,9 +72,10 @@ public class DistributionService extends BaseVisitService {
         }
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
+        logger().info("日期转换完成：startDate：{}， endDate：{}", startDate, endDate);
         Result<MpDistributionVisitRecord> result = getDistributionRecord(startDate, endDate);
         Integer sourceId = param.getSourceId();
-        List<LineChartVo> vos = new ArrayList<>();
+        List<LineChartVo> lineChart = new ArrayList<>();
         for (MpDistributionVisitRecord record : result) {
             String refDate = record.getRefDate();
             String list = record.getList();
@@ -85,11 +87,12 @@ public class DistributionService extends BaseVisitService {
                 if (ACCESS_SOURCE_PV.equals(indexName)) {
                     Map<Integer, Integer> values = item.getValue();
                     Integer v = values.get(sourceId);
-                    vos.add(LineChartVo.builder().refDate(refDate).openTimes(Objects.isNull(v) ? INTEGER_ZERO : v).build());
+                    lineChart.add(LineChartVo.builder().refDate(refDate).openTimes(Objects.isNull(v) ? INTEGER_ZERO : v).build());
                 }
             }
         }
-        return vos;
+        logger().info("数据获取完成");
+        return SourceAnalysisVo.builder().lineChart(lineChart).startDate(startDate).endDate(endDate).build();
     }
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {
         //得到时间

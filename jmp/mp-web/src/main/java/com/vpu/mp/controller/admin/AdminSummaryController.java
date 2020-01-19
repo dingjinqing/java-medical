@@ -39,7 +39,7 @@ public class AdminSummaryController extends AdminBaseController {
 
     @PostMapping("/api/admin/summary/source/distribution")
     public JsonResult getSourceAnalysis(@Valid @RequestBody VisitDistributionParam param) {
-        return success(shop().distribution.getSourceAnalysis(param));
+        return success(shop().distribution.querySourceAnalysis(param));
     }
 
     @GetMapping("/api/admin/summary/source/selectoption")

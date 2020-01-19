@@ -101,6 +101,7 @@ public class GroupDrawUserService extends ShopBaseService {
 		goodsGroupDrawList.forEach(goodsGroupDraw -> {
 			Integer goodsGroupDrawId = goodsGroupDraw.getId();
 			Short minJoinNum = goodsGroupDraw.getMinJoinNum();
+			logger().info("团："+goodsGroupDrawId+"最小参与人数："+minJoinNum);
 			// 抽奖记录置为已开奖
 			updateGroupDrawStatus(goodsGroupDraw.getId());
 			// 活动商品
@@ -109,23 +110,29 @@ public class GroupDrawUserService extends ShopBaseService {
 				int joinUserNum = getJoinUserNumByGoodsId(goodsGroupDrawId, goodsId, null);
 				if (joinUserNum > 0) {
 					// 已成团该商品参与用户数
+					logger().info("已成团该商品参与用户数");
 					joinUserNum = getJoinUserNumByGoodsId(goodsGroupDrawId, goodsId, GROUPED);
+					logger().info("参与人数："+joinUserNum);
 					if (minJoinNum <= joinUserNum) {
 						// 人数达到开奖条件 开奖
+						logger().info("人数达到开奖条件 开奖");
 						startDraw(goodsGroupDrawId, goodsId);
 					} else {
 						// 不满足开奖条件，更新开奖状态
 						updateGroupDrawStatus(goodsGroupDrawId, goodsId);
 					}
 					// 拼团失败更新开奖状态
+					logger().info("拼团失败更新开奖状态");
 					updateOnGoingGroupDrawStatus(goodsGroupDrawId, goodsId);
 					// 获得参与抽奖用户
+					logger().info("获得参与抽奖用户");
 					List<JoinGroupListRecord> groupUserList = getGroupUserListByGoodsId(goodsGroupDrawId, goodsId,
 							null);
 					// 订单号
 					List<String> orderSns = groupUserList.stream().map(JoinGroupListRecord::getOrderSn)
 							.collect(Collectors.toList());
 					// 更新订单状态为 "待发货"
+					logger().info("更新订单状态为 \"待发货\"");
 					updateOrderWaitDelivery(orderSns);
 					// TODO 同步订单状态到 CRM
 					List<Integer> couponUserIds = new LinkedList<>();
@@ -133,6 +140,7 @@ public class GroupDrawUserService extends ShopBaseService {
 					groupUserList.forEach(groupUser -> {
 						if (WIN_DRAW == groupUser.getIsWinDraw()) {
 							// 更新库存
+							logger().info("更新库存");
 							updateProductNumber(groupUser.getOrderSn());
 						} else {
 							refundMoney(groupUser.getOrderSn());

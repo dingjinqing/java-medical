@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
@@ -33,13 +35,15 @@ public class DistributorCheckService extends ShopBaseService{
      * @return
      */
 	public PageResult<DistributorCheckListVo> getDistributorCheckList(DistributorCheckListParam param) {
-        SelectConditionStep<Record> select = db().select(DISTRIBUTOR_APPLY.fields()).select(USER.USERNAME, USER.MOBILE, USER.IS_DISTRIBUTOR, USER.INVITE_ID,
-            USER_DETAIL.REAL_NAME,USER_DETAIL.SEX,USER_DETAIL.BIRTHDAY_YEAR,USER_DETAIL.BIRTHDAY_MONTH,USER_DETAIL.BIRTHDAY_DAY,USER_DETAIL.MARITAL_STATUS,
-            USER_DETAIL.CID,USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO)
-            .from(DISTRIBUTOR_APPLY.leftJoin(USER).on(DISTRIBUTOR_APPLY.USER_ID.eq(USER.USER_ID))
-                .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID))).where(DSL.trueCondition());
+        SelectConditionStep<Record> select = db().select(DISTRIBUTOR_APPLY.fields()).select(USER.USERNAME, USER.MOBILE)
+            .from(DISTRIBUTOR_APPLY.leftJoin(USER).on(DISTRIBUTOR_APPLY.USER_ID.eq(USER.USER_ID)))
+               .where(DSL.trueCondition());
         buildOptions(select,param);
         PageResult<DistributorCheckListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), DistributorCheckListVo.class);
+        System.out.println(pageResult);
+        for(DistributorCheckListVo applyInfo: pageResult.getDataList()){
+            applyInfo.setCheckField(Util.parseJson(applyInfo.getActivationFields(),DistributorApplyParam.InfoField.class));
+        }
         return pageResult;
 	}
 

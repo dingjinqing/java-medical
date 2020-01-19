@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.sql.Timestamp;
-
+import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import lombok.Data;
 
 /**
@@ -11,84 +11,45 @@ import lombok.Data;
  */
 @Data
 public class DistributorCheckListVo {
-	private Integer id;
     /**
      * 用户ID
      */
-	private Integer userId;
+    private Integer userId;
     /**
-     * 审核状态 0：审核中；1：审核功过；2：未通过
+     * 审核校验
      */
-	private Integer status;
+    private String activationFields;
     /**
-     *审核内容（不通过原因）
+     * 审核字段
      */
-	private String msg;
-	private Integer delFlag;
-	private String activationFields;
-	private Timestamp createTime;
+    private String configFields;
     /**
-     * 用户名
+     * 后台审核字段
      */
-	private String username;
+    private DistributorApplyParam.InfoField checkField;
     /**
-     * 手机号
+     * 用户昵称
      */
-	private String mobile;
-
-	private Integer inviteId;
+    private String username;
     /**
-     * 真实姓名
+     *手机号
      */
-	private String realName;
+    private String mobile;
     /**
-     * 性别 f:女 m：男
+     * 审核状态 0：审核中；1：审核通过；2：审核拒绝
      */
-	private String sex;
+    private Integer status;
     /**
-     * 身份证号
+     * 是否删除 0：为删除；1：删除
      */
-	private String cid;
+    private Integer delFlag;
     /**
-     * 出生年
+     * 创建时间
      */
-	private Integer birthdayYear;
+    private Timestamp createTime;
     /**
-     * 出生月
+     * 更新时间
      */
-	private Integer birthdayMonth;
-    /**
-     * 出生日
-     */
-	private Integer birthdayDay;
-    /**
-     * 婚姻状况 1：未婚；2：已婚
-     */
-	private Byte maritalStatus;
-    /**
-     * 教育程度
-     */
-	private Byte education;
-    /**
-     * 所在行业
-     */
-	private Byte industryInfo;
-    /**
-     * 所在地
-     */
-	private String address;
-    /**
-     * 行业名称
-     */
-	private String industryName;
-    /**
-     * 教育程度名称
-     */
-	private String educationName;
-
-    /**
-     * 审核时间
-     */
-	private Timestamp updateTime;
+    private Timestamp updateTime;
 
 }

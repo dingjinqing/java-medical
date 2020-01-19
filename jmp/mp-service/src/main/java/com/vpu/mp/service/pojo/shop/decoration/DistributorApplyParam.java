@@ -122,6 +122,10 @@ public class DistributorApplyParam {
          */
         @JsonProperty(value = "custom_options")
         public List<CustomOptions> customOptions;
+
+        public String industryName;
+
+        public String educationName;
     }
     @Data
     public static class CustomOptions{

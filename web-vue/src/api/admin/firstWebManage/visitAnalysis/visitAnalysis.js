@@ -39,3 +39,20 @@ export function pageAnalysis (data) {
     data: data
   })
 }
+
+// 来源分析折线图
+export function sourceAnalysis (data) {
+  return service({
+    url: '/api/admin/summary/source/distribution',
+    method: 'post',
+    data: data
+  })
+}
+
+// 来源下拉
+export function sourceSelect () {
+  return service({
+    url: '/api/admin/summary/source/selectoption',
+    method: 'get'
+  })
+}
