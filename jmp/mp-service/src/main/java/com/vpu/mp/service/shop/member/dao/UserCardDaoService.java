@@ -315,7 +315,8 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 
 	/**
-	 * 计算用户等级
+	 *	 获取用户等级
+	 *	@return 等级 || null
 	 */
     public String calcUserGrade(Integer userId) {
 		return db().select(MEMBER_CARD.GRADE)

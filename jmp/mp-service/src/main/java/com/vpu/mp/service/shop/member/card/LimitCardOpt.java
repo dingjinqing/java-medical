@@ -70,7 +70,7 @@ public class LimitCardOpt extends CardOpt {
 	
 	
 	@Override
-	protected boolean canSendCard(Integer userId, Integer cardId) {
+	public boolean canSendCard(Integer userId, Integer cardId) {
 		logger().info("检测是否能够发放该先此限次卡");
 		//	获取要发送卡
 		MemberCardRecord card = cardService.getCardById(cardId);
