@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -9,16 +10,17 @@ import java.util.List;
  *
  * @author 郑保乐
  */
-@Data
+@Getter
+@Setter
 public class VisitDistributionParam {
     /** 日期类型 7:最近7天 30:最近30天 0:自定义 */
-    private Integer type = 7;
-    private String startDate;
-    private String endDate;
+    public Integer type = 7;
+    public String startDate;
+    public String endDate;
 
     /**
      * 忽略哪些访问来源
      */
-    private List<Integer> cancelBtn;
-    private Integer sourceId = 1;
+    public List<Integer> cancelBtn;
+    public Integer sourceId = 1;
 }

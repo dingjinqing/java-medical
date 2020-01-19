@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @Builder
 public class SourceAnalysisVo {
-    private List<LineChartVo> lineChart;
-    private String startDate;
-    private String endDate;
+    public List<LineChartVo> lineChart;
+    public String startDate;
+    public String endDate;
 }

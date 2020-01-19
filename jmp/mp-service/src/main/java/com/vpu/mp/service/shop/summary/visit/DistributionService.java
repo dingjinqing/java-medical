@@ -64,6 +64,7 @@ public class DistributionService extends BaseVisitService {
      * @return the source analysis
      */
     public SourceAnalysisVo getSourceAnalysis(VisitDistributionParam param) {
+        logger().info("获取来源分析折线图数据");
         param.setSourceId(Objects.isNull(param.getSourceId()) ? MP_HISTORY_LIST.getIndex() : param.getSourceId());
         if (!param.getType().equals(CUSTOM_DAYS)) {
             param.setStartDate(getDate(param.getType()));
@@ -71,6 +72,7 @@ public class DistributionService extends BaseVisitService {
         }
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
+        logger().info("日期转换完成：startDate：{}， endDate：{}", startDate, endDate);
         Result<MpDistributionVisitRecord> result = getDistributionRecord(startDate, endDate);
         Integer sourceId = param.getSourceId();
         List<LineChartVo> lineChart = new ArrayList<>();
@@ -89,6 +91,7 @@ public class DistributionService extends BaseVisitService {
                 }
             }
         }
+        logger().info("数据获取完成");
         return SourceAnalysisVo.builder().lineChart(lineChart).startDate(startDate).endDate(endDate).build();
     }
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {
