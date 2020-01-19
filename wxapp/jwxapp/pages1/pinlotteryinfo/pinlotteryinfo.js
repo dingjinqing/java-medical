@@ -63,29 +63,29 @@ global.wxPage({
       if (res.error == 0) {
         group_info = res.content;
         if (res.content) {
-          util.api('/api/wxapp/user_goods/record', function (res1) {
+          // util.api('/api/wxapp/user_goods/record', function (res1) {
 
-          }, { goods_id: goods_id, active_id: group_draw_id, active_type: 8, type: 1 })
+          // }, { goods_id: goods_id, active_id: group_draw_id, active_type: 8, type: 1 })
         }
-        if (group_info.user_group_info) {
-          order_sn = group_info.user_group_info.order_sn;
+        if (group_info.userGroupInfo) {
+          order_sn = group_info.userGroupInfo.orderSn;
         }
 
         // 判断更多抽奖活动的个数
-        if (group_info.draw_goods != '' && group_info.draw_goods) {
-          if (group_info.draw_goods.length > 6) {
-            group_info.draw_goods = group_info.draw_goods.slice(0, 6);
+        if (group_info.drawGoods != '' && group_info.drawGoods) {
+          if (group_info.drawGoods.length > 6) {
+            group_info.drawGoods = group_info.drawGoods.slice(0, 6);
           }
         }
         // 倒计时
-        if (group_info.surplus_second) {
-          total_micro_second = group_info.surplus_second;
+        if (group_info.surplusSecond) {
+          total_micro_second = group_info.surplusSecond;
           if (total_micro_second > 0) {
             that.countdown(that);
           }
         }
-        if (group_info.group_join_detail.user_list.length > 0) {
-          user_arr = group_info.group_join_detail.user_list.slice(1);
+        if (group_info.groupJoinDetail.userList.length > 0) {
+          user_arr = group_info.groupJoinDetail.userList.slice(1);
         }
         that.setData({
           group_info: group_info,
@@ -99,10 +99,20 @@ global.wxPage({
         });
         return false;
       }
-    }, { group_draw_id: group_draw_id, goods_id: goods_id, group_id: group_id })
-    util.api('/api/wxapp/groupdraw/shareimg', function (res) {
-      share_img = res.content;
-    }, { goods_id: goods_id, group_draw_id: group_draw_id, group_id: group_id });
+    }, { 
+      group_draw_id: group_draw_id, 
+      goods_id: goods_id, 
+      group_id: group_id, 
+      options: {
+        group_draw_id: group_draw_id,
+        goods_id: goods_id,
+        group_id: group_id
+      } 
+    })
+
+    // util.api('/api/wxapp/groupdraw/shareimg', function (res) {
+    //   share_img = res.content;
+    // }, { goods_id: goods_id, group_draw_id: group_draw_id, group_id: group_id });
   },
   to_lists: function () {
     if (group_info.group_draw.status == 2) {
