@@ -32,7 +32,13 @@ global.wxComponent({
       console.log(initData, '++++++++++++++++++++++')
       // 分组名称处理
       if (initData.position_style == 0 && initData.group_display == 1) {
-        initData.sort_group_arr.unshift({ 'group_name': '全部' })
+        initData.sort_group_arr.unshift({
+          'group_name': '全部',
+          "sort_id": null,
+          "sort_type": null,
+          "group_goods_id": null,
+          "is_all": null
+        })
       }
       initData.navlen = initData.sort_group_arr.length;
       initData.group_nav_index = 0;
@@ -51,25 +57,45 @@ global.wxComponent({
       console.log(d)
       var _this = this;
       var m = this.data.m;
+      console.log(m)
       if (d.click == 1) {
         util.jumpLink('/pages/searchs/search?cur_idx=' + m.idx + '&group_idx=' + m.group_nav_index + '&page_id=' + m.page_id);
       } else {
         m.group_nav_index = d.index;
         m.page_num = 1;
-        // util.api('/api/wxapp/get/group/goods', function (res) {
-        //   if (res.error == 0) {
-        //     var data = res.content;
-        //     m.first_group_goods = data.goods_list;
-        //     m.pin_group_goods = data.pin_group_goods;
-        //     m.more_flag = data.more_flag;
-        //     _this.$set();
-        //   }
-        // }, {
-        //   cur_idx: m.idx,
-        //   group_idx: m.group_nav_index,
-        //   page: m.page_id,
-        //   page_num: m.page_num,
-        // });
+        let arr = []
+        if (m.sort_group_arr[d.index].group_name === '全部') {
+          m.sort_group_arr.forEach((item, index) => {
+            let obj = {
+              "sort_id": m.sort_group_arr[index].sort_id,
+              "sort_type": m.sort_group_arr[index].sort_type,
+              "group_goods_id": m.sort_group_arr[index].group_goods_id,
+              "is_all": m.sort_group_arr[index].is_all
+            }
+            arr.push(obj)
+          })
+
+        } else {
+          arr = [{
+            "sort_id": m.sort_group_arr[d.index].sort_id,
+            "sort_type": m.sort_group_arr[d.index].sort_type,
+            "group_goods_id": m.sort_group_arr[d.index].group_goods_id,
+            "is_all": m.sort_group_arr[d.index].is_all
+          }]
+        }
+        util.api('/api/wxapp/goods/group/list', function (res) {
+          console.log(res)
+          if (res.error == 0) {
+            var data = res.content;
+            _this.handleToLabel(data)
+            _this.handleToGoodsActivities(data)
+            m.goodsListData = data;
+            m.more_flag = data.more_flag;
+            _this.$set();
+          }
+        }, {
+          sort_group_arr: arr
+        });
       }
     },
     onPageScroll (e) {
