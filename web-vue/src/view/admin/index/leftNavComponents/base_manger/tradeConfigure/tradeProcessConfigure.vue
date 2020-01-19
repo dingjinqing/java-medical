@@ -384,7 +384,7 @@
             <el-input
               size="small"
               style="width:180px"
-              v-model="areaLinkage.address"
+              v-model="address"
             ></el-input>
           </div>
           <!-- 快递表格数据部分 -->
@@ -631,9 +631,6 @@ export default {
       console.log(newData)
     }
   },
-  // created () {
-  //   this.initData()
-  // },
   data () {
     return {
       // 商品弹窗回调数据
@@ -741,12 +738,6 @@ export default {
           add_brand: {}
         }
       },
-      addresssConf: {
-        province_code: '',
-        city_code: '',
-        district_code: '',
-        address: ''
-      },
       // 自提门店列表
       storeParamList: [
         {
@@ -778,9 +769,9 @@ export default {
       areaLinkage: {
         provinceCode: '',
         cityCode: '',
-        districtCode: '',
-        address: ''
-      }
+        districtCode: ''
+      },
+      address: ''
     }
   },
   methods: {
@@ -792,7 +783,7 @@ export default {
           this.areaLinkage.provinceCode = res.content.trade_process_config.shop_address.province_code
           this.areaLinkage.cityCode = res.content.trade_process_config.shop_address.city_code
           this.areaLinkage.districtCode = res.content.trade_process_config.shop_address.district_code
-          this.areaLinkage.address = res.content.trade_process_config.shop_address.address
+          this.address = res.content.trade_process_config.shop_address.address
           // 物流助手列表
           this.expressCompany = res.content.delivery_list || []
           this.expressCompany.map((item, index1) => {
@@ -872,13 +863,8 @@ export default {
     // 更新配置项
     updateConfig () {
       // 省市区数据
-      // this.addresssConf.province_code = this.areaLinkage.provinceCode
-      // this.addresssConf.city_code = this.areaLinkage.cityCode
-      // this.addresssConf.district_code = this.areaLinkage.districtCode
-      // this.addresssConf.address = this.areaLinkage.address
-
+      this.tradeProcessConfig.shop_address.address = this.address
       this.tradeProcessConfig.cancel_time = this.cancelHour * 60 + this.cancelMinute
-      // this.tradeProcessConfig.shop_address = this.addresssConf
       this.deliverMethods.map((item, index) => {
         switch (item.code) {
           case 'express':
@@ -919,6 +905,9 @@ export default {
       this.tradeProcessConfig.order_require_goods_package.add_sort = this.busClass
       this.tradeProcessConfig.order_require_goods_package.add_cate = this.platClass
       console.log(JSON.parse(JSON.stringify(this.tradeProcessConfig)))
+
+      console.log(this.tradeProcessConfig)
+
       tradeUpdate(this.tradeProcessConfig).then(res => {
         console.log(res)
         if (res.error === 0) {
