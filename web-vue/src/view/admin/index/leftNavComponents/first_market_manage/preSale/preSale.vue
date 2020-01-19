@@ -9,27 +9,29 @@
       <statusTab
         v-model="param.status"
         :activityName="activityName"
-        :standard="false"
+        :standard="true"
+        @click="initDataList()"
       />
       <section>
         <div class="tab_info1">
           <div>
-            活动名称：
+            <span class="info_title">活动名称：</span>
             <el-input
-              v-model="param.presaleName"
+              v-model="param.name"
               placeholder="活动名称"
               style="width:180px"
               size="small"
             ></el-input>
           </div>
           <div class="money_paytime">
-            定金支付时间：
+            <span class="info_title">定金支付时间：</span>
             <el-date-picker
               v-model="param.preStartTime"
               type="datetime"
               placeholder="选择开始日期"
               size="small"
               style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -39,29 +41,35 @@
               placeholder="选择结束日期"
               size="small"
               style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
         </div>
         <div class="tab_info2">
-          <span>尾款支付时间：</span>
-          <el-date-picker
-            v-model="param.startTime"
-            type="datetime"
-            placeholder="选择开始日期"
-            size="small"
-            style="width:185px"
-          >
-          </el-date-picker>
-          <span style="margin: 0 5px">至</span>
-          <el-date-picker
-            v-model="param.endTime"
-            type="datetime"
-            placeholder="选择结束日期"
-            size="small"
-            style="width:185px"
-          >
-          </el-date-picker>
+          <div>
+            <span class="info_title">尾款支付时间：</span>
+            <el-date-picker
+              v-model="param.startTime"
+              type="datetime"
+              placeholder="选择开始日期"
+              size="small"
+              style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            >
+            </el-date-picker>
+            <span style="margin: 0 5px">至</span>
+            <el-date-picker
+              v-model="param.endTime"
+              type="datetime"
+              placeholder="选择结束日期"
+              size="small"
+              style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            >
+            </el-date-picker>
+          </div>
+
           <el-button
             type='primary'
             size="small"
@@ -82,7 +90,6 @@
 
     <div class="table_list">
       <el-table
-        class="version-manage-table"
         header-row-class-name="tableHeader"
         :data="tableData"
         border
@@ -137,7 +144,7 @@
           align="center"
         > </el-table-column>
         <el-table-column
-          prop="status"
+          prop="statusText"
           label="活动状态"
           align="center"
         > </el-table-column>
@@ -150,7 +157,7 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
-                v-if="scope.row.status === 0 || scope.row.status === 1"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -161,7 +168,7 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.share')"
                 placement="top"
-                v-if="scope.row.status === 0 || scope.row.status === 1"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -172,7 +179,7 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.disableUse')"
                 placement="top"
-                v-if="scope.row.status === 0 || scope.row.status === 1"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -183,19 +190,19 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.enableUse')"
                 placement="top"
-                v-if="scope.row.status === 3"
-                @click="enable(scope.row.id)"
+                v-if="scope.row.status === 4"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-circle-check"
+                  @click="enable(scope.row.id)"
                 ></span>
               </el-tooltip>
               <!-- hello world  -->
               <el-tooltip
                 content="查看活动订单"
                 placement="top"
-                v-if="scope.row.status !== 1"
+                v-if="scope.row.status !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -206,7 +213,7 @@
               <el-tooltip
                 content="活动明细"
                 placement="top"
-                v-if="scope.row.status !== 1"
+                v-if="scope.row.status !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -217,7 +224,7 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.delete')"
                 placement="top"
-                v-if="scope.row.status === 2 || scope.row.status === 3"
+                v-if="scope.row.status === 3 || scope.row.status === 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -263,8 +270,8 @@ export default {
       activityName: '定金膨胀',
       startTime: '',
       param: {
-        status: 3,
-        presaleName: '',
+        status: 1,
+        name: '',
         startTime: null,
         endTime: null,
         preStartTime: null,
@@ -283,6 +290,9 @@ export default {
           console.log(res, 'res')
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
+          this.tableData.map((item, index) => {
+            item.statusText = this.getActStatusString(item.status)
+          })
         }
       }).catch(err => console.log(err))
     },
@@ -301,22 +311,53 @@ export default {
     },
     // 停用活动
     disable (id) {
-      disablePreSale(id).then(r => {
-        this.$message.success('停用成功')
+      this.$confirm(this.$t('payReward.confirmStop'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
+        type: 'warning'
+      }).then(() => {
+        disablePreSale(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('payReward.stopSuccess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('payReward.cancelStop') })
       })
     },
     // 启用活动
     enable (id) {
-      enablePreSale(id).then(r => {
-        this.$message.success('启用成功')
+      this.$confirm(this.$t('payReward.confirmEnable'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
+        type: 'warning'
+      }).then(() => {
+        enablePreSale(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('payReward.enableSuccess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('payReward.cancelEnable') })
       })
     },
     // 删除活动
     deleteActivity (id) {
-      deletePreSale(id).then(res => {
-        if (res.error === 0) {
-          this.$message.success('删除成功')
-        }
+      this.$confirm(this.$t('payReward.confirmDelete'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deletePreSale(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('payReward.deleteSucess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('payReward.cancelDelete') })
       })
     },
     // 领取明细
@@ -343,19 +384,24 @@ export default {
     padding: 20px;
     background: #fff;
     font-size: 14px;
-    .tab_info1 {
+    .tab_info1,
+    .tab_info2 {
       display: flex;
       margin: 10px 0;
       .money_paytime {
         margin-left: 70px;
       }
+      .choose {
+        margin-left: 15px;
+      }
+      .info_title {
+        display: inline-block;
+        width: 110px;
+        text-align: right;
+      }
     }
     .tab_info2 {
-      display: inline-block;
-      margin: 10px 0;
-      .choose {
-        margin-left: 20px;
-      }
+      margin: 20px 0;
     }
     .add_activity {
       display: block;
