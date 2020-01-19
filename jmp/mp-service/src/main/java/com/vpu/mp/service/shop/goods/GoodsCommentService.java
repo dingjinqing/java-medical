@@ -610,8 +610,7 @@ public class GoodsCommentService extends ShopBaseService {
           actId =
               db().select(COMMENT_GOODS.COMMENT_AWARD_ID)
                   .from(COMMENT_GOODS)
-                  .where(COMMENT_GOODS.GOODS_ID.eq(forGoodsId.getGoodsId()))
-                  .and(COMMENT_GOODS.ORDER_SN.eq(forGoodsId.getOrderSn()))
+                  .where(COMMENT_GOODS.REC_ID.eq(forGoodsId.getRecId()))
                   .and(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                   .fetchOptionalInto(Integer.class)
                   .orElse(NumberUtils.INTEGER_ZERO);
@@ -769,8 +768,7 @@ public class GoodsCommentService extends ShopBaseService {
       // 为参与评价有礼活动的商品设置活动id 此时已经经过满足评价条件的校验了
       db().update(COMMENT_GOODS)
           .set(COMMENT_GOODS.COMMENT_AWARD_ID, param.getId())
-          .where(COMMENT_GOODS.GOODS_ID.eq(param.getGoodsId()))
-          .and(COMMENT_GOODS.ORDER_SN.eq(param.getOrderSn()))
+          .where(COMMENT_GOODS.REC_ID.eq(param.getRecId()))
           .and(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO))
           .execute();
       // 活动奖励1：赠送积分
