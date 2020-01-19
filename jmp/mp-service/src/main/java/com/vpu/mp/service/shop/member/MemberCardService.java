@@ -1156,7 +1156,7 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 会员卡列表
+	 * 	会员卡列表
 	 *
 	 * @return
 	 */
@@ -1266,24 +1266,29 @@ public class MemberCardService extends ShopBaseService {
 	 * 查询所有的会员卡
 	 */
 	private Result<MemberCardRecord> selectAllMemberCard(CardParam param) {
-		logger().info("查询所有会员卡");
-		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
-				.and(getCondition(param))
-				.fetch();
-		return cardRecords;
-	}
-
-	private Condition getCondition(CardParam param) {
+		logger().info("查询所有有效会员卡");
 		Condition condition = DSL.noCondition();
-		if(isNotNull(param.getCardType())) {
+		//	有效时间
+		
+		condition = condition.and(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_DURING)
+				.or(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_FOREVER))
+				.or(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_FIX)
+						.and(MEMBER_CARD.END_TIME.gt(DateUtil.getLocalDateTime()))));
+		
+		condition = condition.and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO));
+		
+		if(null != param.getCardType()) {
 			condition = condition.and(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
 		}
-		if(isNotBlank(param.getCardName())) {
-			condition = condition.and(MEMBER_CARD.CARD_NAME.like(likeValue(param.getCardName())));
+		if(!StringUtils.isBlank(param.getCardName())) {
+			String cardName = param.getCardName().trim();
+			condition = condition.and(MEMBER_CARD.CARD_NAME.like(likeValue(cardName)));
 		}
-		return condition;
+		
+		return db().selectFrom(MEMBER_CARD).where(condition).fetch();
 	}
+
+	
 
 	/**
 	 * 为会员分配会员卡
