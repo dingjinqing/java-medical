@@ -138,20 +138,36 @@
                   {{$t('membershipIntroduction.abolished')}}
                 </span>
               </td>
-              <td class="td-money">
-                  <span style="margin-right: 10px;">{{item.money}}</span>
-                  <img :src="plusImg" align="right" @click="modifyAccount(item,0)">
+              <td class="td-money"  style="margin: 0px;padding: 0px;">
+                <div class="moneyModify" v-if="item.cardType==='0' ">
+                  <span >{{item.money}}</span>
+                  <img :src="plusImg" align="right" @click="modifyAccount(item,0)" v-if="!item.deleteShow && !item.expired">
+                  <img v-else style="width: 10px;">
+                </div>
               </td>
-              <td>{{item.surplus}}</td>
-              <td>{{item.exchang_surplus}}</td>
+              <td>
+                <div class="moneyModify" v-if="item.cardType==='1' ">
+                  <span>{{item.surplus}}</span>
+                  <img :src="plusImg" align="right" @click="modifyAccount(item,2)" v-if="!item.deleteShow && !item.expired">
+                  <img v-else style="width: 10px;">
+                </div>
+              </td>
+              <td>
+                <div class="moneyModify" v-if="item.cardType==='1' ">
+                  <span>{{item.exchang_surplus}}</span>
+                  <img :src="plusImg" align="right" @click="modifyAccount(item,1)" v-if="!item.deleteShow && !item.expired">
+                  <img v-else style="width: 10px;">
+                </div>
+
+              </td>
               <td class="link">
                 <div class="operateDiv">
-                  <span @click="jumpToChargeDetail(item)">充值明细</span>
-                  <span>-消费明细</span>
+                  <span @click="jumpToChargeDetail(item)">{{ $t('membershipIntroduction.chargeDetail')  }}</span>
+                  <span>-{{ $t('membershipIntroduction.consumeDetail')  }}</span>
                   <span
-                    v-if="item.deleteShow"
+                    v-if="!item.deleteShow"
                     @click="deleteUserCard(item)"
-                  >-废除</span>
+                  >-{{ $t('membershipIntroduction.deleteCard')  }}</span>
                 </div>
               </td>
 
@@ -313,8 +329,12 @@ export default {
             this.trList = res.content
             this.trList.forEach(item => {
               item.deleteShow = false
-              if (Number(item.flag) === 0) {
+              if (Number(item.flag) === 1) {
                 item.deleteShow = true
+              }
+              item.expired = false
+              if (item.expireTime && Date.now() > Date.parse(item.expireTime)) {
+                item.expired = true
               }
             })
             console.log(this.trList)
@@ -376,7 +396,7 @@ export default {
     modifyAccount (row, type) {
       // 修改弹窗
       console.log('修改账户余额')
-      let dialogData = this.$t('membershipIntroduction.balanceDialogData')[0]
+      let dialogData = this.$t('membershipIntroduction.balanceDialogData')[type]
       Object.keys(this.modifyDialogData).forEach(key => {
         this.modifyDialogData[key] = dialogData[key] || this.modifyDialogData[key]
       })
@@ -385,7 +405,13 @@ export default {
       this.modifyDialogData.userId = row.userId
       this.modifyDialogData.cardId = row.cardId
       this.modifyDialogData.cardType = row.cardType
-      this.modifyDialogData.persentMoney = row.money
+      if (type === 0) {
+        this.modifyDialogData.persentMoney = row.money
+      } else if (type === 1) {
+        this.modifyDialogData.persentMoney = row.exchang_surplus
+      } else if (type === 2) {
+        this.modifyDialogData.persentMoney = row.surplus
+      }
       // 代表卡余额,兑换次数，门店兑换次数
       this.modifyDialogData.index = 2
       this.modifyDialogData.type = type
@@ -525,12 +551,18 @@ tbody td {
   color: #666;
 }
 
-.td-money > *{
-  vertical-align: middle;
+.moneyModify{
+  width: 90px;
+  margin-right: 0px;
+}
+
+.moneyModify > span{
+  width: 80px;
+  margin-left: 0px;
 }
 
 .td-money > img{
-  padding-right: 10px;
+  /* padding-right: 10px; */
 }
 
 td {
