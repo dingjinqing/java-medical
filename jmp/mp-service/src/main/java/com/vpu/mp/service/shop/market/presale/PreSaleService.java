@@ -310,7 +310,7 @@ public class PreSaleService extends ShopBaseService {
         ShareConfig shareConfig = new ShareConfig();
         shareConfig.setShareAction(param.getShareAction());
         shareConfig.setShareDoc(param.getShareDoc());
-        shareConfig.setShareImgAction(param.getShareImgType());
+        shareConfig.setShareImgAction(param.getShareImgAction());
         shareConfig.setShareImg(param.getShareImg());
         return shareConfig;
     }

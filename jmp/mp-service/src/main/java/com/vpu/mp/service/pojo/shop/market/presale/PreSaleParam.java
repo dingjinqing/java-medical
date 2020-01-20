@@ -106,7 +106,7 @@ public class PreSaleParam {
     /** 分享文案 **/
     private String shareDoc;
     /** 分享图来源 **/
-    private Byte shareImgType;
+    private Byte shareImgAction;
     /** 自定义图片 **/
     private String shareImg;
     /** 活动商品 **/
