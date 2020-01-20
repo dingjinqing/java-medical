@@ -651,7 +651,7 @@ export default {
     function validChance (rule, value, callback) {
       let prizeList = that.requestParam.prizeList
       // 规则一：一等奖必须填写
-      if (prizeList[0].chanceNumerator === '' || prizeList[0].chanceNumerator === undefined) {
+      if ((prizeList[0].chance === '' || prizeList[0].chance === undefined) && (prizeList[0].chanceNumerator === '' || prizeList[0].chanceNumerator === undefined)) {
         callback(new Error('请填写中奖概率!'))
       }
       // 规则二：当填写了奖品后，没有填写中奖概率则报错
@@ -664,6 +664,13 @@ export default {
       }
       callback()
     }
+    // 填写奖品
+    function validLotteryExplain (rule, value, callback) {
+      if (that.tabSwitch === '1' && value === '') {
+        callback(new Error(that.$t('luckyDraw.validDesc')))
+      }
+      callback()
+    }
     return {
       requestParam: {
         lotteryName: '',
@@ -671,9 +678,9 @@ export default {
         startTime: '',
         endTime: '',
         freeChances: 0,
-        canShare: 0,
+        canShare: 2,
         shareChances: 0,
-        canUseScore: 0,
+        canUseScore: 2,
         scorePerChance: 0,
         scoreChances: 0,
         noAwardScore: 0,
@@ -709,7 +716,7 @@ export default {
           { required: true, message: that.$t('luckyDraw.validEndTime'), trigger: 'blur' },
           { validator: validTime, trigger: 'blur' }
         ],
-        lotteryExplain: [{ required: true, message: that.$t('luckyDraw.validDesc'), trigger: 'blur' }],
+        lotteryExplain: [{ required: true, validator: validLotteryExplain, trigger: 'change' }],
         prizeList: [{ validator: validChance, trigger: 'change' }]
       }
     }
