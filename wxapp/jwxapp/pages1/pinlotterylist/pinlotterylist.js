@@ -48,7 +48,7 @@ global.wxPage({
           list_info: list_info
         })
       } else {
-        util.showModal("提示", res.message, function () {
+        util.showModal(that.$t('page1.pinlottery.over'), res.message, function () {
           util.redirectTo({
             url: '/pages/index/index',
           })
@@ -63,8 +63,8 @@ global.wxPage({
     var goods_id = e.currentTarget.dataset.goods_id;
     var group_id = e.currentTarget.dataset.group_id;
     util.navigateTo({
-      // url: 'pages/item/item?activityId=' + group_draw_id + '&&activityType=1&&goodsId=' + goods_id
-      url: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=3"
+      url: 'pages/item/item?activityId=' + group_draw_id + '&&activityType=1&&goodsId=' + goods_id
+      // url: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=3"
     })
   },
   //倒计时
@@ -74,7 +74,7 @@ global.wxPage({
     });
     if (total_micro_second <= 0) {
       that.setData({
-        clock: "已经截止"
+        clock: that.$t('page1.pinlottery.over')
       });
       return;
     }
@@ -105,7 +105,8 @@ global.wxPage({
     if (sec < 10) {
       sec = "0" + sec;
     }
-    return date + "天" + hr + '时' + min + "分" + sec + "秒";
+    // return date + "天" + hr + '时' + min + "分" + sec + "秒";
+    return date + this.$t('page1.pinlottery.day') + hr + this.$t('page1.pinlottery.hour') + min + this.$t('page1.pinlottery.minute') + sec + this.$t('page1.pinlottery.second');
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

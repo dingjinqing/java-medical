@@ -1,4 +1,5 @@
 <!--pages1/pinlotteryinfo/pinlotteryinfo.wxml-->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml"/>
 <view class='main_container'>
     <!-- 拼团商品信息 -->
@@ -6,14 +7,14 @@
         <view class='goods_img'><image src='{{group_info.goods.goodsImg}}'></image></view>
         <view class='goods_content'>
             <view class='goods_name'>
-                <text style='color:{{comColor}};border-color:{{comColor}}'>拼团抽奖</text>
+                <text style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"page1.pinlottery.lotteryDraw")}}</text>
                 {{group_info.goods.goodsName}}
             </view>
             <view class='price_info'>
               <view class='shop_prices' style='color:{{comColor}};'>￥<text>{{group_info.groupDraw.payMoney}}</text></view>
               <view class='market_prices'>￥{{group_info.goods.shopPrice }}</view>
             </view>
-            <view class='buy_tips'>如未中奖，将全额退款至原支付账户</view>
+            <view class='buy_tips'>{{i18n.$t(localePack,"page1.pinlottery.buyTips")}}</view>
         </view>
     </view>
 
@@ -21,26 +22,26 @@
     <view class='pinlo_info'>
         <!-- 进行中，未成团 -->
         <block wx:if='{{group_info.groupJoinDetail.groupStatus == 0}}'>
-          <view class='renshu_info'>还差<text style='color:{{comColor}};'> {{group_info.groupJoinDetail.surplusGroupNum}}</text>人，即可成团参与抽奖</view>
-          <view class='time_info' style='color:{{comColor}}'>距结束仅剩 <text style='color:{{comColor}};'>{{clock}}</text></view>
+          <view class='renshu_info'>{{i18n.$t(localePack,"page1.pinlottery.unformed1")}}<text style='color:{{comColor}};'> {{group_info.groupJoinDetail.surplusGroupNum}}</text>{{i18n.$t(localePack,"page1.pinlottery.unformed2")}}</view>
+          <view class='time_info' style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.pinlottery.clock")}} <text style='color:{{comColor}};'>{{clock}}</text></view>
         </block>
         <!-- 进行中，已成团 -->
         <block wx:if='{{group_info.groupJoinDetail.groupStatus == 10}}'>
-          <view class='renshu_info renshu_info1'>已成团，邀请更多用户参与，可增加中奖机会</view>
-          <view class='time_info time_info1'>邀请好友参与，将会增加中奖机会</view>
-          <view class='open_time' style='color:{{comColor}}'>距结束仅剩 <text>{{clock}}</text></view>
+          <view class='renshu_info renshu_info1'>{{i18n.$t(localePack,"page1.pinlottery.formed1")}}</view>
+          <view class='time_info time_info1'>{{i18n.$t(localePack,"page1.pinlottery.formed2")}}</view>
+          <view class='open_time' style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.pinlottery.clock")}} <text>{{clock}}</text></view>
         </block>
         <!-- 未成团，活动结束 -->
         <block wx:if='{{group_info.groupJoinDetail.groupStatus == 2}}'>
-          <view class='renshu_info renshu_info1'>未满员，拼团失败</view>
-          <view class='time_info' style='color:{{comColor}}' bindtap='to_orderinfos'>将即刻退款到原支付账户，查看退款详情<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
+          <view class='renshu_info renshu_info1'>{{i18n.$t(localePack,"page1.pinlottery.activityEnd1")}}</view>
+          <view class='time_info' style='color:{{comColor}}' bindtap='to_orderinfos'>{{i18n.$t(localePack,"page1.pinlottery.activityEnd2")}}<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
         </block>
         <!-- 已成团，自己未中奖 -->
         <block wx:if='{{group_info.groupJoinDetail.groupStatus == 12}}'>
-          <view class='renshu_info renshu_info1'>很遗憾，本次活动未中奖</view>
-          <view class='time_info' style='color:{{comColor}}'  bindtap='to_orderinfos'>将即刻退款到原支付账户，查看退款详情<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
+          <view class='renshu_info renshu_info1'>{{i18n.$t(localePack,"page1.pinlottery.noPrize1")}}</view>
+          <view class='time_info' style='color:{{comColor}}'  bindtap='to_orderinfos'>{{i18n.$t(localePack,"page1.pinlottery.noPrize2")}}<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
           <view class='lucky_person' style='background:url({{imageUrl}}/image/wxapp/pl_item3.png);background-size:100% 100%;'>
-              <view>本次中奖用户</view>
+              <view>{{i18n.$t(localePack,"page1.pinlottery.noPrize3")}}</view>
               <view class='luck_info'>
                   <image src='{{group_info.groupJoinDetail.drawUser.userAvatar}}'></image>
                   {{group_info.groupJoinDetail.drawUser.username}}
@@ -49,23 +50,23 @@
         </block>
         <!-- 全体都未中奖 -->
         <block wx:if='{{group_info.groupJoinDetail.groupStatus == 13}}'>
-          <view class='renshu_info renshu_info1'>很遗憾，本次活动未中奖</view>
-          <view class='time_info'  style='color:{{comColor}}' bindtap='to_orderinfos'>将即刻退款到原支付账户，查看退款详情<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
+          <view class='renshu_info renshu_info1'>{{i18n.$t(localePack,"page1.pinlottery.noPrize1")}}</view>
+          <view class='time_info'  style='color:{{comColor}}' bindtap='to_orderinfos'>{{i18n.$t(localePack,"page1.pinlottery.noPrize2")}}<image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
           <view class='no_one_luck' style='background:url({{imageUrl}}/image/wxapp/pl_item2.png);background-size:100% 100%;'>
-              <view>本次活动抽奖池人数不足，</view>
-              <view>参与用户均未中奖</view>
+              <view>{{i18n.$t(localePack,"page1.pinlottery.noPrize4")}}</view>
+              <view>{{i18n.$t(localePack,"page1.pinlottery.noPrize5")}}</view>
           </view>
         </block>
         <!-- 自己中奖状态 -->
         <block wx:if='{{group_info.groupJoinDetail.groupStatus == 11}}'>
-          <view class='luck_self'>恭喜您已中奖</view>
-          <view class='award_tips'>奖品将即刻发货</view>
+          <view class='luck_self'>{{i18n.$t(localePack,"page1.pinlottery.prize1")}}</view>
+          <view class='award_tips'>{{i18n.$t(localePack,"page1.pinlottery.prize2")}}</view>
         </block>
 
         <!-- 团员信息 -->
         <view class='person_avater clearfix' wx:if='{{group_info.groupJoinDetail.userList!=""}}'>
             <view class='first_avater'>
-              <view class='captian' style='background:{{comColor}}'>团长</view>
+              <view class='captian' style='background:{{comColor}}'>{{i18n.$t(localePack,"page1.pinlottery.grouper")}}</view>
               <image src='{{group_info.groupJoinDetail.userList[0].userAvatar}}' style='border-color:{{comColor}}'></image>
               <view class='user_name'>{{group_info.groupJoinDetail.userList[0].username}}</view>
             </view>
@@ -75,59 +76,59 @@
             </view>
             <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum < 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum}}">
               <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
+              <view class='user_name'>{{i18n.$t(localePack,"page1.pinlottery.waitInvitation")}}</view>
             </view>
             <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum >= 14}}" wx:for="{{group_info.groupJoinDetail.surplusGroupNum - 1}}" >
               <image src='{{imageUrl}}/image/wxapp/icon_group2.png'></image>
-              <view class='user_name'>待邀请</view>
+              <view class='user_name'>{{i18n.$t(localePack,"page1.pinlottery.waitInvitation")}}</view>
             </view>
             <view class='other_avater' wx:if="{{group_info.groupJoinDetail.surplusGroupNum >= 14}}">
               <image src='{{imageUrl}}/image/wxapp/icon_group1.png'></image>
-              <view class='user_name'>待邀请</view>
+              <view class='user_name'>{{i18n.$t(localePack,"page1.pinlottery.waitInvitation")}}</view>
             </view>
         </view>
 
         <!-- 拼团结果 -->
         <view class='btn_invites' wx:if='{{(group_info.groupJoinDetail.groupStatus == 0 && group_info.groupJoinDetail.button.isToInvite == 1) || (group_info.groupJoinDetail.group_status == 10 && group_info.groupJoinDetail.button.isToInvite == 1)}}'>
           <block wx:if="{{getsq == true || click_num == true}}">
-            <button open-type='share' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>邀请好友参与抽奖</button>
+            <button open-type='share' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>
           </block>
           <block wx:else>
-            <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>邀请好友参与抽奖</button>
+            <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites1")}}</button>
           </block>
         </view>
         <view class='two_btn' wx:if='{{(group_info.groupJoinDetail.groupStatus == 0 && group_info.groupJoinDetail.button.isToInvite != 1) || (group_info.groupJoinDetail.groupStatus == 10 && group_info.groupJoinDetail.button.isToInvite != 1)}}'>
          <block wx:if="{{getsq == true || click_num == true}}">
-            <view class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' bindtap='to_join' wx:if="{{group_info.groupJoinDetail.button.isJoinDraw == 1}}">￥{{group_info.groupDraw.payMoney}}参与拼团抽奖</view>
+            <view class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' bindtap='to_join' wx:if="{{group_info.groupJoinDetail.button.isJoinDraw == 1}}">￥{{group_info.groupDraw.payMoney}}{{i18n.$t(localePack,"page1.pinlottery.btnInvites2")}}</view>
              <view class='btn_open' bindtap='to_open' wx:if='{{group_info.groupJoinDetail.button.isOpenDraw == 1}}'>
-              ￥{{group_info.groupDraw.payMoney}}发起拼团抽奖
+              ￥{{group_info.groupDraw.payMoney}}{{i18n.$t(localePack,"page1.pinlottery.btnInvites3")}}
               <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
             </view>
          </block>
          <block wx:else>
-          <button class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if="{{group_info.groupJoinDetail.button.isJoinDraw == 1}}" data-join="{{1}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">￥{{group_info.groupDraw.payMoney}}参与拼团抽奖</button>
+          <button class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if="{{group_info.groupJoinDetail.button.isJoinDraw == 1}}" data-join="{{1}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">￥{{group_info.groupDraw.payMoney}}{{i18n.$t(localePack,"page1.pinlottery.btnInvites2")}}</button>
              <button class='btn_open'  wx:if='{{group_info.groupJoinDetail.button.isOpenDraw == 1}}' data-open="{{1}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">
-              ￥{{group_info.groupDraw.payMoney}}发起拼团抽奖
+              ￥{{group_info.groupDraw.payMoney}}{{i18n.$t(localePack,"page1.pinlottery.btnInvites3")}}
               <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
             </button>
          </block>
 
         </view>
         <view class='btn_invites ' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{ group_info.groupJoinDetail.groupStatus == 2 || group_info.groupJoinDetail.groupStatus == 11}}' bindtap='to_orderinfo'>
-          <block wx:if='{{group_info.groupDraw.status == 2}}'>回到首页</block>
-          <block wx:if='{{group_info.groupDraw.status != 2}}'>查看订单详情</block>
+          <block wx:if='{{group_info.groupDraw.status == 2}}'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites4")}}</block>
+          <block wx:if='{{group_info.groupDraw.status != 2}}'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites5")}}</block>
         </view>
         <view class='btn_invites' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{ group_info.groupJoinDetail.groupStatus == 12 || group_info.groupJoinDetail.groupStatus == 13}}' bindtap='to_lists'>
-          <block wx:if='{{group_info.groupDraw.status == 2}}'>回到首页</block>
-          <block wx:if='{{group_info.groupDraw.status != 2}}'>查看更多抽奖活动</block>
+          <block wx:if='{{group_info.groupDraw.status == 2}}'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites4")}}</block>
+          <block wx:if='{{group_info.groupDraw.status != 2}}'>{{i18n.$t(localePack,"page1.pinlottery.btnInvites5")}}</block>
         </view>
     </view>
 
     <!-- 拼团鼓励奖 -->
     <view class="group_fail_reward" style='color:{{comColor}};' wx:if='{{group_info.groupJoinDetail.groupStatus == 2 || group_info.groupJoinDetail.groupStatus == 12 || group_info.groupJoinDetail.groupStatus == 13}}' bindtap="to_coupon_list">
-      <view>感谢您的参与，获得{{group_info.group_draw.reward_num}}张优惠券</view>
+      <view>{{i18n.$t(localePack,"page1.pinlottery.failReward1")}}{{group_info.group_draw.reward_num}}{{i18n.$t(localePack,"page1.pinlottery.failReward2")}}</view>
       <view class="reward-right">
-        去看看
+        {{i18n.$t(localePack,"page1.pinlottery.failReward3")}}
         <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
       </view>
     </view>
@@ -135,36 +136,36 @@
     <!-- 拼团抽奖规则 -->
     <view class='pinlo_rule' data-oo='{{is_show_modal}}'>
       <view class='pr_top' bindtap='to_rule'>
-          <view class='pt_left'>拼团抽奖玩法</view>
+          <view class='pt_left'>{{i18n.$t(localePack,"page1.pinlottery.pinloRule1")}}</view>
           <view class='pt_right'>
-            详细说明
+            {{i18n.$t(localePack,"page1.pinlottery.pinloRule2")}}
             <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
           </view>
       </view>
       <view class='pr_content'>
           <view class='has_icon'>
               <view class='icon_img'><image src='{{imageUrl}}/image/wxapp/pl_icons1.png'></image></view>
-              <view class='icon_text'>付款开团</view>
+              <view class='icon_text'>{{i18n.$t(localePack,"page1.pinlottery.pinloRule3")}}</view>
           </view>
           <view class='one_heng'></view>
           <view class='has_icon'>
               <view class='icon_img'><image src='{{imageUrl}}/image/wxapp/pl_icons2.png'></image></view>
-              <view class='icon_text'>邀请好友</view>
+              <view class='icon_text'>{{i18n.$t(localePack,"page1.pinlottery.pinloRule4")}}</view>
           </view>
           <view class='one_heng'></view>
           <view class='has_icon'>
               <view class='icon_img'><image src='{{imageUrl}}/image/wxapp/pl_icons3.png'></image></view>
-              <view class='icon_text'>成团抽奖</view>
+              <view class='icon_text'>{{i18n.$t(localePack,"page1.pinlottery.pinloRule5")}}</view>
           </view>
           <view class='one_heng'></view>
           <view class='has_icon'>
               <view class='icon_img'><image src='{{imageUrl}}/image/wxapp/pl_icons4.png'></image></view>
-              <view class='icon_text'>中奖发货</view>
+              <view class='icon_text'>{{i18n.$t(localePack,"page1.pinlottery.pinloRule6")}}</view>
           </view>
       </view>
       <view class='pr_bottom'>
-          <view>开奖时间：活动结束后24小时内开奖</view>
-          <view>退款说明：如未中奖，将全额退款至原支付账户</view>
+          <view>{{i18n.$t(localePack,"page1.pinlottery.pinloRule7")}}</view>
+          <view>{{i18n.$t(localePack,"page1.pinlottery.pinloRule8")}}</view>
       </view>
     </view>
 
@@ -174,7 +175,7 @@
             <view class='title_img'><image src='{{imageUrl}}/image/wxapp/pl_item1.png'></image></view>
             <view class='title_img1'><image src='{{imageUrl}}/image/wxapp/pl_item4.png'></image></view>
             <view class='title_img2'><image src='{{imageUrl}}/image/wxapp/pl_item4.png'></image></view>
-            <view class='title_word'>更多抽奖</view>
+            <view class='title_word'>{{i18n.$t(localePack,"page1.pinlottery.moreGoods")}}</view>
         </view>
         <view class='mg_content clearfix'>
             <view class='each_goods' wx:for='{{group_info.drawGoods}}' wx:key='key' bindtap='to_group' data-goods_id='{{item.goodsId}}' data-draw_id='{{group_info.groupDraw.id}}'>
@@ -187,7 +188,7 @@
                       <view class='sale_price' style='color:{{comColor}}'>￥{{group_info.groupDraw.payMoney}}</view>
                       <view class='market_price'>￥{{item.shopPrice}}</view>
                   </view>
-                  <view class='ec_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' >马上抢</view>
+                  <view class='ec_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' >{{i18n.$t(localePack,"page1.pinlottery.toBuy")}}</view>
               </view>
             </view>
         </view>
@@ -197,11 +198,11 @@
     <view class='zhezhao' wx:if='{{is_show_modal == 1 }}'></view>
     <view class='share_content' wx:if='{{is_show_modal == 1}}'>
         <view class='sc_top' style='background:url({{imageUrl}}/image/wxapp/group_modal_img.png) no-repeat;background-size:100% 100%;'>
-          <view>快去邀请更多好友</view>
-          <view>一起参与拼团抽奖吧</view>
+          <view>{{i18n.$t(localePack,"page1.pinlottery.shareTip1")}}</view>
+          <view>{{i18n.$t(localePack,"page1.pinlottery.shareTip2")}}</view>
         </view>
-        <view class='more_changes'>邀请新用户参与活动，抽奖机会将会增加</view>
-        <button class='btn_go_share' open-type='share' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>继续分享</button>
+        <view class='more_changes'>{{i18n.$t(localePack,"page1.pinlottery.shareTip3")}}</view>
+        <button class='btn_go_share' open-type='share' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.pinlottery.shareTip4")}}</button>
     </view>
     <view class='btn_close_modal' wx:if='{{is_show_modal == 1}}' bindtap='close_this'><image src='{{imageUrl}}/image/wxapp/kanjia_close.png'></image></view>
 
@@ -209,9 +210,9 @@
     <view class='zhezhao' wx:if='{{show_user_modal == 1 && group_info.groupJoinDetail.groupStatus == 0}}'></view>
     <view class='get_user_info' wx:if='{{show_user_modal == 1 && group_info.groupJoinDetail.groupStatus == 0}}'>
         <view class='user_tip_word'>
-          参与拼团将获得更多抽奖机会
+          {{i18n.$t(localePack,"page1.pinlottery.userInfo1")}}
         </view>
-        <button class='btn_get_info'  style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'  open-type='getUserInfo' bindgetuserinfo="getUserInfo">知道了</button>
+        <button class='btn_get_info'  style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'  open-type='getUserInfo' bindgetuserinfo="getUserInfo">{{i18n.$t(localePack,"page1.pinlottery.userInfo2")}}</button>
     </view>
 </view>
 <include src="/pages/common/footer.wxml"/>

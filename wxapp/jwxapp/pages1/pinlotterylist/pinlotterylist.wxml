@@ -1,9 +1,10 @@
 <!--pages/pinlotterylist/pinlotterylist.wxml-->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml"/>
 <view class='main-container'>
     <view class='pl_top' style='background:{{comColor}}'>
-        <view class='time_show' wx:if='{{!list_info.groupDraw.surplusSecond }}'>开始时间：{{list_info.groupDraw.startTime}}</view>
-        <view class='time_show' wx:if='{{list_info.groupDraw.surplusSecond && list_info.groupDraw.surplusSecond!=undefined}}'>距结束仅剩：{{clock}}</view>
+        <view class='time_show' wx:if='{{!list_info.groupDraw.surplusSecond }}'>{{i18n.$t(localePack,"page1.pinlottery.startTime")}}：{{list_info.groupDraw.startTime}}</view>
+        <view class='time_show' wx:if='{{list_info.groupDraw.surplusSecond && list_info.groupDraw.surplusSecond!=undefined}}'>{{i18n.$t(localePack,"page1.pinlottery.clock")}}：{{clock}}</view>
     </view>
     <view class='pl_content clearfix'>
         <view class='each_goods clearfix' wx:for='{{list_info.list}}' wx:key='key' bindtap='to_item' data-goods_id='{{item.goodsId}}' data-group_id='{{list_info.groupDraw.groupId}}'>
@@ -17,7 +18,7 @@
                         <view class='sale_price' style='color:{{comColor}}'>￥{{list_info.groupDraw.payMoney}}</view>
                         <view class='market_price'>￥{{item.shopPrice}}</view>
                     </view>
-                    <view class='ec_btn' style='background:{{comColor}}'>马上抢</view>
+                    <view class='ec_btn' style='background:{{comColor}}'>{{i18n.$t(localePack,"page1.pinlottery.toBuy")}}</view>
                 </view>
             </view>
         </view>
