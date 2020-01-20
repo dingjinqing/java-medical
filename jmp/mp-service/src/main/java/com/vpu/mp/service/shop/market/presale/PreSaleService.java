@@ -308,8 +308,8 @@ public class PreSaleService extends ShopBaseService {
      */
     private ShareConfig createShareConfig(PreSaleParam param) {
         ShareConfig shareConfig = new ShareConfig();
-        shareConfig.setShareAction(param.getShareType());
-        shareConfig.setShareDoc(param.getShareText());
+        shareConfig.setShareAction(param.getShareAction());
+        shareConfig.setShareDoc(param.getShareDoc());
         shareConfig.setShareImgAction(param.getShareImgType());
         shareConfig.setShareImg(param.getShareImg());
         return shareConfig;
@@ -481,7 +481,11 @@ public class PreSaleService extends ShopBaseService {
             .on(GOODS_SPEC_PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .where(SUB_TABLE.PRESALE_ID.eq(preSaleId)).fetchInto(ProductVo.class);
         preSaleVo.setProducts(productVos);
-        preSaleVo.setShareConfiguration(shareConfig(preSaleVo));
+        ShareConfig shareConfig = shareConfig(preSaleVo);
+        preSaleVo.setShareAction(shareConfig.getShareAction());
+        preSaleVo.setShareDoc(shareConfig.getShareDoc());
+        preSaleVo.setShareImgAction(shareConfig.getShareImgAction());
+        preSaleVo.setShareImg(shareConfig.getShareImg());
         preSaleVo.setStatus(preSaleVo.getStatus());
         return preSaleVo;
     }

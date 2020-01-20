@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.presale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -58,7 +57,10 @@ public class PreSaleVo implements StatusContainer {
     /** 活动商品 **/
     private List<ProductVo> products;
     /** 分享配置 **/
-    private ShareConfig shareConfiguration;
+    private Byte shareAction;
+    private String shareDoc;
+    private Byte shareImgAction;
+    private String shareImg;
     /** 活动状态 **/
     private Byte status;
 
