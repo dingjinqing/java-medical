@@ -43,7 +43,7 @@
 					 catchtap="bindJumpLink"
 					 data-is_first_touch="{{m.is_first_touch}}"
 					 data-idx='{{m.cur_idx}}'
-					 data-url="pages/item/item?goodId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
 					>
 						<view class='module_img'>
 							<include src="../product/goodscommon/labelcommon.wxml" />
@@ -119,7 +119,7 @@
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
 					 catchtap="bindJumpLink"
 					 data-idx='{{m.cur_idx}}'
-					 data-url="pages/item/item?goodId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
 					>
 						<view class='module_img'>
 							<include src="../product/goodscommon/labelcommon.wxml" />
@@ -196,7 +196,7 @@
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
 					 catchtap="bindJumpLink"
 					 data-idx='{{m.cur_idx}}'
-					 data-url="pages/item/item?goodId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
 					>
 						<view class='module_img'>
 							<include src="../product/goodscommon/labelcommon.wxml" />
@@ -263,7 +263,7 @@
 					 catchtap="bindJumpLink"
 					 data-is_first_touch="{{m.is_first_touch}}"
 					 data-idx='{{m.cur_idx}}'
-					 data-url="pages/item/item?goodId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
 					>
 						<view
 						 class="see_more"
@@ -347,7 +347,7 @@
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
 					 catchtap="bindJumpLink"
 					 data-idx='{{m.cur_idx}}'
-					 data-url="pages/item/item?goodId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
 					>
 						<view class='module_img'>
 							<include src="../product/goodscommon/labelcommon.wxml" />
@@ -465,7 +465,7 @@
 					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
 					 catchtap="bindJumpLink"
 					 data-idx='{{m.cur_idx}}'
-					 data-url="pages/item/item?goodId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
 					>
 						<view class='module_img'>
 							<include src="../product/goodscommon/labelcommon.wxml" />
