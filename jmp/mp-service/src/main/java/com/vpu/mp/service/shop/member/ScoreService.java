@@ -205,6 +205,7 @@ public class ScoreService extends ShopBaseService {
 		}else {
 			userScoreRecord.setExpireTime(getScoreExpireTime());
 		}
+		
 		userScoreRecord.setScore(param.getScore());
 		userScoreRecord.setUserId(param.getUserId());
 		userScoreRecord.setRemarkId(String.valueOf(param.getRemarkCode()));

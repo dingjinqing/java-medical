@@ -125,6 +125,19 @@ public class UserCardDaoService extends ShopBaseService{
 
 		 return sql.fetchAny();
 	}
+	
+	/**
+	 * 	获取可用的用户卡(未过期，未废除)
+	 */
+	public UserCardRecord getUsableUserCard(Integer userId, Integer cardId) {
+		return db().selectFrom(USER_CARD)
+					.where(USER_CARD.CARD_ID.eq(userId))
+					.and(USER_CARD.CARD_ID.eq(cardId))
+					.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+					.and((USER_CARD.EXPIRE_TIME.isNull()).or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())))
+					.fetchAny();
+	}
+	
 
 	/**
 	 * 获取有效用户会员卡列表
@@ -265,7 +278,8 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 
 	/**
-	 * 计算用户等级
+	 *	 获取用户等级
+	 *	@return 等级 || null
 	 */
     public String calcUserGrade(Integer userId) {
 		return db().select(MEMBER_CARD.GRADE)
@@ -382,6 +396,7 @@ public class UserCardDaoService extends ShopBaseService{
 	 */
 	public void insertConsume(UserCardConsumeBean data) {
 		CardConsumerRecord cardConsumer = db().newRecord(CARD_CONSUMER);
+		cardConsumer.setMoney(data.getMoney().abs());
 		FieldsUtil.assignNotNull(data, cardConsumer);
 		cardConsumer.insert();
 	}
@@ -660,5 +675,7 @@ public class UserCardDaoService extends ShopBaseService{
 				);
 		return condition;
 	}
+	
+	
 	
 }

@@ -32,7 +32,7 @@
         <div>
           <span>收货人姓名：</span>
           <el-input
-            v-model="pageParams.id"
+            v-model="pageParams.consigneeName"
             size="small"
             class="input_width"
           ></el-input>
@@ -143,7 +143,10 @@ export default {
       pageParams: {
         id: '',
         mobile: '',
-        orderSn: ''
+        orderSn: '',
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
       }
     }
   },
@@ -157,9 +160,9 @@ export default {
     },
     handleAreaData (data) {
       console.log(data)
-      // this.searchParams.provinceCode = data.province
-      // this.searchParams.cityCode = data.city
-      // this.searchParams.districtCode = data.district
+      this.pageParams.provinceCode = data.province
+      this.pageParams.cityCode = data.city
+      this.pageParams.districtCode = data.district
     }
   }
 }

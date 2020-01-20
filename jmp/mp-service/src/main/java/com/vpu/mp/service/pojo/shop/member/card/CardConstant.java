@@ -17,10 +17,10 @@ public class CardConstant {
 	public static final Byte MCARD_TP_NORMAL = 0;
 	/** 限次会员卡 */
 	public static final Byte MCARD_TP_LIMIT = 1;
-	/** 等级会员卡 */
+	/**	等级会员卡 */
 	public static final Byte MCARD_TP_GRADE = 2;
 
-	/** is_pay 直接购买 */
+	/** is_pay 直接领取 */
 	public static final Byte MCARD_ISP_DEFAULT = 0;
 	/** is_pay 需要购买 */
 	public static final Byte MCARD_ISP_BUY = 1;

@@ -18,16 +18,16 @@
                     <el-col :span="10" style="font: 16px solid;">{{$t('reservationManage.orderInfo')}}</el-col>
                   </el-row>
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10"  class="col_style"> {{$t('reservationManage.orderStatus')}}： {{this.detailData.orderStatusName}}</el-col>
-                    <el-col :span="10" class="col_style">{{$t('reservationManage.orderAmount')}}： {{this.detailData.orderAmount}}</el-col>
+                    <el-col :span="12"  class="col_style"> {{$t('reservationManage.orderStatus')}}： {{this.detailData.orderStatusName}}</el-col>
+                    <el-col :span="8" class="col_style">{{$t('reservationManage.orderAmount')}}： {{this.detailData.orderAmount}}</el-col>
                   </el-row>
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10" class="col_style"> {{$t('reservationManage.serviceDate')}}： {{this.detailData.serviceDate}} {{this.detailData.servicePeriod}}</el-col>
-                    <el-col :span="10" class="col_style">{{$t('reservationManage.store')}}： {{this.detailData.orderAmount}}</el-col>
+                    <el-col :span="12" class="col_style"> {{$t('reservationManage.serviceDate')}}： {{this.detailData.serviceDate}} {{this.detailData.servicePeriod}}</el-col>
+                    <el-col :span="8" class="col_style">{{$t('reservationManage.store')}}： {{this.detailData.storeName}}</el-col>
                   </el-row>
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10" class="col_style"> {{$t('reservationManage.orderSn')}}： {{this.detailData.orderSn}}</el-col>
-                    <el-col :span="10" class="col_style">{{$t('reservationManage.technician')}}： {{this.detailData.technicianName}}</el-col>
+                    <el-col :span="12" class="col_style"> {{$t('reservationManage.orderSn')}}： {{this.detailData.orderSn}}</el-col>
+                    <el-col :span="8" class="col_style">{{$t('reservationManage.technician')}}： {{this.detailData.technicianName}}</el-col>
                   </el-row>
                 </div>
               </el-col>
@@ -447,11 +447,13 @@ export default {
     .navBox {
       background-color: #fff;
       padding: 15px;
+      min-width: 1800px;
     }
     .btn {
       margin-left: 5px;
     }
     .table_box {
+      min-width: 1800px;
       margin-top: 10px;
       background-color: #fff;
       padding: 15px;
