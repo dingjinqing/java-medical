@@ -29,5 +29,13 @@ module.exports = {
   "isUsed": "立即使用",
   "myCoupon": "我的优惠券",
   "visitshop": "进店看看",
-  "useExplain": "使用说明"
+  "useExplain": "使用说明",
+  // 装修优惠券
+  "limitSurplusFlag": "剩余",
+  "sheets": "张",
+  "stock": "库存无限制",
+  "membership": "会员领取",
+  "score": "积分 兑换",
+  "receive": "领取",
+  "check": "立即查看"
 }
