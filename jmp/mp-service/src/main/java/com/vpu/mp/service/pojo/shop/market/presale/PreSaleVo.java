@@ -27,9 +27,9 @@ public class PreSaleVo implements StatusContainer {
     /** 定金支付结束时间 **/
     private Timestamp preEndTime;
     /** 2段定金支付开始时间 **/
-    private Timestamp preStartTimeTwo;
+    private Timestamp preStartTime2;
     /** 2段定金支付结束时间 **/
-    private Timestamp preEndTimeTwo;
+    private Timestamp preEndTime2;
     /** 尾款支付开始时间 **/
     private Timestamp startTime;
     /** 尾款支付结束时间 **/
@@ -74,14 +74,4 @@ public class PreSaleVo implements StatusContainer {
     private Timestamp createTime;
     @JsonIgnore
     private Timestamp updateTime;
-
-    @Override
-    public Timestamp getPreStartTime2() {
-        return preStartTimeTwo;
-    }
-
-    @Override
-    public Timestamp getPreEndTime2() {
-        return preEndTimeTwo;
-    }
 }

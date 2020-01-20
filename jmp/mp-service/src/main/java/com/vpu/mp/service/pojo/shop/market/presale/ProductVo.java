@@ -33,9 +33,9 @@ public class ProductVo {
     /** 定金 **/
     private Double presaleMoney;
     /** 1段定金可抵扣金额 **/
-    private Double preDiscountMoneyOne;
+    private Double preDiscountMoney1;
     /** 2段定金可抵扣金额 **/
-    private Double preDiscountMoneyTwo;
+    private Double preDiscountMoney2;
     @JsonIgnore
     private Integer presaleId;
     @JsonIgnore
