@@ -308,9 +308,9 @@ public class PreSaleService extends ShopBaseService {
      */
     private ShareConfig createShareConfig(PreSaleParam param) {
         ShareConfig shareConfig = new ShareConfig();
-        shareConfig.setShareAction(param.getShareType());
-        shareConfig.setShareDoc(param.getShareText());
-        shareConfig.setShareImgAction(param.getShareImgType());
+        shareConfig.setShareAction(param.getShareAction());
+        shareConfig.setShareDoc(param.getShareDoc());
+        shareConfig.setShareImgAction(param.getShareImgAction());
         shareConfig.setShareImg(param.getShareImg());
         return shareConfig;
     }
@@ -464,8 +464,8 @@ public class PreSaleService extends ShopBaseService {
                 TABLE.BUY_TYPE, TABLE.DELIVER_DAYS, TABLE.DELIVER_TIME, TABLE.DELIVER_TYPE, TABLE.GOODS_ID,
                 TABLE.DISCOUNT_TYPE, TABLE.PRE_PAY_STEP, TABLE.PRESALE_TYPE, TABLE.RETURN_TYPE, TABLE.SHARE_CONFIG,
                 TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, GOODS.GOODS_NAME)
-                .select(TABLE.PRE_START_TIME_2.as("preStartTimeTwo"))
-                .select(TABLE.PRE_END_TIME_2.as("preEndTimeTwo"))
+                .select(TABLE.PRE_START_TIME_2.as("preStartTime2"))
+                .select(TABLE.PRE_END_TIME_2.as("preEndTime2"))
                 .from(TABLE)
                 .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
                 .where(TABLE.ID.eq(preSaleId))
@@ -474,14 +474,18 @@ public class PreSaleService extends ShopBaseService {
             SUB_TABLE.PRESALE_MONEY, SUB_TABLE.PRESALE_NUMBER, SUB_TABLE.PRESALE_PRICE, SUB_TABLE.GOODS_ID,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_NUMBER,
             GOODS_SPEC_PRODUCT.PRD_PRICE)
-            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_1.as("preDiscountMoneyOne"))
-            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_2.as("preDiscountMoneyTwo"))
+            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_1.as("preDiscountMoney1"))
+            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_2.as("preDiscountMoney2"))
             .from(SUB_TABLE)
             .leftJoin(GOODS_SPEC_PRODUCT)
             .on(GOODS_SPEC_PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .where(SUB_TABLE.PRESALE_ID.eq(preSaleId)).fetchInto(ProductVo.class);
         preSaleVo.setProducts(productVos);
-        preSaleVo.setShareConfiguration(shareConfig(preSaleVo));
+        ShareConfig shareConfig = shareConfig(preSaleVo);
+        preSaleVo.setShareAction(shareConfig.getShareAction());
+        preSaleVo.setShareDoc(shareConfig.getShareDoc());
+        preSaleVo.setShareImgAction(shareConfig.getShareImgAction());
+        preSaleVo.setShareImg(shareConfig.getShareImg());
         preSaleVo.setStatus(preSaleVo.getStatus());
         return preSaleVo;
     }

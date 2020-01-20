@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.presale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -28,9 +27,9 @@ public class PreSaleVo implements StatusContainer {
     /** 定金支付结束时间 **/
     private Timestamp preEndTime;
     /** 2段定金支付开始时间 **/
-    private Timestamp preStartTimeTwo;
+    private Timestamp preStartTime2;
     /** 2段定金支付结束时间 **/
-    private Timestamp preEndTimeTwo;
+    private Timestamp preEndTime2;
     /** 尾款支付开始时间 **/
     private Timestamp startTime;
     /** 尾款支付结束时间 **/
@@ -58,7 +57,10 @@ public class PreSaleVo implements StatusContainer {
     /** 活动商品 **/
     private List<ProductVo> products;
     /** 分享配置 **/
-    private ShareConfig shareConfiguration;
+    private Byte shareAction;
+    private String shareDoc;
+    private Byte shareImgAction;
+    private String shareImg;
     /** 活动状态 **/
     private Byte status;
 
@@ -72,14 +74,4 @@ public class PreSaleVo implements StatusContainer {
     private Timestamp createTime;
     @JsonIgnore
     private Timestamp updateTime;
-
-    @Override
-    public Timestamp getPreStartTime2() {
-        return preStartTimeTwo;
-    }
-
-    @Override
-    public Timestamp getPreEndTime2() {
-        return preEndTimeTwo;
-    }
 }

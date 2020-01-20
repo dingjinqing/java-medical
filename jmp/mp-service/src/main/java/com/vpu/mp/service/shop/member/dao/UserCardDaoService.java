@@ -396,7 +396,9 @@ public class UserCardDaoService extends ShopBaseService{
 	 */
 	public void insertConsume(UserCardConsumeBean data) {
 		CardConsumerRecord cardConsumer = db().newRecord(CARD_CONSUMER);
-		cardConsumer.setMoney(data.getMoney().abs());
+		if(data.getMoney() != null) {
+			cardConsumer.setMoney(data.getMoney().abs());
+		}
 		FieldsUtil.assignNotNull(data, cardConsumer);
 		cardConsumer.insert();
 	}
