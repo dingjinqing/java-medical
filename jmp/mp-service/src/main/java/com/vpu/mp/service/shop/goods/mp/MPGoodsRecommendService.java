@@ -241,6 +241,20 @@ public class MPGoodsRecommendService extends ShopBaseService {
                 goodsIds.addAll(getOnShelfGoods(null, null, record.getRecommendSortId()));
             }
         }
+        //若数量不满足推荐数量 补充数量
+        int remainderNumber = record.getRecommendNumber() - goodsIds.size();
+        if (remainderNumber > 0) {
+            List<Integer> goodsList = getPageList(record.getRecommendNumber());
+            for (Integer item : goodsList) {
+                if (!goodsIds.contains(item)) {
+                    goodsIds.add(item);
+                    remainderNumber -= 1;
+                    if (remainderNumber <= 0) {
+                        break;
+                    }
+                }
+            }
+        }
         //推荐商品id去重
         goodsIds = goodsIds.stream().distinct().collect(Collectors.toList());
         return goodsIds;
@@ -282,10 +296,11 @@ public class MPGoodsRecommendService extends ShopBaseService {
         // 是否展示售罄
         Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
         if (soldOutGoods == null || soldOutGoods.equals(NumberUtils.BYTE_ZERO)) {
-            result = selectConditionStep.and(GOODS.GOODS_NUMBER.greaterThan(NumberUtils.INTEGER_ZERO))
-                .orderBy(GOODS.CREATE_TIME.desc())
-                .fetchInto(Integer.class);
+            selectConditionStep.and(GOODS.GOODS_NUMBER.greaterThan(NumberUtils.INTEGER_ZERO));
+
         }
+        result = selectConditionStep.orderBy(GOODS.CREATE_TIME.desc())
+                .fetchInto(Integer.class);
         return result;
     }
 
