@@ -8,6 +8,7 @@ var fight = require('./page1/fight.js') // 拼团
 var reserve = require('./page1/reserve.js') // 预约
 var usercenter = require('./page1/usercenter.js') // 个人中心
 var pinlottery = require('./page1/pinlottery.js') // 拼团抽奖
+var coupon = require('./pages/coupon.js') // 优惠券
 var decorate = require('./components/decorate/decorate.js')
 var item = require('./pages/item.js')
 var zh_CN = {
@@ -53,7 +54,8 @@ var zh_CN = {
     }, store),
     "order": order,
     "checkout": checkout,
-    "item":item
+    "item":item,
+    "coupon": coupon
   },
   "page1": {
     "comment": comment,
