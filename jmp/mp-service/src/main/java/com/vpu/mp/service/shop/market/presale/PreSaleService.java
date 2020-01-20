@@ -290,7 +290,11 @@ public class PreSaleService extends ShopBaseService {
         List<PresaleProductRecord> productRecords =
             products.stream().map(product -> {
                 product.setPresaleId(presaleId);
-                return db.newRecord(SUB_TABLE, product);
+                PresaleProductRecord r = db.newRecord(PRESALE_PRODUCT);
+                assign(product,r);
+                r.setPreDiscountMoney_1(product.getPreDiscountMoney1());
+                r.setPreDiscountMoney_2(product.getPreDiscountMoney2());
+                return r;
             }).collect(Collectors.toList());
         db.batchInsert(productRecords).execute();
     }
@@ -411,15 +415,15 @@ public class PreSaleService extends ShopBaseService {
         if (twoSteps == prePayStep) {
             Assert.notNull(product.getPreDiscountMoney2(), "Missing parameter preDiscountMoney2");
         }
-        Double presalePrice = product.getPresalePrice();
-        Double presaleMoney = product.getPresaleMoney();
-        Double preDiscountMoney1 = product.getPreDiscountMoney1();
-        Double preDiscountMoney2 = product.getPreDiscountMoney2();
-        if (preDiscountMoney1 < presaleMoney || preDiscountMoney1 > presalePrice) {
+        BigDecimal presalePrice = product.getPresalePrice();
+        BigDecimal presaleMoney = product.getPresaleMoney();
+        BigDecimal preDiscountMoney1 = product.getPreDiscountMoney1();
+        BigDecimal preDiscountMoney2 = product.getPreDiscountMoney2();
+        if (preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0) {
             throwMoneyException();
         }
         if (null != preDiscountMoney2) {
-            boolean illegalPresaleMoney = preDiscountMoney2 < presaleMoney || preDiscountMoney2 > presalePrice;
+            boolean illegalPresaleMoney = preDiscountMoney2.compareTo(presaleMoney) < 0 || preDiscountMoney2.compareTo(presalePrice) > 0;
             if (illegalPresaleMoney) {
                 throwMoneyException();
             }
@@ -534,10 +538,10 @@ public class PreSaleService extends ShopBaseService {
                             SUB_TABLE.PRESALE_NUMBER, SUB_TABLE.PRESALE_MONEY, SUB_TABLE.PRE_DISCOUNT_MONEY_1,
                             SUB_TABLE.PRE_DISCOUNT_MONEY_2)
                         .values(presaleId, product.getGoodsId(), product.getProductId(),
-                            BigDecimal.valueOf(product.getPresalePrice()),
-                            product.getPresaleNumber(), BigDecimal.valueOf(product.getPresaleMoney()),
-                            BigDecimal.valueOf(product.getPreDiscountMoney1()),
-                            BigDecimal.valueOf(product.getPreDiscountMoney2()))
+                            product.getPresalePrice(),
+                            product.getPresaleNumber(), product.getPresaleMoney(),
+                            product.getPreDiscountMoney1(),
+                            product.getPreDiscountMoney2())
                         .execute();
                 });
             });
