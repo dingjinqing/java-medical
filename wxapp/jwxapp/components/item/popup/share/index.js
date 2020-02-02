@@ -30,12 +30,17 @@ global.wxComponent({
         goodsImage = this.data.shareData.goodsImgs
       }
       const apiInfo = {
-        1:{
+        1:{ //拼团
           api:'/api/wxapp/groupbuy/pictorial/info',
           params:['realPrice','linePrice','activityId']
+        }, 
+        3:{ //砍价
+          api:'/api/wxapp/bargain/pictorial/info',
+          params:['realPrice','linePrice','activityId']
         },
-        3:{},
-        5:{},
+        5:{ //秒杀
+
+        },
         default:{} //普通商品
       }
       let target = this.data.shareData.activityType ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
@@ -44,7 +49,7 @@ global.wxComponent({
         title: '生成中',
       })
       util.api(target.api,res=>{
-        if(res.error === 0){
+        if(res.error === 0 && res.content !== null){
           this.setData({
             showPoster:true,
             posterImage: [res.content,...goodsImage]

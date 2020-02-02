@@ -173,12 +173,12 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
                     if (PreSaleService.PRE_SALE_ONE_PHASE.equals(activityInfo.getPrePayStep()) || param.getDate().before(activityInfo.getPreEndTime())) {
                         //定金一期 || 定金二期第一期
                         discount = BigDecimalUtil.subtrac(
-                            new BigDecimal(productVo.getPreDiscountMoneyOne().toString()), new BigDecimal(productVo.getPresaleMoney().toString()))
+                            new BigDecimal(productVo.getPreDiscountMoney1().toString()), new BigDecimal(productVo.getPresaleMoney().toString()))
                             .multiply(new BigDecimal((orderGoodsBo.getGoodsNumber())));
                     } else {
                         //定金二期
                         discount = BigDecimalUtil.subtrac(
-                            new BigDecimal(productVo.getPreDiscountMoneyTwo().toString()), new BigDecimal(productVo.getPresaleMoney().toString()))
+                            new BigDecimal(productVo.getPreDiscountMoney2().toString()), new BigDecimal(productVo.getPresaleMoney().toString()))
                             .multiply(new BigDecimal((orderGoodsBo.getGoodsNumber())));
                     }
                 }

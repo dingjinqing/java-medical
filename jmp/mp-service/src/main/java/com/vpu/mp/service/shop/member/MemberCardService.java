@@ -1,93 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BRAND;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_PLAT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_COLOR;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_IMG;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_COUPON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_PACKAGE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_PART;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_NON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PART;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_BUY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_CODE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_CODE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_PWD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_CODE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_PWD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_SUSE_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_SUSE_OK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-import static org.jooq.impl.DSL.count;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javax.validation.Valid;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.InsertValuesStep3;
-import org.jooq.Result;
-import org.jooq.SelectSeekStep1;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
-import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
-import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
-import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.database.DslPlus;
@@ -106,38 +20,7 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
-import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
-import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
-import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardParam;
-import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
-import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
-import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
-import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
-import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
-import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
-import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
-import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -148,6 +31,7 @@ import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.card.CardOpt;
+import com.vpu.mp.service.shop.member.card.GradeCardOpt;
 import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.card.NormalCardOpt;
@@ -156,8 +40,30 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-
 import jodd.util.StringUtil;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.InsertValuesStep3;
+import org.jooq.Result;
+import org.jooq.SelectSeekStep1;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.jooq.impl.DSL.count;
 
 
 /**
@@ -200,6 +106,8 @@ public class MemberCardService extends ShopBaseService {
 	private NormalCardOpt normalCardOpt;
 	@Autowired
 	private LimitCardOpt limitCardOpt;
+	@Autowired
+	private GradeCardOpt gradeCardOpt;
 
     
 	/**
@@ -247,11 +155,11 @@ public class MemberCardService extends ShopBaseService {
 	private MemberCardRecord initMembercardRecordByCfgData(CardParam param) {
 		logger().info("开始初始化会员卡");
 		MemberCardRecordBuilder cardBuilder = MemberCardRecordBuilder.create();
-		if (isNormalCard(param.getCardType())) {
+		if (CardUtil.isNormalCard(param.getCardType())) {
 			initNormalCardCfg(param, cardBuilder);
-		} else if (isLimitCard(param.getCardType())) {
+		} else if (CardUtil.isLimitCard(param.getCardType())) {
 			initLimitCardCfg(param, cardBuilder);
-		} else if (isGradeCard(param.getCardType())) {
+		} else if (CardUtil.isGradeCard(param.getCardType())) {
 			initGradeCardCfg(param, cardBuilder);
 		}
 		return cardBuilder.build();
@@ -274,11 +182,12 @@ public class MemberCardService extends ShopBaseService {
 	private void initReceiveCardCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
 		logger().info("正在初始化领取需要的条件");
 
-		if (isNormalOrLimitCard(param.getCardType())) {
+		if (CardUtil.isNormalCard(param.getCardType()) || 
+				CardUtil.isLimitCard(param.getCardType())) {
 			initReceiveCardCondition(param, cardBuilder);
 		}
 
-		if (isLimitCard(param.getCardType())) {
+		if (CardUtil.isLimitCard(param.getCardType())) {
 			initReceiveAndSendNumLimitCfg(param, cardBuilder);
 		}
 
@@ -352,7 +261,7 @@ public class MemberCardService extends ShopBaseService {
 		}
 		cardBuilder.storeList(storeList).storeUseSwitch(storeUseSwitch);
 
-		if (isLimitCard(param.getCardType())) {
+		if (CardUtil.isLimitCard(param.getCardType())) {
 
 			if (isAllStore(storeListType) || isPartStore(storeListType)) {
 				// 1. 使用时间 2.卡总次数
@@ -395,7 +304,9 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	private void initOwncfg(CardParam card) {
 
-		if (isNormalOrGradeCard(card.getCardType()) && isAllowPayOwnGoods(card)) {
+		if ((CardUtil.isNormalCard(card.getCardType()) || 
+				CardUtil.isGradeCard(card.getCardType())) && 
+				isAllowPayOwnGoods(card)) {
 			logger().info("正在处理会员卡的专享商品");
 
 			if (isNotNull(card.getOwnGoodsId())) {
@@ -957,7 +868,6 @@ public class MemberCardService extends ShopBaseService {
 	public MemberCardRecord getCardById(Integer cardId) {
 		logger().info("获取会员卡基本信息");
 		MemberCardRecord card = cardDao.getCardById(cardId);
-		//return card != null ? card : new MemberCardRecord();
 		return card;
 	}
 	
@@ -970,11 +880,11 @@ public class MemberCardService extends ShopBaseService {
 	public BaseCardVo getCardDetailById(CardIdParam param) {
 		MemberCardRecord card = getCardById(param.getId());
 
-		if (isNormalCard(card.getCardType())) {
+		if (CardUtil.isNormalCard(card.getCardType())) {
 			return changeToNormalCardDetail(card);
-		} else if (isLimitCard(card.getCardType())) {
+		} else if (CardUtil.isLimitCard(card.getCardType())) {
 			return changeToLimitCardDetail(card);
-		} else if (isGradeCard(card.getCardType())) {
+		} else if (CardUtil.isGradeCard(card.getCardType())) {
 			return changeToGradeCardDetail(card);
 		}
 		return null;
@@ -986,7 +896,8 @@ public class MemberCardService extends ShopBaseService {
 	 * @param card
 	 */
 	private void assignCardBatch(BaseCardVo card) {
-		if (isNormalOrLimitCard(card.getCardType())) {
+		if (CardUtil.isNormalCard(card.getCardType()) || 
+				CardUtil.isLimitCard(card.getCardType())) {
 			logger().info("正在获取批次信息");
 			List<CardBatchRecord> batchList = cardReceiveCode.getAvailableCardBatchByCardId(card.getId());
 			List<CardBatchVo> res = new ArrayList<>();
@@ -1001,7 +912,8 @@ public class MemberCardService extends ShopBaseService {
 	 * 装配专享商品
 	 */
 	private void assignPayOwnGoods(BaseCardVo card) {
-		if (isNormalOrGradeCard(card.getCardType())) {
+		if (CardUtil.isNormalCard(card.getCardType()) ||
+				CardUtil.isGradeCard(card.getCardType())) {
 			logger().info("正在获取专享商品");
 			card.setOwnGoodsId(getOwnGoodsId(card.getId()));
 			card.setOwnStoreCategoryIds(getOwnStoreCategory(card.getId()));
@@ -1173,7 +1085,7 @@ public class MemberCardService extends ShopBaseService {
 			List<String> legal = new ArrayList<>();
 			List<String> exchangCountLegal = new ArrayList<>();
 			Integer legalFlag = 0;
-			if(isNormalCard(cardType) || isGradeCard(cardType)) {
+			if(CardUtil.isNormalCard(cardType) || CardUtil.isGradeCard(cardType)) {
 				if(isNotNull(card.getDiscount())) {
 					logger().info("积分打折");
 					legal.add(""+card.getDiscount());
@@ -1220,7 +1132,7 @@ public class MemberCardService extends ShopBaseService {
 						legalFlag = 8;
 					}
 				}
-			}else if(isLimitCard(cardType)) {
+			}else if(CardUtil.isLimitCard(cardType)) {
 				if(isNotNull(card.getCount())) {
 					logger().info("开卡赠送门店服务机会");
 					legal.add(""+card.getCount());
@@ -1276,7 +1188,18 @@ public class MemberCardService extends ShopBaseService {
 
 	private Condition getCondition(CardParam param) {
 		Condition condition = DSL.noCondition();
-		if(isNotNull(param.getCardType())) {
+
+		//	有效时间
+		
+		condition = condition.and(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_DURING)
+				.or(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_FOREVER))
+				.or(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_FIX)
+						.and(MEMBER_CARD.END_TIME.gt(DateUtil.getLocalDateTime()))));
+		
+		condition = condition.and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO));
+		condition = condition.and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING));
+		
+		if(null != param.getCardType()) {
 			condition = condition.and(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
 		}
 		if(isNotBlank(param.getCardName())) {
@@ -1298,7 +1221,7 @@ public class MemberCardService extends ShopBaseService {
 			MemberCardRecord card = this.getCardById(cardId);
 			CardOpt cardOpt = getCardOpt(card.getCardType());
 			for(Integer userId: userIdList) {
-				cardOpt.sendCard(userId, cardId, true);
+				cardOpt.handleSendCard(userId, cardId, true);
 			}
 		}
 	}
@@ -1309,13 +1232,9 @@ public class MemberCardService extends ShopBaseService {
 		}else if(CardUtil.isLimitCard(type)) {
 			return limitCardOpt;
 		}else {
-			// todo 等级卡
-			return null;
+			return gradeCardOpt;
 		}
 	}
-	
-	
-	
 
 	/**
 	 * 生成会员卡号
@@ -1999,25 +1918,6 @@ public class MemberCardService extends ShopBaseService {
 		return cardDao.getCardIdByType(type);
 	}
 
-	public boolean isNormalCard(Byte cardType) {
-		return MCARD_TP_NORMAL.equals(cardType);
-	}
-
-	public boolean isLimitCard(Byte cardType) {
-		return MCARD_TP_LIMIT.equals(cardType);
-	}
-
-	public boolean isGradeCard(Byte cardType) {
-		return MCARD_TP_GRADE.equals(cardType);
-	}
-
-	public boolean isNormalOrLimitCard(Byte cardType) {
-		return isNormalCard(cardType) || isLimitCard(cardType);
-	}
-
-	public boolean isNormalOrGradeCard(Byte cardType) {
-		return isNormalCard(cardType) || isGradeCard(cardType);
-	}
 
 	private boolean isNotNull(Object obj) {
 		return !isNull(obj);
@@ -2046,7 +1946,7 @@ public class MemberCardService extends ShopBaseService {
 
     /**
      * 小程序装修会员卡模块显示异步调用
-     * status : 未领取-1 已领取1 过期2  停用3
+     * status : -1未领取， 1已领取， 2过期= ， 3停用,4已达到领取上限，5无库存
      * @param cardId
      * @param userId
      * @return
@@ -2071,11 +1971,11 @@ public class MemberCardService extends ShopBaseService {
                     //未达到领取上限
                     vo.setStatus((byte)-1);
                 }else{
-                    vo.setStatus((byte)1);
+                    vo.setStatus((byte)4);
                 }
             }else{
                 //已经没有库存
-                vo.setStatus((byte)1);
+                vo.setStatus((byte)5);
             }
         }else if(vo.getCardType().equals(MCARD_TP_GRADE)){
             //只要拥有一张等级卡，就认为是已领取
@@ -2086,6 +1986,9 @@ public class MemberCardService extends ShopBaseService {
             //普通卡 只能拥有一张
             if(userHasGotNumber > 0){
                 vo.setStatus((byte)1);
+            }else{
+                //有效，可以领取
+                vo.setStatus((byte)-1);
             }
         }
 

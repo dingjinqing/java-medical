@@ -60,7 +60,8 @@ public class CardUtil {
 	}
 	
 	/**
-	 * 卡是否需要购买
+	 * 	卡是否需要购买
+	 * @return true 需要，false不需要
 	 */
 	public static boolean isNeedToBuy(Byte isPay) {
 		return CardConstant.MCARD_ISP_BUY.equals(isPay);
@@ -131,11 +132,11 @@ public class CardUtil {
 	}
 	
 	/**
-	 * 是否可以再门店使用
+	 * 	是否可以再门店使用
 	 * @return true: 可以，false: 不可以
 	 */
 	public static boolean canUseInStore(Byte type) {
-		return NumberUtils.BYTE_ZERO.equals(type);
+		return !CardConstant.MCARD_STP_BAN.equals(type);
 	}
 	
 	/**

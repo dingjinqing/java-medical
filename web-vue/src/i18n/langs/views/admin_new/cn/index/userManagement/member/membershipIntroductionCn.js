@@ -282,6 +282,24 @@ export const cn = {
       tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
       bzText: '增加备注',
       index: 0
+    },
+    {
+      title: '修改兑换次数',
+      presentText: '当前兑换次数',
+      persentMoney: '',
+      addText: '增加次数',
+      tips: '（*当次数为正时，增加次数；次数为负时，减少次数*）',
+      bzText: '增加备注',
+      index: 0
+    },
+    {
+      title: '修改次数',
+      presentText: '当前次数',
+      persentMoney: '',
+      addText: '增加次数',
+      tips: '（*当次数为正时，增加次数；次数为负时，减少次数*）',
+      bzText: '增加备注',
+      index: 0
     }
   ],
   integralDialogData: [
@@ -424,5 +442,8 @@ export const cn = {
   allCard: {
     id: null,
     cardName: '全部'
-  }
+  },
+  chargeDetail: '充值明细',
+  consumeDetail: '消费明细',
+  deleteCard: '废除'
 }

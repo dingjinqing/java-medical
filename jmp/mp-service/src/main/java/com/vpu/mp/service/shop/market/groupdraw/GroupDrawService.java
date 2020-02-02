@@ -187,7 +187,7 @@ public class GroupDrawService extends ShopBaseService {
 		param.setId(id);
 		SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer>> select = createSelect(
 				param);
-		GroupDrawListVo vo = select.fetchOne().into(GroupDrawListVo.class);
+		GroupDrawListVo vo = select.fetchOneInto(GroupDrawListVo.class);
 		transformStatus(vo);
 		return vo;
 	}
@@ -561,6 +561,7 @@ public class GroupDrawService extends ShopBaseService {
 		Byte status = groupDraw.getStatus();
 		Byte delFlag = groupDraw.getDelFlag();
 		Timestamp nowTime = DateUtil.getLocalDateTime();
+		GroupDrawInfoVo into = groupDraw.into(GroupDrawInfoVo.class);
 		if (endTime.before(nowTime) || status.equals(ACTIVITY_STATUS_DISABLE) || delFlag.equals(ONE)) {
 			// 活动不存在
 			logger().info("活动已结束，活动不存在");
@@ -571,9 +572,8 @@ public class GroupDrawService extends ShopBaseService {
 		if (startTime.after(nowTime)) {
 			// 活动还没开始
 			logger().info("活动还没开始");
-			vo.setStartTimeDoc(startTime);
 		} else {
-			vo.setSurplusSecond((endTime.getTime() - nowTime.getTime()) / 1000);
+			into.setSurplusSecond((endTime.getTime() - nowTime.getTime()) / 1000);
 		}
 		String goodsId = groupDraw.getGoodsId();
 		if (StringUtil.isNotEmpty(goodsId)) {
@@ -591,6 +591,7 @@ public class GroupDrawService extends ShopBaseService {
 				goodsSmallVo.setGoodsImg(imageService.imageUrl(goodsSmallVo.getGoodsImg()));
 			}
 			vo.setList(goodsList);
+			vo.setGroupDraw(into);
 			logger().info("返回");
 			return vo;
 		}

@@ -82,9 +82,6 @@ global.wxPage({
     var limit_min = e.target.dataset.limit_min
     var limit_max = e.target.dataset.limit_max
     that.data.canBuyGoodsList.forEach((item, index) => {
-      if (item.cartId == cartId) {
-        item.cartNumber = value
-      }
       // if (item.prdId == prdId) {
       //   if ((value >= limit_min) && (value <= limit_max)) {
       //     item.cartNumber = value
@@ -92,9 +89,17 @@ global.wxPage({
       //     item.cartNumber = limit_min
       //   }
       // }
-    })
-    that.setData({
-      canBuyGoodsList: that.data.canBuyGoodsList,
+      if (item.cartId == cartId) {
+        item.cartNumber = value
+        util.api('/api/wxapp/cart/change', res => {
+          if (res.error == 0) {
+            this.requestCartList()
+          }
+        }, {
+            productId: item.productId,
+            cartNumber: item.cartNumber
+          })
+      }
     })
   },
 
@@ -223,5 +228,10 @@ global.wxPage({
     // that.data.cart_datas = JSON.stringify(cart_data);
     // cart_request(that);
   },
+
+  // 秒杀抢购
+  to_seckill: function (e) {
+    util.jumpLink(e.currentTarget.dataset.link);
+  }
 
 })

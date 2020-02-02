@@ -75,11 +75,11 @@
         <div class="mainList">
           <span>菜单样式</span>
           <el-radio
-            v-model="linkageData.menu_style"
+            v-model="linkageData.position_style"
             label="0"
           >顶部展示商品分组</el-radio>
           <el-radio
-            v-model="linkageData.menu_style"
+            v-model="linkageData.position_style"
             label="1"
           >左侧展示商品分组</el-radio>
         </div>
@@ -115,7 +115,7 @@
           </div>
 
         </div>
-        <div v-if="linkageData.menu_style === '0'">
+        <div v-if="linkageData.position_style === '0'">
           <div class="mainList allGroup">
             <span>全部分组</span>
             <div>
@@ -136,11 +136,11 @@
           <div class="mainList menuLocation">
             <span>菜单位置</span>
             <el-radio
-              v-model="linkageData.position_style"
+              v-model="linkageData.menu_style"
               label="0"
             >一般样式</el-radio>
             <el-radio
-              v-model="linkageData.position_style"
+              v-model="linkageData.menu_style"
               label="1"
             >滚动至顶部固定</el-radio>
           </div>
@@ -150,25 +150,25 @@
               <div class="listStyleFirstDiv">
                 <el-radio
                   v-model="linkageData.shop_style"
-                  label="0"
+                  label="1"
                 >大图展示</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
-                  label="1"
+                  label="2"
                 >一行两个</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
-                  label="2"
+                  label="3"
                 >一行三个</el-radio>
               </div>
               <div>
                 <el-radio
                   v-model="linkageData.shop_style"
-                  label="3"
+                  label="4"
                 >商品列表</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
-                  label="4"
+                  label="5"
                 >一行横滑</el-radio>
               </div>
             </div>
@@ -525,16 +525,16 @@ export default {
         if (arr.indexOf(item) !== -1) {
           console.log(flag, newData[item])
           if (flag) {
-            if (newData[item] === '1') {
+            if (newData[item] === '0') {
               newData[item] = true
-            } else if (newData[item] === '0') {
+            } else if (newData[item] === '1') {
               newData[item] = false
             }
           } else {
             if (newData[item]) {
-              newData[item] = '1'
-            } else {
               newData[item] = '0'
+            } else {
+              newData[item] = '1'
             }
           }
         }

@@ -259,7 +259,7 @@ export default {
   methods: {
     // 点击顶部icon
     handleToChangeIcon () {
-      this.$emit('handleToClearIndex')
+      this.$emit('handleToClearIndex', this.topIconFlag)
       this.topIconFlag = !this.topIconFlag
       this.showModule = ''
     },

@@ -12,7 +12,7 @@
       <!--菜单样式为顶部展示商品分组-->
       <div
         class="commodityGrouping"
-        v-if="data.menu_style==='0'"
+        v-if="data.position_style==='0'"
       >
         <div class="commodityGroupingMain">
           <div
@@ -91,9 +91,9 @@
                   <div class="bottomHead">
                     <div
                       class="goodsNameClass"
-                      v-if="data.show_name === '1'"
+                      v-if="data.show_name === '0'"
                     >{{item.goodsName}}</div>
-                    <div :style="!data.show_name==='1'?'height:14px':''"></div>
+                    <div :style="data.show_name!=='0'?'height:14px':''"></div>
                     <div
                       class="activityContainer"
                       :style="(data.shop_style==='0')?'display:flex;margin-top:0':data.shop_style==='1'?'display:flex;margin-top:0':data.shop_style==='2'?'display:flex':data.shop_style==='3'?'margin-top:50px;display:flex':'display:flex'"
@@ -104,7 +104,10 @@
                         :key="indexC"
                         class="activitySpan"
                       >
-                        <span :style="((data.shop_style==='2'||data.shop_style==='4')?'max-width:100%;white-space: nowrap;margin-top:0;':data.shop_style==='1'?'max-width:145px':data.shop_style==='1'?'max-width:163px':data.shop_style==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):itemC.activityType===19?'支付有礼':(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===21?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===22?$t('commodity.membershipPrice'):itemC.activityType===23?$t('commodity.membershipExclusive'):''}}</span>
+                        <span
+                          v-if="itemC.activityType!==0"
+                          :style="((data.shop_style==='2'||data.shop_style==='4')?'max-width:100%;white-space: nowrap;margin-top:0;':data.shop_style==='1'?'max-width:145px':data.shop_style==='1'?'max-width:163px':data.shop_style==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`"
+                        >{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===20?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===21?$t('commodity.membershipPrice'):itemC.activityType===22?'会员专享':''}}</span>
                       </div>
                     </div>
 
@@ -115,42 +118,42 @@
                   >
                     <span
                       :style="`color:${bgColor};`"
-                      v-if="data.show_price==='1'"
+                      v-if="data.show_price==='0'"
                     >￥{{Number(item.realPrice).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.show_market==='1'&&data.other_message==='1'"
+                      v-if="data.show_market==='1'&&data.other_message==='0'"
                     >{{Number(item.linePrice).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.show_market==='2'&&data.other_message==='1'"
+                      v-if="data.show_market==='2'&&data.other_message==='0'"
                     >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.show_market==='3'&&data.other_message==='1'"
+                      v-if="data.show_market==='3'&&data.other_message==='0'"
                     >{{Number(item.goodsNumber).toFixed(2)}}</span>
                     <!--购买按钮-->
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
                       :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='1'&&data.cart_btn_choose === '0'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'"
                     ></i>
                     <i
                       class="iconfont icongouwuche1 icon_font_size new_class"
                       :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='1'&&data.cart_btn_choose === '1'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'"
                     ></i>
                     <i
                       class="right_buy new_back"
                       :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='1'&&data.cart_btn_choose==='2'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'"
                     >
                       {{$t('commodity.grabAtOnce')}}
                     </i>
                     <i
                       class="cart_buy"
                       :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='1'&&data.cart_btn_choose==='3'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'"
                     >{{$t('commodity.purchase')}}</i>
                   </div>
                 </div>
@@ -241,12 +244,12 @@
                     <div class="bottomHead">
                       <div
                         class="goodsNameClass"
-                        v-if="data.show_name==='1'"
+                        v-if="data.show_name==='0'"
                       >{{item.goodsName}}</div>
-                      <div :style="!data.show_name ==='1'?'height:14px':''"></div>
+                      <div :style="data.show_name !=='0'?'height:14px':''"></div>
                       <div
                         class="activityContainer"
-                        :style="'display:flex;'+(!data.show_name==='1'?'margin: 10px 0 50px;':'margin-top:50px;')"
+                        :style="'display:flex;'+(!data.show_name==='0'?'margin: 10px 0 50px;':'margin-top:50px;')"
                       >
                         <div
                           :style="indexC===0?'margin-right:5px;':'margin-top:0px;'"
@@ -254,7 +257,10 @@
                           :key="indexC"
                           class="activitySpan"
                         >
-                          <span :style="'max-width:128px'+`;color:${bgColor};border-color:${bgColor};white-space:nowrap`">{{itemC}}</span>
+                          <span
+                            v-if="itemC.activityType!==0"
+                            :style="((data.shop_style==='2'||data.shop_style==='4')?'max-width:100%;white-space: nowrap;margin-top:0;':data.shop_style==='1'?'max-width:145px':data.shop_style==='1'?'max-width:163px':data.shop_style==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`"
+                          >{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===20?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===21?$t('commodity.membershipPrice'):itemC.activityType===22?'会员专享':''}}</span>
                         </div>
                       </div>
 
@@ -265,42 +271,46 @@
                     >
                       <span
                         :style="`color:${bgColor};`"
-                        v-if="data.show_price==='1'"
+                        v-if="data.show_price==='0'"
                       >￥{{Number(item.realPrice).toFixed(2)}}</span>
                       <span
+                        v-if="data.show_price!=='0'"
+                        style="height:14px"
+                      ></span>
+                      <span
                         style="text-decoration: line-through;color: #c0c0c0"
-                        v-if="data.show_market==='1'&&data.other_message==='1'"
+                        v-if="data.show_market==='1'&&data.other_message==='0'"
                       >{{Number(item.linePrice).toFixed(2)}}</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
-                        v-if="data.show_market==='2'&&data.other_message==='1'"
+                        v-if="data.show_market==='2'&&data.other_message==='0'"
                       >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
-                        v-if="data.show_market==='3'&&data.other_message==='1'"
+                        v-if="data.show_market==='3'&&data.other_message==='0'"
                       >{{Number(item.goodsNumber).toFixed(2)}}</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn==='1'&&data.cart_btn_choose === '0'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'"
                       ></i>
                       <i
                         class="iconfont icongouwuche1 icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn==='1'&&data.cart_btn_choose === '1'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'"
                       ></i>
                       <i
                         class="right_buy new_back"
                         style="`position:static;backgroundColor:${bgColor};`"
-                        v-if="data.cart_btn==='1'&&data.cart_btn_choose==='2'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'"
                       >
                         {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
                         :style="`position:static;color:${bgColor};border-color:${bgColor};`"
-                        v-if="data.cart_btn==='1'&&data.cart_btn_choose==='3'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'"
                       >{{$t('commodity.purchase')}}</i>
                     </div>
                   </div>
@@ -404,6 +414,8 @@ export default {
           let turnToString = this.handleToTurnNumToStr(newData)
           console.log(turnToString)
           this.$nextTick(() => {
+            turnToString.shop_style = JSON.stringify(Number(turnToString.shop_style) - 1)
+            console.log(turnToString.shop_style)
             this.data = turnToString
             this.handleToInit(this.data)
           })
@@ -449,7 +461,7 @@ export default {
       groupData.forEach((item, idnex) => {
         let obj = {}
         obj['sort_id'] = item.sort_id
-        obj['sort_type'] = JSON.stringify(item.sort_type)
+        obj['sort_type'] = item.sort_type
         obj['group_goods_id'] = item.group_goods_id ? item.group_goods_id : null
         obj['is_all'] = item.is_all
         arr.push(obj)
@@ -478,6 +490,7 @@ export default {
             }
             this.handleToActivities(item, index)
           })
+          console.log(this.goodsData)
         }
       })
     },

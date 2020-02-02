@@ -71,14 +71,6 @@ import static org.springframework.util.StringUtils.isEmpty;
 @Primary
 public class PreSaleService extends ShopBaseService {
 
-    /**
-     * 启用状态
-     */
-    public static final Byte STATUS_NORMAL = 1;
-    /**
-     * 停用状态
-     */
-    public static final Byte STATUS_DISABLED = 0;
     /**全款付*/
     public static final Byte PRE_SALE_TYPE_ALL_MONEY = 1;
     /**定金付*/
@@ -231,7 +223,7 @@ public class PreSaleService extends ShopBaseService {
         if (null != endTime) {
             query.and(TABLE.END_TIME.le(endTime));
         }
-        if (null != status) {
+        if (null != status && status > 0) {
             andStatus(query, status);
         }
     }
@@ -244,19 +236,23 @@ public class PreSaleService extends ShopBaseService {
         Timestamp now = Util.currentTimeStamp();
         switch (status) {
             case NAVBAR_TYPE_ONGOING:
-                query.and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now)))
-                        .or(TABLE.START_TIME.ge(now).and(TABLE.END_TIME.gt(now)))
-                        .or(TABLE.PRE_START_TIME_2.le(now).and(TABLE.PRE_END_TIME_2.gt(now)));
+                query.and(
+                    (TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME_2.gt(now))))
+                    .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now))))
+                ).and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
             case NAVBAR_TYPE_NOT_STARTED:
-                query.and(TABLE.PRE_START_TIME.gt(now));
+                query.and(TABLE.PRE_START_TIME.gt(now)).and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
             case NAVBAR_TYPE_FINISHED:
-                query.and(TABLE.PRE_END_TIME.le(now).and(TABLE.PRE_START_TIME_2.gt(now))
-                    .and(TABLE.PRE_END_TIME_2.le(now).and(TABLE.START_TIME.gt(now))))
-                    .or(TABLE.PRE_END_TIME.le(now).and(TABLE.START_TIME.gt(now)).or(TABLE.END_TIME.gt(now)));
+                query.and(
+                    ((TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_END_TIME_2.le(now)))
+                        .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_END_TIME.lt(now)))
+                    )
+                    .and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)));
                 break;
             case NAVBAR_TYPE_DISABLED:
+                query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected status: " + status);
@@ -294,7 +290,11 @@ public class PreSaleService extends ShopBaseService {
         List<PresaleProductRecord> productRecords =
             products.stream().map(product -> {
                 product.setPresaleId(presaleId);
-                return db.newRecord(SUB_TABLE, product);
+                PresaleProductRecord r = db.newRecord(PRESALE_PRODUCT);
+                assign(product,r);
+                r.setPreDiscountMoney_1(product.getPreDiscountMoney1());
+                r.setPreDiscountMoney_2(product.getPreDiscountMoney2());
+                return r;
             }).collect(Collectors.toList());
         db.batchInsert(productRecords).execute();
     }
@@ -312,9 +312,9 @@ public class PreSaleService extends ShopBaseService {
      */
     private ShareConfig createShareConfig(PreSaleParam param) {
         ShareConfig shareConfig = new ShareConfig();
-        shareConfig.setShareAction(param.getShareType());
-        shareConfig.setShareDoc(param.getShareText());
-        shareConfig.setShareImgAction(param.getShareImgType());
+        shareConfig.setShareAction(param.getShareAction());
+        shareConfig.setShareDoc(param.getShareDoc());
+        shareConfig.setShareImgAction(param.getShareImgAction());
         shareConfig.setShareImg(param.getShareImg());
         return shareConfig;
     }
@@ -415,15 +415,15 @@ public class PreSaleService extends ShopBaseService {
         if (twoSteps == prePayStep) {
             Assert.notNull(product.getPreDiscountMoney2(), "Missing parameter preDiscountMoney2");
         }
-        Double presalePrice = product.getPresalePrice();
-        Double presaleMoney = product.getPresaleMoney();
-        Double preDiscountMoney1 = product.getPreDiscountMoney1();
-        Double preDiscountMoney2 = product.getPreDiscountMoney2();
-        if (preDiscountMoney1 < presaleMoney || preDiscountMoney1 > presalePrice) {
+        BigDecimal presalePrice = product.getPresalePrice();
+        BigDecimal presaleMoney = product.getPresaleMoney();
+        BigDecimal preDiscountMoney1 = product.getPreDiscountMoney1();
+        BigDecimal preDiscountMoney2 = product.getPreDiscountMoney2();
+        if (preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0) {
             throwMoneyException();
         }
         if (null != preDiscountMoney2) {
-            boolean illegalPresaleMoney = preDiscountMoney2 < presaleMoney || preDiscountMoney2 > presalePrice;
+            boolean illegalPresaleMoney = preDiscountMoney2.compareTo(presaleMoney) < 0 || preDiscountMoney2.compareTo(presalePrice) > 0;
             if (illegalPresaleMoney) {
                 throwMoneyException();
             }
@@ -468,8 +468,8 @@ public class PreSaleService extends ShopBaseService {
                 TABLE.BUY_TYPE, TABLE.DELIVER_DAYS, TABLE.DELIVER_TIME, TABLE.DELIVER_TYPE, TABLE.GOODS_ID,
                 TABLE.DISCOUNT_TYPE, TABLE.PRE_PAY_STEP, TABLE.PRESALE_TYPE, TABLE.RETURN_TYPE, TABLE.SHARE_CONFIG,
                 TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, GOODS.GOODS_NAME)
-                .select(TABLE.PRE_START_TIME_2.as("preStartTimeTwo"))
-                .select(TABLE.PRE_END_TIME_2.as("preEndTimeTwo"))
+                .select(TABLE.PRE_START_TIME_2.as("preStartTime2"))
+                .select(TABLE.PRE_END_TIME_2.as("preEndTime2"))
                 .from(TABLE)
                 .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
                 .where(TABLE.ID.eq(preSaleId))
@@ -478,14 +478,18 @@ public class PreSaleService extends ShopBaseService {
             SUB_TABLE.PRESALE_MONEY, SUB_TABLE.PRESALE_NUMBER, SUB_TABLE.PRESALE_PRICE, SUB_TABLE.GOODS_ID,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_NUMBER,
             GOODS_SPEC_PRODUCT.PRD_PRICE)
-            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_1.as("preDiscountMoneyOne"))
-            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_2.as("preDiscountMoneyTwo"))
+            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_1.as("preDiscountMoney1"))
+            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_2.as("preDiscountMoney2"))
             .from(SUB_TABLE)
             .leftJoin(GOODS_SPEC_PRODUCT)
             .on(GOODS_SPEC_PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .where(SUB_TABLE.PRESALE_ID.eq(preSaleId)).fetchInto(ProductVo.class);
         preSaleVo.setProducts(productVos);
-        preSaleVo.setShareConfiguration(shareConfig(preSaleVo));
+        ShareConfig shareConfig = shareConfig(preSaleVo);
+        preSaleVo.setShareAction(shareConfig.getShareAction());
+        preSaleVo.setShareDoc(shareConfig.getShareDoc());
+        preSaleVo.setShareImgAction(shareConfig.getShareImgAction());
+        preSaleVo.setShareImg(shareConfig.getShareImg());
         preSaleVo.setStatus(preSaleVo.getStatus());
         return preSaleVo;
     }
@@ -534,10 +538,10 @@ public class PreSaleService extends ShopBaseService {
                             SUB_TABLE.PRESALE_NUMBER, SUB_TABLE.PRESALE_MONEY, SUB_TABLE.PRE_DISCOUNT_MONEY_1,
                             SUB_TABLE.PRE_DISCOUNT_MONEY_2)
                         .values(presaleId, product.getGoodsId(), product.getProductId(),
-                            BigDecimal.valueOf(product.getPresalePrice()),
-                            product.getPresaleNumber(), BigDecimal.valueOf(product.getPresaleMoney()),
-                            BigDecimal.valueOf(product.getPreDiscountMoney1()),
-                            BigDecimal.valueOf(product.getPreDiscountMoney2()))
+                            product.getPresalePrice(),
+                            product.getPresaleNumber(), product.getPresaleMoney(),
+                            product.getPreDiscountMoney1(),
+                            product.getPreDiscountMoney2())
                         .execute();
                 });
             });

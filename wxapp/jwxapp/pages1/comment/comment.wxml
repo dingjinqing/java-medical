@@ -43,10 +43,11 @@
           </view>
           <view class="commm_goods clearfix">
             <view class="left">
-              <image src="{{imageUrl + item.goodsImg}}"></image>
+              <image wx:if="{{item.goodsImg}}" src="{{imageUrl + item.goodsImg}}"></image>
             </view>
             <view class="middle">
               <view class="goods_name">{{item.goodsName}}</view>
+              <view class="goods_specific" wx:if="{{item.prdDesc}}">{{item.prdDesc}}</view>
               <view class="goods_time clearfix">{{item.createTime}}
                 <!-- 发表评价 -->
                 <block>
@@ -85,7 +86,7 @@
                   <view class="xin_left">
                     <text style='color:#fff;'>*</text>{{i18n.$t(localePack,"page1.comment.experience")}}:
                   </view>
-                  <textarea wx:if="{{item.commentFlag == 0 && !show_act_custom}}" name="commNote" bindinput='comm_note' placeholder="{{i18n.$t(localePack,'page1.comment.isForce')}}" style="float:left" />
+                  <textarea value="{{item.commNote}}" wx:if="{{item.commentFlag == 0 && !show_act_custom}}" name="commNote" bindinput='comm_note' placeholder="{{i18n.$t(localePack,'page1.comment.isForce')}}" style="float:left" />
                   <text class="xinde_content" wx:elif="{{item.commentFlag == 1}}">{{item.commNote?item.commNote: '{{i18n.$t(localePack,"page1.comment.noExperience")}}'}}</text>
                   <view style="clear:both"></view>
                 </view>
@@ -97,7 +98,7 @@
                       <block wx:for="{{info.comm_img}}" wx:key="index" wx:for-item="imgitem">
                         <view class='shai_view'>
                           <image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
-                          <image src="{{imageUrl + imgitem}}" data-idx="{{index}}"></image>
+                          <image wx:if="{{imgitem}}" src="{{imageUrl + imgitem}}" data-idx="{{index}}"></image>
                         </view>
                       </block>
                     </block>
