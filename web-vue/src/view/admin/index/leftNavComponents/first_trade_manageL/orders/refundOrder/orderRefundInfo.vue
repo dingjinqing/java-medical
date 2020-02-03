@@ -724,7 +724,7 @@ export default {
         returnOperate: returnOperate,
         returnMoney: this.returnMoney,
         shippingFee: this.shippingFee,
-        reasonDesc: this.refusalInfo,
+        refundRefuseReason: this.refusalInfo,
         returnType: this.returnInfo.returnType,
         retId: this.returnInfo.retId,
         ...this.returnAddressInfo
