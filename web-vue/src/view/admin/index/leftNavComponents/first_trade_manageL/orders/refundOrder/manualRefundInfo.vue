@@ -1,21 +1,17 @@
 <template>
-  <div
-    class="main"
-    v-loading="loading"
-  >
+  <div class="main" v-loading="loading">
     <div class="order_info">
-      <p>{{$t('order.orderSn')}}：{{$route.query.orderSn}}</p>
-      <p>{{$t('order.orderTime')}}：{{$route.query.orderTime}}</p>
+      <p>{{ $t("order.orderSn") }}：{{ $route.query.orderSn }}</p>
+      <p>{{ $t("order.orderTime") }}：{{ $route.query.orderTime }}</p>
       <div>
-        <el-button
-          type="primary"
-          size="small"
-        >{{$t('order.backRefundList')}}</el-button>
+        <el-button type="primary" size="small">{{
+          $t("order.backRefundList")
+        }}</el-button>
       </div>
     </div>
     <div class="return_info">
       <p>
-        {{$t('order.returnRefundType')}}：
+        {{ $t("order.returnRefundType") }}：
         <el-select
           v-model="params.returnType"
           size="small"
@@ -37,20 +33,16 @@
         ref="multipleTable"
         v-if="params.returnType != 2"
         :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none'
-          }"
+          'background-color': '#f5f5f5',
+          'text-align': 'center',
+          border: 'none'
+        }"
         :cell-style="{
-            'text-align':'center'
-          }"
+          'text-align': 'center'
+        }"
         @selection-change="selectionChange"
       >
-        <el-table-column
-          type="selection"
-          width="55"
-          :selectable="selectable"
-        >
+        <el-table-column type="selection" width="55" :selectable="selectable">
         </el-table-column>
         <el-table-column :label="$t('order.goodsName')">
           <template slot-scope="scope">
@@ -61,8 +53,8 @@
                 size="mini"
                 v-if="scope.row.isGift"
               >
-                赠品
-              </el-tag>{{scope.row.goodsName}}
+                赠品 </el-tag
+              >{{ scope.row.goodsName }}
             </div>
           </template>
         </el-table-column>
@@ -80,20 +72,28 @@
           :formatter="formatMoney"
           :label="$t('order.purchaseDiscountedPrice')"
         ></el-table-column>
-        <el-table-column :label="`${$t('order.canReturnNum')}/${$t('order.submitted')}/${$t('order.totalNum')}`">
+        <el-table-column
+          :label="
+            `${$t('order.canReturnNum')}/${$t('order.submitted')}/${$t(
+              'order.totalNum'
+            )}`
+          "
+        >
           <template slot-scope="scope">
             <div>
-              {{scope.row.returnable}}/{{scope.row.submitted}}/{{scope.row.total}}
+              {{ scope.row.returnable }}/{{ scope.row.submitted }}/{{
+                scope.row.total
+              }}
             </div>
           </template>
         </el-table-column>
-        <template v-if="[0,1].indexOf(params.returnType) != -1">
+        <template v-if="[0, 1].indexOf(params.returnType) != -1">
           <el-table-column
             prop="returnable"
             :label="`${$t('order.refund')}/${$t('order.returnNumText')}`"
           >
             <template
-              v-if="[0,1].indexOf(params.returnType) != -1"
+              v-if="[0, 1].indexOf(params.returnType) != -1"
               slot-scope="scope"
             >
               <!-- template重复判断if,切换退款类型会占位 -->
@@ -121,21 +121,20 @@
             :label="$t('order.returned')"
           ></el-table-column>
           <el-table-column :label="$t('order.returnMostAmount')">
-            <template
-              v-if="params.returnType == 3"
-              slot-scope="scope"
-            >
+            <template v-if="params.returnType == 3" slot-scope="scope">
               <!-- template重复判断if,切换退款类型会占位 -->
               {{
-                computeReturnMostAmount(scope.row , scope.row.returnNumber , scope.row.discountedGoodsPrice , scope.row.returnMoney).toFixed(2)
+                computeReturnMostAmount(
+                  scope.row,
+                  scope.row.returnNumber,
+                  scope.row.discountedGoodsPrice,
+                  scope.row.returnMoney
+                ).toFixed(2)
               }}
             </template>
           </el-table-column>
           <el-table-column :label="$t('order.returnMoney')">
-            <template
-              v-if="params.returnType == 3"
-              slot-scope="scope"
-            >
+            <template v-if="params.returnType == 3" slot-scope="scope">
               <!-- template重复判断if,切换退款类型会占位 -->
               <el-input-number
                 v-model="scope.row.returnOneGoodsAmount"
@@ -152,10 +151,11 @@
         </template>
       </el-table>
       <div class="return_item">
-        <div class="item_title">{{$t('order.refundPrice')}}：</div>
+        <div class="item_title">{{ $t("order.refundPrice") }}：</div>
         <div class="item_content money_set">
           <p>
-            <span v-if="params.returnType != 2">{{$t('order.refundGoodsPrice')}}：
+            <span v-if="params.returnType != 2"
+              >{{ $t("order.refundGoodsPrice") }}：
               <el-input-number
                 v-model="canRefundPrice"
                 :disabled="params.returnType == 3"
@@ -166,9 +166,11 @@
                 :min="0"
                 :max="max_refund_price"
               >
-              </el-input-number>{{currency[0]}}，</span>
+              </el-input-number
+              >{{ currency[0] }}，</span
+            >
             <span>
-              {{$t('order.returnShippingFee')}}：
+              {{ $t("order.returnShippingFee") }}：
               <el-input-number
                 v-model="params.shippingFee"
                 :precision="2"
@@ -177,16 +179,39 @@
                 controls-position="right"
                 :min="0"
                 :max="returnShippingFee"
-              ></el-input-number>{{currency[0]}},
-              {{$t('order.maxRefundShippingFee')}}：{{returnShippingFee.toFixed(2)}}{{currency[0]}}
+              ></el-input-number
+              >{{ currency[0] }}, {{ $t("order.maxRefundShippingFee") }}：{{
+                returnShippingFee.toFixed(2)
+              }}{{ currency[0] }}
             </span>
           </p>
-          <p>{{$t('order.totalRefundPrice')}}：{{currency[1]}}<span class="text-warning">{{refundtotalPrice.toFixed(2)}}</span> ={{$t('order.refundMemberCardBalance')}}：{{currency[1]}}<span class="text-warning">{{member_card_balance.toFixed(2)}}</span> +{{$t('order.refundBalanceMoney')}}：{{currency[1]}}<span class="text-warning">{{refund_balance_money.toFixed(2)}}</span>+{{$t('order.refundScoreMoney')}}：{{currency[1]}}<span class="text-warning">{{refund_score_money.toFixed(2)}}</span> + {{$t('order.refundPayMoney')}}：{{currency[1]}}<span class="text-warning">{{refund_pay_money.toFixed(2)}}</span> </p>
-          <p class="text-warning">{{$t('order.refundTips')}}</p>
+          <p>
+            {{ $t("order.totalRefundPrice") }}：{{ currency[1]
+            }}<span class="text-warning">{{
+              refundtotalPrice.toFixed(2)
+            }}</span>
+            ={{ $t("order.refundMemberCardBalance") }}：{{ currency[1]
+            }}<span class="text-warning">{{
+              member_card_balance.toFixed(2)
+            }}</span>
+            +{{ $t("order.refundBalanceMoney") }}：{{ currency[1]
+            }}<span class="text-warning">{{
+              refund_balance_money.toFixed(2)
+            }}</span
+            >+{{ $t("order.refundScoreMoney") }}：{{ currency[1]
+            }}<span class="text-warning">{{
+              refund_score_money.toFixed(2)
+            }}</span>
+            + {{ $t("order.refundPayMoney") }}：{{ currency[1]
+            }}<span class="text-warning">{{
+              refund_pay_money.toFixed(2)
+            }}</span>
+          </p>
+          <p class="text-warning">{{ $t("order.refundTips") }}</p>
         </div>
       </div>
       <div class="return_item">
-        <div class="item_title">{{$t('order.refundReason')}}：</div>
+        <div class="item_title">{{ $t("order.refundReason") }}：</div>
         <div class="item_content">
           <el-select
             v-model="params.reasonType"
@@ -194,7 +219,7 @@
             class="default_input"
           >
             <el-option
-              v-for="(item,index) in $t('order.reasonTypeList')"
+              v-for="(item, index) in $t('order.reasonTypeList')"
               :key="index"
               :value="index"
               :label="item"
@@ -203,11 +228,13 @@
         </div>
       </div>
       <div class="return_item">
-        <div class="item_title">{{$t('order.refundReasonDescription')}}：</div>
+        <div class="item_title">
+          {{ $t("order.refundReasonDescription") }}：
+        </div>
         <div class="item_content">
           <el-input
             type="textarea"
-            v-model="params.reasonDesc"
+            v-model="params.refundRefuseReason"
             :rows="5"
             class="textarea_width"
             resize="none"
@@ -215,28 +242,32 @@
         </div>
       </div>
       <div class="return_item">
-        <div class="item_title">{{$t('order.voucherPicture')}}：</div>
+        <div class="item_title">{{ $t("order.voucherPicture") }}：</div>
         <div class="item_content">
           <img
-            :src="params.voucherImages ? $imageHost +'/' + params.voucherImages : ' '"
+            :src="
+              params.voucherImages
+                ? $imageHost + '/' + params.voucherImages
+                : ' '
+            "
             class="bgImgDiv"
             @click="handleToAddImg()"
-            :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
+            :style="
+              `backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`
+            "
           />
         </div>
       </div>
     </div>
     <div class="footer">
-      <el-button
-        type="primary"
-        size="small"
-        @click="comfirmRefund"
-      >确定</el-button>
+      <el-button type="primary" size="small" @click="comfirmRefund"
+        >确定</el-button
+      >
     </div>
     <ImageDalog
-      pageIndex='userCardAdd'
+      pageIndex="userCardAdd"
       :tuneUp="tuneUp"
-      @handleSelectImg='handleSelectImg'
+      @handleSelectImg="handleSelectImg"
     />
   </div>
 </template>
@@ -253,7 +284,7 @@ export default {
       params: {
         returnType: 0,
         reasonType: 0,
-        reasonDesc: null,
+        refundRefuseReason: null,
         voucherImages: null,
         returnMoney: null,
         shippingFee: 0
