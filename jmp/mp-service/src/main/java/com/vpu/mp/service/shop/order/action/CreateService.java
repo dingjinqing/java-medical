@@ -826,7 +826,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //配送方式校验
         checkExpress(param.getDeliverType());
         //支付方式校验
-        checkPayWay(param.getOrderPayWay(), vo);
+        checkPayWay(param, vo);
     }
 
     /**
@@ -985,20 +985,20 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
     /**
      *
-     * @param orderPayWay 当前配支付方式
+     * @param param getOrderPayWay() 当前配支付方式
      * @throws MpException 当前支付方式不支持
      */
-    public void checkPayWay(Byte orderPayWay, OrderBeforeVo vo) throws MpException {
+    public void checkPayWay(CreateParam param, OrderBeforeVo vo) throws MpException {
         Map<String, PaymentVo> supportPayment = payment.getSupportPayment();
-        if(OrderConstant.MP_PAY_CODE_WX_PAY.equals(orderPayWay) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[orderPayWay])){
+        if(OrderConstant.MP_PAY_CODE_WX_PAY.equals(param.getOrderPayWay()) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])){
             //wx
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_WX);
         }
-        if(OrderConstant.MP_PAY_CODE_COD.equals(orderPayWay) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[orderPayWay])){
+        if(OrderConstant.MP_PAY_CODE_COD.equals(param.getOrderPayWay()) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])){
             //货到付款
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_COD);
         }
-        if(vo.getGoodsType() != null &&BaseConstant.ACTIVITY_TYPE_INTEGRAL != vo.getGoodsType() && BigDecimalUtil.compareTo(vo.getScoreDiscount(), BigDecimal.ZERO) == 1 && vo.getIsScorePay() == NO){
+        if(vo.getGoodsType() != null &&BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType()) && BigDecimalUtil.compareTo(vo.getScoreDiscount(), BigDecimal.ZERO) == 1 && vo.getIsScorePay() == NO){
             //积分（非积分兑换）
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
         }

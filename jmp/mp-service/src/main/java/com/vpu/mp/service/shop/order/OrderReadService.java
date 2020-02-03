@@ -398,8 +398,12 @@ public class OrderReadService extends ShopBaseService {
             goods.forEach(x->x.setIsGift(keyMapByIds.get(x.getRecId()).getIsGift()));
             vo.setReturnGoods(goods);
 		}
-		//快递code
-		vo.setShippingCode(getShippingCode(rOrder));
+		//快递消息
+        ExpressVo shippingInfo = getShippingInfo(rOrder);
+		if(shippingInfo != null) {
+            vo.setShippingCode(shippingInfo.getShippingCode());
+            vo.setShippingName(shippingInfo.getShippingName());
+        }
 		//金额计算
 		setCalculateMoney(vo);
 		//获取该退款订单操作记录
@@ -807,6 +811,8 @@ public class OrderReadService extends ShopBaseService {
         }
         //退款记录
         Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());
+        //买家提交物流快递名称
+
         vo.setReturnOrderlist(new ArrayList<>(rOrders.size()));
         rOrders.forEach(rOrder->{
             ReturnOrderListMp returnOrderListMp = rOrder.into(ReturnOrderListMp.class);
@@ -814,6 +820,10 @@ public class OrderReadService extends ShopBaseService {
                 ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(rOrder.getRetId());
                 returnOrderListMp.setRole(OrderConstant.IS_MP_Y == lastOperator.getType() ? OrderConstant.IS_MP_Y : OrderConstant.IS_MP_ADMIN);
                 returnOrderListMp.setFinishTime(lastOperator.getCreateTime());
+                if(!StringUtils.isBlank(returnOrderListMp.getShippingType())) {
+                    ExpressVo expressVo = expressService.get(Byte.valueOf(returnOrderListMp.getShippingType()));
+                    returnOrderListMp.setShippingName(expressVo == null ? null : expressVo.getShippingName());
+                }
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });
         return vo;
@@ -834,9 +844,9 @@ public class OrderReadService extends ShopBaseService {
      * @param returnOrder
      * @return
      */
-    private String getShippingCode(ReturnOrderRecord returnOrder) {
-        if(returnOrder.getReturnType() == OrderConstant.RT_GOODS && returnOrder.getRefundStatus() >= OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
-            return expressService.get(Byte.valueOf(returnOrder.getShippingType())).getShippingCode();
+    private ExpressVo getShippingInfo(ReturnOrderRecord returnOrder) {
+        if(!StringUtils.isBlank(returnOrder.getShippingType())) {
+            return expressService.get(Byte.valueOf(returnOrder.getShippingType()));
         }else {
             return null;
         }

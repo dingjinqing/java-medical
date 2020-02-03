@@ -100,6 +100,11 @@ public class DistributorCheckService extends ShopBaseService{
         return true;
     }
 
+    /**
+     * 分销员审核拒绝
+     * @param param
+     * @return
+     */
     public boolean applyRefuse(DistributionApplyOptParam param){
         //获取申请信息
         Integer userId = db().select(DISTRIBUTOR_APPLY.USER_ID).from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.ID.eq(param.getId())).fetchOne().into(Integer.class);

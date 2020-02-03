@@ -113,6 +113,11 @@ global.wxComponent({
           productId: productId,	
           cartNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1	
         })	
+    },
+    // 去商品详情页
+    goItem(){
+      let {goodsId,activityId,activityType} = this.data.goodsData
+      util.jumpLink(`pages/item/item?goodsId=${goodsId}&activityType=${activityType}&activityId=${activityId}`,'navigateTo')
     }
   }
 })
