@@ -6,8 +6,7 @@
         <span></span>{{$t('returnconfiguration.afterconfig')}}
         <el-switch
           v-model="returnParam.post_sale_status"
-          active-color="#13ce66"
-          inactive-color="#f7931e"
+          active-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         {{returnParam.post_sale_status?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
