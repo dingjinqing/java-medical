@@ -53,5 +53,10 @@ module.exports = {
     onlyLeft: '仅剩',
     toBargain: '去砍价',
     originalPrice: '原价购买',
-    tips: '提示'
+    tips: '提示',
+    doesNotExist: '该活动不存在',
+    notStart: '该活动未开始',
+    insufficientInventory: '商品库存不足',
+    operationFailed: '操作失败',
+    start: '开始'
 }
