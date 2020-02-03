@@ -81,7 +81,7 @@ public class LotteryRecordService extends ShopBaseService {
      *
      * @param userId       会员id
      * @param lotteryId    活动id
-     * @param chanceSource 0:free 1:share 2:score
+     * @param chanceSource 1:free 2:share 3:score
      * @return 抽奖次数
      */
     public Integer getJoinLotteryNumber(Integer userId, Integer lotteryId, Byte chanceSource) {
@@ -113,20 +113,25 @@ public class LotteryRecordService extends ShopBaseService {
             case 0:
                 logger().info("积分");
                 //积分
+
                 break;
             case 1:
                 logger().info("用户余额");
                 //用户余额
+
                 break;
             case 2:
                 logger().info("优惠卷");
                 //2优惠券
+
                 break;
             case 3:
                 //3赠品
+
                 break;
             case 4:
                 //自定义
+
                 break;
             default:
         }

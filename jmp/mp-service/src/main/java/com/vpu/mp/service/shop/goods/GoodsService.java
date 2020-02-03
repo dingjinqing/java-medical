@@ -1361,14 +1361,15 @@ public class GoodsService extends ShopBaseService {
      * @return 商品信息
      */
     public GoodsVo select(Integer goodsId) {
-        GoodsVo goodsVo = db().select()
+        Record record = db().select()
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
-            .where(GOODS.GOODS_ID.eq(goodsId)).fetchOne().into(GoodsVo.class);
-
-        if (goodsVo == null) {
+            .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
+        if (record == null) {
             return null;
         }
+
+        GoodsVo goodsVo=record.into(GoodsVo.class);
 
         //设置主绝对路径图片,都是全路径
         goodsVo.setGoodsImgPath(goodsVo.getGoodsImg());
@@ -1881,6 +1882,13 @@ public class GoodsService extends ShopBaseService {
     public GoodsRecord getGoodsRecordById(int goodsId){
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(GoodsRecord.class).orElse(null);
     }
+    /**
+     * 取多个完整Goods
+     * @return
+     */
+    public Map<Integer, GoodsRecord> getGoodsRecordByIds(List<Integer> goodsIds){
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetchMap(Tables.GOODS.GOODS_ID);
+    }
 
     /**
      * 更新商品和规格的库存和销量，减少number个库存，增加number个销量，number可以是负数
@@ -1904,6 +1912,99 @@ public class GoodsService extends ShopBaseService {
         }
     }
 
+    /**
+     * 获取满足条件的商品数量
+     * @param param 条件
+     * @return 商品数量
+     */
+    public Integer getGoodsNum(GoodsNumCountParam param) {
+        return getGoodsNum(Collections.singletonList(param)).get(0);
+    }
+    /**
+     * 获取满足过滤条件的商品数量集合
+     * @param params 过滤条件集合
+     * @return 商品数量集合
+     */
+    public List<Integer> getGoodsNum(List<GoodsNumCountParam> params) {
+        Condition baseCondition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (!GoodsConstant.SOLD_OUT_GOODS_SHOW.equals(soldOutGoods)) {
+            baseCondition = baseCondition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+        List<Integer> goodsNums = new ArrayList<>();
+
+        for (GoodsNumCountParam param : params) {
+            Condition condition = baseCondition;
+            if (param.getLabelId() != null) {
+                List<Integer> allIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+                if (allIds.size() == 0) {
+                    List<Integer> sortIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
+                    List<Integer> goodsIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
+                    List<Integer> catIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
+                    Condition idCondition = DSL.noCondition();
+                    if (sortIds.size() > 0) {
+                        idCondition = idCondition.or(GOODS.SORT_ID.in(sortIds));
+                    }
+                    if (goodsIds.size() > 0) {
+                        idCondition = idCondition.or(GOODS.GOODS_ID.in(goodsIds));
+                    }
+                    if (catIds.size() > 0) {
+                        idCondition = idCondition.or(GOODS.CAT_ID.in(catIds));
+                    }
+                    condition = condition.and(idCondition);
+                } else {
+                    // 存在全部商品行标签
+                    goodsNums.add(getGoodsNumDao(condition));
+                    continue;
+                }
+            }
+
+            if (param.getSortId() != null) {
+                condition = condition.and(GOODS.SORT_ID.eq(param.getSortId()));
+            }
+
+            if (param.getBrandId() != null) {
+                condition = condition.and(GOODS.BRAND_ID.eq(param.getBrandId()));
+            }
+
+            if (param.getCatId() != null) {
+                condition = condition.and(GOODS.CAT_ID.eq(param.getCatId()));
+            }
+            goodsNums.add(getGoodsNumDao(condition));
+        }
+        return goodsNums;
+    }
+
+    /**
+     * 查询普通商品分享时使用的分享信息
+     * @param goodsId 商品id
+     * @return 商品分享信息
+     */
+    public GoodsVo selectGoodsShareInfo(Integer goodsId) {
+        Record3<String,String,String> record = db().select(GOODS.GOODS_NAME,GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
+            .from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchAny();
+
+        if (record == null) {
+            return null;
+        }
+        GoodsVo goodsVo = record.into(GoodsVo.class);
+
+        // 反序列化商品海报分享信息
+        GoodsSharePostConfig goodsSharePostConfig = Util.parseJson(goodsVo.getShareConfig(), GoodsSharePostConfig.class);
+        goodsSharePostConfig.setShareImgPath(goodsSharePostConfig.getShareImgUrl());
+        goodsVo.setGoodsSharePostConfig(goodsSharePostConfig);
+        return goodsVo;
+    }
+
+    /**
+     * 获取指定条件的商品的数量
+     * @param condition 指定的条件
+     * @return 商品的数量
+     */
+    public Integer getGoodsNumDao(Condition condition) {
+        return db().fetchCount(GOODS, condition);
+    }
     /**
      * Exist boolean.商品是否存在
      *

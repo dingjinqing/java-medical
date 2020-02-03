@@ -162,5 +162,11 @@ export const en = {
   validScore: 'Please fill in the bonus points',
   validBounsAmount: 'Please fill in the bonus amount',
   validCoupon: 'Please select a coupon',
-  validGivea: 'Please select a giveaway'
+  validGivea: 'Please select a giveaway',
+  dataLoadFail: 'Data load failed',
+  addSweepstakes: 'Add Sweepstakes',
+  jumpRaffleDetails: 'Jump to the raffle details page',
+  jumpGetUserList: 'Jump to get new user list page',
+  consumed: 'null means no points are consumed',
+  fetchDataFail: 'Failed to get data'
 }

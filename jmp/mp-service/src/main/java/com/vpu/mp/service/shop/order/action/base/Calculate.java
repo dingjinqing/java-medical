@@ -21,9 +21,11 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.base.BaseMarketingBaseVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.shop.activity.processor.FullReductionProcessor;
+import com.vpu.mp.service.shop.activity.processor.PreSaleProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -76,6 +78,8 @@ public class Calculate extends ShopBaseService {
     private ShopReturnConfigService returnCfg;
     @Autowired
     private FullReductionProcessor fullReductionProcessor;
+    @Autowired
+    private PreSaleProcessor preSaleProcessor;
 
     /**
      * 计算订单商品折扣金额
@@ -282,7 +286,7 @@ public class Calculate extends ShopBaseService {
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
             if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())) {
                 //限次卡
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), card == null ? null : Lists.newArrayList(card));
                 vo.setDefaultMemberCard(card);
                 vo.setMemberCards(validCardList);
             } else {
@@ -358,10 +362,9 @@ public class Calculate extends ShopBaseService {
      * @param districtCode     区县编号
      * @param bos              bos
      * @param storeId          门店id
-     * @param noCalculateGoods 不参与计算的商品
      * @return 运费
      */
-    public BigDecimal calculateShippingFee(Integer districtCode, List<OrderGoodsBo> bos, Integer storeId, List<Integer> noCalculateGoods) {
+    public BigDecimal calculateShippingFee(Integer districtCode, List<OrderGoodsBo> bos, Integer storeId) {
         logger().info("计算运费start");
         BigDecimal result = BigDecimal.ZERO;
         //处理过程中局部内部类
@@ -376,8 +379,12 @@ public class Calculate extends ShopBaseService {
         }
         Map<Integer, Total> totalMaps = Maps.newHashMap();
         for (OrderGoodsBo bo : bos) {
+            //过滤不参与计算的商品
+            if(bo.getFreeShip() != null && bo.getFreeShip() == OrderConstant.YES) {
+                bo.setIsShipping(OrderConstant.YES);
+                continue;
+            }
             //TODO 检查加价购换购商品是否走运费计算
-
             if (totalMaps.get(bo.getDeliverTemplateId()) == null) {
                 totalMaps.put(bo.getDeliverTemplateId(), new Total());
             }
@@ -386,14 +393,13 @@ public class Calculate extends ShopBaseService {
             total.setTotalNumber(total.getTotalNumber() + bo.getGoodsNumber());
             total.setTotalPrice(total.getTotalPrice().add(bo.getDiscountedTotalPrice()));
             total.setTotalWeight(total.getTotalWeight().add(BigDecimalUtil.multiply(bo.getGoodsWeight(), new BigDecimal(bo.getGoodsNumber()))));
-            bo.getDeliverTemplateId();
         }
 
         for (Map.Entry<Integer, Total> entry : totalMaps.entrySet()) {
             Integer templateId = entry.getKey();
             Total total = entry.getValue();
             logger().info("计算运费模板id:{},参数:{}", templateId, total);
-            BigDecimal shippingFeeByTemplate = null;
+            BigDecimal shippingFeeByTemplate;
             try {
                 if (districtCode == null || districtCode.equals(0)) {
                     total.getBos().forEach(x -> {
@@ -644,6 +650,7 @@ public class Calculate extends ShopBaseService {
 
         //首单特惠
         if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice() != null) {
+            goods.setFirstSpecialId(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
             return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
         }
 
@@ -666,5 +673,20 @@ public class Calculate extends ShopBaseService {
      */
     public List<OrderFullReduce> calculateFullReduce(OrderBeforeParam param, List<OrderGoodsBo> bos) {
         return fullReductionProcessor.calculate(param, bos);
+    }
+
+    /**
+     * 计算预售
+     * @param param
+     * @param bos
+     * @param tolalNumberAndPrice
+     * @param vo
+     * @return
+     */
+    public OrderPreSale calculatePreSale(OrderBeforeParam param, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice, OrderBeforeVo vo) {
+        if(!BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType())){
+            return null;
+        }
+        return preSaleProcessor.calculate(param, bos, tolalNumberAndPrice, vo);
     }
 }

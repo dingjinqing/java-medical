@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import jodd.util.StringUtil;
 import org.jooq.DatePart;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -351,7 +352,7 @@ public class ShopService extends MainBaseService {
      */
 	public ShopBaseConfig getShopBaseInfoById(Integer shopId) {
         ShopPojo shop = db().select(SHOP.SHOP_AVATAR, SHOP.SHOP_NAME, SHOP.BUSINESS_STATE, SHOP.CREATED, SHOP.BUSINESS_STATE,SHOP.LOGO)
-            .from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(ShopPojo.class);
+            .from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOneInto(ShopPojo.class);
         ShopBaseConfig shopBaseCfgInfo = new ShopBaseConfig();
         shopBaseCfgInfo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(shopId));
         shopBaseCfgInfo.setShopName(shop.getShopName());
@@ -377,7 +378,9 @@ public class ShopService extends MainBaseService {
         this.transaction(() -> {
             db().executeUpdate(record);
             saas.getShopApp(shopId).config.shopCommonConfigService.setShowLogo(shop.getShowLogo());
-            saas.getShopApp(shopId).config.shopCommonConfigService.setLogoLink(shop.getLogoLink());
+            if(StringUtil.isNotEmpty(shop.getLogoLink())){
+                saas.getShopApp(shopId).config.shopCommonConfigService.setLogoLink(shop.getLogoLink());
+            }
         });
 	}
 	public List<ShopSelectInnerResp> getShopList(AdminTokenAuthInfo info,

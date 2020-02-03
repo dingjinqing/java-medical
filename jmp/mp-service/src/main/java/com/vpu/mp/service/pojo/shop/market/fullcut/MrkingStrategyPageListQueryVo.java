@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.fullcut;
 
+import lombok.Data;
+
 import java.sql.Timestamp;
 import java.util.List;
-
-import lombok.Data;
 
 /**
  * @author: 王兵兵
@@ -29,6 +29,9 @@ public class MrkingStrategyPageListQueryVo {
 
     /** 结束时间 */
     private Timestamp endTime;
+
+    /** 优先级 */
+    private Integer strategyPriority;
 
     /** 活动状态：0停用，1启用 */
     private Byte status;

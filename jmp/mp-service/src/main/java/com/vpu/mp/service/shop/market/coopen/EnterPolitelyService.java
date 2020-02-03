@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.wxapp.market.enterpolitely.AwardVo;
 import com.vpu.mp.service.pojo.wxapp.market.enterpolitely.ExtBo;
@@ -255,6 +256,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 scoreParam.setUserId(userId);
                 scoreParam.setOrderSn(Objects.isNull(bo) ? StringUtils.EMPTY : bo.getOrderSn());
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                scoreParam.setRemarkCode(RemarkTemplate.ENTER_HAS_GIFT.code);
                 try {
                     scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());
                 } catch (MpException e) {

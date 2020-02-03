@@ -38,7 +38,8 @@ global.wxComponent({
           })
         }
       }
-    }
+    },
+    promotion:Array
   },
 
   /**

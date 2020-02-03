@@ -189,9 +189,7 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
                     }
                     if(!OrderConstant.CART_Y.equals(param.getIsCart()) || param.getStoreId() != null || (activity.getId().equals(goods.getStraId()))) {
                         //购物车可选是否参加活动需要特殊处理
-                        if(joinActivity.get(activityInfo) == null){
-                            joinActivity.put(activityInfo, new ArrayList<>());
-                        }
+                        joinActivity.computeIfAbsent(activityInfo, k -> new ArrayList<>());
                         goods.setStraId(activity.getId());
                         joinActivity.get(activityInfo).add(goods);
                         used.add(goods.getProductId());

@@ -8,6 +8,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -31,7 +32,7 @@ public class OrderOperateFactory implements ApplicationContextAware {
 		orderOperateMap = new HashMap<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam, AbstractOrderOperateQueryParam>>();
 		map.forEach((key, value) -> {
 			//防止实现IorderOperate接口的类的ServiceCode重复
-			assert(orderOperateMap.get(value.getServiceCode()) == null);
+			Assert.isTrue(orderOperateMap.get(value.getServiceCode()) == null,"防止实现IorderOperate接口的类的ServiceCode重复");
 			orderOperateMap.put(value.getServiceCode(), value);
 		});
 	}

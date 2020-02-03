@@ -2,12 +2,13 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
+import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -16,8 +17,12 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSaleMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSalePrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
@@ -25,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -124,47 +132,70 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         PreSaleVo activityInfo = preSaleProcessorDao.getDetail(param.getActivityId());
-        if(activityInfo == null || DelFlag.DISABLE_VALUE.equals(activityInfo.getDelFlag()) || BaseConstant.ACTIVITY_STATUS_DISABLE.equals(activityInfo.getStatus())) {
-            log.error("活动停用");
-            throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_DISABLE);
-        }
-        if(param.getDate().before(activityInfo.getStartTime())) {
-            log.error("活动未开始");
-            throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NO_START);
-        }
-        if(PreSaleService.PRESALE_MONEY_INTERVAL.equals(activityInfo.getPrePayStep())) {
-            //定金期数2
-            if((param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
-                || param.getDate().after(activityInfo.getPreEndTime2())) {
-                log.error("活动已结束");
-                throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
-            }
-        }else if(param.getDate().after(activityInfo.getPreEndTime())){
-            //定金期数1
-            log.error("活动已结束");
-            throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
-        }
-        if(activityInfo.getBuyNumber() != null && activityInfo.getBuyNumber() > 0){
-            Integer hasBuyNumber = order.getPreSaletUserBuyNumber(param.getWxUserInfo().getUserId(), activityInfo.getId());
-            if(hasBuyNumber >= activityInfo.getBuyNumber()) {
-                log.error("购买数量已达活动上限");
-                throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NUMBER_LIMIT);
-            }
-        }
-        if(activityInfo.getGoodsId().equals(param.getGoodsIds().get(0))) {
-            //预售商品只支持一个商品,所以get(0)
-            log.error("该商品不支持预售");
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_SUPORT_PRESALE);
-        }
+        preSaleProcessorDao.orderCheck(param, activityInfo);
+        preSaleProcessorDao.orderInit(param, activityInfo);
     }
+
+
 
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        //无需处理
     }
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        Map<Integer, Integer> updateParam = param.getBos().stream()
+            .filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift()))
+            .collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber));
+        if(updateParam.size() != 0){
+            preSaleProcessorDao.updateStockAndSales(updateParam, order.getActivityId());
+        }
+    }
 
+    /**
+     * 订单处理金额
+     * @param param
+     * @param bos
+     * @param tolalNumberAndPrice
+     * @param vo
+     * @return
+     */
+    public OrderPreSale calculate(OrderBeforeParam param, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice, OrderBeforeVo vo) {
+        log.info("预售处理金额start");
+        PreSaleVo activityInfo = preSaleProcessorDao.getDetail(param.getActivityId());
+        BigDecimal totalPreSaleMoney = null;
+        BigDecimal discount = null;
+        for (OrderGoodsBo orderGoodsBo : bos) {
+            for (ProductVo productVo : activityInfo.getProducts()) {
+                if(productVo.getProductId().equals(orderGoodsBo.getProductId())) {
+                    totalPreSaleMoney = BigDecimalUtil.add(totalPreSaleMoney , BigDecimalUtil.multiply( new BigDecimal(productVo.getPresaleMoney().toString()), new BigDecimal(orderGoodsBo.getGoodsNumber())));
+                    if (PreSaleService.PRE_SALE_ONE_PHASE.equals(activityInfo.getPrePayStep()) || param.getDate().before(activityInfo.getPreEndTime())) {
+                        //定金一期 || 定金二期第一期
+                        discount = BigDecimalUtil.subtrac(
+                            new BigDecimal(productVo.getPreDiscountMoney1().toString()), new BigDecimal(productVo.getPresaleMoney().toString()))
+                            .multiply(new BigDecimal((orderGoodsBo.getGoodsNumber())));
+                    } else {
+                        //定金二期
+                        discount = BigDecimalUtil.subtrac(
+                            new BigDecimal(productVo.getPreDiscountMoney2().toString()), new BigDecimal(productVo.getPresaleMoney().toString()))
+                            .multiply(new BigDecimal((orderGoodsBo.getGoodsNumber())));
+                    }
+                }
+            }
+        }
+        OrderPreSale result = new OrderPreSale();
+        result.setTotalPreSaleMoney(totalPreSaleMoney);
+        result.setInfo(activityInfo);
+        result.setTotalDiscount(discount);
+        result.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
+        result.setTotalGoodsNumber(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
+        result.setIdentity(activityInfo.getId().toString());
+        result.setBos(bos);
+        result.initRatio();
+        vo.setBkShippingTime(PreSaleService.DELIVER_TYPE_TIME.equals(activityInfo.getDeliverType()) ? activityInfo.getDeliverTime() : Timestamp.from(Instant.now().plusSeconds(Duration.ofDays(activityInfo.getDeliverDays()).getSeconds())));
+        vo.setBkReturnType(activityInfo.getReturnType());
+        log.info("预售处理金额end");
+        return result;
     }
 }

@@ -1,12 +1,12 @@
 <block wx:if="{{m.title_model == '1'}}">
   <view class="title-container" catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.cur_idx}}' style="background-color: {{m.bg_color}};margin-bottom:{{m.margin_bot}}rpx;">
     <view class="main-titles" style="text-align:{{m.pos}};">
-      <image src='{{m.img_url}}' wx:if="{{m.img_url}}" style='width:50rpx;height:50rpx'></image>
-      <text style='color:{{m.color}};padding-right:40rpx;'>{{m.title}}</text>
+      <image class="image" src='{{m.img_url}}' wx:if="{{m.img_url}}" style='width:50rpx;height:50rpx'></image>
+      <text class="text" style='color:{{m.color}};padding-right:40rpx;'>{{m.title}}</text>
     </view>
     <view class="more-title">
-      <text>更多</text>
-      <image src="/images/arrow.png"></image>
+      <text class="text">更多</text>
+      <image class="image" src="/images/arrow.png"></image>
     </view>
   </view>
 </block>

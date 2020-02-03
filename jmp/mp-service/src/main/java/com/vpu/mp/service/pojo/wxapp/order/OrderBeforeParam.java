@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
+import jdk.internal.org.jline.utils.Log;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -78,7 +79,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	/**下单时间*/
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Timestamp date = DateUtil.getSqlTimestamp();
-
+    /**活动免运费*/
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Byte isFreeShippingAct;
     /**
      * 指定可用的支付方式
      */
@@ -106,6 +109,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	 */
 	@Getter
 	@Setter
+    @ToString
 	public static class Goods{
 		@NotNull
 		private Integer goodsId;
@@ -147,11 +151,15 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**
      * 获取商品计算首单特惠活动。。。
      */
-    public OrderCartProductBo getOrderCartProductBo(){
+    public OrderCartProductBo  getOrderCartProductBo(){
     	if (orderCartProductBo==null){
 			orderCartProductBo= new OrderCartProductBo();
+            orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.productId, x.goodsNumber));
+                Log.info("debug{}", x);
+                OrderCartProductBo.OrderCartProduct orderCartProduct = new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber());
+                Log.info("debug{}", orderCartProduct);
+                orderCartProductBo.getAll().add(orderCartProduct);
 			});
 		}
         return orderCartProductBo;

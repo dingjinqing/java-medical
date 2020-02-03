@@ -42,5 +42,21 @@ module.exports = {
     hit: '打',
     fullReduction: '满减',
     fullMemberDiscount: '会员满减价',
-    membershipExclusive: '会员专享'
+    membershipExclusive: '会员专享',
+    goodsDeleted: '商品已删除', // 砍价模块部分
+    endOfDistance: '距结束',
+    offShelf: '商品已下架',
+    activityEnded: '活动已结束',
+    activityDeactivated: '活动已停用',
+    activityDeleted: '活动已删除',
+    start: '开始',
+    onlyLeft: '仅剩',
+    toBargain: '去砍价',
+    originalPrice: '原价购买',
+    tips: '提示',
+    doesNotExist: '该活动不存在',
+    notStart: '该活动未开始',
+    insufficientInventory: '商品库存不足',
+    operationFailed: '操作失败',
+    start: '开始'
 }

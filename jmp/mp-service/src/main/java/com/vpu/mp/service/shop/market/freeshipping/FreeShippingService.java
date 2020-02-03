@@ -13,8 +13,10 @@ import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingGoodsRuleVo;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -22,6 +24,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,9 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABL
 import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
 import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
 import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
+import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_MONEY;
+import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_NUM;
+import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_NUM_MONEY;
 
 /**
  * 免邮费
@@ -129,11 +135,11 @@ public class FreeShippingService extends ShopBaseService {
     public void addFreeShipping(FreeShippingParam param) {
         transaction(() -> {
             param.setId(null);
-            FreeShippingRecord record = db().newRecord(FREE_SHIPPING,param);
+            FreeShippingRecord record = db().newRecord(FREE_SHIPPING, param);
             record.setStatus(ACTIVITY_STATUS_NORMAL);
             record.insert();
             param.getRuleList().forEach(rule -> {
-                FreeShippingRuleRecord ruleRecord = db().newRecord(FREE_SHIPPING_RULE,rule);
+                FreeShippingRuleRecord ruleRecord = db().newRecord(FREE_SHIPPING_RULE, rule);
                 ruleRecord.setShippingId(record.getId());
                 ruleRecord.insert();
             });
@@ -149,12 +155,12 @@ public class FreeShippingService extends ShopBaseService {
     public void updateFreeShipping(FreeShippingParam param) {
         //开启事务
         transaction(() -> {
-            FreeShippingRecord record = db().newRecord(FREE_SHIPPING,param);
+            FreeShippingRecord record = db().newRecord(FREE_SHIPPING, param);
             record.update();
             List<Integer> ruleList = new ArrayList<>();
             //更新规则
             param.getRuleList().forEach(rule -> {
-                FreeShippingRuleRecord ruleRecord = db().newRecord(FREE_SHIPPING_RULE,rule);
+                FreeShippingRuleRecord ruleRecord = db().newRecord(FREE_SHIPPING_RULE, rule);
                 ruleRecord.setShippingId(record.getId());
                 if (ruleRecord.getId() == null) {
                     ruleRecord.insert();
@@ -183,6 +189,7 @@ public class FreeShippingService extends ShopBaseService {
                 .leftJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
                 .where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOption(select, param);
+        select.orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.ID.desc());
         PageResult<FreeShippingVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), FreeShippingVo.class);
         result.getDataList().forEach(freeShipping -> {
             List<FreeShippingRuleVo> ruleVoList = ruleService.getRuleListByFreeShippingId(freeShipping.getId()).into(FreeShippingRuleVo.class);
@@ -195,7 +202,7 @@ public class FreeShippingService extends ShopBaseService {
 
     private void buildOption(SelectConditionStep<Record> select, FreeShipQueryParam param) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        if (param.getNavType()!=null) {
+        if (param.getNavType() != null) {
             switch (param.getNavType()) {
                 case NAVBAR_TYPE_ONGOING:
                     //进行中的
@@ -224,14 +231,26 @@ public class FreeShippingService extends ShopBaseService {
         }
     }
 
+    /**
+     * 根据规则id获取满包邮活动
+     *
+     * @param ruleId
+     * @return
+     */
     public FreeShippingRecord getFreeShippingByRuleId(Integer ruleId) {
         return db().select(FREE_SHIPPING.asterisk()).from(FREE_SHIPPING)
                 .leftJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
                 .where(FREE_SHIPPING_RULE.ID.eq(ruleId))
-                .orderBy(FREE_SHIPPING.LEVEL.desc(),FREE_SHIPPING_RULE.CREATE_TIME.desc())
+                .orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING_RULE.CREATE_TIME.desc())
                 .fetchOneInto(FreeShippingRecord.class);
     }
 
+    /**
+     * 获取满包邮活动
+     *
+     * @param id
+     * @return
+     */
     public FreeShippingRecord getFreeShippingById(Integer id) {
         return db().selectFrom(FREE_SHIPPING).where(FREE_SHIPPING.ID.eq(id)).fetchOne();
     }
@@ -258,7 +277,13 @@ public class FreeShippingService extends ShopBaseService {
     }
 
 
-    public ShareQrCodeVo shareFreeShipping(Integer id){
+    /**
+     * 分享满包邮活动
+     *
+     * @param id
+     * @return
+     */
+    public ShareQrCodeVo shareFreeShipping(Integer id) {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FULL_SHIP, id.toString());
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
@@ -268,14 +293,60 @@ public class FreeShippingService extends ShopBaseService {
 
     /**
      * 删除满包邮
+     *
      * @param id
      * @return
      */
     public int deleteFreeShipping(Integer id) {
-        ruleService.deleteByid(id,null);
+        ruleService.deleteByid(id, null);
         return db().update(FREE_SHIPPING)
                 .set(FREE_SHIPPING.DEL_FLAG, DelFlag.DISABLE_VALUE)
                 .where(FREE_SHIPPING.ID.eq(id))
                 .execute();
+    }
+
+    /**
+     * 获取满包邮活动
+     *
+     * @param timestamp
+     */
+    public List<FreeShippingVo> getValidFreeList(Timestamp timestamp) {
+        List<FreeShippingVo> freeShippingVos = db().selectFrom(FREE_SHIPPING).where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(FREE_SHIPPING.STATUS.eq(ACTIVITY_STATUS_NORMAL))
+                .and(FREE_SHIPPING.EXPIRE_TYPE.eq(ACTIVITY_IS_FOREVER)
+                        .or(FREE_SHIPPING.EXPIRE_TYPE.eq(ACTIVITY_NOT_FOREVER)
+                                .and(FREE_SHIPPING.START_TIME.le(timestamp))
+                                .and(FREE_SHIPPING.END_TIME.ge(timestamp))))
+                .orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.CREATE_TIME.desc())
+                .fetchInto(FreeShippingVo.class);
+        freeShippingVos.forEach(freeShipping -> {
+            List<FreeShippingRuleVo> ruleVoList = ruleService.getRuleListByFreeShippingId(freeShipping.getId()).into(FreeShippingRuleVo.class);
+            freeShipping.setRuleList(ruleVoList);
+            Byte actStatus = Util.getActStatus(freeShipping.getStatus(), freeShipping.getStartTime(), freeShipping.getEndTime(), freeShipping.getExpireType());
+            freeShipping.setCurrentStatus(actStatus);
+        });
+        return freeShippingVos;
+    }
+
+    /**
+     * 判断是否符合满包邮条件
+     * @param address  地址
+     * @param tolalNumberAndPrice 数量和金额
+     * @param ruleList 规则列表
+     * @return
+     */
+    public boolean checkedFreeshipCondition(UserAddressVo address, BigDecimal[] tolalNumberAndPrice, List<FreeShippingRuleVo> ruleList) {
+        for (FreeShippingRuleVo rule : ruleList) {
+            List<Integer> districtCode = Util.stringToList(rule.getArea());
+            if (districtCode.contains(address.getDistrictCode())) {
+                if ((rule.getConType().equals(CONTYPE_NUM)||rule.getConType().equals(CONTYPE_NUM_MONEY)) && tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].intValue() >= rule.getNum()) {
+                    return true;
+                }
+                if ((rule.getConType().equals(CONTYPE_MONEY)||rule.getConType().equals(CONTYPE_NUM_MONEY))&&tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].intValue()>=rule.getMoney()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

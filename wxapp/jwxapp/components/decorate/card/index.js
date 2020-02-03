@@ -13,6 +13,8 @@ global.wxComponent({
         newVal.bg = newVal.bg_color = newVal.bg_color || '#e6cb96';
       }
       if (newVal.bg_type == 1) {
+        let flag = newVal.bgImg
+        if (!flag) return
         newVal.bg = 'url(' + newVal.bgImg + ')';
       }
       console.log(newVal)

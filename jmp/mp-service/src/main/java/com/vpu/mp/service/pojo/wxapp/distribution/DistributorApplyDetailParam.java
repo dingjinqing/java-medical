@@ -1,6 +1,10 @@
 package com.vpu.mp.service.pojo.wxapp.distribution;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @Auther 常乐

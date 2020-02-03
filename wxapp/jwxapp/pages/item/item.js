@@ -74,28 +74,28 @@ const actBaseInfo = {
       prdLinePrice: 'prdPrice'
     }
   },
-  6:{
-    actName:'限时降价',
-    multiSkuAct:true,
-    prdListName:'reducePricePrdMpVos',
+  6: {
+    actName: '限时降价',
+    multiSkuAct: true,
+    prdListName: 'reducePricePrdMpVos',
     prdPriceName: {
       prdRealPrice: 'reducePrice',
       prdLinePrice: 'prdPrice'
     }
   },
-  97:{
-    actName:'会员价',
-    multiSkuAct:true,
-    prdListName:'gradePrdMpVos',
+  22: {
+    actName: '会员价',
+    multiSkuAct: true,
+    prdListName: 'gradePrdMpVos',
     prdPriceName: {
       prdRealPrice: 'gradePrice',
       prdLinePrice: 'prdPrice'
     }
   },
-  98:{
-    actName:'会员价|限时降价',
-    multiSkuAct:true,
-    prdListName:'gradeReducePrdVos',
+  98: {
+    actName: '会员价|限时降价',
+    multiSkuAct: true,
+    prdListName: 'gradeReducePrdVos',
     prdPriceName: {
       prdRealPrice: 'activityPrice',
       prdLinePrice: 'prdPrice'
@@ -131,6 +131,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    console.log(options, "++++++++++++++++++++++++")
     if (!options.goodsId) return;
     let {
       goodsId,
@@ -202,9 +203,9 @@ global.wxPage({
               }
             })
             // 限时降价状态栏
-            if (res.content.activity && res.content.activity.activityType === 6) { 
+            if (res.content.activity && [6, 98].includes(res.content.activity.activityType)) {
               this.setData({
-                  reduceActBarPrice:this.getActBarPrice(products,activity,'prdRealPrice'),
+                reduceActBarPrice: this.getActBarPrice(products, activity, 'prdRealPrice'),
               })
             }
             this.getPromotions(res.content)
@@ -274,6 +275,7 @@ global.wxPage({
       showSpec: true,
       triggerButton: trigger.detail
     })
+    
   },
   // 关闭item页规格弹窗
   bindCloseSpec () {
@@ -470,15 +472,15 @@ global.wxPage({
     let { products, activity } = data
     if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
       products = activity[actBaseInfo[activity.activityType]['prdListName']]
-      if(activity.activityType === 6 && activity.actState != 0){
-      products = data.products
+      if (activity.activityType === 6 && activity.actState != 0) {
+        products = data.products
       }
     }
     let { realPrice, linePrice } = products.reduce((defaultData, val) => {
       if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
         var { [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice, [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice } = val
-        if(activity.activityType === 6 && activity.actState != 0){
-        var { prdRealPrice, prdLinePrice } = val
+        if (activity.activityType === 6 && activity.actState != 0) {
+          var { prdRealPrice, prdLinePrice } = val
         }
       } else {
         var { prdRealPrice, prdLinePrice } = val
@@ -488,12 +490,12 @@ global.wxPage({
       return defaultData
     }, { realPrice: [], linePrice: [] })
     let realMinPrice = this.getMin(realPrice),
-        realMaxPrice = this.getMax(realPrice),
-        lineMinPrice = this.getMin(linePrice),
-        lineMaxPrice = this.getMax(linePrice)
-    return { 
-      prdRealPrice: data.defaultPrd ? realPrice[0] : realMinPrice === realMaxPrice ?  realMinPrice : `${realMinPrice}~${realMaxPrice}`,
-      prdLinePrice: data.defaultPrd ? linePrice[0] : lineMinPrice === lineMaxPrice ?  lineMinPrice : `${lineMinPrice}~${lineMaxPrice}`,
+      realMaxPrice = this.getMax(realPrice),
+      lineMinPrice = this.getMin(linePrice),
+      lineMaxPrice = this.getMax(linePrice)
+    return {
+      prdRealPrice: data.defaultPrd ? realPrice[0] : realMinPrice === realMaxPrice ? realMinPrice : `${realMinPrice}~${realMaxPrice}`,
+      prdLinePrice: data.defaultPrd ? linePrice[0] : lineMinPrice === lineMaxPrice ? lineMinPrice : `${lineMinPrice}~${lineMaxPrice}`,
       singleRealPrice: lineMinPrice,
       singleLinePrice: lineMaxPrice
     }
@@ -511,13 +513,75 @@ global.wxPage({
     })
   },
   getPromotionInfo (promotionType, info) {
+    let data = { id: info.promotionId }
     switch (promotionType) {
+      case '7':
+        if (Array.isArray(info.purchasePriceRules) && info.purchasePriceRules.length > 0) {
+          data.desc = ''
+          info.purchasePriceRules.forEach((item, index) => {
+            if (index > 0) {
+              data.desc += '，或'
+            }
+            data.desc += `满${item.fullPrice}元另加${item.purchasePrice}元`
+            if (index === info.purchasePriceRules.length - 1) {
+              data.desc += `即可换购商品`
+            }
+          })
+        }
+        return data
+      case '15':
+        if (info.conType === 0) {
+          data.desc = `满${info.money}元，`
+        }
+        if (info.conType === 1) {
+          data.desc = `满${info.num}件，`
+        }
+        if (info.conType === 2) {
+          data.desc = `满${info.money}元或${info.num}件，`
+        }
+        data.desc += `部分地区包邮`
+        return data
       case '18':
         if (info.isLimit) {
-          return { desc: `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`, id: info.promotionId }
+          data.desc = `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`
         } else {
-          return { desc: `新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`, id: info.promotionId }
+          data.desc = `新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`
         }
+        return data
+      case '19':
+        if (info.goodsAreaType === 1) {
+          data.desc = `购买“指定商品”`
+        } else {
+          data.desc = `购买“全部商品”`
+        }
+        if (info.minPayMoney > 0) {
+          data.desc += `且“订单金额满${info.minPayMoney}元”`
+        }
+        data.desc += `可获得活动奖励`
+        return data
+      case '21':
+        data.isExclusive = info.isExclusive
+        if (info.type === 1) {
+          if (info.amount > 0) {
+            data.desc = `每满${info.amount}件`
+          } else {
+            data.desc = `每满${info.fullMoney}元`
+          }
+        } else if (info.type === 2 || info.type === 3) {
+          if (info.amount > 0) {
+            data.desc = `满${info.amount}件`
+          } else {
+            data.desc = `满${info.fullMoney}元`
+          }
+        } else if (info.type === 4) {
+          data.desc = `第${info.amount}件`
+        }
+        if (info.type === 1 || info.type === 2) {
+          data.desc += `，减${info.reduceMoney}元`
+        } else (
+          data.desc += `，打${info.discount}折`
+        )
+        return data
     }
   },
   /**

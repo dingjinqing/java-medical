@@ -109,6 +109,7 @@ public class SeckillService extends ShopBaseService{
         PageResult<SeckillPageListQueryVo> res = getPageData(param);
         for(SeckillPageListQueryVo vo : res.dataList){
             vo.setSecPrice(getMinProductSecPrice(vo.getSkId()));
+            vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
         }
         return res;
     }
@@ -147,7 +148,7 @@ public class SeckillService extends ShopBaseService{
      *
      */
     private BigDecimal getMinProductSecPrice(int skId){
-        return db().select(DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchOne().into(BigDecimal.class);
+        return db().select(DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchOneInto(BigDecimal.class);
     }
 
     /**
@@ -216,7 +217,7 @@ public class SeckillService extends ShopBaseService{
     public SeckillVo getSeckillById(Integer skId){
         SecKillDefineRecord record = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,
             SEC_KILL_DEFINE.LIMIT_AMOUNT,SEC_KILL_DEFINE.LIMIT_PAYTIME,SEC_KILL_DEFINE.FREE_FREIGHT,SEC_KILL_DEFINE.CARD_ID,SEC_KILL_DEFINE.SHARE_CONFIG).
-            from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne().into(SecKillDefineRecord.class);
+            from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOneInto(SecKillDefineRecord.class);
         SeckillVo res = record.into(SeckillVo.class);
 
         GoodsView goods = saas().getShopApp(getShopId()).goods.getGoodsView(record.getGoodsId());
@@ -468,8 +469,8 @@ public class SeckillService extends ShopBaseService{
      * @return
      */
     private boolean checkSeckillProductStock(int skId,int productId){
-        int seckillStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))).fetchOne().into(Integer.class);
-        int prdNumber = db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOne().into(Integer.class);
+        int seckillStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))).fetchOneInto(Integer.class);
+        int prdNumber = db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOneInto(Integer.class);
         return seckillStock > 0 && prdNumber > 0;
     }
 
@@ -482,7 +483,7 @@ public class SeckillService extends ShopBaseService{
      *          7该秒杀为会员专属，该用户没有对应会员卡；8该规格无库存；9有待支付的秒杀订单
      */
     public Byte canApplySecKill(Integer skId,Integer productId,Integer userId) {
-        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne().into(SecKillDefineRecord.class);
+        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOneInto(SecKillDefineRecord.class);
         int goodsNumber = saas.getShopApp(getShopId()).goods.getGoodsView(secKill.getGoodsId()).getGoodsNumber();
         byte res = this.canApplySecKill(secKill,goodsNumber,userId);
         if(res == 0){

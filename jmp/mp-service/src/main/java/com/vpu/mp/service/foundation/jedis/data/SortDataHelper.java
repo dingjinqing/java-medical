@@ -2,6 +2,7 @@ package com.vpu.mp.service.foundation.jedis.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -96,21 +99,50 @@ public class SortDataHelper extends ShopBaseService implements DataHelperInterfa
     }
 
 
+    private Map<Short,List<GoodsSortCacheInfo>> getGoodsSortMapGroupByLevel(List<GoodsSortCacheInfo> list){
+        return list.stream().collect(Collectors.groupingBy(GoodsSortCacheInfo::getLevel));
+    }
+
+    /**
+     * 根据第一次查询的结果，二次查询一级分类
+     * @param sortLevelMap 第一次查询的结果
+     * @return 一级分类信息
+     */
+    private List<GoodsSortCacheInfo> getParentSortInfoByGoodsSortLevelMap(Map<Short,List<GoodsSortCacheInfo>> sortLevelMap){
+        Set<Integer> parentIds = Sets.newHashSet();
+        if( sortLevelMap.containsKey(GoodsConstant.ROOT_LEVEL) ){
+            parentIds.addAll(getSortIds(sortLevelMap.get(GoodsConstant.ROOT_LEVEL)));
+        }
+        if( sortLevelMap.containsKey(GoodsConstant.SECOND_LEVEL) ){
+            parentIds.addAll(getParentIds(sortLevelMap.get(GoodsConstant.SECOND_LEVEL)));
+        }
+        return get(Lists.newArrayList(parentIds));
+    }
+    private List<Integer> getSortIds(List<GoodsSortCacheInfo> sorts){
+        return sorts.stream().map(GoodsSortCacheInfo::getSortId).collect(Collectors.toList());
+    }
+    private List<Integer> getParentIds(List<GoodsSortCacheInfo> childSorts){
+        return childSorts.stream().map(GoodsSortCacheInfo::getParentId).collect(Collectors.toList());
+    }
+
     public Map<Short,List<GoodsSortCacheInfo>> getAndGroup(List<Integer> ids){
         Map<Short,List<GoodsSortCacheInfo>> results = Maps.newHashMap();
         List<GoodsSortCacheInfo> infos = get(ids);
         if( infos.isEmpty() ){
             return results;
         }
-        Map<Short,List<GoodsSortCacheInfo>> levelMap =
-            infos.stream().collect(Collectors.groupingBy(GoodsSortCacheInfo::getLevel));
+        Map<Short,List<GoodsSortCacheInfo>> levelMap = getGoodsSortMapGroupByLevel(infos);
         results.put(GoodsConstant.SECOND_LEVEL,levelMap.get(GoodsConstant.SECOND_LEVEL));
-        List<Integer> parentIds = levelMap.get(GoodsConstant.ROOT_LEVEL).stream().
-            map(GoodsSortCacheInfo::getSortId).
-            collect(Collectors.toList());
-        List<GoodsSortCacheInfo> parentInfos = get(parentIds);
-        results.put(GoodsConstant.ROOT_LEVEL,parentInfos);
+        results.put(GoodsConstant.ROOT_LEVEL,getParentSortInfoByGoodsSortLevelMap(levelMap));
         return results;
+    }
+
+
+
+    public Map<Integer,GoodsSortCacheInfo> getAllSortByIds(List<Integer> sortIds){
+        List<GoodsSortCacheInfo> allSorts = Lists.newArrayList();
+        getAndGroup(sortIds).values().forEach(allSorts::addAll);
+        return allSorts.stream().collect(Collectors.toMap(GoodsSortCacheInfo::getSortId, Function.identity()));
     }
 
 }

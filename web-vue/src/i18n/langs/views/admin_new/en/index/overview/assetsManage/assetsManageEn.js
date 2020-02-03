@@ -20,6 +20,7 @@ export const en = {
   status: 'trading status',
   Reset: 'Reset',
   Export: 'Export',
+  sourceAnalysis: 'Overall source analysis',
 
   scoreOptions: [{
     value: '0',

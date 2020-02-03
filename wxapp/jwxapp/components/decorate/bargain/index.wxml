@@ -1,3 +1,4 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="bargain-container">
 	<view class='all_zero_bargain clearfix'>
 		<view
@@ -24,32 +25,32 @@
 			<view class='each_img' style="{{m.list_style==1?'width:260rpx;height:260rpx;margin-right:30rpx':''}}">
 				<image class="sell_out image" wx:if='{{item.bargain_num == 0}}' src="{{m.imageUrl}}image/wxapp/goods_sell_out.png" />
 				<image wx:if="{{item.isShowImg}}" class="image" src="{{item.goods_img}}" style="{{m.list_style?'width:260rpx;height:260rpx':''}}" />
-				<view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>商品已删除</view>
-				<view class='daojishi' wx:elif='{{item.goods_is_delete == 1 && item.is_on_sale == 0}}'>商品已下架</view>
-				<view class='daojishi' wx:elif='{{item.time_state == 2&&item.goods_is_delete==0&&item.act_del_flag == 0 || m.times_arr[item.act_id] == 0}}'>活动已结束</view>
-				<view class='daojishi' wx:elif='{{item.act_status == 0 && item.act_del_flag == 1 }}'>活动已停用</view>
-				<view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>活动已删除</view>
-				<view class='daojishi' wx:elif='{{m.goods_count_down==true &&item.time_state == 0&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0}}'>{{item.format_begin_time}} 开始</view>
+				<view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>{{i18n.$t(localePack,'components.decorate.goodsDeleted')}}</view>
+				<view class='daojishi' wx:elif='{{item.goods_is_delete == 1 && item.is_on_sale == 0}}'>{{i18n.$t(localePack,'components.decorate.offShelf')}}</view>
+				<view class='daojishi' wx:elif='{{item.time_state == 2&&item.goods_is_delete==0&&item.act_del_flag == 0 || m.times_arr[item.act_id] == 0}}'>{{i18n.$t(localePack,'components.decorate.activityEnded')}}</view>
+				<view class='daojishi' wx:elif='{{item.act_status == 0 && item.act_del_flag == 1 }}'>{{i18n.$t(localePack,'components.decorate.activityDeactivated')}}</view>
+				<view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>{{i18n.$t(localePack,'components.decorate.activityDeleted')}}</view>
+				<view class='daojishi' wx:elif='{{m.goods_count_down==true &&item.time_state == 0&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0}}'>{{item.format_begin_time}} {{i18n.$t(localePack,'components.decorate.start')}}</view>
 				<view class='daojishi' wx:elif='{{m.goods_count_down==true &&item.time_state == 1&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0&&item.act_status == 1&&item.is_on_sale == 1}}'>
-					距结束：{{m.times_arr[item.act_id]}}
+					{{i18n.$t(localePack,'components.decorate.endOfDistance')}}：{{m.times_arr[item.act_id]}}
 				</view>
 			</view>
 			<view style="{{m.list_style==1?'display:flex;flex-direction: column;justify-content: space-between;flex:1':''}}">
 				<view>
 					<view wx:if="{{m.list_style==1}}" class='goods_names' style="{{m.list_style==1?'margin:20rpx 0 0':''}}">{{item.goods_name}}</view>
-					<view class='more_unit' wx:if="{{m.list_style==1}}" style="color:#666;font-size:24rpx">仅剩{{item.bargain_num}}{{item.unit}}</view>
+					<view class='more_unit' wx:if="{{m.list_style==1}}" style="color:#666;font-size:24rpx">{{i18n.$t(localePack,'components.decorate.onlyLeft')}}{{item.bargain_num}}{{item.unit}}</view>
 				</view>
 				<view style="{{m.list_style==1?'width:100%;display:flex;justify-content:space-between;align-items:flex-end':''}}">
 					<view class='price_info' style="{{m.list_style==1?'padding-left:0;display:flex;flex-direction:column':''}}">
-						<text class='zero' style='color:{{comColor}}'>￥<text class="text">{{item.bargain_price}}</text>
+						<text class='zero' style='color:{{comColor}}'>￥<text class="text">{{item.bargain_price==null?'0.00':item.bargain_price}}</text>
 						</text>
-						<text class='original_price' wx:if="{{m.goods_price == true && item.max_price != null}}">￥{{item.max_price}}</text>
+						<text class='original_price' wx:if="{{m.goods_price == true && item.max_price != null}}">￥{{item.max_price?'0.00':item.max_price}}</text>
 					</view>
 					<view wx:if="{{m.list_style==0}}" class='goods_names'>{{item.goods_name}}</view>
 					<view class='number_info clearfix' style="{{m.list_style==1?'padding-left:0;display:flex;flex-direction:column;margin:0;margin-bottom:15rpx':''}}">
-						<view class='more_unit view' wx:if="{{m.list_style==0}}">仅剩{{item.bargain_num}}{{item.unit}}</view>
-						<view class='free_ntn view' wx:if="{{m.free_btn == true && item.act_del_flag != 1 && item.goods_is_delete != 1 && m.times_arr[item.act_id] != 0 && item.act_status && item.is_on_sale != 0 && !(item.time_state == 2&&item.act_del_flag == 1)}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去砍价</view>
-						<view class='orig_ntn view' wx:if="{{item.act_del_flag == 1 || item.goods_is_delete == 1 || m.times_arr[item.act_id] == 0 || item.act_status == 0 || item.is_on_sale == 0 || (m.goods_count_down==true &&item.time_state == 2&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 1)}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>原价购买</view>
+						<view class='more_unit view' wx:if="{{m.list_style==0}}">{{i18n.$t(localePack,'components.decorate.onlyLeft')}}{{item.bargain_num}}{{item.unit==null?'0.00':item.unit}}</view>
+						<view class='free_ntn view' wx:if="{{m.free_btn == true && item.act_del_flag != 1 && item.goods_is_delete != 1 && m.times_arr[item.act_id] != 0 && item.act_status && item.is_on_sale != 0 && !(item.time_state == 2&&item.act_del_flag == 1)}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,'components.decorate.toBargain')}}</view>
+						<view class='orig_ntn view' wx:if="{{item.act_del_flag == 1 || item.goods_is_delete == 1 || m.times_arr[item.act_id] == 0 || item.act_status == 0 || item.is_on_sale == 0 || (m.goods_count_down==true &&item.time_state == 2&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 1)}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,'components.decorate.originalPrice')}}</view>
 					</view>
 				</view>
 			</view>

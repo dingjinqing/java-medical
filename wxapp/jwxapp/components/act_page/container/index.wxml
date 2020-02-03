@@ -4,16 +4,9 @@
       <view>
       <icon size="13" type="search" role="img"></icon>
       </view>
-      <input placeholder="请输入搜索关键字"></input>
+      <input placeholder="请输入搜索关键字" bindconfirm="handleSearch"></input>
     </view>
   </view>
   <slot name="goods-content" />
-  <view class="footer">
-    <view class="selected-price">已选<text style="color:{{main_setting.comColor}};">￥0.00</text></view>
-    <view class="selected" style="background-color:{{main_setting.commonColor}}" bindtap="showSelected">查看已选商品</view>
-    <view class="cart" style="background-color:{{main_setting.comColor}}">去购物车</view>
-  </view>
+  <slot name="footer" />
 </view>
-
-
-<v-selected show="{{showSelectedDialog}}" />

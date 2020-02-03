@@ -1,0 +1,7 @@
+<view class="window-container" style='margin-bottom:{{m.margin_bot}}rpx;height:{{m.all_height}}rpx'>
+  <block wx:for="{{m.data}}" wx:key="index" wx:for-item="win_item">
+    <view class="view" bindtap="bindJumpLink" data-url="{{win_item.jump_link}}" data-idx='{{m.idx}}' style="width:{{win_item.width}};height:{{win_item.height}};top:{{win_item.top}};left:{{win_item.left}};">
+      <image class="image" src="{{win_item.img_url}}!big?1" lazy-load="{{true}}" mode='aspectFill'></image>
+    </view>
+  </block>
+</view>

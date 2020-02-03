@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 public class GoodsActivityInfo extends GoodsActivityBaseMp {
 
     /**
-     * 活动状态  0失效 1生效
+     * 活动状态  0失效 1生效 2可选
      */
     private Byte status = CartConstant.ACTIVITY_STATUS_VALID;
     /**

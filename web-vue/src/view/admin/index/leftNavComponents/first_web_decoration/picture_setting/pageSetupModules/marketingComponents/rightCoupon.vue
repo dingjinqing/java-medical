@@ -153,6 +153,8 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
+    this.backgroundColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
+    this.backgroundColorTransparent = this.backgroundColor.split(')')[0] + ',0.4)'
   },
   methods: {
     // 点击添加优惠券按钮
@@ -230,8 +232,7 @@ export default {
       //   useScore:'',   是否可以积分兑换
       //   scoreNumber:''  需要积分数
       // }
-      this.backgroundColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
-      this.backgroundColorTransparent = this.backgroundColor.split(')')[0] + ',0.4)'
+
       console.log(res)
       this.nowShowCouponList = res
     },

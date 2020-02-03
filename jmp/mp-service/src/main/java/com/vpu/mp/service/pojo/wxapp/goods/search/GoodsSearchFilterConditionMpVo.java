@@ -18,6 +18,9 @@ public class GoodsSearchFilterConditionMpVo {
     /**商家分类筛选条件*/
     private List<GoodsSearchSortMpVo> sorts;
 
+    /**商家分类筛选条件默认展示项*/
+    private List<GoodsSearchSortMpVo> showSorts;
+
     /**商家品牌筛选条件*/
     private List<GoodsBrandMpPinYinVo> goodsBrands;
 

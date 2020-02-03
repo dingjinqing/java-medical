@@ -3,7 +3,7 @@
   <image src='{{m.video_showpath}}' mode='aspectFit' class='video_img' wx:if="{{m.video_poster == 1}}"></image>
   <image src='{{m.custom_path}}' mode='aspectFit' class='video_img' wx:if="{{m.video_poster == 2}}"></image>
   <view class='btn_play'>
-    <image src='{{m.imageUrl}}image/wxapp/play_btn.png'></image>
+    <image class="image" src='{{m.imageUrl}}image/wxapp/play_btn.png'></image>
   </view>
 </view>
 

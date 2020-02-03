@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
@@ -15,9 +16,13 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
 import com.vpu.mp.service.shop.config.GiftConfigService;
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.gift.GiftService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.UserCardService;
@@ -25,18 +30,20 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Condition;
+import org.jooq.Record6;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.Gift.GIFT;
+import static com.vpu.mp.db.shop.tables.GiftProduct.GIFT_PRODUCT;
 
 /**
  * 赠品processor
@@ -59,6 +66,63 @@ public class GiftProcessorDao extends GiftService {
 
     @Autowired
     private UserCardService userCard;
+    @Autowired
+    private GoodsMpService goodsMpService;
+    @Autowired
+    private ImageService imageService;
+
+    /**
+     * 获取商品的赠品信息
+     * @param goodsId 商品ID
+     * @return 赠品信息
+     */
+    public List<GoodsGiftMpVo> getGoodsGiftInfoForDetail(Integer goodsId,Timestamp now){
+        // 查询赠品数量大于零的规格
+        Condition condition = GIFT.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(GIFT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(GIFT.START_TIME.le(now)).and(GIFT.END_TIME.ge(now)).and(GIFT_PRODUCT.PRODUCT_NUMBER.gt(0)).and(GIFT.GOODS_ID.isNull().or(DslPlus.findInSet(goodsId,GIFT.GOODS_ID)));
+
+        Result<Record6<Integer, String, String, Integer, Integer, Integer>> giftResults = db().
+            select(GIFT.ID, GIFT.RULE, GIFT.EXPLAIN, GIFT_PRODUCT.ID, GIFT_PRODUCT.PRODUCT_ID, GIFT_PRODUCT.PRODUCT_NUMBER)
+            .from(GIFT).innerJoin(GIFT_PRODUCT).on(GIFT.ID.eq(GIFT_PRODUCT.GIFT_ID))
+            .where(condition).orderBy(GIFT.LEVEL.desc(), GIFT.CREATE_TIME.desc()).fetch();
+
+        if (giftResults == null || giftResults.size() == 0) {
+            return null;
+        }
+
+        // 获取对应有效规格的信息
+        List<Integer> giftPrdIds = giftResults.stream().map(item -> item.get(GIFT_PRODUCT.PRODUCT_ID)).collect(Collectors.toList());
+        List<GoodsGiftPrdMpVo> prdInfos = goodsMpService.getGoodsDetailGiftPrdsInfoDao(giftPrdIds);
+        Map<Integer, GoodsGiftPrdMpVo> prdInfoMap = prdInfos.stream().collect(Collectors.toMap(GoodsGiftPrdMpVo::getProductId, Function.identity()));
+
+        Map<Integer,GoodsGiftMpVo> returnMap = new HashMap<>(prdInfoMap.size());
+
+        for (Record6<Integer, String, String, Integer, Integer, Integer> giftResult : giftResults) {
+
+            GoodsGiftPrdMpVo goodsGiftPrdMpVo = prdInfoMap.get(giftResult.get(GIFT_PRODUCT.PRODUCT_ID));
+            // 对应的商品规格信息已不存在
+            if (goodsGiftPrdMpVo == null) {
+                continue;
+            }
+            goodsGiftPrdMpVo.setId(giftResult.get(GIFT_PRODUCT.ID));
+
+            GoodsGiftMpVo goodsGiftMpVo = returnMap.get(giftResult.get(GIFT.ID));
+            if (goodsGiftMpVo == null) {
+                goodsGiftMpVo =new GoodsGiftMpVo();
+                goodsGiftMpVo.setId(giftResult.get(GIFT.ID));
+                goodsGiftMpVo.setExplain(giftResult.get(GIFT.EXPLAIN));
+                String rule = giftResult.get(GIFT.RULE);
+                goodsGiftMpVo.setIsFullPrice(rule!=null&&(rule.contains("full_price") || rule.contains("full_number")));
+                goodsGiftMpVo.setGoodsGiftPrdMpVos(new ArrayList<>());
+                returnMap.put(giftResult.get(GIFT.ID),goodsGiftMpVo);
+            }
+            goodsGiftPrdMpVo.setPrdImg(imageService.getImgFullUrl(goodsGiftPrdMpVo.getPrdImg()));
+            goodsGiftMpVo.getGoodsGiftPrdMpVos().add(goodsGiftPrdMpVo);
+        }
+
+        return new ArrayList<>(returnMap.values());
+    }
+
 
     /**
      * 下单获取赠品
@@ -70,7 +134,7 @@ public class GiftProcessorDao extends GiftService {
         //googsBo转map,聚合相同规格(k->prdId;v->数量)
         Map<Integer, Integer> goodsMapCount = goodsBo.stream().collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber, (ov, nv) -> ov + nv));
         //商品未参与赠品记录
-        Set<Integer> noJoinRecord = goodsMapCount.keySet();
+        Set<Integer> noJoinRecord = goodsBo.stream().map(OrderGoodsBo::getGoodsId).collect(Collectors.toSet());
         //0：赠送满足赠品条件的所有赠品;1：只赠送其中优先级最高的活动赠品
         Byte cfg = giftConfig.getCfg();
         //所有进行中的活动
@@ -251,5 +315,35 @@ public class GiftProcessorDao extends GiftService {
             }
         }
         db().batchUpdate(result).execute();
+    }
+
+    /**
+     * 支付接口校验赠品
+     * @param giftId 赠品活动id
+     * @param productId 赠品规格id
+     * @param number 商品数量
+     */
+    public boolean toPayCheck(Integer giftId, Integer productId, Integer number){
+        GiftVo info = getGiftDetail(giftId);
+        if(info == null || info.getEndTime().before(DateUtil.getSqlTimestamp()) || BaseConstant.ACTIVITY_STATUS_DISABLE.equals(info.getStatus()) || !checkStock(info, productId, number)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 赠品校验库存
+     * @param info
+     * @param productId
+     * @param number
+     * @return
+     */
+    private boolean checkStock(GiftVo info, Integer productId,  Integer number){
+        for (ProductVo productVo : info.getGifts()) {
+            if(productVo.getProductId().equals(productId) && productVo.getProductNumber() >= number){
+                return true;
+            }
+        }
+        return false;
     }
 }

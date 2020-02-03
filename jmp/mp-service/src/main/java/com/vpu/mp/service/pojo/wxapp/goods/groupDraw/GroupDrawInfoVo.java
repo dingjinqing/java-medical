@@ -35,4 +35,5 @@ public class GroupDrawInfoVo {
 	private Timestamp delTime;
 	private String rewardCouponId;
 	private Integer rewardNum;
+	private Long surplusSecond;
 }

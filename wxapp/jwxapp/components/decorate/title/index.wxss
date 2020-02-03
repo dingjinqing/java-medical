@@ -12,7 +12,7 @@
   height: 80rpx;
   line-height: 80rpx;
 }
-.more-title text{
+.more-title .text{
   margin-right: 6rpx;
 }
 .more-title{
@@ -25,16 +25,16 @@ height:80rpx;
 line-height:82rpx;
 
 }
-.more-title image{
+.more-title .image{
   width: 15rpx;
   height: 22rpx;
 }
-.main-titles image{
+.main-titles .image{
   width: 60rpx;
   height: 60rpx;
   vertical-align: middle;
 }
-.main-titles text{
+.main-titles .text{
   margin-left: 10rpx;
   font-size: 28rpx;
 }
@@ -57,6 +57,6 @@ line-height:82rpx;
   color:#607fa6;
   font-size: 24rpx;
 }
-.new_content text{
+.new_content .time,.author,.link_t{
   margin-right: 20rpx;
 }
