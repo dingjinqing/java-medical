@@ -1,5 +1,32 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="flex_outside_box">
+  <view class="flex_box" wx:if="{{goodsGifts.length > 0}}">
+    <view class="item_left align-top">赠品</view>
+    <view class="item_middle" wx:if="{{goodsGifts.length === 1}}">
+      <view class="promotion-item" data-id="{{goodsGifts[0].id}}" bindtap="showGift">
+        <view class="promotion-desc gift-desc">
+          <text>{{goodsGifts[0].explain}}</text>
+          <view class="gift-goods-list">
+            <block wx:for="{{goodsGifts[0].goodsGiftPrdMpVos}}" wx:key="id" wx:for-item="imageItem">
+              <view class="gift-gift-item">
+                  <image src="{{imageItem.prdImg}}"></image>
+              </view>
+            </block>
+          </view>
+        </view>
+        <view class="item_right" style="align-self: flex-start;">></view>
+      </view>
+    </view>
+    <view class="item_middle" wx:else>
+      <block wx:for="{{goodsGifts}}" wx:key="id" wx:for-item="giftItem">
+        <view class="promotion-item" data-id="{{giftItem.id}}" bindtap="showGift">
+          <view class="promotion-desc">{{giftItem.explain}}</view>
+          <view class="item_right">></view>
+        </view>
+      </block>
+    </view>
+  </view>
+  <view class="item_line" wx:if="{{goodsGifts.length > 0}}"></view>
   <view class="flex_box" bindtap="showCouponDialog" wx:if="{{couponList && couponList.length>0}}">
     <view class="item_left">优惠券</view>
     <view class="item_middle goods_coupon_list">
@@ -25,3 +52,4 @@
 <!-- 优惠券选择弹窗 -->
 <v-popup-coupon show="{{show_recommend_coupons}}" coupon_list="{{couponList}}" />
 <v-popup-promotion show="{{showPromotionDialog}}" promotion="{{promotion}}"/>
+<v-popup-gifts show="{{showGiftsDialog}}" giftsInfo="{{giftInfo}}"/>
