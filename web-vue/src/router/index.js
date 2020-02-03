@@ -42,6 +42,11 @@ const baseRoutes = [{
   path: '/wxapp/group/help', // 小程序内跳转拼团规则
   name: 'groupbuy',
   component: () => import('@/view/admin/layout/groupbuy')
+},
+{
+  path: '/wxapp/bargain/help', // 小程序内跳转砍价规则
+  name: 'bargainRules',
+  component: () => import('@/view/admin/layout/bargainRules')
 }
 ]
 const routes = baseRoutes.concat(

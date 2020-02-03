@@ -481,7 +481,7 @@ public class BargainRecordService extends ShopBaseService {
                         }
                     }
                 }else {
-                    if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y) || recordInfo.getStatus().equals(STATUS_IN_PROCESS)){
+                    if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y) || recordInfo.getStatus().equals(STATUS_SUCCESS)){
                         return 9;
                     }
                 }

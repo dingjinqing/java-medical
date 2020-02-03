@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
@@ -590,11 +591,23 @@ public class AdminDistributionController extends AdminBaseController{
                 String industryInfo = MemberIndustryEnum.getNameByCode(list.getCheckField().getIndustryInfo(),getLang());
                 list.getCheckField().setIndustryName(industryInfo);
             }
+            //教育程度
             if(list.getCheckField().getEducation() != null){
-                //教育程度
                 String education = MemberEducationEnum.getNameByCode(list.getCheckField().getEducation(),getLang());
                 list.getCheckField().setEducationName(education);
             }
+            //性别
+            if(list.getCheckField().getSex().equalsIgnoreCase("f")){
+                list.getCheckField().setSex("女");
+            }else if(list.getCheckField().getSex().equalsIgnoreCase("m")){
+                list.getCheckField().setSex("男");
+            }
+            //婚姻状况
+            if(list.getCheckField().getMaritalStatus() != null){
+                String maritalInfo = MemberMarriageEnum.getNameByCode(list.getCheckField().getMaritalStatus(),getLang());
+                list.getCheckField().setMaritalName(maritalInfo);
+            }
+
         }
         return this.success(distributorCheckList);
     }
