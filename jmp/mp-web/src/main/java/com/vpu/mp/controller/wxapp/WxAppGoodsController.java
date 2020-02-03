@@ -55,8 +55,9 @@ public class WxAppGoodsController extends WxAppBaseController {
 
     @PostMapping("/api/wxapp/goods/share/info")
     public JsonResult getShareImage(@RequestBody GoodsShareBaseParam param) {
-        Integer userId = wxAppAuth.user().getUserId();
-        param.setUserId(userId);
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserName(user.getUsername());
+        param.setUserId(user.getUserId());
         return success(shop().pictorialIntegrationService.getNormalGoodsShareInfo(param));
     }
 
