@@ -42,6 +42,12 @@ global.wxComponent({
       }
       initData.navlen = initData.sort_group_arr.length;
       initData.group_nav_index = 0;
+      if (initData.goodsListData.length > 6) {
+        initData.more_flag = 1
+      } else {
+        initData.more_flag = 0
+      }
+
       // 处理label标签、从商品分组引入特殊处理
       this.handleToLabel(initData.goodsListData)
       // 处理活动
@@ -59,7 +65,7 @@ global.wxComponent({
       var m = this.data.m;
       console.log(m)
       if (d.click == 1) {
-        util.jumpLink('/pages/searchs/search?cur_idx=' + m.idx + '&group_idx=' + m.group_nav_index + '&page_id=' + m.page_id);
+        util.jumpLink('/pages/newsearch/newsearch?cur_idx=' + m.idx + '&group_idx=' + m.group_nav_index + '&page_id=' + m.page_id);
       } else {
         m.group_nav_index = d.index;
         m.page_num = 1;
@@ -91,6 +97,11 @@ global.wxComponent({
             _this.handleToGoodsActivities(data)
             m.goodsListData = data;
             m.more_flag = data.more_flag;
+            if (m.goodsListData.length > 6) {
+              m.more_flag = 1
+            } else {
+              m.more_flag = 0
+            }
             _this.$set();
           }
         }, {

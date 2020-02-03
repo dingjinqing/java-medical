@@ -107,7 +107,7 @@ var base = {
         case 10:
           obj.text = this.$t("components.decorate.advanceSale")
           break
-        case 19:
+        case 20:
           if (itemC.actCode === 'voucher') {
             if (itemC.useConsumeRestrict === 1) {
               obj.text = `${this.$t("components.decorate.full")}${itemC.leastConsume}${this.$t("components.decorate.reduce")}￥${itemC.denomination}`
@@ -122,11 +122,14 @@ var base = {
             }
           }
           break
-        case 20:
+        case 21:
           obj.text = this.$t("components.decorate.fullReduction")
           break
-        case 21:
+        case 22:
           obj.text = this.$t("components.decorate.fullMemberDiscount")
+          break
+        case 23:
+          obj.text = this.$t("components.decorate.membershipExclusive")
           break
       }
       if ((itemC.activityType != 22) || (itemC.activityType != 18)) {

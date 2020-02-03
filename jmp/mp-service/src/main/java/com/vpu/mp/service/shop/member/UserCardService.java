@@ -236,7 +236,11 @@ public class UserCardService extends ShopBaseService {
 		scoreParam.setUserId(userId);
 		scoreParam.setScore(card.getSorce());
 		scoreParam.setDesc("score_open_card");
-		scoreParam.setRemarkCode(RemarkTemplate.CARD_UPGRADE.code);
+		if(CardUtil.isGradeCard(card.getCardType())) {
+			scoreParam.setRemarkCode(RemarkTemplate.CARD_UPGRADE.code);
+		}else {
+			scoreParam.setRemarkCode(RemarkTemplate.OPEN_CARD_SEND.code);
+		}
 		scoreParam.setExpiredTime(scoreService.getScoreExpireTime());
 		
 		try {
@@ -247,12 +251,8 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * 会员卡升级检测并升级
-=======
 	 * 	会员卡升级检测并升级
 	 * 
->>>>>>> 95c830863... 限次卡，等级卡领取，送积分
 	 * @param type 是否领取 1领取 0只是检测
 	 * @return cardId（当type为0时为检测可升级的卡id,type为1时为领取后的卡id),0为没有可升级的卡
 	 */
@@ -416,13 +416,8 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * 添加会员卡
-	 *
-=======
 	 * 	添加会员卡
 	 * 
->>>>>>> 519ef0a0d... 限次卡，等级卡发卡代码优化
 	 * @return
 	 */
 	public List<String> addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate)
@@ -676,11 +671,11 @@ public class UserCardService extends ShopBaseService {
 		if (CardUtil.isLimitCard(data.getType())) {
 			// 限次卡
 			if (NumberUtils.BYTE_ONE.equals(type)) {
-				if (adminUser != null && (userInfo.getExchangCount() - data.getCountDis()) != 0) {
+				if (adminUser != null && (userInfo.getExchangSurplus() - data.getCountDis()) != 0) {
 					return -1;
 				}
 			} else {
-				if (adminUser != null && (userInfo.getCount() - data.getCountDis()) != 0) {
+				if (adminUser != null && (userInfo.getSurplus() - data.getCountDis()) != 0) {
 					return -1;
 				}
 			}
@@ -1494,7 +1489,6 @@ public class UserCardService extends ShopBaseService {
 		//	第一次领取
 		boolean firstGet = true;
 		if (param.getCardId() != null) {
-
 			MemberCardRecord mCard = memberCardService.getCardById(param.getCardId());
 			if(mCard == null) {
 				return null;

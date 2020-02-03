@@ -102,11 +102,11 @@ public class PreSaleParam {
     private Integer buyNumber;
     /** 分享样式 **/
     @NotNull
-    private Byte shareType;
+    private Byte shareAction;
     /** 分享文案 **/
-    private String shareText;
+    private String shareDoc;
     /** 分享图来源 **/
-    private Byte shareImgType;
+    private Byte shareImgAction;
     /** 自定义图片 **/
     private String shareImg;
     /** 活动商品 **/

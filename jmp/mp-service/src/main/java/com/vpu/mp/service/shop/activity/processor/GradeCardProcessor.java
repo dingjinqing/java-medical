@@ -4,7 +4,6 @@ import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -86,12 +85,12 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
             }
             Record3<Integer, Integer, BigDecimal> record3 = goodsGradeInfos.get(goodsId).get(0);
 
-            // 已被限时降价处理
-            if (capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY)) {
+            // 已被限时降价处理（被限时降价处理则不可能是会员专享）
+            if (capsule.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)) {
                 // 会员价比限时降价价格低则将限时降价的处理信息删除
                 if (record3.get(GRADE_PRD.GRADE_PRICE).compareTo(capsule.getRealPrice()) < 0) {
-                    capsule.getProcessedTypes().remove(GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY);
-                    List<GoodsActivityBaseMp> activities = capsule.getGoodsActivities().stream().filter(x -> !GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY.equals(x.getActivityType())).collect(Collectors.toList());
+                    capsule.getProcessedTypes().remove(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                    List<GoodsActivityBaseMp> activities = capsule.getGoodsActivities().stream().filter(x -> !BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(x.getActivityType())).collect(Collectors.toList());
                     capsule.setGoodsActivities(activities);
                 } else {// 没有限时降价的价格低,则按照直接返回不加入会员价信息
                     return;
@@ -162,7 +161,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
         if (capsule.getActivity() == null) {
             GradeCardMpVo vo = new GradeCardMpVo();
             vo.setActState(BaseConstant.ACTIVITY_STATUS_CAN_USE);
-            vo.setActivityType(BaseConstant.ACTIVITY_TYPE_GRADE_PRICE);
+            vo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
             vo.setGradePrdMpVos(gradePrdMpVos);
             capsule.setActivity(vo);
         } else {

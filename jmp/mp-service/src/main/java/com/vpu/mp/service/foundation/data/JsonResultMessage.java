@@ -801,7 +801,9 @@ public class JsonResultMessage {
     public static final String WX_MA_DOT = "wx.ma.dot";
     /** 元 */
     public static final String WX_MA_PICTORIAL_MONEY = "wx.ma.pictorial.money";
-    /**普通商品*/
+    /**普通商品分享时默认海报分享语*/
+    public static final String WX_MA_NORMAL_GOODS_SHARE_INFO = "wx.ma.normal.goods.share.info";
+    /**普通商品海报下载时默认宣传语*/
     public static final String WX_MA_NORMAL_GOODS_INFO = "wx.ma.normal.goods.info";
     /** 拼团相关 */
     /** 开团省 */
