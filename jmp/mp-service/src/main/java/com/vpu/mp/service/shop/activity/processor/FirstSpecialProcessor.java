@@ -228,6 +228,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
         boolean isNewUser = orderInfoService.isNewUser(productBo.getUserId());
         if (isNewUser) {
             List<Integer> productIds = productBo.getAll().stream().map(OrderCartProductBo.OrderCartProduct::getProductId).collect(Collectors.toList());
+            log.info("debug,{}",productBo);
             List<FirstSpecialProductBo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(productIds, productBo.getDate()).into(FirstSpecialProductBo.class);
             if (specialPrdIdList != null && specialPrdIdList.size() > 0) {
                 log.debug("新用户触发首单特惠活动FirstSpecialProductBo:" + Util.toJson(specialPrdIdList));
@@ -289,6 +290,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
 
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        log.info("debug,{}",param);
         doOrderOperation(param.getOrderCartProductBo());
     }
 
