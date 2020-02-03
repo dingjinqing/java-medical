@@ -58,5 +58,8 @@ module.exports = {
     notStart: '该活动未开始',
     insufficientInventory: '商品库存不足',
     operationFailed: '操作失败',
-    start: '开始'
+    start: '开始',
+    snapUp: '去抢购',
+    sold: '已售',
+    endOfDistance: '距结束'
 }
