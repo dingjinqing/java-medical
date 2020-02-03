@@ -7,7 +7,7 @@ global.wxComponent({
     onPropChange (newVal, oldVal, changedPath) {
 
       // 根据背景类型来判断是采用背景颜色还是背景图片
-      console.log(newVal, 'cardData')
+      console.log(newVal, 'cardData11111111111111111111111')
       // 处理背景
       if (newVal.bg_type == 0) {
         newVal.bg = newVal.bg_color = newVal.bg_color || '#e6cb96';
@@ -16,6 +16,7 @@ global.wxComponent({
         newVal.bg = 'url(' + newVal.bgImg + ')';
       }
       console.log(newVal)
+      newVal.status = -1
       // shop_img、activation字段在第二个接口
     },
     bindGetCard (e) {
