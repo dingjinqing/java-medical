@@ -24,7 +24,7 @@ public class OrderCartProductBo {
     /**
      * 下单时间
      */
-    private   Timestamp date;
+    private Timestamp date;
     /**
      * 用户id
      */
