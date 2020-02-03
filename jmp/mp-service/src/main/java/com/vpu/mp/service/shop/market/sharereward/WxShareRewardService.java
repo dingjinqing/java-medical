@@ -4,25 +4,30 @@ import com.vpu.mp.db.shop.tables.AttendShareUser;
 import com.vpu.mp.db.shop.tables.ShareAward;
 import com.vpu.mp.db.shop.tables.ShareAwardReceive;
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
-import com.vpu.mp.db.shop.tables.records.AttendShareUserRecord;
-import com.vpu.mp.db.shop.tables.records.ShareAwardReceiveRecord;
-import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
-import com.vpu.mp.db.shop.tables.records.ShareRecordRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.market.sharereward.GoodsShareDetail;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardInfoVo;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRule;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.market.enterpolitely.ExtBo;
 import com.vpu.mp.service.pojo.wxapp.market.sharereward.ShareParam;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.market.award.Award;
 import com.vpu.mp.service.shop.market.award.AwardFactory;
 import com.vpu.mp.service.shop.market.award.AwardParam;
 import com.vpu.mp.service.shop.market.award.SendAwardImpl;
+import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -74,6 +79,14 @@ public class WxShareRewardService extends ShopBaseService {
     private ShareRewardService shareReward;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CouponService couponService;
+
+    /**
+     * The Mp schedule task service.
+     */
+    @Autowired
+    private MaMpScheduleTaskService mpScheduleTaskService;
 
     /**
      * Add share record.添加分享记录，同时参与分享有礼活动，两张表b2c_share_record和b2c_share_award_record
@@ -299,7 +312,8 @@ public class WxShareRewardService extends ShopBaseService {
                                 addShareReceive(userId, activityId, goodsId, level);
                                 log.info("{} 级分享有礼活动规则下的奖品发放完成！", level);
                             });
-                            // todo 发送消息模板通知用户奖品已发放
+                            // 发送消息模板通知用户奖品已发放
+                            sendWinningNotice(userId, rule, info.getName());
                             log.info("发送消息模板通知用户奖品已发放");
                         } catch (Exception e) {
                             log.info("分享有礼发送奖品异常，更新对应等级的奖品为未领取状态！当前活动规则信息：{}！报错信息：{}", Util.toJson(rule), ExceptionUtils.getStackTrace(e));
@@ -446,6 +460,84 @@ public class WxShareRewardService extends ShopBaseService {
                 return AWARD.THIRD_AWARD_NUM;
             default:
                 throw new IllegalStateException("Unexpected value: " + ruleLevel);
+        }
+    }
+
+    /**
+     * 发送分享有礼奖品发放成功消息通知
+     */
+    private void sendWinningNotice(int userId, ShareRule rule, String activityName) {
+        UserRecord userInfo = userService.getUserByUserId(userId);
+        String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
+        if (officeAppId == null) {
+            logger().info("店铺" + getShopId() + "没有关注公众号");
+            return;
+        }
+        List<Integer> userIdList = new ArrayList<>();
+        UserRecord wxUserInfo = mpScheduleTaskService.checkMp(userInfo.getWxUnionId(), officeAppId);
+        if (null == wxUserInfo) {
+            log.info("用户{}未关注公众号{}，不发送公众号模板消息给用户", userId, officeAppId);
+            return;
+        }
+        userIdList.add(wxUserInfo.getUserId());
+        String page = getTemplatePage(rule.getRewardType(), rule.getLottery());
+        String award = "恭喜分享任务成功，" + getTemplateAward(rule);
+        String time = LocalDateTime.now().toString();
+        //TODO 内容待定
+        String first = "恭喜分享任务成功，点击查看活动奖励!";
+        String remake = "恭喜分享任务成功，点击查看活动奖励!";
+        String[][] data = new String[][]{{first, "#173177"}
+            , {activityName, "#173177"}
+            , {award, "#173177"}
+            , {time, "#173177"}
+            , {remake, "#173177"}};
+        RabbitMessageParam param = RabbitMessageParam.builder()
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.WINNING_RESULT).data(data).build())
+            .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+            .build();
+        logger().info("发送分享有礼奖品发放成功模板消息");
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+    }
+
+    private String getTemplatePage(Byte rewardType, Integer lotteryId) {
+        switch (rewardType) {
+            case 1:
+                return "pages/integral/integral";
+            case 2:
+                return "pages/couponlist/couponlist";
+            case 3:
+                return "pages/lottery/lottery?lottery_id=" + lotteryId;
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    private String getTemplateAward(ShareRule rule) {
+        switch (rule.getRewardType()) {
+            case 1:
+                return "获得" + rule.getScore() + "积分";
+            case 2:
+                String temp;
+                CouponView view = couponService.getCouponViewById(rule.getCoupon());
+                switch (view.getActCode()) {
+                    case "random":
+                        // 分裂优惠卷
+                        temp = "最高" + view.getRandomMax() + "元优惠券";
+                        break;
+                    case "voucher":
+                        temp = view.getDenomination() + "元优惠券";
+                        break;
+                    case "discount":
+                        temp = view.getDenomination() + "折优惠券";
+                        break;
+                    default:
+                        temp = "优惠券";
+                }
+                return "获得" + temp;
+            case 3:
+                return "点击进行抽奖";
+            default:
+                throw new IllegalStateException();
         }
     }
 
