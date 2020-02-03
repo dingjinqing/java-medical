@@ -4,7 +4,6 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.*;
-import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,28 +81,4 @@ public class WxAppBargainController extends WxAppBaseController {
     public JsonResult getRecordUserList(@RequestBody @Valid BargainUsersListParam param) {
         return success(shop().bargain.bargainRecord.bargainUser.getWxPageList(param));
     }
-
-
-    /**
-     * 获取砍价图片
-     * @return
-     */
-    @PostMapping("/api/wxapp/bargain/share/info")
-    public JsonResult getBargainShareInfo(@RequestBody BargainShareInfoParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        return success(shop().pictorialIntegrationService.getBargainShareInfo(param));
-    }
-
-    /**
-     * 下载海报
-     * @return
-     */
-    @PostMapping("/api/wxapp/bargain/pictorial/info")
-    public JsonResult getBargainPictorialInfo(@RequestBody BargainShareInfoParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        return success(shop().pictorialIntegrationService.getBargainPictorialInfo(param));
-    }
-
 }

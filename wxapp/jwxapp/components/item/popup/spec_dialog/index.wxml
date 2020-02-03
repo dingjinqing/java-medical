@@ -24,7 +24,7 @@
         <view class="info">
           <text class="goods-price" style="color:{{main_setting.comColor}};">
             <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 6 || (productsInfo.activity.activityType === 98 && !filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background-color:{{main_setting.comColor}};">限时降价</text>
-            <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 97 || (productsInfo.activity.activityType === 98 && filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</text>
+            <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 22 || (productsInfo.activity.activityType === 98 && filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</text>
             <text class="price">￥{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdRealPrice :checkedProduct.prdRealPrice}}</text>
           </text>
           <text class="marking-price">￥{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdLinePrice :checkedProduct.prdLinePrice}}</text>

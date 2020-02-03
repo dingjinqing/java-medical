@@ -43,7 +43,6 @@ public class NormalGoodsPictorialService extends ShopBaseService {
      * 普通商品-分享图片生成
      * @param param 商品分享参数
      */
-
     public GoodsShareInfo getNormalGoodsShareInfo(GoodsShareBaseParam param) {
         GoodsShareInfo shareInfoVo =new GoodsShareInfo();
         GoodsVo goodsVo = goodsService.selectGoodsShareInfo(param.getTargetId());
@@ -67,12 +66,20 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         } else {
             // 使用默认分享图片样式
             shareInfoVo.setImgUrl(goodsVo.getGoodsImg());
+            ShopRecord shop = saas.shop.getShopById(getShopId());
+            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, null,"messages",param.getUserName(),goodsVo.getGoodsName());
+            shareInfoVo.setShareDoc(doc);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 
         return shareInfoVo;
     }
 
+    /**
+     * 普通商品海报生成接口
+     * @param param 获取海报参数
+     * @return 海报图片base64
+     */
     public String getNormalGoodsPictorialInfo(GoodsShareBaseParam param) {
         GoodsVo goodsVo = goodsService.selectGoodsShareInfo(param.getTargetId());
         if (goodsVo == null) {

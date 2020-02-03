@@ -417,7 +417,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 	添加会员卡
-	 *
+	 * 
 	 * @return
 	 */
 	public List<String> addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate)
@@ -1489,7 +1489,6 @@ public class UserCardService extends ShopBaseService {
 		//	第一次领取
 		boolean firstGet = true;
 		if (param.getCardId() != null) {
-
 			MemberCardRecord mCard = memberCardService.getCardById(param.getCardId());
 			if(mCard == null) {
 				return null;

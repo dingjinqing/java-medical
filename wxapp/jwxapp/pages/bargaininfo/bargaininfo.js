@@ -155,7 +155,7 @@ global.wxPage({
   // 直接购买
   to_buy: function () {
     util.navigateTo({
-      url: "/pages/item/item?goods_id=" + bargain_info.recordInfo.goodsId
+      url: "/pages/item/item?goodsId=" + bargain_info.recordInfo.goodsId
     })
   },
   toWhere: function (e) {
@@ -243,7 +243,7 @@ global.wxPage({
         util.showModal('提示', res.content);
         return false;
       }
-    }, { record_id: record_id });
+    }, { recordId: record_id });
 
   },
   // 订单详情
@@ -258,11 +258,11 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     var that = this;
-    if (bargain_info.record_status.status == 8 || bargain_info.record_status.status == 11) {
+    if (bargain_info.state == 8 || bargain_info.state == 11) {
       clearTimeout(set_time_out);
       util.api("/api/wxapp/bargain/cut", function (res) {
 
-      }, { record_id: record_id });
+      }, { recordId: record_id });
       setTimeout(function () {
         clearTimeout(set_time_out);
         that.onPullDownRefresh();
@@ -271,14 +271,14 @@ global.wxPage({
         is_success: 0
       })
     }
-    util.api("/api/wxapp/share/record", function (d) {
+    // util.api("/api/wxapp/share/record", function (d) {
 
-    }, { activity_id: bargain_info.recordInfo.bargain_id, activity_type: 3 });
+    // }, { activity_id: bargain_info.recordInfo.bargainId, activity_type: 3 });
     return {
-      title: bargain_info.share_title,
+      title: bargain_info.recordShareImg.shareDoc,
       path: 'pages/bargaininfo/bargaininfo?record_id=' + record_id + "&invite_id=" + util.getCache('user_id')
-        + "&bargain_id=" + bargain_info.recordInfo.bargain_id,
-      imageUrl: that.data.imageUrl + bargain_info.record_share_img.bargain_image,
+        + "&bargain_id=" + bargain_info.recordInfo.bargainId,
+      imageUrl: that.data.imageUrl + bargain_info.recordShareImg.shareImg,
       complete: function () {
 
       }
@@ -397,6 +397,7 @@ function request_kanjia(that) {
   util.api("/api/wxapp/bargain/info", function (res) {
     if (res.error == 0) {
       bargain_info = res.content;
+      console.log(bargain_info)
       // if (bargain_info.recordInfo.goodsId) {
       //   util.getUserLocation(function (loc) {
       //     util.api('/api/wxapp/user_goods/record', function (res1) { }, {
