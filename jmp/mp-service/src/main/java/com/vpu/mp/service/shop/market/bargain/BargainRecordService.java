@@ -453,6 +453,13 @@ public class BargainRecordService extends ShopBaseService {
                         return 11;
                     }
                 }
+            }else{
+                if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y)){
+                    return 10;
+                }
+                if(recordInfo.getStatus().equals(STATUS_SUCCESS)){
+                    return 5;
+                }
             }
         }
 
@@ -481,7 +488,7 @@ public class BargainRecordService extends ShopBaseService {
                         }
                     }
                 }else {
-                    if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y) || recordInfo.getStatus().equals(STATUS_IN_PROCESS)){
+                    if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y) || recordInfo.getStatus().equals(STATUS_SUCCESS)){
                         return 9;
                     }
                 }
