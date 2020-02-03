@@ -243,7 +243,7 @@ global.wxPage({
         util.showModal('提示', res.content);
         return false;
       }
-    }, { record_id: record_id });
+    }, { recordId: record_id });
 
   },
   // 订单详情
@@ -397,6 +397,7 @@ function request_kanjia(that) {
   util.api("/api/wxapp/bargain/info", function (res) {
     if (res.error == 0) {
       bargain_info = res.content;
+      console.log(bargain_info)
       // if (bargain_info.recordInfo.goodsId) {
       //   util.getUserLocation(function (loc) {
       //     util.api('/api/wxapp/user_goods/record', function (res1) { }, {
