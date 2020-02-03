@@ -12,10 +12,10 @@ import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
-import jdk.internal.org.jline.utils.Log;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @ToString
+@Slf4j
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
     /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.foundation.data.BaseConstant} 下的ACTIVITY_TYPE**/
@@ -156,9 +157,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 			orderCartProductBo= new OrderCartProductBo();
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-                Log.info("debug{}", x);
+                log.info("debug{}", x);
                 OrderCartProductBo.OrderCartProduct orderCartProduct = new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber());
-                Log.info("debug{}", orderCartProduct);
+                log.info("debug{}", orderCartProduct);
                 orderCartProductBo.getAll().add(orderCartProduct);
 			});
 		}
