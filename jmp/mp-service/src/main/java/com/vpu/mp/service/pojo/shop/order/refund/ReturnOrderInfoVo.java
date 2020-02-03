@@ -38,6 +38,7 @@ public class ReturnOrderInfoVo {
 	private Byte reasonType;
 	private String reasonDesc;
 	private String shippingType;
+    private String shippingName;
 	private String shippingNo;
 	private String goodsImages;
 	private String voucherImages;

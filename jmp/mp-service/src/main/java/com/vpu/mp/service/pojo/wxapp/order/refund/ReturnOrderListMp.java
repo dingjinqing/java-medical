@@ -33,6 +33,8 @@ public class ReturnOrderListMp {
     /**退货凭证（物流）*/
     private String voucherImages;
     private String shippingType;
+    /**商家提交快递公司名称*/
+    private String shippingName;
     private String shippingNo;
     private String phone;
     /**拒绝原因*/
