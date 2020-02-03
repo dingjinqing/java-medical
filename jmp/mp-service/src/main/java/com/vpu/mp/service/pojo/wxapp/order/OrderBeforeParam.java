@@ -108,6 +108,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	 */
 	@Getter
 	@Setter
+    @ToString
 	public static class Goods{
 		@NotNull
 		private Integer goodsId;
@@ -149,7 +150,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**
      * 获取商品计算首单特惠活动。。。
      */
-    public OrderCartProductBo getOrderCartProductBo(){
+    public OrderCartProductBo  getOrderCartProductBo(){
     	if (orderCartProductBo==null){
 			orderCartProductBo= new OrderCartProductBo();
             orderCartProductBo.setDate(date);
