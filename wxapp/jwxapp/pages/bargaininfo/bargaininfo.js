@@ -258,11 +258,11 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     var that = this;
-    if (bargain_info.record_status.status == 8 || bargain_info.record_status.status == 11) {
+    if (bargain_info.state == 8 || bargain_info.state == 11) {
       clearTimeout(set_time_out);
       util.api("/api/wxapp/bargain/cut", function (res) {
 
-      }, { record_id: record_id });
+      }, { recordId: record_id });
       setTimeout(function () {
         clearTimeout(set_time_out);
         that.onPullDownRefresh();
@@ -271,14 +271,14 @@ global.wxPage({
         is_success: 0
       })
     }
-    util.api("/api/wxapp/share/record", function (d) {
+    // util.api("/api/wxapp/share/record", function (d) {
 
-    }, { activity_id: bargain_info.recordInfo.bargain_id, activity_type: 3 });
+    // }, { activity_id: bargain_info.recordInfo.bargainId, activity_type: 3 });
     return {
-      title: bargain_info.share_title,
+      title: bargain_info.recordShareImg.shareDoc,
       path: 'pages/bargaininfo/bargaininfo?record_id=' + record_id + "&invite_id=" + util.getCache('user_id')
-        + "&bargain_id=" + bargain_info.recordInfo.bargain_id,
-      imageUrl: that.data.imageUrl + bargain_info.record_share_img.bargain_image,
+        + "&bargain_id=" + bargain_info.recordInfo.bargainId,
+      imageUrl: that.data.imageUrl + bargain_info.recordShareImg.shareImg,
       complete: function () {
 
       }
