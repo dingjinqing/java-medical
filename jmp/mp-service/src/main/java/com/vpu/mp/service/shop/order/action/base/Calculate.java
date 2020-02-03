@@ -650,6 +650,7 @@ public class Calculate extends ShopBaseService {
 
         //首单特惠
         if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice() != null) {
+            goods.setFirstSpecialId(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
             return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
         }
 

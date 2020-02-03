@@ -35,5 +35,21 @@ module.exports = {
   storeList: "门店列表",
   userActivate: "会员激活",
   orderVerify: "扫码核销",
-  presentList: "礼物记录"
+  presentList: "礼物记录",
+  activationSuccsess: "激活成功",
+  activationTitle: "激活说明",
+  activationReward: "激活奖励",
+  points:"积分",
+  pointsReward: "积分奖励",
+  obtain: "获得",
+  couponReward: "优惠券奖励",
+  coupon2: "张优惠券",
+  fold: "折",
+  highest: "最高",
+  allProducts: "全部商品可用",
+  partProducts: "部分商品可用",
+  toActivate: "去激活",
+  backHome: "回到首页",
+  activationFail: "激活失败",
+  knowIt: "知道啦"
 }
