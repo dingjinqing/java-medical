@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
+import jdk.internal.org.jline.utils.Log;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -155,7 +156,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 			orderCartProductBo= new OrderCartProductBo();
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber()));
+                Log.info("debug{}", x);
+                OrderCartProductBo.OrderCartProduct orderCartProduct = new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber());
+                Log.info("debug{}", orderCartProduct);
+                orderCartProductBo.getAll().add(orderCartProduct);
 			});
 		}
         return orderCartProductBo;
