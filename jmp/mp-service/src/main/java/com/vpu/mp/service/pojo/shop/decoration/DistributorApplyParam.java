@@ -122,10 +122,18 @@ public class DistributorApplyParam {
          */
         @JsonProperty(value = "custom_options")
         public List<CustomOptions> customOptions;
-
+        /**
+         * 所属行业名称
+         */
         public String industryName;
-
+        /**
+         * 教育程度名称
+         */
         public String educationName;
+        /**
+         * 婚姻状况名称
+         */
+        public String maritalName;
     }
     @Data
     public static class CustomOptions{
