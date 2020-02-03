@@ -276,6 +276,7 @@ global.wxPage({
       showSpec: true,
       triggerButton: trigger.detail
     })
+    
   },
   // 关闭item页规格弹窗
   bindCloseSpec () {

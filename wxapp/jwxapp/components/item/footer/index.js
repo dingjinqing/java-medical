@@ -81,10 +81,11 @@ global.wxComponent({
       this.toCheckOut()
     },
     getCartNum() {
-      let { goodsId } = this.data.productInfo
+      // let { goodsId } = this.data.productInfo
+      let that = this
       util.api('/api/wxapp/cart/goods/num', res => {
         if (res.error === 0) {
-          this.setData({
+          that.setData({
             cartNum: res.content.goodsNum
           })
         }
@@ -96,9 +97,9 @@ global.wxComponent({
       util.api(
         "/api/wxapp/cart/add",
         res => {
-          if (res.error === 0) {
-            util.toast_success('添加成功')
+          if (res.error == 0) {
             this.getCartNum()
+            util.toast_success('添加成功')
           } else {
             util.toast_fail('添加失败')
           }

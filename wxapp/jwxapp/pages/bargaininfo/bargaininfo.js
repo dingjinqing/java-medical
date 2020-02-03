@@ -128,10 +128,11 @@ global.wxPage({
   },
   // 砍价完成
   toCheckout: function (e) {
-    var form_id = e.detail.formId;
-    var open_id = util.getCache("openid");
-    util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
+    // var form_id = e.detail.formId;
+    // var open_id = util.getCache("openid");
+    // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
     var record_id = bargain_info.recordInfo.id;
+    var bargain_id = bargain_info.recordInfo.bargainId;
     if (bargain_info.recordInfo.bargainType == 1 && bargain_info.recordInfo.isOrdered == 1) {
       var check_money = parseFloat(bargain_info.recordInfo.goodsPrice - bargain_info.recordInfo.bargainMoney).toFixed(2);
       util.showModal("提示", "您有一笔待支付订单，继续下单将以" + (check_money || 0) + "元结算并取消订单，是否继续下单？", function () {
@@ -140,8 +141,17 @@ global.wxPage({
         })
       }, true, "取消", "去下单")
     } else {
+      let goodsList = [{
+        goodsId: bargain_info.recordInfo.goodsId,
+        prdRealPrice: bargain_info.recordInfo.prdPrice,
+        goodsPrice: bargain_info.recordInfo.goodsPrice,
+        goodsNum: bargain_info.recordInfo.goodsNum,
+        prdId: bargain_info.recordInfo.prdId,
+        productId: bargain_info.recordInfo.prdId
+      }]
+      console.log(goodsList)
       util.navigateTo({
-        url: '/pages/goodsCheckout/goodsCheckout?order_type=bargain&record_id=' + record_id,
+        url: "/pages/checkout/checkout?activityType=3&activityId=" + bargain_id + "&recordId=" + record_id + "&goodsList=" + JSON.stringify(goodsList)
       })
     }
   },
@@ -159,18 +169,18 @@ global.wxPage({
     })
   },
   toWhere: function (e) {
-    var bargain_id = bargain_info.recordInfo.bargain_id;
-    if (bargain_info.recordInfo.prd_desc != "") {
+    var bargain_id = bargain_info.recordInfo.bargainId;
+    if (bargain_info.recordInfo.prdDesc != "") {
       util.reLaunch({
         url: '/pages/bargainitem/bargainitem?bargain_id=' + bargain_id,
       })
-    } else if (bargain_info.recordInfo.prd_desc == "") {
+    } else if (bargain_info.recordInfo.prdDesc == "") {
       var choose_list = {};
       choose_list.user_id = util.getCache('user_id');
-      choose_list.goods_id = bargain_info.recordInfo.goods_id;
-      choose_list.prd_id = bargain_info.recordInfo.prd_id;
-      choose_list.bargain_id = bargain_info.recordInfo.bargain_id;
-      choose_list.goods_price = bargain_info.recordInfo.goods_price;
+      choose_list.goods_id = bargain_info.recordInfo.goodsId;
+      choose_list.prd_id = bargain_info.recordInfo.prdId;
+      choose_list.bargain_id = bargain_info.recordInfo.bargainId;
+      choose_list.goods_price = bargain_info.recordInfo.goodsPrice;
       util.api("/api/wxapp/bargain/apply", function (res) {
         if (res.error == 0) {
           util.reLaunch({

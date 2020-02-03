@@ -46,14 +46,13 @@ global.wxComponent({
       }
     },
     bindToBargain (e) {
-      util.showModal(this.$t("components.decorate.tips"), '商品已删除')
       var _this = this
       var d = _this.eventData(e);
       console.log(d)
       if (d.is_delete == 1) {
-        util.showModal(this.$t("components.decorate.tips"), '商品已删除');
+        util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.goodsDeleted"));
       } else if (d.is_on_sale == 0 || d.goods_number <= 0) {
-        util.showModal('提示', '商品已下架');
+        util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.offShelf"));
       } else if (d.act_status == 0 || d.time_state == 2 || d.act_del_flag == 1) {
         this.navigateToItem(d.goods_id);
       } else {
@@ -70,17 +69,17 @@ global.wxComponent({
                 var url = "/pages/bargaininfo/bargaininfo?record_id=" + data.recordId;
                 util.jumpLink(url);
               } else if (data.resultCode == 1) {
-                util.showModal('提示', '该活动不存在');
+                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.doesNotExist"));
               } else if (data.resultCode == 2) {
-                util.showModal('提示', '该活动已停用');
+                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.activityDeactivated"));
               } else if (data.resultCode == 3) {
-                util.showModal('提示', '该活动未开始');
+                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.notStart"));
               } else if (data.resultCode == 4) {
-                util.showModal('提示', '该活动已结束');
+                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.activityEnded"));
               } else if (data.resultCode == 5) {
-                util.showModal('提示', '商品库存不足');
+                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.insufficientInventory"));
               } else if (data.resultCode == -1) {
-                util.showModal('提示', '操作失败');
+                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.operationFailed"));
               }
             } else {
               _this.navigateToItem(d.goods_id);
