@@ -1219,9 +1219,11 @@ public class MemberCardService extends ShopBaseService {
 		
 		for(Integer cardId: cardIdList) {
 			MemberCardRecord card = this.getCardById(cardId);
-			CardOpt cardOpt = getCardOpt(card.getCardType());
-			for(Integer userId: userIdList) {
-				cardOpt.handleSendCard(userId, cardId, true);
+			if(card != null) {
+				CardOpt cardOpt = getCardOpt(card.getCardType());
+				for(Integer userId: userIdList) {
+					cardOpt.handleSendCard(userId, cardId, true);
+				}
 			}
 		}
 	}
