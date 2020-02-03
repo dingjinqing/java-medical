@@ -48,6 +48,7 @@
             <text class="spec">{{goodsItem.goodsAttr}}</text>
           </view>
           <view class="goods_price">
+            <text class="goods-price-tag" wx:if="{{goodsItem.firstSpecialId > 0}}" style="background-color:{{comColor}};">首单特惠</text>
             <text class="price" style="color:{{comColor}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.discountedGoodsPrice || '0'})}}</text>
             <text class="num">x{{goodsItem.goodsNumber}}</text>
           </view>

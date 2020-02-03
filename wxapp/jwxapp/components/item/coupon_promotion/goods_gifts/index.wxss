@@ -1,0 +1,17 @@
+.content{
+  height: 600rpx;
+  background-color: #fff;
+  position: relative;
+  width:750rpx;
+}
+.title{
+  line-height: 80rpx;
+  text-align: center;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #eee;
+}
+.promotion-content{
+  padding:0 20rpx;
+  max-height: 519rpx;
+  overflow-y: scroll;
+}
