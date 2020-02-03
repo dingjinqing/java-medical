@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.activity;
 
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ public class OrderCartProductBo {
     /**
      * 下单时间
      */
-    private   Timestamp date;
+    private Timestamp date = DateUtil.getSqlTimestamp();
     /**
      * 用户id
      */
