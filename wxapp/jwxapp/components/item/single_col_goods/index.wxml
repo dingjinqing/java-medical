@@ -1,6 +1,6 @@
-<view class="goods-item">
+<view class="goods-item" bindtap="goItem">
   <view class="edit" wx:if="{{isEdit}}">
-    <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" bindtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
+    <text class="iconfont iconshanchu1bind" data-cart-id="{{goodsData.cartId}}" bindtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
   </view>
   <view class="all-image">
     <image class="goods-image" src="{{!enableNumEdit ? goodsData.goodsImg : imageUrl+goodsData.goodsImg}}"></image>
