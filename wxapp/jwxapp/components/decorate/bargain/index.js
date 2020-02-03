@@ -46,7 +46,6 @@ global.wxComponent({
       }
     },
     bindToBargain (e) {
-      util.showModal(this.$t("components.decorate.tips"), '商品已删除')
       var _this = this
       var d = _this.eventData(e);
       console.log(d)

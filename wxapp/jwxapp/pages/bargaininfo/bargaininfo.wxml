@@ -130,9 +130,13 @@
       </view>
     </block>
     <block wx:else>
-      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 7 || bargain_info.state == 8}}'>
+      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 7}}'>
         <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
-        立即邀请好友砍价，多砍X元
+        邀请好友帮忙砍价
+      </view>
+      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 8}}'>
+        <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
+        立即邀请好友砍价，多砍{{bargain_info.stateMoney}}元
       </view>
     </block>
     <view class='btn_kanjia' bindtap='toWhere' wx:if='{{bargain_info.state == 9}}'>我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物</view>

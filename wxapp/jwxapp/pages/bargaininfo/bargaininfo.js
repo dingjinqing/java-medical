@@ -159,18 +159,18 @@ global.wxPage({
     })
   },
   toWhere: function (e) {
-    var bargain_id = bargain_info.recordInfo.bargain_id;
-    if (bargain_info.recordInfo.prd_desc != "") {
+    var bargain_id = bargain_info.recordInfo.bargainId;
+    if (bargain_info.recordInfo.prdDesc != "") {
       util.reLaunch({
         url: '/pages/bargainitem/bargainitem?bargain_id=' + bargain_id,
       })
-    } else if (bargain_info.recordInfo.prd_desc == "") {
+    } else if (bargain_info.recordInfo.prdDesc == "") {
       var choose_list = {};
       choose_list.user_id = util.getCache('user_id');
-      choose_list.goods_id = bargain_info.recordInfo.goods_id;
-      choose_list.prd_id = bargain_info.recordInfo.prd_id;
-      choose_list.bargain_id = bargain_info.recordInfo.bargain_id;
-      choose_list.goods_price = bargain_info.recordInfo.goods_price;
+      choose_list.goods_id = bargain_info.recordInfo.goodsId;
+      choose_list.prd_id = bargain_info.recordInfo.prdId;
+      choose_list.bargain_id = bargain_info.recordInfo.bargainId;
+      choose_list.goods_price = bargain_info.recordInfo.goodsPrice;
       util.api("/api/wxapp/bargain/apply", function (res) {
         if (res.error == 0) {
           util.reLaunch({
