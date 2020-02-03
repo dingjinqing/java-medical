@@ -132,6 +132,7 @@ global.wxPage({
     // var open_id = util.getCache("openid");
     // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
     var record_id = bargain_info.recordInfo.id;
+    var bargain_id = bargain_info.recordInfo.bargainId;
     if (bargain_info.recordInfo.bargainType == 1 && bargain_info.recordInfo.isOrdered == 1) {
       var check_money = parseFloat(bargain_info.recordInfo.goodsPrice - bargain_info.recordInfo.bargainMoney).toFixed(2);
       util.showModal("提示", "您有一笔待支付订单，继续下单将以" + (check_money || 0) + "元结算并取消订单，是否继续下单？", function () {
@@ -150,11 +151,8 @@ global.wxPage({
       }]
       console.log(goodsList)
       util.navigateTo({
-        url: "/pages/checkout/checkout?activityType=3&activityId=" + record_id + "&goodsList=" + JSON.stringify(goodsList)
+        url: "/pages/checkout/checkout?activityType=3&activityId=" + bargain_id + "&recordId=" + record_id + "&goodsList=" + JSON.stringify(goodsList)
       })
-      // util.navigateTo({
-      //   url: '/pages/goodsCheckout/goodsCheckout?order_type=bargain&record_id=' + record_id,
-      // })
     }
   },
   // 砍价人列表
