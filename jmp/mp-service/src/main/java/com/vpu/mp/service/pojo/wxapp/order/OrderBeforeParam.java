@@ -154,6 +154,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
      */
     public OrderCartProductBo  getOrderCartProductBo(){
     	if (orderCartProductBo==null){
+            log.info("orderCartProductBo==null");
 			orderCartProductBo= new OrderCartProductBo();
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
