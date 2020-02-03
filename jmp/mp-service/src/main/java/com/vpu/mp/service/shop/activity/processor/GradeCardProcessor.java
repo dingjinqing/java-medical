@@ -85,7 +85,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
             }
             Record3<Integer, Integer, BigDecimal> record3 = goodsGradeInfos.get(goodsId).get(0);
 
-            // 已被限时降价处理
+            // 已被限时降价处理（被限时降价处理则不可能是会员专享）
             if (capsule.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)) {
                 // 会员价比限时降价价格低则将限时降价的处理信息删除
                 if (record3.get(GRADE_PRD.GRADE_PRICE).compareTo(capsule.getRealPrice()) < 0) {
