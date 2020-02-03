@@ -21,4 +21,6 @@ public class GoodsShareBaseParam {
     private BigDecimal linePrice;
     /** 发起分享操作的用户Id*/
     private Integer userId;
+    /** 发起分享操作的用户名称*/
+    private String userName;
 }

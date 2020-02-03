@@ -40,7 +40,6 @@ public class DistributorCheckService extends ShopBaseService{
                .where(DSL.trueCondition());
         buildOptions(select,param);
         PageResult<DistributorCheckListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), DistributorCheckListVo.class);
-        System.out.println(pageResult);
         for(DistributorCheckListVo applyInfo: pageResult.getDataList()){
             applyInfo.setCheckField(Util.parseJson(applyInfo.getActivationFields(),DistributorApplyParam.InfoField.class));
         }
@@ -54,19 +53,25 @@ public class DistributorCheckService extends ShopBaseService{
      * @param param
      */
 	public void buildOptions(SelectConditionStep<Record> select,DistributorCheckListParam param){
+	    //根据手机号查询
         if(isNotEmpty(param.getMobile())){
             select.and(USER.MOBILE.eq(param.getMobile()));
         }
+        //根据用户名
         if(isNotEmpty(param.getUsername())){
             select.and(USER.USERNAME.contains(param.getUsername()));
         }
+        //申请开始时间
         if(param.getStartTime() !=null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.le(param.getStartTime()));
         }
+        //申请结束时间
         if(param.getEndTime() != null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.ge(param.getEndTime()));
         }
+        //状态 0：待审核；1：审核通过；2：未通过
         select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
+        //根据申请时间降序排序
         select.orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc());
     }
 

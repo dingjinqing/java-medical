@@ -83,7 +83,7 @@ const actBaseInfo = {
       prdLinePrice: 'prdPrice'
     }
   },
-  97: {
+  22: {
     actName: '会员价',
     multiSkuAct: true,
     prdListName: 'gradePrdMpVos',

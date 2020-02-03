@@ -61,7 +61,7 @@
         <view class="goods_price" style='color:{{comColor}}'>
         <view class="goods-price-tag" wx:if="{{goodsInfo.activity.activityType === 18}}" style="background-color:{{comColor}};">首单特惠</view>
         <view class="goods-price-tag" wx:if="{{goodsInfo.activity.activityType === 6}}" style="background-color:{{comColor}};">限时降价</view>
-        <view class="goods-price-tag" wx:if="{{filter.includes([97,98],goodsInfo.activity.activityType)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</view>
+        <view class="goods-price-tag" wx:if="{{filter.includes([22,98],goodsInfo.activity.activityType)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</view>
           <text>￥</text><text>{{goodsInfo.prdRealPrice}}</text>
         </view>
         <view class="marking_price">￥<text>{{goodsInfo.prdLinePrice}}</text></view>
