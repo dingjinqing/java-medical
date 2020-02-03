@@ -1224,6 +1224,8 @@ public class MemberCardService extends ShopBaseService {
 				for(Integer userId: userIdList) {
 					cardOpt.handleSendCard(userId, cardId, true);
 				}
+			}else {
+				logger().info("该卡: "+cardId+" 不存在");
 			}
 		}
 	}
