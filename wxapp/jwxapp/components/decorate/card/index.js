@@ -18,7 +18,6 @@ global.wxComponent({
         newVal.bg = 'url(' + newVal.bgImg + ')';
       }
       console.log(newVal)
-      newVal.status = -1
       // shop_img、activation字段在第二个接口
     },
     bindGetCard (e) {
