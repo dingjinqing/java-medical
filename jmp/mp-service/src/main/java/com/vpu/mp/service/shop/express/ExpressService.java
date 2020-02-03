@@ -29,7 +29,7 @@ public class ExpressService extends ShopBaseService {
         return db().selectFrom(TABLE).where(TABLE.SHIPPING_ID.in(ids)).fetchMap(TABLE.SHIPPING_ID, ExpressVo.class);
     }
 
-    public ExpressVo get(Byte ids){
-        return gets(Lists.newArrayList(ids)).get(ids);
+    public ExpressVo get(Byte id){
+        return gets(Lists.newArrayList(id)).get(id);
     }
 }
