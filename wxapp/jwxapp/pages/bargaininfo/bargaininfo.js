@@ -128,9 +128,9 @@ global.wxPage({
   },
   // 砍价完成
   toCheckout: function (e) {
-    var form_id = e.detail.formId;
-    var open_id = util.getCache("openid");
-    util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
+    // var form_id = e.detail.formId;
+    // var open_id = util.getCache("openid");
+    // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
     var record_id = bargain_info.recordInfo.id;
     if (bargain_info.recordInfo.bargainType == 1 && bargain_info.recordInfo.isOrdered == 1) {
       var check_money = parseFloat(bargain_info.recordInfo.goodsPrice - bargain_info.recordInfo.bargainMoney).toFixed(2);
@@ -140,9 +140,21 @@ global.wxPage({
         })
       }, true, "取消", "去下单")
     } else {
+      let goodsList = [{
+        goodsId: bargain_info.recordInfo.goodsId,
+        prdRealPrice: bargain_info.recordInfo.prdPrice,
+        goodsPrice: bargain_info.recordInfo.goodsPrice,
+        goodsNum: bargain_info.recordInfo.goodsNum,
+        prdId: bargain_info.recordInfo.prdId,
+        productId: bargain_info.recordInfo.prdId
+      }]
+      console.log(goodsList)
       util.navigateTo({
-        url: '/pages/goodsCheckout/goodsCheckout?order_type=bargain&record_id=' + record_id,
+        url: "/pages/checkout/checkout?activityType=3&activityId=" + record_id + "&goodsList=" + JSON.stringify(goodsList)
       })
+      // util.navigateTo({
+      //   url: '/pages/goodsCheckout/goodsCheckout?order_type=bargain&record_id=' + record_id,
+      // })
     }
   },
   // 砍价人列表
