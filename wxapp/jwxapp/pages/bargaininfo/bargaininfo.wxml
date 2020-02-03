@@ -109,7 +109,11 @@
       <button class='btn_kanjia' formType="submit" wx:if='{{bargain_info.state == 5}}'>砍价成功，立即完善订单</button>
     </form>
     <block wx:if="{{ getsq == true || click_num == true}}">
-      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 7 || bargain_info.state == 8}}'>
+      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 7}}'>
+        <button open-type='share'></button>
+        邀请好友帮忙砍价
+      </view>
+      <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 8}}'>
         <button open-type='share'></button>
         立即邀请好友砍价，多砍{{bargain_info.stateMoney}}元
       </view>
