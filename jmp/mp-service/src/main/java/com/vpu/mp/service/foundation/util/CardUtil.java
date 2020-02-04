@@ -60,6 +60,13 @@ public class CardUtil {
 	}
 	
 	/**
+	 * 	是否为等级卡或普通卡
+	 */
+	public static boolean isNormalOrGradeCard(Byte cardType) {
+		return isNormalCard(cardType) || isGradeCard(cardType);
+	}
+	
+	/**
 	 * 	卡是否需要购买
 	 * @return true 需要，false不需要
 	 */

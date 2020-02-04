@@ -304,8 +304,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	private void initOwncfg(CardParam card) {
 
-		if ((CardUtil.isNormalCard(card.getCardType()) || 
-				CardUtil.isGradeCard(card.getCardType())) && 
+		if (CardUtil.isNormalOrGradeCard(card.getCardType()) && 
 				isAllowPayOwnGoods(card)) {
 			logger().info("正在处理会员卡的专享商品");
 
@@ -1073,78 +1072,15 @@ public class MemberCardService extends ShopBaseService {
 	 * @return
 	 */
 	public MemberCardVo getAllCardList(CardParam param) {
-
 		Result<MemberCardRecord> cardRecords = selectAllMemberCard(param);
-		
 		MemberCardVo vo = new MemberCardVo();
 		logger().info("正在分类处理");
-		
 		for (MemberCardRecord card : cardRecords) {
 			Byte cardType = card.getCardType();
-			
 			List<String> legal = new ArrayList<>();
 			List<String> exchangCountLegal = new ArrayList<>();
 			Integer legalFlag = 0;
-			if(CardUtil.isNormalCard(cardType) || CardUtil.isGradeCard(cardType)) {
-				if(isNotNull(card.getDiscount())) {
-					logger().info("积分打折");
-					legal.add(""+card.getDiscount());
-					legalFlag = 1;
-				}else if(isNotNull(card.getSorce())) {
-					logger().info("开卡赠送积分");
-					legal.add(""+card.getSorce());
-					legalFlag = 2;
-				}else if(isNotBlank(card.getBuyScore())) {
-					ScoreJson buyScore = Util.parseJson(card.getBuyScore(), ScoreJson.class);
-					Byte offset = buyScore.getOffset();
-					if(!Byte.valueOf((byte)-1).equals(offset)) {
-						if(Byte.valueOf((byte)0).equals(offset) && buyScore.getGoodsMoney().size()>0) {
-							logger().info("购买满多少赠送多少积分");
-							legal.add(""+buyScore.getGoodsMoney().get(0));
-							legal.add(" "+buyScore.getGetScores().get(0));
-							legalFlag = 3;
-						}else {
-							logger().info("购买每满多少赠送多少积分");
-							legal.add(""+buyScore.getPerGoodsMoney());
-							legal.add(""+buyScore.getPerGetScores());
-							legalFlag = 4;
-						}
-					}
-				}else if(isNotNull(card.getSendMoney())){
-					logger().info("开卡赠送多少");
-					legal.add(""+ card.getSendMoney());
-					legalFlag = 5;
-				}else if(isNotBlank(card.getChargeMoney())) {
-					PowerCardJson powerCardJson = Util.parseJson(card.getChargeMoney(), PowerCardJson.class);
-					Byte offsetMoney = powerCardJson.getOffsetMoney();
-					if(Byte.valueOf((byte)0).equals(offsetMoney) && powerCardJson.getMoney().length>0) {
-						logger().info("充值满多少赠送多少");
-						legal.add(""+powerCardJson.getMoney()[0]);
-						legal.add(""+powerCardJson.getGetMoney()[0]);
-						legalFlag = 6;
-					}else if(Byte.valueOf((byte)1).equals(offsetMoney)){
-						logger().info("充值每满多少赠多少");
-						legal.add(""+powerCardJson.getPerMoney());
-						legal.add(""+powerCardJson.getPerGetMoney());
-						legalFlag = 7;
-					}else if(Byte.valueOf((byte)2).equals(offsetMoney)) {
-						logger().info("仅充值");
-						legalFlag = 8;
-					}
-				}
-			}else if(CardUtil.isLimitCard(cardType)) {
-				if(isNotNull(card.getCount())) {
-					logger().info("开卡赠送门店服务机会");
-					legal.add(""+card.getCount());
-					legalFlag = 9;
-				}else {
-					logger().info("开卡赠送兑换商品机会");
-					exchangCountLegal.add(""+card.getExchangCount());
-					legalFlag = 10;
-				}
-			}
-			
-			
+			legalFlag = dealWithCardRights(card, cardType, legal, exchangCountLegal, legalFlag);
 			MemberCard cardVo = card.into(MemberCard.class);
 			/** 执行策略 */
 			cardVo.changeJsonCfg();
@@ -1164,10 +1100,76 @@ public class MemberCardService extends ShopBaseService {
 			} else if (MCARD_TP_GRADE.equals(cardType)) {
 				vo.getRankCard().add(cardVo);
 			}
-
 		}
-
 		return vo;
+	}
+	
+	/**
+	 * 	处理会员卡的拥有的权益
+	 * @return
+	 */
+	private Integer dealWithCardRights(MemberCardRecord card, Byte cardType, List<String> legal,
+			List<String> exchangCountLegal, Integer legalFlag) {
+		final Byte two = Byte.valueOf("2");
+		if(CardUtil.isNormalCard(cardType) || CardUtil.isGradeCard(cardType)) {
+			if(isNotNull(card.getDiscount())) {
+				logger().info("积分打折");
+				legal.add(""+card.getDiscount());
+				legalFlag = 1;
+			}else if(isNotNull(card.getSorce())) {
+				logger().info("开卡赠送积分");
+				legal.add(""+card.getSorce());
+				legalFlag = 2;
+			}else if(isNotBlank(card.getBuyScore())) {
+				ScoreJson buyScore = Util.parseJson(card.getBuyScore(), ScoreJson.class);
+				Byte offset = buyScore.getOffset();
+				if(!Byte.valueOf((byte)-1).equals(offset)) {
+					if(Byte.valueOf((byte)0).equals(offset) && buyScore.getGoodsMoney().size()>0) {
+						logger().info("购买满多少赠送多少积分");
+						legal.add(""+buyScore.getGoodsMoney().get(0));
+						legal.add(" "+buyScore.getGetScores().get(0));
+						legalFlag = 3;
+					}else {
+						logger().info("购买每满多少赠送多少积分");
+						legal.add(""+buyScore.getPerGoodsMoney());
+						legal.add(""+buyScore.getPerGetScores());
+						legalFlag = 4;
+					}
+				}
+			}else if(isNotNull(card.getSendMoney())){
+				logger().info("开卡赠送多少");
+				legal.add(""+ card.getSendMoney());
+				legalFlag = 5;
+			}else if(isNotBlank(card.getChargeMoney())) {
+				PowerCardJson powerCardJson = Util.parseJson(card.getChargeMoney(), PowerCardJson.class);
+				Byte offsetMoney = powerCardJson.getOffsetMoney();
+				if(Byte.valueOf((byte)0).equals(offsetMoney) && powerCardJson.getMoney().length>0) {
+					logger().info("充值满多少赠送多少");
+					legal.add(""+powerCardJson.getMoney()[0]);
+					legal.add(""+powerCardJson.getGetMoney()[0]);
+					legalFlag = 6;
+				}else if(Byte.valueOf((byte)1).equals(offsetMoney)){
+					logger().info("充值每满多少赠多少");
+					legal.add(""+powerCardJson.getPerMoney());
+					legal.add(""+powerCardJson.getPerGetMoney());
+					legalFlag = 7;
+				}else if(two.equals(offsetMoney)) {
+					logger().info("仅充值");
+					legalFlag = 8;
+				}
+			}
+		}else if(CardUtil.isLimitCard(cardType)) {
+			if(isNotNull(card.getCount())) {
+				logger().info("开卡赠送门店服务机会");
+				legal.add(""+card.getCount());
+				legalFlag = 9;
+			}else {
+				logger().info("开卡赠送兑换商品机会");
+				exchangCountLegal.add(""+card.getExchangCount());
+				legalFlag = 10;
+			}
+		}
+		return legalFlag;
 	}
 
 	private boolean isNotBlank(String buyScore) {
@@ -1940,7 +1942,7 @@ public class MemberCardService extends ShopBaseService {
 
 
     /**
-     * 小程序装修会员卡模块显示异步调用
+     * 	小程序装修会员卡模块显示异步调用
      * status : -1未领取， 1已领取， 2过期= ， 3停用,4已达到领取上限，5无库存
      * @param cardId
      * @param userId
@@ -1961,7 +1963,9 @@ public class MemberCardService extends ShopBaseService {
         int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,cardId);
         if(vo.getCardType().equals(MCARD_TP_LIMIT) && vo.getLimit() > 1){
             //限次卡，还有库存 或 不限库存
-            if(vo.getStock() == 0 || (vo.getStock() > 0 && userCardService.userCardDao.calcNumCardById(cardId) < vo.getStock())){
+        	int hasSend = userCardService.userCardDao.calcNumCardById(cardId);
+        	boolean canSend = vo.getStock() > 0 && hasSend < vo.getStock();
+            if(vo.getStock() == 0 || canSend){
                 if(vo.getLimit() == null || vo.getLimit() == 0 || userHasGotNumber < vo.getLimit()){
                     //未达到领取上限
                     vo.setStatus((byte)-1);
@@ -1974,7 +1978,8 @@ public class MemberCardService extends ShopBaseService {
             }
         }else if(vo.getCardType().equals(MCARD_TP_GRADE)){
             //只要拥有一张等级卡，就认为是已领取
-            if(userCardService.userCardDao.getUserGradeCard(userId) != null){
+        	MemberCardRecord mCard = userCardService.userCardDao.getUserGradeCard(userId);
+            if( mCard != null && cardId == mCard.getId()){
                 vo.setStatus((byte)1);
             }
         }else{
