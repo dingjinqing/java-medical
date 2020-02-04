@@ -219,3 +219,11 @@
   margin-right: 10rpx;
   padding: 0 4rpx;
 }
+.goods-price-tag{
+  padding: 0 8rpx;
+  margin-right: 10rpx;
+  border-bottom-left-radius: 22rpx;
+  border-top-right-radius: 22rpx;
+  color: #fff;
+  font-size: 24rpx;
+}

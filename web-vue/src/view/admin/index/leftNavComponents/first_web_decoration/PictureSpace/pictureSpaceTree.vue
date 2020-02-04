@@ -214,6 +214,7 @@
           :label="item.name"
           :value="item.name"
         >
+          <span :style="'padding-left:'+(item.level)*20+'px;float:left;width:100%;display:block'">{{ item.name }}</span>
         </el-option>
       </el-select>
       <span
@@ -338,10 +339,12 @@ export default {
       // console.log(data)
     },
     Initialization_allTree (data) {
+      this.allNodesName = []
       let content = data.content[0]
       let obj = {
         name: content.name,
-        id: content.id
+        id: content.id,
+        level: content.level
       }
       this.value_move = content.name
       this.allNodesName.push(obj)
@@ -357,7 +360,8 @@ export default {
         if (item.name !== '') {
           let obj = {
             name: item.name,
-            id: item.id
+            id: item.id,
+            level: item.level
           }
           this.allNodesName.push(obj)
         }
@@ -572,6 +576,7 @@ export default {
     // 图片批量移动下拉框确定事件
     allNodesSelectSure () {
       // console.log(this.checkArr)
+      // this.Initialization_allTree(this.allNodes_)
       let arr = []
       this.checkArr.map((item, index) => {
         arr.push(item.imgId)

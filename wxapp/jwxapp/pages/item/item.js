@@ -154,7 +154,7 @@ global.wxPage({
           if (res.error === 0) {
             if (res.content.activity && [1, 3, 5].includes(res.content.activity.activityType)) this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             let { comment, goodsImgs, goodsVideo, goodsVideoImg, coupons, goodsDesc = null, isPageUp = 0, goodsPageId = null, deliverPlace, defaultPrd, activity, goodsNumber, goodsSaleNum, labels, goodsAd, isCollected, products, goodsName, deliverPrice, limitBuyNum,
-              limitMaxNum, goodsId } = res.content
+              limitMaxNum, goodsId, goodsGifts} = res.content
             let goodsMediaInfo = {
               goodsImgs,//商品图片
               goodsVideo,//商品视频
@@ -191,7 +191,8 @@ global.wxPage({
               defaultPrd,//是否单规格
               goodsMediaInfo,
               couponList: coupons,//优惠券
-              goodsDescInfo
+              goodsDescInfo,
+              goodsGifts // 赠品
             })
             this.setData({
               specParams
@@ -275,6 +276,7 @@ global.wxPage({
       showSpec: true,
       triggerButton: trigger.detail
     })
+    
   },
   // 关闭item页规格弹窗
   bindCloseSpec () {

@@ -22,6 +22,7 @@ global.wxPage({
       action: 10,
       activityType: null, // 指定本次结算所参加的唯一营销活动类型
       activityId: null, // 指定本次结算所参加的唯一营销活动类型 ID
+      recordId: null, // 砍价活动id
       groupId: null, // 拼团参团id
       addressId: null, // 地址id
       goods: null, // 商品列表
@@ -49,7 +50,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = [];
-    let { goodsList, activityType, activityId } = options
+    let { goodsList, activityType, activityId, recordId } = options
     JSON.parse(goodsList).forEach(item => {
       let { goodsId, prdRealPrice: goodsPrice, goodsNum: goodsNumber, prdId: productId, isCart = 0 } = item
       goods.push({ goodsId, goodsPrice, goodsNumber, productId, isCart })
@@ -58,7 +59,8 @@ global.wxPage({
       'params.goods': goods,
       'params.isCart': goods[0].isCart, //购物车来源|商品详情
       'params.activityType': activityType,
-      'params.activityId': activityId
+      'params.activityId': activityId,
+      'params.recordId': recordId
     })
     if (options.groupid) {
       this.setData({
@@ -393,6 +395,7 @@ global.wxPage({
       memberCardNo,
       activityType,
       activityId,
+      recordId: this.data.params.recordId,
       groupId: this.data.params.groupId
     }
     util.api('/api/wxapp/order/submit', res => {

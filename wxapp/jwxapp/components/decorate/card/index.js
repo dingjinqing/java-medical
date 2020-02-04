@@ -7,7 +7,7 @@ global.wxComponent({
     onPropChange (newVal, oldVal, changedPath) {
 
       // 根据背景类型来判断是采用背景颜色还是背景图片
-      console.log(newVal, 'cardData', newVal.bgImg)
+      console.log(newVal, 'cardData11111111111111111111111')
       // 处理背景
       if (newVal.bg_type == 0) {
         newVal.bg = newVal.bg_color = newVal.bg_color || '#e6cb96';
@@ -18,6 +18,7 @@ global.wxComponent({
         newVal.bg = 'url(' + newVal.bgImg + ')';
       }
       console.log(newVal)
+      newVal.status = -1
       // shop_img、activation字段在第二个接口
     },
     bindGetCard (e) {
@@ -32,14 +33,14 @@ global.wxComponent({
         console.log(res)
         if (res.error == 0) {
           if (res.content.isMostGrade) {
-            util.toast_fail('当前等级已最高');
+            util.toast_fail(this.$t("components.decorate.highestGrade"));
             return;
           } else if (res.content.gradeCard) {
-            var text = '没有达到该卡的条件';
+            var text = this.$t("components.decorate.conditionsNotMet");
             if (res.content.gradeCard.gradeScore > 0) {
-              text = '您的积分没有达到' + res.content.gradeCard.gradeScore + '积分';
+              text = this.$t("components.decorate.PointsNotAchieved") + res.content.gradeCard.gradeScore + this.$t("components.decorate.integral");
             } else {
-              text = '您的消费金额没有达到' + res.content.gradeCard.gradeMoney + '元';
+              text = this.$t("components.decorate.amountNotReached") + res.content.gradeCard.gradeMoney + this.$t("components.decorate.element");
             }
             util.showModal('', text);
             return;
@@ -62,14 +63,14 @@ global.wxComponent({
             if (d.activation == 1) {
               util.jumpLink('/pages/cardinfo/cardinfo?cardNo=' + cardNo);
             } else {
-              util.showModal('提示', '领取成功，可在个人中心查看', function () {
+              util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.successfulReception"), function () {
                 console.log('触发')
                 util.jumpLink('/pages/cardinfo/cardinfo?cardNo=' + cardNo, 'navigateTo')
-              }, true, '取消', '立即查看')
+              }, true, this.$t("components.decorate.cancel"), this.$t("components.decorate.checkNow"))
             }
           }
         } else {
-          util.toast_fail('领取失败');
+          util.toast_fail(this.$t("components.decorate.failToRreceive"));
         }
       }, {
         cardId: d.card_id

@@ -2,12 +2,19 @@ module.exports = {
     searchPlaceholder: '请输入商品关键字',
     searchText: '分类',
     ordinaryCard: '普通卡',  // 会员卡部分
+    membershiGradeCard: '会员等级卡',
     limitCard: '限次卡',
     integral: '积分',
     moreToCheck: '更多权益领取后查看',
     collarCard: '我要领卡',
     needActivation: '该卡需要在会员卡详情页激活后才可使用',
     moreEquity: '查看更多权益',
+    highestGrade: '当前等级已最高',
+    conditionsNotMet: '没有达到该卡的条件',
+    PointsNotAchieved: '您的积分没有达到',
+    amountNotReached: '您的消费金额没有达到',
+    successfulReception: '领取成功，可在个人中心查看',
+    failToRreceive: '领取失败',
     fracture: '折',  // 优惠券部分
     unlimited: '库存无限制',
     memberReceive: '会员领取',
@@ -21,6 +28,15 @@ module.exports = {
     enterClaimCode: '请输入领取码',
     cancel: '取消',
     confirm: '确认',
+    wrongReceivingCode: '领取码错误',
+    successfulReception: '领取成功',
+    couponDoesNotExist: '优惠券不存在',
+    coupoExpired: '优惠券已过期',
+    couponDisabled: '优惠券已停用',
+    couponStockIs: '优惠券库存为0',
+    insufficientPointsAvailable: '可用积分不足',
+    pointUpdateFailed: '积分更新失败',
+    reachesTheUpperLimit: '领取次数达上限',
     grabAtOnce: '马上抢', // 商品部分
     purchase: '购买',
     viewMore: '查看更多',
@@ -53,5 +69,25 @@ module.exports = {
     onlyLeft: '仅剩',
     toBargain: '去砍价',
     originalPrice: '原价购买',
-    tips: '提示'
+    tips: '提示',
+    doesNotExist: '该活动不存在',
+    notStart: '该活动未开始',
+    insufficientInventory: '商品库存不足',
+    operationFailed: '操作失败',
+    start: '开始',
+    snapUp: '去抢购',
+    sold: '已售',
+    endOfDistance: '距结束',
+    toExchange: '去兑换', // 积分兑换模块
+    groupDraw: '拼团抽奖',  // 拼团抽奖部分
+    leftBeforeTheEnd: '距结束仅剩',
+    startTime: '开始时间',
+    waitinForYou: '积分等你拿',   // 瓜分积分部分
+    cashForShopping: '购物可抵现金',
+    humanCarveUp: '人瓜分',
+    termOfValidity: '有效期',
+    to: '至',
+    more: '更多',
+    personalPayment: '人付款', // 商品分组
+    humanEvaluation: '人评价'
 }

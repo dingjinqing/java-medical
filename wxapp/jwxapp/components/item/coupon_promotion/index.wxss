@@ -37,3 +37,25 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
+.gift-desc{
+  flex-direction: column;
+}
+.gift-goods-list{
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10rpx;
+}
+.gift-goods-list .gift-gift-item{
+  width: 80rpx;
+  height: 80rpx;
+  border: 1rpx solid #eee;
+  padding: 8rpx;
+  margin-top: 10rpx;
+}
+.gift-goods-list .gift-gift-item + .gift-gift-item{
+  margin-left: 10rpx;
+}
+.gift-goods-list .gift-gift-item image{
+  width: 100%;
+  height: 100%;
+}

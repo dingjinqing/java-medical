@@ -245,7 +245,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
 
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
-        doOrderOperation(param.getOrderCartProductBo());
+        doOrderOperation(param.createOrderCartProductBo());
     }
 
     @Override
