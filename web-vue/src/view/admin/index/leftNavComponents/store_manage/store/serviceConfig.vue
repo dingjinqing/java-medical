@@ -108,7 +108,8 @@
         >
           <el-table-column
             type="selection"
-            align="right">
+            align="center"
+          >
           </el-table-column>
           <el-table-column
             prop="storeName"
@@ -201,7 +202,7 @@ export default {
         store_buy: 0,
         store_scan_ids: '',
         technician_title: '',
-        store_scan_num: ''
+        store_scan_num: 0
       },
       radioDisabled: false, // 门店买单 radio disbaled
       inputDisabled: false // 职称配置input disbaled
@@ -252,8 +253,8 @@ export default {
             }
             item.autoPick = this.number2boolean(item.autoPick)
             item.businessTime = item.openingTime + '-' + item.closeTime
-            // this.param.store_scan_ids.split(',').indexOf(item.storeId.toString()) > -1
-            if (JSON.parse(this.param.store_scan_ids).indexOf(item.storeId) > -1) {
+            if (this.param.store_scan_ids === '') {
+            } else if (JSON.parse(this.param.store_scan_ids).indexOf(item.storeId) > -1) {
               initStoreList.push(this.storeParamList[index])
             }
           })
@@ -292,7 +293,11 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.param = res.content
-          this.param.store_scan_num = res.content.store_scan_ids.split(',').length
+          if (res.content.store_scan_ids === '' || res.content.store_scan_ids === '[]') {
+            this.param.store_scan_num = 0
+          } else {
+            this.param.store_scan_num = res.content.store_scan_ids.split(',').length
+          }
           console.log(this.param.store_scan_num)
         } else {
           this.$message.error(this.$t('storeCommon.operatefailed'))
