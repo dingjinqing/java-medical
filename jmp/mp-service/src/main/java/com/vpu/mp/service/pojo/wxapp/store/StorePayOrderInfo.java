@@ -1,11 +1,14 @@
 package com.vpu.mp.service.pojo.wxapp.store;
 
 import lombok.Data;
+import org.jooq.tools.StringUtils;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
+
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * The type Store pay order info.
@@ -30,23 +33,23 @@ public class StorePayOrderInfo {
     /**
      * The Card charge dis.会员卡余额抵扣金额
      */
-    public BigDecimal cardAmount;
+    public BigDecimal cardAmount = BigDecimal.ZERO;
     /**
      * The Card dis.会员卡折扣抵扣金额
      */
-    public BigDecimal cardDisAmount;
+    public BigDecimal cardDisAmount = BigDecimal.ZERO;
     /**
      * The Invoice.发票
      */
-    public int invoiceId;
+    public Integer invoiceId = INTEGER_ZERO;
     /**
      * The Score dis.积分抵扣金额
      */
-    public BigDecimal scoreAmount;
+    public BigDecimal scoreAmount = BigDecimal.ZERO;
     /**
      * The Score dis.余额抵扣金额
      */
-    public BigDecimal balanceAmount;
+    public BigDecimal balanceAmount = BigDecimal.ZERO;
     /**
      * The Total price.应付金额
      */
@@ -56,5 +59,5 @@ public class StorePayOrderInfo {
     /**
      * The remark 留言
      */
-    public String remark;
+    public String remark = StringUtils.EMPTY;
 }

@@ -145,6 +145,16 @@ public class BigDecimalUtil {
     }
 
     /**
+     * Null 2 zero big decimal.
+     *
+     * @param target the target
+     * @return the big decimal
+     */
+    public static BigDecimal null2Zero(BigDecimal target) {
+        return Objects.nonNull(target) ? target : BIGDECIMAL_ZERO;
+    }
+
+    /**
      * Ge zero boolean.是否大于等于0
      *
      * @param target the target
