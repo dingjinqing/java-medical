@@ -435,6 +435,7 @@ public class GoodsCommentService extends ShopBaseService {
 //                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
                 .and(ORDER_GOODS.COMMENT_FLAG.eq(param.getCommentFlag()))
                 .and(ORDER_GOODS.GOODS_NUMBER.greaterThan(ORDER_GOODS.RETURN_NUMBER))
+                .orderBy(ORDER_GOODS.CREATE_TIME.desc())
                 .fetchInto(CommentListVo.class);
         // 当前订单下的所有满足条件的商品信息作为出参
         commentListVo.addAll(tempCommentList);
@@ -480,6 +481,7 @@ public class GoodsCommentService extends ShopBaseService {
 //                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
                 .and(ORDER_GOODS.COMMENT_FLAG.eq(param.getCommentFlag()))
                 .and(ORDER_GOODS.GOODS_NUMBER.greaterThan(ORDER_GOODS.RETURN_NUMBER))
+                .orderBy(COMMENT_GOODS.CREATE_TIME.desc())
                 .fetchInto(CommentListVo.class);
         // 当前订单下的所有满足条件的商品信息作为出参
         commentListVo.addAll(tempCommentList);
