@@ -25,7 +25,7 @@ export const cn = {
   account: '我的余额',
   score: '我的积分',
   coupon: '优惠券',
-  card: '优惠卡',
+  card: '会员卡',
   show: '展示',
   noShow: '不展示',
 
