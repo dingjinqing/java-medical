@@ -13,8 +13,10 @@ import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -22,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.OrderCloseQueenParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
@@ -793,7 +796,21 @@ public class StoreReservation extends ShopBaseService {
 
     private boolean cancelWXOrder(Integer orderId) {
         // TODO 队列五分钟后调用微信关闭订单接口
-//        String orderSn = serviceOrderService.selectSingleField(orderId, SERVICE_ORDER.ORDER_SN);
+
+        String orderSn = serviceOrderService.selectSingleField(orderId, SERVICE_ORDER.ORDER_SN);
+        OrderCloseQueenParam param = new OrderCloseQueenParam(getShopId(),orderSn);
+        Timestamp startTime = DateUtil.getDalyedDateTime(60*5);
+        TaskJobInfo info = TaskJobInfo.builder(getShopId())
+            .type(TaskJobsConstant.EXECUTION_TIMING)
+            .content(param)
+            .className(OrderCloseQueenParam.class.getName())
+            .startTime(startTime)
+            .executionType(TaskJobsConstant.TaskJobEnum.WX_CLOSEORDER)
+            .builder();
+        saas.taskJobMainService.dispatch(info);
+
+
+
 //        try {
 //            mpPaymentService.wxCloseOrder(orderSn);
 //        } catch (WxPayException e) {
