@@ -42,6 +42,16 @@ global.wxPage({
       useScore: 0//已使用的积分
     },
     orderInfo: {},
+    invoiceArray: ['不需要','普通发票','增值税普通发票','增值税专用发票'],
+    invoiceIndex:0,
+    message:"", //买家备注
+    must:{
+      orderRealName:'',
+      orderCid:'',
+      consigneeRealName:'',
+      consigneeCid:'',
+      custom:''
+    }
   },
 
   /**
@@ -342,6 +352,69 @@ global.wxPage({
         break;
     }
   },
+  // 是否使用发票
+  bindInvoiceChange(e){
+    this.setData({
+      invoiceIndex:parseInt(e.detail.value)
+    })
+  },
+  // 下单必填项
+  mustInput(e){
+    let {type} = e.currentTarget.dataset,{value} = e.detail
+    switch (type) {
+      case 'orderRealName':
+        this.setData({
+          'must.orderRealName':value
+        })
+        break;
+      case 'orderCid':
+        this.setData({
+          'must.orderCid':value
+        })
+        break;
+      case 'consigneeRealName':
+        this.setData({
+          'must.consigneeRealName':value
+        })
+        break;
+      case 'consigneeCid':
+        this.setData({
+          'must.consigneeCid':value
+        })
+        break;
+      default:
+        this.setData({
+          'must.must':value
+        })
+        break;
+    }
+  },
+  // 添加备注
+  addMsg(e){
+    let { value: message} = e.detail
+    this.setData({
+      message
+    })
+  },
+  // 选择发票
+  chooseInvoice (){
+    wx.chooseInvoiceTitle({
+      success(res) {
+        // util.api('/api/wxapp/invoice/choose', function(e) {
+        //   that.data.create_order.invoice_id = e.content;
+        //   that.setData({
+        //     invoiceTitle: res.title
+        //   })
+        // }, {
+        //   invoice_info: JSON.stringify(res)
+        // })
+        console.log(res)
+      },
+      fail() {
+        util.showModal('', "获取发票信息失败");
+      }
+    })
+  },
   // 关闭弹窗
   closeDialog (target) {
     switch (target.detail) {
@@ -376,6 +449,13 @@ global.wxPage({
       })
       return
     }
+    if ((this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) || (this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) || (this.data.orderInfo.must.orderCid && !this.data.must.orderCid) || (this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName)) {
+      wx.showToast({
+        title: '请输入必填项',
+        icon: 'none'
+      })
+      return
+    }
     goods = goods.filter((item) => {
      return item.isGift !== 1
     })
@@ -390,10 +470,12 @@ global.wxPage({
       deliverType: this.data.params.deliverType,
       orderPayWay: this.data.choosePayTypeIndex,
       couponSn,
+      message:this.data.message,
       memberCardNo,
       activityType,
       activityId,
-      groupId: this.data.params.groupId
+      groupId: this.data.params.groupId,
+      must:this.data.must
     }
     util.api('/api/wxapp/order/submit', res => {
       if (res.error === 0) {

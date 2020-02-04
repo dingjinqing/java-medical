@@ -227,3 +227,15 @@
   color: #fff;
   font-size: 24rpx;
 }
+.invoice .pay_list_item .pay_list_right image{
+  vertical-align: unset;
+}
+.invoice .pay_list_content{
+  color: #888;
+}
+.msg .pay_list_content{
+  text-align: left;
+}
+.must{
+  color: #f66;
+}

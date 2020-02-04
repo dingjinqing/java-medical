@@ -104,7 +104,83 @@
           </view>
         </view>
       </view>
- 
+      <view class="pay_content msg" wx:if="{{orderInfo.must.orderCid || orderInfo.must.orderRealName}}">
+        <view class="pay_list_item">
+           <text class="pay_list_title">下单人信息</text>
+        </view>
+        <view class="pay_list_item" wx:if="{{orderInfo.must.orderRealName}}">
+           <text class="pay_list_title"><text class="must">*</text>真实姓名：</text>
+           <view class="pay_list_content">
+            <input placeholder="请输入" value='' data-type="orderRealName" bindinput="mustInput"></input>
+           </view>
+        </view>
+        <view class="pay_list_item" wx:if="{{orderInfo.must.orderCid}}">
+           <text class="pay_list_title"><text class="must">*</text>身份证号：</text>
+           <view class="pay_list_content">
+            <input placeholder="请输入" value='' data-type="orderCid" bindinput="mustInput"></input>
+           </view>
+        </view>
+      </view>
+
+      <view class="pay_content msg"  wx:if="{{orderInfo.must.consigneeCid || orderInfo.must.consigneeRealName}}">
+        <view class="pay_list_item">
+           <text class="pay_list_title">收货人信息</text>
+        </view>
+        <view class="pay_list_item" wx:if="{{orderInfo.must.consigneeRealName}}">
+           <text class="pay_list_title"><text class="must">*</text>真实姓名：</text>
+           <view class="pay_list_content">
+            <input placeholder="请输入" value='' data-type="consigneeRealName" bindinput="mustInput"></input>
+           </view>
+        </view>
+        <view class="pay_list_item" wx:if="{{orderInfo.must.consigneeCid}}">
+           <text class="pay_list_title"><text class="must">*</text>身份证号：</text>
+           <view class="pay_list_content">
+            <input placeholder="请输入" value='' data-type="consigneeCid" bindinput="mustInput"></input>
+           </view>
+        </view>
+      </view>
+
+
+      <view class="pay_content msg"  wx:if="{{orderInfo.must.custom}}">
+        <view class="pay_list_item">
+           <text class="pay_list_title"><text class="must">*</text>{{orderInfo.must.customTitle}}：</text>
+           <view class="pay_list_content">
+            <input placeholder="请输入" value='' data-type="custom" bindinput="mustInput"></input>
+           </view>
+        </view>
+      </view>
+
+
+
+      <view class="pay_content msg">
+        <view class="pay_list_item">
+           <text class="pay_list_title">备注：</text>
+           <view class="pay_list_content">
+            <input placeholder="请输入给店铺的留言，可不填写" value='' bindinput='addMsg'></input>
+           </view>
+        </view>
+      </view>
+      <view class="pay_content invoice">
+        <view class="pay_list_item">
+          <text class="pay_list_title">发票</text>
+          <view class="pay_list_content">
+            <picker mode="selector" value="{{invoiceIndex}}" range="{{invoiceArray}}" bindchange="bindInvoiceChange">
+                {{invoiceArray[invoiceIndex]}}
+            </picker>
+          </view>
+          <view class="pay_list_right">
+            <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
+          </view>
+        </view>
+        <view class="pay_list_item invoice" bindtap="chooseInvoice" wx:if="{{invoiceIndex !== 0}}">
+          <text class="pay_list_title">发票抬头</text>
+          <text class="pay_list_content">选择发票抬头</text>
+          <view class="pay_list_right">
+            <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
+          </view>
+        </view>
+      </view>
+
       <view class="checkout_detail">
         <view class="detail_item">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.goods")+i18n.$t(localePack,"pages.checkout.total")}}</text>
