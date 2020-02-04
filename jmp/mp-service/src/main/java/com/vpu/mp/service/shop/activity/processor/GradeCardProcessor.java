@@ -208,7 +208,12 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(cartBo.getUserId(), cartBo.getProductIdList());
+        log.info("会员价计算start");
+        String grade = userCardService.getUserGrade(cartBo.getUserId());
+        if (grade.equals(CardConstant.LOWEST_GRADE)) {
+            return;
+        }
+        List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(grade, cartBo.getProductIdList());
         cartBo.getCartGoodsList().forEach(goods -> {
             // 会员等级
             userCartGradePrice.forEach(gradePrice -> {
@@ -216,6 +221,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
                     CartActivityInfo gradePriceInfo = new CartActivityInfo();
                     gradePriceInfo.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
                     gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
+                    goods.getCartActivityInfos().add(gradePriceInfo);
                 }
             });
         });
