@@ -98,7 +98,13 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/groupdraw/share/info")
     public JsonResult getGroupDrawShareInfo(@RequestBody GroupDrawShareInfoParam param){
-        param.setUserId( wxAppAuth.user().getUserId());
+        param.setUserId(wxAppAuth.user().getUserId());
         return success(shop().pictorialIntegrationService.getGroupDrawShareInfo(param));
+    }
+
+    @PostMapping("/api/wxapp/groupdraw/pictorial/info")
+    public JsonResult getGroupDrawPictorial(@RequestBody GroupDrawShareInfoParam param) {
+        param.setUserId(wxAppAuth.user().getUserId());
+        return success(shop().pictorialIntegrationService.getGroupDrawPictorialInfo(param));
     }
 }

@@ -22,6 +22,15 @@
   position: relative;
   margin-right: 20rpx;
 }
+.goods_item > .goods_img > .member_tip {
+  position: absolute;
+  bottom: 5rpx;
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  font-size: 24rpx;
+  text-align: center;
+}
 .goods_item > .goods_img > .invalid {
   position: absolute;
   bottom: 0;

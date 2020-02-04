@@ -823,6 +823,9 @@ public class JsonResultMessage {
     public static final String WX_MA_GROUP_DRAW_SHARE_INFO = "wx.ma.group.draw.share.info";
     /**'快来参与1.00元拼团大抽奖吧'文字*/
     public static final String WX_MA_GROUP_DRAW_SHARE_DOC = "wx.ma.group.draw.share.doc";
+    /**'1.00元大抽奖，快来参与吧'文字*/
+    public static final String WX_MA_GROUP_DRAW_PICTORIAL_DOC = "wx.ma.group.draw.pictorial.doc";
+
     /** 拼团相关 */
     /** 开团省 */
     public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";

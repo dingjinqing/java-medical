@@ -27,9 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -214,31 +212,29 @@ public class BargainPictorialService extends ShopBaseService {
             bargainLog("pictorial", "获取二维码失败");
             return null;
         }
-        PictorialImgPx imgPx = new PictorialImgPx();
+
         // 拼装背景图
+        PictorialImgPx imgPx = new PictorialImgPx();
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,true);
 
         try(InputStream moneyIconIo = Util.loadFile(BARGAIN_MONEY_ICON_IMG)) {
             BufferedImage moneyIconImg = ImageIO.read(moneyIconIo);
             moneyIconImg = ImageUtil.resizeImage(40,30,moneyIconImg);
-            ImageUtil.addTwoImage(bgBufferedImage,moneyIconImg,imgPx.getCustomerTextStartX(),imgPx.getCustomerTextStartY()-imgPx.getMediumFontSize());
+            ImageUtil.addTwoImage(bgBufferedImage,moneyIconImg,imgPx.getCustomerTextStartX(),imgPx.getCustomerRectStartY()+imgPx.getLargeFontAscent(bgBufferedImage)/2);
         }catch (IOException e){
             bargainLog("pictorial", "读取本地图片money_icon错误"+e.getMessage());
             return null;
         }
 
         // 原价
-        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_TAKE, "messages",param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP));
-        ImageUtil.addFont(bgBufferedImage, realPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),imgPx.getCustomerTextStartX()+42,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
+        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_TAKE, null,"messages",param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+        ImageUtil.addFont(bgBufferedImage, realPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),imgPx.getCustomerTextStartX()+42,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor(),false);
         Integer realPriceLength=  ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceText);
 
         // 划线价
         String linePriceText =Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2,BigDecimal.ROUND_HALF_UP);
         Integer linePriceStartX = imgPx.getCustomerTextStartX()+42+realPriceLength;
-        ImageUtil.addFont(bgBufferedImage,linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getMediumFontSize()),linePriceStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
-        Integer linePriceLength=  ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getMediumFontSize()),linePriceText);
-        // 画线
-        ImageUtil.addLine(bgBufferedImage,linePriceStartX-2,imgPx.getCustomerTextStartY()-imgPx.getMediumFontSize()/3,linePriceStartX+linePriceLength+4,imgPx.getCustomerTextStartY()-imgPx.getMediumFontSize()/3,imgPx.getCustomerTextFontColor());
+        ImageUtil.addFontWithLine(bgBufferedImage,linePriceStartX,imgPx.getCustomerSecondTextStartY(),linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextFontColor());
 
         return ImageUtil.toBase64(bgBufferedImage);
     }
