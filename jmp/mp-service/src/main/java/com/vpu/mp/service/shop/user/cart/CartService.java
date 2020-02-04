@@ -14,7 +14,9 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.factory.CartProcessorContext;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -48,6 +50,7 @@ public class CartService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private CartProcessorContext cartProcessor;
+    private ImageService imageService;
     /**
      * 用户会员卡
      */
@@ -98,6 +101,7 @@ public class CartService extends ShopBaseService {
         appCartGoods.forEach(cartGoods->{
             cartGoods.setGoodsRecord(goodsRecordMap.get(cartGoods.getGoodsId()));
             cartGoods.setProductRecord(productRecordMap.get(cartGoods.getProductId()));
+            cartGoods.setGoodsImg(getImgFullUrlUtil(cartGoods.getGoodsImg()));
         });
         //购物车业务数据
         WxAppCartBo cartBo = WxAppCartBo.builder()
@@ -110,7 +114,19 @@ public class CartService extends ShopBaseService {
         cartProcessor.executeCart(cartBo);
         return cartBo;
     }
-
+    /**
+     * 将相对路劲修改为全路径
+     *
+     * @param relativePath 相对路径
+     * @return null或全路径
+     */
+    private String getImgFullUrlUtil(String relativePath) {
+        if (StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return imageService.imageUrl(relativePath);
+        }
+    }
     /**
      * 获取购物车记录
      * @param userId
