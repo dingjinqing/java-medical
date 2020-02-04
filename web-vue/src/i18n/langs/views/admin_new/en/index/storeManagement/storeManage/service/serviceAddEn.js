@@ -25,6 +25,7 @@ export const en = {
   endPeriodTips: 'The time period should be within the store opening hours (business hours',
   endPeriodTips2: ', the service period selected by the front-end user will be split according to the time period',
   serviceDuration: 'Service duration',
+  serviceTimeValid: 'Service end time should be greater than service start time',
   hour: 'hour',
   minute: 'minute',
   serviceType1: 'At the same time, the number of people can be served',
