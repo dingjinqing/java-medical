@@ -320,9 +320,20 @@ global.wxPage({
   couponChange(e) {
     let { couponSn } = this.data.couponArray[parseInt(e.detail.value)]
     this.setData({
-      'params.couponSn': couponSn,
       defaultCouponIndex: parseInt(e.detail.value)
     })
+    if (couponSn) {
+      this.setData({
+        'params.couponSn': couponSn
+      })
+    } else {
+      let params = this.data.params
+      delete params.couponSn
+      this.setData({
+        params
+      })
+    }
+
     this.requestOrder()
   },
   // 选择会员卡事件
@@ -333,9 +344,17 @@ global.wxPage({
   },
   // 得到选择后的会员卡
   getSelectCard(data) {
-    this.setData({
-      'params.memberCardNo': data.detail
-    })
+    if (data.detail) {
+      this.setData({
+        'params.memberCardNo': data.detail
+      })
+    } else {
+      let params = this.data.params
+      delete params.memberCardNo
+      this.setData({
+        params
+      })
+    }
     this.requestOrder()
   },
   // 变更支付类型
