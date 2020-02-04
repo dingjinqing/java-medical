@@ -22,7 +22,7 @@ export const cn = {
   to: '至',
   dateTips: '前端用户预约所选择的服务日期按照该限制显示',
   serviceHours: '服务时段',
-  endPeriodTips: '时间段应在门店营业时间内(营业时间：',
+  endPeriodTips: '时间段应在门店营业时间内(营业时间',
   endPeriodTips2: '，前端用户所选择的服务时段将按照该时段进行拆分',
   serviceDuration: '服务时长',
   hour: '小时',
