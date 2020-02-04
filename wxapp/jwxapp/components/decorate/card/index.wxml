@@ -21,7 +21,7 @@
           <image class="image" src='{{m.shipImg}}' />
         </view>
         <view class="card_content_right">
-          <view style='font-size:28rpx;'>会员等级卡</view>
+          <view style='font-size:28rpx;'>{{i18n.$t(localePack,'components.decorate.membershiGradeCard')}}</view>
         </view>
       </view>
       <view class="card_bottom">

@@ -1,3 +1,4 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <block wx:if="{{m.title_model == '1'}}">
   <view class="title-container" catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.cur_idx}}' style="background-color: {{m.bg_color}};margin-bottom:{{m.margin_bot}}rpx;">
     <view class="main-titles" style="text-align:{{m.pos}};">
@@ -5,7 +6,7 @@
       <text class="text" style='color:{{m.color}};padding-right:40rpx;'>{{m.title}}</text>
     </view>
     <view class="more-title">
-      <text class="text">更多</text>
+      <text class="text">{{i18n.$t(localePack,'components.decorate.more')}}</text>
       <image class="image" src="/images/arrow.png"></image>
     </view>
   </view>

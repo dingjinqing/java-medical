@@ -49,9 +49,9 @@
           </view>
           <view>
             <view class='one_ori_pri' wx:if='{{m.show_goods_price == true}}'>￥{{item.prd_price}}</view>
-            <view class='btn_convert' wx:if='{{!item.tip}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去兑换</view>
-            <view class='orig_convert' style="background:#ccc" wx:if="{{item.tip && item.tip == '商品已删除'}}">原价购买</view>
-            <view class='orig_convert' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if="{{item.tip && item.tip != '商品已删除'}}">原价购买</view>
+            <view class='btn_convert' wx:if='{{!item.tip}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,'components.decorate.toExchange')}}</view>
+            <view class='orig_convert' style="background:#ccc" wx:if="{{item.tip && item.tip == i18n.$t(localePack,'components.decorate.goodsDeleted')}}">{{i18n.$t(localePack,'components.decorate.originalPrice')}}</view>
+            <view class='orig_convert' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if="{{item.tip && item.tip != i18n.$t(localePack,'components.decorate.goodsDeleted')}}">{{i18n.$t(localePack,'components.decorate.originalPrice')}}</view>
           </view>
         </view>
       </view>
