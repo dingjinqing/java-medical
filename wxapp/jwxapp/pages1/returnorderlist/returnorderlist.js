@@ -22,7 +22,7 @@ global.wxPage({
     reasone: i18n.trans("page1.afterSale.reasone"), // 退货退款原因
     reasone_huan: i18n.trans("page1.afterSale.reasone_huan"), // 换货原因
 
-    voucherImages: [], // 物流凭证
+    goodsImages: [], // 物流凭证
   },
 
   /**
@@ -43,6 +43,9 @@ global.wxPage({
       if (res.error === 0) {
         let content = res.content
         content.returnOrderlist.forEach(function (item) {
+          if (item.goodsImages) {
+            item.goodsImages = JSON.parse(item.goodsImages)
+          }
           if (item.voucherImages) {
             item.voucherImages = JSON.parse(item.voucherImages)
           }

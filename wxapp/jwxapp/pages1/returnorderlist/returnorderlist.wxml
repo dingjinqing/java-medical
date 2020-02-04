@@ -79,17 +79,17 @@
               <text class="order-item-title">{{i18n.$t(localePack,"page1.afterSale.afterSaleDescription")}}：</text>
               <text>{{item.refundRefuseReason}}</text>
             </view>
-            <view wx:if="{{item.goodsImages && item.goodsImages.length>0}}">
-              <text class="order-item-title">{{i18n.$t(localePack,"page1.afterSale.afterSalesCertificate")}}：</text>
+            <view wx:if="{{item.goodsImages && item.goodsImages.length>0}}" style="overflow:hidden;">
+              <text class="order-item-title" style="float:left;">{{i18n.$t(localePack,"page1.afterSale.afterSalesCertificate")}}：</text>
               <view class='return_shuom' style='float:left'>
                 <block wx:for='{{item.goodsImages}}' wx:key='index'>
-                  <image src='{{item}}' mode='aspectFit'></image>
+                  <image src='{{imageUrl + item}}' mode='aspectFit' style="width:100%;height:100%;"></image>
                 </block>
               </view>
             </view>
           </block>
           <!-- 商家同意,等待提交物流 -->
-          <block wx:elif="{{item.refundStatus == 2}}">
+          <block wx:if="{{item.refundStatus == 2}}">
             <view class='order-item-title'>
               <text>{{i18n.$t(localePack,"page1.afterSale.reviewTime")}}：</text>
               {{item.finishTime}}
@@ -159,11 +159,12 @@
               <text style="float:left;">{{i18n.$t(localePack,"page1.afterSale.refundInstruct")}}：</text>
               <text class='return_shuom' style="width:518rpx;height:auto;">{{item.reasonDesc}}</text>
             </view>
-            <view wx:if="{{item.goodsImages && item.goodsImages.length>0}}">
-              <text class="order-item-title">{{i18n.$t(localePack,"page1.afterSale.refundCertificate")}}：</text>
-              <view class='return_shuom' style='float:left'>
+            <!-- 退款凭证 -->
+            <view wx:if="{{item.goodsImages && item.goodsImages.length>0}}" style="overflow:hidden;">
+              <text class="order-item-title" style="display:block;float:left;">{{i18n.$t(localePack,"page1.afterSale.refundCertificate")}}：</text>
+              <view class='return_shuom' >
                 <block wx:for='{{item.goodsImages}}' wx:key='index'>
-                  <image src='{{item}}' mode='aspectFit'></image>
+                  <image style="width:100%;height:100%;" src='{{imageUrl + item}}' mode='aspectFit'></image>
                 </block>
               </view>
             </view>
@@ -174,9 +175,10 @@
               <text>{{i18n.$t(localePack,"page1.afterSale.submitDeliveryTime")}}：</text>
               {{item.createTime}}
             </view>
+            <!-- 物流公司 -->
             <view class='order-item-title'>
               <text>{{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：</text>
-              {{item.shippingType}}
+              {{item.shippingName}}
             </view>
             <view class='order-item-title'>
               <text>{{i18n.$t(localePack,"page1.afterSale.waybillNumber")}}：</text>
@@ -189,7 +191,7 @@
             <view class='order-item-title return_descs clearfix' wx:if="{{item.refundStatus == 4 && item.returnType == 1&& item.voucherImages.length > 0}}">
               <text style="float:left;">{{i18n.$t(localePack,"page1.afterSale.logisticsVoucher")}}：</text>
               <view class='return_shuom' style='float:left' wx:for="{{item.voucherImages}}">
-                <image class="return_shuom-img" src='{{imageUrl + item}}' mode='aspectFit'></image>
+                <image class="return_shuom-img" src='{{imageUrl + item}}' style="width:100%;height:100%;" mode='aspectFit'></image>
               </view>
             </view>
           </block>

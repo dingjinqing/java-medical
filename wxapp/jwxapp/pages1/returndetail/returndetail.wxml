@@ -119,7 +119,7 @@
         <view class="order-block-detail-item">
           <text class="details-item-title">{{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：</text>
           <!-- 物流公司id -->
-          <text>{{orderInfo.shippingType}}</text>
+          <text>{{orderInfo.shippingName}}</text>
         </view>
         <view class="order-block-detail-item">
           <text class="details-item-title">{{i18n.$t(localePack,"page1.afterSale.waybillNumber")}}：</text>
