@@ -7,26 +7,14 @@ import java.math.BigDecimal;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
 import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.OrderRefundRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.RandomUtil;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.shop.payment.MpPaymentService;
-import com.vpu.mp.service.shop.payment.PaymentRecordService;
 
 /**
  * 	非系统金额退款记录表
