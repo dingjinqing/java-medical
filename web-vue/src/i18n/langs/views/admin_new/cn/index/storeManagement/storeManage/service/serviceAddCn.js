@@ -25,6 +25,7 @@ export const cn = {
   endPeriodTips: '时间段应在门店营业时间内(营业时间',
   endPeriodTips2: '，前端用户所选择的服务时段将按照该时段进行拆分',
   serviceDuration: '服务时长',
+  serviceTimeValid: '服务结束时间应大于服务开始时间',
   hour: '小时',
   minute: '分钟',
   serviceType1: '同时段可服务人数',
