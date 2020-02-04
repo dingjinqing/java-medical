@@ -36,10 +36,11 @@ public class OrderMustService extends ShopBaseService {
      * 记录入库
      * @param must 订单必填信息
      */
-    public void addRecord(OrderMustParam must){
+    public void addRecord(OrderMustParam must, String orderSn){
         if(must == null) {
             return;
         }
+        must.setOrderSn(orderSn);
         db().newRecord(TABLE, must).store();
     }
 }
