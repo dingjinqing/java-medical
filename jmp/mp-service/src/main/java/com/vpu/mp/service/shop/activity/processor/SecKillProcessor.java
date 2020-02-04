@@ -104,13 +104,15 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
             Map<Integer, SeckillProductBo> seckillProductBoMap = secKillInfoList.intoMap(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SeckillProductBo.class);
             cartBo.getCartGoodsList().forEach(goods->{
                 SeckillProductBo seckillPrd = seckillProductBoMap.get(goods.getProductId());
-                CartActivityInfo seckillProductInfo =new CartActivityInfo();
-                seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
-                seckillProductInfo.setActivityId(seckillPrd.getSkId());
-                seckillProductInfo.setSecKillPrice(seckillPrd.getSecKillPrice());
-                goods.getCartActivityInfos().add(seckillProductInfo);
-                goods.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
-                goods.setActivityId(seckillPrd.getSkId());
+                if (seckillPrd!=null){
+                    CartActivityInfo seckillProductInfo =new CartActivityInfo();
+                    seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+                    seckillProductInfo.setActivityId(seckillPrd.getSkId());
+                    seckillProductInfo.setSecKillPrice(seckillPrd.getSecKillPrice());
+                    goods.getCartActivityInfos().add(seckillProductInfo);
+                    goods.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+                    goods.setActivityId(seckillPrd.getSkId());
+                }
             });
         }
     }
