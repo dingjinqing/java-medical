@@ -1,12 +1,12 @@
 <template>
   <div class="tree_container">
     <el-dialog
-      title="确认要删除此项吗？"
+      title="提示"
       :visible.sync="delDialogVisible"
       width="30%"
       :append-to-body="true"
     >
-
+      <span>确认要删除此项吗？</span>
       <span slot="footer">
         <el-button
           size="small"
@@ -31,6 +31,7 @@
             size="mini"
             type="text"
             @click="update(node, data)"
+            v-if="del_btn"
           >
             编辑
           </el-button>
@@ -144,6 +145,7 @@ export default {
       } else {
         this.del_btn = false
       }
+
       // console.log('右键被点击的event:', event)
       // console.log('右键被点击的object:', object)
       // console.log('右键被点击的value:', value)

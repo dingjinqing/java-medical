@@ -147,10 +147,10 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         BigDecimal totalPrice  =new BigDecimal(0);
         byte isAllCheck  = 1;
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
+            if (goods.getPrdPrice()==null){
+                goods.setPrdPrice(goods.getGoodsPrice());
+            }
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
-                if (goods.getPrdPrice()==null){
-                    goods.setPrdPrice(goods.getGoodsPrice());
-                }
                 totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
             }else {
                 isAllCheck=0;

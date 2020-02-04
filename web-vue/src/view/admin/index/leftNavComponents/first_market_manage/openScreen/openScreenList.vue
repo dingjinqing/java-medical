@@ -76,12 +76,12 @@
         ></el-table-column>
         <el-table-column
           :label="$t('openScreen.activeStatus')"
-          prop="status"
+          prop="statusText"
           align="center"
         >
-          <template slot-scope="{row}">
+          <!-- <template slot-scope="{row}">
             <div>{{row.status|filterStatus}}</div>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           prop="operate"
@@ -177,6 +177,11 @@ export default {
       pageParams: {}
     }
   },
+  watch: {
+    lang () {
+      this.initDataList()
+    }
+  },
   filters: {
     filterAction (val) {
       let text = ''
@@ -189,27 +194,6 @@ export default {
           break
         case 3:
           text = vm.$t('openScreen.notPaidUser')
-          break
-      }
-      return text
-    },
-    filterStatus (status) {
-      let text = ''
-      switch (status) {
-        case 1:
-          text = vm.$t('openScreen.processing')
-          break
-        case 2:
-          text = vm.$t('openScreen.notStart')
-          break
-        case 3:
-          text = vm.$t('openScreen.expired')
-          break
-        case 4:
-          text = vm.$t('openScreen.terminated')
-          break
-        default:
-          text = ''
           break
       }
       return text

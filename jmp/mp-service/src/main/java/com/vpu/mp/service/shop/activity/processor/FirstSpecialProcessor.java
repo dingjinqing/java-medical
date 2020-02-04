@@ -290,8 +290,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
 
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
-        log.info("debug,{}",param);
-        doOrderOperation(param.getOrderCartProductBo());
+        doOrderOperation(param.createOrderCartProductBo());
     }
 
     @Override

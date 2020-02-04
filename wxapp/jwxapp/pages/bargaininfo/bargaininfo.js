@@ -115,9 +115,10 @@ global.wxPage({
     util.jumpToWeb('/wxapp/bargain/help');
   },
   toIndex: function () {
-    util.reLaunch({
-      url: '/pages/index/index',
-    })
+    // util.reLaunch({
+    //   url: '/pages/index/index',
+    // })
+    util.jumpLink('/pages/index/index', 'reLaunch')
   },
   // 砍价商品详情
   toItem: function () {
@@ -145,7 +146,7 @@ global.wxPage({
         goodsId: bargain_info.recordInfo.goodsId,
         prdRealPrice: bargain_info.recordInfo.prdPrice,
         goodsPrice: bargain_info.recordInfo.goodsPrice,
-        goodsNum: bargain_info.recordInfo.goodsNum,
+        goodsNum: 1,
         prdId: bargain_info.recordInfo.prdId,
         productId: bargain_info.recordInfo.prdId
       }]

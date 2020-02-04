@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -23,7 +22,6 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +32,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @ToString
-@Slf4j
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
     /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.foundation.data.BaseConstant} 下的ACTIVITY_TYPE**/
@@ -152,15 +149,14 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**
      * 获取商品计算首单特惠活动。。。
      */
-    public OrderCartProductBo  getOrderCartProductBo(){
+    public OrderCartProductBo createOrderCartProductBo(){
     	if (orderCartProductBo==null){
 			orderCartProductBo= new OrderCartProductBo();
+            orderCartProductBo.setUserId(getWxUserInfo().getUserId());
+            orderCartProductBo.setStoreId(getStoreId());
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-                log.info("debug{}", x);
-                OrderCartProductBo.OrderCartProduct orderCartProduct = new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber());
-                log.info("debug{}", orderCartProduct);
-                orderCartProductBo.getAll().add(orderCartProduct);
+				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber()));
 			});
 		}
         return orderCartProductBo;
@@ -180,20 +176,5 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	 */
 	public List<Integer> getProductIds() {
 		return goods == null ? Collections.emptyList() : goods.stream().map(Goods::getProductId).collect(Collectors.toList());
-	}
-
-	/**
-	 * 获取goodsMap
-	 * @return k->proId,v->goods
-	 */
-	public Map<Integer, Goods> getGoodsMap(){
-		if(goods == null) {
-			return Collections.emptyMap();
-		}else if(goodsMap != null){
-			return goodsMap;
-		}else {
-			//重复key报错
-			return goods.stream().collect(Collectors.toMap(Goods::getProductId, Function.identity()));
-		}
 	}
 }

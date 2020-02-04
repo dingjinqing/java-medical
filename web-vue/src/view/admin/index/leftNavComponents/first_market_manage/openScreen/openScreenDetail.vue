@@ -33,7 +33,7 @@
             ></el-date-picker>
           </li>
           <li>
-            <span>{{$t('openScreenDetail.phoneNum')}}：</span>
+            <span class="phoneNum">{{$t('openScreenDetail.phoneNum')}}：</span>
             <el-input
               size="small"
               style="width: 170px;"
@@ -179,11 +179,14 @@ export default {
         float: left;
         margin-right: 10px;
         li:not(:first-child) {
-          margin-left: 10px;
+          margin-left: 50px;
         }
         span {
           display: inline-block;
-          width: 80px;
+          width: 70px;
+        }
+        .phoneNum {
+          width: 60px;
         }
       }
     }
