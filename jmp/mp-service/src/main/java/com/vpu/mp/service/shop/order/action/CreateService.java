@@ -235,7 +235,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
-                must.addRecord(param.getMust());
+                must.addRecord(param.getMust(), orderSn);
                 orderBo.setOrderId(order.getOrderId());
                 if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
