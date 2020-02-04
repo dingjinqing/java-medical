@@ -287,8 +287,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.where(USER_CARD.FLAG.eq(UCARD_FG_USING))
 				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
-				.and((MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO)).or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
-            .fetchAnyInto(String.class);
+				.fetchAnyInto(String.class);
     }
 
 	/**
