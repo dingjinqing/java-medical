@@ -14,6 +14,8 @@ module.exports = {
     PointsNotAchieved: '您的积分没有达到',
     amountNotReached: '您的消费金额没有达到',
     successfulReception: '领取成功，可在个人中心查看',
+    theMaximumClaimLimit: '已达到领取上限',
+    nStock: '无库存',
     failToRreceive: '领取失败',
     fracture: '折',  // 优惠券部分
     unlimited: '库存无限制',

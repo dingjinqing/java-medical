@@ -93,4 +93,13 @@ public class PictorialIntegrationService extends ShopBaseService {
     public GoodsShareInfo getGroupDrawShareInfo(GroupDrawShareInfoParam param) {
         return groupDrawPictorialService.getGroupDrawShareInfo(param);
     }
+
+    /**
+     * 拼团抽奖海报获取
+     * @param param 拼团抽奖参数信息
+     * @return 分享图片信息
+     */
+    public String getGroupDrawPictorialInfo(GroupDrawShareInfoParam param) {
+        return groupDrawPictorialService.getGroupDrawPictorialInfo(param);
+    }
 }

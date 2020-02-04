@@ -164,7 +164,7 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/service/cancelReservation")
     public JsonResult cancelWaitToPayReservation(@RequestBody @Validated(ValidCon2.class) ReservationDetail param) {
-        shop().store.reservation.cancelWaitToPayReservation(param.getOrderId(), param.getCancelReason());
+        shop().store.reservation.cancelWaitToPayReservation(param);
         return this.success();
     }
 

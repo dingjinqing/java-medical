@@ -1,9 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.groupDraw;
 
-import java.sql.Timestamp;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 
 import lombok.Data;

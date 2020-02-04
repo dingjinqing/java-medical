@@ -22,7 +22,7 @@ export const en = {
   to: 'to',
   dateTips: 'The service date selected by the front-end user reservation is displayed according to the limit',
   serviceHours: 'Service hours',
-  endPeriodTips: 'The time period should be within the store opening hours (business hours: ',
+  endPeriodTips: 'The time period should be within the store opening hours (business hours',
   endPeriodTips2: ', the service period selected by the front-end user will be split according to the time period',
   serviceDuration: 'Service duration',
   hour: 'hour',

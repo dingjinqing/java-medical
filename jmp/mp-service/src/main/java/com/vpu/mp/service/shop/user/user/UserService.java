@@ -423,8 +423,8 @@ public class UserService extends ShopBaseService {
 		logger().info("获取sessionKey："+sessionKey2+"结果"+StringUtils.isEmpty(sessionKey));
 		WxMaUserInfo userInfo = maService.getUserService().getUserInfo(sessionKey,
 				param.getEncryptedData(), param.getIv());
-		logger().info("获取用户信息"+userInfo.toString());
 		if (userInfo != null) {
+			logger().info("获取用户信息"+userInfo.toString());
 			if (!userInfo.getUnionId().equals(record.getWxUnionId())) {
 				db().update(USER).set(USER.WX_UNION_ID, userInfo.getUnionId()).where(USER.USER_ID.eq(userId)).execute();
 				record.setWxUnionId(userInfo.getUnionId());
@@ -432,7 +432,7 @@ public class UserService extends ShopBaseService {
 				// TODO $crmResult = shop($shopId)->serviceRequest->crmApi->init();
 			}
 		} else {
-			logger().error("wxDecryptData error:" + userInfo.toString());
+			logger().error("wxDecryptData error:" + param.toString());
 			return false;
 		}
 		String token = tokenPrefix + Util.md5(shopId + "_" +userId);
@@ -711,7 +711,7 @@ public class UserService extends ShopBaseService {
 		if(importUser==null) {
 			return true;
 		}
-		if(importUser!=null||importUser.getIsActivate()==1) {
+		if(importUser.getIsActivate()==1) {
 			return false;
 		}
 		return true;

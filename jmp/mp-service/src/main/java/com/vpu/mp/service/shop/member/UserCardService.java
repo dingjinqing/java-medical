@@ -201,7 +201,9 @@ public class UserCardService extends ShopBaseService {
 	 * @Return  true拥有 ，false 未拥有
 	 */
 	public boolean isHasAvailableGradeCard(Integer userId) {
-		return !StringUtils.isBlank(userCardDao.calcUserGrade(userId));
+		String grade = userCardDao.calcUserGrade(userId);
+		logger().info("当前用户等级"+grade);
+		return !StringUtils.isBlank(grade);
 	}
 
 	/**
@@ -1167,12 +1169,8 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * 获取用户累积消费总额
-=======
-	 * 	获取用户累积消费总额
 	 * 
->>>>>>> 170a4151e... 小程序端领取等级卡
 	 * @return 消费总额,默认为0
 	 */
 	public BigDecimal getUserTotalSpendAmount(Integer userId) {

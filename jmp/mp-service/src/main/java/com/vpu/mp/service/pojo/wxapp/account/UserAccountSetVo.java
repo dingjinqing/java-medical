@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.wxapp.account;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 /**
  * 

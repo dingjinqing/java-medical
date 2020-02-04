@@ -97,7 +97,7 @@ public class WxMainUserService extends MainBaseService {
 	 * @param shopId
 	 * @param userId
 	 */
-	public void updateMainUser(Map map,Integer shopId, Integer userId) {
+	public void updateMainUser(Map<?, ?> map,Integer shopId, Integer userId) {
 		db().update(USER).set(map).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).execute();
 	}
 	
@@ -107,7 +107,7 @@ public class WxMainUserService extends MainBaseService {
 	 * @param shopId
 	 * @param userId
 	 */
-	public void updateMainUserDetail(Map map,Integer shopId, Integer userId) {
+	public void updateMainUserDetail(Map<?, ?> map,Integer shopId, Integer userId) {
 		db().update(USER).set(map).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).execute();
 	}
 }
