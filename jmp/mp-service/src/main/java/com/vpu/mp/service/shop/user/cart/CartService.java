@@ -50,6 +50,7 @@ public class CartService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private CartProcessorContext cartProcessor;
+    @Autowired
     private ImageService imageService;
     /**
      * 用户会员卡
@@ -101,7 +102,6 @@ public class CartService extends ShopBaseService {
         appCartGoods.forEach(cartGoods->{
             cartGoods.setGoodsRecord(goodsRecordMap.get(cartGoods.getGoodsId()));
             cartGoods.setProductRecord(productRecordMap.get(cartGoods.getProductId()));
-            cartGoods.setGoodsImg(getImgFullUrlUtil(cartGoods.getGoodsImg()));
         });
         //购物车业务数据
         WxAppCartBo cartBo = WxAppCartBo.builder()
@@ -112,6 +112,9 @@ public class CartService extends ShopBaseService {
             return null;
         }
         cartProcessor.executeCart(cartBo);
+        cartBo.getCartGoodsList().forEach(cartGoods->{
+            cartGoods.setGoodsImg(getImgFullUrlUtil(cartGoods.getGoodsImg()));
+        });
         return cartBo;
     }
     /**
