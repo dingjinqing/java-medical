@@ -25,10 +25,10 @@ global.wxComponent({
       var _this = this;
       console.log(d)
       if (d.status == 4) {
-        util.toast_fail('已达到领取上限');
+        util.toast_fail(this.$t("components.decorate.theMaximumClaimLimit"));
         return
       } else if (d.status == 5) {
-        util.toast_fail('无库存');
+        util.toast_fail(this.$t("components.decorate.nStock"));
         return
       }
       if (d.is_pay == 1 || d.is_pay == 2) {
