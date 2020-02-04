@@ -233,7 +233,6 @@
             <el-form-item
               :label="$t('serviceAdd.serviceDuration')+ '：'"
               prop="serviceDuration"
-              required
             >
               <el-input-number
                 v-model="serviceHour"
@@ -333,14 +332,21 @@ export default {
       callback()
     }
     function validateDuration (rule, value, callback) {
-      if (!that.form.serviceDuration) {
+      if ((Number(that.serviceHour) + Number(that.serviceMinute)) === 0) {
         return callback(new Error(that.$t('serviceAdd.validateDuration')))
       }
       callback()
     }
     function validServiceNum (rule, value, callback) {
       if (value === '' || value === 0) {
-        callback(new Error(that.$t('servieAdd.validServiceNum')))
+        callback(new Error(that.$t('serviceAdd.validServiceNum')))
+      }
+      callback()
+    }
+    // 验证
+    function validServiceImg (rule, value, callback) {
+      if (that.imgLists.length === 0) {
+        callback(new Error(that.$t('serviceAdd.serviceMapValid')))
       }
       callback()
     }
@@ -382,7 +388,7 @@ export default {
           { required: true, message: this.$t('serviceAdd.serviceClassValid'), trigger: 'change' }
         ],
         serviceImg: [
-          { required: true, message: this.$t('serviceAdd.serviceMapValid') }
+          { required: true, validator: validServiceImg, trigger: 'change' }
         ],
         serviceType: [
           { required: true, message: this.$t('serviceAdd.serviceModeValid'), trigger: 'change' }
@@ -400,7 +406,7 @@ export default {
           { required: true, message: this.$t('serviceAdd.servicePeriodValid'), trigger: 'blur' }
         ],
         dateInterval: [{ validator: validInterval, trigger: 'change' }],
-        serviceDuration: [{ validator: validateDuration, trigger: 'change' }],
+        serviceDuration: [{ required: true, validator: validateDuration, trigger: 'change' }],
         servicesNumber: [{ required: true, validator: validServiceNum, trigger: 'change' }]
       }
     }
@@ -512,11 +518,17 @@ export default {
       }
       this.imgLists.push(...imgObj)
       let imgs = this.imgLists.map(item => item.imgPath)
+      if (imgs.length > 0) {
+        this.$refs.serviceForm.clearValidate('serviceImg')
+      }
       this.form.serviceImg = JSON.stringify(imgs)
     },
     /* 删除商品图片 */
     deleteGoodsImg (index) {
       this.imgLists.splice(index, 1)
+      if (this.imgLists.length === 0) {
+        this.$refs.serviceForm.validateField('serviceImg')
+      }
     },
     /* 移动商品图片 -1:左移 1:右移 */
     moveGoodsImgIndex (index, direction) {

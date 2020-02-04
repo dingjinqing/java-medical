@@ -112,8 +112,9 @@ public class EnterPolitelyService extends ShopBaseService {
         AwardVo award;
         try {
             UserRecord userRecord = userService.getUserByUserId(userId);
-            if (Objects.isNull(userRecord))
+            if (Objects.isNull(userRecord)) {
                 throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
             // 获取进行中的开屏有礼活动（取优先级最高的活动）
             CoopenActivityRecord record = getProcessingActivity().stream().findFirst().orElseThrow(() -> new BusinessException(JsonResultCode.CODE_FAIL));
             int activityId = record.getId();

@@ -15,6 +15,7 @@ public class AwardParam {
     public Integer activityId;
     public Integer userId;
     public ShareRule rule;
+    @Builder.Default
     public String orderSn = StringUtils.EMPTY;
     /**
      * 积分来源
