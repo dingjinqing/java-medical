@@ -92,7 +92,7 @@
     </view>
 
     <!-- 优惠券&促销信息-->
-    <v-coupon-promotion coupon-list="{{couponList}}" promotion="{{promotionInfo}}"/>
+    <v-coupon-promotion wx:if="{{!filter.includes([1,3,5],specParams.activity.activityType)}}" coupon-list="{{couponList}}" promotion="{{promotionInfo}}"/>
 
     <!--  选择规格（包含无规格情况）  -->
     <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
