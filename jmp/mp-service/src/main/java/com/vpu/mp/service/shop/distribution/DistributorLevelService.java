@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import org.jooq.*;
@@ -30,6 +31,7 @@ public class DistributorLevelService extends ShopBaseService{
 	 * @return
 	 */
 	public DistributorLevelCfgVo levelConfig() {
+	    //获取每级分销员等级信息
 		Integer level_info = db().selectCount()
 				.from(DISTRIBUTOR_LEVEL)
 				.where(DISTRIBUTOR_LEVEL.LEVEL_ID.eq((byte) 1))
@@ -331,5 +333,18 @@ public class DistributorLevelService extends ShopBaseService{
 		return bigDecimal;
 		
 	}
+
+    /**
+     * 分销等等级配置，手动升级添加分销员
+     * @param param
+     * @return
+     */
+	public Integer addDistributorTOLevel(AddDistributorToLevelParam param){
+        int result = db().update(USER)
+            .set(USER.DISTRIBUTOR_LEVEL,(param.getLevel()))
+            .where(USER.USER_ID.in(param.getUserIds()))
+            .execute();
+        return result;
+    }
 
 }
