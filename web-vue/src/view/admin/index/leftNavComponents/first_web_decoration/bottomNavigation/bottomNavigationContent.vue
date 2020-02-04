@@ -220,7 +220,9 @@ export default {
   watch: {
     afferentPath_ (newData, oldData) {
       console.log(newData)
-      this.contentList[this.linksIndex].page = newData
+      if (newData) {
+        this.contentList[this.linksIndex].page = newData
+      }
     }
   },
   mounted () {
@@ -233,7 +235,10 @@ export default {
     // 选中路径
     selectLinkPath (path) {
       console.log(path)
-      this.contentList[this.linksIndex].page = path
+      if (path) {
+        console.log(path)
+        this.contentList[this.linksIndex].page = path
+      }
     },
     queryBottom () {
       bottomGetRequest().then((res) => {
@@ -268,6 +273,11 @@ export default {
     // 保存
     saveShopStyle () {
       let obj = this.contentList
+      console.log(obj)
+      let arr = JSON.parse(JSON.stringify(obj))
+      // 校验
+      let flag = this.handleToJudge(arr)
+      if (!flag) return
       bottomUpdateRequest(obj).then((res) => {
         if (res.error === 0) {
           this.$message.success({
@@ -277,6 +287,36 @@ export default {
         }
         console.log(res)
       })
+    },
+    handleToJudge (arr) {
+      let flag = true
+      let obj = {
+        normal: 'http://jmpdevimg.weipubao.cn/image/admin/btn_add.png',
+        hover: 'http://jmpdevimg.weipubao.cn/image/admin/btn_add.png'
+      }
+      arr.forEach((item, index) => {
+        if (!item.text) {
+          this.$message.error({
+            showClose: true,
+            message: '导航文字不能为空'
+          })
+          flag = false
+        } else if (item.normal === obj.normal) {
+          this.$message.error({
+            showClose: true,
+            message: '请添加点击状态的图片'
+          })
+          flag = false
+          this.$message.error({
+            showClose: true,
+            message: '请添加未点击状态的图片'
+          })
+        } else if (item.hover === obj.hover) {
+          flag = false
+        }
+      })
+
+      return flag
     },
     // 添加一项
     addNav () {
