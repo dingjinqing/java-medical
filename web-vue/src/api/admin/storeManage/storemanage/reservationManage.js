@@ -73,3 +73,11 @@ export function availableCard (data) {
     data: data
   })
 }
+
+// 被核销用户余额
+export function getChargeAccount (data) {
+  return service({
+    url: `/api/admin/store/charge/${data}`,
+    method: 'get'
+  })
+}

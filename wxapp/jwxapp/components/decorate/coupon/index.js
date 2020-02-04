@@ -19,32 +19,32 @@ global.wxComponent({
       var _this = this;
       var m = this.data.m;
       if (this._input_vali != d.vali) {
-        util.toast_fail('领取码错误');
+        util.toast_fail(this.$t("components.decorate.wrongReceivingCode"));
       } else {
         util.api("/api/wxapp/coupon/get", function (res) {
 
           if (res.error == 0) {
             if (res.content == 0) {
-              util.toast_success('领取成功', function () {
+              util.toast_success(this.$t("components.decorate.successfulReception"), function () {
                 m.isCoupon = 0;
                 m['coupon_arr'][d.coupon_key].status = -1;
                 _this.$set();
               });
             } else {
               if (res.content == 1) {
-                util.toast_fail('优惠券不存在');
+                util.toast_fail(this.$t("components.decorate.couponDoesNotExist"));
               } else if (res.content == 2) {
-                util.toast_fail('优惠券已过期');
+                util.toast_fail(this.$t("components.decorate.coupoExpired"));
               } else if (res.content == 3) {
-                util.toast_fail('优惠券已停用');
+                util.toast_fail(this.$t("components.decorate.couponDisabled"));
               } else if (res.content == 4) {
-                util.toast_fail('优惠券库存为0');
+                util.toast_fail(this.$t("components.decorate.couponStockIs"));
               } else if (res.content == 5) {
-                util.toast_fail('可用积分不足');
+                util.toast_fail(this.$t("components.decorate.insufficientPointsAvailable"));
               } else if (res.content == 6) {
-                util.toast_fail('积分更新失败');
+                util.toast_fail(this.$t("components.decorate.pointUpdateFailed"));
               } else if (res.content == 7) {
-                util.toast_fail('领取次数达上限');
+                util.toast_fail(this.$t("components.decorate.reachesTheUpperLimit"));
               }
               util.toast_fail(res.content);
               m.isCoupon = 0;
@@ -65,7 +65,7 @@ global.wxComponent({
             //   });
             // }
           } else {
-            util.toast_fail('领取失败');
+            util.toast_fail(this.$t("components.decorate.failToRreceive"));
           }
         }, {
           code: d.code,
