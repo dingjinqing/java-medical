@@ -19,7 +19,8 @@
             v-model="queryParams.serviceDateStart"
             type="date"
             size="small"
-            :placeholder="$t('reservationManage.reservationStartTime')">
+            :placeholder="$t('reservationManage.reservationStartTime')"
+          >
           </el-date-picker>
         </label>
         <label style="font-size: 14px;">
@@ -28,7 +29,8 @@
             v-model="queryParams.serviceDateEnd"
             type="date"
             size="small"
-            :placeholder="$t('reservationManage.reservationEndTime')">
+            :placeholder="$t('reservationManage.reservationEndTime')"
+          >
           </el-date-picker>
         </label>
         <label style="font-size: 14px;">
@@ -71,12 +73,27 @@
             :name="item.name"
           >
             <span slot="label">
-                {{item.title}}<span class="wait_num" v-if="item.name === '-1'">{{countingData.all}}</span>
-              <span class="wait_num" v-if="item.name === '0'">{{countingData.waitPay}}</span>
-              <span class="wait_num" v-if="item.name === '1'">{{countingData.waitService}}</span>
-              <span class="wait_num" v-if="item.name === '2'">{{countingData.canceled}}</span>
-              <span class="wait_num" v-if="item.name === '3'">{{countingData.finished}}</span>
-              </span>
+              {{item.title}}<span
+                class="wait_num"
+                v-if="item.name === '-1'"
+              >{{countingData.all}}</span>
+              <span
+                class="wait_num"
+                v-if="item.name === '0'"
+              >{{countingData.waitPay}}</span>
+              <span
+                class="wait_num"
+                v-if="item.name === '1'"
+              >{{countingData.waitService}}</span>
+              <span
+                class="wait_num"
+                v-if="item.name === '2'"
+              >{{countingData.canceled}}</span>
+              <span
+                class="wait_num"
+                v-if="item.name === '3'"
+              >{{countingData.finished}}</span>
+            </span>
           </el-tab-pane>
         </el-tabs>
         <!--列表展示-->
@@ -147,13 +164,19 @@
                       @click="click2Evluation()"
                     >{{$t('reservationManage.seeEvluation')}}</span>
                   </el-tooltip>
-                  <el-tooltip :content="$t('reservationManage.cancel')" v-if="row.orderStatus == 1">
+                  <el-tooltip
+                    :content="$t('reservationManage.cancel')"
+                    v-if="row.orderStatus == 1"
+                  >
                     <span
                       class="iconSpan"
                       @click="showMess1(row.orderId, row.orderSn)"
                     >{{$t('reservationManage.cancel')}}</span>
                   </el-tooltip>
-                  <el-tooltip :content="$t('reservationManage.charge')" v-if="row.orderStatus == 1">
+                  <el-tooltip
+                    :content="$t('reservationManage.charge')"
+                    v-if="row.orderStatus == 1"
+                  >
                     <span
                       class="iconSpan"
                       @click="showMess2(row.orderId, row.orderSn, row.userId)"
@@ -184,7 +207,8 @@
           type="textarea"
           :rows="2"
           :placeholder="$t('reservationManage.message')"
-          v-model="adminMessage">
+          v-model="adminMessage"
+        >
         </el-input>
       </div>
       <span
@@ -214,7 +238,8 @@
           type="textarea"
           :rows="2"
           :placeholder="$t('reservationManage.cancelReason')"
-          v-model="cancelReason">
+          v-model="cancelReason"
+        >
         </el-input>
       </div>
       <span
@@ -245,7 +270,8 @@
           <el-input
             style="width: 40%"
             :placeholder="$t('reservationManage.chargeCode')"
-            v-model="chargeParam.verifyCode">
+            v-model="chargeParam.verifyCode"
+          >
           </el-input>
         </div>
         <br>
@@ -261,12 +287,17 @@
               <div style="margin-top: 20px">
                 <el-radio :label="1">{{$t('reservationManage.memberCard')}}</el-radio>
                 <template v-if="chargeParam.verifyPay === 1">
-                  <el-select v-model="chargeParam.cardId" clearable :placeholder="$t('reservationManage.memberCard')">
+                  <el-select
+                    v-model="chargeParam.cardId"
+                    clearable
+                    :placeholder="$t('reservationManage.memberCard')"
+                  >
                     <el-option
                       v-for="item in availableCard"
                       :key="item.cardId"
                       :label="item.cardName"
-                      :value="item.cardId">
+                      :value="item.cardId"
+                    >
                     </el-option>
                   </el-select>
                 </template>
@@ -274,13 +305,15 @@
                   v-if="chargeParam.verifyPay === 1"
                   style="width: 20%"
                   :placeholder="$t('reservationManage.reduceOrLimit')"
-                  v-model="chargeParam.reduce">
+                  v-model="chargeParam.reduce"
+                >
                 </el-input>
                 <el-input
                   v-if="chargeParam.verifyPay === 1"
                   style="width: 20%"
                   :placeholder="$t('reservationManage.season')"
-                  v-model="chargeParam.reason">
+                  v-model="chargeParam.reason"
+                >
                 </el-input>
               </div>
               <div style="margin-top: 20px">
@@ -288,14 +321,16 @@
                 <el-input
                   v-if="chargeParam.verifyPay === 2"
                   style="width: 30%"
-                  placeholder="99999999999999"
-                  v-model.number="chargeParam.balance">
+                  :placeholder="userAccount"
+                  v-model.number="chargeParam.balance"
+                >
                 </el-input>
                 <el-input
                   v-if="chargeParam.verifyPay === 2"
                   style="width: 30%"
                   :placeholder="$t('reservationManage.season')"
-                  v-model="chargeParam.reason">
+                  v-model="chargeParam.reason"
+                >
                 </el-input>
               </div>
             </el-radio-group>
@@ -326,14 +361,18 @@
     >
       <div class="table_list">
         <div>
-          <el-row :gutter="15" class="row_style">
+          <el-row
+            :gutter="15"
+            class="row_style"
+          >
             <el-col :span="5">
-               <span class="span_asterisk">*</span> {{$t('reservationManage.subscriber')}}：
+              <span class="span_asterisk">*</span> {{$t('reservationManage.subscriber')}}：
             </el-col>
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.chooseUser')"
-                v-model="userRowData.userName">
+                v-model="userRowData.userName"
+              >
               </el-input>
               <el-button
                 type="primary"
@@ -343,84 +382,112 @@
           </el-row>
         </div>
         <div>
-          <el-row :gutter="15" class="row_style">
+          <el-row
+            :gutter="15"
+            class="row_style"
+          >
             <el-col :span="5">
               <span class="span_asterisk">*</span> {{$t('reservationManage.mobile')}}：
             </el-col>
             <el-col :span="10">
-                <el-input
+              <el-input
                 :placeholder="$t('reservationManage.mobile')"
-                v-model="reservation.mobile">
+                v-model="reservation.mobile"
+              >
               </el-input>
             </el-col>
           </el-row>
         </div>
         <div>
-          <el-row :gutter="15" class="row_style">
+          <el-row
+            :gutter="15"
+            class="row_style"
+          >
             <el-col :span="5">
-          <span class="span_asterisk">*</span> {{$t('reservationManage.serviceDate')}}：
+              <span class="span_asterisk">*</span> {{$t('reservationManage.serviceDate')}}：
             </el-col>
             <el-col :span="10">
-            <el-date-picker
-            v-model="dateTime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            type="datetime"
-            :placeholder="$t('reservationManage.serviceDate')"
-            align="right"
-            :picker-options="pickerOptions">
-          </el-date-picker>
+              <el-date-picker
+                v-model="dateTime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                type="datetime"
+                :placeholder="$t('reservationManage.serviceDate')"
+                align="right"
+                :picker-options="pickerOptions"
+              >
+              </el-date-picker>
             </el-col>
           </el-row>
         </div>
         <div>
-          <el-row :gutter="15" class="row_style">
+          <el-row
+            :gutter="15"
+            class="row_style"
+          >
             <el-col :span="5">
-          <span class="span_asterisk">*</span> {{$t('reservationManage.serviceName')}}：
+              <span class="span_asterisk">*</span> {{$t('reservationManage.serviceName')}}：
             </el-col>
             <el-col :span="10">
-            <template>
-            <el-select v-model="reservation.serviceId" clearable :placeholder="$t('reservationManage.serviceName')"
-                       @change="changeEvent()">
-              <el-option
-                v-for="item in reservationService"
-                :key="item.id"
-                :label="item.serviceName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </template>
+              <template>
+                <el-select
+                  v-model="reservation.serviceId"
+                  clearable
+                  :placeholder="$t('reservationManage.serviceName')"
+                  @change="changeEvent()"
+                >
+                  <el-option
+                    v-for="item in reservationService"
+                    :key="item.id"
+                    :label="item.serviceName"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </template>
             </el-col>
           </el-row>
         </div>
         <div>
-          <el-row :gutter="15" class="row_style">
+          <el-row
+            :gutter="15"
+            class="row_style"
+          >
             <el-col :span="5">
-          <span class="span_asterisk"></span> {{$t('reservationManage.technician')}}：
+              <span class="span_asterisk"></span> {{$t('reservationManage.technician')}}：
             </el-col>
             <el-col :span="10">
-            <template>
-            <el-select v-model="reservation.technicianId" clearable :placeholder="$t('reservationManage.technician')">
-              <el-option
-                v-for="item in reservationTech"
-                :key="item.id"
-                :label="item.technicianName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </template>
+              <template>
+                <el-select
+                  v-model="reservation.technicianId"
+                  clearable
+                  :placeholder="$t('reservationManage.technician')"
+                >
+                  <el-option
+                    v-for="item in reservationTech"
+                    :key="item.id"
+                    :label="item.technicianName"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </template>
             </el-col>
           </el-row>
         </div>
         <div>
-          <el-row :gutter="15" class="row_style">
+          <el-row
+            :gutter="15"
+            class="row_style"
+          >
             <el-col :span="5">
-          {{$t('reservationManage.message')}}：
+              {{$t('reservationManage.message')}}：
             </el-col>
             <el-col :span="10">
-            <el-input
-            :placeholder="$t('reservationManage.messageLimit')"
-            v-model="reservation.adminMessage">
-          </el-input>
+              <el-input
+                :placeholder="$t('reservationManage.messageLimit')"
+                v-model="reservation.adminMessage"
+              >
+              </el-input>
             </el-col>
           </el-row>
         </div>
@@ -449,7 +516,7 @@
 </template>
 
 <script>
-import { getList, availableCard, addMessage, add, charge, cancel, techList } from '@/api/admin/storeManage/storemanage/reservationManage'
+import { getList, availableCard, getChargeAccount, addMessage, add, charge, cancel, techList } from '@/api/admin/storeManage/storemanage/reservationManage'
 import { getAllService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -495,6 +562,8 @@ export default {
       }],
       // 门店技师下拉
       reservationTech: [],
+      // 被核销用户余额
+      userAccount: 0.0,
       // 可用会员卡下拉
       availableCard: [],
       // 备注
@@ -621,6 +690,14 @@ export default {
       techList(obj).then(res => {
         if (res.error === 0) {
           this.reservationTech = res.content
+        }
+      })
+    },
+    // 被核销用户余额
+    getChargeUserAccount (userId) {
+      getChargeAccount(userId).then(res => {
+        if (res.error === 0) {
+          this.userAccount = res.content
         }
       })
     },
@@ -777,6 +854,7 @@ export default {
       this.userId = parseInt(userId)
       this.getMemberCardList()
       this.showCharge = true
+      this.getChargeUserAccount(this.userId)
     },
     // 关闭核销弹窗
     closeWin2 () {
@@ -864,77 +942,76 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .table_list {
-    margin-left: 20px;
-    position: relative;
-    .table_footer {
-      background: #666;
-    }
-    .span_asterisk {
-      color: #cc0000;
-    }
-    .span_text {
-      text-align: right;
-    }
-    .row_style{
-      margin-top: 10px;
-    }
+.table_list {
+  margin-left: 20px;
+  position: relative;
+  .table_footer {
+    background: #666;
   }
-  .content {
+  .span_asterisk {
+    color: #cc0000;
+  }
+  .span_text {
+    text-align: right;
+  }
+  .row_style {
     margin-top: 10px;
   }
-  .la
-  .modifypersonDivTop .el-input__inner {
-    width: 140px !important;
-  }
-  .modifypersonDivTop,
-  .modifypersonDivTop > div {
-    display: flex;
-  }
-  .wait_num {
-    position: relative;
-    top: -7px;
-    right: 0;
-    border-radius: 10px;
-    background: #ff9d0e;
-    color: #fff;
-    line-height: 1;
-    font-size: 11px;
-    text-align: center;
-    padding: 2px 5px;
-  }
-  .modifypersonDivTop > div > span {
-    line-height: 32px;
-    height: 32px;
-    display: block;
-    width: 56px;
-  }
-  .baseInfo .el-dialog__body {
-    padding-bottom: 0 !important;
-  }
-  .baseInfo .el-dialog__footer {
-    border-top: 1px solid #eee;
-  }
-  .technician_list_page {
-    margin: 0 25px;
-    .list_info {
-      margin-top: 20px;
-      padding-bottom: 10px;
-      .filter_input {
-        width: 170px;
-      }
-      .technician_list_img {
-        display: inline-block;
-        width: 60px;
-        height: 60px;
-      }
+}
+.content {
+  margin-top: 10px;
+}
+.la .modifypersonDivTop .el-input__inner {
+  width: 140px !important;
+}
+.modifypersonDivTop,
+.modifypersonDivTop > div {
+  display: flex;
+}
+.wait_num {
+  position: relative;
+  top: -7px;
+  right: 0;
+  border-radius: 10px;
+  background: #ff9d0e;
+  color: #fff;
+  line-height: 1;
+  font-size: 11px;
+  text-align: center;
+  padding: 2px 5px;
+}
+.modifypersonDivTop > div > span {
+  line-height: 32px;
+  height: 32px;
+  display: block;
+  width: 56px;
+}
+.baseInfo .el-dialog__body {
+  padding-bottom: 0 !important;
+}
+.baseInfo .el-dialog__footer {
+  border-top: 1px solid #eee;
+}
+.technician_list_page {
+  margin: 0 25px;
+  .list_info {
+    margin-top: 20px;
+    padding-bottom: 10px;
+    .filter_input {
+      width: 170px;
     }
-    .list_table {
-      .iconSpan {
-        color: #5a8bff;
-        text-decoration: none;
-        cursor: pointer !important;
-      }
+    .technician_list_img {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
     }
   }
+  .list_table {
+    .iconSpan {
+      color: #5a8bff;
+      text-decoration: none;
+      cursor: pointer !important;
+    }
+  }
+}
 </style>
