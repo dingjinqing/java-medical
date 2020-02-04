@@ -448,7 +448,7 @@
                 </template>
                 <template v-else-if="record.logicStatus == 2">
                   <li>{{recordLogicStatus[record.logicStatus]}}</li>
-                  <li>{{$t('order.refusedReason') + '：' + returnInfo.refundRefuseReason}}</li>
+                  <li>{{$t('order.refusedReason')}}：{{returnInfo.refundRefuseReason}} {{returnInfo.applyNotPassReason}}</li>
                 </template>
                 <template v-else-if="record.logicStatus == 3">
                   <li>{{recordLogicStatus[record.logicStatus]}}</li>
