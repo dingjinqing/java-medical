@@ -18,13 +18,19 @@ global.wxComponent({
         newVal.bg = 'url(' + newVal.bgImg + ')';
       }
       console.log(newVal)
-      newVal.status = -1
       // shop_img、activation字段在第二个接口
     },
     bindGetCard (e) {
       var d = this.eventData(e);
       var _this = this;
       console.log(d)
+      if (d.status == 4) {
+        util.toast_fail('已达到领取上限');
+        return
+      } else if (d.status == 5) {
+        util.toast_fail('无库存');
+        return
+      }
       if (d.is_pay == 1 || d.is_pay == 2) {
         util.jumpLink('/pages/cardinfo/cardinfo?cardId=' + d.card_id)
         return false;

@@ -239,6 +239,8 @@ export default {
             this.changeColor(res.content.shopStyleId)
           }
         }
+        console.log(res.content.shopStyleId)
+        this.clickColor(res.content.shopStyleId)
         console.log(res.content)
       })
     },

@@ -323,8 +323,8 @@ export default {
     // 修改icon弹窗li点击事件
     handleSelectIcon (data, index) {
       this.contentList[this.iconindex].text = data.text
-      this.contentList[this.iconindex].normal = data.img_one
-      this.contentList[this.iconindex].hover = data.img_two
+      this.contentList[this.iconindex].normal = data.img_two
+      this.contentList[this.iconindex].hover = data.img_one
       this.modifyDialog = false
     }
   }
