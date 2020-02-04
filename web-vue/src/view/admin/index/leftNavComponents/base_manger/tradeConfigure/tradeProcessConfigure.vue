@@ -10,8 +10,7 @@
         <span>{{item.name}}</span>
         <el-switch
           v-model="item.value"
-          active-color="#13ce66"
-          inactive-color="#f7931e"
+          active-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span>{{item.value?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -110,8 +109,7 @@
       <div class="settingContent delay top">
         <el-switch
           v-model="extenReceiveGoods"
-          active-color="#13ce66"
-          inactive-color="#f7931e"
+          active-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.extenReceiveGoods?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -137,8 +135,7 @@
       <div class="settingContent">
         <el-switch
           v-model="invoice"
-          active-color="#13ce66"
-          inactive-color="#f7931e"
+          active-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.invoice?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -155,8 +152,7 @@
       <div class="settingContent defaultSelect">
         <el-switch
           v-model="serviceTerms"
-          active-color="#13ce66"
-          inactive-color="#f7931e"
+          active-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.serviceTerms?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -205,8 +201,7 @@
         <span style="display: block;width: 130px;">{{item.info}}</span>
         <el-switch
           v-model="item.value"
-          active-color="#13ce66"
-          inactive-color="#f7931e"
+          active-color="#f7931e"
           style="margin:0 10px;height:60px;line-height:60px"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{item.value?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -359,8 +354,7 @@
       >
         <el-switch
           v-model="shippingExpress"
-          active-color="#13ce66"
-          inactive-color="#f7931e"
+          active-color="#f7931e"
           style="margin: 17px 10px 0;"
         ></el-switch>
         <div class="switchText">
@@ -482,8 +476,7 @@
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.autoPick"
-                active-color="#13ce66"
-                inactive-color="#f7931e"
+                active-color="#f7931e"
                 style="margin: 0 10px;"
               ></el-switch>
               <span style="font-size: 14px; color:#333;">{{scope.row.autoPick?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
