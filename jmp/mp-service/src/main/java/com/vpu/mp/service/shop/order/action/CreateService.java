@@ -214,7 +214,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }else {
                 //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
                 //初始化订单商品
-                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId());
+                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId());
             }
             orderBo.setOrderGoodsBo(orderGoodsBos);
 
@@ -441,7 +441,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }else {
             //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
             //初始化订单商品
-            vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId()));
+            vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId()));
         }
         //据处理过的param和其他信息填充下单确认页返回信息
         processBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
