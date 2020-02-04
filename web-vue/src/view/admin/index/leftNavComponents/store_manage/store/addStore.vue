@@ -393,8 +393,17 @@ export default {
       callback()
     }
     let validBusinessTime = function (rule, value, callback) {
+      let openTime = that.storeFormInfo.openingTime
+      let closeTime = that.storeFormInfo.closeTime
+      let openTimes = openTime.split(':')
+      let closeTimes = closeTime.split(':')
       if (!that.storeFormInfo.openingTime || !that.storeFormInfo.closeTime) {
         callback(new Error(that.$t('addStore.enterHours')))
+      }
+      if (Number(openTimes[0]) > Number(closeTimes[0])) {
+        callback(new Error(that.$t('addStore.businessHoursValid')))
+      } else if (Number(openTimes[0]) === Number(closeTimes[0]) && Number(openTimes[1]) > Number(closeTimes[1])) {
+        callback(new Error(that.$t('addStore.businessHoursValid')))
       }
       callback()
     }

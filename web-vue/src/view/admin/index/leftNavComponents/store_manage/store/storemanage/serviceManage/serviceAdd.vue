@@ -192,7 +192,7 @@
             </el-form-item>
             <el-form-item
               :label="$t('serviceAdd.serviceHours')+ '：'"
-              required
+              prop="serviceHours"
             >
               <el-form-item
                 style="display:inline-block;"
@@ -350,6 +350,18 @@ export default {
       }
       callback()
     }
+    function validServiceHours (rule, value, callback) {
+      let startTime = that.form.startPeriod
+      let endTime = that.form.endPeriod
+      let startTimes = startTime.split(':')
+      let endTimes = endTime.split(':')
+      if (Number(startTimes[0]) > Number(endTimes[0])) {
+        callback(new Error(that.$t('serviceAdd.serviceTimeValid')))
+      } else if (Number(startTimes[0]) === Number(endTimes[0]) && Number(startTimes[1]) > Number(endTimes[1])) {
+        callback(new Error(that.$t('serviceAdd.serviceTimeValid')))
+      }
+      callback()
+    }
     return {
       activeStep: 1, // 步骤条
       storeId: '',
@@ -407,7 +419,8 @@ export default {
         ],
         dateInterval: [{ validator: validInterval, trigger: 'change' }],
         serviceDuration: [{ required: true, validator: validateDuration, trigger: 'change' }],
-        servicesNumber: [{ required: true, validator: validServiceNum, trigger: 'change' }]
+        servicesNumber: [{ required: true, validator: validServiceNum, trigger: 'change' }],
+        serviceHours: [{ required: true, validator: validServiceHours, trigger: 'change' }]
       }
     }
   },
