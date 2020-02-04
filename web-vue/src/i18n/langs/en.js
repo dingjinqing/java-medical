@@ -147,6 +147,10 @@ import {
 import {
   en as commoditySearch
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
+// 小程序商品分组模块国际化
+import {
+  en as commodityGrouping
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commodityGroupingEn'
 // 小程序页面装修会员卡模块国际化
 import {
   en as membershipCard
@@ -1052,6 +1056,7 @@ const en = {
   selectLinks, // 选择链接弹窗国际化
   indexApply, // 申请试用
   indexMobile, //  官网首页移动端国际化
-  reservationManage // 预约管理
+  reservationManage, // 预约管理
+  commodityGrouping // 小程序商品分组
 }
 export default en
