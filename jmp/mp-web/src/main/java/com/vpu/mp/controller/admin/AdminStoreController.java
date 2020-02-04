@@ -643,4 +643,14 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult shareStore(@PathVariable Integer id) {
         return success(shop().store.share(QrCodeTypeEnum.SHOP_SHARE, "id=" + id));
     }
+
+    /**
+     * 获取被核销用户余额
+     *
+     * @param userId userId
+     */
+    @GetMapping(value = "/api/admin/store/charge/{userId}")
+    public JsonResult getUserAccount(@PathVariable Integer userId) {
+        return success(shop().user.getUserByUserId(userId).getAccount());
+    }
 }
