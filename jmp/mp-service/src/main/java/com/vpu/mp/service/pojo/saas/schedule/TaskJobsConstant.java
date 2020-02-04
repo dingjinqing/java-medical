@@ -50,6 +50,7 @@ public class TaskJobsConstant {
         GIVE_COUPON(1004, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_COUPON_KEY),
     	/**订单 */
     	WX_IMPORTORDER(1006, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_IMPORTORDER_KEY),
+        WX_CLOSEORDER(1010, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_CLOSE_ORDER_KEY),
     	/**收藏 */
     	WX_ADDSHOPPINGLIST(1007, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_ADDSHOPPINGLIST_KEY),
     	/**物品信息 */

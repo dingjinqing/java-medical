@@ -70,7 +70,7 @@
                 <h3>
                   {{$t('order.refundNote_1_4_1')}}
                 </h3>
-                <div class="tips">{{$t('order.refundNote_1_4_2',[todo])}}</div>
+                <div class="tips">{{$t('order.refundNote_1_4_2',[$t('expressList.company')[returnInfo.shippingType], returnInfo.shippingNo])}}</div>
                 <div
                   v-if="autoTime != null"
                   class="tips"
@@ -444,7 +444,7 @@
                   <li>{{$t('order.returntype')}}：{{returnTypeMap.get(returnInfo.returnType)}}</li>
                   <li>{{$t('order.returnReasonText')}}：{{$t('order.reasonTypeList')[returnInfo.reasonType]}}</li>
                   <li>{{$t('order.returnMoney')}}：{{(returnInfo.money + returnInfo.shippingFee).toFixed(2)}}</li>
-                  <li>{{$t('order.returnDescription')}}：{{returnInfo.reasonDesc}}</li>
+                  <li>{{$t('order.returnDescription')}}：{{$t('order.reasonTypeList')[returnInfo.reasonType]}}</li>
                 </template>
                 <template v-else-if="record.logicStatus == 2">
                   <li>{{recordLogicStatus[record.logicStatus]}}</li>
@@ -705,6 +705,10 @@ export default {
       this.handleReturn('refusal')
     },
     handleReturn (target = null) {
+      if (target == null && this.returnInfo.refundStatus === 1 && !(this.returnAddressInfo.consignee && this.returnAddressInfo.returnAddress && this.returnAddressInfo.merchantTelephone && this.returnAddressInfo.zipCode)) {
+        this.$message.error('请输入卖家收货所需内容')
+        return
+      }
       let returnOperate = null
       if ((this.returnInfo.refundStatus === 4 || this.returnInfo.refundStatus === 2) && target) {
         returnOperate = 2
@@ -712,10 +716,6 @@ export default {
         returnOperate = 3
       } else if (this.returnInfo.returnType === 1 && this.returnInfo.refundStatus === 1 && target) {
         returnOperate = 4
-      }
-      if (this.returnInfo.refundStatus === 1 && !(this.returnAddressInfo.consignee && this.returnAddressInfo.returnAddress && this.returnAddressInfo.merchantTelephone && this.returnAddressInfo.zipCode)) {
-        this.$message.error('请输入卖家收货所需内容')
-        return
       }
       let obj = {
         orderId: this.returnInfo.orderId,
@@ -725,6 +725,7 @@ export default {
         returnMoney: this.returnMoney,
         shippingFee: this.shippingFee,
         refundRefuseReason: this.refusalInfo,
+        applyNotPassReason: this.refusalInfo,
         returnType: this.returnInfo.returnType,
         retId: this.returnInfo.retId,
         ...this.returnAddressInfo
@@ -750,10 +751,10 @@ export default {
     },
     setRecordLogicStatus (operatorRecord) {
       operatorRecord.forEach(record => {
-        if (record.status === 4 || (returnInfo.returnType === 0 && record.status === 1)) {
+        if ((this.returnInfo.returnType === 1 && record.status === 1) || (this.returnInfo.returnType !== 1 && record.status === 4)) {
           // 发起申请
           record.logicStatus = 1
-        } else if (record.status === 6 && returnInfo.returnType === 0) {
+        } else if ((record.status === 6 && this.returnInfo.returnType === 0) || record.status === 3) {
           // 商家拒绝退款申请
           record.logicStatus = 2
         } else if (record.status === 5) {
@@ -860,7 +861,7 @@ export default {
       return JSON.parse(this.returnInfo.goodsImages)
     },
     getVoucherImages () {
-      return this.returnInfo.voucherImages
+      return JSON.parse(this.returnInfo.voucherImages)
     },
     toShippingView () {
       return 'https://www.kuaidi100.com/chaxun?com=' + this.returnInfo.shippingCode + '&nu=' + this.returnInfo.shippingNo

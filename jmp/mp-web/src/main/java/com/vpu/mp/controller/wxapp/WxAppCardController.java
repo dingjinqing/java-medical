@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardGetParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
@@ -85,7 +87,12 @@ public class WxAppCardController extends WxAppBaseController {
 		para.setGetType(param.getGetType());
 		para.setCardId(param.getCardId()!=null?param.getCardId():param.getCardInfo().getCardId());
 		try {
-			return success(shop().user.userCard.getCard(para));
+			CardReceiveVo vo = shop().user.userCard.getCard(para);
+			if(!StringUtils.isBlank(vo.getCardNo())) {
+				return success(vo);
+			}else {
+				return fail();
+			}
 		} catch (MpException e) {
 			return fail(e.getErrorCode());
 		}	

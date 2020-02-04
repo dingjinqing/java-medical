@@ -65,6 +65,8 @@ public class RabbitConfig {
     public static final String QUEUE_ES_LABEL = "es.label";
     /**读取Excel */
     public static final String QUEUE_EXCEL = "mq.excel";
+    /** 关闭订单队列 */
+    public static final String CLOSE_ORDER = "order.close";
     /**
      * 路由和队列的对应关系是1:n不是1:1(路由按照模块区分)
      */
@@ -108,6 +110,9 @@ public class RabbitConfig {
     public static final String BINDING_EXCHANGE_ES_GOODS_LABEL_KEY = "bind.es.goods.label";
     /**读Excel */
     public static final String BINDING_EXCHANGE_OTHER_KEY = "other.read.excel";
+    /**关闭订单路由键 */
+    public static final String BINDING_EXCHANGE_CLOSE_ORDER_KEY = "bind.wx.closeorder";
+
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -238,6 +243,17 @@ public class RabbitConfig {
     public Queue excelQueue() {
         return new Queue(QUEUE_EXCEL,true,false,false);
     }
+
+    /**
+     *
+     * 关闭订单
+     * @return
+     */
+    @Bean
+    public Queue closeOrderQueue() {
+        return new Queue(CLOSE_ORDER,true,false,false);
+    }
+
     /**
      * 1.路由名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
@@ -340,6 +356,11 @@ public class RabbitConfig {
     @Bean
     public Binding bindingExcelSome() {
     	   return BindingBuilder.bind(excelQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_OTHER_KEY);
+    }
+
+    @Bean
+    public Binding bindingWxCloseOrder() {
+        return BindingBuilder.bind(closeOrderQueue()).to(wxExchange()).with(BINDING_EXCHANGE_CLOSE_ORDER_KEY);
     }
     
 }
