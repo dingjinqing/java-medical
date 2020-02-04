@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -89,4 +90,15 @@ public class WxAppPictorialController extends WxAppBaseController  {
         return success(shop().pictorialIntegrationService.getBargainPictorialInfo(param));
     }
 
+
+    /**
+     * 获取拼团抽奖分享图片信息
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/groupdraw/share/info")
+    public JsonResult getGroupDrawShareInfo(@RequestBody GroupDrawShareInfoParam param){
+        param.setUserId( wxAppAuth.user().getUserId());
+        return success(shop().pictorialIntegrationService.getGroupDrawShareInfo(param));
+    }
 }

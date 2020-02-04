@@ -3,15 +3,10 @@ package com.vpu.mp.service.foundation.util;
 import com.thoughtworks.xstream.core.util.Base64Encoder;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +45,7 @@ public final class ImageUtil {
      * @param message         文字
      * @param font            字体
      * @param x               x轴数值
-     * @param y               y轴数值
+     * @param y               y轴数值 添加文本时的y值表示的是文本的底边位置
      * @param color           颜色,默认黑色
      * @returns
      */
@@ -67,7 +62,6 @@ public final class ImageUtil {
 
     /**
      * 在图片上绘制矩形
-     *
      * @param bufferedImage 目标背景图对象
      * @param x             矩形左上角x位置
      * @param y             矩形左上角y位置
@@ -94,6 +88,27 @@ public final class ImageUtil {
     }
 
     /**
+     *  添加文字附带边框
+     * @param bufferedImage 背景图
+     * @param x 开始x
+     * @param y 开始y
+     * @param message 文字内容
+     * @param font 文本字体
+     * @param lineColor 边框线颜色
+     * @param fillColor 边框内部填充颜色
+     * @param fontColor 文本颜色
+     */
+    public static void addFontWithRect(BufferedImage bufferedImage, int x, int y, String message, Font font, Color lineColor,Color fillColor,Color fontColor){
+        int paddingLeft = 5;
+        int paddingHeight = font.getSize()/4;
+        int fontHeight = getTextHeight(bufferedImage,font);
+        int textWidth = getTextWidth(bufferedImage,font,message);
+        addRect(bufferedImage,x,y,textWidth+2*paddingLeft,fontHeight,lineColor,fillColor);
+        // 添加文本时的y值表示的是文本的底边位置
+        addFont(bufferedImage,message,font,x+paddingLeft,y+fontHeight-paddingHeight,fontColor);
+    }
+
+    /**
      * 添加线段
      *
      * @param bufferedImage 目标背景图对象
@@ -109,6 +124,23 @@ public final class ImageUtil {
         graphics.setColor(color);
         graphics.drawLine(x1, y1, x2, y2);
         graphics.dispose();
+    }
+
+    /**
+     * 添加文字附带中划线
+     * @param bufferedImage 背景图片
+     * @param x 文本左上角开始x坐标
+     * @param y 文本左上角开始y坐标
+     * @param message 文本内容
+     * @param font 字体
+     * @param fontColor 字体颜色
+     */
+    public static void addFontWithLine(BufferedImage bufferedImage, int x, int y, String message,Font font, Color fontColor) {
+        int linePad = 3;
+        int textWidth = getTextWidth(bufferedImage, font, message);
+        int textHeight = getTextHeight(bufferedImage,font);
+        addLine(bufferedImage,x,y+textHeight-textHeight/4,x+textWidth+2*linePad,y+textHeight-textHeight/4,fontColor);
+        addFont(bufferedImage,message,font,x+linePad,y+textHeight,fontColor);
     }
 
     /**
@@ -227,7 +259,6 @@ public final class ImageUtil {
 
     /**
      * 获取文本内容的宽度
-     *
      * @param font 文本使用的字体
      * @param text 文本内容
      * @return 文本宽度
@@ -242,5 +273,17 @@ public final class ImageUtil {
         }
         return width;
     }
-    
+
+    /**
+     * 获取对应字体文本的高度
+     * @param bufferedImage
+     * @param font
+     * @return
+     */
+    public static Integer getTextHeight(BufferedImage bufferedImage, Font font) {
+        Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setFont(font);
+        FontMetrics metrics = graphics.getFontMetrics(font);
+        return metrics.getHeight();
+    }
 }

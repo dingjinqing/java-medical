@@ -805,6 +805,11 @@ public class JsonResultMessage {
     public static final String WX_MA_NORMAL_GOODS_SHARE_INFO = "wx.ma.normal.goods.share.info";
     /**普通商品海报下载时默认宣传语*/
     public static final String WX_MA_NORMAL_GOODS_INFO = "wx.ma.normal.goods.info";
+    /**拼团抽奖相关*/
+    /**'拼团抽奖'文字*/
+    public static final String WX_MA_GROUP_DRAW_SHARE_INFO = "wx.ma.group.draw.share.info";
+    /**'快来参与1.00元拼团大抽奖吧'文字*/
+    public static final String WX_MA_GROUP_DRAW_SHARE_DOC = "wx.ma.group.draw.share.doc";
     /** 拼团相关 */
     /** 开团省 */
     public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";

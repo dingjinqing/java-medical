@@ -32,8 +32,9 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * 一般营销  首单特惠 会员专享
      */
     private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
-            BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
+        BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
+        BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
+        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
     );
     /**
      * 全局的活动  支付有礼
