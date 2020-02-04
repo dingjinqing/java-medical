@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.wxapp.share;
 
+import com.vpu.mp.service.foundation.util.ImageUtil;
 import lombok.Data;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * 海报背景图片内容相关像素
@@ -99,13 +101,22 @@ public class PictorialImgPx {
     private Integer customerRectStartY = bgPadding + headerHeight + goodsHeight - customerRectHeight;
 
     /**
-     * 自定内容文字位置x,y
+     * 自定内容文字位置x
      */
     private Integer customerTextStartX = customerRectStartX + 20;
-    private Integer customerTextStartY = customerRectStartY + smallFontSize * 2;
+    private Integer customerTextStartY = customerRectStartY + 10;
+    private Integer customerSecondTextStartY = customerTextStartY+10;
     private Color customerTextFontColor = new Color(255,255,255);
 
-    /**自定义内容文字白色边框位置*/
-    private Integer customerTextRectStartX = customerTextStartX-5;
-    private Integer customerTextRectStartY = customerTextStartY - smallFontSize;
+    public PictorialImgPx(){}
+
+    public Integer getSmallFontAscent(BufferedImage bufferedImage){
+        return ImageUtil.getTextAscent(bufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN, smallFontSize));
+    }
+    public Integer getMediumFontAscent(BufferedImage bufferedImage){
+        return ImageUtil.getTextAscent(bufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN, mediumFontSize));
+    }
+    public Integer getLargeFontAscent(BufferedImage bufferedImage){
+        return ImageUtil.getTextAscent(bufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN, largeFontSize));
+    }
 }
