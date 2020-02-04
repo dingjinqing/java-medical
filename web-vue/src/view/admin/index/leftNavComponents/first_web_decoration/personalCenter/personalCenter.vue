@@ -545,6 +545,7 @@
                     v-if="bgImg==''"
                     @click="changeImgHandler(item.module_name, '')"
                   >
+
                     <el-image
                       fit="scale-down"
                       :src="imgHost + '/image/admin/add_img_bg.png'"
@@ -574,7 +575,7 @@
                   <el-form-item :label="$t('personalCenter.title')">
                     <el-input
                       :placeholder="$t('personalCenter.inputTip')"
-                      maxlength="20"
+                      maxlength="10"
                       show-word-limit
                       style="width: 170px;"
                       size="small"
@@ -654,7 +655,7 @@
                   <el-form-item :label="$t('personalCenter.title')">
                     <el-input
                       :placeholder="$t('personalCenter.inputTip')"
-                      maxlength="20"
+                      maxlength="10"
                       show-word-limit
                       style="width: 170px;"
                       size="small"
@@ -827,7 +828,7 @@
                   <el-form-item :label="$t('personalCenter.title')">
                     <el-input
                       :placeholder="$t('personalCenter.inputTip')"
-                      maxlength="20"
+                      maxlength="10"
                       show-word-limit
                       style="width: 170px;"
                       size="small"
@@ -860,7 +861,7 @@
                   <el-form-item :label="$t('personalCenter.title')">
                     <el-input
                       :placeholder="$t('personalCenter.inputTip')"
-                      maxlength="20"
+                      maxlength="10"
                       show-word-limit
                       style="width: 170px;"
                       size="small"
@@ -923,7 +924,7 @@
                   <el-form-item :label="$t('personalCenter.title')">
                     <el-input
                       :placeholder="$t('personalCenter.inputTip')"
-                      maxlength="20"
+                      maxlength="10"
                       show-word-limit
                       style="width: 170px;"
                       size="small"
@@ -1219,7 +1220,7 @@
                     <div style="margin: 10px 0;">
                       {{ $t('personalCenter.title') }}&nbsp;&nbsp;<el-input
                         :placeholder="$t('personalCenter.inputTip')"
-                        maxlength="20"
+                        maxlength="10"
                         show-word-limit
                         v-model="val.title"
                         size="small"
@@ -1641,12 +1642,15 @@ export default {
       } else {
         this.rightData[1].bg_img = this.bgImg
       }
+
       let obj = this.rightData
       personalSaveRequest(obj).then((res) => {
         if (res.error === 0) {
           this.$message.success({
             message: '保存成功'
           })
+        } else {
+          this.$message.warning(res.message)
         }
       })
     },
