@@ -348,18 +348,25 @@ public class StoreOrderService extends ShopBaseService {
         orderRecord.setOrderStatus(WAIT_TO_PAY);
         orderRecord.setOrderStatusName(WAIT_TO_PAY_NAME);
         if (Objects.nonNull(invoiceInfo)) {
-            orderRecord.setInvoiceId(invoiceInfo.getId());
+            orderRecord.setInvoiceId(Objects.nonNull(invoiceInfo.getId()) ? invoiceInfo.getId() : INTEGER_ZERO);
             orderRecord.setInvoiceDetail(Util.toJson(invoiceInfo));
         }
-        orderRecord.setAddMessage(orderInfo.getRemark());
+        orderRecord.setAddMessage(Objects.nonNull(orderInfo.getRemark()) ? orderInfo.getRemark() : StringUtils.EMPTY);
         orderRecord.setPayCode(moneyPaid.compareTo(ZERO) > 0 ? PAY_CODE_WX_PAY : PAY_CODE_BALANCE_PAY);
         orderRecord.setPayName(paymentService.getPaymentInfo(orderRecord.getPayCode()).getPayName());
         orderRecord.setMoneyPaid(moneyPaid);
-        orderRecord.setMemberCardNo(cardNo);
-        orderRecord.setMemberCardRedunce(cardAmount);
-        orderRecord.setScoreDiscount(scoreAmount);
-        orderRecord.setUseAccount(balanceAmount);
-        orderRecord.setOrderAmount(orderInfo.getOrderAmount());
+        orderRecord.setMemberCardNo(Objects.nonNull(cardNo) ? cardNo : StringUtils.EMPTY);
+        orderRecord.setMemberCardRedunce(BigDecimalUtil.null2Zero(cardDisAmount));
+        orderRecord.setMemberCardBalance(BigDecimalUtil.null2Zero(cardAmount));
+        orderRecord.setScoreDiscount(BigDecimalUtil.null2Zero(scoreAmount));
+        orderRecord.setUseAccount(BigDecimalUtil.null2Zero(balanceAmount));
+        orderRecord.setOrderAmount(orderAmount);
+        orderRecord.setSellerRemark(StringUtils.EMPTY);
+        orderRecord.setStarFlag(BYTE_ZERO);
+        orderRecord.setDelFlag(BYTE_ZERO);
+        orderRecord.setCardNo(Objects.nonNull(cardNo) ? cardNo : StringUtils.EMPTY);
+        orderRecord.setAliTradeNo(StringUtils.EMPTY);
+        orderRecord.setCurrency("CNY");
         return StoreOrderTran.builder()
             .account(accountParam)
             .cardConsumpData(cardConsumpData)
