@@ -122,7 +122,7 @@ public class BargainProcessorDao extends ShopBaseService {
         }
 
         if (bargainRecord == null) {
-            logger().debug("小程序-商品详情-砍价信息-活动不存在或已删除[activityId:{}]",bargainRecord.getId());
+            logger().debug("小程序-商品详情-砍价信息-活动不存在或已删除");
             return  BaseConstant.ACTIVITY_STATUS_NOT_HAS;
         }
 
@@ -161,6 +161,7 @@ public class BargainProcessorDao extends ShopBaseService {
      * @param param
      */
     public void setOrderPrdBargainPrice(OrderBeforeParam param) throws MpException {
+        logger().info("砍价下单校验调试param:",param);
         BargainRecordInfo bargainRecordInfo = bargainService.bargainRecord.getRecordInfo(param.getRecordId());
         if(!bargainRecordInfo.getStatus().equals(BargainRecordService.STATUS_SUCCESS)){
             //状态不对

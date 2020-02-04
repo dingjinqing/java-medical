@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.wxapp.share.PictorialUserInfo;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -271,8 +272,14 @@ public class PictorialService extends ShopBaseService {
      * @return 画报详情
      */
     public PictorialRecord getPictorialDao(Integer identityId, Byte action, Integer userId) {
+        Condition condition = PICTORIAL.IDENTITY_ID.eq(identityId).and(PICTORIAL.ACTION.eq(action));
+        if (userId != null) {
+            condition = condition.and(PICTORIAL.USER_ID.eq(userId));
+        }
+
+
         return db().selectFrom(PICTORIAL).where(PICTORIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(PICTORIAL.USER_ID.eq(userId)).and(PICTORIAL.IDENTITY_ID.eq(identityId)).and(PICTORIAL.ACTION.eq(action))
+            .and(condition)
             .fetchAny();
     }
 

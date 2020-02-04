@@ -49,7 +49,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = [];
-    let { goodsList, activityType, activityId } = options
+    let { goodsList, activityType, activityId, recordId } = options
     JSON.parse(goodsList).forEach(item => {
       let { goodsId, prdRealPrice: goodsPrice, goodsNum: goodsNumber, prdId: productId, isCart = 0 } = item
       goods.push({ goodsId, goodsPrice, goodsNumber, productId, isCart })
@@ -58,7 +58,8 @@ global.wxPage({
       'params.goods': goods,
       'params.isCart': goods[0].isCart, //购物车来源|商品详情
       'params.activityType': activityType,
-      'params.activityId': activityId
+      'params.activityId': activityId,
+      'params.recordId': recordId
     })
     if (options.groupid) {
       this.setData({
