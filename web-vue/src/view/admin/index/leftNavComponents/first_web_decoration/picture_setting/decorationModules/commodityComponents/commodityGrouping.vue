@@ -322,7 +322,7 @@
       </div>
       <!--模块编辑区结束-->
       <div class="item_module_title">
-        <span>商品分组</span>
+        <span>{{$t('commoditySearch.commodityGrouping')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -350,7 +350,7 @@
       class="setHere activeSetHere"
       :class="activeSetHere?'middleModulesActive':''"
     >
-      放这里
+      {{$t('commoditySearch.putItHere')}}
     </div>
   </div>
 </template>
@@ -373,7 +373,7 @@ export default {
       data: {
         sort_group_arr: []
       },
-      groupTextData: ['全部', '分组一', '分组二', '分组三', '分组四'],
+      groupTextData: [],
       showNav: [],
       bgColor: '',
       goodsData: [] // 商品信息
@@ -406,6 +406,10 @@ export default {
         this.activeSetHere = false
       }
     },
+    lang () {
+      console.log('触发')
+      this.groupTextData = this.$t('commoditySearch.groupTextData')
+    },
     // 右侧模块点击传回中间当前高亮模块的数据
     backData: {
       handler (newData) {
@@ -428,10 +432,10 @@ export default {
     }
   },
   mounted () {
-    this.langDefault() // 初始化语言
     this.bgColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
     // 初始化数据
     this.defaultData()
+    this.langDefault() // 初始化语言
   },
   methods: {
     // 处理初始数据

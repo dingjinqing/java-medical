@@ -17,5 +17,7 @@ export const en = {
   merchantClassification: 'Merchant classification',
   display: 'display',
   noDisplay: 'No display',
-  iconColor: 'Icon color'
+  iconColor: 'Icon color',
+  commodityGrouping: 'Commodity grouping',
+  groupTextData: ['whole', 'Group one', 'Group two', 'Group Three', 'Group four']
 }
