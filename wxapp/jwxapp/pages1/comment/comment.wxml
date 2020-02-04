@@ -87,7 +87,7 @@
                     <text style='color:#fff;'>*</text>{{i18n.$t(localePack,"page1.comment.experience")}}:
                   </view>
                   <textarea value="{{item.commNote}}" wx:if="{{item.commentFlag == 0 && !show_act_custom}}" name="commNote" bindinput='comm_note' placeholder="{{i18n.$t(localePack,'page1.comment.isForce')}}" style="float:left" />
-                  <text class="xinde_content" wx:elif="{{item.commentFlag == 1}}">{{item.commNote?item.commNote: '{{i18n.$t(localePack,"page1.comment.noExperience")}}'}}</text>
+                  <text class="xinde_content" wx:elif="{{item.commentFlag == 1}}">{{item.commNote?item.commNote: i18n.$t(localePack,"page1.comment.noExperience")}}</text>
                   <view style="clear:both"></view>
                 </view>
                 <view class="shaidan" wx:if="{{item.commentFlag == 0}}">

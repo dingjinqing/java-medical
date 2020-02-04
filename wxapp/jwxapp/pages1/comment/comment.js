@@ -360,6 +360,9 @@ global.wxPage({
     } else {
       info.commImg = info.commImg.toString();
     }
+    if (params.commNote == '') {
+      params.commNote = null
+    }
     console.log(params);
     util.api('/api/wxapp/comment/add', function (res) {
       if (res.error === 0) {
