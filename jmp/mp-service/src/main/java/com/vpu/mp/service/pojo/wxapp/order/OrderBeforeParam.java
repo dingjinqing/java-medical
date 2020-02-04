@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -34,7 +33,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @ToString
-@Slf4j
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
     /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.foundation.data.BaseConstant} 下的ACTIVITY_TYPE**/
@@ -152,16 +150,12 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**
      * 获取商品计算首单特惠活动。。。
      */
-    public OrderCartProductBo  getOrderCartProductBo(){
+    public OrderCartProductBo createOrderCartProductBo(){
     	if (orderCartProductBo==null){
-            log.info("orderCartProductBo==null");
 			orderCartProductBo= new OrderCartProductBo();
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-                log.info("debug{}", x);
-                OrderCartProductBo.OrderCartProduct orderCartProduct = new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber());
-                log.info("debug{}", orderCartProduct);
-                orderCartProductBo.getAll().add(orderCartProduct);
+				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber()));
 			});
 		}
         return orderCartProductBo;
