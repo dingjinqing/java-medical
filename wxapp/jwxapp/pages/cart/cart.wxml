@@ -4,7 +4,7 @@
         <!-- 可购买商品列表 -->
         <view class="list_box" wx:if="{{canBuyGoodsList.length > 0}}">
             <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index">
-              <!-- 活动类型 -->
+              <!-- 加价购 / 满折满减 -->
               <view class='act_info clearfix' wx:if="{{item.activityType == 7 || item.activityType == 21}}">
                 <view class='ai_left'>
                   <view class='full_member_icon'>会员</view>
@@ -41,7 +41,7 @@
                         </view>
                         <view class="goods_item">
                             <view class="goods_img">
-                                <image src="{{imageUrl}}{{item.goodsImg}}"/>
+                                <image src="{{item.goodsImg}}"/>
                                 <view class="invalid" wx:if="{{item.tip}}">
                                     {{item.tip}}
                                 </view>
@@ -55,12 +55,13 @@
                                         {{item.prdDesc}}
                                     </view>
                                 </view>
-                                <view class="ng_goods_jiang" wx:if="{{item.activityType == 4}}" style="color:{{comColor}}">比加入时降了9.00元</view>
+                                <!-- <view class="ng_goods_jiang" wx:if="{{item.activityType == 4}}" style="color:{{comColor}}">比加入时降了9.00元</view> -->
                                 <view class="goods_price">
-                                    <!-- 首单特惠 / 限时降价 标签 -->
+                                    <!-- 首单特惠 / 限时降价 / 会员价 标签 -->
                                     <view style="display: flex;">
                                       <view class='reduce_icon' wx:if="{{item.activityType == 18}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
                                       <view class='reduce_icon' wx:if="{{item.activityType == 4}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+                                      <!-- <view class='reduce_icon' style='background:linear-gradient(to left,#e0c787,#d9ae69)'>会员价</view> -->
                                       <view class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
                                     </view>
                                     <view class="num_cfg">
