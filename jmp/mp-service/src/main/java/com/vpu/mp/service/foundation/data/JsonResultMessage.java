@@ -479,6 +479,19 @@ public class JsonResultMessage {
 	public static final String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
 	public static final String OVERVIEW_USER_ANALYSIS_RFM_NULL = "overview.user.analysis.rfm.null";
 	public static final String OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL = "overview.yesterday.analysis.data.null";
+    /**
+     * 访问分析导出
+     */
+    public static final String VIST_EXPORT_FILE_NAME = "visit.export.file_name";
+    public static final String VISIT_EXPORT_COLUMN_GRADING = "visit.statistics.grading";
+    public static final String VISIT_EXPORT_COLUMN_DATE = "visit.statistics.date";
+    public static final String VISIT_EXPORT_COLUMN_SESSION_COUNT = "visit.statistics.session_count";
+    public static final String VISIT_EXPORT_COLUMN_PV = "visit.statistics.pv";
+    public static final String VISIT_EXPORT_COLUMN_UV = "visit.statistics.uv";
+    public static final String VISIT_EXPORT_COLUMN_UV_NEW = "visit.statistics.uv_new";
+    public static final String VISIT_EXPORT_COLUMN_STAY_TIME_UV = "visit.statistics.stay_time_uv";
+    public static final String VISIT_EXPORT_COLUMN_STAY_TIME_SESSION = "visit.statistics.stay_time_session";
+    public static final String VISIT_EXPORT_COLUMN_VISIT_DEPTH = "visit.statistics.visit_depth";
     // 资产明细导出
     public static final String ASSETS_EXPORT_FILE_NAME = "assets.export.file_name";
     public static final String ASSETS_EXPORT_COLUMN_TRADE_TIME = "overview.asset.management.trade_time";
