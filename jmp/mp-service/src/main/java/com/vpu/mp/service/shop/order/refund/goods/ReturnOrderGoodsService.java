@@ -1,7 +1,24 @@
 package com.vpu.mp.service.shop.order.refund.goods;
 
-import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,26 +30,8 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.springframework.stereotype.Service;
-import org.jooq.impl.DSL;
-
-import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 
 /**
  * Table:return_order_goods
@@ -162,7 +161,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 			success = OrderConstant.SUCCESS_REVOKE;
 		}
 		//若拒绝订单需更新returnOrderGoods的success状态
-		if(orderStatus == OrderConstant.REFUND_STATUS_REFUSE) {
+        if(orderStatus == OrderConstant.REFUND_STATUS_REFUSE || orderStatus == OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS) {
 			success = OrderConstant.SUCCESS_REFUSE;
 		}
 		//若拒绝订单需 更新returnOrderGoods的success状态
