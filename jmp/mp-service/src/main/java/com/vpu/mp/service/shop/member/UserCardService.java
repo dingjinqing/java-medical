@@ -109,6 +109,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.member.card.CardUserOpt;
+import com.vpu.mp.service.shop.member.card.GradeCardOpt;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.card.NormalCardOpt;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -179,6 +180,8 @@ public class UserCardService extends ShopBaseService {
 	private LimitCardOpt limitCardOpt;
 	@Autowired
 	private NormalCardOpt normalCardOpt;
+	@Autowired 
+	private GradeCardOpt gradeCardOpt;
 	@Autowired 
 	private CardUserOpt cardUserOpt;
 	public static final String DESC = "score_open_card";
@@ -359,7 +362,7 @@ public class UserCardService extends ShopBaseService {
 		return gradeCard;
 	}
 
-	private GradeConditionJson getGradeCondition(Integer userTotalScore, BigDecimal amount, MemberCardRecord gCard) {
+	public GradeConditionJson getGradeCondition(Integer userTotalScore, BigDecimal amount, MemberCardRecord gCard) {
 
 		GradeConditionJson gradeCondition = Util.parseJson(gCard.getGradeCondition(), GradeConditionJson.class);
 
@@ -376,7 +379,7 @@ public class UserCardService extends ShopBaseService {
 	/**
 	 * 是否满足升级条件
 	 */
-	private boolean isSatisfyUpgradeCondition(Integer userTotalScore, BigDecimal amount,
+	public boolean isSatisfyUpgradeCondition(Integer userTotalScore, BigDecimal amount,
 			GradeConditionJson gradeCondition) {
 		return gradeCondition.getGradeScore().intValue() <= userTotalScore
 				|| BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), amount) <= 0;
@@ -1167,11 +1170,11 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 获取用户累积消费总额
+	 * 	获取用户累积消费总额
 	 * 
 	 * @return 消费总额,默认为0
 	 */
-	private BigDecimal getUserTotalSpendAmount(Integer userId) {
+	public BigDecimal getUserTotalSpendAmount(Integer userId) {
 		DistributorSpendVo distributorSpendVo = distributorLevelService.getTotalSpend(userId);
 		return distributorSpendVo.getTotal() != null ? distributorSpendVo.getTotal() : BigDecimal.ZERO;
 	}
@@ -1499,6 +1502,7 @@ public class UserCardService extends ShopBaseService {
 				return null;
 			}
 			if(CardUtil.isLimitCard(mCard.getCardType())) {
+				logger().info("领取限次会员卡");
 				cardUserOpt.setDecorate(limitCardOpt);
 				String cardNo = cardUserOpt.handleSendCard(param.getUserId(), param.getCardId(), false);
 				
@@ -1513,7 +1517,7 @@ public class UserCardService extends ShopBaseService {
 					return vo;
 				}
 			}else if(CardUtil.isNormalCard(mCard.getCardType())) {
-				
+				logger().info("领取普通会员卡");
 				cardUserOpt.setDecorate(normalCardOpt);
 				String cardNo = cardUserOpt.handleSendCard(param.getUserId(), param.getCardId(), false);
 				//	如果已经领取了该普通卡，不再次领取，返回拥有的会员卡号
@@ -1528,6 +1532,15 @@ public class UserCardService extends ShopBaseService {
 					vo.setCardNo(cardNo);
 					return vo;
 				}
+			}else if(CardUtil.isGradeCard(mCard.getCardType())) {
+				logger().info("领取等级会员卡");
+				cardUserOpt.setDecorate(gradeCardOpt);
+				String cardNo = cardUserOpt.handleSendCard(param.getUserId(), param.getCardId(), false);
+				if(StringUtil.isBlank(cardNo)) {
+					logger().info("领取失败");
+					throw new CardReceiveFailException();
+				}
+				vo.setCardNo(cardNo);
 			}
 					
 		} else {
