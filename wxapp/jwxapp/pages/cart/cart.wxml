@@ -41,7 +41,7 @@
                         </view>
                         <view class="goods_item">
                             <view class="goods_img">
-                                <image src="{{imageUrl}}{{item.goodsImg}}"/>
+                                <image src="{{item.goodsImg}}"/>
                                 <view class="invalid" wx:if="{{item.tip}}">
                                     {{item.tip}}
                                 </view>
@@ -139,7 +139,7 @@
               <view class="flex_goods">
                   <view class="goods_item">
                       <view class="goods_img">
-                          <image src="{{imageUrl}}{{item.goodsImg}}"/>
+                          <image src="{{item.goodsImg}}"/>
                           <view class="invalid">
                             失效商品
                           </view>
