@@ -795,36 +795,25 @@ public class StoreReservation extends ShopBaseService {
             put(SERVICE_ORDER.CANCEL_REASON, param.getCancelReason());
         }};
         serviceOrderService.updateServiceOrder(param.getOrderId(), map);
+        int shopId = getShopId();
         // 调用微信关闭订单接口
-        CompletableFuture.supplyAsync(() -> cancelWXOrder(param.getOrderSn()));
+        CompletableFuture.supplyAsync(() -> cancelWXOrder(param.getOrderSn(),shopId));
     }
 
-    private boolean cancelWXOrder(String orderSn) {
-        // TODO 队列五分钟后调用微信关闭订单接口
+    private boolean cancelWXOrder(String orderSn,int shopId) {
+        // 队列五分钟后调用微信关闭订单接口
 
-        logger().info("关闭订单队列 1 {}",orderSn);
-        OrderCloseQueenParam param = OrderCloseQueenParam.builder().shopId(getShopId()).orderSn(orderSn).build();
-        logger().info("关闭订单队列 1.1 {}",param);
+        OrderCloseQueenParam param = OrderCloseQueenParam.builder().shopId(shopId).orderSn(orderSn).build();
         Timestamp startTime = DateUtil.getDalyedDateTime(60*5);
 
-        TaskJobInfo info = TaskJobInfo.builder(getShopId())
+        TaskJobInfo info = TaskJobInfo.builder(shopId)
             .type(TaskJobsConstant.EXECUTION_TIMING)
             .content(param)
             .className(OrderCloseQueenParam.class.getName())
             .startTime(startTime)
             .executionType(TaskJobsConstant.TaskJobEnum.WX_CLOSEORDER)
             .builder();
-        logger().info("关闭订单队列 2 {}",info);
-        taskJobMainService.dispatch(info);
-
-
-
-//        try {
-//            mpPaymentService.wxCloseOrder(orderSn);
-//        } catch (WxPayException e) {
-//            log.debug("微信关闭订单接口调用失败 {}", e.getMessage());
-//            return false;
-//        }
+       taskJobMainService.dispatch(info);
         return true;
     }
 
