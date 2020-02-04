@@ -69,6 +69,7 @@ public class OrderScheduleTask {
         Result<ShopRecord> shops = saas.shop.getAll();
         shops.forEach((shop)->{
             saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.close();
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.serviceOrderClose();
         });
     }
 

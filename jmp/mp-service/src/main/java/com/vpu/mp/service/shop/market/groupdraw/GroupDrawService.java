@@ -428,7 +428,7 @@ public class GroupDrawService extends ShopBaseService {
 	 * @return 付款订单数 拉新用户数 参与用户数 成团用户数 {@link GroupDrawAnalysisMap}
 	 */
 	public GroupDrawAnalysisMap getGroupDrawInfo(Integer id, Timestamp startTime, Timestamp endTime) {
-		SelectConditionStep builder = db().select(ORDER_INFO.CREATE_TIME, ORDER_INFO.USER_ID).from(ORDER_INFO)
+		SelectConditionStep<?> builder = db().select(ORDER_INFO.CREATE_TIME, ORDER_INFO.USER_ID).from(ORDER_INFO)
 				.where(ORDER_INFO.ACTIVITY_ID.eq(id))
 				.and(ORDER_INFO.GOODS_TYPE.likeRegex(
 						OrderInfoService.getGoodsTypeToSearch(new Byte[] { BaseConstant.ACTIVITY_TYPE_GROUP_DRAW })))
@@ -438,9 +438,9 @@ public class GroupDrawService extends ShopBaseService {
 		}
 		List<GroupDrawAnalysisInfo> analysisInfos = builder.fetchInto(GroupDrawAnalysisInfo.class);
 		// 付款订单数
-		Map<String, Integer> orderNumber = new HashMap();
+		Map<String, Integer> orderNumber = new HashMap<String, Integer>();
 		// 拉新用户数
-		Map<String, Integer> newUser = new HashMap();
+		Map<String, Integer> newUser = new HashMap<String, Integer>();
 		// 控制跳出当前遍历
 		List<Integer> userIds = new ArrayList<>();
 		for (GroupDrawAnalysisInfo item : analysisInfos) {
@@ -462,9 +462,9 @@ public class GroupDrawService extends ShopBaseService {
 				.and(JOIN_GROUP_LIST.STATUS.greaterOrEqual(NumberUtils.BYTE_ZERO))
 				.fetchInto(GroupDrawAnalysisStatus.class);
 		// 参与用户数
-		Map<String, Integer> joinNum = new HashMap();
+		Map<String, Integer> joinNum = new HashMap<String, Integer>();
 		// 成团用户数
-		Map<String, Integer> successUserNum = new HashMap();
+		Map<String, Integer> successUserNum = new HashMap<String, Integer>();
 		for (GroupDrawAnalysisStatus item : analysisStatus) {
 			String date = substring(item.getOpenTime().toString(), 0, 10);
 			if (item.getStatus() == 1) {
@@ -496,7 +496,7 @@ public class GroupDrawService extends ShopBaseService {
 				return o1.getKey().compareTo(o2.getKey());
 			}
 		});
-		Map result = new LinkedHashMap();
+		Map<String, Integer> result = new LinkedHashMap<String, Integer>();
 		for (Map.Entry<String, Integer> entry : list) {
 			result.put(entry.getKey(), entry.getValue());
 		}

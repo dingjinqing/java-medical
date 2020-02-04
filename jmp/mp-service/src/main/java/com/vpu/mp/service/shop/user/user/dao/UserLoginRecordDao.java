@@ -4,15 +4,10 @@ import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
-import org.jooq.Record1;
-import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 
 /**
  * @author 黄壮壮

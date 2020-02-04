@@ -15,7 +15,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.distribution.addDistributorToGroupParam;
+import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToGroupParam;
 
 @Service
 public class DistributorGroupService extends ShopBaseService{
@@ -157,7 +157,7 @@ public class DistributorGroupService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public boolean addDistributorGroup(addDistributorToGroupParam param) {
+	public boolean addDistributorGroup(AddDistributorToGroupParam param) {
 		 int result = db().update(USER)
 				.set(USER.INVITE_GROUP,(param.getGroupId()))
 				.where(USER.USER_ID.in(param.getUserIds()))
