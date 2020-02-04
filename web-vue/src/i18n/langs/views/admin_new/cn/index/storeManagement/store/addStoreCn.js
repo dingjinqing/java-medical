@@ -9,6 +9,7 @@ export const cn = {
   open: '营业中',
   close: '关店',
   BusinessHours: '营业时间',
+  businessHoursValid: '营业结束时间应该大于营业开始时间',
   everyDay: '每天',
   workDay: '工作日',
   startTime: '开始时间',
