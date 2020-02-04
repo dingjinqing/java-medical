@@ -146,7 +146,7 @@ global.wxPage({
         goodsId: bargain_info.recordInfo.goodsId,
         prdRealPrice: bargain_info.recordInfo.prdPrice,
         goodsPrice: bargain_info.recordInfo.goodsPrice,
-        goodsNum: bargain_info.recordInfo.prdNumber,
+        goodsNum: 1,
         prdId: bargain_info.recordInfo.prdId,
         productId: bargain_info.recordInfo.prdId
       }]

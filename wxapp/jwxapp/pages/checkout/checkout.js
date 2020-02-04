@@ -22,6 +22,7 @@ global.wxPage({
       action: 10,
       activityType: null, // 指定本次结算所参加的唯一营销活动类型
       activityId: null, // 指定本次结算所参加的唯一营销活动类型 ID
+      recordId: null, // 砍价活动id
       groupId: null, // 拼团参团id
       addressId: null, // 地址id
       goods: null, // 商品列表
@@ -394,6 +395,7 @@ global.wxPage({
       memberCardNo,
       activityType,
       activityId,
+      recordId: this.data.params.recordId,
       groupId: this.data.params.groupId
     }
     util.api('/api/wxapp/order/submit', res => {
