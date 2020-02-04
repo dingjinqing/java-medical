@@ -791,12 +791,14 @@ public class StoreReservation extends ShopBaseService {
         }};
         serviceOrderService.updateServiceOrder(orderId, map);
         // 调用微信关闭订单接口
+        logger().info("关闭订单队列 1");
         CompletableFuture.supplyAsync(() -> cancelWXOrder(orderId));
     }
 
     private boolean cancelWXOrder(Integer orderId) {
         // TODO 队列五分钟后调用微信关闭订单接口
 
+        logger().info("关闭订单队列 2");
         String orderSn = serviceOrderService.selectSingleField(orderId, SERVICE_ORDER.ORDER_SN);
         OrderCloseQueenParam param = new OrderCloseQueenParam(getShopId(),orderSn);
         Timestamp startTime = DateUtil.getDalyedDateTime(60*5);

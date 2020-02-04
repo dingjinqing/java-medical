@@ -31,12 +31,27 @@ public final class ImageUtil {
      * @return
      */
     public static BufferedImage resizeImage(int width, int height, BufferedImage bufferedImage) {
-        BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_USHORT_555_RGB);
         newBufferedImage.getGraphics().drawImage(bufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0,
             0, null);
         return newBufferedImage;
     }
 
+    
+    /**
+     * 重新设置图片大小，图带Alpha，存在透明像素时调用
+     *
+     * @param width
+     * @param height
+     * @param bufferedImage
+     * @return
+     */
+    public static BufferedImage resizeImageTransparent(int width, int height, BufferedImage bufferedImage) {
+        BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        newBufferedImage.getGraphics().drawImage(bufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0,
+            0, null);
+        return newBufferedImage;
+    }
 
     /**
      * 给图片添加文字

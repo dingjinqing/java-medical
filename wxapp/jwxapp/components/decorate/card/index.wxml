@@ -1,5 +1,5 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
-<block wx:if="{{m.status==-1}}">
+<block wx:if="{{m.status==-1 || m.status==4 || m.status==5}}">
   <view class='card' wx:if="{{m.card_id}}" style='margin-bottom:{{m.margin_bot}}rpx'>
     <view class="view" style="background:{{m.bg}} no-repeat;background-size:cover;">
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>
@@ -26,7 +26,7 @@
       </view>
       <view class="card_bottom">
         {{i18n.$t(localePack,'components.decorate.moreToCheck')}}
-        <text class="text" catchtap="bindGetCard" data-is_pay="{{m.is_pay}}" data-activation="{{m.activation}}" data-card_type="{{m.card_type}}" data-card_id="{{m.card_id}}" data-cur_idx="{{m.cur_idx}}">{{i18n.$t(localePack,'components.decorate.collarCard')}}</text>
+        <text class="text" catchtap="bindGetCard" data-status="{{m.status}}" data-is_pay="{{m.is_pay}}" data-activation="{{m.activation}}" data-card_type="{{m.card_type}}" data-card_id="{{m.card_id}}" data-cur_idx="{{m.cur_idx}}">{{i18n.$t(localePack,'components.decorate.collarCard')}}</text>
       </view>
     </view>
   </view>

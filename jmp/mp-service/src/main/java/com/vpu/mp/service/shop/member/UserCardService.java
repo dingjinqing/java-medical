@@ -1167,12 +1167,8 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * 获取用户累积消费总额
-=======
-	 * 	获取用户累积消费总额
 	 * 
->>>>>>> 170a4151e... 小程序端领取等级卡
 	 * @return 消费总额,默认为0
 	 */
 	public BigDecimal getUserTotalSpendAmount(Integer userId) {
