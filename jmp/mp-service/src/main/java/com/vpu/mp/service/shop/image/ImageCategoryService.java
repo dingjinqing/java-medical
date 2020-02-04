@@ -45,10 +45,6 @@ public class ImageCategoryService extends ShopBaseService {
                 record.update();
             }
         }
-        record.setImgCatParentId(0);
-        record.setCatIds(String.valueOf(record.getImgCatId()));
-        record.setLevel((byte) 1);
-        record.update();
     }
 
     /**
