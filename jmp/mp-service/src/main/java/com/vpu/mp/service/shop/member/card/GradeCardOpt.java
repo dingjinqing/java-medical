@@ -40,12 +40,14 @@ public class GradeCardOpt extends CardOpt {
 		//	是否拥有会员卡
 		if(uCardSvc.isHasAvailableGradeCard(userId)) {
 			//	设置卡等级
+			logger().info("更换等级卡卡号");
 			MemberCardRecord oldCard = uCardSvc.getUserGradeCard(userId);
 			MemberCardRecord newCard = mCardSvc.getCardById(cardId);
 			uCardSvc.changeUserGradeCard(userId, oldCard, newCard, "");
 			return uCardSvc.getCardNoByUserAndCardId(userId,cardId);
 		}else {
 			//	直接发卡
+			logger().info("直接发卡");
 			MemberCardRecord card = mCardSvc.getCardById(cardId);
 			
 			UserCardRecord newCard = UserCardRecordBuilder.create()

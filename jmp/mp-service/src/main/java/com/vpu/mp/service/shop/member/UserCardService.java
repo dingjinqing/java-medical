@@ -201,7 +201,9 @@ public class UserCardService extends ShopBaseService {
 	 * @Return  true拥有 ，false 未拥有
 	 */
 	public boolean isHasAvailableGradeCard(Integer userId) {
-		return !StringUtils.isBlank(userCardDao.calcUserGrade(userId));
+		String grade = userCardDao.calcUserGrade(userId);
+		logger().info("当前用户等级"+grade);
+		return !StringUtils.isBlank(grade);
 	}
 
 	/**
