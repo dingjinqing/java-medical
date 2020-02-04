@@ -1,0 +1,13 @@
+<wxs src="../../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<v-popup show="{{show}}" bindtap="bindClose" bind:close="bindClose" horizon="center" vertical="bottom" close_pos="inner">
+  <view class="content">
+    <view class="title">
+      <text>赠品</text>
+    </view>
+    <view class="promotion-content">
+     <block wx:for="{{goodsList}}" wx:key="goodsId" wx:for-index="itemIndex">
+        <v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" />
+      </block>
+    </view>
+  </view>
+</v-popup>
