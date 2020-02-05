@@ -110,7 +110,7 @@
             <template slot-scope="scope">
               <span>{{scope.row.name}}</span>
               <span
-                @click="getPageCate(scope.row.pageId)"
+                @click="getPageCate(scope.row)"
                 style="color:#5A8BFF;cursor:pointer"
               >{{$t('pictureSetting.setUp')}}</span>
             </template>
@@ -318,7 +318,8 @@ export default {
       setPageCateParam: {},
       pageIds: '',
       isBatch: 0,
-      delPageId: ''
+      delPageId: '',
+      setRowData: ''
 
     }
   },
@@ -510,8 +511,8 @@ export default {
       this.tuneUpMiniPage = true
     },
     // 获取页面分类
-    getPageCate (pageId) {
-      this.pageId = pageId
+    getPageCate (row) {
+      this.pageId = row.pageId
       getPageCate().then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -523,16 +524,20 @@ export default {
           this.pageSetoptions = res.content
         }
       })
-      if (pageId > -1) {
+      if (row.pageId > -1) {
+        console.log(row)
+        this.setRowData = row
         this.pageSetdialogVisible = true
       }
     },
     // 装修页面设置页面分类
 
-    savePageCate (row) {
+    savePageCate () {
+      let row = this.setRowData
+      console.log(row)
       if (this.isBatch === 0) {
         this.setPageCateParam.pageId = row.pageId
-        this.setPageCateParam.id = row.pageSetvalue
+        this.setPageCateParam.id = this.pageSetvalue
         console.log(111)
         setPageCate(this.setPageCateParam).then(res => {
           if (res.error === 0) {
