@@ -850,5 +850,14 @@ public class JsonResultMessage {
     public static final String  WX_MA_BARGAIN_DOC="wx.ma.bargain.doc";
     /** 砍走*/
     public static final String WX_MA_BARGAIN_TAKE = "wx.ma.bargain.take";
+    /** 预售图片相关*/
+    /**"定金膨胀"四个字*/
+    public static final String WX_MA_PRESALE_SHARE_INFO = "wx.ma.presale.share.info";
+    /**"定金"两个字*/
+    public static final String WX_MA_PRESALE_DEPOSIT = "wx.ma.presale.deposit";
+    /**"10.00元定金,限时预售" 分享图片*/
+    public static final String WX_MA_PRESALE_SHARE_DOC = "wx.ma.presale.share.doc";
+    /**"200.00元,限时预售" 分享图片*/
+    public static final String WX_MA_PRESALE_PICTORIAL_DOC = "wx.ma.presale.pictorial.doc";
 
 }

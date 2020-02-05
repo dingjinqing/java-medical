@@ -631,6 +631,15 @@ public class PreSaleService extends ShopBaseService {
 		return into;
 
 	}
-	
+
+    /**
+     * 根据活动id获取预售活动record信息
+     * @param activityId 活动id
+     * @return record信息
+     */
+	public PresaleRecord getPresaleRecord(Integer activityId){
+        return db().selectFrom(PRESALE).where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PRESALE.ID.eq(activityId)))
+            .fetchAny();
+    }
 	
 }
