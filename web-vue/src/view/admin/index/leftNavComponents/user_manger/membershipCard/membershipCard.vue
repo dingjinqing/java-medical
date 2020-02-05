@@ -6,7 +6,7 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="普通会员卡"
+          :label="$t('memberCard.normalCard')"
           name="first"
         >
           <div class="firstDiv">
@@ -126,7 +126,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane
-          label="限次会员卡"
+           :label="$t('memberCard.limitCard')"
           name="second"
         >
           <div class="firstDiv">
@@ -241,7 +241,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane
-          label="等级会员卡"
+          :label="$t('memberCard.gradeCard')"
           name="third"
         >
           <div class="firstDiv">
@@ -294,6 +294,14 @@
                         {{$t('memberCard.ForeverEffective')}}
                       </span>
                     </div>
+                  <div class="grade_condition">
+                    <p class="grade_tip">{{$t('memberCard.gradeCondition')}}</p>
+                    <div class="grade_detail">
+                      <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}</p>
+                      <p>{{$t('memberCard.or')}}</p>
+                      <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}</p>
+                    </div>
+                  </div>
                   </div>
                   <div class="card_edit">
                     <div @click="handleToTips(0,item,index,2)">
@@ -970,6 +978,18 @@ export default {
                 span {
                   width: 200px;
                 }
+              }
+            }
+            .grade_condition{
+              margin-top: 5px;
+              color: #fff;
+              line-height: normal;
+              font-size: 12px;
+              .grade_tip{
+                color: #fff;
+              }
+              .grade_detail{
+                padding-left: 20px;
               }
             }
             .card_edit {
