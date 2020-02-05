@@ -319,6 +319,7 @@ export default {
     // 自定义颜色改Left
     headleChangeColorLeft () {
       console.log(this.colorLeft_)
+      if (!this.colorLeft_) return
       console.log(this.colorLeft_color)
       this.ToRgba(this.colorLeft_, 0.2)
       this.colorLeft_color = 'color:' + this.colorLeft_
@@ -339,6 +340,7 @@ export default {
     // 自定义颜色改Right
     headleChangeColorRight () {
       console.log(this.colorRight)
+      if (!this.colorRight) return
       this.btnLeft_background = 'background:' + this.colorRight
       this.custom_btnLeft_background = this.btnLeft_background
       this.choiseId = 6
@@ -371,6 +373,13 @@ export default {
     saveShopStyle () {
       let saveLeftColor = this.btnLeft_background.split(':')[1]
       let saveRightColor = this.btnRight_background.split(':')[1]
+      if (!this.colorLeft_ || !this.colorRight) {
+        this.$message.error({
+          message: '请选择自定义颜色',
+          showClose: true
+        })
+        return
+      }
       let obj = {
         'shopStyleId': this.choiseId,
         'shopStyleValue': saveLeftColor + ',' + saveRightColor
