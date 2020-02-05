@@ -36,8 +36,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * The type Trade service.
@@ -731,6 +730,18 @@ public class TradeService extends BaseShopConfigService {
     public List<PaymentConfigVo> getPaymentEnabled() {
         return db().select(Payment.PAYMENT.PAY_CODE, Payment.PAYMENT.PAY_NAME, Payment.PAYMENT.ENABLED)
             .from(Payment.PAYMENT).fetchInto(PaymentConfigVo.class);
+    }
+
+    /**
+     * Payment is enabled boolean.支付方式是否开启
+     *
+     * @param payCode the pay code
+     * @return the boolean true开启，false关闭
+     */
+    public boolean paymentIsEnabled(String payCode) {
+        return BYTE_ONE.equals(db().select(Payment.PAYMENT.ENABLED)
+            .from(Payment.PAYMENT).where(Payment.PAYMENT.PAY_CODE.eq(payCode))
+            .fetchOneInto(Byte.class));
     }
 
     /**
