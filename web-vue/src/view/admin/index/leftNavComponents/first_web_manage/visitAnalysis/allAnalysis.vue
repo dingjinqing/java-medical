@@ -56,22 +56,22 @@
         @change="customDate"
         value-format="yyyyMMdd"
         range-separator="-"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        :start-placeholder="$t('visitAnalysis.startDate')"
+        :end-placeholder="$t('visitAnalysis.endDate')"
         class="custom"
       >
       </el-date-picker>
-      <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
-      <el-button type="primary" size="small" @click="exportData()">数据导出</el-button>
+      <span>{{this.startDate.year}}{{$t('visitAnalysis.years')}}{{this.startDate.month}}{{$t('visitAnalysis.months')}}{{this.startDate.day}}{{$t('visitAnalysis.days')}} - {{this.endDate.year}}{{$t('visitAnalysis.years')}}{{this.endDate.month}}{{$t('visitAnalysis.months')}}{{this.endDate.day}}{{$t('visitAnalysis.days')}}</span>
+      <el-button type="primary" size="small" @click="exportData()">{{$t('visitAnalysis.export')}}</el-button>
     </div>
-    <div v-show="this.param.action===1"><span>筛选时间范围内总打开次数:</span>{{this.totalNum}}</div>
-    <div v-show="this.param.action===2"><span>筛选时间范围内总访问次数:</span>{{this.totalNum}}</div>
-    <div v-show="this.param.action===4"><span>筛选时间范围内总新用户数:</span>{{this.totalNum}}</div>
-    <div v-show="this.param.action===6"><span>筛选时间范围内次均停留时长:</span>{{this.averageNum}}</div>
-    <div v-show="this.param.action===7"><span>筛选时间范围内平均访问深度:</span>{{this.averageNum}}</div>
+    <div v-show="this.param.action===1"><span>{{$t('visitAnalysis.totalSessionCount')}}:</span>{{this.totalNum}}</div>
+    <div v-show="this.param.action===2"><span>{{$t('visitAnalysis.totalPv')}}:</span>{{this.totalNum}}</div>
+    <div v-show="this.param.action===4"><span>{{$t('visitAnalysis.totalUvNew')}}:</span>{{this.totalNum}}</div>
+    <div v-show="this.param.action===6"><span>{{$t('visitAnalysis.aveStayTime')}}:</span>{{this.averageNum}}</div>
+    <div v-show="this.param.action===7"><span>{{$t('visitAnalysis.aveVisitDepth')}}:</span>{{this.averageNum}}</div>
     <!--    折线图数据-->
     <div v-show="this.controlShow" id="allAnalysisCharts"></div>
-    <div class="noData" v-show="this.totalNum===0"><span>暂无相关数据</span></div>
+    <div class="noData" v-show="this.totalNum===0"><span>{{$t('visitAnalysis.noData')}}</span></div>
   </div>
 </template>
 
@@ -89,25 +89,25 @@ export default {
       timeValue: [],
       actionSelect: 1,
       actionRange: [
-        { value: 1, label: '打开次数' },
-        { value: 2, label: '访问次数' },
-        { value: 3, label: '访问人数' },
-        { value: 4, label: '新用户数' },
-        { value: 5, label: '人均停留时长' },
-        { value: 6, label: '次均停留时长' },
-        { value: 7, label: '平均访问深度' }
+        { value: 1, label: this.$t('visitAnalysis.sessionCount') },
+        { value: 2, label: this.$t('visitAnalysis.pv') },
+        { value: 3, label: this.$t('visitAnalysis.uv') },
+        { value: 4, label: this.$t('visitAnalysis.uvNew') },
+        { value: 5, label: this.$t('visitAnalysis.stayTimeUv') },
+        { value: 6, label: this.$t('visitAnalysis.stayTimePv') },
+        { value: 7, label: this.$t('visitAnalysis.visitDepth') }
       ],
       timeSelect: 7,
       timeRange: [
-        { value: 7, label: '最近7天' },
-        { value: 30, label: '最近30天' },
-        { value: 0, label: '自定义' }
+        { value: 7, label: this.$t('visitAnalysis.lastSeven') },
+        { value: 30, label: this.$t('visitAnalysis.lastThirty') },
+        { value: 0, label: this.$t('visitAnalysis.custom') }
       ],
       gradeSelect: 1,
       gradeRange: [
-        { value: 1, label: '日' },
-        { value: 7, label: '周' },
-        { value: 30, label: '月' }
+        { value: 1, label: this.$t('visitAnalysis.day') },
+        { value: 7, label: this.$t('visitAnalysis.week') },
+        { value: 30, label: this.$t('visitAnalysis.month') }
       ],
       param: {
         action: 1,
@@ -148,9 +148,6 @@ export default {
     // 数据导出
     exportData () {
       excelExport(this.param).then(res => {
-        console.log('开始数据导出')
-        // let fileName = '访问分析'
-        // download(res, decodeURIComponent(fileName))
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
         download(res, decodeURIComponent(fileName))
@@ -195,7 +192,7 @@ export default {
         date: [],
         number: []
       }
-      console.log('选择器的时间：', this.timeValue)
+      console.log('datePicker：', this.timeValue)
       this.param.startDate = this.timeValue[0]
       this.param.endDate = this.timeValue[1]
       this.loadData()
@@ -203,7 +200,7 @@ export default {
     // 页面初始化数据
     loadData () {
       amountAnalysis(this.param).then(res => {
-        console.log('访问分析', res)
+        console.log('visitAnalysis', res)
         if (res.error === 0) {
           this.handleData(res.content)
         }
