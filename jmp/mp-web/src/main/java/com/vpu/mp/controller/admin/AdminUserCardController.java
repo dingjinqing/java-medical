@@ -78,6 +78,7 @@ public class AdminUserCardController extends AdminBaseController {
 	    			.userId(param.getUserId())
 	    			.cardId(param.getCardId())
 	    			.message(param.getMessage())
+	    			.payment("")
 	    			.cardNo(param.getCardNo())
 	    			.build();
     	shop().userCard.cardConsumer(bean, 0, (byte)10, (byte)2, param.getType(), isContinue);
