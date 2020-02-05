@@ -130,20 +130,21 @@ export default {
       deep: true
     },
     lang () {
-      switch (this.carData.card_type) {
-        case '0':
-          this.carClass = this.$t('membershipCard.ordinaryCard')
-          break
-        case '1':
-          this.carClass = this.$t('membershipCard.limitCard')
-          break
-        case '2':
-          this.carClass = this.$t('membershipCard.gradeCard')
-      }
-      this.carData.card_name = this.$t('membershipCard.cardName')
-      this.carData.card_state = this.$t('membershipCard.cardState')
-      this.carData.receive_day = this.$t('membershipCard.receiveDay')
-      this.carData.legal = this.$t('membershipCard.legal')
+      console.log('1')
+      // switch (this.carData.card_type) {
+      //   case '0':
+      //     this.carClass = this.$t('membershipCard.ordinaryCard')
+      //     break
+      //   case '1':
+      //     this.carClass = this.$t('membershipCard.limitCard')
+      //     break
+      //   case '2':
+      //     this.carClass = this.$t('membershipCard.gradeCard')
+      // }
+      // this.carData.card_name = this.$t('membershipCard.cardName')
+      // this.carData.card_state = this.$t('membershipCard.cardState')
+      // this.carData.receive_day = this.$t('membershipCard.receiveDay')
+      // this.carData.legal = this.$t('membershipCard.legal')
     }
   },
   mounted () {
