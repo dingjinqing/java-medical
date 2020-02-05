@@ -10,6 +10,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
@@ -201,6 +203,15 @@ public class SecKillProcessorDao extends ShopBaseService {
             seckillService.seckillList.addSecRecord(order,param.getGoods().get(0).getGoodsId());
         }
 
+    }
+
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods){
+        returnGoods.forEach(g->{
+            //不是赠品行，返还活动库存
+            if(g.getIsGift().equals(OrderConstant.IS_GIFT_N)){
+                seckillService.updateSeckillStock(activityId,g.getProductId(),- g.getGoodsNumber());
+            }
+        });
     }
 
 }

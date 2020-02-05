@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -257,5 +258,10 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
             groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),orderGoodsBos.get(0).getGoodsName());
         }
+    }
+
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+
     }
 }

@@ -301,6 +301,12 @@ export default {
             message: '导航文字不能为空'
           })
           flag = false
+        } else if (!item.page) {
+          this.$message.error({
+            showClose: true,
+            message: '链接不能为空'
+          })
+          flag = false
         } else if (item.normal === obj.normal) {
           this.$message.error({
             showClose: true,
