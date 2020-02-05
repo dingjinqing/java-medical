@@ -18,7 +18,7 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     is_load: 0,
     is_sign: 0,
-    page: 1,
+    currentPage: 1,
     last_page: 1,
     bottom: false,
     list: [],
@@ -48,13 +48,13 @@ global.wxPage({
     that.setData({
       is_load: 1
     })
-    if (that.data.page == that.data.last_page) {
+    if (that.data.currentPage == that.data.last_page) {
       that.setData({
         is_load: 0
       })
       return;
     }
-    that.data.page = that.data.page + 1;
+    that.data.currentPage = that.data.currentPage + 1;
     that.getlist();
   },
   toSign: function (e) {
@@ -136,11 +136,11 @@ global.wxPage({
         }
       }
       that.setData({
-        list: list,
+        list: that.data.list.concat(list),
         expire: expire
       })
     }, {
-        pageNo: that.data.page
+        currentPage: that.data.currentPage
       });
   },
   // 自定义模板加载
@@ -177,21 +177,6 @@ global.wxPage({
   onUnload: function () {
 
   },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
   /**
    * 用户点击右上角分享
    */
@@ -220,6 +205,6 @@ function get_score(that) {
     })
   }, {
 
-      pageNo: that.data.page
+      currentPage: that.data.currentPage
     });
 }

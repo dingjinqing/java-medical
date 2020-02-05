@@ -65,10 +65,9 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 	 * @returns
 	 */
 	@PostMapping(value = "/api/wxapp/score/list")
-	public JsonResult getUserScoreList() {
+	public JsonResult getUserScoreList(@RequestBody ScorePageListParam param) {
 		logger().info("获取用户积分数据");
 		UserScoreListVo vo=new UserScoreListVo();
-		ScorePageListParam param=new ScorePageListParam();
 		param.setUserId(wxAppAuth.user().getUserId());
 		param.setType("wxapp");
 		PageResult<ScorePageListVo> list = shop().userCard.scoreService.getPageListOfScoreDetails(param,getLang());
