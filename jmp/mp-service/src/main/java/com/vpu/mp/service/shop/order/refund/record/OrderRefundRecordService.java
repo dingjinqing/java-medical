@@ -1,20 +1,19 @@
 package com.vpu.mp.service.shop.order.refund.record;
 
-import static com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
-
-import java.math.BigDecimal;
-
 import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
+import com.vpu.mp.db.shop.tables.OrderRefundRecord;
 import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.OrderRefundRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import java.math.BigDecimal;
+
+import static com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
 
 /**
  * 	非系统金额退款记录表
@@ -56,9 +55,7 @@ public class OrderRefundRecordService extends ShopBaseService{
             record.setDealStatus((byte)2);
             record.setDealStatusName("退款失败");
             record.setDealRemark("见日志");
-            record.setRefundAmount(
-                BigDecimalUtil.divide(new BigDecimal(refundResult.getRefundFee().toString()), new BigDecimal("100"))
-            );
+            record.setRefundAmount(BigDecimal.ZERO);
         }
         record.insert();
     }

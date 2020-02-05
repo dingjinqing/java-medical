@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.*;
 
 /**
  * @author 孔德成
@@ -51,18 +52,21 @@ public class LotteryPrizeService  extends ShopBaseService {
         LotteryRecord lottery = joinValid.getLottery();
         //取最大的分母
         Integer maxChance = getLotteryMaxDenominatorById(lottery.getId());
-        Integer randNumber = RANDOM.nextInt(maxChance);
+        int randNumber = RANDOM.nextInt(maxChance);
         Result<LotteryPrizeRecord> prizeRecords = getPrizeByLotteryId(lottery.getId());
         for (LotteryPrizeRecord record : prizeRecords) {
-            Integer chanceNumerator = record.getChanceNumerator()*maxChance/record.getChanceDenominator();
+            int chanceNumerator = record.getChanceNumerator()*maxChance/record.getChanceDenominator();
             if (randNumber <chanceNumerator) {
+                if (record.getAwardTimes() == null) {
+                    record.setAwardTimes(0);
+                }
                 //中奖了
                 if (record.getAwardTimes() >= record.getLotteryNumber()) {
                     //奖品发完了
-                    joinValid.setFlag(false);
+                    joinValid.setResultsType(LOTTERY_TYPE_SEND_OUT);
                     break;
                 }
-                joinValid.setFlag(true);
+                joinValid.setResultsType(record.getLotteryType());
                 joinValid.setLotteryPrize(record);
                 return;
             }
@@ -70,10 +74,10 @@ public class LotteryPrizeService  extends ShopBaseService {
         }
         if (lottery.getNoAwardScore()!=null&&lottery.getNoAwardScore()>0){
             //未中奖励积分（安慰奖）
-            joinValid.setFlag(true);
+            joinValid.setResultsType(LOTTERY_TYPE_HEARTEN);
         }
         //没中奖
-        joinValid.setFlag(false);
+        joinValid.setResultsType(LOTTERY_TYPE_NULL);
     }
 
 }

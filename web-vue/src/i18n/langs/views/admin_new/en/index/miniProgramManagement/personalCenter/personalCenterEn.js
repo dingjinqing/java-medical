@@ -20,7 +20,7 @@ export const en = {
   assetsLabel: 'Assets：',
   assetsLabelTip: 'When the switch is on, the account asset information will be displayed',
   title: 'Title：',
-  inputTip: 'Input up to 20 words',
+  inputTip: 'Input up to 10 words',
   assetsTitle: 'Title of user asset module. If it is not filled in, it will not be displayed',
   account: 'My balance',
   score: 'My points',

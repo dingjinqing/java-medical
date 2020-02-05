@@ -13,7 +13,8 @@ import lombok.Data;
 public class LotteryPageListParam {
 
     /**
-     * 活动状态过滤 ：     */
+     * 活动状态过滤 ：
+     */
     @Max(5)
     @Min(0)
     private Byte state = (byte)0;

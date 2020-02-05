@@ -15,6 +15,7 @@ import java.util.List;
  */
 @Data
 public class ActivationInfoVo {
+    private UserBaseInfoVo userBaseInfo;
     private List<IndustryVo> industryList;
     private List<EducationVo> educationList;
     private  List<MarriageData> MarriageData;

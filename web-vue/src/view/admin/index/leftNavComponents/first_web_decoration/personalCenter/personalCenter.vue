@@ -121,7 +121,10 @@
               :class="styleChoose=='1'? 'widthActive' : ''"
               v-if="item.module_name=='order' && item.is_show=='1'"
             >
-              <div class="orderTitle">
+              <div
+                class="orderTitle"
+                v-if="item.title !== ''"
+              >
                 <div class="titleLeft">{{ item.title }}</div>
                 <div
                   class="titleRight"
@@ -1631,6 +1634,12 @@ export default {
           this.leftData = res.content
           this.bgImg = this.rightData[1].bg_img
           this.bgImage = this.imgHost + this.bgImg
+
+          for (var i = 0; i < this.leftData.length; i++) {
+            if (this.leftData[i].module_name === 'order') {
+              this.isShowOrder = this.leftData[i].module_style
+            }
+          }
         }
       })
     },

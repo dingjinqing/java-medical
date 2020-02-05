@@ -87,7 +87,7 @@ view,text{
   color: #888;
 }
 .footer{
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
   background: #fff;

@@ -112,6 +112,8 @@ module.exports = {
     "presentcheckout": "订单结算",
     "presentlist": "礼物记录",
     "presentchoose": "礼物商品",
-    "history": "我的足迹"
+    "history": "我的足迹",
+    "returnorderlist": "退货中心",
+    "returndetail": "退货/退款详情"
   }
 }

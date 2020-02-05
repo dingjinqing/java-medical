@@ -251,7 +251,20 @@ public class JsonResultMessage {
 	public static final String PARTICIPANTS_IS_MAX = "participated.is.max";
 	public static final String GROUP_UPPER_LIMIT = "group.upper.limit";
 	public static final String GROUP_ONLY_ONE = "group.only.one";
-    
+
+	/**
+	 * 幸运大抽奖
+	 */
+	public static final String LOTTERY_ACTIVITY_FAIL="lottery.activity.fail";
+	public static final String LOTTERY_ACTIVITY_STOP="lottery.activity.stop";
+	public static final String LOTTERY_ACTIVITY_NOT_BEGIN="lottery.activity.not.begin";
+	public static final String LOTTERY_ACTIVITY_OUT_DATE="lottery.activity.out.date";
+	public static final String LOTTERY_SHARE_TIME_USE_UP="lottery.share.time.use.up";
+	public static final String LOTTERY_SCORE_LESS="lottery.score.less";
+	public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";
+	public static final String LOTTERY_TIME_USE_UP="lottery.time.use.up";
+
+
 	/**
 	 * 营销- 支付有礼
 	 */
@@ -837,5 +850,14 @@ public class JsonResultMessage {
     public static final String  WX_MA_BARGAIN_DOC="wx.ma.bargain.doc";
     /** 砍走*/
     public static final String WX_MA_BARGAIN_TAKE = "wx.ma.bargain.take";
+    /** 预售图片相关*/
+    /**"定金膨胀"四个字*/
+    public static final String WX_MA_PRESALE_SHARE_INFO = "wx.ma.presale.share.info";
+    /**"定金"两个字*/
+    public static final String WX_MA_PRESALE_DEPOSIT = "wx.ma.presale.deposit";
+    /**"10.00元定金,限时预售" 分享图片*/
+    public static final String WX_MA_PRESALE_SHARE_DOC = "wx.ma.presale.share.doc";
+    /**"200.00元,限时预售" 分享图片*/
+    public static final String WX_MA_PRESALE_PICTORIAL_DOC = "wx.ma.presale.pictorial.doc";
 
 }
