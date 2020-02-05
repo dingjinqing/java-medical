@@ -121,7 +121,10 @@
               :class="styleChoose=='1'? 'widthActive' : ''"
               v-if="item.module_name=='order' && item.is_show=='1'"
             >
-              <div class="orderTitle">
+              <div
+                class="orderTitle"
+                v-if="item.title !== ''"
+              >
                 <div class="titleLeft">{{ item.title }}</div>
                 <div
                   class="titleRight"
