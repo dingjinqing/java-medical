@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.upyun.UpException;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.TxMapLBSConfig;
@@ -17,7 +16,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -31,7 +29,8 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -349,9 +348,11 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     /**
                      * TODO: 基于店铺等级的模块权限校验
                      */
+
+                default:
             }
         }
-        if(node.getKey().equals("page_cfg")){
+        if("page_cfg".equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
                 pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
@@ -608,10 +609,11 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     return moduleCard;
 
                 //TODO 其他保存前需要处理的模块
+                default:
 
             }
         }
-        if(node.getKey().equals("page_cfg")){
+        if("page_cfg".equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
                 pageCfg.setPageBgImage(new URL(pageCfg.getPageBgImage()).getPath());
@@ -646,7 +648,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     }
 
     protected String getStaticMapImg(String latitude,String longitude){
-        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>(8);
         param.put("size","375*150");
         param.put("key",txMapLBSConfig.getKey());
         param.put("center",latitude + "," + longitude);

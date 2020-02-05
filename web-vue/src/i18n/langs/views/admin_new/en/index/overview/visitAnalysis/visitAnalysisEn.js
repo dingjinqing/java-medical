@@ -1,4 +1,30 @@
 export const en = {
   // 折线图
-  grading: 'grading'
+  grading: 'grading',
+  startDate: 'start date',
+  endDate: 'end date',
+  year: 'year',
+  week: 'week',
+  month: 'month',
+  day: 'day',
+  years: '-',
+  months: '-',
+  days: '',
+  export: 'export',
+  totalSessionCount: 'Total open times in filter time range',
+  totalPv: 'Total number of visits in the filter time range',
+  totalUvNew: 'Total new users in filter time range',
+  aveStayTime: 'The average stay time of each time in the screening time range',
+  aveVisitDepth: 'Average access depth in filter time range',
+  nodata: 'No data available',
+  sessionCount: 'Opening times',
+  pv: 'Number of visits',
+  uv: 'Number of visitors',
+  uvNew: 'New user number',
+  stayTimeUv: 'Average stay time',
+  stayTimePv: 'Average dwell time',
+  visitDepth: 'Average access depth',
+  lastSeven: 'last 7 days',
+  lastThirty: 'last 30 days',
+  custom: 'custom'
 }

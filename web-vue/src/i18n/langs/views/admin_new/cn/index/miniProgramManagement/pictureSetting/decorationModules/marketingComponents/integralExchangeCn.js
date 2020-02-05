@@ -32,5 +32,6 @@ export const cn = {
   generalRecord: '总记录',
   strip: '条',
   cancel: '取 消',
-  determine: '确 定'
+  determine: '确 定',
+  search: '搜索'
 }
