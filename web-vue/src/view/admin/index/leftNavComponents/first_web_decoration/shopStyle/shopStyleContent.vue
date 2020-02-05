@@ -29,7 +29,6 @@
 
           <el-color-picker
             v-model="colorLeft_"
-            show-alpha
             :predefine="predefineColors"
             v-if="index===6?true:false"
             size='small'
@@ -38,7 +37,6 @@
           </el-color-picker>
           <el-color-picker
             v-model="colorRight"
-            show-alpha
             :predefine="predefineColors"
             v-if="index===6?true:false"
             size='small'

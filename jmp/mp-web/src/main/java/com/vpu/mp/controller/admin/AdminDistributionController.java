@@ -274,7 +274,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/admin/distribution/distributor/add")
-	public JsonResult addDistributorToGroup(@RequestBody addDistributorToGroupParam param) {
+	public JsonResult addDistributorToGroup(@RequestBody AddDistributorToGroupParam param) {
 		boolean res = shop().distributorGroup.addDistributorGroup(param);
 		return this.success(res);
 	}
@@ -388,6 +388,17 @@ public class AdminDistributionController extends AdminBaseController{
 		int res = shop().distributorLevel.openDistributorLevel(id);
 		return this.success(res);
 	}
+
+    /**
+     * 分销员等级配置，手动升级添加分销员
+     * @param param
+     * @return
+     */
+	@PostMapping("/admin/distribution/level/distributor/add")
+    public JsonResult addDistributorTOLevel(@RequestBody AddDistributorToLevelParam param){
+        int res = shop().distributorLevel.addDistributorTOLevel(param);
+        return this.success(res);
+    }
 
 	/**
 	 * 分销员列表

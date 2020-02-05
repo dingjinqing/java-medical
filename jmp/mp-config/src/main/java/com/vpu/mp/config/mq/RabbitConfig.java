@@ -66,7 +66,7 @@ public class RabbitConfig {
     /**读取Excel */
     public static final String QUEUE_EXCEL = "mq.excel";
     /** 关闭订单队列 */
-    public static final String CLOSE_ORDER = "order.close";
+    public static final String QUEUE_CLOSE_ORDER = "order.close";
     /**
      * 路由和队列的对应关系是1:n不是1:1(路由按照模块区分)
      */
@@ -251,7 +251,7 @@ public class RabbitConfig {
      */
     @Bean
     public Queue closeOrderQueue() {
-        return new Queue(CLOSE_ORDER,true,false,false);
+        return new Queue(QUEUE_CLOSE_ORDER,true,false,false);
     }
 
     /**

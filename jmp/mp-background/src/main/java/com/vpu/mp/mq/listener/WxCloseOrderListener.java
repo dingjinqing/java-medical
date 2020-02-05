@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RabbitListener(queues = {RabbitConfig.CLOSE_ORDER},containerFactory = "simpleRabbitListenerContainerFactory")
+@RabbitListener(queues = {RabbitConfig.QUEUE_CLOSE_ORDER},containerFactory = "simpleRabbitListenerContainerFactory")
 public class WxCloseOrderListener implements BaseRabbitHandler {
     @Autowired
     private SaasApplication saas;
@@ -31,11 +31,11 @@ public class WxCloseOrderListener implements BaseRabbitHandler {
 
     @RabbitHandler
     public void handler(@Payload OrderCloseQueenParam param, Message message, Channel channel){
-        log.info("关闭订单队列");
+        log.info("关闭订单队列消费");
         try {
             saas.getShopApp(param.getShopId()).pay.mpPay.wxCloseOrder(param.getOrderSn());
         } catch (WxPayException e) {
-            log.error("关闭订单队列执行失败",e);
+            log.error("关闭订单队列消费失败",e);
         }
     }
 

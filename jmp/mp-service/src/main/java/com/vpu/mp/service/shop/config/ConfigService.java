@@ -16,6 +16,7 @@ import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -100,7 +101,7 @@ public class ConfigService extends ShopBaseService {
 	}
 
 	/**
-	 * 获取店铺风格
+	 * 获取店铺风格 rgb/rgba转16进制
 	 * 
 	 * @return
 	 */
@@ -109,23 +110,55 @@ public class ConfigService extends ShopBaseService {
 			return new String[] { "", "" };
 		}
 		String style = config.getShopStyleValue().trim();
-		if (style.indexOf("rgb") == -1) {
+		if (!style.contains("rgb")) {
 			return style.split(",");
+		} else if (style.startsWith("rgba")){
+			String pattern = "rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
+			Pattern r = Pattern.compile(pattern);
+			Matcher m = r.matcher(style);
+			if (m.find()) {
+				Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)),Integer.parseInt(m.group(4)));
+				Color color2 =new Color(Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)), Integer.parseInt(m.group(7)),Integer.parseInt(m.group(8)));
+				String hexColor1 = toHexFromColor(color1);
+				String hexColor2 = toHexFromColor(color2);
+				return new String[]{hexColor1,hexColor2};
+			}
 		} else {
 			String pattern = "rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
 			Pattern r = Pattern.compile(pattern);
 			Matcher m = r.matcher(style);
 			if (m.find()) {
-				return new String[] {
-						String.format("#%02x%02x%02x", Integer.valueOf(m.group(1)), Integer.valueOf(m.group(2)),
-								Integer.valueOf(m.group(3))),
-						String.format("#%02x%02x%02x", Integer.valueOf(m.group(4)), Integer.valueOf(m.group(5)),
-								Integer.valueOf(m.group(6)))
-				};
-			} else {
-				return new String[] {};
+				Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
+				Color color2 =new Color(Integer.parseInt(m.group(4)), Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)));
+				String hexColor1 = toHexFromColor(color1);
+				String hexColor2 = toHexFromColor(color2);
+				return new String[]{hexColor1,hexColor2};
 			}
 		}
+		return new String[] {};
+	}
+	/**
+	 * Color对象转换成字符串
+	 * @param color Color对象
+	 * @return 16进制颜色字符串
+	 * */
+	private static String toHexFromColor(Color color){
+		String r,g,b;
+		StringBuilder su = new StringBuilder();
+		r = Integer.toHexString(color.getRed());
+		g = Integer.toHexString(color.getGreen());
+		b = Integer.toHexString(color.getBlue());
+		r = r.length() == 1 ? "0" + r : r;
+		g = g.length() ==1 ? "0" +g : g;
+		b = b.length() == 1 ? "0" + b : b;
+		r = r.toUpperCase();
+		g = g.toUpperCase();
+		b = b.toUpperCase();
+		su.append("0xFF");
+		su.append(r);
+		su.append(g);
+		su.append(b);
+		return su.toString();
 	}
 
 	/**

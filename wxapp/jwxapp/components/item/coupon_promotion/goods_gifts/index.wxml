@@ -4,6 +4,11 @@
     <view class="title">
       <text>赠品</text>
     </view>
+    <view class="desc">
+      <view class="desc-title">赠品规则：</view>
+      <view class="desc-content">{{giftsInfo.explain}}</view>
+      <view class="desc-right" style="color:{{main_setting.comColor}};">去凑单></view>
+    </view>
     <view class="promotion-content">
      <block wx:for="{{goodsList}}" wx:key="goodsId" wx:for-index="itemIndex">
         <v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" />

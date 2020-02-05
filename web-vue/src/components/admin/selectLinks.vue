@@ -161,6 +161,7 @@ export default {
   },
   watch: {
     choisePath_ (newData, oldData) {
+      console.log(newData)
       this.suerPath = newData
     },
     tuneUpSelectLink () {

@@ -74,7 +74,7 @@ public class LimitCardOpt extends CardOpt {
 		logger().info("检测是否能够发放该先此限次卡");
 		//	获取要发送卡
 		MemberCardRecord card = cardService.getCardById(cardId);
-		if(card == null && CardUtil.isCardDeleted(card.getDelFlag())) {
+		if(card == null || CardUtil.isCardDeleted(card.getDelFlag())) {
 			logger().info("该卡不存在或已经删除");
 			return false;
 		}

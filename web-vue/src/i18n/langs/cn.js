@@ -117,6 +117,10 @@ import {
 import {
   cn as commoditySearch
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchCn'
+// 小程序页面装修商品分组模块国际化
+import {
+  cn as commodityGrouping
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commodityGroupingCn'
 // 小程序页面装修会员卡
 import {
   cn as membershipCard
@@ -1058,7 +1062,8 @@ const cn = {
   selectLinks, // 选择链接弹窗国际化
   indexApply, // 申请试用国际化
   indexMobile, // 官网首页移动端国际化
-  reservationManage // 预约管理
+  reservationManage, // 预约管理
+  commodityGrouping //  商品分组
 }
 
 export default cn
