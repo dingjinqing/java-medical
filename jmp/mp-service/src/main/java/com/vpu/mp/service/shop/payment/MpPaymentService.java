@@ -129,7 +129,6 @@ public class MpPaymentService extends ShopBaseService {
         if (Objects.isNull(queryResult)) {
             return true;
         }
-        logger().info("关闭订单接口调用 r",queryResult);
         return WxPayConstants.WxpayTradeStatus.CLOSED.equals(queryResult.getTradeState());
     }
 

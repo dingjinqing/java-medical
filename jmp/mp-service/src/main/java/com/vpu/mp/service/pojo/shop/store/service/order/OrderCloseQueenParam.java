@@ -11,4 +11,9 @@ import lombok.*;
 public class OrderCloseQueenParam {
     private Integer shopId;
     private String orderSn;
+
+    /**
+     *任务id
+     */
+    private Integer taskJobId;
 }
