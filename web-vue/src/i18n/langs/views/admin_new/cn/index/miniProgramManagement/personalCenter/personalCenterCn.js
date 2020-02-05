@@ -20,7 +20,7 @@ export const cn = {
   assetsLabel: '资产：',
   assetsLabelTip: '开关开启，则展示账户资产信息',
   title: '标题：',
-  inputTip: '最多输入20字',
+  inputTip: '最多输入10字',
   assetsTitle: '用户资产模块标题，不填写则不显示',
   account: '我的余额',
   score: '我的积分',
