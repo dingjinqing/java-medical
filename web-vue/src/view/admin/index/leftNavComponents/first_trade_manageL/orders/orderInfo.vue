@@ -511,10 +511,10 @@
                     -{{currencyPool[order.currency][lang][1] + order.promotionReduce.toFixed(2)}}
                   </span>
                 </p>
-                <p v-if="order.couponDiscount > 0">
-                  {{$t('order.couponDiscount')}}：
+                <p v-if="order.discount > 0">
+                  {{$t('order.discount')}}：
                   <span>
-                    -{{currencyPool[order.currency][lang][1] + order.couponDiscount.toFixed(2)}}
+                    -{{currencyPool[order.currency][lang][1] + order.discount.toFixed(2)}}
                   </span>
                 </p>
                 <p v-if="order.grouperCheapReduce > 0">
