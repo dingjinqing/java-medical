@@ -377,8 +377,11 @@ export default {
     this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()
-    this.list()
+    if (this.$route.query.page > 0) {
+      this.selectValue = this.$route.query.page
+    }
     this.getPageCate(-1)
+    this.list()
   },
   methods: {
     querySearch (queryString, cb) {
