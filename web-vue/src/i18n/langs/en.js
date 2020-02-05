@@ -101,6 +101,10 @@ import {
 import {
   en as userStatistics
 } from './views/admin_new/en/index/overview/userStatistics/userStatisticsEn'
+// 访问分析
+import {
+  en as visitAnalysis
+} from './views/admin_new/en/index/overview/visitAnalysis/visitAnalysisEn'
 
 // 小程序管理系列国际化
 // 页面装修
@@ -936,6 +940,7 @@ const en = {
   userportrait,
   userStatistics, // 用户统计
   assetsManage, // 资产管理
+  visitAnalysis, // 访问分析
 
   // 小程序管理
   pictureSetting,

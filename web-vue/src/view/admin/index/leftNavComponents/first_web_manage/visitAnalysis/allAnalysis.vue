@@ -32,8 +32,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      粒度：
-      <!--     选择粒度-->
+      {{$t('visitAnalysis.grading')}}：
       <el-select
         v-model="gradeSelect"
         size="small"

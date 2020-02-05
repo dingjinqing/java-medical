@@ -79,6 +79,10 @@ import {
 import {
   cn as userportrait
 } from './views/admin_new/cn/index/overview/userportrait/userportraitCn'
+// 访问分析
+import {
+  cn as visitAnalysis
+} from './views/admin_new/cn/index/overview/visitAnalysis/visitAnalysisCn'
 
 // 小程序管理系列国际化
 // 小程序管理 -> 页面装修
@@ -941,6 +945,7 @@ const cn = {
   userportrait,
   userStatistics, // 用户统计
   assetsManage, // 资产管理
+  visitAnalysis, // 访问分析
 
   // 小程序管理
   pictureSetting,
