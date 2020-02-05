@@ -57,6 +57,9 @@ public class LotteryPrizeService  extends ShopBaseService {
         for (LotteryPrizeRecord record : prizeRecords) {
             int chanceNumerator = record.getChanceNumerator()*maxChance/record.getChanceDenominator();
             if (randNumber <chanceNumerator) {
+                if (record.getAwardTimes() == null) {
+                    record.setAwardTimes(0);
+                }
                 //中奖了
                 if (record.getAwardTimes() >= record.getLotteryNumber()) {
                     //奖品发完了

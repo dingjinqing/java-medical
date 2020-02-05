@@ -140,18 +140,21 @@ public class LotteryRecordService extends ShopBaseService {
         LotteryRecord lotteryRecord = joinValid.getLottery();
         LotteryRecordRecord recordRecord = db().newRecord(LOTTERY_RECORD);
         recordRecord.setUserId(userId);
+        recordRecord.setLotteryId(lotteryRecord.getId());
         recordRecord.setLotteryActId(lotteryRecord.getId());
-        recordRecord.setLotterySource(joinValid.getScore());
+        recordRecord.setLotterySource(joinValid.getSource());
+        recordRecord.setLotteryType(joinValid.getLotteryType());
         recordRecord.setLotteryActId(1);
         recordRecord.setChanceSource((byte) 1);
-        recordRecord.setLotteryGrade(lotteryPrizeRecord.getLotteryGrade());
+        if (lotteryPrizeRecord != null) {
+            recordRecord.setLotteryGrade(lotteryPrizeRecord.getLotteryGrade());
+        }
         logger().info("抽奖结果:");
         //选择奖类型
         switch (joinValid.getResultsType()) {
             case LOTTERY_TYPE_NULL:
                 //未中奖
                 logger().info("未中奖");
-
 
                 break;
             case LOTTERY_TYPE_SEND_OUT:
@@ -197,7 +200,7 @@ public class LotteryRecordService extends ShopBaseService {
 
                 CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
                 couponGive.setUserIds(Collections.singletonList(userId));
-                couponGive.setCouponArray(new  String[]{String.valueOf(lotteryPrizeRecord.getCouponId())});
+                couponGive.setCouponArray(new String[]{String.valueOf(lotteryPrizeRecord.getCouponId())});
                 couponGive.setActId(lotteryRecord.getId());
                 couponGive.setAccessMode((byte) 0);
                 couponGive.setGetSource(COUPON_GIVE_SOURCE_LOTTERY_AWARD);
@@ -218,6 +221,9 @@ public class LotteryRecordService extends ShopBaseService {
                 //自定义
                 break;
             default:
+        }
+        if (recordRecord.getId() == null) {
+            recordRecord.insert();
         }
     }
 

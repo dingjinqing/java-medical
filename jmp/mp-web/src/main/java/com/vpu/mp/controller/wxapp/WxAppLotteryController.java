@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryIdParam;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryInfoVo;
+import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryShareParam;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryUserTimeInfo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +48,17 @@ public class WxAppLotteryController extends WxAppBaseController{
     }
 
     /**
+     * 分享接口修改
+     * @return
+     */
+    @PostMapping("/share")
+    public JsonResult share(@RequestBody @Valid LotteryShareParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        shop().lottery.shareLottery(user.getUserId(),param.getLotteryId());
+        return success();
+    }
+
+    /**
      * 参加抽奖活动
      * @param param
      * @return
@@ -56,6 +68,10 @@ public class WxAppLotteryController extends WxAppBaseController{
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
         JoinLottery joinLottery = shop().lottery.joinLottery(param);
+        if (!joinLottery.getFlag()){
+            JsonResult fail = fail(joinLottery.getResultMessage());
+            joinLottery.setMsg(fail.getMessage().toString());
+        }
         return success(joinLottery);
     }
 }
