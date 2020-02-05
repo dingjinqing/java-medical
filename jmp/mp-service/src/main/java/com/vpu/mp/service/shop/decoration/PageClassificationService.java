@@ -39,7 +39,7 @@ public class PageClassificationService extends ShopBaseService {
 		SelectWhereStep<Record> select = db().select().from(PAGE_CLASSIFICATION);
 		select = this.buildOptions(select, param);
 		select.orderBy(PAGE_CLASSIFICATION.CREATE_TIME.desc());
-		return this.getPageResult(select, param.currentPage,PageClassificationPojo.class);
+		return this.getPageResult(select, param.currentPage,param.pageRows,PageClassificationPojo.class);
 	}
 
 	/**
