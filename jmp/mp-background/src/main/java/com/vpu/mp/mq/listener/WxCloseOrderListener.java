@@ -10,6 +10,7 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 import com.rabbitmq.client.Channel;
 import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.service.order.OrderCloseQueenParam;
 import com.vpu.mp.service.saas.SaasApplication;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +31,16 @@ public class WxCloseOrderListener implements BaseRabbitHandler {
 
 
     @RabbitHandler
-    public void handler(@Payload OrderCloseQueenParam param, Message message, Channel channel){
-        log.info("关闭订单队列消费");
+    public void handler(@Payload OrderCloseQueenParam param, Message message, Channel channel) throws WxPayException {
         try {
             saas.getShopApp(param.getShopId()).pay.mpPay.wxCloseOrder(param.getOrderSn());
-        } catch (WxPayException e) {
-            log.error("关闭订单队列消费失败",e);
+        }catch (WxPayException e){
+            log.error("关闭订单接口调用 错误 e",e);
+            throw e;
         }
+        //更新taskJob进度和状态
+        saas.taskJobMainService.updateProgress(Util.toJson(param),param.getTaskJobId(),0,1);
+
     }
 
 

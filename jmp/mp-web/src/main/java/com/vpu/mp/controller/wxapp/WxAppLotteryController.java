@@ -7,6 +7,9 @@ import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryIdParam;
+import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryInfoVo;
+import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryShareParam;
+import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryUserTimeInfo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,11 +33,29 @@ public class WxAppLotteryController extends WxAppBaseController{
      */
     @PostMapping("/get")
     public JsonResult get(@RequestBody @Valid LotteryIdParam param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        LotteryInfoVo lotteryInfoVo =new LotteryInfoVo();
+        //活动信息
         LotteryVo lotteryVo = shop().lottery.getLotteryVo(param.getId());
         if (lotteryVo==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
-        return success(lotteryVo);
+        //用户抽奖情况
+        LotteryUserTimeInfo userLotteryTimeInfo = shop().lottery.getUserLotteryInfo(user.getUserId(), param.getId());
+        lotteryInfoVo.setLotteryInfo(lotteryVo);
+        lotteryInfoVo.setLotteryUserTimeInfo(userLotteryTimeInfo);
+        return success(lotteryInfoVo);
+    }
+
+    /**
+     * 分享接口修改
+     * @return
+     */
+    @PostMapping("/share")
+    public JsonResult share(@RequestBody @Valid LotteryShareParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        shop().lottery.shareLottery(user.getUserId(),param.getLotteryId());
+        return success();
     }
 
     /**
@@ -47,6 +68,10 @@ public class WxAppLotteryController extends WxAppBaseController{
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
         JoinLottery joinLottery = shop().lottery.joinLottery(param);
+        if (!joinLottery.getFlag()){
+            JsonResult fail = fail(joinLottery.getResultMessage());
+            joinLottery.setMsg(fail.getMessage().toString());
+        }
         return success(joinLottery);
     }
 }

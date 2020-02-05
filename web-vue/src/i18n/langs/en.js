@@ -101,6 +101,10 @@ import {
 import {
   en as userStatistics
 } from './views/admin_new/en/index/overview/userStatistics/userStatisticsEn'
+// 访问分析
+import {
+  en as visitAnalysis
+} from './views/admin_new/en/index/overview/visitAnalysis/visitAnalysisEn'
 
 // 小程序管理系列国际化
 // 页面装修
@@ -165,6 +169,10 @@ import {
 import {
   en as spike
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeEn'
+// 积分兑换
+import {
+  en as integralExchange
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/integralExchangeEn'
 import {
   en as fightGroup
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/fightGroupEn'
@@ -932,6 +940,7 @@ const en = {
   userportrait,
   userStatistics, // 用户统计
   assetsManage, // 资产管理
+  visitAnalysis, // 访问分析
 
   // 小程序管理
   pictureSetting,
@@ -1057,6 +1066,7 @@ const en = {
   indexApply, // 申请试用
   indexMobile, //  官网首页移动端国际化
   reservationManage, // 预约管理
-  commodityGrouping // 小程序商品分组
+  commodityGrouping, // 小程序商品分组
+  integralExchange // 积分兑换
 }
 export default en

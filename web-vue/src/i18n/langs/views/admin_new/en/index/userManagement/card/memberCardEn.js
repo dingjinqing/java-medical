@@ -204,7 +204,7 @@ export const en = {
   startUse: 'ON',
   stopUse: 'OFF',
   cardGrade: 'GRADE',
-  chooseGrade: 'CHOOSE',
+  chooseGrade: 'CHOOSE GRADE',
   gradeConditionTip: 'Digital grade level, when the member meets the corresponding conditions, the membership card of the corresponding level will be automatically assigned',
   amountTip: 'Only include WeChat and balance payment',
   gradeAmountCon: 'Grade Amount',
@@ -212,5 +212,11 @@ export const en = {
   or: 'OR',
   gradeTip: 'Low-level users automatically upgrade to high-level cards when they meet the upgrade conditions',
   gradeSetting: 'Grade Setting',
-  save: 'save'
+  save: 'save',
+  gradeScoreError: 'score not valid',
+  gradeCrashError: 'crash not valid',
+  gradeCondition: 'Condition: ',
+  normalCard: 'NormalCard',
+  limitCard: 'LimitCard',
+  gradeCard: 'GradeCard'
 }

@@ -1356,6 +1356,7 @@ export default {
 
       // 默认规格数据
       if (!this.specInfoSwitch) {
+        retData.isDefaultProduct = 1
         retData.goodsGradePrds = []
         // 收集有效会员价
         this.memberCards.forEach(card => {
@@ -1382,6 +1383,7 @@ export default {
           prdMarketPrice: this.goodsProductInfo.marketPrice
         }]
       } else {
+        retData.isDefaultProduct = 0
         // 自定义规格数据
         retData.goodsSpecProducts = []
         retData.goodsGradePrds = []

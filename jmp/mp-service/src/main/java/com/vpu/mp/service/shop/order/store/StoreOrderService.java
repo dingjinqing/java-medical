@@ -30,10 +30,8 @@ import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.store.StoreOrderTran;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
-import com.vpu.mp.service.shop.member.AccountService;
-import com.vpu.mp.service.shop.member.MemberCardService;
-import com.vpu.mp.service.shop.member.ScoreCfgService;
-import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
@@ -65,8 +63,7 @@ import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConst
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.pojo.shop.payment.PayCode.*;
 import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.*;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY_EACH;
@@ -127,6 +124,15 @@ public class StoreOrderService extends ShopBaseService {
      */
     @Autowired
     public AccountService accountService;
+
+    /**
+     * The Trade service.交易服务配置
+     */
+    @Autowired
+    public TradeService tradeService;
+
+    @Autowired
+    public BaseScoreCfgService baseScoreCfgService;
 
     public final StoreOrder TABLE = STORE_ORDER;
     public static final BigDecimal HUNDRED = new BigDecimal(100);
@@ -236,6 +242,8 @@ public class StoreOrderService extends ShopBaseService {
         BigDecimal orderAmount = orderInfo.getOrderAmount();
         // 应付金额
         BigDecimal moneyPaid = orderAmount;
+        // 实际支付金额（支付金额=微信支付+会员卡余额支付+余额支付+积分支付）
+        BigDecimal payAmount = ZERO;
         // 会员卡余额抵扣金额
         BigDecimal cardAmount = orderInfo.getCardAmount();
         // 会员卡折扣抵扣金额
@@ -248,6 +256,7 @@ public class StoreOrderService extends ShopBaseService {
         CardConsumpData cardConsumpData = null;
         ScoreParam scoreParam = null;
         String cardNo = orderInfo.getCardNo();
+        // todo 目前门店买单只支持普通会员卡：cardType=0，会员卡折扣和余额均可使用
         if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo)) {
             // 验证会员卡有效性
             if (!userCardDaoService.checkStoreValidCard(userInfo.getUserId(), orderInfo.getStoreId(), cardNo)) {
@@ -268,6 +277,7 @@ public class StoreOrderService extends ShopBaseService {
                 }
                 log.debug("会员卡折扣金额:{}", cardDisAmount);
                 moneyPaid = moneyPaid.subtract(cardDisAmount).setScale(2, RoundingMode.UP);
+                payAmount = moneyPaid;
             }
             // 会员卡余额抵扣金额
             if (BigDecimalUtil.greaterThanZero(cardAmount)) {
@@ -286,34 +296,18 @@ public class StoreOrderService extends ShopBaseService {
                     .setCardNo(cardNo)
                     .setCardId(userCardParam.getCardId())
                     .setReason(orderSn)
-                    // 消费类型 :门店只支持普通卡0
+                    // 消费类型 :门店只支持普通会员卡：cardType=0
                     .setType(MCARD_TP_NORMAL);
                 log.debug("会员卡余额抵扣金额:{}", cardAmount);
                 moneyPaid = moneyPaid.subtract(cardAmount).setScale(2, RoundingMode.UP);
             }
         }
-        // 积分抵扣金额(积分数除以100就是积分抵扣金额数)
-        if (BigDecimalUtil.greaterThanZero(scoreAmount)) {
-            int scoreValue = scoreAmount.multiply(HUNDRED).intValue();
-            if (scoreValue > userInfo.getScore()) {
-                // 积分不足，无法下单
-                log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换率为1:100)，无法下单", userInfo.getScore(), scoreAmount);
-                throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
-            }
-            scoreParam = new ScoreParam() {{
-                setScoreDis(userInfo.getScore());
-                setUserId(userInfo.getUserId());
-                // 积分变动数额
-                setScore(scoreValue);
-                setOrderSn(orderSn);
-                setRemarkData(orderSn);
-                //setRemark(orderSn);
-            }};
-            log.debug("积分抵扣金额:{}", scoreAmount);
-            moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);
-        }
         // 余额抵扣金额
         if (BigDecimalUtil.greaterThanZero(balanceAmount)) {
+            if (!tradeService.paymentIsEnabled(PAY_CODE_BALANCE_PAY)) {
+                log.error("未开启余额支付");
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
             if (balanceAmount.compareTo(userInfo.getAccount()) > 0) {
                 // 余额不足，无法下单
                 log.error("用户余额[{}]不足(实际抵扣金额[{}])，无法下单", userInfo.getAccount(), balanceAmount);
@@ -333,6 +327,40 @@ public class StoreOrderService extends ShopBaseService {
             }};
             log.debug("余额抵扣金额:{}", balanceAmount);
             moneyPaid = moneyPaid.subtract(balanceAmount).setScale(2, RoundingMode.UP);
+        }
+        // 积分抵扣金额(积分数除以100就是积分抵扣金额数)todo 积分润换比暂时为固定的100积分=1元RMB，后续会改为可配置参数
+        if (BigDecimalUtil.greaterThanZero(scoreAmount)) {
+            if (!tradeService.paymentIsEnabled(PAY_CODE_SCORE_PAY)) {
+                log.error("未开启积分支付");
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
+            // 积分使用上下限限制
+            int scoreValue = scoreAmount.multiply(HUNDRED).intValue();
+            if (scoreValue < baseScoreCfgService.getScorePayNum()) {
+                log.debug("低于积分使用下限配置，不可使用积分支付");
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
+            BigDecimal ratio = BigDecimal.valueOf(baseScoreCfgService.getScoreDiscountRatio()).divide(HUNDRED);
+            if (scoreAmount.compareTo(payAmount.multiply(ratio)) > INTEGER_ZERO) {
+                log.debug("超过积分使用上限配置，不可使用积分支付");
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
+            if (scoreValue > userInfo.getScore()) {
+                // 积分不足，无法下单
+                log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换率为1:100)，无法下单", userInfo.getScore(), scoreAmount);
+                throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
+            }
+            scoreParam = new ScoreParam() {{
+                setScoreDis(userInfo.getScore());
+                setUserId(userInfo.getUserId());
+                // 积分变动数额
+                setScore(scoreValue);
+                setOrderSn(orderSn);
+                setRemarkData(orderSn);
+                //setRemark(orderSn);
+            }};
+            log.debug("积分抵扣金额:{}", scoreAmount);
+            moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);
         }
         // 应付金额
         log.debug("应付金额:{}", moneyPaid);

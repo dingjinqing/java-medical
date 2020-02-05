@@ -38,7 +38,8 @@ public class WxAppDistributionController extends WxAppBaseController{
      */
 	@PostMapping("distributor/activation")
     public JsonResult activationInfo(){
-        ActivationInfoVo activationInfo = shop().mpDistribution.getActivationInfo(getLang());
+        Integer userId = wxAppAuth.user().getUserId();
+        ActivationInfoVo activationInfo = shop().mpDistribution.getActivationInfo(userId,getLang());
         return this.success(activationInfo);
     }
 	

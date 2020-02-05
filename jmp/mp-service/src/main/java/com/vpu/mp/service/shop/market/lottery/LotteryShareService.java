@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.LotteryShareRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import org.springframework.stereotype.Service;
 
+import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.Tables.LOTTERY_SHARE;
 
 /**
@@ -25,4 +26,22 @@ public class LotteryShareService extends ShopBaseService {
         return db().fetchOne(LOTTERY_SHARE,LOTTERY_SHARE.USER_ID.eq(userId).and(LOTTERY_SHARE.LOTTERY_ID.eq(lotteryId)));
     }
 
+    /**
+     * 添加分享记录
+     * @param userId
+     * @param lotteryId
+     */
+    public void addShareRecord(Integer userId, Integer lotteryId) {
+        LotteryShareRecord lotteryShareByUser = getLotteryShareByUser(userId, lotteryId);
+        if (lotteryShareByUser!=null){
+            lotteryShareByUser.setShareTimes(lotteryShareByUser.getShareTimes()+1);
+        }else {
+            db().insertInto(LOTTERY_SHARE)
+                    .set(LOTTERY_SHARE.USER_ID,userId)
+                    .set(LOTTERY_SHARE.LOTTERY_ID,lotteryId)
+                    .set(LOTTERY_SHARE.SHARE_TIMES,1)
+                    .execute();
+        }
+
+    }
 }

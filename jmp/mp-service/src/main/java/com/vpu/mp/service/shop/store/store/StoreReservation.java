@@ -803,7 +803,9 @@ public class StoreReservation extends ShopBaseService {
     private boolean cancelWXOrder(String orderSn,int shopId) {
         // 队列五分钟后调用微信关闭订单接口
 
-        OrderCloseQueenParam param = OrderCloseQueenParam.builder().shopId(shopId).orderSn(orderSn).build();
+        OrderCloseQueenParam param = new OrderCloseQueenParam();
+        param.setShopId(shopId);
+        param.setOrderSn(orderSn);
         Timestamp startTime = DateUtil.getDalyedDateTime(60*5);
 
         TaskJobInfo info = TaskJobInfo.builder(shopId)

@@ -34,7 +34,7 @@
                 >
                   <div class="goodsPrice">
                     <div class="integral_price ">
-                      ￥{{item.money}} + {{item.score}} <i style="font-size:12px">积分</i>
+                      ￥{{item.money}} + {{item.score}} <i style="font-size:12px">{{$t('integralExchange.integral')}}</i>
                     </div>
                   </div>
                 </div>
@@ -47,7 +47,10 @@
                     v-else
                     style="height:25px"
                   ></div>
-                  <div class="btn_convert ">去兑换</div>
+                  <div
+                    class="btn_convert "
+                    :style="columnFlag?'width:100px':''"
+                  >{{$t('integralExchange.toExchange')}}</div>
                 </div>
               </div>
             </li>
@@ -125,7 +128,8 @@ export default {
       // 模块私有
       modulesData: {
 
-      }
+      },
+      columnFlag: false
     }
   },
   watch: {
