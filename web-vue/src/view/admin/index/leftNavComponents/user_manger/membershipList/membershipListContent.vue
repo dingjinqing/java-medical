@@ -493,13 +493,13 @@
         :modal-append-to-body="false"
       >
         <div class="setUpDialogDiv">
-          <p>你可以在这里编辑该会员的会员卡信息，添加/删除会员卡，注意：需要激活的会员卡直接发放到用户</p>
+          <p>{{ $t('membershipIntroduction.addCardTips') }}</p>
           <div
             class="setUpDialogMain"
             style="overflow-y: auto;height: 500px"
           >
             <div class="setUpcommon">
-              <span class="cardTypeName">普通会员卡</span>
+              <span class="cardTypeName">{{ $t('membershipIntroduction.normalCardFull') }}</span>
               <div class="setUpContainer">
                 <div
                   class="hy_common selectDataClass"
@@ -509,11 +509,14 @@
                   <div>
                     {{item.text}}
                   </div>
-                  <img
-                    style="cursor:pointer"
-                    @click="handleReadd(0,index)"
-                    src="../../../../../../assets/adminImg/hy_icon_delete.png"
-                  >
+                  <span v-if="index>=setUpSelectVal_oneTmp">
+                    <img
+                      style="cursor:pointer"
+                      @click="handleReadd(0,index)"
+                      src="../../../../../../assets/adminImg/hy_icon_delete.png"
+                    >
+                  </span>
+
                 </div>
 
                 <div
@@ -551,13 +554,13 @@
                   <span
                     class="setUpAdd"
                     @click="handleToChangeSetUpAdd(0)"
-                  >添加</span>
+                  >{{ $t('membershipIntroduction.add') }}</span>
                 </div>
               </div>
 
             </div>
             <div class="setUpcommon">
-              <span class="cardTypeName">限次会员卡</span>
+              <span class="cardTypeName">{{ $t('membershipIntroduction.limiteCardFull') }}</span>
               <div class="setUpContainer">
                 <div
                   class="hy_common selectDataClass"
@@ -567,11 +570,14 @@
                   <div>
                     {{item.text}}
                   </div>
-                  <img
-                    style="cursor:pointer"
-                    @click="handleReadd(1,index)"
-                    src="../../../../../../assets/adminImg/hy_icon_delete.png"
-                  >
+                  <span v-if="index>=setUpSelectVal_twoTmp">
+                    <img
+                      style="cursor:pointer"
+                      @click="handleReadd(1,index)"
+                      src="../../../../../../assets/adminImg/hy_icon_delete.png"
+                    >
+                  </span>
+
                 </div>
 
                 <div
@@ -591,6 +597,7 @@
                         :key="index"
                         :label="item.cardName"
                         :value="item"
+                        :disabled="item.disabled"
                       >
                       </el-option>
                     </el-select>
@@ -608,13 +615,13 @@
                   <span
                     class="setUpAdd"
                     @click="handleToChangeSetUpAdd(1)"
-                  >添加</span>
+                  >{{ $t('membershipIntroduction.add') }}</span>
                 </div>
               </div>
 
             </div>
             <div class="setUpcommon setUpBottomDiv">
-              <span class="cardTypeName">等级会员卡</span>
+              <span class="cardTypeName">{{ $t('membershipIntroduction.gradeCard') }}</span>
               <div class="setUpContainer">
                 <div
                   class="hy_common selectDataClass"
@@ -624,11 +631,13 @@
                   <div>
                     {{item.text}}
                   </div>
-                  <img
+                  <span v-if="index>=setUpSelectVal_threeTmp">
+                    <img
                     style="cursor:pointer"
                     @click="handleReadd(2,index)"
                     src="../../../../../../assets/adminImg/hy_icon_delete.png"
                   >
+                  </span>
                 </div>
 
                 <div
@@ -666,7 +675,7 @@
                   <span
                     class="setUpAdd"
                     @click="handleToChangeSetUpAdd(2)"
-                  >添加</span>
+                  >{{ $t('membershipIntroduction.add') }}</span>
                 </div>
               </div>
 
@@ -679,13 +688,13 @@
         >
           <el-button
             size="small"
-            @click="setUpDialogVisible = false"
-          >取 消</el-button>
+            @click="clearCardDialog"
+          >{{ $t('membershipIntroduction.cancel') }}</el-button>
           <el-button
             type="primary"
             size="small"
             @click="setUpCardForMember()"
-          >确 定</el-button>
+          >{{ $t('membershipIntroduction.centain') }}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -1311,7 +1320,7 @@ export default {
         if (res.error === 0) {
           // 设置缓冲区
           res.content.forEach(item => {
-            let obj = { text: item.cardName, id: item.id }
+            let obj = { text: item.cardName, id: item.id, limit: item.limit }
             switch (item.cardType) {
               case 0:
                 this.setUpSelectVal_one.push(obj)
@@ -1353,6 +1362,14 @@ export default {
           this.defaultTabelListData()
         }
       })
+      this.clearCardDialog()
+    },
+
+    clearCardDialog () {
+      this.setUpFalg_1 = true
+      this.setUpFalg_2 = true
+      this.setUpFalg_3 = true
+      this.setUpDialogVisible = false
     },
     // 切换会员设置弹窗中的添加与下拉框
     handleToChangeSetUpAdd (index) {
@@ -1365,6 +1382,7 @@ export default {
         case 1:
           this.setUpFalg_2 = false
           this.setUpValTwo = ''
+          this.handleLimitCardShow()
           break
         case 2:
           this.setUpFalg_3 = false
@@ -1396,6 +1414,7 @@ export default {
               this.setUpSelectVal_twoTmp--
             }
             this.setUpSelectVal_two.splice(index, 1)
+            this.handleLimitCardShow()
         }
       } else {
         switch (index) {
@@ -1407,8 +1426,19 @@ export default {
               this.setUpSelectVal_threeTmp--
             }
             this.setUpSelectVal_three.splice(index, 1)
+            this.handleGradeCardShow()
         }
       }
+    },
+    handleLimitCardShow () {
+      this.setUpoptionsTwo.forEach(item => {
+        let cnt = this.setUpSelectVal_two.filter(x => x.id === item.id).length
+        console.log(cnt, item.limit)
+        item.disabled = false
+        if (cnt >= item.limit) {
+          item.disabled = true
+        }
+      })
     },
     handleNormalCardShow () {
       this.setUpoptionsOne.forEach(itemA => {
