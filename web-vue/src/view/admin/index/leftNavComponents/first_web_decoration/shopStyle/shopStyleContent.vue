@@ -1,48 +1,6 @@
 <template>
   <div class="shopStyleContent">
     <div class="shopStyleContent_main">
-<<<<<<< HEAD
-      <div class="color_title">
-        <div
-          style="padding-left: 20px;"
-          :class="en_ch_title_width_one"
-        >{{$t('shopStyle.title')}}</div>
-        <div
-          class="shop_color"
-          v-for="(item,index) in colorDataList"
-          :key="index"
-          :class="choiseId===index?'clickColor':''"
-          @click="clickColor(index)"
-        >
-          <span>{{item.title}}</span>
-          <span
-            class="ps_color middle_span"
-            :style="item.colorLeft"
-            :class="item.id===index?'choiseColor':''"
-            v-if="index===6?false:true"
-          ></span>
-          <span
-            class="ps_color"
-            :style="item.colorRight"
-            :class="item.id===index?'choiseColor':''"
-            v-if="index===6?false:true"
-          ></span>
-
-          <el-color-picker
-            v-model="colorLeft_"
-            :predefine="predefineColors"
-            v-if="index===6?true:false"
-            size='small'
-            @change="headleChangeColorLeft()"
-          >
-          </el-color-picker>
-          <el-color-picker
-            v-model="colorRight"
-            :predefine="predefineColors"
-            v-if="index===6?true:false"
-            size='small'
-            @change="headleChangeColorRight()"
-=======
       <div>
         <div class="color_title">
           <div
@@ -55,7 +13,6 @@
             :key="index"
             :class="choiseId===index?'clickColor':''"
             @click="clickColor(index)"
->>>>>>> f22a1c696... 增加店铺风格自定义提示
           >
             <span>{{item.title}}</span>
             <span
