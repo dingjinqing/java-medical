@@ -126,10 +126,11 @@
               :label="1"
             >&nbsp;指定发货开始时间</el-radio>
             <el-date-picker
-              v-model="deliverTime"
+              v-model="param.deliverTime"
               type="datetime"
               size="small"
               style="width:190px"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
