@@ -1,28 +1,28 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>积分兑换</h2>
+      <h2>{{$t('integralExchange.integralExchange')}}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="listStyle">
-          <div class="title">列表样式：</div>
+          <div class="title">{{$t('integralExchange.listStyle')}}</div>
           <el-radio
             v-model="moduleData.list_styles"
             :label="1"
-          >单列</el-radio>
+          >{{$t('integralExchange.singleRow')}}</el-radio>
           <el-radio
             v-model="moduleData.list_styles"
             :label="2"
-          >双列</el-radio>
+          >{{$t('integralExchange.doubleRow')}}</el-radio>
         </div>
         <div class="listStyle">
-          <div class="title">选择活动：</div>
+          <div class="title">{{$t('integralExchange.selectAnActivity')}}</div>
           <div
             class="choose_goods"
             @click="handleToAddAct()"
           >
             <img :src="$imageHost+'/image/admin/icon_jia.png'">
-            添加活动
+            {{$t('integralExchange.addActivities')}}
           </div>
           <div class="question">
             <img :src="$imageHost+'/image/admin/analysis_tishi.png'">
@@ -31,8 +31,7 @@
                 class="float-layer-i"
                 style="left:81px; top:-11px"
               ></div>
-              <div>仅可以选择进行中以及未开始的积分兑换活动，将以活动商品形式展示在小程序前端，每个“积分兑换“组件最多可添加6个积分兑换活动。
-                对积分兑换活动中商品进行更换时，当前组件商品将同步更新。</div>
+              <div>{{$t('integralExchange.addActivitiesTip')}}</div>
             </div>
           </div>
         </div>
@@ -51,7 +50,7 @@
           >
             <el-table-column
               prop="name"
-              label="商品信息"
+              :label="$t('integralExchange.commodityInformation')"
             >
               <template slot-scope="scope">
                 <div class="goodsInfo">
@@ -62,36 +61,36 @@
             </el-table-column>
             <el-table-column
               prop="stockSum"
-              label="库存"
+              :label="$t('integralExchange.stock')"
               width="80"
             >
             </el-table-column>
             <el-table-column
               prop="xianjin"
-              label="现金+积分"
+              :label="$t('integralExchange.cashPoints')"
             >
               <template slot-scope="scope">
-                ￥{{scope.row.money}}+{{scope.row.score}}积分
+                ￥{{scope.row.money}}+{{scope.row.score}}{{$t('integralExchange.integral')}}
               </template>
             </el-table-column>
             <el-table-column
               prop="status"
-              label="状态"
+              :label="$t('integralExchange.status')"
               width="80"
             >
               <template slot-scope="scope">
-                {{scope.row.isOnSale==='1'?'正常操作':'异常操作'}}
+                {{scope.row.isOnSale==='1'?$t('integralExchange.normalOperation'):$t('integralExchange.exceptionOperation')}}
               </template>
             </el-table-column>
             <el-table-column
-              label="操作"
+              :label="$t('integralExchange.operation')"
               width="80"
             >
               <template slot-scope="scope">
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="上移"
+                  :content="$t('integralExchange.moveUpward')"
                   placement="top"
                 >
                   <span
@@ -103,7 +102,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="下移"
+                  :content="$t('integralExchange.movDown')"
                   placement="top"
                 >
                   <span
@@ -115,7 +114,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="删除"
+                  :content="$t('integralExchange.delete')"
                   placement="top"
                 >
                   <span
@@ -130,13 +129,13 @@
         </div>
         <!--底部显示内容模块-->
         <div class="listStyle">
-          <div class="title">显示内容：</div>
-          <el-checkbox v-model="moduleData.show_goods_price">商品原价</el-checkbox>
+          <div class="title">{{$t('integralExchange.displayContent')}}</div>
+          <el-checkbox v-model="moduleData.show_goods_price">{{$t('integralExchange.originalCommodity')}}</el-checkbox>
         </div>
       </div>
       <!--选择活动弹窗-->
       <el-dialog
-        title="选择积分活动"
+        :title="$t('integralExchange.selectPointsActivity')"
         :visible.sync="dialogVisible"
         width="60%"
         header-row-class-name="tableClss"
@@ -145,7 +144,7 @@
         <div class="addActDialogMain">
           <div class="dialogTop">
             <div class="key">
-              <span>关键词</span>
+              <span>{{$t('integralExchange.keyWord')}}</span>
               <el-input
                 v-model="keyInput"
                 size="small"
@@ -153,7 +152,7 @@
             </div>
             <el-select
               v-model="value"
-              placeholder="请选择"
+              :placeholder="$t('integralExchange.pleaseChoose')"
               size="small"
             >
               <el-option
@@ -168,7 +167,7 @@
               type="primary"
               @click="handleToSearch()"
               size="small"
-            >搜索</el-button>
+            >{{$t('integralExchange.search')}}</el-button>
           </div>
           <div class="dialogMain">
             <el-table
@@ -184,7 +183,7 @@
               </el-table-column>
               <el-table-column
                 prop="name"
-                label="商品信息"
+                :label="$t('integralExchange.commodityInformation')"
               >
                 <template slot-scope="scope">
                   <div class="goodsInfo">
@@ -195,41 +194,41 @@
               </el-table-column>
               <el-table-column
                 prop="stockSum"
-                label="库存"
+                :label="$t('integralExchange.stock')"
                 width="80"
               >
               </el-table-column>
               <el-table-column
                 prop="prdPrice"
-                label="价格"
+                :label="$t('integralExchange.price')"
                 width="80"
               >
               </el-table-column>
               <el-table-column
                 prop="money"
-                label="现金"
+                :label="$t('integralExchange.cash')"
                 width="80"
               >
               </el-table-column>
               <el-table-column
                 prop="score"
-                label="积分"
+                :label="$t('integralExchange.integral')"
                 width="80"
               >
               </el-table-column>
               <el-table-column
                 prop="startTime"
-                label="开始时间"
+                :label="$t('integralExchange.startTime')"
               >
               </el-table-column>
               <el-table-column
                 prop="endTime"
-                label="结束时间"
+                :label="$t('integralExchange.endTime')"
               >
               </el-table-column>
             </el-table>
             <div class="pagination">
-              <div>当前页面{{currentPage}}/{{pageCount}}，总记录{{total}}条</div>
+              <div>{{$t('integralExchange.currentPage')}}{{currentPage}}/{{pageCount}}，{{$t('integralExchange.generalRecord')}}{{total}}{{$t('integralExchange.strip')}}</div>
               <el-pagination
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage"
@@ -246,11 +245,11 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="dialogVisible = false">{{$t('integralExchange.cancel')}}</el-button>
           <el-button
             type="primary"
             @click="handleToSure()"
-          >确 定</el-button>
+          >{{$t('integralExchange.determine')}}</el-button>
         </span>
       </el-dialog>
       <!--模块私有end-->
