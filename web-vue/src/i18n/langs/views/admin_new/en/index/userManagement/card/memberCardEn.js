@@ -214,5 +214,9 @@ export const en = {
   gradeSetting: 'Grade Setting',
   save: 'save',
   gradeScoreError: 'score not valid',
-  gradeCrashError: 'crash not valid'
+  gradeCrashError: 'crash not valid',
+  gradeCondition: 'Condition: ',
+  normalCard: 'NormalCard',
+  limitCard: 'LimitCard',
+  gradeCard: 'GradeCard'
 }

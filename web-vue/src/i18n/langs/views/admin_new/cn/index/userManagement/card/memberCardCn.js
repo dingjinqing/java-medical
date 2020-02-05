@@ -239,12 +239,16 @@ export const cn = {
   chooseGrade: '请选择等级',
   gradeConditionTip: '数字越大等级越高，当会员满足相应条件时会自动发放对应等级的会员卡',
   amountTip: '仅包含微信、余额支付',
-  gradeAmountCon: '累积消费总额达到',
-  gradeScore: '累积积分达到',
+  gradeAmountCon: '累积消费总额达到 ',
+  gradeScore: '累积积分达到 ',
   or: '或',
   gradeTip: '低等级用户满足升级条件会自动升级为高等级卡',
   gradeSetting: '升级设置',
   save: '保存',
   gradeScoreError: '填写积分有效值',
-  gradeCrashError: '填写消费额有效值'
+  gradeCrashError: '填写消费额有效值',
+  gradeCondition: '升级条件: ',
+  normalCard: '普通会员卡',
+  limitCard: '限次会员卡',
+  gradeCard: '等级会员卡'
 }
