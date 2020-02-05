@@ -7,6 +7,8 @@ import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryIdParam;
+import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryInfoVo;
+import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryUserTimeInfo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,11 +32,18 @@ public class WxAppLotteryController extends WxAppBaseController{
      */
     @PostMapping("/get")
     public JsonResult get(@RequestBody @Valid LotteryIdParam param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        LotteryInfoVo lotteryInfoVo =new LotteryInfoVo();
+        //活动信息
         LotteryVo lotteryVo = shop().lottery.getLotteryVo(param.getId());
         if (lotteryVo==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
-        return success(lotteryVo);
+        //用户抽奖情况
+        LotteryUserTimeInfo userLotteryTimeInfo = shop().lottery.getUserLotteryInfo(user.getUserId(), param.getId());
+        lotteryInfoVo.setLotteryInfo(lotteryVo);
+        lotteryInfoVo.setLotteryUserTimeInfo(userLotteryTimeInfo);
+        return success(lotteryInfoVo);
     }
 
     /**

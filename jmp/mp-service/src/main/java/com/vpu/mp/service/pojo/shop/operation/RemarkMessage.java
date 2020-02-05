@@ -59,6 +59,7 @@ public class RemarkMessage {
 	 */
 	/** 支付有礼 */
 	public static final String MSG_PAY_HAS_GIFT = "pay.has.gift";
+	public static final String MSG_LOTTERY_GIFT = "lottery.has.gift";
 	/** 评价有礼送积分 */
 	public static final String MSG_COMMENT_HAS_GIFT = "comment.has.gift";
 	/** 收藏有礼 */
