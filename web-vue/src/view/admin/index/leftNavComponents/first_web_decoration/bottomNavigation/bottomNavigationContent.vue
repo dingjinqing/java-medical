@@ -289,10 +289,11 @@ export default {
       })
     },
     handleToJudge (arr) {
+      console.log(this.$imageHost)
       let flag = true
       let obj = {
-        normal: 'http://jmpdevimg.weipubao.cn/image/admin/btn_add.png',
-        hover: 'http://jmpdevimg.weipubao.cn/image/admin/btn_add.png'
+        normal: this.$imageHost + '/image/admin/btn_add.png',
+        hover: this.$imageHost + '/image/admin/btn_add.png'
       }
       arr.forEach((item, index) => {
         if (!item.text) {
