@@ -63,7 +63,7 @@
       >
       </el-date-picker>
       <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
-      <el-button type="primary" size="small">数据导出</el-button>
+      <el-button type="primary" size="small" @click="exportData()">数据导出</el-button>
     </div>
     <div v-show="this.param.action===1"><span>筛选时间范围内总打开次数:</span>{{this.totalNum}}</div>
     <div v-show="this.param.action===2"><span>筛选时间范围内总访问次数:</span>{{this.totalNum}}</div>
@@ -78,7 +78,8 @@
 
 <script>
 import echarts from 'echarts'
-import {amountAnalysis} from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
+import { download } from '@/util/excelUtil.js'
+import {amountAnalysis, excelExport} from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
 
 export default {
   components: {},
@@ -145,6 +146,18 @@ export default {
     this.myChart = echarts.init(document.getElementById('allAnalysisCharts'))
   },
   methods: {
+    // 数据导出
+    exportData () {
+      excelExport(this.param).then(res => {
+        console.log('开始数据导出')
+        // let fileName = '访问分析'
+        // download(res, decodeURIComponent(fileName))
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      }).catch(err => console.log(err))
+    },
+
     // action下拉框变化
     actionChangeHandler (action) {
       this.chartChange = {
