@@ -154,7 +154,7 @@ public class ConfigService extends ShopBaseService {
 		r = r.toUpperCase();
 		g = g.toUpperCase();
 		b = b.toUpperCase();
-		su.append("0xFF");
+		su.append("#");
 		su.append(r);
 		su.append(g);
 		su.append(b);
