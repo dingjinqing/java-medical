@@ -437,7 +437,7 @@
           <el-form-item label="活动分享：">
             <div>
               <el-radio
-                v-model="param.shareType"
+                v-model="param.shareAction"
                 :label=0
               >默认样式</el-radio>
               <el-popover
@@ -466,22 +466,22 @@
             </div>
             <div>
               <el-radio
-                v-model="param.shareType"
+                v-model="param.shareAction"
                 :label=1
               >自定义样式</el-radio>
               <div
-                v-if="param.shareType === 1"
+                v-if="param.shareAction === 1"
                 style="margin-left: 25px"
               >
                 <span>文案：</span>
                 <el-input
-                  v-model="param.shareText"
+                  v-model="param.shareDoc"
                   size="small"
                   style="width:150px"
                 ></el-input>
               </div>
               <div
-                v-if="param.shareType === 1"
+                v-if="param.shareAction === 1"
                 style="margin-left: 25px"
               >
                 <!-- <span>分享图：</span> -->
@@ -639,8 +639,8 @@ export default {
         showSaleNumber: 0,
         buyType: 0,
         buyNumber: 0,
-        shareType: 0,
-        shareText: '',
+        shareAction: 0,
+        shareDoc: '',
         shareImgAction: 0,
         shareImg: '',
         products: []
@@ -708,7 +708,7 @@ export default {
       this.formatTimes()
     },
     formatTimes () {
-      const { isFullPay, payTimeRange, twoSteps, preTime1Range, preTime2Range, tailPayTimeRange, deliverTime, deliverTimeSpecified } = this
+      const { isFullPay, payTimeRange, twoSteps, preTime1Range, preTime2Range, tailPayTimeRange } = this
       if (isFullPay) {
         this.param.startTime = format(payTimeRange[0])
         this.param.endTime = format(payTimeRange[1])
@@ -722,9 +722,9 @@ export default {
           this.param.preEndTime2 = format(preTime2Range[1])
         }
       }
-      if (deliverTimeSpecified) {
-        this.param.deliverTime = format(deliverTime)
-      }
+      // if (deliverTimeSpecified) {
+      //   this.param.deliverTime = format(deliverTime)
+      // }
     },
     // 回显数据加载
     loadData () {
@@ -733,7 +733,23 @@ export default {
         this.param = content
         this.loadStatus(content)
         this.loadingGoods(content)
+        console.log(this.param, 'get return param')
+        if (content) {
+          if (content.presaleType === 1) {
+            // 全款购买 - 定金支付时间
+            this.preTimeRange = [content.startTime, content.endTime]
+          } else {
+            // 定金膨胀 - 定金支付时间
+            this.preTime1Range = [content.preStartTime, content.preEndTime]
+            this.preTime2Range = [content.preStartTimeTwo, content.preEndTimeTwo]
+          }
+          // 尾款支付时间
+          this.tailPayTimeRange = [content.startTime, content.endTime]
+        }
       })
+      // getDetail(id).then(res => {
+      //   console.log(res)
+      // })
     },
     loadStatus: ({ status }) => {
       this.status = status
@@ -764,7 +780,6 @@ export default {
     setCurrent (index) {
       // 拷贝一份数据
       let price = JSON.parse(JSON.stringify(this.param.products))
-      // console.log(price, 'setCurrent')
 
       switch (index) {
         case 1:
