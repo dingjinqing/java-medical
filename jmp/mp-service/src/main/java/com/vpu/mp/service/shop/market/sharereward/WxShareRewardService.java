@@ -313,7 +313,7 @@ public class WxShareRewardService extends ShopBaseService {
                                 log.info("{} 级分享有礼活动规则下的奖品发放完成！", level);
                             });
                             // 发送消息模板通知用户奖品已发放
-                            sendWinningNotice(userId, rule, info.getName());
+                            sendWinningNotice(userId, rule);
                             log.info("发送消息模板通知用户奖品已发放");
                         } catch (Exception e) {
                             log.info("分享有礼发送奖品异常，更新对应等级的奖品为未领取状态！当前活动规则信息：{}！报错信息：{}", Util.toJson(rule), ExceptionUtils.getStackTrace(e));
@@ -466,7 +466,7 @@ public class WxShareRewardService extends ShopBaseService {
     /**
      * 发送分享有礼奖品发放成功消息通知
      */
-    private void sendWinningNotice(int userId, ShareRule rule, String activityName) {
+    private void sendWinningNotice(int userId, ShareRule rule) {
         UserRecord userInfo = userService.getUserByUserId(userId);
         String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
         if (officeAppId == null) {
@@ -481,13 +481,11 @@ public class WxShareRewardService extends ShopBaseService {
         }
         userIdList.add(wxUserInfo.getUserId());
         String page = getTemplatePage(rule.getRewardType(), rule.getLottery());
-        String award = "恭喜分享任务成功，" + getTemplateAward(rule);
+        String award = getTemplateAward(rule);
         String time = LocalDateTime.now().toString();
-        //TODO 内容待定
-        String first = "恭喜分享任务成功，点击查看活动奖励!";
-        String remake = "恭喜分享任务成功，点击查看活动奖励!";
+        String first = "恭喜您完成分享任务!";
+        String remake = "点击查看活动奖励!";
         String[][] data = new String[][]{{first, "#173177"}
-            , {activityName, "#173177"}
             , {award, "#173177"}
             , {time, "#173177"}
             , {remake, "#173177"}};
@@ -515,7 +513,7 @@ public class WxShareRewardService extends ShopBaseService {
     private String getTemplateAward(ShareRule rule) {
         switch (rule.getRewardType()) {
             case 1:
-                return "获得" + rule.getScore() + "积分";
+                return rule.getScore() + "积分";
             case 2:
                 String temp;
                 CouponView view = couponService.getCouponViewById(rule.getCoupon());
@@ -533,9 +531,9 @@ public class WxShareRewardService extends ShopBaseService {
                     default:
                         temp = "优惠券";
                 }
-                return "获得" + temp;
+                return temp;
             case 3:
-                return "点击进行抽奖";
+                return "幸运大抽奖";
             default:
                 throw new IllegalStateException();
         }
