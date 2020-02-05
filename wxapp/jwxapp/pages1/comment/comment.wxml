@@ -117,7 +117,7 @@
                   <view class="shai_content">
                     <block wx:for="{{item.comm_img}}" wx:key="index" wx:for-item="imgitem">
                       <view class='shai_view'>
-                        <image src="{{imgitem}}" data-idx="{{index}}"></image>
+                        <image src="{{imageUrl + imgitem}}" data-idx="{{index}}"></image>
                       </view>
                     </block>
                   </view>

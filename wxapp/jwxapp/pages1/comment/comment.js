@@ -321,7 +321,7 @@ global.wxPage({
    */
   good_commtag: function (e) {
     // 防抖函数
-    util.throttle(this.evaluate, 1000)(e)
+    util.throttle(this.evaluate, 1500)(e)
   },
   // 发表评价
   evaluate: function (e) {
