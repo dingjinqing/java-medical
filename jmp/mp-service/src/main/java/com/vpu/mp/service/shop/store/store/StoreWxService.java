@@ -422,6 +422,8 @@ public class StoreWxService extends ShopBaseService {
         payOrderVo.setDelFlag(storePojo.getDelFlag());
         // 门店买单开关配置
         payOrderVo.setStoreBuy(storeConfigService.getStoreBuy());
+        payOrderVo.setDefaultPayConf(tradeService.getDefaultPayConf());
+        payOrderVo.setPayStatusList(tradeService.getPaymentEnabled());
         return payOrderVo;
     }
 
