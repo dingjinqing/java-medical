@@ -165,6 +165,10 @@ import {
 import {
   en as spike
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeEn'
+// 积分兑换
+import {
+  en as integralExchange
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/integralExchangeEn'
 import {
   en as fightGroup
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/fightGroupEn'
@@ -1057,6 +1061,7 @@ const en = {
   indexApply, // 申请试用
   indexMobile, //  官网首页移动端国际化
   reservationManage, // 预约管理
-  commodityGrouping // 小程序商品分组
+  commodityGrouping, // 小程序商品分组
+  integralExchange // 积分兑换
 }
 export default en

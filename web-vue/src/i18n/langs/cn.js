@@ -136,6 +136,10 @@ import {
 import {
   cn as spike
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeCn'
+// 积分兑换
+import {
+  cn as integralExchange
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/integralExchangeCn'
 // 小程序装修拼团抽奖
 import {
   cn as fightGroup
@@ -1063,7 +1067,8 @@ const cn = {
   indexApply, // 申请试用国际化
   indexMobile, // 官网首页移动端国际化
   reservationManage, // 预约管理
-  commodityGrouping //  商品分组
+  commodityGrouping, //  商品分组
+  integralExchange // 积分兑换
 }
 
 export default cn

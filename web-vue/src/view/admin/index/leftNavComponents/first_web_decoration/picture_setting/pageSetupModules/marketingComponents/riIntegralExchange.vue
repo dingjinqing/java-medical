@@ -349,7 +349,10 @@ export default {
       deep: true
     }
   },
-
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
     // 初始化请求弹窗数据
     handleToRequestData () {
