@@ -49,6 +49,11 @@ public class GroupDrawPictorialService extends ShopBaseService {
     @Autowired
     private QrCodeService qrCodeService;
 
+    /**
+     * 拼团抽奖活动获取分享图片
+     * @param param 分享参数
+     * @return 分享信息
+     */
     @SuppressWarnings("all")
     public GoodsShareInfo getGroupDrawShareInfo(GroupDrawShareInfoParam param) {
         GoodsShareInfo goodsShareInfo = new GoodsShareInfo();
@@ -63,14 +68,13 @@ public class GroupDrawPictorialService extends ShopBaseService {
         }
 
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        GoodsSharePostConfig shareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
         // 拼团商品信息不可用
         if (goodsRecord == null) {
             groupDrawLog("分享", "拼团抽奖商品信息不可用");
             goodsShareInfo.setShareCode(GoodsShareInfo.GOODS_DELETED);
             return goodsShareInfo;
         }
-
+        GoodsSharePostConfig shareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
         goodsShareInfo.setShareAction(shareConfig.getShareAction());
 
 
@@ -86,7 +90,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
         } else {
             // 使用默认分享图片样式
             ShopRecord shop = saas.shop.getShopById(getShopId());
-            String imgPath = createBargainShareImg(groupDrawRecord, goodsRecord, param);
+            String imgPath = createGroupDrawShareImg(groupDrawRecord, goodsRecord, param);
             String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_DOC, "messages",param.getRealPrice());
             goodsShareInfo.setImgUrl(imgPath);
             goodsShareInfo.setShareDoc(doc);
@@ -102,14 +106,15 @@ public class GroupDrawPictorialService extends ShopBaseService {
     private static final String GROUP_DRAW_BG_IMG = "image/wxapp/group_draw.png";
 
     /**
-     * 生成商品详情分享图
+     * 生成商拼团抽奖分享图
      * @param groupDrawRecord 活动信息
      * @param goodsRecord 商品信息
      * @param param 图片参数
      * @return
      */
-    private String createBargainShareImg(GroupDrawRecord groupDrawRecord,GoodsRecord goodsRecord,GroupDrawShareInfoParam param){
+    private String createGroupDrawShareImg(GroupDrawRecord groupDrawRecord, GoodsRecord goodsRecord, GroupDrawShareInfoParam param){
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.GROUP_DRAW_ACTION_SHARE,null);
+
         // 已存在生成的图片
         if (pictorialRecord != null&&pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(),goodsRecord.getUpdateTime(),groupDrawRecord.getUpdateTime())) {
             return pictorialRecord.getPath();
@@ -172,6 +177,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
             groupDrawLog("pictorial", "商品或拼团信息已删除或失效");
             return null;
         }
+
 
         GoodsSharePostConfig goodsShareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
         PictorialShareConfig shareConfig =new PictorialShareConfig();
