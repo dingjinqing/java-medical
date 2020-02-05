@@ -245,10 +245,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		RefundVo vo = new RefundVo();
 		//获取当前订单
 		OrderListInfoVo currentOrder = orderInfo.getByOrderId(param.getOrderId(),OrderListInfoVo.class);
-        vo.setOrderType(OrderInfoService.orderTypeToArray(currentOrder.getGoodsType()));
 		if(currentOrder == null) {
 			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
+		vo.setOrderType(OrderInfoService.orderTypeToArray(currentOrder.getGoodsType()));
 		//退款校验
 		if(OrderOperationJudgment.isReturnMoney(currentOrder, isMp)) {
 			vo.getReturnType()[OrderConstant.RT_ONLY_MONEY] = true;
