@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
@@ -205,5 +206,11 @@ public class BargainProcessorDao extends ShopBaseService {
 
         //绑定新订单
         db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.IS_ORDERED,BargainRecordService.IS_ORDERED_Y).set(BARGAIN_RECORD.ORDER_SN,newOrder.getOrderSn()).where(BARGAIN_RECORD.ID.eq(orderParam.getBargainRecordInfo().getId())).execute();
+    }
+
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods){
+        returnGoods.forEach(g->{
+            bargainService.updateBargainStock(activityId,- g.getGoodsNumber());
+        });
     }
 }
