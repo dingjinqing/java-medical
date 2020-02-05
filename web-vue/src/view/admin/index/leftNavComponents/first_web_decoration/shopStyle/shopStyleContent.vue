@@ -1,6 +1,7 @@
 <template>
   <div class="shopStyleContent">
     <div class="shopStyleContent_main">
+<<<<<<< HEAD
       <div class="color_title">
         <div
           style="padding-left: 20px;"
@@ -41,10 +42,59 @@
             v-if="index===6?true:false"
             size='small'
             @change="headleChangeColorRight()"
+=======
+      <div>
+        <div class="color_title">
+          <div
+            style="padding-left: 20px;"
+            :class="en_ch_title_width_one"
+          >{{$t('shopStyle.title')}}</div>
+          <div
+            class="shop_color"
+            v-for="(item,index) in colorDataList"
+            :key="index"
+            :class="choiseId===index?'clickColor':''"
+            @click="clickColor(index)"
+>>>>>>> f22a1c696... 增加店铺风格自定义提示
           >
-          </el-color-picker>
+            <span>{{item.title}}</span>
+            <span
+              class="ps_color middle_span"
+              :style="item.colorLeft"
+              :class="item.id===index?'choiseColor':''"
+              v-if="index===6?false:true"
+            ></span>
+            <span
+              class="ps_color"
+              :style="item.colorRight"
+              :class="item.id===index?'choiseColor':''"
+              v-if="index===6?false:true"
+            ></span>
+
+            <el-color-picker
+              v-model="colorLeft_"
+              show-alpha
+              :predefine="predefineColors"
+              v-if="index===6?true:false"
+              size='small'
+              @change="headleChangeColorLeft()"
+            >
+            </el-color-picker>
+            <el-color-picker
+              v-model="colorRight"
+              show-alpha
+              :predefine="predefineColors"
+              v-if="index===6?true:false"
+              size='small'
+              @change="headleChangeColorRight()"
+            >
+            </el-color-picker>
+          </div>
         </div>
 
+        <div class="tips">
+          提示：自定义风格不要设置白色
+        </div>
       </div>
 
       <div class="color_content">
@@ -688,5 +738,13 @@ export default {
 <style lang="scss" scoped>
 /deep/ .el-color-picker {
   width: 34px !important;
+}
+.tips {
+  width: 1120px;
+  height: 27px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  color: #999;
 }
 </style>
