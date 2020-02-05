@@ -199,7 +199,7 @@
           <block wx:elif="{{item.refundStatus == 5}}">
             <view class='order-item-title'>
               <text>{{i18n.$t(localePack,"page1.afterSale.reviewAfterTime")}}：</text>
-              {{item.refund_success_time}}
+              {{item.finishTime}}
             </view>
             <view class='order-item-title'>
               <text>{{i18n.$t(localePack,"page1.afterSale.note")}}：</text>
