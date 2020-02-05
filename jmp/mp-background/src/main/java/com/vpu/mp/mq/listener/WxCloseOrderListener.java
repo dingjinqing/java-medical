@@ -30,13 +30,14 @@ public class WxCloseOrderListener implements BaseRabbitHandler {
 
 
     @RabbitHandler
-    public void handler(@Payload OrderCloseQueenParam param, Message message, Channel channel){
-        log.info("关闭订单队列消费");
+    public void handler(@Payload OrderCloseQueenParam param, Message message, Channel channel) throws WxPayException {
         try {
             saas.getShopApp(param.getShopId()).pay.mpPay.wxCloseOrder(param.getOrderSn());
-        } catch (WxPayException e) {
-            log.error("关闭订单队列消费失败",e);
+        }catch (WxPayException e){
+            log.error("关闭订单接口调用 错误 e",e);
+            throw e;
         }
+
     }
 
 
