@@ -357,7 +357,7 @@ export default {
     },
     modulesData: {
       handler (newData, oldData) {
-        console.log(newData, oldData)
+        console.log(newData)
       },
       deep: true
     }
@@ -372,7 +372,7 @@ export default {
     console.log(this.$route)
     if (Number(this.$route.query.pageId) !== -1) { // 判断是否是页面列表配置页面点击编辑跳转而来
       this.isEditSave = true
-      pageEdit({ pageId: this.$route.query.pageId }).then((res) => {
+      pageEdit({ pageId: Number(this.$route.query.pageId) }).then((res) => {
         console.log(res)
         if (res.error === 0) {
           let turnToString = this.handleToTurnNumToStr(res.content.page_cfg)
@@ -395,13 +395,11 @@ export default {
           let moduleDataCopy = JSON.parse(JSON.stringify(content))
           delete moduleDataCopy.page_cfg
           let arr = []
+          console.log(moduleDataCopy, JSON.parse(res.content.page_content))
           Object.keys(moduleDataCopy).forEach((item, index) => {
-            arr.push(moduleDataCopy[item])
+            arr.push(JSON.parse(res.content.page_content)[item])
           })
           console.log(arr)
-          this.$nextTick(() => {
-            this.modulesData = arr
-          })
           this.handleToTurnModulesName(arr)
         }
       })
@@ -438,6 +436,9 @@ export default {
       })
       console.log(showModuleArr)
       this.showModulesList = showModuleArr
+      this.$nextTick(() => {
+        this.modulesData = data
+      })
     },
     // 模块名数据池
     modulesName (name) {
