@@ -25,9 +25,11 @@
               :min="0"
               :max="999999999"
               :controls="false"
+              @blur="checkGradeScore"
             >
             </el-input-number>
             <span>{{$t('memberCard.unitM')}}</span>
+            <span v-if="scoreValid" class="error-tip"> {{$t('memberCard.gradeScoreError')}} </span>
           </el-form-item>
           <div>{{$t('memberCard.or')}}</div>
           <el-form-item class="grade-amount">
@@ -38,9 +40,11 @@
               :min="0"
               :max="999999999"
               :controls="false"
+              @blur="checkGradeCrash"
             >
             </el-input-number>
             <span>{{$t('memberCard.yuan')}}</span>
+            <span v-if="crashValid" class="error-tip"> {{$t('memberCard.gradeCrashError')}} </span>
             <span class="amount-tip">
               {{$t('memberCard.amountTip')}}
             </span>
@@ -68,7 +72,7 @@
             >
             </el-option>
           </el-select>
-          <span v-if="valid" style="color: red;">请选择会员卡等级</span>
+          <span v-if="valid" style="color: red;">{{ $t('memberCard.chooseGrade') }}</span>
           <div class="grade-condition-tip">
             {{$t('memberCard.gradeConditionTip')}}
           </div>
@@ -137,10 +141,25 @@ export default {
     this.$on('checkRule', () => {
       if (this.ruleForm.gradeValue) {
         this.valid = false
-        this.ruleForm.valid = true
       } else {
         this.valid = true
-        this.$message.warning('请输入等级')
+        // this.$message.warning('请输入等级')
+      }
+
+      if (this.valid || this.scoreValid || this.crashValid) {
+        // 等级
+        if (this.valid) {
+          this.$message.warning(this.$t('memberCard.chooseGrade'))
+        } else if (this.scoreValid) {
+          // 升级积分
+          this.$message.warning(this.$t('memberCard.gradeScoreError'))
+        } else if (this.crashValid) {
+          // 升级余额
+          this.$message.warning(this.$t('memberCard.gradeCrashError'))
+        }
+      } else {
+        // validate success
+        this.ruleForm.valid = true
       }
     })
   },
@@ -148,6 +167,8 @@ export default {
     return {
       recordGrade: true,
       valid: false,
+      scoreValid: false,
+      crashValid: false,
       gradeOptions: [
         { label: '请选择', value: null, disabled: false },
         { label: 'v1', value: 'v1', disabled: false },
@@ -178,6 +199,17 @@ export default {
           })
         }
       })
+    },
+    checkUndefindNullNotIncludeZero (val) {
+      return !val && val !== 0
+    },
+    checkGradeScore () {
+      let res = this.checkUndefindNullNotIncludeZero(this.ruleForm.gradeScore)
+      this.scoreValid = res
+    },
+    checkGradeCrash () {
+      let res = this.checkUndefindNullNotIncludeZero(this.ruleForm.gradeCrash)
+      this.crashValid = res
     }
   }
 }
@@ -219,5 +251,8 @@ export default {
       }
     }
   }
+}
+.error-tip{
+  color: red;
 }
 </style>

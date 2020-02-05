@@ -85,18 +85,22 @@ public enum RemarkTemplate {
 	RECEIVE_COUPON(4005,RemarkMessage.MSG_RECEIVE_COUPON),
 	/**	好友助力失败 */
     FRIENDS_HELP_FAIL(4006, RemarkMessage.MSG_FRIENDS_HELP_FAIL),
-    /**
+	/**
      * 分享有礼
      */
     SHARE_HAS_GIFT(4007, RemarkMessage.MSG_SHARE_HAS_GIFT),
-    /**
+	/**
      * 开屏有礼
      */
     ENTER_HAS_GIFT(4008, RemarkMessage.MSG_ENTER_HAS_GIFT),
+	/**
+	 * 抽奖
+	 */
+	MSG_LOTTERY_GIFT(4009,RemarkMessage.MSG_LOTTERY_GIFT),
 	/** 门店支付 */
 	STORE_PAYMEMBT(4007,RemarkMessage.STORE_PAYMEMBT),
 
-    /**
+	/**
      * 管理员
      */
 	/**	管理员操作 */

@@ -8,8 +8,12 @@ import lombok.*;
  **/
 @Setter
 @Getter
-@Builder
 public class OrderCloseQueenParam {
     private Integer shopId;
     private String orderSn;
+
+    /**
+     *任务id
+     */
+    private Integer taskJobId;
 }
