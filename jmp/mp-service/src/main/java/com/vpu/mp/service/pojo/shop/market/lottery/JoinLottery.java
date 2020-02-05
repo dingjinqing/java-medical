@@ -21,31 +21,43 @@ public class JoinLottery {
      */
     private Boolean flag=false;
     /**
-     * 抽奖来源类型
+     * 抽奖类型
      */
-    private Byte timeType;
+    private Byte lotteryType;
     /**
      * 抽奖结果
      */
     private Byte resultsType;
     /**
-     * 错误信息
+     * 奖品文字
      */
-    private ResultMessage resultMessage;
+    private String prizeText;
+    /**
+     * 奖品图片
+     */
+    private String prizeImage;
 
     /**
      * 可用抽奖次数
      */
     private Integer canUseTime;
 
+    /**
+     * 信息
+     */
     private String msg;
 
     /**
-     * 来源,支付,登陆
+     * 来源,支付,登陆,扫码
      */
-    private Byte score=0;
+    private Byte source=0;
 
 
+    /**
+     * 错误信息
+     */
+    @JsonIgnore
+    private ResultMessage resultMessage;
     /**
      * 抽奖规则
      */

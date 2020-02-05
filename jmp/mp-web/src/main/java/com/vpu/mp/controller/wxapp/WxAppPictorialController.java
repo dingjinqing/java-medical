@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -102,9 +103,37 @@ public class WxAppPictorialController extends WxAppBaseController  {
         return success(shop().pictorialIntegrationService.getGroupDrawShareInfo(param));
     }
 
+    /**
+     * 获取拼团抽奖海报信息
+     * @param param 海报参数信息
+     * @return JsonResult
+     */
     @PostMapping("/api/wxapp/groupdraw/pictorial/info")
     public JsonResult getGroupDrawPictorial(@RequestBody GroupDrawShareInfoParam param) {
         param.setUserId(wxAppAuth.user().getUserId());
         return success(shop().pictorialIntegrationService.getGroupDrawPictorialInfo(param));
     }
+
+    /**
+     * 获取预售活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/presale/share/info")
+    public JsonResult getPreSaleShareInfo(@RequestBody PreSaleShareInfoParam param){
+        param.setUserId(wxAppAuth.user().getUserId());
+        return success(shop().pictorialIntegrationService.getPreSaleShareInfo(param));
+    }
+
+    /**
+     * 获取拼团抽奖海报信息
+     * @param param 海报参数信息
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/presale/pictorial/info")
+    public JsonResult getPreSalePictorial(@RequestBody PreSaleShareInfoParam param) {
+        param.setUserId(wxAppAuth.user().getUserId());
+        return success(shop().pictorialIntegrationService.getPreSalePictorialInfo(param));
+    }
+
 }
