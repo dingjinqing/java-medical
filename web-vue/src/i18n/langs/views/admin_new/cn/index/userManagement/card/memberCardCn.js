@@ -244,5 +244,7 @@ export const cn = {
   or: '或',
   gradeTip: '低等级用户满足升级条件会自动升级为高等级卡',
   gradeSetting: '升级设置',
-  save: '保存'
+  save: '保存',
+  gradeScoreError: '填写积分有效值',
+  gradeCrashError: '填写消费额有效值'
 }
