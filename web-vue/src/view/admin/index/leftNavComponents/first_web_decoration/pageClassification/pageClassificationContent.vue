@@ -231,6 +231,8 @@ export default {
     // 查询
     handleQuery () {
       this.loading = true
+      this.requestParams.pageRows = this.pageParams.pageRows
+      this.requestParams.currentPage = this.pageParams.currentPage
       getPageclassificationData(this.requestParams).then(res => {
         console.log(res)
         this.pageParams = res.content.page
@@ -270,7 +272,8 @@ export default {
       })
     },
     jumpCatergory (row) {
-
+      console.log('跳转到页面装修 id = ', row)
+      this.$router.push({ path: '/admin/home/main/pictureSetting', query: { page: row.id } })
     },
     handleEdit (row) {
       this.$prompt(this.$t('pageClassification.catergoryNamePlease'), {
