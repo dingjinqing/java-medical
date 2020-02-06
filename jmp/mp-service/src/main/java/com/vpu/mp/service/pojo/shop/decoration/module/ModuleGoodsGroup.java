@@ -1,7 +1,8 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -10,7 +11,8 @@ import java.util.List;
  * @author lixinguo
  *
  */
-@Data
+@Getter
+@Setter
 public class ModuleGoodsGroup extends ModuleBase {
 
     /**
@@ -111,7 +113,8 @@ public class ModuleGoodsGroup extends ModuleBase {
 
     private List<?> goodsListData;
 
-    @Data
+    @Getter
+    @Setter
     public static class SortGroup{
         /**选择分组筛查条件名*/
         @JsonProperty("sort_name")

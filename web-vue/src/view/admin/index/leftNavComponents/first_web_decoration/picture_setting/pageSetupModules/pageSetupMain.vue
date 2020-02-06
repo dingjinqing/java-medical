@@ -333,7 +333,8 @@ export default {
         ]
       },
       pageClassify: '请选择页面分类',
-      picFlag: null
+      picFlag: null,
+      columnFlag: false
       // pageData: {
       //   'is_ok': 1,
       //   'page_name': '', // 页面名称
@@ -366,7 +367,9 @@ export default {
           item.name = this.$t('divideScorePoints.selectPageClassification')
         }
       })
-      console.log(this.pageClassify)
+      if (this.pageClassify === '请选择页面分类' || this.pageClassify === 'Please select a page classification') {
+        this.pageClassify = this.$t('divideScorePoints.selectPageClassification')
+      }
     },
     pageSet: {
       handler (newData) {
