@@ -18,5 +18,7 @@ export const en = {
   viewUser: 'View User',
   addTagSuccess: 'Add Success',
   removeTagSuccess: 'Delete Success',
-  modifyTagSuccess: 'Modify Success'
+  modifyTagSuccess: 'Modify Success',
+  lengthError: 'Max length 10',
+  addContent: 'Not valid'
 }

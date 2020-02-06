@@ -17,5 +17,7 @@ export const cn = {
   viewUser: '查看用户',
   addTagSuccess: '添加成功',
   removeTagSuccess: '删除成功',
-  modifyTagSuccess: '修改成功'
+  modifyTagSuccess: '修改成功',
+  lengthError: '名称最多能填写10个字',
+  addContent: '请填写标签名'
 }
