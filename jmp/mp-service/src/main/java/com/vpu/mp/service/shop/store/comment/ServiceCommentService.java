@@ -181,7 +181,10 @@ public class ServiceCommentService extends ShopBaseService {
      * @return the newestcomment
      */
     public ServiceCommentVo getNewestcomment(Integer serviceId) {
-        return db().select(COMMENT_SERVICE.asterisk()).from(COMMENT_SERVICE)
+        return db().select(COMMENT_SERVICE.COMM_NOTE, COMMENT_SERVICE.COMM_IMG
+            , COMMENT_SERVICE.COMMSTAR, COMMENT_SERVICE.ANONYMOUSFLAG, COMMENT_SERVICE.CREATE_TIME
+            , USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR).from(COMMENT_SERVICE)
+            .leftJoin(USER_DETAIL).on(COMMENT_SERVICE.USER_ID.eq(USER_DETAIL.USER_ID))
             .where(COMMENT_SERVICE.SERVICE_ID.eq(serviceId))
             .and(COMMENT_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
             .and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE))
