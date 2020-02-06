@@ -443,9 +443,12 @@ export const cn = {
     id: null,
     cardName: '全部'
   },
+<<<<<<< HEAD
   chargeDetail: '充值明细',
   consumeDetail: '消费明细',
   deleteCard: '废除',
+=======
+>>>>>>> bugfix-membershipcard-confict-v1
   add: '添加',
   normalCardFull: '普通会员卡',
   limiteCardFull: '限次会员卡',
