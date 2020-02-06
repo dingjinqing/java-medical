@@ -60,7 +60,7 @@ public class UserCenterConfigParam {
     /**
      * 标题
      */
-    @CharacterValid( max = 10)
+    @CharacterValid(letterDigit =false,chinese =false, max = 10)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
 
