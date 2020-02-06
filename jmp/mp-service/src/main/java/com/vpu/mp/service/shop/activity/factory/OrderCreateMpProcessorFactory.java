@@ -61,7 +61,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     /**
      * 退款
      */
-    private final static List<Byte> RETURN_ACTIVITY = Arrays.asList(
+    public final static List<Byte> RETURN_ACTIVITY = Arrays.asList(
         BaseConstant.ACTIVITY_TYPE_GIFT
     );
 
