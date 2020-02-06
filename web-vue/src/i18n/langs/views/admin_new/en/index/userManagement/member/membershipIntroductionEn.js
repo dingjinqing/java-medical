@@ -446,5 +446,10 @@ export const en = {
   },
   chargeDetail: 'chargeDetail',
   consumeDetail: 'consumeDetail',
-  deleteCard: 'DEL'
+  deleteCard: 'DEL',
+  add: 'Add',
+  normalCardFull: 'NormalCard',
+  limiteCardFull: 'LimiteCard',
+  gradeCard: 'GradeCard',
+  addCardTips: 'Note: the card that needs to be activated is issued directly to the user'
 }

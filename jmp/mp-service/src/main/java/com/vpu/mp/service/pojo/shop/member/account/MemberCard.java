@@ -44,6 +44,8 @@ public class MemberCard {
 	private List<String> exchangCountLegal;
 	private List<String> legal;
 	private Integer legalFlag;
+	/**	每人领取限制 */
+	private Integer limit;
 	
 	
 	/** 创建时间 */
