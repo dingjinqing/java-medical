@@ -24,9 +24,16 @@ export default {
   methods: {
     onSelected (data) {
       console.log(data)
-      this.temp.address__province = data.province.code
-      this.temp.address__city = data.city.code
-      this.temp.address__dist = data.area.code
+      let flag = true
+      Object.keys(data).forEach((item, index) => {
+        if (!data[item].code) flag = false
+      })
+      if (!flag) return
+      console.log(data)
+      this.temp.address__province = data.province.value
+      this.temp.address__city = data.city.value
+      this.temp.address__dist = data.area.value
+      this.$emit('handleToGetProCode', data)
     }
   }
 
