@@ -68,7 +68,7 @@ public class FootPrintService extends ShopBaseService {
 	 *
 	 */
 	public void addFootprint(Integer userId,Integer goodsId){
-		Timestamp nowDate = DateUtil.getLocalTimeDate();
+		Timestamp nowDate = DateUtil.getLocalDateTime();
 
 		Integer count = db().selectCount().from(Tables.FOOTPRINT_RECORD)
 				.where(Tables.FOOTPRINT_RECORD.USER_ID.eq(userId)).and(Tables.FOOTPRINT_RECORD.GOODS_ID.eq(goodsId))
