@@ -44,7 +44,7 @@
             </el-table-column>
             <el-table-column
               prop="lastAuthTime"
-              store
+              :label="$t('authRoleList.store')"
               align="center"
             >
               <template
@@ -260,7 +260,7 @@ export default {
       if (this.isEmpty(value)) {
         callback(new Error(this.$t('authRoleList.tips9')))
       } if (value !== this.ruleForm.pass) {
-        callback(new Error(this.$t('authRoleList.tips10')))
+        callback(new Error(this.$t('authRoleList.tipss10')))
       } if (!(this.passWd.test(value))) {
         callback(new Error(this.$t('authRoleList.tips8')))
       } else {

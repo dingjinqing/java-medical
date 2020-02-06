@@ -341,9 +341,10 @@ public class MpDecorationService extends ShopBaseService {
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
+                default:
             }
         }
-        if(node.getKey().equals("page_cfg")){
+        if("page_cfg".equals(node.getKey())){
             return this.convertPageCfgIndex(objectMapper, node, user);
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
@@ -703,6 +704,7 @@ public class MpDecorationService extends ShopBaseService {
                         case ModuleConstant.M_GROUP_DRAW:
                             return  this.convertGroupDrawForModule(objectMapper, node, user);
                         //TODO case
+                        default:
                     }
                 }
             }
@@ -873,10 +875,10 @@ public class MpDecorationService extends ShopBaseService {
      * @throws IOException
      */
     private ModuleGroupDraw convertGroupDrawForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        ModuleGroupDraw ModuleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+        ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
 
         // 转换实时信息
-        return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(ModuleGroupDraw);
+        return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
     }
 
 }

@@ -4,17 +4,9 @@
     <section class="info_content">
       <div class="info1">
         <div>
-          <span>用户昵称：</span>
+          <span>商品名称：</span>
           <el-input
-            v-model="pageParams.id"
-            size="small"
-            class="input_width"
-          ></el-input>
-        </div>
-        <div>
-          <span>手机号：</span>
-          <el-input
-            v-model="pageParams.mobile"
+            v-model="params.goodsName"
             size="small"
             class="input_width"
           ></el-input>
@@ -22,7 +14,15 @@
         <div>
           <span>订单号：</span>
           <el-input
-            v-model="pageParams.orderSn"
+            v-model="params.orderSn"
+            size="small"
+            class="input_width"
+          ></el-input>
+        </div>
+        <div>
+          <span>订单类型：</span>
+          <el-input
+            v-model="params.orderSn"
             size="small"
             class="input_width"
           ></el-input>
@@ -32,7 +32,7 @@
         <div>
           <span>收货人姓名：</span>
           <el-input
-            v-model="pageParams.consigneeName"
+            v-model="params.consigneeName"
             size="small"
             class="input_width"
           ></el-input>
@@ -40,7 +40,7 @@
         <div>
           <span>收货人手机号：</span>
           <el-input
-            v-model="pageParams.mobile"
+            v-model="params.mobile"
             size="small"
             class="input_width"
           ></el-input>
@@ -76,7 +76,7 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="presaleName"
+          prop=""
           label="用户昵称"
           align="center"
         ></el-table-column>
@@ -86,7 +86,7 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="orderId"
+          prop="orderSn"
           label="订单号"
           align="center"
         ></el-table-column>
@@ -117,7 +117,7 @@
         ></el-table-column>
       </el-table>
       <pagination
-        :page-params.sync="pageParams"
+        :page-params.sync="params"
         @pagination="initDataList"
       />
     </div>
@@ -140,8 +140,8 @@ export default {
   },
   data () {
     return {
-      pageParams: {
-        id: '',
+      params: {
+        goodsName: '',
         mobile: '',
         orderSn: '',
         provinceCode: '',
@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     initDataList () {
-      getOrderList(this.pageParams).then(res => {
+      getOrderList(this.params).then(res => {
         if (res.error === 0) {
           console.log(res)
         }
@@ -160,9 +160,9 @@ export default {
     },
     handleAreaData (data) {
       console.log(data)
-      this.pageParams.provinceCode = data.province
-      this.pageParams.cityCode = data.city
-      this.pageParams.districtCode = data.district
+      this.params.provinceCode = data.province
+      this.params.cityCode = data.city
+      this.params.districtCode = data.district
     }
   }
 }

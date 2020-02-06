@@ -34,12 +34,12 @@
       </view>
     </view>
     <view class="all-spec">
-      <view class="spec-info" wx:for="{{specList}}" wx:for-item="specItem" wx:for-index="key" wx:key="key">
+      <view class="spec-info" wx:for="{{spec_list}}" wx:for-item="specItem" wx:for-index="key" wx:key="key">
         <view class="spec-title">
           {{key}}：
         </view>
         <view class="spec-content">
-          <text class="spec-item" style="border-color:{{item.isChecked ? main_setting.comColor : ''}}" wx:for="{{specItem}}" wx:key="index" bindtap="tapSpec" data-key="{{key}}" data-index="{{index}}">{{item.specName}}</text>
+          <text class="spec-item" style="{{item.gary ? 'background-color:#f5f5f5;border-color:#f5f5f5;color:#ccc;' : item.isChecked && 'border-color:'+main_setting.comColor+';'}}" wx:for="{{specItem}}" wx:for-index="itemVal" wx:key="itemVal" bindtap="{{!item.gary && 'bindClickSpec'}}" data-key="{{key}}" data-index="{{itemVal}}">{{itemVal}}</text>
         </view>
       </view>
     </view>

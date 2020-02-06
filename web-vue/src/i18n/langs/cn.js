@@ -79,6 +79,10 @@ import {
 import {
   cn as userportrait
 } from './views/admin_new/cn/index/overview/userportrait/userportraitCn'
+// 访问分析
+import {
+  cn as visitAnalysis
+} from './views/admin_new/cn/index/overview/visitAnalysis/visitAnalysisCn'
 
 // 小程序管理系列国际化
 // 小程序管理 -> 页面装修
@@ -136,6 +140,18 @@ import {
 import {
   cn as spike
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeCn'
+// 积分兑换
+import {
+  cn as integralExchange
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/integralExchangeCn'
+// 瓜分积分
+import {
+  cn as divideScorePoints
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/divideScorePointsCn'
+// 图片热区
+import {
+  cn as pictureHotSpot
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureHotSpotCn'
 // 小程序装修拼团抽奖
 import {
   cn as fightGroup
@@ -172,6 +188,10 @@ import {
 import {
   cn as textModule
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/textModuleCn'
+// 轮播图模块
+import {
+  cn as carouselPicture
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/carouselPictureCn'
 // 小程序页面装修标题模块国际化
 import {
   cn as titleModule
@@ -937,6 +957,7 @@ const cn = {
   userportrait,
   userStatistics, // 用户统计
   assetsManage, // 资产管理
+  visitAnalysis, // 访问分析
 
   // 小程序管理
   pictureSetting,
@@ -1063,7 +1084,11 @@ const cn = {
   indexApply, // 申请试用国际化
   indexMobile, // 官网首页移动端国际化
   reservationManage, // 预约管理
-  commodityGrouping //  商品分组
+  commodityGrouping, //  商品分组
+  integralExchange, // 积分兑换
+  divideScorePoints, // 瓜分积分
+  pictureHotSpot, //  图片热区
+  carouselPicture // 轮播图模块
 }
 
 export default cn

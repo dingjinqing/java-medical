@@ -369,6 +369,21 @@ public class OrderInfoService extends ShopBaseService {
         return orderType.substring(1, orderType.length() - 1 ).split("\\]\\[");
     }
 
+    /**
+     * 转化订单类型
+     * @param orderType
+     * @return
+     */
+    public static Byte[] orderTypeToByte(String orderType) {
+        String[] split = orderTypeToArray(orderType);
+        Byte[] bytes = new Byte[split.length];
+        int i = 0;
+        for (String str : split) {
+            bytes[i] = Byte.valueOf(str);
+        }
+        return bytes;
+    }
+
 	/**
 	 * 构造营销订查询条件
 	 *

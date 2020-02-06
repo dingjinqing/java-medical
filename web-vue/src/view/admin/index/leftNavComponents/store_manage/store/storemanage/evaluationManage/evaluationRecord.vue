@@ -30,11 +30,11 @@
           ></el-input>
         </label>
         <label style="font-size: 14px;">
-          {{$t('technicianList.technicianName')}}：
+          {{this.technicianConfigName + '姓名'}}：
           <el-input
             size="small"
             class="filter_input"
-            :placeholder="$t('technicianList.technicianName')"
+            :placeholder="technicianConfigName"
             v-model="queryParams.technicianName"
           ></el-input>
         </label>
@@ -56,8 +56,8 @@
         </template>-->
         <label style="font-size: 14px;">{{$t('reservationManage.commentStar')}}： </label>
         <!-- 评价星级下拉 -->
-          <template>
-            <el-select
+        <template>
+          <el-select
             size="small"
             style="width:170px;"
             v-model="queryParams.commstar"
@@ -69,7 +69,7 @@
               :value="item.label"
             ></el-option>
           </el-select>
-          </template>
+        </template>
         <el-button
           type="primary"
           size="small"
@@ -91,11 +91,10 @@
         >
           <el-table-column
             type="selection"
-            width="55">
-          </el-table-column>
-          <el-table-column
-            :label="$t('reservationManage.serviceInfo')"
+            width="55"
           >
+          </el-table-column>
+          <el-table-column :label="$t('reservationManage.serviceInfo')">
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
@@ -104,7 +103,10 @@
               </el-row>
               <el-row :gutter=20>
                 <el-col :span="5">
-                  <img :src="row.serviceImg" style="width: 48px; height: 48px">
+                  <img
+                    :src="row.serviceImg"
+                    style="width: 48px; height: 48px"
+                  >
                 </el-col>
                 <el-col :span="15">
                   <label style="font-size: 14px;">{{row.serviceName}}</label>
@@ -112,9 +114,7 @@
               </el-row>
             </template>
           </el-table-column>
-          <el-table-column
-            :label="$t('reservationManage.userInfo')"
-          >
+          <el-table-column :label="$t('reservationManage.userInfo')">
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
@@ -128,13 +128,14 @@
               </el-row>
             </template>
           </el-table-column>
-          <el-table-column
-            :label="$t('reservationManage.commentInfo')"
-          >
+          <el-table-column :label="$t('reservationManage.commentInfo')">
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">{{$t('reservationManage.commentScore')}}：<img :src="row.commstar" alt=""></label>
+                  <label style="font-size: 14px;">{{$t('reservationManage.commentScore')}}：<img
+                      :src="row.commstar"
+                      alt=""
+                    ></label>
                 </el-col>
               </el-row>
               <el-row :gutter=20>
@@ -143,14 +144,20 @@
                 </el-col>
               </el-row>
               <el-row :gutter=20>
-                <el-col :span="20" v-if="row.commImg">
-                  <img :src="row.commImg" style="width: 65px; height: 65px">
+                <el-col
+                  :span="20"
+                  v-if="row.commImg"
+                >
+                  <img
+                    :src="row.commImg"
+                    style="width: 65px; height: 65px"
+                  >
                 </el-col>
               </el-row>
             </template>
           </el-table-column>
           <el-table-column
-            :label="$t('reservationManage.technician')"
+            :label="technicianConfigName"
             prop="technicianName"
           ></el-table-column>
           <el-table-column
@@ -202,11 +209,13 @@
 
 <script>
 import { getList, batchDel, pass, refuse } from '@/api/admin/storeManage/storemanage/evaluationManage'
+import { getServiceConfig } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
   data () {
     return {
+      technicianConfigName: '',
       storeSelect: [],
       starSelect: [{
         label: 0,
@@ -248,6 +257,18 @@ export default {
     this.initDataList()
   },
   methods: {
+    // 获取职称配置名称
+    getTechConfigName () {
+      getServiceConfig().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.technicianConfigName = res.content.technician_title
+          console.log('职称配置名称为：' + this.technicianConfigName)
+        } else {
+          this.$message.error(this.$t('storeCommon.operatefailed'))
+        }
+      })
+    },
     handleSelectionChange (val) {
       this.multipleSelection = val
       console.log(this.multipleSelection)
@@ -339,31 +360,32 @@ export default {
           })
         }
       })
+      this.getTechConfigName()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .technician_list_page {
-    margin: 0 25px;
-    .list_info {
-      padding-bottom: 10px;
-      .filter_input {
-        width: 170px;
-      }
-      .technician_list_img {
-        display: inline-block;
-        width: 60px;
-        height: 60px;
-      }
+.technician_list_page {
+  margin: 0 25px;
+  .list_info {
+    padding-bottom: 10px;
+    .filter_input {
+      width: 170px;
     }
-    .list_table {
-      .iconSpan {
-        color: #5a8bff;
-        text-decoration: none;
-        cursor: pointer !important;
-      }
+    .technician_list_img {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
     }
   }
+  .list_table {
+    .iconSpan {
+      color: #5a8bff;
+      text-decoration: none;
+      cursor: pointer !important;
+    }
+  }
+}
 </style>

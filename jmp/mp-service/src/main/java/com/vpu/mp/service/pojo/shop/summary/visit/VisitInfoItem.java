@@ -29,5 +29,6 @@ public class VisitInfoItem {
     /**
      * 是否显示
      */
+    @Builder.Default
     private Integer isShow = 1;
 }

@@ -1,11 +1,11 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>组团瓜分积分模块</h2>
+      <h2>{{$t('divideScorePoints.divisionIntegralModule')}}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>标题：</span>
+          <span>{{$t('divideScorePoints.title')}}</span>
           <div class="radioDiv">
             <div
               class="radio"
@@ -14,19 +14,19 @@
               <el-radio
                 v-model="data.pin_title"
                 :label="1"
-              >默认标题：</el-radio>XX积分等你拿,购物可抵现金！
+              >{{$t('divideScorePoints.defaultTitle')}}</el-radio>{{$t('divideScorePoints.defaultTitleTip')}}
             </div>
             <div class="radio special">
               <el-radio
                 v-model="data.pin_title"
                 :label="0"
-              >自定义</el-radio>
+              >{{$t('divideScorePoints.custom')}}</el-radio>
               <el-input
                 :disabled="data.pin_title===1?true:false"
                 v-model="data.pin_title_text"
                 :maxlength="14"
                 size="small"
-              ></el-input><i style="color: #999;font-size:12px">限制14字，为空不显示</i>
+              ></el-input><i style="color: #999;font-size:12px">{{$t('divideScorePoints.customTip')}}</i>
             </div>
           </div>
         </div>
@@ -34,26 +34,26 @@
           class="list"
           style="margin-top:20px"
         >
-          <span>隐藏内容：</span>
+          <span>{{$t('divideScorePoints.hiddenContent')}}</span>
           <div>
-            <el-checkbox v-model="hide_active">活动内容</el-checkbox>
-            <el-checkbox v-model="hide_time">有效期</el-checkbox>
+            <el-checkbox v-model="hide_active">{{$t('divideScorePoints.activityContent')}}</el-checkbox>
+            <el-checkbox v-model="hide_time">{{$t('divideScorePoints.termOfValidity')}}</el-checkbox>
           </div>
         </div>
         <div
           class="list"
           style="margin-top:20px"
         >
-          <span>活动底图：</span>
+          <span>{{$t('divideScorePoints.activityMap')}}</span>
           <div>
             <el-radio
               v-model="data.module_bg"
               :label="0"
-            >默认底图</el-radio>
+            >{{$t('divideScorePoints.defaultBaseMap')}}</el-radio>
             <el-radio
               v-model="data.module_bg"
               :label="1"
-            >自定义</el-radio>
+            >{{$t('divideScorePoints.custom')}}</el-radio>
           </div>
         </div>
         <!--活动底图选择自定义显示的隐藏模块-->
@@ -67,8 +67,8 @@
             class="add_bgs"
             @click="handleToAddActPic()"
           >
-            <div style="color: #5a8bff;margin: 27px 0 5px 0;"><img :src="$imageHost+'/image/admin/icon_jia.png'">添加一个背景图</div>
-            <div style="color: #999;font-size: 12px">建议宽度720像素以内，高度300像素以内</div>
+            <div style="color: #5a8bff;margin: 27px 0 5px 0;"><img :src="$imageHost+'/image/admin/icon_jia.png'">{{$t('divideScorePoints.backgroundImage')}}</div>
+            <div style="color: #999;font-size: 12px">{{$t('divideScorePoints.backgroundImageTip')}}</div>
             <img
               v-if="data.module_img"
               :src="data.module_img"
@@ -77,7 +77,7 @@
             <div
               class="change-img2"
               v-if="data.module_img"
-            >更换图片</div>
+            >{{$t('divideScorePoints.replacePictures')}}</div>
           </div>
           <div></div>
         </div>
@@ -85,7 +85,7 @@
           class="list"
           style="margin-top:20px"
         >
-          <span style="height:32px;line-height:32px">字体颜色：</span>
+          <span style="height:32px;line-height:32px">{{$t('divideScorePoints.fontColor')}}</span>
           <el-color-picker
             v-model="data.font_color"
             show-alpha
@@ -97,7 +97,7 @@
             style="margin-left:5px"
             size="small"
             @click="handleToReset()"
-          >重置</el-button>
+          >{{$t('divideScorePoints.reset')}}</el-button>
         </div>
         <div class="selectClass">
           <el-form
@@ -108,13 +108,13 @@
             class="demo-ruleForm"
           >
             <el-form-item
-              label="添加组团瓜分积分活动："
+              :label="$t('divideScorePoints.divisionPointsActivity')"
               prop="act_id"
             >
               <el-select
                 size="small"
                 v-model="ruleForm.act_id"
-                placeholder="请选择"
+                :placeholder="$t('divideScorePoints.pleaseChoose')"
                 @visible-change="handlevisibleChange"
               >
                 <el-option
@@ -153,7 +153,7 @@ export default {
     var validatePass = (rule, value, callback) => {
       console.log(value)
       if (value === -1 && !this.isFirstClick) {
-        callback(new Error('请选择组团瓜分积分活动'))
+        callback(new Error(this.pleaseSelectGroup))
       } else {
         callback()
       }
@@ -196,6 +196,11 @@ export default {
       tuneUp: false // 添加图片弹窗flag
     }
   },
+  computed: {
+    pleaseSelectGroup () {
+      return this.$t('divideScorePoints.pleaseSelectGroup')
+    }
+  },
   watch: {
     // 中间模块当前高亮index
     sortIndex: { // 模块公共
@@ -229,9 +234,14 @@ export default {
     },
     'ruleForm.act_id' (newVal) {
       this.modulesData.act_id = newVal
+    },
+    lang () {
+      this.options = this.$t('divideScorePoints.options')
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     this.isFirstClick = true
     console.log(this.$refs, this.isFirstClick)
     this.$http.$on('isMpinintegration', () => {
@@ -253,6 +263,7 @@ export default {
         this.$forceUpdate()
       }
     })
+    this.langDefault()
   },
   methods: {
     // 处理隐藏内容字段

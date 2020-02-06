@@ -187,6 +187,9 @@ public class StoreWxService extends ShopBaseService {
     @Autowired
     public ProvinceService provinceService;
 
+    @Autowired
+    public BaseScoreCfgService baseScoreCfgService;
+
     /**
      * The constant BYTE_TWO.
      */
@@ -383,7 +386,7 @@ public class StoreWxService extends ShopBaseService {
         }});
         catService.forEach(e -> e.setServiceList(storeService.getStoreServiceByCatId(storeId, e.getCatId())));
         storeInfoVo.setServiceCat(catService);
-        storeInfoVo.setAllService(storeService.getAllStoreServiceByStoreId(storeId));
+        storeInfoVo.setAllService(storeService.getWxAllStoreServiceByStoreId(storeId));
         // todo 扫码购
 //        List<String> storeScanIds = Arrays.asList(storeConfigService.getStoreScanIds().split(","));
         // todo 获取购物车商品数
@@ -422,6 +425,12 @@ public class StoreWxService extends ShopBaseService {
         payOrderVo.setDelFlag(storePojo.getDelFlag());
         // 门店买单开关配置
         payOrderVo.setStoreBuy(storeConfigService.getStoreBuy());
+        // 交易配置
+        payOrderVo.setDefaultPayConf(tradeService.getDefaultPayConf());
+        payOrderVo.setPayStatusList(tradeService.getPaymentEnabled());
+        // 积分使用规则
+        payOrderVo.setScoreDiscountRatio(baseScoreCfgService.getScoreDiscountRatio());
+        payOrderVo.setScorePayNum(baseScoreCfgService.getScorePayNum());
         return payOrderVo;
     }
 

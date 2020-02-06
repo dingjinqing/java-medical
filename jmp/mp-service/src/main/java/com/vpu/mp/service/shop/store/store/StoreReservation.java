@@ -543,7 +543,6 @@ public class StoreReservation extends ShopBaseService {
         }
         webPayVo.setOrderSn(orderSn);
         return webPayVo;
-        // TODO 定时任务倒计时十分钟结束后调接口，关闭该订单，更改状态为已取消
     }
 
     /**
@@ -803,7 +802,9 @@ public class StoreReservation extends ShopBaseService {
     private boolean cancelWXOrder(String orderSn,int shopId) {
         // 队列五分钟后调用微信关闭订单接口
 
-        OrderCloseQueenParam param = OrderCloseQueenParam.builder().shopId(shopId).orderSn(orderSn).build();
+        OrderCloseQueenParam param = new OrderCloseQueenParam();
+        param.setShopId(shopId);
+        param.setOrderSn(orderSn);
         Timestamp startTime = DateUtil.getDalyedDateTime(60*5);
 
         TaskJobInfo info = TaskJobInfo.builder(shopId)
@@ -848,7 +849,7 @@ public class StoreReservation extends ShopBaseService {
      */
     public void createComment(ServiceCommentVo param) {
         if (commentService.isComment(param.getOrderSn())) {
-            throw new BusinessException(JsonResultCode.CODE_DATA_ALREADY_EXIST);
+            throw new BusinessException(JsonResultCode.CODE_DATA_ALREADY_EXIST, "Comment ");
         }
         // 门店服务评论配置：0不用审核    1先发后审   2先审后发
         Byte commConfig = storeConfigService.getServiceComment();

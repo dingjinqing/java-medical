@@ -1,30 +1,27 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
-
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
-import com.vpu.mp.db.shop.tables.records.JoinGroupListRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoParam;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawReturn;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
 
 /**
  * 拼团抽奖
@@ -116,5 +113,10 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
 		groupDrawService.updateGroupInfoByOrderSn(order.getOrderSn(), (byte) 0);
 		log.info("processOrderEffective结束");
 	}
+
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+
+    }
 
 }

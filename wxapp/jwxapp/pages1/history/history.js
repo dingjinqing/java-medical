@@ -6,7 +6,8 @@ global.wxPage({
   data: {
     imageUrl: util.getImageUrl(""),
     dataList: null,
-    pageParams: null
+    pageParams: null,
+    searchText:''
   },
 
   /**
@@ -22,10 +23,19 @@ global.wxPage({
       });
     this.requestList();
   },
+  handleSearch(e){
+    this.setData({
+      searchText:e.detail.value,
+      'pageParams.currentPage': 1,
+      dataList:null
+    })
+    this.requestList()
+  },
   requestList() {
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
+    let keyword = this.data.searchText
     let api = parseInt(this.data.action) === 1 ? '/api/wxapp/order/goods/history' : 'api/wxapp/footprint/list'
     util.api(
       api,
@@ -41,7 +51,8 @@ global.wxPage({
       {
         currentPage: currentPage,
         pageRows: 20,
-        userId: util.getCache('user_id')
+        userId: util.getCache('user_id'),
+        keyword
       }
     );
   },

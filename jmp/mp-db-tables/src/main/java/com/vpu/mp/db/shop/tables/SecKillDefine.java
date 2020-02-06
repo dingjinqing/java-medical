@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
 
-    private static final long serialVersionUID = 24216065;
+    private static final long serialVersionUID = -1997236962;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_define</code>
@@ -143,6 +143,11 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     public final TableField<SecKillDefineRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB, this, "分享配置");
 
     /**
+     * The column <code>mini_shop_471752.b2c_sec_kill_define.base_sale</code>. 初始销量
+     */
+    public final TableField<SecKillDefineRecord, Integer> BASE_SALE = createField("base_sale", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "初始销量");
+
+    /**
      * Create a <code>mini_shop_471752.b2c_sec_kill_define</code> table reference
      */
     public SecKillDefine() {
@@ -188,7 +193,7 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SEC_KILL_DEFINE_PRIMARY);
+        return Arrays.<Index>asList(Indexes.SEC_KILL_DEFINE_GOODS_ID, Indexes.SEC_KILL_DEFINE_PRIMARY);
     }
 
     /**

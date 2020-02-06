@@ -293,7 +293,9 @@ public class PreSaleService extends ShopBaseService {
                 PresaleProductRecord r = db.newRecord(PRESALE_PRODUCT);
                 assign(product,r);
                 r.setPreDiscountMoney_1(product.getPreDiscountMoney1());
-                r.setPreDiscountMoney_2(product.getPreDiscountMoney2());
+                if(product.getPreDiscountMoney2() != null){
+                    r.setPreDiscountMoney_2(product.getPreDiscountMoney2());
+                }
                 return r;
             }).collect(Collectors.toList());
         db.batchInsert(productRecords).execute();
@@ -394,7 +396,7 @@ public class PreSaleService extends ShopBaseService {
         switch (deliverType) {
             case DELIVER_SPECIFIC:
                 Assert.notNull(param.getDeliverTime(), "Missing parameter deliverTime");
-                if (param.getDeliverTime().before(param.getEndTime())) {
+                if (param.getPresaleType() == PreSaleParam.PRESALE && param.getDeliverTime().before(param.getEndTime())) {
                     throw new IllegalArgumentException("DeliverTime earlier than endTime");
                 }
                 break;
@@ -631,6 +633,15 @@ public class PreSaleService extends ShopBaseService {
 		return into;
 
 	}
-	
+
+    /**
+     * 根据活动id获取预售活动record信息
+     * @param activityId 活动id
+     * @return record信息
+     */
+	public PresaleRecord getPresaleRecord(Integer activityId){
+        return db().selectFrom(PRESALE).where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PRESALE.ID.eq(activityId)))
+            .fetchAny();
+    }
 	
 }

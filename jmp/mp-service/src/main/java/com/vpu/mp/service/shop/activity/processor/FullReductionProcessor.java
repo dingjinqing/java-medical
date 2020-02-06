@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -156,6 +157,11 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         //无
+    }
+
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+
     }
 
     /**

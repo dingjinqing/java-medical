@@ -445,5 +445,10 @@ export const cn = {
   },
   chargeDetail: '充值明细',
   consumeDetail: '消费明细',
-  deleteCard: '废除'
+  deleteCard: '废除',
+  add: '添加',
+  normalCardFull: '普通会员卡',
+  limiteCardFull: '限次会员卡',
+  gradeCard: '等级会员卡',
+  addCardTips: '你可以在这里编辑该会员的会员卡信息，添加会员卡，注意：需要激活的会员卡直接发放到用户'
 }

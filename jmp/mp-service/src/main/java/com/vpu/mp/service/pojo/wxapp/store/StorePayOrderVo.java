@@ -1,10 +1,12 @@
 package com.vpu.mp.service.pojo.wxapp.store;
 
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Store pay order vo.
@@ -50,4 +52,20 @@ public class StorePayOrderVo {
      * The Del flag.门店删除标识
      */
     public Byte delFlag;
+    /**
+     * 支付方式开关
+     */
+    private List<PaymentConfigVo> payStatusList;
+    /**
+     * 默认支付配置
+     */
+    private Map<String, Byte> defaultPayConf;
+    /**
+     * 积分支付限制
+     */
+    private Integer scoreDiscountRatio;
+    /**
+     * 积分抵扣比例
+     */
+    private Integer scorePayNum;
 }
