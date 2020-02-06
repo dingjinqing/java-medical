@@ -95,6 +95,7 @@ module.exports = {
   postAReview: "发表评价",
   viewReviews: "查看评价",
   score: "评分",
+  evaluationTitle: "评价",
   evaluation: ["非常差", "差", "一般", "好", "非常好"],
   experience: "心得",
   sunOrder: "晒单",
