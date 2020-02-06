@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
@@ -22,10 +23,10 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
@@ -124,6 +125,11 @@ public class FootPrintService extends ShopBaseService {
         return footprintListVo;
 	}
 
+	/**
+	 * 按照日期分类
+	 * @param footprintList
+	 * @param footprintDaylist
+	 */
 	public void byDateGroup(List<FootprintDayVo> footprintList,List<FootprintDayVo> footprintDaylist){
 		// 安装日期分组
 		footprintList.forEach(footprint->{
@@ -141,5 +147,19 @@ public class FootPrintService extends ShopBaseService {
 			}
 			footprintDay.getGoodsList().addAll(footprint.getGoodsList());
 		});
+		//去重
+		footprintDaylist.forEach(footprintDay->{
+			if (footprintDay.getGoodsList()!=null&&footprintDay.getGoodsList().size()>1){
+				ArrayList<GoodsListMpVo> collect1 = footprintDay.getGoodsList().stream().filter(Objects::nonNull).collect(
+						Collectors.collectingAndThen(
+								Collectors.toCollection(() ->
+										new TreeSet<GoodsListMpVo>(Comparator.comparing(GoodsBaseMp::getGoodsName))
+								), ArrayList::new
+						)
+				);
+				footprintDay.setGoodsList(collect1);
+			}
+		});
 	}
+
 }
