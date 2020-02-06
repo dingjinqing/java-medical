@@ -41,7 +41,11 @@ global.wxPage({
 
     technicianTitle: '', // 职称
 
-    mobile: ''
+    mobile: '',
+    anonymous: {
+      name: '',
+      avatar: ''
+    }
   },
 
   /**
@@ -69,7 +73,15 @@ global.wxPage({
    * 评价
    */
   click_to_detail () { },
-  clickComment () { },
+  clickComment (e) {
+    console.log(e)
+    let url = e.currentTarget.dataset.src
+    wx.previewImage({
+      urls: [
+        imageUrl + url
+      ],
+    })
+  },
 
   bindGetPhoneNumberOk (e) {
     this.setData({
@@ -213,6 +225,7 @@ global.wxPage({
         console.log(res.content)
         let serviceInfo = res.content.serviceInfo
         let storeInfo = res.content.storeInfo
+        let commentInfo = res.content.commentInfo
         let reservationInfoList = res.content.reservationInfoList
         if (storeInfo.delFlag == 1 || serviceInfo.delFlag == 1) {
           util.showModal(that.$t('page1.reserve.prompt'), that.$t('page1.reserve.serviceDeleted'), function () {
@@ -248,10 +261,16 @@ global.wxPage({
             })
           })
         }
+        if (!!commentInfo) {
+          if (commentInfo.commImg) {
+            commentInfo.commImg = JSON.parse(commentInfo.commImg)
+          }
+        }
         that.setData({
           reservationInfoList: reservationInfoList,
           storeInfo: storeInfo,
           serviceInfo: serviceInfo,
+          commentInfo: commentInfo,
           technicianTitle: res.content.technicianTitle
         })
       } else {
