@@ -549,25 +549,31 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	}
 
     private void updateStockAndSales(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods) {
-        List<String> goodsType = Arrays.asList(order.getGoodsType().split(","));
+        List<Byte> goodsType = Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
         //非货到付款 非拼团抽奖
         if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
             //修改商品库存-销量
-            updateNormalStockAndSales(returnGoods,order,goodsType);
-
-
+            updateNormalStockAndSales(returnGoods,order);
         }
-        //修改活动库存
-        orderCreateMpProcessorFactory.processReturnOrder(null,null,null);
+        //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
+        goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
+        for (Byte type : goodsType) {
+            if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type)){
+                //赠品修改活动库存
+                orderCreateMpProcessorFactory.processReturnOrder(BaseConstant.ACTIVITY_TYPE_GIFT,null,returnGoods.stream().filter(x->OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.toList()));
+            }else {
+                //修改活动库存
+                orderCreateMpProcessorFactory.processReturnOrder(type, order.getActivityId(), returnGoods.stream().filter(x->OrderConstant.IS_GIFT_N.equals(x.getIsGift())).collect(Collectors.toList()));
+            }
+        }
     }
 
     /**
 	 * 	更新库存和销量
 	 * @param returnGoods
 	 * @param order
-	 * @param goodsType
 	 */
-	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods , OrderInfoVo order , List<String> goodsType) {
+	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods , OrderInfoVo order) {
 		//TODO 对接pos erp未完成
 		
 		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
@@ -608,7 +614,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 }
 			}
 			//订单类型为拼团 且存在拼团id
-			if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) && order.getActivityId() != null) {
+			/*if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) && order.getActivityId() != null) {
 				//TODO 拼团修改库存和销量
 			}
             //订单类型为秒杀 且存在秒杀id 且不是赠品行
@@ -618,7 +624,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             //订单类型为砍价 且存在砍价id
             if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_BARGAIN)) && order.getActivityId() != null) {
                 saas.getShopApp(getShopId()).bargain.updateBargainStock(order.getActivityId(),- rGoods.getGoodsNumber());
-            }
+            }*/
 		}
 		if(updateProducts.size() > 0) {
 			db().batchUpdate(updateProducts);
