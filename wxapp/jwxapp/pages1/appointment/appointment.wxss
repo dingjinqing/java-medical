@@ -656,7 +656,7 @@ contact-button{
   font-size: 0;
   padding: 15rpx 0;
 }
-.comment_list_top image{
+.comment_list_top .user_avatar{
   width: 50rpx;
   border-radius: 100%;
   margin-right: 20rpx;
