@@ -1,12 +1,11 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * 
@@ -34,16 +33,18 @@ public class ModuleMagicCube extends ModuleBase {
 	 */
     @JsonProperty(value = "data")
 	Map<String,BlockItem> data;
-	
-	@Data
+
+    @Getter
+    @Setter
 	public static class TableSize{
         @JsonProperty(value = "rows")
 		Integer rows;
         @JsonProperty(value = "cols")
 		Integer cols;
 	}
-	
-	@Data
+
+    @Getter
+    @Setter
 	public static class BlockItem{
 		
 		/**

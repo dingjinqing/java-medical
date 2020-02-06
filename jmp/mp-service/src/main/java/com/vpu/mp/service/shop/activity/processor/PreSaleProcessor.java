@@ -155,8 +155,12 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
-
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+        Map<Integer, Integer> updateParam = returnGoods.stream().collect(Collectors.toMap(OrderReturnGoodsVo::getProductId, OrderReturnGoodsVo::getGoodsNumber));
+        updateParam.forEach((k, v)->updateParam.put(k, -v));
+        if(updateParam.size() != 0){
+            preSaleProcessorDao.updateStockAndSales(updateParam, activityId);
+        }
     }
 
     /**
