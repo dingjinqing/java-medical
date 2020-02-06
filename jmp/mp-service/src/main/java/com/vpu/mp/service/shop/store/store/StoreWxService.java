@@ -386,7 +386,7 @@ public class StoreWxService extends ShopBaseService {
         }});
         catService.forEach(e -> e.setServiceList(storeService.getStoreServiceByCatId(storeId, e.getCatId())));
         storeInfoVo.setServiceCat(catService);
-        storeInfoVo.setAllService(storeService.getAllStoreServiceByStoreId(storeId));
+        storeInfoVo.setAllService(storeService.getWxAllStoreServiceByStoreId(storeId));
         // todo 扫码购
 //        List<String> storeScanIds = Arrays.asList(storeConfigService.getStoreScanIds().split(","));
         // todo 获取购物车商品数

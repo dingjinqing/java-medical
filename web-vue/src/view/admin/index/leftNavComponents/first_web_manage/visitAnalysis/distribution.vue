@@ -26,23 +26,23 @@
         @change="customDate"
         value-format="yyyyMMdd"
         range-separator="-"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        :start-placeholder="$t('visitAnalysis.startDate')"
+        :end-placeholder="$t('visitAnalysis.endDate')"
         class="custom"
       >
       </el-date-picker>
-      <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+      <span>{{this.startDate.year}}{{$t('visitAnalysis.years')}}{{this.startDate.month}}{{$t('visitAnalysis.months')}}{{this.startDate.day}}{{$t('visitAnalysis.days')}} - {{this.endDate.year}}{{$t('visitAnalysis.years')}}{{this.endDate.month}}{{$t('visitAnalysis.months')}}{{this.endDate.day}}{{$t('visitAnalysis.days')}}</span>
     </div>
     <!--图表数据-->
     <div class="image_chart">
       <div class="left"  id="leftCharts">
-        <div>访问来源</div>
+        <div>{{$t('visitAnalysis.visitSource')}}</div>
       </div>
       <div  class="mid" id="midCharts">
-        <div>访问时长</div>
+        <div>{{$t('visitAnalysis.visitTime')}}</div>
       </div>
       <div class="right" id="rightCharts">
-        <div>访问深度</div>
+        <div>{{$t('visitAnalysis.visitDepth')}}</div>
       </div>
     </div>
   </div>
@@ -61,9 +61,9 @@ export default {
       timeValue: [],
       timeSelect: 7,
       timeRange: [
-        { value: 7, label: '最近7天' },
-        { value: 30, label: '最近30天' },
-        { value: 0, label: '自定义' }
+        { value: 7, label: this.$t('visitAnalysis.lastSeven') },
+        { value: 30, label: this.$t('visitAnalysis.lastThirty') },
+        { value: 0, label: this.$t('visitAnalysis.custom') }
       ],
       param: {
         type: '7',
@@ -108,7 +108,7 @@ export default {
     },
     // 自定义时间
     customDate () {
-      console.log('选择器的时间：', this.timeValue)
+      console.log('datePicker：', this.timeValue)
       this.param.startDate = this.timeValue[0]
       this.param.endDate = this.timeValue[1]
       this.loadData()
@@ -116,7 +116,7 @@ export default {
     // 页面初始化数据
     loadData () {
       distributionAnalysis(this.param).then(res => {
-        console.log('访问分析', res)
+        console.log('distribution data:', res)
         if (res.error === 0) {
           this.handleData(res.content)
         }
@@ -144,7 +144,7 @@ export default {
       // 饼状图数据部分
       this.leftEchartsData = {
         title: {
-          text: '访问来源',
+          text: this.$t('visitAnalysis.visitSource'),
           left: 'center',
           textStyle: {
             color: '#a4a4a4',
@@ -160,7 +160,7 @@ export default {
         color: ['#7EC0EE', '#FF9F7F', '#FFD700', '#C9C9C9', '#E066FF', '#C0FF3E'],
         series: [
           {
-            name: '访问来源',
+            name: this.$t('visitAnalysis.visitSource'),
             type: 'pie',
             radius: ['50%', '70%'],
             avoidLabelOverlap: false,
@@ -189,7 +189,7 @@ export default {
       this.leftChart.setOption(this.leftEchartsData)
       this.midEchartsData = {
         title: {
-          text: '访问时长',
+          text: this.$t('visitAnalysis.visitTime'),
           left: 'center',
           textStyle: {
             color: '#a4a4a4',
@@ -221,7 +221,7 @@ export default {
         },
         series: [
           {
-            name: '打开次数',
+            name: this.$t('visitAnalysis.sessionCount'),
             type: 'bar',
             data: content.visitStayTime.xaxis
           }
@@ -230,7 +230,7 @@ export default {
       this.midChart.setOption(this.midEchartsData)
       this.rightEchartsData = {
         title: {
-          text: '访问深度',
+          text: this.$t('visitAnalysis.visitDepth'),
           left: 'center',
           textStyle: {
             color: '#a4a4a4',
