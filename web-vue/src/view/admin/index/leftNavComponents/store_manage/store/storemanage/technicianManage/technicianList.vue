@@ -65,7 +65,7 @@
             prop="seviceGroup"
           >
             <template slot-scope="{row}">
-              {{row.seviceGroup.groupName}}
+              {{row.seviceGroup&&row.seviceGroup.groupName?row.seviceGroup.groupName:''}}
             </template>
           </el-table-column>
           <el-table-column
