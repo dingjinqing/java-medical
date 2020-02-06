@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -548,10 +549,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         logger.info("退款完成变更相关信息end");
 	}
 
-    private void updateStockAndSales(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods) {
-        List<Byte> goodsType = Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
+    private void updateStockAndSales(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+        List<Byte> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
         //非货到付款 非拼团抽奖
-        if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
+        if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) {
             //修改商品库存-销量
             updateNormalStockAndSales(returnGoods,order);
         }

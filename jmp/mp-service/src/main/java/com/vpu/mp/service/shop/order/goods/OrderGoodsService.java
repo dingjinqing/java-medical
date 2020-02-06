@@ -149,8 +149,8 @@ public class OrderGoodsService extends ShopBaseService{
 		//退款商品recIds
 		List<Integer> recIds = returnGoods.stream().map(ReturnOrderGoodsRecord::getRecId).collect(Collectors.toList());
 		//退款退货商品对应的orderGoods商品
-		Result<OrderGoodsRecord> orderGoods = db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REC_ID.in(recIds))).fetch();
-		//退款商品map(key->recId)
+        Result<OrderGoodsRecord> orderGoods = getOrderGoods(orderSn, recIds);
+        //退款商品map(key->recId)
 		Map<Integer, ReturnOrderGoodsRecord> returnGoodsMap = returnGoods.stream().collect(Collectors.toMap(ReturnOrderGoodsRecord::getRecId,Function.identity()));
 		for (OrderGoodsRecord goods : orderGoods) {
 			switch (returnOrderRecord.getRefundStatus()) {
@@ -171,7 +171,11 @@ public class OrderGoodsService extends ShopBaseService{
 		db().batchUpdate(orderGoods).execute();
 	}
 
-	/**
+    public Result<OrderGoodsRecord> getOrderGoods(String orderSn, List<Integer> recIds) {
+        return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REC_ID.in(recIds))).fetch();
+    }
+
+    /**
 	 * 	判断当前订单是否可以退商品（有无可退商品数量）
 	 * 	(有状态依赖于ordergoods表的商品数量与已经退货退款数量)
 	 * @param orderSn
@@ -374,7 +378,7 @@ public class OrderGoodsService extends ShopBaseService{
      */
     public List<String> getGiftOrderSns(Integer giftId, boolean isIncludeReturn){
         Condition condition = TABLE.IS_GIFT.eq(OrderConstant.IS_GIFT_Y).and(TABLE.GIFT_ID.eq(giftId));
-        if(isIncludeReturn == false){
+        if(!isIncludeReturn){
             condition.and(TABLE.RETURN_NUMBER.eq(0));
         }
         return db().selectDistinct(TABLE.ORDER_SN).from(TABLE).where(condition).fetchInto(String.class);
