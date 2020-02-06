@@ -189,6 +189,7 @@ public class ServiceCommentService extends ShopBaseService {
             .and(COMMENT_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
             .and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE))
             .orderBy(COMMENT_SERVICE.CREATE_TIME.desc())
+            .limit(INTEGER_ONE)
             .fetchOneInto(ServiceCommentVo.class);
     }
 
