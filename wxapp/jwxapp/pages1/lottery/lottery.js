@@ -50,6 +50,10 @@ global.wxPage({
     that.setData({
       lotteryId: lotteryId
     })
+    // 可以获取到进入小程序的场景值，例如从分享卡片进来的
+    let res = wx.getEnterOptionsSync()
+    console.log(options)
+    console.log(res)
     util.api('/api/wxapp/lottery/get', function(res) {
       console.log(res)
       if (res.error === 0) {
@@ -175,8 +179,8 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-
+  onShow: function (res) {
+    console.log(res)
   },
 
   /**
@@ -212,5 +216,14 @@ global.wxPage({
    */
   onShareAppMessage: function () {
 
+  },
+
+  /**
+   * 监听用户某些操作触发的事件，用于统计用途，目前仅支持转发事件
+   */
+  onUserOpStatistic: function (e) {
+    if (e.op == 'share') {
+      console.log(e)
+    }
   }
 })
