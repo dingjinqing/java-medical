@@ -124,7 +124,6 @@ global.wxPage({
 
   // 输入心得
   comm_note: function (e) {
-    console.log(e.detail.value)
     this.setData({
       'serviceInfo.commNote': e.detail.value
     })

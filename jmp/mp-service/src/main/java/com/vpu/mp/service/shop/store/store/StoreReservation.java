@@ -849,7 +849,7 @@ public class StoreReservation extends ShopBaseService {
      */
     public void createComment(ServiceCommentVo param) {
         if (commentService.isComment(param.getOrderSn())) {
-            throw new BusinessException(JsonResultCode.CODE_DATA_ALREADY_EXIST);
+            throw new BusinessException(JsonResultCode.CODE_DATA_ALREADY_EXIST, "Comment ");
         }
         // 门店服务评论配置：0不用审核    1先发后审   2先审后发
         Byte commConfig = storeConfigService.getServiceComment();

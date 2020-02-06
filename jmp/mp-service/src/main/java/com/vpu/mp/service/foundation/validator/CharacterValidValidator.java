@@ -138,6 +138,31 @@ public class CharacterValidValidator implements ConstraintValidator<CharacterVal
                 return false;
             }
         }
+        for (char c : charArray) {
+            int cnorEn = isCnorEn(c);
+            if (cnorEn==0){
+                //只能输入中文
+                message="{com.vpu.validation.constraints.CharacterValid.Chinese}";
+                context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+                return false;
+            }
+            num+=cnorEn;
+        }
+        if (min>=0&&num<min){
+            //至少输入几个字符
+            chineseNum =min/2;
+            message="{com.vpu.validation.constraints.CharacterValid.min}";
+            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+            return false;
+        }
+        if (max>=0&&num>max){
+            //至多输入几个字符
+            chineseNum =max/2;
+            message="{com.vpu.validation.constraints.CharacterValid.max}";
+            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+            return false;
+        }
+
         return true;
     }
 

@@ -3,7 +3,12 @@
       <rich-text nodes="{{dis_desc}}"></rich-text>
     </view>
     <!-- 审核状态 -->
-    <view class='bten_shenqing' style='background:{{comColor}}' wx:if='{{status == 1}}' bindtap='to_distribution'>进入分销中心</view>
+
+    <form report-submit='true' bindsubmit='apply_get'>
+     <button class='bten_shenqing' style='background:{{comColor}}' formType='submit'>分销中心 - 申请成为分销员</button>
+    </form>
+
+    <!-- <view class='bten_shenqing' style='background:{{comColor}}' wx:if='{{status == 1}}' bindtap='to_distribution'>进入分销中心</view>
     <view class='shenhe_tips' style='background:{{commonColor}};color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};' wx:if='{{status == 2}}'>审核未通过，请重新申请</view>
     <form report-submit='true' bindsubmit='apply_get'>
      <button class='bten_shenqing' style='background:{{comColor}}' wx:if='{{status == 2}}'  formType='submit'>申请成为分销员</button>
@@ -11,7 +16,7 @@
     <view class='btn_wait bten_shenqing' wx:if='{{status == 0}}'>等待审核</view>
     <form report-submit='true' bindsubmit='apply_get'>
       <button class='bten_shenqing' wx:if='{{status == null}}' style='background:{{comColor}}' bindtap='apply_get' formType='submit'>申请成为分销员</button>
-    </form>
+    </form> -->
 
     <!-- 绑定手机号弹窗 -->
     <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以申请成为分销员" />

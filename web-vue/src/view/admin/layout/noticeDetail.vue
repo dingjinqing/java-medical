@@ -43,7 +43,7 @@ export default {
   },
   data () {
     return {
-      image: 'http://mpdevimg2.weipubao.cn',
+      image: `${this.$imageHost}`,
       id: this.$route.query.id,
       detailData: {}
     }

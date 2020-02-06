@@ -653,8 +653,8 @@ export default {
   watch: {
     lang () {
       this.checkedList = this.$t('distribution.checkedList')
-      this.checkedList1 = this.checkedList.slice(0, 10)
-      this.checkedList2 = this.checkedList.slice(11)
+      this.checkedList1 = this.checkedList.slice(0, 12)
+      this.checkedList2 = this.checkedList.slice(12)
     }
   },
   mounted () {

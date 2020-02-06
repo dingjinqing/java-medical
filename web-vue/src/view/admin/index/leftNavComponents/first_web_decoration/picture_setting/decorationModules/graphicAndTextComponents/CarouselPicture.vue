@@ -30,7 +30,7 @@
       </div>
       <!--模块编辑区结束-->
       <div class="item_module_title">
-        <span>轮播图</span>
+        <span>{{$t('carouselPicture.rotationChart')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -58,7 +58,7 @@
       class="setHere activeSetHere"
       :class="activeSetHere?'middleModulesActive':''"
     >
-      放这里
+      {{$t('carouselPicture.putItHere')}}
     </div>
   </div>
 </template>
@@ -81,6 +81,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     this.defaultData()
   },
   watch: {

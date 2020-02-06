@@ -96,10 +96,10 @@
         </block>
       </view>
       <!-- 评价 -->
-      <block wx:if="{{commentInfo && commentInfo.length > 0}}">
+      <block wx:if="{{!!commentInfo}}">
         <view class="goods-comment" bindtap="click_to_detail">
           <view class="clearfix goods_comment_title">
-            <view class="goods_act_title">{{i18n.$t(localePack,"page1.reserve.evaluation")}}</view>
+            <view class="goods_act_title">{{i18n.$t(localePack,"page1.reserve.evaluationTitle")}}</view>
             <view class="goods_comment_all">
               <text>{{i18n.$t(localePack,"page1.reserve.viewAll")}}</text>
               <image class="click_more" src='{{ img_arrow }}' mode="widthFix"></image>
@@ -109,9 +109,14 @@
             <view class="comment_list_top clearfix">
               <view class="clearfix">
                 <view class="fl">
-                  <image class="user_avatar" src='{{ commentInfo.user_avatar }}' mode="widthFix" />
-                  <text wx:if="{{commentInfo.anonymousflag == 0}}">{{ commentInfo.username}}</text>
-                  <text wx:if="{{commentInfo.anonymousflag == 1}}">{{ commentInfo.name }}</text>
+                  <block wx:if="commentInfo.anonymousflag == 1">
+                    <image class="user_avatar" src='{{ commentInfo.userAvatar }}' mode="widthFix" />
+                    <text>匿名用户</text>
+                  </block>
+                  <block wx:else>
+                    <image class="user_avatar" src='{{ commentInfo.userAvatar }}' mode="widthFix" />
+                    <text>{{ commentInfo.username}}</text>
+                  </block>
                 </view>
                 <view class="fr">
                   <text class='iconfont iconshoucang' wx:if="{{commentInfo.commstar >= 1}}" style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;'></text>
@@ -126,7 +131,7 @@
               <view class="comment_list_img clearfix">
                 <block wx:for="{{commentInfo.commImg}}" wx:key="key" wx:for-item="item_img">
                   <view>
-                    <image src="{{item_img}}" catchtap="clickComment" data-src="{{item_img}}"></image>
+                    <image src="{{imageUrl + item_img}}" catchtap="clickComment" data-src="{{item_img}}"></image>
                   </view>
                 </block>
               </view>

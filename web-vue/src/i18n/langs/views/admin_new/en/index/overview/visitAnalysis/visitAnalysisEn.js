@@ -37,5 +37,17 @@ export const en = {
   time: 'time',
   dayLater: 'day later',
   newRetention: 'new retention',
-  activeRetention: 'active retention'
+  activeRetention: 'active retention',
+
+  // 页面访问
+  pagePath: 'Page path',
+  pageName: 'Page name',
+  pageVisitPv: 'Page visits',
+  pageVisitUv: 'Page visitors',
+  pageStayTimePv: 'Page stay time',
+  entryPagePv: 'Entry page times',
+  exitPagePv: 'Exit page times',
+  exitRate: 'Exit rate',
+  pageSharePv: 'Page sharing times',
+  pageShareUv: 'Number of page sharers'
 }
