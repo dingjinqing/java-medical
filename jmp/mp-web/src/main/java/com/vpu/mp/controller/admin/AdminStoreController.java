@@ -472,6 +472,7 @@ public class AdminStoreController extends AdminBaseController{
     	param.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
     	countingData.setFinished(shop().store.serviceOrder.getCountData(param));
     	vo.setCountingData(countingData);
+        vo.setTechnicianTitle(shop().config.storeConfigService.getTechnicianTitle());
     	return success(vo);
     }
 
