@@ -93,8 +93,9 @@ public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor{
         Map<Integer, OrderGoodsRecord> orderGoodsRecord = orderGoods.getOrderGoods(returnGoods.get(0).getOrderSn(), recIds).intoMap(OrderGoodsRecord::getRecId);
         returnGoods.stream().collect(Collectors.groupingBy(x->orderGoodsRecord.get(x.getRecId()).getGiftId()))
             .forEach((k, v) ->{
-                v.forEach(x->x.setGoodsNumber(- x.getGoodsNumber()));
                 updateparam.put(k, v.stream().collect(Collectors.toMap(OrderReturnGoodsVo::getProductId, OrderReturnGoodsVo::getGoodsNumber)));
+                //退款时将数量置为负数
+                updateparam.get(k).forEach((k1, v1)-> updateparam.get(k).put(k1, -v1));
                 }
             );
         if(updateparam.size() != 0){
