@@ -23,8 +23,14 @@ export const cn = {
   uvNew: '新用户数',
   stayTimeUv: '人均停留时长',
   stayTimePv: '次均停留时长',
-  visitDepth: '平均访问深度',
+  visitDepthAve: '平均访问深度',
   lastSeven: '最近7天',
   lastThirty: '最近30天',
-  custom: '自定义'
+  custom: '自定义',
+
+  // 访问分布饼状图
+  visitSource: '访问来源',
+  visitTime: '访问时长',
+  visitDepth: '访问深度'
+
 }

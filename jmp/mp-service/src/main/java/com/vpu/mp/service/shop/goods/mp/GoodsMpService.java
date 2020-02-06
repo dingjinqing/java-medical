@@ -23,6 +23,7 @@ import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
@@ -68,7 +69,8 @@ public class GoodsMpService extends ShopBaseService {
 
     @Autowired
     ProcessorFactoryBuilder processorFactoryBuilder;
-
+    @Autowired
+    FootPrintService footPrintService;
     @Autowired
     EsGoodsSearchMpService esGoodsSearchMpService;
     @Autowired
@@ -392,6 +394,8 @@ public class GoodsMpService extends ShopBaseService {
                 return goodsDetailMpBo;
             }
         }
+        //添加足迹
+        footPrintService.addFootprint(param.getUserId(),param.getGoodsId());
 
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
         GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
