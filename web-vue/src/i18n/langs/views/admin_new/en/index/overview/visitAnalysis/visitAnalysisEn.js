@@ -31,5 +31,11 @@ export const en = {
   // 访问分布饼状图
   visitSource: 'visit source',
   visitTime: 'visit time',
-  visitDepth: 'visit depth'
+  visitDepth: 'visit depth',
+
+  // 留存表格
+  time: 'time',
+  dayLater: 'day later',
+  newRetention: 'new retention',
+  activeRetention: 'active retention'
 }

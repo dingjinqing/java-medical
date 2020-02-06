@@ -127,39 +127,44 @@ public class PictorialService extends ShopBaseService {
      */
     BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx, boolean needSelfCustomerRect) {
         //设置背景图
-        BufferedImage bgBufferedImage = new BufferedImage(imgPx.getBgWidth(), imgPx.getBgHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage bgBufferedImage = new BufferedImage(imgPx.getBgWidth(), imgPx.getBgHeight(), BufferedImage.TYPE_USHORT_555_RGB);
         ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), null, Color.WHITE);
         // 设置用户头像
         BufferedImage userAvatarImage = ImageUtil.makeRound(userInfo.getUserAvatarImage(), imgPx.getUserHeaderDiameter());
         ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getBgPadding(), imgPx.getBgPadding());
         // 设置用户名
-        ImageUtil.addFont(bgBufferedImage, userInfo.getUserName(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getUserNameX(), imgPx.getUserNameY(), imgPx.getDefaultFontColor());
+        ImageUtil.addFont(bgBufferedImage, userInfo.getUserName(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getUserNameX(), imgPx.getUserNameY(), imgPx.getDefaultFontColor(),false);
         // 设置宣传语
-        ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), imgPx.getDefaultFontColor());
+        ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), imgPx.getDefaultFontColor(),false);
 
         // 设置商品图片
         goodsImg = ImageUtil.resizeImage(imgPx.getGoodsWidth(), imgPx.getGoodsHeight(), goodsImg);
         ImageUtil.addTwoImage(bgBufferedImage, goodsImg, imgPx.getGoodsStartX(), imgPx.getGoodsStartY());
 
-        // 设置商品名称
-        ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), imgPx.getBottomStartY() + imgPx.getMediumFontSize() * 2, imgPx.getGoodsNameColor());
         // 设置二维码
-        qrCodeImg = ImageUtil.resizeImage(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeImg);
+        qrCodeImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeImg);
         ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getBottomStartY());
 
+        // 设置商品名称
+        ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), imgPx.getGoodsNameStartY(), imgPx.getGoodsNameColor(),false);
+        int goodsNameHeight = ImageUtil.getTextAscent(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()));
+        imgPx.setPriceY(imgPx.getGoodsNameStartY()+goodsNameHeight+30);
         // 设置原价
-        String realPriceStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")
-            + realPrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        ImageUtil.addFont(bgBufferedImage, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getBgPadding(), imgPx.getPriceY(), imgPx.getRealPriceColor());
+        if (realPrice != null) {
+            String realPriceStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")
+                + realPrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+            ImageUtil.addFont(bgBufferedImage, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getBgPadding(), imgPx.getPriceY(), imgPx.getRealPriceColor(),false);
 
-        // 设置划线价
-        Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStr) + imgPx.getBgPadding() + 10;
-        String linePriceStr = linePrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        ImageUtil.addFont(bgBufferedImage, linePriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), lineStartX, imgPx.getPriceY(), imgPx.getLinePriceColor());
+            Integer realPriceHeight = imgPx.getLargeFontAscent(bgBufferedImage);
+            // 设置划线价
+            if (linePrice != null) {
+                Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStr) + imgPx.getBgPadding() + 10;
+                String linePriceStr = linePrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+                ImageUtil.addFontWithLine(bgBufferedImage,lineStartX, imgPx.getPriceY()+realPriceHeight/4,linePriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getLinePriceColor());
+            }
+        }
 
-        Integer lineEndX = lineStartX + ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), linePriceStr);
-        Integer lineY = imgPx.getPriceY() - imgPx.getSmallFontSize() / 3;
-        ImageUtil.addLine(bgBufferedImage, lineStartX, lineY, lineEndX, lineY, imgPx.getLinePriceColor());
+
 
         // 设置商品图片上方显示自定义内容区域
         if (needSelfCustomerRect) {

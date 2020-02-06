@@ -31,6 +31,12 @@ export const cn = {
   // 访问分布饼状图
   visitSource: '访问来源',
   visitTime: '访问时长',
-  visitDepth: '访问深度'
+  visitDepth: '访问深度',
+
+  // 留存表格
+  time: '时间',
+  dayLater: '天后',
+  newRetention: '新增留存',
+  activeRetention: '活跃留存'
 
 }

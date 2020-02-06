@@ -1,13 +1,11 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -46,8 +44,9 @@ public class ModuleImageAdver extends ModuleBase {
 	 */
 	@JsonProperty(value = "image_list")
 	List<ImageAdItem> imageList = new ArrayList<>();
-	
-	@Data
+
+    @Getter
+    @Setter
 	public static class ImageAdItem{
 		
 		/**
