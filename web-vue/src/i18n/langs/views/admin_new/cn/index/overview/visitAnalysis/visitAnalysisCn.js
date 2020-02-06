@@ -37,6 +37,18 @@ export const cn = {
   time: '时间',
   dayLater: '天后',
   newRetention: '新增留存',
-  activeRetention: '活跃留存'
+  activeRetention: '活跃留存',
+
+  // 页面访问
+  pagePath: '页面路径',
+  pageName: '页面名称',
+  pageVisitPv: '页面访问次数',
+  pageVisitUv: '页面访问人数',
+  pageStayTimePv: '次均时长',
+  entryPagePv: '入口页次数',
+  exitPagePv: '退出页次数',
+  exitRate: '退出率',
+  pageSharePv: '分享次数',
+  pageShareUv: '分享人数'
 
 }
