@@ -85,7 +85,7 @@ export function updateTechnicianGroup (data) {
 // 删除技师分组
 export function deleteTechnicianGroup (data) {
   return service({
-    url: '/api/admin/store/services/technician/delete/' + data.id,
+    url: '/api/admin/store/services/technician/group/delete/' + data.id,
     method: 'post'
   })
 }
