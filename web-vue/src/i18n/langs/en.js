@@ -173,6 +173,14 @@ import {
 import {
   en as integralExchange
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/integralExchangeEn'
+// 瓜分积分
+import {
+  en as divideScorePoints
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/divideScorePointsEn'
+// 图片热区
+import {
+  en as pictureHotSpot
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureHotSpotEn'
 import {
   en as fightGroup
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/fightGroupEn'
@@ -1067,6 +1075,8 @@ const en = {
   indexMobile, //  官网首页移动端国际化
   reservationManage, // 预约管理
   commodityGrouping, // 小程序商品分组
-  integralExchange // 积分兑换
+  integralExchange, // 积分兑换
+  divideScorePoints, // 瓜分积分
+  pictureHotSpot // 图片热区
 }
 export default en

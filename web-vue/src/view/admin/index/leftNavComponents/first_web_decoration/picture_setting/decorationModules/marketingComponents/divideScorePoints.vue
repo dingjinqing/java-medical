@@ -16,7 +16,7 @@
           <div class="floatModule">
             <div
               class="title"
-              :style="data.font_color?`color:${data.font_color}`:''"
+              :style="(data.font_color?`color:${data.font_color};`:'')+(columnFlag?'width:100%':'width:128px')"
             >{{data.pin_title===0?data.pin_title_text:zbTitle}}</div>
             <div
               class="content"
@@ -39,7 +39,7 @@
         class="item_module_title"
         :style="hoverTips?'width:140px':''"
       >
-        <span>瓜分积分</span>
+        <span>{{$t('divideScorePoints.divideAndScorePoints')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -88,6 +88,7 @@ export default {
       zbTitle: 'xx积分等你拿,购物可抵现金！', // title占位
       content: 'x人瓜分xxx积分', // 内容
       date: 'xx至xx', // 时间
+      columnFlag: false,
       // 模块私有
       data: {
         'module_name': 'm_pin_integration',
@@ -103,6 +104,11 @@ export default {
     }
   },
   watch: {
+    lang () {
+      this.zbTitle = this.$t('divideScorePoints.zbTitle')
+      this.content = this.$t('divideScorePoints.content')
+      this.date = this.$t('divideScorePoints.date')
+    },
     nowRightShowIndex (newData) { // 模块公共
       if (this.flag === newData) {
         this.activeBorder = true
@@ -138,8 +144,8 @@ export default {
               console.log(res)
               if (res.error === 0) {
                 let content = res.content
-                this.content = `${content.limitAmount}瓜分${content.inteTotal}`
-                this.date = `${content.startTime}至${content.endTime}`
+                this.content = `${content.limitAmount}${this.carveUp}${content.inteTotal}`
+                this.date = `${content.startTime}${this.to}${content.endTime}`
               }
             })
             this.data = newData
@@ -149,6 +155,14 @@ export default {
       },
       immediate: true,
       deep: true
+    }
+  },
+  computed: {
+    carveUp () {
+      return this.$t('divideScorePoints.carveUp')
+    },
+    to () {
+      return this.$t('divideScorePoints.to')
     }
   },
   mounted () {

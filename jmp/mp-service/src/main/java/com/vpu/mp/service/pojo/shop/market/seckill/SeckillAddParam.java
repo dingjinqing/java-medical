@@ -57,6 +57,9 @@ public class SeckillAddParam {
     @Max(1)
     private Byte freeFreight;
 
+    /**活动初始销量*/
+    private Integer baseSale;
+
     /** 专属会员卡，卡ID字符串，逗号分隔；为空时代表该活动所有人都可以参与*/
     private String cardId;
 

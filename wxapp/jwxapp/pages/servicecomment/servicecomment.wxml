@@ -72,7 +72,8 @@
                 <text wx:else>{{serviceInfo.commNote}}</text>
                 <view style="clear:both"></view>
               </view>
-              <view class="shaidan">
+              <!-- 服务已评价，且没有图片时隐藏 -->
+              <view class="shaidan" hidden="{{serviceInfo.flag == 1 && serviceInfo.commImg == ''}}">
                 <view class="shai_left">
                   <text style='color:#fff;'>*</text>
                   {{i18n.$t(localePack,'page1.reserve.sunOrder')}}:
