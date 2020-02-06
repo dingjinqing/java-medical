@@ -34,11 +34,7 @@ public class AdminCommentServiceController extends AdminBaseController {
 	@PostMapping("/comment/list")
 	JsonResult getPageList(@RequestBody @Valid ServiceCommentPageListParam param){
 		PageResult<ServiceCommentVo> result = shop().store.serviceComment.getPageList(param);
-        Map<String, Object> results = new HashMap<String, Object>(2) {{
-            put("pageList", result);
-            put("technicianTitle", shop().config.storeConfigService.getTechnicianTitle());
-        }};
-        return success(results);
+        return success(result);
 	}
 	
 	@PostMapping("/comment/delete")
