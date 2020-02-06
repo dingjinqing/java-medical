@@ -1,18 +1,19 @@
 package com.vpu.mp.controller.admin;
 
-import javax.validation.Valid;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.comment.CommentIdParam;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author 黄荣刚
@@ -33,7 +34,7 @@ public class AdminCommentServiceController extends AdminBaseController {
 	@PostMapping("/comment/list")
 	JsonResult getPageList(@RequestBody @Valid ServiceCommentPageListParam param){
 		PageResult<ServiceCommentVo> result = shop().store.serviceComment.getPageList(param);
-		return success(result);
+        return success(result);
 	}
 	
 	@PostMapping("/comment/delete")

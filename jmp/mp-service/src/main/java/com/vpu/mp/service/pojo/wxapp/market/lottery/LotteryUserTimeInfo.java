@@ -41,6 +41,10 @@ public class LotteryUserTimeInfo {
      */
     private Integer scoreTime=0;
     /**
+     * 积分
+     */
+    private Integer score=0;
+    /**
      * 已使用积分
      */
     private Integer usedScoreTime=0;

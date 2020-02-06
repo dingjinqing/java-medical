@@ -34,11 +34,11 @@
           </el-date-picker>
         </label>
         <label style="font-size: 14px;">
-          {{$t('reservationManage.technician')}}
+          {{this.technicianConfigName}}
           <el-input
             size="small"
             class="filter_input"
-            :placeholder="$t('reservationManage.technician')"
+            :placeholder="technicianConfigName"
             v-model="queryParams.technicianName"
           ></el-input>
         </label>
@@ -128,7 +128,7 @@
               prop="serviceDate"
             ></el-table-column>
             <el-table-column
-              :label="$t('reservationManage.technician')"
+              :label="technicianConfigName"
               prop="technicianName"
             ></el-table-column>
             <el-table-column
@@ -453,14 +453,14 @@
             class="row_style"
           >
             <el-col :span="5">
-              <span class="span_asterisk"></span> {{$t('reservationManage.technician')}}：
+              <span class="span_asterisk"></span> {{this.technicianConfigName}}：
             </el-col>
             <el-col :span="10">
               <template>
                 <el-select
                   v-model="reservation.technicianId"
                   clearable
-                  :placeholder="$t('reservationManage.technician')"
+                  :placeholder="technicianConfigName"
                 >
                   <el-option
                     v-for="item in reservationTech"
@@ -517,7 +517,8 @@
 
 <script>
 import { getList, availableCard, getChargeAccount, addMessage, add, charge, cancel, techList } from '@/api/admin/storeManage/storemanage/reservationManage'
-import { getAllService } from '@/api/admin/storeManage/storemanage/serviceManage'
+import { getAllService, getServiceConfig } from '@/api/admin/storeManage/storemanage/serviceManage'
+
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: {
@@ -551,6 +552,7 @@ export default {
         }]
       },
       dateTime: '',
+      technicianConfigName: '',
       // 门店服务下拉
       reservationService: [{
         serviceId: 3,
@@ -623,8 +625,8 @@ export default {
         userId: 0,
         subscriber: '',
         mobile: '',
-        serviceId: 0,
-        technicianId: 0,
+        serviceId: '',
+        technicianId: '',
         technicianName: '',
         serviceDate: '',
         servicePeriod: '',
@@ -666,6 +668,18 @@ export default {
     // this.getTechList()
   },
   methods: {
+    // 获取职称配置名称
+    getTechConfigName () {
+      getServiceConfig().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.technicianConfigName = res.content.technician_title
+          console.log('职称配置名称为：' + this.technicianConfigName)
+        } else {
+          this.$message.error(this.$t('storeCommon.operatefailed'))
+        }
+      })
+    },
     // 服务下拉
     getStoreService () {
       let obj = {
@@ -747,6 +761,7 @@ export default {
         name: 'store_storemanage_reservation_detail',
         params: {
           orderSn: orderSn,
+          technicianConfigName: this.technicianConfigName,
           flag: true
         }
       })
@@ -928,6 +943,7 @@ export default {
           })
         }
       })
+      this.getTechConfigName()
     },
     // 吊起选择会员组件
     hanldeModifyPerson () {

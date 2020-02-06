@@ -21,9 +21,9 @@ public class JoinLottery {
      */
     private Boolean flag=false;
     /**
-     * 抽奖类型
+     * 免费抽奖分享抽奖,积分抽奖
      */
-    private Byte lotteryType;
+    private Byte chanceSource;
     /**
      * 抽奖结果
      */

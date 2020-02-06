@@ -23,7 +23,7 @@ public class LotteryConstant {
     public final static Byte LOTTERY_TIME_SCORE=3;
 
 
-
+    //***********奖品类型*****************
     /**
      * 未中奖
      */
@@ -56,5 +56,11 @@ public class LotteryConstant {
      * 自定义
      */
     public final static byte LOTTERY_TYPE_CUSTOM  =5;
+
+
+    //*************奖品领取状态************:0.待领取，1：已领取，2.已过期',
+    public final static byte LOTTERY_PRIZE_STATUS_UNCLAIMED  =0;
+    public final static byte LOTTERY_PRIZE_STATUS_RECEIVED  =1;
+    public final static byte LOTTERY_PRIZE_STATUS_OVERDUE  =2;
 
 }
