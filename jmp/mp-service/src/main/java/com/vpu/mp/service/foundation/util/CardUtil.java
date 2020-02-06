@@ -312,4 +312,12 @@ public class CardUtil {
 		return CardConstant.MCARD_ACT_YES.equals(activte);
 	}
 	
+	/**
+	 * 	会员卡是否停用
+	 * @return true 是  false 否
+	 */
+	public static boolean isStopUsing(Byte flag) {
+		return CardConstant.MCARD_FLAG_STOP.equals(flag);
+	}
+	
 }
