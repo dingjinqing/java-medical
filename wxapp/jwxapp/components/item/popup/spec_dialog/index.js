@@ -181,7 +181,7 @@ global.wxComponent({
           actLimit.limitMaxNum = this.data.productsInfo.activity.limitMaxNum
         }
         if(this.data.activityPrds){
-          actLimit.prdNumber = this.data.activityPrds.find(item=>item.prdId === productTarget.prdId).prdNumber
+          actLimit.prdNumber = this.data.activityPrds.find(item=>item.prdId === select_prd.prdId).prdNumber
         }
         if(this.data.productsInfo.activity.limitBuyNum){
           actLimit.limitBuyNum = this.data.productsInfo.activity.limitBuyNum
