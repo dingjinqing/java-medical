@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.store.service.order;
 
 import com.vpu.mp.service.foundation.util.PageResult;
-
 import lombok.Data;
 
 /**
@@ -13,4 +12,5 @@ import lombok.Data;
 public class ServiceOrderPageListQueryVo {
 	private PageResult<ServiceOrderListQueryVo> pageList;
 	private ServiceOrderCountingDataVo countingData;
+    private String technicianTitle;
 }
