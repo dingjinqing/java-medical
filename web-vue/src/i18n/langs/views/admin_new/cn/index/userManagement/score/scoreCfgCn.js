@@ -47,7 +47,7 @@ export const cn = {
     '例如，设置未"明年的01月01日",即是指用户今年获得的积分将在明年1月1日24:00:00失效',
   fromGetScore: '从获得积分当天起',
   innerEffective: '内有效',
-  exchange: '积分润换比',
+  exchange: '积分兑换比',
   formula: '100积分=1元RMB',
   day: '日',
   week: '周',

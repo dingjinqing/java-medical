@@ -190,14 +190,18 @@ export default {
     // 保存
     saveTagHandler () {
       if (this.dialogTag === '') {
-        this.$message.warning('请填写标签名')
+        this.$message.warning(this.$t('tag.addContent'))
+        return
+      }
+      if (this.dialogTag.length > 10) {
+        this.$message.warning(this.$t('tag.lengthError'))
         return
       }
       if (this.dialogType === true) {
         // 添加
         addTag({ tagName: this.dialogTag }).then((res) => {
           if (res.error === 0) {
-            this.$message.success('新建成功!')
+            this.$message.success(this.$t('tag.addTagSuccess'))
             this.getTagList()
           }
         })
@@ -208,7 +212,7 @@ export default {
           tagName: this.dialogTag
         }).then((res) => {
           if (res.error === 0) {
-            this.$message.success('编辑成功!')
+            this.$message.success(this.$t('tag.modifyTagSuccess'))
             this.getTagList()
           }
         })
