@@ -346,23 +346,23 @@ public class OrderGoodsService extends ShopBaseService{
     public Set<Byte> getGoodsType(List<OrderGoodsBo> bos){
         HashSet<Byte> type = new HashSet<>();
         for(OrderGoodsBo bo : bos){
-            if(bo.getPurchasePriceRuleId() != null){
+            if(bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0){
                 //加价购活动
                 type.add(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
             }
-            if(bo.getReducePriceId() != null){
+            if(bo.getReducePriceId() != null && bo.getReducePriceId() > 0){
                 //限时降价
                 type.add(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
             }
-            if(!NumberUtils.INTEGER_ZERO.equals(bo.getFirstSpecialId())){
+            if(bo.getFirstSpecialId() != null && bo.getFirstSpecialId() > 0){
                 //首单特惠
                 type.add(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
             }
-            if(bo.getGiftId() != null){
+            if(bo.getGiftId() != null && bo.getGiftId() > 0){
                 //赠品
                 type.add(BaseConstant.ACTIVITY_TYPE_GIFT);
             }
-            if(bo.getFreeShip() != null){
+            if(bo.getFreeShip() != null && bo.getFreeShip() > 0){
                 //满包邮
                 type.add(BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER);
             }
