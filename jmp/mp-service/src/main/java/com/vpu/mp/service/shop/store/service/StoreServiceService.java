@@ -10,21 +10,27 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.*;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.store.store.StoreService;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
 
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static com.vpu.mp.service.shop.store.store.StoreReservation.HH_MM_FORMATTER;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * @author 王兵兵
@@ -34,8 +40,10 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
  * 门店服务
  */
 @Service
-
+@Slf4j
 public class StoreServiceService extends ShopBaseService {
+    @Autowired
+    private StoreService store;
 
     /**
      * 门店服务分类列表分页查询
@@ -118,13 +126,28 @@ public class StoreServiceService extends ShopBaseService {
     }
 
     /**
-     * Get all store service by store id list.获取门店所有服务
+     * Get all store service by store id list.获取admin门店所有服务
      *
      * @param storeId the store id
      * @return the list
      */
     public List<StoreServiceListQueryVo> getAllStoreServiceByStoreId(Integer storeId) {
         return db().selectFrom(STORE_SERVICE).where(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(StoreServiceListQueryVo.class);
+    }
+
+    /**
+     * Get all store service by store id list.获取Wx门店所有服务(未删除，已上架，未过期)
+     *
+     * @param storeId the store id
+     * @return the list
+     */
+    public List<StoreServiceListQueryVo> getWxAllStoreServiceByStoreId(Integer storeId) {
+        return db().selectFrom(STORE_SERVICE).where(STORE_SERVICE.STORE_ID.eq(storeId))
+            .and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(STORE_SERVICE.SERVICE_SHELF.eq(BYTE_ONE))
+            .and(STORE_SERVICE.END_DATE.ge(Date.valueOf(LocalDate.now())))
+            .orderBy(STORE_SERVICE.END_DATE)
+            .fetchInto(StoreServiceListQueryVo.class);
     }
 
 
@@ -207,6 +230,18 @@ public class StoreServiceService extends ShopBaseService {
      * 新增门店服务
      */
     public Boolean addStoreService(StoreServiceParam storeService) {
+        StorePojo storePojo = store.getStore(storeService.getStoreId());
+        if (storePojo.getOpeningTime().compareTo(storeService.getStartPeriod()) > 0 || storePojo.getCloseTime().compareTo(storeService.getEndPeriod()) < 0) {
+            log.debug("服务时间[{}-{}]超过门店营业时间[{}-{}]范围！", storeService.getStartPeriod(), storeService.getEndPeriod(), storePojo.getOpeningTime(), storePojo.getCloseTime());
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
+        LocalTime startPeriod = LocalTime.parse(storeService.getStartPeriod(), HH_MM_FORMATTER);
+        LocalTime endPeriod = LocalTime.parse(storeService.getEndPeriod(), HH_MM_FORMATTER);
+        int totalDuration = (endPeriod.toSecondOfDay() - startPeriod.toSecondOfDay()) / 60;
+        if (storeService.getServiceDuration() > totalDuration) {
+            log.debug("服务时长大于服务时间范围");
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
         storeService.setServiceSn(this.createServiceSn());
         StoreServiceRecord record = new StoreServiceRecord();
         this.assign(storeService, record);
@@ -277,14 +312,18 @@ public class StoreServiceService extends ShopBaseService {
     }
 
     /**
-     * Gets store service by cat id.根据服务分类id获取服务
+     * Gets store service by cat id.根据服务分类id获取服务(未删除，已上架，未过期)
      *
      * @param storeId the store id
      * @param catId   the cat id
      */
     public List<StoreServiceListQueryVo> getStoreServiceByCatId(Integer storeId, Integer catId) {
         return db().selectFrom(STORE_SERVICE).where(STORE_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
-            .and(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.CAT_ID.eq(catId)).fetchInto(StoreServiceListQueryVo.class);
+            .and(STORE_SERVICE.SERVICE_SHELF.eq(BYTE_ONE))
+            .and(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.CAT_ID.eq(catId))
+            .and(STORE_SERVICE.END_DATE.ge(Date.valueOf(LocalDate.now())))
+            .orderBy(STORE_SERVICE.END_DATE)
+            .fetchInto(StoreServiceListQueryVo.class);
     }
 
     /**

@@ -23,8 +23,32 @@ export const cn = {
   uvNew: '新用户数',
   stayTimeUv: '人均停留时长',
   stayTimePv: '次均停留时长',
-  visitDepth: '平均访问深度',
+  visitDepthAve: '平均访问深度',
   lastSeven: '最近7天',
   lastThirty: '最近30天',
-  custom: '自定义'
+  custom: '自定义',
+
+  // 访问分布饼状图
+  visitSource: '访问来源',
+  visitTime: '访问时长',
+  visitDepth: '访问深度',
+
+  // 留存表格
+  time: '时间',
+  dayLater: '天后',
+  newRetention: '新增留存',
+  activeRetention: '活跃留存',
+
+  // 页面访问
+  pagePath: '页面路径',
+  pageName: '页面名称',
+  pageVisitPv: '页面访问次数',
+  pageVisitUv: '页面访问人数',
+  pageStayTimePv: '次均时长',
+  entryPagePv: '入口页次数',
+  exitPagePv: '退出页次数',
+  exitRate: '退出率',
+  pageSharePv: '分享次数',
+  pageShareUv: '分享人数'
+
 }

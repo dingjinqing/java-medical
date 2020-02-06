@@ -22,6 +22,9 @@ public class SeckillMpVo extends GoodsActivityDetailMp {
     /** 规定的有效支付时间(分钟数) */
     private Short limitPaytime;
 
+    /** 活动销量（已加入初始销量） */
+    private Integer saleNum;
+
     /** 专属会员卡ID串，逗号隔开 */
     private String cardId;
 

@@ -32,5 +32,6 @@ export const en = {
   generalRecord: 'General record',
   strip: 'strip',
   cancel: 'cancel',
-  determine: 'Determine'
+  determine: 'Determine',
+  search: 'search'
 }

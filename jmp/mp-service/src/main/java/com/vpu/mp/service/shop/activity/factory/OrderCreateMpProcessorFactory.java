@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.activity.factory;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.processor.CreateOrderProcessor;
@@ -58,6 +59,13 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     );
 
     /**
+     * 退款
+     */
+    public final static List<Byte> RETURN_ACTIVITY = Arrays.asList(
+        BaseConstant.ACTIVITY_TYPE_GIFT
+    );
+
+    /**
      * 单一营销
      */
     private Map<Byte, CreateOrderProcessor> processorMap;
@@ -66,6 +74,11 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * 普通营销活动
      */
     private List<CreateOrderProcessor> processorGeneralList;
+
+    /**
+     * 退货活动处理
+     */
+    private Map<Byte, CreateOrderProcessor> processorReturnMap;
 
     /**
      * 全局营销
@@ -79,6 +92,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         processorMap = new HashMap<>(processors.size());
         processorGeneralList = new ArrayList<>(processors.size());
         processorGlobalList = new ArrayList<>(processors.size());
+        processorReturnMap = new HashMap<>(RETURN_ACTIVITY.size());
         for (CreateOrderProcessor processor : processors) {
             if (SINGLENESS_ACTIVITY.contains(processor.getActivityType())) {
                 processorMap.put(processor.getActivityType(), processor);
@@ -88,6 +102,9 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             }
             if (GLOBAL_ACTIVITY.contains(processor.getActivityType())) {
                 processorGlobalList.add(processor);
+            }
+            if(RETURN_ACTIVITY.contains(processor.getActivityType())){
+                processorReturnMap.put(processor.getActivityType(), processor);
             }
         }
     }
@@ -161,6 +178,21 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             //全局活动
             processor.processOrderEffective(param, order);
         }
+    }
+
+    /**
+     * 退款成功调用活动库存销量修改方法
+     * @param activityType 活动类型
+     * @param activityId 活动id（赠品活动id在）
+     * @param returnOrderGoods 退款商品
+     * @throws MpException
+     */
+    public void processReturnOrder(Byte activityType, Integer activityId, List<OrderReturnGoodsVo> returnOrderGoods) throws MpException {
+        CreateOrderProcessor process = processorReturnMap.get(activityType);
+        if(process != null){
+            process.processReturn(activityId, returnOrderGoods);
+        }
+
     }
 }
 

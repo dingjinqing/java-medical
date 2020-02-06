@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
@@ -37,6 +38,9 @@ public class MpDistributionService extends ShopBaseService{
     @Autowired
     public DistributionConfigService distributionCfg;
 
+    @Autowired
+    public BrokerageStatisticalService bs;
+
     /**
      * 申请分销员页面信息
      * @param lang
@@ -49,6 +53,9 @@ public class MpDistributionService extends ShopBaseService{
             .from(USER.leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID)))
             .where(USER.USER_ID.eq(userId)).fetchOne().into(UserBaseInfoVo.class);
 
+        //分销分组信息
+        List<DistributorGroupListVo> groupList = bs.getGroupList();
+
         //转换行业码对应的名称
         if(baseInfo.getIndustryInfo() != null){
             String industryInfo = MemberIndustryEnum.getNameByCode(baseInfo.getIndustryInfo(),lang);
@@ -60,9 +67,9 @@ public class MpDistributionService extends ShopBaseService{
             baseInfo.setEducationName(education);
         }
         //性别
-        if(baseInfo.getSex().equalsIgnoreCase("f") && baseInfo.getSex() != null){
+        if(baseInfo.getSex().equalsIgnoreCase("f")){
             baseInfo.setSex("女");
-        }else if(baseInfo.getSex().equalsIgnoreCase("m") && baseInfo.getSex() != null){
+        }else if(baseInfo.getSex().equalsIgnoreCase("m")){
             baseInfo.setSex("男");
         }
         //婚姻状况
@@ -76,6 +83,8 @@ public class MpDistributionService extends ShopBaseService{
         ActivationInfoVo activationInfo = new ActivationInfoVo();
         //用户基本信息
         activationInfo.setUserBaseInfo(baseInfo);
+        //分组列表
+        activationInfo.setGroupList(groupList);
         //获取行业信息
         List<IndustryVo> allIndustryInfo = MemberIndustryEnum.getAllIndustryInfo(lang);
         activationInfo.setIndustryList(allIndustryInfo);

@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoVo;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,9 @@ public class PictorialIntegrationService extends ShopBaseService {
 
     @Autowired
     private PreSalePictorialService preSalePictorialService;
+
+    @Autowired
+    private ReducePricePictorialService reducePricePictorialService;
 
     /**
      * 获取普通商品分享信息
@@ -123,5 +127,23 @@ public class PictorialIntegrationService extends ShopBaseService {
      */
     public String getPreSalePictorialInfo(PreSaleShareInfoParam param) {
         return preSalePictorialService.getPreSalePictorialInfo(param);
+    }
+
+    /**
+     * 限时降价分享图片获取
+     * @param param 拼团抽奖参数信息
+     * @return 分享图片信息
+     */
+    public GoodsShareInfo getReducePriceShareInfo(ReducePriceShareInfoParam param) {
+        return reducePricePictorialService.getReducePriceShareInfo(param);
+    }
+
+    /**
+     * 限时降价海报获取
+     * @param param 拼团抽奖参数信息
+     * @return base64图片信息
+     */
+    public String getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
+        return reducePricePictorialService.getReducePricePictorialInfo(param);
     }
 }

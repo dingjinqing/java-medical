@@ -1990,7 +1990,10 @@ public class MemberCardService extends ShopBaseService {
         	MemberCardRecord mCard = userCardService.userCardDao.getUserGradeCard(userId);
             if( mCard != null && cardId == mCard.getId()){
                 vo.setStatus((byte)1);
+            }else {
+            	vo.setStatus((byte)-1);
             }
+            logger().info("等级卡->status: "+vo.getStatus());
         }else{
             //普通卡 只能拥有一张
             if(userHasGotNumber > 0){
@@ -2000,7 +2003,7 @@ public class MemberCardService extends ShopBaseService {
                 vo.setStatus((byte)-1);
             }
         }
-
+        logger().info("卡->status: "+vo.getStatus());
         //图片域名
         String shopAvatar = saas().shop.getShopAvatarById(getShopId());
         if(StringUtil.isNotEmpty(shopAvatar)){

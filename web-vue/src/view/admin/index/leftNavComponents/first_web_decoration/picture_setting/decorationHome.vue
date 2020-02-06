@@ -5,7 +5,10 @@
         <span>{{$t('decorationHome.libraryName')}}</span><span>{{$t('decorationHome.libraryNameTips')}}</span>
       </div>
       <div class="content">
-        <div class="decLeft">
+        <div
+          class="decLeft"
+          :class="columnFlag?'':'tapsClass'"
+        >
           <el-tabs v-model="activeName">
             <el-tab-pane
               :label="$t('decorationHome.imageAndText')"
@@ -329,7 +332,8 @@ export default {
       isDragFlag: false,
       isClickIcon: false,
       isClickModule: false,
-      isClickPageSetIcon: false
+      isClickPageSetIcon: false,
+      columnFlag: false // 解决顶部tap中英文切换
     }
   },
   watch: {
@@ -1401,6 +1405,17 @@ export default {
         z-index: 100;
         width: 41.4%;
         margin-left: 20px;
+      }
+      .tapsClass {
+        /deep/ .is-scrollable {
+          padding: 0 !important;
+          .el-tabs__nav-prev {
+            display: none;
+          }
+          .el-tabs__nav-next {
+            display: none;
+          }
+        }
       }
     }
   }

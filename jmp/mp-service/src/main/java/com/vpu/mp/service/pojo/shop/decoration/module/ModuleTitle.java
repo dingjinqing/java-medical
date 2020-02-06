@@ -2,13 +2,16 @@ package com.vpu.mp.service.pojo.shop.decoration.module;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
  * @author lixinguo
  *
  */
-@Data
+@Getter
+@Setter
 public class ModuleTitle extends ModuleBase {
     @JsonProperty("title")
     private String title;

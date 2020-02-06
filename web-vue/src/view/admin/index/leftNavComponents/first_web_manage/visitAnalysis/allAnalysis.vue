@@ -95,7 +95,7 @@ export default {
         { value: 4, label: this.$t('visitAnalysis.uvNew') },
         { value: 5, label: this.$t('visitAnalysis.stayTimeUv') },
         { value: 6, label: this.$t('visitAnalysis.stayTimePv') },
-        { value: 7, label: this.$t('visitAnalysis.visitDepth') }
+        { value: 7, label: this.$t('visitAnalysis.visitDepthAve') }
       ],
       timeSelect: 7,
       timeRange: [

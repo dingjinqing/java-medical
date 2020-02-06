@@ -225,7 +225,7 @@ public class BargainPictorialService extends ShopBaseService {
 
         try(InputStream moneyIconIo = Util.loadFile(BARGAIN_MONEY_ICON_IMG)) {
             BufferedImage moneyIconImg = ImageIO.read(moneyIconIo);
-            moneyIconImg = ImageUtil.resizeImage(40,30,moneyIconImg);
+            moneyIconImg = ImageUtil.resizeImageTransparent(40,30,moneyIconImg);
             ImageUtil.addTwoImage(bgBufferedImage,moneyIconImg,imgPx.getCustomerTextStartX(),imgPx.getCustomerRectStartY()+imgPx.getLargeFontAscent(bgBufferedImage)/2);
         }catch (IOException e){
             bargainLog("pictorial", "读取本地图片money_icon错误"+e.getMessage());
