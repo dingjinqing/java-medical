@@ -47,7 +47,7 @@ export const en = {
   invitationTip4: 'List of distributors',
   invitationTip5: 'Set up',
   reviewedInfo: 'When you apply to become a distributor after opening, you need to submit your personal information',
-  checkedList: ['Real Name', 'Phone number', 'ID card', 'Sex', 'Birthday', 'Marital status', 'Education level', 'Industry in which', 'Location', 'Remarks', 'Picture upload', 'Invitation code'],
+  checkedList: ['Real Name', 'Phone number', 'ID card', 'Sex', 'Birthday', 'Marital status', 'Education level', 'Industry in which', 'Location', 'Remarks', 'Rebate Group', 'Picture upload', 'Invitation code'],
   ranking: 'Distributor Ranking：',
   rankingTip: 'By default, the switch is off and on. When the number of distributors with rebate data is greater than or equal to 3, the distributor center displays the distributor Commission ranking. If it is closed, the distributor Commission ranking page will not be displayed.',
   validity: 'Validity Of Rebate：',
