@@ -6,7 +6,10 @@
       </div>
       <div class="content">
         <div class="decLeft">
-          <el-tabs v-model="activeName">
+          <el-tabs
+            v-model="activeName"
+            :class="columnFlag?'':'tapsClass'"
+          >
             <el-tab-pane
               :label="$t('decorationHome.imageAndText')"
               name="first"
@@ -315,6 +318,7 @@ export default {
         preventOnFilter: false,
         fallbackTolerance: '1'
       },
+      columnFlag: false, // 解决顶部tap中英文切换
       pageSetData: {},
       cur_idx: 100,
       MoveWhiteFlag: false, // 是否移入的是底部空白部分
@@ -1401,6 +1405,17 @@ export default {
         z-index: 100;
         width: 41.4%;
         margin-left: 20px;
+      }
+      .tapsClass {
+        /deep/ .is-scrollable {
+          padding: 0 !important;
+          .el-tabs__nav-prev {
+            display: none;
+          }
+          .el-tabs__nav-next {
+            display: none;
+          }
+        }
       }
     }
   }
