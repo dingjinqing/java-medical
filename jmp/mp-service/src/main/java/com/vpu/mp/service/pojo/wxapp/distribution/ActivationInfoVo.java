@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.distribution;
 
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 public class ActivationInfoVo {
     private UserBaseInfoVo userBaseInfo;
+    private List<DistributorGroupListVo> groupList;
     private List<IndustryVo> industryList;
     private List<EducationVo> educationList;
     private  List<MarriageData> MarriageData;
