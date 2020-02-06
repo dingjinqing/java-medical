@@ -21,7 +21,7 @@ public class PictorialImgPx {
     /**
      * 背景图内边距
      */
-    private Integer bgPadding = 40;
+    private Integer bgPadding = 20;
     private Color defaultFontColor = new Color(85, 85, 85);
     private Integer smallFontSize = 24;
     private Integer mediumFontSize = 30;
@@ -29,22 +29,22 @@ public class PictorialImgPx {
     /**
      * 图片头部
      */
-    private Integer headerHeight = 150;
+    private Integer headerHeight = 140;
     /**
      * 用户头像直径
      */
     private Integer userHeaderDiameter = 96;
     /**
-     * 用户名开始x,y坐标,颜色，字体大小
+     * 用户名开始x,y坐标
      */
     private Integer userNameX = bgPadding + userHeaderDiameter + 10;
-    private Integer userNameY = bgPadding + userHeaderDiameter / 2 - 5;
+    private Integer userNameY = bgPadding;
 
     /**
      * 商品shareDoc内容
      */
     private Integer shareDocX = bgPadding;
-    private Integer shareDocY = bgPadding + userHeaderDiameter + mediumFontSize + 5;
+    private Integer shareDocY = bgPadding + userHeaderDiameter;
     /**
      * 商品宽高,位置x,y
      */
@@ -64,7 +64,7 @@ public class PictorialImgPx {
     /**
      * 底部开始Y
      */
-    private Integer bottomStartY = bgHeight - bgPadding - bottomHeight;
+    private Integer bottomStartY =headerHeight+goodsHeight+bgPadding;
     private Color goodsNameColor = new Color(52, 52, 52);
 
     /**
@@ -75,11 +75,13 @@ public class PictorialImgPx {
      * 二维码X
      */
     private Integer qrCodeStartX = bgWidth - (bgPadding + qrCodeWidth);
+    /**商品名称开始Y*/
+    private Integer goodsNameStartY = bottomStartY+10;
 
     /**
-     * 底部商品价格
+     * 底部商品价格开始y,需要根据商品名称行数计算得到
      */
-    private Integer priceY = bgHeight - bgPadding - largeFontSize;
+    private Integer priceY = goodsNameStartY+20;
     private Color realPriceColor = new Color(255, 102, 102);
     /**
      * 底部划线价，线的Y
