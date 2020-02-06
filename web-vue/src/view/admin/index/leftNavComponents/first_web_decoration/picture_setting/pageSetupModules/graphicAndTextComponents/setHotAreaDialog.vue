@@ -5,7 +5,7 @@
       v-if="modelFlag"
     ></div>
     <el-dialog
-      title="编辑图片热区"
+      :title="$t('pictureHotSpot.editPictureHotArea')"
       :visible.sync="hotDialogVisible"
       width="30%"
       :modal="false"
@@ -40,11 +40,11 @@
                   class="top"
                   @click="handleToCallLink()"
                 >
-                  {{item.link_text?item.link_text:'设置关联链接'}}
+                  {{item.link_text?item.link_text:$t('pictureHotSpot.setAssociationLink')}}
                 </div>
                 <div class="footer">
                   <div @click="handleToCallLink()">
-                    添加链接
+                    {{$t('pictureHotSpot.addLinks')}}
                   </div>
 
                 </div>
@@ -68,13 +68,13 @@
         slot="footer"
         class="dialog-footer"
       >
-        <div class="choose_el_area">已添加热区数量：<span>{{hotAreaData.length}}</span> 个</div>
+        <div class="choose_el_area">{{$t('pictureHotSpot.numberOfHotSpotsAdded')}}<span>{{hotAreaData.length}}</span> 个</div>
         <div>
-          <el-button @click="handleToAddHot()">添加热区</el-button>
+          <el-button @click="handleToAddHot()">{{$t('pictureHotSpot.addHotZone')}}</el-button>
           <el-button
             type="primary"
             @click="handleToSave()"
-          >保存</el-button>
+          >{{$t('pictureHotSpot.save')}}</el-button>
         </div>
 
       </span>
@@ -120,6 +120,9 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    lang () {
+      this.hotMainTopData = this.$t('pictureHotSpot.hotMainTopData')
     }
   },
   data () {
@@ -146,6 +149,10 @@ export default {
       modelFlag: false,
       nowClickIndex: null
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 添加热区
