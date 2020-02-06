@@ -519,8 +519,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         Result<ReturnOrderGoodsRecord> returnGoodsRecord = returnOrderGoods.getReturnGoods(returnOrderRecord.getOrderSn(),returnOrderRecord.getRetId());
         List<OrderReturnGoodsVo> returnGoods = returnGoodsRecord.into(OrderReturnGoodsVo.class);
         returnGoods.forEach(g->g.setIsGift(orderGoods.isGift(g.getRecId())));
-
-        updateStockAndSales(order, returnGoods);
+        //库存更新
+        updateStockAndSales(order, returnGoods, returnOrderRecord);
         //退款退货订单完成更新
 		returnOrder.finishReturn(returnOrderRecord);
 		//更新ReturnOrderGoods-success
@@ -549,17 +549,26 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         logger.info("退款完成变更相关信息end");
 	}
 
-    private void updateStockAndSales(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+    private void updateStockAndSales(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods, ReturnOrderRecord returnOrderRecord) throws MpException {
         List<Byte> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
-        //非货到付款 非拼团抽奖
-        if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) && !goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) {
-            //修改商品库存-销量
-            updateNormalStockAndSales(returnGoods,order);
+        //货到付款 、拼团抽奖未中奖（TODO）、退运费、手动退款
+        if(OrderConstant.IS_COD_NO.equals(order.getIsCod()) ||
+            goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW) ||
+            returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_SHIPPING_FEE) ||
+            returnOrderRecord.getReturnType().equals(OrderConstant.RT_MANUAL)) {
+            //不进行修改库存销量操作
+            return;
         }
+        //是否恢复库存（仅限普通商品与赠品）->
+        // （(退款退货 || 换货) || (退款待发货)）
+        boolean isRestore = ((returnOrderRecord.getReturnType().equals(OrderConstant.RT_GOODS) || returnOrderRecord.getReturnType().equals(OrderConstant.RT_CHANGE))
+            || (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
+        //修改商品库存-销量
+        updateNormalStockAndSales(returnGoods, order, isRestore);
         //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
         goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
         for (Byte type : goodsType) {
-            if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type)){
+            if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type) && isRestore && OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()){
                 //赠品修改活动库存
                 orderCreateMpProcessorFactory.processReturnOrder(BaseConstant.ACTIVITY_TYPE_GIFT,null,returnGoods.stream().filter(x->OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.toList()));
             }else {
@@ -571,10 +580,11 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
     /**
 	 * 	更新库存和销量
-	 * @param returnGoods
-	 * @param order
-	 */
-	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods , OrderInfoVo order) {
+     * @param returnGoods
+     * @param order
+     * @param isRestore 是否恢复库存
+     */
+	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, boolean isRestore) {
 		//TODO 对接pos erp未完成
 		
 		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
@@ -597,7 +607,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			}
 			if(OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()) {
 				//待发货
-				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && products.get(rGoods.getProductId()) != null) {
+				if(isRestore && products.get(rGoods.getProductId()) != null) {
 					//待发货+规格库存
 					GoodsSpecProductRecord product = products.get(rGoods.getProductId());
 					product.setPrdNumber(product.getPrdNumber() + rGoods.getGoodsNumber());
