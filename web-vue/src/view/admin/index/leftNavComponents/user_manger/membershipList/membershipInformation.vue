@@ -253,7 +253,7 @@
               </el-col>
             </el-form-item>
             <el-form-item :label="$t('membershipIntroduction.localtion')">
-              <ProAndUrbA />
+              <ProAndUrbA @handleToGetProCode="handleToGetProCode" />
             </el-form-item>
             <el-form-item :label="$t('membershipIntroduction.Maritalstatus')">
               <el-col :span="12">
@@ -1457,6 +1457,10 @@ export default {
         message: message,
         type: 'success'
       })
+    },
+    // 省市区数据回传
+    handleToGetProCode (data) {
+      console.log(data)
     }
   }
 }

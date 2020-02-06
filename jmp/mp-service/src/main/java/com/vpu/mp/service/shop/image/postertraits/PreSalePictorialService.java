@@ -59,7 +59,7 @@ public class PreSalePictorialService extends ShopBaseService {
 
         // 预售活动信息不可用
         if (presaleRecord == null) {
-            preSaleLog("分享", "拼团抽奖活动信息不可用");
+            preSaleLog("分享", "定金膨胀活动信息不可用");
             shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
             return shareInfoVo;
         }
@@ -67,7 +67,7 @@ public class PreSalePictorialService extends ShopBaseService {
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
         // 商品信息不可用
         if (goodsRecord == null) {
-            preSaleLog("分享", "拼团抽奖商品信息不可用");
+            preSaleLog("分享", "定金膨胀商品信息不可用");
             shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
             return shareInfoVo;
         }
@@ -91,6 +91,7 @@ public class PreSalePictorialService extends ShopBaseService {
             String imgPath = createPreSaleShareImg(presaleRecord, goodsRecord, param);
             shareInfoVo.setImgUrl(imgPath);
         }
+        shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 
         return shareInfoVo;
     }
@@ -101,7 +102,7 @@ public class PreSalePictorialService extends ShopBaseService {
     private static final String PRE_SALE_BG_IMG = "image/wxapp/presale.png";
 
     /**
-     *生成定金膨胀分享图
+     * 生成定金膨胀分享图
      * @param presaleRecord 定金膨胀信息
      * @param goodsRecord 商品信息
      * @param param 请求参数

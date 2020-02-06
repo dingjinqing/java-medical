@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.sql.Timestamp;
 
+import com.vpu.mp.service.foundation.util.Util;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -164,5 +165,20 @@ public class DistributorGroupService extends ShopBaseService{
 				.execute();
 		 return result > 0 ? true : false;
 	}
+
+    /**
+     * 根据用户id获取分组
+     * @param userId
+     * @return
+     */
+	public DistributorGroupListVo getGroupByUserId(Integer userId){
+        Record record = db().select().from(USER.leftJoin(DISTRIBUTOR_GROUP).on(USER.INVITE_GROUP.eq(DISTRIBUTOR_GROUP.ID)))
+            .where(USER.USER_ID.eq(userId)).fetchOne();
+        if(record != null){
+          return record.into(DistributorGroupListVo.class);
+        }else{
+            return null;
+        }
+    }
 
 }

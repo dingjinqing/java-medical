@@ -1,19 +1,19 @@
 <template>
   <div class="rightPictureNavigation">
     <div class="rightPictureNavigationMain">
-      <h2>轮播图片模块<span>图片最多6个，最少1个，建议尺寸：620*310</span></h2>
+      <h2>{{$t('carouselPicture.carouselPictureModule')}}<span>{{$t('carouselPicture.carouselPictureModuleTip')}}</span></h2>
       <div class="main">
-        <p class="tips">轮播图组件至少设置一张轮播图为全部用户可见</p>
+        <p class="tips">{{$t('carouselPicture.titleTips')}}</p>
         <div class="mainList">
-          <label class="left">预览原图：</label>
+          <label class="left">{{$t('carouselPicture.previewOriginal')}}</label>
           <div class="right">
             <div class="right-radios">
               <el-radio-group v-model="data.is_preview">
-                <el-radio :label="0">否</el-radio>
-                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">{{$t('carouselPicture.no')}}</el-radio>
+                <el-radio :label="1">{{$t('carouselPicture.yes')}}</el-radio>
               </el-radio-group>
             </div>
-            <p class="tips">选择是，则在图片没有添加链接时，前端用户点击可以预览原图。选择否，则未添加图片链接时，不可预览原图</p>
+            <p class="tips">{{$t('carouselPicture.tips')}}</p>
           </div>
         </div>
         <!-- 图片添加组件 -->
@@ -42,7 +42,7 @@
                   </div>
                 </el-image>
               </div>
-              <p class="add_img_center">链接：</p>
+              <p class="add_img_center">{{$t('carouselPicture.links')}}</p>
               <div class="add_img_right">
                 <div class="add_img_rt">
                   <el-input
@@ -53,28 +53,28 @@
                   <el-button
                     size="small"
                     @click="handleToCallLinkDialog(index)"
-                  >选择链接</el-button>
+                  >{{$t('carouselPicture.selectLink')}}</el-button>
                 </div>
                 <div class="add_img_rb">
                   <el-button
                     size="small"
-                    title="向上"
+                    :title="$t('carouselPicture.upward')"
                     @click="handleToClickIcon(index,0)"
                   >↑</el-button>
                   <el-button
                     size="small"
-                    title="向下"
+                    :title="$t('carouselPicture.down')"
                     @click="handleToClickIcon(index,1)"
                   >↓</el-button>
                   <el-button
                     size="small"
-                    title="移除"
+                    :title="$t('carouselPicture.remove')"
                     @click="handleToClickIcon(index,2)"
                   >×</el-button>
                   <a
                     class="add_img_more"
                     @click="item.showmore=!item.showmore"
-                  >{{!item.showmore?'展示更多配置':'收起更多配置'}}</a>
+                  >{{!item.showmore?$t('carouselPicture.showMoreConfigurations'):$t('carouselPicture.moreConfigurations')}}</a>
                 </div>
               </div>
             </div>
@@ -82,13 +82,13 @@
               v-show="!!item.showmore"
               class="add_img_bottom"
             >
-              <p class="add_img_bl">显示设置：</p>
+              <p class="add_img_bl">{{$t('carouselPicture.displaySettings')}}</p>
               <el-radio-group
                 class="add_img_br"
                 v-model="item.can_show"
               >
-                <el-radio :label="0">全部用户可见</el-radio>
-                <el-radio :label="1">未在店铺内支付用户可见</el-radio>
+                <el-radio :label="0">{{$t('carouselPicture.visibleUsers')}}</el-radio>
+                <el-radio :label="1">{{$t('carouselPicture.storeVisibleUsers')}}</el-radio>
               </el-radio-group>
             </div>
           </div>
@@ -98,7 +98,7 @@
           class="add_list"
           @click="handleToClickAddList"
         >
-          <span>+添加列表</span>
+          <span>+{{$t('carouselPicture.addList')}}</span>
         </div>
       </div>
       <!--end-->
@@ -160,6 +160,10 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 导航配置列表右上角icon点击统一处理

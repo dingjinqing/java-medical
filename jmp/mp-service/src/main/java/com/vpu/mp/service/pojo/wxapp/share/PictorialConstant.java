@@ -18,6 +18,8 @@ public class PictorialConstant {
     public static final Byte GROUP_DRAW_ACTION_SHARE = 5;
     /** 预售分享*/
     public static final Byte PRE_SALE_ACTION_SHARE = 7;
+    /** 限时降价 */
+    public static final Byte REDUCE_PRICE_ACTION_SAHRE = 9;
 
 
 }

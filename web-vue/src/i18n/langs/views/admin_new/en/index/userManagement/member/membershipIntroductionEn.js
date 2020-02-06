@@ -447,6 +447,7 @@ export const en = {
   chargeDetail: 'chargeDetail',
   consumeDetail: 'consumeDetail',
   deleteCard: 'DEL',
+
   add: 'Add',
   normalCardFull: 'NormalCard',
   limiteCardFull: 'LimiteCard',

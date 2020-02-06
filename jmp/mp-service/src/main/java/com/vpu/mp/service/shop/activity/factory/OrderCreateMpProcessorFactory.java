@@ -187,7 +187,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * @param returnOrderGoods 退款商品
      * @throws MpException
      */
-    public void processReturnOrder(Byte activityType, Integer activityId, List<OrderReturnGoodsVo> returnOrderGoods) {
+    public void processReturnOrder(Byte activityType, Integer activityId, List<OrderReturnGoodsVo> returnOrderGoods) throws MpException {
         CreateOrderProcessor process = processorReturnMap.get(activityType);
         if(process != null){
             process.processReturn(activityId, returnOrderGoods);

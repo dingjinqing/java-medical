@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -136,4 +137,27 @@ public class WxAppPictorialController extends WxAppBaseController  {
         return success(shop().pictorialIntegrationService.getPreSalePictorialInfo(param));
     }
 
+    /**
+     * 获取限时降价活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/reduceprice/share/info")
+    public JsonResult getReducePriceShareInfo(@RequestBody ReducePriceShareInfoParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        param.setUserName(user.getUsername());
+        return success(shop().pictorialIntegrationService.getReducePriceShareInfo(param));
+    }
+
+    /**
+     * 获取限时降价海报信息
+     * @param param 海报参数信息
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/reduceprice/pictorial/info")
+    public JsonResult getReducePricePictorial(@RequestBody ReducePriceShareInfoParam param) {
+        param.setUserId(wxAppAuth.user().getUserId());
+        return success(shop().pictorialIntegrationService.getReducePricePictorialInfo(param));
+    }
 }
