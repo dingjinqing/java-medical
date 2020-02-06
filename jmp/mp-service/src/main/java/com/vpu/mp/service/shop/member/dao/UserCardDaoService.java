@@ -58,6 +58,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
 				.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
+				.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 				.fetchAnyInto(MemberCardRecord.class);
 	}
 
