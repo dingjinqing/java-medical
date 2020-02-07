@@ -146,7 +146,7 @@ public class CharacterValidValidator implements ConstraintValidator<CharacterVal
                 context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
                 return false;
             }
-            num+=cnorEn;
+            num+=1;
         }
         if (min>=0&&num<min){
             //至少输入几个字符
