@@ -499,17 +499,16 @@ public class UserCardDaoService extends ShopBaseService{
                     .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
                     .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
             ).fetchAnyInto(ValidUserCardBean.class);
-
-        card.setAvatar(userCardService.getCardAvatar());
-        // 快照时间
-        EffectTimeParam etParam = new EffectTimeParam();
-        BeanUtils.copyProperties(card, etParam);
-        EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-        BeanUtils.copyProperties(etBean, card);
-        // 背景处理
-        CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-        BeanUtils.copyProperties(bg, card);
         if(card != null) {
+            card.setAvatar(userCardService.getCardAvatar());
+            // 快照时间
+            EffectTimeParam etParam = new EffectTimeParam();
+            BeanUtils.copyProperties(card, etParam);
+            EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+            BeanUtils.copyProperties(etBean, card);
+            // 背景处理
+            CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+            BeanUtils.copyProperties(bg, card);
             return new OrderMemberVo().init(card);
         }
         return null;
@@ -542,18 +541,19 @@ public class UserCardDaoService extends ShopBaseService{
                     .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
                     .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
             ).fetchAnyInto(OrderMemberVo.class);
-        card.setAvatar(userCardService.getCardAvatar());
-        // 快照时间
-        EffectTimeParam etParam = new EffectTimeParam();
-        BeanUtils.copyProperties(card, etParam);
-        EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-        BeanUtils.copyProperties(etBean, card);
-        // 背景处理
-        CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-        BeanUtils.copyProperties(bg, card);
+
         if(card == null) {
             return card;
         }else {
+            card.setAvatar(userCardService.getCardAvatar());
+            // 快照时间
+            EffectTimeParam etParam = new EffectTimeParam();
+            BeanUtils.copyProperties(card, etParam);
+            EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+            BeanUtils.copyProperties(etBean, card);
+            // 背景处理
+            CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+            BeanUtils.copyProperties(bg, card);
             return card.init();
         }
     }
