@@ -65,10 +65,12 @@ global.wxPage({
     let de_type = options.de_type;// 自取还是同城配送
     let scan_stores = options.scan_stores; // 是否支持扫码购
     let goods_id = options.goods_id; // 商品id
+    let card_id = options.cardId || null
     this.setData({
       scan_stores: scan_stores ? scan_stores : 0,
       de_type: de_type,
-      goods_id: goods_id
+      goods_id: goods_id,
+      card_id
     })
   },
 
