@@ -318,6 +318,7 @@ export default {
         preventOnFilter: false,
         fallbackTolerance: '1'
       },
+      columnFlag: false, // 解决顶部tap中英文切换
       pageSetData: {},
       cur_idx: 100,
       MoveWhiteFlag: false, // 是否移入的是底部空白部分
@@ -332,8 +333,7 @@ export default {
       isDragFlag: false,
       isClickIcon: false,
       isClickModule: false,
-      isClickPageSetIcon: false,
-      columnFlag: false // 解决顶部tap中英文切换
+      isClickPageSetIcon: false
     }
   },
   watch: {

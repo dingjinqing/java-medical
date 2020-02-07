@@ -476,6 +476,52 @@ global.wxPage({
       }
     })
   },
+  // 获取必填项
+  getMust(params){
+    let must = {}
+    if(this.data.orderInfo.must.consigneeCid){
+      must.consigneeCid = this.data.must.consigneeCid
+    }
+    if(this.data.orderInfo.must.consigneeRealName){
+      must.consigneeRealName = this.data.must.consigneeRealName
+    }
+    if(this.data.orderInfo.must.orderCid){
+      must.orderCid = this.data.must.orderCid
+    }
+    if(this.data.orderInfo.must.orderRealName){
+      must.orderRealName = this.data.must.orderRealName
+    }
+    if(this.data.orderInfo.must.custom){
+      must.custom = this.data.must.custom
+    }
+    if(Object.keys(must).length > 0){
+      params.must = must
+    }
+  },
+  // 是否可提交
+  canSubmit(){
+    let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
+    if (!addressId) {
+      wx.showToast({
+        title: '请选择地址',
+        icon: 'none'
+      })
+      return false
+    }
+    if (
+      (this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) ||
+      (this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) ||
+      (this.data.orderInfo.must.orderCid && !this.data.must.orderCid) ||
+      (this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName)
+    ) {
+      wx.showToast({
+        title: '请输入必填项',
+        icon: 'none'
+      })
+      return false
+    }
+    return true
+  },
   // 关闭弹窗
   closeDialog(target) {
     switch (target.detail) {
@@ -511,28 +557,11 @@ global.wxPage({
     let memberCardNo =
       (this.data.orderInfo.defaultMemberCard && this.data.orderInfo.defaultMemberCard.cardNo) ||
       null
-    if (!addressId) {
-      wx.showToast({
-        title: '请选择地址',
-        icon: 'none'
-      })
-      return
-    }
-    if (
-      (this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) ||
-      (this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) ||
-      (this.data.orderInfo.must.orderCid && !this.data.must.orderCid) ||
-      (this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName)
-    ) {
-      wx.showToast({
-        title: '请输入必填项',
-        icon: 'none'
-      })
-      return
-    }
     goods = goods.filter(item => {
       return item.isGift !== 1
     })
+
+    if(!this.canSubmit()) return
     let params = {
       goods,
       action: 10,
@@ -549,9 +578,9 @@ global.wxPage({
       activityType,
       activityId,
       recordId: this.data.params.recordId,
-      groupId: this.data.params.groupId,
-      must: this.data.must
+      groupId: this.data.params.groupId
     }
+    this.getMust(params)
     util.api(
       '/api/wxapp/order/submit',
       res => {
