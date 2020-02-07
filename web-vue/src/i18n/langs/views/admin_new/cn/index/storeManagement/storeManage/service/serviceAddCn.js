@@ -30,8 +30,12 @@ export const cn = {
   minute: '分钟',
   serviceType1: '同时段可服务人数',
   serviceType2: '同时段内技师可服务人数',
+  serviceType2L: '同时段内',
+  serviceType2R: '可服务人数',
   servicesNumber1: '该服务在同一时段内可预约的最多人数',
   servicesNumber2: '该服务在同一时间段内每个技师可以被预约的次数',
+  servicesNumber2L: '该服务在同一时间段内每个',
+  servicesNumber2R: '可以被预约的次数',
   servicePrev: '服务详情效果预览',
   save: '保存',
   next: '下一步',
@@ -47,6 +51,7 @@ export const cn = {
   validInterval: '请选择可服务日期',
   validateDuration: '服务时长不能为0',
   validServiceNum: '技师可预约人数不能为空',
+  validServiceNum2: '可预约人数不能为空',
 
   successTip: '保存成功',
   updateTip: '更新成功'

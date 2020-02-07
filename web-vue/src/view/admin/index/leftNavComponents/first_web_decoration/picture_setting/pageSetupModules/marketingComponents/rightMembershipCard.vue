@@ -37,7 +37,8 @@
                 <span
                   v-else
                   class="card_state"
-                >{{nowChecked.card_state===1?'使用中':'停止使用'}}</span>
+                  :style="nowChecked.card_type === 2?'border:none':''"
+                >{{nowChecked.card_type === 2?nowChecked.card_grade:nowChecked.card_state===1?'使用中':'停止使用'}}</span>
               </div>
               <!-- <p
                 class="receive_day"
@@ -417,12 +418,15 @@ export default {
     sortIndex: {
       handler (newData) {
         if (this.modulesData) {
+          this.modulesData.card_state = Number(this.modulesData.card_state)
+          this.modulesData.card_type = Number(this.modulesData.card_type)
           this.nowChecked = this.modulesData // 回显数据
           if (this.modulesData.hidden_card) { // 是否选中用户领取后隐藏会员卡回显
             this.checked = true
           } else {
             this.checked = false
           }
+          console.log(newData)
         }
         console.log(newData, this.modulesData)
       },

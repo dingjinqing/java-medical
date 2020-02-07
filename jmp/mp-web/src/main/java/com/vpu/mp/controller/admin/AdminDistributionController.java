@@ -595,7 +595,6 @@ public class AdminDistributionController extends AdminBaseController{
     @PostMapping("/admin/distribution/distributor/check/list")
 	public JsonResult distributorCheckList(@RequestBody DistributorCheckListParam param){
         PageResult<DistributorCheckListVo> distributorCheckList = shop().distributorCheck.getDistributorCheckList(param);
-        System.out.print(distributorCheckList.dataList);
         for(DistributorCheckListVo list:distributorCheckList.dataList){
             //转换行业码对应的名称
             if(list.getCheckField().getIndustryInfo() != null){

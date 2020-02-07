@@ -1,7 +1,7 @@
 <template>
   <div class="payContent">
     <el-dialog
-      title="添加权限组"
+      :title="$t('authRoleList.addRoleGroup')"
       :visible.sync="centerDialogVisible"
       v-if="centerDialogVisible"
     >
@@ -17,9 +17,8 @@
         >
           <authRoleList
             v-if="showFlag"
-            :faClick="haveClick"
             @privilegeInfo="sendList"
-            @faClickChange="faChange"
+            ref="authRoleList"
             :isEdit="edit"
           />
         </el-tab-pane>
@@ -30,9 +29,8 @@
         >
           <authRolePwd
             v-if="showFlagTwo"
-            :faClick="haveClick"
             @privilegePassInfo="sendPwdList"
-            @faClickChange="faChange"
+            ref="authRolePwd"
             :isEdit="edit"
           />
         </el-tab-pane>
@@ -48,7 +46,7 @@
         <el-button
           size="mini"
           type="primary"
-          @click="haveClick=true"
+          @click="befSub()"
         >{{$t('authRoleList.sure')}}</el-button>
       </span>
     </el-dialog>
@@ -77,6 +75,7 @@ export default {
       defaultBtn: 'first',
       centerDialogVisible: false,
       haveClick: false,
+      haveClick1: false,
       authRoleListData: null,
       showFlagTwo: true,
       authRolePwdListData: [],
@@ -154,14 +153,18 @@ export default {
       this.flag2 = true
       this.submitInfo()
     },
-    faChange (data) {
-      console.log('重新点击确定')
-      this.haveClick = data.faClick
+    befSub () {
+      this.flag1 = false
+      this.flag2 = false
+      this.$refs.authRoleList.uploadData()
+      this.$refs.authRolePwd.uploadData()
     },
     submitInfo () {
+      console.log('submitInfosubmitInfosubmitInfosubmitInfosubmitInfo')
       if (this.flag1 && this.flag2) {
         console.log('编辑')
         console.log(this.authRoleListData)
+        console.log(this.authRolePwdListData.privilegePass)
         let params = {
           'roleName': this.authRoleListData.roleName,
           'privilegeList': this.authRoleListData.privilegeList,
@@ -170,6 +173,8 @@ export default {
           'rolePass': this.authRolePwdListData.rolePass,
           'roleId': this.edit
         }
+        console.log('发送')
+        console.log(params)
         if (this.edit === 0) {
           // 添加
           this.add(params)
@@ -197,7 +202,7 @@ export default {
     },
     editUpdate (params) {
       editUpdateRoleRequest(params).then((res) => {
-        console.log('添加权限组')
+        console.log('编辑添加权限组')
         console.log(res)
         if (res.error === 0) {
           this.$message.success(res.message)

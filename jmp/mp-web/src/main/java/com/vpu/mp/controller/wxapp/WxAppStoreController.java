@@ -9,13 +9,11 @@ import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.DEFAULT_LANGUAGE;
 
@@ -183,5 +181,13 @@ public class WxAppStoreController extends WxAppBaseController{
     public JsonResult createComment(@RequestBody @Validated(ValidCon.class) ServiceCommentVo param) {
         shop().store.reservation.createComment(param);
         return this.success();
+    }
+
+    /**
+     * 取消预约/获取门店联系方式
+     */
+    @GetMapping("/service/getStoreMobile/{storeId}")
+    public JsonResult cancelReservation(@PathVariable @NotEmpty Integer storeId) {
+        return this.success(shop().store.reservation.getStoreMobile(storeId));
     }
 }
