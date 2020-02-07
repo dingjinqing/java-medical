@@ -366,7 +366,13 @@
           <div class="grayText">{{$t('tradeConfiguration.logiscaption2')}}</div>
           <div style="display:flex;line-height:25px">
             <span style="color:red;">{{$t('tradeConfiguration.logiscaption3')}} </span>
-            <span style="color: #5A8BFF;margin-left: 20px;">{{$t('tradeConfiguration.showsupportcompany')}}</span>
+            <span style="color: #5A8BFF;margin-left: 20px;">
+              <a
+                href="https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/express/introduction.html"
+                target="_blank"
+                style="color: #5A8BFF"
+              >{{$t('tradeConfiguration.showsupportcompany')}}</a>
+            </span>
           </div>
           <!-- 发货地址部分 -->
           <div class="addressContent">
@@ -383,27 +389,38 @@
           </div>
           <!-- 快递表格数据部分 -->
           <div class="expressTable">
-            <table>
-              <thead>
-                <tr>
-                  <td>{{$t('tradeConfiguration.logiscompany')}}</td>
-                  <td>{{$t('tradeConfiguration.account')}}</td>
-                  <td>{{$t('tradeConfiguration.status')}}</td>
-                  <td>{{$t('tradeConfiguration.operation')}}</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="item in expressCompany"
-                  :key="item.delivery_name"
+            <template>
+              <el-table
+                :data="expressCompany"
+                style="width: 100%"
+              >
+                <el-table-column
+                  prop="delivery_name"
+                  :label="$t('tradeConfiguration.logiscompany')"
                 >
-                  <td style="width:190px">{{item.delivery_name}}</td>
-                  <td style="width:150px">{{item.biz_id}}</td>
-                  <td style="width:90px">{{item.status_code}}</td>
-                  <td style="color:#5A8BFF;cursor:pointer;width:70px">{{item.operate}}</td>
-                </tr>
-              </tbody>
-            </table>
+                </el-table-column>
+                <el-table-column
+                  prop="biz_id"
+                  :label="$t('tradeConfiguration.account')"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="status_code"
+                  :label="$t('tradeConfiguration.status')"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="operate"
+                  :label="$t('tradeConfiguration.operation')"
+                >
+                  <template slot-scope="{ row }">
+                    <div style="margin-top:10px;color:#5A8BFF;">
+                      <span @click="showBindCompany(row.delivery_name, row.delivery_id, row.operate)">{{row.operate}} </span>
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </template>
           </div>
         </div>
       </div>
@@ -502,6 +519,76 @@
       </span>
     </el-dialog>
 
+    <!-- 绑定物流公司弹窗 -->
+    <el-dialog
+      title="绑定物流公司"
+      :visible.sync="showBind"
+      :close-on-click-modal='false'
+      width=25%
+    >
+      <div>
+        <el-form
+          :model="bindParam"
+          :rules="rules"
+          ref="bindParam"
+          label-width="120px"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="物流公司">
+            <el-input
+              :placeholder="companyName"
+              :disabled="true"
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item
+            label="电子面单账号"
+            prop="biz_id"
+          >
+            <el-input
+              placeholder="电子面单账号"
+              v-model="bindParam.biz_id"
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item
+            label="密码"
+            prop="password"
+          >
+            <el-input
+              placeholder="密码"
+              v-model="bindParam.password"
+              show-password
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input
+              placeholder="EMS必填"
+              type="textarea"
+              :rows="2"
+              v-model="bindParam.remark_content"
+            >
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="bindCompany('bindParam')"
+        >{{$t('tradeConfiguration.save')}}</el-button>
+        <el-button
+          size="small"
+          @click="closeBind('bindParam')"
+        >{{$t('tradeConfiguration.cancel')}}</el-button>
+      </span>
+    </el-dialog>
+
     <!--选择商品弹窗-->
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
@@ -534,7 +621,7 @@
 <script>
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
 import pagination from '@/components/admin/pagination/pagination'
-import { tradeSelect, tradeUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import { tradeSelect, tradeUpdate, bindaccount } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import ProductLabel from '@/components/admin/addProductLabel'
 import BrandDialog from '@/components/admin/addBrandDialog'
@@ -626,6 +713,24 @@ export default {
   },
   data () {
     return {
+      bindParam: {
+        type: '',
+        biz_id: '',
+        delivery_id: '',
+        password: '',
+        remark_content: ''
+      },
+      rules: {
+        biz_id: [
+          { required: true, message: '请输入电子面单账号', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ]
+      },
+      // 绑定物流公司弹窗
+      showBind: false,
+      companyName: '',
       // 商品弹窗回调数据
       goodsInfo: [],
       goodsInfoRow: [],
@@ -1054,6 +1159,45 @@ export default {
         this.brand.push(item.id)
       })
       this.brandN = this.brand.length
+    },
+    // 显示绑定物流公司弹窗
+    showBindCompany (name, id, operate) {
+      this.showBind = true
+      this.companyName = name
+      this.bindParam.delivery_id = id
+      if (operate === '解约') {
+        this.bindParam.type = 'unbind'
+      } else if (operate === '签约') {
+        this.bindParam.type = 'bind'
+      }
+    },
+    closeBind (fromName) {
+      this.showBind = false
+      this.$refs[fromName].resetFields()
+    },
+    // 绑定物流公司
+    bindCompany (fromName) {
+      this.$refs[fromName].validate((valid) => {
+        if (valid) {
+          bindaccount(this.bindParam).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.info({
+                message: '签约成功！',
+                showClose: true
+              })
+              this.closeBind()
+            } else {
+              this.$message.error({
+                message: res.message,
+                showClose: true
+              })
+            }
+          })
+        } else {
+          return false
+        }
+      })
     }
   }
 }
@@ -1190,7 +1334,12 @@ export default {
       }
     }
   }
-
+  .span_asterisk {
+    color: #cc0000;
+  }
+  .row_style {
+    margin-top: 10px;
+  }
   .settingWrapper:nth-of-type(1) {
     margin-top: 20px;
   }
