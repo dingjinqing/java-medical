@@ -423,6 +423,7 @@ public class MemberService extends ShopBaseService {
 		logger().info("正在处理会员基本信息");
 
 		MemberBasicInfoVo memberBasicInfoVo = getMemberInfo(userId);
+		
 		if(memberBasicInfoVo == null) {
 			return memberBasicInfoVo;
 		}
@@ -468,11 +469,12 @@ public class MemberService extends ShopBaseService {
 		
 		/** 行业 */
 		if(memberBasicInfoVo.getIndustryInfo() != null) {
-			String name = MemberIndustryEnum.getNameByCode(Integer.parseInt(memberBasicInfoVo.getIndustryInfo()));
+			int industryCode = Integer.parseInt(memberBasicInfoVo.getIndustryInfo());
+			memberBasicInfoVo.setIndustryId(industryCode);
+			String name = MemberIndustryEnum.getNameByCode(industryCode);
 			memberBasicInfoVo.setIndustryInfo(name);
-			
 		}
-
+		memberBasicInfoVo.setUserId(userId);
 		/** ---统计信息--- */
 		/** 最近下单的订单信息 */
 		setRecentOrderInfo(userId, transStatistic);

@@ -253,7 +253,9 @@
               </el-col>
             </el-form-item>
             <el-form-item :label="$t('membershipIntroduction.localtion')">
-              <ProAndUrbA @handleToGetProCode="handleToGetProCode" />
+              <ProAndUrbA
+              :address="address"
+              @handleToGetProCode="handleToGetProCode" />
             </el-form-item>
             <el-form-item :label="$t('membershipIntroduction.Maritalstatus')">
               <el-col :span="12">
@@ -678,55 +680,6 @@
         @submitRes="hanldeModifyData"
         >
         </ModifyData>
-      <!-- <el-dialog
-        title="修改余额"
-        :visible.sync="memberLabelVisible"
-        width="40%"
-        :modal-append-to-body="false"
-      >
-        <div
-          class="labelEditDialogDiv"
-          style="margin-bottom:30px"
-        >
-          <div class="balanceDialogDiv">
-            <div class="bD_div">
-              <span>{{item.presentText}}：</span>
-              <span>{{item.persentMoney}}</span>
-            </div>
-            <div class="bD_div specialAddMoney">
-              <span>{{item.addText}}：</span>
-              <el-input
-                v-model="balanceDialogInput"
-                placeholder="请输入内容"
-                size="small"
-              ></el-input>
-              <span>{{item.tips}}</span>
-            </div>
-            <div class="bD_div">
-              <span>{{item.bzText}}：</span>
-              <el-input
-                v-model="balanceDialogBottomInput"
-                placeholder="请输入内容"
-                size="small"
-              ></el-input>
-            </div>
-          </div>
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="memberLabelVisible = false"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="memberLabelVisible = false"
-          >确 定</el-button>
-        </span>
-      </el-dialog> -->
 
     </div>
   </div>
@@ -758,6 +711,7 @@ export default {
       mobileInput: '', // 用户输入->手机号
       realNameInput: '', // 用户输入->真实姓名
       addressListLength: '', // 地址长度
+      address: {},
       assetsUl: '',
       headeImgUrl: this.$imageHost + '/image/admin/head_icon.png',
       assetsData: [],
@@ -824,7 +778,10 @@ export default {
       memberLabelVisible: false,
       balanceDialogData: null,
       integralDialogData: null,
-      cardNameIndex: 0
+      cardNameIndex: 0,
+      provinceCode: null,
+      cityCode: null,
+      districtCode: null
     }
   },
   created () {
@@ -958,8 +915,11 @@ export default {
           if (this.memberBasicInfo.sex) {
             let sexArr = this.$t('membershipIntroduction.sex')
             let map = new Map(sexArr)
-            let sex = map.get(this.memberBasicInfo.sex)
+            let key = this.memberBasicInfo.sex
+            let sex = map.get(key)
+            // this.memberBasicInfo.sexId = this.memberBasicInfo.sex
             this.memberBasicInfo.sex = sex
+            this.memberBasicInfo.sexKey = key
             console.log(sex)
           }
           console.log(this.memberBasicInfo.monthlyIncome)
@@ -971,6 +931,7 @@ export default {
               console.log(i)
               if (tmp === i.value) {
                 this.memberBasicInfo.monthlyIncome = i.label
+                this.memberBasicInfo.income = i.value
                 break
               }
             }
@@ -978,7 +939,9 @@ export default {
           // 存储余额 可用积分
           this.assetsData[3].num = this.memberBasicInfo.account || 0
           this.assetsData[4].num = this.memberBasicInfo.score || 0
-
+          this.provinceCode = this.memberBasicInfo.provinceCode
+          this.cityCode = this.memberBasicInfo.cityCode
+          this.districtCode = this.memberBasicInfo.districtCode
           // 用户标签信息
           this.handleToLabel()
           // 交易 统计
@@ -1170,11 +1133,28 @@ export default {
       }
       console.log(this.hiddenUlFlag)
     },
+    fullUserDetailDialog () {
+      this.GenderValue = this.memberBasicInfo.sexKey
+      if (this.memberBasicInfo.birthdayYear && this.memberBasicInfo.birthdayMonth && this.memberBasicInfo.birthdayDay) { this.birthdayVal = this.memberBasicInfo.birthdayYear + '-' + this.memberBasicInfo.birthdayMonth + '-' + this.memberBasicInfo.birthdayDay }
+      this.nameInput = this.memberBasicInfo.realName
+      this.address.provinceName = this.memberBasicInfo.provinceName
+      this.address.cityName = this.memberBasicInfo.cityName
+      this.address.distictName = this.memberBasicInfo.distictName
+      this.MarriageValue = this.memberBasicInfo.maritalStatus ? String(this.memberBasicInfo.maritalStatus) : null
+      this.incomeValue = this.memberBasicInfo.income
+      this.IDInput = this.memberBasicInfo.cid
+      this.educationValue = this.memberBasicInfo.educationId ? String(this.memberBasicInfo.educationId) : null
+      this.industryValue = this.memberBasicInfo.industryId
+    },
     // 基本信息编辑弹窗
     handleBaseInfo () {
       // 清空数据
       this.clearInputData()
       this.baseInfoDialogVisible = true
+
+      // 回显数据
+      this.fullUserDetailDialog()
+
       // 获取所有行业信息
       getAllIndustryRequest().then(res => {
         if (res.error === 0) {
@@ -1255,7 +1235,10 @@ export default {
         'monthlyIncome': this.incomeValue,
         'cid': this.IDInput,
         'education': this.educationValue,
-        'industory': this.industryValue
+        'industory': this.industryValue,
+        'provinceCode': this.provinceCode,
+        'cityCode': this.cityCode,
+        'districtCode': this.districtCode
       }
       console.log(obj)
 
@@ -1486,7 +1469,9 @@ export default {
     },
     // 省市区数据回传
     handleToGetProCode (data) {
-      console.log(data)
+      this.provinceCode = data.province.code || this.provinceCode
+      this.cityCode = data.city.code || this.cityCode
+      this.districtCode = data.area.code || this.districtCode
     },
     jumpToOrderPage () {
       this.$router.push({

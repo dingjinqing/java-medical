@@ -13,7 +13,7 @@ import lombok.Data;
 public class IndustryVo {
 	private Integer value;
 	
-	//@I18N(propertiesFileName = "member")
+	@I18N(propertiesFileName = "member")
 	private String label;
 	public IndustryVo(Integer value,String label) {
 		this.value = value;
