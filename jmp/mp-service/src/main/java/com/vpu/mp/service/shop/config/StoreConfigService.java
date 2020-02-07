@@ -1,8 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
@@ -75,7 +74,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public String getTechnicianTitle() {
-		return this.get(K_TECHNICIAN_TITLE, String.class, "");
+        return this.get(K_TECHNICIAN_TITLE, String.class, "技师");
 	}
 	
 	/**
