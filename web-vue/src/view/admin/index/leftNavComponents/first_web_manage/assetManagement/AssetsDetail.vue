@@ -104,6 +104,7 @@
             <el-col :span="5">
               <template>
                 <el-select
+                  size="small"
                   v-model="param.tradeType"
                   :placeholder="$t('promoteList.all')"
                 >

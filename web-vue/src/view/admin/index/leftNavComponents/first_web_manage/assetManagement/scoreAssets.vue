@@ -1,6 +1,10 @@
 <template>
   <section class="label">
-    <div class="labelItem">{{$t('assetsManage.overviewTrends')}} <el-button type="text" @click="toDetail()">{{$t('assetsManage.details')}}</el-button></div>
+    <div class="labelItem">{{$t('assetsManage.overviewTrends')}} <el-button
+        type="text"
+        @click="toDetail()"
+      >{{$t('assetsManage.details')}}</el-button>
+    </div>
     <el-select
       v-model="timeSelect"
       size="small"
@@ -58,17 +62,20 @@
         <div
           class="num"
           style="color: #5A8BFF"
-        >{{item.number}}  {{$t('assetsManage.integral')}}</div>
+        >{{item.number}} {{$t('assetsManage.integral')}}</div>
         <div>{{$t('assetsManage.previous')}} {{item.rate}}</div>
       </div>
     </div>
     <!-- echarts图表部分 -->
-    <div id="charts1"></div>
+    <ve-line
+      :data="chartData"
+      :settings="chartSettings"
+      style="width:90%;margin-left:20px"
+    ></ve-line>
   </section>
 </template>
 
 <script>
-import echarts from 'echarts'
 import { scoreManage } from '@/api/admin/firstWebManage/assetsManage/assetsManage.js'
 
 export default {
@@ -85,11 +92,20 @@ export default {
 
   mounted () {
     this.langDefault()
-    this.myChart = echarts.init(document.getElementById('charts1'))
   },
 
   data () {
+    this.chartSettings = {
+      metrics: ['净收入', '总收入', '总支出'],
+      dimension: ['refDate']
+    }
     return {
+      chartData: {
+        columns: ['refDate', '净收入', '总收入', '总支出'],
+        rows: [
+          { 'refDate': '1970-01-01', '净收入': 0, '总收入': 0, '总支出': 0 }
+        ]
+      },
       timeSelect: 1,
       timeValue: [],
       timeRange: this.$t('tradesStatistics.timeRange'),
@@ -111,13 +127,6 @@ export default {
         endTime: '',
         tradeContent: 1
       },
-      chartChange: {
-        date: [],
-        incomeRealScore: [], // 图表净收入
-        incomeTotalScore: [], // 图表总收入
-        outgoScore: [] // 图表总支出
-      },
-      myChart: {},
       table: [],
       startDate: {
         year: '',
@@ -144,12 +153,6 @@ export default {
     },
     // 自定义时间
     customDate () {
-      this.chartChange = {
-        date: [],
-        incomeRealScore: [],
-        incomeTotalScore: [],
-        outgoScore: []
-      }
       this.screeningTime = 0
       this.param.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8)
       this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8)
@@ -159,12 +162,6 @@ export default {
     // 指定时间段
     dateChangeHandler (time) {
       if (time !== 0) {
-        this.chartChange = {
-          date: [],
-          incomeRealScore: [],
-          incomeTotalScore: [],
-          outgoScore: []
-        }
         this.screeningTime = time
         this.initData()
       }
@@ -214,13 +211,6 @@ export default {
       this.originalData.outgoScore = data.outgoScore
       this.originalData.outgoScorePer = this.numberChange(data.outgoScorePer)
 
-      data.revenueDates.map(item => {
-        this.chartChange.date.push(item.refDate)
-        this.chartChange.incomeRealScore.push(item.incomeRealScore)
-        this.chartChange.incomeTotalScore.push(item.incomeTotalScore)
-        this.chartChange.outgoScore.push(item.outgoScore)
-      })
-
       this.table = [
         {
           name: this.$t('assetsManage.income'),
@@ -242,104 +232,71 @@ export default {
         }
       ]
 
-      console.log(this.chartChange, 'char change value==')
-
       // 折线图数据部分
-      this.echartsData = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-        },
-        grid: {
-          left: '7%',
-          right: '4%',
-          bottom: '4%',
-          containLabel: true
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: this.chartChange.date
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            name: this.$t('assetsManage.income'),
-            type: 'line',
-            data: this.chartChange.incomeRealScore
-          },
-          {
-            name: this.$t('assetsManage.revenue'),
-            type: 'line',
-            data: this.chartChange.incomeTotalScore
-          },
-          {
-            name: this.$t('assetsManage.expenses'),
-            type: 'line',
-            data: this.chartChange.outgoScore
-          }
+      if (data.revenueDates === []) {
+        this.chartData.rows = [
+          { 'refDate': '2020-01-01', '净收入': 0, '总收入': 0, '总支出': 0 }
         ]
+      } else {
+        this.chartData.rows = data.revenueDates
+        this.chartData.rows.map(item => {
+          item.净收入 = item.incomeRealScore
+          item.总收入 = item.incomeTotalScore
+          item.总支出 = item.outgoScore
+        })
       }
-      this.myChart.setOption(this.echartsData)
     }
 
   }
 }
-
 </script>
 <style lang="scss" scoped>
-  .label {
-    background: #fff;
-    padding: 10px;
-    .labelItem {
-      height: 50px;
-      line-height: 50px;
-      color: #333;
+.label {
+  background: #fff;
+  padding: 10px;
+  .labelItem {
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+  }
+  .timeSelect {
+    width: 140px;
+    margin: 0 10px 0 2px;
+  }
+}
+.fromWrapper {
+  border: 1px solid #eee;
+  height: 130px;
+  width: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto 50px;
+  .fromItem {
+    flex: 1;
+    height: 130px;
+    position: relative;
+    border-right: 1px solid #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .icons {
+      margin-left: 10px;
+      position: relative;
     }
-    .timeSelect {
-      width: 140px;
-      margin: 0 10px 0 2px;
+    .num {
+      margin-top: 15px;
+      font-size: 30px;
     }
-
-    .fromWrapper {
-      border: 1px solid #eee;
-      height: 130px;
-      width: 85%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 30px auto 50px;
-      .fromItem {
-        flex: 1;
-        height: 130px;
-        position: relative;
-        border-right: 1px solid #eee;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        .icons {
-          margin-left: 10px;
-          position: relative;
-        }
-        .num {
-          margin-top: 15px;
-          font-size: 30px;
-        }
-        :nth-of-type(3) {
-          margin-top: 10px;
-        }
-      }
-
-    }
-
-    #charts1 {
-      width: 90%;
-      height: 500px;
+    :nth-of-type(3) {
+      margin-top: 10px;
     }
   }
+}
 
+#charts1 {
+  width: 90%;
+  height: 500px;
+}
 </style>
