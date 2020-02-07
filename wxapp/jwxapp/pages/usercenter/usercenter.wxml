@@ -1,11 +1,13 @@
-<!--pages/usercenter/usercenter.wxml-->
+<!-- pages/usercenter/usercenter.wxml -->
 <include src="../common/header.wxml" />
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="main-container" style='overflow-x:hidden;padding-bottom:50rpx;'>
   <view class="top">
     <image src="{{wx_user_avatar}}" bindtap="bindJumpLink" data-url="/pages/userinfo/userinfo" class="touxiang" mode="widthFix" wx:if='{{wx_user_avatar!=""}}'></image>
     <image src="{{imageUrl}}image/wxapp/icon_no_4.png" bindtap="bindJumpLink" data-url="/pages/userinfo/userinfo" class="touxiang" mode="widthFix" wx:if='{{wx_user_avatar==""}}'></image>
-    <view class="number" wx:if="{{user_center[0].sign_score.is_open_sign == 1 && user_center[0].sign_score.sign_data.receive_score > 0 && user_center[0].sign_score.is_open_sign==1}}">{{user_name}}</view>
+    <view class="number" wx:if="{{user_center[0].sign_score.is_open_sign == 1 && user_center[0].sign_score.sign_data.receive_score > 0 && user_center[0].sign_score.is_open_sign==1}}">
+      {{user_name}}
+    </view>
     <view class="number" wx:else style="top:100rpx;">{{user_name}}</view>
     <block wx:if="{{user_center[0].sign_score.is_open_sign==1}}">
       <view class='sign' style='background:{{comColor}}' wx:if="{{user_center[0].sign_score.is_open_sign == 1 && user_center[0].sign_score.sign_data.receive_score > 0}}" bindtap='to_integral'>
@@ -16,7 +18,9 @@
         </block>
         <block wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==1}}">
           {{i18n.$t(localePack,"page1.usercenter.available")}} {{user_center[0].sign_score.sign_data.receive_score}} {{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}
-          <text>{{i18n.$t(localePack,"page1.usercenter.continuouslySignedIn")}} {{user_center[0].sign_score.sign_data.day}} {{i18n.$t(localePack,"page1.usercenter.day")}}</text>
+          <text>
+            {{i18n.$t(localePack,"page1.usercenter.continuouslySignedIn")}} {{user_center[0].sign_score.sign_data.day}} {{i18n.$t(localePack,"page1.usercenter.day")}}
+          </text>
         </block>
       </view>
     </block>
@@ -31,20 +35,27 @@
   </view>
   <!-- 领取会员卡 -->
   <view class='fenlei card_rece clearfix' wx:if="{{is_grade==0 && user_center[0].get_grade==1}}">
-    <image src="{{imageUrl}}image/wxapp/grade_icon.png" mode="widthFix" /> {{i18n.$t(localePack,"page1.usercenter.membershipCard")}}
+    <image src="{{imageUrl}}image/wxapp/grade_icon.png" mode="widthFix" />
+    {{i18n.$t(localePack,"page1.usercenter.membershipCard")}}
     <form report-submit='true' bindsubmit='GetCrade'>
-      <button form-type='submit' class='btn_card'>{{i18n.$t(localePack,"page1.usercenter.collectImmediately")}}</button>
+      <button form-type='submit' class='btn_card'>
+        {{i18n.$t(localePack,"page1.usercenter.collectImmediately")}}
+      </button>
     </form>
   </view>
   <block wx:for='{{user_center}}' wx:key='key'>
     <!-- 我的资产 -->
     <view class='my_account each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "account_money" && item.is_show == 1 && audit_state != 1}}'>
-      <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
+      <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>
+        {{item.title}}
+      </view>
       <view class='ma_content'>
         <block wx:for='{{item.content}}' wx:key='key' wx:for-item='item1'>
           <view class='ac_item' bindtap='to_account' wx:if='{{item1.icon_name == "account" && item1.is_show == 1}}'>
             <view class='account_num' style='color:{{comColor}}'>
-              <text>{{item1.num}}</text>元</view>
+              <text>{{item1.num}}</text>
+              元
+            </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.account")}}</view>
           </view>
           <view class='ac_item' bindtap='to_integral' wx:if='{{item1.icon_name == "score" && item1.is_show == 1}}'>
@@ -55,12 +66,16 @@
           </view>
           <view class='ac_item' bindtap="bindJumpLink" data-url="/pages/coupon/coupon" wx:if='{{item1.icon_name == "coupon" && item1.is_show == 1}}'>
             <view class='account_num' style='color:{{comColor}}'>
-              <text>{{item1.num}}</text>{{i18n.$t(localePack,"page1.usercenter.sheets")}}</view>
+              <text>{{item1.num}}</text>
+              {{i18n.$t(localePack,"page1.usercenter.sheets")}}
+            </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.coupon")}}</view>
           </view>
           <view class='ac_item' bindtap="bindJumpLink" data-url="/pages/cardlist/cardlist" wx:if='{{item1.icon_name == "card" && item1.is_show == 1}}'>
             <view class='account_num' style='color:{{comColor}}'>
-              <text>{{item1.num}}</text>{{i18n.$t(localePack,"page1.usercenter.sheets")}}</view>
+              <text>{{item1.num}}</text>
+              {{i18n.$t(localePack,"page1.usercenter.sheets")}}
+            </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.card")}}</view>
           </view>
         </block>
@@ -70,7 +85,8 @@
     <view class='my_order each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "order" && item.is_show == 1}}'>
       <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>
         <view>{{item.title}}</view>
-        <view class='to_more' bindtap="allOrder" wx:if='{{item.module_style == 1}}'>{{i18n.$t(localePack,"page1.usercenter.viewAllOrders")}}
+        <view class='to_more' bindtap="allOrder" wx:if='{{item.module_style == 1}}'>
+          {{i18n.$t(localePack,"page1.usercenter.viewAllOrders")}}
           <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
         </view>
       </view>
@@ -79,21 +95,27 @@
           <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_PAY" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_pay" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item2.num}}</view>
+              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
+                {{item2.num}}
+              </view>
             </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitPay")}}</view>
           </view>
           <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_DELIVERY" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_deliver" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item2.num}}</view>
+              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
+                {{item2.num}}
+              </view>
             </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitDeliver")}}</view>
           </view>
           <view class='ac_item' bindtap="bindOrderNav" data-type="SHIPPED" data-disabled_r="none" data-disabled_l="block" data-transform="-30" wx:if='{{item2.icon_name == "wait_receive" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item2.num}}</view>
+              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
+                {{item2.num}}
+              </view>
             </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitReceive")}}</view>
           </view>
@@ -107,7 +129,9 @@
           <view class='ac_item' bindtap="bindOrderNav" data-type="RETURNING" data-disabled_r="none" data-disabled_l="block" data-transform="-30" wx:if='{{item2.icon_name == "refund" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item2.num}}</view>
+              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
+                {{item2.num}}
+              </view>
             </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.refund")}}</view>
           </view>
@@ -123,9 +147,10 @@
     </view>
     <!-- 我的预约 -->
     <view class='my_appointment each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "appointment" && item.is_show == 1 && item.appointment_info!=null }}'>
-      <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>
-        <view>{{item.title}}</view>
-        <view class='to_more' bindtap='allReserve'>{{i18n.$t(localePack,"page1.usercenter.viewAllAppointments")}}
+      <view class='ma_title'>
+        <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
+        <view class='to_more' bindtap='allReserve'>
+          查看全部预约
           <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
         </view>
       </view>
@@ -135,13 +160,17 @@
         </view>
         <view class='app_info'>
           <view>{{item.appointment_info.serviceName}}</view>
-          <view>{{i18n.$t(localePack,"page1.usercenter.appointmentTime")}}：{{item.appointment_info.serviceDate}} {{item.appointment_info.servicePeriod}}</view>
+          <view>
+            {{i18n.$t(localePack,"page1.usercenter.appointmentTime")}}：{{item.appointment_info.serviceDate}} {{item.appointment_info.servicePeriod}}
+          </view>
         </view>
       </view>
     </view>
     <!-- 使用记录 -->
     <view class='my_history each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "use_record" && item.is_show == 1}}'>
-      <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
+      <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>
+        {{item.title}}
+      </view>
       <view class='ma_content'>
         <view class='ac_item' wx:if='{{item.is_show_collect == 1}}' bindtap='to_collect'>
           <view class='history_num'>{{item.collect}}</view>
@@ -159,7 +188,9 @@
     </view>
     <!-- 我的服务 -->
     <view class='my_service each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "service" && item.is_show == 1}}'>
-      <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
+      <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>
+        {{item.title}}
+      </view>
       <view class='ma_service clearfix'>
         <block wx:for='{{item.content}}' wx:key='key' wx:for-item='item3' wx:if='{{item3.icon_name != "custom_icon"}}'>
           <view class='each_service' wx:if='{{item3.icon_name== "distribution" && item3.is_show == 1}}' data-judge_status='{{item3.judge_status}}' data-names='{{item3.rebate_center_name}}' data-is_distributor="{{item3.is_distributor}}" bindtap='to_where'>
@@ -223,28 +254,38 @@
     </view>
   </block>
 </view>
-
 <include src="../common/footer.wxml" />
-<!--  积分签到  -->
+<!-- 积分签到 -->
 <view class='zhezhao' wx:if="{{is_sign == 1}}" bindtap='closeSign'></view>
 <view class='modal_sign' wx:if="{{is_sign == 1}}">
   <view>
     <image src='{{imageUrl}}/image/wxapp/look_rule.png' mode='widthFix' class='look_rule' data-rule="{{user_center[0].sign_score.sign_rule}}" bindtap='lookRule' />
-    <view class='modal_sign_head' wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==0}}">{{i18n.$t(localePack,"page1.usercenter.continuouslySignedIn")}}</view>
-    <view class='modal_sign_head' wx:else>{{i18n.$t(localePack,"page1.usercenter.continuouslySignedIn")}} {{user_center[0].sign_score.sign_data.day}} {{i18n.$t(localePack,"page1.usercenter.signInForPoints")}}</view>
+    <view class='modal_sign_head' wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==0}}">
+      {{i18n.$t(localePack,"page1.usercenter.continuouslySignedIn")}}
+    </view>
+    <view class='modal_sign_head' wx:else>
+      {{i18n.$t(localePack,"page1.usercenter.continuouslySignedIn")}} {{user_center[0].sign_score.sign_data.day}} {{i18n.$t(localePack,"page1.usercenter.signInForPoints")}}
+    </view>
     <view class='sub-setting' style='background:url({{imageUrl}}/image/wxapp/user-sub-setting.png) left top no-repeat;background-size: 100% 100%;'>
       <view class='pre-jifen-num' style='background: url({{imageUrl}}/image/wxapp/user-jifen.png);background-size: 100% 100%;'>
-        <text>{{user_center[0].sign_score.sign_data.receive_score}}</text>{{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}
+        <text>{{user_center[0].sign_score.sign_data.receive_score}}</text>
+        {{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}
       </view>
     </view>
     <block wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==0}}">
-      <view class='tip'>{{i18n.$t(localePack,"page1.usercenter.checkInToday")}} {{user_center[0].sign_score.sign_data.receive_score}} {{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}</view>
+      <view class='tip'>
+        {{i18n.$t(localePack,"page1.usercenter.checkInToday")}} {{user_center[0].sign_score.sign_data.receive_score}} {{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}
+      </view>
       <form report-submit='true' bindsubmit='signScore'>
-        <button form-type='submit' class='tosign'>{{i18n.$t(localePack,"page1.usercenter.signIn")}}</button>
+        <button form-type='submit' class='tosign'>
+          {{i18n.$t(localePack,"page1.usercenter.signIn")}}
+        </button>
       </form>
     </block>
     <block wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==1}}">
-      <view class='tip' wx:if="{{user_center[0].sign_score.sign_data.tomoroow_receive > 0}}">{{i18n.$t(localePack,"page1.usercenter.checkInTomorrow")}} {{user_center[0].sign_score.sign_data.tomoroow_receive}} {{i18n.$t(localePack,"page1.usercenter.signIn")}}</view>
+      <view class='tip' wx:if="{{user_center[0].sign_score.sign_data.tomoroow_receive > 0}}">
+        {{i18n.$t(localePack,"page1.usercenter.checkInTomorrow")}} {{user_center[0].sign_score.sign_data.tomoroow_receive}} {{i18n.$t(localePack,"page1.usercenter.signIn")}}
+      </view>
       <view class='tosign signed'>{{i18n.$t(localePack,"page1.usercenter.checkIn")}}</view>
     </block>
     <view class='close' bindtap='closeSign'>
@@ -261,7 +302,9 @@
     <image src='{{imageUrl}}image/wxapp/grade_back.png' mode='widthFix' />
     <view>{{i18n.$t(localePack,"page1.usercenter.membershipCard")}}</view>
     <form report-submit='true' bindsubmit='GetCrade'>
-      <button class='btn_modal_card' form-type='submit'>{{i18n.$t(localePack,"page1.usercenter.collectImmediately")}}</button>
+      <button class='btn_modal_card' form-type='submit'>
+        {{i18n.$t(localePack,"page1.usercenter.collectImmediately")}}
+      </button>
     </form>
   </view>
 </view>
