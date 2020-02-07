@@ -10,5 +10,11 @@ export const en = {
   introduction: 'Introduction',
   operate: 'operating',
   shiftManagement: 'Shift management',
-  edit: 'edit'
+  edit: 'edit',
+
+  technicianNameR: 'Name',
+  selectTipL: 'Please select',
+  selectTipR: 'Grouping',
+  technicianPhoneR: 'Phone',
+  technicianGroupR: 'Group'
 }
