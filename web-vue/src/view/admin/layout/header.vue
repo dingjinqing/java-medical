@@ -20,7 +20,7 @@
       <div class="account">
         <div class="menu">
           <div class="menu_main">
-            <span>
+            <span v-if="shopAvatar!=''">
               <img
                 class="shopAvatar"
                 :src="shopAvatar"
