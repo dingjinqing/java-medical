@@ -144,6 +144,8 @@ export const en = {
   tips3: 'The modified new password will replace the original password',
   tips4: 'Please enter the login password',
   tips5: 'Please set a password',
+  tipTitles6: 'Feature access password',
+
   // 功能权限管理的弹窗
   manual_refund: 'Manual return refund',
   extend_receive_time: 'Extend automatic receipt time',
