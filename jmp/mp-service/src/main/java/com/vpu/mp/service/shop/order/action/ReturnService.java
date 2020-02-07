@@ -30,6 +30,7 @@ import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -97,6 +98,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     public ShopReturnConfigService shopReturncfg;
     @Autowired
     public OrderCreateMpProcessorFactory orderCreateMpProcessorFactory;
+    @Autowired
+    public GroupBuyService groupBuyService;
 
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -564,7 +567,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         boolean isRestore = ((returnOrderRecord.getReturnType().equals(OrderConstant.RT_GOODS) || returnOrderRecord.getReturnType().equals(OrderConstant.RT_CHANGE))
             || (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
         //修改商品库存-销量
-        updateNormalStockAndSales(returnGoods, order, isRestore);
+        updateNormalStockAndSales(returnGoods, order,goodsType, isRestore);
         //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
         goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
         for (Byte type : goodsType) {
@@ -580,11 +583,12 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
     /**
 	 * 	更新库存和销量
-     * @param returnGoods
-     * @param order
-     * @param isRestore 是否恢复库存
-     */
-	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, boolean isRestore) {
+	 * @param returnGoods
+	 * @param order
+	 * @param goodsType
+	 * @param isRestore 是否恢复库存
+	 */
+	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, List<Byte> goodsType, boolean isRestore) {
 		//TODO 对接pos erp未完成
 		
 		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
@@ -625,9 +629,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 }
 			}
 			//订单类型为拼团 且存在拼团id
-			/*if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) && order.getActivityId() != null) {
-				//TODO 拼团修改库存和销量
+			if(goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY) && order.getActivityId() != null) {
+				groupBuyService.updateGroupBuyStock(order.getActivityId(),rGoods.getProductId(),-rGoods.getGoodsNumber());
 			}
+			/*
             //订单类型为秒杀 且存在秒杀id 且不是赠品行
             if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_SEC_KILL)) && order.getActivityId() != null && rGoods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
                 saas.getShopApp(getShopId()).seckill.updateSeckillStock(order.getActivityId(),rGoods.getProductId(),- rGoods.getGoodsNumber());

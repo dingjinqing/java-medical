@@ -708,4 +708,41 @@ public class GroupBuyService extends ShopBaseService {
 
         return BaseConstant.ACTIVITY_STATUS_CAN_USE;
     }
+
+    /**
+     * 修改拼团库存和销量
+     *
+     * @param activityId
+     * @param productId
+     * @param goodsNumber 商品数量
+     * @return
+     */
+    public boolean updateGroupBuyStock(Integer activityId, Integer productId, Integer goodsNumber) {
+        //规格库存`
+        int prdFlag = db().update(GROUP_BUY_PRODUCT_DEFINE)
+                .set(GROUP_BUY_PRODUCT_DEFINE.STOCK, GROUP_BUY_PRODUCT_DEFINE.STOCK.minus(goodsNumber))
+                .set(GROUP_BUY_PRODUCT_DEFINE.SALE_NUM, GROUP_BUY_PRODUCT_DEFINE.SALE_NUM.add(goodsNumber))
+                .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId))
+                .and(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))
+                .and(GROUP_BUY_PRODUCT_DEFINE.STOCK.ge(goodsNumber.shortValue())).execute();
+        if (prdFlag == 1) {
+            //总库存
+            int tolFlag = db().update(GROUP_BUY_DEFINE)
+                    .set(GROUP_BUY_DEFINE.STOCK, GROUP_BUY_DEFINE.STOCK.minus(goodsNumber))
+                    .set(GROUP_BUY_DEFINE.SALE_NUM, GROUP_BUY_DEFINE.SALE_NUM.add(goodsNumber))
+                    .where(GROUP_BUY_DEFINE.ID.eq(activityId))
+                    .and(GROUP_BUY_DEFINE.STOCK.ge(goodsNumber.shortValue())).execute();
+            if (tolFlag == 1) {
+                return true;
+            } else {
+                //库存修改失败
+                db().update(GROUP_BUY_PRODUCT_DEFINE)
+                        .set(GROUP_BUY_PRODUCT_DEFINE.STOCK, GROUP_BUY_PRODUCT_DEFINE.STOCK.add(goodsNumber))
+                        .set(GROUP_BUY_PRODUCT_DEFINE.SALE_NUM, GROUP_BUY_PRODUCT_DEFINE.SALE_NUM.minus(goodsNumber))
+                        .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId))
+                        .and(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID.eq(productId)).execute();
+            }
+        }
+        return false;
+    }
 }
