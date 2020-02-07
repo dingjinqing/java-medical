@@ -298,6 +298,14 @@ export function distributorGroupList (data) {
     data: data
   })
 }
+// 手动升级添加分销员
+export function manualAddDistributor (data) {
+  return service({
+    url: '/api/admin/distribution/level/distributor/add',
+    method: 'post',
+    data: data
+  })
+}
 
 // 分销员已邀请用户列表
 export function inviteUserList (data) {
