@@ -857,6 +857,10 @@ export default {
   },
   inject: ['adminReload'],
   mounted () {
+    let userId = this.$route.query.userId
+    let userName = this.$route.query.userName
+    this.searchParams.userName = userName || null
+    console.log(userId)
     console.log('mounted-----------------------')
     this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : null
     // 初始化数据
