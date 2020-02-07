@@ -591,7 +591,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 * @param goodsType
 	 * @param isRestore 是否恢复库存
 	 */
-	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, List<Byte> goodsType, boolean isRestore) {
+	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, boolean isRestore) {
 		//TODO 对接pos erp未完成
 		
 		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
@@ -631,18 +631,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                     updateNormalGoods.add(goods);
                 }
 			}
-			//订单类型为拼团 且存在拼团id
-			/*if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)) && order.getActivityId() != null) {
-				//TODO 拼团修改库存和销量
-			}
-            //订单类型为秒杀 且存在秒杀id 且不是赠品行
-            if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_SEC_KILL)) && order.getActivityId() != null && rGoods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
-                saas.getShopApp(getShopId()).seckill.updateSeckillStock(order.getActivityId(),rGoods.getProductId(),- rGoods.getGoodsNumber());
-            }
-            //订单类型为砍价 且存在砍价id
-            if(goodsType.contains(Byte.toString(BaseConstant.ACTIVITY_TYPE_BARGAIN)) && order.getActivityId() != null) {
-                saas.getShopApp(getShopId()).bargain.updateBargainStock(order.getActivityId(),- rGoods.getGoodsNumber());
-            }*/
 		}
 		if(updateProducts.size() > 0) {
 			db().batchUpdate(updateProducts);
