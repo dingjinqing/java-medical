@@ -160,6 +160,10 @@ global.wxComponent({
           textContent
         })
     },
+    // 打开规格弹窗
+    showSpecDialog(){
+      this.triggerEvent("showSpecDialog", this.data.goodsData);
+    },
     toItem() {
       util.jumpLink(
         `pages/item/item?goodsId=${this.data.goodsData.goodsId}&activityType=${this.data.goodsData.activityType}&activityId=${this.data.goodsData.activityId}`,

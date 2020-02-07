@@ -19,7 +19,7 @@
         <view class="goods_content">
           <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
             <block wx:for="{{pageItem}}" wx:for-item="goodsItem" wx:key="itemIndex" wx:for-index="itemIndex">
-              <v-double-col-goods goods-data="{{goodsItem}}" del-market="{{delMarket}}" show-cart="{{showCart}}"/>
+              <v-double-col-goods bindshowSpecDialog="showSpecDialog" goods-data="{{goodsItem}}" del-market="{{delMarket}}" show-cart="{{showCart}}"/>
             </block>
           </block>
         </view>
@@ -36,3 +36,9 @@
   <v-recommend id="recommend" pageName="search"/>
   <include src="/pages/common/footer.wxml"/>
 </view>
+
+
+<v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">
+  <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+  <v-item-footer slot="footer" dealt-act="{{dealtAct}}" activity="{{productsInfo.activity}}"  origin="spec" product-info="{{productInfo}}" bindclose="bindCloseSpec" />
+</v-spec-dialog>

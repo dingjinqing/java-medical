@@ -36,6 +36,7 @@ global.wxComponent({
         } else {
           this.setData({
             leftButtonName: '加入购物车',
+            rightButtonName: '立即购买',
             rightButtonShow: true,
             leftButtonShow: true
           })

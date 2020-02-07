@@ -11,25 +11,25 @@ global.wxComponent({
       type: Object,
       value: null
     },
-    show:{
+    show: {
       type: Boolean,
       value: false,
-      observer(val){
-        if(val === true){
+      observer(val) {
+        if (val === true) {
           this.specDialogShow()
         }
       }
     },
-    triggerButton:{
-      type:String,
-      value:'',
-      observer(val){
+    triggerButton: {
+      type: String,
+      value: '',
+      observer(val) {
         console.log(val)
       }
     },
-    dealtAct:{
-      type:Object,
-      value:null
+    dealtAct: {
+      type: Object,
+      value: null
     }
   },
 
@@ -50,31 +50,31 @@ global.wxComponent({
     specDialogShow() {
       this.setData({
         showSpec: true
-      });
+      })
     },
     getProductData(data) {
       this.setData({
         product: data.detail
-      });
-      this.triggerEvent("product", data.detail);
+      })
+      this.triggerEvent('product', data.detail)
     },
     getGoodsNum(data) {
       this.setData({
         goodsNum: data.detail
-      });
-      this.setProductInfo();
+      })
+      this.setProductInfo()
     },
     setProductInfo() {
       this.setData({
         productInfo: { ...this.data.product, ...this.data.goodsNum }
-      });
-      this.triggerEvent("getProductInfo", this.data.productInfo);
+      })
+      this.triggerEvent('getProductInfo', this.data.productInfo)
     },
-    bindClose(){
+    bindClose() {
       this.setData({
-        showSpec:false
+        showSpec: false
       })
       this.triggerEvent('close')
     }
   }
-});
+})
