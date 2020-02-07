@@ -10,5 +10,11 @@ export const cn = {
   introduction: '介绍',
   operate: '操作',
   shiftManagement: '排班管理',
-  edit: '编辑'
+  edit: '编辑',
+
+  technicianNameR: '姓名',
+  selectTipL: '请选择',
+  selectTipR: '分组',
+  technicianPhoneR: '电话',
+  technicianGroupR: '分组'
 }

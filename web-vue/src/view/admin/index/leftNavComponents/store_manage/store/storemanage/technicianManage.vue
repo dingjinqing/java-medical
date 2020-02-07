@@ -7,17 +7,17 @@
       @tab-click="tabClickHandle"
     >
       <el-tab-pane
-        :label="$t('technicianManage.technicianList')"
+        :label="technicianList"
         name="first"
       >
       </el-tab-pane>
       <el-tab-pane
-        :label="$t('technicianManage.technicianClass')"
+        :label="technicianClass"
         name="second"
       >
       </el-tab-pane>
       <el-tab-pane
-        :label="$t('technicianManage.addTechnician')"
+        :label="addTechnician"
         name="third"
       >
       </el-tab-pane>
@@ -27,21 +27,42 @@
 </template>
 
 <script>
+import utils from '@/util/public.js'
 export default {
   data () {
     return {
       id: '',
-      activeName: 'first'
+      activeName: 'first',
+      // 配置技师职称
+      technicianList: this.$t('technicianManage.technicianList'),
+      technicianClass: this.$t('technicianManage.technicianClass'),
+      addTechnician: this.$t('technicianManage.addTechnician')
     }
   },
   mounted () {
     this.id = this.$route.query.id
     this.langDefault()
     this.initStatus()
+    utils.getJobTitle().then(res => {
+      if (res) {
+        this.technicianList = res + this.$t('technicianManage.technicianListR')
+        this.technicianClass = res + this.$t('technicianManage.technicianClassR')
+        this.addTechnician = this.$t('technicianManage.addTechnicianL') + res
+      }
+    })
   },
   watch: {
     $route: function (val) {
       this.initStatus()
+    },
+    lang: function (val) {
+      utils.getJobTitle().then(res => {
+        if (res) {
+          this.technicianList = res + this.$t('technicianManage.technicianListR')
+          this.technicianClass = res + this.$t('technicianManage.technicianClassR')
+          this.addTechnician = this.$t('technicianManage.addTechnicianL') + res
+        }
+      })
     }
   },
   methods: {

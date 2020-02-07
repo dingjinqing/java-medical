@@ -240,6 +240,7 @@
 </template>
 
 <script>
+import utils from '@/util/public.js'
 import { getAllServiceCats, getServiceList, deleteService, onService, offService, shareService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 import vm from '@/main'
@@ -260,7 +261,9 @@ export default {
       shareDialogVisible: false,
       shareImageUrl: '',
       shareUrl: '',
-      isSelectAll: false
+      isSelectAll: false,
+      noTechnician: this.$t('serviceList.noTechnician'),
+      haveTechnician: this.$t('serviceList.haveTechnician')
     }
   },
   created () {
@@ -269,6 +272,16 @@ export default {
     this.langDefault()
     this.initServiceSelect()
     this.initDataList()
+    // 配置技师职称
+    utils.getJobTitle().then(res => {
+      if (res) {
+        this.haveTechnician = this.$t('serviceList.yes') + res
+        this.noTechnician = this.$t('serviceList.no') + res
+      } else {
+        this.haveTechnician = this.$t('serviceList.haveTechnician')
+        this.noTechnician = this.$t('serviceList.noTechnician')
+      }
+    })
   },
   filters: {
     formatImgUrl (serviceImg) {
@@ -284,9 +297,9 @@ export default {
   methods: {
     formatType (row) {
       if (row.serviceType === 0) {
-        return this.$t('serviceList.noTechnician')
+        return this.noTechnician
       } else if (row.serviceType === 1) {
-        return this.$t('serviceList.haveTechnician')
+        return this.haveTechnician
       } else {
         return ''
       }
