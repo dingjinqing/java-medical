@@ -122,6 +122,7 @@ export default {
       handler (newData) {
         if (newData) {
           console.log(newData)
+          newData.card_type = Number(newData.card_type)
           this.carData = newData
         }
         console.log(newData)
