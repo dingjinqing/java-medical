@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
+import java.time.LocalDate;
 
 /**
 * @author 黄壮壮
@@ -46,5 +47,6 @@ public class ValidUserCardBean {
 	
 	// 头像
 	private String avatar;
-	
+    private LocalDate startDate;
+    private LocalDate endDate;
 }
