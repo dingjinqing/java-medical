@@ -139,7 +139,7 @@
                       <span
                         v-else
                         class="card_state"
-                      >{{(item.cardState===1||item.cardState==='1')?'使用中':'停止使用'}}</span>
+                      >{{item.cardState===1?'使用中':'停止使用'}}</span>
                     </div>
                     <!-- <p
                       class="receive_day"
