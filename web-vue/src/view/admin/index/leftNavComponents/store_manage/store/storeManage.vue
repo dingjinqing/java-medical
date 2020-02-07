@@ -68,6 +68,18 @@ export default {
       }
     })
   },
+  watch: {
+    lang (val) {
+      // 配置技师职称
+      utils.getJobTitle().then(res => {
+        if (res) {
+          this.technicianManagement = res + this.$t('storeManage.management')
+        } else {
+          this.technicianManagement = this.$t('storeManage.technicianManagement')
+        }
+      })
+    }
+  },
   methods: {
     tabClickHandle (tab) {
       const name = tab.name

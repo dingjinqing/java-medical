@@ -205,15 +205,27 @@ export default {
       this.initForm()
     }
     // 配置
-    let that = this
     utils.getJobTitle().then(res => {
       if (res) {
-        that.technicianName = res + that.$t('technicianAdd.technicianNameR')
-        that.introTips = that.$t('technicianAdd.introTipsL') + res
-        that.nameValid = that.$t('technicianAdd.nameValidL') + res + that.$t('technicianAdd.technicianNameR')
-        that.phoneValid = that.$t('technicianAdd.nameValidL') + res + that.$t('technicianAdd.phoneValidR')
+        this.technicianName = res + this.$t('technicianAdd.technicianNameR')
+        this.introTips = this.$t('technicianAdd.introTipsL') + res
+        this.nameValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.technicianNameR')
+        this.phoneValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.phoneValidR')
       }
     })
+  },
+  watch: {
+    lang (val) {
+      // 配置
+      utils.getJobTitle().then(res => {
+        if (res) {
+          this.technicianName = res + this.$t('technicianAdd.technicianNameR')
+          this.introTips = this.$t('technicianAdd.introTipsL') + res
+          this.nameValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.technicianNameR')
+          this.phoneValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.phoneValidR')
+        }
+      })
+    }
   },
   methods: {
     initGroupData () {
