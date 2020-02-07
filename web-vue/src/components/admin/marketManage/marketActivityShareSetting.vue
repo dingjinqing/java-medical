@@ -73,6 +73,7 @@
                 @click="addGoodsImg"
               >
                 <img
+                  style="width: 100%; height:100%;"
                   class="selectImage"
                   :src="srcList.src3"
                 >
@@ -83,6 +84,7 @@
         </el-radio>
         <ImageDalog
           pageIndex='pictureSpace'
+          :imageSize=[800,800]
           :tuneUp="showImageDialog"
           @handleSelectImg='handleSelectImg'
         />
@@ -111,6 +113,7 @@ export default {
   methods: {
     // 活动分享 -- 添加图片点击事件，弹出图片选择组件
     addGoodsImg () {
+      console.log(this.shareConfig)
       this.showImageDialog = !this.showImageDialog
     },
     // 图片点击回调函数
@@ -141,9 +144,6 @@ export default {
   border: 1px solid #e4e4e4;
   cursor: pointer;
   text-align: center;
-  .selectImage {
-    margin-top: 8px;
-  }
 }
 .deleteIcon {
   width: 17px;
