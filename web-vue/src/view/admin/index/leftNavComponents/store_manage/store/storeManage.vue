@@ -61,7 +61,6 @@ export default {
     this.initStatus()
     // 配置技师职称
     utils.getJobTitle().then(res => {
-      console.log('title:', res)
       if (res) {
         this.technicianManagement = res + this.$t('storeManage.management')
       } else {
