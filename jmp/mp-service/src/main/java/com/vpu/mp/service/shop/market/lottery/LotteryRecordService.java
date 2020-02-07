@@ -136,7 +136,6 @@ public class LotteryRecordService extends ShopBaseService {
 
     /**
      * 发送奖品
-     * TODO: 2019/8/8  抽奖业务逻辑
      *
      * @param userId
      * @param joinValid JoinLottery

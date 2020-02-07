@@ -30,6 +30,7 @@ import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
@@ -98,6 +99,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     public ShopReturnConfigService shopReturncfg;
     @Autowired
     public OrderCreateMpProcessorFactory orderCreateMpProcessorFactory;
+    @Autowired
+    public GroupBuyService groupBuyService;
     @Autowired
     public GroupDrawService groupDraw;
 
@@ -583,11 +586,12 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
     /**
 	 * 	更新库存和销量
-     * @param returnGoods
-     * @param order
-     * @param isRestore 是否恢复库存
-     */
-	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, boolean isRestore) {
+	 * @param returnGoods
+	 * @param order
+	 * @param goodsType
+	 * @param isRestore 是否恢复库存
+	 */
+	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, List<Byte> goodsType, boolean isRestore) {
 		//TODO 对接pos erp未完成
 		
 		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
