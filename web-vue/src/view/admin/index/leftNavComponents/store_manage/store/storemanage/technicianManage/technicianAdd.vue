@@ -161,6 +161,7 @@
 </template>
 
 <script>
+import utils from '@/util/public.js'
 import { addTechnicianApi, getTechnicianGroup, getTechnician, getServiceList, updateTechnicianApi } from '@/api/admin/storeManage/storemanage/technicianManage'
 import ImageDialog from '@/components/admin/imageDalog'
 export default {
@@ -200,6 +201,28 @@ export default {
     this.initServiceData()
     if (this.$route.query.technicianId) {
       this.initForm()
+    }
+    // 配置
+    utils.getJobTitle().then(res => {
+      if (res) {
+        this.technicianName = res + this.$t('technicianAdd.technicianNameR')
+        this.introTips = this.$t('technicianAdd.introTipsL') + res
+        this.nameValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.technicianNameR')
+        this.phoneValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.phoneValidR')
+      }
+    })
+  },
+  watch: {
+    lang (val) {
+      // 配置
+      utils.getJobTitle().then(res => {
+        if (res) {
+          this.technicianName = res + this.$t('technicianAdd.technicianNameR')
+          this.introTips = this.$t('technicianAdd.introTipsL') + res
+          this.nameValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.technicianNameR')
+          this.phoneValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.phoneValidR')
+        }
+      })
     }
   },
   methods: {

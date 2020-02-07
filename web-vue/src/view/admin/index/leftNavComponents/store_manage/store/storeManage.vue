@@ -21,7 +21,7 @@
             >
             </el-tab-pane>
             <el-tab-pane
-              :label="$t('storeManage.technicianManagement')"
+              :label="technicianManagement"
               name="third"
             >
             </el-tab-pane>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import utils from '@/util/public.js'
 import { judgeJurisdictionRequest } from '@/api/admin/util.js'
 export default {
   data () {
@@ -48,7 +49,8 @@ export default {
       id: null, // 门店id
       businessHours: null, // 营业时间
       businessType: 1, // 工作日还是每天
-      activeName: 'first'
+      activeName: 'first',
+      technicianManagement: ''
     }
   },
   created () {
@@ -57,6 +59,26 @@ export default {
     this.businessType = this.$route.query.businessType
     this.langDefault()
     this.initStatus()
+    // 配置技师职称
+    utils.getJobTitle().then(res => {
+      if (res) {
+        this.technicianManagement = res + this.$t('storeManage.management')
+      } else {
+        this.technicianManagement = this.$t('storeManage.technicianManagement')
+      }
+    })
+  },
+  watch: {
+    lang (val) {
+      // 配置技师职称
+      utils.getJobTitle().then(res => {
+        if (res) {
+          this.technicianManagement = res + this.$t('storeManage.management')
+        } else {
+          this.technicianManagement = this.$t('storeManage.technicianManagement')
+        }
+      })
+    }
   },
   methods: {
     tabClickHandle (tab) {
