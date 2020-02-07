@@ -158,7 +158,8 @@ export default {
       ],
       ruleForm: {
         username: '',
-        password: ''
+        password: '',
+        isSubLogin: false
       },
       rules: {
         username: { validator: validateUserName, trigger: 'blur' },
@@ -167,7 +168,8 @@ export default {
       subRuleForm: {
         username: '',
         subUsername: '',
-        password: ''
+        password: '',
+        isSubLogin: true
       },
       subRules: {
         username: { validator: validateUserName, trigger: 'blur' },
@@ -234,13 +236,13 @@ export default {
               // test
             })
           } else {
-            loginRequest(this.subData).then((res) => {
+            loginRequest(this.subRuleForm).then((res) => {
               console.log('第二')
               if (res.error === 0) {
                 document.onkeydown = undefined
                 localStorage.setItem('V-loginType', 0)
                 Cookies.set('V-Index-Token', res.content.token)
-                localStorage.setItem('V-Username', res.content.userName)
+                localStorage.setItem('V-Username', res.content.subUserName)
                 localStorage.setItem('V-AccountName', res.content.accountName)
                 localStorage.setItem('V-isSubLogin', this.isSubLogin)
                 console.log('子账户登录')
