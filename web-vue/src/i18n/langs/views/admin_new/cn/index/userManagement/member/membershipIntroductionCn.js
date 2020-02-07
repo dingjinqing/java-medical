@@ -138,7 +138,6 @@ export const cn = {
   Deleteinviter: '删除邀请人',
   Revisioninviters: '修改邀请人',
   Currentpage: '当前页面',
-
   Essentialinformation: '基本信息',
   Towrite: '编辑',
   Realname: '真实姓名',
@@ -372,35 +371,35 @@ export const cn = {
   ],
   educationValueOptions: [
     {
-      value: '0',
+      value: '1',
       label: '初中'
     },
     {
-      value: '1',
+      value: '2',
       label: '高中'
     },
     {
-      value: '2',
+      value: '3',
       label: '中专'
     },
     {
-      value: '3',
+      value: '4',
       label: '大专'
     },
     {
-      value: '4',
+      value: '5',
       label: '本科'
     },
     {
-      value: '5',
+      value: '6',
       label: '硕士'
     },
     {
-      value: '6',
+      value: '7',
       label: '博士'
     },
     {
-      value: '7',
+      value: '8',
       label: '其它'
     }
   ],
