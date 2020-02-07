@@ -246,4 +246,13 @@ public class FirstSpecialService extends ShopBaseService {
         return res;
     }
 
+    /**
+     * 获取首单特惠活动record
+     * @param activityId 活动id
+     * @return record信息
+     */
+    public FirstSpecialRecord getFirstSpecialRecord(Integer activityId) {
+        return db().selectFrom(FIRST_SPECIAL).where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FIRST_SPECIAL.ID.eq(activityId)))
+            .fetchAny();
+    }
 }

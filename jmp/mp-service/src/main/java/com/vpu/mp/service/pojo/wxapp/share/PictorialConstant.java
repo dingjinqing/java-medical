@@ -19,7 +19,9 @@ public class PictorialConstant {
     /** 预售分享*/
     public static final Byte PRE_SALE_ACTION_SHARE = 7;
     /** 限时降价 */
-    public static final Byte REDUCE_PRICE_ACTION_SAHRE = 9;
+    public static final Byte REDUCE_PRICE_ACTION_SHARE = 9;
+    /** 首单特惠 */
+    public static final Byte FIRST_SPECIAL_ACTION_SHARE = 11;
 
 
 }
