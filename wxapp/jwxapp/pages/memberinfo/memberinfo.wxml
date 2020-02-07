@@ -133,6 +133,16 @@
           </view>
         </block>
       </view>
+      <!-- 邀请码 -->
+      <view wx:if="{{if_invitation}}">
+        <text class='main_txt'>邀请码</text>
+        <block wx:if="{{ user_info.invitationCode != null && user_info.invitationCode != '' }}">
+          <input class='main_ipt' value='{{ user_info.invitationCode }}' bindblur='invitationCode'  />
+        </block>
+        <block wx:else>
+          <input placeholder='输入您的邀请码' placeholder-style='#ccc' class='main_ipt' bindblur='invitationCode'  />
+        </block>
+      </view>
       <!-- 自定义激活项 -->
       <view wx:for="{{custom_arr}}" wx:key="index" wx:if="{{item.is_checked == 1}}">
         <view wx:if="{{if_custom == 1}}">

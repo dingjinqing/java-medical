@@ -7,6 +7,7 @@ var region = ['', '', ''];
 var regionCode = ['', '', ''];
 var real_name = '';
 var remarks = '';
+var invitation_code = '';
 var sex_index = 0;
 var act = 0;
 var user_block = 0;
@@ -62,6 +63,7 @@ global.wxPage({
     if_edu: 0,
     if_remark: 0,
     if_upImage: 0,
+    if_invitation: 0,
     user_nick_name: "",
     save_flag: 1,
     img_len: 0,
@@ -96,6 +98,7 @@ global.wxPage({
     sex_index = 0;
     user_nick_name = '';
     real_name = '';
+    invitation_code = '';
     marry_index = 0;
     region: ['', '', ''];
     regionCode: ['', '', ''];
@@ -127,8 +130,12 @@ global.wxPage({
               if (custom_arr[i].custom_type == 0) {
                 custom_arr[i].custom_select = 0
                 for (var j in custom_arr[i].option_arr) {
-                  if (j == 0) {
-                    custom_arr[i].option_arr[j].checked = true
+                  if (custom_arr[i].is_checked == 1) {
+                    if (j == 0) {
+                      custom_arr[i].option_arr[j].checked = true
+                    } else {
+                      custom_arr[i].option_arr[j].checked = false
+                    }
                   } else {
                     custom_arr[i].option_arr[j].checked = false
                   }
@@ -228,6 +235,11 @@ global.wxPage({
                 if_upImage: 1
               })
             }
+            if (fi_arr[i] == '邀请码') {
+              that.setData({
+                if_invitation: 1
+              })
+            }
           }
 
 
@@ -322,6 +334,10 @@ global.wxPage({
               edu_array: edu_array,
               edu_select: edu_select,
             })
+          }
+          // 邀请码
+          if (user_info.invitationCode) {
+            invitation_code = user_info.invitationCode
           }
 
           that.setData({
@@ -432,28 +448,36 @@ global.wxPage({
     if (this.data.if_upImage == 1) {
       user_info.upload_image = that.data.comm_img[0];
     }
+    // 邀请码
+    if (this.data.if_invitation == 1) {
+      user_info.invitation_code = invitation_code
+    }
     // 自定义激活项
     var custom_arr = that.data.custom_arr
+    var custom_options = []
     for (var i in custom_arr) {
-      // 必填项
-      if (custom_arr[i].option_ver == 1 && custom_arr[i].is_checked == 1) {
-        if (custom_arr[i].custom_type == 0 || custom_arr[i].custom_type == 1) {
-          var result = custom_arr[i].option_arr.some(function (item) {
-            if (item.checked == true) {
-              return true
-            } else {
-              return false;
+      if (custom_arr[i].is_checked == 1) {
+        // 必填项
+        if (custom_arr[i].option_ver == 1) {
+          if (custom_arr[i].custom_type == 0 || custom_arr[i].custom_type == 1) {
+            var result = custom_arr[i].option_arr.some(function (item) {
+              if (item.checked == true) {
+                return true
+              } else {
+                return false;
+              }
+            })
+            if (result == false) {
+              util.showModal("提示", "请填写" + custom_arr[i].custom_title);
+              return;
             }
-          })
-          if (result == false) {
+          } else if (custom_arr[i].custom_type == 2 && custom_arr[i].text == '') {
             util.showModal("提示", "请填写" + custom_arr[i].custom_title);
             return;
           }
-        } else if (custom_arr[i].custom_type == 2 && custom_arr[i].text == '') {
-          util.showModal("提示", "请填写" + custom_arr[i].custom_title);
-          return;
         }
-        user_info.custom_options = that.data.custom_arr
+        custom_options.push(custom_arr[i])
+        user_info.custom_options = custom_options
       }
     }
     //激活
@@ -485,11 +509,11 @@ global.wxPage({
       util.showModal("提示", "请选择婚姻状况");
       return;
     }
-    if (user_info.education == 0 && this.data.if_edu == 1) {
+    if (user_info.education == -1 && this.data.if_edu == 1) {
       util.showModal("提示", "请选择教育程度");
       return;
     }
-    if (user_info.industry_info == 0 && this.data.if_work == 1) {
+    if (user_info.industry_info == -1 && this.data.if_work == 1) {
       util.showModal("提示", "请选择所在行业");
       return;
     }
@@ -500,6 +524,10 @@ global.wxPage({
     if ((user_info.upload_image == '' || user_info.upload_image == undefined) && this.data.if_upImage == 1) {
       util.showModal("提示", "请上传图片");
       return;
+    }
+    if (user_info.invitation_code == '' && this.data.if_invitation == 1) {
+      util.showModal("提示", "请输入邀请码");
+      return
     }
 
     if (!distribution) user_info.card_no = card_no;
@@ -512,9 +540,13 @@ global.wxPage({
         console.log(user_info)
         util.api('/api/wxapp/distribution/distributor/apply', function (res) {
           if (res.error == 0) {
-            // util.redirectTo({
-            //   url: '/pages/distributionspread/distributionspread'
-            // })
+            if (res.error == -1) {
+              // 申请不成功, 邀请码不存在
+              util.showModal("提示", "邀请码不存在");
+            }
+            util.redirectTo({
+              url: '/pages/distributionspread/distributionspread'
+            })
           }
         }, {
           activationFields: user_info,
@@ -651,6 +683,13 @@ global.wxPage({
       }
     });
   },
+  // 邀请码
+  invitationCode: function (e) {
+    if (e.detail.value == "") {
+      util.showModal("提示", "请填写邀请码");
+    }
+    invitation_code = e.detail.value;
+  },
   // 自定义单选
   bindRadioChange: function (e) {
     var that = this
@@ -659,7 +698,13 @@ global.wxPage({
     var custom_select = e.detail.value
 
     custom_arr[index].custom_select = custom_select
-    custom_arr[index].option_arr[custom_select].checked = true
+    for (var i in custom_arr[index].option_arr) {
+      if (i == custom_select) {
+        custom_arr[index].option_arr[i].checked = true
+      } else 
+        custom_arr[index].option_arr[i].checked = false
+    }
+    
 
     that.setData({
       custom_arr: custom_arr
