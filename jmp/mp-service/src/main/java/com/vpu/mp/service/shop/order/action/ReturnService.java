@@ -30,6 +30,7 @@ import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -97,8 +98,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     public ShopReturnConfigService shopReturncfg;
     @Autowired
     public OrderCreateMpProcessorFactory orderCreateMpProcessorFactory;
+    @Autowired
+    public GroupDrawService groupDraw;
 
-	@Override
+    @Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.RETURN;
 	}
@@ -553,7 +556,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         List<Byte> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
         //货到付款 、拼团抽奖未中奖（TODO）、退运费、手动退款
         if(OrderConstant.IS_COD_NO.equals(order.getIsCod()) ||
-            goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW) ||
+            (goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW) && !groupDraw.IsWinDraw(order.getOrderSn())) ||
             returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_SHIPPING_FEE) ||
             returnOrderRecord.getReturnType().equals(OrderConstant.RT_MANUAL)) {
             //不进行修改库存销量操作

@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.order;
 
-import java.sql.Timestamp;
-
 import lombok.Data;
+
+import java.sql.Timestamp;
 
 /**
  * 
@@ -73,4 +73,6 @@ public class OrderPageListQueryParam {
 	public Byte refundStatus;
     /**营销活动主键 过滤某营销活动订单*/
 	public Integer activityId;
+	/**用户id*/
+	public Integer userId;
 }

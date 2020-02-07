@@ -237,6 +237,9 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(USER_TAG.TAG_ID.in(param.tagIds));
 			}
 		}
+		if(param.getUserId() != null){
+            select.where(ORDER_INFO.USER_ID.eq(param.getUserId()));
+        }
 		if (!StringUtils.isEmpty(param.source)) {
 			select.where(ORDER_INFO.SOURCE.eq(param.source));
 		}
@@ -823,6 +826,10 @@ public class OrderInfoService extends ShopBaseService {
 
         if(Boolean.FALSE){
 
+        }
+        //必填信息初始化orderSn
+        if(param.getMust() != null) {
+            param.getMust().setOrderSn(orderSn);
         }
         return order;
     }

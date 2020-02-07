@@ -200,7 +200,8 @@ public enum JsonResultCode {
     CODE_ORDER_GOODS_LIMIT_MAX(120086, JsonResultMessage.MSG_ORDER_GOODS_LIMIT_MAX),
     /**下单时赠品已经送完,请重新下单*/
     CODE_ORDER_GIFT_GOODS_ZERO(120087, JsonResultMessage.MSG_ORDER_GIFT_GOODS_ZERO),
-
+    /**下单必填*/
+    CODE_ORDER_MUST_NOT_NULL(120088, JsonResultMessage.MSG_ORDER_MUST_NOT_NULL),
     /**
      * 去支付
      */
