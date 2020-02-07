@@ -979,7 +979,7 @@ export default {
       let _this = this
       let params = this.paramsAssign()
       console.log(params)
-      传参校验
+      // 传参校验
       this.paramsValid(params, function (params) {
         addFirstSpecial(params).then(res => {
           if (res.error === 0) {

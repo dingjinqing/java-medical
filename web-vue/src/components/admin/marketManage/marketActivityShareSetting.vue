@@ -4,7 +4,7 @@
     <div>
       <section>
         <el-radio
-          v-model="actShare"
+          v-model="shareConfig.shareAction"
           label="1"
         >{{$t('marketCommon.defaultStyle')}}</el-radio>
         <el-popover
@@ -33,13 +33,13 @@
 
       <section>
         <el-radio
-          v-model="actShare"
+          v-model="shareConfig.shareAction"
           label="2"
         >
           {{$t('marketCommon.customStyle')}}
           <div
             style="margin: 15px 0"
-            v-if="actShare == '2'"
+            v-if="shareConfig.shareAction == '2'"
           >
             <span style="color:#606266">{{$t('marketCommon.copywriting')}}:</span>
             <el-input
@@ -48,17 +48,17 @@
               style="width:200px"
             ></el-input>
           </div>
-          <div v-if="actShare == '2'">
+          <div v-if="shareConfig.shareAction == '2'">
             <span style="color:#606266">{{$t('marketCommon.sharedPicture')}}:</span>
             <el-radio
-              v-model="shareImg.shareImgAction"
+              v-model="shareConfig.shareImgAction"
               label="1"
               style="margin-left:10px"
             >{{$t('marketCommon.goodsInformationPicture')}}</el-radio>
 
             <div style="margin: 10px 0 0 60px">
               <el-radio
-                v-model="shareImg.shareImgAction"
+                v-model="shareConfig.shareImgAction"
                 label="2"
               >{{$t('marketCommon.customPicture')}}</el-radio>
             </div>
@@ -99,10 +99,6 @@ export default {
   props: ['shareConfig'],
   data () {
     return {
-      actShare: '1',
-      shareImg: {
-        shareImgAction: '1'
-      },
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
@@ -123,6 +119,7 @@ export default {
       if (res != null) {
         console.log(res)
         this.srcList.src3 = res.imgUrl
+        this.shareConfig.shareImg = res.imgUrl
       }
     },
     // 删除商品图片
