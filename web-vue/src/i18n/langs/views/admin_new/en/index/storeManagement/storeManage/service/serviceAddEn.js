@@ -30,8 +30,12 @@ export const en = {
   minute: 'minute',
   serviceType1: 'At the same time, the number of people can be served',
   serviceType2: 'At the same time, the number of technicians in the segment can be served',
+  serviceType2L: 'within the same period',
+  serviceType2R: 'Serviceable people',
   servicesNumber1: 'The maximum number of people the service can make in the same time period',
   servicesNumber2: 'The number of times each service technician can be reserved during the same time period',
+  servicesNumber2L: 'The services each in the same time period',
+  servicesNumber2R: 'number of times that can be reserved',
   servicePrev: 'Service Details Effect Preview',
   save: 'save',
   next: 'Next',
@@ -46,7 +50,8 @@ export const en = {
   servicePeriodValid: 'The service period cannot be empty',
   validInterval: 'Please select a service date',
   validateDuration: 'Service duration cannot be 0',
-  validServiceNum: 'Reservations cannot be empty',
+  validServiceNum: 'The number of technician reservations cannot be empty',
+  validServiceNum2: 'Reservations cannot be empty',
 
   successTip: 'Successfully saved',
   updateTip: 'update completed'

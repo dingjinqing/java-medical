@@ -7,11 +7,13 @@ import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
+import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
@@ -24,9 +26,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
@@ -48,6 +47,8 @@ public class FootPrintService extends ShopBaseService {
 	private GoodsMpService goodsMpService;
 	@Autowired
 	ProcessorFactoryBuilder processorFactoryBuilder;
+	@Autowired
+	public ConfigService configService;
 	/**
 	 * 获得用户足迹数
 	 * @param userId
@@ -68,15 +69,15 @@ public class FootPrintService extends ShopBaseService {
 	 *
 	 */
 	public void addFootprint(Integer userId,Integer goodsId){
-		Timestamp nowDate = DateUtil.getLocalDateTime();
+		String nowDate = DateUtil.getLocalDateTime().toString().substring(0,10);
 
 		Integer count = db().selectCount().from(Tables.FOOTPRINT_RECORD)
 				.where(Tables.FOOTPRINT_RECORD.USER_ID.eq(userId)).and(Tables.FOOTPRINT_RECORD.GOODS_ID.eq(goodsId))
-				.and(Tables.FOOTPRINT_RECORD.CREATE_TIME.eq(nowDate)).fetchOne().component1();
+				.and(DslPlus.dateFormatDay(Tables.FOOTPRINT_RECORD.CREATE_TIME).eq(nowDate)).fetchOne().component1();
 		if (count!=null&&count>0){
 			db().update(Tables.FOOTPRINT_RECORD).set(Tables.FOOTPRINT_RECORD.COUNT, Tables.FOOTPRINT_RECORD.COUNT.add(1))
 					.where(Tables.FOOTPRINT_RECORD.USER_ID.eq(userId))
-					.and(Tables.FOOTPRINT_RECORD.GOODS_ID.eq(goodsId)).and(Tables.FOOTPRINT_RECORD.CREATE_TIME.eq(nowDate)).execute();
+					.and(Tables.FOOTPRINT_RECORD.GOODS_ID.eq(goodsId)).and(DslPlus.dateFormatDay(Tables.FOOTPRINT_RECORD.CREATE_TIME).eq(nowDate)).execute();
 		}else {
 			FootprintRecordRecord footprint = db().newRecord(Tables.FOOTPRINT_RECORD);
 			footprint.setCount(1);
@@ -122,6 +123,12 @@ public class FootPrintService extends ShopBaseService {
 			footprintGoods.getGoodsList().add(goodsListMpVo);
 		});
 		byDateGroup(footprintList,footprintDaylist);
+		//是否显示划线价开关
+		Byte delMarket = configService.shopCommonConfigService.getDelMarket();
+		//是否显示购买按钮
+		ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
+		footprintListVo.setShowCart(showCart);
+		footprintListVo.setDelMarket(delMarket);
         return footprintListVo;
 	}
 

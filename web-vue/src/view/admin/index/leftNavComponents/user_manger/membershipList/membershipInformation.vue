@@ -164,7 +164,7 @@
               style="color:#5A8BFF;cursor: pointer;"
               @click="handleSetUp(index)"
             >{{$t('membershipIntroduction.setup')}}</span>
-            <span style="margin-top:10px;color:#5A8BFF;cursor: pointer;display:block">{{item.num}}</span>
+            <span @click="jumpToDetailPage(index)" style="margin-top:10px;color:#5A8BFF;cursor: pointer;display:block">{{item.num}}</span>
           </div>
         </li>
       </ul>
@@ -548,7 +548,7 @@
             </div>
             <div class="cardName">
               <i>1</i>
-              普通会员卡
+              {{getCardName}}
             </div>
             <div class="memberCardT1Main">
               <div>已选：</div>
@@ -671,10 +671,14 @@
     <!--设置会员卡弹窗类别二-->
     <div
       class="balanceDialo"
-      v-for="(item,index) in addDialogData"
-      :key="index"
     >
-      <el-dialog
+        <ModifyData
+        :model="modifyDialogData"
+        :userId="userId"
+        @submitRes="hanldeModifyData"
+        >
+        </ModifyData>
+      <!-- <el-dialog
         title="修改余额"
         :visible.sync="memberLabelVisible"
         width="40%"
@@ -722,7 +726,8 @@
             @click="memberLabelVisible = false"
           >确 定</el-button>
         </span>
-      </el-dialog>
+      </el-dialog> -->
+
     </div>
   </div>
 </template>
@@ -730,10 +735,21 @@
 import ProAndUrbA from '@/components/system/proAndUrbA'
 import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
 import { getMemberCard, getAllAvailableMemberCardRequest, setCardForMemberRequest } from '@/api/admin/memberManage/memberCard.js'
+import ModifyData from './modifyData'
 export default {
-  components: { ProAndUrbA },
+  components: { ProAndUrbA, ModifyData },
   data () {
     return {
+      modifyDialogData: {
+        title: null,
+        presentText: null,
+        addText: null,
+        tips: null,
+        bzText: null,
+        persentMoney: '',
+        index: 0, // 0 余额，1 积分
+        visiable: false
+      },
       userId: '', // 用户id
       memberBasicInfo: {}, //  会员基本信息
       transStatistic: {}, // 会员交易统计
@@ -806,36 +822,20 @@ export default {
       balanceDialogInput: '',
       balanceDialogBottomInput: '',
       memberLabelVisible: false,
-      balanceDialogData: [
-        {
-          title: '修改金额',
-          presentText: '当前金额',
-          persentMoney: '0.00',
-          addText: '增加金额',
-          tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
-          bzText: '增加备注'
-        }
-      ],
-      integralDialogData: [
-        {
-          title: '修改积分',
-          presentText: '当前积分',
-          persentMoney: '0.00',
-          addText: '增加积分',
-          tips: '（*当积分为正时，增加积分；积分为负时，减少积分*）',
-          bzText: '增加备注'
-        }
-      ]
+      balanceDialogData: null,
+      integralDialogData: null,
+      cardNameIndex: 0
     }
   },
   created () {
     // 从路由获取userId
-    this.userId = this.$route.query.userId
+    this.userId = Number(this.$route.query.userId)
   },
   watch: {
     lang () {
       // 加载数据
-
+      this.integralDialogData = this.$t('membershipIntroduction.integralDialogData')
+      this.balanceDialogData = this.$t('membershipIntroduction.balanceDialogData')
       this.loadMemberInfo()
     }
   },
@@ -843,6 +843,18 @@ export default {
     // 初始化语言
 
     this.langDefault()
+  },
+  computed: {
+    getCardName () {
+      if (this.cardNameIndex === 0) {
+        return this.$t('membershipIntroduction.normalCardFull')
+      } else if (this.cardNameIndex === 1) {
+        return this.$t('membershipIntroduction.limiteCardFull')
+      } else if (this.cardNameIndex === 2) {
+        return this.$t('membershipIntroduction.gradeCard')
+      }
+      return null
+    }
   },
   methods: {
     defaultMessage () {
@@ -963,6 +975,10 @@ export default {
               }
             }
           }
+          // 存储余额 可用积分
+          this.assetsData[3].num = this.memberBasicInfo.account || 0
+          this.assetsData[4].num = this.memberBasicInfo.score || 0
+
           // 用户标签信息
           this.handleToLabel()
           // 交易 统计
@@ -1357,6 +1373,7 @@ export default {
         // 调用接口获取数据
         this.getMemberCardForData(index)
         this.cardDialogFlag = index
+        this.cardNameIndex = index
       }
       switch (index) {
         case 0:
@@ -1372,14 +1389,23 @@ export default {
           this.cardLlabelsdATa = this.rankCardTmp
           break
         case 3:
-          console.log(3)
-          this.memberLabelVisible = true
-          this.addDialogData = this.balanceDialogData
-
-          break
         case 4:
-          this.memberLabelVisible = true
-          this.addDialogData = this.integralDialogData
+          let val = null
+          if (index === 3) {
+            this.balanceDialogData[0].persentMoney = this.memberBasicInfo.account
+            val = this.balanceDialogData[0]
+          } else if (index === 4) {
+            this.integralDialogData[0].persentMoney = this.memberBasicInfo.score
+            val = this.integralDialogData[0]
+          }
+          // copy value by same key
+          Object.keys(this.modifyDialogData).forEach(key => {
+            if (!(!val[key] && val[key] !== 0)) {
+              this.modifyDialogData[key] = val[key]
+            }
+          })
+          this.modifyDialogData.visiable = true
+          console.log(this.modifyDialogData)
           break
       }
     },
@@ -1470,6 +1496,38 @@ export default {
           userName: this.memberBasicInfo.username
         }
       })
+    },
+    jumpToDetailPage (index) {
+      switch (index) {
+        case 3:
+          // 余额详情
+          this.$router.push({
+            path: '/admin/home/main/balanceDetail',
+            query: {
+              name: this.memberBasicInfo.username,
+              id: this.userId
+            }
+          })
+          break
+        case 4:
+          // 积分详情
+          this.$router.push({
+            path: '/admin/home/main/integralDetail',
+            query: {
+              name: this.memberBasicInfo.username,
+              id: this.userId
+            }
+          })
+          break
+        default:
+          break
+      }
+    },
+    hanldeModifyData (res) {
+      if (res) {
+        this.loadMemberInfo()
+      }
+      this.modifyDialogData.visiable = false
     }
   }
 }

@@ -102,12 +102,12 @@
                 ></el-input> {{ $t('distribution.levelTip5') }}</div>
             </div>
             <div
-              v-if="scope.row.levelUpRoute === 1 && (scope.row.levelId === 2 || scope.row.levelId === 3)"
+              v-if="scope.row.levelUpRoute === 1 && scope.row.levelStatus == 1"
               style="margin: 15px 0;"
             >
               <el-button
                 size="mini"
-                @click="addDistributor(scope.row.levelId)"
+                @click="addDistributor(scope.row.levelId, scope.row.levelUserIds)"
               ><i class="el-icon-plus"></i> {{ $t('distribution.addDistributor') }}</el-button>
             </div>
           </template>
@@ -161,15 +161,10 @@
 
     <!-- 添加分销员弹窗 -->
     <DistributorDialog
-      :turnUp="turnUpDialogTwo"
-      @handleSelect="handleSelectRowTwo"
-      :selectRowIds="selectRowTwoIds"
-    />
-
-    <DistributorDialog
-      :turnUp="turnUpDialogThree"
-      @handleSelect="handleSelectRowThree"
-      :selectRowIds="selectRowThreeIds"
+      :turnUp="turnUpDialog"
+      @handleSelect="handleSelectRow"
+      :level="levelId"
+      :userIds="userIds"
     />
 
   </div>
@@ -241,12 +236,8 @@ export default {
         levelStatus: 0
       }],
       centerDialogVisible: false, // 规则弹框
-      turnUpDialogTwo: false, // 等级2弹窗
-      selectRowTwo: [],
-      selectRowTwoIds: [],
-      turnUpDialogThree: false, // 等级3弹窗
-      selectRowThree: [],
-      selectRowThreeIds: []
+      turnUpDialog: false, // 等级弹窗
+      userIds: '' // 手动升级分销员数据回显
     }
   },
   mounted () {
@@ -292,13 +283,6 @@ export default {
 
     // 设置分销员等级
     setDistributionLevel () {
-      this.tableData.map((item, index) => {
-        if (index === 1) {
-          item.levelUserIds = this.selectRowTwoIds.toString()
-        } else if (index === 2) {
-          item.levelUserIds = this.selectRowThreeIds.toString()
-        }
-      })
       setDistributionLevel(this.tableData).then((res) => {
         if (res.error === 0) {
           this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
@@ -343,30 +327,19 @@ export default {
     },
 
     // 显示等级弹窗
-    addDistributor (levelId) {
+    addDistributor (levelId, levelUserIds) {
       this.levelId = levelId
-      if (levelId === 2) {
-        this.turnUpDialogTwo = !this.turnUpDialogTwo
-      } else if (levelId === 3) {
-        this.turnUpDialogThree = !this.turnUpDialogThree
-      }
+      this.userIds = levelUserIds
+      this.turnUpDialog = !this.turnUpDialog
     },
 
-    // 等级2弹框回调函数
-    handleSelectRowTwo (row) {
-      this.selectRowTwo = row
-      this.selectRowTwoIds = []
-      this.selectRowTwo.map(item => {
-        this.selectRowTwoIds.push(item.userId)
-      })
-    },
-
-    // 等级3弹框回调函数
-    handleSelectRowThree (row) {
-      this.selectRowThree = row
-      this.selectRowThreeIds = []
-      this.selectRowThree.map(item => {
-        this.selectRowThreeIds.push(item.userId)
+    // 弹窗回显数据
+    handleSelectRow (row) {
+      console.log(row)
+      this.tableData.map((item, index) => {
+        if ((item.levelId === this.levelId) && row) {
+          item.levelUserIds = row.toString()
+        }
       })
     },
 

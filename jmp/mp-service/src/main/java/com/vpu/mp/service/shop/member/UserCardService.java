@@ -1074,7 +1074,6 @@ public class UserCardService extends ShopBaseService {
 		}
 		for (Iterator<OrderMemberVo> iterator = defaultCards.iterator(); iterator.hasNext();) {
 			OrderMemberVo card = iterator.next();
-			cards.add(card);
 			// 当前会员卡适用商品
 			BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos,
 					OrderConstant.D_T_MEMBER_CARD,
@@ -1102,6 +1101,7 @@ public class UserCardService extends ShopBaseService {
 			card.setTotalDiscount(discountAmount);
 			card.setIdentity(card.getCardNo());
 			card.initRatio();
+            cards.add(card);
 		}
 		return cards;
 	}

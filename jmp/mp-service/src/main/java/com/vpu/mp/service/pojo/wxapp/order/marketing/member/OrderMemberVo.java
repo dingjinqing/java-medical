@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 /**
  * @author 王帅
@@ -50,7 +51,8 @@ public class OrderMemberVo extends BaseMarketingBaseVo {
     private Byte storeUseSwitch;
     // 头像
     String avatar;
-
+    private LocalDate startDate;
+    private LocalDate endDate;
     /**
      * 使用pojo初始化自己
      * @param source

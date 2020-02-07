@@ -201,22 +201,35 @@
     </el-dialog>
     <!--二次保存确认-->
     <el-dialog
-      title="页面发布提醒"
+      :title="$t('decorationHome.pagePublishingReminder')"
       :visible.sync="saveTwoDialogVisible"
       width="30%"
       :center='true'
     >
-      <span>页面将自动保存为草稿并发布到线上</span>
+      <span>{{$t('decorationHome.pagePublishingReminderTip')}}</span>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="saveTwoDialogVisible = false">取 消</el-button>
+        <el-button @click="saveTwoDialogVisible = false">{{$t('decorationHome.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="handleToSaveTwo()"
-        >确 定</el-button>
+        >{{$t('decorationHome.determine')}}</el-button>
       </span>
+    </el-dialog>
+    <!--预览弹窗-->
+    <el-dialog
+      :title="$t('decorationHome.scanningPreview')"
+      :visible.sync="previewVisible"
+      width="30%"
+    >
+      <div style="padding: 20px 40px;display:flex;justify-content: center">
+        <img
+          style="width:180px;height: 180px"
+          src="http://mpdevimg2.weipubao.cn/upload/4748160/unlimitcode/20200207/un_200207152930_102.jpg"
+        >
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -272,6 +285,7 @@ export default {
   },
   data () {
     return {
+      previewVisible: false, // 扫码预览弹窗flag
       saveTwoDialogVisible: false, // 二次弹窗flag
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
@@ -1204,11 +1218,12 @@ export default {
           }
         })
       } else {
-        this.$message.success({
-          message: '预览测试',
-          showClose: true,
-          duration: 1000
-        })
+        this.previewVisible = true
+        // this.$message.success({
+        //   message: '预览测试',
+        //   showClose: true,
+        //   duration: 1000
+        // })
       }
       this.saveTwoDialogVisible = false
       console.log(params)
