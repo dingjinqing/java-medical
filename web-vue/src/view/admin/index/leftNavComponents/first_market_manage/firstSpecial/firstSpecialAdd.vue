@@ -345,7 +345,7 @@
               :label="$t('firstSpecialAdd.sharing')"
               required
             >
-              <el-radio-group v-model="form.shareConfig.share_action">
+              <el-radio-group v-model="form.shareConfig.shareAction">
                 <div>
                   <el-radio
                     :label="1"
@@ -392,14 +392,14 @@
               </el-radio-group>
               <div
                 class="custom_style"
-                v-show="form.shareConfig.share_action === 2"
+                v-show="form.shareConfig.shareAction === 2"
               >
                 <div>
                   <label>{{$t('firstSpecialAdd.copywriting')}}：</label>
                   <el-input
                     class="form_input"
                     size="small"
-                    v-model="form.shareConfig.share_doc"
+                    v-model="form.shareConfig.shareDoc"
                   ></el-input>
                 </div>
                 <div>
@@ -407,7 +407,7 @@
                   <div>
                     <el-radio-group
                       class="share_img_group"
-                      v-model="form.shareConfig.share_img_action"
+                      v-model="form.shareConfig.shareImgAction"
                     >
                       <el-radio
                         class="share_img_radio"
@@ -427,7 +427,7 @@
                           <el-image
                             style="width: 100%; height:100%;"
                             fit="contain"
-                            :src="form.shareConfig.share_img"
+                            :src="form.shareConfig.shareImg"
                           ></el-image>
                         </div>
                         <p class="sizeTips">{{$t('firstSpecialAdd.size')}}</p>
@@ -508,10 +508,10 @@ export default {
         batchFinalPrice: '', // 批量折后价
         isBatchInteger: 0, // 是否批量取整
         shareConfig: {
-          share_action: 1,
-          share_doc: '',
-          share_img_action: 1,
-          share_img: this.$imageHost + '/image/admin/btn_add.png'
+          shareAction: 1,
+          shareDoc: '',
+          shareImgAction: 1,
+          shareImg: this.$imageHost + '/image/admin/btn_add.png'
         } // 分享设置
       },
       limit: 0,
@@ -912,7 +912,7 @@ export default {
       this.tuneUp = !this.tuneUp
     },
     handleSelectImg (image) {
-      this.$set(this.form.shareConfig, 'share_img', image.imgUrl)
+      this.$set(this.form.shareConfig, 'shareImg', image.imgUrl)
     },
     getProductdata (goodsId, datas) {
       this.tableData.forEach((row, index) => {
@@ -979,7 +979,7 @@ export default {
       let _this = this
       let params = this.paramsAssign()
       console.log(params)
-      // 传参校验
+      传参校验
       this.paramsValid(params, function (params) {
         addFirstSpecial(params).then(res => {
           if (res.error === 0) {
