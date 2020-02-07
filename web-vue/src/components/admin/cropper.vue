@@ -5,7 +5,7 @@
       <el-dialog
         title="裁剪图片"
         :visible.sync="dialogVisible"
-        width="35%"
+        width="40%"
         :append-to-body='true'
         :modal-append-to-body='false'
       >
