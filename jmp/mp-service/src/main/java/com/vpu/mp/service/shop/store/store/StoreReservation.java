@@ -819,6 +819,16 @@ public class StoreReservation extends ShopBaseService {
     }
 
     /**
+     * Gets store mobile.获取门店联系方式
+     *
+     * @param storeId the store id
+     * @return the store mobile
+     */
+    public String getStoreMobile(int storeId) {
+        return db().select(STORE.MOBILE).from(STORE).where(STORE.STORE_ID.eq(storeId)).fetchOneInto(String.class);
+    }
+
+    /**
      * Reservation comment service comment vo.订单评价
      *
      * @param orderSn the order sn
