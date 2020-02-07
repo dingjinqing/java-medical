@@ -36,4 +36,10 @@ public class MemberParam {
 	private String realName;
 	/** 所在行业 */
 	private Byte industory;
+	/** 省市区 */
+	private Integer provinceCode;
+	private Integer cityCode;
+	private Integer districtCode;
+	
+	
 }

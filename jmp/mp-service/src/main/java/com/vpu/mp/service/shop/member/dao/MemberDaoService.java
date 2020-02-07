@@ -271,6 +271,18 @@ public class MemberDaoService extends ShopBaseService {
 			record.setSex(param.getSex());
 		}
 		
+		if(param.getProvinceCode()!=null) {
+			record.setProvinceCode(param.getProvinceCode());
+		}
+		
+		if(param.getCityCode()!=null) {
+			record.setCityCode(param.getCityCode());
+		}
+		
+		if(param.getDistrictCode()!=null) {
+			record.setDistrictCode(param.getDistrictCode());
+		}
+		
 	}
 	
 	/**
