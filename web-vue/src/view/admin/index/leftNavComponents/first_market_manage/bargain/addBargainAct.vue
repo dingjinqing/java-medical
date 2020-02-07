@@ -520,16 +520,16 @@ export default {
         goodsId: 0,
         expectationPrice: 0,
         shareConfig: {
-          'shareAction': 1,
+          'shareAction': '1',
           'shareDoc': '',
-          'shareImgAction': 1,
+          'shareImgAction': '1',
           'shareImg': ''
         }
       },
       shareConfig: {
-        'shareAction': 1,
+        'shareAction': '1',
         'shareDoc': '',
-        'shareImgAction': 1,
+        'shareImgAction': '1',
         'shareImg': ''
       },
       isEditFlag: false,

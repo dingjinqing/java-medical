@@ -177,7 +177,7 @@
               <!-- 图标 -->
               <el-form-item
                 :label="$t('pledge.icon')+'：'"
-                prop="logos"
+                prop="icon"
               >
 
                 <!-- 图片弹窗 -->
@@ -262,7 +262,7 @@ export default {
         first: '',
         icon: '',
         desc: '',
-        logos: '',
+        // logos: '',
 
         goods: '1'
       },
@@ -278,10 +278,10 @@ export default {
         desc: [
           { required: true, message: this.$t('pledge.explanationCheck'), trigger: 'blur' },
           { max: 300, message: this.$t('pledge.explanationTip'), trigger: 'blur' }
-        ],
-        logos: [
-          { required: true, message: this.$t('pledge.iconCheck'), trigger: 'blur' }
         ]
+        // logos: [
+        //   { required: true, message: this.$t('pledge.iconCheck'), trigger: 'blur' }
+        // ]
       },
       // 图片弹窗
       srcList: {
@@ -315,6 +315,7 @@ export default {
         if (res.error === 0) {
           res.content.list.map((item, index) => {
             item.state = Boolean(item.state)
+            item.pledgeLogo = `${this.$imageHost}` + `/` + item.pledgeLogo
           })
           this.tableData = res.content.list
           console.log('state:', Boolean(res.content.state))
@@ -337,11 +338,12 @@ export default {
           let editParam = {
             'id': this.id,
             'pledgeName': this.form.name,
-            'pledgeLogo': this.form.icon,
+            'pledgeLogo': this.form.icon.substring(29),
             'pledgeContent': this.form.desc
           }
           if (this.id !== null) {
             editPledge(editParam).then(res => {
+              console.log('editParam:', editParam)
               console.log('editRes:', res)
               if (res.error === 0) {
                 alert(this.$t('pledge.success'))
@@ -431,8 +433,11 @@ export default {
     },
     // 图片点击回调函数
     imgDialogSelectedCallback (src) {
+      console.log('path:', src.imgPath)
+      console.log('url:', src.imgUrl)
+      console.log('前缀:', `${this.$imageHost}`)
+      this.form.icon = src.imgPath
       this.srcList.src = src.imgUrl
-      this.form.icon = this.srcList.src
       console.log('icon:', this.form.icon)
     }
   }

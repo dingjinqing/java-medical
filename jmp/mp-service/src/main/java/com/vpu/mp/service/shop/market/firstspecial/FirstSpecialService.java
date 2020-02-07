@@ -9,16 +9,19 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -68,6 +71,9 @@ public class FirstSpecialService extends ShopBaseService {
             FirstSpecialRecord record = db().newRecord(FIRST_SPECIAL);
             assign(param,record);
             if(param.getShareConfig() != null) {
+                if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                }
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
             }
             record.insert();
