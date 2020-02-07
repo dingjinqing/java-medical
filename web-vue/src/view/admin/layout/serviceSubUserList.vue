@@ -552,6 +552,7 @@ export default {
   }
 }
 .p_middle {
+  margin-top: 15px;
   /deep/ .tableClss th {
     background-color: #f5f5f5;
     border: none;
