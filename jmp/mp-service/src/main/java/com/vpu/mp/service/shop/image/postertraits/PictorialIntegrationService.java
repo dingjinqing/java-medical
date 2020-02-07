@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoVo;
@@ -38,6 +39,8 @@ public class PictorialIntegrationService extends ShopBaseService {
     @Autowired
     private ReducePricePictorialService reducePricePictorialService;
 
+    @Autowired
+    private FirstSpecialPictorialService firstSpecialPictorialService;
     /**
      * 获取普通商品分享信息
      * @param param 分享参数
@@ -146,4 +149,23 @@ public class PictorialIntegrationService extends ShopBaseService {
     public String getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
         return reducePricePictorialService.getReducePricePictorialInfo(param);
     }
+
+    /**
+     * 首单特惠分享图片获取
+     * @param param 首单特惠参数信息
+     * @return 分享图片信息
+     */
+    public GoodsShareInfo getFirstSpecialShareInfo(FirstSpecialShareInfoParam param) {
+        return firstSpecialPictorialService.getFirstSpecialShareInfo(param);
+    }
+
+    /**
+     * 首单特惠海报获取
+     * @param param 首单特惠参数信息
+     * @return base64图片信息
+     */
+    public String getFirstSpecialPictorialInfo(FirstSpecialShareInfoParam param) {
+        return firstSpecialPictorialService.getFirstSpecialPictorialInfo(param);
+    }
+
 }

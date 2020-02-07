@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
@@ -159,5 +160,29 @@ public class WxAppPictorialController extends WxAppBaseController  {
     public JsonResult getReducePricePictorial(@RequestBody ReducePriceShareInfoParam param) {
         param.setUserId(wxAppAuth.user().getUserId());
         return success(shop().pictorialIntegrationService.getReducePricePictorialInfo(param));
+    }
+
+    /**
+     * 获取首单特惠活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/firstspecial/share/info")
+    public JsonResult getFirstSpecialShareInfo(@RequestBody FirstSpecialShareInfoParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        param.setUserName(user.getUsername());
+        return success(shop().pictorialIntegrationService.getFirstSpecialShareInfo(param));
+    }
+
+    /**
+     * 获取限时降价海报信息
+     * @param param 海报参数信息
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/firstspecial/pictorial/info")
+    public JsonResult getFirstSpecialPictorial(@RequestBody FirstSpecialShareInfoParam param) {
+        param.setUserId(wxAppAuth.user().getUserId());
+        return success(shop().pictorialIntegrationService.getFirstSpecialPictorialInfo(param));
     }
 }

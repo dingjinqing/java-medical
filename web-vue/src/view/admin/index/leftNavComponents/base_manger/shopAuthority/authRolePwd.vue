@@ -10,7 +10,7 @@
               size="mini"
               label-position="top"
             >
-              <el-form-item label="功能权限密码">
+              <el-form-item :label="$t('authRoleList.tipTitles6')">
                 <div class="password_set">
                   <div class="password_tips">
                     <p>{{$t('authRoleList.tips1')}}</p>
@@ -151,10 +151,6 @@ import { defRoleListRequest, editViewRoleRequest } from '@/api/admin/basicConfig
 export default {
   name: 'childConfig',
   props: {
-    faClick: { // 父组件的点击
-      type: Boolean,
-      default: () => false
-    },
     isEdit: { // 父组件的点击
       type: Number,
       default: () => 0
@@ -197,19 +193,17 @@ export default {
     this.defaluteData()
   },
   watch: {
-    faClick (newData) {
-      console.log('点点滴滴' + newData)
-      if (newData === true) {
-        this.submitInfo()
-      }
-      console.log(newData)
-    }
   },
   methods: {
     defaluteData () {
       console.log('是编辑吗2222')
       console.log(this.isEdit)
       this.search()
+    },
+    uploadData () {
+      console.log('test22222222222')
+      console.log('点点滴滴submitInfo')
+      this.submitInfo()
     },
     search () {
       let params = {
@@ -265,8 +259,6 @@ export default {
       })
     },
     isEmpty (obj) {
-      console.log('empty')
-      console.log(obj)
       if (typeof obj === 'undefined' || obj == null || obj === '') {
         return true
       } else {
@@ -276,6 +268,7 @@ export default {
 
     // 点击右侧后左侧checkbox是否选择
     show (val, val2) {
+      console.log('show')
       console.log(val)
       console.log(val2)
       var arr = document.getElementsByName(val2)
@@ -319,7 +312,9 @@ export default {
     },
     // 提交信息到父页面
     submitInfo () {
+      console.log('密码页submitInfo')
       // 获取所有switch的数据
+      this.privilegePwdList = []
       for (let i = 0; i < this.tableData.length; i++) {
         for (let n = 0; n < this.tableData[i].length; n++) {
           if (this.tableData[i][n].prNameSwitch !== 0) {
@@ -327,14 +322,17 @@ export default {
           }
         }
       }
+      console.log('开关' + this.privilegePwdList)
       if (this.privilegePwdList.length > 0) {
+        console.log('大于0')
+        console.log(this.privilegePwdList)
         if (this.isEmpty(this.loginPass)) {
           this.$message.error('请输入登录密码')
-          this.toFath()
+          return false
         }
         if (this.isEmpty(this.rolePass)) {
           this.$message.error('请设置密码')
-          this.toFath()
+          return false
         }
       }
       var pList = this.privilegePass.join(',')
@@ -351,14 +349,6 @@ export default {
         'privilegePass': this.finprList
       }
       this.$emit('privilegePassInfo', param)
-    },
-    toFath () {
-      console.log('toFath')
-      let params = {
-        'faClick': false
-      }
-      this.$emit('faClickChange', params)
-      return false
     }
   }
 }
