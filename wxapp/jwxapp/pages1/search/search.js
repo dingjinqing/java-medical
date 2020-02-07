@@ -128,6 +128,57 @@ global.wxPage({
       resolve()
     })
   },
+  
+  showSpecDialog(e){
+    console.log(e)
+    util.api("/api/wxapp/goods/detail",res=>{
+      if(res.error === 0){
+        let productsInfo = {
+          activity:res.content.activity,
+          defaultPrd:res.content.defaultPrd,
+          goodsId:res.content.goodsId,
+          goodsImgs:res.content.goodsImgs,
+          goodsNumber:res.content.goodsNumber,
+          limitBuyNum:res.content.limitBuyNum,
+          limitMaxNum:res.content.limitMaxNum,
+          products:res.content.products
+        }
+        this.setData({
+          productsInfo,
+          showSpec:true
+        })
+      }
+    },{
+      goodsId: e.detail.goodsId,
+      activityId: e.detail.activityId,
+      activityType: e.detail.activityType,
+      userId: util.getCache("user_id"),
+      lon: null,
+      lat: null
+    })
+  },
+  bindCloseSpec(){
+    this.setData({
+      showSpec:false
+    })
+  },
+  getProductData(e){
+    this.setData({
+      product:e.detail,
+      limitInfo:{
+        activityType:this.data.productsInfo.activityType,
+        limitBuyNum:e.detail.limitBuyNum,
+        limitMaxNum:e.detail.limitMaxNum,
+        prdNumber:e.detail.prdNumber
+      }
+    })
+  },
+  getGoodsNum(e) {
+    this.setData({
+      productInfo: { ...this.data.product, goodsNum:e.detail.goodsNum }
+    });
+    console.log(this.data.productInfo)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

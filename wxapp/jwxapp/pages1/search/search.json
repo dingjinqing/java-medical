@@ -2,6 +2,9 @@
   "usingComponents": {
     "v-double-col-goods": "/components/item/double_col_goods/index",
     "v-filter":"../filters/index",
-    "v-recommend":"/components/item/recommend/index"
+    "v-recommend":"/components/item/recommend/index",
+    "v-spec-dialog": "/components/item/popup/spec_dialog/index",
+    "v-goods-num-cfg": "/components/item/goods_num_cfg/index",
+    "v-item-footer": "/components/item/footer/index"
   }
 }

@@ -7,11 +7,13 @@ import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
+import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
@@ -45,6 +47,8 @@ public class FootPrintService extends ShopBaseService {
 	private GoodsMpService goodsMpService;
 	@Autowired
 	ProcessorFactoryBuilder processorFactoryBuilder;
+	@Autowired
+	public ConfigService configService;
 	/**
 	 * 获得用户足迹数
 	 * @param userId
@@ -119,6 +123,12 @@ public class FootPrintService extends ShopBaseService {
 			footprintGoods.getGoodsList().add(goodsListMpVo);
 		});
 		byDateGroup(footprintList,footprintDaylist);
+		//是否显示划线价开关
+		Byte delMarket = configService.shopCommonConfigService.getDelMarket();
+		//是否显示购买按钮
+		ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
+		footprintListVo.setShowCart(showCart);
+		footprintListVo.setDelMarket(delMarket);
         return footprintListVo;
 	}
 
