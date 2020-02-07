@@ -326,6 +326,7 @@ export default {
         if (res.error === 0) {
           this.$message.success(this.$t('storeCommon.updatesuccess'))
           this.initData()
+          localStorage.setItem('jobtitle', this.param.technician_title)
         } else {
           this.$message.error(this.$t('storeCommon.updatefailed'))
         }

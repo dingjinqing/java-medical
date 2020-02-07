@@ -10,8 +10,11 @@
             label-width="180px"
           >
             <el-form-item
-              :label="$t('technicianAdd.technicianName')+'：'"
+              :label="technicianName+'：'"
               prop="technicianName"
+              :rules="[
+                { required: true, message: nameValid, trigger: 'blur' }
+              ]"
             >
               <el-input
                 size="small"
@@ -22,6 +25,7 @@
             <el-form-item
               :label="$t('technicianAdd.cellphone')+'：'"
               prop="technicianMobile"
+              :rules="[{ required: true, message: phoneValid, trigger: 'blur' }]"
             >
               <el-input
                 type="tel"
@@ -69,7 +73,7 @@
               <el-input
                 size="small"
                 class="big_input"
-                :placeholder="$t('technicianAdd.introTips')"
+                :placeholder="introTips"
                 v-model="form.technicianIntroduce"
               ></el-input>
             </el-form-item>
@@ -185,13 +189,11 @@ export default {
         remarks: ''
       },
       rules: {
-        technicianName: [
-          { required: true, message: this.$t('technicianAdd.nameValid'), trigger: 'blur' }
-        ],
-        technicianMobile: [
-          { required: true, message: this.$t('technicianAdd.phoneValid'), trigger: 'blur' }
-        ]
-      }
+      },
+      technicianName: this.$t('technicianAdd.technicianName'),
+      introTips: this.$t('technicianAdd.introTips'),
+      nameValid: this.$t('technicianAdd.nameValid'),
+      phoneValid: this.$t('technicianAdd.phoneValid')
     }
   },
   created () {

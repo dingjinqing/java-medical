@@ -20,5 +20,10 @@ export const cn = {
   successSave: '保存成功',
   updated: '更新成功',
   failSave: '添加失败',
-  failUpdated: '更新失败'
+  failUpdated: '更新失败',
+
+  technicianNameR: '名称',
+  introTipsL: '请用一句话介绍',
+  nameValidL: '请输入',
+  phoneValidR: '的电话号码'
 }
