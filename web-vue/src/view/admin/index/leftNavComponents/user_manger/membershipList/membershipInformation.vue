@@ -170,7 +170,7 @@
       </ul>
     </div>
     <div class="topContainer">
-      <div class="titleEdit"><span>{{$t('membershipIntroduction.Transactionstatistics')}}</span><span>{{$t('membershipIntroduction.OrderList')}}</span></div>
+      <div class="titleEdit"><span>{{$t('membershipIntroduction.Transactionstatistics')}}</span><span @click="jumpToOrderPage">{{$t('membershipIntroduction.OrderList')}}</span></div>
       <div class="transactionDiv">
         <div
           style="flex:1"
@@ -1461,6 +1461,15 @@ export default {
     // 省市区数据回传
     handleToGetProCode (data) {
       console.log(data)
+    },
+    jumpToOrderPage () {
+      this.$router.push({
+        name: 'order',
+        query: {
+          userId: this.userId,
+          userName: this.memberBasicInfo.username
+        }
+      })
     }
   }
 }
