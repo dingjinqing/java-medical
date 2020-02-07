@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.CHANNEL;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.TAG;
 import static com.vpu.mp.db.shop.Tables.USER;
@@ -52,6 +53,7 @@ import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -745,9 +747,13 @@ public class MemberService extends ShopBaseService {
 		List<AvailableMemberCardVo> cardList = new ArrayList<>();
 		allAvailableMemberCard.stream()
 							  .forEach(
-									  record->cardList.add(new AvailableMemberCardVo(record.get(MEMBER_CARD.ID),record.get(MEMBER_CARD.CARD_TYPE),record.get(MEMBER_CARD.CARD_NAME)))
+									  record->{
+										  Timestamp expireTime = record.get(USER_CARD.EXPIRE_TIME);
+										  if(expireTime==null || !CardUtil.isCardExpired(expireTime)) {
+											  cardList.add(new AvailableMemberCardVo(record.get(MEMBER_CARD.ID),record.get(MEMBER_CARD.CARD_TYPE),record.get(MEMBER_CARD.CARD_NAME)));
+										  }
+										  }
 									  );
-
 		return cardList;
 	}
 
