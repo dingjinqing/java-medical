@@ -146,6 +146,7 @@ export const cn = {
   tips3: '修改后的新密码将替换原有密码',
   tips4: '请输入登录密码',
   tips5: '请设置密码',
+  tipTitles6: '功能权限密码',
 
   // 功能权限管理的弹窗
   manual_refund: '手动退货退款',
