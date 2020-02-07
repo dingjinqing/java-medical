@@ -1,44 +1,59 @@
 <template>
   <div>
-    <wrapper>
+    <section class="info_container">
       <el-row>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('receiveDetails.mobile')">
+        <el-col :span="5">
+          <el-form label-width="80px">
+            <el-form-item :label="$t('receiveDetails.mobile')+'：'">
               <el-input
                 v-model="param.mobile"
                 :placeholder="$t('receiveDetails.placeholderMobile')"
+                size="small"
+                clearable
+                class="input_width"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('receiveDetails.username')">
+        <el-col :span="5">
+          <el-form
+            label-width="80px"
+            class="right_distance"
+          >
+            <el-form-item :label="$t('receiveDetails.username')+'：'">
               <el-input
                 v-model="param.username"
                 :placeholder="$t('receiveDetails.placeholderName')"
+                size="small"
+                clearable
+                class="input_width"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('receiveDetails.goodsName')">
+        <el-col :span="5">
+          <el-form label-width="80px">
+            <el-form-item :label="$t('receiveDetails.goodsName')+'：'">
               <el-input
                 v-model="param.goodsName"
                 :placeholder="$t('receiveDetails.placeholderGoodsName')"
+                size="small"
+                clearable
+                class="input_width"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('receiveDetails.awardLevel')">
+        <el-col :span="5">
+          <el-form label-width="80px">
+            <el-form-item :label="$t('receiveDetails.awardLevel')+'：'">
               <template>
                 <el-select
                   v-model="param.rewardLevel"
                   :placeholder="$t('receiveDetails.placeholderLevel')"
+                  size="small"
+                  clearable
+                  class="input_width"
                 >
                   <el-option
                     v-for="item in levelOptions"
@@ -54,17 +69,20 @@
         </el-col>
         <el-col
           :span="3"
-          :offset="3"
+          style="margin-top:5px;"
         >
-          <el-form label-width="100px">
+          <el-form label-width="80px">
             <el-button
               type="primary"
               @click="searchByCondition"
+              size="small"
             >{{$t('receiveDetails.inquire')}}</el-button>
           </el-form>
         </el-col>
       </el-row>
+    </section>
 
+    <wrapper>
       <el-row>
         <el-table
           class="version-manage-table"
@@ -245,3 +263,22 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.info_container {
+  margin: 10px;
+  background: #fff;
+  padding: 25px 15px 10px;
+}
+/deep/ .el-form-item__label {
+  padding-right: 0;
+}
+.input_width {
+  width: 170px;
+}
+.right_distance {
+  margin-right: 30px;
+}
+/deep/ .el-row {
+  margin-bottom: 0;
+}
+</style>

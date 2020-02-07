@@ -26,7 +26,6 @@ public class WxAppPayAwardController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/payaward/prize/info")
     public JsonResult getOrderPayAwardPrize(@RequestBody @Validated PayAwardOrderParam param) {
-        WxAppSessionUser user = wxAppAuth.user();
         PayAwardOrderVo orderPayAward = shop().payAward.getOrderPayAward(param.getOrderSn(),getLang());
         return success(orderPayAward);
     }

@@ -28,12 +28,12 @@
         @change="customDate"
         value-format="yyyyMMdd"
         range-separator="-"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        :start-placeholder="$t('visitAnalysis.startDate')"
+        :end-placeholder="$t('visitAnalysis.endDate')"
         class="custom"
       >
       </el-date-picker>
-      <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+      <span>{{this.startDate.year}}{{$t('visitAnalysis.years')}}{{this.startDate.month}}{{$t('visitAnalysis.months')}}{{this.startDate.day}}{{$t('visitAnalysis.days')}} - {{this.endDate.year}}{{$t('visitAnalysis.years')}}{{this.endDate.month}}{{$t('visitAnalysis.months')}}{{this.endDate.day}}{{$t('visitAnalysis.days')}}</span>
     </div>
     <!--表格数据-->
     <div class="table">
@@ -45,14 +45,14 @@
       >
         <el-table-column
           prop="pagePath"
-          label="页面路径"
+          :label="$t('visitAnalysis.pagePath')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="pageName"
-          label="页面名称"
+          :label="$t('visitAnalysis.pageName')"
           align="center"
         >
         </el-table-column>
@@ -60,55 +60,55 @@
         <el-table-column
           sortable
           prop="pageVisitPv"
-          label="访问次数"
+          :label="$t('visitAnalysis.pageVisitPv')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           sortable
           prop="pageVisitUv"
-          label="访问人数"
+          :label="$t('visitAnalysis.pageVisitUv')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           sortable
           prop="pageStayTimePv"
-          label="次均时长"
+          :label="$t('visitAnalysis.pageStayTimePv')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           sortable
           prop="entryPagePv"
-          label="入口页次数"
+          :label="$t('visitAnalysis.entryPagePv')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           sortable
           prop="exitPagePv"
-          label="退出页次数"
+          :label="$t('visitAnalysis.exitPagePv')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="exitRate"
-          label="退出率"
+          :label="$t('visitAnalysis.exitRate')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           sortable
           prop="pageSharePv"
-          label="分享次数"
+          :label="$t('visitAnalysis.pageSharePv')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           sortable
           prop="pageShareUv"
-          label="分享人数"
+          :label="$t('visitAnalysis.pageShareUv')"
           align="center"
         >
         </el-table-column>
@@ -130,9 +130,9 @@ export default {
 
       timeSelect: 7,
       timeRange: [
-        { value: 7, label: '最近7天' },
-        { value: 30, label: '最近30天' },
-        { value: 0, label: '自定义' }
+        { value: 7, label: this.$t('visitAnalysis.lastSeven') },
+        { value: 30, label: this.$t('visitAnalysis.lastThirty') },
+        { value: 0, label: this.$t('visitAnalysis.custom') }
       ],
 
       param: {
@@ -176,7 +176,7 @@ export default {
 
     // 自定义时间
     customDate () {
-      console.log('选择器的时间：', this.timeValue)
+      console.log('date picker：', this.timeValue)
       this.param.startDate = this.timeValue[0]
       this.param.endDate = this.timeValue[1]
       this.loadData()
@@ -184,7 +184,7 @@ export default {
     // 页面初始化数据
     loadData () {
       pageAnalysis(this.param).then(res => {
-        console.log('访问页面', res)
+        console.log('visit page data:', res)
         if (res.error === 0) {
           this.handleData(res.content)
         }

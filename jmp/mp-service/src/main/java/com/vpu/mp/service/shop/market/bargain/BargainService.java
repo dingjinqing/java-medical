@@ -10,7 +10,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleBargain;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -24,10 +23,10 @@ import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotalVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
+import jodd.util.StringUtil;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -200,11 +199,11 @@ public class BargainService extends ShopBaseService  {
 	 *
 	 */
 	public BargainUpdateVo getBargainByIsd(Integer bargainId) {
-        BargainUpdateVo bargain = db().select(BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_MIN,BARGAIN.BARGAIN_MAX,BARGAIN.STOCK,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.BARGAIN_MONEY_TYPE,BARGAIN.BARGAIN_FIXED_MONEY,BARGAIN.BARGAIN_MIN_MONEY,BARGAIN.BARGAIN_MAX_MONEY,BARGAIN.FREE_FREIGHT,BARGAIN.GOODS_ID,BARGAIN.MRKING_VOUCHER_ID,BARGAIN.REWARD_COUPON_ID,BARGAIN.SHARE_CONFIG).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOne().into(BargainUpdateVo.class);
+        BargainUpdateVo bargain = db().select(BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_MIN,BARGAIN.BARGAIN_MAX,BARGAIN.STOCK,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.BARGAIN_MONEY_TYPE,BARGAIN.BARGAIN_FIXED_MONEY,BARGAIN.BARGAIN_MIN_MONEY,BARGAIN.BARGAIN_MAX_MONEY,BARGAIN.FREE_FREIGHT,BARGAIN.GOODS_ID,BARGAIN.MRKING_VOUCHER_ID,BARGAIN.REWARD_COUPON_ID,BARGAIN.SHARE_CONFIG).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOneInto(BargainUpdateVo.class);
 		if(bargain != null) {
 			bargain.setGoods(saas().getShopApp(getShopId()).goods.getGoodsView(bargain.getGoodsId()));
             bargain.setShopShareConfig(Util.parseJson(bargain.getShareConfig(), PictorialShareConfigVo.class));
-            if(bargain.getShopShareConfig() != null && bargain.getShopShareConfig().getShareImg() != null){
+            if(bargain.getShopShareConfig() != null && StringUtil.isNotEmpty(bargain.getShopShareConfig().getShareImg())){
                 bargain.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(bargain.getShopShareConfig().getShareImg()));
             }
             bargain.setMrkingVoucherList(saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(bargain.getMrkingVoucherId())));

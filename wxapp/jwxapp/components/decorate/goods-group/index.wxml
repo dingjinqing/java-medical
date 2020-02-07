@@ -1,0 +1,548 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n" />
+<view class="goods-group-container" id="{{m.cur_idx}}" style="min-height:{{m.fix_height}}px">
+	<!-- 顶部分组 -->
+	<block wx:if="{{m.position_style == '0' }}">
+		<view class='content_scroll_view'>
+			<view style="{{m.fixed ? 'top:'+m.top+'px;position:fixed;z-index:9;width:750rpx;':''}}">
+				<scroll-view class='goods_group_scroll' scroll-x='true'>
+					<view class='goods_group_nav'>
+						<block
+						 wx:for="{{m.sort_group_arr}}"
+						 wx:key="key"
+						 wx:for-item="item"
+						 wx:for-index='index'
+						>
+							<view class='group_nav_single {{m.navlen > 4 ? "group_double_flex" : "group_single_flex"}}'>
+								<view
+								 class='group_nav_single_content'
+								 bindtap='bindMenuClick'
+								 data-index="{{index}}"
+								 data-idx="{{m.cur_idx}}"
+								>
+									<view class='group_nav_title {{index == m.group_nav_index ? "color_red":" "}}' style='color:{{index == m.group_nav_index ?comColor:""}}'>{{item.group_name}}</view>
+								</view>
+								<view class='nav_bottom_select' style='border-color:{{comColor}}' wx:if="{{index == m.group_nav_index }}" />
+							</view>
+						</block>
+					</view>
+				</scroll-view>
+			</view>
+		</view>
+		<view class='goods_group_module clearfix' style="background:{{m.goods_module_bg == 0 ? '': m.goods_bg_color}}">
+			<!-- 大图 -->
+			<view class='group_big_module' wx:if="{{m.shop_style == 1}}">
+				<block
+				 data-idx="{{m.cur_idx}}"
+				 wx:for="{{m.goodsListData}}"
+				 wx:key='key'
+				 wx:for-item="item"
+				 wx:for-index='index'
+				>
+					<view
+					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
+					 catchtap="bindJumpLink"
+					 data-is_first_touch="{{m.is_first_touch}}"
+					 data-idx='{{m.cur_idx}}'
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					>
+						<view class='module_img'>
+							<include src="../product/goodscommon/labelcommon.wxml" />
+							<view class='group_delete' wx:if='{{item.is_delete == 1}}'>{{i18n.$t(localePack,'components.decorate.goodsDeleted')}}</view>
+						</view>
+						<view class='module_text'>
+							<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+								<block wx:if='{{item.activityType != 10 || item.goodsActivities.length}}'>
+									<view class='van-ellipsis'>{{item.goodsName}}</view>
+									<view class="title_box">
+
+										<view
+										 style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}"
+										 class='title_label'
+										 wx:key="indexC"
+										 wx:for="{{item.activityLabelData}}"
+										 wx:for-item="itemC"
+										 wx:for-index='indexC'
+										>
+											{{itemC.text}}
+										</view>
+									</view>
+								</block>
+								<block wx:else>
+									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+								</block>
+							</view>
+							<view class='module_goods_price'>
+								<block wx:if="{{m.show_price != 1}}">
+									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
+									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+								</block>
+								<block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+									<block wx:if="{{m.show_market == 1}}">
+										<view class='market_price' wx:if="{{item.linePrice != undefined && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 2}}">
+										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 3}}">
+										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+									</block>
+								</block>
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5 }}">
+									<text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+
+
+
+
+									<text class='cart_btn iconfont icongouwuche1' style='font-size:52rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+									<text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}
+
+
+
+</text>
+									<text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}}' wx:if="{{m.cart_btn_choose == '3'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.purchase')}}</text>
+								</block>
+							</view>
+						</view>
+					</view>
+				</block>
+			</view>
+			<!-- 双列图 -->
+			<view class='group_double_module' wx:if="{{m.shop_style == 2}}">
+				<block
+				 data-idx="{{m.cur_idx}}"
+				 wx:for="{{m.goodsListData}}"
+				 wx:key='key'
+				 wx:for-item="item"
+				 wx:for-index='index'
+				>
+					<view
+					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
+					 catchtap="bindJumpLink"
+					 data-idx='{{m.cur_idx}}'
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					>
+						<view class='module_img'>
+							<include src="../product/goodscommon/labelcommon.wxml" />
+						</view>
+						<view class='module_text'>
+							<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+								<block wx:if='{{item.goods_type != 10 || item.goodsActivities.length}}'>
+									<view class='van-ellipsis'>{{item.goodsName}}</view>
+									<view class="title_box">
+
+										<view
+										 style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}"
+										 class='title_label'
+										 wx:key="indexC"
+										 wx:for="{{item.activityLabelData}}"
+										 wx:for-item="itemC"
+										 wx:for-index='indexC'
+										>
+											{{itemC.text}}
+										</view>
+									</view>
+								</block>
+								<block wx:else>
+									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+								</block>
+
+							</view>
+							<view class='module_goods_price'>
+								<block wx:if="{{m.show_price != 1}}">
+									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
+									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+								</block>
+								<block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+									<block wx:if="{{m.show_market == 1}}">
+										<view class='market_price' wx:if="{{item.linePrice != undefined && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 2}}">
+										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 3}}">
+										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+									</block>
+								</block>
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5 }}">
+									<text class='cart_btn iconfont icontianjia' style='font-size:42rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+
+
+
+
+									<text class='cart_btn iconfont icongouwuche1' style='font-size:42rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+									<text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}
+
+
+
+</text>
+									<text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}}' wx:if="{{m.cart_btn_choose == '3'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.purchase')}}</text>
+								</block>
+							</view>
+						</view>
+					</view>
+
+				</block>
+			</view>
+			<!-- 三列图 -->
+			<view class='group_trible_module' wx:if="{{m.shop_style == 3}}">
+				<block
+				 data-idx="{{m.cur_idx}}"
+				 wx:for="{{m.goodsListData}}"
+				 wx:key='key'
+				 wx:for-item="item"
+				 wx:for-index='index'
+				>
+					<view
+					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
+					 catchtap="bindJumpLink"
+					 data-idx='{{m.cur_idx}}'
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					>
+						<view class='module_img'>
+							<include src="../product/goodscommon/labelcommon.wxml" />
+							<view class='group_delete' wx:if='{{item.is_delete == 1}}'>{{i18n.$t(localePack,'components.decorate.goodsDeleted')}}</view>
+						</view>
+						<view class='module_text' wx:if="{{item.activityType!=1|| item.activityType!=3 ||item.activityType!=5}}}}">
+							<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+								<block wx:if='{{item.activityType == 10 || item.goodsActivities.length}}'>
+									<view class='van-ellipsis'>{{item.goodsName}}</view>
+									<view class="title_box">
+
+										<view
+										 style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}"
+										 class='title_label'
+										 wx:key="indexC"
+										 wx:for="{{item.activityLabelData}}"
+										 wx:for-item="itemC"
+										 wx:for-index='indexC'
+										>
+											{{itemC.text}}
+										</view>
+									</view>
+								</block>
+								<block wx:else>
+									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+								</block>
+							</view>
+							<view  class='module_goods_price'>
+								<block wx:if="{{m.show_price != 1}}">
+									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
+									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+								</block>
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10}}">
+									<text class='cart_btn iconfont icontianjia' style='font-size:32rpx;color:{{comColor}};margin-top:4rpx;' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+									<text class='cart_btn iconfont icongouwuche1' style='font-size:32rpx;color:{{comColor}};margin-top:4rpx;' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+								</block>
+							</view>
+						</view>
+						<view class='module_text' wx:else>
+								<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+								<view class='van-ellipsis'>{{item.goodsName}}</view>
+								<view class='title_label' style="border:none">
+									<view class='pin_flagThree' style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}">{{item.activityType==1?i18n.$t(localePack,'components.decorate.assemble'):item.activityType==3?i18n.$t(localePack,'components.decorate.bargain'):i18n.$t(localePack,'components.decorate.seckill')}}</view>
+								</view>
+							</view>
+							<view class='module_goods_price' style='display:{{m.show_price == 1?"none":"block"}}'>
+								<view class='sale_price' style='color:{{comColor}}'>￥{{item.activityType==1?item.groupDiscount:item.realPrice}}</view>
+							</view>
+						</view>
+					</view>
+				</block>
+			</view>
+			<!-- 横向滑动 -->
+			<scroll-view class='group_slide_module' scroll-x='true' wx:if="{{m.shop_style == 5}}">
+				<block
+				 data-idx="{{m.cur_idx}}"
+				 wx:for="{{m.goodsListData}}"
+				 wx:key='key'
+				 wx:for-item="item"
+				 wx:for-index='index'
+				>
+					<view
+					 class='group_container {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
+					 catchtap="bindJumpLink"
+					 data-is_first_touch="{{m.is_first_touch}}"
+					 data-idx='{{m.cur_idx}}'
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					>
+						<view
+						 class="see_more"
+						 catchtap='bindMenuClick'
+						 data-click='{{1}}'
+						 data-index="{{index}}"
+						 data-idx="{{m.cur_idx}}"
+						 wx:if="{{m.more_flag == 1 && index == 6 }}"
+						>
+							<view>{{i18n.$t(localePack,'components.decorate.viewMore')}}</view>
+							<view class="see_line" />
+							<view style="line-height:20rpx;">see more</view>
+						</view>
+						<view class='module_img'>
+							<include src="../product/goodscommon/labelcommon.wxml" />
+						</view>
+						<view class='module_text'>
+							<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+								<block wx:if='{{item.activityType != 10 || item.goodsActivities.length}}'>
+									<view class='van-ellipsis'>{{item.goodsName}}</view>
+									<view class="title_box">
+
+										<view
+										 style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}"
+										 class='title_label'
+										 wx:key="indexC"
+										 wx:for="{{item.activityLabelData}}"
+										 wx:for-item="itemC"
+										 wx:for-index='indexC'
+										>
+											{{itemC.text}}
+										</view>
+									</view>
+								</block>
+								<block wx:else>
+									<view class='van-two-ellipsis' style="white-space:normal;">{{item.goodsName}}</view>
+								</block>
+
+							</view>
+							<view class='module_goods_price'>
+								<block wx:if="{{m.show_price != 1&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5}}">
+									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
+									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+								</block>
+								
+								<block wx:else="{{item.activityType==1||item.activityType==3||item.activityType==5}}">
+								<view class='sale_price' style='color:{{comColor}};'>￥{{item.activityType==1?item.groupDiscount:item.realPrice}}</view>
+								</block>
+								<block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+									<block wx:if="{{m.show_market == 1 }}">
+										<view class='market_price' wx:if="{{item.linePrice != undefined && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 2 }}">
+										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 3}}">
+										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+									</block>
+								</block>
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType !=1&&item.activityType !=3 }}">
+									<text class='cart_btn iconfont icontianjia' style='font-size:32rpx;color:{{comColor}};margin-top:3rpx;' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+									<text class='cart_btn iconfont icongouwuche1' style='font-size:32rpx;color:{{comColor}};margin-top:3rpx;' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+
+								</block>
+							</view>
+						</view>
+					</view>
+				</block>
+			</scroll-view>
+			<!-- 商品列表 -->
+			<view class='group_list_module' wx:if="{{m.shop_style == 4}}">
+				<block
+				 data-idx="{{m.cur_idx}}"
+				 wx:for="{{m.goodsListData}}"
+				 wx:key='key'
+				 wx:for-item="item"
+				 wx:for-index='index'
+				>
+					<!-- 普通商品 -->
+					<view
+					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
+					 catchtap="bindJumpLink"
+					 data-idx='{{m.cur_idx}}'
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					>
+						<view class='module_img'>
+							<include src="../product/goodscommon/labelcommon.wxml" />
+						</view>
+						<view class='module_text'>
+							<view class='module_goods_name' wx:if='{{m.show_name != 1}}'>
+								<view class='top_title'>
+									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+								</view>
+								<view class="title_box">
+
+										<view
+										 style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}"
+										 class='title_label'
+										 wx:key="indexC"
+										 wx:for="{{item.activityLabelData}}"
+										 wx:for-item="itemC"
+										 wx:for-index='indexC'
+										>
+											{{itemC.text}}
+										</view>
+									</view>
+							</view>
+							<view class='module_goods_name' wx:if='{{m.show_name == 1}}' />
+							<view class='module_goods_price'>
+								<block wx:if="{{m.show_price != 1&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5}}">
+									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
+									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+								</block>
+								<block wx:else="{{item.activityType==1||item.activityType==3||item.activityType==5}}">
+								<view class='sale_price' style='color:{{comColor}};'>￥{{item.activityType==1?item.groupDiscount:item.realPrice}}</view>
+								</block>
+								<block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+									<block wx:if="{{m.show_market == 1  }}">
+										<view class='market_price' wx:if="{{item.linePrice != undefined && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 2 }}">
+										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 3}}">
+										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+									</block>
+								</block>
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10 }}">
+									<text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+									<text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+									<text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}
+
+
+
+</text>
+									<text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}}' wx:if="{{m.cart_btn_choose == '3'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.purchase')}}</text>
+								</block>
+							</view>
+						</view>
+					</view>
+				</block>
+			</view>
+		</view>
+		<view
+		 class='click_see_more'
+		 catchtap='bindMenuClick'
+		 data-click='{{1}}'
+		 data-index="{{index}}"
+		 data-idx="{{m.idx}}"
+		 wx:if="{{m.more_flag == 1 && m.shop_style != 5}}"
+		>
+			<view class='click_see'>
+				<text>{{i18n.$t(localePack,'components.decorate.viewMore')}}</text>
+				<image lazy-load='{{true}}' src='{{m.imgUrl}}image/wxapp/see_more_down.png' />
+			</view>
+		</view>
+	</block>
+	<!-- 左部分组 -->
+	<block wx:if="{{m.position_style == '1' }}">
+		<view class='left_container' style='height:{{m.scr_height}}px'>
+			<view class='left_nav'>
+				<block
+				 wx:for='{{m.sort_group_arr}}'
+				 wx:for-item='item'
+				 wx:key='key'
+				 wx:for-index="index"
+				>
+					<view
+					 class='left_icon {{m.group_nav_index == index ? "left_select" : ""}}'
+					 style='border-left-color:{{m.group_nav_index == index ? comColor:""}}'
+					 bindtap='bindMenuClick'
+					 data-index="{{index}}"
+					 data-idx="{{m.cur_idx}}"
+					>
+						<view class='left_title'>{{item.group_name}}</view>
+					</view>
+				</block>
+			</view>
+			<view class='goods_left_module' style="background:{{m.goods_module_bg == 0 ? '': m.goods_bg_color}}">
+				<block
+				 wx:for='{{m.sort_group_arr}}'
+				 wx:for-item='item'
+				 wx:key='key'
+				 wx:for-index="index"
+				>
+					<view class='left_module_title' wx:if="{{index == m.group_nav_index}}">
+						{{item.group_name}}
+					</view>
+				</block>
+
+				<block
+				 data-idx="{{m.cur_idx}}"
+				 wx:for="{{m.goodsListData}}"
+				 wx:key='key'
+				 wx:for-item="item"
+				 wx:for-index='index'
+				>
+					<view
+					 class='group_container  {{m.if_radius == 1 ? "circle_radius": " "}} {{m.module_style == 2 ? "have_shadow":" "}} {{m.module_style == 3 ? "have_border" : ""}}'
+					 catchtap="bindJumpLink"
+					 data-idx='{{m.cur_idx}}'
+					 data-url="pages/item/item?goodsId={{item.goodsId}}&activityId={{item.activityId}}&activityType={{item.activityType}}"
+					>
+						<view class='module_img'>
+							<include src="../product/goodscommon/labelcommon.wxml" />
+						</view>
+						<view class='module_text'>
+							<view class='module_goods_name' wx:if='{{m.show_name != 1}}'>
+
+								<view class='top_title'>
+									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+								</view>
+								<view class="title_box">
+
+										<view
+										 style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}"
+										 class='title_label'
+										 wx:key="indexC"
+										 wx:for="{{item.activityLabelData}}"
+										 wx:for-item="itemC"
+										 wx:for-index='indexC'
+										>
+											{{itemC.text}}
+										</view>
+									</view>
+							</view>
+							<view class='module_goods_name' wx:if="{{m.show_name == 1}}" />
+							<view class='module_goods_price'>
+								<block wx:if="{{m.show_price != 1&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5}}">
+									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
+									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
+								</block>
+								<block wx:else="{{item.activityType==1||item.activityType==3||item.activityType==5}}">
+								<view class='sale_price' style='color:{{comColor}};'>￥{{item.activityType==1?item.groupDiscount:item.realPrice}}</view>
+								</block>
+								<block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
+									<block wx:if="{{m.show_market == 1 }}">
+										<view class='market_price' wx:if="{{item.linePrice != undefined && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 2}}">
+										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
+									</block>
+									<block wx:if="{{m.show_market == 3 }}">
+										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+									</block>
+								</block>
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5 }}">
+									<text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+
+
+
+
+									<text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
+									<text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}
+
+
+
+</text>
+									<text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}}' wx:if="{{m.cart_btn_choose == '3'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.purchase')}}</text>
+								</block>
+							</view>
+						</view>
+					</view>
+				</block>
+				<view
+				 class='click_see_more'
+				 catchtap='bindMenuClick'
+				 data-click='{{1}}'
+				 data-index="{{index}}"
+				 data-idx="{{m.idx}}"
+				 wx:if="{{m.more_flag == 1}}"
+				>
+					<view class='click_see'>
+						<text>{{i18n.$t(localePack,'components.decorate.viewMore')}}</text>
+						<image lazy-load='{{true}}' src='{{m.imgUrl}}image/wxapp/see_more_down.png' />
+					</view>
+				</view>
+			</view>
+		</view>
+	</block>
+</view>
+

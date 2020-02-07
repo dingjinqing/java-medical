@@ -70,10 +70,8 @@ public class PreSaleParam {
     /** 2段定金支付结束时间 **/
     private Timestamp preEndTime2;
     /** 尾款支付开始时间 **/
-    @NotNull
     private Timestamp startTime;
     /** 尾款支付结束时间 **/
-    @NotNull
     private Timestamp endTime;
     /** 商品id **/
     @NotNull
@@ -102,11 +100,11 @@ public class PreSaleParam {
     private Integer buyNumber;
     /** 分享样式 **/
     @NotNull
-    private Byte shareType;
+    private Byte shareAction;
     /** 分享文案 **/
-    private String shareText;
+    private String shareDoc;
     /** 分享图来源 **/
-    private Byte shareImgType;
+    private Byte shareImgAction;
     /** 自定义图片 **/
     private String shareImg;
     /** 活动商品 **/

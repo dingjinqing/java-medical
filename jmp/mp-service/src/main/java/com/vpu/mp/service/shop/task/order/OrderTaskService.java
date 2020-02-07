@@ -1,14 +1,13 @@
 package com.vpu.mp.service.shop.task.order;
 
+import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.shop.order.action.CloseService;
-import com.vpu.mp.service.shop.order.action.FinishService;
-import com.vpu.mp.service.shop.order.action.PayService;
-import com.vpu.mp.service.shop.order.action.ReceiveService;
-import com.vpu.mp.service.shop.order.action.ReturnService;
-import com.vpu.mp.service.shop.task.ShopTaskService;
+import com.vpu.mp.service.pojo.wxapp.store.ReservationDetail;
+import com.vpu.mp.service.shop.order.action.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author 王帅
@@ -78,5 +77,21 @@ public class OrderTaskService extends ShopBaseService {
         logger().info("订单未支付通知定时任务start,shop:{}", getShopId());
         refund.autoReturnOrder();
         logger().info("订单未支付通知定时任务end");
+    }
+
+    /**
+     * 门店服务预约订单自动关闭
+     */
+    public void serviceOrderClose(){
+
+        List<ServiceOrderRecord> orders = saas.getShopApp(getShopId()).store.reservation.getExpiredUnpaidOrders();
+        ReservationDetail param = new ReservationDetail();
+        param.setCancelReason("定时任务自动取消");
+        logger().info("门店服务订单自动关闭定时任务start,shop:{},orderIds:{}", getShopId(),orders);
+        orders.forEach(order->{
+            param.setOrderId(order.getOrderId());
+            param.setOrderSn(order.getOrderSn());
+            saas.getShopApp(getShopId()).store.reservation.cancelWaitToPayReservation(param);
+        });
     }
 }

@@ -24,7 +24,7 @@
         <view class="info">
           <text class="goods-price" style="color:{{main_setting.comColor}};">
             <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 6 || (productsInfo.activity.activityType === 98 && !filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background-color:{{main_setting.comColor}};">限时降价</text>
-            <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 97 || (productsInfo.activity.activityType === 98 && filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</text>
+            <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 22 || (productsInfo.activity.activityType === 98 && filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</text>
             <text class="price">￥{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdRealPrice :checkedProduct.prdRealPrice}}</text>
           </text>
           <text class="marking-price">￥{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdLinePrice :checkedProduct.prdLinePrice}}</text>
@@ -34,12 +34,12 @@
       </view>
     </view>
     <view class="all-spec">
-      <view class="spec-info" wx:for="{{specList}}" wx:for-item="specItem" wx:for-index="key" wx:key="key">
+      <view class="spec-info" wx:for="{{spec_list}}" wx:for-item="specItem" wx:for-index="key" wx:key="key">
         <view class="spec-title">
           {{key}}：
         </view>
         <view class="spec-content">
-          <text class="spec-item" style="border-color:{{item.isChecked ? main_setting.comColor : ''}}" wx:for="{{specItem}}" wx:key="index" bindtap="tapSpec" data-key="{{key}}" data-index="{{index}}">{{item.specName}}</text>
+          <text class="spec-item" style="{{item.gary ? 'background-color:#f5f5f5;border-color:#f5f5f5;color:#ccc;' : item.isChecked && 'border-color:'+main_setting.comColor+';'}}" wx:for="{{specItem}}" wx:for-index="itemVal" wx:key="itemVal" bindtap="{{!item.gary && 'bindClickSpec'}}" data-key="{{key}}" data-index="{{itemVal}}">{{itemVal}}</text>
         </view>
       </view>
     </view>

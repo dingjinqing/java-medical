@@ -13,8 +13,10 @@ import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -22,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.OrderCloseQueenParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
@@ -29,6 +32,7 @@ import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.pay.jsapi.JsApiVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.saas.region.ProvinceService;
+import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
@@ -52,6 +56,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -233,6 +238,9 @@ public class StoreReservation extends ShopBaseService {
      */
     @Autowired
     private MaMpScheduleTaskService mpScheduleTaskService;
+
+    @Autowired
+    private TaskJobMainService taskJobMainService;
 
     /**
      * The constant HH_MM_FORMATTER.
@@ -535,7 +543,6 @@ public class StoreReservation extends ShopBaseService {
         }
         webPayVo.setOrderSn(orderSn);
         return webPayVo;
-        // TODO 定时任务倒计时十分钟结束后调接口，关闭该订单，更改状态为已取消
     }
 
     /**
@@ -777,29 +784,37 @@ public class StoreReservation extends ShopBaseService {
     /**
      * Cancel wait to pay reservation.取消待付款订单
      *  门店服务不支持退款（包括用户余额，会员卡余额）
-     * @param orderId the order id
+     * @param param
      */
-    public void cancelWaitToPayReservation(Integer orderId, String reason) {
+    public void cancelWaitToPayReservation(ReservationDetail param) {
         Map<Field<?>, Object> map = new HashMap<Field<?>, Object>(5) {{
             put(SERVICE_ORDER.CANCELLED_TIME, Timestamp.valueOf(LocalDateTime.now()));
             put(SERVICE_ORDER.ORDER_STATUS, ORDER_STATUS_CANCELED);
             put(SERVICE_ORDER.ORDER_STATUS_NAME, ORDER_STATUS_NAME_CANCELED);
-            put(SERVICE_ORDER.CANCEL_REASON, reason);
+            put(SERVICE_ORDER.CANCEL_REASON, param.getCancelReason());
         }};
-        serviceOrderService.updateServiceOrder(orderId, map);
+        serviceOrderService.updateServiceOrder(param.getOrderId(), map);
+        int shopId = getShopId();
         // 调用微信关闭订单接口
-        CompletableFuture.supplyAsync(() -> cancelWXOrder(orderId));
+        CompletableFuture.supplyAsync(() -> cancelWXOrder(param.getOrderSn(),shopId));
     }
 
-    private boolean cancelWXOrder(Integer orderId) {
-        // TODO 队列五分钟后调用微信关闭订单接口
-//        String orderSn = serviceOrderService.selectSingleField(orderId, SERVICE_ORDER.ORDER_SN);
-//        try {
-//            mpPaymentService.wxCloseOrder(orderSn);
-//        } catch (WxPayException e) {
-//            log.debug("微信关闭订单接口调用失败 {}", e.getMessage());
-//            return false;
-//        }
+    private boolean cancelWXOrder(String orderSn,int shopId) {
+        // 队列五分钟后调用微信关闭订单接口
+
+        OrderCloseQueenParam param = new OrderCloseQueenParam();
+        param.setShopId(shopId);
+        param.setOrderSn(orderSn);
+        Timestamp startTime = DateUtil.getDalyedDateTime(60*5);
+
+        TaskJobInfo info = TaskJobInfo.builder(shopId)
+            .type(TaskJobsConstant.EXECUTION_TIMING)
+            .content(param)
+            .className(OrderCloseQueenParam.class.getName())
+            .startTime(startTime)
+            .executionType(TaskJobsConstant.TaskJobEnum.WX_CLOSEORDER)
+            .builder();
+       taskJobMainService.dispatch(info);
         return true;
     }
 
@@ -845,5 +860,15 @@ public class StoreReservation extends ShopBaseService {
         // 0:未审批,1:审批通过,2:审批未通过（不用审核时评价状态直接为通过，否则为待审核）
         serviceRecord.setFlag(BYTE_ZERO.equals(commConfig) ? BYTE_ONE : BYTE_ZERO);
         commentService.createComment(serviceRecord);
+    }
+
+    /**
+     * 需要自动取消的待付款订单
+     * @return
+     */
+    public Result<ServiceOrderRecord> getExpiredUnpaidOrders(){
+        int cancelTime = shopCommonConfigService.getCancelTime();
+        Timestamp expiredTime = DateUtil.getDalyedDateTime(- cancelTime * 60);
+        return db().selectFrom(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq(ORDER_STATUS_WAIT_PAY)).and(SERVICE_ORDER.CREATE_TIME.lt(expiredTime)).fetch();
     }
 }

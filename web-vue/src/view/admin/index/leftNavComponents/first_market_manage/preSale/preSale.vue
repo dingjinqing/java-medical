@@ -9,27 +9,53 @@
       <statusTab
         v-model="param.status"
         :activityName="activityName"
-        :standard="false"
+        :standard="true"
+        @click="initDataList()"
       />
       <section>
         <div class="tab_info1">
           <div>
-            活动名称：
+            <span class="info_title">活动名称：</span>
             <el-input
-              v-model="param.presaleName"
+              v-model="param.name"
               placeholder="活动名称"
               style="width:180px"
               size="small"
             ></el-input>
           </div>
           <div class="money_paytime">
-            定金支付时间：
+            <span class="info_title">定金支付时间：</span>
+            <el-date-picker
+              v-model="param.startTime"
+              type="datetime"
+              placeholder="选择开始日期"
+              size="small"
+              style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            >
+            </el-date-picker>
+            <span style="margin: 0 5px">至</span>
+            <el-date-picker
+              v-model="param.endTime"
+              type="datetime"
+              placeholder="选择结束日期"
+              size="small"
+              style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            >
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="tab_info2">
+          <div>
+            <span class="info_title">尾款支付时间：</span>
             <el-date-picker
               v-model="param.preStartTime"
               type="datetime"
               placeholder="选择开始日期"
               size="small"
               style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -39,34 +65,16 @@
               placeholder="选择结束日期"
               size="small"
               style="width:185px"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
-        </div>
-        <div class="tab_info2">
-          <span>尾款支付时间：</span>
-          <el-date-picker
-            v-model="param.startTime"
-            type="datetime"
-            placeholder="选择开始日期"
-            size="small"
-            style="width:185px"
-          >
-          </el-date-picker>
-          <span style="margin: 0 5px">至</span>
-          <el-date-picker
-            v-model="param.endTime"
-            type="datetime"
-            placeholder="选择结束日期"
-            size="small"
-            style="width:185px"
-          >
-          </el-date-picker>
+
           <el-button
             type='primary'
             size="small"
             class="choose"
-            @click="loadData"
+            @click="initDataList"
           >
             筛选
           </el-button>
@@ -82,7 +90,6 @@
 
     <div class="table_list">
       <el-table
-        class="version-manage-table"
         header-row-class-name="tableHeader"
         :data="tableData"
         border
@@ -97,12 +104,20 @@
           prop=""
           label="定金支付时间"
           align="center"
-        > </el-table-column>
+        >
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+          </template>
+        </el-table-column>
         <el-table-column
           prop=""
           label="尾款支付时间"
           align="center"
-        > </el-table-column>
+        >
+          <template slot-scope="scope">
+            {{scope.row.preStartTime}}<br>至<br>{{scope.row.preEndTime}}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="boughtGoodsQuantity"
           label="已购商品数量"
@@ -129,7 +144,7 @@
           align="center"
         > </el-table-column>
         <el-table-column
-          prop="status"
+          prop="statusText"
           label="活动状态"
           align="center"
         > </el-table-column>
@@ -138,71 +153,116 @@
           align="center"
         >
           <template slot-scope="scope">
-            <el-row>
-              <el-button
-                size="mini"
-                @click="disable(scope.row.id)"
-                v-show="couldStop(scope.row)"
-              >停用</el-button>
-              <el-button
-                size="mini"
-                @click="enable(scope.row.id)"
-                v-show="couldStart(scope.row)"
-              >启用</el-button>
-              <el-button
-                size="mini"
-                @click="gotoEdit(scope.row.id)"
-                v-show="couldEdit(scope.row)"
-              >编辑</el-button>
-              <el-button
-                size="mini"
-                @click="gotoOrderDetail(scope.row.id)"
-              >订单明细</el-button>
-              <el-button
-                size="mini"
-                @click="gotoDetail(scope.row.id)"
-              >活动明细</el-button>
-              <el-button
-                size="mini"
-                @click="deleteGift(scope.row.id)"
-                v-show="couldDelete(scope.row)"
-              >删除</el-button>
-              <el-button
-                size="mini"
-                @click="share(scope.row.id)"
-              >分享</el-button>
-            </el-row>
+            <div class="opt">
+              <el-tooltip
+                content="编辑"
+                placement="top"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-edit-outline"
+                  @click="gotoEdit(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('ordinaryCouponList.share')"
+                placement="top"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-share"
+                  @click="share(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('ordinaryCouponList.disableUse')"
+                placement="top"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-circle-close"
+                  @click="disable(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('ordinaryCouponList.enableUse')"
+                placement="top"
+                v-if="scope.row.status === 4"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-circle-check"
+                  @click="enable(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <!-- hello world  -->
+              <el-tooltip
+                content="查看活动订单"
+                placement="top"
+                v-if="scope.row.status !== 2"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-tickets"
+                  @click="receiveDetails(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="活动明细"
+                placement="top"
+                v-if="scope.row.status !== 2"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-document"
+                  @click="activityDetails(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('ordinaryCouponList.delete')"
+                placement="top"
+                v-if="scope.row.status === 3 || scope.row.status === 4"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-delete"
+                  @click="deleteActivity(scope.row.id)"
+                ></span>
+              </el-tooltip>
+            </div>
           </template>
         </el-table-column>
       </el-table>
-      <el-row>
-        <el-col
-          :offset="14"
-          :span="10"
-        >
-          <el-pagination
-            @size-change="loadData"
-            @current-change="loadData"
-            :current-page.sync="param.currentPage"
-            :page-size="param.pageRows"
-            :total="page.pageRows"
-            layout="total, sizes, prev, pager, next, jumper"
-          >
-          </el-pagination>
-        </el-col>
-      </el-row>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
     </div>
   </div>
 </template>
 <script>
 import statusTab from '@/components/admin/marketManage/status/statusTab'
-import { couldEdit, couldStop, couldStart, couldDelete, getNameById } from '@/components/admin/marketManage/status/status'
-import { getPageList, deletePreSale, disablePreSale, enablePreSale, sharePreSale } from '@/api/admin/marketManage/preSale'
+import pagination from '@/components/admin/pagination/pagination.vue'
+// import { couldEdit, couldStop, couldStart, couldDelete, getNameById } from '@/components/admin/marketManage/status/status'
+import { getPageList, disablePreSale, sharePreSale, enablePreSale, deletePreSale } from '@/api/admin/marketManage/preSale'
 
 export default {
 
   components: {
-    statusTab
+    statusTab,
+    pagination
+  },
+
+  watch: {
+    'param.status' (n, o) {
+      this.initDataList()
+    }
+  },
+  mounted () {
+    this.initDataList()
   },
   data () {
     return {
@@ -210,99 +270,110 @@ export default {
       activityName: '定金膨胀',
       startTime: '',
       param: {
-        status: 0,
-        presaleName: '',
+        status: 1,
+        name: '',
         startTime: null,
         endTime: null,
         preStartTime: null,
-        preEndTime: null,
-        currentPage: 1,
-        pageRows: 20
+        preEndTime: null
       },
-      page: {
-        totalRows: 0
-      },
+      pageParams: {},
       tableData: []
     }
   },
   methods: {
     // 列表查询
-    loadData () {
+    initDataList () {
       const { param } = this
       getPageList(param).then(res => {
-        console.log(res, 'query res')
-        const { content: { page, dataList } } = res
-        this.tableData = dataList
-        this.page = page
-      })
-    },
-    // 删除活动
-    delete (id) {
-      deletePreSale(id).then(r => {
-        this.loadData()
-        this.success('删除成功')
-      })
-    },
-    // 停用活动
-    disable (id) {
-      disablePreSale(id).then(r => {
-        this.loadData()
-        this.success('停用成功')
-      })
-    },
-    // 启用活动
-    enable (id) {
-      enablePreSale(id).then(r => {
-        this.loadData()
-        this.success('启用成功')
-      })
+        if (res.error === 0) {
+          console.log(res, 'res')
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+          this.tableData.map((item, index) => {
+            item.statusText = this.getActStatusString(item.status)
+          })
+        }
+      }).catch(err => console.log(err))
     },
     gotoAdd () {
       this.$router.push('/admin/home/main/presale/add')
     },
     gotoEdit (id) {
+      console.log(12345)
+      console.log(id, 'get id')
       this.$router.push(`/admin/home/main/presale/edit/${id}`)
-    },
-    gotoOrderDetail (id) {
-      this.$router.push(`/admin/home/main/presale/order_detail/${id}`)
-    },
-    gotoDetail (id) {
-      this.$router.push(`/admin/home/main/presale/detail/${id}`)
     },
     share (id) {
       sharePreSale(id).then(r => {
         // todo share
       })
     },
-    getStatus (v) {
-      return getNameById(v).name
-    },
-    success (message) {
-      this.$message({
-        message,
-        type: 'success'
+    // 停用活动
+    disable (id) {
+      this.$confirm(this.$t('payReward.confirmStop'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
+        type: 'warning'
+      }).then(() => {
+        disablePreSale(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('payReward.stopSuccess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('payReward.cancelStop') })
       })
     },
-    couldEdit (row) {
-      return couldEdit(row)
+    // 启用活动
+    enable (id) {
+      this.$confirm(this.$t('payReward.confirmEnable'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
+        type: 'warning'
+      }).then(() => {
+        enablePreSale(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('payReward.enableSuccess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('payReward.cancelEnable') })
+      })
     },
-    couldStop (row) {
-      return couldStop(row)
+    // 删除活动
+    deleteActivity (id) {
+      this.$confirm(this.$t('payReward.confirmDelete'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deletePreSale(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('payReward.deleteSucess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('payReward.cancelDelete') })
+      })
     },
-    couldStart (row) {
-      return couldStart(row)
+    // 领取明细
+    receiveDetails (id) {
+      console.log(id)
+      this.$router.push(`/admin/home/main/presale/order_detail/${id}`)
     },
-    couldDelete (row) {
-      return couldDelete(row)
+    // 活动明细
+    activityDetails (id) {
+      this.$router.push({
+        path: `/admin/home/main/presale/detail/${id}`,
+        query: {
+          id: id
+        }
+      })
     }
-  },
-  watch: {
-    'param.status' (n, o) {
-      this.loadData()
-    }
-  },
-  mounted () {
-    this.loadData()
   }
 }
 </script>
@@ -313,19 +384,24 @@ export default {
     padding: 20px;
     background: #fff;
     font-size: 14px;
-    .tab_info1 {
+    .tab_info1,
+    .tab_info2 {
       display: flex;
       margin: 10px 0;
       .money_paytime {
         margin-left: 70px;
       }
+      .choose {
+        margin-left: 15px;
+      }
+      .info_title {
+        display: inline-block;
+        width: 110px;
+        text-align: right;
+      }
     }
     .tab_info2 {
-      display: inline-block;
-      margin: 10px 0;
-      .choose {
-        margin-left: 20px;
-      }
+      margin: 20px 0;
     }
     .add_activity {
       display: block;
@@ -343,6 +419,13 @@ export default {
     height: 36px;
     color: #000;
     padding: 8px 10px;
+  }
+  .opt {
+    text-align: left;
+    color: #5a8bff;
+    span {
+      cursor: pointer;
+    }
   }
 }
 </style>

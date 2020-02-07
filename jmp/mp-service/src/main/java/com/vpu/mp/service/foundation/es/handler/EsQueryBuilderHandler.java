@@ -4,11 +4,13 @@ import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.index.query.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -20,16 +22,15 @@ import java.util.stream.Collectors;
 @Component
 public class EsQueryBuilderHandler {
     /**
-     * 查询语句结构bool->match/range
+     * 查询语句结构bool->must->match/range
      * @param propertyList 查询条件
      * @return {@link BoolQueryBuilder}
      */
     public BoolQueryBuilder assemblySearchBuilder(List<FieldProperty> propertyList ) {
         BoolQueryBuilder resultQueryBuilder = QueryBuilders.boolQuery();
-        List<TermQueryBuilder> termQueryBuilders = Lists.newArrayList();
-        List<TermsQueryBuilder> termsQueryBuilders = Lists.newArrayList();
-        List<MatchQueryBuilder> matchQueryBuilders = Lists.newArrayList();
-        List<RangeQueryBuilder> rangeQueryBuilders = Lists.newArrayList();
+
+        AllQueryBuilders queryBuilderArrays = new AllQueryBuilders();
+
         for( FieldProperty x: propertyList ) {
             //elasticSearch查询优化,对filter query进行cache
             if( "shop_id".equals(x.getSearchName()) ){
@@ -42,45 +43,90 @@ public class EsQueryBuilderHandler {
                 resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.BRAND_NAME,x.getValue()));
                 resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.SORT_NAME,x.getValue()));
                 resultQueryBuilder.should(QueryBuilders.termQuery(EsSearchName.CAT_NAME,x.getValue()));
-                resultQueryBuilder.minimumShouldMatch(1);
+
                 continue;
             }
-            if( x.getOperator().equals(Operator.EQ) ){
-                if ( x.isUseFullQuery() ){
-                    termsQueryBuilders.add(QueryBuilders.termsQuery(x.getSearchName(),(List<?>)x.getValue()));
-                }else{
-                    termQueryBuilders.add(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
-                }
+            queryBuilderArrays.addToQueryBuilders(x.isMust(),getQueryBuilderByProperty(x));
 
-            }else if( x.getOperator().equals(Operator.SIM) ){
-                matchQueryBuilders.add(QueryBuilders.matchQuery(x.getSearchName(),x.getValue()));
-            }else if( x.getOperator().equals(Operator.LT) ){
-                rangeQueryBuilders.add(QueryBuilders.rangeQuery(x.getSearchName()).lt(x.getValue()));
-            }else if( x.getOperator().equals(Operator.LTE) ){
-                rangeQueryBuilders.add(QueryBuilders.rangeQuery(x.getSearchName()).lte(x.getValue()));
-            }else if( x.getOperator().equals(Operator.GT) ){
-                rangeQueryBuilders.add(QueryBuilders.rangeQuery(x.getSearchName()).gt(x.getValue()));
-            }else if( x.getOperator().equals(Operator.GTE) ){
-                rangeQueryBuilders.add(QueryBuilders.rangeQuery(x.getSearchName()).gte(x.getValue()));
-            }
         }
-
-
-        if(!matchQueryBuilders.isEmpty()){
-            matchQueryBuilders.forEach(resultQueryBuilder::must);
+        queryBuilderArrays.queryShouldBuilders.getAll().forEach(x-> {
+            x.forEach(resultQueryBuilder::should);
+        });
+        queryBuilderArrays.queryMustBuilders.getAll().forEach(x-> {
+            x.forEach(resultQueryBuilder::must);
+        });
+        if( !CollectionUtils.isEmpty(resultQueryBuilder.should()) ){
+            resultQueryBuilder.minimumShouldMatch(1);
         }
-        if(!termQueryBuilders.isEmpty()){
-            termQueryBuilders.forEach(resultQueryBuilder::must);
-        }
-        if(!termsQueryBuilders.isEmpty()){
-            termsQueryBuilders.forEach(resultQueryBuilder::must);
-        }
-        if(!rangeQueryBuilders.isEmpty()){
-            rangeQueryBuilders.forEach(resultQueryBuilder::must);
-        }
-
         return resultQueryBuilder;
     }
+
+
+    private QueryBuilder getQueryBuilderByProperty(FieldProperty fp){
+        Objects.requireNonNull(fp);
+        if( fp.getOperator().equals(Operator.EQ) ){
+            if ( fp.isUseFullQuery() ){
+                return QueryBuilders.termsQuery(fp.getSearchName(),(List<?>)fp.getValue());
+            }else{
+                return QueryBuilders.termQuery(fp.getSearchName(),fp.getValue());
+            }
+        }
+        if( fp.getOperator().equals(Operator.SIM) ){
+            return  QueryBuilders.matchQuery(fp.getSearchName(),fp.getValue());
+        }
+        if( fp.getOperator().equals(Operator.LT) ){
+            return QueryBuilders.rangeQuery(fp.getSearchName()).lt(fp.getValue());
+        }
+        if( fp.getOperator().equals(Operator.LTE) ){
+            return QueryBuilders.rangeQuery(fp.getSearchName()).lte(fp.getValue());
+        }
+        if( fp.getOperator().equals(Operator.GT) ){
+            return QueryBuilders.rangeQuery(fp.getSearchName()).gt(fp.getValue());
+        }
+        if( fp.getOperator().equals(Operator.GTE) ){
+            return QueryBuilders.rangeQuery(fp.getSearchName()).gte(fp.getValue());
+        }
+        return null;
+    }
+
+    private static class QueryMustBuilders extends QueryBuilderArrays {
+
+    }
+    private static class QueryShouldBuilders extends QueryBuilderArrays{
+
+    }
+    public static class AllQueryBuilders{
+        private QueryMustBuilders queryMustBuilders;
+
+        private QueryShouldBuilders queryShouldBuilders;
+
+        AllQueryBuilders(){
+            queryMustBuilders = new QueryMustBuilders();
+            queryShouldBuilders = new QueryShouldBuilders();
+        }
+        void addToQueryBuilders(Boolean isMust, QueryBuilder queryBuilder){
+            QueryBuilderArrays arrays;
+            if( isMust ){
+                arrays = queryMustBuilders;
+            }else{
+                arrays = queryShouldBuilders;
+            }
+            if( queryBuilder instanceof TermsQueryBuilder ){
+                arrays.getTermsQueryBuilders().add((TermsQueryBuilder)queryBuilder);
+            }
+            if( queryBuilder instanceof TermQueryBuilder ){
+                arrays.getTermQueryBuilders().add((TermQueryBuilder)queryBuilder);
+            }
+            if( queryBuilder instanceof RangeQueryBuilder ){
+                arrays.getRangeQueryBuilders().add((RangeQueryBuilder)queryBuilder);
+            }
+            if( queryBuilder instanceof MatchQueryBuilder ){
+                arrays.getMatchQueryBuilders().add((MatchQueryBuilder)queryBuilder);
+            }
+        }
+    }
+
+
     /**
      * 封装disMax查询结构
      * @param builderList match查询条件

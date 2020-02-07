@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
@@ -217,7 +218,12 @@ public class GroupBuyPictorialService extends ShopBaseService {
         }
 
         // 获取分享码
-        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
+        String mpQrCode;
+        if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
+        } else {
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
+        }
         BufferedImage qrCodeImage;
         try {
              qrCodeImage = ImageIO.read(new URL(mpQrCode));
@@ -227,7 +233,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
         }
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,true);
 
         // 拼装自定义内容
         // "开团省" 文字
@@ -236,25 +242,20 @@ public class GroupBuyPictorialService extends ShopBaseService {
         String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
         BigDecimal saveMoney = param.getLinePrice().subtract(param.getRealPrice()).setScale(2,BigDecimal.ROUND_HALF_UP);
         String saveText = startGroupText+saveMoney+startGroupMoneyText;
-        ImageUtil.addFont(bgBufferedImage,saveText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextStartX(),imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
-
         Integer saveTextWidth  = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),saveText);
-        ImageUtil.addRect(bgBufferedImage,imgPx.getCustomerTextStartX()-5,imgPx.getCustomerTextStartY()-imgPx.getSmallFontSize(),saveTextWidth+10,imgPx.getSmallFontSize()+5,imgPx.getCustomerTextFontColor(),null);
+
+        ImageUtil.addFontWithRect(bgBufferedImage,imgPx.getCustomerTextStartX(),imgPx.getCustomerSecondTextStartY(),saveText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextFontColor(),null,imgPx.getCustomerTextFontColor());
 
         // 活动价
         String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP);
         Integer realPriceTextStartX = imgPx.getCustomerTextStartX()+saveTextWidth+15;
-        ImageUtil.addFont(bgBufferedImage,realPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
+        ImageUtil.addFont(bgBufferedImage,realPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor(),false);
         Integer realPriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceText);
 
         // 划线价格
         String linePriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2,BigDecimal.ROUND_HALF_UP);
-        Integer linePriceTextStartX = realPriceTextStartX+realPriceTextWidth+5;
-        ImageUtil.addFont(bgBufferedImage, linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),linePriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor());
-        Integer linePriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),linePriceText);
-
-        // 画线
-        ImageUtil.addLine(bgBufferedImage,linePriceTextStartX-2,imgPx.getCustomerTextStartY()-imgPx.getSmallFontSize()/3,linePriceTextStartX+linePriceTextWidth+5,imgPx.getCustomerTextStartY()-imgPx.getSmallFontSize()/3,imgPx.getCustomerTextFontColor());
+        int linePriceTextStartX = realPriceTextStartX+realPriceTextWidth+5;
+        ImageUtil.addFontWithLine(bgBufferedImage,linePriceTextStartX,imgPx.getCustomerSecondTextStartY(),linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextFontColor());
 
         return ImageUtil.toBase64(bgBufferedImage);
     }

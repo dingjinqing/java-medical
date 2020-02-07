@@ -2,7 +2,6 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,10 +23,7 @@ import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 public class AdminLoginController extends AdminBaseController {
 
 	@PostMapping(value = "/admin/login")
-	public JsonResult login(@RequestBody @Valid ShopLoginParam param, BindingResult result) {
-		if (result.hasErrors()) {
-			return this.fail(result.getFieldError().getDefaultMessage());
-		}
+	public JsonResult login(@RequestBody @Valid ShopLoginParam param) {
 		AdminTokenAuthInfo info = adminAuth.login(param);
 
 		if (info != null) {

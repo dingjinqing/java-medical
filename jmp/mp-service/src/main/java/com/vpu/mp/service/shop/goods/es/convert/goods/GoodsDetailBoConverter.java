@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.goods.es.convert.goods;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -15,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 /**

@@ -4,7 +4,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +38,8 @@ public class WxAppDistributionController extends WxAppBaseController{
      */
 	@PostMapping("distributor/activation")
     public JsonResult activationInfo(){
-        ActivationInfoVo activationInfo = shop().mpDistribution.getActivationInfo(getLang());
+        Integer userId = wxAppAuth.user().getUserId();
+        ActivationInfoVo activationInfo = shop().mpDistribution.getActivationInfo(userId,getLang());
         return this.success(activationInfo);
     }
 	
@@ -49,7 +49,8 @@ public class WxAppDistributionController extends WxAppBaseController{
 	 * @return
 	 */
 	@PostMapping("distributor/apply")
-	public JsonResult saveDistributorApply(@RequestBody DistributorApplyParam param) {	
+	public JsonResult saveDistributorApply(@RequestBody DistributorApplyParam param) {
+	    System.out.println(param);
 		Integer userId = wxAppAuth.user().getUserId();
 		param.setUserId(userId);
 		int res = shop().mpDistribution.distributorApply(param);

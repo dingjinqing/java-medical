@@ -62,7 +62,7 @@ global.wxComponent({
     onPageScroll (e) {
       var _this = this;
       var m = this.data.m;
-      if (m.announce_position === '1') {
+      if (m.announce_position == '1') {
         this.getRect(`#${m.cur_idx}`).then(function (rect) {
           var top = _this.getFixeTop();
           if (!m.fixed && rect.top <= top) {

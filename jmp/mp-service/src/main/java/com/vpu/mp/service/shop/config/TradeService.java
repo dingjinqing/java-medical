@@ -36,8 +36,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * The type Trade service.
@@ -211,7 +210,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the express
      */
     public int setExpress(Byte express) {
-        assert (express == (byte) 0 || express == (byte) 1);
+        Assert.isTrue(express == (byte) 0 || express == (byte) 1,"setExpress need value equal one or zero");
         return this.set(K_EXPRESS, express, Byte.class);
     }
 
@@ -231,7 +230,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the fetch
      */
     public int setFetch(Byte fetch) {
-        assert (fetch == (byte) 0 || fetch == (byte) 1);
+        Assert.isTrue(fetch == (byte) 0 || fetch == (byte) 1,"setFetch need value equal one or zero");
         return this.set(K_FETCH, fetch, Byte.class);
     }
 
@@ -240,7 +239,7 @@ public class TradeService extends BaseShopConfigService {
     }
 
     public int setIsLock(Byte isLock) {
-        assert (isLock == (byte) 0 || isLock == (byte) 1);
+        Assert.isTrue(isLock == (byte) 0 || isLock == (byte) 1,"setIsLock need value equal one or zero");
         return this.set(K_IS_LOCK, isLock, Byte.class);
     }
 
@@ -316,7 +315,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the card first
      */
     public int setCardFirst(Byte cardFirst) {
-        assert (cardFirst == (byte) 0 || cardFirst == (byte) 1);
+        Assert.isTrue(cardFirst == (byte) 0 || cardFirst == (byte) 1,"need value equal one or zero");
         return this.set(K_CARD_FIRST, cardFirst, Byte.class);
     }
 
@@ -327,7 +326,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the balance first
      */
     public int setBalanceFirst(Byte balanceFirst) {
-        assert (balanceFirst == (byte) 0 || balanceFirst == (byte) 1);
+        Assert.isTrue(balanceFirst == (byte) 0 || balanceFirst == (byte) 1,"need value equal one or zero");
         return this.set(K_BALANCE_FIRST, balanceFirst, Byte.class);
     }
 
@@ -338,7 +337,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the score first
      */
     public int setScoreFirst(Byte scoreFirst) {
-        assert (scoreFirst == (byte) 0 || scoreFirst == (byte) 1);
+        Assert.isTrue(scoreFirst == (byte) 0 || scoreFirst == (byte) 1,"Value must meet requirements");
         return this.set(K_SCORE_FIRST, scoreFirst, Byte.class);
     }
 
@@ -358,7 +357,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the cancel time
      */
     public int setCancelTime(Integer cancelTime) {
-        assert (cancelTime >= 0);
+        Assert.isTrue(cancelTime >= 0,"Value must meet requirements");
         return this.set(K_CANCEL_TIME, cancelTime, Integer.class);
     }
 
@@ -378,7 +377,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the extend receive goods
      */
     public int setExtendReceiveGoods(Byte extendReceiveGoods) {
-        assert (extendReceiveGoods == (byte) 0 || extendReceiveGoods == (byte) 1);
+        Assert.isTrue(extendReceiveGoods == (byte) 0 || extendReceiveGoods == (byte) 1,"Value must meet requirements");
         return this.set(K_EXTEND_RECEIVE_GOODS, extendReceiveGoods, Byte.class);
     }
 
@@ -398,7 +397,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the extend receive days
      */
     public int setExtendReceiveDays(Integer extendReceiveDays) {
-        assert (extendReceiveDays > 0);
+        Assert.isTrue(extendReceiveDays > 0,"Value must meet requirements");
         extendReceiveDays = extendReceiveDays > 30 ? 30 : extendReceiveDays;
         return this.set(K_EXTEND_RECEIVE_DAYS, extendReceiveDays, Integer.class);
     }
@@ -419,7 +418,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the invoice
      */
     public int setInvoice(Byte invoice) {
-        assert (invoice == (byte) 0 || invoice == (byte) 1);
+        Assert.isTrue(invoice == (byte) 0 || invoice == (byte) 1,"Value must meet requirements");
         return this.set(K_INVOICE, invoice, Byte.class);
     }
 
@@ -439,7 +438,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the service terms
      */
     public int setServiceTerms(Byte serviceTerms) {
-        assert (serviceTerms == (byte) 0 || serviceTerms == (byte) 1);
+        Assert.isTrue(serviceTerms == (byte) 0 || serviceTerms == (byte) 1,"Value must meet requirements");
         return this.set(K_SERVICE_TERMS, serviceTerms, Byte.class);
     }
 
@@ -459,7 +458,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the service name
      */
     public int setServiceName(String serviceName) {
-        assert (serviceName != null);
+        Assert.isTrue(serviceName != null,"Value must meet requirements");
         return this.set(K_SERVICE_NAME, serviceName, String.class);
     }
 
@@ -479,7 +478,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the service document
      */
     public int setServiceDocument(String serviceDocument) {
-        assert (serviceDocument != null);
+        Assert.isTrue(serviceDocument != null,"Value must meet requirements");
         return this.set(K_SERVICE_DOCUMENT, serviceDocument, String.class);
     }
 
@@ -499,7 +498,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the service choose
      */
     public int setServiceChoose(Byte serviceChoose) {
-        assert (serviceChoose == (byte) 0 || serviceChoose == (byte) 1);
+        Assert.isTrue(serviceChoose == (byte) 0 || serviceChoose == (byte) 1,"Value must meet requirements");
         return this.set(K_SERVICE_CHOOSE, serviceChoose, Byte.class);
     }
 
@@ -519,7 +518,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the order real name
      */
     public int setOrderRealName(Byte orderRealName) {
-        assert (orderRealName == (byte) 0 || orderRealName == (byte) 1);
+        Assert.isTrue(orderRealName == (byte) 0 || orderRealName == (byte) 1,"Value must meet requirements");
         return this.set(K_ORDER_REAL_NAME, orderRealName, Byte.class);
     }
 
@@ -539,7 +538,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the order cid
      */
     public int setOrderCid(Byte orderCid) {
-        assert (orderCid == (byte) 0 || orderCid == (byte) 1);
+        Assert.isTrue(orderCid == (byte) 0 || orderCid == (byte) 1,"Value must meet requirements");
         return this.set(K_ORDER_CID, orderCid, Byte.class);
     }
 
@@ -559,7 +558,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the consignee real name
      */
     public int setConsigneeRealName(Byte consigneeRealName) {
-        assert (consigneeRealName == (byte) 0 || consigneeRealName == (byte) 1);
+        Assert.isTrue(consigneeRealName == (byte) 0 || consigneeRealName == (byte) 1,"Value must meet requirements");
         return this.set(K_CONSIGNEE_REAL_NAME, consigneeRealName, Byte.class);
     }
 
@@ -579,7 +578,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the consignee cid
      */
     public int setConsigneeCid(Byte consigneeCid) {
-        assert (consigneeCid == (byte) 0 || consigneeCid == (byte) 1);
+        Assert.isTrue(consigneeCid == (byte) 0 || consigneeCid == (byte) 1,"Value must meet requirements");
         return this.set(K_CONSIGNEE_CID, consigneeCid, Byte.class);
     }
 
@@ -599,7 +598,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the custom
      */
     public int setCustom(Byte custom) {
-        assert (custom == (byte) 0 || custom == (byte) 1);
+        Assert.isTrue(custom == (byte) 0 || custom == (byte) 1,"Value must meet requirements");
         return this.set(K_CUSTOM, custom, Byte.class);
     }
 
@@ -619,7 +618,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the custom title
      */
     public int setCustomTitle(String customTitle) {
-        assert (customTitle != null);
+        Assert.isTrue(customTitle != null,"Value must meet requirements");
         return this.set(K_CUSTOM_TITLE, customTitle, String.class);
     }
 
@@ -644,7 +643,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the order requeire goods package
      */
     public int setOrderRequireGoodsPackage(GoodsPackageParam orderRequireGoodsPackage) {
-        assert (orderRequireGoodsPackage != null);
+        Assert.isTrue(orderRequireGoodsPackage != null,"Value must meet requirements");
         return this.setJsonObject(K_ORDER_REQUIRE_GOODS_PACKAGE, orderRequireGoodsPackage);
     }
 
@@ -664,7 +663,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the shipping express
      */
     public int setShippingExpress(Byte shippingExpress) {
-        assert (shippingExpress == (byte) 0 || shippingExpress == (byte) 1);
+        Assert.isTrue(shippingExpress == (byte) 0 || shippingExpress == (byte) 1,"Value must meet requirements");
         return this.set(K_SHIPPING_EXPRESS, shippingExpress, Byte.class);
     }
 
@@ -685,7 +684,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the shop address
      */
     public int setShopAddress(ShopAddress shopAddress) {
-        assert (shopAddress != null);
+        Assert.isTrue(shopAddress != null,"Value must meet requirements");
         return this.setJsonObject(K_SHOP_ADDRESS, shopAddress);
     }
 
@@ -734,6 +733,18 @@ public class TradeService extends BaseShopConfigService {
     }
 
     /**
+     * Payment is enabled boolean.支付方式是否开启
+     *
+     * @param payCode the pay code
+     * @return the boolean true开启，false关闭
+     */
+    public boolean paymentIsEnabled(String payCode) {
+        return BYTE_ONE.equals(db().select(Payment.PAYMENT.ENABLED)
+            .from(Payment.PAYMENT).where(Payment.PAYMENT.PAY_CODE.eq(payCode))
+            .fetchOneInto(Byte.class));
+    }
+
+    /**
      * 查询默认支付配置
      *
      * @return the default pay conf
@@ -743,8 +754,8 @@ public class TradeService extends BaseShopConfigService {
         Byte balanceFirst = this.getBalanceFirst();
         Byte scoreFirst = this.getScoreFirst();
         return new HashMap<String, Byte>(3) {
-			private static final long serialVersionUID = -8116540563458868251L;
-			{
+                        private static final long serialVersionUID = -8116540563458868251L;
+                        {
                 put(K_CARD_FIRST, cardFirst);
                 put(K_BALANCE_FIRST, balanceFirst);
                 put(K_SCORE_FIRST, scoreFirst);
@@ -907,15 +918,15 @@ public class TradeService extends BaseShopConfigService {
      * 服务条款配置
      *
      * @param document 服务条款配置内容
-     *                 数据库保存内容格式为json，样例如下： { 	"document": "此处直接为html页面格式的字符串", 	"update_time": 1568859761 }
+     *                 数据库保存内容格式为json，样例如下： {   "document": "此处直接为html页面格式的字符串",        "update_time": 1568859761 }
      * @throws JsonProcessingException the json processing exception
      *                                 {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#UPDATE_TIME}
      *                                 {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DOCUMENT}
      */
     public void confTermsOfService(String document) throws JsonProcessingException {
         String serviceDocument = MAPPER.writeValueAsString(new HashMap<String, Object>(2) {
-			private static final long serialVersionUID = 7869445296870051056L;
-			{
+                        private static final long serialVersionUID = 7869445296870051056L;
+                        {
                 put(DOCUMENT, document);
                 put(UPDATE_TIME, System.currentTimeMillis());
             }
@@ -958,8 +969,8 @@ public class TradeService extends BaseShopConfigService {
         List<LogisticsParam> allDelivery = logisticsService.getAllDelivery();
         //组合上述两个列表信息得到返回果
         Map<String, String> temp = new HashMap<String, String>(allDelivery.size()) {
-			private static final long serialVersionUID = 6286507281294185183L;
-			{
+                        private static final long serialVersionUID = 6286507281294185183L;
+                        {
                 allDelivery.forEach(d -> put(d.getDeliveryId(), d.getDeliverName()));
             }
         };

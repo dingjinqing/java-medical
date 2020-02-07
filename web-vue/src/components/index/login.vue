@@ -1,16 +1,16 @@
 <template>
   <div class="container login-container">
-    <div class="head_logo">
+    <!-- <div class="head_logo">
       <img
         :src="imgUrl[0].img"
         alt="微铺宝logo"
         width="200px"
       />
-    </div>
+    </div> -->
     <div class="main clearfix">
       <div class="main-left">
         <img
-          :src="$imageHost+'/image/admin/2020_logo.png'"
+          :src="$imageHost+'/image/admin/2020_new_year.jpg'"
           alt=""
         />
       </div>
@@ -121,6 +121,7 @@
           </div>
         </div>
       </div>
+      <span class="hc">慧策集团出品</span>
     </div>
   </div>
 </template>
@@ -158,7 +159,8 @@ export default {
       ],
       ruleForm: {
         username: '',
-        password: ''
+        password: '',
+        isSubLogin: false
       },
       rules: {
         username: { validator: validateUserName, trigger: 'blur' },
@@ -167,7 +169,8 @@ export default {
       subRuleForm: {
         username: '',
         subUsername: '',
-        password: ''
+        password: '',
+        isSubLogin: true
       },
       subRules: {
         username: { validator: validateUserName, trigger: 'blur' },
@@ -234,13 +237,13 @@ export default {
               // test
             })
           } else {
-            loginRequest(this.subData).then((res) => {
+            loginRequest(this.subRuleForm).then((res) => {
               console.log('第二')
               if (res.error === 0) {
                 document.onkeydown = undefined
                 localStorage.setItem('V-loginType', 0)
                 Cookies.set('V-Index-Token', res.content.token)
-                localStorage.setItem('V-Username', res.content.userName)
+                localStorage.setItem('V-Username', res.content.subUserName)
                 localStorage.setItem('V-AccountName', res.content.accountName)
                 localStorage.setItem('V-isSubLogin', this.isSubLogin)
                 console.log('子账户登录')
@@ -312,6 +315,7 @@ export default {
   background: white;
   color: #333;
   font-size: 16px;
+  position: relative;
 }
 
 .main-left {
@@ -334,6 +338,7 @@ export default {
   height: 100%;
   padding: 50px 40px;
   box-sizing: border-box;
+  position: relative;
 }
 
 .main-right-title {
@@ -437,5 +442,15 @@ input::-webkit-input-placeholder {
     margin-bottom: 10px;
     margin-left: 60px !important;
   }
+}
+.hc {
+  position: absolute;
+  bottom: 12px;
+  // left: 0;
+  right: 0;
+  font-size: 12px;
+  color: #989898;
+  text-align: center;
+  width: 445px;
 }
 </style>

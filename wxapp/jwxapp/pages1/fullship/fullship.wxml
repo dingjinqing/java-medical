@@ -1,21 +1,17 @@
 <include src="/pages/common/header.wxml" />
-<v-container>
+<v-container bindsearch="getSearchText">
   <view slot="goods-content" class="goods-content">
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
-    <v-single-col-goods />
+    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+      <block wx:for="{{pageItem}}" wx:key="goodsId" wx:for-index="itemIndex">
+        <v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" />
+      </block>
+    </block>
+  </view>
+  <view class="footer" slot="footer">
+    <view class="selected-price">已选<text style="color:{{comColor}};">￥{{cartData.totalPrice || 0.00}}</text></view>
+    <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">查看已选商品</view>
+    <view class="cart" style="background-color:{{comColor}}" bindtap="goCart">去购物车</view>	
   </view>
 </v-container>
+
+<v-selected show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}"/>

@@ -46,10 +46,9 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
@@ -92,12 +91,12 @@ public class UserService extends ShopBaseService {
 
 	@Autowired
 	public MpOrderInfoService mpOrderInfoService;
-	
+
 	@Autowired
 	public WxUserCardService wxUserCardService;
-	
-	
-	private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
+
+
+    private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
 			1038, 1042, 1014, 1043, 1045, 1046, 1052, 1053, 1056, 1057, 1058, 1064, 1067, 1068, 1071, 1072, 1073, 1074,
 			1078, 1079, 1081, 1082, 1084, 1089, 1090, 1091, 1092, 1095, 1097, 1102, 1039, 1103, 1104, 1129, 1099, 1059,
 			1054, 1022, 1030 };
@@ -424,8 +423,8 @@ public class UserService extends ShopBaseService {
 		logger().info("获取sessionKey："+sessionKey2+"结果"+StringUtils.isEmpty(sessionKey));
 		WxMaUserInfo userInfo = maService.getUserService().getUserInfo(sessionKey,
 				param.getEncryptedData(), param.getIv());
-		logger().info("获取用户信息"+userInfo.toString());
 		if (userInfo != null) {
+			logger().info("获取用户信息"+userInfo.toString());
 			if (!userInfo.getUnionId().equals(record.getWxUnionId())) {
 				db().update(USER).set(USER.WX_UNION_ID, userInfo.getUnionId()).where(USER.USER_ID.eq(userId)).execute();
 				record.setWxUnionId(userInfo.getUnionId());
@@ -433,7 +432,7 @@ public class UserService extends ShopBaseService {
 				// TODO $crmResult = shop($shopId)->serviceRequest->crmApi->init();
 			}
 		} else {
-			logger().error("wxDecryptData error:" + userInfo.toString());
+			logger().error("wxDecryptData error:" + param.toString());
 			return false;
 		}
 		String token = tokenPrefix + Util.md5(shopId + "_" +userId);
@@ -550,7 +549,7 @@ public class UserService extends ShopBaseService {
 	 * 我的订单
 	 * @param userId
 	 * @param data
-	 * @return 
+     * @return
 	 */
 	public List<Map<String, Object>> parseMyOrder(Integer userId, List<Map<String, Object>> data) {
 		Map<Byte, Integer> orderStatusNum = mpOrderInfoService.getOrderStatusNum(userId, false);
@@ -712,7 +711,7 @@ public class UserService extends ShopBaseService {
 		if(importUser==null) {
 			return true;
 		}
-		if(importUser!=null||importUser.getIsActivate()==1) {
+		if(importUser.getIsActivate()==1) {
 			return false;
 		}
 		return true;
@@ -879,7 +878,7 @@ public class UserService extends ShopBaseService {
 	/**
 	 * 店铺库的user同步到主库
 	 * @param shopRecord
-	 * @return 
+     * @return
 	 */
 	public int[] syncMainUser(UserRecord shopRecord) {
 		return  saas().wxUserService.syncMainUser(getShopId(),shopRecord.getUserId(),shopRecord);
@@ -890,7 +889,7 @@ public class UserService extends ShopBaseService {
 	 * 店铺库的userdetail同步到主库
 	 * @param shopRecords
 	 * @param type
-	 * @return 
+     * @return
 	 */
 	public int[] syncMainUserDetail(UserDetailRecord shopRecord) {
 		return	saas().wxUserService.syncMainUserDetail(getShopId(),shopRecord.getUserId(),shopRecord);
@@ -916,7 +915,7 @@ public class UserService extends ShopBaseService {
 		}
 		return db().selectFrom(USER).where(USER.WX_OPENID.eq(openId)).fetchAny();
 	}
-	
+
 	//解析手机号
 	public WxMaPhoneNumberInfo wxDecryptData(WxAppAccountParam param,String tokenPrefix) {
 		Integer userId=param.getUserId();
@@ -953,14 +952,14 @@ public class UserService extends ShopBaseService {
 			return phoneNoInfo;
 		}
 		return null;
-		
-	}
-	
+
+    }
+
 	public UserRecord getUserByUnionId(String wxUnionId) {
 		return db().fetchAny(USER, USER.WX_UNION_ID.eq(wxUnionId));
 	}
-	
-	public Result<UserRecord> getAllUser() {
+
+    public Result<UserRecord> getAllUser() {
 		return db().fetch(USER);
 	}
 	public Result<UserDetailRecord> getAllUserDetail() {
@@ -968,7 +967,7 @@ public class UserService extends ShopBaseService {
 	}
 	/**
 	 * 同步用户信息
-	 * @return 
+     * @return
 	 */
 	public UserSysVo synchronizeUser() {
 		Result<UserRecord> allUser = getAllUser();
@@ -995,8 +994,8 @@ public class UserService extends ShopBaseService {
 		UserSysVo vo=new UserSysVo(allUser.size(), updateSuccess, insertSuccess, updateFail, insertFail);
 		return vo;
 	}
-	
-	public UserSysVo synchronizeUserDetail() {
+
+    public UserSysVo synchronizeUserDetail() {
 		Result<UserDetailRecord> allUserDetail = getAllUserDetail();
 		logger().info(getShopId()+"用户详情数量"+allUserDetail.size());
 		int updateSuccess=0;
@@ -1021,8 +1020,25 @@ public class UserService extends ShopBaseService {
 		UserSysVo vo=new UserSysVo(allUserDetail.size(), updateSuccess, insertSuccess, updateFail, insertFail);
 		return vo;
 	}
-	
-	public UserRecord getUserByMobile(String mobile) {
+
+    public UserRecord getUserByMobile(String mobile) {
 		return db().selectFrom(USER).where(USER.MOBILE.eq(mobile)).fetchAny();
 	}
+
+    /**
+     * Is new boolean.是否店铺新用户，0否，1是
+     *
+     * @param userId the user id
+     * @return the boolean
+     */
+    public boolean isNew(Integer userId) {
+        UserRecord record = getUserByUserId(userId);
+        if (Objects.isNull(record)) {
+            return false;
+        }
+        if (Timestamp.valueOf(LocalDateTime.now()).getTime() - record.getCreateTime().getTime() <= 120) {
+            return true;
+        }
+        return false;
+    }
 }

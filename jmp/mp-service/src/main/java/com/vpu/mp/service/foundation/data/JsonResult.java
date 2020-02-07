@@ -1,6 +1,7 @@
 package com.vpu.mp.service.foundation.data;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
 
 import com.vpu.mp.service.foundation.util.Util;
 
@@ -67,7 +68,7 @@ public class JsonResult {
 	}
 
 	public JsonResult fail(String language, JsonResultCode resultCode, Object content,Object ...args) {
-		assert (resultCode.getCode() != JsonResultCode.CODE_SUCCESS.getCode());
+		Assert.isTrue(resultCode.getCode() != JsonResultCode.CODE_SUCCESS.getCode(),"code is not equal to JsonResultCode.CODE_SUCCESS");
 		return result(language, resultCode, content,args);
 	}
 

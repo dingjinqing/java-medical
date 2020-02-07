@@ -17,5 +17,7 @@ export const cn = {
   merchantClassification: '商家分类',
   display: '显示',
   noDisplay: '不显示',
-  iconColor: '图标颜色'
+  iconColor: '图标颜色',
+  commodityGrouping: '商品分组',
+  groupTextData: ['全部', '分组一', '分组二', '分组三', '分组四']
 }

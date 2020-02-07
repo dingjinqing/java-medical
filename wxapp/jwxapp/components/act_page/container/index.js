@@ -12,17 +12,15 @@ global.wxComponent({
    * 组件的初始数据
    */
   data: {
-    showSelectedDialog:false
+    
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
-    showSelected(){
-      this.setData({
-        showSelectedDialog:true
-      })
+    handleSearch(e){
+      this.triggerEvent('search',e.detail.value)
     }
   }
 })

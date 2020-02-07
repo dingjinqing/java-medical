@@ -101,6 +101,10 @@ import {
 import {
   en as userStatistics
 } from './views/admin_new/en/index/overview/userStatistics/userStatisticsEn'
+// 访问分析
+import {
+  en as visitAnalysis
+} from './views/admin_new/en/index/overview/visitAnalysis/visitAnalysisEn'
 
 // 小程序管理系列国际化
 // 页面装修
@@ -147,6 +151,10 @@ import {
 import {
   en as commoditySearch
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
+// 小程序商品分组模块国际化
+import {
+  en as commodityGrouping
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commodityGroupingEn'
 // 小程序页面装修会员卡模块国际化
 import {
   en as membershipCard
@@ -161,6 +169,18 @@ import {
 import {
   en as spike
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeEn'
+// 积分兑换
+import {
+  en as integralExchange
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/integralExchangeEn'
+// 瓜分积分
+import {
+  en as divideScorePoints
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/divideScorePointsEn'
+// 图片热区
+import {
+  en as pictureHotSpot
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureHotSpotEn'
 import {
   en as fightGroup
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/fightGroupEn'
@@ -192,6 +212,10 @@ import {
 import {
   en as textModule
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/textModuleEn'
+// 轮播图模块
+import {
+  en as carouselPicture
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/carouselPictureEn'
 // 小程序页面装修标题模块国际化
 import {
   en as titleModule
@@ -928,6 +952,7 @@ const en = {
   userportrait,
   userStatistics, // 用户统计
   assetsManage, // 资产管理
+  visitAnalysis, // 访问分析
 
   // 小程序管理
   pictureSetting,
@@ -1052,6 +1077,11 @@ const en = {
   selectLinks, // 选择链接弹窗国际化
   indexApply, // 申请试用
   indexMobile, //  官网首页移动端国际化
-  reservationManage // 预约管理
+  reservationManage, // 预约管理
+  commodityGrouping, // 小程序商品分组
+  integralExchange, // 积分兑换
+  divideScorePoints, // 瓜分积分
+  pictureHotSpot, // 图片热区
+  carouselPicture // 轮播图模块
 }
 export default en

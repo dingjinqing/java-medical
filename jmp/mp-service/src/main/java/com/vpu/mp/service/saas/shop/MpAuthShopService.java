@@ -54,6 +54,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
@@ -213,7 +214,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaService getMaServiceByShopId(Integer shopId) {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
-		assert (mp != null && mp.getIsAuthOk().equals(AUTH_OK));
+		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!"); 
 		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
 	}
 
@@ -225,7 +226,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaService getMaServiceByAppId(String appId) {
 		MpAuthShopRecord mp = getAuthShopByAppId(appId);
-		assert (mp != null && mp.getIsAuthOk().equals(AUTH_OK));
+		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!"); 
 		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
 	}
 
@@ -1648,7 +1649,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public String getAppIdByShopId(Integer shopId) {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
-		assert (mp != null && mp.getIsAuthOk().equals(AUTH_OK));
+		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK),"mp is null ");
 		return mp.getAppId();
 	}
 }

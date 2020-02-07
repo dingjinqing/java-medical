@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -98,5 +99,10 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         logger().info("奖品已成功领取");
         int i = prizeRecordService.updateReceivedPrize(param.getActivityId(), order.getOrderSn());
+    }
+
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+
     }
 }

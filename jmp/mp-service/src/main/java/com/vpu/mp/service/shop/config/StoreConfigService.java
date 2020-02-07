@@ -47,7 +47,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setServiceComment(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1 || value == (byte)2);
+        assert (value == (byte) 0 || value == (byte) 1 || value == (byte) 2);
 		return this.set(K_SERVICE_COMMENT, value,Byte.class);
 	}
 	
@@ -65,7 +65,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setStoreBuy(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+        assert (value == (byte) 0 || value == (byte) 1);
 		return this.set(K_STORE_BUY, value,Byte.class);
 	}
 	
@@ -83,7 +83,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setTechnicianTitle(String value) {
-		assert(!"".equals(value));
+        assert (!"".equals(value));
 		return this.set(K_TECHNICIAN_TITLE, value);
 	}
 	
@@ -101,7 +101,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setStoreScanIds(String value) {
-		assert(!"".equals(value));
+        assert (!"".equals(value));
 		return this.set(K_STORE_SCAN_IDS, value);
 	}
 	

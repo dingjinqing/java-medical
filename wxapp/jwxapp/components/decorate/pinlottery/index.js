@@ -14,12 +14,13 @@ global.wxComponent({
         0: m.surplus_second
       });
     },
+    // 拼团抽奖列表
     bindToGroupList (e) {
       var d = this.eventData(e);
       if (d.tips == "" || !d.tips) {
         util.jumpLink('/pages/pinlotterylist/pinlotterylist?group_draw_id=' + d.group_draw_id);
       } else {
-        util.showModal("提示", d.tips);
+        util.showModal(this.$t("components.decorate.tips"), d.tips);
         return false;
       }
     },

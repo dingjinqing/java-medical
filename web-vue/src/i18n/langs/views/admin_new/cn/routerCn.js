@@ -216,6 +216,8 @@ export const cn = {
   lottery_activity: ['营销管理', '幸运大抽奖'],
   // 营销管理 幸运大抽奖 抽奖明细
   lottery_activity_detail: ['营销管理', '幸运大抽奖', '抽奖明细'],
+  // 营销管理 幸运大抽奖 获取新用户明细
+  lottery_activity_newUserList: ['营销管理', '幸运大抽奖', '获取新用户明细'],
   // 营销管理 限时降价
   reduce: ['营销管理', '限时降价'],
   // 营销管理 限时降价 订单明细

@@ -21,7 +21,7 @@
           <image class="image" src='{{m.shipImg}}' />
         </view>
         <view class="card_content_right">
-          <view style='font-size:28rpx;'>会员等级卡</view>
+          <view style='font-size:28rpx;'>{{i18n.$t(localePack,'components.decorate.membershiGradeCard')}}</view>
         </view>
       </view>
       <view class="card_bottom">
@@ -31,7 +31,7 @@
     </view>
   </view>
 </block>
-<block wx:else>
+<block wx:elif="m.hidden_card==0">
   <view class='card' wx:if="{{m.card_id}}" bindtap="{{m.status==1 ? 'viewCard' : ''}}"  data-card_id="{{m.card_id}}" style='margin-bottom:{{m.margin_bot}}rpx'>
     <view class="view" style="background:{{m.bg}} no-repeat;background-size:cover;">
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>

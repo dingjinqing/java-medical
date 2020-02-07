@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.operation;
 /**
  * @author 黄壮壮
- * 备注模块: 
+ * 备注模块:
  * 用户输入: 0, 代表的是用户自己输入
  * 登录签到相关:1开头四位数，如1001,
  * 订单相关: 2开头四位数，如2001,
@@ -9,23 +9,23 @@ package com.vpu.mp.service.pojo.shop.operation;
  * 营销相关: 4开头四位数，如4001,
  * 管理员操作相关：5开头四位数，如5001,
  * 依次类推)
- * 
+ *
  */
 public enum RemarkTemplate {
 	/**	用户输入 */
 	USER_INPUT_MSG(0,null),
-	
-	
-	/**
+
+
+    /**
 	 * 登录
 	 */
 	/**	每日登录送积分 */
 	LOGIN_EVERY_DAY_SEND(1001,RemarkMessage.MSG_LOGIN_EVERY_DAY_SEND),
 	/**	连续签到{0}天，获得{1}积分 */
 	SIGN_SOME_DAY_SEND(1002,RemarkMessage.MSG_SIGN_SOME_DAY_SEND),
-	
-	
-	/**
+
+
+    /**
 	 * 订单
 	 */
 	/**	订单: {订单号}退余额 */
@@ -49,9 +49,9 @@ public enum RemarkTemplate {
 	ORDER_RETURN_CARD_ACCOUNT(2014,RemarkMessage.MSG_ORDER_RETURN_CARD_ACCOUNT),
 	/**	虚拟订单退款	*/
 	ORDER_VIRTUAL_RETURN_DEFAULT(2015,RemarkMessage.MSG_ORDER_VIRTUAL_RETURN_DEFAULT),
-	
-	
-	/**
+
+
+    /**
 	 * 会员卡
 	 */
 	/**	领卡赠送 */
@@ -66,10 +66,10 @@ public enum RemarkTemplate {
 	OPEN_CARD_SEND(3005,RemarkMessage.OPEN_CARD_SEND),
 	/**	系统检测升级 */
 	SYSTEM_UPGRADE(3006,RemarkMessage.SYSTEM_UPGRADE),
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * 营销
 	 */
@@ -84,13 +84,25 @@ public enum RemarkTemplate {
 	/**	领取优惠券 */
 	RECEIVE_COUPON(4005,RemarkMessage.MSG_RECEIVE_COUPON),
 	/**	好友助力失败 */
-	FRIENDS_HELP_FAIL(4006,RemarkMessage.MSG_FRIENDS_HELP_FAIL),
+    FRIENDS_HELP_FAIL(4006, RemarkMessage.MSG_FRIENDS_HELP_FAIL),
+	/**
+     * 分享有礼
+     */
+    SHARE_HAS_GIFT(4007, RemarkMessage.MSG_SHARE_HAS_GIFT),
+	/**
+     * 开屏有礼
+     */
+    ENTER_HAS_GIFT(4008, RemarkMessage.MSG_ENTER_HAS_GIFT),
+	/**
+	 * 抽奖
+	 */
+	MSG_LOTTERY_GIFT(4009,RemarkMessage.MSG_LOTTERY_GIFT),
 	/** 门店支付 */
 	STORE_PAYMEMBT(4007,RemarkMessage.STORE_PAYMEMBT),
-	
-	/** 
-	 * 管理员
-	 */
+
+	/**
+     * 管理员
+     */
 	/**	管理员操作 */
 	ADMIN_OPERATION(6001,RemarkMessage.MSG_ADMIN_OPERATION),
 	/**	管理员测试 */
@@ -105,17 +117,17 @@ public enum RemarkTemplate {
 	ADMIN_USER_IMPORT(6006,RemarkMessage.MSG_ADMIN_USER_IMPORT),
 	/** 用户激活奖励送积分*/
 	ADMIN_USER_ACTIVATE(6007,RemarkMessage.MSG_ADMIN_USER_ACTIVATE);
-	
+
 	/**	返回码 */
 	public  Integer code;
 	/**	返回信息 */
 	private String message;
-	
+
 	private RemarkTemplate(Integer code,String message) {
 		this.code = code;
 		this.message = message;
 	}
-	
+
 	public static String getMessageByCode(Integer code) {
 		for(RemarkTemplate item: RemarkTemplate.values()) {
 			if(item.code.equals(code)) {

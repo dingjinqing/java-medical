@@ -4,10 +4,10 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductBo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import lombok.extern.slf4j.Slf4j;
@@ -96,22 +95,25 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.debug("WxAppCartBo:"+ Util.toJson(cartBo));
         //秒杀商品
         List<Integer> secProductList = cartBo.getCartGoodsList().stream()
-                .filter(goods -> BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goods.getGoodsType()))
-                .map(WxAppCartGoods::getPrdId).collect(Collectors.toList());
+                .filter(goods -> BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goods.getGoodsRecord().getGoodsType()))
+                .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
         //查询商品的秒杀活动,获取活动id
         Result<? extends Record> secKillInfoList = secKillProcessorDao.getSecKillInfoList(secProductList, cartBo.getDate());
         if (secKillInfoList!=null&&secKillInfoList.size()>0){
             Map<Integer, SeckillProductBo> seckillProductBoMap = secKillInfoList.intoMap(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SeckillProductBo.class);
             cartBo.getCartGoodsList().forEach(goods->{
-                SeckillProductBo productBo = seckillProductBoMap.get(goods.getPrdId());
-                CartActivityInfo seckillProductInfo =new CartActivityInfo();
-                seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
-                seckillProductInfo.setActivityId(productBo.getSkId());
-                seckillProductInfo.setSecKillPrice(productBo.getSecKillPrice());
-                goods.getCartActivityInfos().add(seckillProductInfo);
+                SeckillProductBo seckillPrd = seckillProductBoMap.get(goods.getProductId());
+                if (seckillPrd!=null){
+                    CartActivityInfo seckillProductInfo =new CartActivityInfo();
+                    seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+                    seckillProductInfo.setActivityId(seckillPrd.getSkId());
+                    seckillProductInfo.setSecKillPrice(seckillPrd.getSecKillPrice());
+                    goods.getCartActivityInfos().add(seckillProductInfo);
+                    goods.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+                    goods.setActivityId(seckillPrd.getSkId());
+                }
             });
         }
     }
@@ -146,6 +148,11 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     @Override
     public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
 
+    }
+
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+        secKillProcessorDao.processReturn(activityId,returnGoods);
     }
 
 }

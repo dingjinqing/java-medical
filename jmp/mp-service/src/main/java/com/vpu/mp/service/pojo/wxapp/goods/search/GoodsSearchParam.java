@@ -19,8 +19,12 @@ public class GoodsSearchParam extends BasePageParam {
     private Integer userId;
 
     /**搜索输入的关键字*/
-    private String keyWords;
-
+    private String goodsName;
+    /**
+     * GOODS_AREA_TYPE_SECTION
+     * 0范围 1全部
+     */
+    private Byte goodsAreaType;
     /**
      * 商品id
      */
@@ -31,7 +35,7 @@ public class GoodsSearchParam extends BasePageParam {
     /**平台id集合*/
     private List<Integer> catIds;
     /**
-     * 是否在售
+     * 是否展示已售罄商品
      */
     private Boolean showSoldOut;
 }

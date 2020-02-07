@@ -5,11 +5,11 @@
         <span>{{$t('decorationHome.libraryName')}}</span><span>{{$t('decorationHome.libraryNameTips')}}</span>
       </div>
       <div class="content">
-        <div class="decLeft">
-          <el-tabs
-            v-model="activeName"
-            :class="columnFlag?'':'tapsClass'"
-          >
+        <div
+          class="decLeft"
+          :class="columnFlag?'':'tapsClass'"
+        >
+          <el-tabs v-model="activeName">
             <el-tab-pane
               :label="$t('decorationHome.imageAndText')"
               name="first"
@@ -332,7 +332,8 @@ export default {
       isNewEnterFirstSaveSucess: -1, //  新建进来并且是非第一次保存记录id
       isDragFlag: false,
       isClickIcon: false,
-      isClickModule: false
+      isClickModule: false,
+      isClickPageSetIcon: false
     }
   },
   watch: {
@@ -347,6 +348,10 @@ export default {
       }
     },
     nowRightShowIndex (newData) {
+      if (this.isClickPageSetIcon) { // 如果是点击的页面设置的内容则终止响应操作
+        this.isClickPageSetIcon = false
+        return
+      }
       console.log(newData, this.activeName, this.nowRightModulesData)
       this.handleToModuleHight()
     },
@@ -361,7 +366,7 @@ export default {
     },
     modulesData: {
       handler (newData, oldData) {
-        console.log(newData)
+        console.log(newData, oldData)
       },
       deep: true
     }
@@ -376,7 +381,7 @@ export default {
     console.log(this.$route)
     if (Number(this.$route.query.pageId) !== -1) { // 判断是否是页面列表配置页面点击编辑跳转而来
       this.isEditSave = true
-      pageEdit({ pageId: Number(this.$route.query.pageId) }).then((res) => {
+      pageEdit({ pageId: this.$route.query.pageId }).then((res) => {
         console.log(res)
         if (res.error === 0) {
           let turnToString = this.handleToTurnNumToStr(res.content.page_cfg)
@@ -399,11 +404,13 @@ export default {
           let moduleDataCopy = JSON.parse(JSON.stringify(content))
           delete moduleDataCopy.page_cfg
           let arr = []
-          console.log(moduleDataCopy, JSON.parse(res.content.page_content))
           Object.keys(moduleDataCopy).forEach((item, index) => {
-            arr.push(JSON.parse(res.content.page_content)[item])
+            arr.push(moduleDataCopy[item])
           })
           console.log(arr)
+          this.$nextTick(() => {
+            this.modulesData = arr
+          })
           this.handleToTurnModulesName(arr)
         }
       })
@@ -440,9 +447,6 @@ export default {
       })
       console.log(showModuleArr)
       this.showModulesList = showModuleArr
-      this.$nextTick(() => {
-        this.modulesData = data
-      })
     },
     // 模块名数据池
     modulesName (name) {
@@ -787,8 +791,8 @@ export default {
         this.MoveWhiteFlag = false
         console.log(this.nowRightShowIndex, insert, index)
         this.showModulesList.splice(insert, 0, index)
-        this.modulesData.splice(insert, 0, this.handleToAddModules(index))
         this.$nextTick(() => {
+          this.modulesData.splice(insert, 0, this.handleToAddModules(index))
           if (this.nowRightShowIndex === insert) {
             this.handleToModuleHight()
           }
@@ -886,30 +890,37 @@ export default {
           let index = flag - 1
           console.log(newArr1)
           this.showModulesList = arrFliter
-          // 保存数据顺序更改
-          let tempModules = JSON.parse(JSON.stringify(modulesData1[(flag - 1)]))
-          console.log(tempModules)
-          modulesData1[(flag - 1)] = modulesData1[flag]
-          modulesData1[flag] = tempModules
-          console.log(modulesData1)
-          // let arrFliterModules = modulesData1.filter(item => {
-          //   return item
-          // })
-          // console.log(arrFliterModules)
-          this.modulesData = modulesData1
 
           // let data = this.showModulesList
           // this.$http.$emit('decCard', data, -1)
           this.$nextTick(() => {
-            this.nowRightShowIndex = index
+            // 保存数据顺序更改
+            let tempModules = JSON.parse(JSON.stringify(modulesData1[(flag - 1)]))
+            console.log(tempModules)
+            modulesData1[(flag - 1)] = modulesData1[flag]
+            modulesData1[flag] = tempModules
+            console.log(modulesData1)
+            // let arrFliterModules = modulesData1.filter(item => {
+            //   return item
+            // })
+            // console.log(arrFliterModules)
+            this.modulesData = modulesData1
+            if (this.nowRightShowIndex === index) {
+              this.handleToModuleHight()
+            } else {
+              this.nowRightShowIndex = index
+            }
+
             // this.$http.$emit('modulesClick', index)
           })
           console.log(newArr1, this.modulesData)
           break
         case 'down':
+          console.log(this.modulesData)
           let newArr2 = JSON.parse(JSON.stringify(this.showModulesList))
           let modulesData2 = JSON.parse(JSON.stringify(this.modulesData))
-          console.log(newArr2, '--', flag, '123123123')
+          console.log(modulesData2)
+          console.log(newArr2, '--', modulesData2, '123123123')
           this.oldIndex = flag
           let temp2 = newArr2[(flag + 1)]
           // 底部判断
@@ -922,20 +933,25 @@ export default {
           let indexD = flag + 1
           console.log(arrFliterD)
           this.showModulesList = arrFliterD
-          // 保存数据顺序改变
-          let tempModules2 = JSON.parse(JSON.stringify(modulesData2[(flag + 1)]))
-          modulesData2[(flag + 1)] = modulesData2[flag]
-          modulesData2[flag] = tempModules2
-          console.log(modulesData2)
-          let arrFliterModules2 = modulesData2.filter(item => {
-            return item
-          })
-          this.modulesData = arrFliterModules2
+
           // let dataD = this.showModulesList
           // this.$http.$emit('decCard', dataD, -1)
           this.$nextTick(() => {
+            // 保存数据顺序改变
+            let tempModules2 = JSON.parse(JSON.stringify(modulesData2[(flag + 1)]))
+            modulesData2[(flag + 1)] = modulesData2[flag]
+            modulesData2[flag] = tempModules2
+            console.log(modulesData2)
+            let arrFliterModules2 = modulesData2.filter(item => {
+              return item
+            })
+            this.modulesData = arrFliterModules2
             // this.$http.$emit('modulesClick', indexD)
-            this.nowRightShowIndex = indexD
+            if (this.nowRightShowIndex === indexD) {
+              this.handleToModuleHight()
+            } else {
+              this.nowRightShowIndex = indexD
+            }
           })
 
           break
@@ -949,34 +965,15 @@ export default {
     handleToSureDelete (flag) {
       console.log(this.modulesData)
       let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
-      console.log(this.nowRightShowIndex)
-      console.log(this.nowRightShowIndex, flag)
-
-      console.log(this.nowRightShowIndex)
-
-      console.log(newArr3, flag)
       newArr3.splice(flag, 1)
-      console.log(this.modulesData[flag])
-      // if (this.modulesData[flag].module_name === 'm_image_guide') {
-      //   this.modulesData[flag].nav_group.forEach((item, index) => {
-      //     item.nav_link = ''
-      //     item.nav_src = ''
-      //   })
-      // }
-
-      // this.modulesData.splice(flag, 1)
-      console.log(flag)
-
-      // this.modulesData = modulesData
-      console.log(this.modulesData)
       // 如果数组为空就重置当前插入模块id
       if (!newArr3.length) {
         this.insertModulesId = -1
       }
       console.log(newArr3)
-      this.modulesData.splice(flag, 1)
       this.showModulesList = newArr3
       this.$nextTick(() => {
+        this.modulesData.splice(flag, 1)
         if (this.nowRightShowIndex > flag) {
           this.nowRightShowIndex--
         } else if (this.nowRightShowIndex === flag) {
@@ -1087,9 +1084,9 @@ export default {
         this.oldIndex = -1
       }
       console.log(this.oldIndex, this.nowRightShowIndex, this.modulesData)
-      let newArr = JSON.parse(JSON.stringify(this.modulesData))
-      this.modulesData = null
-      this.modulesData = newArr
+      // let newArr = JSON.parse(JSON.stringify(this.modulesData))
+      // this.modulesData = null
+      // this.modulesData = newArr
 
       console.log(this.modulesData)
       // this.$nextTick(() => {
@@ -1115,15 +1112,18 @@ export default {
       console.log(insert, this.showModulesList, this.modulesData)
     },
     // 右侧点击页面设置重置中部显示
-    handleToClearIndex () {
-      this.nowRightShowIndex = null
+    handleToClearIndex (flag) {
+      if (!flag) {
+        this.isClickPageSetIcon = true
+      }
+      this.nowRightShowIndex = -1
     },
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
       console.log(this.modulesData, data)
-
-      data['cur_idx'] = this.modulesData[this.nowRightShowIndex].cur_idx
-      data['module_name'] = this.modulesData[this.nowRightShowIndex].module_name
+      console.log(this.modulesData[this.nowRightShowIndex])
+      // data['cur_idx'] = this.modulesData[this.nowRightShowIndex].cur_idx
+      // data['module_name'] = this.modulesData[this.nowRightShowIndex].module_name
 
       this.modulesData[this.nowRightShowIndex] = data
       console.log(this.modulesData)

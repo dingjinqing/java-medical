@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas.shop.official;
 import static com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -20,7 +21,7 @@ public class MpOfficialAccountService extends MainBaseService {
 	 */
 	public WxMpService getOfficialAccountClient(String appId) {
 		MpOfficialAccountRecord account = getOfficialAccountByAppid(appId);
-		assert(account !=null &&account.getIsAuthOk() == (byte)1);
+		Assert.isTrue(account !=null &&account.getIsAuthOk() == (byte)1,"MpOfficial is null");
 		return open.getWxOpenComponentService().getWxMpServiceByAppid(appId);
 	}
 

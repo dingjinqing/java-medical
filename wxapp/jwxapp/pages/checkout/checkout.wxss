@@ -219,3 +219,23 @@
   margin-right: 10rpx;
   padding: 0 4rpx;
 }
+.goods-price-tag{
+  padding: 0 8rpx;
+  margin-right: 10rpx;
+  border-bottom-left-radius: 22rpx;
+  border-top-right-radius: 22rpx;
+  color: #fff;
+  font-size: 24rpx;
+}
+.invoice .pay_list_item .pay_list_right image{
+  vertical-align: unset;
+}
+.invoice .pay_list_content{
+  color: #888;
+}
+.msg .pay_list_content{
+  text-align: left;
+}
+.must{
+  color: #f66;
+}

@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
@@ -159,5 +162,34 @@ public class AdminTestController extends AdminBaseController {
 		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("yyyy-MM-dd HH:mm:ss")}};
 		return success();
 		
+	}
+	
+	/**
+	 * 小程序公众号一起发。小程序失败的，让公众号发
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/api/admin/test/sendMaAndMpByMq/{id}")
+	public JsonResult testRecord(@PathVariable Integer id) {
+		logger().info("混合发送");
+		String page="/page/test/test";
+		//小程序数据
+		String[][] maData = new String[][] { { "金坷垃抽奖" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
+		//公众号数据
+		String[][] mpData = new String[][] { { "尊敬的用户，您的优惠券", "#173177" }, { "", "#173177" }, { "测测测测名字", "#173177" },
+				{ Util.getdate("yyyy-MM-dd HH:mm:ss"), "#173177" }, { "", "#173177" } };
+		ArrayList<Integer> arrayList = new ArrayList<Integer>();
+		arrayList.add(id);
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.maTemplateData(
+						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(maData).build())
+				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(mpData).build())
+				.page(page).shopId(adminAuth.user().getLoginShopId()).userIdList(arrayList)
+				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+		//想混合发RabbitParamConstant选小程序的
+		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(),
+				adminAuth.user().getLoginShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
+		logger().info("混合发送发出");
+		return success();
 	}
 }

@@ -145,7 +145,7 @@ public class ReducePriceService extends ShopBaseService {
     public ReducePriceVo getReducePriceById(Integer id) {
         ReducePriceRecord record = db().select(REDUCE_PRICE.ID, REDUCE_PRICE.NAME, REDUCE_PRICE.START_TIME, REDUCE_PRICE.END_TIME,
             REDUCE_PRICE.LIMIT_AMOUNT, REDUCE_PRICE.PERIOD_ACTION, REDUCE_PRICE.POINT_TIME, REDUCE_PRICE.EXTEND_TIME, REDUCE_PRICE.LIMIT_FLAG, REDUCE_PRICE.FIRST, REDUCE_PRICE.SHARE_CONFIG).
-            from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchOne().into(ReducePriceRecord.class);
+            from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchOneInto(ReducePriceRecord.class);
         ReducePriceVo res = record.into(ReducePriceVo.class);
         res.setShopShareConfig(Util.parseJson(record.getShareConfig(), PictorialShareConfigVo.class));
         if (res.getShopShareConfig() != null && StringUtil.isNotEmpty(res.getShopShareConfig().getShareImg())) {
@@ -184,19 +184,19 @@ public class ReducePriceService extends ShopBaseService {
     }
 
     private int getReducePriceActGoodsAmount(int id) {
-        return db().selectCount().from(REDUCE_PRICE_GOODS).where(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID.eq(id)).fetchOne().into(Integer.class);
+        return db().selectCount().from(REDUCE_PRICE_GOODS).where(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID.eq(id)).fetchOneInto(Integer.class);
     }
 
     private int getReducePriceActOrderAmount(int id) {
-        return db().select(countDistinct(ORDER_GOODS.ORDER_SN)).from(ORDER_GOODS).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).fetchOne().into(Integer.class);
+        return db().select(countDistinct(ORDER_GOODS.ORDER_SN)).from(ORDER_GOODS).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).fetchOneInto(Integer.class);
     }
 
     private int getReducePriceActUserAmount(int id) {
-        return db().select(countDistinct(ORDER_INFO.USER_ID)).from(ORDER_GOODS).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).fetchOne().into(Integer.class);
+        return db().select(countDistinct(ORDER_INFO.USER_ID)).from(ORDER_GOODS).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).fetchOneInto(Integer.class);
     }
 
     private BigDecimal getReducePricePaymentTotalAmount(int id) {
-        BigDecimal res = db().select(sum(ORDER_GOODS.DISCOUNTED_GOODS_PRICE)).from(ORDER_GOODS).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_WAIT_DELIVERY)).fetchOne().into(BigDecimal.class);
+        BigDecimal res = db().select(sum(ORDER_GOODS.DISCOUNTED_GOODS_PRICE)).from(ORDER_GOODS).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)).where(ORDER_GOODS.ACTIVITY_ID.eq(id)).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_WAIT_DELIVERY)).fetchOneInto(BigDecimal.class);
         return res == null ? BigDecimal.ZERO : res;
     }
 
@@ -464,6 +464,16 @@ public class ReducePriceService extends ShopBaseService {
                 l.sort(c);
                 return l;
             });
+    }
+
+    /**
+     * 获取限时降价record信息
+     * @param activityId 活动id
+     * @return record信息 或 null
+     */
+    public ReducePriceRecord getReducePriceRecord(Integer activityId){
+       return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(REDUCE_PRICE.ID.eq(activityId)))
+            .fetchAny();
     }
 
 }

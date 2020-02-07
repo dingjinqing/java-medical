@@ -46,6 +46,7 @@ public class CartProcessorContext {
         executeStrategy(exclusive,cartBo);
         executeStrategy(firstSpecial,cartBo);
         executeStrategy(gradeCard,cartBo);
+        //活动冲突处理
         executeStrategy(goodsTail,cartBo);
     }
 

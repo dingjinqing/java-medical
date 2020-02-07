@@ -46,6 +46,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -679,14 +680,16 @@ public class CouponService extends ShopBaseService {
             //代金券
             return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ? coupon.getAmount() : BigDecimal.ZERO;
         }else if(OrderConstant.T_CAC_TYPE_DISCOUNT == coupon.getType()){
-            //打折券 return = totalPrice * (1 - coupon.getAmount) /10
+            //打折券 return = 价格 * （10 - 折扣（eg:6.66） / 10）
             return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ?
-                BigDecimalUtil.multiplyOrDivide(
+                BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
                     BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
-                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(BigDecimal.ONE, BigDecimalUtil.Operator.subtrac),
-                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), BigDecimalUtil.Operator.divide),
-                            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)), null)
-                    ), null))
+                    BigDecimalUtil.BigDecimalPlus.create(
+                        BigDecimalUtil.addOrSubtrac(
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac),
+                            BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), null)),
+                        BigDecimalUtil.Operator.divide),
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
             : BigDecimal.ZERO;
         }
         return BigDecimal.ZERO;

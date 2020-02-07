@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
@@ -122,7 +123,7 @@ public class BargainProcessorDao extends ShopBaseService {
         }
 
         if (bargainRecord == null) {
-            logger().debug("小程序-商品详情-砍价信息-活动不存在或已删除[activityId:{}]",bargainRecord.getId());
+            logger().debug("小程序-商品详情-砍价信息-活动不存在或已删除");
             return  BaseConstant.ACTIVITY_STATUS_NOT_HAS;
         }
 
@@ -161,6 +162,7 @@ public class BargainProcessorDao extends ShopBaseService {
      * @param param
      */
     public void setOrderPrdBargainPrice(OrderBeforeParam param) throws MpException {
+        logger().info("砍价下单校验调试param:",param);
         BargainRecordInfo bargainRecordInfo = bargainService.bargainRecord.getRecordInfo(param.getRecordId());
         if(!bargainRecordInfo.getStatus().equals(BargainRecordService.STATUS_SUCCESS)){
             //状态不对
@@ -203,6 +205,12 @@ public class BargainProcessorDao extends ShopBaseService {
         }
 
         //绑定新订单
-        db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.IS_ORDERED,BargainRecordService.IS_ORDERED_Y).set(BARGAIN_RECORD.ORDER_SN,newOrder.getOrderSn()).execute();
+        db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.IS_ORDERED,BargainRecordService.IS_ORDERED_Y).set(BARGAIN_RECORD.ORDER_SN,newOrder.getOrderSn()).where(BARGAIN_RECORD.ID.eq(orderParam.getBargainRecordInfo().getId())).execute();
+    }
+
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods){
+        returnGoods.forEach(g->{
+            bargainService.updateBargainStock(activityId,- g.getGoodsNumber());
+        });
     }
 }

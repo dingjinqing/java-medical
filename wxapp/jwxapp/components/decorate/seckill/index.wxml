@@ -1,3 +1,4 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <!-- 单列 -->
 <view class='all_seckill'>
   <view class='one_seckill clearfix' data-link="pages/seckillitem/seckillitem?sk_id={{item.act_id}}" catchtap="bindToSecKill" data-is_prd='{{item.is_prd}}' data-idx="{{m.idx}}" wx:for='{{m.seckill_goods}}' wx:if='{{m.list_style == 1}}' data-goods_price='{{item.goods_price}}'
@@ -7,31 +8,31 @@
         <image class="sell_out image" wx:if ='{{item.goods_number == 0}}'  src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
       <image wx:if="{{item.isShowImg}}" class="image" src='{{item.goods_img}}'></image>
       <view class='daojishi' wx:if='{{m.goods_count_down==true &&item.time_state == 0&&item.goods_is_delete==0&&item.act_del_flag == 0 &&item.act_status != 0}}'>
-        <view class="start_time">{{item.act_begin_time}}开始</view>
+        <view class="start_time">{{item.act_begin_time}}{{i18n.$t(localePack,'components.decorate.start')}}</view>
       </view>
-      <view class='daojishi' wx:if='{{m.goods_count_down==true &&item.time_state == 1&&item.goods_is_delete==0&&item.act_del_flag == 0 &&item.act_status != 0 && item.is_on_sale == 1}}'>距结束{{m.times_arr[item.act_id]}}</view>
-      <view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>商品已删除</view>
-      <view class='daojishi' wx:elif='{{item.goods_is_delete == 0 && item.is_on_sale == 0}}'>商品已下架</view>
-      <view class='daojishi' wx:elif='{{item.time_state == 2}}'>活动已结束</view>
-      <view class='daojishi' wx:elif='{{item.act_status == 0 && item.act_del_flag == 0}}'>活动已停用</view>
-      <view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>活动已删除</view>
+      <view class='daojishi' wx:if='{{m.goods_count_down==true &&item.time_state == 1&&item.goods_is_delete==0&&item.act_del_flag == 0 &&item.act_status != 0 && item.is_on_sale == 1}}'>{{i18n.$t(localePack,'components.decorate.endOfDistance')}}：{{m.times_arr[item.act_id]}}</view>
+      <view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>{{i18n.$t(localePack,'components.decorate.goodsDeleted')}}</view>
+      <view class='daojishi' wx:elif='{{item.goods_is_delete == 0 && item.is_on_sale == 0}}'>{{i18n.$t(localePack,'components.decorate.offShelf')}}</view>
+      <view class='daojishi' wx:elif='{{item.time_state == 2}}'>{{i18n.$t(localePack,'components.decorate.activityEnded')}}</view>
+      <view class='daojishi' wx:elif='{{item.act_status == 0 && item.act_del_flag == 0}}'>{{i18n.$t(localePack,'components.decorate.activityDeactivated')}}</view>
+      <view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>{{i18n.$t(localePack,'components.decorate.activityDeleted')}}</view>
     </view>
     <view class='seckill_right'>
       <view class='goods_info'>
         <view class='good_names'>{{item.goods_name}}</view>
-        <view class='seckill_icon' style='color:{{comColor}};border-color:{{comColor}}'>秒杀</view>
+        <view class='seckill_icon' style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,'components.decorate.seckill')}}</view>
       </view>
       <view class='seckill_bottom clearfix'>
         <view class='bottom_top'>
           <view class='price_info'>
             <text class='seckill_price' style='color:{{comColor}};'>￥<text class="text">{{item.sec_price}}</text></text>
           </view>
-          <view class='free_ntn' wx:if="{{item.percent < 100 && item.time_state != 2 && item.act_status != 0 && item.is_on_sale == 1 && item.goods_is_delete == 0}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去抢购</view>
+          <view class='free_ntn' wx:if="{{item.percent < 100 && item.time_state != 2 && item.act_status != 0 && item.is_on_sale == 1 && item.goods_is_delete == 0}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,'components.decorate.snapUp')}}</view>
           <view class='orig_ntn' wx:else="{{item.percent == 100 || item.time_state == 2&&item.goods_is_delete==0&&item.act_del_flag == 0&&item.is_on_sale == 0 && item.goods_is_delete == 1 || item.act_status == 0}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'
-            data-goods="{{item.goods_id}}">原价购买</view>
+            data-goods="{{item.goods_id}}">{{i18n.$t(localePack,'components.decorate.originalPrice')}}</view>
         </view>
         <view class='bottom_bottom'>
-          <text class='original_price' wx:if="{{m.goods_price}}">￥{{item.max_price}}</text>
+          <text wx:if="{{m.goods_price}}" class='original_price'>￥{{item.max_price}}</text>
 
           <text class='seckill_progess2' wx:if="{{item.time_state == 2&&item.goods_is_delete==0&&item.act_del_flag == 0 || item.act_del_flag == 1 || item.percent == 100}}">
                   <text class='progess2' style='width:{{item.percent}}%'></text>
@@ -40,7 +41,7 @@
                   <text class='progess1' style='width:{{item.percent}}%;background:{{comColor}}'></text>
           </text>
 
-          <text class='seckill_pay'>已售{{item.percent}}%</text>
+          <text class='seckill_pay'>{{i18n.$t(localePack,'components.decorate.sold')}}{{item.percent}}%</text>
         </view>
       </view>
     </view>
@@ -56,18 +57,18 @@
           <image class="sell_out image" wx:if ='{{item.goods_number == 0}}'  src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
         <image wx:if="{{item.isShowImg}}" class="image"  src='{{item.goods_img}}'></image>
         <view class='daojishi' wx:if='{{m.goods_count_down==true &&item.time_state == 0&&item.goods_is_delete==0&&item.act_del_flag == 0 &&item.act_status != 0}}'>
-          <view>{{item.act_begin_time}} 开始</view>
+          <view>{{item.act_begin_time}} {{i18n.$t(localePack,'components.decorate.start')}}</view>
         </view>
-        <view class='daojishi' wx:if='{{m.goods_count_down==true &&item.time_state == 1&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0 &&item.act_status != 0 && item.is_on_sale == 1}}'>距结束：{{m.times_arr[item.act_id]}}</view>
-        <view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>商品已删除</view>
-        <view class='daojishi' wx:elif='{{item.goods_is_delete == 0 && item.is_on_sale == 0}}'>商品已下架</view>
-        <view class='daojishi' wx:elif='{{item.time_state == 2}}'>活动已结束</view>
-        <view class='daojishi' wx:elif='{{item.act_status == 0 && item.act_del_flag == 0}}'>活动已停用</view>
-        <view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>活动已删除</view>
+        <view class='daojishi' wx:if='{{m.goods_count_down==true &&item.time_state == 1&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0 &&item.act_status != 0 && item.is_on_sale == 1}}'>{{i18n.$t(localePack,'components.decorate.endOfDistance')}}：{{m.times_arr[item.act_id]}}</view>
+        <view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>{{i18n.$t(localePack,'components.decorate.goodsDeleted')}}</view>
+        <view class='daojishi' wx:elif='{{item.goods_is_delete == 0 && item.is_on_sale == 0}}'>{{i18n.$t(localePack,'components.decorate.offShelf')}}</view>
+        <view class='daojishi' wx:elif='{{item.time_state == 2}}'>{{i18n.$t(localePack,'components.decorate.activityEnded')}}</view>
+        <view class='daojishi' wx:elif='{{item.act_status == 0 && item.act_del_flag == 0}}'>{{i18n.$t(localePack,'components.decorate.activityDeactivated')}}</view>
+        <view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>{{i18n.$t(localePack,'components.decorate.activityDeleted')}}</view>
       </view>
       <view class='goods_names'>{{item.goods_name}}</view>
       <view class='prices_info'>
-        <text class='seckill_icon' style='font-size:26rpx;color:{{comColor}};border-color:{{comColor}}'>秒杀</text>
+        <text class='seckill_icon' style='font-size:26rpx;color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,'components.decorate.seckill')}}</text>
         <text class='seckill_price' style='color:{{comColor}}'>￥<text class="text" style='font-size:34rpx;'>{{item.sec_price}}</text></text>
         <text wx:if="{{m.goods_price}}" class='original_price'>￥{{item.max_price}}</text>
       </view>

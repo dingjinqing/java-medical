@@ -4,9 +4,11 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -18,7 +20,11 @@ import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PayAwardPromotion;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardRecordService;
@@ -69,7 +75,7 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
  * @date 2019/12/18 10:56
  */
 @Service
-public class PayAwardProcessor extends ShopBaseService implements Processor, CreateOrderProcessor {
+public class PayAwardProcessor extends ShopBaseService implements Processor, CreateOrderProcessor,GoodsDetailProcessor {
 
     @Autowired
     private PayAwardService payAwardService;
@@ -96,6 +102,15 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
         return ACTIVITY_TYPE_PAY_AWARD;
     }
 
+    /*****************商品详情处理*******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        PayAwardPromotion payAwardPromotionInfo = payAwardService.getPayAwardPromotionInfo(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), DateUtil.getLocalDateTime());
+        if (payAwardPromotionInfo == null) {
+            return;
+        }
+        capsule.getPromotions().put(BaseConstant.ACTIVITY_TYPE_PAY_AWARD,Collections.singletonList(payAwardPromotionInfo));
+    }
 
     /**
      * @param param
@@ -340,5 +355,10 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             e.printStackTrace();
 
         }
+    }
+
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+
     }
 }

@@ -1,15 +1,14 @@
 package com.vpu.mp.service.pojo.shop.order;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 
@@ -74,6 +73,7 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**搭配立减优惠*/
 	private BigDecimal dapeiReduceAmount;
 	private String sellerRemark;
+	private Byte isCod;
 	@JsonIgnore
 	private String verifyCode;
 	/**退定金模式1:自动退定金0:不退定金*/

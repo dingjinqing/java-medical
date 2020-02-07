@@ -13,10 +13,14 @@ import java.math.BigDecimal;
 public class GoodsShareBaseParam {
     /** 活动Id */
     private Integer activityId;
+    /**商品id或规格id*/
+    private Integer targetId;
     /** 活动分享图片中需要显示的拼团价格 */
     private BigDecimal realPrice;
     /** 活动分享图片中需要显示的划线价格 */
     private BigDecimal linePrice;
     /** 发起分享操作的用户Id*/
     private Integer userId;
+    /** 发起分享操作的用户名称*/
+    private String userName;
 }

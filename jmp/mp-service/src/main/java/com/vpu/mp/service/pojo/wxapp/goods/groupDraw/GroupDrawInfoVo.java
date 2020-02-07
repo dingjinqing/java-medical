@@ -3,8 +3,6 @@ package com.vpu.mp.service.pojo.wxapp.goods.groupDraw;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 /**
@@ -35,4 +33,5 @@ public class GroupDrawInfoVo {
 	private Timestamp delTime;
 	private String rewardCouponId;
 	private Integer rewardNum;
+	private Long surplusSecond;
 }

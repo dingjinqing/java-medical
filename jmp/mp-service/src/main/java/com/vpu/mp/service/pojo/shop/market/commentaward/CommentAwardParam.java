@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.commentaward;
 
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
@@ -99,10 +98,6 @@ public class CommentAwardParam {
      */
     @Min(0)
     private Integer    awardNum;
-    /**
-     * 奖品送出数量
-     */
-    private Integer    sendNum;
     /**
      * 设置链接
      */

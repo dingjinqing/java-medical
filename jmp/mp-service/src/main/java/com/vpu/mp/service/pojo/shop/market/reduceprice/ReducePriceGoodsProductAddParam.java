@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**

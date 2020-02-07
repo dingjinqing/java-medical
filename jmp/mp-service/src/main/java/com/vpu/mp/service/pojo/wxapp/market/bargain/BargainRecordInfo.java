@@ -40,6 +40,7 @@ public class BargainRecordInfo {
     private BigDecimal floorPrice;
     private String shareConfig;
     private Integer stock;
+    private Timestamp updateTime;
 
     private String wxOpenid;
     private String username;

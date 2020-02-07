@@ -166,7 +166,7 @@ public class UserCardDaoService extends ShopBaseService{
         List<ValidUserCardBean> result = getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
             .stream().filter((c) -> org.jooq.tools.StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
             }, false)).contains(storeId))
-            // todo 该方法目前只有门店使用，门店暂不支持会员卡次卡，所以过滤掉
+            // 该方法目前只有门店使用，门店只支持普通会员卡
             .filter((e) -> BYTE_ZERO.equals(e.getCardType()))
             .collect(Collectors.toList());
         log.debug("用户【{}】在门店【{}】的有效会员卡列表：{}", userId, storeId, result);
@@ -396,7 +396,9 @@ public class UserCardDaoService extends ShopBaseService{
 	 */
 	public void insertConsume(UserCardConsumeBean data) {
 		CardConsumerRecord cardConsumer = db().newRecord(CARD_CONSUMER);
-		cardConsumer.setMoney(data.getMoney().abs());
+		if(data.getMoney() != null) {
+			cardConsumer.setMoney(data.getMoney().abs());
+		}
 		FieldsUtil.assignNotNull(data, cardConsumer);
 		cardConsumer.insert();
 	}

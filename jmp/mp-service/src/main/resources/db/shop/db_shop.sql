@@ -245,7 +245,7 @@ CREATE TABLE `b2c_cart` (
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品id',
   `goods_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '商品sn',
   `goods_name` varchar(120) NOT NULL DEFAULT '' COMMENT '商品名称',
-  `goods_specs` text COMMENT '例如,颜色:黑色',
+  `prd_desc` varchar(1024) NOT NULL DEFAULT '' COMMENT '规格描述，格式例子：颜色:红色 尺码:s',
   `product_id` int(11) NOT NULL DEFAULT '0' COMMENT '规格产品id',
   `prd_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '规格sn',
   `goods_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品价格',

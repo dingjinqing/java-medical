@@ -28,6 +28,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -187,7 +188,7 @@ public class AccountService extends ShopBaseService {
 	 * 更新user表的account字段
 	 */
 	private void updateUserAccount(BigDecimal account, Integer userId) {
-		assert isGreatOrEqualThanZero(account):"余额不能为负数";
+		Assert.isTrue(isGreatOrEqualThanZero(account),"余额不能为负数");
 		if(isNotNull(account) && isGreatOrEqualThanZero(account)) {
 			accountDao.updateUserAccount(account, userId);
 		}
