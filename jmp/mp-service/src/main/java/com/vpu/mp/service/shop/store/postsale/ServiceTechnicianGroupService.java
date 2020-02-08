@@ -55,6 +55,7 @@ public class ServiceTechnicianGroupService extends ShopBaseService {
     public List<ServiceTechnicianGroup> getGroupAllList(Integer storeId) {
         return db().select(SERVICE_TECHNICIAN_GROUP.GROUP_ID, SERVICE_TECHNICIAN_GROUP.STORE_ID, SERVICE_TECHNICIAN_GROUP.GROUP_NAME)
             .from(SERVICE_TECHNICIAN_GROUP).where(SERVICE_TECHNICIAN_GROUP.STORE_ID.eq(storeId))
+            .and(SERVICE_TECHNICIAN_GROUP.DEL_FLAG.eq(SHORT_ZERO))
             .fetchInto(ServiceTechnicianGroup.class);
     }
 
