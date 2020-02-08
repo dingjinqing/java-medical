@@ -69,6 +69,79 @@ global.wxPage({
       showSelectedDialog:true
     })
   },
+  showSpecDialog(e){
+    console.log(e)
+    util.api("/api/wxapp/goods/detail",res=>{
+      if(res.error === 0){
+        let productsInfo = {
+          activity:res.content.activity,
+          defaultPrd:res.content.defaultPrd,
+          goodsId:res.content.goodsId,
+          goodsImgs:res.content.goodsImgs,
+          goodsNumber:res.content.goodsNumber,
+          limitBuyNum:res.content.limitBuyNum,
+          limitMaxNum:res.content.limitMaxNum,
+          products:res.content.products
+        }
+        this.setData({
+          productsInfo,
+          showSpec:true
+        })
+      }
+    },{
+      goodsId: e.detail.goodsId,
+      activityId: e.detail.activityId,
+      activityType: e.detail.activityType,
+      userId: util.getCache("user_id"),
+      lon: null,
+      lat: null
+    })
+  },
+  bindCloseSpec(){
+    this.setData({
+      showSpec:false
+    })
+  },
+  getProductData(e){
+    this.setData({
+      product:e.detail,
+      limitInfo:{
+        activityType:this.data.productsInfo.activityType,
+        limitBuyNum:e.detail.limitBuyNum,
+        limitMaxNum:e.detail.limitMaxNum,
+        prdNumber:e.detail.prdNumber
+      }
+    })
+  },
+  getGoodsNum(e) {
+    this.setData({
+      productInfo: { ...this.data.product, goodsNum:e.detail.goodsNum }
+    });
+    console.log(this.data.productInfo)
+  },
+  addCart(){
+    let { goodsNum: goodsNumber, prdId } = this.data.productInfo
+      util.api(
+        "/api/wxapp/cart/add",
+        res => {
+          if (res.error == 0) {
+            util.toast_success('添加成功')
+            this.requestCartGoodsList()
+          } else {
+            util.toast_fail('添加失败')
+          }
+          this.bindCloseSpec()
+        },
+        {
+          goodsNumber: goodsNumber,
+          prdId: prdId
+        }
+      );
+  },
+  cartChange(){
+    console.log(123)
+    this.requestCartGoodsList()
+  },
   goCart(){	
     util.jumpLink('pages/cart/cart','navigateTo')	
   },

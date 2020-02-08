@@ -3,7 +3,7 @@
   <view slot="goods-content" class="goods-content">
     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
       <block wx:for="{{pageItem}}" wx:key="goodsId" wx:for-index="itemIndex">
-        <v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" />
+        <v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" bindshowSpecDialog="showSpecDialog" />
       </block>
     </block>
   </view>
@@ -14,4 +14,14 @@
   </view>
 </v-container>
 
-<v-selected show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}"/>
+<v-selected bindcartChange="cartChange" show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}"/>
+
+
+<v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">
+  <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+  <view class="spec-footer" slot="footer">
+    <view class="footer_flex_view"  bindtap="addCart" style='color:#fff;background:{{comColor}};'>
+    <text>加入购物车</text>
+  </view>
+  </view>
+</v-spec-dialog>

@@ -2,6 +2,8 @@
   "usingComponents": {
     "v-container":"/components/act_page/container/index",
     "v-single-col-goods":"/components/item/single_col_goods/index",
-    "v-selected":"/components/act_page/selected-goods/index"
+    "v-selected":"/components/act_page/selected-goods/index",
+    "v-spec-dialog": "/components/item/popup/spec_dialog/index",
+    "v-goods-num-cfg": "/components/item/goods_num_cfg/index"
   }
 }

@@ -12,6 +12,11 @@
 import VDistpicker from 'v-distpicker'
 export default {
   components: { VDistpicker },
+  props: {
+    address: {
+      type: Object
+    }
+  },
   data () {
     return {
       temp: {
@@ -20,6 +25,11 @@ export default {
         address__dist: '东城区'
       }
     }
+  },
+  mounted () {
+    this.temp.address__province = this.address.provinceName || this.temp.address__province
+    this.temp.address__city = this.address.cityName || this.temp.address__city
+    this.temp.address__dist = this.address.distictName || this.temp.address__dist
   },
   methods: {
     onSelected (data) {
