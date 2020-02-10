@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.shop.overview.commodity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.Map;
 
 /**
@@ -58,6 +60,11 @@ public class ProductOverviewVo {
      * V: 变化率
      */
     Map<String, BigDecimal> changeRate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date startTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date endTime;
 
     public ProductOverviewVo() {
     }

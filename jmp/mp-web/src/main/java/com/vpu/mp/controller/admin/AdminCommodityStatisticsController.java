@@ -3,10 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectParam;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectVo;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewVo;
+import com.vpu.mp.service.pojo.shop.overview.commodity.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -104,6 +101,16 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Product ranking.商品排行
+     *
+     * @param param the param
+     */
+    @PostMapping("/api/admin/commoditystatistics/productRanking")
+    public JsonResult productRanking(@RequestBody @Validated RankingParam param) {
+        return success();
     }
 
 }

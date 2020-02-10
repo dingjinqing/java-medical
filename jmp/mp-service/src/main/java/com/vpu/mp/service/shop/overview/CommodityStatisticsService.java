@@ -40,6 +40,7 @@ import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 import static org.jooq.impl.DSL.*;
 
 /**
@@ -82,6 +83,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         if (Objects.isNull(nowData)) {
             return ProductOverviewVo.builder().build();
         }
+        nowData.setStartTime(Date.valueOf(prefix));
+        nowData.setEndTime(Date.valueOf(now));
         nowData.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(nowData.getPaidGoodsNum()), BigDecimal.valueOf(nowData.getVisitedGoodsNum())));
         ProductOverviewVo prefixData = getGoodsOverviewSummary(DateUtil.yyyyMmDdDate(prefix), type);
         if (Objects.isNull(prefixData)) {
@@ -147,6 +150,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         return db().selectFrom(GOS)
             .where(GOS.REF_DATE.eq(date))
             .and(GOS.TYPE.eq(type))
+            .limit(INTEGER_ONE)
             .fetchOneInto(ProductOverviewVo.class);
     }
 
@@ -166,6 +170,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         if (Objects.isNull(data)) {
             return ProductOverviewVo.builder().build();
         }
+        data.setStartTime(Date.valueOf(start));
+        data.setEndTime(Date.valueOf(end));
         data.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(data.getPaidGoodsNum()), BigDecimal.valueOf(data.getVisitedGoodsNum())));
         ProductOverviewVo prefixData = getCustomizeGoodsOverviewSummary(prefixStart, start);
         if (Objects.isNull(prefixData)) {
@@ -206,23 +212,36 @@ public class CommodityStatisticsService extends ShopBaseService {
      */
     public ProductOverviewVo conditionOverview(ProductOverviewParam param) {
         ProductOverviewVo data = ProductOverviewVo.builder()
+            // 在架商品数
             .onShelfGoodsNum(goodsStatisticTaskService.getSaleGoodsNumber(param))
+            // 动销商品数
             .soldGoodsNum(goodsStatisticTaskService.getDySoldGoodsNum(param))
+            // 被访问商品数
             .visitedGoodsNum(goodsStatisticTaskService.getGoodsNumByVisit(param))
+            // 商品访客数 (商品UV)
             .goodsUserVisit(goodsStatisticTaskService.getGoodsUv(param))
+            // 商品浏览量 (商品pv)
             .goodsPageviews(goodsStatisticTaskService.getGoodsPv(param))
+            // 加购人数
             .purchaseNum(goodsStatisticTaskService.addCartUserNum(param))
+            // 加购件数
             .purchaseQuantity(goodsStatisticTaskService.getAddCartGoodsNumber(param))
+            // 付款商品数
             .paidGoodsNum(goodsStatisticTaskService.paidGoodsNum(param))
+            // 下单商品数
             .orderGoodsNum(goodsStatisticTaskService.getPayOrderGoodsNum(param))
             .build();
         if (Objects.isNull(data)) {
             return ProductOverviewVo.builder().build();
         }
+        // 商品访问付款转化率
         data.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(data.getPaidGoodsNum()), BigDecimal.valueOf(data.getVisitedGoodsNum())));
 
         LocalDate start = param.getStartTime().toLocalDateTime().toLocalDate();
         LocalDate end = param.getEndTime().toLocalDateTime().toLocalDate();
+        data.setStartTime(Date.valueOf(start));
+        data.setEndTime(Date.valueOf(end));
+        // 计算起始日期和结束日期相差的天数
         long days = end.toEpochDay() - start.toEpochDay();
         LocalDate prefixStart = start.minusDays(days);
         // 计算得到前一段等长的起止日期
@@ -450,5 +469,9 @@ public class CommodityStatisticsService extends ShopBaseService {
         ExcelWriter excelWriter = new ExcelWriter(workbook);
         excelWriter.writeModelList(exportVos, ProductEffectExportVo.class);
         return workbook;
+    }
+
+    public void getGoodsRanking(RankingParam param) {
+
     }
 }
