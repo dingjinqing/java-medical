@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class DistributorCheckListVo {
+    private Integer id;
     /**
      * 用户ID
      */
