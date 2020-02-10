@@ -29,6 +29,12 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index SEARCH_HISTORY_PRIMARY = Indexes0.SEARCH_HISTORY_PRIMARY;
+    public static final Index MP_SCENE_RECORD_PRIMARY = Indexes0.MP_SCENE_RECORD_PRIMARY;
+    public static final Index TRADES_PRIMARY = Indexes0.TRADES_PRIMARY;
+    public static final Index DISTRIBUTION_ORDER_PRIMARY = Indexes0.DISTRIBUTION_ORDER_PRIMARY;
+    public static final Index SERVICE_MESSAGE_RECORD_PRIMARY = Indexes0.SERVICE_MESSAGE_RECORD_PRIMARY;
+    public static final Index MP_SUMMARY_TREND_PRIMARY = Indexes0.MP_SUMMARY_TREND_PRIMARY;
     public static final Index PRIZE_RECORD_PRIMARY = Indexes0.PRIZE_RECORD_PRIMARY;
     public static final Index CART_PRIMARY = Indexes0.CART_PRIMARY;
     public static final Index CART_USER_ID = Indexes0.CART_USER_ID;
@@ -429,7 +435,6 @@ public class Indexes {
     public static final Index USER_FANLI_STATISTICS_PRIMARY = Indexes0.USER_FANLI_STATISTICS_PRIMARY;
     public static final Index USER_FANLI_STATISTICS_USER_ID = Indexes0.USER_FANLI_STATISTICS_USER_ID;
     public static final Index FANLI_GOODS_STATISTICS_PRIMARY = Indexes0.FANLI_GOODS_STATISTICS_PRIMARY;
-    public static final Index FANLI_GOODS_STATISTICS_REC_ID = Indexes0.FANLI_GOODS_STATISTICS_REC_ID;
     public static final Index USER_TOTAL_FANLI_PRIMARY = Indexes0.USER_TOTAL_FANLI_PRIMARY;
     public static final Index USER_TOTAL_FANLI_USER_ID = Indexes0.USER_TOTAL_FANLI_USER_ID;
     public static final Index ORDER_GOODS_REBATE_ORDER_SN = Indexes0.ORDER_GOODS_REBATE_ORDER_SN;
@@ -479,12 +484,20 @@ public class Indexes {
     public static final Index SUBSCRIBE_MESSAGE_USER_ID = Indexes0.SUBSCRIBE_MESSAGE_USER_ID;
     public static final Index SUBSCRIBE_MESSAGE_WX_OPENID = Indexes0.SUBSCRIBE_MESSAGE_WX_OPENID;
     public static final Index PAY_AWARD_PRIZE_PRIMARY = Indexes0.PAY_AWARD_PRIZE_PRIMARY;
+    public static final Index USER_CARD_PRIMARY = Indexes0.USER_CARD_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index SEARCH_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", SearchHistory.SEARCH_HISTORY, new OrderField[] { SearchHistory.SEARCH_HISTORY.ID }, true);
+        public static Index MP_SCENE_RECORD_PRIMARY = Internal.createIndex("PRIMARY", MpSceneRecord.MP_SCENE_RECORD, new OrderField[] { MpSceneRecord.MP_SCENE_RECORD.ID }, true);
+        public static Index TRADES_PRIMARY = Internal.createIndex("PRIMARY", Trades.TRADES, new OrderField[] { Trades.TRADES.ID }, true);
+        public static Index DISTRIBUTION_ORDER_PRIMARY = Internal.createIndex("PRIMARY", DistributionOrder.DISTRIBUTION_ORDER, new OrderField[] { DistributionOrder.DISTRIBUTION_ORDER.ID }, true);
+        public static Index SERVICE_MESSAGE_RECORD_PRIMARY = Internal.createIndex("PRIMARY", ServiceMessageRecord.SERVICE_MESSAGE_RECORD, new OrderField[] { ServiceMessageRecord.SERVICE_MESSAGE_RECORD.ID }, true);
+        public static Index MP_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", MpSummaryTrend.MP_SUMMARY_TREND, new OrderField[] { MpSummaryTrend.MP_SUMMARY_TREND.ID }, true);
+        public static Index USER_CARD_PRIMARY = Internal.createIndex("PRIMARY", UserCard.USER_CARD, new OrderField[] { UserCard.USER_CARD.ID }, true);
         public static Index PRIZE_RECORD_PRIMARY = Internal.createIndex("PRIMARY", PrizeRecord.PRIZE_RECORD, new OrderField[] { PrizeRecord.PRIZE_RECORD.ID }, true);
         public static Index PAY_AWARD_PRIZE_PRIMARY = Internal.createIndex("PRIMARY", PayAwardPrize.PAY_AWARD_PRIZE, new OrderField[] { PayAwardPrize.PAY_AWARD_PRIZE.ID }, true);
         public static Index COMMENT_AWARD_PRIMARY = Internal.createIndex("PRIMARY", CommentAward.COMMENT_AWARD, new OrderField[] { CommentAward.COMMENT_AWARD.ID }, true);
@@ -878,7 +891,6 @@ public class Indexes {
         public static Index USER_FANLI_STATISTICS_PRIMARY = Internal.createIndex("PRIMARY", UserFanliStatistics.USER_FANLI_STATISTICS, new OrderField[] { UserFanliStatistics.USER_FANLI_STATISTICS.ID }, true);
         public static Index USER_FANLI_STATISTICS_USER_ID = Internal.createIndex("user_id", UserFanliStatistics.USER_FANLI_STATISTICS, new OrderField[] { UserFanliStatistics.USER_FANLI_STATISTICS.USER_ID }, false);
         public static Index FANLI_GOODS_STATISTICS_PRIMARY = Internal.createIndex("PRIMARY", FanliGoodsStatistics.FANLI_GOODS_STATISTICS, new OrderField[] { FanliGoodsStatistics.FANLI_GOODS_STATISTICS.ID }, true);
-        public static Index FANLI_GOODS_STATISTICS_REC_ID = Internal.createIndex("rec_id", FanliGoodsStatistics.FANLI_GOODS_STATISTICS, new OrderField[] { FanliGoodsStatistics.FANLI_GOODS_STATISTICS.REC_ID }, false);
         public static Index USER_TOTAL_FANLI_PRIMARY = Internal.createIndex("PRIMARY", UserTotalFanli.USER_TOTAL_FANLI, new OrderField[] { UserTotalFanli.USER_TOTAL_FANLI.ID }, true);
         public static Index USER_TOTAL_FANLI_USER_ID = Internal.createIndex("user_id", UserTotalFanli.USER_TOTAL_FANLI, new OrderField[] { UserTotalFanli.USER_TOTAL_FANLI.USER_ID }, false);
         public static Index ORDER_GOODS_REBATE_ORDER_SN = Internal.createIndex("order_sn", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.ORDER_SN, OrderGoodsRebate.ORDER_GOODS_REBATE.PRODUCT_ID }, false);
