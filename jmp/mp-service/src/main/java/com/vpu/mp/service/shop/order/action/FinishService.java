@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,7 +39,12 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
+import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY;
+import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY_EACH;
 import static java.math.BigDecimal.ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -70,6 +77,9 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private RecordTradeService recordMemberTrade;
+
+    @Autowired
+    public ScoreCfgService scoreCfgService;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -172,6 +182,45 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             if (BigDecimalUtil.compareTo(sendScore, BIGDECIMAL_ZERO) > 0) {
                 sendScore(order.getOrderSn(), sendScore.intValue(), order.getUserId());
             }
+        }else {
+            if(BYTE_ZERO.equals(scoreCfgService.getShoppingScore())) {
+                return;
+            }
+            // 非会员卡送积分逻辑
+            //订单金额
+            BigDecimal payMoney = BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(order.getMoneyPaid(), BigDecimalUtil.Operator.add),
+                BigDecimalUtil.BigDecimalPlus.create(order.getUseAccount(), BigDecimalUtil.Operator.subtrac),
+                BigDecimalUtil.BigDecimalPlus.create(order.getShippingFee())
+            );
+            int sendScore = 0;
+            //购物送积分类型： 0： 购物满；1：购物每满
+            byte scoreType = scoreCfgService.getScoreType();
+            //购物满
+            if (scoreType == CONDITION_ZERO) {
+                Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY, payMoney.toString());
+                // 满...金额
+                String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
+                // 送...积分
+                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
+                if (org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
+                    return;
+                }
+                sendScore = Integer.parseInt(setVal2);
+                logger().info("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, payMoney, sendScore);
+            } else if (scoreType == CONDITION_ONE) {
+//                购物每满
+                Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY_EACH);
+                // 每满...金额
+                String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
+                // 送...积分
+                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
+                if (org.apache.commons.lang3.StringUtils.isBlank(setVal) || org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
+                    return;
+                }
+                sendScore = BigDecimalUtil.divide(payMoney, new BigDecimal(setVal)).intValue() * Integer.valueOf(setVal2);
+                logger().debug("支付完成送积分:非会员卡每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, payMoney, sendScore);
+            }
+            sendScore(order.getOrderSn(), sendScore, order.getUserId());
         }
     }
 
