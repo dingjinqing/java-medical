@@ -617,6 +617,11 @@ public class AdminDistributionController extends AdminBaseController{
                 String maritalInfo = MemberMarriageEnum.getNameByCode(list.getCheckField().getMaritalStatus(),getLang());
                 list.getCheckField().setMaritalName(maritalInfo);
             }
+            //分销分组名称
+            if(list.getCheckField().getRebateGroup() != null){
+                DistributorGroupListVo oneInfo = shop().distributorGroup.getOneInfo(list.getCheckField().getRebateGroup());
+                list.getCheckField().setRebateGroupName(oneInfo.getGroupName());
+            }
 
         }
         return this.success(distributorCheckList);
