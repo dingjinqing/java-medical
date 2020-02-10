@@ -114,12 +114,12 @@
     <!-- 选择规格（包含无规格情况） -->
     <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
       <!-- 服务规则 -->
-      <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
+      <view class="flex_box" bindtap="goPledge" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">服务</view>
         <view class="item_middle pledge-content">
           <block wx:for="{{pledgeInfo.pledgeListVo}}" wx:for-item="pledgeItem" wx:key="index">
             <view class="pledge-item" wx:if="{{index <= 2}}">
-              <image src="{{pledgeItem.pledgeLogo}}" />
+              <image src="{{imageUrl}}{{pledgeItem.pledgeLogo}}" />
               <text>{{pledgeItem.pledgeName}}</text>
             </view>
           </block>

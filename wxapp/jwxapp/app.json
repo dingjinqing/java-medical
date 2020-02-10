@@ -80,7 +80,8 @@
         "usercardrecord/usercardrecord",
         "lottery/lottery",
         "pinlotterylist/pinlotterylist",
-        "pinlotteryinfo/pinlotteryinfo"
+        "pinlotteryinfo/pinlotteryinfo",
+        "pledgeannounce/pledgeannounce"
       ]
     }
   ],

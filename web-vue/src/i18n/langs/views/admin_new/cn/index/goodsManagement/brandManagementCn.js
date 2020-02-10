@@ -16,6 +16,8 @@ export const cn = {
   switchTips: '开启后，将在商品分类页展示全部品牌列表',
   viewExamples: '查看示例',
   recommendBrand: '推荐品牌',
+  recommend_yes: '是',
+  recommend_no: '否',
   recommendTitle: '推荐标题',
   showStyle: '展示样式',
   byBrandShow: '按品牌展示',

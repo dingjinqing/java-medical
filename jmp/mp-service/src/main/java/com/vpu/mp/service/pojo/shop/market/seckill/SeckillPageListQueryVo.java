@@ -51,7 +51,10 @@ public class SeckillPageListQueryVo {
     private Byte status;
 
     /**商品交易数量*/
-    private Short saleNum;
+    private Integer saleNum;
+
+    /**初始销量*/
+    private Integer baseSale;
 
     /**单用户最大购买数量*/
     private Short limitAmount;

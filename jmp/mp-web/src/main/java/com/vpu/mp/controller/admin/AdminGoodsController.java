@@ -572,6 +572,7 @@ public class AdminGoodsController extends AdminBaseController {
         return success(shop().goods.getGoodsNum(param.getGoodsNumCountParams()));
     }
 
+
     /**
      * 小程序装修商品列表模块数据接口
      * @param goodsListMpParam

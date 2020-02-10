@@ -54,7 +54,7 @@ global.wxPage({
         serviceInfo.src = src_down; // 展开图标
         serviceInfo.show = false; // 是否展示评价
         // 已评价
-        if (serviceInfo.flag == 1) {
+        if (serviceInfo.flag === 1||serviceInfo.flag === 0 || serviceInfo.flag === 2) {
           serviceInfo.commstar = parseInt(serviceInfo.commstar);
           if (serviceInfo.commImg != '' && serviceInfo.commImg != null) {
             serviceInfo.commImg = JSON.parse(serviceInfo.commImg);
@@ -107,7 +107,7 @@ global.wxPage({
   choose_star: function (e) {
     var that = this;
     var id = e.currentTarget.dataset.id;
-    if (this.data.serviceInfo.flag) return false;
+    if (this.data.serviceInfo.flag === 1 || this.data.serviceInfo.flag === 0 || this.data.serviceInfo.flag === 2) return false;
     for (var i = 0; i < that.data.star.length; i++) {
       if (i <= id) {
         that.data.star[i].show = true;

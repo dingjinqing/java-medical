@@ -3,8 +3,9 @@
     class="container"
     v-if="isSurvey"
   >
-    <span>{{titleLeft}}</span>
+    <span @click="handleToClickCrumb(titleLeft,true)">{{titleLeft}}</span>
     <span
+      @click="handleToClickCrumb(item)"
       style="color:#666"
       v-for="(item,index) in titleList"
       :key="index"
@@ -126,17 +127,46 @@ export default {
       this.titleLeft = data.concat(this.titleList)[0]
       this.titleList = data.concat(this.titleList)
       console.log(data, this.titleList)
+    },
+    handleToClickCrumb (name, flag) {
+      if (flag) {
+        if (this.$route.meta.category) {
+          this.$router.push({
+            name: this.$route.meta.category
+          })
+        } else {
+          this.$router.push({
+            name: this.$route.name
+          })
+        }
+        // 特殊点击面包屑跳转
+        this.handleToSpecielTurn()
+      }
+      console.log(name, this.$route)
+    },
+    handleToSpecielTurn () {
+      if (this.$route.name === 'goods_update') {
+        this.$router.push({
+          name: 'sale_on'
+        })
+      }
     }
   }
 
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .container {
   height: 55px;
   line-height: 55px;
   padding-left: 25px;
   color: #333;
   background: #fff;
+  span {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 </style>
