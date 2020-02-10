@@ -260,6 +260,10 @@ global.wxPage({
           }
           // 所在行业
           if (res.content.industryList) {
+            res.content.industryList.unshift({
+              value: 0,
+              label: "请选择"
+            })
             for (var i in res.content.industryList) {
               work_arr.push(res.content.industryList[i].label)
             }
@@ -322,6 +326,10 @@ global.wxPage({
           }
           // 教育程度
           if (res.content.educationList) {
+            res.content.educationList.unshift({
+              value: 0,
+              label: "请选择"
+            })
             for (var i in res.content.educationList) {
               edu_array.push(res.content.educationList[i].label)
             }
@@ -509,11 +517,11 @@ global.wxPage({
       util.showModal("提示", "请选择婚姻状况");
       return;
     }
-    if (user_info.education == -1 && this.data.if_edu == 1) {
+    if (user_info.education == 0 && this.data.if_edu == 1) {
       util.showModal("提示", "请选择教育程度");
       return;
     }
-    if (user_info.industry_info == -1 && this.data.if_work == 1) {
+    if (user_info.industry_info == 0 && this.data.if_work == 1) {
       util.showModal("提示", "请选择所在行业");
       return;
     }
@@ -716,15 +724,16 @@ global.wxPage({
     var index = e.target.dataset.index
     var custom_arr = that.data.custom_arr
     var valueList = e.detail.value
-    
-    for (var i in custom_arr[index].option_arr) {
-      for (var j in valueList) {
-        if (valueList[j] == custom_arr[index].option_arr[i].option_title) {
-          custom_arr[index].option_arr[i].checked = true
-        }
-      }
-    }
 
+    custom_arr[index].option_arr.find((item, index) => {
+      item.checked = false
+      valueList.find((val, key) => {
+        if (val == item.option_title) {
+          item.checked = true
+        }
+      })
+    })
+   
     that.setData({
       custom_arr: custom_arr
     })
