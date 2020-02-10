@@ -16,7 +16,11 @@ public class  JoinLotteryParam {
     private Integer lotteryId;
 
     /**
-     * 抽奖来源 1
+     * 抽奖来源 1开瓶有礼 2支付有礼3分享
      */
     private Byte lotterySource;
+    /**
+     * 活动记录来源
+     */
+    private Integer activityRecordId;
 }
