@@ -6,6 +6,9 @@ let util = require("../../utils/util.js")
 let config = require("../../utils/config.js")
 var app = getApp();
 var set_time_out;
+var startX = 0;
+var endX;
+var maxRight = 146;
 // pages/test/test.js
 global.wxPage({
 
@@ -163,31 +166,117 @@ global.wxPage({
   /**
    * 优惠券删除
    */
-  // coupon_del: function (e) {
-  //   var that = this;
-  //   var coupon_sn = e.currentTarget.dataset.couponSn;
-  //   util.showModal('', '您确定要删除该优惠券？', function () {
-  //     var animate = '';
-  //     var Coupon = that.data.cou_list;
-  //     // util.api('/api/wxapp/coupon/del', function (res) {
-  //     //   if (res.error === 0) {
-  //     //     for (let i = 0; i < Coupon.length; i++) {
-  //     //       Coupon[i].right = 0;
-  //     //       if (coupon_sn == Coupon[i].coupon_sn) {
-  //     //         Coupon.splice(i, 1)
-  //     //         i--;
-  //     //       }
-  //     //     }
-  //     //     clearTimeout(set_time_out);
-  //     //     cou_request(that, this_type);
-  //     //     that.setData({
-  //     //       cou_list: Coupon,
-  //     //       animate: animate
-  //     //     })
-  //     //   }
-  //     // }, { coupon_sn: coupon_sn })
-  //   }, true, '取消', '确定')
-  // },
+  drawStart: function (e) {
+    var touch = e.touches[0];
+    startX = touch.clientX;
+    var check_action = e.currentTarget.dataset.check_action;
+    var animate = '';
+    var Coupon = this.data.allCoupon
+    for (var i in Coupon) {
+      var data = Coupon[i];
+      data.startRight = data.right;
+    }
+    this.setData({
+      animate: 'all .1s ease-out'
+    })
+  },
+  drawMove: function (e) {
+    var self = this;
+    var dataSn = e.currentTarget.dataset.couponsn;
+    var Coupon = this.data.allCoupon;
+    var touch = e.touches[0];
+    endX = touch.clientX;
+    if ((endX - startX) < 0) {
+      for (var k in Coupon) {
+        if (dataSn === Coupon[k].couponSn) {
+          var startRight = Coupon[k].startRight;
+          var change = startX - endX;
+          startRight += change;
+          if (startRight > maxRight) startRight = maxRight;
+          Coupon[k].right = startRight;
+        }
+      }
+    } else {
+      for (var k in Coupon) {
+        if (dataSn === Coupon[k].couponSn) {
+          var startRight = Coupon[k].startRight;
+          var change = startX - endX;
+          startRight += change;
+          if (startRight < 0) startRight = 0;
+          Coupon[k].right = startRight;
+        }
+      }
+    }
+
+    self.setData({
+      allCoupon: Coupon
+    })
+
+  },
+  drawEnd: function (e) {
+    var self = this;
+    var dataSn = e.currentTarget.dataset.couponsn;
+    var touch = e.touches[0];
+    var Coupon = this.data.allCoupon;
+    if ((endX - startX) < 0) {
+      for (var k in Coupon) {
+        if (dataSn === Coupon[k].couponSn) {
+          var startRight = Coupon[k].startRight;
+          var change = startX - endX;
+          startRight += change;
+          if (startRight > maxRight) startRight = maxRight;
+          if (startRight < maxRight / 2) {
+            Coupon[k].right = 0;
+          } else {
+            Coupon[k].right = 146;
+          }
+        }
+      }
+    } else {
+      for (var k in Coupon) {
+        if (dataSn === Coupon[k].couponSn) {
+          var startRight = Coupon[k].startRight;
+          var change = startX - endX;
+          startRight += change;
+          if (startRight < 0) startRight = 0;
+          if (startRight > maxRight / 2) {
+            Coupon[k].right = 146;
+          } else {
+            Coupon[k].right = 0;
+          }
+        }
+      }
+    }
+    self.setData({
+      allCoupon: Coupon
+    })
+  },
+  coupon_del: function (e) {
+    var that = this;
+    var coupon_sn = e.currentTarget.dataset.couponSn;
+    var check_action = e.currentTarget.dataset.check_action;
+    util.showModal('', '您确定要删除该优惠券？', function () {
+      var animate = '';
+      var Coupon = that.data.allCoupon;
+      // util.api('/api/wxapp/coupon/del', function (res) {
+      //   if (res.error === 0) {
+      //     for (let i = 0; i < Coupon.length; i++) {
+      //       Coupon[i].right = 0;
+      //       if (coupon_sn == Coupon[i].coupon_sn) {
+      //         Coupon.splice(i, 1)
+      //         i--;
+      //       }
+      //     }
+      //     clearTimeout(set_time_out);
+      //     cou_request(that, this_type);
+      //     that.setData({
+      //       cou_list: Coupon,
+      //       animate: animate
+      //     })
+      //   }
+      // }, { coupon_sn: coupon_sn })
+    }, true, '取消', '确定')
+  },
 
   /**
    * 优惠券状态tab切换
@@ -230,6 +319,6 @@ global.wxPage({
    */
   to_search: function (opt) {
     var coupon_sn = opt.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages/searchs/search?coupon_sn=' + coupon_sn);
+    util.jumpLink('/pages1/search/search?coupon_sn=' + coupon_sn);
   }
 })
