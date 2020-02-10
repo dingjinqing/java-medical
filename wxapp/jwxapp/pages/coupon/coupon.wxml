@@ -15,45 +15,87 @@
         </view>
     </view>
     <view class="cou_area">
-        <block> 
-            <view bindtap="couponDetail" data-couponSn="{{item.couponSn}}" wx:for="{{allCoupon}}" wx:key="index" wx:if="{{allCoupon.length != 0}}"  style="margin-bottom: 20rpx;overflow: hidden;">
-              <view class="left" style="background:{{ this_type == 0 ? comColor :'#ccc' }}">
-                <view class="vip_exclusive" wx:if="{{item.is_exclusive == 1}}">{{i18n.$t(localePack,"pages.coupon.vipExclusive")}}</view>
-                <view class='coupon_xian'>
-                  <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
-                </view>
-                <view class="price" wx:if="{{item.type == '0'}}">￥<text>{{item.amount}}</text></view>
-                <view class="price" wx:if="{{item.type == '1'}}"><text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text></view>
-                <view class='name'>{{item.actName}}</view>
+        <!-- 未使用 -->
+        <block wx:if="{{this_type == 0}}">
+          <view class="cou_list" bindtap="couponDetail" data-couponSn="{{item.couponSn}}" data-check_action='{{this_type}}'  wx:for="{{allCoupon}}" wx:key="index" wx:if="{{allCoupon.length != 0}}">
+            <view class="left" style="background:{{ this_type == 0 ? comColor :'#ccc' }}">
+              <view class="vip_exclusive" wx:if="{{item.is_exclusive == 1}}">{{i18n.$t(localePack,"pages.coupon.vipExclusive")}}</view>
+              <view class='coupon_xian'>
+                <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
               </view>
-              <view class="right">
-                  <view class="case">
-                    <block wx:if="{{item.limitOrderAmount != 0 && item.limitOrderAmount != null}}">
-                      {{i18n.$t(localePack,"pages.coupon.limitOrderAmount1")}}{{item.limitOrderAmount}}{{i18n.$t(localePack,"pages.coupon.limitOrderAmount2")}}
-                    </block> 
-                    <block wx:else> 
-                      {{i18n.$t(localePack,"pages.coupon.limitOrderAmount3")}}
-                    </block> 
-                  </view>
-                  <!-- <view class="click_to_detail">{{item.is_all_goods}}</view> -->
-                  <view class="click_to_detail" wx:if="{{item.recommendGoodsId == ''}}">{{i18n.$t(localePack,"pages.coupon.allGoods")}}</view>
-                  <view class="click_to_detail" wx:if="{{item.recommendGoodsId != ''}}">{{i18n.$t(localePack,"pages.coupon.partGoods")}}</view>
-                  <view class="time_canuse" wx:if='{{item.remainDays != 0 || item.remain_seconds_all <= 0}}'>{{item.startTime}} - {{item.endTime}}</view>
-                  <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0 && item.remain_seconds_all > 0}}'>
-                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
-                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[1]}}</text>:
-                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>
-                    <text style='color:#666'>{{i18n.$t(localePack,"pages.coupon.timeTip")}}</text>
-                  </view>
-              </view>  
-              <!-- <view class="del_btn" wx:if="{{ this_type != 0 }}" catchtap='coupon_del' data-coupon_sn="{{item.couponSn}}" data-type='{{ this_type }}' style='background:{{comColor}}'>删除</view> -->
-              <view class="go_use" wx:if="{{ this_type == 0 }}" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view>  
+              <view class="price" wx:if="{{item.type == '0'}}">￥<text>{{item.amount}}</text></view>
+              <view class="price" wx:if="{{item.type == '1'}}"><text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text></view>
+              <view class='name'>{{item.actName}}</view>
             </view>
-            <view class="no_cou" wx:if="{{allCoupon.length == 0}}">
-              <view class="icon_no"><image src='{{imageUrl}}image/wxapp/coupo-no.png' mode='widthFix'/></view>
-              <view class="no_tips">{{i18n.$t(localePack,"pages.coupon.noCoupon")}}</view>
-            </view>
+            <view class="right">
+                <view class="case">
+                  <block wx:if="{{item.limitOrderAmount != 0 && item.limitOrderAmount != null}}">
+                    {{i18n.$t(localePack,"pages.coupon.limitOrderAmount1")}}{{item.limitOrderAmount}}{{i18n.$t(localePack,"pages.coupon.limitOrderAmount2")}}
+                  </block> 
+                  <block wx:else> 
+                    {{i18n.$t(localePack,"pages.coupon.limitOrderAmount3")}}
+                  </block> 
+                </view>
+                <view class="click_to_detail" wx:if="{{item.recommendGoodsId == ''}}">{{i18n.$t(localePack,"pages.coupon.allGoods")}}</view>
+                <view class="click_to_detail" wx:if="{{item.recommendGoodsId != ''}}">{{i18n.$t(localePack,"pages.coupon.partGoods")}}</view>
+                <view class="time_canuse" wx:if='{{item.remainDays != 0 || item.remain_seconds_all <= 0}}'>{{item.startTime}} - {{item.endTime}}</view>
+                <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0 && item.remain_seconds_all > 0}}'>
+                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
+                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[1]}}</text>:
+                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>
+                  <text style='color:#666'>{{i18n.$t(localePack,"pages.coupon.timeTip")}}</text>
+                </view>
+            </view>  
+            <view class="go_use" wx:if="{{ this_type == 0 }}" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view>  
+          </view>
+
+          <view class="no_cou" wx:if="{{allCoupon.length == 0}}">
+            <view class="icon_no"><image src='{{imageUrl}}image/wxapp/coupo-no.png' mode='widthFix'/></view>
+            <view class="no_tips">{{i18n.$t(localePack,"pages.coupon.noCoupon")}}</view>
+          </view>
         </block>
+        <!-- 已使用和已过期 -->
+        <block wx:if="{{this_type != 0}}">
+          <view class="cou_list" bindtap="couponDetail" data-couponSn="{{item.couponSn}}" data-check_action='{{this_type}}'  wx:for="{{allCoupon}}" wx:key="index" wx:if="{{allCoupon.length != 0}}" bindtouchstart="drawStart" bindtouchmove="drawMove" bindtouchend="drawEnd" style="transform:translateX(-{{item.right}}rpx); transition:{{animate ? animate : 'none'}};" >
+            <view class="left" style="background:{{ this_type == 0 ? comColor :'#ccc' }}">
+              <view class="vip_exclusive" wx:if="{{item.is_exclusive == 1}}">{{i18n.$t(localePack,"pages.coupon.vipExclusive")}}</view>
+              <view class='coupon_xian'>
+                <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
+              </view>
+              <view class="price" wx:if="{{item.type == '0'}}">￥<text>{{item.amount}}</text></view>
+              <view class="price" wx:if="{{item.type == '1'}}"><text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text></view>
+              <view class='name'>{{item.actName}}</view>
+            </view>
+            <view class="right">
+                <view class="case">
+                  <block wx:if="{{item.limitOrderAmount != 0 && item.limitOrderAmount != null}}">
+                    {{i18n.$t(localePack,"pages.coupon.limitOrderAmount1")}}{{item.limitOrderAmount}}{{i18n.$t(localePack,"pages.coupon.limitOrderAmount2")}}
+                  </block> 
+                  <block wx:else> 
+                    {{i18n.$t(localePack,"pages.coupon.limitOrderAmount3")}}
+                  </block> 
+                </view>
+                <view class="click_to_detail" wx:if="{{item.recommendGoodsId == ''}}">{{i18n.$t(localePack,"pages.coupon.allGoods")}}</view>
+                <view class="click_to_detail" wx:if="{{item.recommendGoodsId != ''}}">{{i18n.$t(localePack,"pages.coupon.partGoods")}}</view>
+                <view class="time_canuse" wx:if='{{item.remainDays != 0 || item.remain_seconds_all <= 0}}'>{{item.startTime}} - {{item.endTime}}</view>
+                <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0 && item.remain_seconds_all > 0}}'>
+                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
+                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[1]}}</text>:
+                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>
+                  <text style='color:#666'>{{i18n.$t(localePack,"pages.coupon.timeTip")}}</text>
+                </view>
+            </view>  
+            <view class="del_btn" wx:if="{{ this_type != 0 }}" catchtap='coupon_del' data-coupon_sn="{{item.couponSn}}" data-check_action='{{this_type}}' style='background:{{comColor}}'>删除</view>
+            <view class="go_use" wx:if="{{ this_type == 0 }}" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view>  
+          </view>
+
+          <view class="no_cou" wx:if="{{allCoupon.length == 0}}">
+            <view class="icon_no"><image src='{{imageUrl}}image/wxapp/coupo-no.png' mode='widthFix'/></view>
+            <view class="no_tips">{{i18n.$t(localePack,"pages.coupon.noCoupon")}}</view>
+          </view>
+        </block>
+        
+        
      </view> 
   </view>
 </view>

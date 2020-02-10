@@ -34,47 +34,21 @@ page{
   color: #f66;
   border-bottom: 2px solid #f66;
 }
-.cou_not .right{
-  border-bottom:1px dashed #eee;
-} 
-.cou_not{
+.cou_area {
+  margin-top: 110rpx;
+}
+.cou_list {
   width: 700rpx;
   margin: 25rpx 25rpx;
-  height: 285rpx;
-}
-.cou_not::after{
-  content: "";
-  display: block;
-  clear: both;
-}
-.cou_guoqi {
-  width: 700rpx;
-  margin: 25rpx 25rpx;
-  height: 210rpx;
+  /* height: 210rpx; */
   position: relative;
 }
-.cou_guoqi::after{
+.cou_list::after{
   content: "";
   display: block;
   clear: both;
 }
-.cou_used {
-  width: 700rpx;
-  margin: 25rpx 25rpx;
-  height: 210rpx;
-  position: relative;
-}
-.cou_used::after{
-  content: "";
-  display: block;
-  clear: both;
-}
-.cou_used .left{
-  
-  background-size: 100% 100%;
-}
-.cou_guoqi .left{
- 
+.cou_list .left{
   background-size: 100% 100%;
 }
 .del_btn{
@@ -234,9 +208,4 @@ page{
 }
 .time_canuse .time_square:first-of-type{
   margin-left: 0
-}
-
-.cou_area {
-   margin-top: 110rpx;
-   padding: 0 25rpx;
 }

@@ -18,7 +18,7 @@
               </view>
               <view class="goods_time clearfix">
                 <text>{{serviceInfo.serviceDate}} {{serviceInfo.servicePeriod}}</text>
-                <view wx:if="{{serviceInfo.flag != 1}}" bindtap="com_show" class="right" data-shop_id="{{serviceInfo.shop_id}}" data-osn="{{serviceInfo.order_sn}}" data-service_id="{{serviceInfo.service_id}}" data-store_id="{{serviceInfo.store_id}}" data-technician_id="{{serviceInfo.technician_id}}">
+                <view wx:if="{{serviceInfo.flag != 1 && serviceInfo.flag !== 0 && serviceInfo.flag != 2}}" bindtap="com_show" class="right" data-shop_id="{{serviceInfo.shop_id}}" data-osn="{{serviceInfo.order_sn}}" data-service_id="{{serviceInfo.service_id}}" data-store_id="{{serviceInfo.store_id}}" data-technician_id="{{serviceInfo.technician_id}}">
                   {{i18n.$t(localePack,'page1.reserve.postAReview')}}
                   <image style="width:10px;height:5px;margin-left:5rpx;" src="{{serviceInfo.src}}"></image>
                 </view>
@@ -68,12 +68,12 @@
                   <text>*</text>
                   {{i18n.$t(localePack,'page1.reserve.experience')}}:
                 </view>
-                <textarea wx:if="{{serviceInfo.flag != 1}}" value="{{serviceInfo.commNote}}" bindinput="comm_note" placeholder="{{i18n.$t(localePack,'page1.reserve.servicePowerful')}}" style="float:left" />
+                <textarea wx:if="{{serviceInfo.flag != 1 && serviceInfo.flag !== 0 && serviceInfo.flag != 2}}" value="{{serviceInfo.commNote}}" bindinput="comm_note" placeholder="{{i18n.$t(localePack,'page1.reserve.servicePowerful')}}" style="float:left" />
                 <text wx:else>{{serviceInfo.commNote}}</text>
                 <view style="clear:both"></view>
               </view>
               <!-- 服务已评价，且没有图片时隐藏 -->
-              <view class="shaidan" hidden="{{serviceInfo.flag == 1 && serviceInfo.commImg == ''}}">
+              <view class="shaidan" hidden="{{(serviceInfo.flag == 1||serviceInfo.flag === 0 || serviceInfo.flag === 2) && serviceInfo.commImg == ''}}">
                 <view class="shai_left">
                   <text style='color:#fff;'>*</text>
                   {{i18n.$t(localePack,'page1.reserve.sunOrder')}}:
@@ -82,12 +82,12 @@
                   <block wx:if="{{serviceInfo.commImg && serviceInfo.commImg.length > 0}}">
                     <block wx:for="{{serviceInfo.commImg}}" wx:key="index" wx:for-item="imgitem">
                       <view class='shai_view'>
-                        <image wx:if="{{serviceInfo.flag != 1}}" src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
-                        <image src="{{serviceInfo.flag?'':imageUrl}}{{imgitem}}" data-idx="{{index}}"></image>
+                        <image wx:if="{{serviceInfo.flag != 1 && serviceInfo.flag !== 0 && serviceInfo.flag != 2}}" src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
+                        <image src="{{(serviceInfo.flag == 1||serviceInfo.flag === 0 || serviceInfo.flag === 2)?'':imageUrl}}{{imgitem}}" data-idx="{{index}}"></image>
                       </view>
                     </block>
                   </block>
-                  <block wx:if="{{!serviceInfo.flag && serviceInfo.commImg.length < 9}}">
+                  <block wx:if="{{!(serviceInfo.flag == 1||serviceInfo.flag === 0 || serviceInfo.flag === 2) && serviceInfo.commImg.length < 9}}">
                     <view class="shai_right" bindtap="upImage">
                       <image src='{{imageUrl}}/image/wxapp/add.png' mode='widthFix' />
                     </view>
@@ -95,7 +95,7 @@
                 </view>
                 <text class="shai_num">{{serviceInfo.commImg.length}}/9</text>
               </view>
-              <view class="square_end" wx:if="{{serviceInfo.flag != 1}}">
+              <view class="square_end" wx:if="{{serviceInfo.flag != 1 && serviceInfo.flag !== 0 && serviceInfo.flag != 2}}">
                 <view style='margin-left:140rpx;width:570rpx;'>
                   <view class="niming">
                     <checkbox-group bindchange="anonymousChange">
