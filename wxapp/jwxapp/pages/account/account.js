@@ -72,5 +72,5 @@ function get_accout(that) {
       // account_list: account_list
       account_list: res.content.dataList
     })
-  }, { pageNo: that.data.page })
+  }, { currentPage: that.data.page })
 }
