@@ -134,8 +134,7 @@
               class="middle"
               v-if="activeName === '0'"
             >
-              <p v-if="item.activationFields.rebate_group">{{ item.activationFields.rebate_group }}</p>
-              <!-- <p v-if="item.activationFields.rebate_group">{{ item.activationFields.rebate_text }}</p> -->
+              <p v-if="item.activationFields.rebate_group">{{ item.checkField.rebateGroupName }}</p>
               <p
                 class="active"
                 v-if="item.activationFields.rebate_group"
@@ -184,18 +183,18 @@
           </tr>
           <tr v-if="item.userId !== ''">
             <td>{{ $t('distribution.reviewSex') }}</td>
-            <td>{{ item.activationFields.sex ? item.activationFields.sex_text : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.sex ? item.checkField.sex : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewBirthday') }}</td>
             <td>{{ item.activationFields.birthday_day ? item.activationFields.birthday : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewMarital') }}</td>
-            <td>{{ item.activationFields.marital_status ? item.activationFields.marital_text : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.marital_status ? item.checkField.maritalName : $t('distribution.reviewNo') }}</td>
 
           </tr>
           <tr v-if="item.userId !== ''">
             <td>{{ $t('distribution.reviewEducation') }}</td>
-            <td>{{ item.activationFields.education ? item.activationFields.education : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.education ? item.checkField.educationName : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewIndustry') }}</td>
-            <td>{{ item.activationFields.industry_info ? item.activationFields.industry_info : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.industry_info ? item.checkField.industryName : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewAddress') }}</td>
             <td>{{ item.activationFields.address ? item.activationFields.address : $t('distribution.reviewNo') }}</td>
 
@@ -223,14 +222,15 @@
             <td>{{ val.custom_title }}
               <span v-if="val.custom_type === 0">(单选)</span>
               <span v-if="val.custom_type === 1">(多选)</span>
-              <span v-if="val.custom_type === 2">(文本)</span>
             </td>
             <td colspan="5">
               <span v-if="val.custom_type === 0 || val.custom_type === 1">
                 <span
                   v-for="(option, key) in val.option_arr"
                   :key="key"
-                >{{ option.option_title }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                >
+                  <span v-if="option.checked === 'true'">{{ option.option_title }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </span>
               </span>
               <span v-if="val.custom_type === 2">{{ val.text }}</span>
             </td>
@@ -348,7 +348,7 @@ export default {
       // 分页
       pageParams: {
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
       requestParams: {},
       tableData: [], // 表格数据
@@ -400,34 +400,12 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.forEach(item => {
-        data.groupData = {}
+        // data.groupData = {}
         // 审核项
         item.activationFields = JSON.parse(item.activationFields)
-        // 性别
-        if (item.activationFields.sex === 'f') {
-          item.activationFields.sex_text = '女'
-        } else if (item.activationFields.sex === 'm') {
-          item.activationFields.sex_text = '男'
-        }
         // 生日
         if (item.activationFields.birthday_day) {
           item.activationFields.birthday = item.activationFields.birthday_year + '-' + item.activationFields.birthday_month + '-' + item.activationFields.birthday_day
-        }
-        // 婚姻状况
-        if (item.activationFields.marital_status === 1) {
-          item.activationFields.marital_text = '未婚'
-        } else if (item.activationFields.marital_status === 2) {
-          item.activationFields.marital_text = '已婚'
-        } else if (item.activationFields.marital_status === 3) {
-          item.activationFields.marital_text = '保密'
-        }
-        // 教育程度
-        if (item.activationFields.education) {
-
-        }
-        // 所在行业
-        if (item.activationFields.industry_info) {
-
         }
         // 所在地
         if (item.activationFields.city_code) {
@@ -442,14 +420,6 @@ export default {
                   })
                 }
               })
-            }
-          })
-        }
-        // 分销员分组
-        if (item.activationFields.rebate_group) {
-          this.selectData.find((item1, index1) => {
-            if (item1.id === item.activationFields.rebate_group) {
-              item.activationFields.rebate_text = item1.groupName
             }
           })
         }
@@ -500,8 +470,10 @@ export default {
         if (item.id === this.selectValue) {
           // 赋值给表格
           this.tableData.forEach((val, key) => {
-            if (val.userId === this.groupId) {
-              val.groupData = item
+            if (item.id === this.selectValue) {
+              val.activationFields.rebate_group = this.selectValue
+              val.checkField.rebate_group = this.selectValue
+              val.checkField.rebateGroupName = item.groupName
             }
           })
         }
@@ -511,8 +483,8 @@ export default {
     // 审核通过
     reviewPassHandler (data) {
       var groupId = 0
-      if (data.groupData) {
-        groupId = data.groupData.id
+      if (data.activationFields.rebate_group) {
+        groupId = data.activationFields.rebate_group
       }
       getCheckPass({
         id: data.id,
@@ -539,12 +511,17 @@ export default {
 
     // 确定审核不通过
     surePassHandler () {
+      if (this.textarea === '') {
+        this.$message.warning('请填写审核不通过原因')
+        return
+      }
       var groupId = 0
-      if (this.failData.groupData) {
-        groupId = this.failData.groupData.id
+      var data = this.failData
+      if (data.activationFields.rebate_group) {
+        groupId = data.activationFields.rebate_group
       }
       getCheckRefuse({
-        id: this.failData.id,
+        id: data.id,
         groupId: groupId,
         msg: this.textarea
       }).then((res) => {

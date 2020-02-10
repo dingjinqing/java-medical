@@ -333,6 +333,12 @@
             align="center"
           ></el-table-column>
           <el-table-column
+            prop="isRecommend"
+            :label="$t('brandManagement.recommendBrand')"
+            :formatter="isRecommendFormat"
+            align="center"
+          ></el-table-column>
+          <el-table-column
             prop="createTime"
             :label="$t('brandManagement.creatTime')"
             align="center"
@@ -623,6 +629,13 @@ export default {
 
       let arr = ['商品管理', '品牌管理']
       this.changeCrumbstitle(arr)
+    },
+    isRecommendFormat (row) {
+      if (row.isRecommend === 1) {
+        return this.$t('brandManagement.recommend_yes')
+      } else {
+        return this.$t('brandManagement.recommend_no')
+      }
     },
     // 调起添加品牌弹窗
     handleToAddBrand (id) {

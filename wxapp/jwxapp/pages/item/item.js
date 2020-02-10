@@ -585,6 +585,9 @@ global.wxPage({
         return data
     }
   },
+  goPledge(){
+    util.jumpLink('pages1/pledgeannounce/pledgeannounce?pledgeList='+JSON.stringify(this.data.pledgeInfo.pledgeListVo))
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

@@ -158,6 +158,11 @@
                           v-if="data.hide_name==='1'"
                         >{{item.goodsName}}</div>
                         <div
+                          class="goodsNameClass"
+                          style="height:14px"
+                          v-if="data.hide_name==='0'"
+                        ></div>
+                        <div
                           class="activityContainer"
                           :style="data.col_type==='4'?'display:flex':data.col_type==='1'?'display:flex;margin-top:0':(data.col_type==='2'||data.col_type==='3')?'margin-top:0;height:37px;':'display:flex;margin-top:0'"
                         >
@@ -167,7 +172,10 @@
                             :key="indexC"
                             class="activitySpan"
                           >
-                            <span :style="((data.col_type==='2'||data.col_type==='0')?'max-width:100%':data.col_type==='4'?'max-width:145px':data.col_type==='1'?'max-width:163px':data.col_type==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):itemC.activityType===19?'支付有礼':(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===21?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===22?$t('commodity.membershipPrice'):itemC.activityType===23?$t('commodity.membershipExclusive'):''}}</span>
+                            <span
+                              v-if="indexC<2"
+                              :style="((data.col_type==='2'||data.col_type==='0')?'max-width:100%':data.col_type==='4'?'max-width:145px':data.col_type==='1'?'max-width:163px':data.col_type==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`"
+                            >{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):itemC.activityType===19?'支付有礼':(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===20)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===21?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===22?$t('commodity.membershipPrice'):itemC.activityType===23?$t('commodity.membershipExclusive'):''}}</span>
                           </div>
                         </div>
 
@@ -179,19 +187,23 @@
                         <span
                           :style="`color:${bgColor}`"
                           v-if="data.hide_price === '1'"
-                        >￥{{Number(item.realPrice).toFixed(2)}}</span>
+                        >￥{{item.realPrice}}</span>
+                        <span
+                          :style="`color:${bgColor}`"
+                          v-if="data.hide_price === '0'"
+                        ></span>
                         <span
                           style="text-decoration: line-through;color: #c0c0c0"
                           v-if="data.show_market==='1'&&data.col_type!=='2'&&data.other_message==='1'"
                         >{{Number(item.linePrice).toFixed(2)}}</span>
                         <span
                           style="text-decoration: line-through;color: #c0c0c0"
-                          v-if="data.show_market==='2'&&data.other_message==='1'"
-                        >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                          v-if="data.show_market==='2'&&data.col_type!=='2'&&data.other_message==='1'"
+                        >{{item.goodsSaleNum}}人付款</span>
                         <span
                           style="text-decoration: line-through;color: #c0c0c0"
-                          v-if="data.show_market==='3'&&data.other_message==='1'"
-                        >{{Number(item.goodsNumber).toFixed(2)}}</span>
+                          v-if="data.show_market==='3'&&data.col_type!=='2'&&data.other_message==='1'"
+                        >{{item.goodsNumber}}人评价</span>
                         <!--购买按钮-->
                         <i
                           class="iconfont icontianjia icon_font_size new_class"

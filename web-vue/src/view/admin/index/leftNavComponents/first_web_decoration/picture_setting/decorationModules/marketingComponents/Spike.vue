@@ -172,7 +172,7 @@
               <div class="spike_right_bottom">
                 <span class="spike_to">{{$t('spike.goToBuy')}}</span>
                 <div class="spike_to_tip">
-                  <div class="spike_to_info">{{$t('spike.sold')}}{{good.salePercent}}%</div>
+                  <div class="spike_to_info">{{$t('spike.sold')}}{{good.salePercent * 100}}%</div>
                   <el-progress
                     class="spike_progress"
                     :style="'color:' + themeColor"
@@ -304,13 +304,14 @@ export default {
     // 右侧模块点击传回中间当前高亮模块的数据
     backData: { // 模块公共
       handler (newData) {
+        console.log(newData)
         if (newData) {
           if (newData.seckill_goods) {
             newData.seckill_goods.forEach(function (item, i) {
               if (!Number(item.seckill_num)) {
                 item.salePercent = 0
               } else {
-                item.salePercent = Number(Number(item.sale_num) / Number(item.seckill_num)) || 0
+                item.salePercent = Number((Number(item.sale_num) + Number(item.base_sale)) / (Number(item.seckill_num) + Number(item.base_sale))).toFixed(4) || 0
               }
             })
           }
