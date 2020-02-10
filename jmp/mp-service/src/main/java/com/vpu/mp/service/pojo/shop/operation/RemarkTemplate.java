@@ -49,6 +49,8 @@ public enum RemarkTemplate {
 	ORDER_RETURN_CARD_ACCOUNT(2014,RemarkMessage.MSG_ORDER_RETURN_CARD_ACCOUNT),
 	/**	虚拟订单退款	*/
 	ORDER_VIRTUAL_RETURN_DEFAULT(2015,RemarkMessage.MSG_ORDER_VIRTUAL_RETURN_DEFAULT),
+    /**	订单完成送积分	*/
+    ORDER_FINISH_SEND_SCORE(2016,RemarkMessage.MSG_ORDER_FINISH_SEND_SCORE),
 
 
     /**
