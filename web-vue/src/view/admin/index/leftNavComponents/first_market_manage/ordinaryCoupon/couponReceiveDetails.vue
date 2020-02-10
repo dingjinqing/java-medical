@@ -234,6 +234,9 @@ export default {
   },
   mounted () {
     this.id = this.$route.query.id
+    this.searchData.mobile = this.$route.query.phoneNum
+    this.searchData.userName = this.$route.query.userName
+    this.searchData.isUsed = this.$route.query.isUsed
     // 初始化数据
     this.initDataList()
   },
