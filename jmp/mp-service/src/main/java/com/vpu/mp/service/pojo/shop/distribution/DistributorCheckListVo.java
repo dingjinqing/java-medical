@@ -16,6 +16,8 @@ public class DistributorCheckListVo {
      * 用户ID
      */
     private Integer userId;
+    private String msg;
+    private Byte isAutoPass;
     /**
      * 审核校验
      */
