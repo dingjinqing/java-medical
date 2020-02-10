@@ -277,6 +277,8 @@ export default {
     this.userId = this.$route.query.id
     this.username = this.$route.query.name
     this.nameInput = this.$route.query.name
+    this.phoneNum = this.$route.query.phoneNum
+    this.CardTypeValue = this.$route.query.cardType
     console.log(this.userId, this.username)
 
     // 加载数据

@@ -1369,6 +1369,19 @@ export default {
     },
     jumpToDetailPage (index) {
       switch (index) {
+        case 0:
+        case 1:
+        case 2:
+          this.$router.push({
+            path: '/admin/home/main/receiveDetail',
+            query: {
+              name: this.memberBasicInfo.username,
+              id: this.userId,
+              phoneNum: this.memberBasicInfo.mobile,
+              cardType: index
+            }
+          })
+          break
         case 3:
           // 余额详情
           this.$router.push({
@@ -1389,6 +1402,17 @@ export default {
             }
           })
           break
+        case 5:
+          this.$router.push({
+            path: '/admin/home/main/ordinaryCoupon/receiveDetails',
+            query: {
+              userName: this.memberBasicInfo.username,
+              phoneNum: this.memberBasicInfo.mobile,
+              isUsed: 1
+            }
+          })
+          break
+
         default:
           break
       }
