@@ -354,138 +354,11 @@
     </div>
     <!--修改邀请人弹窗-->
     <div class="baseInfo">
-      <el-dialog
-        :title="$t('membershipIntroduction.chooseUser')"
-        :visible.sync="modifypersonDialogVisible"
-        width="800px"
-        :modal-append-to-body="false"
-      >
-        <div
-          class="modifypersonDiv"
-          style="margin-bottom:30px"
-        >
-          <div class="modifypersonDivTop">
-            <div>
-              <span>{{ $t('membershipIntroduction.nickname') }}</span>
-              <el-input
-                size="small"
-                v-model="userNameInput"
-                :placeholder="$t('membershipIntroduction.Pleasecontent')"
-              ></el-input>
-            </div>
-            <div>
-              <span style="width:80px">{{ $t('membershipIntroduction.phoneNum') }}</span>
-              <el-input
-                size="small"
-                v-model="mobileInput"
-                :placeholder="$t('membershipIntroduction.Pleasecontent')"
-              ></el-input>
-            </div>
-            <div>
-              <span style="width:90px">{{ $t('membershipIntroduction.Realname') }}</span>
-              <el-input
-                size="small"
-                v-model="realNameInput"
-                :placeholder="$t('membershipIntroduction.Pleasecontent')"
-              ></el-input>
-            </div>
-            <el-button
-              type="primary"
-              size="small"
-              @click="getUserTabelListData"
-            >{{ $t('membershipIntroduction.search')}}</el-button>
-          </div>
-          <!--底部表格-->
-          <div
-            class="content"
-            v-if="page_one"
-          >
-            <table width='100%'>
-              <thead>
-                <tr>
-                  <td>{{ $t('membershipIntroduction.userId') }}</td>
-                  <td>{{ $t('membershipIntroduction.nickname') }}</td>
-                  <td>{{ $t('membershipIntroduction.phoneNum') }}</td>
-                  <td>{{ $t('membershipIntroduction.Realname') }}</td>
-
-                </tr>
-              </thead>
-              <tbody v-if="tbodyFlag">
-                <tr
-                  v-for="(item,index) in trList"
-                  :key="index"
-                  :class="clickIindex===item.userId?'clickClass':''"
-                  @click="handleClick(item.userId)"
-                >
-
-                  <td>{{item.userId}}</td>
-                  <td>{{item.userName}}</td>
-                  <td>{{item.mobile}}</td>
-                  <td>{{item.realName}}</td>
-                </tr>
-              </tbody>
-
-            </table>
-            <div
-              class="noData"
-              v-if="!tbodyFlag"
-            >
-              <img :src="noImg">
-              <span>{{ $t('membershipIntroduction.noData')}}</span>
-            </div>
-          </div>
-          <div
-            class="content_two"
-            v-else
-          >
-            <table width='100%'>
-              <thead>
-                <tr>
-                  <td>名称</td>
-
-                  <td>链接</td>
-                </tr>
-              </thead>
-              <tbody v-if="tbodyFlag">
-                <tr
-                  v-for="(item,index) in trList"
-                  :key="index"
-                  :class="clickIindex===index?'clickClass':''"
-                  @click="handleClick(index)"
-                >
-                  <td>{{item.title}}</td>
-
-                  <td class="tb_decorate_a">
-                    {{item.path}}
-                  </td>
-                </tr>
-              </tbody>
-
-            </table>
-            <div
-              class="noData"
-              v-if="!tbodyFlag"
-            >
-              <img :src="noImg">
-              <span>暂无相关数据</span>
-            </div>
-          </div>
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="modifypersonDialogVisible = false"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleUserDialogSure()"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
+      <!--选择会员弹窗组件-->
+    <ChooseUser
+      :dialogVisible.sync="modifypersonDialogVisible"
+      @rowData="dealRowData"
+    />
     </div>
     <!--标签信息编辑弹窗-->
     <div class="balanceDialo">
@@ -689,8 +562,10 @@ import ProAndUrbA from '@/components/system/proAndUrbA'
 import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
 import { getMemberCard, getAllAvailableMemberCardRequest, setCardForMemberRequest } from '@/api/admin/memberManage/memberCard.js'
 import ModifyData from './modifyData'
+import pagination from '@/components/admin/pagination/pagination'
+import ChooseUser from '@/components/admin/chooseUser'
 export default {
-  components: { ProAndUrbA, ModifyData },
+  components: { ProAndUrbA, ModifyData, pagination, ChooseUser },
   data () {
     return {
       modifyDialogData: {
@@ -884,8 +759,13 @@ export default {
           // 设置值 基本信息
           this.memberBasicInfo = res.content.memberBasicInfo
           if (this.memberBasicInfo.userAvatar) {
-            this.headeImgUrl = this.memberBasicInfo.userAvatar
+            let check = this.memberBasicInfo.userAvatar.startsWith('http')
+            if (check) {
+              this.headeImgUrl = this.memberBasicInfo.userAvatar
+            }
           }
+          console.log(this.headeImgUrl)
+
           console.log(this.memberBasicInfo)
           this.addressListLength = this.memberBasicInfo.addressList.length
           // 交易统计
@@ -1217,7 +1097,6 @@ export default {
       console.log(this.birthdayVal)
       let tmp = this.birthdayVal.split('-')
       console.log(tmp)
-      this.modifypersonDialogVisible = false
       this.baseInfoDialogVisible = false
       let year, month, day
       if (this.birthdayVal) {
@@ -1256,8 +1135,14 @@ export default {
     hanldeModifyPerson () {
       // 清空弹出框的输入数据
       this.clearInputData()
-      this.modifypersonDialogVisible = true
+      this.modifypersonDialogVisible = !this.modifypersonDialogVisible
       this.getUserTabelListData()
+    },
+
+    dealRowData (data) {
+      console.log(data)
+      this.clickIindex = data.userId
+      this.handleUserDialogSure()
     },
     // 获取会员用户
     getUserTabelListData () {
