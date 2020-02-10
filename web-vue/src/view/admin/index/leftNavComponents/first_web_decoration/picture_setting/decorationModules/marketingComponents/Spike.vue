@@ -310,7 +310,7 @@ export default {
               if (!Number(item.seckill_num)) {
                 item.salePercent = 0
               } else {
-                item.salePercent = Number(Number(item.sale_num) / Number(item.seckill_num)) || 0
+                item.salePercent = (Number(Number(item.sale_num) / Number(item.seckill_num))).toFixed(2) || 0
               }
             })
           }
