@@ -50,27 +50,27 @@ global.wxPage({
     that.data.page = that.data.page + 1;
     util.api('/api/wxapp/account/list', function (res) {
       var account_listL = res.content;
-      var ar_r = account_listL.data;
+      var ar_r = account_listL.dataList;
       if (ar_r.length > 0) {
         account_list = ar_r
       }
       that.setData({
         account_list: that.data.account_list.concat(account_list)
       })
-    }, { pageNo: that.data.page })
+    }, { currentPage: that.data.page })
   },
 })
 function get_accout(that) {
   util.api('/api/wxapp/account/list', function (res) {
     // var account_listL = res.content;
-    // that.data.last_page = account_listL.last_page;
+    that.data.last_page = res.content.page.lastPage;
     // var ar_r = account_listL.data;
     // if (ar_r.length > 0) {
     //   account_list = ar_r
     // }
     that.setData({
       // account_list: account_list
-      account_list: res.content
+      account_list: res.content.dataList
     })
-  }, { pageNo: that.data.page })
+  }, { currentPage: that.data.page })
 }
