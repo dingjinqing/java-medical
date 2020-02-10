@@ -19,15 +19,15 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryListUserParam;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreService;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.SelectOnConditionStep;
+import org.elasticsearch.common.Strings;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,13 +39,11 @@ import java.util.Collections;
 import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_LOTTERY_AWARD;
-import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.*;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_LOTTERY;
-import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_PAY_AWARD;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
@@ -88,6 +86,25 @@ public class LotteryRecordService extends ShopBaseService {
             item.setAwardInfo(null);
         });
         return pageList;
+    }
+    /**
+     * 获取用户抽奖列表
+     * @param param
+     * @return
+     */
+    public PageResult<LotteryRecordPageListVo> lotteryListByUser(LotteryListUserParam param) {
+        SelectSeekStep1<LotteryRecordRecord, Timestamp> selectConditionStep = db().selectFrom(LOTTERY_RECORD)
+                .where(LOTTERY_RECORD.USER_ID.eq(param.getUserId()))
+                .and(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()))
+                .orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
+        PageResult<LotteryRecordPageListVo> pageResult = getPageResult(selectConditionStep, param, LotteryRecordPageListVo.class);
+        pageResult.getDataList().forEach(item -> {
+            if (!Strings.isEmpty(item.getAwardInfo())){
+                item.setLotteryPrize(Util.parseJson(item.getAwardInfo(), LotteryPrizeVo.class));
+                item.setAwardInfo(null);
+            }
+        });
+        return pageResult;
     }
 
     private void buildSelect(SelectOnConditionStep<Record> select, LotteryRecordPageListParam param) {
@@ -149,12 +166,14 @@ public class LotteryRecordService extends ShopBaseService {
         recordRecord.setLotteryActId(lotteryRecord.getId());
         recordRecord.setLotterySource(joinValid.getSource());
         recordRecord.setLotteryType(joinValid.getResultsType());
-        recordRecord.setChanceSource((byte) 1);
+        recordRecord.setChanceSource(joinValid.getChanceSource());
         recordRecord.setPrdId(0);
-        recordRecord.setLotteryGrade(lotteryPrizeRecord != null ? lotteryPrizeRecord.getLotteryGrade() : 0);
+        recordRecord.setLotteryGrade(lotteryPrizeRecord != null ? lotteryPrizeRecord.getLotteryGrade():0);
         recordRecord.setLotteryAward(lotteryPrizeRecord != null ? lotteryPrizeRecord.getLotteryDetail() : "");
-        recordRecord.setAwardInfo(lotteryRecord.toString());
-
+        if (lotteryPrizeRecord!=null){
+            LotteryPrizeVo lotteryPrizeVo =lotteryPrizeRecord.into(LotteryPrizeVo.class);
+            recordRecord.setAwardInfo(Util.toJson(lotteryPrizeVo));
+        }
         joinValid.setPrizeImage(imageService.getImgFullUrl(lotteryPrizeRecord != null ? lotteryPrizeRecord.getIconImgsImage() : null));
         joinValid.setPrizeText(lotteryPrizeRecord!=null?lotteryPrizeRecord.getIconImgs():"");
         logger().info("抽奖结果:");
@@ -178,7 +197,8 @@ public class LotteryRecordService extends ShopBaseService {
                 logger().info("安慰奖");
                 recordRecord.setLotteryGrade((byte) 0);
                 recordRecord.setLotteryAward("未中奖赠送积分:"+lotteryRecord.getNoAwardScore());
-                recordRecord.setAwardInfo(Util.toJson(lotteryRecord));
+                LotteryPrizeVo lotteryPrizeVo =lotteryPrizeRecord.into(LotteryPrizeVo.class);
+                recordRecord.setAwardInfo(Util.toJson(lotteryPrizeVo));
                 recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_RECEIVED);
 
                 joinValid.setPrizeImage(imageService.getImgFullUrl(lotteryPrizeRecord.getIconImgsImage()));
