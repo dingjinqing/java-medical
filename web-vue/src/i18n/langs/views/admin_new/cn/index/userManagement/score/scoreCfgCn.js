@@ -48,7 +48,7 @@ export const cn = {
   fromGetScore: '从获得积分当天起',
   innerEffective: '内有效',
   exchange: '积分兑换比',
-  formula: '100积分=1元RMB',
+  formula: '积分=1元RMB',
   day: '日',
   week: '周',
   month: '月',
@@ -89,5 +89,7 @@ export const cn = {
   chooseTemplate: '选择模板',
   refresh: '刷新',
   addTemplate: '添加模板',
-  titelError: '系统开启签到上线为30天'
+  titelError: '系统开启签到上线为30天',
+  titelMsg: '修改积分抵扣比例将带来店铺积分价值的变化，请谨慎修改',
+  titelMsg2: '订单折后金额是否包含运费 '
 }
