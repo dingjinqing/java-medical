@@ -166,7 +166,8 @@ export default {
               status: row.act_status,
               isOnSale: row.is_on_sale,
               isDelete: row.is_delete,
-              endTime: row.act_end_time
+              endTime: row.act_end_time,
+              sale_num: row.sale_num
             }
           })
         }
@@ -190,7 +191,7 @@ export default {
             goods_id: row.goodsId,
             act_id: row.skId,
             sec_price: row.secPrice,
-            sale_num: row.saleNum,
+            sale_num: row.sale_num,
             goods_img: row.goodsImg,
             goods_name: row.goodsName,
             goods_price: row.shopPrice,
