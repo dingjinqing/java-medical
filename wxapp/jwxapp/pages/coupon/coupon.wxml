@@ -85,7 +85,7 @@
                   <text style='color:#666'>{{i18n.$t(localePack,"pages.coupon.timeTip")}}</text>
                 </view>
             </view>  
-            <view class="del_btn" wx:if="{{ this_type != 0 }}" catchtap='coupon_del' data-coupon_sn="{{item.couponSn}}" data-check_action='{{this_type}}' style='background:{{comColor}}'>删除</view>
+            <view class="del_btn" wx:if="{{ this_type != 0 }}" catchtap='coupon_del' data-coupon_id="{{item.id}}" data-coupon_sn="{{item.couponSn}}" data-check_action='{{this_type}}' style='background:{{comColor}}'>删除</view>
             <view class="go_use" wx:if="{{ this_type == 0 }}" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view>  
           </view>
 
