@@ -321,7 +321,8 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
         vo.setSignScore(userScore.getScore());
         logger().info("处理签到数据成功");
-        vo.setSignInRules(userScore.getSignInRules());
+        Byte signInRules = userScore.getSignInRules();
+        vo.setSignInRules(signInRules==null?ZERO:signInRules);
         // 模板名称
 		if(!StringUtils.isBlank(vo.getScorePageId())) {
 			XcxCustomerPageRecord xcxCustomerPage = mpDecoration.getPageById(Integer.parseInt(vo.getScorePageId()));
