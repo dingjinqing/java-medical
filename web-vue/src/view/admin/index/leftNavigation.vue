@@ -63,7 +63,7 @@
 import { mapActions } from 'vuex'
 import { jurisdictionQueryRequest } from '@/api/admin/jurisdiction'
 export default {
-  data() {
+  data () {
     return {
       dialogVisible: false, // 二级菜单无权限弹窗flag
       navLeftData: '',
@@ -522,18 +522,18 @@ export default {
     }
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       console.log(to)
       console.log(this.$route, this.click_nav_index, this.saveIndex)
       this.saveIndex = -1
       this.defaultNav(to.meta.meta)
     },
-    lang(newData) {
+    lang (newData) {
       console.log(newData)
       this.handleJurisdiction()
     }
   },
-  mounted() {
+  mounted () {
     console.log(this.$route)
     //初始化语言
     this.langDefault()
@@ -543,7 +543,7 @@ export default {
   },
   methods: {
     ...mapActions(['judgeMenuAll']),
-    handleJurisdiction() {
+    handleJurisdiction () {
       this.$http.$on('jurisdictionDialog', () => {
         this.dialogVisible = true
       })
@@ -556,6 +556,9 @@ export default {
                 // console.log(itemp.name, itemchildren)
                 itemp.flag = true
               }
+              if (itemchildren === 'kanjia' && itemp.name === 'bargain') {
+                itemp.flag = true
+              }
             })
           })
         }
@@ -564,7 +567,7 @@ export default {
         console.log(this.dataList)
       })
     },
-    async defaultNav(meta) {
+    async defaultNav (meta) {
       console.log(meta)
       console.log(this.dataList)
       switch (meta) {
@@ -598,6 +601,7 @@ export default {
           this.dataList['first_market_manage'].map((item, index) => {
             this.dataList['first_market_manage'][index].span = this.$t(`adminPageFramework.leftNavArr.nav5[${index}]`)
           })
+          console.log(this.dataList['first_market_manage'])
           this.navLeftData = this.dataList['first_market_manage']
           break
         case 'user_manger':
@@ -640,7 +644,7 @@ export default {
       console.log(this.navLeftData)
     },
     // 左侧菜单栏点击事件
-    leftNavClick(index, name) {
+    leftNavClick (index, name) {
       // 判断二级菜单事件
       this.handleToJudgeTwoDiction(name).then(res => {
         console.log(res)
@@ -709,11 +713,11 @@ export default {
 
     },
     // 左侧菜单栏划入事件
-    left_nav_over(index) {
+    left_nav_over (index) {
       this.click_nav_index = index
     },
     // 左侧菜单栏划出事件
-    left_nav_leave(index) {
+    left_nav_leave (index) {
       this.click_nav_index = null
     }
   }
