@@ -105,7 +105,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
     private static final String PIN_GROUP_BG_IMG = "image/wxapp/pin_group_bg.jpg";
 
     private String createGroupBuyShareImg(GroupBuyDefineRecord groupBuyDefineRecord, GoodsRecord goodsRecord, GroupBuyShareInfoParam param) {
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.GROUP_BUY_ACTION_SHARE, param.getUserId());
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.GROUP_BUY_ACTION_SHARE, param.getUserId());
         // 已存在生成的图片
         if (pictorialRecord != null&&pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(),goodsRecord.getUpdateTime(),groupBuyDefineRecord.getUpdateTime())) {
             return pictorialRecord.getPath();

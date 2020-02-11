@@ -110,7 +110,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
      * @return
      */
     private String createFirstSpecialShareImg(FirstSpecialRecord firstSpecialRecord, GoodsRecord goodsRecord, FirstSpecialShareInfoParam param) {
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.FIRST_SPECIAL_ACTION_SHARE, null);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.FIRST_SPECIAL_ACTION_SHARE, null);
         // 已存在生成的图片
         if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), firstSpecialRecord.getUpdateTime())) {
             return pictorialRecord.getPath();
