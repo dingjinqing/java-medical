@@ -28,6 +28,7 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -165,7 +166,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                 if (scoreJson.getPerGetScores().compareTo(ZERO) > 0 && scoreJson.getPerGoodsMoney().compareTo(ZERO) > 0) {
                     sendScore = BigDecimalUtil.multiply(new BigDecimal(BigDecimalUtil.divide(payMoney, scoreJson.getPerGoodsMoney()).intValue()),
                         scoreJson.getPerGetScores());
-                    logger().info("支付完成送积分:会员卡id[{}],每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", order.getMemberCardId(), scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), payMoney, sendScore);
+                    logger().info("支付完成送积分:会员卡id[{}],每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", order.getMemberCardId(), scoreJson.getPerGoodsMoney(), scoreJson.getPerGetScores(), payMoney, sendScore);
                 }
             } else if (BYTE_ZERO.equals(scoreJson.getOffset())) {
                 BigDecimal currentRule = scoreJson.getGoodsMoney().stream().filter(e -> e.compareTo(payMoney) <= 0).max(Comparators.comparable()).orElse(BIGDECIMAL_ZERO);
@@ -176,8 +177,11 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                         break;
                     }
                 }
-                sendScore = index > -1 ? scoreJson.getGetScores().get(index) : BIGDECIMAL_ZERO;
-                logger().debug("支付完成送积分:会员卡id[{}],满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", order.getMemberCardId(), scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), payMoney, sendScore);
+                if(index == -1) {
+                    return;
+                }
+                sendScore = scoreJson.getGetScores().get(index);
+                logger().debug("支付完成送积分:会员卡id[{}],满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", order.getMemberCardId(), currentRule, sendScore, payMoney, sendScore);
             }
             if (BigDecimalUtil.compareTo(sendScore, BIGDECIMAL_ZERO) > 0) {
                 sendScore(order.getOrderSn(), sendScore.intValue(), order.getUserId());
@@ -198,22 +202,28 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             //购物满
             if (scoreType == CONDITION_ZERO) {
                 Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY, payMoney.toString());
+                if(CollectionUtils.isEmpty(record2s)) {
+                    return;
+                }
                 // 满...金额
                 String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
                 // 送...积分
-                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
+                String setVal2 = record2s.getValue(0, USER_SCORE_SET.SET_VAL2);
                 if (org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
                     return;
                 }
                 sendScore = Integer.parseInt(setVal2);
                 logger().info("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, payMoney, sendScore);
             } else if (scoreType == CONDITION_ONE) {
-//                购物每满
-                Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY_EACH);
+                //购物每满
+                Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY_EACH, payMoney.toString());
+                if(CollectionUtils.isEmpty(record2s)) {
+                    return;
+                }
                 // 每满...金额
                 String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
                 // 送...积分
-                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
+                String setVal2 = record2s.getValue(0, USER_SCORE_SET.SET_VAL2);
                 if (org.apache.commons.lang3.StringUtils.isBlank(setVal) || org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
                     return;
                 }
