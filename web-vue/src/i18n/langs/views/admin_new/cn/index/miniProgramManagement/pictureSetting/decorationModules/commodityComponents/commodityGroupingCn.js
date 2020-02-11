@@ -4,7 +4,7 @@ export const cn = {
   menu: '商品分组菜单：',
   groupsCanBeSelected: '最多可选择10个分组',
   merchantClassification: '商家分类',
-  merchantLabel: '商家标签',
+  merchantLabel: '商品标签',
   merchantBrand: '商家品牌',
   modify: '修改',
   customGroupName: '自定义分组名称：',
