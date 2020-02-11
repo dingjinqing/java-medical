@@ -26,8 +26,8 @@ ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAU
 /***********************2.9********************BEGIN*/
 
 -- 2020年2月11日 砍价杀表添加初始销量、绑定手机号字段
-ALTER TABLE `b2c_bargain` ADD COLUMN `need_bind_mobile` tinyint(1) DEFAULT '0' COMMENT '是否需要绑定手机号，1是';
-ALTER TABLE `b2c_bargain` ADD COLUMN `initial_sales` int(9) DEFAULT '0' COMMENT '初始销量';
+-- ALTER TABLE `b2c_bargain` ADD COLUMN `need_bind_mobile` tinyint(1) DEFAULT '0' COMMENT '是否需要绑定手机号，1是';
+-- ALTER TABLE `b2c_bargain` ADD COLUMN `initial_sales` int(9) DEFAULT '0' COMMENT '初始销量';
 
 -- 2020年2月11日 pictorial 分享图片缓存表添加活动id字段
 ALTER TABLE `b2c_pictorial` ADD COLUMN `activity_id` int(10) DEFAULT NULL COMMENT '活动id';
