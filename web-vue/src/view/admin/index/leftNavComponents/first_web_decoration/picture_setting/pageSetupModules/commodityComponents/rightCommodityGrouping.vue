@@ -15,7 +15,7 @@
             :key="index"
           >
             <div>
-              <span>{{item.sort_type===0?$t('commodityGrouping.merchantClassification'):item.sort_type===1?$t('commodityGrouping.merchantLabel'):$t('commodityGrouping.merchantBrand')}}：</span>
+              <span>{{Number(item.sort_type)===0?$t('commodityGrouping.merchantClassification'):Number(item.sort_type)===1?$t('commodityGrouping.merchantLabel'):$t('commodityGrouping.merchantBrand')}}：</span>
               <span style="display:inline-block;width:100px">{{item.sort_name}}</span>
               <span
                 @click="handleToEditData(index)"
@@ -41,6 +41,7 @@
                 @change="handleToClickShowNumRadio(index)"
                 :label="2"
               >{{$t('commodityGrouping.designatedCommodity')}}</el-radio>
+
             </div>
             <div class="groupItemOperation">
               <img
@@ -252,6 +253,7 @@
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
                   label="2"
+                  :disabled="isCartBtnDisabled"
                 >
                   <i
                     class="right_buy new_back"
@@ -263,6 +265,7 @@
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
                   label="3"
+                  :disabled="isCartBtnDisabled"
                 >
                   <i
                     class="cart_buy"
@@ -416,10 +419,35 @@ export default {
       nowClickAppointIndex: null,
       initialConditionRender: [], // 选择商品弹窗初始渲染条件
       reLoad: true,
-      columnFlag: false
+      columnFlag: false,
+      isCartBtnDisabled: false // 购买按钮是否禁用，在商品列表样式选中一行三个、一行横滑得时候禁用
     }
   },
   watch: {
+    'linkageData.shop_style' (newData) {
+      // shop_style
+      console.log(newData)
+      if (newData === '3' || newData === '5') {
+        this.isCartBtnDisabled = true
+        this.linkageData.cart_btn_choose = '0'
+      } else {
+        this.isCartBtnDisabled = false
+      }
+    },
+    'linkageData.position_style' (newData) {
+      // shop_style
+      console.log(newData)
+      if (newData === '1') {
+        this.isCartBtnDisabled = false
+      } else {
+        this.linkageData.cart_btn_choose = '0'
+        if (this.linkageData.shop_style === '3' || this.linkageData.shop_style === '5') {
+          this.isCartBtnDisabled = true
+        } else {
+          this.isCartBtnDisabled = false
+        }
+      }
+    },
     // 中间模块当前高亮index
     sortIndex: {
       handler (newData) {
@@ -439,6 +467,10 @@ export default {
     // 监听数据变换
     linkageData: {
       handler (newData) {
+        console.log(newData)
+        newData.sort_group_arr.forEach((item, index) => {
+          if (item.sort_type === 0) item.sort_type = ''
+        })
         console.log(newData)
         // 测试数据
         // newData['sort_length'] = newData.sort_group_arr.length

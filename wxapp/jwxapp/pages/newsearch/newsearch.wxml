@@ -4,29 +4,30 @@
     <view class='top_search clearfix'>
       <view class="search" >
         <text class='iconfont iconsousuo search-img' style='color:#bbb'></text>
-        <input type="text" placeholder="请输入商品关键字" bindconfirm="bindSearchConfirm" bindblur='save_zhi' auto-focus='' bindinput='change_word' value='{{input_value}}'/>
-        
-        <!-- <input type="text" placeholder="请输入商品关键字" wx:if='{{hot_info.search_config.title_action == 1}}'  bindconfirm="bindSearchConfirm" bindblur='save_zhi' auto-focus='' bindinput='change_word' value='{{input_value}}'/> -->
-        <input type="text" bindinput='change_word' placeholder="查看全部商品" wx:if='{{hot_info.search_config.title_action == 2}}'  bindconfirm="bindSearchConfirm" bindblur='save_zhi' auto-focus='' value='{{input_value}}'/>
-        <input type="text" bindinput='change_word' bindfocus="chang_value" placeholder="{{auto_set_word}}" wx:if='{{hot_info.search_config.title_action == 3}}'  bindconfirm="bindSearchConfirm" bindblur='save_zhi' auto-focus='' value='{{input_value}}'/>
+        <!-- 不设置 -->
+        <input type="text" placeholder="请输入商品关键字" wx:if='{{search_config.title_action == 1}}' bindconfirm="bindSearchConfirm" bindblur='save_zhi' auto-focus='' bindinput='change_word' value='{{input_value}}'/>
+        <!-- 全部商品 -->
+        <input type="text" placeholder="查看全部商品" wx:if='{{search_config.title_action == 2}}' bindconfirm="bindSearchConfirm" bindblur='save_zhi' auto-focus='' bindinput='change_word' value='{{input_value}}'/>
+        <!-- 自定义 -->
+        <input type="text" placeholder="{{auto_set_word}}" wx:if='{{search_config.title_action == 3}}' bindfocus="chang_value" bindconfirm="bindSearchConfirm" bindblur='save_zhi' auto-focus='' bindinput='change_word'  value='{{input_value}}'/>
         <image src='{{imageUrl}}/image/wxapp/search_clear.png' mode='widthFix' bindtap='clear_value'></image>
       </view>
       <view class='btn_search' bindtap='bindSearch' data-value='{{search_word}}'>搜索</view>
     </view>
-    <view class='icon_info' wx:if='{{hot_info.search_config.is_open_history == 1 || hot_info.search_config.is_open_hot_words == 1}}'>
-        <view class='search_history' wx:if='{{hot_info.search_config.is_open_history == 1 && hot_info.history_words != ""}}'>
+    <view class='icon_info' wx:if='{{search_config.is_open_history == 1 || search_config.is_open_hot_words == 1}}'>
+        <view class='search_history' wx:if='{{search_config.is_open_history == 1 && history_words != []}}'>
             <view class='have_del'>
               <view class='sh_title'>搜索历史</view>
               <image src='{{imageUrl}}image/wxapp/search_del.png' mode='widthFix' bindtap='to_del'></image>
             </view>
             <view class='some_item clearfix some_item_his'>
-              <view class='each_item' wx:for='{{hot_info.history_words}}' wx:key='key' data-value='{{item}}' bindtap='to_search'>{{item}}</view>
+              <view class='each_item' wx:for='{{history_words}}' wx:key='key' data-value='{{item}}' bindtap='to_search' wx:if="{{item.hotWords != ''}}">{{item.hotWords}}</view>
             </view>
         </view>
-        <view class='search_history' wx:if='{{hot_info.search_config.is_open_hot_words == 1 && hot_info.search_config.hot_words != "" }}'>
+        <view class='search_history' wx:if='{{search_config.is_open_hot_words == 1 && search_config.hot_words != "" }}'>
             <view class='sh_title'>热门搜索</view>
             <view class='some_item clearfix'>
-              <view class='each_item' wx:for='{{hot_info.hot_words}}' wx:key='key' data-value='{{item}}' bindtap='to_search'>{{item}}</view>
+              <view class='each_item' wx:for='{{search_config.hot_words}}' wx:key='key' data-value='{{item}}' bindtap='to_search' wx:if="{{item != ''}}">{{item}}</view>
             </view>
         </view>
     </view>

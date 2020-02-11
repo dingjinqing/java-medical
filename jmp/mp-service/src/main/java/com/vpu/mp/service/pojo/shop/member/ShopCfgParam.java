@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -110,11 +111,19 @@ public class ShopCfgParam {
 	/**
 	 * 积分兑换比
 	 */
+	@NotNull
 	private Integer scoreProportion;
 	
 	/**
 	 * 签到类型 0：连续签到；1：循环签到
 	 */
+	@NotNull
 	private Byte signInRules;
+	/**
+	 * 订单折后金额是否包含运费
+	 */
+	@NotNull
+	private Byte discountHasShipping;
+
 	
 }

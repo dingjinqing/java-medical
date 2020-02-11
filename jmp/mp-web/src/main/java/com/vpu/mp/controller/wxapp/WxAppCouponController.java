@@ -73,12 +73,12 @@ public class WxAppCouponController extends WxAppBaseController {
 
     /**
      * 删除优惠券
-     * @param couponId
+     * @param param
      * @return
      */
-	@GetMapping("/del")
-	public JsonResult delCoupon(Integer couponId){
-	    Integer res = shop().mpCoupon.delCoupon(couponId);
+	@PostMapping("/del")
+	public JsonResult delCoupon(@RequestBody CouponDelParam param){
+	    Integer res = shop().mpCoupon.delCoupon(param);
 	    return this.success(res);
     }
 }
