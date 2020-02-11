@@ -4,8 +4,17 @@
   <view class="main-container" wx:if="{{orderInfo}}">
     <view class="order-status_bg" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
     <view class="order-status">
-      <image mode="widthFix" src="{{imageUrl}}image/wxapp/status_success.png"></image>
-      <text>{{orderInfo.orderStatusName}}</text>
+      <view class="status-name">
+        <image mode="widthFix" src="{{imageUrl}}image/wxapp/status_success.png"></image>
+        <text>{{orderInfo.orderStatusName}}</text>
+      </view>
+      <view class="count-down" wx:if="{{clock && clock === 'end'}}">
+        已经截至
+      </view>
+      <view class="count-down" wx:elif="{{clock}}">
+        <view>请在{{clock}}内完成支付</view>
+      </view>
+      
     </view>
     <view class="shipping_info">
       <navigator wx:if="{{orderInfo.shippingInfo}}">

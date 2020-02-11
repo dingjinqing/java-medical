@@ -17,10 +17,13 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.requestOrderInfo(options.orderSn);
+    this.setData({
+      orderSn:options.orderSn
+    })
+    this.requestOrderInfo();
   },
   // 请求订单详情
-  requestOrderInfo (orderSn) {
+  requestOrderInfo () {
     let that = this
     util.api(
       "/api/wxapp/order/get",
@@ -56,12 +59,15 @@ global.wxPage({
               orderInfo.groupBuyInfo.show_noper = orderInfo.groupBuyInfo.groupBuyLimitAmout - orderInfo.groupBuyUserInfos.length;
             }
           }
+          if(orderInfo.payOperationTime > 0){
+            this.countdown(parseInt(orderInfo.payOperationTime / 1000))
+          }
           this.setData({
             orderInfo: orderInfo
           });
         }
       },
-      { orderSn: orderSn }
+      { orderSn: this.data.orderSn }
     );
   },
   itemPage (e) {
@@ -97,6 +103,55 @@ global.wxPage({
     } else {
       util.toast_fail(this.$t('pages.order.seckill'))
     }
+  },
+  countdown (total_micro_second) {
+    this.countDown = setInterval(() => {
+      total_micro_second -= 1
+      let clock = total_micro_second <= 0 ? "end" : this.dateformat(total_micro_second);
+      this.setData({
+        clock: clock
+      });
+      if(total_micro_second <= 0){
+        this.requestOrderInfo()
+        clearInterval(this.countDown)
+      }
+    }, 1000)
+  },
+  dateformat: function(micro_second) {
+    // 秒数
+    var second = Math.floor(micro_second);
+    // 分钟位
+    var min = Math.floor(second / 60);
+    // 小时位
+    var hour = Math.floor(min / 60);
+    // 小时位
+    var day = Math.floor(h / 24);
+    // 秒位
+    var sec = this.numberFormat(second % 60);
+    var m = this.numberFormat(min % 60);
+    var h = this.numberFormat(hour % 60);
+    var str = '';
+    if (day > 0) {
+      str += this.numberFormat(day) + '天';
+      if (h > 0) {
+        str += h + '时' + m + "分" + sec + "秒";
+      } else {
+        str += '00时' + m + "分" + sec + "秒";
+      }
+    } else {
+      if (h > 0) {
+        str += h + '时' + m + "分" + sec + "秒";
+      } else {
+        str += m + "分" + sec + "秒";
+      }
+    }
+    return str;
+  },
+  numberFormat: function(num) {
+    if (num < 10) {
+      return '0' + num;
+    }
+    return num;
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
