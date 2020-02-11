@@ -379,6 +379,9 @@ public class BargainRecordService extends ShopBaseService {
 
             vo.setTimestamp(DateUtil.getLocalDateTime());
             vo.setBargainPrice(recordInfo.getBargainType().equals(BargainService.BARGAIN_MONEY_TYPE_RANDOM) ? recordInfo.getFloorPrice() : recordInfo.getExpectationPrice());
+
+            vo.setNeedBindMobile(recordInfo.getNeedBindMobile());
+            vo.setInitialSales(recordInfo.getInitialSales());
         }
         return vo;
     }
@@ -388,7 +391,7 @@ public class BargainRecordService extends ShopBaseService {
             GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,
             USER_DETAIL.USER_AVATAR,
             GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_NUMBER,
-            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,
+            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,BARGAIN.NEED_BIND_MOBILE,BARGAIN.INITIAL_SALES,
             USER.WX_OPENID,USER.USERNAME).from(
             BARGAIN_RECORD
             .leftJoin(USER_DETAIL).on(BARGAIN_RECORD.USER_ID.eq(USER_DETAIL.USER_ID))

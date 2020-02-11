@@ -154,6 +154,7 @@ export default {
         this.data = this.modulesData
         if (this.modulesData.seckill_goods) {
           this.tableData = this.modulesData.seckill_goods.map(function (row) {
+            console.log(row)
             return {
               goodsId: row.goods_id,
               skId: row.act_id,
@@ -166,7 +167,9 @@ export default {
               status: row.act_status,
               isOnSale: row.is_on_sale,
               isDelete: row.is_delete,
-              endTime: row.act_end_time
+              endTime: row.act_end_time,
+              sale_num: row.sale_num,
+              base_sale: row.base_sale
             }
           })
         }
@@ -190,7 +193,7 @@ export default {
             goods_id: row.goodsId,
             act_id: row.skId,
             sec_price: row.secPrice,
-            sale_num: row.saleNum,
+            sale_num: row.sale_num,
             goods_img: row.goodsImg,
             goods_name: row.goodsName,
             goods_price: row.shopPrice,
@@ -199,7 +202,8 @@ export default {
             act_status: row.status,
             is_on_sale: row.isOnSale,
             is_delete: row.isDelete,
-            act_end_time: row.endTime
+            act_end_time: row.endTime,
+            base_sale: row.base_sale
           }
         })
         this.$set(this.data, 'seckill_goods', datas)

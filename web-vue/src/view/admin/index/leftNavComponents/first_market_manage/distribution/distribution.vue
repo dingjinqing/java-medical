@@ -99,10 +99,17 @@ export default {
       activeName: 'first'
     }
   },
+  mounted () {
+    this.$http.$on('toChangeActiveName', (flag) => {
+      if (flag) {
+        this.activeName = 'first'
+      }
+    })
+  },
   methods: {
-    handleClick () {
-      // console.log(tab)
-
+    handleClick (tab) {
+      console.log(tab.index)
+      this.$http.$emit('distributionTap', tab.index)
     },
     tabChange () {
       this.activeName = 'fouth'

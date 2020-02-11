@@ -6,6 +6,7 @@
         class="tableClass"
         border
         style="width: 100%"
+        @sort-change="sortChange"
       >
         <el-table-column
           align="center"
@@ -41,6 +42,8 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="shopPrice"
+          sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
           width="100"
@@ -90,6 +93,8 @@
         >
         </el-table-column>
         <el-table-column
+          prop="goodsNumber"
+          sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
           width="130"
@@ -409,6 +414,10 @@ export default {
         this.qrCodeData.pageUrl = res.content.pageUrl
         this.qrCodeData.isShow = true
       })
+    },
+    /* 表头排序 */
+    sortChange (data) {
+      this.$emit('sortChange', data.prop, data.order)
     },
     /* 操作确认弹框 */
     _$confirm (questionMessage, confirmMesage, confirmCallback, cancelCallback) {

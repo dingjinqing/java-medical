@@ -97,6 +97,15 @@ public class GroupBuyParam {
     private GroupBuyShareConfigParam share;
 
     private String shareConfig;
+
+    /**
+     * 初始化等级
+     */
+    private Integer level=0;
+    /**
+     * 初始化数量
+     */
+    private Integer beginNum=0;
     /**
      * 产品规格配置
      */

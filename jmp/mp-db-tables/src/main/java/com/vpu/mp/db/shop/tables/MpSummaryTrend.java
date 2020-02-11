@@ -5,25 +5,17 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MpSummaryTrendRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -39,10 +31,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpSummaryTrend extends TableImpl<MpSummaryTrendRecord> {
 
-    private static final long serialVersionUID = 734343719;
+    private static final long serialVersionUID = 43764213;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_mp_summary_trend</code>
+     * The reference instance of <code>jmini_shop_666666.b2c_mp_summary_trend</code>
      */
     public static final MpSummaryTrend MP_SUMMARY_TREND = new MpSummaryTrend();
 
@@ -55,51 +47,51 @@ public class MpSummaryTrend extends TableImpl<MpSummaryTrendRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_summary_trend.ref_date</code>. 日期
+     * The column <code>jmini_shop_666666.b2c_mp_summary_trend.ref_date</code>. 日期
      */
     public final TableField<MpSummaryTrendRecord, String> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.CHAR(8).nullable(false), this, "日期");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_summary_trend.visit_total</code>. 总访问量
+     * The column <code>jmini_shop_666666.b2c_mp_summary_trend.visit_total</code>. 总访问量
      */
     public final TableField<MpSummaryTrendRecord, Integer> VISIT_TOTAL = createField("visit_total", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总访问量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_summary_trend.share_pv</code>. 转发次数
+     * The column <code>jmini_shop_666666.b2c_mp_summary_trend.share_pv</code>. 转发次数
      */
     public final TableField<MpSummaryTrendRecord, Integer> SHARE_PV = createField("share_pv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "转发次数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_summary_trend.share_uv</code>. 转发人数
+     * The column <code>jmini_shop_666666.b2c_mp_summary_trend.share_uv</code>. 转发人数
      */
     public final TableField<MpSummaryTrendRecord, Integer> SHARE_UV = createField("share_uv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "转发人数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_summary_trend.create_time</code>.
+     * The column <code>jmini_shop_666666.b2c_mp_summary_trend.create_time</code>. 添加时间
      */
-    public final TableField<MpSummaryTrendRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MpSummaryTrendRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_summary_trend.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_666666.b2c_mp_summary_trend.id</code>.
      */
-    public final TableField<MpSummaryTrendRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MpSummaryTrendRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_mp_summary_trend</code> table reference
+     * Create a <code>jmini_shop_666666.b2c_mp_summary_trend</code> table reference
      */
     public MpSummaryTrend() {
         this(DSL.name("b2c_mp_summary_trend"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_summary_trend</code> table reference
+     * Create an aliased <code>jmini_shop_666666.b2c_mp_summary_trend</code> table reference
      */
     public MpSummaryTrend(String alias) {
         this(DSL.name(alias), MP_SUMMARY_TREND);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_summary_trend</code> table reference
+     * Create an aliased <code>jmini_shop_666666.b2c_mp_summary_trend</code> table reference
      */
     public MpSummaryTrend(Name alias) {
         this(alias, MP_SUMMARY_TREND);
@@ -130,7 +122,31 @@ public class MpSummaryTrend extends TableImpl<MpSummaryTrendRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MP_SUMMARY_TREND_REF_DATE);
+        return Arrays.<Index>asList(Indexes.MP_SUMMARY_TREND_PRIMARY, Indexes.MP_SUMMARY_TREND_REF_DATE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<MpSummaryTrendRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_MP_SUMMARY_TREND;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<MpSummaryTrendRecord> getPrimaryKey() {
+        return Keys.KEY_B2C_MP_SUMMARY_TREND_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<MpSummaryTrendRecord>> getKeys() {
+        return Arrays.<UniqueKey<MpSummaryTrendRecord>>asList(Keys.KEY_B2C_MP_SUMMARY_TREND_PRIMARY);
     }
 
     /**
