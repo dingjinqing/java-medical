@@ -77,6 +77,10 @@ public class RequestLogAspect {
             logResponseStr.append("JsonResult   :").append(result);
             log.info(logResponseStr.toString());
         }catch (Throwable e){
+            // 如果是自定义的业务异常, 继续抛出让ExceptionControllerHandler去捕获, 这样可以回显前端详细的错误信息, 而不是简单的"操作失败"
+            if (e instanceof BusinessException) {
+                throw e;
+            }
             StringBuilder logErrorStr = new StringBuilder();
             logErrorStr.append("\n");
             logErrorStr.append("#####################Exception#####################").append("\n");
@@ -89,10 +93,6 @@ public class RequestLogAspect {
             e.printStackTrace();
             log.error(logErrorStr.toString());
             log.error("ExceptionStackTrace   :",e);
-            // 如果是自定义的业务异常, 继续抛出让ExceptionControllerHandler去捕获, 这样可以回显前端详细的错误信息, 而不是简单的"操作失败"
-            if (e instanceof BusinessException) {
-                throw e;
-            }
             return new JsonResult().fail("zh_CN", JsonResultCode.CODE_FAIL);
         }
         return result;
