@@ -5,27 +5,43 @@
     <scroll-view class="coupon_scorll coupon_more" scroll-x>
       <block wx:for="{{m.coupon_arr}}" wx:key="index" wx:for-item="item">
         <block>
-          <view class="coupon_list {{ m.coupon_arr.length == 2 ? 'coupon_list2' : m.coupon_arr.length == 1 ? 'coupon_list1' : '' }}" style='margin-bottom:{{m.margin_bot}}rpx;border-color:{{comColor}}'>
-            <view class="coupon_list_top" wx:if="{{item.act_code=='discount'}}" style='color:{{comColor}}'>
+          <view class="coupon_list {{ m.coupon_arr.length == 2 ? 'coupon_list2' : m.coupon_arr.length == 1 ? 'coupon_list1' : '' }}" style="margin-bottom:{{m.margin_bot}}rpx;border-color:{{ item.status == 1 ? comColor : '#ccc'}}">
+            <view class="coupon_list_top" wx:if="{{item.act_code=='discount'}}" style="color:{{ item.status == 1 ? comColor : '#ccc'}}">
               <text class="text">{{item.denomination}}</text>{{i18n.$t(localePack,"pages.coupon.amount")}}
             </view>
-            <view class="coupon_list_top" wx:if="{{item.act_code=='voucher'}}" style='color:{{comColor}}'>
+            <view class="coupon_list_top" wx:if="{{item.act_code=='voucher'}}" style="color:{{ item.status == 1 ? comColor : '#ccc'}}">
               ￥
               <text class="text">{{item.denomination}}</text>
             </view>
             <view class="coupon_list_center">
-              <view class="coupon_center_limit" style='color:{{comColor}}'>{{item.consume_text}}</view>
-              <view class="coupon_center_number" style='color:{{borColor}};' wx:if="{{item.limitSurplusFlag == 0}}">
+              <view class="coupon_center_limit" style="color:{{ item.status == 1 ? comColor : '#ccc'}}">{{item.consume_text}}</view>
+              <view class="coupon_center_number" style="color:{{ item.status == 1 ? borColor : '#ccc'}}" wx:if="{{item.limitSurplusFlag == 0}}">
                 <text>{{i18n.$t(localePack,"pages.coupon.limitSurplusFlag")}}{{item.surplus}}{{i18n.$t(localePack,"pages.coupon.sheets")}}</text>
               </view>
-              <view class="coupon_center_number" style='color:{{borColor}};' wx:if="{{item.limitSurplusFlag == 1}}">
+              <view class="coupon_center_number" style="color:{{ item.status == 1 ? borColor : '#ccc'}}" wx:if="{{item.limitSurplusFlag == 1}}">
                 <text>{{i18n.$t(localePack,"pages.coupon.stock")}}</text>
               </view>
             </view>
             <view class="coupon_list_bottom">
-              <form report-submit='true' class="get_coupon"  bindsubmit="bindGetCoupon" data-idx="{{m.idx}}" data-vali="{{item.validationCode}}" data-exclusive="{{item.cardId}}" data-code="{{item.aliasCode}}" data-key="{{index}}" data-use_score="{{item.use_score}}" data-coupon_id="{{item.coupon_id}}" data-item="{{ item }}">
-                <button class="button" form-type='submit' wx:if="{{ m.coupon_arr.length == 1 && item.status != -1 }}" style='background: {{comColor}} url("{{m.imageUrl}}image/admin/coupon_border_y.png") repeat-y left;background-size: 10rpx;height:200rpx;line-height:200rpx;font-size:28rpx'>{{item.cardId != ''  ? i18n.$t(localePack,'components.decorate.memberReceive') : item.use_score == 1 ? item.score_number + i18n.$t(localePack,'components.decorate.exchange') : i18n.$t(localePack,'components.decorate.receive')}}</button>
-                <button class="button" form-type='submit' plain="false" wx:if="{{ m.coupon_arr.length > 1 && item.status != -1 }}" style='background: {{comColor}} url("{{m.imageUrl}}image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;margin-top: 10rpx;'>{{item.cardId != '' ? i18n.$t(localePack,'components.decorate.memberReceive') : item.use_score == 1 ? item.score_number + i18n.$t(localePack,'components.decorate.exchange') : i18n.$t(localePack,'components.decorate.receive')}}</button>
+              <form report-submit='true' class="get_coupon"  bindsubmit="bindGetCoupon" data-status="{{item.status}}" data-idx="{{m.idx}}" data-vali="{{item.validationCode}}" data-exclusive="{{item.cardId}}" data-code="{{item.aliasCode}}" data-key="{{index}}" data-use_score="{{item.use_score}}" data-coupon_id="{{item.coupon_id}}">
+
+
+                <button class="button" form-type='submit' wx:if="{{ m.coupon_arr.length == 1}}" style="background: {{ item.status == 1 ? comColor : '#ccc'}} url('{{m.imageUrl}}image/admin/coupon_border_y.png') repeat-y left;background-size: 10rpx;height:200rpx;line-height:200rpx;font-size:28rpx">
+                  <span wx:if="{{ item.status == 1 }}">{{item.cardId != ''  ? i18n.$t(localePack,'components.decorate.memberReceive') : item.use_score == 1 ? item.score_number + i18n.$t(localePack,'components.decorate.exchange') : i18n.$t(localePack,'components.decorate.receive')}}</span>
+                  <span wx:if="{{ item.status == 2 }}">已过期</span>
+                  <span wx:if="{{ item.status == 3 }}">已抢光</span>
+                  <span wx:if="{{ item.status == 4 }}">已停用</span>
+                  <span wx:if="{{ item.status == 5 }}">已领取或领取达到极限</span>
+                  <span wx:if="{{ item.status == 6 }}">优惠券不存在</span>
+                </button>
+                <button class="button" form-type='submit' plain="false" wx:if="{{ m.coupon_arr.length > 1 }}" style="background: {{ item.status == 1 ? comColor : '#ccc'}} url('{{m.imageUrl}}image/admin/coupon_border.png') repeat-x top;background-size: 16rpx;margin-top: 10rpx;">
+                  <span wx:if="{{ item.status == 1 }}">{{item.cardId != '' ? i18n.$t(localePack,'components.decorate.memberReceive') : item.use_score == 1 ? item.score_number + i18n.$t(localePack,'components.decorate.exchange') : i18n.$t(localePack,'components.decorate.receive')}}</span>
+                  <span wx:if="{{ item.status == 2 }}">已过期</span>
+                  <span wx:if="{{ item.status == 3 }}">已抢光</span>
+                  <span wx:if="{{ item.status == 4 }}">已停用</span>
+                  <span wx:if="{{ item.status == 5 }}">领取已到上限</span>
+                  <span wx:if="{{ item.status == 6 }}">优惠券不存在</span>
+                </button>
                 <!-- 领取之后查看详情样式 -->
                 <view wx:if="{{ m.coupon_arr.length == 1 && item.status == -1}}" class="coupon_list_bottom" bindtap='bindJumpLink' data-url='/pages/coupon/coupon' style='background: {{somColor}} url("{{m.imageUrl}}image/admin/coupon_border_y.png") repeat-y left;background-size: 10rpx;color:{{comColor}};width: 100%;'>{{i18n.$t(localePack,"pages.coupon.check")}} ></view>
                 <view wx:if="{{ m.coupon_arr.length > 1 && item.status == -1}}" class="coupon_list_bottom" style='background:{{somColor}} url("{{m.imageUrl}}image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;margin-top: 10rpx;color:{{comColor}};width: 100%;' bindtap='bindJumpLink' data-url='/pages/coupon/coupon'>{{i18n.$t(localePack,"pages.coupon.check")}} ></view>
