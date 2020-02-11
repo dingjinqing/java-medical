@@ -22,6 +22,15 @@
             ></el-input>
           </div>
           <div class="filters_item">
+            <span>{{$t('order.shippingNo')}}：</span>
+            <el-input
+              v-model="searchParams.shippingNo"
+              :placeholder="$t('order.shippingNo')"
+              size="small"
+              class="default_input"
+            ></el-input>
+          </div>
+          <div class="filters_item">
             <span>{{$t('order.orderStatusText')}}：</span>
             <el-select
               v-model="searchParams.orderStatus"
@@ -824,7 +833,8 @@ export default {
         provinceCode: null,
         cityCode: null,
         districtCode: null,
-        orderStatus2: '-1'
+        orderStatus2: '-1',
+        shippingNo: ''
       },
       orderTime: null,
       completeTime: null,

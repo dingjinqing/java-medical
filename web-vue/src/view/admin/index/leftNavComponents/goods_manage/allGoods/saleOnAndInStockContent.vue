@@ -6,6 +6,7 @@
         class="tableClass"
         border
         style="width: 100%"
+        @sort-change="sortChange"
       >
         <!-- 复选框 -->
         <el-table-column
@@ -48,6 +49,8 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="shopPrice"
+          sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
           width="100"
@@ -100,7 +103,7 @@
           align="center"
           prop="sortName"
           :label="$t('allGoods.allGoodsData.sort')"
-          width="90"
+          width="100"
         />
         <!--商品品牌-->
         <el-table-column
@@ -112,6 +115,8 @@
         </el-table-column>
         <!--商品库存-->
         <el-table-column
+          prop="goodsNumber"
+          sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
           width="120"
@@ -139,9 +144,10 @@
           </template>
         </el-table-column>
         <el-table-column
-          align="center"
           prop="goodsSaleNum"
-          width="80"
+          sortable="custom"
+          align="center"
+          width="100"
           :label="$t('allGoods.allGoodsData.saleNumber')"
         />
         <el-table-column
@@ -539,6 +545,10 @@ export default {
     copyPageUrlClick () {
       this.$refs.qrCodePageUrlInput.select()
       document.execCommand('Copy')
+    },
+    /* 表头排序 */
+    sortChange (data) {
+      this.$emit('sortChange', data.prop, data.order)
     },
     /* 操作确认弹框 */
     _$confirm (questionMessage, confirmMesage, confirmCallback, cancelCallback) {

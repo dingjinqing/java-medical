@@ -131,13 +131,18 @@ export default {
 
     }
   },
-  created () {
+  mounted () {
     fetchDeliverTemplateList(this.pageParams).then(res => {
       const { error, content: { config, pageResult: { dataList, page } } } = res
       if (error === 0) {
         this.pageParams = page
         this.content = res.content
         this.formData = JSON.parse(config)
+        if (this.formData.templateName === 0) {
+          this.isShow = true
+        } else if (this.formData.templateName === 1) {
+          this.isShow = false
+        }
         let resData = formatTemplateData(dataList)
         this.lists = resData
       }

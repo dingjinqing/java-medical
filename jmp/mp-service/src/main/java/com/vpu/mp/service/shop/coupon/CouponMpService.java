@@ -209,4 +209,16 @@ public class CouponMpService extends ShopBaseService {
         }
         return couponGetStatus;
     }
+
+    /**
+     * 删除优惠券
+     * @param couponId
+     * @return
+     */
+    public Integer delCoupon(Integer couponId){
+        int res = db().update(CUSTOMER_AVAIL_COUPONS).set(CUSTOMER_AVAIL_COUPONS.DEL_FLAG, (byte) 1)
+            .where(CUSTOMER_AVAIL_COUPONS.ID.eq(couponId)).execute();
+        return res;
+
+    }
 }

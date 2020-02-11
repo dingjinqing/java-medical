@@ -11,11 +11,11 @@
         <li
           v-for="(item,index) in navLeftData"
           :key="index"
-          :class="$route.name == item.name||click_nav_index==index||saveIndex == index||$route.meta.category == item.name?'active_bg':''"
+          :class="($route.name == item.name||click_nav_index==index||saveIndex == index||$route.meta.category == item.name)?'active_bg':''"
           @click="leftNavClick(index,item.name)"
           @mouseover="left_nav_over(index)"
           @mouseleave="left_nav_leave(index)"
-          style="cursor:pointer"
+          :style="specialFlag&&index==0?'cursor:pointer;background:none':'cursor:pointer;'"
         >
           <div
             class="lestList"
@@ -63,7 +63,7 @@
 import { mapActions } from 'vuex'
 import { jurisdictionQueryRequest } from '@/api/admin/jurisdiction'
 export default {
-  data() {
+  data () {
     return {
       dialogVisible: false, // 二级菜单无权限弹窗flag
       navLeftData: '',
@@ -518,22 +518,31 @@ export default {
       nav_s_class_index: false,
       saveIndex: null,
       leftMenuEn: '',
-
+      specialFlag: false
     }
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       console.log(to)
       console.log(this.$route, this.click_nav_index, this.saveIndex)
       this.saveIndex = -1
       this.defaultNav(to.meta.meta)
+      if (to.name === 'bargain') {
+        this.specialFlag = true
+      } else if (to.name === 'group_draw') {
+        this.specialFlag = true
+      } else if (to.name === 'lottery_activity') {
+        this.specialFlag = true
+      } else {
+        this.specialFlag = false
+      }
     },
-    lang(newData) {
+    lang (newData) {
       console.log(newData)
       this.handleJurisdiction()
     }
   },
-  mounted() {
+  mounted () {
     console.log(this.$route)
     //初始化语言
     this.langDefault()
@@ -543,7 +552,7 @@ export default {
   },
   methods: {
     ...mapActions(['judgeMenuAll']),
-    handleJurisdiction() {
+    handleJurisdiction () {
       this.$http.$on('jurisdictionDialog', () => {
         this.dialogVisible = true
       })
@@ -556,6 +565,9 @@ export default {
                 // console.log(itemp.name, itemchildren)
                 itemp.flag = true
               }
+              if (itemchildren === 'kanjia' && itemp.name === 'bargain') {
+                itemp.flag = true
+              }
             })
           })
         }
@@ -564,7 +576,7 @@ export default {
         console.log(this.dataList)
       })
     },
-    async defaultNav(meta) {
+    async defaultNav (meta) {
       console.log(meta)
       console.log(this.dataList)
       switch (meta) {
@@ -598,6 +610,7 @@ export default {
           this.dataList['first_market_manage'].map((item, index) => {
             this.dataList['first_market_manage'][index].span = this.$t(`adminPageFramework.leftNavArr.nav5[${index}]`)
           })
+          console.log(this.dataList['first_market_manage'])
           this.navLeftData = this.dataList['first_market_manage']
           break
         case 'user_manger':
@@ -640,7 +653,7 @@ export default {
       console.log(this.navLeftData)
     },
     // 左侧菜单栏点击事件
-    leftNavClick(index, name) {
+    leftNavClick (index, name) {
       // 判断二级菜单事件
       this.handleToJudgeTwoDiction(name).then(res => {
         console.log(res)
@@ -696,6 +709,7 @@ export default {
               }
             })
           } else {
+            console.log(this.$route, name, this.click_nav_index, this.saveIndex, index)
             // this.dialogVisible = true
             this.$router.push({
               name: name
@@ -709,11 +723,11 @@ export default {
 
     },
     // 左侧菜单栏划入事件
-    left_nav_over(index) {
+    left_nav_over (index) {
       this.click_nav_index = index
     },
     // 左侧菜单栏划出事件
-    left_nav_leave(index) {
+    left_nav_leave (index) {
       this.click_nav_index = null
     }
   }
@@ -760,7 +774,7 @@ export default {
   display: flex;
 }
 .active_bg {
-  background: #2e3144 !important;
+  background: #2e3144;
   color: #fff;
 }
 .active_bg span {

@@ -27,7 +27,7 @@
                     <el-button
                       type="primary"
                       size="small"
-                      @click="handleToDecPage()"
+                      @click="handleToDecPage(item)"
                     >{{index===0?'自定义':'使用模板'}}</el-button>
                   </div>
 
@@ -65,7 +65,27 @@ export default {
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '订单',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/upload/0/image/crop_iwpm2uCcmvqt8TTk.jpeg',
+          title: '图书（不可修改）',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '食品（不可修改）',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '女装（不可修改）',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '美妆（模板不可修改）',
           flag: ''
         },
         {
@@ -75,7 +95,17 @@ export default {
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '测试213',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '教育',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '摄影',
           flag: ''
         },
         {
@@ -85,42 +115,27 @@ export default {
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '汽车4s店',
           flag: ''
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '数码',
           flag: ''
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '美发',
           flag: ''
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '鲜花',
           flag: ''
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
-          flag: ''
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
-          flag: ''
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
-          flag: ''
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '化妆品专卖',
           flag: ''
         }
       ]
@@ -166,7 +181,8 @@ export default {
       this.dialogData[index].flag = ''
     },
     // 跳转到装修主页
-    handleToDecPage () {
+    handleToDecPage (item) {
+      console.log(item)
       this.$router.push({
         path: '/admin/home/main/decorationHome',
         query: {

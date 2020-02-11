@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.overview.commodity;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
  * @date 2/10/2020
  */
 @Data
+@Builder
 public class RankingVo {
     // 图表数据
     // 销售额

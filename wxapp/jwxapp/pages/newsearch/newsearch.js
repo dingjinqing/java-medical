@@ -3,6 +3,7 @@ var app = new getApp();
 var util = require('../../utils/util.js');
 var imageUrl = app.globalData.imageUrl;
 var mobile = util.getCache('mobile');
+var userId = util.getCache('user_id');
 var hot_info = [];
 var search_word = '';
 var input_value = "";
@@ -30,45 +31,50 @@ global.wxPage({
     search_word = '';
     input_value = '';
 
-
-    hot_info = {
-      history_words: ['123', '男装', '女装'],
-      search_config: {
-        is_open_history: "1",
-        is_open_hot_words: "1",
-        title_action: "3",
-        title_custom: "香奈儿",
-        hot_words: ['Q10Viking', '123456', '男鞋']
+    // 获取历史记录和热词
+    util.api('/api/wxapp/search/userSearchHot', function (res) {
+      if (res.error == 0) {
+        // hot_info = res.content;
+        // if (hot_info.search_config.title_action == 3) {
+        //   search_word = hot_info.search_config.title_custom;
+        //   that.setData({
+        //     search_word: search_word,
+        //     auto_set_word: search_word
+        //   })
+        // }
+        // that.setData({
+        //   hot_info: hot_info
+        // })
+      } else {
+        util.showModal("提示", res.message);
       }
-    };
-    if (hot_info.search_config.title_action == 3) {
-      search_word = hot_info.search_config.title_custom;
-      that.setData({
-        search_word: search_word,
-        auto_set_word: search_word
-      })
-      that.setData({
-        hot_info: hot_info
-      })
-    }
-    this.selectComponent('#recommend').resetDataList().resetPage().requestData() //推荐商品
-    // util.api('/api/wxapp/search/hotwords', function (res) {
-    //   if (res.error == 0) {
-    //     hot_info = res.content;
-    //     if (hot_info.search_config.title_action == 3) {
-    //       search_word = hot_info.search_config.title_custom;
-    //       that.setData({
-    //         search_word: search_word,
-    //         auto_set_word: search_word
-    //       })
-    //     }
-    //     that.setData({
-    //       hot_info: hot_info
-    //     })
-    //   } else {
-    //     util.showModal("提示", res.message);
+    }, { 
+      userId: userId,
+      num: 10 
+    })
+
+
+    // hot_info = {
+    //   history_words: ['123', '男装', '女装'],
+    //   search_config: {
+    //     is_open_history: "1",
+    //     is_open_hot_words: "1",
+    //     title_action: "3",
+    //     title_custom: "香奈儿",
+    //     hot_words: ['Q10Viking', '123456', '男鞋']
     //   }
-    // }, { num: 10 })
+    // };
+    // if (hot_info.search_config.title_action == 3) {
+    //   search_word = hot_info.search_config.title_custom;
+    //   that.setData({
+    //     search_word: search_word,
+    //     auto_set_word: search_word
+    //   })
+    //   that.setData({
+    //     hot_info: hot_info
+    //   })
+    // }
+    
   },
   bindSearchConfirm: function (e) {
     var search_text = e.detail.value;
@@ -94,10 +100,19 @@ global.wxPage({
       search_word: search_word
     })
   },
+  // 搜索
   bindSearch: function (e) {
-    console.log(2);
     console.log(search_word);
-    util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
+    // 添加热词
+    util.api('/api/wxapp/search/addHotWords', function (res) {
+      if (res.error == 0) {
+        util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
+      }
+    }, {
+      userId: userId,
+      hotWords: search_word
+    })
+    
   },
   to_search: function (e) {
     var search_text = e.currentTarget.dataset.value;
@@ -117,9 +132,11 @@ global.wxPage({
       auto_set_word: ''
     })
   },
+
+  // 删除搜索词
   to_del: function () {
     var that = this;
-    util.api('/api/wxapp/search/clearwords', function (res) {
+    util.api('/api/wxapp/search/clearWords', function (res) {
       if (res.error == 0) {
         hot_info.history_words = "";
         that.setData({

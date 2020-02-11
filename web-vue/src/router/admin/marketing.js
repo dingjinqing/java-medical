@@ -74,7 +74,8 @@ const routes = [
     name: 'bargain_activity',
     meta: {
       crumbTitle: 'router.bargain_activity',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'bargain'
     },
     component: () =>
       import(

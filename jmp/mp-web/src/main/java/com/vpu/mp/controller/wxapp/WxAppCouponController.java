@@ -4,10 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -74,4 +71,14 @@ public class WxAppCouponController extends WxAppBaseController {
         return this.success(fetchStatus);
 	}
 
+    /**
+     * 删除优惠券
+     * @param couponId
+     * @return
+     */
+	@GetMapping("/del")
+	public JsonResult delCoupon(Integer couponId){
+	    Integer res = shop().mpCoupon.delCoupon(couponId);
+	    return this.success(res);
+    }
 }
