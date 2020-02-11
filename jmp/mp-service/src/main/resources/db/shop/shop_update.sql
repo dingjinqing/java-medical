@@ -31,4 +31,8 @@ ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAU
 
 -- 2020年2月11日 pictorial 分享图片缓存表添加活动id字段
 ALTER TABLE `b2c_pictorial` ADD COLUMN `activity_id` int(10) DEFAULT NULL COMMENT '活动id';
+-- 2020年2月10日15:46:57  拼团表增加字段
+ALTER TABLE `b2c_group_buy_define` ADD  COLUMN `level` int(11) NOT NULL DEFAULT 0 COMMENT '优先级' ;
+ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAULT 0 COMMENT '初始成团数' ;
+
 /***********************2.9*********************END*/

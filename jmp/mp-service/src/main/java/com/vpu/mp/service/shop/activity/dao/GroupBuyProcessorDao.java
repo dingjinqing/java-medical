@@ -90,8 +90,8 @@ public class GroupBuyProcessorDao extends GroupBuyService {
         vo.setLimitAmount(groupBuyDefineRecord.getLimitAmount());
 
         /** 商品拼团最小最大购买数量 */
-        vo.setLimitBuyNum(groupBuyDefineRecord.getLimitBuyNum());
-        vo.setLimitMaxNum(groupBuyDefineRecord.getLimitMaxNum());
+        vo.setLimitBuyNum(groupBuyDefineRecord.getLimitBuyNum().intValue());
+        vo.setLimitMaxNum(groupBuyDefineRecord.getLimitMaxNum().intValue());
 
         /** 拼团表中 shippingType 活动运费 1 免运费 2 按照商品原运费模板*/
         vo.setFreeShip((byte) (groupBuyDefineRecord.getShippingType() == 1 ? 0 : 1));

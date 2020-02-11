@@ -88,7 +88,7 @@ public class GroupBuyListService extends ShopBaseService {
                 .leftJoin(GOODS).on(GROUP_BUY_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
                 .leftJoin(table).on(table.field(GROUP_BUY_LIST.ACTIVITY_ID).eq(GROUP_BUY_DEFINE.ID))
                 .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
-        records.orderBy(GROUP_BUY_DEFINE.ID.desc());
+        records.orderBy(GROUP_BUY_DEFINE.LEVEL,GROUP_BUY_DEFINE.ID.desc());
         this.buildOptions(param, records);
 
         PageResult<GroupBuyListVo> page = getPageResult(records, param.getCurrentPage(), param.getPageRows(), GroupBuyListVo.class);
