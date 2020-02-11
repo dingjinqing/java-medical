@@ -11,7 +11,7 @@
         <!-- 公共部分 -->
         <el-form
           :model="param"
-          label-width="150px"
+          label-width="200px"
           labelPosition='right'
           :rules="formRules"
           ref="form"
@@ -190,6 +190,15 @@
           <div v-if="this.param.bargainType==0">
 
             <el-form-item
+              label="帮砍设置:"
+              prop=""
+            >
+              <el-checkbox
+                label="帮砍好友需要授权手机号才可以参与砍价"
+                v-model="param.needBindMobile"
+              ></el-checkbox>
+            </el-form-item>
+            <el-form-item
               :label="$t('marketCommon.shippingSetting')+':'"
               prop=""
             >
@@ -238,6 +247,19 @@
                 style="line-height:24px;margin-top:10px"
               >{{$t('addBargainAct.proportionInterval')}}</div>
             </el-form-item>
+
+            <el-form-item label="活动初始参与砍价人次：">
+              <el-input-number
+                :disabled="isEditFlag"
+                v-model="param.initialSales"
+                size="small"
+                controls-position="right"
+                style="width:150px"
+                :min="0"
+              >
+              </el-input-number>
+              <div class="fontColor">活动商品初始参与砍价人次，将展示在小程序端。参与砍价人次=活动初始参与砍价人次+实际砍价人次，不填写则表示0</div>
+            </el-form-item>
           </div>
 
           <!-- 砍到任意金额计算部分 -->
@@ -277,6 +299,15 @@
             </el-form-item>
 
             <el-form-item
+              label="帮砍设置:"
+              prop=""
+            >
+              <el-checkbox
+                label="帮砍好友需要授权手机号才可以参与砍价"
+                v-model="param.needBindMobile"
+              ></el-checkbox>
+            </el-form-item>
+            <el-form-item
               :label="$t('marketCommon.shippingSetting')+':'"
               prop=""
             >
@@ -284,6 +315,19 @@
                 <el-radio :label="1">{{$t('marketCommon.freeShipping')}}</el-radio>
                 <el-radio :label="0">{{$t('marketCommon.useOriginalProductShippingTemplate')}}</el-radio>
               </el-radio-group>
+            </el-form-item>
+
+            <el-form-item label="活动初始参与砍价人次：">
+              <el-input-number
+                :disabled="isEditFlag"
+                v-model="param.initialSales"
+                size="small"
+                controls-position="right"
+                style="width:150px"
+                :min="0"
+              >
+              </el-input-number>
+              <div class="fontColor">活动商品初始参与砍价人次，将展示在小程序端。参与砍价人次=活动初始参与砍价人次+实际砍价人次，不填写则表示0</div>
             </el-form-item>
           </div>
 
@@ -519,6 +563,8 @@ export default {
         effectiveDate: '',
         goodsId: 0,
         expectationPrice: 0,
+        needBindMobile: 0,
+        initialSales: 0,
         shareConfig: {
           'shareAction': '1',
           'shareDoc': '',
@@ -619,6 +665,7 @@ export default {
           this.param.endTime = this.param.effectiveDate[1]
           this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
           this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
+          this.param.needBindMobile = this.param.needBindMobile ? 1 : 0
 
           if (this.validParam()) {
             addBargain(this.param).then((res) => {

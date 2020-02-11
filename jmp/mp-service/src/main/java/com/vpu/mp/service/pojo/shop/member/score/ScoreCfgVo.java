@@ -76,5 +76,10 @@ public class ScoreCfgVo {
 	public String signInScore;
 	// 签到积分数据 如第一天签到送多少积分
 	public String[] signScore;
+	/**
+	 * 签到类型 0：连续签到；1：循环签到
+	 */
+	private Byte signInRules;
+
 
 }

@@ -22,3 +22,11 @@ ALTER TABLE `b2c_order_must` MODIFY COLUMN `must_content` varchar(100) NOT NULL 
 ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAULT NULL COMMENT '审核校验';
 
 /***********************2.8*********************END*/
+
+/***********************2.9********************BEGIN*/
+
+-- 2020年2月11日 砍价杀表添加初始销量、绑定手机号字段
+ALTER TABLE `b2c_bargain` ADD COLUMN `need_bind_mobile` tinyint(1) DEFAULT '0' COMMENT '是否需要绑定手机号，1是';
+ALTER TABLE `b2c_bargain` ADD COLUMN `initial_sales` int(9) DEFAULT '0' COMMENT '初始销量';
+
+/***********************2.9*********************END*/
