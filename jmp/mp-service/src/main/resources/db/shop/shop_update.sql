@@ -21,6 +21,14 @@ ALTER TABLE `b2c_order_must` MODIFY COLUMN `must_content` varchar(100) NOT NULL 
 --20200207 申请分销员审核字段类型优化
 ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAULT NULL COMMENT '审核校验';
 
+
+-- 修复table
+
+
+
+
+
+
 /***********************2.8*********************END*/
 
 /***********************2.9********************BEGIN*/
@@ -30,9 +38,9 @@ ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAU
 -- ALTER TABLE `b2c_bargain` ADD COLUMN `initial_sales` int(9) DEFAULT '0' COMMENT '初始销量';
 
 -- 2020年2月11日 pictorial 分享图片缓存表添加活动id字段
-ALTER TABLE `b2c_pictorial` ADD COLUMN `activity_id` int(10) DEFAULT NULL COMMENT '活动id';
+-- ALTER TABLE `b2c_pictorial` ADD COLUMN `activity_id` int(10) DEFAULT NULL COMMENT '活动id';
 -- 2020年2月10日15:46:57  拼团表增加字段
-ALTER TABLE `b2c_group_buy_define` ADD  COLUMN `level` int(11) NOT NULL DEFAULT 0 COMMENT '优先级' ;
-ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAULT 0 COMMENT '初始成团数' ;
+-- ALTER TABLE `b2c_group_buy_define` ADD  COLUMN `level` int(11) NOT NULL DEFAULT 0 COMMENT '优先级' ;
+-- ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAULT 0 COMMENT '初始成团数' ;
 
 /***********************2.9*********************END*/
