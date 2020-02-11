@@ -1,9 +1,11 @@
 .common-footer .footer-text {
   padding-bottom: 120rpx !important;
 }
+
 .main-container {
   overflow-y: auto;
 }
+
 .order-status_bg {
   height: 370rpx;
   position: absolute;
@@ -12,17 +14,20 @@
   z-index: -1;
   width: 100%;
 }
+
 .order-status {
   font-size: 30rpx;
   color: #fff;
   text-align: center;
   margin: 40rpx 0;
 }
-.order-status > image {
+
+.status-name>image {
   width: 32rpx;
   vertical-align: middle;
   margin-right: 10rpx;
 }
+
 .shipping_info {
   display: flex;
   flex-direction: column;
@@ -34,18 +39,20 @@
   overflow: hidden;
   color: #333;
 }
+
 .shipping_info .logistics {
   border-bottom: 2rpx solid #eee;
 }
-.logistics,
-.address_info {
+
+.logistics, .address_info {
   display: flex;
   padding: 16rpx;
 }
-.logistics > image:first-of-type,
-.address_info > image:first-of-type {
+
+.logistics>image:first-of-type, .address_info>image:first-of-type {
   width: 32rpx;
 }
+
 .shipping_info_content {
   flex: 1;
   display: flex;
@@ -53,16 +60,20 @@
   margin-bottom: -16rpx;
   padding-left: 16rpx;
 }
-.shipping_info_content > view {
+
+.shipping_info_content>view {
   margin-bottom: 16rpx;
   display: flex;
 }
-.shipping_info_content > view > text:first-of-type {
+
+.shipping_info_content>view>text:first-of-type {
   width: auto;
 }
-.shipping_info_content > view > text:last-of-type {
+
+.shipping_info_content>view>text:last-of-type {
   flex: 1;
 }
+
 .order_top {
   padding: 16rpx;
   background-color: #fff;
@@ -76,18 +87,21 @@
   padding: 14rpx 14rpx;
   background-color: #fafafa;
 }
-.goods_item > image {
+
+.goods_item>image {
   width: 150rpx;
   height: 150rpx;
 }
-.goods_item > .goods_info {
+
+.goods_item>.goods_info {
   flex: 1;
   margin-left: 6rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.goods_info > .goods_name {
+
+.goods_info>.goods_name {
   color: #353535;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -95,17 +109,20 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
-.goods_info > .goods_spec {
+
+.goods_info>.goods_spec {
   color: #888;
   font-size: 24rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.goods_info > .goods_price_num {
+
+.goods_info>.goods_price_num {
   display: flex;
   justify-content: space-between;
 }
+
 .pay_info {
   display: flex;
   flex-direction: column;
@@ -113,23 +130,28 @@
   background-color: #fff;
   margin-top: 16rpx;
 }
+
 .pay_info .pay_item {
   margin-bottom: 10rpx;
   color: #888;
   display: flex;
 }
-.pay_info .pay_item > text:first-of-type {
+
+.pay_info .pay_item>text:first-of-type {
   flex: 1;
 }
+
 .pay_info .total_money {
   text-align: right;
   color: #333;
   padding: 10rpx 0;
 }
+
 .line-item {
   height: 2rpx;
   background-color: #eee;
 }
+
 .fixed_footer {
   width: 100%;
   display: flex;
@@ -142,6 +164,7 @@
   background-color: #fff;
   padding: 16rpx;
 }
+
 .footer_item {
   height: 60rpx;
   line-height: 60rpx;
@@ -149,6 +172,7 @@
   border: 2rpx solid #eee;
   margin-left: 10rpx;
 }
+
 .order_info {
   margin-top: 16rpx;
   background-color: #fff;
@@ -157,16 +181,20 @@
   display: flex;
   flex-direction: column;
 }
+
 .order_info .title {
   color: #333;
   line-height: 60rpx;
   border-bottom: 2rpx solid #eee;
 }
+
 .order_item {
   line-height: 46rpx;
   color: #888;
 }
+
 /* 拼团活动样式 */
+
 .fight_info {
   width: 100%;
   background: #fff;
@@ -175,37 +203,46 @@
   padding-left: 38rpx;
   font-size: 26rpx;
 }
+
 .fight-header {
   overflow: hidden;
   width: 680rpx;
   border-bottom: 1px solid #eee;
 }
+
 .fight-h-left {
   float: left;
   display: flex;
   align-items: center;
   padding: 20rpx 0;
 }
+
 .fight-h-right {
   float: right;
   display: flex;
   align-items: center;
   padding: 20rpx 0;
 }
+
 .fight-content {
   display: flex;
   align-items: center;
   padding: 30rpx 0;
 }
+
 .fight-avatar {
   width: 80rpx;
   height: 80rpx;
   margin-right: 30rpx;
   border-radius: 50%;
 }
+
 .activity_icon {
   padding: 0 10rpx;
   border: 1px solid #eb8e40;
   color: #eb8e40;
   margin-right: 10rpx;
+}
+.count-down{
+  margin-top:10rpx;
 }

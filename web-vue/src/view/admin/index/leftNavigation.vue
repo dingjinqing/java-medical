@@ -11,11 +11,11 @@
         <li
           v-for="(item,index) in navLeftData"
           :key="index"
-          :class="$route.name == item.name||click_nav_index==index||saveIndex == index||$route.meta.category == item.name?'active_bg':''"
+          :class="($route.name == item.name||click_nav_index==index||saveIndex == index||$route.meta.category == item.name)?'active_bg':''"
           @click="leftNavClick(index,item.name)"
           @mouseover="left_nav_over(index)"
           @mouseleave="left_nav_leave(index)"
-          style="cursor:pointer"
+          :style="specialFlag&&index==0?'cursor:pointer;background:none':'cursor:pointer;'"
         >
           <div
             class="lestList"
@@ -518,7 +518,7 @@ export default {
       nav_s_class_index: false,
       saveIndex: null,
       leftMenuEn: '',
-
+      specialFlag: false
     }
   },
   watch: {
@@ -527,6 +527,15 @@ export default {
       console.log(this.$route, this.click_nav_index, this.saveIndex)
       this.saveIndex = -1
       this.defaultNav(to.meta.meta)
+      if (to.name === 'bargain') {
+        this.specialFlag = true
+      } else if (to.name === 'group_draw') {
+        this.specialFlag = true
+      } else if (to.name === 'lottery_activity') {
+        this.specialFlag = true
+      } else {
+        this.specialFlag = false
+      }
     },
     lang (newData) {
       console.log(newData)
@@ -700,6 +709,7 @@ export default {
               }
             })
           } else {
+            console.log(this.$route, name, this.click_nav_index, this.saveIndex, index)
             // this.dialogVisible = true
             this.$router.push({
               name: name
@@ -764,7 +774,7 @@ export default {
   display: flex;
 }
 .active_bg {
-  background: #2e3144 !important;
+  background: #2e3144;
   color: #fff;
 }
 .active_bg span {
