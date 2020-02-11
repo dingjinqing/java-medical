@@ -41,7 +41,11 @@
                 @change="handleToClickShowNumRadio(index)"
                 :label="2"
               >{{$t('commodityGrouping.designatedCommodity')}}</el-radio>
-
+              <span
+                style="cursor:pointer;color:#409EFF"
+                v-if="item.group_goods_id?true:false"
+                @click="handleToClickShowNumRadio(index)"
+              >{{item.group_goods_id.split(",").length}}件</span>
             </div>
             <div class="groupItemOperation">
               <img
@@ -748,6 +752,10 @@ export default {
       this.reLoad = false
       console.log(this.linkageData.sort_group_arr[index])
       this.nowClickAppointIndex = index
+      if (this.linkageData.sort_group_arr[index].group_goods_id) {
+        this.chooseGoodsBack = this.linkageData.sort_group_arr[index].group_goods_id.split(',')
+        console.log(this.chooseGoodsBack)
+      }
       console.log(index, this.linkageData.sort_group_arr[index].is_all)
       if (this.linkageData.sort_group_arr[index].is_all === 2) {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
@@ -763,6 +771,7 @@ export default {
       console.log(res, this.linkageData.sort_group_arr, this.nowClickAppointIndex)
       console.log(res.join(','))
       this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id = res.join(',')
+      console.log(this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id)
     }
   }
 }
