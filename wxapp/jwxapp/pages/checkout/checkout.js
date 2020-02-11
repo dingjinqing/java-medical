@@ -150,7 +150,8 @@ global.wxPage({
       scorePayNum,
       userScore,
       scoreMaxDiscount,
-      paymentList
+      paymentList,
+      scoreProportion
     } = orderInfo
     if (isCardPay === 1 && memberCardMoney > 0) {
       let useCardBalance = moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid
@@ -180,13 +181,13 @@ global.wxPage({
     }
     if (paymentList.score && isScorePay === 1 && userScore > scorePayNum && userScore > 0) {
       let useScore =
-        moneyPaid * 100 > scoreMaxDiscount * 100
-          ? scoreMaxDiscount * 100 > userScore
+        moneyPaid * scoreProportion > scoreMaxDiscount * scoreProportion
+          ? scoreMaxDiscount * scoreProportion > userScore
             ? userScore
-            : scoreMaxDiscount * 100
-          : moneyPaid * 100 > userScore
+            : scoreMaxDiscount * scoreProportion
+          : moneyPaid * scoreProportion > userScore
           ? userScore
-          : moneyPaid * 100
+          : moneyPaid * scoreProportion
       moneyPaid -= useScore
       this.setData({
         'usePayInfo.useScore': useScore,
@@ -391,10 +392,11 @@ global.wxPage({
     let moneyPaid = this.data.orderInfo.moneyPaid,
       useScore = this.data.usePayInfo.useScore,
       useBalance = this.data.usePayInfo.useBalance,
-      useCardBalance = this.data.usePayInfo.useCardBalance
-    let floatNum = parseFloat(moneyPaid - useCardBalance - useBalance - useScore / 100).toFixed(3)
+      useCardBalance = this.data.usePayInfo.useCardBalance,
+      scoreProportion = this.data.orderInfo.scoreProportion
+    let floatNum = parseFloat(moneyPaid - useCardBalance - useBalance - useScore / scoreProportion).toFixed(3)
     floatNum = parseFloat(floatNum.substring(0, floatNum.length - 1))
-    let floatScoreMoney = (useScore / 100).toFixed(3)
+    let floatScoreMoney = (useScore / scoreProportion).toFixed(3)
     floatScoreMoney = parseFloat(floatScoreMoney.substring(0, floatScoreMoney.length - 1))
     this.setData({
       'usePayInfo.moneyPaid': floatNum,
