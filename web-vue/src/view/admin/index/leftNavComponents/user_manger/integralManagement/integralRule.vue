@@ -102,7 +102,16 @@
             </div>
           </el-form-item>
           <el-form-item :label="$t('scoreCfg.exchange') + '：'">
-            {{$t('scoreCfg.formula')}}
+              <el-select v-model="form.scoreProportion" size="small" class="selectWidth">
+                <el-option
+                  v-for="item in scoreProportionOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+           {{$t('scoreCfg.formula')}}
+           <span style="color:#FF0000;margin-left: 10px;">{{$t('scoreCfg.titelMsg')}}</span>
           </el-form-item>
         </div>
 
@@ -149,8 +158,10 @@
               ></el-input-number>{{$t('scoreCfg.scoreScaleDesTwo')}}
               <span style="margit-left:20px;color:#999">{{$t('scoreCfg.prineTwo')}}</span>
             </span>
+            <div> {{$t('scoreCfg.titelMsg2')}}
+              <el-radio v-model="form.discountHasShipping" label="1" style="margin-left:15px">包含运费</el-radio>
+              <el-radio v-model="form.discountHasShipping" label="2">不包含运费</el-radio></div>
           </el-form-item>
-
         </div>
 
         <div class="integralRule">
@@ -628,7 +639,9 @@ export default {
         scoreLogin: 1, // 登录积分
         signInScore: 'off', // 签到送积分
         signScore: [], // 签到积分
-        signInRules: '0'
+        signInRules: '0',
+        scoreProportion: 100,
+        discountHasShipping: '1'
       },
       // 校验表单
       fromRules: {
@@ -639,7 +652,22 @@ export default {
         loginScore: { required: true, validator: validateLogin, trigger: 'change' },
         signInScore: { required: true, validator: validateSignIn, trigger: 'change' }
       },
-      iconUrl: this.$imageHost + '/image/admin/system_icon.png'
+      iconUrl: this.$imageHost + '/image/admin/system_icon.png',
+      scoreProportionOptions: [{
+        value: 1,
+        label: '1'
+      }, {
+        value: 10,
+        label: '10'
+      },
+      {
+        value: 100,
+        label: '100'
+      },
+      {
+        value: 1000,
+        label: '1000'
+      }]
     }
   },
   watch: {
@@ -681,9 +709,9 @@ export default {
           this.form.scoreYear = data.scoreYear
           this.form.scoreLimitNumber = data.scoreLimitNumber
           this.form.scorePeriod = data.scorePeriod
-          console.log('11111111111111111111111111111')
           this.form.signInRules = String(data.signInRules)
-          console.log(this.form.signInRules)
+          this.form.scoreProportion = data.scoreProportion
+          this.form.discountHasShipping = String(data.discountHasShipping)
           if (!data.scorePayLimit === null) {
             this.form.scorePayLimit = '0'
           } else {

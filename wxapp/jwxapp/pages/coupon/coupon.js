@@ -253,28 +253,28 @@ global.wxPage({
   },
   coupon_del: function (e) {
     var that = this;
-    var coupon_sn = e.currentTarget.dataset.couponSn;
-    var check_action = e.currentTarget.dataset.check_action;
+    var coupon_id = e.currentTarget.dataset.coupon_id;
+    var coupon_sn = e.currentTarget.dataset.coupon_sn;
     util.showModal('', '您确定要删除该优惠券？', function () {
       var animate = '';
       var Coupon = that.data.allCoupon;
-      // util.api('/api/wxapp/coupon/del', function (res) {
-      //   if (res.error === 0) {
-      //     for (let i = 0; i < Coupon.length; i++) {
-      //       Coupon[i].right = 0;
-      //       if (coupon_sn == Coupon[i].coupon_sn) {
-      //         Coupon.splice(i, 1)
-      //         i--;
-      //       }
-      //     }
-      //     clearTimeout(set_time_out);
-      //     cou_request(that, this_type);
-      //     that.setData({
-      //       cou_list: Coupon,
-      //       animate: animate
-      //     })
-      //   }
-      // }, { coupon_sn: coupon_sn })
+      util.api('api/wxapp/coupon/del', function (res) {
+        if (res.error === 0) {
+          for (let i = 0; i < Coupon.length; i++) {
+            Coupon[i].right = 0;
+            if (coupon_id == Coupon[i].id) {
+              Coupon.splice(i, 1)
+              i--;
+            }
+          }
+          clearTimeout(set_time_out);
+          // that.dataList()
+          that.setData({
+            allCoupon: Coupon,
+            animate: animate
+          })
+        }
+      }, { couponId: coupon_id })
     }, true, '取消', '确定')
   },
 

@@ -15,7 +15,7 @@
             :key="index"
           >
             <div>
-              <span>{{item.sort_type===0?$t('commodityGrouping.merchantClassification'):item.sort_type===1?$t('commodityGrouping.merchantLabel'):$t('commodityGrouping.merchantBrand')}}：</span>
+              <span>{{Number(item.sort_type)===0?$t('commodityGrouping.merchantClassification'):Number(item.sort_type)===1?$t('commodityGrouping.merchantLabel'):$t('commodityGrouping.merchantBrand')}}：</span>
               <span style="display:inline-block;width:100px">{{item.sort_name}}</span>
               <span
                 @click="handleToEditData(index)"
@@ -41,6 +41,7 @@
                 @change="handleToClickShowNumRadio(index)"
                 :label="2"
               >{{$t('commodityGrouping.designatedCommodity')}}</el-radio>
+
             </div>
             <div class="groupItemOperation">
               <img
@@ -466,6 +467,10 @@ export default {
     // 监听数据变换
     linkageData: {
       handler (newData) {
+        console.log(newData)
+        newData.sort_group_arr.forEach((item, index) => {
+          if (item.sort_type === 0) item.sort_type = ''
+        })
         console.log(newData)
         // 测试数据
         // newData['sort_length'] = newData.sort_group_arr.length

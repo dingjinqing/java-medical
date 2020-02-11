@@ -95,5 +95,7 @@ export const en = {
   chooseTemplate: 'Select template',
   refresh: 'Refresh',
   addTemplate: 'Add template',
-  titelError: 'The system opens the check-in for 30 days'
+  titelError: 'The system opens the check-in for 30 days',
+  titelMsg: 'Changing the points deduction ratio will bring changes to the value of the store points, please be careful to modify it',
+  titelMsg2: 'Does the shipping amount include shipping costs?'
 }
