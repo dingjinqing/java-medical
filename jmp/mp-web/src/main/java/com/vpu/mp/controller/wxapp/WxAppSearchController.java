@@ -64,7 +64,7 @@ public class WxAppSearchController extends WxAppBaseController {
      * 查询 搜索配置
      * @return 搜索配置
      */
-    @GetMapping("/config")
+    @PostMapping("/config")
     public JsonResult getSearchCfg() {
         SearchConfig searchConfig = shop().config.searchCfg.getSearchConfig();
         if(null==searchConfig) {

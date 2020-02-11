@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCoupon;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.wxapp.coupon.CouponDelParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,5 +209,17 @@ public class CouponMpService extends ShopBaseService {
             couponGetStatus = 0;
         }
         return couponGetStatus;
+    }
+
+    /**
+     * 删除优惠券
+     * @param param
+     * @return
+     */
+    public Integer delCoupon(CouponDelParam param){
+        int res = db().update(CUSTOMER_AVAIL_COUPONS).set(CUSTOMER_AVAIL_COUPONS.DEL_FLAG, (byte) 1)
+            .where(CUSTOMER_AVAIL_COUPONS.ID.eq(param.getCouponId())).execute();
+        return res;
+
     }
 }

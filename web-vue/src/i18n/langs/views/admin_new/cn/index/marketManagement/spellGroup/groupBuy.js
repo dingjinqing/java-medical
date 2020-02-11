@@ -99,6 +99,8 @@ export const cn = {
   shippingOption: '运费设置',
   freeShipping: '免运费',
   shippingOptionComment: '使用原商品运费模板',
+  beginNum: '初始化成团数量',
+  beginNumComment: '活动商品初始下单件数，将展示在小程序端。活动商品已团数量=活动初始已团数量+实际已团数量，不填写则表示0',
   consolationPrize: '鼓励奖',
   addCoupon: '添加优惠券',
   consolationPrizeComment1: '买家拼团失败后给予一定奖励，可提升买家复购',
@@ -109,6 +111,8 @@ export const cn = {
   // 拼团订单
   // 拼团活动
   activityName: '活动名称',
+  activtiyLevel: '优先级',
+  activtiyLevelComment: '用于区分不同拼团活动的优先级，请填写正整数，数值越大优先级越高',
   activityType: '活动类型',
   addActivity: '添加活动',
   editActivity: '编辑活动',
