@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member;
 
+import javax.validation.constraints.Size;
+
 import lombok.Data;
 
 /**
@@ -98,6 +100,7 @@ public class ShopCfgParam {
 	/**
 	 * 签到积分
 	 */
+	@Size(max = 30)
 	private String[] signScore;
 	
 	/**
@@ -108,5 +111,10 @@ public class ShopCfgParam {
 	 * 积分兑换比
 	 */
 	private Integer scoreProportion;
+	
+	/**
+	 * 签到类型 0：连续签到；1：循环签到
+	 */
+	private Byte signInRules;
 	
 }

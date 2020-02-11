@@ -1,6 +1,8 @@
 package com.vpu.mp.controller.admin;
 
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +36,7 @@ public class AdminScoreCfgController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value="/update")
-	public JsonResult userScoreConfig(@RequestBody ShopCfgParam param) {
+	public JsonResult userScoreConfig(@RequestBody @Valid ShopCfgParam param) {
 		
 		//判断积分有效期类型
 		int r = shop().score.setShopCfg(param);

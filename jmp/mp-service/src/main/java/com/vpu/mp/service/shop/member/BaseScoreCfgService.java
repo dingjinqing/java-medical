@@ -184,7 +184,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	
 	public void setSignInScore(UserScoreSetValue obj){
 		if(obj == null) {
-			obj = new UserScoreSetValue(BYTE_ZERO,new String[0]); 
+			obj = new UserScoreSetValue(BYTE_ZERO,new String[0],BYTE_ZERO); 
 		}
 		String json = Util.toJson(obj);
 		set(SIGN_IN_SCORE, json,UserScoreSetValue.class);
@@ -194,9 +194,12 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 		UserScoreSetValue obj = null;
 		String value = get(SIGN_IN_SCORE);
 		if(value==null) {
-			obj = new UserScoreSetValue(BYTE_ZERO,new String[0]); 
+			obj = new UserScoreSetValue(BYTE_ZERO,new String[0],BYTE_ZERO); 
 		}else {
 			obj = Util.parseJson(value,UserScoreSetValue.class);
+			Byte signInRules2 = obj.getSignInRules();
+			signInRules2 = null == signInRules2 ? (byte) 0 : signInRules2;
+			obj.setSignInRules(signInRules2);
 		}
 		return obj;
 	}

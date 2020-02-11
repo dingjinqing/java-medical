@@ -33,7 +33,7 @@ export const cn = {
   score: '积分',
   loginDescTwo: '每日仅首次登陆赠送积分',
   signSendScore: '签到送积分',
-  signDescOne: '开关开启，则系统开启签到14天',
+  signDescOne: '开关开启，则系统开启签到送积分，最多设置连续签到30天',
   view: '查看签到会员',
   continueSign: '连续签到',
   daySend: '天，送',
