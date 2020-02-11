@@ -67,6 +67,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -782,10 +783,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //折后订单金额
         BigDecimal moneyAfterDiscount = BigDecimalUtil.add(tolalDiscountAfterPrice, vo.getShippingFee());
         //最大积分抵扣
-        BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivide(
+        BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivideByMode(
+            RoundingMode.HALF_DOWN,
             BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.divide),
-            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreProportion)));
+            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(100)));
         //会员信息
         UserRecord user = member.getUserRecordById(param.getWxUserInfo().getUserId());
         //赋值
