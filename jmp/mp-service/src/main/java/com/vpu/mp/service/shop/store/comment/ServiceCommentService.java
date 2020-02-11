@@ -10,6 +10,8 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.comment.CommentFlagEnum;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
+import com.vpu.mp.service.pojo.wxapp.store.AllCommentParam;
+import com.vpu.mp.service.pojo.wxapp.store.AllCommentVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.SelectConditionStep;
@@ -240,6 +242,82 @@ public class ServiceCommentService extends ShopBaseService {
      */
     public void createComment(CommentServiceRecord record) {
         db().executeInsert(record);
+    }
+
+    /**
+     * 取一个服务的所有评价
+     * @param param
+     * @return
+     */
+    public AllCommentVo getAllComment(AllCommentParam param){
+        SelectConditionStep select = db().select(COMMENT_SERVICE.COMMSTAR,COMMENT_SERVICE.ANONYMOUSFLAG,COMMENT_SERVICE.COMM_NOTE,COMMENT_SERVICE.COMM_IMG,USER_DETAIL.USERNAME,USER_DETAIL.USER_AVATAR,COMMENT_SERVICE.CREATE_TIME).
+            from(COMMENT_SERVICE.leftJoin(USER_DETAIL).on(COMMENT_SERVICE.USER_ID.eq(USER_DETAIL.USER_ID))).
+            where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())));
+
+        Byte commConfig = saas.getShopApp(getShopId()).config.storeConfigService.getServiceComment();
+        if(commConfig == 2){
+            select.and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE));
+        }else{
+            select.and(COMMENT_SERVICE.FLAG.notEqual((byte)2));
+        }
+
+        if(param.getType() == 1){
+            select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)4).or(COMMENT_SERVICE.COMMSTAR.eq((byte)5)));
+        }else if(param.getType() == 2){
+            select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)2).or(COMMENT_SERVICE.COMMSTAR.eq((byte)3)));
+        }else if(param.getType() == 3){
+            select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)0).or(COMMENT_SERVICE.COMMSTAR.eq((byte)1)));
+        }
+
+        List<AllCommentVo.Comment> commentList = select.orderBy(COMMENT_SERVICE.CREATE_TIME.desc()).fetchInto(AllCommentVo.Comment.class);
+
+        commentList.forEach(comment -> {
+            // 图片加域名处理
+            List<String> stringList = Util.json2Object(comment.getCommImg(), new TypeReference<List<String>>() {}, false);
+            if (!CollectionUtils.isEmpty(stringList)) {
+                stringList = stringList.stream().map(domainConfig::imageUrl).collect(Collectors.toList());
+                comment.setCommImg(Util.toJson(stringList));
+            }
+        });
+
+        AllCommentVo vo = new AllCommentVo();
+        vo.setComment(commentList);
+        int[] numbers = getCommentsNumber(param,commConfig);
+        vo.setNumbers(numbers);
+
+        double[] ratio = new double[3];
+        if(numbers[0] > 0){
+            ratio[0] = (numbers[1]/(double)numbers[0])*100;
+            ratio[1] = (numbers[2]/(double)numbers[0])*100;
+            ratio[2] = (numbers[3]/(double)numbers[0])*100;
+        }
+        vo.setRatio(ratio);
+
+        return vo;
+    }
+
+    /**
+     * 评价数量
+     * @param param
+     * @param commConfig
+     * @return
+     */
+    private int[] getCommentsNumber(AllCommentParam param,Byte commConfig){
+        int[] numbers = new int[4];
+        if(commConfig == 2){
+            numbers[1] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)4).or(COMMENT_SERVICE.COMMSTAR.eq((byte)5)))).fetchOptionalInto(Integer.class).orElse(0);
+            numbers[2] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)2).or(COMMENT_SERVICE.COMMSTAR.eq((byte)3)))).fetchOptionalInto(Integer.class).orElse(0);
+            numbers[3] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)0).or(COMMENT_SERVICE.COMMSTAR.eq((byte)1)))).fetchOptionalInto(Integer.class).orElse(0);
+        }else{
+            numbers[1] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.notEqual((byte)2)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)4).or(COMMENT_SERVICE.COMMSTAR.eq((byte)5)))).fetchOptionalInto(Integer.class).orElse(0);
+            numbers[2] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.notEqual((byte)2)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)2).or(COMMENT_SERVICE.COMMSTAR.eq((byte)3)))).fetchOptionalInto(Integer.class).orElse(0);
+            numbers[3] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.notEqual((byte)2)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)0).or(COMMENT_SERVICE.COMMSTAR.eq((byte)1)))).fetchOptionalInto(Integer.class).orElse(0);
+        }
+
+        //0全部，1好评，2中评，3差评
+        numbers[0] = numbers[1] + numbers[2] + numbers[3];
+
+        return numbers;
     }
 
 }
