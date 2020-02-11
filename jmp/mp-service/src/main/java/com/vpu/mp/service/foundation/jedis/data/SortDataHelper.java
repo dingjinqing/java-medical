@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.image.ImageService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -141,7 +142,7 @@ public class SortDataHelper extends ShopBaseService implements DataHelperInterfa
 
     public Map<Integer,GoodsSortCacheInfo> getAllSortByIds(List<Integer> sortIds){
         List<GoodsSortCacheInfo> allSorts = Lists.newArrayList();
-        getAndGroup(sortIds).values().forEach(allSorts::addAll);
+        getAndGroup(sortIds).values().stream().filter(x-> !CollectionUtils.isEmpty(x)).forEach(allSorts::addAll);
         return allSorts.stream().collect(Collectors.toMap(GoodsSortCacheInfo::getSortId, Function.identity()));
     }
 
