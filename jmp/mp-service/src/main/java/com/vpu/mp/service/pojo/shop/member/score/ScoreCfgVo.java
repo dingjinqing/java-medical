@@ -80,6 +80,13 @@ public class ScoreCfgVo {
 	 * 签到类型 0：连续签到；1：循环签到
 	 */
 	private Byte signInRules;
-
+	/**
+	 * 积分兑换比
+	 */
+	private Integer scoreProportion;
+	/**
+	 * 订单折后金额是否包含运费
+	 */
+	private Byte discountHasShipping;
 
 }
