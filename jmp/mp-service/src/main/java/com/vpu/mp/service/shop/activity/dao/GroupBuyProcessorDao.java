@@ -98,7 +98,7 @@ public class GroupBuyProcessorDao extends GroupBuyService {
 
         /**已成功拼团数量*/
         logger().debug("小程序-商品详情-拼团信息-已成团数量");
-        vo.setGroupBuySuccessCount(getGroupBuySuccessCount(activityId));
+        vo.setGroupBuySuccessCount(getGroupBuySuccessCount(activityId)+groupBuyDefineRecord.getBeginNum());
 
         /** 正在进行中拼团信息列表 */
         logger().debug("小程序-商品详情-拼团信息-正在拼团列表信息");

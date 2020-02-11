@@ -302,14 +302,14 @@
                       ></i>
                       <i
                         class="right_buy new_back"
-                        style="`position:static;backgroundColor:${bgColor};`"
+                        :style="`backgroundColor:${bgColor};right:0;line-height:27px;height:27px;top:0;width:55px`"
                         v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'"
                       >
                         {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
-                        :style="`position:static;color:${bgColor};border-color:${bgColor};`"
+                        :style="`color:${bgColor};border-color:${bgColor};right:0;line-height:27px;height:27px;top:0`"
                         v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'"
                       >{{$t('commodity.purchase')}}</i>
                     </div>
