@@ -88,5 +88,6 @@ export const cn = {
   show: '用于向用户推荐积分相关活动商品',
   chooseTemplate: '选择模板',
   refresh: '刷新',
-  addTemplate: '添加模板'
+  addTemplate: '添加模板',
+  titelError: '系统开启签到上线为30天'
 }

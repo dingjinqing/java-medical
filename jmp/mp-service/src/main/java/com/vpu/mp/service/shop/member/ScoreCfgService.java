@@ -103,7 +103,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			setScoreLogin(param.getScoreLogin());
 		}
 
-
+		setDiscount(String.valueOf(param.getDiscountHasShipping()));
         //签到送积分
 		byte signInScore = BUTTON_ON.equals(param.getSignInScore()) ? ONE:ZERO;
 		setSignScore(signInScore,param.getSignScore(),param.getSignInRules());
@@ -331,6 +331,10 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			}
 		}
 		logger().info("模板名称处理成功");
+		Integer scoreProportion = getScoreProportion();
+		logger().info("积分兑换比查询："+scoreProportion);
+		vo.setScoreProportion(scoreProportion==null?100:scoreProportion);
+		vo.setDiscountHasShipping(Byte.valueOf(getDiscount()));
 		return vo;
 	}
 

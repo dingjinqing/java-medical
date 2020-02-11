@@ -62,8 +62,8 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	final public static String SCORE_DOCUMENT = "score_document";
 	// 积分兑换比
 	final public static String SCORE_PROPORTION = "score_proportion";
-	
-	
+	//订单折后金额是否包含运费 
+	public static final String DISCOUNT_HAS_SHIPPING="discount_has_shipping";
 	
 	//-------------------------------------------------------
 	
@@ -226,6 +226,15 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 
 	public Integer getScoreProportion() {
 		return get(SCORE_PROPORTION,Integer.class,SCORE_PROPORTION_LIST.get(2));
+	}
+	
+	
+	public void setDiscount(String value) {
+		set(DISCOUNT_HAS_SHIPPING, value);
+	}
+
+	public String getDiscount() {
+		return get(DISCOUNT_HAS_SHIPPING,String.class,"1");
 	}
 	
 }

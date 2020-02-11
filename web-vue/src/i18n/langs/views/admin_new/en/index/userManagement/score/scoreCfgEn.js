@@ -94,5 +94,6 @@ export const en = {
   show: 'Use to recommend points related activity items to users',
   chooseTemplate: 'Select template',
   refresh: 'Refresh',
-  addTemplate: 'Add template'
+  addTemplate: 'Add template',
+  titelError: 'The system opens the check-in for 30 days'
 }

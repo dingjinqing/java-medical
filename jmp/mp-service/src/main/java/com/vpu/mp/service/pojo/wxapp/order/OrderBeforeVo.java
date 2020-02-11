@@ -104,6 +104,8 @@ public class OrderBeforeVo {
     private Byte canShipping;
     /**积分最大抵用金额*/
     private BigDecimal scoreMaxDiscount;
+    /**积分兑换比*/
+    private Integer scoreProportion;
     /**发票开关*/
     private Byte invoiceSwitch;
     /**
