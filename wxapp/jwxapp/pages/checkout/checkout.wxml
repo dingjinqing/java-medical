@@ -220,7 +220,7 @@
   <!-- 修改余额 -->
   <v-balance-popup show="{{showBalanceDialog}}" money-paid="{{usePayInfo.moneyPaid}}" user-balance="{{orderInfo.userAccount}}" bindconfirm="getInputBalance" bindclose="closeDialog" />
   <!-- 修改积分 -->
-  <v-score-popup show="{{showScoreDialog}}" money-paid="{{usePayInfo.moneyPaid}}" score-max="{{orderInfo.scoreMaxDiscount}}" score-min="{{orderInfo.scorePayNum}}" user-score="{{orderInfo.userScore}}" bindconfirm="getInputScore" bindclose="closeDialog"/>
+  <v-score-popup show="{{showScoreDialog}}" money-paid="{{usePayInfo.moneyPaid}}" score-max="{{orderInfo.scoreMaxDiscount}}" score-min="{{orderInfo.scorePayNum}}" score-proportion="{{orderInfo.scoreProportion}}" user-score="{{orderInfo.userScore}}" bindconfirm="getInputScore" bindclose="closeDialog"/>
   <!-- 修改会员卡余额- -->
   <v-card-balance show="{{showCardBalanceDialog}}" money-paid="{{usePayInfo.moneyPaid}}" user-card-balance="{{orderInfo.memberCardMoney}}" bindconfirm="getInputCardBalance" bindclose="closeDialog"/>
   <!-- 选择会员卡 -->

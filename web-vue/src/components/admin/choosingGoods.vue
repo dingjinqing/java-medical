@@ -431,7 +431,7 @@ export default {
         if (res.error === 0) {
           console.log(res)
           let arr1 = [{ id: null, name: '请选择商品标签' }]
-          let arr2 = [{ id: null, brandName: '请选择商品标签' }]
+          let arr2 = [{ id: null, brandName: '请选择商品品牌' }]
           this.goodsLabelOptions = arr1.concat(res.content.goodsLabels)
           this.goodsBrandOptions = arr2.concat(res.content.goodsBrands)
         }

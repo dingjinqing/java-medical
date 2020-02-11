@@ -105,7 +105,7 @@ export default {
     hotDialogVisible (newVal) {
       if (!newVal) {
         this.modelFlag = false
-        // this.$emit('update:hotDialogVisible', false)
+        this.$emit('update:hotDialogVisible', false)
       } else {
         this.modelFlag = true
       }
@@ -114,7 +114,8 @@ export default {
     hotData: {
       handler (newVal) {
         if (newVal.length) {
-          this.hotAreaData = newVal
+          let data = JSON.parse(JSON.stringify(newVal))
+          this.hotAreaData = data
         }
         console.log(this.hotAreaData)
       },
