@@ -1,15 +1,15 @@
 <template>
   <div
-    class="container"
+    :class="'container '+(titleList.length>2?'canClick':'')"
     v-if="isSurvey"
   >
     <span @click="handleToClickCrumb(titleLeft,true)">{{titleLeft}}</span>
     <span
       @click="handleToClickCrumb(item)"
-      style="color:#666"
+      :style="index===2?'cursor:auto;text-decoration: none;color:#666;':'color:#666;'"
       v-for="(item,index) in titleList"
       :key="index"
-    ><i v-if="index !==0">/ {{item}}</i></span>
+    ><i v-if="index !==0"> / {{item}}</i></span>
   </div>
 </template>
 <script>
@@ -73,10 +73,55 @@ export default {
         let localData = JSON.parse(localStorage.getItem('V-UserCardCrumb'))
         console.log(localData)
         this.handleToRefllDet(localData)
+      } else if (this.$route.name === 'distribution_info') {
+        data.push('分销配置')
+        console.log(data)
+        this.titleLeft = data[0]
+        this.titleList = data
       } else {
         this.titleLeft = data[0]
         this.titleList = data
       }
+      // 分销员
+
+      this.$http.$on('distributionTap', (index) => {
+        console.log(index)
+        switch (index) {
+          case '0':
+            data[2] = '分销配置'
+            console.log(data)
+            break
+          case '1':
+            data[2] = '分销员等级配置'
+            console.log(data)
+            break
+          case '2':
+            data[2] = '返利策略配置'
+            break
+          case '3':
+            data[2] = '分销员列表'
+            break
+          case '4':
+            data[2] = '分销员分组'
+            break
+          case '5':
+            data[2] = '佣金统计'
+            break
+          case '6':
+            data[2] = '商品返利统计'
+            break
+          case '7':
+            data[2] = '返利提现审核'
+            break
+          case '8':
+            data[2] = '分销员审核'
+            break
+          case '9':
+            data[2] = '分销推广语'
+            break
+        }
+        this.titleList = data
+      })
     },
     // 处理数据
     handleToData (newData) {
@@ -129,27 +174,31 @@ export default {
       console.log(data, this.titleList)
     },
     handleToClickCrumb (name, flag) {
+      console.log(this.$route)
       if (flag) {
-        if (this.$route.meta.category) {
+        if (this.$route.meta.meta === 'user_manger') {
           this.$router.push({
             name: this.$route.meta.category
           })
         } else {
           this.$router.push({
-            name: this.$route.name
+            name: this.$route.meta.meta
           })
         }
-        // 特殊点击面包屑跳转
-        this.handleToSpecielTurn()
+      } else {
+        if (this.$route.name === 'distribution_info') {
+          this.$http.$emit('toChangeActiveName', true)
+        } else if (this.$route.meta.meta === 'user_manger') {
+          this.$router.push({
+            name: this.$route.meta.category
+          })
+        } else {
+          this.$router.push({
+            name: this.$route.meta.meta
+          })
+        }
       }
       console.log(name, this.$route)
-    },
-    handleToSpecielTurn () {
-      if (this.$route.name === 'goods_update') {
-        this.$router.push({
-          name: 'sale_on'
-        })
-      }
     }
   }
 
@@ -162,6 +211,8 @@ export default {
   padding-left: 25px;
   color: #333;
   background: #fff;
+}
+.canClick {
   span {
     cursor: pointer;
     &:hover {

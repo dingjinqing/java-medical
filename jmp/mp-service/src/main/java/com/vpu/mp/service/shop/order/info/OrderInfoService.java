@@ -73,6 +73,8 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
+import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
+
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
@@ -215,7 +217,7 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(ORDER_GOODS.PRODUCT_SN.like(likeValue(param.productSn)));
 			}
 		}
-		if (!StringUtils.isEmpty(param.orderSn)) {
+		if (!StringUtils.isBlank(param.orderSn)) {
 			select.where(ORDER_INFO.ORDER_SN.contains(param.orderSn));
 		}
 		if (param.orderStatus != null && param.orderStatus.length != 0) {
@@ -240,19 +242,19 @@ public class OrderInfoService extends ShopBaseService {
 		if(param.getUserId() != null){
             select.where(ORDER_INFO.USER_ID.eq(param.getUserId()));
         }
-		if (!StringUtils.isEmpty(param.source)) {
+		if (!StringUtils.isBlank(param.source)) {
 			select.where(ORDER_INFO.SOURCE.eq(param.source));
 		}
 		if (param.storeId != null) {
 			select.where(ORDER_INFO.STORE_ID.eq(param.storeId));
 		}
-		if (!StringUtils.isEmpty(param.verifyCode)) {
+		if (!StringUtils.isBlank(param.verifyCode)) {
 			select.where(ORDER_INFO.VERIFY_CODE.eq(param.verifyCode));
 		}
-		if (!StringUtils.isEmpty(param.consignee)) {
+		if (!StringUtils.isBlank(param.consignee)) {
 			select.where(ORDER_INFO.CONSIGNEE.contains(param.consignee));
 		}
-		if (!StringUtils.isEmpty(param.getMobile())) {
+		if (!StringUtils.isBlank(param.getMobile())) {
 			select.where(ORDER_INFO.MOBILE.contains(param.getMobile()));
 		}
 		if (param.countryCode != null) {
@@ -282,6 +284,9 @@ public class OrderInfoService extends ShopBaseService {
 		if (param.getIsStar() != null) {
 			select.where(TABLE.STAR_FLAG.eq(param.getIsStar()));
 		}
+		if(!StringUtils.isBlank(param.getShippingNo())) {
+            select.leftJoin(PART_ORDER_GOODS_SHIP).on(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(TABLE.ORDER_SN)).where(PART_ORDER_GOODS_SHIP.SHIPPING_NO.like(likeValue(param.getShippingNo())));
+        }
 		// 拼团退款失败订单
 		if (param.pinStatus != null && param.pinStatus.length != 0) {
 			select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));

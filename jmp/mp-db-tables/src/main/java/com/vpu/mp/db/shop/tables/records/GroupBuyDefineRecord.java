@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineRecord> {
 
-    private static final long serialVersionUID = -853170266;
+    private static final long serialVersionUID = 753260767;
 
     /**
      * Setter for <code>mini_shop_4748160.b2c_group_buy_define.id</code>.
@@ -116,29 +116,29 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
     /**
      * Setter for <code>mini_shop_4748160.b2c_group_buy_define.limit_buy_num</code>. 最少购买数 0不限制
      */
-    public void setLimitBuyNum(Integer value) {
+    public void setLimitBuyNum(Short value) {
         set(6, value);
     }
 
     /**
      * Getter for <code>mini_shop_4748160.b2c_group_buy_define.limit_buy_num</code>. 最少购买数 0不限制
      */
-    public Integer getLimitBuyNum() {
-        return (Integer) get(6);
+    public Short getLimitBuyNum() {
+        return (Short) get(6);
     }
 
     /**
      * Setter for <code>mini_shop_4748160.b2c_group_buy_define.limit_max_num</code>. 最多购买数 0不限制
      */
-    public void setLimitMaxNum(Integer value) {
+    public void setLimitMaxNum(Short value) {
         set(7, value);
     }
 
     /**
      * Getter for <code>mini_shop_4748160.b2c_group_buy_define.limit_max_num</code>. 最多购买数 0不限制
      */
-    public Integer getLimitMaxNum() {
-        return (Integer) get(7);
+    public Short getLimitMaxNum() {
+        return (Short) get(7);
     }
 
     /**
@@ -351,6 +351,34 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
         return (Timestamp) get(22);
     }
 
+    /**
+     * Setter for <code>mini_shop_4748160.b2c_group_buy_define.level</code>. 优先级
+     */
+    public void setLevel(Integer value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_4748160.b2c_group_buy_define.level</code>. 优先级
+     */
+    public Integer getLevel() {
+        return (Integer) get(23);
+    }
+
+    /**
+     * Setter for <code>mini_shop_4748160.b2c_group_buy_define.begin_num</code>. 初始成团数
+     */
+    public void setBeginNum(Integer value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_4748160.b2c_group_buy_define.begin_num</code>. 初始成团数
+     */
+    public Integer getBeginNum() {
+        return (Integer) get(24);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -377,7 +405,7 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
     /**
      * Create a detached, initialised GroupBuyDefineRecord
      */
-    public GroupBuyDefineRecord(Integer id, Integer goodsId, String name, Short limitAmount, Short joinLimit, Short openLimit, Integer limitBuyNum, Integer limitMaxNum, Timestamp startTime, Timestamp endTime, Short stock, Short saleNum, Byte isDefault, Byte activityType, Byte isGrouperCheap, Byte shippingType, String rewardCouponId, String shareConfig, Byte status, Byte delFlag, Integer delTime, Timestamp createTime, Timestamp updateTime) {
+    public GroupBuyDefineRecord(Integer id, Integer goodsId, String name, Short limitAmount, Short joinLimit, Short openLimit, Short limitBuyNum, Short limitMaxNum, Timestamp startTime, Timestamp endTime, Short stock, Short saleNum, Byte isDefault, Byte activityType, Byte isGrouperCheap, Byte shippingType, String rewardCouponId, String shareConfig, Byte status, Byte delFlag, Integer delTime, Timestamp createTime, Timestamp updateTime, Integer level, Integer beginNum) {
         super(GroupBuyDefine.GROUP_BUY_DEFINE);
 
         set(0, id);
@@ -403,5 +431,7 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
         set(20, delTime);
         set(21, createTime);
         set(22, updateTime);
+        set(23, level);
+        set(24, beginNum);
     }
 }

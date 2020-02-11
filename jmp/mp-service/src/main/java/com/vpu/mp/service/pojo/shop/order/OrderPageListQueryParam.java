@@ -75,4 +75,8 @@ public class OrderPageListQueryParam {
 	public Integer activityId;
 	/**用户id*/
 	public Integer userId;
+	/**快递单号*/
+	public String shippingNo;
+	/**TODO 订单来源 : 0 自营订单; 1平台订单（欧派寺库）*/
+	public Byte orderSource;
 }

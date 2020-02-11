@@ -1,14 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
-
-import lombok.Data;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author 王兵兵
@@ -105,4 +103,14 @@ public class BargainAddParam {
 	 * 任意金额结算模式的，单次帮砍金额模式的随机金额模式的，随机金额数值上限
 	 */
 	private BigDecimal bargainMaxMoney;
+
+    /**
+     * 是否需要绑定(授权)手机号，1是
+     */
+    private Byte needBindMobile;
+
+    /**
+     * 初始销量(初始砍价人次)
+     */
+    private Integer initialSales;
 }
