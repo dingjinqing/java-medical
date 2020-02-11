@@ -1,11 +1,9 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.overview.hotwords.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -62,5 +60,16 @@ public class WxAppSearchController extends WxAppBaseController {
 
         return success();
     }
-
+    /**
+     * 查询 搜索配置
+     * @return 搜索配置
+     */
+    @GetMapping("/config")
+    public JsonResult getSearchCfg() {
+        SearchConfig searchConfig = shop().config.searchCfg.getSearchConfig();
+        if(null==searchConfig) {
+            searchConfig=new SearchConfig(1, 1, 0);
+        }
+        return success(searchConfig);
+    }
 }
