@@ -56,6 +56,15 @@ public class GroupBuyEditParam {
      */
     private String rewardCouponId;
     /**
+     * 初始化等级
+     */
+    private Integer level=0;
+    /**
+     * 初始化数量
+     */
+    private Integer beginNum=0;
+
+    /**
      * 分享设置
      */
     private GroupBuyShareConfigParam share;
