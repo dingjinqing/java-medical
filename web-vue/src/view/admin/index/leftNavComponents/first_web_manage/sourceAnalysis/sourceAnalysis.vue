@@ -34,17 +34,31 @@
       </el-date-picker>
       <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
       <!--来源标签-->
-      <div   style="display:flex">
-      <div class="label_style"
-           v-for="(item, index) in this.span_data"
-           :key="index"
-
-      >
-        <div :id="item.name" :class="spanStyle" @click="changeData(item.name, index)">{{item.name}}</div>
-      </div>
+      <div style="display:flex">
+        <div
+          class="label_style"
+          v-for="(item, index) in this.span_data"
+          :key="index"
+        >
+          <div
+            :id="item.name"
+            :class="spanStyle"
+            @click="changeData(item.name, index)"
+          >{{item.name}}</div>
+        </div>
       </div>
       <!-- 柱状图部分 -->
-      <div class="charts"><ve-histogram :data="chartData"></ve-histogram></div>
+      <div class="charts">
+        <ve-histogram
+          :data="chartData"
+          :legend-visible="false"
+        >
+          <div
+            class="data-empty"
+            v-if="emptyChar"
+          >{{$t('userportrait.noData')}}</div>
+        </ve-histogram>
+      </div>
 
     </div>
     <!--下半部分-->
@@ -95,14 +109,25 @@
       </el-date-picker>
       <span>{{this.startDate1.year}}{{$t('userStatistics.year')}}{{this.startDate1.month}}{{$t('userStatistics.month')}}{{this.startDate1.day}}{{$t('userStatistics.day')}} - {{this.endDate1.year}}{{$t('userStatistics.year')}}{{this.endDate1.month}}{{$t('userStatistics.month')}}{{this.endDate1.day}}{{$t('userStatistics.day')}}</span>
       <!-- 折线图部分 -->
-      <div class="charts"><ve-line :data="lineData" :settings="chartSettings"></ve-line></div>
+      <div class="charts">
+        <ve-line
+          :data="lineData"
+          :settings="chartSettings"
+          :legend-visible="false"
+        >
+          <div
+            class="data-empty"
+            v-if="emptyLine"
+          >{{$t('userportrait.noData')}}</div>
+        </ve-line>
+      </div>
 
     </div>
   </div>
 </template>
 
 <script>
-import {distributionAnalysis, sourceSelect, sourceAnalysis} from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
+import { distributionAnalysis, sourceSelect, sourceAnalysis } from '@/api/admin/firstWebManage/visitAnalysis/visitAnalysis.js'
 
 export default {
   watch: {
@@ -171,21 +196,19 @@ export default {
         day: ''
       },
       span_data: [],
-      histogram_data: [{'name': '小程序', 'value': 0}],
+      histogram_data: [],
       histogram: Object,
       // 柱状图数据
       chartData: {
         columns: ['name', 'value'],
-        rows: [
-          {'name': '2020-01-01', 'value': 0}
-        ]
+        rows: []
       },
+      emptyChar: true,
       lineData: {
         columns: ['refDate', 'openTimes'],
-        rows: [
-          { 'refDate': '2020-01-01', 'openTimes': 0 }
-        ]
-      }
+        rows: []
+      },
+      emptyLine: true
     }
   },
 
@@ -207,6 +230,11 @@ export default {
           this.endDate1.month = res.content.endDate.substring(4, 6)
           this.endDate1.day = res.content.endDate.substring(6, 8)
           this.lineData.rows = res.content.lineChart
+          if (this.lineData.rows.length === 0) {
+            this.emptyLine = true
+          } else {
+            this.emptyLine = false
+          }
         }
       }).catch(err => console.log(err))
     },
@@ -274,7 +302,6 @@ export default {
           this.endDate.year = res.content.endDate.substring(0, 4)
           this.endDate.month = res.content.endDate.substring(4, 6)
           this.endDate.day = res.content.endDate.substring(6, 8)
-          console.log(res.content.accessSourceSessionCnt)
           this.histogram_data = res.content.accessSourceSessionCnt
           this.histogram_data.map((item, index) => {
             this.histogram[index] = item.key
@@ -282,6 +309,11 @@ export default {
             delete item.isShow
           })
           this.chartData.rows = this.histogram_data
+          if (this.chartData.rows.length === 0) {
+            this.emptyChar = true
+          } else {
+            this.emptyChar = false
+          }
           if (this.isChange === true) {
             this.span_data = this.histogram_data
             this.isChange = false
@@ -312,52 +344,66 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+.labelItem {
+  height: 50px;
+  line-height: 50px;
+  color: #333;
+  margin-left: 20px;
+}
+.div_style {
+  margin-left: 10px;
+  margin-top: 10px;
+  background: #fff;
+  border: #9f9f9f;
+  padding: 10px;
   .labelItem {
     height: 50px;
     line-height: 50px;
     color: #333;
-    margin-left: 20px;
   }
-  .div_style {
-    margin-left: 10px;
-    margin-top: 10px;
-    background: #fff;
-    border: #9f9f9f;
-    padding: 10px;
-    .labelItem {
-      height: 50px;
-      line-height: 50px;
-      color: #333;
-    }
-    .timeSelect {
-      width: 140px;
-      margin: 0 10px 0 30px;
-    }
+  .timeSelect {
+    width: 140px;
+    margin: 0 10px 0 30px;
   }
-  .label_style{
-    margin-left: 20px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-  .span_normal {
-    padding: 7px 15px;
-    margin-right: 10px;
-    border: 1px solid #5A8BFF;
-    border-radius: 30px;
-    cursor: pointer;
-    margin-bottom: 10px;
-  }
-  .span_cancel {
-    padding: 7px 15px;
-    margin-right: 10px;
-    color: #9a9a9a;
-    border: 1px solid #afafb2;
-    border-radius: 30px;
-  }
+}
+.label_style {
+  margin-left: 20px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.span_normal {
+  padding: 7px 15px;
+  margin-right: 10px;
+  border: 1px solid #5a8bff;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.span_cancel {
+  padding: 7px 15px;
+  margin-right: 10px;
+  color: #9a9a9a;
+  border: 1px solid #afafb2;
+  border-radius: 30px;
+}
 
-  .charts {
-    margin-left: 5%;
-    width: 80%;
-    height: 500px;
-  }
+.data-empty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #888;
+  font-size: 14px;
+}
+
+.charts {
+  margin-left: 5%;
+  width: 80%;
+  height: 500px;
+}
 </style>

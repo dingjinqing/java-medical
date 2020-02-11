@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListP
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryListUserParam;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryUserTimeInfo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -303,6 +304,7 @@ public class LotteryService extends ShopBaseService {
         //获取活动
         LotteryRecord lottery = this.getLotteryById(lotteryId);
         join.setLottery(lottery);
+        join.setChanceSource(param.getLotterySource());
         //活动不存在了
         if (lottery == null || DelFlag.DISABLE_VALUE.equals(lottery.getDelFlag())) {
             join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_ACTIVITY_FAIL).build());
@@ -424,4 +426,14 @@ public class LotteryService extends ShopBaseService {
     public void shareLottery(Integer userId, Integer lotteryId) {
         lotteryShareService.addShareRecord(userId,lotteryId);
     }
+
+    /**
+     * 用户中奖列表
+     * @param param
+     * @return
+     */
+    public PageResult<LotteryRecordPageListVo> lotteryListByUser(LotteryListUserParam param) {
+      return  lotteryRecordService.lotteryListByUser(param);
+    }
+
 }

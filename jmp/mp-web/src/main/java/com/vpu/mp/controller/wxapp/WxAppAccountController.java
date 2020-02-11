@@ -126,7 +126,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	public JsonResult getUserAccountList(@RequestBody AccountPageListParam param) {
 		param.setUserId(wxAppAuth.user().getUserId());
 		PageResult<AccountPageListVo> res = shop().member.account.getPageListOfAccountDetails(param,getLang());
-		return success(res.dataList);
+		return success(res);
 	}
 	
 	/**

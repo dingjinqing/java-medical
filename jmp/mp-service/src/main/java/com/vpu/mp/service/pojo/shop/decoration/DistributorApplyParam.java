@@ -134,6 +134,10 @@ public class DistributorApplyParam {
          * 婚姻状况名称
          */
         public String maritalName;
+        /**
+         * 分销分组名称
+         */
+        public String rebateGroupName;
     }
     @Data
     public static class CustomOptions{
@@ -177,6 +181,12 @@ public class DistributorApplyParam {
     public static class Options{
         @JsonProperty(value = "option_title")
         public String optionTitle;
+
+        /**
+         * 选中状态
+         */
+        @JsonProperty(value = "checked")
+        public String checked;
 
     }
 }
