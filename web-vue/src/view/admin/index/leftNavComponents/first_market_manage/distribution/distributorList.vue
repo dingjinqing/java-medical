@@ -1,59 +1,68 @@
 <template>
   <div class="distributorListContent">
     <div class="searchInfo_main">
-      <ul>
-        <li class="li">
-          <div class="liNav">
-            <span class="labelClass">手机号</span>
+      <el-form
+        :model="param"
+        label-width="140px"
+        :label-position="'right'"
+      >
+        <div>
+          <el-form-item
+            label="手机号："
+            class="item"
+          >
             <el-input
               v-model="param.mobile"
               placeholder="请填写手机号"
               size="small"
+              class="inputWidth"
             ></el-input>
-          </div>
-          <div
-            class="liNav"
-            style="margin: 0 100px"
+          </el-form-item>
+          <el-form-item
+            label="微信昵称："
+            class="item"
           >
-            <span class="labelClass">微信昵称</span>
             <el-input
               v-model="param.username"
               placeholder="请填写微信昵称"
               size="small"
+              class="inputWidth"
             ></el-input>
-          </div>
-          <div class="liNav">
-            <span class="labelClass">真实姓名</span>
+          </el-form-item>
+          <el-form-item
+            label="真实姓名："
+            class="item"
+          >
             <el-input
               v-model="param.realName"
               placeholder="请填写真实姓名"
               size="small"
-            >
-            </el-input>
-          </div>
-        </li>
-      </ul>
-      <ul class="uls">
-        <li class="li">
-          <div class="liNav">
-            <span class="labelClass invitationPhone">被邀请用户手机号</span>
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+        </div>
+        <div>
+          <el-form-item
+            label="被邀请用户手机号："
+            class="item"
+          >
             <el-input
+              v-model="param.inviterMobile"
               placeholder="请填写被邀请用户手机号"
               size="small"
-            >
-            </el-input>
-          </div>
-        </li>
-        <li
-          class="li"
-          style="margin-left: 20px"
-        >
-          <div class="liNav timeLine">
-            <span class="labelClass date">注册时间</span>
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="注册时间："
+            class="item"
+          >
             <el-date-picker
               v-model="param.startCreateTime"
               type="date"
               placeholder="选择日期"
+              size="small"
+              class="inputWidth"
             >
             </el-date-picker>
             <span>至</span>
@@ -61,34 +70,33 @@
               v-model="param.endCreateTime"
               type="date"
               placeholder="选择日期"
+              size="small"
+              class="inputWidth"
             >
             </el-date-picker>
-
-          </div>
-        </li>
-      </ul>
-      <ul class="uls">
-        <li class="li">
-          <div class="liNav">
-            <span class="labelClass invitation">被邀请用户昵称</span>
+          </el-form-item>
+        </div>
+        <div>
+          <el-form-item
+            label="被邀请用户昵称："
+            class="item"
+          >
             <el-input
               v-model="param.invitedUsername"
               placeholder="请填写被邀请用户昵称"
               size="small"
-            >
-            </el-input>
-          </div>
-        </li>
-        <li class="li">
-          <div
-            class="liNav"
-            style="margin: 0 100px"
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="分销员等级："
+            class="item"
           >
-            <span class="labelClass">分销员等级</span>
             <el-select
-              size="small"
-              v-model="valueLevel"
+              v-model="param.valueLevel"
               placeholder="请选择等级"
+              size="small"
+              class="inputWidth"
             >
               <el-option
                 v-for="level in groupLevelList"
@@ -98,15 +106,16 @@
               >
               </el-option>
             </el-select>
-          </div>
-        </li>
-        <li class="li">
-          <div class="liNav">
-            <span class="labelClass">分销员分组</span>
+          </el-form-item>
+          <el-form-item
+            label="分销员分组："
+            class="item"
+          >
             <el-select
-              size="small"
-              v-model="valueGroup"
+              v-model="param.valueGroup"
               placeholder="请选择分组"
+              size="small"
+              class="inputWidth"
             >
               <el-option
                 v-for="group in groupNameList"
@@ -116,22 +125,31 @@
               >
               </el-option>
             </el-select>
+          </el-form-item>
+        </div>
+        <div style="overflow: auto;">
+          <div
+            class="item"
+            style="float: left;"
+          >
+            <el-checkbox v-model="param.hasSubordinate">有下级用户</el-checkbox>
+            <el-checkbox v-model="param.hasMobile">有手机号</el-checkbox>
+            <el-checkbox v-model="param.hasRealName">有真实姓名</el-checkbox>
           </div>
-        </li>
-        <li
-          class="li"
-          style="margin: 0 10px 0 50px"
-        >
-          <el-button
-            @click="list"
-            type="primary"
-            size="small"
-          >筛选</el-button>
-        </li>
-        <li class="li">
-          <el-button size="small">导出</el-button>
-        </li>
-      </ul>
+          <div
+            class="item"
+            style="float: right;"
+          >
+            <el-button
+              @click="initDataList"
+              type="primary"
+              size="small"
+            >筛选</el-button>
+            <el-button size="small">导出</el-button>
+          </div>
+        </div>
+      </el-form>
+
     </div>
     <div class="tableInfo">
       <div class="notice">
@@ -147,17 +165,24 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="userId"
             label="ID"
             align="center"
           >
+            <template slot-scope="scope">
+              <el-checkbox></el-checkbox> {{ scope.row.userId }}
+            </template>
           </el-table-column>
 
           <el-table-column
-            prop="username"
             label="分销员昵称"
             align="center"
           >
+            <template slot-scope="scope">
+              <span
+                class="nameStyle"
+                @click="userNameHandler(scope.row.userId)"
+              >{{ scope.row.username }}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -165,6 +190,18 @@
             label="分销员手机号"
             align="center"
           >
+          </el-table-column>
+
+          <el-table-column
+            label="邀请人"
+            align="center"
+          >
+            <!-- <template slot-scope="scope">
+              <span
+                class="nameStyle"
+                @click="userNameHandler(scope.row.userId)"
+              >{{ scope.row.username }}</span>
+            </template> -->
           </el-table-column>
 
           <el-table-column
@@ -181,11 +218,35 @@
           >
           </el-table-column>
 
+          <el-table-column align="center">
+            <template slot="header">
+              <el-tooltip
+                effect="dark"
+                content="用户在申请成为分销员时，填写其邀请人的邀请码，则成为分销员后将成为该邀请人的下级"
+                placement="top"
+              >
+                <span>邀请码 <i class="el-icon-question"></i></span>
+              </el-tooltip>
+            </template>
+            <template slot-scope="scope">
+              <p
+                class="nameStyle"
+                @click="invitationCodeHandler"
+              >设置</p>
+            </template>
+          </el-table-column>
+
           <el-table-column
-            prop="groupName"
             label="分销员分组"
             align="center"
           >
+            <template slot-scope="scope">
+              <p>{{ scope.row.groupName }}</p>
+              <p
+                class="nameStyle"
+                @click="groupNameHandler"
+              >编辑</p>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -195,18 +256,28 @@
           >
           </el-table-column>
 
-          <el-table-column
-            prop="nextNumber"
-            label="下级用户数"
-            align="center"
-          >
+          <el-table-column align="center">
+            <template slot="header">
+              下级用户数 <i class="el-icon-bottom"></i>
+            </template>
+            <template slot-scope="scope">
+              <span
+                class="nameStyle"
+                @click="nextNumberHandler"
+              >{{ scope.row.nextNumber }}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
-            prop="sublayerNumber"
             label="间接邀请用户数"
             align="center"
           >
+            <template slot-scope="scope">
+              <span
+                class="nameStyle"
+                @click="sublayerNumberHandler"
+              >{{ scope.row.sublayerNumber }}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -244,10 +315,30 @@
             </template>
           </el-table-column>
         </el-table>
+        <!-- 全选修改分销员分组 -->
+        <div class="checkedStyle">
+          <el-checkbox v-model="allChecked"></el-checkbox>
+          全选当前页
+          <el-select
+            v-model="checkedValue"
+            placeholder="请选择等级"
+            size="small"
+            class="checkboxWidth"
+          >
+            <el-option
+              v-for="(item, index) in checkList"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+
+        </div>
       </div>
       <pagination
         :page-params.sync="pageParams"
-        @pagination="list"
+        @pagination="initDataList"
       />
     </div>
   </div>
@@ -264,32 +355,54 @@ export default {
     return {
       groupNameList: [],
       groupLevelList: [],
-      valueGroup: '',
-      valueLevel: '',
-      value: '',
-      time1: '',
-      time2: '',
+      // 表格
       tableData: [],
-      currentPage: 1,
+      // 分页
       pageParams: {},
+      // 搜索
       param: {
-
-      }
+        mobile: '',
+        username: '',
+        realName: '',
+        inviterMobile: '',
+        startCreateTime: '',
+        endCreateTime: '',
+        invitedUsername: '',
+        valueLevel: '',
+        valueGroup: '',
+        hasSubordinate: false,
+        hasMobile: false,
+        hasRealName: false
+      },
+      requestParams: {},
+      // 全选按钮
+      allChecked: false,
+      checkedValue: '0',
+      checkList: [{
+        label: '批量修改分员分组',
+        value: '0'
+      }, {
+        label: '对选中的分销员修改分组',
+        value: '1'
+      }, {
+        label: '对筛选出的66人修改分组',
+        value: '2'
+      }]
     }
   },
   mounted () {
-    this.list()
+    this.initDataList()
     this.levelList()
     this.groupList()
   },
 
   methods: {
-    handleCurrentChange () {
-
-    },
     // 分销员列表
-    list () {
-      distributorList(this.pageParams).then(res => {
+    initDataList () {
+      // this.requestParams = this.param
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      distributorList(this.requestParams).then(res => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
@@ -332,12 +445,42 @@ export default {
               type: 'success',
               message: '清除成功!'
             })
-            this.list()
+            this.initDataList()
           }
         })
       }).catch(() => {
 
       })
+    },
+
+    // 用户昵称跳转
+    userNameHandler (id) {
+      this.$router.push({
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: id
+        }
+      })
+    },
+
+    // 邀请码设置
+    invitationCodeHandler () {
+
+    },
+
+    // 分销员分组编辑
+    groupNameHandler () {
+
+    },
+
+    // 下级用户数跳转
+    nextNumberHandler () {
+
+    },
+
+    // 间接邀请用户数跳转
+    sublayerNumberHandler () {
+
     }
 
   }
@@ -345,6 +488,26 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+.item {
+  display: inline-block;
+}
+.inputWidth {
+  width: 170px;
+}
+.checkboxWidth {
+  width: 200px;
+}
+.nameStyle {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.el-tooltip__popper {
+  max-width: 120px;
+}
+.checkedStyle {
+  margin-top: 20px;
+  margin-left: 10px;
+}
 .distributorListContent {
   padding: 10px;
   padding-bottom: 68px;
@@ -420,7 +583,6 @@ export default {
 .table_list {
   position: relative;
   background-color: #fff;
-  padding: 0px 20px 10px 20px;
 }
 .footer {
   padding: 20px 0 20px 20px;
