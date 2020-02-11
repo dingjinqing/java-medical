@@ -509,11 +509,11 @@ global.wxPage({
       return false
     }
     if (
-      (orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) ||
-      (orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) ||
-      (orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) ||
-      (orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) ||
-      (orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom)
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) ||
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) ||
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) ||
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) ||
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom)
     ) {
       wx.showToast({
         title: '请输入必填项',
