@@ -694,9 +694,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void processOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) {
         logger().info("金额处理赋值(processOrderBeforeVo),start");
+        //积分兑换比
+        Integer scoreProportion = scoreCfg.getScoreProportion();
         //积分抵扣金额()
         BigDecimal scoreDiscount =
-            BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal("100"));
+            BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal(scoreProportion));
         //余额抵扣金额
         BigDecimal useAccount = param.getBalance();
         //会员卡抵扣金额
@@ -783,8 +785,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivide(
             BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.divide),
-            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal("100"), null)
-        );
+            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreProportion)));
         //会员信息
         UserRecord user = member.getUserRecordById(param.getWxUserInfo().getUserId());
         //赋值
@@ -805,6 +806,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setMoneyAfterDiscount(moneyAfterDiscount);
         vo.setExchang(vo.getDefaultMemberCard() == null ? NO : (CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()) ? YES : NO));
         vo.setScoreMaxDiscount(scoreMaxDiscount);
+        vo.setScoreProportion(scoreProportion);
         vo.setInvoiceSwitch(tradeCfg.getInvoice());
         vo.setCancelTime(tradeCfg.getCancelTime());
         vo.setActivityType(param.getActivityType());
