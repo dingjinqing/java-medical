@@ -32,6 +32,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
@@ -39,8 +40,9 @@ import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
+import static com.vpu.mp.service.pojo.shop.overview.commodity.CharConstant.*;
+import static org.apache.commons.lang3.math.NumberUtils.*;
+import static org.jooq.impl.DSL.max;
 import static org.jooq.impl.DSL.*;
 
 /**
@@ -471,7 +473,78 @@ public class CommodityStatisticsService extends ShopBaseService {
         return workbook;
     }
 
+    // b2c_goods_summary
     public void getGoodsRanking(RankingParam param) {
+        // 给定时间段的商品销售额TOP10的商品
+        Map<Integer, Result<Record4<Date, Integer, BigDecimal, String>>> sales = db()
+            .select(GOODS_SUMMARY.REF_DATE, GOODS_SUMMARY.GOODS_ID, GOODS_SUMMARY.GOODS_SALES, GOODS.GOODS_NAME)
+            .from(GOODS_SUMMARY)
+            .leftJoin(GOODS).on(GOODS_SUMMARY.GOODS_ID.eq(GOODS.GOODS_ID))
+            .where(GOODS_SUMMARY.REF_DATE.greaterThan(param.getStartTime()))
+            .and(GOODS_SUMMARY.REF_DATE.le(param.getEndTime()))
+            .and(GOODS_SUMMARY.TYPE.eq(BYTE_ONE))
+            .groupBy(GOODS_SUMMARY.GOODS_ID)
+            .orderBy(sum(GOODS_SUMMARY.GOODS_SALES).desc(), GOODS_SUMMARY.REF_DATE)
+            .limit(10)
+            .fetchGroups(GOODS_SUMMARY.GOODS_ID);
 
+        // top10商品名称列表
+        List<String> columns = new ArrayList<>();
+        // key：日期date，value：2020-01-01
+        // key：商品名称，value：销售额/销售订单量（付款商品件数）
+        List<Map<String, Object>> dayRows = new ArrayList<>();
+        List<Map<String, Object>> weekRows = new ArrayList<>();
+        List<Map<String, Object>> monthRows = new ArrayList<>();
+        List<Map<String, Object>> yearRows = new ArrayList<>();
+
+        sales.forEach((k, v) -> {
+            columns.add(v.getValue(INTEGER_ZERO, GOODS.GOODS_NAME));
+            dayCharData(dayRows, v);
+            mutilCharData(weekRows, v, 7);
+            mutilCharData(monthRows, v, 30);
+            mutilCharData(yearRows, v, 365);
+        });
+
+        // 得到图形数据
+        Map<String, ChartData> salesVo = new HashMap<>(4);
+        salesVo.put(DAY_CHAR_DATA, ChartData.builder().columns(columns).rows(dayRows).build());
+        salesVo.put(WEEK_CHAR_DATA, ChartData.builder().columns(columns).rows(weekRows).build());
+        salesVo.put(MONTH_CHAR_DATA, ChartData.builder().columns(columns).rows(monthRows).build());
+        salesVo.put(YEAR_CHAR_DATA, ChartData.builder().columns(columns).rows(yearRows).build());
+
+        // 给定时间段的商品销售订单TOP10的商品
+
+    }
+
+    // 构造每天的图形数据
+    private void dayCharData(List<Map<String, Object>> rows, final Result<Record4<Date, Integer, BigDecimal, String>> results) {
+        rows.forEach(m ->
+            results.forEach(record -> {
+                m.putIfAbsent("Date", dateDecrement(record.getValue(GOODS_SUMMARY.REF_DATE)));
+                m.put(record.getValue(GOODS.GOODS_NAME), record.getValue(GOODS_SUMMARY.GOODS_SALES));
+            }));
+    }
+
+    // 构造每week/month/year的图形数据
+    private void mutilCharData(List<Map<String, Object>> rows, final Result<Record4<Date, Integer, BigDecimal, String>> results, final int unit) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (int i = 0; i < results.size() / unit; i++) {
+            Map<String, Object> tempMap = new HashMap<>(4);
+            List<Record4<Date, Integer, BigDecimal, String>> temp = results.stream().skip(i * unit).limit(unit).collect(Collectors.toList());
+            tempMap.put("REF_DATE", dateDecrement(temp.get(INTEGER_ZERO).getValue(GOODS_SUMMARY.REF_DATE)).toString() + "~" + dateDecrement(temp.get(temp.size() - 1).getValue(GOODS_SUMMARY.REF_DATE)).toString());
+            tempMap.put("GOODS_NAME", temp.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME));
+            tempMap.put("GOODS_SALES", temp.stream().map(e -> e.getValue(GOODS_SUMMARY.GOODS_SALES)).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
+            list.add(tempMap);
+        }
+        rows.forEach(m ->
+            list.forEach(r -> {
+                m.putIfAbsent("Date", r.get("REF_DATE"));
+                m.put(r.get("GOODS_NAME").toString(), r.get("GOODS_SALES"));
+            }));
+    }
+
+
+    private Date dateDecrement(Date date) {
+        return Date.valueOf(date.toLocalDate().minusDays(INTEGER_ONE));
     }
 }
