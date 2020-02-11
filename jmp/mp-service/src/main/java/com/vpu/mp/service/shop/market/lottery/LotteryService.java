@@ -402,8 +402,8 @@ public class LotteryService extends ShopBaseService {
         //分享
         if (lottery.getCanShare().equals(YES)){
             LotteryShareRecord lotteryShareByUser = lotteryShareService.getLotteryShareByUser(userId, lotteryId);
+            lotteryTimeInfo.setShareMaximum(lottery.getShareChances());
             if (lotteryShareByUser!=null){
-                lotteryTimeInfo.setShareMaximum(lottery.getShareChances());
                 lotteryTimeInfo.setShareTime(lotteryShareByUser.getShareTimes());
                 lotteryTimeInfo.setUsedShareTime(lotteryShareByUser.getUseShareTimes());
             }
