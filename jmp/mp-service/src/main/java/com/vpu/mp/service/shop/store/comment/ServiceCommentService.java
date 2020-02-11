@@ -260,9 +260,8 @@ public class ServiceCommentService extends ShopBaseService {
         }else{
             select.and(COMMENT_SERVICE.FLAG.notEqual((byte)2));
         }
-logger().info(param.getType().toString());
+
         if(param.getType() == 1){
-            logger().info("啊啊啊啊啊啊啊啊啊啊啊");
             select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)4).or(COMMENT_SERVICE.COMMSTAR.eq((byte)5)));
         }else if(param.getType() == 2){
             select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)2).or(COMMENT_SERVICE.COMMSTAR.eq((byte)3)));
