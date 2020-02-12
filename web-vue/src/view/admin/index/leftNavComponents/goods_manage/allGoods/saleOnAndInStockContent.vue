@@ -15,7 +15,10 @@
           label=""
         >
           <template slot-scope="scope">
-            <el-checkbox v-model="scope.row.check"></el-checkbox>
+            <el-checkbox
+              :key="scope.row.goodsId"
+              v-model="scope.row.check"
+            ></el-checkbox>
           </template>
         </el-table-column>
         <!-- 商品名称图片 -->
@@ -278,6 +281,7 @@
           @pagination="fetchGoodsData"
         />
       </div>
+
     </div>
 
     <!--预览商品太阳码-->
@@ -734,8 +738,8 @@ export default {
           item.shopPriceOld = item.shopPrice
           item.goodsNumberEdit = false
           item.goodsNumberOld = item.goodsNumber
+          item.check = false
         })
-
         this.goodsData = dataList
       })
     },
