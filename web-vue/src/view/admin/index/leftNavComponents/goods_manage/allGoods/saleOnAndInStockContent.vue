@@ -913,4 +913,15 @@ export default {
   font-size: 16px;
   cursor: pointer;
 }
+.allGoodsFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 22px;
+  .allGoodsFooterLeft {
+    /deep/ .el-button {
+      margin: 0 5px;
+    }
+  }
+}
 </style>
