@@ -130,14 +130,13 @@
                 :src="good.goods_img"
                 style="width: 100%; height: 100%;"
               ></el-image>
-              <div class="bargain_time_down">
+              <div class="bargain_time_down" v-if="data.goods_count_down">
                 <div>{{$t('bargain.endOfLeft')}}</div>
                 <p>{{good.act_end_time | endTimeFmt}}</p>
               </div>
             </div>
             <div class="bargain_default_info">
               <div
-                v-if="data.goods_count_down"
                 class="bargain_info_head"
               >
                 <div class="bargain_info_name">{{good.goods_name}}</div>
