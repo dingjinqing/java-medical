@@ -127,11 +127,11 @@
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
                       v-if="data.show_market==='2'&&data.other_message==='0'&&data.shop_style!=='2'"
-                    >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                    >{{item.goodsSaleNum}}人付款</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
                       v-if="data.show_market==='3'&&data.other_message==='0'&&data.shop_style!=='2'"
-                    >{{Number(item.goodsNumber).toFixed(2)}}</span>
+                    >{{item.goodsNumber}}人评价</span>
                     <!--购买按钮-->
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
@@ -284,11 +284,11 @@
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.show_market==='2'&&data.other_message==='0'"
-                      >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                      >{{item.goodsSaleNum}}人付款</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.show_market==='3'&&data.other_message==='0'"
-                      >{{Number(item.goodsNumber).toFixed(2)}}</span>
+                      >{{item.goodsNumber}}人评价</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"

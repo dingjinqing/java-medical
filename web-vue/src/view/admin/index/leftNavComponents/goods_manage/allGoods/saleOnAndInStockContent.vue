@@ -343,6 +343,24 @@
       :param="this.filterData"
       :paramString="this.filterDataString"
     />
+    <!--底部点击综合提示框-->
+    <el-dialog
+      :title="isBottomClickIndex===0 || isBottomClickIndex===1?'提醒':'提示'"
+      :visible.sync="bottomDialogVisible"
+      width="30%"
+    >
+      <div style="text-align:center">{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':''}}</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="bottomDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="bottomDialogVisible = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -377,7 +395,74 @@ export default {
         labelSelectedOptions: [],
         isShow: false
       },
-      showExportConfirm: false
+      showExportConfirm: false,
+      allChecked: false, // 全选checkbox flag
+      isDataCheckChange: false, // 是否是因为当前页数据改变而影响的allChecked
+      batchExportVal: '0',
+      batchExportOptions: [{
+        value: '0',
+        label: '批量导出'
+      }, {
+        value: '1',
+        label: '批量导出筛选的件商品'
+      }, {
+        value: '2',
+        label: '批量导出勾选结果'
+      }],
+      bottomDialogVisible: false, // 底部点击弹窗flag
+      isBottomClickIndex: 0 // 底部按钮点击flag
+    }
+  },
+  watch: {
+    goodsData: { // 监听当页数据判断是否全选
+      handler (newData) {
+        console.log(newData)
+        let flag = newData.filter((item, index) => {
+          console.log(item.check)
+          return item.check
+        })
+        if (flag.length === newData.length) {
+          this.allChecked = true
+        } else {
+          this.allChecked = false
+          this.isDataCheckChange = true
+        }
+        console.log(flag, newData)
+      },
+      deep: true
+    },
+    allChecked (newData) { // 监听全选按钮
+      console.log(newData)
+      if (newData) {
+        this.goodsData.forEach((item, index) => {
+          item.check = true
+        })
+      } else {
+        if (!this.isDataCheckChange) { // 点击全选触发
+          this.goodsData.forEach((item, index) => {
+            item.check = false
+          })
+        }
+      }
+      this.isDataCheckChange = false
+      console.log(this.goodsData)
+    },
+    batchExportVal (newData) { // 底部 批量导出下拉框值变化
+      if (newData === '1') {
+        this.bottomDialogVisible = true
+        this.isBottomClickIndex = 2 // 当前选中批量导出筛选的件商品
+      } else if (newData === '2') {
+        let flag = this.handleToJudgeIsChecked()
+        if (!flag) {
+          this.$message.error({
+            message: '请选择商品',
+            showClose: true
+          })
+          return
+        }
+        this.bottomDialogVisible = true
+        this.isBottomClickIndex = 3 // 当前选中的批量导出勾选结果
+      }
     }
   },
   methods: {
@@ -584,7 +669,7 @@ export default {
         this.pageParams.totalRows = page.totalRows
         this.pageParams.currentPage = page.currentPage
         this.pageParams.pageRows = page.pageRows
-
+        this.batchExportOptions[1].label = `批量导出筛选的${page.totalRows}件商品`
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
           item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
@@ -624,6 +709,37 @@ export default {
         this.filterDataString = filterDataString
       }
       this.showExportConfirm = true
+    },
+    // 底部栏按钮点击事件综合处理
+    handleToClickBottomBtn (index) {
+      // 判断是否有商品被选中
+      let flag = this.handleToJudgeIsChecked()
+      if (!flag) {
+        this.$message.error({
+          message: '未选择任何商品',
+          showClose: true
+        })
+        return
+      }
+      switch (index) {
+        case 0:
+          this.bottomDialogVisible = true
+          this.isBottomClickIndex = index
+          break
+        case 1:
+          this.bottomDialogVisible = true
+          this.isBottomClickIndex = index
+          break
+        case 2:
+          break
+      }
+    },
+    // 判断是否有商品被选中
+    handleToJudgeIsChecked () {
+      let flag = this.goodsData.filter((item, index) => {
+        return item.check
+      })
+      if (flag.length) return true
     }
   },
   mounted () {
