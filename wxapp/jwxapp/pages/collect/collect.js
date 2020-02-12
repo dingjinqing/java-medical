@@ -117,25 +117,25 @@ global.wxPage({
       console.log(rest)
       if (rest.error == 0) {
         goods_array = rest.content.dataList;
-        if (rest.content.dataList.length > 0) {
-          console.log(123)
-          for (var i = 0; i < rest.content.dataList.length; i++) {
-            if (parseFloat(rest.content.dataList[i].shop_price) < parseFloat(rest.content.dataList[i].goods_price)) {
-              rest.content.dataList[i].less_money = parseFloat(rest.content.dataList[i].goods_price) - parseFloat(rest.content.dataList[i].shop_price);
-              rest.content.dataList[i].less_money = parseFloat(rest.content.dataList[i].less_money).toFixed(2)
-            }
-          }
+        // if (rest.content.dataList.length > 0) {
+        //   console.log(123)
+        //   for (var i = 0; i < rest.content.dataList.length; i++) {
+        //     if (parseFloat(rest.content.dataList[i].shop_price) < parseFloat(rest.content.dataList[i].goods_price)) {
+        //       rest.content.dataList[i].less_money = parseFloat(rest.content.dataList[i].goods_price) - parseFloat(rest.content.dataList[i].shop_price);
+        //       rest.content.dataList[i].less_money = parseFloat(rest.content.dataList[i].less_money).toFixed(2)
+        //     }
+        //   }
           that.setData({
             data: rest.content.dataList,
             collectData_no: false
           })
 
-        } else {
-          that.setData({
-            collectData_no: true
-          })
+        // } else {
+          // that.setData({
+          //   collectData_no: true
+          // })
         }
-      }
+      // }
     }, { pageNo: that.data.page });
   },
   goodsItem: function (e) {
