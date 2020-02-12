@@ -175,6 +175,9 @@ public class BargainProcessorDao extends ShopBaseService {
             }
         }
 
+        //是否免运费
+        param.setIsFreeShippingAct(bargainRecordInfo.getFreeFreight());
+
         //临时记录
         param.setBargainRecordInfo(bargainRecordInfo);
 
