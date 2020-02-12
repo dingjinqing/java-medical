@@ -1,16 +1,19 @@
 package com.vpu.mp.service.shop.config.pledge;
 
+import com.google.common.collect.Lists;
+import com.vpu.mp.db.shop.tables.Pledge;
+import com.vpu.mp.db.shop.tables.PledgeRelated;
 import com.vpu.mp.db.shop.tables.records.PledgeRecord;
+import com.vpu.mp.db.shop.tables.records.PledgeRelatedRecord;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
-import com.vpu.mp.service.pojo.shop.config.pledge.PledgeParam;
-import com.vpu.mp.service.pojo.shop.config.pledge.PledgePojo;
-import com.vpu.mp.service.pojo.shop.config.pledge.PledgeStateUpdateParam;
+import com.vpu.mp.service.pojo.shop.config.pledge.*;
 import com.vpu.mp.service.pojo.wxapp.config.pledge.PledgeListParam;
 import com.vpu.mp.service.pojo.wxapp.config.pledge.PledgeListVo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -20,8 +23,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
+import static com.vpu.mp.db.shop.tables.PledgeRelated.PLEDGE_RELATED;
 
 /**
  * PledgeService
@@ -32,8 +39,6 @@ import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
 @Service
 public class ShopPledgeService extends ShopBaseService {
 
-  @Autowired private RabbitmqSendService rabbitmqSendService;
-  @Autowired private AmqpTemplate amqpTemplate;
 
   private static final int MAX_INSERT_NUMBERS = 20;
 
@@ -44,15 +49,36 @@ public class ShopPledgeService extends ShopBaseService {
                 PLEDGE.PLEDGE_NAME,
                 PLEDGE.PLEDGE_LOGO,
                 PLEDGE.PLEDGE_CONTENT,
-                PLEDGE.STATE)
+                PLEDGE.STATE,
+                PLEDGE.LEVEL,
+                PLEDGE.TYPE)
             .from(PLEDGE)
             .where(PLEDGE.DEL_FLAG.eq(PledgePojo.DELFLAG_NOT))
             .orderBy(PLEDGE.CREATE_TIME.asc())
             .fetch()
             .into(PledgeInfo.class);
+    assemblyPledgeRelatedForPledgeInfo(list);
     return list;
   }
 
+  public void assemblyPledgeRelatedForPledgeInfo(List<PledgeInfo> infoList){
+      Map<Integer,PledgeInfo> pledgeMap = infoList.stream().collect(Collectors.toMap(PledgeInfo::getId, Function.identity()));
+      List<Integer> pledgeIds = Lists.newArrayList(pledgeMap.keySet());
+      Result<PledgeRelatedRecord> result =db().select().
+          from(PLEDGE_RELATED).
+          where(PLEDGE_RELATED.PLEDGE_ID.in(pledgeIds)).
+          fetchInto(PLEDGE_RELATED);
+      for( PledgeRelatedRecord record: result ){
+          PledgeInfo info = pledgeMap.get(record.getPledgeId());
+          if( PledgeConstant.PLEDGE_RELATE_TYPE_GOODS.equals(record.getType()) ){
+              info.getGoodsIds().add(record.getRelatedId());
+          }else if( PledgeConstant.PLEDGE_RELATE_TYPE_SORT.equals(record.getType()) ){
+              info.getSortIds().add(record.getRelatedId());
+          }else {
+              info.getGoodsBrandIds().add(record.getRelatedId());
+          }
+      }
+  }
   /**
    * 小程序-向用户展示服务承诺
    *
@@ -125,14 +151,34 @@ public class ShopPledgeService extends ShopBaseService {
     return count > MAX_INSERT_NUMBERS ? Boolean.FALSE : Boolean.TRUE;
   }
 
-  public int insertPledge(PledgeParam param) {
+  public void insertPledge(PledgeParam param) {
+
     PledgeRecord record = db().newRecord(PLEDGE, param);
-    return record.insert();
+    Integer id = db().insertInto(PLEDGE).set(record).returning(PLEDGE.ID).fetchOne().getId();
+    batchInsertPledgeRelated(param,id);
+  }
+
+    /**
+     * 批量添加服务承诺关联表数据
+     * @param param 商品范围相关数据
+     * @param id 服务承诺id
+     * @return 新加条数
+     */
+  private int batchInsertPledgeRelated(PledgeParam param,Integer id){
+      if( PledgeConstant.PLEDGE_TYPE_DESIGNATED_GOODS.equals(param.getType()) ){
+          List<PledgeRelatedRecord> pledgeRelatedList = getPledgeRelatedRecords(param,id);
+          if( !pledgeRelatedList.isEmpty() ){
+              return db().batchInsert(pledgeRelatedList).execute().length;
+          }
+      }
+      return 0;
   }
 
   public void updatePledge(PledgeParam param) {
     PledgeRecord record = db().newRecord(PLEDGE, param);
     record.update();
+    deletePledgeRelatedByPledgeId(record.getId());
+    batchInsertPledgeRelated(param,record.getId());
   }
 
   public void updatePledgeState(PledgeStateUpdateParam param) {
@@ -143,9 +189,46 @@ public class ShopPledgeService extends ShopBaseService {
   }
 
   public void deletePledgeState(PledgeStateUpdateParam param) {
+    //服务承诺删除
     db().update(PLEDGE)
         .set(PLEDGE.DEL_FLAG, PledgePojo.DELFLAG_DEL)
         .where(PLEDGE.ID.eq(param.getId()))
         .execute();
+    //服务承诺关联表删除
+    db().delete(PLEDGE_RELATED).where(PLEDGE_RELATED.PLEDGE_ID.eq(param.getId())).execute();
   }
+
+  private List<PledgeRelatedRecord> getPledgeRelatedRecords(PledgeParam param,Integer pledgeId){
+      List<PledgeRelatedRecord> result = Lists.newArrayList();
+      if( CollectionUtils.isEmpty(param.getGoodsIds()) ){
+          result.addAll(param.getGoodsIds().stream().
+              map(x->
+                  new PledgeRelatedRecord().
+                      value2(pledgeId).value3(PledgeConstant.PLEDGE_RELATE_TYPE_GOODS).value4(x)).
+              collect(Collectors.toList())
+          );
+      }
+      if( CollectionUtils.isEmpty(param.getSortIds()) ){
+          result.addAll(param.getGoodsIds().stream().
+              map(x->
+                  new PledgeRelatedRecord().
+                      value2(pledgeId).value3(PledgeConstant.PLEDGE_RELATE_TYPE_SORT).value4(x)).
+              collect(Collectors.toList())
+          );
+      }
+      if( CollectionUtils.isEmpty(param.getGoodsBrandIds()) ){
+          result.addAll(param.getGoodsIds().stream().
+              map(x->
+                  new PledgeRelatedRecord().
+                      value2(pledgeId).value3(PledgeConstant.PLEDGE_RELATE_TYPE_BRAND).value4(x)).
+              collect(Collectors.toList())
+          );
+      }
+      return result;
+  }
+
+  private void deletePledgeRelatedByPledgeId(Integer pledgeId){
+      db().delete(PLEDGE_RELATED).where(PLEDGE_RELATED.PLEDGE_ID.eq(pledgeId));
+  }
+
 }

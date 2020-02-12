@@ -40,7 +40,7 @@ public class SqlScopeProcessor implements ApplicationListener<ContextRefreshedEv
                     dataConfigSource.initDataSource(Scope.shop,null);
                 }else{
                     String[] id = shopId.split(",");
-                    dataConfigSource.initDataSource(Scope.appoint_shop,Arrays.stream(id).map(Integer::valueOf).collect(Collectors.toList()));
+                    dataConfigSource.initDataSource(Scope.shop,Arrays.stream(id).map(Integer::valueOf).collect(Collectors.toList()));
                 }
             }else if( main != null ){
                 dataConfigSource.initDataSource(Scope.main,null);
