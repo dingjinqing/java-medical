@@ -41,6 +41,9 @@ public class BargainRecordInfo {
     private String shareConfig;
     private Integer stock;
     private Timestamp updateTime;
+    private Byte needBindMobile;
+    private Integer initialSales;
+    private Byte freeFreight;
 
     private String wxOpenid;
     private String username;
