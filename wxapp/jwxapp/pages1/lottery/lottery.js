@@ -163,12 +163,30 @@ global.wxPage({
 
   // 立即抽奖
   drawNow () {
-    // 抽奖动画
     let that = this
-    let startStep = this.data.winIndex;
-    let endStep = parseInt(Math.random()*8+1);
-    console.log(startStep, endStep);
-    this.rolling(startStep, endStep)
+    util.api('/api/wxapp/lottery/join', function (res) {
+      if (res.error === 0 && res.content.flag) {
+        console.log(res.content)
+        let content = res.content
+        // 是否抽奖成功
+        if (content.flag) {
+          // 抽奖动画
+          let startStep = that.data.winIndex;
+          let endStep = parseInt(Math.random() * 8 + 1);
+          console.log(startStep, endStep);
+          that.rolling(startStep, endStep)
+        } else {
+          that.$message.error(content.msg)
+        }
+      } else {
+        that.$message.error(res.message)
+      }
+    }, {
+        lotteryId: Number(that.data.lotteryId),
+        lotteryType: that.data.lotteryType,
+        lotterySource: that.data.lotterySource
+      }
+    )
     
   },
 
@@ -197,27 +215,11 @@ global.wxPage({
       if (hasRunStep === totalStep) {
         // 动画停止
         clearInterval(timer)
-        // 中奖请求
-        that.lotteryJoinRequest()
+        // 弹出奖励
       }
     }, that.data.speed)
   },
 
-  // 抽奖请求
-  lotteryJoinRequest () {
-    let that = this
-    util.api('/api/wxapp/lottery/join', function (res) {
-      if (res.error === 0) {
-        console.log(res.content)
-      }
-    }, {
-        lotteryId: Number(that.data.lotteryId),
-        lotteryType: that.data.lotteryType,
-        lotterySource: that.data.lotterySource
-      }
-    )
-  },
-  
   // 未中奖弹窗
   noDraw() {
     this.setData({
