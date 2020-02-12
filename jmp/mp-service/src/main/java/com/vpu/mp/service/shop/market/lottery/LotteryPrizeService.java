@@ -57,8 +57,12 @@ public class LotteryPrizeService  extends ShopBaseService {
         for (LotteryPrizeRecord record : prizeRecords) {
             int chanceNumerator = record.getChanceNumerator()*maxChance/record.getChanceDenominator();
             if (randNumber <chanceNumerator) {
-                //中奖了
-                if (record.getAwardTimes() >= record.getLotteryNumber()) {
+                if (record.getAwardTimes() == null) {
+                    record.setAwardTimes(0);
+                }
+                //中奖了 更新库存
+                int flag= updateLotteryStock(record);
+                if (flag<=0&&record.getAwardTimes() >= record.getLotteryNumber()) {
                     //奖品发完了
                     joinValid.setResultsType(LOTTERY_TYPE_SEND_OUT);
                     break;
@@ -77,4 +81,13 @@ public class LotteryPrizeService  extends ShopBaseService {
         joinValid.setResultsType(LOTTERY_TYPE_NULL);
     }
 
+    /**
+     * 更新奖品库存
+     * @return
+     */
+    public int updateLotteryStock(LotteryPrizeRecord record){
+        return  db().update(LOTTERY_PRIZE).set(LOTTERY_PRIZE.AWARD_TIMES, LOTTERY_PRIZE.AWARD_TIMES.add(1))
+                .where(LOTTERY_PRIZE.LOTTERY_ID.eq(record.getLotteryId()))
+                .and(LOTTERY_PRIZE.AWARD_TIMES.lt(LOTTERY_PRIZE.LOTTERY_NUMBER)).execute();
+    }
 }

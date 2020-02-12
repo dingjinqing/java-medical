@@ -333,7 +333,8 @@ export default {
         ]
       },
       pageClassify: '请选择页面分类',
-      picFlag: null
+      picFlag: null,
+      columnFlag: false
       // pageData: {
       //   'is_ok': 1,
       //   'page_name': '', // 页面名称
@@ -354,7 +355,22 @@ export default {
       // }
     }
   },
+  computed: {
+    selectPageClassification () {
+      return this.$t('divideScorePoints.selectPageClassification')
+    }
+  },
   watch: {
+    lang () {
+      this.classificationOptions.forEach((item, index) => {
+        if (item.id === null) {
+          item.name = this.$t('divideScorePoints.selectPageClassification')
+        }
+      })
+      if (this.pageClassify === '请选择页面分类' || this.pageClassify === 'Please select a page classification') {
+        this.pageClassify = this.$t('divideScorePoints.selectPageClassification')
+      }
+    },
     pageSet: {
       handler (newData) {
         console.log(newData, this.classificationOptions)
@@ -366,7 +382,7 @@ export default {
             if (res.error === 0) {
               let obj = {
                 id: null,
-                name: '请选择页面分类'
+                name: this.selectPageClassification
               }
               res.content.unshift(obj)
               this.classificationOptions = res.content

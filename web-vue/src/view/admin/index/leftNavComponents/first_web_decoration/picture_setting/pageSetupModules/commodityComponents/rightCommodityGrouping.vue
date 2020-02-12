@@ -1,11 +1,11 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>商品分组模块</h2>
+      <h2>{{$t('commodityGrouping.commodityGroupingModule')}}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="tips">
-          商品分组菜单：<span style="color:#999">最多可选择10个分组</span>
+          {{$t('commodityGrouping.menu')}}<span style="color:#999">{{$t('commodityGrouping.groupsCanBeSelected')}}</span>
         </div>
         <!--添加商家分类、商品标签、商品品牌数据后显示的隐藏模块-->
         <div v-if='linkageData.sort_group_arr.length'>
@@ -15,32 +15,37 @@
             :key="index"
           >
             <div>
-              <span>{{item.sort_type===0?'商家分类':item.sort_type===1?'商家标签':'商家品牌'}}：</span>
+              <span>{{Number(item.sort_type)===0?$t('commodityGrouping.merchantClassification'):Number(item.sort_type)===1?$t('commodityGrouping.merchantLabel'):$t('commodityGrouping.merchantBrand')}}：</span>
               <span style="display:inline-block;width:100px">{{item.sort_name}}</span>
               <span
                 @click="handleToEditData(index)"
                 style="padding-left: 20px;color: #5A8BFF;cursor: pointer;"
-              >修改</span>
+              >{{$t('commodityGrouping.modify')}}</span>
             </div>
             <div class="nameContainer">
-              <span>自定义分组名称：</span>
+              <span>{{$t('commodityGrouping.customGroupName')}}</span>
               <el-input
                 v-model="item.group_name"
                 size="small"
               ></el-input>
             </div>
             <div>
-              <span>展示商品数量：</span>
+              <span>{{$t('commodityGrouping.displayQuantity')}}</span>
               <el-radio
                 v-model="item.is_all"
                 @change="handleToClickShowNumRadio(index)"
                 :label="1"
-              >全部{{item.sort_goods_num}}件</el-radio>
+              >{{$t('commodityGrouping.whole')}}{{item.sort_goods_num}}{{$t('commodityGrouping.piece')}}</el-radio>
               <el-radio
                 v-model="item.is_all"
                 @change="handleToClickShowNumRadio(index)"
                 :label="2"
-              >指定商品</el-radio>
+              >{{$t('commodityGrouping.designatedCommodity')}}</el-radio>
+              <span
+                style="cursor:pointer;color:#409EFF"
+                v-if="item.group_goods_id?true:false"
+                @click="handleToClickShowNumRadio(index)"
+              >{{item.group_goods_id.split(",").length}}件</span>
             </div>
             <div class="groupItemOperation">
               <img
@@ -65,36 +70,42 @@
           <span
             @click="handleToCallDialog(0)"
             style="border-right:1px dashed #D3D3D3"
-          >+添加商家分类</span>
+          >+{{$t('commodityGrouping.addMerchantCategory')}}</span>
           <span
             @click="handleToCallDialog(1)"
             style="border-right:1px dashed #D3D3D3"
-          >+添加商品标签</span>
-          <span @click="handleToCallDialog(2)">+添加商品品牌</span>
+          >+{{$t('commodityGrouping.addProductLabel')}}</span>
+          <span @click="handleToCallDialog(2)">+{{$t('commodityGrouping.addBrand')}}</span>
         </div>
-        <div class="mainList">
-          <span>菜单样式</span>
-          <el-radio
-            v-model="linkageData.position_style"
-            label="0"
-          >顶部展示商品分组</el-radio>
-          <el-radio
-            v-model="linkageData.position_style"
-            label="1"
-          >左侧展示商品分组</el-radio>
+        <div
+          class="mainList"
+          style="display:flex"
+        >
+          <span>{{$t('commodityGrouping.menuStyle')}}</span>
+          <div :style="columnFlag?'display:flex;flex-direction: column':''">
+            <el-radio
+              v-model="linkageData.position_style"
+              label="0"
+            >{{$t('commodityGrouping.showProductGroups')}}</el-radio>
+            <el-radio
+              v-model="linkageData.position_style"
+              label="1"
+            >{{$t('commodityGrouping.groupsOnTheLeft')}}</el-radio>
+          </div>
+
         </div>
         <div class="mainList bgContainer">
-          <span>背景颜色</span>
+          <span>{{$t('commodityGrouping.backgroundColor')}}</span>
           <div class="bgDiv">
             <el-radio
               v-model="linkageData.goods_module_bg"
               label="0"
-            >与页面背景颜色一致</el-radio>
+            >{{$t('commodityGrouping.pageBackgroundColor')}}</el-radio>
             <div class="customBgColor">
               <el-radio
                 v-model="linkageData.goods_module_bg"
                 label="1"
-              >自定义</el-radio>
+              >{{$t('commodityGrouping.custom')}}</el-radio>
               <span>
                 <el-color-picker
                   v-model="linkageData.goods_bg_color"
@@ -108,7 +119,7 @@
                 <el-button
                   @click="handleToReset()"
                   size="small"
-                >重置</el-button>
+                >{{$t('commodityGrouping.reset')}}</el-button>
               </div>
             </div>
 
@@ -117,59 +128,59 @@
         </div>
         <div v-if="linkageData.position_style === '0'">
           <div class="mainList allGroup">
-            <span>全部分组</span>
+            <span>{{$t('commodityGrouping.allGrouped')}}</span>
             <div>
-              <div style="color:#999;margin-bottom:10px">全部分组将展示已选商品分组种的所有商品</div>
+              <div style="color:#999;margin-bottom:10px">{{$t('commodityGrouping.allGroupedTip')}}</div>
               <div>
                 <el-radio
                   v-model="linkageData.group_display"
                   label="1"
-                >展示</el-radio>
+                >{{$t('commodityGrouping.exhibition')}}</el-radio>
                 <el-radio
                   v-model="linkageData.group_display"
                   label="0"
-                >不展示</el-radio>
+                >{{$t('commodityGrouping.notShow')}}</el-radio>
               </div>
             </div>
 
           </div>
           <div class="mainList menuLocation">
-            <span>菜单位置</span>
+            <span>{{$t('commodityGrouping.menuLocation')}}</span>
             <el-radio
               v-model="linkageData.menu_style"
               label="0"
-            >一般样式</el-radio>
+            >{{$t('commodityGrouping.generaSstyle')}}</el-radio>
             <el-radio
               v-model="linkageData.menu_style"
               label="1"
-            >滚动至顶部固定</el-radio>
+            >{{$t('commodityGrouping.scrollToTopFixed')}}</el-radio>
           </div>
           <div class="mainList listStyle">
-            <span>商品列表样式</span>
+            <span>{{$t('commodityGrouping.productListStyle')}}</span>
             <div>
               <div class="listStyleFirstDiv">
                 <el-radio
                   v-model="linkageData.shop_style"
                   label="1"
-                >大图展示</el-radio>
+                >{{$t('commodityGrouping.bigPictureDisplay')}}</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
                   label="2"
-                >一行两个</el-radio>
+                >{{$t('commodityGrouping.twoRows')}}</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
                   label="3"
-                >一行三个</el-radio>
+                >{{$t('commodityGrouping.threeRows')}}</el-radio>
               </div>
               <div>
                 <el-radio
                   v-model="linkageData.shop_style"
                   label="4"
-                >商品列表</el-radio>
+                >{{$t('commodityGrouping.listOfCommodities')}}</el-radio>
                 <el-radio
                   v-model="linkageData.shop_style"
                   label="5"
-                >一行横滑</el-radio>
+                >{{$t('commodityGrouping.rowSlip')}}</el-radio>
               </div>
             </div>
 
@@ -178,42 +189,49 @@
 
         <!--底部模块-->
         <div class="foorter">
-          <div>
-            <span>模块样式</span>
-            <el-radio
-              v-model="linkageData.module_style"
-              label="1"
-            >白底无边框</el-radio>
-            <el-radio
-              v-model="linkageData.module_style"
-              label="2"
-            >边框投影</el-radio>
-            <el-radio
-              v-model="linkageData.module_style"
-              label="3"
-            >白底有边框</el-radio>
+          <div style="display:flex">
+            <span>{{$t('commodityGrouping.moduleStyle')}}</span>
+            <div :style="columnFlag?'display:flex;flex-direction: column':''">
+              <el-radio
+                v-model="linkageData.module_style"
+                label="1"
+              >{{$t('commodityGrouping.whiteBackground')}}</el-radio>
+              <el-radio
+                v-model="linkageData.module_style"
+                label="2"
+              >{{$t('commodityGrouping.frameProjection')}}</el-radio>
+              <el-radio
+                v-model="linkageData.module_style"
+                label="3"
+              >{{$t('commodityGrouping.whiteWithBorder')}}</el-radio>
+            </div>
+
           </div>
           <div style="margin:10px 0">
-            <span>模块角度</span>
+            <span>{{$t('commodityGrouping.moduleAngle')}}</span>
             <el-radio
               v-model="linkageData.if_radius"
               label="0"
-            >直角</el-radio>
+            >{{$t('commodityGrouping.rightAngle')}}</el-radio>
             <el-radio
               v-model="linkageData.if_radius"
               label="1"
-            >圆角</el-radio>
+            >{{$t('commodityGrouping.fillet')}}</el-radio>
           </div>
           <div class="endDiv">
-            <span>显示内容</span>
+            <span>{{$t('commodityGrouping.showContents')}}</span>
             <div>
               <div>
-                <el-checkbox v-model="linkageData.show_name">商品名称</el-checkbox>
-                <el-checkbox v-model="linkageData.show_price">商品价格</el-checkbox>
+                <el-checkbox v-model="linkageData.show_name">{{$t('commodityGrouping.tradeName')}}</el-checkbox>
+                <el-checkbox v-model="linkageData.show_price">{{$t('commodityGrouping.commodityPrice')}}</el-checkbox>
               </div>
-              <div style="margin:10px 0">
-                <el-checkbox v-model="linkageData.cart_btn">购买按钮</el-checkbox>
-                <span style="color:#999">显示购买按钮时将不显示其他信息</span>
+              <div :style="columnFlag?'margin:10px 0':'margin:10px 0;display:flex'">
+                <el-checkbox v-model="
+                linkageData.cart_btn">{{$t('commodityGrouping.purchaseButton')}}</el-checkbox>
+                <div>
+                  <span style="color:#999;white-space: pre-wrap;width: 330px">{{$t('commodityGrouping.purchaseButtonTip')}}</span>
+
+                </div>
               </div>
               <!--购买按钮checkbox选中后显示的隐藏模块-->
               <div
@@ -239,43 +257,47 @@
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
                   label="2"
+                  :disabled="isCartBtnDisabled"
                 >
                   <i
                     class="right_buy new_back"
                     style="background-color: rgb(177, 78, 105);"
                   >
-                    马上抢
+                    {{$t('commodityGrouping.grabAtOnce')}}
                   </i>
                 </el-radio>
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
                   label="3"
+                  :disabled="isCartBtnDisabled"
                 >
                   <i
                     class="cart_buy"
                     style="color: rgb(177, 78, 105); border-color: rgb(177, 78, 105);"
-                  >购买</i>
+                  >{{$t('commodityGrouping.purchase')}}</i>
                 </el-radio>
               </div>
               <!--end-->
-              <div style="margin-bottom:10px">
-                <el-checkbox v-model="linkageData.other_message">其他信息</el-checkbox>
-                <span style="color:#999">后台数据仅为参考请以实际显示为准</span>
+              <div :style="columnFlag?'margin-bottom:10px':'margin-bottom:10px;display:flex'">
+                <el-checkbox v-model="linkageData.other_message">{{$t('commodityGrouping.otherInformation')}}</el-checkbox>
+                <div>
+                  <span style="color:#999;white-space: pre-wrap;width: 330px">{{$t('commodityGrouping.otherInformationTip')}}</span>
+                </div>
               </div>
               <!--其他信息checkbox选中后显示的隐藏模块-->
               <div v-if="linkageData.other_message">
                 <el-radio
                   v-model="linkageData.show_market"
                   label="1"
-                >市场价</el-radio>
+                >{{$t('commodityGrouping.marketValue')}}</el-radio>
                 <el-radio
                   v-model="linkageData.show_market"
                   label="2"
-                >销量</el-radio>
+                >{{$t('commodityGrouping.salesVolume')}}</el-radio>
                 <el-radio
                   v-model="linkageData.show_market"
                   label="3"
-                >评价数</el-radio>
+                >{{$t('commodityGrouping.evaluationNumber')}}</el-radio>
               </div>
               <!--end-->
             </div>
@@ -287,22 +309,22 @@
     </div>
     <!--删除提示弹窗-->
     <el-dialog
-      title="提示"
+      :title="$t('commodityGrouping.tips')"
       :visible.sync="delVisible"
       :append-to-body='true'
       width="30%"
     >
-      <div style="width:100%;text-align:center"><span>确认要删除吗？</span></div>
+      <div style="width:100%;text-align:center"><span>{{$t('commodityGrouping.wantToDelete')}}</span></div>
 
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button @click="delVisible = false">{{$t('commodityGrouping.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="handleToDel()"
-        >确 定</el-button>
+        >{{$t('commodityGrouping.Determine')}}</el-button>
       </span>
     </el-dialog>
     <!--商家分类弹窗-->
@@ -400,10 +422,36 @@ export default {
       chooseGoodsBack: [], // 选择商品弹窗回显
       nowClickAppointIndex: null,
       initialConditionRender: [], // 选择商品弹窗初始渲染条件
-      reLoad: true
+      reLoad: true,
+      columnFlag: false,
+      isCartBtnDisabled: false // 购买按钮是否禁用，在商品列表样式选中一行三个、一行横滑得时候禁用
     }
   },
   watch: {
+    'linkageData.shop_style' (newData) {
+      // shop_style
+      console.log(newData)
+      if (newData === '3' || newData === '5') {
+        this.isCartBtnDisabled = true
+        this.linkageData.cart_btn_choose = '0'
+      } else {
+        this.isCartBtnDisabled = false
+      }
+    },
+    'linkageData.position_style' (newData) {
+      // shop_style
+      console.log(newData)
+      if (newData === '1') {
+        this.isCartBtnDisabled = false
+      } else {
+        this.linkageData.cart_btn_choose = '0'
+        if (this.linkageData.shop_style === '3' || this.linkageData.shop_style === '5') {
+          this.isCartBtnDisabled = true
+        } else {
+          this.isCartBtnDisabled = false
+        }
+      }
+    },
     // 中间模块当前高亮index
     sortIndex: {
       handler (newData) {
@@ -423,6 +471,10 @@ export default {
     // 监听数据变换
     linkageData: {
       handler (newData) {
+        console.log(newData)
+        newData.sort_group_arr.forEach((item, index) => {
+          if (item.sort_type === 0) item.sort_type = ''
+        })
         console.log(newData)
         // 测试数据
         // newData['sort_length'] = newData.sort_group_arr.length
@@ -483,6 +535,10 @@ export default {
         this.linkageData.cart_btn = false
       }
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 商品数据获取
@@ -696,6 +752,10 @@ export default {
       this.reLoad = false
       console.log(this.linkageData.sort_group_arr[index])
       this.nowClickAppointIndex = index
+      if (this.linkageData.sort_group_arr[index].group_goods_id) {
+        this.chooseGoodsBack = this.linkageData.sort_group_arr[index].group_goods_id.split(',')
+        console.log(this.chooseGoodsBack)
+      }
       console.log(index, this.linkageData.sort_group_arr[index].is_all)
       if (this.linkageData.sort_group_arr[index].is_all === 2) {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
@@ -711,6 +771,7 @@ export default {
       console.log(res, this.linkageData.sort_group_arr, this.nowClickAppointIndex)
       console.log(res.join(','))
       this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id = res.join(',')
+      console.log(this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id)
     }
   }
 }
@@ -735,6 +796,8 @@ export default {
         margin: 10px 0;
       }
       .add_sort_cat {
+        display: flex;
+        align-items: center;
         width: 440px;
         padding: 10px 20px;
         background: #fff;

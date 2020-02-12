@@ -13,7 +13,7 @@
           class="card_back_module"
           :style="(carData.bg_type===1&&carData.bg_img)?`;backgroundImage:url(${carData.bg_img})`:(carData.bg_type===1&&!carData.bg_img)?`backgroundColor:${overallColor}`:carData.bg_color?`backgroundColor:${carData.bg_color}`:`backgroundColor:${overallColor}`"
         >
-          <div class="card_type">{{carData.card_type===0?'普通卡':carData.card_type===1?'限次卡':'等级卡'}}</div>
+          <div class="card_type">{{carData.card_type===0?$t('membershipCard.ordinaryCard'):carData.card_type===1?$t('membershipCard.limitCard'):$t('membershipCard.gradeCard')}}</div>
           <div class="card_content clearfix">
             <div class="card_shop_icon">
               <img :src="shopAvatar">
@@ -122,6 +122,7 @@ export default {
       handler (newData) {
         if (newData) {
           console.log(newData)
+          newData.card_type = Number(newData.card_type)
           this.carData = newData
         }
         console.log(newData)
@@ -130,20 +131,12 @@ export default {
       deep: true
     },
     lang () {
-      switch (this.carData.card_type) {
-        case '0':
-          this.carClass = this.$t('membershipCard.ordinaryCard')
-          break
-        case '1':
-          this.carClass = this.$t('membershipCard.limitCard')
-          break
-        case '2':
-          this.carClass = this.$t('membershipCard.gradeCard')
+      console.log(this.carData)
+      if (!this.carData.card_id) {
+        this.carData.card_name = this.$t('membershipCard.cardName')
+        this.carData.receive_day = this.$t('membershipCard.receiveDay')
+        this.carData.legal = this.$t('membershipCard.legal')
       }
-      this.carData.card_name = this.$t('membershipCard.cardName')
-      this.carData.card_state = this.$t('membershipCard.cardState')
-      this.carData.receive_day = this.$t('membershipCard.receiveDay')
-      this.carData.legal = this.$t('membershipCard.legal')
     }
   },
   mounted () {

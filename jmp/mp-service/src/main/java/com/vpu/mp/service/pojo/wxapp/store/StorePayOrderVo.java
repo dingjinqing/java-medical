@@ -60,4 +60,12 @@ public class StorePayOrderVo {
      * 默认支付配置
      */
     private Map<String, Byte> defaultPayConf;
+    /**
+     * 积分支付限制
+     */
+    private Integer scoreDiscountRatio;
+    /**
+     * 积分抵扣比例
+     */
+    private Integer scorePayNum;
 }

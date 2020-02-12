@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
@@ -217,7 +218,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
         }
 
         String mpQrcode;
-        if (GroupDrawShareInfoParam.GOODS_ITEM.equals(param.getPageType())) {
+        if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
             mpQrcode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupDrawRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_DRAW));
         } else {
             mpQrcode = qrCodeService.getMpQrCode(QrCodeTypeEnum.LOTTERY, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupDrawRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_DRAW));

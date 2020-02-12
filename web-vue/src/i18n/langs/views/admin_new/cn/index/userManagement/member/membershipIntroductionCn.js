@@ -138,7 +138,6 @@ export const cn = {
   Deleteinviter: '删除邀请人',
   Revisioninviters: '修改邀请人',
   Currentpage: '当前页面',
-
   Essentialinformation: '基本信息',
   Towrite: '编辑',
   Realname: '真实姓名',
@@ -372,35 +371,35 @@ export const cn = {
   ],
   educationValueOptions: [
     {
-      value: '0',
+      value: '1',
       label: '初中'
     },
     {
-      value: '1',
+      value: '2',
       label: '高中'
     },
     {
-      value: '2',
+      value: '3',
       label: '中专'
     },
     {
-      value: '3',
+      value: '4',
       label: '大专'
     },
     {
-      value: '4',
+      value: '5',
       label: '本科'
     },
     {
-      value: '5',
+      value: '6',
       label: '硕士'
     },
     {
-      value: '6',
+      value: '7',
       label: '博士'
     },
     {
-      value: '7',
+      value: '8',
       label: '其它'
     }
   ],
@@ -445,5 +444,10 @@ export const cn = {
   },
   chargeDetail: '充值明细',
   consumeDetail: '消费明细',
-  deleteCard: '废除'
+  deleteCard: '废除',
+  add: '添加',
+  normalCardFull: '普通会员卡',
+  limiteCardFull: '限次会员卡',
+  gradeCard: '等级会员卡',
+  addCardTips: '你可以在这里编辑该会员的会员卡信息，添加会员卡，注意：需要激活的会员卡直接发放到用户'
 }

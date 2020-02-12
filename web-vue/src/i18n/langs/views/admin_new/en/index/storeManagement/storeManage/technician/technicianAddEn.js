@@ -20,5 +20,10 @@ export const en = {
   successSave: 'Successfully saved',
   updated: 'update completed',
   failSave: 'add failed',
-  failUpdated: 'Update failed'
+  failUpdated: 'Update failed',
+
+  technicianNameR: 'Name',
+  introTipsL: 'Please introduce in one sentence',
+  nameValidL: 'Please enter',
+  phoneValidR: 'Phone number'
 }

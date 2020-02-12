@@ -496,12 +496,8 @@ global.wxPage({
   },
   // 点击使用门店
   toStoreList () {
-    console.log(card_info)
-    if (card_info.store_name) {
-      util.jumpLink('/pages/storelist/storelist?card_id=' + card_info.card_id)
-    } else {
-      util.jumpLink('/pages/storelist/storelist')
-    }
+      console.log(this.data)
+      util.jumpLink('/pages/storelist/storelist?cardId=' + this.data.cardInfo.cardId)
   },
   // 点击使用记录
   toCardRecord (e) {

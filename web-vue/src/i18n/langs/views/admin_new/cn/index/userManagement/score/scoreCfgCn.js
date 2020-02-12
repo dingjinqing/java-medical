@@ -26,7 +26,7 @@ export const cn = {
   alreadyClose: '已关闭',
   storeSendDescOne:
     '开关开启，则会在用户门店买单后按照购物送积分规则给用户赠送积分，关闭则不赠送',
-  loginSendScore: '登陆送积分',
+  loginSendScore: '登录送积分',
   loginDescOne:
     '开关开启，则登录后会给用户按照积分获取规则赠送积分，关闭则不赠送',
   loginSend: '登录送',
@@ -47,7 +47,7 @@ export const cn = {
     '例如，设置未"明年的01月01日",即是指用户今年获得的积分将在明年1月1日24:00:00失效',
   fromGetScore: '从获得积分当天起',
   innerEffective: '内有效',
-  exchange: '积分润换比',
+  exchange: '积分兑换比',
   formula: '100积分=1元RMB',
   day: '日',
   week: '周',

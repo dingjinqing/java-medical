@@ -92,7 +92,10 @@
                 class="header"
                 v-if="item.createTime"
               >{{ $t('distribution.reviewTime') + '：' }}{{ item.createTime }}</div>
-              <!-- <div class="header">邀请码：</div> -->
+              <!-- <div
+                class="header"
+                v-if="item.activationFields.invitation_code"
+              >邀请码：{{ item.activationFields.invitation_code }}</div> -->
             </td>
 
             <td
@@ -116,44 +119,44 @@
 
           <tr>
             <td v-if="item.userId !== ''">{{ $t('distribution.reviewRealName') }}</td>
-            <td v-if="item.userId !== ''">{{ item.realName ? item.realName : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.userId !== ''">{{ item.activationFields.real_name ? item.activationFields.real_name : $t('distribution.reviewNo') }}</td>
             <td v-if="item.userId !== ''">{{ $t('distribution.reviewMobile') }}</td>
-            <td v-if="item.userId !== ''">{{ item.mobile ? item.mobile : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.userId !== ''">{{ item.activationFields.mobile ? item.activationFields.mobile : $t('distribution.reviewNo') }}</td>
             <td v-if="item.userId !== ''">{{ $t('distribution.reviewId') }}</td>
-            <td v-if="item.userId !== ''">{{ item.userId ? item.userId : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.userId !== ''">{{ item.activationFields.cid ? item.activationFields.cid : $t('distribution.reviewNo') }}</td>
             <td
               colspan="6"
               v-if="item.userId === ''"
               class="middle"
             >{{ $t('distribution.reviewTip') }}</td>
             <td
-              rowspan="5"
+              :rowspan="5 + item.activationFields.custom_options.length"
               class="middle"
               v-if="activeName === '0'"
             >
-              <p v-if="item.groupData">{{ item.groupData.groupName }}</p>
+              <p v-if="item.activationFields.rebate_group">{{ item.checkField.rebateGroupName }}</p>
               <p
                 class="active"
-                v-if="item.groupData"
-                @click="setGroupHandler(item.userId, item.groupData.id)"
+                v-if="item.activationFields.rebate_group"
+                @click="setGroupHandler(item.userId, item.activationFields.rebate_group)"
               >{{ $t('distribution.reviewSet') }}</p>
               <p
                 class="active"
-                v-if="!item.groupData"
+                v-if="!item.activationFields.rebate_group"
                 @click="setGroupHandler(item.userId)"
               >{{ $t('distribution.reviewSet') }}</p>
             </td>
             <td
-              rowspan="5"
+              :rowspan="5 + item.activationFields.custom_options.length"
               class="middle"
               v-if="activeName !== '0'"
             >{{ item.updateTime }}</td>
             <td
-              rowspan="5"
+              :rowspan="5 + item.activationFields.custom_options.length"
               class="middle"
             >{{ item.status }}</td>
             <td
-              rowspan="5"
+              :rowspan="5 + item.activationFields.custom_options.length"
               class="middle"
               v-if="activeName === '0'"
             >
@@ -172,7 +175,7 @@
               >{{ $t('distribution.noPassBtn') }}</el-button>
             </td>
             <td
-              rowspan="5"
+              :rowspan="5 + item.activationFields.custom_options.length"
               class="middle"
               v-if="activeName === '2'"
             >{{ item.msg }}</td>
@@ -180,29 +183,57 @@
           </tr>
           <tr v-if="item.userId !== ''">
             <td>{{ $t('distribution.reviewSex') }}</td>
-            <td>{{ item.sex ? item.sex : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.sex ? item.checkField.sex : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewBirthday') }}</td>
-            <td>{{ item.birthdayYear ? item.birthdayYear - item.birthdayMonth - item.birthdayDay : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.birthday_day ? item.activationFields.birthday : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewMarital') }}</td>
-            <td>{{ item.maritalStatus ? item.maritalStatus : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.marital_status ? item.checkField.maritalName : $t('distribution.reviewNo') }}</td>
 
           </tr>
           <tr v-if="item.userId !== ''">
             <td>{{ $t('distribution.reviewEducation') }}</td>
-            <td>{{ item.educationName ? item.educationName : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.education ? item.checkField.educationName : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewIndustry') }}</td>
-            <td>{{ item.industryName ? item.industryName : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.industry_info ? item.checkField.industryName : $t('distribution.reviewNo') }}</td>
             <td>{{ $t('distribution.reviewAddress') }}</td>
-            <td>{{ item.address ? item.address : $t('distribution.reviewNo') }}</td>
+            <td>{{ item.activationFields.address ? item.activationFields.address : $t('distribution.reviewNo') }}</td>
 
           </tr>
           <tr v-if="item.userId !== ''">
             <td>{{ $t('distribution.reviewNote') }}</td>
-            <td colspan="5"></td>
+            <td colspan="5">{{ item.activationFields.remarks ? item.activationFields.remarks : $t('distribution.reviewNo') }}</td>
           </tr>
           <tr v-if="item.userId !== ''">
             <td>{{ $t('distribution.reviewImg') }}</td>
-            <td colspan="5"></td>
+            <td colspan="5">
+              <a
+                v-if="item.activationFields.upload_image"
+                :href="item.activationFields.upload_image"
+                target="_blank"
+                style="color: #5a8bff; text-decoration: none;"
+              >查看图片</a>
+              <span v-if="!item.activationFields.upload_image">{{  $t('distribution.reviewNo') }}</span>
+            </td>
+          </tr>
+          <tr
+            v-for="(val, i) in item.activationFields.custom_options"
+            :key="i"
+          >
+            <td>{{ val.custom_title }}
+              <span v-if="val.custom_type === 0">(单选)</span>
+              <span v-if="val.custom_type === 1">(多选)</span>
+            </td>
+            <td colspan="5">
+              <span v-if="val.custom_type === 0 || val.custom_type === 1">
+                <span
+                  v-for="(option, key) in val.option_arr"
+                  :key="key"
+                >
+                  <span v-if="option.checked === 'true'">{{ option.option_title }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </span>
+              </span>
+              <span v-if="val.custom_type === 2">{{ val.text }}</span>
+            </td>
           </tr>
         </table>
 
@@ -298,6 +329,8 @@
 
 <script>
 import { getCheckList, distributionGroup, getCheckPass, getCheckRefuse } from '@/api/admin/marketManage/distribution.js'
+import chinaData from '@/assets/china-data'
+import { deepCloneObj } from '@/util/deepCloneObj'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
@@ -315,7 +348,7 @@ export default {
       // 分页
       pageParams: {
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
       requestParams: {},
       tableData: [], // 表格数据
@@ -329,7 +362,10 @@ export default {
       // 审核不通过弹窗
       failDialogVisible: false,
       failData: {}, // 审核不通过数据
-      textarea: '' // 审核不通过说明
+      textarea: '', // 审核不通过说明
+
+      // 省市区数据
+      province: ''
     }
   },
   watch: {
@@ -342,6 +378,7 @@ export default {
     this.langDefault()
     this.initDataList()
     this.getDistributionGroup()
+    this.province = deepCloneObj(chinaData)
   },
   methods: {
     initDataList () {
@@ -363,18 +400,28 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.forEach(item => {
-        data.groupData = {}
-        // 性别
-        if (item.sex === 'f') {
-          item.sex = '女'
-        } else if (item.sex === 'm') {
-          item.sex = '男'
+        // data.groupData = {}
+        // 审核项
+        item.activationFields = JSON.parse(item.activationFields)
+        // 生日
+        if (item.activationFields.birthday_day) {
+          item.activationFields.birthday = item.activationFields.birthday_year + '-' + item.activationFields.birthday_month + '-' + item.activationFields.birthday_day
         }
-        // 婚姻状况
-        if (item.maritalStatus === 1) {
-          item.maritalStatus = '未婚'
-        } else if (item.maritalStatus === 2) {
-          item.maritalStatus = '已婚'
+        // 所在地
+        if (item.activationFields.city_code) {
+          this.province.find((item1, index1) => {
+            if (item1.provinceId === Number(item.activationFields.province_code)) {
+              item1.areaCity.find((item2, index2) => {
+                if (item2.cityId === Number(item.activationFields.city_code)) {
+                  item2.areaDistrict.find((item3, index3) => {
+                    if (item3.districtId === Number(item.activationFields.district_code)) {
+                      item.activationFields.address = item1.provinceName + item2.cityName + item3.districtName
+                    }
+                  })
+                }
+              })
+            }
+          })
         }
         // 审核状态
         if (this.activeName === '0') {
@@ -386,6 +433,7 @@ export default {
         }
       })
       this.tableData = data
+      console.log(this.tableData)
     },
 
     // 获取分销员分组
@@ -422,8 +470,10 @@ export default {
         if (item.id === this.selectValue) {
           // 赋值给表格
           this.tableData.forEach((val, key) => {
-            if (val.userId === this.groupId) {
-              val.groupData = item
+            if (item.id === this.selectValue) {
+              val.activationFields.rebate_group = this.selectValue
+              val.checkField.rebate_group = this.selectValue
+              val.checkField.rebateGroupName = item.groupName
             }
           })
         }
@@ -433,8 +483,8 @@ export default {
     // 审核通过
     reviewPassHandler (data) {
       var groupId = 0
-      if (data.groupData) {
-        groupId = data.groupData.id
+      if (data.activationFields.rebate_group) {
+        groupId = data.activationFields.rebate_group
       }
       getCheckPass({
         id: data.id,
@@ -461,12 +511,17 @@ export default {
 
     // 确定审核不通过
     surePassHandler () {
+      if (this.textarea === '') {
+        this.$message.warning('请填写审核不通过原因')
+        return
+      }
       var groupId = 0
-      if (this.failData.groupData) {
-        groupId = this.failData.groupData.id
+      var data = this.failData
+      if (data.activationFields.rebate_group) {
+        groupId = data.activationFields.rebate_group
       }
       getCheckRefuse({
-        id: this.failData.id,
+        id: data.id,
         groupId: groupId,
         msg: this.textarea
       }).then((res) => {

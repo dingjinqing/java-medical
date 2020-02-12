@@ -3,6 +3,10 @@
       <rich-text nodes="{{dis_desc}}"></rich-text>
     </view>
     <!-- 审核状态 -->
+    <!-- <form report-submit='true' bindsubmit='apply_get'>
+     <button class='bten_shenqing' style='background:{{comColor}}' formType='submit'>分销中心 - 申请成为分销员</button>
+    </form> -->
+
     <view class='bten_shenqing' style='background:{{comColor}}' wx:if='{{status == 1}}' bindtap='to_distribution'>进入分销中心</view>
     <view class='shenhe_tips' style='background:{{commonColor}};color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};' wx:if='{{status == 2}}'>审核未通过，请重新申请</view>
     <form report-submit='true' bindsubmit='apply_get'>

@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleBargain;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -35,6 +36,8 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -151,10 +154,17 @@ public class BargainService extends ShopBaseService  {
 	 * 新建砍价活动
 	 *
 	 */
-	public void addBargain(BargainAddParam param) {
+	public void addBargain(BargainAddParam param){
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
 		if(param.getShareConfig() != null) {
+            if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                try {
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
 			record.setShareConfig(Util.toJson(param.getShareConfig()));
 		}
 		db().executeInsert(record);

@@ -12,7 +12,15 @@ export function amountAnalysis (data) {
     data: data
   })
 }
-
+// 表格导出
+export function excelExport (data) {
+  return service({
+    url: '/api/admin/summary/visit/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
 // 访问分布
 export function distributionAnalysis (data) {
   return service({

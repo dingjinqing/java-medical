@@ -32,6 +32,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
+import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -59,6 +60,7 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,6 +218,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //初始化订单商品
                 orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId());
             }
+            //生成订单商品后校验必填项
+            checkMust(orderGoodsBos, param);
+
             orderBo.setOrderGoodsBo(orderGoodsBos);
 
             //处理orderBeforeVo
@@ -250,7 +255,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
-                must.addRecord(param.getMust(), orderSn);
+                must.addRecord(param.getMust());
                 orderBo.setOrderId(order.getOrderId());
                 if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
                     OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
@@ -295,6 +300,32 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
+        }
+    }
+
+    private void checkMust(List<OrderGoodsBo> orderGoodsBos, CreateParam param) throws MpException {
+        OrderMustVo orderMust = calculate.getOrderMust(orderGoodsBos);
+        if(orderMust.getIsShow() == NO) {
+            param.setMust(null);
+            return;
+        }
+        if(param.getMust() == null) {
+            throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
+        }
+        if(orderMust.getOrderRealName() == YES && StringUtils.isBlank(param.getMust().getOrderRealName())) {
+            throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
+        }
+        if(orderMust.getConsigneeCid() == YES && StringUtils.isBlank(param.getMust().getConsigneeCid())) {
+            throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
+        }
+        if(orderMust.getConsigneeRealName() == YES && StringUtils.isBlank(param.getMust().getConsigneeRealName())) {
+            throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
+        }
+        if(orderMust.getCustom() == YES && StringUtils.isBlank(param.getMust().getCustom())) {
+            throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
+        }
+        if(orderMust.getOrderCid() == YES && StringUtils.isBlank(param.getMust().getOrderCid())) {
+            throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
     }
 

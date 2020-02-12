@@ -18,6 +18,8 @@ export const cn = {
   delete: '删除',
   noTechnician: '无技师',
   haveTechnician: '有技师',
+  yes: '有',
+  no: '无',
   successDelete: '删除成功',
   underSuccess: '下架成功',
   successShelf: '上架成功',

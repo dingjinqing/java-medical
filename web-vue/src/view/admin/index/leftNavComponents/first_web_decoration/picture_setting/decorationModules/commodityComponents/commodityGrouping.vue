@@ -302,14 +302,14 @@
                       ></i>
                       <i
                         class="right_buy new_back"
-                        style="`position:static;backgroundColor:${bgColor};`"
+                        :style="`backgroundColor:${bgColor};right:0;line-height:27px;height:27px;top:0;width:55px`"
                         v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'"
                       >
                         {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
-                        :style="`position:static;color:${bgColor};border-color:${bgColor};`"
+                        :style="`color:${bgColor};border-color:${bgColor};right:0;line-height:27px;height:27px;top:0`"
                         v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'"
                       >{{$t('commodity.purchase')}}</i>
                     </div>
@@ -376,7 +376,10 @@ export default {
       groupTextData: [],
       showNav: [],
       bgColor: '',
-      goodsData: [] // 商品信息
+      goodsData: [], // 商品信息
+      groupDataCn: ['全部', '分组一', '分组二', '分组三', '分组四'],
+      groupDataEn: ['whole', 'Group one', 'Group two', 'Group Three', 'Group four'],
+      columnFlag: false
     }
   },
   watch: {
@@ -407,8 +410,37 @@ export default {
       }
     },
     lang () {
-      console.log('触发')
-      this.groupTextData = this.$t('commoditySearch.groupTextData')
+      console.log('触发', this.showNav, this.$t('commoditySearch.groupTextData'))
+      let flagData = []
+      let copy = []
+      if (this.columnFlag) {
+        flagData = this.groupDataCn
+        copy = this.groupDataEn
+      } else {
+        flagData = this.groupDataEn
+        copy = this.groupDataCn
+      }
+      console.log(this.columnFlag, this.showNav, flagData, this.$t('commoditySearch.groupTextData'))
+      this.showNav.forEach((item, index) => {
+        if (flagData.indexOf(item) !== -1) {
+          console.log(this.$t('commoditySearch.groupTextData')[index])
+          this.showNav[index] = copy[index]
+        }
+      })
+
+      console.log(this.showNav)
+      let data = JSON.parse(JSON.stringify(this.showNav))
+      this.showNav = []
+      this.showNav = data
+      // this.$nextTick(() => {
+      // this.groupTextData = this.$t('commoditySearch.groupTextData')
+      this.$forceUpdate()
+      // })
+
+      // if (JSON.parse(JSON.stringify(this.showNav)) === JSON.parse(JSON.stringify(this.groupTextData))) {
+      //   this.showNav = this.groupTextData
+      // }
+      // this.showNav = this.groupTextData
     },
     // 右侧模块点击传回中间当前高亮模块的数据
     backData: {
@@ -436,6 +468,7 @@ export default {
     // 初始化数据
     this.defaultData()
     this.langDefault() // 初始化语言
+    this.groupTextData = this.$t('commoditySearch.groupTextData')
   },
   methods: {
     // 处理初始数据

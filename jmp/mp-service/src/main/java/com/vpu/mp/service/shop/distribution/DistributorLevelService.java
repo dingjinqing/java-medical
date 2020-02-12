@@ -347,4 +347,33 @@ public class DistributorLevelService extends ShopBaseService{
         return result;
     }
 
+    /**
+     * 获取下级用户数
+     * @param userId
+     * @return
+     */
+    public Integer getNextUser(Integer userId){
+        Record1<Integer> record1 = db().selectCount().from(USER).where(USER.INVITE_ID.eq(userId)).fetchOne();
+        if(record1 != null){
+            return record1.into(Integer.class);
+        }else{
+            return 0;
+        }
+    }
+
+    /**
+     * 根据userId获取对应分组
+     * @param userId
+     * @return
+     */
+    public DistributorLevelVo getLevelByUser(Integer userId){
+        Record record = db().select().from(USER.leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)))
+            .where(USER.USER_ID.eq(userId)).fetchOne();
+        if(record != null){
+            return record.into(DistributorLevelVo.class);
+        }else{
+            return null;
+        }
+    }
+
 }

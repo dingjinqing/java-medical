@@ -4,7 +4,7 @@
     <div>
       <section>
         <el-radio
-          v-model="actShare"
+          v-model="shareConfig.shareAction"
           label="1"
         >{{$t('marketCommon.defaultStyle')}}</el-radio>
         <el-popover
@@ -33,13 +33,13 @@
 
       <section>
         <el-radio
-          v-model="actShare"
+          v-model="shareConfig.shareAction"
           label="2"
         >
           {{$t('marketCommon.customStyle')}}
           <div
             style="margin: 15px 0"
-            v-if="actShare == '2'"
+            v-if="shareConfig.shareAction == '2'"
           >
             <span style="color:#606266">{{$t('marketCommon.copywriting')}}:</span>
             <el-input
@@ -48,17 +48,17 @@
               style="width:200px"
             ></el-input>
           </div>
-          <div v-if="actShare == '2'">
+          <div v-if="shareConfig.shareAction == '2'">
             <span style="color:#606266">{{$t('marketCommon.sharedPicture')}}:</span>
             <el-radio
-              v-model="shareImg.shareImgAction"
+              v-model="shareConfig.shareImgAction"
               label="1"
               style="margin-left:10px"
             >{{$t('marketCommon.goodsInformationPicture')}}</el-radio>
 
             <div style="margin: 10px 0 0 60px">
               <el-radio
-                v-model="shareImg.shareImgAction"
+                v-model="shareConfig.shareImgAction"
                 label="2"
               >{{$t('marketCommon.customPicture')}}</el-radio>
             </div>
@@ -73,6 +73,7 @@
                 @click="addGoodsImg"
               >
                 <img
+                  style="width: 100%; height:100%;"
                   class="selectImage"
                   :src="srcList.src3"
                 >
@@ -83,6 +84,7 @@
         </el-radio>
         <ImageDalog
           pageIndex='pictureSpace'
+          :imageSize=[800,800]
           :tuneUp="showImageDialog"
           @handleSelectImg='handleSelectImg'
         />
@@ -99,10 +101,6 @@ export default {
   props: ['shareConfig'],
   data () {
     return {
-      actShare: '1',
-      shareImg: {
-        shareImgAction: '1'
-      },
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
@@ -115,6 +113,7 @@ export default {
   methods: {
     // 活动分享 -- 添加图片点击事件，弹出图片选择组件
     addGoodsImg () {
+      console.log(this.shareConfig)
       this.showImageDialog = !this.showImageDialog
     },
     // 图片点击回调函数
@@ -123,6 +122,7 @@ export default {
       if (res != null) {
         console.log(res)
         this.srcList.src3 = res.imgUrl
+        this.shareConfig.shareImg = res.imgUrl
       }
     },
     // 删除商品图片
@@ -144,9 +144,6 @@ export default {
   border: 1px solid #e4e4e4;
   cursor: pointer;
   text-align: center;
-  .selectImage {
-    margin-top: 8px;
-  }
 }
 .deleteIcon {
   width: 17px;

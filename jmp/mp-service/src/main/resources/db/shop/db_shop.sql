@@ -768,7 +768,7 @@ CREATE TABLE `b2c_distributor_apply` (
   `status` tinyint(2) NOT NULL DEFAULT '0',
   `msg` text COMMENT '审核内容',
   `del_flag` tinyint(2) NOT NULL DEFAULT '0',
-  `activation_fields` varchar(1000) DEFAULT NULL COMMENT '审核校验',
+  `activation_fields` text DEFAULT NULL COMMENT '审核校验',
   `config_fields` varchar(500) DEFAULT NULL COMMENT '审核字段',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',

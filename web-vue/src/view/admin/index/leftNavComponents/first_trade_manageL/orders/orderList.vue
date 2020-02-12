@@ -532,7 +532,7 @@
                         >{{$t('order.applyRetrunView')}}</el-button>
                       </template>
                       <template v-else>
-                        <el-button type="text">{{$t('order.retrunView')}}</el-button>
+                        <el-button  @click="goReturnView(orderItem.orderSn)" type="text">{{$t('order.retrunView')}}</el-button>
                       </template>
                     </template>
                     <template v-if="orderItem.canClose == true">
@@ -857,6 +857,10 @@ export default {
   },
   inject: ['adminReload'],
   mounted () {
+    let userId = this.$route.query.userId
+    let userName = this.$route.query.userName
+    this.searchParams.userName = userName || null
+    console.log(userId)
     console.log('mounted-----------------------')
     this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : null
     // 初始化数据

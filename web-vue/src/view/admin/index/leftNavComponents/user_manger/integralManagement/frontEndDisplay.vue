@@ -192,8 +192,15 @@ export default {
           this.$http.$emit('choiseTemplateDialog', true)
           break
         case 2:
+          console.log('刷新页面')
           break
         case 3:
+          this.$router.push({
+            path: '/admin/home/main/decorationHome',
+            query: {
+              pageId: -1
+            }
+          })
           break
       }
     },

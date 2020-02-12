@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -60,6 +61,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.AfterSaleServiceVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
+import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.express.ExpressService;
@@ -179,6 +181,8 @@ public class OrderReadService extends ShopBaseService {
     private ReturnService returnService;
     @Autowired
     private ExpressService expressService;
+    @Autowired
+    private ConfigService configService;
 	/**
 	 * 订单查询
 	 * @param param
@@ -1106,6 +1110,12 @@ public class OrderReadService extends ShopBaseService {
 		});
 		// 安装日期分组
 		footPrintService.byDateGroup(orderGoodsHistoryVos,footprintDaylist);
+		//是否显示划线价开关
+		Byte delMarket = configService.shopCommonConfigService.getDelMarket();
+		//是否显示购买按钮
+		ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
+		footprintListVo.setShowCart(showCart);
+		footprintListVo.setDelMarket(delMarket);
 		return footprintListVo;
 	}
 

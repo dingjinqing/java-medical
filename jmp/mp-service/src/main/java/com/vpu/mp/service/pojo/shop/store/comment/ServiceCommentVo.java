@@ -41,6 +41,8 @@ public class ServiceCommentVo {
 	private String username;
 	/** 用户手机号 */
 	private String mobile;
+    private String userAvatar;
+
 
 
     /** 评价星级 */

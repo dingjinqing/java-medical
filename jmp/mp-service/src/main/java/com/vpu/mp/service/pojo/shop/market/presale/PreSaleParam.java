@@ -70,10 +70,8 @@ public class PreSaleParam {
     /** 2段定金支付结束时间 **/
     private Timestamp preEndTime2;
     /** 尾款支付开始时间 **/
-    @NotNull
     private Timestamp startTime;
     /** 尾款支付结束时间 **/
-    @NotNull
     private Timestamp endTime;
     /** 商品id **/
     @NotNull

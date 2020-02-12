@@ -543,7 +543,6 @@ public class StoreReservation extends ShopBaseService {
         }
         webPayVo.setOrderSn(orderSn);
         return webPayVo;
-        // TODO 定时任务倒计时十分钟结束后调接口，关闭该订单，更改状态为已取消
     }
 
     /**
@@ -820,6 +819,16 @@ public class StoreReservation extends ShopBaseService {
     }
 
     /**
+     * Gets store mobile.获取门店联系方式
+     *
+     * @param storeId the store id
+     * @return the store mobile
+     */
+    public String getStoreMobile(int storeId) {
+        return db().select(STORE.MOBILE).from(STORE).where(STORE.STORE_ID.eq(storeId)).fetchOneInto(String.class);
+    }
+
+    /**
      * Reservation comment service comment vo.订单评价
      *
      * @param orderSn the order sn
@@ -850,7 +859,7 @@ public class StoreReservation extends ShopBaseService {
      */
     public void createComment(ServiceCommentVo param) {
         if (commentService.isComment(param.getOrderSn())) {
-            throw new BusinessException(JsonResultCode.CODE_DATA_ALREADY_EXIST);
+            throw new BusinessException(JsonResultCode.CODE_DATA_ALREADY_EXIST, "Comment ");
         }
         // 门店服务评论配置：0不用审核    1先发后审   2先审后发
         Byte commConfig = storeConfigService.getServiceComment();

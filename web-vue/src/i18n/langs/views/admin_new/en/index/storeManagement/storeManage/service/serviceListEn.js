@@ -18,6 +18,8 @@ export const en = {
   delete: 'delete',
   noTechnician: 'No technician',
   haveTechnician: 'Having a technician',
+  yes: 'yes',
+  no: 'no',
   successDelete: 'successfully deleted',
   underSuccess: 'Under success',
   successShelf: 'Successful on the shelf',

@@ -9,12 +9,12 @@ export default {
             module_name: 'm_card', // 模块名称
             card_id: '', // 会员卡id
             hidden_card: 0, // 是否用户领取后隐藏会员卡
-            card_name: 'V1代理卡', // 会员卡名称
+            card_name: '', // 会员卡名称
             card_state: 1, // 会员卡使用状态
             card_grade: 'v1', // 会员卡等级
-            receive_day: '有效期:永久有效', // 有效期
+            receive_day: '', // 有效期
             card_type: 0, // 会员卡等级
-            legal: '会员折扣9折', // 会员卡描述
+            legal: '', // 会员卡描述
             exchang_count_legal: '', // 会员卡折扣描述
             bg_type: 0, // 背景类型
             bg_color: '#ecc98f', // 背景颜色
@@ -612,6 +612,15 @@ export default {
             if (!item.shop_text) {
               this.$message.error({
                 message: '请输入店铺公告内容',
+                showClose: true
+              })
+              flag = false
+            }
+            break
+          case 'm_goods_group':
+            if (!item.sort_group_arr.length) {
+              this.$message.error({
+                message: '请添加商品分组',
                 showClose: true
               })
               flag = false

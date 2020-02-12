@@ -466,4 +466,14 @@ public class ReducePriceService extends ShopBaseService {
             });
     }
 
+    /**
+     * 获取限时降价record信息
+     * @param activityId 活动id
+     * @return record信息 或 null
+     */
+    public ReducePriceRecord getReducePriceRecord(Integer activityId){
+       return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(REDUCE_PRICE.ID.eq(activityId)))
+            .fetchAny();
+    }
+
 }

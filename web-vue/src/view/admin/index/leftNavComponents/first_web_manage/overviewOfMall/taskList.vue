@@ -339,7 +339,7 @@ export default {
   },
   data () {
     return {
-      image: 'http://mpdevimg2.weipubao.cn',
+      image: `${this.$imageHost}`,
       tabSwitch: '1',
       tabInfo: this.$t('overview.tabInfo'),
       storeList: [] // 数据

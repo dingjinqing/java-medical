@@ -293,7 +293,9 @@ public class PreSaleService extends ShopBaseService {
                 PresaleProductRecord r = db.newRecord(PRESALE_PRODUCT);
                 assign(product,r);
                 r.setPreDiscountMoney_1(product.getPreDiscountMoney1());
-                r.setPreDiscountMoney_2(product.getPreDiscountMoney2());
+                if(product.getPreDiscountMoney2() != null){
+                    r.setPreDiscountMoney_2(product.getPreDiscountMoney2());
+                }
                 return r;
             }).collect(Collectors.toList());
         db.batchInsert(productRecords).execute();
@@ -394,7 +396,7 @@ public class PreSaleService extends ShopBaseService {
         switch (deliverType) {
             case DELIVER_SPECIFIC:
                 Assert.notNull(param.getDeliverTime(), "Missing parameter deliverTime");
-                if (param.getDeliverTime().before(param.getEndTime())) {
+                if (param.getPresaleType() == PreSaleParam.PRESALE && param.getDeliverTime().before(param.getEndTime())) {
                     throw new IllegalArgumentException("DeliverTime earlier than endTime");
                 }
                 break;

@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
 import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,7 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * mp分销模块service
@@ -37,15 +38,53 @@ public class MpDistributionService extends ShopBaseService{
     @Autowired
     public DistributionConfigService distributionCfg;
 
+    @Autowired
+    public BrokerageStatisticalService bs;
+
     /**
      * 申请分销员页面信息
      * @param lang
      * @return
      */
-    public ActivationInfoVo getActivationInfo(String lang){
+    public ActivationInfoVo getActivationInfo(Integer userId,String lang){
+        //获取用户基本信息
+        UserBaseInfoVo baseInfo = db().select(USER.MOBILE,USER_DETAIL.REAL_NAME,USER_DETAIL.ADDRESS,USER_DETAIL.PROVINCE_CODE,USER_DETAIL.CITY_CODE,USER_DETAIL.DISTRICT_CODE,
+            USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,USER_DETAIL.MARITAL_STATUS,USER_DETAIL.SEX)
+            .from(USER.leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID)))
+            .where(USER.USER_ID.eq(userId)).fetchOne().into(UserBaseInfoVo.class);
+
+        //分销分组信息
+        List<DistributorGroupListVo> groupList = bs.getGroupList();
+
+        //转换行业码对应的名称
+        if(baseInfo.getIndustryInfo() != null){
+            String industryInfo = MemberIndustryEnum.getNameByCode(baseInfo.getIndustryInfo(),lang);
+            baseInfo.setIndustryName(industryInfo);
+        }
+        //教育程度
+        if(baseInfo.getEducation() != null){
+            String education = MemberEducationEnum.getNameByCode(baseInfo.getEducation(),lang);
+            baseInfo.setEducationName(education);
+        }
+        //性别
+        if(baseInfo.getSex().equalsIgnoreCase("f")){
+            baseInfo.setSex("女");
+        }else if(baseInfo.getSex().equalsIgnoreCase("m")){
+            baseInfo.setSex("男");
+        }
+        //婚姻状况
+        if(baseInfo.getMaritalStatus() != null){
+            String maritalInfo = MemberMarriageEnum.getNameByCode(baseInfo.getMaritalStatus(),lang);
+            baseInfo.setMaritalName(maritalInfo);
+        }
+
         //获取分销配置，成为分销员是否需要审核
         DistributionParam cfg = this.distributionCfg.getDistributionCfg();
         ActivationInfoVo activationInfo = new ActivationInfoVo();
+        //用户基本信息
+        activationInfo.setUserBaseInfo(baseInfo);
+        //分组列表
+        activationInfo.setGroupList(groupList);
         //获取行业信息
         List<IndustryVo> allIndustryInfo = MemberIndustryEnum.getAllIndustryInfo(lang);
         activationInfo.setIndustryList(allIndustryInfo);

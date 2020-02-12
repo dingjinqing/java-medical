@@ -75,7 +75,7 @@ public class MemberBasicInfoVo {
 	
 	/** b2c_user_detail */
 	/** 受教育程度 */
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@JsonProperty("educationId")
 	private Byte education;
 	
 	@I18N(propertiesFileName = "member")
@@ -113,6 +113,6 @@ public class MemberBasicInfoVo {
 	/** 行业  {@link com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum}*/
 	@I18N(propertiesFileName = "member")
 	private String industryInfo;
-
+	private Integer industryId;
 
 }

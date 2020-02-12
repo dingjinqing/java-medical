@@ -836,7 +836,7 @@ export default {
   },
   data () {
     return {
-      image: 'http://mpdevimg2.weipubao.cn',
+      image: `${this.$imageHost}`,
       shareData: {}, // 分享店铺
       dataDialog: false, // 自定义事项弹框
       // 选中自定义事项

@@ -1,13 +1,11 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -40,8 +38,9 @@ public class ModuleImageGuide extends ModuleBase {
 	 */
 	@JsonProperty(value = "nav_group")
 	List<NavItem> navGroup = new ArrayList<>();
-	
-	@Data
+
+    @Getter
+    @Setter
 	public static class NavItem{
 		
 		/**

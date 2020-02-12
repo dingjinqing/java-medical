@@ -17,7 +17,7 @@
             ref="serviceForm"
             :model="form"
             :rules="rules"
-            label-width="180px"
+            label-width="195px"
             size="small"
           >
             <el-form-item
@@ -141,7 +141,7 @@
                   <el-radio :label="0">{{$t('serviceAdd.serviceMode1')}}</el-radio>
                 </div>
                 <div class="radio_div">
-                  <el-radio :label="1">{{$t('serviceAdd.serviceMode2')}}</el-radio>
+                  <el-radio :label="1">{{serviceMode2}}</el-radio>
                 </div>
               </el-radio-group>
             </el-form-item>
@@ -251,7 +251,7 @@
               <span>{{$t('serviceAdd.minute')}}</span>
             </el-form-item>
             <el-form-item
-              :label="form.serviceType===0?$t('serviceAdd.serviceType1'):$t('serviceAdd.serviceType2')"
+              :label="form.serviceType===0?$t('serviceAdd.serviceType1'):serviceType2"
               prop="servicesNumber"
             >
               <el-input-number
@@ -260,7 +260,7 @@
                 size="small"
                 :min="0"
               ></el-input-number>
-              <p class="tips">{{form.serviceType===0?$t('serviceAdd.servicesNumber1'):$t('serviceAdd.servicesNumber2')}}</p>
+              <p class="tips">{{form.serviceType===0?$t('serviceAdd.servicesNumber1'):servicesNumber2}}</p>
             </el-form-item>
           </el-form>
         </div>
@@ -316,6 +316,7 @@
 </template>
 
 <script>
+import utils from '@/util/public.js'
 import { getAllServiceCats, addService, editService, updateService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import('@/util/date')
 export default {
@@ -339,7 +340,7 @@ export default {
     }
     function validServiceNum (rule, value, callback) {
       if (value === '' || value === 0) {
-        callback(new Error(that.$t('serviceAdd.validServiceNum')))
+        callback(new Error(that.$t('serviceAdd.validServiceNum2')))
       }
       callback()
     }
@@ -421,7 +422,11 @@ export default {
         serviceDuration: [{ required: true, validator: validateDuration, trigger: 'change' }],
         servicesNumber: [{ required: true, validator: validServiceNum, trigger: 'change' }],
         serviceHours: [{ required: true, validator: validServiceHours, trigger: 'change' }]
-      }
+      },
+      // 职称配置
+      serviceMode2: this.$t('serviceAdd.serviceMode2'),
+      serviceType2: this.$t('serviceAdd.serviceType2'),
+      servicesNumber2: this.$t('serviceAdd.servicesNumber2')
     }
   },
   watch: {
@@ -436,6 +441,14 @@ export default {
     }
   },
   created () {
+    // 配置技师职称
+    utils.getJobTitle().then(res => {
+      if (res) {
+        this.serviceMode2 = this.$t('serviceAdd.serviceMode1') + '+' + res
+        this.serviceType2 = this.$t('serviceAdd.serviceType2L') + res + this.$t('serviceAdd.serviceType2R')
+        this.servicesNumber2 = this.$t('serviceAdd.servicesNumber2L') + res + this.$t('serviceAdd.servicesNumber2R')
+      }
+    })
     this.langDefault()
     this.initStatus()
     this.initDetail()

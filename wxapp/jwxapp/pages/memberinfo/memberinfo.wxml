@@ -4,14 +4,14 @@
     <view class='main'>
       <!-- 会员昵称 -->
       <view wx:if='{{if_username == 1 && user_info.username}}'>
-        <text class='main_txt'><text style="color:#e64340">*</text>会员昵称</text>
+        <text class='main_txt'>会员昵称</text>
         <view class='main_ipt'>{{user_info.username}}</view>
       </view>
       <!-- 真实姓名 -->
       <view wx:if='{{if_realname == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>真实姓名</text>
-        <block wx:if="{{ user_info.real_name != null && user_info.real_name != '' }}">
-          <input class='main_ipt' value='{{ user_info.real_name }}' bindblur='realName'  />
+        <text class='main_txt'>真实姓名</text>
+        <block wx:if="{{ user_info.realName != null && user_info.realName != '' }}">
+          <input class='main_ipt' value='{{ user_info.realName }}' bindblur='realName'  />
         </block>
         <block wx:else>
           <input placeholder='输入您的真实姓名' placeholder-style='#ccc' class='main_ipt' bindblur='realName'  />
@@ -19,13 +19,13 @@
       </view>
       <!-- 手机号 -->
       <view wx:if="{{if_mobile == 1}}">
-        <text class='main_txt'><text class="must_choose">*</text>手机号码</text>
+        <text class='main_txt'>手机号码</text>
         <view class='main_ipt' style="width:53%">{{mobile}}</view>
         <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class="tel" type='default'>授权手机号</button>
       </view>
       <!-- 身份证号码 -->
       <view wx:if='{{if_cid == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>身份证号</text>
+        <text class='main_txt'>身份证号</text>
         <block wx:if="{{ user_info.cid != null && user_info.cid != '' }}">
           <input class='main_ipt' value='{{ user_info.cid }}' bindblur='IDnum'  />
         </block>
@@ -35,7 +35,7 @@
       </view>
       <!-- 所在地 -->
       <view wx:if='{{if_citydoce == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>所在地</text>
+        <text class='main_txt'>所在地</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
           <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
             <view class="picker" wx:if="{{region[0] != ''}}">
@@ -47,7 +47,7 @@
       </view>
       <!-- 性别 -->
       <view wx:if='{{if_sex == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>性别</text>
+        <text class='main_txt'>性别</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
           <picker mode="selector" value="{{sex_index}}" range="{{array}}" bindchange="bindSexChange">  
             <view class="picker">  
@@ -58,7 +58,7 @@
       </view>
       <!-- 生日 -->
       <view wx:if='{{if_birthdayyear == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>生日</text>
+        <text class='main_txt'>生日</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
           <picker mode="date" value="{{date}}" start="1978-01-01" end="2020-1-23" bindchange="bindDateChange">  
             <view  wx:if="{{dates == '选择您的生日'}}">请选择</view>
@@ -70,7 +70,7 @@
       </view>
       <!-- 婚姻状况 -->
       <view wx:if='{{if_mar == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>婚姻状况</text>
+        <text class='main_txt'>婚姻状况</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
           <picker mode="selector" value="{{marry_index}}" range="{{marry_arr}}" bindchange="bindMarryChange">  
             <view class="picker">  
@@ -81,7 +81,7 @@
       </view>
       <!-- 教育程度 -->
       <view wx:if='{{if_edu == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>教育程度</text>
+        <text class='main_txt'>教育程度</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
           <picker mode="selector" value="{{edu_select}}" range="{{edu_array}}" bindchange="bindEduChange">  
             <view class="picker">  
@@ -92,7 +92,7 @@
       </view>
       <!-- 所在行业 -->
       <view wx:if='{{if_work == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>所在行业</text>
+        <text class='main_txt'>所在行业</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
           <picker mode="selector" value="{{work_select}}"  bindchange="bindWorkChange" range='{{work_arr}}'>  
             <view class="picker">  
@@ -103,30 +103,23 @@
       </view>
       <!-- 分销员分组 -->
       <view wx:if='{{if_rebate_group == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>分销员分组</text>
+        <text class='main_txt'>分销员分组</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
-          <picker mode="selector" value="{{group_select}}"  bindchange="bindGroupChange" range='{{group_arr}}'>
+          <picker mode="selector" value="{{group_select}}"  bindchange="bindGroupChange" range='{{group_arr}}'>  
             <view class="picker">  
               {{group_arr[group_select]}}  
             </view>   
           </picker>  
         </view>
       </view>
-      <!-- 分销邀请码 -->
-      <view wx:if='{{if_invitation_code == 1}}'>
-        <text class='main_txt'><text class="must_choose">*</text>邀请码</text>
-        <block>
-          <input placeholder='请输入邀请码' placeholder-style='#ccc' class='main_ipt' bindblur='inviteNum' maxlength="6" />
-        </block>
-      </view>
       <!-- 备注 -->
       <view wx:if="{{if_remark == 1}}">
-        <text class="main_text"><text class="must_choose">*</text>备注</text>
+        <text class="main_text">备注</text>
         <textarea placeholder='' class="remark" maxlength="50" bindblur='remarkBlur' value="{{ user_info.remarks }}"></textarea>
       </view>
       <!-- 上传图片 -->
       <view wx:if="{{if_upImage}}">
-        <text class="main_text"><text class="must_choose">*</text>上传图片</text>
+        <text class="main_text">上传图片</text>
         <block wx:if="{{image}}">
           <block wx:for="{{comm_img}}" wx:key="index" wx:for-item="imgitem" wx:key="key_img">
             <view class='shai_view'> 
@@ -140,6 +133,40 @@
           </view>
         </block>
       </view>
+      <!-- 邀请码 -->
+      <view wx:if="{{if_invitation}}">
+        <text class='main_txt'>邀请码</text>
+        <block wx:if="{{ user_info.invitationCode != null && user_info.invitationCode != '' }}">
+          <input class='main_ipt' value='{{ user_info.invitationCode }}' bindblur='invitationCode'  />
+        </block>
+        <block wx:else>
+          <input placeholder='输入您的邀请码' placeholder-style='#ccc' class='main_ipt' bindblur='invitationCode'  />
+        </block>
+      </view>
+      <!-- 自定义激活项 -->
+      <view wx:for="{{custom_arr}}" wx:key="index" wx:if="{{item.is_checked == 1}}">
+        <view wx:if="{{if_custom == 1}}">
+          <text class='main_txt'>{{item.custom_title}}</text>
+          <view class='main_ipt main_picker' wx:if="{{item.custom_type == 0}}" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+            <picker mode="selector" value="{{item.custom_select}}" range="{{item.option_arr}}" range-key="option_title" bindchange="bindRadioChange" data-index="{{index}}">  
+              <view class="picker">  
+                {{item.option_arr[item.custom_select].option_title}}  
+              </view>   
+            </picker>  
+          </view>
+          <view class='main_ipt main_picker' wx:if="{{item.custom_type == 1}}">
+            <checkbox-group bindchange="checkboxChange" data-index="{{index}}">
+              <label class="checkbox" wx:for="{{item.option_arr}}" wx:for-item="val" wx:for-index="bindex" wx:key="bindex">
+                <checkbox value="{{val.option_title}}" checked="{{val.checked}}"/>{{val.option_title}}
+              </label>
+            </checkbox-group>
+          </view>
+          <view class='main_ipt main_picker' wx:if="{{item.custom_type == 2}}">
+            <input placeholder='输入内容' value="{{item.text}}" placeholder-style='#ccc' class='main_ipt' bindblur='textBlur' data-index="{{index}}" />
+          </view>
+        </view>
+      </view>
+
     </view>
     <view class='footer'>
       <form report-submit='true' bindsubmit='toSave'>
@@ -151,15 +178,6 @@
           <button formType="submit" style='background:{{comColor}};' wx:if="{{examine == 1}}">提交激活申请</button>
         </block>
       </form>
-      <block wx:if="{{ bottom.subscribe_message}}">
-        <block wx:if="{{distribution == 1}}">
-          <button style='background:{{comColor}};' bindtap="toSubscribeMessage" wx:if="{{examine == 0}}">提交审核申请</button>
-        </block>
-        <block wx:else>
-          <button style='background:{{comColor}};' bindtap="toSubscribeMessage" wx:if="{{examine == 0}}">激活会员卡</button>
-          <button style='background:{{comColor}};' bindtap="toSubscribeMessage" wx:if="{{examine == 1}}">提交激活申请</button>
-        </block>
-      </block>
     </view>
   </block>
 </view>

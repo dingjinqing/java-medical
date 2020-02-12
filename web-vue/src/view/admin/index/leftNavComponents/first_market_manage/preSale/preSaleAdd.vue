@@ -59,6 +59,7 @@
                   start-placeholder="开始时间"
                   size="small"
                   end-placeholder="结束时间"
+                  :default-time="['00:00:00', '23:59:59']"
                 >
                 </el-date-picker>
                 <el-button
@@ -126,10 +127,11 @@
               :label="1"
             >&nbsp;指定发货开始时间</el-radio>
             <el-date-picker
-              v-model="deliverTime"
+              v-model="param.deliverTime"
               type="datetime"
               size="small"
               style="width:190px"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
@@ -712,6 +714,8 @@ export default {
       if (isFullPay) {
         this.param.startTime = format(payTimeRange[0])
         this.param.endTime = format(payTimeRange[1])
+        this.param.preStartTime = format(preTime1Range[0])
+        this.param.preEndTime = format(preTime1Range[1])
       } else {
         this.param.startTime = format(tailPayTimeRange[0])
         this.param.endTime = format(tailPayTimeRange[1])

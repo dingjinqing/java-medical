@@ -1,9 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
@@ -49,7 +47,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setServiceComment(Byte value) {
-		Assert.isTrue(value ==(byte)0 || value == (byte)1 || value == (byte)2,"setServiceComment need value equal one or zero");
+        assert (value == (byte) 0 || value == (byte) 1 || value == (byte) 2);
 		return this.set(K_SERVICE_COMMENT, value,Byte.class);
 	}
 	
@@ -67,7 +65,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setStoreBuy(Byte value) {
-		Assert.isTrue(value ==(byte)0 || value == (byte)1,"setStoreBuy need value equal one or zero");
+        assert (value == (byte) 0 || value == (byte) 1);
 		return this.set(K_STORE_BUY, value,Byte.class);
 	}
 	
@@ -76,7 +74,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public String getTechnicianTitle() {
-		return this.get(K_TECHNICIAN_TITLE, String.class, "");
+        return this.get(K_TECHNICIAN_TITLE, String.class, "技师");
 	}
 	
 	/**
@@ -85,7 +83,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setTechnicianTitle(String value) {
-		Assert.isTrue(!"".equals(value),"setTechnicianTitle need value equal not empty");
+        assert (!"".equals(value));
 		return this.set(K_TECHNICIAN_TITLE, value);
 	}
 	
@@ -103,7 +101,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public int setStoreScanIds(String value) {
-		Assert.isTrue(!"".equals(value),"setStoreScanIds need equal not empty");
+        assert (!"".equals(value));
 		return this.set(K_STORE_SCAN_IDS, value);
 	}
 	

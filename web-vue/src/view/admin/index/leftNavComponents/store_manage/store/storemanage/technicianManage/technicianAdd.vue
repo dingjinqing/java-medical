@@ -10,8 +10,11 @@
             label-width="180px"
           >
             <el-form-item
-              :label="$t('technicianAdd.technicianName')+'：'"
+              :label="technicianName+'：'"
               prop="technicianName"
+              :rules="[
+                { required: true, message: nameValid, trigger: 'blur' }
+              ]"
             >
               <el-input
                 size="small"
@@ -22,6 +25,7 @@
             <el-form-item
               :label="$t('technicianAdd.cellphone')+'：'"
               prop="technicianMobile"
+              :rules="[{ required: true, message: phoneValid, trigger: 'blur' }]"
             >
               <el-input
                 type="tel"
@@ -69,7 +73,7 @@
               <el-input
                 size="small"
                 class="big_input"
-                :placeholder="$t('technicianAdd.introTips')"
+                :placeholder="introTips"
                 v-model="form.technicianIntroduce"
               ></el-input>
             </el-form-item>
@@ -161,6 +165,7 @@
 </template>
 
 <script>
+import utils from '@/util/public.js'
 import { addTechnicianApi, getTechnicianGroup, getTechnician, getServiceList, updateTechnicianApi } from '@/api/admin/storeManage/storemanage/technicianManage'
 import ImageDialog from '@/components/admin/imageDalog'
 export default {
@@ -184,13 +189,11 @@ export default {
         remarks: ''
       },
       rules: {
-        technicianName: [
-          { required: true, message: this.$t('technicianAdd.nameValid'), trigger: 'blur' }
-        ],
-        technicianMobile: [
-          { required: true, message: this.$t('technicianAdd.phoneValid'), trigger: 'blur' }
-        ]
-      }
+      },
+      technicianName: this.$t('technicianAdd.technicianName'),
+      introTips: this.$t('technicianAdd.introTips'),
+      nameValid: this.$t('technicianAdd.nameValid'),
+      phoneValid: this.$t('technicianAdd.phoneValid')
     }
   },
   created () {
@@ -200,6 +203,28 @@ export default {
     this.initServiceData()
     if (this.$route.query.technicianId) {
       this.initForm()
+    }
+    // 配置
+    utils.getJobTitle().then(res => {
+      if (res) {
+        this.technicianName = res + this.$t('technicianAdd.technicianNameR')
+        this.introTips = this.$t('technicianAdd.introTipsL') + res
+        this.nameValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.technicianNameR')
+        this.phoneValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.phoneValidR')
+      }
+    })
+  },
+  watch: {
+    lang (val) {
+      // 配置
+      utils.getJobTitle().then(res => {
+        if (res) {
+          this.technicianName = res + this.$t('technicianAdd.technicianNameR')
+          this.introTips = this.$t('technicianAdd.introTipsL') + res
+          this.nameValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.technicianNameR')
+          this.phoneValid = this.$t('technicianAdd.nameValidL') + res + this.$t('technicianAdd.phoneValidR')
+        }
+      })
     }
   },
   methods: {

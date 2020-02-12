@@ -46,13 +46,15 @@ global.wxPage({
     util.api('/api/wxapp/store/service/reservationComment', function (res) {
       if (res.error === 0) {
         let serviceInfo = res.content;
+        // 评价图只能展示一张
         if (serviceInfo.serviceImg && serviceInfo.serviceImg.indexOf('[') > -1) {
           serviceInfo.serviceImg = JSON.parse(serviceInfo.serviceImg)[0];
         }
         // 开始不展示评价详情
         serviceInfo.src = src_down; // 展开图标
         serviceInfo.show = false; // 是否展示评价
-        if (serviceInfo.flag) {
+        // 已评价
+        if (serviceInfo.flag === 1||serviceInfo.flag === 0 || serviceInfo.flag === 2) {
           serviceInfo.commstar = parseInt(serviceInfo.commstar);
           if (serviceInfo.commImg != '' && serviceInfo.commImg != null) {
             serviceInfo.commImg = JSON.parse(serviceInfo.commImg);
@@ -61,6 +63,14 @@ global.wxPage({
           serviceInfo.commstar = 5;
           serviceInfo.commImg = [];
         }
+        let star = that.data.star
+        for(let i = 0; i < 5; i++) {
+          if (i < serviceInfo.commstar) {
+            star[i].show = true
+          } else {
+            star[i].show = false
+          }
+        }
         if (!serviceInfo.storeId) {
           serviceInfo.storeId = that.data.storeId
         }
@@ -68,7 +78,8 @@ global.wxPage({
           serviceInfo.userId = util.getCache('user_id')
         }
         that.setData({
-          serviceInfo: serviceInfo
+          serviceInfo: serviceInfo,
+          star: star
         })
       } else {
         util.toast_fail(res.message)
@@ -96,7 +107,7 @@ global.wxPage({
   choose_star: function (e) {
     var that = this;
     var id = e.currentTarget.dataset.id;
-    if (this.data.serviceInfo.flag) return false;
+    if (this.data.serviceInfo.flag === 1 || this.data.serviceInfo.flag === 0 || this.data.serviceInfo.flag === 2) return false;
     for (var i = 0; i < that.data.star.length; i++) {
       if (i <= id) {
         that.data.star[i].show = true;
@@ -113,7 +124,6 @@ global.wxPage({
 
   // 输入心得
   comm_note: function (e) {
-    console.log(e.detail.value)
     this.setData({
       'serviceInfo.commNote': e.detail.value
     })

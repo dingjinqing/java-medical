@@ -58,6 +58,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
 				.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
+				.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 				.fetchAnyInto(MemberCardRecord.class);
 	}
 
@@ -260,7 +261,7 @@ public class UserCardDaoService extends ShopBaseService{
 	 * 查询用户有效卡的信息
 	 */
 	private SelectJoinStep<Record> selectValidCardSQL() {
-		 return db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.DISCOUNT,MEMBER_CARD.BG_TYPE,MEMBER_CARD.BG_COLOR,
+		 return db().select(USER_CARD.fields()).select(MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.DISCOUNT,MEMBER_CARD.BG_TYPE,MEMBER_CARD.BG_COLOR,
 				MEMBER_CARD.BG_IMG,MEMBER_CARD.BUY_SCORE,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME,MEMBER_CARD.RECEIVE_DAY,
 				MEMBER_CARD.DATE_TYPE,MEMBER_CARD.STORE_USE_SWITCH,MEMBER_CARD.STORE_LIST,MEMBER_CARD.ACTIVATION,MEMBER_CARD.GRADE)
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)));
@@ -481,7 +482,7 @@ public class UserCardDaoService extends ShopBaseService{
      * @return
      */
 	public OrderMemberVo getValidByCardNo(String cardNo){
-        ValidUserCardBean validUserCardBean = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
+        ValidUserCardBean card = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(
                 (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
@@ -500,8 +501,17 @@ public class UserCardDaoService extends ShopBaseService{
                     .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
                     .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
             ).fetchAnyInto(ValidUserCardBean.class);
-        if(validUserCardBean != null) {
-            return new OrderMemberVo().init(validUserCardBean);
+        if(card != null) {
+            card.setAvatar(userCardService.getCardAvatar());
+            // 快照时间
+            EffectTimeParam etParam = new EffectTimeParam();
+            BeanUtils.copyProperties(card, etParam);
+            EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+            BeanUtils.copyProperties(etBean, card);
+            // 背景处理
+            CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+            BeanUtils.copyProperties(bg, card);
+            return new OrderMemberVo().init(card);
         }
         return null;
     }
@@ -513,7 +523,7 @@ public class UserCardDaoService extends ShopBaseService{
      * @return result
      */
     public OrderMemberVo getOrderGradeCard(Integer userId){
-        OrderMemberVo orderMemberVo = selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
+        OrderMemberVo card = selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
             .and(
@@ -533,10 +543,20 @@ public class UserCardDaoService extends ShopBaseService{
                     .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
                     .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
             ).fetchAnyInto(OrderMemberVo.class);
-        if(orderMemberVo == null) {
-            return orderMemberVo;
+
+        if(card == null) {
+            return card;
         }else {
-            return orderMemberVo.init();
+            card.setAvatar(userCardService.getCardAvatar());
+            // 快照时间
+            EffectTimeParam etParam = new EffectTimeParam();
+            BeanUtils.copyProperties(card, etParam);
+            EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+            BeanUtils.copyProperties(etBean, card);
+            // 背景处理
+            CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+            BeanUtils.copyProperties(bg, card);
+            return card.init();
         }
     }
 

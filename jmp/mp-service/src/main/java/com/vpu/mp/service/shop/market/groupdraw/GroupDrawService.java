@@ -1,51 +1,5 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
-import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
-import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
-import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
-import static com.vpu.mp.service.foundation.util.Util.stringToList;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.apache.commons.lang3.StringUtils.substring;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Record;
-import org.jooq.Record18;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Objects;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -99,9 +53,53 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
-
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Record;
+import org.jooq.Record18;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
+import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
+import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
+import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
+import static com.vpu.mp.service.foundation.util.Util.listToString;
+import static com.vpu.mp.service.foundation.util.Util.stringToList;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.substring;
 
 /**
  * 拼团抽奖
@@ -1234,5 +1232,14 @@ public class GroupDrawService extends ShopBaseService {
 	public GroupDrawRecord getById(Integer id) {
 		return db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(id)).fetchAny();
 	}
-
+    /*
+     * 根据订单号获取改订单是否中奖
+     */
+    public boolean IsWinDraw(String orderSn) {
+        JoinGroupListRecord groupInfoByOrderSn = getGroupInfoByOrderSn(orderSn);
+        if(groupInfoByOrderSn == null || OrderConstant.NO == groupInfoByOrderSn.getIsWinDraw()){
+            return false;
+        }
+        return true;
+    }
 }

@@ -91,11 +91,7 @@ import { defRoleListRequest, editViewRoleRequest } from '@/api/admin/basicConfig
 export default {
   name: 'childConfig',
   props: {
-    faClick: { // 父组件的点击
-      type: Boolean,
-      default: () => false
-    },
-    isEdit: { // 父组件的点击
+    isEdit: { // 是否是编辑
       type: Number,
       default: () => 0
     }
@@ -133,18 +129,18 @@ export default {
     this.defaluteData()
   },
   watch: {
-    faClick (newData) {
-      if (newData === true) {
-        this.submitInfo()
-      }
-      console.log(newData)
-    }
+
   },
   methods: {
     defaluteData () {
       console.log('是编辑吗1111')
       console.log(this.isEdit)
       this.search()
+    },
+    uploadData () {
+      console.log('test111111111111111')
+      console.log('角色页submitInfo')
+      this.submitInfo()
     },
     search () {
       defRoleListRequest().then((res) => {
@@ -287,10 +283,6 @@ export default {
     submitInfo () {
       if (this.isEmpty(this.roleName)) {
         this.$message.error('权限组名称不能为空')
-        let params = {
-          'faClick': false
-        }
-        this.$emit('faClickChange', params)
         return false
       }
       let param = {

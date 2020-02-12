@@ -3,11 +3,11 @@
     <div class="technician_list_page">
       <div class="list_info">
         <label style="font-size: 14px;">
-          {{$t('technicianList.technicianName')}}：
+          {{technicianName}}：
           <el-input
             size="small"
             class="filter_input"
-            :placeholder="$t('technicianList.technicianName')"
+            :placeholder="technicianName"
             v-model="queryParams.technicianName"
           ></el-input>
         </label>
@@ -19,7 +19,7 @@
           @change="initDataList"
         >
           <el-option
-            :label="$t('technicianList.selectTip')"
+            :label="selectTip"
             :value="null"
           ></el-option>
           <el-option
@@ -31,7 +31,7 @@
         </el-select>
         <el-input
           type="tel"
-          :placeholder="$t('technicianList.technicianPhone')"
+          :placeholder="technicianPhone"
           style="width: 170px;"
           size="small"
           v-model="queryParams.technicianMobile"
@@ -56,16 +56,16 @@
           }"
         >
           <el-table-column
-            :label="$t('technicianList.technicianName')"
+            :label="technicianName"
             prop="technicianName"
           >
           </el-table-column>
           <el-table-column
-            :label="$t('technicianList.technicianGroup')"
+            :label="technicianGroup"
             prop="seviceGroup"
           >
             <template slot-scope="{row}">
-              {{row.seviceGroup.groupName}}
+              {{row.seviceGroup&&row.seviceGroup.groupName?row.seviceGroup.groupName:''}}
             </template>
           </el-table-column>
           <el-table-column
@@ -120,6 +120,7 @@
 </template>
 
 <script>
+import utils from '@/util/public.js'
 import { getTechnicianList, getTechnicianGroup } from '@/api/admin/storeManage/storemanage/technicianManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -134,7 +135,12 @@ export default {
         groupId: null
       },
       tableData: [],
-      pageParams: {}
+      pageParams: {},
+
+      technicianName: this.$t('technicianList.technicianName'),
+      selectTip: this.$t('technicianList.selectTip'),
+      technicianPhone: this.$t('technicianList.technicianPhone'),
+      technicianGroup: this.$t('technicianList.technicianGroup')
     }
   },
   created () {
@@ -142,6 +148,15 @@ export default {
     this.langDefault()
     this.initGroupData()
     this.initDataList()
+    // 配置技师职称
+    utils.getJobTitle().then(res => {
+      if (res) {
+        this.technicianName = res + this.$t('technicianList.technicianNameR')
+        this.selectTip = this.$t('technicianList.selectTipL') + res + this.$t('technicianList.selectTipR')
+        this.technicianPhone = res + this.$t('technicianList.technicianPhoneR')
+        this.technicianGroup = res + this.$t('technicianList.technicianGroupR')
+      }
+    })
   },
   methods: {
     initGroupData () {

@@ -289,16 +289,23 @@ export default {
       })
     },
     handleToJudge (arr) {
+      console.log(this.$imageHost)
       let flag = true
       let obj = {
-        normal: 'http://jmpdevimg.weipubao.cn/image/admin/btn_add.png',
-        hover: 'http://jmpdevimg.weipubao.cn/image/admin/btn_add.png'
+        normal: this.$imageHost + '/image/admin/btn_add.png',
+        hover: this.$imageHost + '/image/admin/btn_add.png'
       }
       arr.forEach((item, index) => {
         if (!item.text) {
           this.$message.error({
             showClose: true,
             message: '导航文字不能为空'
+          })
+          flag = false
+        } else if (!item.page) {
+          this.$message.error({
+            showClose: true,
+            message: '链接不能为空'
           })
           flag = false
         } else if (item.normal === obj.normal) {

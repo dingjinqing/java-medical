@@ -164,13 +164,13 @@
               style="color:#5A8BFF;cursor: pointer;"
               @click="handleSetUp(index)"
             >{{$t('membershipIntroduction.setup')}}</span>
-            <span style="margin-top:10px;color:#5A8BFF;cursor: pointer;display:block">{{item.num}}</span>
+            <span @click="jumpToDetailPage(index)" style="margin-top:10px;color:#5A8BFF;cursor: pointer;display:block">{{item.num}}</span>
           </div>
         </li>
       </ul>
     </div>
     <div class="topContainer">
-      <div class="titleEdit"><span>{{$t('membershipIntroduction.Transactionstatistics')}}</span><span>{{$t('membershipIntroduction.OrderList')}}</span></div>
+      <div class="titleEdit"><span>{{$t('membershipIntroduction.Transactionstatistics')}}</span><span @click="jumpToOrderPage">{{$t('membershipIntroduction.OrderList')}}</span></div>
       <div class="transactionDiv">
         <div
           style="flex:1"
@@ -253,7 +253,9 @@
               </el-col>
             </el-form-item>
             <el-form-item :label="$t('membershipIntroduction.localtion')">
-              <ProAndUrbA />
+              <ProAndUrbA
+              :address="address"
+              @handleToGetProCode="handleToGetProCode" />
             </el-form-item>
             <el-form-item :label="$t('membershipIntroduction.Maritalstatus')">
               <el-col :span="12">
@@ -352,138 +354,11 @@
     </div>
     <!--修改邀请人弹窗-->
     <div class="baseInfo">
-      <el-dialog
-        :title="$t('membershipIntroduction.chooseUser')"
-        :visible.sync="modifypersonDialogVisible"
-        width="800px"
-        :modal-append-to-body="false"
-      >
-        <div
-          class="modifypersonDiv"
-          style="margin-bottom:30px"
-        >
-          <div class="modifypersonDivTop">
-            <div>
-              <span>{{ $t('membershipIntroduction.nickname') }}</span>
-              <el-input
-                size="small"
-                v-model="userNameInput"
-                :placeholder="$t('membershipIntroduction.Pleasecontent')"
-              ></el-input>
-            </div>
-            <div>
-              <span style="width:80px">{{ $t('membershipIntroduction.phoneNum') }}</span>
-              <el-input
-                size="small"
-                v-model="mobileInput"
-                :placeholder="$t('membershipIntroduction.Pleasecontent')"
-              ></el-input>
-            </div>
-            <div>
-              <span style="width:90px">{{ $t('membershipIntroduction.Realname') }}</span>
-              <el-input
-                size="small"
-                v-model="realNameInput"
-                :placeholder="$t('membershipIntroduction.Pleasecontent')"
-              ></el-input>
-            </div>
-            <el-button
-              type="primary"
-              size="small"
-              @click="getUserTabelListData"
-            >{{ $t('membershipIntroduction.search')}}</el-button>
-          </div>
-          <!--底部表格-->
-          <div
-            class="content"
-            v-if="page_one"
-          >
-            <table width='100%'>
-              <thead>
-                <tr>
-                  <td>{{ $t('membershipIntroduction.userId') }}</td>
-                  <td>{{ $t('membershipIntroduction.nickname') }}</td>
-                  <td>{{ $t('membershipIntroduction.phoneNum') }}</td>
-                  <td>{{ $t('membershipIntroduction.Realname') }}</td>
-
-                </tr>
-              </thead>
-              <tbody v-if="tbodyFlag">
-                <tr
-                  v-for="(item,index) in trList"
-                  :key="index"
-                  :class="clickIindex===item.userId?'clickClass':''"
-                  @click="handleClick(item.userId)"
-                >
-
-                  <td>{{item.userId}}</td>
-                  <td>{{item.userName}}</td>
-                  <td>{{item.mobile}}</td>
-                  <td>{{item.realName}}</td>
-                </tr>
-              </tbody>
-
-            </table>
-            <div
-              class="noData"
-              v-if="!tbodyFlag"
-            >
-              <img :src="noImg">
-              <span>{{ $t('membershipIntroduction.noData')}}</span>
-            </div>
-          </div>
-          <div
-            class="content_two"
-            v-else
-          >
-            <table width='100%'>
-              <thead>
-                <tr>
-                  <td>名称</td>
-
-                  <td>链接</td>
-                </tr>
-              </thead>
-              <tbody v-if="tbodyFlag">
-                <tr
-                  v-for="(item,index) in trList"
-                  :key="index"
-                  :class="clickIindex===index?'clickClass':''"
-                  @click="handleClick(index)"
-                >
-                  <td>{{item.title}}</td>
-
-                  <td class="tb_decorate_a">
-                    {{item.path}}
-                  </td>
-                </tr>
-              </tbody>
-
-            </table>
-            <div
-              class="noData"
-              v-if="!tbodyFlag"
-            >
-              <img :src="noImg">
-              <span>暂无相关数据</span>
-            </div>
-          </div>
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="modifypersonDialogVisible = false"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleUserDialogSure()"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
+      <!--选择会员弹窗组件-->
+    <ChooseUser
+      :dialogVisible.sync="modifypersonDialogVisible"
+      @rowData="dealRowData"
+    />
     </div>
     <!--标签信息编辑弹窗-->
     <div class="balanceDialo">
@@ -548,7 +423,7 @@
             </div>
             <div class="cardName">
               <i>1</i>
-              普通会员卡
+              {{getCardName}}
             </div>
             <div class="memberCardT1Main">
               <div>已选：</div>
@@ -671,58 +546,14 @@
     <!--设置会员卡弹窗类别二-->
     <div
       class="balanceDialo"
-      v-for="(item,index) in addDialogData"
-      :key="index"
     >
-      <el-dialog
-        title="修改余额"
-        :visible.sync="memberLabelVisible"
-        width="40%"
-        :modal-append-to-body="false"
-      >
-        <div
-          class="labelEditDialogDiv"
-          style="margin-bottom:30px"
+        <ModifyData
+        :model="modifyDialogData"
+        :userId="userId"
+        @submitRes="hanldeModifyData"
         >
-          <div class="balanceDialogDiv">
-            <div class="bD_div">
-              <span>{{item.presentText}}：</span>
-              <span>{{item.persentMoney}}</span>
-            </div>
-            <div class="bD_div specialAddMoney">
-              <span>{{item.addText}}：</span>
-              <el-input
-                v-model="balanceDialogInput"
-                placeholder="请输入内容"
-                size="small"
-              ></el-input>
-              <span>{{item.tips}}</span>
-            </div>
-            <div class="bD_div">
-              <span>{{item.bzText}}：</span>
-              <el-input
-                v-model="balanceDialogBottomInput"
-                placeholder="请输入内容"
-                size="small"
-              ></el-input>
-            </div>
-          </div>
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="memberLabelVisible = false"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="memberLabelVisible = false"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
+        </ModifyData>
+
     </div>
   </div>
 </template>
@@ -730,10 +561,23 @@
 import ProAndUrbA from '@/components/system/proAndUrbA'
 import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
 import { getMemberCard, getAllAvailableMemberCardRequest, setCardForMemberRequest } from '@/api/admin/memberManage/memberCard.js'
+import ModifyData from './modifyData'
+import pagination from '@/components/admin/pagination/pagination'
+import ChooseUser from '@/components/admin/chooseUser'
 export default {
-  components: { ProAndUrbA },
+  components: { ProAndUrbA, ModifyData, pagination, ChooseUser },
   data () {
     return {
+      modifyDialogData: {
+        title: null,
+        presentText: null,
+        addText: null,
+        tips: null,
+        bzText: null,
+        persentMoney: '',
+        index: 0, // 0 余额，1 积分
+        visiable: false
+      },
       userId: '', // 用户id
       memberBasicInfo: {}, //  会员基本信息
       transStatistic: {}, // 会员交易统计
@@ -742,6 +586,7 @@ export default {
       mobileInput: '', // 用户输入->手机号
       realNameInput: '', // 用户输入->真实姓名
       addressListLength: '', // 地址长度
+      address: {},
       assetsUl: '',
       headeImgUrl: this.$imageHost + '/image/admin/head_icon.png',
       assetsData: [],
@@ -806,36 +651,23 @@ export default {
       balanceDialogInput: '',
       balanceDialogBottomInput: '',
       memberLabelVisible: false,
-      balanceDialogData: [
-        {
-          title: '修改金额',
-          presentText: '当前金额',
-          persentMoney: '0.00',
-          addText: '增加金额',
-          tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
-          bzText: '增加备注'
-        }
-      ],
-      integralDialogData: [
-        {
-          title: '修改积分',
-          presentText: '当前积分',
-          persentMoney: '0.00',
-          addText: '增加积分',
-          tips: '（*当积分为正时，增加积分；积分为负时，减少积分*）',
-          bzText: '增加备注'
-        }
-      ]
+      balanceDialogData: null,
+      integralDialogData: null,
+      cardNameIndex: 0,
+      provinceCode: null,
+      cityCode: null,
+      districtCode: null
     }
   },
   created () {
     // 从路由获取userId
-    this.userId = this.$route.query.userId
+    this.userId = Number(this.$route.query.userId)
   },
   watch: {
     lang () {
       // 加载数据
-
+      this.integralDialogData = this.$t('membershipIntroduction.integralDialogData')
+      this.balanceDialogData = this.$t('membershipIntroduction.balanceDialogData')
       this.loadMemberInfo()
     }
   },
@@ -843,6 +675,18 @@ export default {
     // 初始化语言
 
     this.langDefault()
+  },
+  computed: {
+    getCardName () {
+      if (this.cardNameIndex === 0) {
+        return this.$t('membershipIntroduction.normalCardFull')
+      } else if (this.cardNameIndex === 1) {
+        return this.$t('membershipIntroduction.limiteCardFull')
+      } else if (this.cardNameIndex === 2) {
+        return this.$t('membershipIntroduction.gradeCard')
+      }
+      return null
+    }
   },
   methods: {
     defaultMessage () {
@@ -915,8 +759,13 @@ export default {
           // 设置值 基本信息
           this.memberBasicInfo = res.content.memberBasicInfo
           if (this.memberBasicInfo.userAvatar) {
-            this.headeImgUrl = this.memberBasicInfo.userAvatar
+            let check = this.memberBasicInfo.userAvatar.startsWith('http')
+            if (check) {
+              this.headeImgUrl = this.memberBasicInfo.userAvatar
+            }
           }
+          console.log(this.headeImgUrl)
+
           console.log(this.memberBasicInfo)
           this.addressListLength = this.memberBasicInfo.addressList.length
           // 交易统计
@@ -946,8 +795,11 @@ export default {
           if (this.memberBasicInfo.sex) {
             let sexArr = this.$t('membershipIntroduction.sex')
             let map = new Map(sexArr)
-            let sex = map.get(this.memberBasicInfo.sex)
+            let key = this.memberBasicInfo.sex
+            let sex = map.get(key)
+            // this.memberBasicInfo.sexId = this.memberBasicInfo.sex
             this.memberBasicInfo.sex = sex
+            this.memberBasicInfo.sexKey = key
             console.log(sex)
           }
           console.log(this.memberBasicInfo.monthlyIncome)
@@ -959,10 +811,17 @@ export default {
               console.log(i)
               if (tmp === i.value) {
                 this.memberBasicInfo.monthlyIncome = i.label
+                this.memberBasicInfo.income = i.value
                 break
               }
             }
           }
+          // 存储余额 可用积分
+          this.assetsData[3].num = this.memberBasicInfo.account || 0
+          this.assetsData[4].num = this.memberBasicInfo.score || 0
+          this.provinceCode = this.memberBasicInfo.provinceCode
+          this.cityCode = this.memberBasicInfo.cityCode
+          this.districtCode = this.memberBasicInfo.districtCode
           // 用户标签信息
           this.handleToLabel()
           // 交易 统计
@@ -1154,11 +1013,28 @@ export default {
       }
       console.log(this.hiddenUlFlag)
     },
+    fullUserDetailDialog () {
+      this.GenderValue = this.memberBasicInfo.sexKey
+      if (this.memberBasicInfo.birthdayYear && this.memberBasicInfo.birthdayMonth && this.memberBasicInfo.birthdayDay) { this.birthdayVal = this.memberBasicInfo.birthdayYear + '-' + this.memberBasicInfo.birthdayMonth + '-' + this.memberBasicInfo.birthdayDay }
+      this.nameInput = this.memberBasicInfo.realName
+      this.address.provinceName = this.memberBasicInfo.provinceName
+      this.address.cityName = this.memberBasicInfo.cityName
+      this.address.distictName = this.memberBasicInfo.distictName
+      this.MarriageValue = this.memberBasicInfo.maritalStatus ? String(this.memberBasicInfo.maritalStatus) : null
+      this.incomeValue = this.memberBasicInfo.income
+      this.IDInput = this.memberBasicInfo.cid
+      this.educationValue = this.memberBasicInfo.educationId ? String(this.memberBasicInfo.educationId) : null
+      this.industryValue = this.memberBasicInfo.industryId
+    },
     // 基本信息编辑弹窗
     handleBaseInfo () {
       // 清空数据
       this.clearInputData()
       this.baseInfoDialogVisible = true
+
+      // 回显数据
+      this.fullUserDetailDialog()
+
       // 获取所有行业信息
       getAllIndustryRequest().then(res => {
         if (res.error === 0) {
@@ -1221,7 +1097,6 @@ export default {
       console.log(this.birthdayVal)
       let tmp = this.birthdayVal.split('-')
       console.log(tmp)
-      this.modifypersonDialogVisible = false
       this.baseInfoDialogVisible = false
       let year, month, day
       if (this.birthdayVal) {
@@ -1239,7 +1114,10 @@ export default {
         'monthlyIncome': this.incomeValue,
         'cid': this.IDInput,
         'education': this.educationValue,
-        'industory': this.industryValue
+        'industory': this.industryValue,
+        'provinceCode': this.provinceCode,
+        'cityCode': this.cityCode,
+        'districtCode': this.districtCode
       }
       console.log(obj)
 
@@ -1257,8 +1135,14 @@ export default {
     hanldeModifyPerson () {
       // 清空弹出框的输入数据
       this.clearInputData()
-      this.modifypersonDialogVisible = true
+      this.modifypersonDialogVisible = !this.modifypersonDialogVisible
       this.getUserTabelListData()
+    },
+
+    dealRowData (data) {
+      console.log(data)
+      this.clickIindex = data.userId
+      this.handleUserDialogSure()
     },
     // 获取会员用户
     getUserTabelListData () {
@@ -1357,6 +1241,7 @@ export default {
         // 调用接口获取数据
         this.getMemberCardForData(index)
         this.cardDialogFlag = index
+        this.cardNameIndex = index
       }
       switch (index) {
         case 0:
@@ -1372,14 +1257,23 @@ export default {
           this.cardLlabelsdATa = this.rankCardTmp
           break
         case 3:
-          console.log(3)
-          this.memberLabelVisible = true
-          this.addDialogData = this.balanceDialogData
-
-          break
         case 4:
-          this.memberLabelVisible = true
-          this.addDialogData = this.integralDialogData
+          let val = null
+          if (index === 3) {
+            this.balanceDialogData[0].persentMoney = this.memberBasicInfo.account
+            val = this.balanceDialogData[0]
+          } else if (index === 4) {
+            this.integralDialogData[0].persentMoney = this.memberBasicInfo.score
+            val = this.integralDialogData[0]
+          }
+          // copy value by same key
+          Object.keys(this.modifyDialogData).forEach(key => {
+            if (!(!val[key] && val[key] !== 0)) {
+              this.modifyDialogData[key] = val[key]
+            }
+          })
+          this.modifyDialogData.visiable = true
+          console.log(this.modifyDialogData)
           break
       }
     },
@@ -1457,6 +1351,53 @@ export default {
         message: message,
         type: 'success'
       })
+    },
+    // 省市区数据回传
+    handleToGetProCode (data) {
+      this.provinceCode = data.province.code || this.provinceCode
+      this.cityCode = data.city.code || this.cityCode
+      this.districtCode = data.area.code || this.districtCode
+    },
+    jumpToOrderPage () {
+      this.$router.push({
+        name: 'order',
+        query: {
+          userId: this.userId,
+          userName: this.memberBasicInfo.username
+        }
+      })
+    },
+    jumpToDetailPage (index) {
+      switch (index) {
+        case 3:
+          // 余额详情
+          this.$router.push({
+            path: '/admin/home/main/balanceDetail',
+            query: {
+              name: this.memberBasicInfo.username,
+              id: this.userId
+            }
+          })
+          break
+        case 4:
+          // 积分详情
+          this.$router.push({
+            path: '/admin/home/main/integralDetail',
+            query: {
+              name: this.memberBasicInfo.username,
+              id: this.userId
+            }
+          })
+          break
+        default:
+          break
+      }
+    },
+    hanldeModifyData (res) {
+      if (res) {
+        this.loadMemberInfo()
+      }
+      this.modifyDialogData.visiable = false
     }
   }
 }

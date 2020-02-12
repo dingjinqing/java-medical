@@ -373,35 +373,35 @@ export const en = {
   ],
   educationValueOptions: [
     {
-      value: '0',
+      value: '1',
       label: 'JUNIOR'
     },
     {
-      value: '1',
+      value: '2',
       label: 'HIGH'
     },
     {
-      value: '2',
+      value: '3',
       label: 'SECONDARY'
     },
     {
-      value: '3',
+      value: '4',
       label: 'COLLEGE'
     },
     {
-      value: '4',
+      value: '5',
       label: 'UNDERGRADUATE'
     },
     {
-      value: '5',
+      value: '6',
       label: 'MASTER'
     },
     {
-      value: '6',
+      value: '7',
       label: 'DOCTOR'
     },
     {
-      value: '7',
+      value: '8',
       label: 'OTHER'
     }
   ],
@@ -446,5 +446,11 @@ export const en = {
   },
   chargeDetail: 'chargeDetail',
   consumeDetail: 'consumeDetail',
-  deleteCard: 'DEL'
+  deleteCard: 'DEL',
+
+  add: 'Add',
+  normalCardFull: 'NormalCard',
+  limiteCardFull: 'LimiteCard',
+  gradeCard: 'GradeCard',
+  addCardTips: 'Note: the card that needs to be activated is issued directly to the user'
 }
