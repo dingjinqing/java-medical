@@ -116,8 +116,21 @@ export default {
         if (newVal.length) {
           let data = JSON.parse(JSON.stringify(newVal))
           this.hotAreaData = data
+        } else {
+          this.hotAreaData = [
+            {
+              hot_idx: 1,
+              x: 0,
+              y: 0,
+              w: 115,
+              h: 115,
+              link_url: '',
+              link_text: '',
+              z: 1
+            }
+          ]
         }
-        console.log(this.hotAreaData)
+        console.log(newVal, this.hotAreaData)
       },
       deep: true,
       immediate: true
@@ -172,16 +185,17 @@ export default {
     },
     // 保存
     handleToSave () {
-      let flag = true
-      this.hotAreaData.forEach((item, index) => {
-        if (!item.link_url) {
-          item.z = 99
-          flag = false
-        } else {
-          item.z = 1
-        }
-      })
-      if (!flag) return
+      // let flag = true
+      // this.hotAreaData.forEach((item, index) => {
+      //   if (!item.link_url) {
+      //     item.z = 99
+      //     flag = false
+      //   } else {
+      //     item.z = 1
+      //   }
+      // })
+      // if (!flag) return
+      console.log(this.hotAreaData)
       this.$emit('handleToGetHotData', this.hotAreaData)
       this.$emit('update:hotDialogVisible', false)
     },
