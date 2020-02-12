@@ -384,6 +384,9 @@ public class GoodsService extends ShopBaseService {
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(goodsPageListParam.getGoodsName())));
         }
+        if (goodsPageListParam.getGoodsIds()!=null&&goodsPageListParam.getGoodsIds().size()>0) {
+            condition = condition.and(GOODS.GOODS_ID.in(goodsPageListParam.getGoodsIds()));
+        }
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsSn())) {
             condition = condition.and(GOODS.GOODS_SN.like(likeValue(goodsPageListParam.getGoodsSn())));
         }
