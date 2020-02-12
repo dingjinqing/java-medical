@@ -231,7 +231,7 @@ global.wxPage({
     // var form_info = {};
     // var open_id = util.getCache("openid");
     // var form_id = e.detail.formId;
-    if (util.getCache('mobile') == '' && bargain_info.recordInfo.need_bind_mobile == 1) {
+    if (util.getCache('mobile') == '' && bargain_info.recordInfo.needBindMobile == 1) {
       util.checkSession(function () {
         that.setData({
           is_block: is_block = 1
