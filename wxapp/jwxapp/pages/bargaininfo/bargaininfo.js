@@ -269,11 +269,21 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     var that = this;
+    var shareDoc = ''; // 文案
+    var imgUrl = ''; // 图片
     if (bargain_info.state == 8 || bargain_info.state == 11) {
       clearTimeout(set_time_out);
-      util.api("/api/wxapp/bargain/cut", function (res) {
-
-      }, { recordId: record_id });
+      // 分享接口
+      util.api('/api/wxapp/bargain/share/info', function (res) {
+        if (res.error == 0) {
+          shareDoc = res.content.shareDoc
+          imgUrl = res.content.imgUrl
+        }
+      }, {
+        activityId: bargain_info.recordInfo.bargainId,
+        realPrice: bargain_info.recordInfo.expectationPrice,
+        linePrice: bargain_info.recordInfo.prdPrice,
+      })
       setTimeout(function () {
         clearTimeout(set_time_out);
         that.onPullDownRefresh();
@@ -282,50 +292,40 @@ global.wxPage({
         is_success: 0
       })
     }
-    // util.api("/api/wxapp/share/record", function (d) {
-
-    // }, { activity_id: bargain_info.recordInfo.bargainId, activity_type: 3 });
     return {
-      title: bargain_info.recordShareImg.shareDoc,
+      title: shareDoc,
       path: 'pages/bargaininfo/bargaininfo?record_id=' + record_id + "&invite_id=" + util.getCache('user_id')
         + "&bargain_id=" + bargain_info.recordInfo.bargainId,
-      imageUrl: that.data.imageUrl + bargain_info.recordShareImg.shareImg,
+      imageUrl: imgUrl,
       complete: function () {
 
       }
     }
 
   },
+  // 生成海报
   go_share: function () {
     var that = this;
     wx.showLoading({
       title: '生成中',
     })
-    // util.api('/api/wxapp/pictorial', function (res) {
-    //   if (res.error == 0) {
-    //     pictorial = res.content.pictorial;
-    //     if (pictorial) {
-    //       util.api('/api/wxapp/upayyun/image', function (res) {
-      
-    //         if (res.error == 0) {
-    //           pictorial = imageUrl + pictorial + "!big";
-    //           posterBase64 = res.content
-    //           that.setData({
-    //             pictorial: posterBase64
-    //           })
-    //           wx.hideLoading();
-    //           that.setData({
-    //             is_share: 1
-    //           })
-    //         }
-    //       }, { image_path: pictorial });
-    //     }
-    //   } else {
-    //     wx.hideLoading();
-    //     util.toast_fail(res.message);
-    //     return false;
-    //   }
-    // }, { action: 3, goods_id: bargain_info.recordInfo.goods_id, record_id: record_id, identity_id: bargain_info.recordInfo.bargain_id })
+    util.api('/api/wxapp/bargain/pictorial/info', function (res) {
+      wx.hideLoading();
+      if (res.error == 0) {
+        posterBase64 = res.content
+        that.setData({
+          pictorial: posterBase64,
+          is_share: 1
+        })
+      } else {
+        util.toast_fail(res.message);
+      }
+    }, {
+      activityId: bargain_info.recordInfo.bargainId,
+      realPrice: bargain_info.recordInfo.expectationPrice,
+      linePrice: bargain_info.recordInfo.prdPrice,
+      pageType: 2
+    })
   },
   not_show_share: function () {
     var that = this;
