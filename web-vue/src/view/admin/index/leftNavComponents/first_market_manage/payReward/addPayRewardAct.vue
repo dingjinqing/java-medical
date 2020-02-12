@@ -952,6 +952,7 @@ export default {
       switch (index) {
         case 0:
           // 商品弹窗显示
+          this.isOnlyShowChooseGoods = false
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
           this.choosingGoodsDateTmpContainer = this.choosingGoodsDateFlag1
           break
