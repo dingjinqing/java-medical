@@ -612,13 +612,24 @@ public class ScoreService extends ShopBaseService {
 			}
 			String receiveScore = null;
 			if (signInScore.getEnable()==(byte)1) {
-				 isOpenSign = 1;
+				isOpenSign = 1;
+				Byte signInRules = signInScore.getSignInRules() == null ? (byte) 0 : signInScore.getSignInRules();
 				if (checkUserIsSign(userId)) {
 					// 未签到
 					logger().info("未签到");
 					isSignIn = 0;
 					// 判断当前是第几天领取
 					day = checkDayByUserSignIn(userId, false);
+					if (days != 0 && day > days) {
+						if (signInRules.equals(NumberUtils.BYTE_ONE)) {
+							logger().info("未签到-循环签到判断");
+							//当签到天数超过设置的天数时，取余当做当前签到天数
+							day = day % days;
+							if(day==0) {
+								day++;
+							}
+						}
+					}
 					// 今天领取多少积分
 					String[] score2 = signInScore.getScore();
 					receiveScore=getReceiveScore(score2, day, 1);
@@ -634,6 +645,14 @@ public class ScoreService extends ShopBaseService {
 					}else {
 						receiveScore = String.valueOf(scoreInDay.getScore());						
 					}
+					if (signInRules.equals(NumberUtils.BYTE_ONE)) {
+						logger().info("已签到-循环签到判断");
+						//当签到天数超过设置的天数时，取余当做当前签到天数
+						day = day % days;
+						if(day==0) {
+							day++;
+						}
+					}
 				}
 				signData.setIsSignIn(isSignIn);
 				signData.setDay(day);
@@ -641,6 +660,7 @@ public class ScoreService extends ShopBaseService {
 				signData.setTomoroowReceive(getReceiveScore(signInScore.getScore(), day, 0));
 				signData.setMaxSignDay(days);
 				signData.setScoreValue(scoreValue);
+				signData.setSignInRules(signInRules);
 
 			} else {
 				 isOpenSign = 0;

@@ -29,4 +29,10 @@ public class SignData {
 	
 	@JsonProperty(value = "score_value")
 	private Integer scoreValue;
+	
+	/**
+	 * 签到类型 0：连续签到；1：循环签到
+	 */
+	@JsonProperty(value = "sign_in_rules")
+	private Byte signInRules;
 }
