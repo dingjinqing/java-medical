@@ -372,7 +372,7 @@
 									</view>
 							</view>
 							<view class='module_goods_name' wx:if='{{m.show_name == 1}}' />
-							<view class='module_goods_price'>
+							<view class='module_goods_price' style="{{m.cart_btn==0?'flex-direction:row;justify-content: space-between;':''}}">
 								<block wx:if="{{m.show_price != 1&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5}}">
 									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>

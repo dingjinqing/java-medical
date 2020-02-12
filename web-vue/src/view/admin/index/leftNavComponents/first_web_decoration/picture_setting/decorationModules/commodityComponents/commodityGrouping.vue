@@ -114,7 +114,7 @@
                   </div>
                   <div
                     class="bottomFooter"
-                    :style="data.shop_style==='3'?'display:flex;flex-direction: row;':'display:flex;flex-direction: row;height:auto'"
+                    :style="(data.shop_style==='3'&&data.other_message==='0')?'display:flex;flex-direction: column;':'display:flex;flex-direction: row;height:auto'"
                   >
                     <span
                       :style="`color:${bgColor};`"
@@ -123,7 +123,7 @@
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
                       v-if="data.show_market==='1'&&data.other_message==='0'"
-                    >{{Number(item.linePrice).toFixed(2)}}</span>
+                    >￥{{Number(item.linePrice).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
                       v-if="data.show_market==='2'&&data.other_message==='0'"

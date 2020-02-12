@@ -547,7 +547,7 @@ export default {
       console.log(this.linkageData.sort_group_arr)
       this.linkageData.sort_group_arr.forEach((item, index) => {
         let obj = {}
-        switch (item.sort_type) {
+        switch (Number(item.sort_type)) {
           case 0:
             obj['sortId'] = item.sort_id
             break
