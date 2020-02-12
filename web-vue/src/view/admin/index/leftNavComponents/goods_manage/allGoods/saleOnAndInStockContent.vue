@@ -238,10 +238,46 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="fetchGoodsData"
-      />
+      <div class="allGoodsFooter">
+        <div class="allGoodsFooterLeft">
+          <el-checkbox v-model="allChecked">全选</el-checkbox>
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            @click="handleToClickBottomBtn(0)"
+          >下架</el-button>
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            @click="handleToClickBottomBtn(1)"
+          >删除</el-button>
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            @click="handleToClickBottomBtn(2)"
+          >批量设置</el-button>
+          <el-select
+            v-model="batchExportVal"
+            size="small"
+          >
+            <el-option
+              v-for="item in batchExportOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="fetchGoodsData"
+        />
+      </div>
     </div>
 
     <!--预览商品太阳码-->
