@@ -8,7 +8,10 @@
       <div class="content">
 
         <div class="left">
-          <img :src="$imageHost+'/image/admin/score_qd.png'">
+          <img
+            :src="$imageHost+'/image/admin/score_qd.png'"
+            style="width: 100%;"
+          >
           <div
             class="show_area"
             @click="handleToDirectDecorate(templateList)"
@@ -27,12 +30,13 @@
             </div>
           </div>
 
-          <div class="
-            score_get">{{$t('scoreCfg.getAndPayDetail')}}</div>
-          <div class="score_set bottom">
-            <div class="score_setDiv">{{$t('scoreCfg.signGetScoreEx')}}</div>
-            <div class="score_setDiv">2019-04-29 12:00:00</div>
-            <div class="score_setDiv">+1</div>
+          <div class="score_get">{{$t('scoreCfg.getAndPayDetail')}}</div>
+          <div class="score_set_bottom">
+            <div class="score_set_content">
+              <div class="score_setDiv">{{$t('scoreCfg.signGetScoreEx')}}</div>
+              <div class="score_setDiv">2019-04-29 12:00:00</div>
+              <div class="score_setDiv">+1</div>
+            </div>
           </div>
         </div>
         <div class="right">
@@ -112,6 +116,7 @@
     <SelectTemplate
       :tuneUpSelectTemplate='tuneUpSelectTemplate'
       @handleSelectTemplate='handleSelectTemplate'
+      ref="templateRefresh"
     />
   </div>
 </template>
@@ -192,7 +197,10 @@ export default {
           this.$http.$emit('choiseTemplateDialog', true)
           break
         case 2:
-          console.log('刷新页面')
+          this.$refs.templateRefresh.getTemplateData()
+          this.$nextTick(() => {
+            this.$message.success('刷新成功')
+          })
           break
         case 3:
           this.$router.push({
@@ -238,34 +246,35 @@ export default {
 .frontEndDisplay {
   width: 100%;
   .frontEndDisplayMain {
-    width: 55%;
-    margin: 0 auto;
-    margin-bottom: 50px;
+    position: relative;
+    background-color: #fff;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
     .frontEndTop {
-      height: 30px;
-      color: rgb(102, 102, 102);
-      font-size: 12px;
-      background-color: rgb(255, 247, 235);
-      padding: 0px 20px;
-      border: 1px solid rgb(255, 213, 163);
-      border-image: initial;
-      margin: 10px 0 0 0px;
-      display: flex;
-      align-items: center;
-      span {
-        display: inline-block;
-        margin-left: 10px;
-      }
+      // width: 70%;
+      width: 845px;
+      height: 40px;
+      line-height: 40px;
+      border: 1px solid #f2e1c8;
+      background: #fff7ec;
+      color: #666;
+      padding-left: 12px;
+      margin: 20px auto;
     }
     .content {
-      margin-top: 10px;
+      // width: 70%;
+      width: 845px;
       overflow: hidden;
-      display: flex;
-      justify-content: space-between;
+      margin: 0 auto;
+      margin-bottom: 70px;
       .left {
-        height: 561px;
-        margin-right: 20px;
-        border: 1px solid #eee;
+        // width: 40%;
+        width: 350px;
+        border: 1px solid #ccc;
+        background: #eee;
+        position: relative;
+        float: left;
         .show_area {
           width: 100%;
           height: 150px;
@@ -296,35 +305,53 @@ export default {
           }
         }
         .score_get {
+          width: 100%;
           height: 40px;
           line-height: 40px;
           text-align: center;
-          border-bottom: 1px solid #eee;
+          background: #fff;
+          border-bottom: 1px solid #ccc;
         }
-        .bottom {
+        .score_set_bottom {
+          width: 100%;
+          height: 150px;
+          background: #fff;
           position: relative;
-          .score_setDiv {
-            height: 25px;
-            line-height: 25px;
-            padding: 10px;
-          }
-          .score_setDiv:nth-of-type(1) {
-            color: #000;
-          }
-          .score_setDiv:nth-of-type(2) {
-            color: #666;
-          }
-          .score_setDiv:nth-of-type(3) {
-            position: absolute;
-            right: 10px;
-            top: 1px;
-            color: #ff6666;
-            font-size: 16px;
+          .score_set_content {
+            width: 95%;
+            height: 65px;
+            margin: 0 auto;
+            border-bottom: 1px solid #ccc;
+            .score_setDiv {
+              height: 25px;
+              line-height: 25px;
+              padding: 10px;
+            }
+            .score_setDiv:nth-of-type(1) {
+              color: #000;
+            }
+            .score_setDiv:nth-of-type(2) {
+              color: #666;
+            }
+            .score_setDiv:nth-of-type(3) {
+              position: absolute;
+              right: 10px;
+              top: 1px;
+              color: #ff6666;
+              font-size: 16px;
+            }
           }
         }
       }
       .right {
-        width: 580px;
+        // width: 57%;
+        width: 480px;
+        float: right;
+        margin-left: 15px;
+        // margin-left: 3%;
+        background: #f8f8f8;
+        padding: 15px 12px 22px;
+        border-radius: 3px;
         .right_div {
           border: 1px solid #eee;
           margin-bottom: 20px;
