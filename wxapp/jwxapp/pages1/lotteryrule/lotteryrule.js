@@ -5,7 +5,7 @@ var imageUrl = app.globalData.imageUrl;
 var baseUrl = app.globalData.baseUrl;
 var mobile = util.getCache('mobile');
 var lotteryId;
-var lottery_list;
+var lotteryList;
 global.wxPage({
 
   /**
@@ -15,7 +15,7 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     page: 1,
     last_page: 1,
-    lottery_list:[],
+    lotteryList:[],
   },
 
   /**
@@ -33,9 +33,13 @@ global.wxPage({
   },
 
   lotteryListRequest () {
+    let that = this
     util.api('/api/wxapp/lottery/user/list', function(res) {
       if (res.error === 0) {
         console.log(res)
+        that.setData({
+          lotteryList: res.content.dataList
+        })
       }
     }, {lotteryId: Number(this.data.lotteryId)})
   },
@@ -85,18 +89,18 @@ global.wxPage({
       var lottL = res.content;
       that.data.last_page = lottL.last_page;
       var server_list_r = res.content.data;
-      var lottery_list = [];
+      var lotteryList = [];
       if (server_list_r.length > 0) {
-        lottery_list = server_list_r;
-        if (lottery_list[i].lotteryType == 3) {
-          if (lottery_list[i].lottery_award.length > 20) {
-            lottery_list[i].lottery_award = lottery_list[i].lottery_award.substring(0, 19) + "...";
-            lottery_list[i].is_length = 1
+        lotteryList = server_list_r;
+        if (lotteryList[i].lotteryType == 3) {
+          if (lotteryList[i].lottery_award.length > 20) {
+            lotteryList[i].lottery_award = lotteryList[i].lottery_award.substring(0, 19) + "...";
+            lotteryList[i].is_length = 1
           }
         }
       }
       that.setData({
-        lottery_list: that.data.lottery_list.concat(lottery_list),
+        lotteryList: that.data.lotteryList.concat(lotteryList),
         page_num: lottL.last_page,
         curpage: lottL.current_page,
       });
@@ -129,21 +133,21 @@ function lottery_user_request(that){
     var lottL = res.content;
     that.data.last_page = lottL.last_page;
     var server_list_r = res.content.data;
-    var lottery_list = [];
+    var lotteryList = [];
     if (server_list_r.length > 0) {
-      lottery_list = server_list_r;
-      for (var i = 0; i < lottery_list.length;i++){
-        if (lottery_list[i].lotteryType == 3){
-          if (lottery_list[i].lottery_award.length > 20){
-            lottery_list[i].lottery_award = lottery_list[i].lottery_award.substring(0,19) + "...";
-            lottery_list[i].is_length = 1
+      lotteryList = server_list_r;
+      for (var i = 0; i < lotteryList.length;i++){
+        if (lotteryList[i].lotteryType == 3){
+          if (lotteryList[i].lottery_award.length > 20){
+            lotteryList[i].lottery_award = lotteryList[i].lottery_award.substring(0,19) + "...";
+            lotteryList[i].is_length = 1
           }
         }
 
       }
     }
     that.setData({
-      lottery_list: lottery_list,
+      lotteryList: lotteryList,
       page_num: lottL.last_page,
       curpage: lottL.current_page,
     });
