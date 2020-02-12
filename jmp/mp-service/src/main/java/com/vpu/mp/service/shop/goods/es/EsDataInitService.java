@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods.es;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -119,7 +122,7 @@ public class EsDataInitService implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         String requestId = UUID.randomUUID().toString();
-        if( jedisManager.addLock(JedisKeyConstant.ES_INIT, requestId,1000*60) ){
+        if( jedisManager.addLock(JedisKeyConstant.ES_INIT, requestId,1000*600) ){
             if(containIndex(EsGoodsConstant.GOODS_INDEX_NAME)){
                 createIndex(EsGoodsConstant.GOODS_INDEX_NAME);
             }
