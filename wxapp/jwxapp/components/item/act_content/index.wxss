@@ -20,6 +20,9 @@
   border: 2rpx solid #fff;
   padding: 0 10rpx;
 }
+.act_left > text+text{
+  margin-left: 10rpx;
+}
 .act_left > .goods_price {
   font-size: 26rpx;
 }
