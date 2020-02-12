@@ -19,20 +19,4 @@
       <image class="l-a-close-img" mode="widthFix" src="{{imageUrl + '/image/wxapp/split_btn1.png'}}" role="img"></image>
     </view>
   </view>
-  <view class="l-a-content">
-    <view class="l-a-top">
-      <image class="l-a-top-img" src="{{imageUrl + '/image/wxapp/is_award1.png'}}" mode="scaleToFill"></image>
-      <text class="l-a-top-title">好遗憾</text>
-    </view>
-    <view class="l-a-center">
-      <view class="l-a-c-top">抱歉啦，这次没有中奖</view>
-      <view class="l-a-c-go">再接再厉吧！</view>
-      <view class="l-a-c-btns">
-        <button class="l-a-c-btn">再抽一次</button>
-      </view>
-    </view>
-    <view class="l-a-close" bindtap="bindClose">
-      <image class="l-a-close-img" mode="widthFix" src="{{imageUrl + '/image/wxapp/split_btn1.png'}}" role="img"></image>
-    </view>
-  </view>
 </view>

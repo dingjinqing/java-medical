@@ -39,7 +39,7 @@ global.wxPage({
     noAwardDialogVisible: false, // 未中奖弹窗
     lotteryId: '', 
     lotteryType: '', // 抽奖类型（抽奖次数来源） 1免费,2分享,3积分
-    lotterySource: 3, // 抽奖来源 1开屏有礼，2支付有礼，3分享，4评价有礼《5分享有礼
+    lotterySource: 3, // 活动来源 1开屏有礼,2支付有礼,3分享,4评价有礼,5分享有礼
     btnstatus: 1 // 按钮状态 1立即抽奖，2去分享，3消耗积分抽奖，4抽奖次数用光啦
   },
 
@@ -57,8 +57,7 @@ global.wxPage({
     })
     // 可以获取到进入小程序的场景值，例如从分享卡片进来的
     let res = wx.getEnterOptionsSync()
-    console.log(options)
-    console.log(res)
+    console.log('场景值：', res)
     this.lotteryRequest()
   },
 
@@ -170,22 +169,7 @@ global.wxPage({
     let endStep = parseInt(Math.random()*8+1);
     console.log(startStep, endStep);
     this.rolling(startStep, endStep)
-    util.api('/api/wxapp/lottery/join', function(res) {
-      if (res.error === 0) {
-        console.log(res.content)
-      }
-    },{
-      lotteryId: Number(that.data.lotteryId),
-      lotteryType: that.data.lotteryType,
-      lotterySource: that.data.lotterySource
-    })
-  },
-
-  // 未中奖弹窗
-  noDraw () {
-    this.setData({
-      noAwardDialogVisible: true
-    })
+    
   },
 
   /**
@@ -213,16 +197,45 @@ global.wxPage({
       if (hasRunStep === totalStep) {
         // 动画停止
         clearInterval(timer)
-        // 中奖弹窗
-        that.hitTheJackpot()
+        // 中奖请求
+        that.lotteryJoinRequest()
       }
     }, that.data.speed)
+  },
+
+  // 抽奖请求
+  lotteryJoinRequest () {
+    let that = this
+    util.api('/api/wxapp/lottery/join', function (res) {
+      if (res.error === 0) {
+        console.log(res.content)
+      }
+    }, {
+        lotteryId: Number(that.data.lotteryId),
+        lotteryType: that.data.lotteryType,
+        lotterySource: that.data.lotterySource
+      }
+    )
+  },
+  
+  // 未中奖弹窗
+  noDraw() {
+    this.setData({
+      noAwardDialogVisible: true
+    })
   },
 
   // 中奖弹窗
   hitTheJackpot () {
     this.setData({
       awardDialogVisible: true
+    })
+  },
+
+  // 抽奖记录
+  toList () {
+    util.navigateTo({
+      url: '/pages1/lotteryrule/lotteryrule?lotteryId=' + this.data.lotteryId,
     })
   },
 
@@ -277,7 +290,7 @@ global.wxPage({
     if (username === "" || username === null) {
       username = "神秘的小伙伴"
     }
-    util.api('/api/wxapp/lotteryshare', function(res) {
+    util.api('/api/wxapp/lottery/share', function(res) {
       if (res.error === 0) {
         that.lotteryRequest()
       }

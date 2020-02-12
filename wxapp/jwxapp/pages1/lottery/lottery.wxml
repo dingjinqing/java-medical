@@ -2,7 +2,7 @@
 <include src="/pages/common/header.wxml"/>
 <view class="main-container">
   <view class="lucky-draw-page"  style="background-image:url({{bgImg}})">
-    <view class="raffle-records">
+    <view class="raffle-records" bindtap="toList">
       <text class="raffle-records-text">抽奖记录</text>
       <image class="raffle-records-icon" src="{{rightIcon}}"></image>
     </view>
@@ -42,14 +42,14 @@
     </view>
     <view class="lottery-opera">
       <button class="lottery-btn" wx:if="{{btnstatus === 1}}" bindtap="drawNow">立即抽奖</button>
-      <!-- <button class="lottery-btn" wx:elif="{{btnstatus === 2}}" open-type="share">去分享</button> -->
+      <button class="lottery-btn" wx:elif="{{btnstatus === 2}}" open-type="share">去分享</button>
       <button class="lottery-btn" wx:elif="{{btnstatus === 3}}" bindtap="drawNow">消耗{{userInfo.score}}积分抽奖</button>
       <button class="lottery-btn" wx:else bindtap="noDraw">抽奖次数用光啦</button>
     </view>
     <view class="lottery-intro">
-      <view class="lottery-opportunities">消耗{{userInfo.score}}积分可获得额外一次抽奖机会哦</view>
-      <view class="lottery-opportunities">分享给好友可获得额外一次抽奖机会哦</view>
-      <view class="lottery-opportunities">您有10次抽奖机会</view>
+      <view class="lottery-opportunities" wx:if="{{btnstatus === 3}}">消耗{{userInfo.score}}积分可获得额外一次抽奖机会哦</view>
+      <view class="lottery-opportunities" wx:if="{{btnstatus === 2}}">分享给好友可获得额外一次抽奖机会哦</view>
+      <view class="lottery-opportunities" wx:if="{{btnstatus === 1}}">您有10次抽奖机会</view>
     </view>
     <view class="lottery-rules">
       <view class="l-r-head">

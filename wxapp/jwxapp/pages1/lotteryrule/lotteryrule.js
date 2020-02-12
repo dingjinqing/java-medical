@@ -4,7 +4,7 @@ var app = getApp()
 var imageUrl = app.globalData.imageUrl;
 var baseUrl = app.globalData.baseUrl;
 var mobile = util.getCache('mobile');
-var lottery_id;
+var lotteryId;
 var lottery_list;
 global.wxPage({
 
@@ -24,8 +24,20 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    lottery_id = options.lottery_id;
-    lottery_user_request(that);
+    lotteryId = options.lotteryId;
+    this.setData({
+      lotteryId: lotteryId
+    })
+    // lottery_user_request(that);
+    this.lotteryListRequest()
+  },
+
+  lotteryListRequest () {
+    util.api('/api/wxapp/lottery/user/list', function(res) {
+      if (res.error === 0) {
+        console.log(res)
+      }
+    }, {lotteryId: Number(this.data.lotteryId)})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -76,7 +88,7 @@ global.wxPage({
       var lottery_list = [];
       if (server_list_r.length > 0) {
         lottery_list = server_list_r;
-        if (lottery_list[i].lottery_type == 3) {
+        if (lottery_list[i].lotteryType == 3) {
           if (lottery_list[i].lottery_award.length > 20) {
             lottery_list[i].lottery_award = lottery_list[i].lottery_award.substring(0, 19) + "...";
             lottery_list[i].is_length = 1
@@ -88,7 +100,7 @@ global.wxPage({
         page_num: lottL.last_page,
         curpage: lottL.current_page,
       });
-    }, {   lottery_id: lottery_id, pageNo: that.data.page });
+    }, {   lotteryId: lotteryId, pageNo: that.data.page });
   },
 
   to_detail:function(e){
@@ -121,7 +133,7 @@ function lottery_user_request(that){
     if (server_list_r.length > 0) {
       lottery_list = server_list_r;
       for (var i = 0; i < lottery_list.length;i++){
-        if (lottery_list[i].lottery_type == 3){
+        if (lottery_list[i].lotteryType == 3){
           if (lottery_list[i].lottery_award.length > 20){
             lottery_list[i].lottery_award = lottery_list[i].lottery_award.substring(0,19) + "...";
             lottery_list[i].is_length = 1
@@ -135,5 +147,5 @@ function lottery_user_request(that){
       page_num: lottL.last_page,
       curpage: lottL.current_page,
     });
-  }, {   lottery_id: lottery_id,pageNo:that.data.page});
+  }, {   lotteryId: lotteryId,pageNo:that.data.page});
 }
