@@ -394,7 +394,9 @@ public class OrderReadService extends ShopBaseService {
 		//退运费校验
 		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo().getShippingFee(), returnShipingFee, true)){
 			vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
-		}
+		} else {
+            vo.setCanReturnShippingFee(BigDecimal.ZERO);
+        }
 		//退款商品
 		if(rOrder.getReturnType() != OrderConstant.RT_ONLY_SHIPPING_FEE) {
 			List<OrderReturnGoodsVo> goods = returnOrderGoods.getReturnGoods(rOrder.getOrderSn(),rOrder.getRetId()).into(OrderReturnGoodsVo.class);
@@ -812,6 +814,8 @@ public class OrderReadService extends ShopBaseService {
         //退运费校验
         if(OrderOperationJudgment.adminIsReturnShipingFee(order.getShippingFee(), returnShipingFee, true)){
             vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
+        }else {
+            vo.setCanReturnShippingFee(BigDecimal.ZERO);
         }
         //退款记录
         Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());

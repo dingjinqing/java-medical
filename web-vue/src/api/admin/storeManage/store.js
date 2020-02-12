@@ -97,3 +97,12 @@ export function updateStoreGroup (data) {
     data: data
   })
 }
+
+// 门店分享
+export function shareStore (data) {
+  return service({
+    url: '/api/admin/store/share/' + data,
+    method: 'get',
+    data: data
+  })
+}

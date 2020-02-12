@@ -2,18 +2,17 @@
   <!-- 实时概况 -->
   <div class="total-content">
     <div class="container">
-      11111
-      <!-- 实时概况 -->
-<!--      <allAnalysis class="distance" />-->
+<!--       实时概况 -->
+      <realTime class="distance" />
       <!-- 核心指标 -->
 <!--      <distribution class="distance" />-->
     </div>
   </div>
 </template>
 <script>
-
+import realTime from './realTime'
 export default {
-  components: { },
+  components: { realTime },
   data () {
     return {}
   }

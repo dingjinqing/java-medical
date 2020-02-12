@@ -17,7 +17,7 @@
             ref="serviceForm"
             :model="form"
             :rules="rules"
-            label-width="190px"
+            label-width="195px"
             size="small"
           >
             <el-form-item

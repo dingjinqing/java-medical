@@ -182,7 +182,7 @@
                   :content="$t('storeCommon.share')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.storeId)">{{$t('storeCommon.share')}}</a>
+                  <a @click="edit('share',scope.row.storeId, scope.row)">{{$t('storeCommon.share')}}</a>
                 </el-tooltip>
               </div>
             </template>
@@ -194,16 +194,27 @@
         />
       </div>
     </div>
+
+    <!-- 分享 -->
+    <shareDialog
+      :show="shareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="shareDialog=false"
+    />
+
   </div>
+
 </template>
 
 <script>
-import { storeList, allStoreGroup, updateStore, delStore } from '@/api/admin/storeManage/store'
+import { storeList, allStoreGroup, updateStore, delStore, shareStore } from '@/api/admin/storeManage/store'
 import pagination from '@/components/admin/pagination/pagination'
 // 地区编码
 import chinaData from '@/assets/china-data'
+import shareDialog from '@/components/admin/shareDialog'
 export default {
-  components: { pagination },
+  components: { pagination, shareDialog },
   data () {
     return {
       loading: false,
@@ -218,7 +229,11 @@ export default {
       storeGroup: [],
 
       // 表格原始数据
-      originalData: []
+      originalData: [],
+
+      shareImg: '',
+      sharePath: '',
+      shareDialog: false // 分享弹窗
     }
   },
   methods: {
@@ -365,6 +380,16 @@ export default {
               businessType: row.businessType
             }
           })
+          break
+        case 'share':
+          this.shareDialog = !this.shareDialog
+          shareStore(id).then((res) => {
+            if (res.error === 0) {
+              this.shareImg = res.content.imageUrl
+              this.sharePath = res.content.pagePath
+            }
+          })
+          break
       }
     }
   },
