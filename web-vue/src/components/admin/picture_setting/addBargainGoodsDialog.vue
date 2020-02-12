@@ -127,7 +127,7 @@ export default {
     initData () {
       let that = this
       let params = Object.assign({
-        state: [1]
+        state: [1, 2]
       }, this.queryParams, this.pageParams)
       getDialogBargainList(params).then(res => {
         console.log('content:', res.content)

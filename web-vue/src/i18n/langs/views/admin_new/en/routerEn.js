@@ -27,6 +27,8 @@ export const en = {
   analysis_visit_source: ['Overview', 'source Analysis'],
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],
+  // 概况 实时概况
+  situation: ['Overview', 'Real Time Profile'],
   // 会员管理 会员卡
   userCard: ['Membership', 'Normal Card'],
   // 会员管理 限次

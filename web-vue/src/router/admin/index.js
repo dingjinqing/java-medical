@@ -149,16 +149,17 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/first_web_manage/assetManagement/AssetsDetail'
           )
       },
+      // 实时概况
       {
-        path: '/admin/home/main/realtimeoverview',
+        path: '/admin/home/main/realTimeOverview',
         name: 'situation',
         meta: {
-          crumbTitle: '',
+          crumbTitle: 'router.situation',
           meta: 'first_web_manage'
         },
         component: () =>
           import(
-            '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics/overviewStatistics'
+            '@/view/admin/index/leftNavComponents/first_web_manage/realTimeOverview/allRealTime'
           )
       },
       {

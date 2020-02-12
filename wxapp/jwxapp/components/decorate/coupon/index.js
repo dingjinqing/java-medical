@@ -94,10 +94,14 @@ global.wxComponent({
             if (res.error == 0) {
               wx.hideLoading();
               if (res.content == 0) {
-                util.toast_success(this.$t("components.decorate.successfulReception"), function () {
+                util.toast_success('领取成功', function () {
                   m['coupon_arr'][d.key].status = -1;
                   _this.$set();
                 });
+                // util.toast_success(this.$t("components.decorate.successfulReception"), function () {
+                //   m['coupon_arr'][d.key].status = -1;
+                //   _this.$set();
+                // });
               } else if (res.content == 1) {
                 util.toast_fail(this.$t("components.decorate.couponDoesNotExist"));
               } else if (res.content == 2) {

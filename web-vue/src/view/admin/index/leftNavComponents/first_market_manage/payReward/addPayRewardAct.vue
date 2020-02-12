@@ -121,16 +121,17 @@
                     class="noneBlockList"
                     v-for="(item,index) in noneBlockDiscArr"
                     :key="index"
-                    @click="hanldeToAddGoodS(index)"
                   >
-                    <div class="noneBlockLeft">
+                    <div class="noneBlockLeft"
+                         @click="hanldeToAddGoodS(index)">
                       <img :src="$imageHost+'/image/admin/icon_jia.png'">
                       {{item.name}}
                     </div>
                     <div
                       v-if="item.num"
                       class="noneBlockRight"
-                    >{{$t('payReward.selectedClassfication')}}{{item.num}}{{$t('payReward.selectedNumber')}}</div>
+                      @click="hanldeToShowGoodS(index)"
+                    >{{$t('payReward.selectedClassfication')[index]}} {{item.num}}{{$t('payReward.selectedNumber')[index]}}</div>
                   </div>
                 </div>
               </div>
@@ -622,6 +623,7 @@
       @result='getGoodsIdFromChoosingGoods'
       :tuneUpChooseGoods='controlChoosingGoodsDialog'
       :chooseGoodsBack='choosingGoodsDateTmpContainer'
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
     />
 
     <!-- 选择支付奖励 - 自定义 - 链接弹窗 -->
@@ -756,6 +758,7 @@ export default {
       tuneUpSelectLinkDialog: false,
       tuneUpImageDialog: false,
       isShowChoosingGoodsDialog: false,
+      isOnlyShowChooseGoods: false,
       showCouponDialog2: false,
       disCouponIdList: [],
       addCouponVisible: false, // 优惠券
@@ -949,6 +952,38 @@ export default {
       switch (index) {
         case 0:
           // 商品弹窗显示
+          this.isOnlyShowChooseGoods = false
+          this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
+          this.choosingGoodsDateTmpContainer = this.choosingGoodsDateFlag1
+          break
+        case 1:
+          this.AtreeType = 1
+          console.log('商家分类')
+          this.isShowBusinessPlatformDialog = !this.isShowBusinessPlatformDialog
+          // this.businessDialogVisible = true
+          this.classFlag = 1
+          this.shopAndPlatformBackDataArr = this.shopCategoryIds
+          break
+        case 2:
+          this.AtreeType = 2
+          console.log('平台分类')
+          this.isShowBusinessPlatformDialog = !this.isShowBusinessPlatformDialog
+          // this.businessDialogVisible = true
+          this.classFlag = 2
+          this.shopAndPlatformBackDataArr = this.platformCategoryIds
+          break
+      }
+    },
+
+    // 点击会员专享商品出现的添加类弹窗汇总
+    hanldeToShowGoodS (index) {
+      console.log('回显')
+      this.userDialogFlag = '1'
+      console.log(index)
+      switch (index) {
+        case 0:
+          // 商品弹窗显示
+          this.isOnlyShowChooseGoods = true
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
           this.choosingGoodsDateTmpContainer = this.choosingGoodsDateFlag1
           break

@@ -22,7 +22,8 @@ export const cn = {
   analysis_visit_source: ['概况', '来源分析'],
   // 概况 用户画像
   analysis_portrait: ['概况', '用户画像'],
-
+  // 概况 实时概况
+  situation: ['概况', '实时概况'],
   // 小程序管理 页面分类
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间

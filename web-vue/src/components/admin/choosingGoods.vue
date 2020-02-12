@@ -283,6 +283,11 @@ export default {
     },
     // 弹出窗口
     tuneUpChooseGoods: Boolean,
+    // 只回显已选商品
+    onlyShowChooseGoods: {
+      type: Boolean,
+      default: false
+    },
     // 选择的商品id
     chooseGoodsBack: {
       type: Array,
@@ -450,6 +455,11 @@ export default {
       }
       this.requestParam.currentPage = this.pageParams.currentPage
       this.requestParam.pageRows = this.pageParams.pageRows
+      if (this.onlyShowChooseGoods) {
+        this.requestParam.goodsIds = this.chooseGoodsBack
+      } else {
+        this.requestParam.goodsIds = []
+      }
       // 分页请求
       query(this.requestParam).then((res) => {
         if (!res) return
