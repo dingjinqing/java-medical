@@ -398,7 +398,12 @@ page {
   bottom: 0;
   height: 60rpx;
 }
-
+.score_question{
+  width:24rpx;
+  height: 24rpx;
+  position: relative;
+  top: 2rpx;
+}
 
 @keyframes mymove {
   0% {

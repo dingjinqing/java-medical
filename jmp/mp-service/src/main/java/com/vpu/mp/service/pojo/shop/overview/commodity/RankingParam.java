@@ -19,6 +19,8 @@ public class RankingParam {
     @NotEmpty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date endTime;
+    // 0天，1月，2年
+    private byte unit;
 
     /**
      * 默认获取30天的数据

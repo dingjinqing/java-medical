@@ -33,6 +33,7 @@ public class GoodsPageListParam {
     public static final Byte GOODS_LIST_WITH_PRD=3;
 
     private Integer goodsId;
+    private List<Integer> goodsIds;
     private String goodsName;
     private String goodsSn;
     private Integer brandId;

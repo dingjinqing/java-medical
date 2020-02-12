@@ -7,7 +7,6 @@ import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
-import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoVo;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +64,7 @@ public class PictorialIntegrationService extends ShopBaseService {
      * @param param 拼团活动信息
      * @return 拼团活动分享信息
      */
-    public GroupBuyShareInfoVo getGroupBuyShareInfo(GroupBuyShareInfoParam param){
+    public GoodsShareInfo getGroupBuyShareInfo(GroupBuyShareInfoParam param){
         return groupBuyPictorialService.getGroupBuyShareInfo(param);
     }
 

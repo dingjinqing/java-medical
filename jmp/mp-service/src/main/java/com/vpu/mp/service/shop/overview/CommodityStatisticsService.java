@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,9 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -41,6 +44,7 @@ import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
 import static com.vpu.mp.service.pojo.shop.overview.commodity.CharConstant.*;
+import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 import static org.jooq.impl.DSL.max;
 import static org.jooq.impl.DSL.*;
@@ -474,7 +478,7 @@ public class CommodityStatisticsService extends ShopBaseService {
     }
 
     // b2c_goods_summary
-    public void getGoodsRanking(RankingParam param) {
+    public RankingVo getGoodsRanking(RankingParam param) {
         // 给定时间段的商品销售额TOP10的商品
         Map<Integer, Result<Record4<Date, Integer, BigDecimal, String>>> sales = db()
             .select(GOODS_SUMMARY.REF_DATE, GOODS_SUMMARY.GOODS_ID, GOODS_SUMMARY.GOODS_SALES, GOODS.GOODS_NAME)
@@ -487,9 +491,14 @@ public class CommodityStatisticsService extends ShopBaseService {
             .orderBy(sum(GOODS_SUMMARY.GOODS_SALES).desc(), GOODS_SUMMARY.REF_DATE)
             .limit(10)
             .fetchGroups(GOODS_SUMMARY.GOODS_ID);
+        log.debug("sql执行完毕");
 
-        // top10商品名称列表
+        // top10商品名称列表(图形用)
         List<String> columns = new ArrayList<>();
+        // top10商品名称列表（表格用)
+        List<String> goodsName = new ArrayList<>();
+        // ref_date日期列表
+        List<String> refDate = new ArrayList<>();
         // key：日期date，value：2020-01-01
         // key：商品名称，value：销售额/销售订单量（付款商品件数）
         List<Map<String, Object>> dayRows = new ArrayList<>();
@@ -499,50 +508,153 @@ public class CommodityStatisticsService extends ShopBaseService {
 
         sales.forEach((k, v) -> {
             columns.add(v.getValue(INTEGER_ZERO, GOODS.GOODS_NAME));
-            dayCharData(dayRows, v);
-            mutilCharData(weekRows, v, 7);
-            mutilCharData(monthRows, v, 30);
-            mutilCharData(yearRows, v, 365);
+            param.setUnit(BYTE_ZERO);
+            dayCharData(dayRows, v, getRefDateList(param), this::dayRule);
+            log.debug("每天的图形数据为：{}", Util.toJson(dayRows));
+            weekCharData(weekRows, v, getRefDateList1(param), this::weekRule);
+            log.debug("每周的图形数据为：{}", Util.toJson(weekRows));
+            param.setUnit(BYTE_ONE);
+            dayCharData(monthRows, v, getRefDateList(param), this::monthRule);
+            log.debug("每月的图形数据为：{}", Util.toJson(monthRows));
+            param.setUnit(BYTE_TWO);
+            dayCharData(yearRows, v, getRefDateList(param), this::yearRule);
+            log.debug("每年的图形数据为：{}", Util.toJson(yearRows));
+            v.forEach(record -> refDate.add(record.getValue(GOODS_SUMMARY.REF_DATE).toString()));
         });
 
+        Map<String, Object> tempName = dayRows.stream().findAny().orElse(EMPTY_MAP);
+        tempName.remove("Date");
+        goodsName = tempName.values().stream().map(Object::toString).collect(Collectors.toList());
         // 得到图形数据
-        Map<String, ChartData> salesVo = new HashMap<>(4);
-        salesVo.put(DAY_CHAR_DATA, ChartData.builder().columns(columns).rows(dayRows).build());
-        salesVo.put(WEEK_CHAR_DATA, ChartData.builder().columns(columns).rows(weekRows).build());
-        salesVo.put(MONTH_CHAR_DATA, ChartData.builder().columns(columns).rows(monthRows).build());
-        salesVo.put(YEAR_CHAR_DATA, ChartData.builder().columns(columns).rows(yearRows).build());
+        Map<String, ChartData> chartVo = new HashMap<>(4);
+        chartVo.put(DAY_CHAR_DATA, ChartData.builder().columns(columns).rows(dayRows).build());
+        chartVo.put(WEEK_CHAR_DATA, ChartData.builder().columns(columns).rows(weekRows).build());
+        chartVo.put(MONTH_CHAR_DATA, ChartData.builder().columns(columns).rows(monthRows).build());
+        chartVo.put(YEAR_CHAR_DATA, ChartData.builder().columns(columns).rows(yearRows).build());
+
+        // 得到表格数据
+        // todo 图形数据和表格数据二维数据横纵坐标正好相反
+//        List<List<BigDecimal>> dayTableData = sales.values().stream().map(e -> e.getValues(GOODS_SUMMARY.GOODS_SALES)).collect(Collectors.toList());
+        List<List<Object>> dayTableData = new ArrayList<List<Object>>() {{
+            dayRows.forEach(e -> {
+                e.remove("Date");
+                add(new ArrayList<>(e.values()));
+            });
+        }};
+        List<List<Object>> weekTableData = new ArrayList<List<Object>>() {{
+            weekRows.forEach(e -> add(new ArrayList<Object>(e.values())));
+        }};
+        List<List<Object>> monthTableData = new ArrayList<List<Object>>() {{
+            monthRows.forEach(e -> add(new ArrayList<Object>(e.values())));
+        }};
+        List<List<Object>> yearTableData = new ArrayList<List<Object>>() {{
+            yearRows.forEach(e -> add(new ArrayList<Object>(e.values())));
+        }};
 
         // 给定时间段的商品销售订单TOP10的商品
 
+        Map<String, TableData> tableVo = new HashMap<>(4);
+        tableVo.put(DAY_TABLE_DATA, TableData.builder().refDate(refDate).goodsName(goodsName).arrayData(dayTableData).build());
+        tableVo.put(WEEK_TABLE_DATA, TableData.builder().refDate(refDate).goodsName(goodsName).arrayData(weekTableData).build());
+        tableVo.put(MONTH_TABLE_DATA, TableData.builder().refDate(refDate).goodsName(goodsName).arrayData(monthTableData).build());
+        tableVo.put(YEAR_TABLE_DATA, TableData.builder().refDate(refDate).goodsName(goodsName).arrayData(yearTableData).build());
+
+        return RankingVo.builder().salesChar(chartVo).salesTable(tableVo).build();
+
     }
 
-    // 构造每天的图形数据
-    private void dayCharData(List<Map<String, Object>> rows, final Result<Record4<Date, Integer, BigDecimal, String>> results) {
-        rows.forEach(m ->
-            results.forEach(record -> {
-                m.putIfAbsent("Date", dateDecrement(record.getValue(GOODS_SUMMARY.REF_DATE)));
-                m.put(record.getValue(GOODS.GOODS_NAME), record.getValue(GOODS_SUMMARY.GOODS_SALES));
-            }));
-    }
-
-    // 构造每week/month/year的图形数据
-    private void mutilCharData(List<Map<String, Object>> rows, final Result<Record4<Date, Integer, BigDecimal, String>> results, final int unit) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        for (int i = 0; i < results.size() / unit; i++) {
-            Map<String, Object> tempMap = new HashMap<>(4);
-            List<Record4<Date, Integer, BigDecimal, String>> temp = results.stream().skip(i * unit).limit(unit).collect(Collectors.toList());
-            tempMap.put("REF_DATE", dateDecrement(temp.get(INTEGER_ZERO).getValue(GOODS_SUMMARY.REF_DATE)).toString() + "~" + dateDecrement(temp.get(temp.size() - 1).getValue(GOODS_SUMMARY.REF_DATE)).toString());
-            tempMap.put("GOODS_NAME", temp.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME));
-            tempMap.put("GOODS_SALES", temp.stream().map(e -> e.getValue(GOODS_SUMMARY.GOODS_SALES)).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
-            list.add(tempMap);
+    private List<LocalDate> getRefDateList(RankingParam param) {
+        List<LocalDate> result = new ArrayList<>();
+        LocalDate start;
+        LocalDate end;
+        switch (param.getUnit()) {
+            case 1:
+                // 月
+                start = param.getStartTime().toLocalDate().with(TemporalAdjusters.firstDayOfMonth());
+                end = param.getEndTime().toLocalDate().with(TemporalAdjusters.firstDayOfMonth());
+                for (LocalDate date = start;
+                     date.isBefore(end.plusMonths(INTEGER_ONE));
+                     date = date.plusMonths(INTEGER_ONE)) {
+                    result.add(date);
+                }
+                return result;
+            case 2:
+                // 年
+                start = param.getStartTime().toLocalDate().with(TemporalAdjusters.firstDayOfYear());
+                end = param.getEndTime().toLocalDate().with(TemporalAdjusters.firstDayOfYear());
+                for (LocalDate date = start;
+                     date.isBefore(end.plusYears(INTEGER_ONE));
+                     date = date.plusYears(INTEGER_ONE)) {
+                    result.add(date);
+                }
+                return result;
+            default:
+                // 0天
+                for (LocalDate date = param.getStartTime().toLocalDate().plusDays(INTEGER_ONE);
+                     date.isBefore(param.getEndTime().toLocalDate().plusDays(INTEGER_ONE));
+                     date = date.plusDays(INTEGER_ONE)) {
+                    result.add(date);
+                }
+                return result;
         }
+    }
+
+    private List<Tuple2<LocalDate, LocalDate>> getRefDateList1(RankingParam param) {
+        List<Tuple2<LocalDate, LocalDate>> result = new ArrayList<>();
+        // 周
+        for (LocalDate date = param.getStartTime().toLocalDate().plusDays(INTEGER_ONE);
+             date.isBefore(param.getEndTime().toLocalDate().plusDays(INTEGER_ONE));
+             date = date.plusDays(7)) {
+            result.add(new Tuple2<>(date, date.plusDays(7)));
+        }
+        return result;
+    }
+
+    private boolean dayRule(Record4<Date, Integer, BigDecimal, String> t, LocalDate u) {
+        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u) == 0;
+    }
+
+    private boolean weekRule(Record4<Date, Integer, BigDecimal, String> t, Tuple2<LocalDate, LocalDate> u) {
+        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u.v1()) > 0 ||
+            t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u.v2()) < 0;
+    }
+
+    private boolean monthRule(Record4<Date, Integer, BigDecimal, String> t, LocalDate u) {
+        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().getYear() == u.getYear();
+    }
+
+    private boolean yearRule(Record4<Date, Integer, BigDecimal, String> t, LocalDate u) {
+        LocalDate tDate = t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate();
+        return tDate.getYear() == u.getYear();
+    }
+
+    // 构造每天/月/年的图形数据
+    private void dayCharData(List<Map<String, Object>> rows,
+                             final Result<Record4<Date, Integer, BigDecimal, String>> results,
+                             List<LocalDate> showDate,
+                             BiPredicate<Record4<Date, Integer, BigDecimal, String>, LocalDate> rule) {
+        String name = results.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME);
         rows.forEach(m ->
-            list.forEach(r -> {
-                m.putIfAbsent("Date", r.get("REF_DATE"));
-                m.put(r.get("GOODS_NAME").toString(), r.get("GOODS_SALES"));
+            showDate.forEach(d -> {
+                List<Record4<Date, Integer, BigDecimal, String>> temp = results.stream().filter(e -> rule.test(e, d)).collect(Collectors.toList());
+                m.putIfAbsent("Date", Date.valueOf(d));
+                m.put(name, temp.stream().map(e -> e.getValue(GOODS_SUMMARY.GOODS_SALES)).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
             }));
     }
 
+    // 构造每周的图形数据
+    private void weekCharData(List<Map<String, Object>> rows,
+                              final Result<Record4<Date, Integer, BigDecimal, String>> results,
+                              List<Tuple2<LocalDate, LocalDate>> showDate,
+                              BiPredicate<Record4<Date, Integer, BigDecimal, String>, Tuple2<LocalDate, LocalDate>> rule) {
+        String name = results.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME);
+        rows.forEach(m ->
+            showDate.forEach(d -> {
+                List<Record4<Date, Integer, BigDecimal, String>> temp = results.stream().filter(e -> rule.test(e, d)).collect(Collectors.toList());
+                m.putIfAbsent("Date", d.v1() + "~" + d.v2());
+                m.put(name, temp.stream().map(e -> e.getValue(GOODS_SUMMARY.GOODS_SALES)).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
+            }));
+    }
 
     private Date dateDecrement(Date date) {
         return Date.valueOf(date.toLocalDate().minusDays(INTEGER_ONE));

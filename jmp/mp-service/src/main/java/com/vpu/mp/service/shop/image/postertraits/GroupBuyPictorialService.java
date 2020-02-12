@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
-import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -57,8 +56,8 @@ public class GroupBuyPictorialService extends ShopBaseService {
      * @param param 拼团分享参数
      * @return 拼团分享图片信息
      */
-    public GroupBuyShareInfoVo getGroupBuyShareInfo(GroupBuyShareInfoParam param) {
-        GroupBuyShareInfoVo shareInfoVo = new GroupBuyShareInfoVo();
+    public GoodsShareInfo getGroupBuyShareInfo(GroupBuyShareInfoParam param) {
+        GoodsShareInfo shareInfoVo = new GoodsShareInfo();
 
         GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecord(param.getActivityId());
         // 拼团活动信息不可用
@@ -68,7 +67,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
             return shareInfoVo;
         }
 
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(groupBuyDefineRecord.getGoodsId());
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
         // 拼团商品信息不可用
         if (goodsRecord == null) {
             groupBuyLog("分享", "拼团商品信息不可用");
@@ -88,11 +87,20 @@ public class GroupBuyPictorialService extends ShopBaseService {
             }
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
         } else {
+            ShopRecord shop = saas.shop.getShopById(getShopId());
             // 使用默认分享图片样式
             String imgPath = createGroupBuyShareImg(groupBuyDefineRecord, goodsRecord, param);
             shareInfoVo.setImgUrl(imgPath);
-            shareInfoVo.setLimitAmount(groupBuyDefineRecord.getLimitAmount());
-            shareInfoVo.setGroupBuyPrice(param.getRealPrice());
+
+           String shareDoc = new StringBuilder().append(groupBuyDefineRecord.getLimitAmount().toString())
+                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC_PERSON_NUM, "messages"))
+                .append(param.getRealPrice().toString())
+                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages"))
+                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_DOT, "messages"))
+                .append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC_RECOMMEND_TO_YOU, "messages"))
+                .toString();
+
+           shareInfoVo.setShareDoc(shareDoc);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
         return shareInfoVo;
@@ -172,7 +180,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
 
         ShopRecord shop = saas.shop.getShopById(getShopId());
         GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecord(param.getActivityId());
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(groupBuyDefineRecord.getGoodsId());
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
 
         if (groupBuyDefineRecord == null || goodsRecord == null) {
             groupBuyLog("pictorial", "商品或拼团信息已删除或失效");
@@ -222,7 +230,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
             mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
         } else {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, String.format("group_id=%d&goods_id=%d",groupBuyDefineRecord.getId(),goodsRecord.getGoodsId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
         }
         BufferedImage qrCodeImage;
         try {

@@ -174,6 +174,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
         }
         Map<Short,List<GoodsSortCacheInfo>> sortInfoMap =sortDataHelper.getAndGroup(sortIds);
         if( !sortInfoMap.isEmpty() ){
+
             Map<Integer,List<GoodsSortCacheInfo>> childGroupMap = sortInfoMap.get(GoodsConstant.SECOND_LEVEL).stream().
                 collect(Collectors.groupingBy(GoodsSortCacheInfo::getParentId));
             sortInfoMap.get(GoodsConstant.ROOT_LEVEL).forEach(x->{

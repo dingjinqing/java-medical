@@ -8,6 +8,10 @@ import com.vpu.sql.constant.Scope;
 import com.vpu.sql.constant.SqlTemplate;
 import com.vpu.sql.entity.DBConfig;
 import com.vpu.sql.entity.DBSource;
+import com.vpu.sql.exception.DuplicateColumnException;
+import com.vpu.sql.exception.DuplicateIndexException;
+import com.vpu.sql.exception.SQLRunTimeException;
+import com.vpu.sql.template.SQLErrorMessageTemplate;
 import com.vpu.sql.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +27,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -116,7 +121,7 @@ public class DataConfigSource {
                         if( checkRepeatSQL(md5SQL,0,"main_sql_temp") ){
                             insertIntoDB(sql,0,md5SQL,"main_sql");
                         }else{
-                            DBUtil.executeSQL(con,sql);
+                            DBUtil.realExecuteSQL(con,sql);
                             insertIntoDB(sql,0,md5SQL,"main_sql");
                         }
 
@@ -126,20 +131,21 @@ public class DataConfigSource {
                     for( String db: source.getDataBases() ){
                         log.info("shop执行:{}",db);
                         int shopId = RegexUtil.getShopIdByTableName(db);
-                        DBUtil.executeSQL(con,initSQL+db);
+                        DBUtil.realExecuteSQL(con,initSQL+db);
                         for( String sql : sqlSource ){
+                            log.debug(sql);
                             String md5SQL = Md5Util.md5(RegexUtil.getCompressionSQL(sql));
                             if( checkRepeatSQL(md5SQL,shopId,"shop_sql_temp") ){
                                 insertIntoDB(sql,shopId,md5SQL,"shop_sql");
                             }else{
-                                DBUtil.executeSQL(con,sql);
+                                DBUtil.realExecuteSQL(con,sql);
                                 insertIntoDB(sql,shopId,md5SQL,"shop_sql");
                             }
                         }
 
                     }
                 }
-            } catch (SQLException e) {
+            }catch (SQLException e){
                 e.printStackTrace();
             }
         }

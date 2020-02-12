@@ -29,6 +29,8 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index PLEDGE_RELATED_BPR_PLEDGE_ID = Indexes0.PLEDGE_RELATED_BPR_PLEDGE_ID;
+    public static final Index PLEDGE_RELATED_PRIMARY = Indexes0.PLEDGE_RELATED_PRIMARY;
     public static final Index SEARCH_HISTORY_PRIMARY = Indexes0.SEARCH_HISTORY_PRIMARY;
     public static final Index MP_SCENE_RECORD_PRIMARY = Indexes0.MP_SCENE_RECORD_PRIMARY;
     public static final Index TRADES_PRIMARY = Indexes0.TRADES_PRIMARY;
@@ -491,6 +493,8 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index PLEDGE_RELATED_BPR_PLEDGE_ID = Internal.createIndex("bpr_pledge_id", PledgeRelated.PLEDGE_RELATED, new OrderField[] { PledgeRelated.PLEDGE_RELATED.PLEDGE_ID }, false);
+        public static Index PLEDGE_RELATED_PRIMARY = Internal.createIndex("PRIMARY", PledgeRelated.PLEDGE_RELATED, new OrderField[] { PledgeRelated.PLEDGE_RELATED.ID }, true);
         public static Index SEARCH_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", SearchHistory.SEARCH_HISTORY, new OrderField[] { SearchHistory.SEARCH_HISTORY.ID }, true);
         public static Index MP_SCENE_RECORD_PRIMARY = Internal.createIndex("PRIMARY", MpSceneRecord.MP_SCENE_RECORD, new OrderField[] { MpSceneRecord.MP_SCENE_RECORD.ID }, true);
         public static Index TRADES_PRIMARY = Internal.createIndex("PRIMARY", Trades.TRADES, new OrderField[] { Trades.TRADES.ID }, true);

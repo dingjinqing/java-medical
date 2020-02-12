@@ -58,10 +58,13 @@ global.wxPage({
     that.getlist();
   },
   toSign: function (e) {
-    is_sign = 1;
-    this.setData({
-      is_sign: is_sign
-    })
+    var score_type = user_center.sign_score.sign_data.sign_in_rules;
+    if (score_type && score_type == 1) {
+      is_sign = 1;
+      this.setData({
+        is_sign: is_sign
+      })
+    }
   },
   closeSign: function (e) {
     this.setData({
@@ -75,20 +78,21 @@ global.wxPage({
   },
 
   signScore: function (e) {
-    this.setData({
-      is_sign: 1
-    })
+    var score_type = user_center.sign_score.sign_data.sign_in_rules;
+    if (score_type == 1) {
+      this.setData({
+        is_sign: 1
+      })
+    }
     var score = user_center.sign_score.sign_data.receive_score;
     var that = this;
     var form_id = e.detail.formId;
     var open_id = util.getCache("openid");
     util.api('api/wxapp/score/signAdd', function (res) {
       if (res.error == 0) {
-        // util.toast_success('签到成功');
-        // is_sign = 0;
-        // that.setData({
-        //   is_sign: is_sign
-        // })
+        if (score_type == 0) {
+          util.toast_success('签到成功');
+        }
         that.userRequest();
         that.getlist();
       } else {
@@ -103,6 +107,10 @@ global.wxPage({
 
   lookRule: function (e) {
     var sign_rule = e.currentTarget.dataset.rule;
+    console.log('sign_rule' + sign_rule)
+    var score_type = user_center.sign_score.sign_data.sign_in_rules;
+    console.log('score_type' + score_type)
+    //TODO
     util.jumpToWeb('/wxapp/sign/help')
   },
 
