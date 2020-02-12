@@ -11,7 +11,7 @@
         <!-- 公共部分 -->
         <el-form
           :model="param"
-          label-width="150px"
+          label-width="200px"
           labelPosition='right'
           :rules="formRules"
           ref="form"
@@ -28,7 +28,7 @@
               <el-radio :label='0'>{{$t('addBargainAct.bargainType1Tip')}}</el-radio>
               <el-radio :label='1'>{{$t('addBargainAct.bargainType2Tip')}}</el-radio>
             </el-radio-group>
-            <span style="margin-left: 15px;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
+            <span class="act-type-tips">{{$t('addBargainAct.sttlementAmountTip')}}</span>
           </el-form-item>
 
           <el-form-item
@@ -63,6 +63,7 @@
           <el-form-item
             :label="$t('addBargainAct.actGoods')+':'"
             prop=""
+            style="padding-top:5px;"
           >
             <div
               v-if="!isEditFlag"
@@ -88,7 +89,7 @@
                 :label="$t('addBargainAct.goodsName')"
                 align="center"
                 class="tableHeaderHeight"
-                width="300"
+                width="250"
               >
                 <template slot-scope="scope">
                   <img
@@ -110,7 +111,7 @@
                 :label="$t('addBargainAct.bargainStock')"
                 align="center"
                 class="tableHeaderHeight"
-                width="200"
+                width="180"
               >
                 <template slot-scope="scope">
                   <el-input-number
@@ -157,7 +158,7 @@
                 class="tableHeaderHeight"
               >
                 <template slot-scope="scope">
-                  <div style="display: flex">
+                  <div>
                     <el-input-number
                       :disabled="isEditFlag"
                       v-model="param.floorPrice"
@@ -171,15 +172,17 @@
                     <el-input-number
                       :disabled="isEditFlag"
                       v-model="param.expectationPrice"
-                      size="small"
+                      size="mini"
                       controls-position="right"
                       :min="0"
                       :max="scope.row.shopPrice"
                     >
                     </el-input-number>
-                    <div style="margin: 4px 6px">({{$t('addBargainAct.default0')}})
+                    <span>({{$t('addBargainAct.default0')}})</span>
+                    <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
+                    <!-- <div style="margin: 4px 6px">({{$t('addBargainAct.default0')}})
                       <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
-                    </div>
+                    </div> -->
                   </div>
                 </template>
               </el-table-column>
@@ -213,8 +216,8 @@
               <div class="fontColor">{{$t('addBargainAct.expectPeopleTip')}}</div>
             </el-form-item>
 
-            <el-form-item :label="$t('addBargainAct.goodsFirstBargainProportion')">
-              <div style="display: flex">
+            <el-form-item :label="$t('addBargainAct.goodsFirstBargainProportion')+':'">
+              <div>
                 <el-input-number
                   v-model="param.bargainMin"
                   controls-position="right"
@@ -235,7 +238,7 @@
               </div>
               <div
                 class="fontColor"
-                style="line-height:24px;margin-top:10px"
+                style="line-height:24px;margin-top:10px;width: 880px;"
               >{{$t('addBargainAct.proportionInterval')}}</div>
             </el-form-item>
           </div>
@@ -243,10 +246,13 @@
           <!-- 砍到任意金额计算部分 -->
           <div v-if="this.param.bargainType==1">
             <el-form-item
-              :label="$t('addBargainAct.singleBargainMoney')"
+              :label="$t('addBargainAct.singleBargainMoney')+':'"
               prop=""
             >
-              <el-radio-group v-model="param.bargainMoneyType">
+              <el-radio-group
+                v-model="param.bargainMoneyType"
+                style="margin-top:7px"
+              >
                 <el-radio :label='0'>{{$t('addBargainAct.fixedMoney')}}
                   <el-input-number
                     v-model="param.bargainFixedMoney"
@@ -290,7 +296,7 @@
           <!-- 收起、展开更多配置 -->
           <div
             @click="handleToChangeArror()"
-            style="margin: 0 0 10px 90px"
+            style="margin: 0 0 10px 140px"
           >
             <div
               v-if="arrorFlag"
@@ -317,28 +323,59 @@
                       v-for="(item,index) in mrkingVoucherObjs"
                       :key="index"
                       class="addInfo"
-                      style="margin-right: 5px;"
+                      style="margin-right: 15px;"
                     >
                       <section
                         class="couponImgWrapper"
                         style="line-height:normal"
                       >
 
-                        <div class="coupon_list_top">
+                        <div
+                          class="coupon_list_top"
+                          v-if="item.actCode==='voucher'"
+                        >
                           <span>￥</span>
                           <span class="number">{{item.denomination}}</span>
                         </div>
+                        <div
+                          class="coupon_list_top"
+                          v-if="item.actCode==='discount'"
+                        >
+                          <span style="font-size: 20px">{{item.denomination}}</span>
+                          <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
+                        </div>
                         <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                        <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                        <div
+                          class="coupon_center_number"
+                          v-if="item.surplus !==0"
+                        >剩余{{item.surplus}}张</div>
+                        <div
+                          class="coupon_center_number"
+                          v-if="item.surplus ===0"
+                        >库存不限制</div>
                         <div
                           class="coupon_list_bottom"
                           style="font-size:12px"
-                        >领取</div>
+                        >
+                          <span v-if="item.scoreNumber === 0">领取</span>
+                          <div v-if="item.scoreNumber !== 0">
+                            <span>{{item.scoreNumber}}</span>积分 兑换
+                          </div>
+                        </div>
                       </section>
-                      <span
+                      <!-- <span
                         @click="deleteCouponImg(index)"
                         class="deleteIcon"
-                      >×</span>
+                      >×</span> -->
+                      <div
+                        @click="deleteCouponImg(index)"
+                        class="deleteIcon"
+                      >
+                        <img
+                          :src="imgHost+'/image/admin/sign_del.png'"
+                          alt=""
+                        >
+                      </div>
                     </div>
                   </div>
 
@@ -372,27 +409,54 @@
                     v-for="(item,index) in rewardCouponObjs"
                     :key="index"
                     class="addInfo"
-                    style="margin-right: 5px;"
+                    style="margin-right: 15px;"
                   >
                     <section
                       class="couponImgWrapper"
                       style="line-height: normal"
                     >
-                      <div class="coupon_list_top">
+                      <div
+                        class="coupon_list_top"
+                        v-if="item.actCode==='voucher'"
+                      >
                         <span>￥</span>
                         <span class="number">{{item.denomination}}</span>
                       </div>
+                      <div
+                        class="coupon_list_top"
+                        v-if="item.actCode==='discount'"
+                      >
+                        <span style="font-size: 20px">{{item.denomination}}</span>
+                        <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
+                      </div>
                       <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_center_number"
+                        v-if="item.surplus !==0"
+                      >剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_center_number"
+                        v-if="item.surplus ===0"
+                      >库存不限制</div>
                       <div
                         class="coupon_list_bottom"
                         style="font-size:12px"
-                      >领取</div>
+                      >
+                        <span v-if="item.scoreNumber === 0">领取</span>
+                        <div v-if="item.scoreNumber !== 0">
+                          <span>{{item.scoreNumber}}</span>积分 兑换
+                        </div>
+                      </div>
                     </section>
-                    <span
+                    <div
                       @click="deleteCouponImg2(index)"
                       class="deleteIcon"
-                    >×</span>
+                    >
+                      <img
+                        :src="imgHost+'/image/admin/sign_del.png'"
+                        alt=""
+                      >
+                    </div>
                   </div>
 
                   <div
@@ -575,7 +639,7 @@ export default {
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data, index) {
-      console.log(data)
+      console.log(data, 'coupon-data')
       console.log(this.rewardCouponObjs)
       if (this.dialogFlag === 1) {
         // console.log(this.rewardCouponObjs)
@@ -754,6 +818,10 @@ export default {
       position: relative;
       background-color: #fff;
       padding: 10px 20px;
+      .act-type-tips {
+        margin-left: 15px;
+        color: #999;
+      }
       .box-card {
         width: 630px;
         background-color: #f5f5f5;
@@ -761,18 +829,14 @@ export default {
           display: flex;
           .deleteIcon {
             position: relative;
-            width: 17px !important;
+            width: 17px;
             height: 17px;
-            line-height: 17px;
-            top: -118px;
-            left: 45px;
-            cursor: pointer;
-            opacity: 0.8;
-            color: #fff;
-            background: #ccc;
-            border: 1px solid #ccc;
-            border-radius: 50%;
-            text-align: center;
+            top: -117px;
+            left: 87px;
+            img {
+              width: 100%;
+              height: 100%;
+            }
           }
         }
         .addInfo {
