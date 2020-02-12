@@ -4,7 +4,12 @@
 
 <view class='main-container'>
   <!-- 下载海报 -->
-  <block wx:if="{{show_poster.flag == 1}}">
+  <view class='share_img_btn' bindtap='go_share'>
+    <view>下载</view>
+    <view>海报</view>
+  </view>
+  
+  <!-- <block wx:if="{{show_poster.flag == 1}}">
     <block wx:if="{{getsq == true || click_num == true}}">
       <view class='share_img_btn' wx:if='{{is_share == 0 && !(bargain_info.state == 1 || bargain_info.state == 2 || bargain_info.state == 4 || bargain_info.state == 6) }}' bindtap='go_share'>
         <view>{{show_poster.text_1}}</view>
@@ -17,7 +22,7 @@
         <view>{{show_poster.text_2}}</view>
       </button>
     </block>
-  </block>
+  </block> -->
 
   <view class='all'>
     <!-- 砍价信息 -->
@@ -221,7 +226,7 @@
       </view>
     </view>
 
-    <!-- 分享弹框  -->
+    <!-- 下载海报弹框  -->
     <view class='share_bg' style='display:{{is_share == 1?"block":"none"}};margin-top:{{margin_top_nav + 8}}px;'>
       <view class='zhezhao' catchtap='not_show_share'></view>
       <view class='share_content'>

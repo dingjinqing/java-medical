@@ -40,6 +40,21 @@
           </el-col>
         </el-form-item>
         <el-form-item
+          :label="$t('groupBuy.activtiyLevel') + '：'"
+          prop="name"
+        >
+          <el-col :span="8">
+            <el-input-number
+                    v-model="form.level"
+                    controls-position="right"
+                    :min="0">
+            </el-input-number>
+            <div class="prompt">
+              {{$t('groupBuy.activtiyLevelComment')}}
+            </div>
+          </el-col>
+        </el-form-item>
+        <el-form-item
           :label="$t('groupBuy.goodsName') + '：'"
           prop="goodsId"
         >
@@ -331,6 +346,16 @@
             <el-radio :label=2>{{$t('groupBuy.shippingOptionComment')}}</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item :label="$t('groupBuy.beginNum') + '：'">
+          <el-input-number
+                  v-model="form.beginNum"
+                  controls-position="right"
+                  :min="0">
+          </el-input-number>
+          <div class="prompt fontColor">
+            {{$t('groupBuy.beginNumComment')}}
+          </div>
+        </el-form-item>
 
         <!-- 收起、展开更多配置 -->
         <div
@@ -614,6 +639,7 @@ export default {
       form: {
         id: null,
         name: '',
+        level: 0,
         goodsId: '',
         limitAmount: 2,
         joinLimit: 0,
@@ -628,6 +654,7 @@ export default {
         rewardCouponId: '',
         limitMaxNum: 0,
         limitBuyNum: 0,
+        beginNum: 0,
         share: {
           shareAction: 1,
           shareDoc: '',
@@ -749,6 +776,7 @@ export default {
         this.form.activityType = data.activityType
         this.form.name = data.name
         this.form.goodsId = data.goodsId
+        this.form.level = data.level
         this.getGoodsInfo(data.goodsId)
         this.form.isGrouperCheap = data.isGrouperCheap
         this.form.product = data.productList
@@ -762,6 +790,7 @@ export default {
         this.form.openLimit = data.openLimit
         this.form.isDefault = data.isDefault
         this.form.shippingType = data.shippingType
+        this.form.beginNum = data.beginNum
         if (data.rewardCouponId) {
           this.form.rewardCouponId = data.rewardCouponId.split(',')
           this.rewardCouponIds = data.rewardCouponId.split(',')

@@ -80,44 +80,55 @@ global.wxComponent({
       var m = this.data.m;
       var _this = this;
 
-      if (d.use_score === 1 || d.exclusive != '') {
-        // 积分兑换
-        util.jumpLink('/pages/receiveCoupon/receiveCoupon?couponId=' + d.coupon_id);
-      } else {
-        // 直接领取
-        wx.showLoading({
-          title: '领取中···',
-        })
-        util.api('/api/wxapp/coupon/get', function (res) {
-          wx.hideLoading();
-          if (res.error == 0) {
-            if (res.content == 0) {
-              util.toast_success(this.$t("components.decorate.successfulReception"), function () {
-                m['coupon_arr'][d.key].status = -1;
-                _this.$set();
-              });
-            } else if (res.content == 1) {
-              util.toast_fail(this.$t("components.decorate.couponDoesNotExist"));
-            } else if (res.content == 2) {
-              util.toast_fail(this.$t("components.decorate.coupoExpired"));
-            } else if (res.content == 3) {
-              util.toast_fail(this.$t("components.decorate.couponDisabled"));
-            } else if (res.content == 4) {
-              util.toast_fail(this.$t("components.decorate.couponStockIs"));
-            } else if (res.content == 5) {
-              util.toast_fail(this.$t("components.decorate.insufficientPointsAvailable"));
-            } else if (res.content == 6) {
-              util.toast_fail(this.$t("components.decorate.pointUpdateFailed"));
-            } else if (res.content == 7) {
-              util.toast_fail(this.$t("components.decorate.reachesTheUpperLimit"));
+      // 可领取状态
+      if (d.status == 1) {
+        if (d.use_score === 1 || d.exclusive != '') {
+          // 积分兑换
+          util.jumpLink('/pages/receiveCoupon/receiveCoupon?couponId=' + d.coupon_id);
+        } else {
+          // 直接领取
+          wx.showLoading({
+            title: '领取中···',
+          })
+          util.api('/api/wxapp/coupon/get', function (res) {
+            if (res.error == 0) {
+              wx.hideLoading();
+              if (res.content == 0) {
+                util.toast_success('领取成功', function () {
+                  m['coupon_arr'][d.key].status = -1;
+                  _this.$set();
+                });
+                // util.toast_success(this.$t("components.decorate.successfulReception"), function () {
+                //   m['coupon_arr'][d.key].status = -1;
+                //   _this.$set();
+                // });
+              } else if (res.content == 1) {
+                util.toast_fail(this.$t("components.decorate.couponDoesNotExist"));
+              } else if (res.content == 2) {
+                util.toast_fail(this.$t("components.decorate.coupoExpired"));
+              } else if (res.content == 3) {
+                util.toast_fail(this.$t("components.decorate.couponDisabled"));
+              } else if (res.content == 4) {
+                util.toast_fail(this.$t("components.decorate.couponStockIs"));
+              } else if (res.content == 5) {
+                util.toast_fail(this.$t("components.decorate.insufficientPointsAvailable"));
+              } else if (res.content == 6) {
+                util.toast_fail(this.$t("components.decorate.pointUpdateFailed"));
+              } else if (res.content == 7) {
+                util.toast_fail(this.$t("components.decorate.reachesTheUpperLimit"));
+              }
+            } else {
+              util.toast_fail(this.$t("components.decorate.failToRreceive"));
             }
-          } else {
-            util.toast_fail(this.$t("components.decorate.failToRreceive"));
-          }
-        }, {
-          couponId: d.coupon_id
-        });
+          }, {
+              couponId: d.coupon_id
+            });
+          
+        }
       }
+
+
+      
     },
 
     bindCodeBlur (e) {

@@ -184,6 +184,14 @@ public class WxAppStoreController extends WxAppBaseController{
     }
 
     /**
+     * 查看服务的全部评价
+     */
+    @PostMapping("/service/allComment")
+    public JsonResult allComment(@RequestBody @Validated AllCommentParam param) {
+        return this.success(shop().store.reservation.commentService.getAllComment(param));
+    }
+
+    /**
      * 取消预约/获取门店联系方式
      */
     @GetMapping("/service/getStoreMobile/{storeId}")

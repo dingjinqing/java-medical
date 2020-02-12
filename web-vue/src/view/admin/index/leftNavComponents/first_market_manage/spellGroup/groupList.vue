@@ -55,6 +55,11 @@
           prop="goodsName"
           :label="$t('groupBuy.goodsName')"
           align="center"
+        ></el-table-column>
+          <el-table-column
+          prop="level"
+          :label="$t('groupBuy.activtiyLevel')"
+          align="center"
         >
         </el-table-column>
         <el-table-column

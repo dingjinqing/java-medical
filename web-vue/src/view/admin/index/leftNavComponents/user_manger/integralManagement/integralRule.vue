@@ -102,7 +102,16 @@
             </div>
           </el-form-item>
           <el-form-item :label="$t('scoreCfg.exchange') + '：'">
-            {{$t('scoreCfg.formula')}}
+              <el-select v-model="form.scoreProportion" size="small" class="selectWidth">
+                <el-option
+                  v-for="item in scoreProportionOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+           {{$t('scoreCfg.formula')}}
+           <span style="color:#FF0000;margin-left: 10px;">{{$t('scoreCfg.titelMsg')}}</span>
           </el-form-item>
         </div>
 
@@ -149,8 +158,10 @@
               ></el-input-number>{{$t('scoreCfg.scoreScaleDesTwo')}}
               <span style="margit-left:20px;color:#999">{{$t('scoreCfg.prineTwo')}}</span>
             </span>
+            <div> {{$t('scoreCfg.titelMsg2')}}
+              <el-radio v-model="form.discountHasShipping" label="1" style="margin-left:15px">包含运费</el-radio>
+              <el-radio v-model="form.discountHasShipping" label="2">不包含运费</el-radio></div>
           </el-form-item>
-
         </div>
 
         <div class="integralRule">
@@ -279,7 +290,6 @@
                 ></el-input-number>{{$t('scoreCfg.score')}}
                 <span style="color:#f66">{{$t('scoreCfg.loginDescTwo')}}</span>
               </span>
-
             </div>
           </el-form-item>
           <el-form-item
@@ -298,6 +308,13 @@
               @click="handleToCheckMember()"
               style="cursor:pointer;color:#5a8bff"
             >{{$t('scoreCfg.view')}}</i>
+
+            <div>
+             <el-radio v-model="form.signInRules" label="0" style="margin-right:1px">连续签到</el-radio>
+                <el-popover trigger="hover" content="连续签到N+1天时，将循环按第N天签到积分数量赠送（N为连续签到上限）"><img :src="iconUrl" slot="reference"></el-popover>
+             <el-radio v-model="form.signInRules" label="1" style="margin-right:1px;margin-left: 12px;">循环签到</el-radio>
+                 <el-popover trigger="hover" content="连续签到N+1天时，将循环按第一天签到积分数量赠送（N为连续签到上限）"><img :src="iconUrl" slot="reference"></el-popover>
+            </div>
             <div
               v-if="form.signInScore === 'on'"
               class="hiddenLoginDiv"
@@ -621,7 +638,10 @@ export default {
         loginScore: 'off', // 登录送积分
         scoreLogin: 1, // 登录积分
         signInScore: 'off', // 签到送积分
-        signScore: [] // 签到积分
+        signScore: [], // 签到积分
+        signInRules: '0',
+        scoreProportion: 100,
+        discountHasShipping: '1'
       },
       // 校验表单
       fromRules: {
@@ -631,7 +651,23 @@ export default {
         shoppingScore: { required: true, validator: validateshopping, trigger: 'change' },
         loginScore: { required: true, validator: validateLogin, trigger: 'change' },
         signInScore: { required: true, validator: validateSignIn, trigger: 'change' }
-      }
+      },
+      iconUrl: this.$imageHost + '/image/admin/system_icon.png',
+      scoreProportionOptions: [{
+        value: 1,
+        label: '1'
+      }, {
+        value: 10,
+        label: '10'
+      },
+      {
+        value: 100,
+        label: '100'
+      },
+      {
+        value: 1000,
+        label: '1000'
+      }]
     }
   },
   watch: {
@@ -673,7 +709,9 @@ export default {
           this.form.scoreYear = data.scoreYear
           this.form.scoreLimitNumber = data.scoreLimitNumber
           this.form.scorePeriod = data.scorePeriod
-
+          this.form.signInRules = String(data.signInRules)
+          this.form.scoreProportion = data.scoreProportion
+          this.form.discountHasShipping = String(data.discountHasShipping)
           if (!data.scorePayLimit === null) {
             this.form.scorePayLimit = '0'
           } else {
@@ -792,13 +830,13 @@ export default {
     // 签到送积分点击添加icon
     handleToAdd () {
       let obj = {
-        input: ''
+        input: '1'
       }
-      if (this.signInput.length < 14) {
+      if (this.signInput.length < 30) {
         this.signInput.push(obj)
         this.signData++
       } else {
-        this.$message.warning('系统开启签到上线为14天')
+        this.$message.warning(this.$t('scoreCfg.titelError'))
       }
     },
     // 签到送积分点击删除icon

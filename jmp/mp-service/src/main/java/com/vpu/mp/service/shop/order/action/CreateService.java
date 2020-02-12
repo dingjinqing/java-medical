@@ -67,6 +67,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -312,19 +313,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(param.getMust() == null) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getOrderRealName() == YES && StringUtils.isNotBlank(param.getMust().getOrderRealName())) {
+        if(orderMust.getOrderRealName() == YES && StringUtils.isBlank(param.getMust().getOrderRealName())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getConsigneeCid() == YES && StringUtils.isNotBlank(param.getMust().getConsigneeCid())) {
+        if(orderMust.getConsigneeCid() == YES && StringUtils.isBlank(param.getMust().getConsigneeCid())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getConsigneeRealName() == YES && StringUtils.isNotBlank(param.getMust().getConsigneeRealName())) {
+        if(orderMust.getConsigneeRealName() == YES && StringUtils.isBlank(param.getMust().getConsigneeRealName())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getCustom() == YES && StringUtils.isNotBlank(param.getMust().getCustom())) {
+        if(orderMust.getCustom() == YES && StringUtils.isBlank(param.getMust().getCustom())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getOrderCid() == YES && StringUtils.isNotBlank(param.getMust().getOrderCid())) {
+        if(orderMust.getOrderCid() == YES && StringUtils.isBlank(param.getMust().getOrderCid())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
     }
@@ -694,9 +695,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void processOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) {
         logger().info("金额处理赋值(processOrderBeforeVo),start");
+        //积分兑换比
+        Integer scoreProportion = scoreCfg.getScoreProportion();
         //积分抵扣金额()
         BigDecimal scoreDiscount =
-            BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal("100"));
+            BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal(scoreProportion));
         //余额抵扣金额
         BigDecimal useAccount = param.getBalance();
         //会员卡抵扣金额
@@ -780,11 +783,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //折后订单金额
         BigDecimal moneyAfterDiscount = BigDecimalUtil.add(tolalDiscountAfterPrice, vo.getShippingFee());
         //最大积分抵扣
-        BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivide(
+        BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivideByMode(
+            RoundingMode.HALF_DOWN,
             BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.divide),
-            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal("100"), null)
-        );
+            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(100)));
         //会员信息
         UserRecord user = member.getUserRecordById(param.getWxUserInfo().getUserId());
         //赋值
@@ -805,6 +808,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setMoneyAfterDiscount(moneyAfterDiscount);
         vo.setExchang(vo.getDefaultMemberCard() == null ? NO : (CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()) ? YES : NO));
         vo.setScoreMaxDiscount(scoreMaxDiscount);
+        vo.setScoreProportion(scoreProportion);
         vo.setInvoiceSwitch(tradeCfg.getInvoice());
         vo.setCancelTime(tradeCfg.getCancelTime());
         vo.setActivityType(param.getActivityType());

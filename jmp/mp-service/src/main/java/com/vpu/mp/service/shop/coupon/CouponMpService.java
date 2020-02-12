@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCoupon;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.wxapp.coupon.CouponDelParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,24 +53,29 @@ public class CouponMpService extends ShopBaseService {
                 couponVo = new CouponPageDecorationVo();
                 //已领取或领取达到极限
                 couponVo.setStatus((byte)6);
-            } else if(couponVo.getReceivePerPerson() > 0){
-                //用户已 领取/发放 优惠券数
-                int getCouponAmount = getUserCouponAmount(coupon.getCouponId(),userId);
-                if(getCouponAmount >= couponVo.getReceivePerPerson()){
-                    //已领取或领取达到极限
-                    couponVo.setStatus((byte)5);
+            } else{
+                if(couponVo.getReceivePerPerson() > 0){
+                    //用户已 领取/发放 优惠券数
+                    int getCouponAmount = getUserCouponAmount(coupon.getCouponId(),userId);
+                    if(getCouponAmount >= couponVo.getReceivePerPerson()){
+                        //已领取或领取达到极限
+                        couponVo.setStatus((byte)5);
+                    }
                 }
-            }else if(couponVo.getEnabled().equals(BaseConstant.COUPON_ENABLED_DISABLED)){
-                //停用
-                couponVo.setStatus((byte)4);
-            }else if(couponVo.getValidityType().equals(BaseConstant.COUPON_VALIDITY_TYPE_FIXED)){
-                if(DateUtil.getLocalDateTime().after(couponVo.getEndTime())){
-                    //已过期
-                    couponVo.setStatus((byte)2);
+                if(couponVo.getEnabled().equals(BaseConstant.COUPON_ENABLED_DISABLED)){
+                    //停用
+                    couponVo.setStatus((byte)4);
                 }
-            }else if(couponVo.getSurplus() == 0 && couponVo.getLimitSurplusFlag().equals(BaseConstant.COUPON_LIMIT_SURPLUS_FLAG_LIMITED)){
-                //库存不足
-                couponVo.setStatus((byte)3);
+                if(couponVo.getValidityType().equals(BaseConstant.COUPON_VALIDITY_TYPE_FIXED)){
+                    if(DateUtil.getLocalDateTime().after(couponVo.getEndTime())){
+                        //已过期
+                        couponVo.setStatus((byte)2);
+                    }
+                }
+                if(couponVo.getSurplus() == 0 && couponVo.getLimitSurplusFlag().equals(BaseConstant.COUPON_LIMIT_SURPLUS_FLAG_LIMITED)){
+                    //库存不足
+                    couponVo.setStatus((byte)3);
+                }
             }
 
             couponList.add(couponVo);
@@ -208,5 +214,17 @@ public class CouponMpService extends ShopBaseService {
             couponGetStatus = 0;
         }
         return couponGetStatus;
+    }
+
+    /**
+     * 删除优惠券
+     * @param param
+     * @return
+     */
+    public Integer delCoupon(CouponDelParam param){
+        int res = db().update(CUSTOMER_AVAIL_COUPONS).set(CUSTOMER_AVAIL_COUPONS.DEL_FLAG, (byte) 1)
+            .where(CUSTOMER_AVAIL_COUPONS.ID.eq(param.getCouponId())).execute();
+        return res;
+
     }
 }

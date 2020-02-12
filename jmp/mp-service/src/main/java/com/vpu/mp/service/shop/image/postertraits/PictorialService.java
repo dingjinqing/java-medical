@@ -272,16 +272,19 @@ public class PictorialService extends ShopBaseService {
      * 根据过了条件查询指定的记录
      *
      * @param identityId 画报关联的实体ID，如goodsId
+     * @param activityId 活动id
      * @param action     画报类型，{@link com.vpu.mp.service.pojo.wxapp.share.PictorialConstant}
      * @param userId     用户Id
      * @return 画报详情
      */
-    public PictorialRecord getPictorialDao(Integer identityId, Byte action, Integer userId) {
+    public PictorialRecord getPictorialDao(Integer identityId,Integer activityId, Byte action, Integer userId) {
         Condition condition = PICTORIAL.IDENTITY_ID.eq(identityId).and(PICTORIAL.ACTION.eq(action));
         if (userId != null) {
             condition = condition.and(PICTORIAL.USER_ID.eq(userId));
         }
-
+        if (activityId != null) {
+            condition = condition.and(PICTORIAL.ACTIVITY_ID.eq(activityId));
+        }
 
         return db().selectFrom(PICTORIAL).where(PICTORIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(condition)

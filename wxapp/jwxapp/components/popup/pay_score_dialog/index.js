@@ -9,7 +9,8 @@ global.wxComponent({
     moneyPaid: Number,
     userScore:Number,
     scoreMax:Number,
-    scoreMin:Number
+    scoreMin:Number,
+    scoreProportion:Number
   },
 
   /**
@@ -34,8 +35,8 @@ global.wxComponent({
     },
     init(){
       let moneyPaid = this.data.moneyPaid
-      moneyPaid = moneyPaid * 100;
-      let scoreMax = this.data.scoreMax * 100
+      moneyPaid = moneyPaid * this.data.scoreProportion;
+      let scoreMax = this.data.scoreMax * this.data.scoreProportion
       let userScore = this.data.userScore
       let scoreMin = this.data.scoreMin
       let useMaxScore = parseInt(moneyPaid > scoreMax ? (scoreMax > userScore ? userScore : scoreMax) : (moneyPaid > userScore ? userScore : moneyPaid));
@@ -78,6 +79,9 @@ global.wxComponent({
         canConfirm = false
       } else if (scoreInPut > this.data.useMaxScore){
         msg = this.$t("pages.checkout.integralTips[7]", { useMaxScore: this.data.useMaxScore})
+        canConfirm = false
+      } else if (this.data.scoreProportion === 1000 && scoreInPut % 10 !== 0) {
+        msg = this.$t("pages.checkout.integralTips[8]")
         canConfirm = false
       }
       this.setData({
