@@ -814,6 +814,8 @@ public class OrderReadService extends ShopBaseService {
         //退运费校验
         if(OrderOperationJudgment.adminIsReturnShipingFee(order.getShippingFee(), returnShipingFee, true)){
             vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
+        }else {
+            vo.setCanReturnShippingFee(BigDecimal.ZERO);
         }
         //退款记录
         Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());
