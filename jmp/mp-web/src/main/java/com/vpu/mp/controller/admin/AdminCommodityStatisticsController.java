@@ -110,7 +110,7 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/commoditystatistics/productRanking")
     public JsonResult productRanking(@RequestBody @Validated RankingParam param) {
-        return success();
+        return success(shop().statisticsService.getGoodsRanking(param));
     }
 
 }
