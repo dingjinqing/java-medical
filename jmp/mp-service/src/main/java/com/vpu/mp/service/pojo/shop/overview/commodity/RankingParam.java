@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.overview.commodity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
 import java.sql.Date;
 import java.time.LocalDate;
 
@@ -13,19 +12,17 @@ import java.time.LocalDate;
  */
 @Data
 public class RankingParam {
-    @NotEmpty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date startTime;
-    @NotEmpty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date endTime;
-    // 0天，1月，2年
-    private byte unit;
+    // 0天，1月，2年 3周
+    private Byte unit;
 
     /**
      * 默认获取30天的数据
      */
-    private RankingParam defaultValue() {
+    public RankingParam defaultValue() {
         LocalDate now = LocalDate.now();
         this.endTime = Date.valueOf(now);
         this.startTime = Date.valueOf(now.minusDays(30));
