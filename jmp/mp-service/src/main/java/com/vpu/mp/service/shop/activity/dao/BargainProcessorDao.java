@@ -87,7 +87,7 @@ public class BargainProcessorDao extends ShopBaseService {
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(aByte)) {
             vo.setStartTime(bargainRecord.getStartTime().getTime() - now.getTime());
         }
-        vo.setEndTime(bargainRecord.getEndTime().getTime() - now.getTime());
+        vo.setEndTime((bargainRecord.getEndTime().getTime() - now.getTime())/1000);
 
         // 设置砍价展示价格
         vo.setBargainPrice(GoodsConstant.BARGAIN_TYPE_FIXED.equals(bargainRecord.getBargainType())?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
