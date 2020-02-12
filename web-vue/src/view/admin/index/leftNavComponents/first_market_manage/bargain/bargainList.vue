@@ -228,6 +228,15 @@
         />
       </div>
     </div>
+
+    <!-- 分享 -->
+    <shareDialog
+      :show="shareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="shareDialog=false"
+    />
+
   </div>
 
 </template>
@@ -235,8 +244,9 @@
 import { bargainList, updateBargain, deleteBargain, getDailyCutTimes, setDailyCutTimes, getBargainShareCode } from '@/api/admin/marketManage/bargain.js'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
+import shareDialog from '@/components/admin/shareDialog'
 export default {
-  components: { pagination, statusTab },
+  components: { pagination, statusTab, shareDialog },
   data () {
     return {
       activityName: this.$t('bargainList.bargain'),
@@ -247,6 +257,10 @@ export default {
       pageParams: {},
       loading: false,
       dailyCutTimes: 0,
+
+      shareDialog: false, // 分享弹窗
+      shareImg: '',
+      sharePath: '',
 
       // 表格原始数据
       originalData: []
@@ -376,8 +390,12 @@ export default {
 
     // 取活动分享二维码
     shareBargain (id) {
+      this.shareDialog = !this.shareDialog
       getBargainShareCode(id).then((res) => {
-        console.log(res)
+        if (res.error === 0) {
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+        }
       })
     },
 
