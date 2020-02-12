@@ -41,10 +41,13 @@
       </view>
     </view>
     <view class="lottery-opera">
-      <button class="lottery-btn" bindtap="drawNow">立即抽奖</button>
+      <button class="lottery-btn" wx:if="{{btnstatus === 1}}" bindtap="drawNow">立即抽奖</button>
+      <!-- <button class="lottery-btn" wx:elif="{{btnstatus === 2}}" open-type="share">去分享</button> -->
+      <button class="lottery-btn" wx:elif="{{btnstatus === 3}}" bindtap="drawNow">消耗{{userInfo.score}}积分抽奖</button>
+      <button class="lottery-btn" wx:else bindtap="noDraw">抽奖次数用光啦</button>
     </view>
     <view class="lottery-intro">
-      <view class="lottery-opportunities">消耗200积分可获得额外一次抽奖机会哦</view>
+      <view class="lottery-opportunities">消耗{{userInfo.score}}积分可获得额外一次抽奖机会哦</view>
       <view class="lottery-opportunities">分享给好友可获得额外一次抽奖机会哦</view>
       <view class="lottery-opportunities">您有10次抽奖机会</view>
     </view>
@@ -64,12 +67,15 @@
         <view>活动有效期：</view>
         <view>2020-1-13 09:45:10 至 2020-1-30 23:59:59</view>
         <view>活动说明：</view>
-        <view>1.用户没有免费抽奖次数和分享获取抽奖机会时，但是 拥有付费获取次数机会，则按钮展示消耗N积分抽奖， 按钮底部显示“消耗N积分获取额外一次抽奖机会奥” 点击则默认扣减用户积分，同时直接抽奖，若用户积分 不足，需要toast提示用户积分不足。</view>
-        <view>2.若用户付费次数用完，则不再展示该内容。</view>
+        <view>
+          <rich-text nodes="{{lotteryInfo.lotteryExplain}}"></rich-text>
+        </view>
       </view>
     </view>
   </view>
 </view>
 <!-- 中奖弹窗 -->
 <v-lottery-award-dialog show="{{awardDialogVisible}}"/>
+<!-- 未中奖弹窗 -->
+<v-lottery-no-award-dialog show="{{noAwardDialogVisible}}"/>
 <!-- <include src="/pages/common/footer.wxml"/> -->

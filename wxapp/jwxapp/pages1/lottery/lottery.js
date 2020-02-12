@@ -36,8 +36,11 @@ global.wxPage({
     minturns: 2, // 最少转几圈(当为2时，最少转1圈)
     speed: 100, // 抽奖转动速度
     awardDialogVisible: false, // 奖品弹窗
+    noAwardDialogVisible: false, // 未中奖弹窗
     lotteryId: '', 
-    lotteryType: ''
+    lotteryType: '', // 抽奖类型（抽奖次数来源） 1免费,2分享,3积分
+    lotterySource: 3, // 抽奖来源 1开屏有礼，2支付有礼，3分享，4评价有礼《5分享有礼
+    btnstatus: 1 // 按钮状态 1立即抽奖，2去分享，3消耗积分抽奖，4抽奖次数用光啦
   },
 
   /**
@@ -47,26 +50,40 @@ global.wxPage({
     // 初始化奖品，拿到奖品数据，加上谢谢参与
     let that = this
     let lotteryId = options.lotteryId
-    that.setData({
-      lotteryId: lotteryId
+    let lotterySource = options.lotterySource || 3
+    this.setData({
+      lotteryId: lotteryId,
+      lotterySource: lotterySource
     })
     // 可以获取到进入小程序的场景值，例如从分享卡片进来的
     let res = wx.getEnterOptionsSync()
     console.log(options)
     console.log(res)
-    util.api('/api/wxapp/lottery/get', function(res) {
+    this.lotteryRequest()
+  },
+
+  // 请求抽奖信息
+  lotteryRequest() {
+    let that = this
+    util.api('/api/wxapp/lottery/get', function (res) {
       console.log(res)
       if (res.error === 0) {
         let content = res.content
         that.initRawards(content.lotteryInfo.prizeList)
+        that.initRaffleButton(content.lotteryUserTimeInfo)
         that.setData({
           lotteryInfo: content.lotteryInfo,
           userInfo: content.lotteryUserTimeInfo
         })
+      } else {
+        util.showModal('提示', res.message, function () {
+          wx.navigateBack({})
+        })
       }
-    }, {id: lotteryId})
+    }, { id: that.data.lotteryId })
   },
 
+  // 初始化奖品
   initRawards (rawards) {
     let lotteryRawards = []
     for(let i = 0; i<9; i++) {
@@ -113,6 +130,38 @@ global.wxPage({
     })
   },
 
+  /**
+   * 初始化抽奖按钮
+   * 1.免费抽奖
+   * 2.分享抽奖
+   * 3.积分抽奖
+   * 4.不能抽奖
+   */
+  initRaffleButton(userInfo) {
+    let raffleInfo = userInfo
+    let btnstatus = 4
+    let canFreeTime = raffleInfo.freeTime - raffleInfo.usedFreeTime
+    let canShareTime = 0
+    if (raffleInfo.shareTime < raffleInfo.shareMaximum) {
+      canShareTime = raffleInfo.shareTime - raffleInfo.usedShareTime
+    } else {
+      canShareTime = raffleInfo.shareMaximum - raffleInfo.usedShareTime
+    }
+    console.log('canFreeTime:', canFreeTime, 'canShareTime', canShareTime)
+    if (canFreeTime + canShareTime > 0) {
+      btnstatus = 1
+    } else if (raffleInfo.shareMaximum > raffleInfo.shareTime && canShareTime === 0) {
+      btnstatus = 2
+    } else if (raffleInfo.scoreMaximum > raffleInfo.usedScoreTime) {
+      btnstatus = 3
+    } else {
+      btnstatus = 4
+    }
+    this.setData({
+      btnstatus: btnstatus
+    })
+  },
+
   // 立即抽奖
   drawNow () {
     // 抽奖动画
@@ -127,7 +176,15 @@ global.wxPage({
       }
     },{
       lotteryId: Number(that.data.lotteryId),
-      lotteryType: that.data.lotteryType
+      lotteryType: that.data.lotteryType,
+      lotterySource: that.data.lotterySource
+    })
+  },
+
+  // 未中奖弹窗
+  noDraw () {
+    this.setData({
+      noAwardDialogVisible: true
     })
   },
 
@@ -215,7 +272,21 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
+    let that = this
+    let username = util.getCache('nickName')
+    if (username === "" || username === null) {
+      username = "神秘的小伙伴"
+    }
+    util.api('/api/wxapp/lotteryshare', function(res) {
+      if (res.error === 0) {
+        that.lotteryRequest()
+      }
+    }, { lotteryId: that.data.lotteryId })
+    return {
+      path: '/pages1/lottery/lottery?lotteryId='+ that.data.lotteryId,
+      title: username + '邀你免费拿大奖，限时免费立即参加吧！！！',
+      imageUrl: imageUrl + '/image/wxapp/share_lott1.jpg'
+    }
   },
 
   /**
