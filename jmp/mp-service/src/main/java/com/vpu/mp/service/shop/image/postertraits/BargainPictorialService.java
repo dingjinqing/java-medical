@@ -91,6 +91,9 @@ public class BargainPictorialService extends ShopBaseService {
             }
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
         } else {
+            ShopRecord shop = saas.shop.getShopById(getShopId());
+            String shareDoc =Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_DOC, "messages",param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP));
+            shareInfoVo.setShareDoc(shareDoc);
             String imgPath = createBargainShareImg(bargainRecord, goodsRecord, param);
             shareInfoVo.setImgUrl(imgPath);
         }
