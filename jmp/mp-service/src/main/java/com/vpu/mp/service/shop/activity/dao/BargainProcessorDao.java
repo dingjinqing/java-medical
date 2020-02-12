@@ -85,7 +85,7 @@ public class BargainProcessorDao extends ShopBaseService {
         }
         // 活动未开始
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(aByte)) {
-            vo.setStartTime(bargainRecord.getStartTime().getTime() - now.getTime());
+            vo.setStartTime((bargainRecord.getStartTime().getTime() - now.getTime())/1000);
         }
         vo.setEndTime((bargainRecord.getEndTime().getTime() - now.getTime())/1000);
 
