@@ -19,8 +19,9 @@
           <view class='score_add' bindtap='toSign'>已领
             <text>{{user_center.sign_score.sign_data.receive_score}}</text>积分
           </view>
-          <view class="score_time" bindtap='toSign'>已经连续签到
+          <view class="score_time">{{user_center.sign_score.sign_data.sign_in_rules == 1 ? '本轮已连续签到' : '已经连续签到' }}
             <text>{{user_center.sign_score.sign_data.day}}</text> 天
+            <image src='{{imageUrl}}/image/wxapp/look_rule.png' class="score_question"  data-rule="{{user_center.sign_score.sign_rule}}" bindtap='lookRule'></image>
           </view>
         </block>
       </view>
@@ -70,7 +71,7 @@
 <view class='zhezhao' wx:if="{{is_sign == 1}}" bindtap='closeSign'></view>
 <view class='modal_sign' wx:if="{{is_sign == 1}}">
   <view>
-    <image src='{{imageUrl}}/image/wxapp/look_rule.png' class='look_rule' data-rule="{{user_center.sign_score.sign_rule}}" bindtap='lookRule' />
+    <!-- <image src='{{imageUrl}}/image/wxapp/look_rule.png' class='look_rule' /> -->
     <view class='modal_sign_head'>签到有礼</view>
     <view class='tip tip_one'>今日签到得到
       <text style='color:{{comColor}}'>{{user_center.sign_score.sign_data.receive_score}}</text> 积分
@@ -83,7 +84,7 @@
         <view class="score_day {{index + 1 == user_center.sign_score.sign_data.day ? 'today' : ''}}" style="color:{{index + 1 == user_center.sign_score.sign_data.day ? 'comColor' : ''}}">
           {{index + 1 == user_center.sign_score.sign_data.day ? '今' : index + 1}}天
         </view>
-        <view class="middle_line" wx:if='{{index != 0 && index != 7}}' style='background:{{somColor}}'></view>
+        <view class="middle_line" wx:if='{{index != 0 && index != 7 & index != 14 & index != 21 & index != 28}}' style='background:{{somColor}}'></view>
       </view>
     </view>
     <view class='tip tip_two' wx:if="{{user_center.sign_score.sign_data.tomoroow_receive > 0}}">连续签到
