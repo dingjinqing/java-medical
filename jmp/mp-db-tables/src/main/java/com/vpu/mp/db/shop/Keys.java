@@ -39,8 +39,6 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
-    public static final UniqueKey<PledgeRelatedRecord> KEY_B2C_PLEDGE_RELATED_PRIMARY = UniqueKeys0.KEY_B2C_PLEDGE_RELATED_PRIMARY;
-    public static final Identity<PledgeRelatedRecord, Integer> IDENTITY_PLEDGE_RELATED = Identities0.IDENTITY_PLEDGE_RELATED;
     public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_SEARCH_HISTORY_PRIMARY;
     public static final Identity<SearchHistoryRecord, Integer> IDENTITY_SEARCH_HISTORY = Identities0.IDENTITY_SEARCH_HISTORY;
     public static final UniqueKey<MpSceneRecordRecord> KEY_B2C_MP_SCENE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_MP_SCENE_RECORD_PRIMARY;
@@ -522,7 +520,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-        public static Identity<PledgeRelatedRecord, Integer> IDENTITY_PLEDGE_RELATED = Internal.createIdentity(PledgeRelated.PLEDGE_RELATED, PledgeRelated.PLEDGE_RELATED.ID);
         public static Identity<SearchHistoryRecord, Integer> IDENTITY_SEARCH_HISTORY = Internal.createIdentity(SearchHistory.SEARCH_HISTORY, SearchHistory.SEARCH_HISTORY.ID);
         public static Identity<MpSceneRecordRecord, Integer> IDENTITY_MP_SCENE_RECORD = Internal.createIdentity(MpSceneRecord.MP_SCENE_RECORD, MpSceneRecord.MP_SCENE_RECORD.ID);
         public static Identity<TradesRecord, Integer> IDENTITY_TRADES = Internal.createIdentity(Trades.TRADES, Trades.TRADES.ID);
@@ -743,7 +740,6 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<PledgeRelatedRecord> KEY_B2C_PLEDGE_RELATED_PRIMARY = Internal.createUniqueKey(PledgeRelated.PLEDGE_RELATED, "KEY_b2c_pledge_related_PRIMARY", PledgeRelated.PLEDGE_RELATED.ID);
         public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = Internal.createUniqueKey(SearchHistory.SEARCH_HISTORY, "KEY_b2c_search_history_PRIMARY", SearchHistory.SEARCH_HISTORY.ID);
         public static final UniqueKey<MpSceneRecordRecord> KEY_B2C_MP_SCENE_RECORD_PRIMARY = Internal.createUniqueKey(MpSceneRecord.MP_SCENE_RECORD, "KEY_b2c_mp_scene_record_PRIMARY", MpSceneRecord.MP_SCENE_RECORD.ID);
         public static final UniqueKey<TradesRecord> KEY_B2C_TRADES_PRIMARY = Internal.createUniqueKey(Trades.TRADES, "KEY_b2c_trades_PRIMARY", Trades.TRADES.ID);

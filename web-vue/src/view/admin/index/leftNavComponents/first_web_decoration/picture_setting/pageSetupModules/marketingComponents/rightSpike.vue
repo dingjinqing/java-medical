@@ -168,8 +168,7 @@ export default {
               isOnSale: row.is_on_sale,
               isDelete: row.is_delete,
               endTime: row.act_end_time,
-              sale_num: row.sale_num,
-              base_sale: row.base_sale
+              sale_num: row.sale_num
             }
           })
         }

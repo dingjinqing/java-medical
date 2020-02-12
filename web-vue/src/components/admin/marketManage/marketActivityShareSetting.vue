@@ -73,7 +73,6 @@
                 @click="addGoodsImg"
               >
                 <img
-                  style="width: 100%; height:100%;"
                   class="selectImage"
                   :src="srcList.src3"
                 >
