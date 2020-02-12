@@ -59,7 +59,11 @@
           prop="vaildDate"
           :label="$t('bargainList.vaildDate')"
           align="center"
+          width="170px"
         >
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -143,7 +147,7 @@
               >
                 <i
                   @click="puaseBargain(scope.row.id)"
-                  class="el-icon-remove-outline"
+                  class="el-icon-circle-close"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -176,7 +180,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-s-order"
+                  class="el-icon-tickets"
                   @click="checkOrderList(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -187,7 +191,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-user"
+                  class="el-icon-user-solid"
                   @click="getNewUserDetail(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -198,7 +202,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-zoom-in"
+                  class="el-icon-s-unfold"
                   @click="bargainingUser(scope.row.id)"
                 ></i>
               </el-tooltip>
@@ -209,7 +213,7 @@
                 placement="top"
               >
                 <i
-                  class="el-icon-s-order"
+                  class="el-icon-s-data"
                   @click="effectData(scope.row.id,scope.row.startTime,scope.row.endTime)"
                 ></i>
               </el-tooltip>
@@ -295,7 +299,7 @@ export default {
     handleData (data) {
       data.map((item, index) => {
         item.bargainType = item.bargainType === 0 ? this.$t('bargainList.bargainType0') : this.$t('bargainList.bargainType1')
-        item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
+        // item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
         item.statusName = this.getActStatusString(item.currentState)
       })
       this.tableData = data
