@@ -212,7 +212,7 @@ public class BargainPictorialService extends ShopBaseService {
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
             mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN));
         } else {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO, String.format("record_id=%d", bargainRecord.getId()));
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO, String.format("record_id=%d", 4));
         }
         BufferedImage qrCodeImage;
         try {
