@@ -43,7 +43,7 @@ ALTER TABLE `b2c_pictorial` ADD COLUMN `activity_id` int(10) DEFAULT NULL COMMEN
 ALTER TABLE `b2c_group_buy_define` ADD  COLUMN `level` int(11) NOT NULL DEFAULT 0 COMMENT '优先级' ;
 ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAULT 0 COMMENT '初始成团数' ;
 -- 2020-02-11 新加服务承诺关联表和服务承诺表新加类型和优先级字段
-CREATE TABLE `b2c_pledge_related` (
+CREATE TABLE if not exists `b2c_pledge_related` (
   `id` int(9) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `pledge_id` int(9) NOT NULL DEFAULT '0' COMMENT '承诺id',
   `type` tinyint(1) DEFAULT NULL COMMENT '指定商品范围:1 商品id,2 商家分类id,3 商品品牌id',
