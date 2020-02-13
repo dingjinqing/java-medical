@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -21,8 +22,10 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +57,8 @@ public class GroupBuyTaskService  extends ShopBaseService {
     private OrderInfoService orderInfoService;
     @Autowired
     private EsDataUpdateMqService esDataUpdateMqService;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
 
     /**
      * 监控goodsType
@@ -275,6 +280,9 @@ public class GroupBuyTaskService  extends ShopBaseService {
     private void refund(List<String> orderSnList){
         orderSnList.forEach(orderSn->{
             OrderInfoRecord orderInfo = orderInfoService.getOrderByOrderSn(orderSn);
+            Result<OrderGoodsRecord> oGoods = orderGoodsService.getByOrderId(orderInfo.getOrderId());
+
+            //组装退款param
             RefundParam param = new RefundParam();
             param.setAction((byte)OrderServiceCode.RETURN.ordinal());//1是退款
             param.setIsMp(OrderConstant.IS_MP_AUTO);
@@ -283,6 +291,13 @@ public class GroupBuyTaskService  extends ShopBaseService {
             param.setReturnType(OrderConstant.RT_ONLY_MONEY);
             param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()));
             param.setShippingFee(orderInfo.getShippingFee());
+            oGoods.forEach(orderGoods->{
+                RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();
+                returnGoods.setRecId(orderGoods.getRecId());
+                returnGoods.setReturnNumber(orderGoods.getGoodsNumber());
+                param.getReturnGoods().add(returnGoods);
+            });
+
             ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
             if(executeResult == null || !executeResult.isSuccess()){
                 throw new BusinessException(executeResult.getErrorCode());
