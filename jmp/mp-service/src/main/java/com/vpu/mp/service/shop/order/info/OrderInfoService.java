@@ -827,11 +827,6 @@ public class OrderInfoService extends ShopBaseService {
             //TODO
             order.setVerifyCode("");
         }
-        //支付方式
-
-        if(Boolean.FALSE){
-
-        }
         //必填信息初始化orderSn
         if(param.getMust() != null) {
             param.getMust().setOrderSn(orderSn);

@@ -253,4 +253,14 @@ public class AdminShopDecorateController extends AdminBaseController {
         shop().config.searchCfg.setSearchConfig(config);
         return success();
     }
+
+
+    /**
+     * 全部页面模板
+     * @return
+     */
+    @GetMapping(value = "/admin/decorate/templates")
+    public JsonResult getTemplates() {
+        return success(saas.shop.decoration.getAll());
+    }
 }

@@ -140,22 +140,22 @@
                   <div style="width:50%;float: left;">
                     <div>{{ $t('distribution.proportionTip3') }}
                       <el-input
-                        v-model.number="scope.row.fanliRatio"
+                        v-model="scope.row.fanliRatio"
                         size="mini"
                         style="width: 50px;"
                       ></el-input> %
                     </div>
                     <div style="margin-top: 10px;">{{ $t('distribution.proportionTip4') }}
                       <el-input
-                        v-model.number="scope.row.rebateRatio"
+                        v-model="scope.row.rebateRatio"
                         size="mini"
                         style="width: 50px;"
                       ></el-input> %
                     </div>
                   </div>
                   <div
-                    style="width:50%;float: left;"
-                    v-if="scope.row.level === '1'"
+                    style="width:50%;float: left;margin-top: 10px;"
+                    v-if="scope.row.levelId === 1"
                   >
                     {{ $t('distribution.proportionTip5') }}
                   </div>
@@ -314,8 +314,8 @@ export default {
       tableData: [{
         levelId: 1,
         levelName: '分销员测试',
-        fanliRatio: 0, // 直接比例
-        rebateRatio: 0, // 间接比例
+        fanliRatio: null, // 直接比例
+        rebateRatio: null, // 间接比例
         firstRatio: null // 首单返利
       }, {
         levelId: 2,
@@ -370,10 +370,11 @@ export default {
   },
   mounted () {
     this.langDefault()
-    this.initDataList()
-    // 编辑初始化
     if (this.isEdite === true) {
+      // 编辑初始化
       this.editSeckillInit(this.editId)
+    } else {
+      this.initDataList()
     }
   },
   methods: {
@@ -413,7 +414,6 @@ export default {
         }
       })
       this.tableData = data
-      console.log(this.tableData)
     },
 
     // 编辑初始化
@@ -460,6 +460,8 @@ export default {
 
           this.platClass = data.recommendSortId.split(',')
           this.platClass = this.platClass.map(Number)
+
+          this.handleData(this.tableData)
         }
       })
     },
@@ -473,25 +475,25 @@ export default {
       this.form.endTime = this.form.validity[1]
 
       // 直接返利
-      this.form.fanliRatio = this.tableData[0].fanliRatio
-      this.form.fanliRatio_2 = this.tableData[1].fanliRatio
-      this.form.fanliRatio_3 = this.tableData[2].fanliRatio
-      this.form.fanliRatio_4 = this.tableData[3].fanliRatio
-      this.form.fanliRatio_5 = this.tableData[4].fanliRatio
+      this.form.fanliRatio = Number(this.tableData[0].fanliRatio)
+      this.form.fanliRatio_2 = Number(this.tableData[1].fanliRatio)
+      this.form.fanliRatio_3 = Number(this.tableData[2].fanliRatio)
+      this.form.fanliRatio_4 = Number(this.tableData[3].fanliRatio)
+      this.form.fanliRatio_5 = Number(this.tableData[4].fanliRatio)
 
       // 间接返利
-      this.form.rebateRatio = this.tableData[0].rebateRatio
-      this.form.rebateRatio_2 = this.tableData[1].rebateRatio
-      this.form.rebateRatio_3 = this.tableData[2].rebateRatio
-      this.form.rebateRatio_4 = this.tableData[3].rebateRatio
-      this.form.rebateRatio_5 = this.tableData[4].rebateRatio
+      this.form.rebateRatio = Number(this.tableData[0].rebateRatio)
+      this.form.rebateRatio_2 = Number(this.tableData[1].rebateRatio)
+      this.form.rebateRatio_3 = Number(this.tableData[2].rebateRatio)
+      this.form.rebateRatio_4 = Number(this.tableData[3].rebateRatio)
+      this.form.rebateRatio_5 = Number(this.tableData[4].rebateRatio)
 
       // 首单返利
-      this.form.firstRatio = this.tableData[0].firstRatio
-      this.form.firstRatio_2 = this.tableData[1].firstRatio
-      this.form.firstRatio_3 = this.tableData[2].firstRatio
-      this.form.firstRatio_4 = this.tableData[3].firstRatio
-      this.form.firstRatio_5 = this.tableData[4].firstRatio
+      this.form.firstRatio = Number(this.tableData[0].firstRatio)
+      this.form.firstRatio_2 = Number(this.tableData[1].firstRatio)
+      this.form.firstRatio_3 = Number(this.tableData[2].firstRatio)
+      this.form.firstRatio_4 = Number(this.tableData[3].firstRatio)
+      this.form.firstRatio_5 = Number(this.tableData[4].firstRatio)
 
       // 返利商品
       this.form.recommendGoodsId = this.goodsInfo.toString() // 商品

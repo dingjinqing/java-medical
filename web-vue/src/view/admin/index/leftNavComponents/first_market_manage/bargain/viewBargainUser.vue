@@ -9,7 +9,7 @@
     <wrapper style="padding: 0 30px">
       <section class="bargainUserMain">
         <div class="bargainUserInfo">
-          <span>{{$t('marketCommon.username')}}</span>
+          <span>{{$t('marketCommon.username')+"："}}</span>
           <el-input
             v-model="requestParams.username"
             size="small"
@@ -17,7 +17,7 @@
           ></el-input>
         </div>
         <div class="bargainUserInfo">
-          <span>{{$t('marketCommon.mobile')}}</span>
+          <span>{{$t('marketCommon.mobile')+"："}}</span>
           <el-input
             v-model="requestParams.mobile"
             size="small"
@@ -25,7 +25,7 @@
           ></el-input>
         </div>
         <div class="bargainUserInfo">
-          <span>{{$t('bargainList.bargainStatus')}}</span>
+          <span>{{$t('bargainList.bargainStatus')+"："}}</span>
           <el-select
             v-model="requestParams.status"
             :placeholder="$t('marketCommon.selectPlaceholder')"
@@ -50,7 +50,7 @@
       </section>
       <section class="bargainUserMain infoBottom">
         <div style="display:flex">
-          <span style="height:32px;line-height:32px;margin-right:20px">{{$t('bargainList.initiatedTime')}}</span>
+          <span style="height:32px;line-height:32px;margin-right:5px">{{$t('bargainList.initiatedTime')+"："}}</span>
           <el-date-picker
             v-model="createDate"
             type="datetimerange"
@@ -259,7 +259,7 @@ export default {
   .bargainUserInfo {
     margin-right: 50px;
     span {
-      margin-right: 20px;
+      margin-right: 5px;
     }
     .inputWidth {
       width: 150px;
@@ -275,8 +275,5 @@ export default {
   height: 36px;
   color: #000;
   padding: 8px 10px;
-}
-.table_list {
-  position: relative;
 }
 </style>

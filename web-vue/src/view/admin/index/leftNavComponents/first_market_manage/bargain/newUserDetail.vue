@@ -8,7 +8,7 @@
     <wrapper>
       <section class="newuserDetailContent">
         <div>
-          <span>{{$t('marketCommon.mobile')}}</span>
+          <span>{{$t('marketCommon.mobile')+"："}}</span>
           <el-input
             v-model="requestParams.mobile"
             class="inputWidth"
@@ -17,7 +17,7 @@
           ></el-input>
         </div>
         <div>
-          <span>{{$t('marketCommon.username')}}</span>
+          <span>{{$t('marketCommon.username')+"："}}</span>
           <el-input
             v-model="requestParams.userName"
             class="inputWidth"
@@ -26,7 +26,7 @@
           ></el-input>
         </div>
         <div>
-          <span>{{$t('marketCommon.inviter')}}</span>
+          <span>{{$t('marketCommon.inviter')+"："}}</span>
           <el-input
             v-model="requestParams.inviteUserName"
             class="inputWidth"
@@ -151,9 +151,9 @@ export default {
 .newuserDetailContent {
   display: flex;
   div {
-    margin-right: 10px;
+    margin-right: 20px;
     span {
-      margin-right: 10px;
+      margin-right: 5px;
     }
     .inputWidth {
       width: 150px;
@@ -170,8 +170,5 @@ export default {
   height: 36px;
   color: #000;
   padding: 8px 10px;
-}
-.table_list {
-  position: relative;
 }
 </style>

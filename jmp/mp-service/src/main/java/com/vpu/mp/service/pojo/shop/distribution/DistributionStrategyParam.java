@@ -84,12 +84,11 @@ public class DistributionStrategyParam {
 	/**
 	 * 首单返利比例
 	 */
-	private Byte firstRatio;
-	private Byte firstRatio_2;
-	private Byte firstRatio_3;
-	private Byte firstRatio_4;
-	private Byte firstRatio_5;
-
+	private Double firstRatio;
+	private Double firstRatio_2;
+	private Double firstRatio_3;
+	private Double firstRatio_4;
+	private Double firstRatio_5;
 
 	/**
 	 * 返利商品类型 0：全部商品；1：部分商品
