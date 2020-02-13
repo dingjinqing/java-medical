@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
@@ -19,6 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class WxAppPictorialController extends WxAppBaseController  {
+
+    /**
+     * 小程序-商品详情页-多图下载
+     * @param param 只需要{@link GoodsShareBaseParam#targetId}接收商品id，其余参数不需要
+     * @return base64 数组
+     */
+    @PostMapping("/api/wxapp/goods/download/images")
+    public JsonResult getGoodsImagesBase64(@RequestBody GoodsShareBaseParam param){
+        if (param.getTargetId() == null) {
+            return fail(JsonResultCode.GOODS_ID_IS_NULL);
+        }
+        return success(shop().pictorialIntegrationService.getGoodsImagesBase64(param.getTargetId()));
+    }
 
     /**
      * 获取普通商品分享图片信息
