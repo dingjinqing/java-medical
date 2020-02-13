@@ -39,7 +39,7 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
                 param.getFactNameList().stream().map(this::getFactByName).collect(Collectors.toList())
             );
         }
-        if( CollectionUtils.isEmpty(param.getGoodsIds()) ){
+        if( !CollectionUtils.isEmpty(param.getGoodsIds()) ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsIds()));
         }
         if( null != shopId ){

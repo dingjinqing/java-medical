@@ -32,7 +32,8 @@ public class GoodsPageListVoConverter implements EsGoodsConvertInterface<GoodsPa
             vo.setPrdMinShopPrice(esGoods.getMinSpecPrdPrices());
         }
         vo.setIsDefaultPrd(esGoods.getDefPrd());
-        if( esGoods.getDefPrd() && StringUtils.isNotBlank(esGoods.getPrdJson()) ){
+
+        if( esGoods.getDefPrd()!= null && esGoods.getDefPrd() && StringUtils.isNotBlank(esGoods.getPrdJson()) ){
             List<GoodsPrdMpVo> list = strToGoodsPrdMpVos(esGoods.getPrdJson());
             vo.setPrdId(CollectionUtils.isNotEmpty(list)?list.get(0).getPrdId():0);
         }
