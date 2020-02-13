@@ -409,7 +409,10 @@
       </span>
     </el-dialog>
     <!--批量弹窗设置-->
-    <BatchSetupDialog :dialogVisible.sync="batchSetupVisible" />
+    <BatchSetupDialog
+      :checkGoodsData="nowCheckAll"
+      :dialogVisible.sync="batchSetupVisible"
+    />
   </div>
 </template>
 <script>

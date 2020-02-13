@@ -103,3 +103,11 @@ export function getGoodsNum (data) {
     data: data
   })
 }
+
+// 装修模板弹窗数据获取
+export function getTemplatesData () {
+  return service({
+    url: '/api/admin/decorate/templates',
+    method: 'get'
+  })
+}
