@@ -4,7 +4,11 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
@@ -21,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -42,6 +47,7 @@ import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Result;
@@ -2092,7 +2098,26 @@ public class MemberCardService extends ShopBaseService {
 		return bean;
 	}
 	
-	
+	//会员导出
+	public List<CardHolderExcelVo> getAllCardHolderExport(CardHolderParam param,String lang) {
+		List<CardHolderExcelVo> allCardHolderAll = cardDao.getAllCardHolderAll(param);
+		String expire = Util.translateMessage(lang, JsonResultMessage.GET_TEMPLATE_NAME, "excel",
+				"messages");
+		String noOut = Util.translateMessage(lang, JsonResultMessage.GET_TEMPLATE_NAME, "excel",
+				"messages");
+		for (CardHolderExcelVo item : allCardHolderAll) {
+			if (item.getExpireTime() != null &&
+					DateUtil.getLocalDateTime().after(item.getExpireTime())) {
+				item.setNflag(expire);
+			}else {
+				item.setNflag(noOut);
+			}
+		}
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(allCardHolderAll, CardHolderExcelVo.class);
+		return allCardHolderAll;
+	}
 	
 	
 	

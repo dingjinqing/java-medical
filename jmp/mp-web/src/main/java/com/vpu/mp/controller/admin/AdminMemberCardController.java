@@ -155,7 +155,12 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(result);
 	}
 	
-	
+	@PostMapping("/cardholder/import/export")
+	public JsonResult getAllCardHoldersExport(@RequestBody CardHolderParam param) {
+		logger().info("获取所有持卡会员");
+		PageResult<CardHolderVo> result = shop().member.card.getAllCardHolder(param);
+		return success(result);
+	}
 	
 	/**
 	 * 获取会员卡领取详情
