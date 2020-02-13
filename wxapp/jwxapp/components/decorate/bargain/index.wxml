@@ -41,10 +41,10 @@
 					<view class='more_unit' wx:if="{{m.list_style==1}}" style="color:#666;font-size:24rpx">{{i18n.$t(localePack,'components.decorate.onlyLeft')}}{{item.bargain_num}}{{item.unit}}</view>
 				</view>
 				<view style="{{m.list_style==1?'width:100%;display:flex;justify-content:space-between;align-items:flex-end':''}}">
-					<view class='price_info' style="{{m.list_style==1?'padding-left:0;display:flex;flex-direction:column':''}}">
+					<view class='price_info' style="{{m.list_style==1?'padding-left:0;display:flex;align-items: center;':''}}">
 						<text class='zero' style='color:{{comColor}}'>￥<text class="text">{{item.bargain_price==null?'0.00':item.bargain_price}}</text>
 						</text>
-						<text class='original_price' wx:if="{{m.goods_price == true && item.max_price != null}}">￥{{item.max_price?'0.00':item.max_price}}</text>
+						<text class='original_price' wx:if="{{m.goods_price == true && item.max_price != null}}">￥{{item.max_price}}</text>
 					</view>
 					<view wx:if="{{m.list_style==0}}" class='goods_names'>{{item.goods_name}}</view>
 					<view class='number_info clearfix' style="{{m.list_style==1?'padding-left:0;display:flex;flex-direction:column;margin:0;margin-bottom:15rpx':''}}">
