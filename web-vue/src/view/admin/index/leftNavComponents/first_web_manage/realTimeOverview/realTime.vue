@@ -82,7 +82,6 @@ export default {
   methods: {
     // 页面初始化数据
     loadData () {
-      console.log('echart-dom:', document.getElementById('realTimeCharts'))
       realTime(this.param).then(res => {
         console.log('realTime:', res)
         if (res.error === 0) {
@@ -184,12 +183,12 @@ export default {
         padding-left: 20px;
         padding-top: 10px;
         float: left;
-        height: 500px;
+        /*height: 300px;*/
         width: 50%;
       }
       .right{
         float: left;
-        height: 500px;
+        /*height: 300px;*/
         width: 50%;
         .table{
           border: 1px gray solid;

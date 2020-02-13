@@ -355,12 +355,12 @@ public class BargainService extends ShopBaseService  {
      * @return bool
      */
     public boolean isOnGoingBargain(int goodsId,Timestamp startTime,Timestamp endTime){
-        Record r = db().select(BARGAIN.ID).from(BARGAIN).where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchOne();
+        Record r = db().select(BARGAIN.ID).from(BARGAIN).where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchAny();
         return r != null;
     }
 
     private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
-        return (BARGAIN.START_TIME.gt(startTime).and(BARGAIN.START_TIME.lt(endTime))).or(BARGAIN.END_TIME.gt(startTime).and(BARGAIN.END_TIME.lt(endTime))).or(BARGAIN.START_TIME.lt(startTime).and(BARGAIN.END_TIME.gt(endTime)));
+        return (BARGAIN.START_TIME.ge(startTime).and(BARGAIN.START_TIME.le(endTime))).or(BARGAIN.END_TIME.ge(startTime).and(BARGAIN.END_TIME.le(endTime))).or(BARGAIN.START_TIME.le(startTime).and(BARGAIN.END_TIME.ge(endTime)));
     }
 
     /**
