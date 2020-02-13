@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.rabbitmq.client.Channel;
 import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.saas.SaasApplication;
 
@@ -35,6 +36,8 @@ public class UserImportExcelListener implements BaseRabbitHandler {
 		saas.getShopApp(param.getShopId()).member.userImportService.checkList(param.getModels(), param.getCardId(),
 				param.getGroupId(), param.getTagId(),param.getLang());
 		log.info("用户导入结束");
+		log.info("param.getTaskJobId()"+param.getTaskJobId());
+	    saas.taskJobMainService.updateProgress(Util.toJson(param),param.getTaskJobId(),0,1);
 	}
 
 	@Override
