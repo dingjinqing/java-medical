@@ -1,18 +1,19 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
-
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.jooq.tools.StringUtils;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
 import com.vpu.mp.service.pojo.saas.shop.MpDecorationListQueryParam;
+import jodd.util.StringUtil;
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
 
 /**
  * 
@@ -45,9 +46,15 @@ public class MpDecorationService extends MainBaseService {
 		return select;
 	}
 
-	public Result<DecorationTemplateRecord> getAll() {
-		return db().fetch(DECORATION_TEMPLATE, DECORATION_TEMPLATE.PAGE_ENABLED.eq((byte) 1));
-	}
+    public List<DecorationTemplatePojo> getAll() {
+        List<DecorationTemplatePojo> list = db().selectFrom(DECORATION_TEMPLATE).where(DECORATION_TEMPLATE.PAGE_ENABLED.eq((byte)1)).fetchInto(DecorationTemplatePojo.class);
+        list.forEach(t->{
+            if(StringUtil.isNotEmpty(t.getPageImg())){
+                t.setPageImg(saas.sysImage.imageUrl(t.getPageImg()));
+            }
+        });
+        return list;
+    }
 	
 	/**
 	 * 得到系统模板
