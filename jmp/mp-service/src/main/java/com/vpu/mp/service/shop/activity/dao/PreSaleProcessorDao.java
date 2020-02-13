@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSaleMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSalePrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -258,7 +259,10 @@ public class PreSaleProcessorDao extends PreSaleService {
             param.setMemberCardNo(StringUtils.EMPTY);
             param.setCouponSn(StringUtils.EMPTY);
         }
-
+        //禁止货到付款
+        if(param.getPaymentList() != null){
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         OrderBeforeParam.Goods goods = param.getGoods().get(0);
         for (ProductVo productVo : activityInfo.getProducts()) {
             if(productVo.getProductId().equals(goods.getProductId())){
