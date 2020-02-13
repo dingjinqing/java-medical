@@ -389,7 +389,7 @@
       :visible.sync="bottomDialogVisible"
       width="30%"
     >
-      <div style="text-align:center">{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':''}}</div>
+      <div style="text-align:center">{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${pageParams.totalRows}条数据,是否确认导出？`:`根据以下条件筛选出${nowCheckAll.length}条数据,是否确认导出？`}}</div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -397,7 +397,7 @@
         <el-button @click="bottomDialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="bottomDialogVisible = false"
+          @click="handleToBottomClickSure()"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -450,7 +450,8 @@ export default {
         label: '批量导出勾选结果'
       }],
       bottomDialogVisible: false, // 底部点击弹窗flag
-      isBottomClickIndex: 0 // 底部按钮点击flag
+      isBottomClickIndex: 0, // 底部按钮点击flag
+      nowCheckAll: [] // 当前选中的总数
     }
   },
   watch: {
@@ -461,6 +462,7 @@ export default {
           console.log(item.check)
           return item.check
         })
+        this.nowCheckAll = flag
         if (flag.length === newData.length) {
           this.allChecked = true
         } else {
@@ -780,6 +782,25 @@ export default {
         return item.check
       })
       if (flag.length) return true
+    },
+    // 底部下架、删除等弹窗确定综合处理
+    handleToBottomClickSure () {
+      let arr = []
+      switch (this.isBottomClickIndex) {
+        case 0:
+          console.log(this.nowCheckAll)
+          this.nowCheckAll.forEach((item, index) => {
+            arr.push(item.goodsId)
+          })
+          batchOperateGoods({ goodsIds: arr, isOnSale: 0 }).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.fetchGoodsData()
+            }
+          })
+          break
+      }
+      this.bottomDialogVisible = false
     }
   },
   mounted () {
