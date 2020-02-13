@@ -408,6 +408,8 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+    <!--批量弹窗设置-->
+    <BatchSetupDialog :dialogVisible.sync="batchSetupVisible" />
   </div>
 </template>
 <script>
@@ -420,7 +422,11 @@ import goodsExportConfirmDialog from './goodsExportConfirmDialog'
 
 export default {
   name: 'saleOnAndInStock',
-  components: { pagination, goodsExportConfirmDialog },
+  components: {
+    pagination,
+    goodsExportConfirmDialog,
+    BatchSetupDialog: () => import('./batchSetupDialog') // 批量设置弹窗
+  },
   data () {
     return {
       filterData: {},
@@ -458,7 +464,8 @@ export default {
       }],
       bottomDialogVisible: false, // 底部点击弹窗flag
       isBottomClickIndex: 0, // 底部按钮点击flag
-      nowCheckAll: [] // 当前选中的总数
+      nowCheckAll: [], // 当前选中的总数
+      batchSetupVisible: false // 批量设置弹窗flag
     }
   },
   watch: {
@@ -781,6 +788,8 @@ export default {
           this.isBottomClickIndex = index
           break
         case 2:
+          this.batchSetupVisible = true
+          console.log(this.batchSetupVisible)
           break
       }
     },
