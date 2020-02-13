@@ -16,6 +16,8 @@
         >
           <el-input
             v-model="form.strategyName"
+            size="small"
+            class="inputWidth"
             :placeholder="$t('distribution.strategyTip1')"
           ></el-input>
         </el-form-item>
@@ -25,6 +27,8 @@
         >
           <el-input
             v-model.number="form.strategyLevel"
+            size="small"
+            class="inputWidth"
             :placeholder="$t('distribution.strategyTip2')"
           ></el-input>
           <div class="text">{{ $t('distribution.strategyTip3') }}</div>
@@ -35,6 +39,7 @@
         >
           <el-date-picker
             v-model="form.validity"
+            size="small"
             type="datetimerange"
             :range-separator="$t('seckill.to')"
             :start-placeholder="$t('seckill.startTime')"
@@ -109,6 +114,8 @@
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.levelName"
+                  size="small"
+                  class="inputWidth"
                   disabled
                 ></el-input>
               </template>
@@ -183,7 +190,32 @@
           >{{ $t('distribution.authorityTip1') }}</el-checkbox>
           <span class="tips">{{ $t('distribution.authorityTip2') }}</span>
         </el-form-item>
-        <el-form-item
+
+        <div style="height: 40px;line-height: 40px;background: #f8f8f8;padding-left: 10px;margin-bottom: 20px;">分销商品</div>
+        <div style="margin-left: 120px;">
+          <el-radio-group v-model="form.recommendType">
+            <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
+            <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
+          </el-radio-group>
+          <div v-if="form.recommendType === 1">
+            <div
+              v-for="(item,index) in storeArr"
+              :key="index"
+              class="storeContent"
+            >
+              <el-button
+                @click="hanldeToAddGoodS(index)"
+                size="small"
+              >
+                <i class="el-icon-plus"></i> {{ item.name }}
+              </el-button>
+              <span v-if="index === 0">{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
+              <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
+              <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
+            </div>
+          </div>
+        </div>
+        <!-- <el-form-item
           :label="$t('distribution.distributionGoods')"
           prop=""
         >
@@ -205,7 +237,7 @@
               <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
             </div>
           </div>
-        </el-form-item>
+        </el-form-item> -->
 
       </el-form>
 
@@ -356,10 +388,12 @@ export default {
 
     // 表格数据处理
     handleData (data) {
-      console.log(this.tableData)
-      this.tableData.map((item, index) => {
-        item.levelId = data[index].levelId
-        item.levelName = data[index].levelName
+      data.map((item, index) => {
+        if (item.levelStatus === 0) {
+          item.levelName = item.levelName + '(已停用)'
+        } else {
+          item.levelName = item.levelName + '(已启用)'
+        }
         switch (item.levelId) {
           case 1:
             item.levelText = '一级'
@@ -378,6 +412,7 @@ export default {
             break
         }
       })
+      this.tableData = data
       console.log(this.tableData)
     },
 
@@ -546,9 +581,12 @@ export default {
 }
 </script>
 <style scoped>
-.el-input {
-  width: 200px;
+.inputWidth {
+  width: 170px;
 }
+/* .el-input {
+  width: 200px;
+} */
 .container {
   margin-top: 10px;
   padding: 10px;
