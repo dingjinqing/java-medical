@@ -266,7 +266,7 @@ public class UserImportService extends ShopBaseService {
 		String cardId = param.getCardId();
 		Integer groupId = param.getGroupId();
 		Integer tagId = param.getTagId();
-		UserImportMqParam mqParam = new UserImportMqParam(models, lang, getShopId(), cardId, groupId, tagId);
+		UserImportMqParam mqParam = new UserImportMqParam(models, lang, getShopId(), cardId, groupId, tagId,null);
 		logger().info("会员导入发队列");
 		saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
 				TaskJobEnum.OTHER_MQ.getExecutionType());
