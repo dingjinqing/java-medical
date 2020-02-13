@@ -64,7 +64,7 @@ export default {
       const { standard } = this
       const allCode = standard ? 0 : null
       if (status.status === allCode) {
-        return this.$t('statusTab.all') + ' ' + this.activityName + ' ' + this.$t('statusTab.activity')
+        return this.$t('statusTab.all') + this.activityName + this.$t('statusTab.activity')
       } else if (status.status === 1) {
         return this.$t('statusTab.processing')
       } else if (status.status === 2) {

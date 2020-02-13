@@ -1,12 +1,13 @@
 <template>
   <div class="content">
-    <div class="main">
+    <div class="search-condition">
       <marketOrderSearchTab
         :requestParams="requestParams"
         @filter="initDataList"
         @export="exportDataList"
       />
-
+    </div>
+    <div class="main">
       <div class="table_box">
         <el-table
           v-loading="loading"
@@ -43,6 +44,7 @@
                   :src="$imageHost+'/image/admin/icon_jia.png'"
                   alt=""
                   class="goods_img"
+                  style="width:25px;height:25px"
                 >
                 <span class="goods_name">{{goodsItem.goodsName}}</span>
               </div>
@@ -64,7 +66,7 @@
           </el-table-column>
           <el-table-column
             prop="createTime"
-            :label="$t('marketCommon.price')"
+            :label="$t('marketCommon.orderTime')"
             align="center"
           >
           </el-table-column>
@@ -190,6 +192,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.search-condition {
+  padding: 10px 10px 0;
+}
 .main {
   padding: 10px;
   .table_box {
