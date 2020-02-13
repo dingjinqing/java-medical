@@ -175,7 +175,8 @@ export default {
             act_status: row.status,
             is_on_sale: row.isOnSale,
             is_delete: row.isDelete,
-            act_end_time: row.endTime
+            act_end_time: row.endTime,
+            cur_idx: row.cur_idx
           }
         })
         this.$set(this.data, 'bargain_goods', datas)
