@@ -141,23 +141,25 @@
                     <div>{{ $t('distribution.proportionTip3') }}
                       <el-input
                         v-model="scope.row.fanliRatio"
+                        @change="checkPercentage(scope.$index)"
                         size="mini"
-                        style="width: 50px;"
+                        style="width: 55px;"
                       ></el-input> %
                     </div>
                     <div style="margin-top: 10px;">{{ $t('distribution.proportionTip4') }}
                       <el-input
                         v-model="scope.row.rebateRatio"
+                        @change="checkPercentage(scope.$index)"
                         size="mini"
-                        style="width: 50px;"
+                        style="width: 55px;"
                       ></el-input> %
                     </div>
                   </div>
                   <div
                     style="width:50%;float: left;margin-top: 10px;"
-                    v-if="scope.row.levelId === 1"
+                    v-if="scope.row.lowValue || scope.row.heightValue || scope.row.lowValue === 0 || scope.row.heightValue === 0"
                   >
-                    {{ $t('distribution.proportionTip5') }}
+                    {{ $t('distribution.proportionTip5') }} {{ scope.row.lowValue }}%-{{ scope.row.heightValue }}%
                   </div>
                 </div>
                 <div
@@ -166,8 +168,9 @@
                 >{{ $t('distribution.proportionTip6') }}
                   <el-input
                     v-model="scope.row.firstRatio"
+                    @change="checkFirstPercentage(scope.$index)"
                     size="mini"
-                    style="width: 50px;"
+                    style="width: 55px;"
                   ></el-input> %
                 </div>
               </template>
@@ -215,29 +218,6 @@
             </div>
           </div>
         </div>
-        <!-- <el-form-item
-          :label="$t('distribution.distributionGoods')"
-          prop=""
-        >
-          <el-radio-group v-model="form.recommendType">
-            <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
-            <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
-          </el-radio-group>
-          <div v-if="form.recommendType === 1">
-            <div
-              v-for="(item,index) in storeArr"
-              :key="index"
-              class="storeContent"
-            >
-              <el-button @click="hanldeToAddGoodS(index)">
-                <i class="el-icon-plus"></i> {{ item.name }}
-              </el-button>
-              <span v-if="index === 0">{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
-              <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
-              <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
-            </div>
-          </div>
-        </el-form-item> -->
 
       </el-form>
 
@@ -390,6 +370,9 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
+        // 佣金比例范围
+        item.lowValue = null
+        item.heightValue = null
         if (item.levelStatus === 0) {
           item.levelName = item.levelName + '(已停用)'
         } else {
@@ -468,6 +451,20 @@ export default {
 
     // 保存返利策略
     saveClickHandler () {
+      var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].fanliRatio !== undefined && !re.test(this.tableData[i].fanliRatio)) {
+          this.$message.warning('直接邀请返利比例在0%-50%之间')
+          return
+        } else if (this.tableData[i].rebateRatio !== undefined && !re.test(this.tableData[i].rebateRatio)) {
+          this.$message.warning('间接邀请返利比例在0%-50%之间')
+          return
+        } else if (this.form.firstRebate === 1 && this.tableData[i].firstRatio !== undefined && !re.test(this.tableData[i].firstRatio)) {
+          this.$message.warning('首单返利比例在0%-50%之间')
+          return
+        }
+      }
+
       this.submitStatus = true
 
       // 有效期
@@ -577,6 +574,62 @@ export default {
         this.platClassRow.map((item, index) => {
           this.platClass.push(item.catId)
         })
+      }
+    },
+
+    // 直接间接返利比例
+    checkPercentage (index) {
+      var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
+      if (this.tableData[index].fanliRatio !== undefined && !re.test(this.tableData[index].fanliRatio)) {
+        this.tableData[index].fanliRatio = 0
+        this.$message.warning('直接邀请返利比例在0%-50%之间')
+      }
+      if (this.tableData[index].rebateRatio !== undefined && !re.test(this.tableData[index].rebateRatio)) {
+        this.tableData[index].rebateRatio = 0
+        this.$message.warning('间接邀请返利比例在0%-50%之间')
+      }
+
+      var fanliRatio = Number(this.tableData[index].fanliRatio)
+      var rebateRatio = Number(this.tableData[index].rebateRatio)
+
+      if (!rebateRatio) {
+        if (fanliRatio === 0) {
+          this.tableData[index].lowValue = 0
+          this.tableData[index].heightValue = 0
+        } else {
+          this.tableData[index].lowValue = 0
+          this.tableData[index].heightValue = fanliRatio
+        }
+      } else if (!fanliRatio) {
+        if (rebateRatio === 0) {
+          this.tableData[index].lowValue = 0
+          this.tableData[index].heightValue = 0
+        } else {
+          this.tableData[index].lowValue = 0
+          this.tableData[index].heightValue = rebateRatio
+        }
+      } else {
+        if (fanliRatio === rebateRatio) {
+          this.tableData[index].lowValue = fanliRatio
+          this.tableData[index].heightValue = fanliRatio
+        } else if (fanliRatio > rebateRatio) {
+          this.tableData[index].lowValue = rebateRatio
+          this.tableData[index].heightValue = fanliRatio
+        } else if (fanliRatio < rebateRatio) {
+          this.tableData[index].lowValue = fanliRatio
+          this.tableData[index].heightValue = rebateRatio
+        }
+      }
+
+      console.log(this.tableData)
+    },
+
+    // 首单返利
+    checkFirstPercentage (index) {
+      var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
+      if (this.tableData[index].fanliRatio !== undefined && !re.test(this.tableData[index].firstRatio)) {
+        this.tableData[index].firstRatio = 0
+        this.$message.warning('首单返利比例在0%-50%之间')
       }
     }
   }
