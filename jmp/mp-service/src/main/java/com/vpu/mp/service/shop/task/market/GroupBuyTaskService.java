@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -21,8 +22,10 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +57,8 @@ public class GroupBuyTaskService  extends ShopBaseService {
     private OrderInfoService orderInfoService;
     @Autowired
     private EsDataUpdateMqService esDataUpdateMqService;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
 
     /**
      * 监控goodsType
@@ -98,6 +103,10 @@ public class GroupBuyTaskService  extends ShopBaseService {
             //下属的所有拼团中记录
             List<GroupBuyListRecord> listRecords = getGroupRecordsByGroupId(group.getGroupId());
             List<String> orderSnList = listRecords.stream().map(GroupBuyListRecord::getOrderSn).collect(toList());
+
+            //先更改订单状态
+            orderInfoService.batchChangeToWaitDeliver(orderSnList);
+
             if(GroupBuyService.IS_DEFAULT_Y.equals(group.getIsDefault())){
                 //设置了默认成团，将生成虚拟的参团记录，并将已参团用户的订单置为待发货状态
                 transaction(()->{
@@ -107,8 +116,6 @@ public class GroupBuyTaskService  extends ShopBaseService {
                         //生成虚拟的参团记录
                         insertRandGroupBuyList(group,randUserNum);
                     }
-                    //更改订单状态
-                    orderInfoService.batchChangeToWaitDeliver(orderSnList);
                     //更改参团状态
                     updateGroupBuyListStatus(group.getGroupId(),STATUS_DEFAULT_SUCCESS);
                 });
@@ -273,14 +280,29 @@ public class GroupBuyTaskService  extends ShopBaseService {
     private void refund(List<String> orderSnList){
         orderSnList.forEach(orderSn->{
             OrderInfoRecord orderInfo = orderInfoService.getOrderByOrderSn(orderSn);
+            Result<OrderGoodsRecord> oGoods = orderGoodsService.getByOrderId(orderInfo.getOrderId());
+
+            //组装退款param
             RefundParam param = new RefundParam();
             param.setAction((byte)OrderServiceCode.RETURN.ordinal());//1是退款
             param.setIsMp(OrderConstant.IS_MP_AUTO);
             param.setOrderSn(orderSn);
             param.setOrderId(orderInfo.getOrderId());
             param.setReturnType(OrderConstant.RT_ONLY_MONEY);
-            param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()));
+            param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()).subtract(orderInfo.getShippingFee()));
             param.setShippingFee(orderInfo.getShippingFee());
+
+            List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
+            oGoods.forEach(orderGoods->{
+                RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();
+                returnGoods.setRecId(orderGoods.getRecId());
+                returnGoods.setReturnNumber(orderGoods.getGoodsNumber());
+
+                returnGoodsList.add(returnGoods);
+            });
+
+            param.setReturnGoods(returnGoodsList);
+
             ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
             if(executeResult == null || !executeResult.isSuccess()){
                 throw new BusinessException(executeResult.getErrorCode());

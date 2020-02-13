@@ -43,6 +43,7 @@ public class BargainRecordInfo {
     private Timestamp updateTime;
     private Byte needBindMobile;
     private Integer initialSales;
+    private Byte freeFreight;
 
     private String wxOpenid;
     private String username;

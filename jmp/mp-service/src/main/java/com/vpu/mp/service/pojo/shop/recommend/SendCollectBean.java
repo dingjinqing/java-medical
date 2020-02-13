@@ -22,4 +22,6 @@ public class SendCollectBean {
 	private Integer status;
 	private JsonCollectBean bean;
 	private Integer shopId;
+	
+	 private Integer taskJobId;
 }

@@ -26,17 +26,17 @@
             </view>
           </view>
         </block>
-        <block wx:if='{{content.goods_type == 1}}'>
+        <block wx:if='{{content.goodsType == 1}}'>
           <view class="item_lefts" bindtap="goodspinItem" data-goods_id="{{content.goods_id}}" data-group_id='{{content.pin_group_goods[content.goods_id].pin_activity_id}}'>
-            <image class="goods_img"  bindload="imageLoad" src="{{content.goods_img}}"></image>
+            <image class="goods_img"  bindload="imageLoad" src="{{content.goodsImg}}"></image>
           </view>
           <view class="item_rights">
-            <view class=" goodnames">{{content.goods_name}}</view>
-            <view class="">{{content.in_time}}</view>
+            <view class=" goodnames">{{content.goodsName}}</view>
+            <view class="">{{content.createTime}}</view>
             <view class="item_price">
               <text class='pin_tip' style='color:{{comColor}};border-color:{{comColor}}'>拼团</text>
-              <text><text class="goosprice" style='color:{{comColor}}'>￥{{content.pin_group_goods[content.goods_id].pin_group_price}}</text></text>
-              <text class='org_price'>￥{{content.pin_group_goods[content.goods_id].original_price}}</text>
+              <text><text class="goosprice" style='color:{{comColor}}'>￥{{content.groupPrice}}</text></text>
+              <text class='org_price'>￥{{content.shopPrice}}</text>
               <text class=" cancel-col" bindtap="cancelCollect" data-goods_id="{{content.goods_id}}" >取消收藏</text>
             </view>
           </view>

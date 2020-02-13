@@ -1,5 +1,5 @@
 <view class="footer">
-  <block wx:if="{{origin === 'item'}}">
+  <block wx:if="{{position === 'footer'}}">
     <view class="small_view" bindtap="backHome">
       <image class="image" mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
       <text>首页</text>
@@ -10,10 +10,15 @@
       <view class="cart_goods_num" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{cartNum}}</view>
     </view>
   </block>
-  <view class="footer_flex_view" bindtap="leftClick" wx:if="{{leftButtonShow}}" style='color:{{(main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{main_setting.commonColor}}'>
+  <!-- <view class="footer_flex_view" bindtap="leftClick" wx:if="{{leftButtonShow}}" style='color:{{(main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{main_setting.commonColor}}'>
     <text>{{leftButtonName}}</text>
   </view>
   <view class="footer_flex_view" bindtap="rightClick" wx:if="{{rightButtonShow}}" style='color:#fff;background:{{(dealtAct &&!dealtAct.canBuy) ? "#666" : main_setting.comColor}};' >
     <text>{{rightButtonName}}</text>
-  </view>
+  </view> -->
+  <block wx:for="{{buttonData}}" wx:key="index">
+    <view class="footer_flex_view" bindtap="{{item.event}}" style='{{index === "left" ? leftStyle : rightStyle}}' >
+      <text>{{item.name}}</text>
+    </view>
+  </block>
 </view>

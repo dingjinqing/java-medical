@@ -28,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
 import com.vpu.mp.service.pojo.shop.member.ucard.CardUseListParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
+import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
 /**
@@ -156,5 +157,16 @@ public class WxAppCardController extends WxAppBaseController {
 		}
 		return success(useList);
 	}
+	
+	/**
+	 * 会员卡升降级记录
+	 */
+	@PostMapping(value="/api/wxapp/card/upgrade")
+	public JsonResult getGradeList(@RequestBody SearchCardParam param) {
+		param.setUserId(wxAppAuth.user().getUserId());
+		PageResult<CardUpgradeVo> gradeList = shop().userCard.getGradeList(param);
+		return success(gradeList);
+	}
+	
 
 }

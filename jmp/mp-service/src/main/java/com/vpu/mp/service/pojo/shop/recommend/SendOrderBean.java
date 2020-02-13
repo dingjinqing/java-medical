@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author zhaojianqiang
  *
- * 2019年11月18日 上午11:48:33
+ *         2019年11月18日 上午11:48:33
  */
 @Data
 @NoArgsConstructor
@@ -22,4 +22,5 @@ public class SendOrderBean {
 	private Integer status;
 	private JsonRootBean bean;
 	private Integer shopId;
+	private Integer taskJobId;
 }

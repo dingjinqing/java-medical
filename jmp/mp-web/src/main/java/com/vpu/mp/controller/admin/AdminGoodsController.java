@@ -88,6 +88,7 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/listAllIds")
     public JsonResult getGoodsIdsListAll(@RequestBody GoodsPageListParam param) {
+        param.setSelectType(GoodsPageListParam.GOODS_LIST);
         List<Integer> goodsIds = shop().goods.getGoodsIdsListAll(param);
         return success(goodsIds);
     }
@@ -261,8 +262,13 @@ public class AdminGoodsController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 单独修改规格对应的价格或数量
+     * @param param PrdPriceNumberParam
+     * @return JsonResult
+     */
     @PostMapping("/api/admin/goodsPrd/updatePriceNumber")
-    public JsonResult updateGoodsPrdPriceNumbers(@RequestBody GoodsBatchOperateParam param) {
+    public JsonResult updateGoodsPrdPriceNumbers(@RequestBody PrdPriceNumberParam param) {
         shop().goods.updateGoodsPrdPriceNumbers(param);
         return success();
     }

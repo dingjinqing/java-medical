@@ -114,7 +114,7 @@
                   </div>
                   <div
                     class="bottomFooter"
-                    :style="data.shop_style==='3'?'display:flex;flex-direction: row;':'display:flex;flex-direction: row;height:auto'"
+                    :style="(data.shop_style==='3'&&data.other_message==='0')?'display:flex;flex-direction: column;':'display:flex;flex-direction: row;height:auto'"
                   >
                     <span
                       :style="`color:${bgColor};`"
@@ -122,16 +122,16 @@
                     >￥{{Number(item.realPrice).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.show_market==='1'&&data.other_message==='0'"
-                    >{{Number(item.linePrice).toFixed(2)}}</span>
+                      v-if="data.show_market==='1'&&data.other_message==='0'&&data.shop_style!=='2'"
+                    >￥{{Number(item.linePrice).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.show_market==='2'&&data.other_message==='0'"
-                    >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                      v-if="data.show_market==='2'&&data.other_message==='0'&&data.shop_style!=='2'"
+                    >{{item.goodsSaleNum}}人付款</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.show_market==='3'&&data.other_message==='0'"
-                    >{{Number(item.goodsNumber).toFixed(2)}}</span>
+                      v-if="data.show_market==='3'&&data.other_message==='0'&&data.shop_style!=='2'"
+                    >{{item.goodsNumber}}人评价</span>
                     <!--购买按钮-->
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
@@ -284,11 +284,11 @@
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.show_market==='2'&&data.other_message==='0'"
-                      >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                      >{{item.goodsSaleNum}}人付款</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.show_market==='3'&&data.other_message==='0'"
-                      >{{Number(item.goodsNumber).toFixed(2)}}</span>
+                      >{{item.goodsNumber}}人评价</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"

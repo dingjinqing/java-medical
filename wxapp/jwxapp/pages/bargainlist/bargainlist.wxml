@@ -19,9 +19,9 @@
               <text class="goods_num">仅剩{{item.stock}}件</text>
             </view>
             <view class="goods_price">
-              <text class="current_price" style="color:{{comColor}};">￥{{item.expectationPrice}}</text>
-              <text class="original_price">￥{{item.floorPrice}}</text>
-              <text class="Settlement_btn" style="background:{{comColor}}" wx:if="{{navType!==2}}" bindtap="{{navType === 1 ? 'checkOut' : (navType === 0 ? 'continueBargain' : '')}}">{{navType === 1 ? '去结算' : (navType === 0 ? '继续砍价' : '')}}</text>            
+              <text class="current_price" style="color:{{comColor}};">￥{{item.bargainType ?  item.floorPrice : item.expectationPrice}}</text>
+              <text class="original_price">￥{{item.goodsPrice}}</text>
+              <text class="Settlement_btn" style="background:{{comColor}}" data-record-id="{{item.id}}" wx:if="{{navType!==2}}" bindtap="{{navType === 1 ? 'checkOut' : (navType === 0 ? 'continueBargain' : '')}}">{{navType === 1 ? '去结算' : (navType === 0 ? '继续砍价' : '')}}</text>            
             </view>
           </view>
         </view>

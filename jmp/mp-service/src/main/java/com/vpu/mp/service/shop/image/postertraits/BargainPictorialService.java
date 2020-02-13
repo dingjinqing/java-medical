@@ -64,7 +64,7 @@ public class BargainPictorialService extends ShopBaseService {
         GoodsShareInfo shareInfoVo = new GoodsShareInfo();
         BargainRecord bargainRecord = bargainService.getBargainActById(param.getActivityId());
 
-        // 拼团活动信息不可用
+        // 砍价活动信息不可用
         if (bargainRecord == null) {
             bargainLog("分享", "砍价活动信息不可用");
             shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
@@ -72,7 +72,7 @@ public class BargainPictorialService extends ShopBaseService {
         }
 
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(bargainRecord.getGoodsId());
-        // 拼团商品信息不可用
+        // 砍价商品信息不可用
         if (goodsRecord == null) {
             bargainLog("分享", "砍价商品信息不可用");
             shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
@@ -169,10 +169,10 @@ public class BargainPictorialService extends ShopBaseService {
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(bargainRecord.getGoodsId());
 
         if (bargainRecord == null || goodsRecord == null) {
-            bargainLog("pictorial", "商品或拼团信息已删除或失效");
+            bargainLog("pictorial", "商品或砍价信息已删除或失效");
             return null;
         }
-        bargainLog("pictorial", "读取拼团海报配置信息");
+        bargainLog("pictorial", "读取砍价海报配置信息");
         PictorialShareConfig shareConfig = Util.parseJson(bargainRecord.getShareConfig(), PictorialShareConfig.class);
 
 

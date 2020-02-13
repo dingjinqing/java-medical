@@ -15,7 +15,10 @@
           label=""
         >
           <template slot-scope="scope">
-            <el-checkbox v-model="scope.row.check"></el-checkbox>
+            <el-checkbox
+              :key="scope.row.goodsId"
+              v-model="scope.row.check"
+            ></el-checkbox>
           </template>
         </el-table-column>
         <!-- 商品名称图片 -->
@@ -238,10 +241,47 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="fetchGoodsData"
-      />
+      <div class="allGoodsFooter">
+        <div class="allGoodsFooterLeft">
+          <el-checkbox v-model="allChecked">全选</el-checkbox>
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            @click="handleToClickBottomBtn(0)"
+          >下架</el-button>
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            @click="handleToClickBottomBtn(1)"
+          >删除</el-button>
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            @click="handleToClickBottomBtn(2)"
+          >批量设置</el-button>
+          <el-select
+            v-model="batchExportVal"
+            size="small"
+          >
+            <el-option
+              v-for="item in batchExportOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="fetchGoodsData"
+        />
+      </div>
+
     </div>
 
     <!--预览商品太阳码-->
@@ -343,11 +383,38 @@
       :param="this.filterData"
       :paramString="this.filterDataString"
     />
+    <!--底部点击综合提示框-->
+    <el-dialog
+      :title="isBottomClickIndex===0 || isBottomClickIndex===1?'提醒':'提示'"
+      :visible.sync="bottomDialogVisible"
+      width="30%"
+    >
+      <div
+        class="bottomTip"
+        :style="isBottomClickIndex===2 || isBottomClickIndex===3?'text-align:left':''"
+      >{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${pageParams.totalRows}条数据,是否确认导出？`:`根据以下条件筛选出${nowCheckAll.length}条数据,是否确认导出？`}}</div>
+      <div
+        style="margin-top:10px"
+        v-if="isBottomClickIndex===2 || isBottomClickIndex===3"
+      >筛选条件：无</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="bottomDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleToBottomClickSure()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <!--批量弹窗设置-->
+    <BatchSetupDialog :dialogVisible.sync="batchSetupVisible" />
   </div>
 </template>
 <script>
 
-import { getGoodsList, deleteGoods, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsList, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
@@ -355,7 +422,11 @@ import goodsExportConfirmDialog from './goodsExportConfirmDialog'
 
 export default {
   name: 'saleOnAndInStock',
-  components: { pagination, goodsExportConfirmDialog },
+  components: {
+    pagination,
+    goodsExportConfirmDialog,
+    BatchSetupDialog: () => import('./batchSetupDialog') // 批量设置弹窗
+  },
   data () {
     return {
       filterData: {},
@@ -377,7 +448,77 @@ export default {
         labelSelectedOptions: [],
         isShow: false
       },
-      showExportConfirm: false
+      showExportConfirm: false,
+      allChecked: false, // 全选checkbox flag
+      isDataCheckChange: false, // 是否是因为当前页数据改变而影响的allChecked
+      batchExportVal: '0',
+      batchExportOptions: [{
+        value: '0',
+        label: '批量导出'
+      }, {
+        value: '1',
+        label: '批量导出筛选的件商品'
+      }, {
+        value: '2',
+        label: '批量导出勾选结果'
+      }],
+      bottomDialogVisible: false, // 底部点击弹窗flag
+      isBottomClickIndex: 0, // 底部按钮点击flag
+      nowCheckAll: [], // 当前选中的总数
+      batchSetupVisible: false // 批量设置弹窗flag
+    }
+  },
+  watch: {
+    goodsData: { // 监听当页数据判断是否全选
+      handler (newData) {
+        console.log(newData)
+        let flag = newData.filter((item, index) => {
+          console.log(item.check)
+          return item.check
+        })
+        this.nowCheckAll = flag
+        if (flag.length === newData.length) {
+          this.allChecked = true
+        } else {
+          this.allChecked = false
+          this.isDataCheckChange = true
+        }
+        console.log(flag, newData)
+      },
+      deep: true
+    },
+    allChecked (newData) { // 监听全选按钮
+      console.log(newData)
+      if (newData) {
+        this.goodsData.forEach((item, index) => {
+          item.check = true
+        })
+      } else {
+        if (!this.isDataCheckChange) { // 点击全选触发
+          this.goodsData.forEach((item, index) => {
+            item.check = false
+          })
+        }
+      }
+      this.isDataCheckChange = false
+      console.log(this.goodsData)
+    },
+    batchExportVal (newData) { // 底部 批量导出下拉框值变化
+      if (newData === '1') {
+        this.bottomDialogVisible = true
+        this.isBottomClickIndex = 2 // 当前选中批量导出筛选的件商品
+      } else if (newData === '2') {
+        let flag = this.handleToJudgeIsChecked()
+        if (!flag) {
+          this.$message.error({
+            message: '请选择商品',
+            showClose: true
+          })
+          return
+        }
+        this.bottomDialogVisible = true
+        this.isBottomClickIndex = 3 // 当前选中的批量导出勾选结果
+      }
     }
   },
   methods: {
@@ -393,52 +534,54 @@ export default {
     },
     /* 商品价格输入框处理函数 */
     shopPriceChange (row) {
-      row.shopPriceEdit = false
       if (typeof row.shopPriceOld !== 'number' || row.shopPriceOld < 0) {
         row.shopPriceOld = row.shopPrice
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.shopPriceRequired') })
+        row.shopPriceEdit = false
         return
       }
+      let originPrice = row.shopPrice
       row.shopPrice = row.shopPriceOld
-      let shopPrices = {}
-      shopPrices[row.goodsId] = [{
+
+      let param = {
         prdId: row.prdId,
         shopPrice: row.shopPrice
-      }]
-      batchOperateGoods({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: shopPrices
-      }).then(res => {
+      }
+
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.shopPriceEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
+        } else {
+          row.shopPrice = originPrice
         }
       })
     },
     /* 商品数量输入框处理函数 */
     goodsNumberChange (row, index) {
-      row.goodsNumberEdit = false
       if (typeof row.goodsNumberOld !== 'number' || row.goodsNumberOld < 0) {
         row.goodsNumberOld = row.goodsNumber
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.goodsNumberRequired') })
+        row.goodsNumberEdit = false
         return
       }
+      let originNum = row.goodsNumber
       row.goodsNumber = parseInt(row.goodsNumberOld)
-      row.goodsNumberOld = row.goodsNumber
 
-      let goodsNumbers = {}
-      goodsNumbers[row.goodsId] = [{
+      let param = {
         prdId: row.prdId,
         goodsNumber: row.goodsNumber
-      }]
-      batchOperateGoods({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: goodsNumbers
-      }).then(res => {
+      }
+
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.goodsNumberEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
           if (row.goodsNumber === 0) {
             this.goodsData.splice(index, 1)
           }
+        } else {
+          row.goodsNumber = originNum
         }
       })
     },
@@ -578,13 +721,14 @@ export default {
         ...this.pageParams,
         ...this.filterData
       }
+      console.log(filterData)
       getGoodsList(params).then(res => {
         let { content: { page, dataList } } = res
 
         this.pageParams.totalRows = page.totalRows
         this.pageParams.currentPage = page.currentPage
         this.pageParams.pageRows = page.pageRows
-
+        this.batchExportOptions[1].label = `批量导出筛选的${page.totalRows}件商品`
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
           item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
@@ -613,8 +757,8 @@ export default {
           item.shopPriceOld = item.shopPrice
           item.goodsNumberEdit = false
           item.goodsNumberOld = item.goodsNumber
+          item.check = false
         })
-
         this.goodsData = dataList
       })
     },
@@ -624,6 +768,60 @@ export default {
         this.filterDataString = filterDataString
       }
       this.showExportConfirm = true
+    },
+    // 底部栏按钮点击事件综合处理
+    handleToClickBottomBtn (index) {
+      // 判断是否有商品被选中
+      let flag = this.handleToJudgeIsChecked()
+      if (!flag) {
+        this.$message.error({
+          message: '未选择任何商品',
+          showClose: true
+        })
+        return
+      }
+      switch (index) {
+        case 0:
+          this.bottomDialogVisible = true
+          this.isBottomClickIndex = index
+          break
+        case 1:
+          this.bottomDialogVisible = true
+          this.isBottomClickIndex = index
+          break
+        case 2:
+          this.batchSetupVisible = true
+          console.log(this.batchSetupVisible)
+          break
+      }
+    },
+    // 判断是否有商品被选中
+    handleToJudgeIsChecked () {
+      let flag = this.goodsData.filter((item, index) => {
+        return item.check
+      })
+      if (flag.length) return true
+    },
+    // 底部下架、删除等弹窗确定综合处理
+    handleToBottomClickSure () {
+      let arr = []
+      switch (this.isBottomClickIndex) {
+        case 0:
+          console.log(this.nowCheckAll)
+          this.nowCheckAll.forEach((item, index) => {
+            arr.push(item.goodsId)
+          })
+          batchOperateGoods({ goodsIds: arr, isOnSale: 0 }).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              console.log(this.filterData)
+              delete this.pageParams.totalRows
+              this.fetchGoodsData(this.filterData)
+            }
+          })
+          break
+      }
+      this.bottomDialogVisible = false
     }
   },
   mounted () {
@@ -760,5 +958,19 @@ export default {
   line-height: 35px;
   font-size: 16px;
   cursor: pointer;
+}
+.allGoodsFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 22px;
+  .allGoodsFooterLeft {
+    /deep/ .el-button {
+      margin: 0 5px;
+    }
+  }
+}
+.bottomTip {
+  text-align: center;
 }
 </style>
