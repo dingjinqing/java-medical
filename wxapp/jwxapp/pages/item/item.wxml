@@ -37,8 +37,8 @@
       <view class="goods-info_top">
         <view class="goods_name" data-typs="give_gift" bindtap="getNeedTemplateId">
           <view class="name">
-            <view class="goods-tag" wx:if="{{goodsInfo.activity.activityType === 1}}" style="border-color:{{comColor}};color:{{comColor}};background:{{somColor}};">
-              {{goodsInfo.activity.limitAmount}}人团
+            <view class="goods-tag" wx:if="{{filter.includes([1,3],goodsInfo.activity.activityType)}}" style="border-color:{{comColor}};color:{{comColor}};background:{{somColor}};">
+              {{goodsInfo.activity.activityType === 1 ? goodsInfo.activity.limitAmount+'人团' : '砍价'}}
             </view>
             {{goodsInfo.goodsName}}
           </view>
@@ -53,7 +53,7 @@
         </view>
       </view>
       <view class="goods_ad" wx:if="{{goodsInfo.goodsAd}}">{{goodsInfo.goodsAd}}</view>
-      <view class="goods_price_info">
+      <view class="goods_price_info" wx:if="{{!filter.includes([1,3,5],goodsInfo.activity.activityType)}}">
         <view class="goods_price" style='color:{{comColor}}'>
           <view class="goods-price-tag" wx:if="{{goodsInfo.activity.activityType === 18}}" style="background-color:{{comColor}};">
             首单特惠
@@ -81,16 +81,19 @@
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">
           剩余可秒杀数量：{{goodsInfo.activity.stock}}个
         </view>
-        <view class="flex-item" wx:else>库存：{{goodsInfo.goodsNumber}}个</view>
+        <view class="flex-item" wx:if="{{!filter.includes([5],goodsInfo.activity.activityType)}}">库存：{{goodsInfo.goodsNumber}}个</view>
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 1}}">
           已团：{{goodsInfo.activity.groupBuySuccessCount}}
         </view>
-        <view class="flex-item" wx:if="{{goodsInfo.activity.activityType !== 5 && goodsInfo.activity.activityType !== 1}}">
+        <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 3}}">
+          参与砍价人数：{{goodsInfo.activity.bargainJoinNum}}
+        </view>
+        <view class="flex-item" wx:if="{{!filter.includes([1,3,5],goodsInfo.activity.activityType)}}">
           销量：{{goodsInfo.goodsSaleNum}}
         </view>
         <view class="flex-item">运费：{{goodsInfo.deliverPrice}}</view>
       </view>
-      <view class="flex-wrap" wx:if="{{goodsInfo.activity.activityType !== 5 && goodsInfo.activity.activityType !== 1}}">
+      <view class="flex-wrap" wx:if="{{!filter.includes([1,3,5],goodsInfo.activity.activityType)}}">
         <view class="flex-item">配送：快递</view>
         <view class="flex-item">
           门店自提
@@ -163,7 +166,7 @@
       <view class="flex_outside_box">
         <view class="flex_box">
           <view class="item_left">{{actRuleText[specParams.activity.activityType].title}}</view>
-          <view class="item_right">详细规则></view>
+          <view class="item_right" data-type="{{specParams.activity.activityType}}" bindtap="goRule">详细规则></view>
         </view>
       </view>
       <view class="item_line"></view>

@@ -295,7 +295,7 @@ public class BargainRecordService extends ShopBaseService {
      * @return
      */
     public BargainApplyVo getUserBargainRecordId(int userId, BargainApplyParam param){
-        Integer recordId = db().select(BARGAIN_RECORD.ID).from(BARGAIN_RECORD).where(BARGAIN_RECORD.USER_ID.eq(userId).and(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.PRD_ID.eq(param.getPrdId()))).fetchOptionalInto(Integer.class).orElse(0);
+        Integer recordId = db().select(BARGAIN_RECORD.ID).from(BARGAIN_RECORD).where(BARGAIN_RECORD.USER_ID.eq(userId).and(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.PRD_ID.eq(param.getPrdId())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOptionalInto(Integer.class).orElse(0);
 
         return recordId > 0 ? BargainApplyVo.builder().recordId(recordId).resultCode((byte)0).build() : BargainApplyVo.builder().resultCode((byte)-1).build();
     }
@@ -388,7 +388,7 @@ public class BargainRecordService extends ShopBaseService {
             GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,
             USER_DETAIL.USER_AVATAR,
             GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_NUMBER,
-            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,
+            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,BARGAIN.FREE_FREIGHT,
             USER.WX_OPENID,USER.USERNAME).from(
             BARGAIN_RECORD
             .leftJoin(USER_DETAIL).on(BARGAIN_RECORD.USER_ID.eq(USER_DETAIL.USER_ID))

@@ -15,7 +15,7 @@
             :key="index"
           >
             <div>
-              <span>{{item.sort_type===0?$t('commodityGrouping.merchantClassification'):item.sort_type===1?$t('commodityGrouping.merchantLabel'):$t('commodityGrouping.merchantBrand')}}：</span>
+              <span>{{Number(item.sort_type)===0?$t('commodityGrouping.merchantClassification'):Number(item.sort_type)===1?$t('commodityGrouping.merchantLabel'):$t('commodityGrouping.merchantBrand')}}：</span>
               <span style="display:inline-block;width:100px">{{item.sort_name}}</span>
               <span
                 @click="handleToEditData(index)"
@@ -41,6 +41,11 @@
                 @change="handleToClickShowNumRadio(index)"
                 :label="2"
               >{{$t('commodityGrouping.designatedCommodity')}}</el-radio>
+              <span
+                style="cursor:pointer;color:#409EFF"
+                v-if="item.group_goods_id?true:false"
+                @click="handleToClickShowNumRadio(index)"
+              >{{item.group_goods_id.split(",").length}}件</span>
             </div>
             <div class="groupItemOperation">
               <img
@@ -252,6 +257,7 @@
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
                   label="2"
+                  :disabled="isCartBtnDisabled"
                 >
                   <i
                     class="right_buy new_back"
@@ -263,6 +269,7 @@
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
                   label="3"
+                  :disabled="isCartBtnDisabled"
                 >
                   <i
                     class="cart_buy"
@@ -271,26 +278,32 @@
                 </el-radio>
               </div>
               <!--end-->
-              <div :style="columnFlag?'margin-bottom:10px':'margin-bottom:10px;display:flex'">
+              <div
+                v-if="linkageData.shop_style!=='3'||linkageData.position_style==='1'"
+                :style="columnFlag?'margin-bottom:10px':'margin-bottom:10px;display:flex'"
+              >
                 <el-checkbox v-model="linkageData.other_message">{{$t('commodityGrouping.otherInformation')}}</el-checkbox>
                 <div>
                   <span style="color:#999;white-space: pre-wrap;width: 330px">{{$t('commodityGrouping.otherInformationTip')}}</span>
                 </div>
               </div>
               <!--其他信息checkbox选中后显示的隐藏模块-->
-              <div v-if="linkageData.other_message">
-                <el-radio
-                  v-model="linkageData.show_market"
-                  label="1"
-                >{{$t('commodityGrouping.marketValue')}}</el-radio>
-                <el-radio
-                  v-model="linkageData.show_market"
-                  label="2"
-                >{{$t('commodityGrouping.salesVolume')}}</el-radio>
-                <el-radio
-                  v-model="linkageData.show_market"
-                  label="3"
-                >{{$t('commodityGrouping.evaluationNumber')}}</el-radio>
+              <div v-if="linkageData.shop_style!=='3'||linkageData.position_style==='1'">
+                <div v-if="linkageData.other_message">
+                  <el-radio
+                    v-model="linkageData.show_market"
+                    label="1"
+                  >{{$t('commodityGrouping.marketValue')}}</el-radio>
+                  <el-radio
+                    v-model="linkageData.show_market"
+                    label="2"
+                  >{{$t('commodityGrouping.salesVolume')}}</el-radio>
+                  <el-radio
+                    v-model="linkageData.show_market"
+                    label="3"
+                  >{{$t('commodityGrouping.evaluationNumber')}}</el-radio>
+                </div>
+
               </div>
               <!--end-->
             </div>
@@ -416,10 +429,35 @@ export default {
       nowClickAppointIndex: null,
       initialConditionRender: [], // 选择商品弹窗初始渲染条件
       reLoad: true,
-      columnFlag: false
+      columnFlag: false,
+      isCartBtnDisabled: false // 购买按钮是否禁用，在商品列表样式选中一行三个、一行横滑得时候禁用
     }
   },
   watch: {
+    'linkageData.shop_style' (newData) {
+      // shop_style
+      console.log(newData)
+      if (newData === '3' || newData === '5') {
+        this.isCartBtnDisabled = true
+        this.linkageData.cart_btn_choose = '0'
+      } else {
+        this.isCartBtnDisabled = false
+      }
+    },
+    'linkageData.position_style' (newData) {
+      // shop_style
+      console.log(newData)
+      if (newData === '1') {
+        this.isCartBtnDisabled = false
+      } else {
+        if (this.linkageData.shop_style === '3' || this.linkageData.shop_style === '5') {
+          this.linkageData.cart_btn_choose = '0'
+          this.isCartBtnDisabled = true
+        } else {
+          this.isCartBtnDisabled = false
+        }
+      }
+    },
     // 中间模块当前高亮index
     sortIndex: {
       handler (newData) {
@@ -439,6 +477,10 @@ export default {
     // 监听数据变换
     linkageData: {
       handler (newData) {
+        console.log(newData)
+        newData.sort_group_arr.forEach((item, index) => {
+          if (item.sort_type === 0) item.sort_type = ''
+        })
         console.log(newData)
         // 测试数据
         // newData['sort_length'] = newData.sort_group_arr.length
@@ -511,7 +553,7 @@ export default {
       console.log(this.linkageData.sort_group_arr)
       this.linkageData.sort_group_arr.forEach((item, index) => {
         let obj = {}
-        switch (item.sort_type) {
+        switch (Number(item.sort_type)) {
           case 0:
             obj['sortId'] = item.sort_id
             break
@@ -716,6 +758,10 @@ export default {
       this.reLoad = false
       console.log(this.linkageData.sort_group_arr[index])
       this.nowClickAppointIndex = index
+      if (this.linkageData.sort_group_arr[index].group_goods_id) {
+        this.chooseGoodsBack = this.linkageData.sort_group_arr[index].group_goods_id.split(',')
+        console.log(this.chooseGoodsBack)
+      }
       console.log(index, this.linkageData.sort_group_arr[index].is_all)
       if (this.linkageData.sort_group_arr[index].is_all === 2) {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
@@ -723,6 +769,9 @@ export default {
         arr[0] = this.linkageData.sort_group_arr[index].sort_type
         arr[1] = this.linkageData.sort_group_arr[index].sort_id
         this.initialConditionRender = arr
+        if (!this.linkageData.sort_group_arr[index].group_goods_id) {
+          this.linkageData.sort_group_arr[index].is_all = 1
+        }
       }
     },
     // 选择商品弹窗数据回传
@@ -731,6 +780,12 @@ export default {
       console.log(res, this.linkageData.sort_group_arr, this.nowClickAppointIndex)
       console.log(res.join(','))
       this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id = res.join(',')
+      console.log(this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id)
+      if (res.join(',')) {
+        this.linkageData.sort_group_arr[this.nowClickAppointIndex].is_all = 2
+      } else {
+        this.linkageData.sort_group_arr[this.nowClickAppointIndex].is_all = 1
+      }
     }
   }
 }

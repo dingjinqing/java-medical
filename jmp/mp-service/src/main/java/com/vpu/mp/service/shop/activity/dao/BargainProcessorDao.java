@@ -85,9 +85,9 @@ public class BargainProcessorDao extends ShopBaseService {
         }
         // 活动未开始
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(aByte)) {
-            vo.setStartTime(bargainRecord.getStartTime().getTime() - now.getTime());
+            vo.setStartTime((bargainRecord.getStartTime().getTime() - now.getTime())/1000);
         }
-        vo.setEndTime(bargainRecord.getEndTime().getTime() - now.getTime());
+        vo.setEndTime((bargainRecord.getEndTime().getTime() - now.getTime())/1000);
 
         // 设置砍价展示价格
         vo.setBargainPrice(GoodsConstant.BARGAIN_TYPE_FIXED.equals(bargainRecord.getBargainType())?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
@@ -174,6 +174,9 @@ public class BargainProcessorDao extends ShopBaseService {
                 throw new MpException(JsonResultCode.BARGAIN_RECORD_ORDERED);
             }
         }
+
+        //是否免运费
+        param.setIsFreeShippingAct(bargainRecordInfo.getFreeFreight());
 
         //临时记录
         param.setBargainRecordInfo(bargainRecordInfo);

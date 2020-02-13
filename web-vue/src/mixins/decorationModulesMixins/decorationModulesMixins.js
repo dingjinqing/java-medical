@@ -616,6 +616,15 @@ export default {
               })
               flag = false
             }
+            break
+          case 'm_goods_group':
+            if (!item.sort_group_arr.length) {
+              this.$message.error({
+                message: '请添加商品分组',
+                showClose: true
+              })
+              flag = false
+            }
         }
       })
       console.log(flag)

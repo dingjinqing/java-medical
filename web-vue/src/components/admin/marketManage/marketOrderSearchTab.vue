@@ -82,6 +82,7 @@
           @click="exportDataList()"
           type="default"
           size="small"
+          class="export-data"
         >{{$t('marketCommon.export')}}</el-button>
       </div>
     </section>
@@ -132,6 +133,9 @@ export default {
       width: 90px;
       font-size: 14px;
       margin-right: 20px;
+    }
+    .export-data {
+      margin-left: 15px;
     }
   }
 }

@@ -95,6 +95,15 @@ global.wxPage({
           })
           this.getCouponData(orderInfo)
           this.defaultInput(orderInfo)
+        } else {
+            util.showModal('提示', res.message, function () {
+              let pages = getCurrentPages()
+              if (pages.length > 1) {
+                wx.navigateBack()
+              } else {
+                util.jumpLink('/pages/index/index', 'reLaunch')
+              }
+            }, false, '', '确定')
         }
       },
       { ...this.data.params }
@@ -509,10 +518,11 @@ global.wxPage({
       return false
     }
     if (
-      (this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) ||
-      (this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) ||
-      (this.data.orderInfo.must.orderCid && !this.data.must.orderCid) ||
-      (this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName)
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) ||
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) ||
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) ||
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) ||
+      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom)
     ) {
       wx.showToast({
         title: '请输入必填项',
