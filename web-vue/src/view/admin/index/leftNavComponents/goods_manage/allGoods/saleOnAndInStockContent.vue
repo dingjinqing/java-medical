@@ -389,7 +389,14 @@
       :visible.sync="bottomDialogVisible"
       width="30%"
     >
-      <div style="text-align:center">{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${pageParams.totalRows}条数据,是否确认导出？`:`根据以下条件筛选出${nowCheckAll.length}条数据,是否确认导出？`}}</div>
+      <div
+        class="bottomTip"
+        :style="isBottomClickIndex===2 || isBottomClickIndex===3?'text-align:left':''"
+      >{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${pageParams.totalRows}条数据,是否确认导出？`:`根据以下条件筛选出${nowCheckAll.length}条数据,是否确认导出？`}}</div>
+      <div
+        style="margin-top:10px"
+        v-if="isBottomClickIndex===2 || isBottomClickIndex===3"
+      >筛选条件：无</div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -796,7 +803,9 @@ export default {
           batchOperateGoods({ goodsIds: arr, isOnSale: 0 }).then((res) => {
             console.log(res)
             if (res.error === 0) {
-              this.fetchGoodsData()
+              console.log(this.filterData)
+              delete this.pageParams.totalRows
+              this.fetchGoodsData(this.filterData)
             }
           })
           break
@@ -949,5 +958,8 @@ export default {
       margin: 0 5px;
     }
   }
+}
+.bottomTip {
+  text-align: center;
 }
 </style>
