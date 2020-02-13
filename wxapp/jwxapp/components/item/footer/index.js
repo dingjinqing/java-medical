@@ -73,6 +73,12 @@ let actType = {
           name:'立即购买',
           event:'actCheckOut'
         }
+      },
+      default:{
+        right:{
+          name:'立即购买',
+          event:'actCheckOut'
+        }
       }
     }
   },
