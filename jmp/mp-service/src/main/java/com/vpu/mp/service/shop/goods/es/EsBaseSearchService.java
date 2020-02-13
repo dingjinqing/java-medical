@@ -72,7 +72,8 @@ public class EsBaseSearchService extends ShopBaseService {
         MIN_SPEC_PRD_PRICE,
         FREIGHT_TEMPLATE_ID,
         PRD_JSON,
-        BASE_SALE
+        BASE_SALE,
+        DEFAULT_PRD
     };
 
 
@@ -216,6 +217,9 @@ public class EsBaseSearchService extends ShopBaseService {
         }
         QueryBuilder queryBuilder = assemblySearchBuilder(param.getSearchList());
         sourceBuilder.query(queryBuilder);
+        if( null != param.getSort() ){
+            sourceBuilder.sort(param.getSort().getSortName(),param.getSort().getSortOrder());
+        }
         if( param.isQueryByPage() ){
             Integer totalRow =  assemblyPage(sourceBuilder,indexName);
             Page page = Page.getPage(totalRow,param.getCurrentPage(),param.getPageRows());

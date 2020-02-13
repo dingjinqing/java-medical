@@ -409,12 +409,15 @@
       </span>
     </el-dialog>
     <!--批量弹窗设置-->
-    <BatchSetupDialog :dialogVisible.sync="batchSetupVisible" />
+    <BatchSetupDialog
+      :checkGoodsData="nowCheckAll"
+      :dialogVisible.sync="batchSetupVisible"
+    />
   </div>
 </template>
 <script>
 
-import { getGoodsList, deleteGoods, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsList, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
@@ -534,52 +537,54 @@ export default {
     },
     /* 商品价格输入框处理函数 */
     shopPriceChange (row) {
-      row.shopPriceEdit = false
       if (typeof row.shopPriceOld !== 'number' || row.shopPriceOld < 0) {
         row.shopPriceOld = row.shopPrice
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.shopPriceRequired') })
+        row.shopPriceEdit = false
         return
       }
+      let originPrice = row.shopPrice
       row.shopPrice = row.shopPriceOld
-      let shopPrices = {}
-      shopPrices[row.goodsId] = [{
+
+      let param = {
         prdId: row.prdId,
         shopPrice: row.shopPrice
-      }]
-      batchOperateGoods({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: shopPrices
-      }).then(res => {
+      }
+
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.shopPriceEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
+        } else {
+          row.shopPrice = originPrice
         }
       })
     },
     /* 商品数量输入框处理函数 */
     goodsNumberChange (row, index) {
-      row.goodsNumberEdit = false
       if (typeof row.goodsNumberOld !== 'number' || row.goodsNumberOld < 0) {
         row.goodsNumberOld = row.goodsNumber
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.goodsNumberRequired') })
+        row.goodsNumberEdit = false
         return
       }
+      let originNum = row.goodsNumber
       row.goodsNumber = parseInt(row.goodsNumberOld)
-      row.goodsNumberOld = row.goodsNumber
 
-      let goodsNumbers = {}
-      goodsNumbers[row.goodsId] = [{
+      let param = {
         prdId: row.prdId,
         goodsNumber: row.goodsNumber
-      }]
-      batchOperateGoods({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: goodsNumbers
-      }).then(res => {
+      }
+
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.goodsNumberEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
           if (row.goodsNumber === 0) {
             this.goodsData.splice(index, 1)
           }
+        } else {
+          row.goodsNumber = originNum
         }
       })
     },
