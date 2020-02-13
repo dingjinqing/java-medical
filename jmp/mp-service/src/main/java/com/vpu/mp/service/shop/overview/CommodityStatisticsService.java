@@ -513,7 +513,9 @@ public class CommodityStatisticsService extends ShopBaseService {
     public <T extends Number> Map<String, ChartData> getAllChartData(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
                                                                      RankingParam param,
                                                                      Field<T> field) {
-        List<String> columns = new ArrayList<>();
+        List<String> columns = new ArrayList<String>() {{
+            add("Date");
+        }};
         List<Map<String, Object>> dayRows = new ArrayList<>();
         List<Map<String, Object>> weekRows = new ArrayList<>();
         List<Map<String, Object>> monthRows = new ArrayList<>();
@@ -549,11 +551,11 @@ public class CommodityStatisticsService extends ShopBaseService {
         return TableData.builder().refDate(refDate).goodsName(goodsName).arrayData(getTableArrayData(rows)).build();
     }
 
-    public List<List<Object>> getTableArrayData(List<Map<String, Object>> rows) {
+    public List<List<Object>> getTableArrayData(final List<Map<String, Object>> rows) {
         List<Map<String, Object>> copy = new ArrayList<>(rows);
         return new ArrayList<List<Object>>() {{
             copy.forEach(e -> {
-                e.remove("Date");
+//                e.remove("Date");
                 add(new ArrayList<>(e.values()));
             });
         }};
@@ -606,11 +608,6 @@ public class CommodityStatisticsService extends ShopBaseService {
             .and(GOODS_SUMMARY.GOODS_ID.in(goodsIds))
             .orderBy(GOODS_SUMMARY.REF_DATE)
             .fetchGroups(GOODS_SUMMARY.GOODS_ID);
-        log.debug("销售额/销售订单排行前10的商品日销售额详情为：");
-        sales.forEach((k, v) -> {
-            log.debug("商品id：{}", k);
-            v.forEach(record -> log.debug("日销售额/销售订单：{}", record.value1() + "--" + record.value2() + "--" + record.value3() + "--" + record.value4()));
-        });
         return sales;
     }
 
@@ -686,8 +683,6 @@ public class CommodityStatisticsService extends ShopBaseService {
                                                 BiPredicate<Record4<Date, Integer, T, String>, LocalDate> rule,
                                                 Field<T> field) {
         String name = results.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME);
-        log.debug("当前商品：{}", name);
-        log.debug("展示日期列表：{}", Util.toJson(showDate));
         AtomicBoolean flag = new AtomicBoolean(false);
 
         showDate.forEach(d -> {
@@ -700,7 +695,6 @@ public class CommodityStatisticsService extends ShopBaseService {
                 flag.set(true);
             }
             List<Record4<Date, Integer, T, String>> temp = results.stream().filter(e -> rule.test(e, d)).collect(Collectors.toList());
-            log.debug("满足过滤规则的日期有：{}", temp.size());
             map.putIfAbsent("Date", Date.valueOf(d));
             Class<T> clazz = field.getType();
             if (clazz.equals(BigDecimal.class)) {
@@ -724,8 +718,6 @@ public class CommodityStatisticsService extends ShopBaseService {
                                                  BiPredicate<Record4<Date, Integer, T, String>, Tuple2<LocalDate, LocalDate>> rule,
                                                  Field<T> field) {
         String name = results.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME);
-        log.debug("当前商品：{}", name);
-        log.debug("展示日期列表：{}", Util.toJson(showDate));
         AtomicBoolean flag = new AtomicBoolean(false);
         showDate.forEach(d -> {
             Optional<Map<String, Object>> optional = rows.stream().filter(m -> m.get("Date").toString().equals(d.v1() + "~" + d.v2())).findFirst();
@@ -737,7 +729,6 @@ public class CommodityStatisticsService extends ShopBaseService {
                 flag.set(true);
             }
             List<Record4<Date, Integer, T, String>> temp = results.stream().filter(e -> rule.test(e, d)).collect(Collectors.toList());
-            log.debug("满足过滤规则的日期有：{}", temp.size());
             map.putIfAbsent("Date", d.v1() + "~" + d.v2());
             Class<T> clazz = field.getType();
             if (clazz.equals(BigDecimal.class)) {
