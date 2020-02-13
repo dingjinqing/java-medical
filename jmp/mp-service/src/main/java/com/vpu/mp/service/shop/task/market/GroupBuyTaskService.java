@@ -289,14 +289,19 @@ public class GroupBuyTaskService  extends ShopBaseService {
             param.setOrderSn(orderSn);
             param.setOrderId(orderInfo.getOrderId());
             param.setReturnType(OrderConstant.RT_ONLY_MONEY);
-            param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()));
+            param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()).subtract(orderInfo.getShippingFee()));
             param.setShippingFee(orderInfo.getShippingFee());
+
+            List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
             oGoods.forEach(orderGoods->{
                 RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();
                 returnGoods.setRecId(orderGoods.getRecId());
                 returnGoods.setReturnNumber(orderGoods.getGoodsNumber());
-                param.getReturnGoods().add(returnGoods);
+
+                returnGoodsList.add(returnGoods);
             });
+
+            param.setReturnGoods(returnGoodsList);
 
             ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
             if(executeResult == null || !executeResult.isSuccess()){

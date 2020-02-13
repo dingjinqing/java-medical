@@ -20,6 +20,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.vpu.mp.db.shop.tables.User;
@@ -28,6 +29,7 @@ import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
 import org.jooq.Record1;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
@@ -45,6 +47,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderExcelVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
@@ -542,6 +545,26 @@ public class CardDaoService extends ShopBaseService {
 				 .selectFrom(CARD_BATCH)
 				 .where(CARD_BATCH.ID.eq(batchId))
 				 .fetchInto(CardBatchDetailVo.class);
+	}
+	
+	public List<CardHolderExcelVo> getAllCardHolderAll(CardHolderParam param) {
+
+		User invitedUser = USER.as("a");
+		SelectJoinStep<?> select = db()
+				.select(USER_CARD.USER_ID, USER.USERNAME, USER.MOBILE, invitedUser.USERNAME.as("invitedName"),
+						USER_CARD.CREATE_TIME, USER_CARD.CARD_NO, USER_CARD.FLAG, USER_CARD.EXPIRE_TIME,USER_CARD.UPDATE_TIME)
+				.from(USER_CARD.leftJoin(USER.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
+
+				).on(USER_CARD.USER_ID.eq(USER.USER_ID)));
+
+		buildOptions(param, select);
+		select.where(USER_CARD.CARD_ID.eq(param.getCardId())).orderBy(USER_CARD.USER_ID.desc());
+		List<CardHolderExcelVo> list = new ArrayList<CardHolderExcelVo>();
+		Result<?> fetch = select.fetch();
+		if(fetch!=null) {
+			list=fetch.into(CardHolderExcelVo.class);
+		}
+		return list;
 	}
 	
 }

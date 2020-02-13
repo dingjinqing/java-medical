@@ -1,27 +1,6 @@
 
 package com.vpu.mp.service.shop.order.action;
 
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
-
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import org.jooq.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
@@ -38,10 +17,29 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
+import org.jooq.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 /**
  * 	发货
  * @author 王帅
@@ -60,6 +58,8 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 	public RecordAdminActionService record;
 	@Autowired
 	public OrderGoodsService orderGoods;
+    @Autowired
+    public OrderOperateSendMessage sendMessage;
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -112,7 +112,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			cbsMap.get(recId).setGoodsNumber(cbsMap.get(recId).getGoodsNumber() - sendNumber);
 			//构造参数
 			OrderGoodsRecord orderGoodsVo = goods.get(oneGoods.getRecId());
-			orderGoodsVo.setSendNumber((orderGoodsVo.getSendNumber().intValue() + sendNumber.intValue()));
+			orderGoodsVo.setSendNumber((orderGoodsVo.getSendNumber() + sendNumber));
 			recordList.add(orderGoodsVo);
 			shipInfo.addRecord(shipInfoList, orderGoodsVo, batchNo, param, sendNumber);
 		}
@@ -127,7 +127,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		if(partShipFlag == OrderConstant.PART_SHIP) {
 			orderRecord.setPartShipFlag(OrderConstant.PART_SHIP);
 		}
-		orderRecord.setShippingTime(Timestamp.from(Instant.now()));
+		orderRecord.setShippingTime(DateUtil.getSqlTimestamp());
 		orderRecord.setShippingNo(param.getShippingNo());
 		orderRecord.setShippingId(param.getShippingId());
 		transaction(()->{
@@ -145,15 +145,17 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		});
 		//action操作
 		orderAction.addRecord(orderRecord, param, OrderConstant.ORDER_WAIT_DELIVERY, orderRecord.getOrderStatus() == OrderConstant.ORDER_SHIPPED ? "全部发货 " : "部分发货");
-		//TODO 操作记录 b2c_record_admin_action  需要测试记录
+		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_SHIP.code }), new String[] {param.getOrderSn()});
+		//发送消息模板
+        sendMessage.send(orderRecord, recordList);
 		logger.info("发货完成");
 		return null;
 	}
 	
 	/**
 	 * 发货查询
-	 * @param SellerRemarkParam
+	 * @param param
 	 * @return ShipVo :
 	 */
 	@Override

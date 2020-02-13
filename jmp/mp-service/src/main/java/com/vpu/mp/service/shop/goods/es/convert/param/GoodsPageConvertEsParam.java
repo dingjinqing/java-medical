@@ -1,13 +1,12 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
-import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
-import com.vpu.mp.service.pojo.shop.goods.es.Operator;
+import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.shop.goods.es.convert.exception.ParamConvertException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +38,9 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
             searchParam.setFactList(
                 param.getFactNameList().stream().map(this::getFactByName).collect(Collectors.toList())
             );
+        }
+        if( !CollectionUtils.isEmpty(param.getGoodsIds()) ){
+            propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsIds()));
         }
         if( null != shopId ){
             propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,shopId));
@@ -94,9 +96,26 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         if( null != param.getCurrentPage() ){
             searchParam.setCurrentPage(param.getCurrentPage());
         }
+        if( StringUtils.isNotBlank(param.getOrderDirection()) && StringUtils.isNotBlank(param.getOrderField()) ){
+            Sort sort = new Sort();
+            if( GoodsPageListParam.GOODS_NUMBER.equals(param.getOrderDirection()) ){
+                sort.setSortName(EsSearchName.GOODS_NUMBER);
+            }else if( GoodsPageListParam.GOODS_SALE_NUM.equals(param.getOrderDirection()) ){
+                sort.setSortName(EsSearchName.GOODS_SALE_NUM);
+            }else if( GoodsPageListParam.SHOP_PRICE.equals(param.getOrderDirection()) ){
+                sort.setSortName(EsSearchName.SHOP_PRICE);
+            }
+            if( GoodsPageListParam.ASC.equals(param.getOrderField()) ){
+                sort.setSortOrder(SortOrder.ASC);
+            }else{
+                sort.setSortOrder(SortOrder.DESC);
+            }
+            searchParam.setSort(sort);
+        }
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);
         }
+
         return searchParam;
     }
 }

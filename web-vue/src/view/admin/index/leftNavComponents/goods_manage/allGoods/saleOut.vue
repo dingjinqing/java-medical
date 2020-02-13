@@ -298,50 +298,51 @@ export default {
     },
     /* 商品价格输入框处理函数 */
     prdPriceChange (row) {
-      row.prdPriceEdit = false
       if (typeof row.prdPriceOld !== 'number' || row.prdPriceOld < 0) {
-        row.prdPriceOld = row.shopPrice
+        row.prdPriceOld = row.prdPrice
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.shopPriceRequired') })
+        row.prdPriceEdit = false
         return
       }
-      row.shopPrice = row.prdPriceOld
-      let shopPrices = {}
-      shopPrices[row.goodsId] = [{
+      // 规格修改之前的价格
+      let originalPrice = row.prdPrice
+      row.prdPrice = row.prdPriceOld
+      let param = {
         prdId: row.prdId,
-        shopPrice: row.shopPrice
-      }]
-      batchOperateSpecPrdPriceNumber({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: shopPrices
-      }).then(res => {
+        shopPrice: row.prdPrice
+      }
+
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.prdPriceEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: '设置成功!' })
+        } else {
+          row.prdPrice = originalPrice
         }
       })
     },
     /* 商品数量输入框处理函数 */
     goodsNumberChange (row) {
-      row.prdNumberEdit = false
       if (typeof row.prdNumberOld !== 'number' || row.prdNumberOld < 0) {
-        row.prdNumberOld = row.goodsNumber
+        row.prdNumberOld = row.prdNumber
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.goodsNumberRequired') })
+        row.prdNumberEdit = false
         return
       }
-      row.goodsNumber = parseInt(row.prdNumberOld)
-      row.prdNumberOld = row.goodsNumber
+      let originalNum = row.prdNumber
+      row.prdNumber = parseInt(row.prdNumberOld)
 
-      let goodsNumbers = {}
-      goodsNumbers[row.goodsId] = [{
+      let param = {
         prdId: row.prdId,
-        goodsNumber: row.goodsNumber
-      }]
-      batchOperateSpecPrdPriceNumber({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: goodsNumbers
-      }).then(res => {
+        goodsNumber: row.prdNumber
+      }
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.prdNumberEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: '设置成功!' })
           this.fetchGoodsData()
+        } else {
+          row.prdNumber = originalNum
         }
       })
     },

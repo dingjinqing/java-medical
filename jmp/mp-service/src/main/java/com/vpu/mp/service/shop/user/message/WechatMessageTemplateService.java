@@ -125,14 +125,14 @@ public class WechatMessageTemplateService extends ShopBaseService {
     public Boolean sendMaMessage(RabbitMessageParam param,WxUserInfo info) {
     	MaTemplateData maTemplateData = param.getMaTemplateData();
     	String[][] data = maTemplateData.getData();
+    	Boolean sendMessage=Boolean.FALSE;
     	try {
-			subscribeMessageService.sendMessage(info.getUserId(), maTemplateData.getConfig(), data, param.getPage());
+			sendMessage = subscribeMessageService.sendMessage(info.getUserId(), maTemplateData.getConfig(), data, param.getPage());
 		} catch (WxErrorException e) {
 			e.printStackTrace();
 			return Boolean.FALSE;
 		}
-
-    	 return Boolean.TRUE;
+    	 return sendMessage;
     }
 
     /**
