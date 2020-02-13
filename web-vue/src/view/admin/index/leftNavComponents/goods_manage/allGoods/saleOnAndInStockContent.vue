@@ -705,6 +705,7 @@ export default {
         ...this.pageParams,
         ...this.filterData
       }
+      console.log(filterData)
       getGoodsList(params).then(res => {
         let { content: { page, dataList } } = res
 
