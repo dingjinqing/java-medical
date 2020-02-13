@@ -80,7 +80,7 @@
         <view class="goods_name">{{goodsItem.goodsName}}</view>
         <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
         <view class="goods_price_num">
-          <view class="goods_price" style="color:{{comColor}}">￥{{goodsItem.goodsPrice}}</view>
+          <view class="goods_price" style="color:{{comColor}}">￥{{goodsItem.discountedGoodsPrice}}</view>
           <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
         </view>
       </view>
