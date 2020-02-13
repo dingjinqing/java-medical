@@ -257,10 +257,27 @@
               <td style="width:8%">{{$t('membershipIntroduction.phoneNum')}}</td>
               <td style="width:8%">{{$t('membershipIntroduction.inviter')}}</td>
               <td style="width:7%">{{$t('membershipIntroduction.Balance')}}</td>
-              <td style="width:7%">{{$t('membershipIntroduction.integral')}}</td>
+              <td style="width:7%">
+                <span  @click="getScoreOrder" class="score-order">
+                  {{$t('membershipIntroduction.integral')}}
+                  <span v-if="scoreArrow">
+                    <span class="score-order" v-if="!scoreDesc">↑</span>
+                    <span class="score-order" v-if="scoreDesc">↓</span>
+                  </span>
+                </span>
+              </td>
               <td style="width:8%">{{$t('membershipIntroduction.membershipCard')}}</td>
               <td style="width:7%">{{$t('membershipIntroduction.source')}}</td>
-              <td style="width:10%">{{$t('membershipIntroduction.registrationTime')}}</td>
+              <td style="width:10%" >
+
+                <span  @click="getRegistTimeOrder" class="score-order">
+                  {{$t('membershipIntroduction.registrationTime')}}
+                  <span v-if="registArrow">
+                    <span class="score-order" v-if="!registTimeDesc">↑</span>
+                    <span class="score-order" v-if="registTimeDesc">↓</span>
+                  </span>
+                </span>
+              </td>
               <td style="width:15%">{{$t('membershipIntroduction.operation')}}</td>
             </tr>
           </thead>
@@ -954,7 +971,12 @@ export default {
       cardUserId: '', // 设置会员卡时临时存放的id
       tuneUpChooseGoods: false,
       singleElection: true,
-      chooseGoodsBack: []
+      chooseGoodsBack: [],
+      orderRule: null,
+      scoreDesc: false,
+      scoreArrow: false,
+      registArrow: false,
+      registTimeDesc: false
     }
   },
   watch: {
@@ -1049,7 +1071,8 @@ export default {
         'buyCountHight': this.frequencyRight,
         'goodsId': this.goodsIdsArr,
         'currentPage': this.currentPage3,
-        'pageRows': '20'
+        'pageRows': '20',
+        'orderRule': this.orderRule
       }
       console.log(this.labelVal[0], typeof this.labelVal[0])
       membershipListRequest(obj).then((res) => {
@@ -1589,6 +1612,29 @@ export default {
         type: 'error'
       })
     },
+    getScoreOrder () {
+      this.scoreArrow = true
+      this.registArrow = false
+      let scoreDesc = this.scoreDesc
+      this.scoreDesc = !this.scoreDesc
+      this.orderRule = {
+        'rule': 0,
+        'desc': scoreDesc
+      }
+      this.defaultTabelListData()
+    },
+
+    getRegistTimeOrder () {
+      this.scoreArrow = false
+      this.registArrow = true
+      let registTimeDesc = this.registTimeDesc
+      this.registTimeDesc = !this.registTimeDesc
+      this.orderRule = {
+        'rule': 1,
+        'desc': registTimeDesc
+      }
+      this.defaultTabelListData()
+    },
     // 点击表格中更多&&余额明细&&积分明细
     handleToTurnMore (params, name, id) {
       switch (params) {
@@ -2092,5 +2138,8 @@ img {
 }
 .hy_common .el-input__inner {
   width: 168px !important;
+}
+.score-order{
+  color: #5A8BFF;
 }
 </style>
