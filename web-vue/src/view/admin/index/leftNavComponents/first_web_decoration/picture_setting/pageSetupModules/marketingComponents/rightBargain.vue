@@ -129,6 +129,7 @@
       <!-- 弹窗选择砍价活动商品 -->
       <addBargainGoodsDialog
         :visible.sync="addBargainDialogVisible"
+        :backData="bargainTableData"
         @select="selectBargainGoodsHandle"
       ></addBargainGoodsDialog>
     </div>
