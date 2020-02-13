@@ -89,7 +89,7 @@
                 :label="$t('addBargainAct.goodsName')"
                 align="center"
                 class="tableHeaderHeight"
-                width="250"
+                width="200px"
               >
                 <template slot-scope="scope">
                   <img
@@ -105,13 +105,13 @@
                 :label="$t('addBargainAct.goodsOriginalStock')"
                 align="center"
                 class="tableHeaderHeight"
-                width="100"
+                width="90px"
               ></el-table-column>
               <el-table-column
                 :label="$t('addBargainAct.bargainStock')"
                 align="center"
                 class="tableHeaderHeight"
-                width="180"
+                width="160"
               >
                 <template slot-scope="scope">
                   <el-input-number
@@ -129,7 +129,7 @@
                 :label="$t('addBargainAct.goodsOriginalPrice')"
                 align="center"
                 class="tableHeaderHeight"
-                width="100"
+                width="90"
               ></el-table-column>
               <el-table-column
                 v-if="param.bargainType == 0"
