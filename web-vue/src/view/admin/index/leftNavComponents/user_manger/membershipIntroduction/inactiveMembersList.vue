@@ -74,6 +74,7 @@
             type="datetime"
             :placeholder="$t('memberIntroductionList.selectTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
+            default-time='23:59:59'
           >
           </el-date-picker>
         </el-form-item>
