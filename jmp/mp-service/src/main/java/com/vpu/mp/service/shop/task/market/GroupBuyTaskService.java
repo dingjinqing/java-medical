@@ -98,6 +98,10 @@ public class GroupBuyTaskService  extends ShopBaseService {
             //下属的所有拼团中记录
             List<GroupBuyListRecord> listRecords = getGroupRecordsByGroupId(group.getGroupId());
             List<String> orderSnList = listRecords.stream().map(GroupBuyListRecord::getOrderSn).collect(toList());
+
+            //先更改订单状态
+            orderInfoService.batchChangeToWaitDeliver(orderSnList);
+
             if(GroupBuyService.IS_DEFAULT_Y.equals(group.getIsDefault())){
                 //设置了默认成团，将生成虚拟的参团记录，并将已参团用户的订单置为待发货状态
                 transaction(()->{
@@ -107,8 +111,6 @@ public class GroupBuyTaskService  extends ShopBaseService {
                         //生成虚拟的参团记录
                         insertRandGroupBuyList(group,randUserNum);
                     }
-                    //更改订单状态
-                    orderInfoService.batchChangeToWaitDeliver(orderSnList);
                     //更改参团状态
                     updateGroupBuyListStatus(group.getGroupId(),STATUS_DEFAULT_SUCCESS);
                 });
