@@ -450,8 +450,8 @@ export default {
       if (newData === '1') {
         this.isCartBtnDisabled = false
       } else {
-        this.linkageData.cart_btn_choose = '0'
         if (this.linkageData.shop_style === '3' || this.linkageData.shop_style === '5') {
+          this.linkageData.cart_btn_choose = '0'
           this.isCartBtnDisabled = true
         } else {
           this.isCartBtnDisabled = false
