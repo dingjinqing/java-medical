@@ -5,10 +5,10 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class BindOARabbitParam  {
-
+public class BindOARabbitParam {
 
 	private String appId;
 	private String language;
 	private Integer sysId;
+	private Integer taskJobId;
 }
