@@ -1,9 +1,16 @@
 package com.vpu.mp.service.shop.goods.es.convert.goods;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * es
@@ -12,6 +19,8 @@ import org.springframework.beans.BeanUtils;
  *
 */
 public class GoodsPageListVoConverter implements EsGoodsConvertInterface<GoodsPageListVo> {
+
+    private final static ObjectMapper MAPPER = new ObjectMapper();
     @Override
     public GoodsPageListVo convert(EsGoods esGoods) {
         GoodsPageListVo vo = new GoodsPageListVo();
@@ -22,11 +31,25 @@ public class GoodsPageListVoConverter implements EsGoodsConvertInterface<GoodsPa
         if( null != esGoods.getMinSpecPrdPrices() ){
             vo.setPrdMinShopPrice(esGoods.getMinSpecPrdPrices());
         }
+        vo.setIsDefaultPrd(esGoods.getDefPrd());
+        if( esGoods.getDefPrd() && StringUtils.isNotBlank(esGoods.getPrdJson()) ){
+            List<GoodsPrdMpVo> list = strToGoodsPrdMpVos(esGoods.getPrdJson());
+            vo.setPrdId(CollectionUtils.isNotEmpty(list)?list.get(0).getPrdId():0);
+        }
         if(StringUtils.isNotBlank(esGoods.getCatName())){
             String[] catName = esGoods.getCatName().split(" ");
             vo.setCatName(catName[catName.length-1]);
         }
 
+
         return vo;
+    }
+    private List<GoodsPrdMpVo> strToGoodsPrdMpVos(String jsonStr){
+        try {
+            return MAPPER.readValue(jsonStr,new TypeReference<List<GoodsPrdMpVo>>(){});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
