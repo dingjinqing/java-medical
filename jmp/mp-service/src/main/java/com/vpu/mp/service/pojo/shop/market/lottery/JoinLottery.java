@@ -25,6 +25,10 @@ public class JoinLottery {
      */
     private Byte chanceSource;
     /**
+     * 中奖等级
+     */
+    private Byte lotteryGrade;
+    /**
      * 抽奖结果
      */
     private Byte resultsType;

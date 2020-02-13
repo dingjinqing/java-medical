@@ -16,6 +16,8 @@
         >
           <el-input
             v-model="form.strategyName"
+            size="small"
+            class="inputWidth"
             :placeholder="$t('distribution.strategyTip1')"
           ></el-input>
         </el-form-item>
@@ -25,6 +27,8 @@
         >
           <el-input
             v-model.number="form.strategyLevel"
+            size="small"
+            class="inputWidth"
             :placeholder="$t('distribution.strategyTip2')"
           ></el-input>
           <div class="text">{{ $t('distribution.strategyTip3') }}</div>
@@ -35,6 +39,7 @@
         >
           <el-date-picker
             v-model="form.validity"
+            size="small"
             type="datetimerange"
             :range-separator="$t('seckill.to')"
             :start-placeholder="$t('seckill.startTime')"
@@ -109,6 +114,8 @@
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.levelName"
+                  size="small"
+                  class="inputWidth"
                   disabled
                 ></el-input>
               </template>
@@ -133,22 +140,22 @@
                   <div style="width:50%;float: left;">
                     <div>{{ $t('distribution.proportionTip3') }}
                       <el-input
-                        v-model.number="scope.row.fanliRatio"
+                        v-model="scope.row.fanliRatio"
                         size="mini"
                         style="width: 50px;"
                       ></el-input> %
                     </div>
                     <div style="margin-top: 10px;">{{ $t('distribution.proportionTip4') }}
                       <el-input
-                        v-model.number="scope.row.rebateRatio"
+                        v-model="scope.row.rebateRatio"
                         size="mini"
                         style="width: 50px;"
                       ></el-input> %
                     </div>
                   </div>
                   <div
-                    style="width:50%;float: left;"
-                    v-if="scope.row.level === '1'"
+                    style="width:50%;float: left;margin-top: 10px;"
+                    v-if="scope.row.levelId === 1"
                   >
                     {{ $t('distribution.proportionTip5') }}
                   </div>
@@ -183,7 +190,32 @@
           >{{ $t('distribution.authorityTip1') }}</el-checkbox>
           <span class="tips">{{ $t('distribution.authorityTip2') }}</span>
         </el-form-item>
-        <el-form-item
+
+        <div style="height: 40px;line-height: 40px;background: #f8f8f8;padding-left: 10px;margin-bottom: 20px;">分销商品</div>
+        <div style="margin-left: 120px;">
+          <el-radio-group v-model="form.recommendType">
+            <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
+            <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
+          </el-radio-group>
+          <div v-if="form.recommendType === 1">
+            <div
+              v-for="(item,index) in storeArr"
+              :key="index"
+              class="storeContent"
+            >
+              <el-button
+                @click="hanldeToAddGoodS(index)"
+                size="small"
+              >
+                <i class="el-icon-plus"></i> {{ item.name }}
+              </el-button>
+              <span v-if="index === 0">{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
+              <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
+              <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
+            </div>
+          </div>
+        </div>
+        <!-- <el-form-item
           :label="$t('distribution.distributionGoods')"
           prop=""
         >
@@ -205,7 +237,7 @@
               <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
             </div>
           </div>
-        </el-form-item>
+        </el-form-item> -->
 
       </el-form>
 
@@ -282,8 +314,8 @@ export default {
       tableData: [{
         levelId: 1,
         levelName: '分销员测试',
-        fanliRatio: 0, // 直接比例
-        rebateRatio: 0, // 间接比例
+        fanliRatio: null, // 直接比例
+        rebateRatio: null, // 间接比例
         firstRatio: null // 首单返利
       }, {
         levelId: 2,
@@ -338,10 +370,11 @@ export default {
   },
   mounted () {
     this.langDefault()
-    this.initDataList()
-    // 编辑初始化
     if (this.isEdite === true) {
+      // 编辑初始化
       this.editSeckillInit(this.editId)
+    } else {
+      this.initDataList()
     }
   },
   methods: {
@@ -356,10 +389,12 @@ export default {
 
     // 表格数据处理
     handleData (data) {
-      console.log(this.tableData)
-      this.tableData.map((item, index) => {
-        item.levelId = data[index].levelId
-        item.levelName = data[index].levelName
+      data.map((item, index) => {
+        if (item.levelStatus === 0) {
+          item.levelName = item.levelName + '(已停用)'
+        } else {
+          item.levelName = item.levelName + '(已启用)'
+        }
         switch (item.levelId) {
           case 1:
             item.levelText = '一级'
@@ -378,7 +413,7 @@ export default {
             break
         }
       })
-      console.log(this.tableData)
+      this.tableData = data
     },
 
     // 编辑初始化
@@ -425,6 +460,8 @@ export default {
 
           this.platClass = data.recommendSortId.split(',')
           this.platClass = this.platClass.map(Number)
+
+          this.handleData(this.tableData)
         }
       })
     },
@@ -438,25 +475,25 @@ export default {
       this.form.endTime = this.form.validity[1]
 
       // 直接返利
-      this.form.fanliRatio = this.tableData[0].fanliRatio
-      this.form.fanliRatio_2 = this.tableData[1].fanliRatio
-      this.form.fanliRatio_3 = this.tableData[2].fanliRatio
-      this.form.fanliRatio_4 = this.tableData[3].fanliRatio
-      this.form.fanliRatio_5 = this.tableData[4].fanliRatio
+      this.form.fanliRatio = Number(this.tableData[0].fanliRatio)
+      this.form.fanliRatio_2 = Number(this.tableData[1].fanliRatio)
+      this.form.fanliRatio_3 = Number(this.tableData[2].fanliRatio)
+      this.form.fanliRatio_4 = Number(this.tableData[3].fanliRatio)
+      this.form.fanliRatio_5 = Number(this.tableData[4].fanliRatio)
 
       // 间接返利
-      this.form.rebateRatio = this.tableData[0].rebateRatio
-      this.form.rebateRatio_2 = this.tableData[1].rebateRatio
-      this.form.rebateRatio_3 = this.tableData[2].rebateRatio
-      this.form.rebateRatio_4 = this.tableData[3].rebateRatio
-      this.form.rebateRatio_5 = this.tableData[4].rebateRatio
+      this.form.rebateRatio = Number(this.tableData[0].rebateRatio)
+      this.form.rebateRatio_2 = Number(this.tableData[1].rebateRatio)
+      this.form.rebateRatio_3 = Number(this.tableData[2].rebateRatio)
+      this.form.rebateRatio_4 = Number(this.tableData[3].rebateRatio)
+      this.form.rebateRatio_5 = Number(this.tableData[4].rebateRatio)
 
       // 首单返利
-      this.form.firstRatio = this.tableData[0].firstRatio
-      this.form.firstRatio_2 = this.tableData[1].firstRatio
-      this.form.firstRatio_3 = this.tableData[2].firstRatio
-      this.form.firstRatio_4 = this.tableData[3].firstRatio
-      this.form.firstRatio_5 = this.tableData[4].firstRatio
+      this.form.firstRatio = Number(this.tableData[0].firstRatio)
+      this.form.firstRatio_2 = Number(this.tableData[1].firstRatio)
+      this.form.firstRatio_3 = Number(this.tableData[2].firstRatio)
+      this.form.firstRatio_4 = Number(this.tableData[3].firstRatio)
+      this.form.firstRatio_5 = Number(this.tableData[4].firstRatio)
 
       // 返利商品
       this.form.recommendGoodsId = this.goodsInfo.toString() // 商品
@@ -546,9 +583,12 @@ export default {
 }
 </script>
 <style scoped>
-.el-input {
-  width: 200px;
+.inputWidth {
+  width: 170px;
 }
+/* .el-input {
+  width: 200px;
+} */
 .container {
   margin-top: 10px;
   padding: 10px;

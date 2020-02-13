@@ -278,26 +278,32 @@
                 </el-radio>
               </div>
               <!--end-->
-              <div :style="columnFlag?'margin-bottom:10px':'margin-bottom:10px;display:flex'">
+              <div
+                v-if="linkageData.shop_style!=='3'||linkageData.position_style==='1'"
+                :style="columnFlag?'margin-bottom:10px':'margin-bottom:10px;display:flex'"
+              >
                 <el-checkbox v-model="linkageData.other_message">{{$t('commodityGrouping.otherInformation')}}</el-checkbox>
                 <div>
                   <span style="color:#999;white-space: pre-wrap;width: 330px">{{$t('commodityGrouping.otherInformationTip')}}</span>
                 </div>
               </div>
               <!--其他信息checkbox选中后显示的隐藏模块-->
-              <div v-if="linkageData.other_message">
-                <el-radio
-                  v-model="linkageData.show_market"
-                  label="1"
-                >{{$t('commodityGrouping.marketValue')}}</el-radio>
-                <el-radio
-                  v-model="linkageData.show_market"
-                  label="2"
-                >{{$t('commodityGrouping.salesVolume')}}</el-radio>
-                <el-radio
-                  v-model="linkageData.show_market"
-                  label="3"
-                >{{$t('commodityGrouping.evaluationNumber')}}</el-radio>
+              <div v-if="linkageData.shop_style!=='3'||linkageData.position_style==='1'">
+                <div v-if="linkageData.other_message">
+                  <el-radio
+                    v-model="linkageData.show_market"
+                    label="1"
+                  >{{$t('commodityGrouping.marketValue')}}</el-radio>
+                  <el-radio
+                    v-model="linkageData.show_market"
+                    label="2"
+                  >{{$t('commodityGrouping.salesVolume')}}</el-radio>
+                  <el-radio
+                    v-model="linkageData.show_market"
+                    label="3"
+                  >{{$t('commodityGrouping.evaluationNumber')}}</el-radio>
+                </div>
+
               </div>
               <!--end-->
             </div>
@@ -444,8 +450,8 @@ export default {
       if (newData === '1') {
         this.isCartBtnDisabled = false
       } else {
-        this.linkageData.cart_btn_choose = '0'
         if (this.linkageData.shop_style === '3' || this.linkageData.shop_style === '5') {
+          this.linkageData.cart_btn_choose = '0'
           this.isCartBtnDisabled = true
         } else {
           this.isCartBtnDisabled = false
@@ -547,7 +553,7 @@ export default {
       console.log(this.linkageData.sort_group_arr)
       this.linkageData.sort_group_arr.forEach((item, index) => {
         let obj = {}
-        switch (item.sort_type) {
+        switch (Number(item.sort_type)) {
           case 0:
             obj['sortId'] = item.sort_id
             break
@@ -763,6 +769,9 @@ export default {
         arr[0] = this.linkageData.sort_group_arr[index].sort_type
         arr[1] = this.linkageData.sort_group_arr[index].sort_id
         this.initialConditionRender = arr
+        if (!this.linkageData.sort_group_arr[index].group_goods_id) {
+          this.linkageData.sort_group_arr[index].is_all = 1
+        }
       }
     },
     // 选择商品弹窗数据回传
@@ -772,6 +781,11 @@ export default {
       console.log(res.join(','))
       this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id = res.join(',')
       console.log(this.linkageData.sort_group_arr[this.nowClickAppointIndex].group_goods_id)
+      if (res.join(',')) {
+        this.linkageData.sort_group_arr[this.nowClickAppointIndex].is_all = 2
+      } else {
+        this.linkageData.sort_group_arr[this.nowClickAppointIndex].is_all = 1
+      }
     }
   }
 }

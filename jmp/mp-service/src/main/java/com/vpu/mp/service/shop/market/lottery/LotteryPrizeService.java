@@ -65,10 +65,11 @@ public class LotteryPrizeService  extends ShopBaseService {
                 if (flag<=0&&record.getAwardTimes() >= record.getLotteryNumber()) {
                     //奖品发完了
                     joinValid.setResultsType(LOTTERY_TYPE_SEND_OUT);
-                    break;
+                    return;
                 }
                 joinValid.setResultsType(record.getLotteryType());
                 joinValid.setLotteryPrize(record);
+                joinValid.setLotteryGrade(record.getLotteryGrade());
                 return;
             }
             randNumber -= chanceNumerator;

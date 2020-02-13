@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * author liufei
@@ -110,6 +111,10 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/commoditystatistics/productRanking")
     public JsonResult productRanking(@RequestBody @Validated RankingParam param) {
+        if (Objects.isNull(param.getStartTime()) || Objects.isNull(param.getEndTime())) {
+            // 默认获取最近30天的数据
+            param.defaultValue();
+        }
         return success(shop().statisticsService.getGoodsRanking(param));
     }
 

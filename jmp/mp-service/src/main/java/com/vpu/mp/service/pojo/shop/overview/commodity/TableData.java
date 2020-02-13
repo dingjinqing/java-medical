@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author liufei
@@ -13,6 +14,6 @@ import java.util.List;
 @Builder
 public class TableData {
     List<String> refDate;
-    List<String> goodsName;
+    Set<String> goodsName;
     List<List<Object>> arrayData;
 }

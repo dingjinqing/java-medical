@@ -4,10 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.UserCollectionRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.wxapp.collection.AddAndCancelCollectionParam;
-import com.vpu.mp.service.pojo.wxapp.collection.CancleCollectParam;
-import com.vpu.mp.service.pojo.wxapp.collection.CollectListParam;
-import com.vpu.mp.service.pojo.wxapp.collection.CollectListVo;
+import com.vpu.mp.service.pojo.wxapp.collection.*;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.jooq.Record;
@@ -16,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.USER_COLLECTION;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 商品收藏service
@@ -40,14 +37,32 @@ public class CollectService extends ShopBaseService{
 	 */
 	public PageResult<CollectListVo> collectList(CollectListParam param , Integer userId) {
 		 SelectConditionStep<? extends Record> sql = db().select(USER_COLLECTION.ID,USER_COLLECTION.USER_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
-				 GOODS.SHOP_PRICE,GOODS.GOODS_TYPE,USER_COLLECTION.COLLECT_PRICE,USER_COLLECTION.USERNAME,USER_COLLECTION.CREATE_TIME)
+				 GOODS.SHOP_PRICE,GOODS.GOODS_ID,GOODS.GOODS_TYPE,USER_COLLECTION.COLLECT_PRICE,USER_COLLECTION.USERNAME,USER_COLLECTION.CREATE_TIME)
 				.from(USER_COLLECTION
 				.leftJoin(GOODS).on(USER_COLLECTION.GOODS_ID.eq(GOODS.GOODS_ID)))
 				.where(USER_COLLECTION.USER_ID.eq(userId).and(GOODS.DEL_FLAG.eq((byte)0)));
 		PageResult<CollectListVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CollectListVo.class);
-		
-		//TODO:判断是否为拼团商品
-		
+
+		//判断是否是拼团商品
+        for(CollectListVo goodsInfo:lists.dataList){
+            if(goodsInfo.getGoodsType() == 1){
+                //查询拼团信息
+                List<CollectGroupVo> infos = db().select(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE).from(GROUP_BUY_DEFINE.leftJoin(GROUP_BUY_PRODUCT_DEFINE)
+                    .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID)))
+                    .where(GROUP_BUY_DEFINE.GOODS_ID.eq(goodsInfo.getGoodsId())).fetch().into(CollectGroupVo.class);
+
+                BigDecimal groupPrice = goodsInfo.getCollectPrice() ;
+                System.out.println(groupPrice);
+                for(CollectGroupVo info:infos){//规格商品、获取最低规格价
+                    System.out.println(info.getGroupPrice());
+                    if(info.getGroupPrice().compareTo(groupPrice)<0){
+                        groupPrice = info.getGroupPrice();
+                    }
+                    System.out.println(groupPrice);
+                }
+                goodsInfo.setGroupPrice(groupPrice);
+            }
+        }
 		//处理图片路径为全路径
 		for(CollectListVo list : lists.dataList) {
 			if(!org.apache.commons.lang3.StringUtils.isBlank(list.getGoodsImg())) {

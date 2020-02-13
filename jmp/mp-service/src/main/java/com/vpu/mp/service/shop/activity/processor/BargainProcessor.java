@@ -99,7 +99,9 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
             param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
             param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
         }
+        //禁用优惠券
         param.setCouponSn("");
+        //禁用会员卡
         param.setMemberCardNo("");
     }
 
