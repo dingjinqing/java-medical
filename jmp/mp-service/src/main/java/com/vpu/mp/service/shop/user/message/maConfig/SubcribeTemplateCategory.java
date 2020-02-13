@@ -24,7 +24,7 @@ public class SubcribeTemplateCategory {
 	/** 积分变更提醒 */
 	public static final String SCORE_CHANGE = "score_change";
 	/** 订单发货通知 */
-	public static final String ORDER_DELIVER = "draw_result";
+	public static final String ORDER_DELIVER = "order_deliver";
 	/** 退款通知 */
 	public static final String REFUND_RESULT = "refund_result";
 	/** 邀请成功通知 */
