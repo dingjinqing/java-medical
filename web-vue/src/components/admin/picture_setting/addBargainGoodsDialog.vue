@@ -24,6 +24,7 @@
           ref="addBargainTable"
           :data="tableData"
           height="300px;"
+          row-key="id"
           @selection-change="selectionChangeHandle"
           @row-click="currentClickHandle"
         >
@@ -94,6 +95,7 @@ export default {
     pagination: () => import('@/components/admin/pagination/pagination')
   },
   props: {
+    backData: Array,
     visible: {
       type: Boolean,
       default: () => false
@@ -116,6 +118,20 @@ export default {
       },
       set: function (val) {
         this.$emit('update:visible', val)
+      }
+    }
+  },
+  watch: {
+    visible: function (newVal) {
+      let that = this
+      if (newVal) {
+        if (that.$refs.addBargainTable) {
+          that.$refs.addBargainTable.clearSelection()
+          that.backData.forEach((row, index) => {
+            let rowData = that.tableData.find((data, j) => data.id === row.act_id)
+            that.$refs.addBargainTable.toggleRowSelection(rowData, true)
+          })
+        }
       }
     }
   },
