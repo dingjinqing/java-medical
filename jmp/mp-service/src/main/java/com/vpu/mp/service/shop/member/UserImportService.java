@@ -53,6 +53,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -66,6 +67,7 @@ import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
@@ -175,9 +177,19 @@ public class UserImportService extends ShopBaseService {
 			return json;
 		}
 		json = Util.parseJson(record.getV(), SetNoticeJson.class);
+		
 		return json;
 	}
 
+	public SetNoticeJsonVo getAllActivationNotice() {
+		SetNoticeJson json = getActivationNotice();
+		String mrkingVoucherId = json.getMrkingVoucherId();
+		List<CouponView> couponViewByIds=new ArrayList<CouponView>();
+		if(StringUtils.isNotEmpty(mrkingVoucherId)) {
+			couponViewByIds = couponService.getCouponViewByIds(Util.splitValueToList(mrkingVoucherId));			
+		}
+		return new SetNoticeJsonVo(json.getExplain(), json.getScore(), mrkingVoucherId, couponViewByIds);
+	}
 	public SetNoticeJsonDetailVo getInfo(String lang) {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
