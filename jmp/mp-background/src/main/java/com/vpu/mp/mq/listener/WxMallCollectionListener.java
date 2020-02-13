@@ -10,10 +10,12 @@ import org.springframework.stereotype.Component;
 import com.rabbitmq.client.Channel;
 import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.recommend.SendCollectBean;
 import com.vpu.mp.service.saas.SaasApplication;
 
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  * 好物圈收藏
@@ -34,14 +36,17 @@ public class WxMallCollectionListener implements BaseRabbitHandler {
 		if(param.getStatus().equals(1)) {
 			//插入
 			log.info("更新收藏");
-			saas.getShopApp(param.getShopId()).recommendService.collectionMallService.addshoppinglistAdd(param.getBean());
+			WxOpenResult addshoppinglistAdd = saas.getShopApp(param.getShopId()).recommendService.collectionMallService.addshoppinglistAdd(param.getBean());
+			log.info("更新收藏结果："+addshoppinglistAdd.isSuccess());
 		}
 		if(param.getStatus().equals(2)) {
 			//删除
 			log.info("删除收藏");
-			saas.getShopApp(param.getShopId()).recommendService.collectionMallService.addshoppinglistDel(param.getBean());
+			WxOpenResult addshoppinglistDel = saas.getShopApp(param.getShopId()).recommendService.collectionMallService.addshoppinglistDel(param.getBean());
+			log.info("删除收藏结果："+addshoppinglistDel.isSuccess());
 		}
-		
+		log.info("收藏更改状态："+param.getTaskJobId());
+		saas.taskJobMainService.updateProgress(Util.toJson(param),param.getTaskJobId(),0,1);
 	}
 
 	@Override

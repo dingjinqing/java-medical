@@ -10,10 +10,12 @@ import org.springframework.stereotype.Component;
 import com.rabbitmq.client.Channel;
 import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.recommend.SendProductBean;
 import com.vpu.mp.service.saas.SaasApplication;
 
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  * 好物圈相关之物品信息
@@ -34,10 +36,12 @@ public class WxMallProductListener implements BaseRabbitHandler {
 		if(param.getStatus().equals(1)) {
 			//插入
 			log.info("更新或导入物品信息");
-			saas.getShopApp(param.getShopId()).recommendService.productMallService.importProductUpdate(param.getBean());
+			WxOpenResult importProductUpdate = saas.getShopApp(param.getShopId()).recommendService.productMallService.importProductUpdate(param.getBean());
+			log.info("更新或导入物品信息结果："+importProductUpdate.isSuccess());
 		}
 		//留以后拓展用
-		
+		log.info("物品更改状态："+param.getTaskJobId());
+		saas.taskJobMainService.updateProgress(Util.toJson(param),param.getTaskJobId(),0,1);
 	}
 
 	@Override

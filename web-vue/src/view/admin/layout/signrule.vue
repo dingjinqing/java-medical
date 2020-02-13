@@ -15,7 +15,7 @@
         </li>
       </ul>
       <p class='title'>3.如果中断签到，连续签到记录也将清零</p>
-      <p class='title'>4.连续签到超过N天，积分获取按照连续签到N天赠送</p>
+      <p class='title'>{{signRule}}</p>
     </div>
   </div>
 </template>
@@ -24,7 +24,8 @@ import { signruleRequest } from '@/api/admin/util.js'
 export default {
   data () {
     return {
-      htmlData: []
+      htmlData: [],
+      signRule: ''
     }
   },
   mounted () {
@@ -40,7 +41,13 @@ export default {
     signruleRequest(obj).then(res => {
       console.log(res)
       if (res.error === 0) {
-        this.htmlData = res.content
+        this.htmlData = res.content.sign_rule
+        let rule = res.content.sign_data.sign_in_rules
+        if (rule === 1) {
+          this.signRule = '4.连续签到N+1天时，将循环按第1天签到积分数量赠送（N为连续签到上限）'
+        } else {
+          this.signRule = '4.连续签到N+1天时，将循环按第N天签到积分数量赠送（N为连续签到上限）'
+        }
       }
     })
   }

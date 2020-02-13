@@ -1819,10 +1819,21 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
-     * 商品图片列表
-     *
+     * 获取商品所有图片列表
+     */
+    public List<String> getGoodsAllImageList(Integer goodsId) {
+        List<String> list = getGoodsImageList(goodsId);
+        GoodsRecord goodsRecord = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
+        if (goodsRecord != null) {
+            list.add(0,getImgFullUrlUtil(goodsRecord.getGoodsImg()));
+        }
+        return list;
+    }
+
+    /**
+     * 获取商品幅图图片列表
      * @param goodsId
-     * @return
+     * @return 图片地址绝对路径集合
      */
     public List<String> getGoodsImageList(Integer goodsId) {
         Result<GoodsImgRecord> fetch = db().selectFrom(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).orderBy(GOODS_IMG.IMG_DESC.desc()).fetch();

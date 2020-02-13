@@ -12,5 +12,5 @@
 
 <v-spec-dialog show="{{showSpec}}" bind:close="bindClose" products-info="{{productsInfo}}" bindproductData="getProductData">
   <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
-  <v-item-footer slot="footer" dealt-act="{{dealtAct}}" activity="{{productsInfo.activity}}"  origin="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}" bindclose="bindClose"/>
+  <v-item-footer wx:if="{{showSpec}}" slot="footer" dealt-act="{{dealtAct}}" activity="{{productsInfo.activity}}"  position="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}" bindclose="bindClose"/>
 </v-spec-dialog>

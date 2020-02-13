@@ -193,7 +193,7 @@ export default {
         totalBuyMoney: 0,
         levelUserIds: null,
         users: '',
-        levelStatus: 0
+        levelStatus: 1
       }, {
         levelId: 2,
         levelName: 'v2',
@@ -257,6 +257,9 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
+        if (item.levelId === 1) {
+          item.levelStatus = 1
+        }
         if (item.levelUserIds !== null) {
           item.levelUserIds = item.levelUserIds.split(',')
         }

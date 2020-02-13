@@ -267,41 +267,20 @@ global.wxPage({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function (options) {
     var that = this;
-    var shareDoc = ''; // 文案
-    var imgUrl = ''; // 图片
-    if (bargain_info.state == 8 || bargain_info.state == 11) {
-      clearTimeout(set_time_out);
-      // 分享接口
-      util.api('/api/wxapp/bargain/share/info', function (res) {
-        if (res.error == 0) {
-          shareDoc = res.content.shareDoc
-          imgUrl = res.content.imgUrl
-        }
-      }, {
-        activityId: bargain_info.recordInfo.bargainId,
-        realPrice: bargain_info.recordInfo.expectationPrice,
-        linePrice: bargain_info.recordInfo.prdPrice,
-      })
-      setTimeout(function () {
-        clearTimeout(set_time_out);
-        that.onPullDownRefresh();
-      }, 1000);
-      that.setData({
-        is_success: 0
-      })
-    }
+    that.setData({
+      is_success: 0
+    })
     return {
-      title: shareDoc,
+      title: bargain_info.recordShareImg.shareDoc,
       path: 'pages/bargaininfo/bargaininfo?record_id=' + record_id + "&invite_id=" + util.getCache('user_id')
         + "&bargain_id=" + bargain_info.recordInfo.bargainId,
-      imageUrl: imgUrl,
+      imageUrl: bargain_info.recordShareImg.shareImg,
       complete: function () {
 
       }
     }
-
   },
   // 生成海报
   go_share: function () {
@@ -321,11 +300,11 @@ global.wxPage({
         util.toast_fail(res.message);
       }
     }, {
-      activityId: bargain_info.recordInfo.bargainId,
-      realPrice: bargain_info.recordInfo.expectationPrice,
-      linePrice: bargain_info.recordInfo.prdPrice,
-      pageType: 2
-    })
+        activityId: bargain_info.recordInfo.bargainId,
+        realPrice: bargain_info.recordInfo.expectationPrice,
+        linePrice: bargain_info.recordInfo.prdPrice,
+        pageType: 2
+      })
   },
   not_show_share: function () {
     var that = this;
@@ -486,6 +465,23 @@ function request_kanjia(that) {
           act_open: 1
         });
       }
+
+      // 分享信息
+      util.api('/api/wxapp/bargain/share/info', function (opt) {
+        if (opt.error == 0) {
+          bargain_info.recordShareImg.shareDoc = opt.content.shareDoc
+          bargain_info.recordShareImg.shareImg = opt.content.imgUrl
+          that.setData({
+            bargain_info: bargain_info
+          })
+        }
+      }, {
+          activityId: bargain_info.recordInfo.bargainId,
+          realPrice: bargain_info.recordInfo.expectationPrice,
+          linePrice: bargain_info.recordInfo.prdPrice
+        })
+
+
       that.setData({
         bargain_info: bargain_info,
         money_now_left: money_now_left
@@ -495,7 +491,6 @@ function request_kanjia(that) {
         wx.navigateBack({})
       });
     }
-    
-  }, { recordId: record_id })
 
+  }, { recordId: record_id })
 }

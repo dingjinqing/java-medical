@@ -15,7 +15,9 @@ export default {
       navHeight: null
     }
   },
+  inject: ['changeIsFillcontain'],
   mounted () {
+    this.changeIsFillcontain()
     console.log(window.location.href)
     let part = window.location.href.split('?')[1].split('&')
     let navHeight = Number(part[0].split('=')[1])
