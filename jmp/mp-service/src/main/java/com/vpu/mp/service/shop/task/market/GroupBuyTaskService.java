@@ -289,7 +289,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
             param.setOrderSn(orderSn);
             param.setOrderId(orderInfo.getOrderId());
             param.setReturnType(OrderConstant.RT_ONLY_MONEY);
-            param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()));
+            param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()).subtract(orderInfo.getShippingFee()));
             param.setShippingFee(orderInfo.getShippingFee());
 
             List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
