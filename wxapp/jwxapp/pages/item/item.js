@@ -586,6 +586,17 @@ global.wxPage({
         return data
     }
   },
+  goRule(e){
+    let {type} = e.currentTarget.dataset
+    switch (type) {
+      case 1:
+        break;
+    
+      case 3:
+        util.jumpToWeb('/wxapp/bargain/help');
+        break;
+    }
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
