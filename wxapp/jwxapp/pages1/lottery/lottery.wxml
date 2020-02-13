@@ -75,7 +75,7 @@
   </view>
 </view>
 <!-- 中奖弹窗 -->
-<v-lottery-award-dialog show="{{awardDialogVisible}}"/>
+<v-lottery-award-dialog show="{{awardDialogVisible}}" prizeInfo="{{prizeInfo}}"/>
 <!-- 未中奖弹窗 -->
 <v-lottery-no-award-dialog show="{{noAwardDialogVisible}}"/>
 <!-- <include src="/pages/common/footer.wxml"/> -->

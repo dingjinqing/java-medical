@@ -40,7 +40,8 @@ global.wxPage({
     lotteryId: '', 
     lotteryType: '', // 抽奖类型（抽奖次数来源） 1免费,2分享,3积分
     lotterySource: 3, // 活动来源 1开屏有礼,2支付有礼,3分享,4评价有礼,5分享有礼
-    btnstatus: 1 // 按钮状态 1立即抽奖，2去分享，3消耗积分抽奖，4抽奖次数用光啦
+    btnstatus: 1, // 按钮状态 1立即抽奖，2去分享，3消耗积分抽奖，4抽奖次数用光啦
+    prizeInfo: null // 奖品信息
   },
 
   /**
@@ -174,7 +175,28 @@ global.wxPage({
           let startStep = that.data.winIndex;
           let endStep = parseInt(Math.random() * 8 + 1);
           console.log(startStep, endStep);
-          that.rolling(startStep, endStep)
+          switch (content.lotteryGrade) {
+            case 1:
+              endStep = 3
+              break
+            case 2:
+              let steps2 = [4, 8]
+              let random2 = parseInt(Math.random() * 2)
+              endStep = steps2[random2]
+              break
+            case 3:
+              let steps3 = [2, 6]
+              let random3 = parseInt(Math.random() * 2)
+              endStep = steps3[random3]
+              break
+            case 4:
+              let steps4 = [0, 5, 7]
+              let random4 = parseInt(Math.random() * 3)
+              endStep = steps4[random4]
+            default:
+              endStep = 1
+          }
+          that.rolling(startStep, endStep, content)
         } else {
           that.$message.error(content.msg)
         }
@@ -192,9 +214,9 @@ global.wxPage({
 
   /**
    * 抽奖动画
-   * params(开始位置（0~8），结束位置（0~8))
+   * params(开始位置（0~8），结束位置（0~8), 奖品信息)
    */
-  rolling(startStep, endStep) {
+  rolling(startStep, endStep, prizeInfo) {
     let that = this;
     // 从winIndex开始，总共要走多少步
     let totalStep = that.data.minturns *9 + endStep - startStep;
@@ -216,6 +238,11 @@ global.wxPage({
         // 动画停止
         clearInterval(timer)
         // 弹出奖励
+        if (prizeInfo.flag && prizeInfo.lotteryGrade > 0) {
+          that.hitTheJackpot(prizeInfo)
+        } else {
+          that.noDraw()
+        }
       }
     }, that.data.speed)
   },
