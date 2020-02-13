@@ -506,7 +506,8 @@ export default {
       imageDalogVisible: false, // 选择图片
       selectImg: null,
       uploadHover: false,
-      selectLinksVisible: false // 选择链接
+      selectLinksVisible: false, // 选择链接
+      timer: null
     }
   },
   computed: {
@@ -568,19 +569,39 @@ export default {
       })
     },
     saveOpenScreenHandle () {
-      this.$refs.openScreenForm.validate(valid => {
+      let that = this
+      this.throttle(this.saveRequest, 1000)(that)
+    },
+    saveRequest (that) {
+      console.log('zhixing...')
+      that.$refs.openScreenForm.validate(valid => {
         if (valid) {
-          let params = Object.assign({}, this.form)
-          if (this.id) {
-            this.updateRequest(params)
+          let params = Object.assign({}, that.form)
+          if (that.id) {
+            that.updateRequest(params)
           } else {
-            this.addRequest(params)
+            that.addRequest(params)
           }
         } else {
           console.log('submit error')
           return false
         }
       })
+    },
+    // 节流函数
+    throttle (fn, delay) {
+      let that = this
+      return function () {
+        let context = that
+        let args = arguments
+        if (!that.timer) {
+          that.timer = setTimeout(function () {
+            clearTimeout(that.timer)
+            fn.apply(context, args)
+            that.timer = null
+          }, delay)
+        }
+      }
     },
     addRequest (params) {
       addOpenScreen(params).then(res => {
