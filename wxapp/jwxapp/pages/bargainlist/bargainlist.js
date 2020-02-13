@@ -44,8 +44,8 @@ global.wxPage({
     })
     this.requestList()
   },
-  continueBargain(){
-    console.log(321)
+  continueBargain(e){
+    util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${e.currentTarget.dataset.recordId}`,'navigateTo')
   },
   checkOut(){
     console.log(123)
