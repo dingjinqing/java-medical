@@ -32,6 +32,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep3;
+import org.jooq.SortField;
 import  org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
+import com.vpu.mp.service.pojo.shop.member.OrderRuleParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.member.UserCardService;
@@ -84,9 +86,24 @@ public class MemberDaoService extends ShopBaseService {
 				.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(USER.USER_ID));
 
 		buildOptionsForTable(param,select);
-		select.where(buildOptions(param))
-			  .orderBy(USER.USER_ID.desc());
+		SortField<? extends Object> order= USER.USER_ID.desc();
+		if(param.getOrderRule()!=null) {
+			OrderRuleParam orderRule = param.getOrderRule();
+			switch (orderRule.getRule()) {
+				case OrderRuleParam.SCORE_RULE:
+					// 积分排序
+					order = orderRule.isDesc() ? USER.SCORE.desc() : USER.SCORE.asc();
+					break;
+				case OrderRuleParam.REGIST_TIME_RULE:
+					// 注册时间
+					order = orderRule.isDesc() ? USER.CREATE_TIME.desc(): USER.CREATE_TIME.asc();
+					break;
+				default:
+					break;
+			}
+		}
 		
+		select.where(buildOptions(param)).orderBy(order);
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), MemberInfoVo.class);
 	}
 	
