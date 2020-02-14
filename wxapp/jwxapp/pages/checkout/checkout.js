@@ -197,6 +197,8 @@ global.wxPage({
           : moneyPaid * scoreProportion > userScore
           ? userScore
           : moneyPaid * scoreProportion
+      useScore = useScore.toFixed(0)
+      console.log(useScore)
       moneyPaid -= useScore
       this.setData({
         'usePayInfo.useScore': useScore,
@@ -556,88 +558,90 @@ global.wxPage({
   },
   // 提交订单
   confirmOrder() {
-    let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
+    util.getNeedTemplateId('add_order',()=>{
+      let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
       this.data.orderInfo || {}
-    let {
-      useBalance: balance,
-      useCardBalance: cardBalance,
-      useScore: scoreDiscount
-    } = this.data.usePayInfo
-    let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
-    let couponSn =
-      (this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn) || null
-    let memberCardNo =
-      (this.data.orderInfo.defaultMemberCard && this.data.orderInfo.defaultMemberCard.cardNo) ||
-      null
-    goods = goods.filter(item => {
-      return item.isGift !== 1
-    })
+      let {
+        useBalance: balance,
+        useCardBalance: cardBalance,
+        useScore: scoreDiscount
+      } = this.data.usePayInfo
+      let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
+      let couponSn =
+        (this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn) || null
+      let memberCardNo =
+        (this.data.orderInfo.defaultMemberCard && this.data.orderInfo.defaultMemberCard.cardNo) ||
+        null
+      goods = goods.filter(item => {
+        return item.isGift !== 1
+      })
 
-    if(!this.canSubmit()) return
-    let params = {
-      goods,
-      action: 10,
-      orderAmount,
-      addressId,
-      balance,
-      cardBalance,
-      scoreDiscount,
-      deliverType: this.data.params.deliverType,
-      orderPayWay: this.data.choosePayTypeIndex,
-      couponSn,
-      message: this.data.message,
-      memberCardNo,
-      activityType,
-      activityId,
-      recordId: this.data.params.recordId,
-      groupId: this.data.params.groupId
-    }
-    this.getMust(params)
-    util.api(
-      '/api/wxapp/order/submit',
-      res => {
-        if (res.error === 0) {
-          let { orderSn } = res.content
-          if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay) {
-            wx.requestPayment({
-              timeStamp: res.content.webPayVo.timeStamp,
-              nonceStr: res.content.webPayVo.nonceStr,
-              package: res.content.webPayVo.package,
-              signType: 'MD5',
-              paySign: res.content.webPayVo.paySign,
-              success: res => {
-                util.toast_success('支付成功')
-                util.jumpLink(
-                  `pages1/payment/payment${this.getUrlParams({
-                    orderSn,
-                    useInfo: JSON.stringify({ ...this.data.usePayInfo })
-                  })}`,
-                  'redirectTo'
-                )
-              },
-              fail: res => {
-                console.log(res)
-                util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
-              },
-              complete: res => {}
-            })
+      if(!this.canSubmit()) return
+      let params = {
+        goods,
+        action: 10,
+        orderAmount,
+        addressId,
+        balance,
+        cardBalance,
+        scoreDiscount,
+        deliverType: this.data.params.deliverType,
+        orderPayWay: this.data.choosePayTypeIndex,
+        couponSn,
+        message: this.data.message,
+        memberCardNo,
+        activityType,
+        activityId,
+        recordId: this.data.params.recordId,
+        groupId: this.data.params.groupId
+      }
+      this.getMust(params)
+      util.api(
+        '/api/wxapp/order/submit',
+        res => {
+          if (res.error === 0) {
+            let { orderSn } = res.content
+            if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay) {
+              wx.requestPayment({
+                timeStamp: res.content.webPayVo.timeStamp,
+                nonceStr: res.content.webPayVo.nonceStr,
+                package: res.content.webPayVo.package,
+                signType: 'MD5',
+                paySign: res.content.webPayVo.paySign,
+                success: res => {
+                  util.toast_success('支付成功')
+                  util.jumpLink(
+                    `pages1/payment/payment${this.getUrlParams({
+                      orderSn,
+                      useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                    })}`,
+                    'redirectTo'
+                  )
+                },
+                fail: res => {
+                  console.log(res)
+                  util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
+                },
+                complete: res => {}
+              })
+            } else {
+              util.jumpLink(
+                `pages1/payment/payment${this.getUrlParams({
+                  orderSn,
+                  useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                })}`,
+                'redirectTo'
+              )
+            }
           } else {
-            util.jumpLink(
-              `pages1/payment/payment${this.getUrlParams({
-                orderSn,
-                useInfo: JSON.stringify({ ...this.data.usePayInfo })
-              })}`,
-              'redirectTo'
-            )
+            util.showModal('提示', res.message, function() {
+              util.jumpLink('/pages/index/index', 'redirectTo')
+            })
           }
-        } else {
-          util.showModal('提示', res.message, function() {
-            util.jumpLink('/pages/index/index', 'redirectTo')
-          })
-        }
-      },
-      params
-    )
+        },
+        params
+      )
+    })
   },
   //整合参数
   getUrlParams(obj) {
