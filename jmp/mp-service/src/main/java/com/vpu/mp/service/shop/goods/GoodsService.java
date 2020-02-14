@@ -384,7 +384,7 @@ public class GoodsService extends ShopBaseService {
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(goodsPageListParam.getGoodsName())));
         }
-        if (goodsPageListParam.getGoodsIds()!=null&&goodsPageListParam.getGoodsIds().size()>0) {
+        if (goodsPageListParam.getGoodsIds() != null && goodsPageListParam.getGoodsIds().size() > 0) {
             condition = condition.and(GOODS.GOODS_ID.in(goodsPageListParam.getGoodsIds()));
         }
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsSn())) {
@@ -752,12 +752,16 @@ public class GoodsService extends ShopBaseService {
 
             //插入商品分销改价信息
             insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+        });
             //更新es
+        try {
             if (esUtilSearchService.esState()) {
                 esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
             }
-        });
+        } catch (Exception e) {
+           logger().debug("商品新增-同步es数据异常："+e.getMessage());
+        }
     }
 
     /**
@@ -1002,87 +1006,64 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品批量修改方法
-     *
-     * @param operateParam
-     */
-    public void batchOperate(GoodsBatchOperateParam operateParam) {
-        transaction(() -> {
-            batchGoodsOperate(operateParam);
-            batchLabelOperate(operateParam);
-        });
-    }
-
-    /**
-     * 批量处理中处理商品表
      * 批量处理中会同时修改同一商品的全部规格数据，单独修改某一规格库存和价格时不可使用本方法
      *
      * @param operateParam
      */
-    private void batchGoodsOperate(GoodsBatchOperateParam operateParam) {
-        List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
-
-        Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
-        List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(0);
-        // 单独处理规格价格和规格数量,
-        if (goodsPriceNumbers != null && goodsPriceNumbers.size() > 0) {
-            goodsRecords.forEach(goodsRecord -> {
-                Integer goodsId = goodsRecord.getGoodsId();
-                List<PrdPriceNumberParam> prdPriceNumberParams = goodsPriceNumbers.get(goodsId);
-                if (prdPriceNumberParams == null || prdPriceNumberParams.size() == 0) {
-                    return;
-                }
-                BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
-                for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams) {
-                    GoodsSpecProductRecord record = new GoodsSpecProductRecord();
-                    record.setPrdId(prdPriceNumberParam.getPrdId());
-                    if (prdPriceNumberParam.getShopPrice() != null) {
-                        record.setPrdPrice(prdPriceNumberParam.getShopPrice());
-                        if (smallestShopPrice.compareTo(prdPriceNumberParam.getShopPrice()) > 0) {
-                            smallestShopPrice = prdPriceNumberParam.getShopPrice();
-                        }
+    public void batchOperate(GoodsBatchOperateParam operateParam) {
+        List<Integer> goodsLabels = operateParam.getGoodsLabels();
+        List<Integer> goodsIds;
+        if (goodsLabels != null && goodsLabels.size() > 0) {
+            goodsIds = operateParam.getGoodsIds();
+            goodsLabelCouple.batchUpdateLabelCouple(goodsIds, goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
+        } else {
+            List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
+            Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
+            List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(0);
+            // 单独处理规格价格和规格数量,
+            if (goodsPriceNumbers != null && goodsPriceNumbers.size() > 0) {
+                goodsRecords.forEach(goodsRecord -> {
+                    Integer goodsId = goodsRecord.getGoodsId();
+                    List<PrdPriceNumberParam> prdPriceNumberParams = goodsPriceNumbers.get(goodsId);
+                    if (prdPriceNumberParams == null || prdPriceNumberParams.size() == 0) {
+                        return;
                     }
-                    goodsSpecProductRecords.add(record);
-                }
-                goodsRecord.setShopPrice(smallestShopPrice);
+                    BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+                    for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams) {
+                        GoodsSpecProductRecord record = new GoodsSpecProductRecord();
+                        record.setPrdId(prdPriceNumberParam.getPrdId());
+                        if (prdPriceNumberParam.getShopPrice() != null) {
+                            record.setPrdPrice(prdPriceNumberParam.getShopPrice());
+                            if (smallestShopPrice.compareTo(prdPriceNumberParam.getShopPrice()) > 0) {
+                                smallestShopPrice = prdPriceNumberParam.getShopPrice();
+                            }
+                        }
+                        goodsSpecProductRecords.add(record);
+                    }
+                    goodsRecord.setShopPrice(smallestShopPrice);
+                });
+            }
+            transaction(() -> {
+                db().batchUpdate(goodsSpecProductRecords).execute();
+                db().batchUpdate(goodsRecords).execute();
             });
-        }
-
-        transaction(() -> {
-            db().batchUpdate(goodsSpecProductRecords).execute();
-            db().batchUpdate(goodsRecords).execute();
-
             //更新es
-            List<Integer> goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
+            goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
+        }
+        try {
             if (esUtilSearchService.esState()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
             }
-        });
-    }
-
-
-    /**
-     * 批量处理中处理商品标签
-     *
-     * @param operateParam
-     */
-    private void batchLabelOperate(GoodsBatchOperateParam operateParam) {
-        List<Integer> goodsLabels = operateParam.getGoodsLabels();
-
-        if (goodsLabels == null || goodsLabels.size() == 0) {
-            return;
-        }
-        List<Integer> goodsIds = operateParam.getGoodsIds();
-        goodsLabelCouple.batchUpdateLabelCouple(goodsIds, goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
-        //更新es
-        if (esUtilSearchService.esState()) {
-            esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
-            esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+        } catch (Exception e) {
+            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
         }
     }
+
 
     /**
      * 单独修改某一个商品规格的数量或价格,用于admin商品列表界面修改
+     *
      * @param param
      */
     public void updateGoodsPrdPriceNumbers(PrdPriceNumberParam param) {
@@ -1107,13 +1088,13 @@ public class GoodsService extends ShopBaseService {
         prds.add(targetRecord);
 
         // 从新计算商品总数量和最低价
-        BigDecimal minPrice=prds.get(0).getPrdPrice();
+        BigDecimal minPrice = prds.get(0).getPrdPrice();
         int goodsNum = 0;
         for (GoodsSpecProductRecord prd : prds) {
             if (minPrice.compareTo(prd.getPrdPrice()) > 0) {
                 minPrice = prd.getPrdPrice();
             }
-            goodsNum+=prd.getPrdNumber();
+            goodsNum += prd.getPrdNumber();
         }
         goodsRecord.setShopPrice(minPrice);
         goodsRecord.setGoodsNumber(goodsNum);
@@ -1122,11 +1103,15 @@ public class GoodsService extends ShopBaseService {
             // 更新目标规格的数据和对应的商品的数据
             targetRecord.update();
             goodsRecord.update();
-            //更新es
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.batchUpdateEsGoodsIndex(Collections.singletonList(goodsRecord.getGoodsId()), getShopId());
-            }
         });
+        //更新es
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.updateEsGoodsIndex(goodsRecord.getGoodsId(), getShopId());
+            }
+        }catch (Exception e) {
+            logger().debug("更新商品规格库存价格-同步es数据异常:" + e.getMessage());
+        }
     }
 
     /**
@@ -1158,12 +1143,6 @@ public class GoodsService extends ShopBaseService {
             memberCardService.deleteOwnEnjoyGoodsByGcta(goodsIds, CardConstant.COUPLE_TP_GOODS);
             //删除商品规格分销信息
             deleteGoodsRebatePrices(goodsIds);
-
-            //更新es
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
-            }
         });
     }
 
@@ -1222,17 +1201,16 @@ public class GoodsService extends ShopBaseService {
 
             //修改分销改价
             updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-
-            //es更新
-            try {
-                if (esUtilSearchService.esState()) {
-                    esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
-                    esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
+        //es更新
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -1716,7 +1694,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 批量更新商品、规格的数量和销量
-     *
      * @param params 待更新商品、规格数量销量信息
      */
     public void batchUpdateGoodsNumsAndSaleNumsForOrder(List<BatchUpdateGoodsNumAndSaleNumForOrderParam> params) {
@@ -1752,13 +1729,12 @@ public class GoodsService extends ShopBaseService {
         transaction(() -> {
             db().batchUpdate(goodsRecords.values()).execute();
             db().batchUpdate(prdRecordsMap.values()).execute();
-
             try {
                 if (esUtilSearchService.esState()) {
                     esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger().debug("批量更新商品、规格的数量和销量-同步es数据异常："+e.getMessage());
             }
         });
 
@@ -1809,13 +1785,14 @@ public class GoodsService extends ShopBaseService {
         List<String> list = getGoodsImageList(goodsId);
         GoodsRecord goodsRecord = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
         if (goodsRecord != null) {
-            list.add(0,getImgFullUrlUtil(goodsRecord.getGoodsImg()));
+            list.add(0, getImgFullUrlUtil(goodsRecord.getGoodsImg()));
         }
         return list;
     }
 
     /**
      * 获取商品幅图图片列表
+     *
      * @param goodsId
      * @return 图片地址绝对路径集合
      */
@@ -1833,7 +1810,7 @@ public class GoodsService extends ShopBaseService {
      * 商品图片列表
      *
      * @param goodsIds goods id
-     * @return Map<goodsid   ,   List   <   url>>
+     * @return Map<goodsid               ,               List               <               url>>
      */
     public Map<Integer, List<String>> getGoodsImageList(List<Integer> goodsIds) {
         Map<Integer, Result<GoodsImgRecord>> fetch = db().selectFrom(GOODS_IMG)
@@ -1911,10 +1888,13 @@ public class GoodsService extends ShopBaseService {
 
         db().update(GOODS).set(GOODS.IS_ON_SALE, GoodsConstant.ON_SALE).where(GOODS.GOODS_ID.in(goodsIds)).execute();
 
-        if (!goodsIds.isEmpty() && esUtilSearchService.esState()) {
-            esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
-            esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
-
+        try {
+            if (!goodsIds.isEmpty() && esUtilSearchService.esState()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+            }
+        } catch (Exception e) {
+            logger().debug("手动上架所有待上架商品-同步es数据异常："+e.getMessage());
         }
     }
 
@@ -1955,7 +1935,7 @@ public class GoodsService extends ShopBaseService {
                 esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+           logger().debug("同步es数据异常："+e.getMessage());
         }
     }
 
