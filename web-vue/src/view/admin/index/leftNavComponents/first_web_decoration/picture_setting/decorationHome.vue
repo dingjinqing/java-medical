@@ -1241,6 +1241,23 @@ export default {
       }
       if (!judgeFlag.flag) return
 
+      // 左图右文数量限制
+      let mTextImageNum = 0
+      console.log(saveMosulesData)
+      saveMosulesData.forEach((item, index) => {
+        if (item.module_name === 'm_text_image') {
+          mTextImageNum++
+        }
+      })
+      console.log(mTextImageNum)
+      if (mTextImageNum > 10) {
+        this.$message.error({
+          message: '左图右文模块最多10个',
+          showClose: true
+        })
+        return
+      }
+      console.log(mTextImageNum)
       if (flag === 0) {
         console.log(this.modulesData)
         this.saveTwoDialogVisible = true
