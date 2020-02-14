@@ -488,27 +488,49 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
 
         recordPageChange(page);
         XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
-
         record.setPageContent(page.getPageContent());
         record.setPageName(page.getPageName());
         record.setCatId(page.getCatId() == null ? 0 : page.getCatId());
 
-        if (page.getPageState() == 1) {
+
+        if(page.getPageState() == 3){
+            //回退到当前已发布版本
+
+            if(page.getPageId() != null && page.getPageId() > 0){
+                XcxCustomerPageRecord oldRecord = this.getPageById(page.getPageId());
+                record.setPageContent(oldRecord.getPagePublishContent());
+            }
+        }else if (page.getPageState() == 1) {
             //保存并发布
+
             record.setPageState(page.getPageState());
             record.setPagePublishContent(page.getPageContent());
         }
-        if (page.getPageId() != null) {
-            XcxCustomerPageRecord oldRecord = this.getPageById(page.getPageId());
-            record.setPageId((page.getPageId()));
-            if (page.getPageState() == 3) {
-                //回退到当前已发布版本
-                record.setPageContent(oldRecord.getPagePublishContent());
-            }
-            return record.update() > 0;
-        }
 
-        return record.insert() > 0;
+        //入库
+        if(page.getPageId() != null && page.getPageId() > 0){
+            return record.update() > 0;
+        }else {
+            if(record.insert() > 0){
+                page.setPageId(record.getPageId());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 预览
+     * @param param
+     * @return
+     */
+    public String getPreviewCode(PageStoreParam param){
+        if(this.storePage(param)){
+            String pathParam="page_id="+param.getPageId();
+            String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
+            return imageUrl;
+        }
+        return null;
     }
 
     /**
