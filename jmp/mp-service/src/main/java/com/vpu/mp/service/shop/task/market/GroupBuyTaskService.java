@@ -5,7 +5,6 @@ import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -37,11 +36,7 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_DEFAULT_SUCCESS;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -305,8 +300,9 @@ public class GroupBuyTaskService  extends ShopBaseService {
 
             ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
             if(executeResult == null || !executeResult.isSuccess()){
-                throw new BusinessException(executeResult.getErrorCode());
+                //throw new BusinessException(executeResult.getErrorCode());
                 //退款失败
+                logger().error("拼团自动退款失败：" + orderSn);
                 //TODO log记录或其他处理
             }
         });
