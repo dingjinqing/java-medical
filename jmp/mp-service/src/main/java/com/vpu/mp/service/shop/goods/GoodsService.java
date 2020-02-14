@@ -1000,21 +1000,17 @@ public class GoodsService extends ShopBaseService {
         return scs;
     }
 
-    public void batchOperate(GoodsBatchOperateParam operateParam) {
-
-    }
-
     /**
      * 商品批量修改方法
      *
      * @param operateParam
      */
-//    public void batchOperate(GoodsBatchOperateParam operateParam) {
-//        transaction(() -> {
-//            batchGoodsOperate(operateParam);
-//            batchLabelOperate(operateParam);
-//        });
-//    }
+    public void batchOperate(GoodsBatchOperateParam operateParam) {
+        transaction(() -> {
+            batchGoodsOperate(operateParam);
+            batchLabelOperate(operateParam);
+        });
+    }
 
     /**
      * 批量处理中处理商品表
@@ -1022,53 +1018,47 @@ public class GoodsService extends ShopBaseService {
      *
      * @param operateParam
      */
-//    private void batchGoodsOperate(GoodsBatchOperateParam operateParam) {
-//        List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
-//
-//        Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
-//        List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(0);
-//        // 单独处理规格价格和规格数量,
-//        if (goodsPriceNumbers != null && goodsPriceNumbers.size() > 0) {
-//            goodsRecords.forEach(goodsRecord -> {
-//                Integer goodsId = goodsRecord.getGoodsId();
-//                List<PrdPriceNumberParam> prdPriceNumberParams = goodsPriceNumbers.get(goodsId);
-//                if (prdPriceNumberParams == null || prdPriceNumberParams.size() == 0) {
-//                    return;
-//                }
-//                BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
-//                Integer goodsNumberSum = 0;
-//                for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams) {
-//                    GoodsSpecProductRecord record = new GoodsSpecProductRecord();
-//                    record.setPrdId(prdPriceNumberParam.getPrdId());
-//                    if (prdPriceNumberParam.getShopPrice() != null) {
-//                        record.setPrdPrice(prdPriceNumberParam.getShopPrice());
-//                        if (smallestShopPrice.compareTo(prdPriceNumberParam.getShopPrice()) > 0) {
-//                            smallestShopPrice = prdPriceNumberParam.getShopPrice();
-//                            goodsRecord.setShopPrice(smallestShopPrice);
-//                        }
-//                    }
-//                    if (prdPriceNumberParam.getGoodsNumber() != null) {
-//                        record.setPrdNumber(prdPriceNumberParam.getGoodsNumber());
-//                        goodsNumberSum += prdPriceNumberParam.getGoodsNumber();
-//                        goodsRecord.setGoodsNumber(goodsNumberSum);
-//                    }
-//                    goodsSpecProductRecords.add(record);
-//                }
-//            });
-//        }
-//
-//        transaction(() -> {
-//            db().batchUpdate(goodsSpecProductRecords).execute();
-//            db().batchUpdate(goodsRecords).execute();
-//
-//            //更新es
-//            List<Integer> goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
-//            if (esUtilSearchService.esState()) {
-//                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
-//                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
-//            }
-//        });
-//    }
+    private void batchGoodsOperate(GoodsBatchOperateParam operateParam) {
+        List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
+
+        Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
+        List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(0);
+        // 单独处理规格价格和规格数量,
+        if (goodsPriceNumbers != null && goodsPriceNumbers.size() > 0) {
+            goodsRecords.forEach(goodsRecord -> {
+                Integer goodsId = goodsRecord.getGoodsId();
+                List<PrdPriceNumberParam> prdPriceNumberParams = goodsPriceNumbers.get(goodsId);
+                if (prdPriceNumberParams == null || prdPriceNumberParams.size() == 0) {
+                    return;
+                }
+                BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+                for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams) {
+                    GoodsSpecProductRecord record = new GoodsSpecProductRecord();
+                    record.setPrdId(prdPriceNumberParam.getPrdId());
+                    if (prdPriceNumberParam.getShopPrice() != null) {
+                        record.setPrdPrice(prdPriceNumberParam.getShopPrice());
+                        if (smallestShopPrice.compareTo(prdPriceNumberParam.getShopPrice()) > 0) {
+                            smallestShopPrice = prdPriceNumberParam.getShopPrice();
+                        }
+                    }
+                    goodsSpecProductRecords.add(record);
+                }
+                goodsRecord.setShopPrice(smallestShopPrice);
+            });
+        }
+
+        transaction(() -> {
+            db().batchUpdate(goodsSpecProductRecords).execute();
+            db().batchUpdate(goodsRecords).execute();
+
+            //更新es
+            List<Integer> goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+            }
+        });
+    }
 
 
     /**
