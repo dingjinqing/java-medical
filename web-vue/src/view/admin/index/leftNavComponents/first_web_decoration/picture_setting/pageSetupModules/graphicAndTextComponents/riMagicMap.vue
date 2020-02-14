@@ -913,7 +913,7 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        console.log(newData)
+        console.log(this.$route)
         console.log(this.moduleSaveData)
         this.$nextTick(() => {
           this.moduleSaveData = this.modulesData
@@ -993,6 +993,7 @@ export default {
         item.isChecked = false
       })
       this.nowTemplateClickIndex = index
+      console.log(index)
       // console.log(index, this.layoutData[index].styleData)
       if (index !== 7) {
         this.nowLayutIndex = this.layoutData[index].styleData.length - 1
@@ -1072,36 +1073,40 @@ export default {
           num = 4
           break
       }
-      console.log(this.layoutData)
-      // 清空imgUrl 数据
-      if (flag) {
-        this.layoutData.forEach((item, index) => {
-          console.log(item)
-          if (index === 7) return
-          item['styleData'].forEach((itemC, indexC) => {
-            itemC.img_url = ''
-            itemC.jump_link = ''
+      console.log(this.layoutData[1].styleData[0].img_url, type, flag, num)
+      this.$nextTick(() => {
+        console.log(this.layoutData[1].styleData[0].img_url, type, flag, num)
+        // 清空imgUrl 数据
+        if (flag) {
+          this.layoutData.forEach((item, index) => {
+            console.log(item)
+            if (index === 7) return
+            item['styleData'].forEach((itemC, indexC) => {
+              itemC.img_url = ''
+              itemC.jump_link = ''
+            })
           })
-        })
-        this.imgUrl = null
-        this.linkInput = null
-      }
-      this.firstInitNotEliminate = true
-      // 重新填入数据
-      let obj = {}
-      for (let index = 0; index < num; index++) {
-        obj[`block_${index}`] = {
-          'name': `block_${index}`,
-          'x': this.layoutData[type].styleData[index]['x'],
-          'y': this.layoutData[type].styleData[index]['y'],
-          'rows': this.layoutData[type].styleData[index]['rows'],
-          'cols': this.layoutData[type].styleData[index]['cols'],
-          'img_url': this.layoutData[type].styleData[index]['img_url'],
-          'jump_link': this.layoutData[type].styleData[index]['jump_link']
+          this.imgUrl = null
+          this.linkInput = null
         }
-      }
-      console.log(obj)
-      this.modulesData.data = obj
+        this.firstInitNotEliminate = true
+
+        // 重新填入数据
+        let obj = {}
+        for (let index = 0; index < num; index++) {
+          obj[`block_${index}`] = {
+            'name': `block_${index}`,
+            'x': this.layoutData[type].styleData[index]['x'],
+            'y': this.layoutData[type].styleData[index]['y'],
+            'rows': this.layoutData[type].styleData[index]['rows'],
+            'cols': this.layoutData[type].styleData[index]['cols'],
+            'img_url': this.layoutData[type].styleData[index]['img_url'],
+            'jump_link': this.layoutData[type].styleData[index]['jump_link']
+          }
+        }
+        console.log(obj)
+        this.modulesData.data = obj
+      })
     },
     // 自定义布局中当前高亮单元格的跳转链接路径和图片信息回传
     handleToGetLinkpathImgUrl (res) {
@@ -1122,6 +1127,7 @@ export default {
     },
     // 处理保存数据中table_size字段
     handleToTableSize (index) {
+      console.log(index)
       switch (index) {
         case 0:
           this.moduleSaveData.table_size = {
@@ -1207,7 +1213,7 @@ export default {
         console.log(backData.data)
         this.$nextTick(() => {
           Object.keys(backData.data).forEach((item, index) => {
-            console.log((backData.table_type - 1), index, backData.data[item].img_url)
+            console.log(this.layoutData, (backData.table_type - 1), index, backData.data[item].img_url)
             this.layoutData[(backData.table_type - 1)].styleData[index].img_url = backData.data[item].img_url
             this.layoutData[(backData.table_type - 1)].styleData[index].jump_link = backData.data[item].jump_link
             console.log(this.layoutData[(backData.table_type - 1)].styleData[index].img_url)

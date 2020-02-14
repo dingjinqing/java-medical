@@ -78,5 +78,11 @@ public class ModuleImageAdver extends ModuleBase {
          */
         @JsonProperty(value = "can_show")
 		private Byte canShow;
+
+        /**
+         * title
+         */
+        @JsonProperty(value = "title")
+        private String title;
 	}
 }

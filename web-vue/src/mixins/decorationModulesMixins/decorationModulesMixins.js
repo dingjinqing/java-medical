@@ -592,6 +592,7 @@ export default {
             }
             break
           case 'm_text_image':
+
             if (!item.img_url) {
               this.$message.error({
                 message: '请上传图片',

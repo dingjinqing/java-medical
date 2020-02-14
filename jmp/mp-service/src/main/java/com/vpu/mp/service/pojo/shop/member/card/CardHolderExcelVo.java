@@ -47,4 +47,9 @@ public class CardHolderExcelVo {
 	/** -过期时间 */
 	@ExcelIgnore
 	private Timestamp expireTime;
+	@ExcelIgnore
+	private Byte flag;
+	/** 更新时间 */
+	@ExcelIgnore
+	private Timestamp updateTime;
 }
