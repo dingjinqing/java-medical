@@ -101,8 +101,8 @@
               <el-option
                 v-for="level in groupLevelList"
                 :key="level.levelId"
-                :label="level.label"
-                :value="level.levelName"
+                :label="level.levelName"
+                :value="level.id"
               >
               </el-option>
             </el-select>
@@ -121,7 +121,7 @@
                 v-for="group in groupNameList"
                 :key="group.id"
                 :label="group.groupName"
-                :value="group.groupName"
+                :value="group.id"
               >
               </el-option>
             </el-select>
@@ -158,6 +158,7 @@
       </div>
       <div class="table_list">
         <el-table
+          ref="multipleTable"
           class="version-manage-table"
           header-row-class-name="tableClss"
           :data="tableData"
@@ -165,12 +166,15 @@
           style="width: 100%"
         >
           <el-table-column
+            type="selection"
+            width="55"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="userId"
             label="ID"
             align="center"
           >
-            <template slot-scope="scope">
-              <el-checkbox></el-checkbox> {{ scope.row.userId }}
-            </template>
           </el-table-column>
 
           <el-table-column
@@ -196,12 +200,13 @@
             label="邀请人"
             align="center"
           >
-            <!-- <template slot-scope="scope">
+            <template slot-scope="scope">
               <span
                 class="nameStyle"
-                @click="userNameHandler(scope.row.userId)"
-              >{{ scope.row.username }}</span>
-            </template> -->
+                @click="userNameHandler(scope.row.inviteId)"
+                v-if="scope.row.inviteName !== 'null'"
+              >{{ scope.row.inviteName }}</span>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -229,9 +234,10 @@
               </el-tooltip>
             </template>
             <template slot-scope="scope">
+              <!-- <p v-if="scope.row.inviteCode">{{ scope.row.inviteCode }}</p> -->
               <p
                 class="nameStyle"
-                @click="invitationCodeHandler"
+                @click="invitationCodeHandler(scope.row.userId)"
               >设置</p>
             </template>
           </el-table-column>
@@ -241,10 +247,11 @@
             align="center"
           >
             <template slot-scope="scope">
-              <p>{{ scope.row.groupName }}</p>
+              <p v-if="scope.row.groupName">{{ scope.row.groupName }}</p>
+              <p v-if="!scope.row.groupName">未分组</p>
               <p
                 class="nameStyle"
-                @click="groupNameHandler"
+                @click="groupNameHandler(scope.row.userId, scope.row.groupName)"
               >编辑</p>
             </template>
           </el-table-column>
@@ -310,20 +317,26 @@
               <div class="opt">
                 <p @click="inviteUserList(scope.row.userId)">查看已邀请用户</p>
                 <p>查看返利佣金明细</p>
+                <p @click="remarksHandler(scope.row.userId)">备注</p>
                 <p @click="del(scope.row.userId)">清除</p>
               </div>
             </template>
           </el-table-column>
         </el-table>
+
         <!-- 全选修改分销员分组 -->
         <div class="checkedStyle">
-          <el-checkbox v-model="allChecked"></el-checkbox>
+          <el-checkbox
+            v-model="allChecked"
+            @change="checkChange"
+          ></el-checkbox>
           全选当前页
           <el-select
             v-model="checkedValue"
             placeholder="请选择等级"
             size="small"
             class="checkboxWidth"
+            @change="selectChange"
           >
             <el-option
               v-for="(item, index) in checkList"
@@ -341,11 +354,167 @@
         @pagination="initDataList"
       />
     </div>
+
+    <!-- 邀请码弹窗 -->
+    <el-dialog
+      title="邀请码"
+      :visible.sync="invitationDialog"
+      :close-on-click-modal="false"
+      width="30%"
+      center
+    >
+      邀请码：
+      <el-input
+        v-model="inviteCode"
+        class="inputWidth"
+        size="small"
+      ></el-input>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="cancelInvitation"
+          size="small"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureInvitation"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 分销员分组 -->
+    <el-dialog
+      title="设置分销员分组"
+      :visible.sync="groupDialog"
+      :close-on-click-modal="false"
+      width="30%"
+      center
+    >
+      选择分组：
+      <el-select
+        v-model="groupValue"
+        placeholder="请选择分组"
+        size="small"
+        class="inputWidth"
+      >
+        <el-option
+          v-for="group in groupNameList"
+          :key="group.id"
+          :label="group.groupName"
+          :value="group.id"
+        >
+        </el-option>
+      </el-select>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="cancelGroup"
+          size="small"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureGroup"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 备注弹窗 -->
+    <el-dialog
+      title="会员备注信息"
+      :visible.sync="remarksDialog"
+      :close-on-click-modal="false"
+      width="50%"
+      center
+    >
+      <el-form>
+        <el-form-item label="备注信息：">
+          <el-input
+            v-model="remarksText"
+            type="textarea"
+            placeholder="请输入备注内容"
+            :rows="2"
+            maxlength="200"
+            show-word-limit
+            style="width: 60%;"
+          >
+          </el-input>
+          <el-button
+            type="primary"
+            size="small"
+            @click="addRemarksHandler"
+          >添加</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-table
+            class="version-manage-table"
+            header-row-class-name="tableClss"
+            :data="remarksList"
+            border
+            style="width: 100%"
+          >
+            <el-table-column
+              label="序号"
+              align="center"
+            >
+              <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+            </el-table-column>
+            <el-table-column
+              prop="createTime"
+              label="添加时间"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="remarks"
+              label="内容"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <span
+                  style="font-size: 22px;color: #5a8bff;"
+                  class="el-icon-delete"
+                  @click="delRemarksHandler(scope.$index)"
+                ></span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+      </el-form>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="cancelremarks"
+          size="small"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureremarks"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList, delDistributor } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorGroupList, delDistributor, setInviteCode } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 
@@ -355,10 +524,6 @@ export default {
     return {
       groupNameList: [],
       groupLevelList: [],
-      // 表格
-      tableData: [],
-      // 分页
-      pageParams: {},
       // 搜索
       param: {
         mobile: '',
@@ -375,6 +540,11 @@ export default {
         hasRealName: false
       },
       requestParams: {},
+      // 表格
+      tableData: [],
+      // 分页
+      pageParams: {},
+
       // 全选按钮
       allChecked: false,
       checkedValue: '0',
@@ -387,7 +557,34 @@ export default {
       }, {
         label: '对筛选出的66人修改分组',
         value: '2'
-      }]
+      }],
+
+      // 邀请码弹窗
+      invitationDialog: false,
+      invitationUserId: '',
+      inviteCode: '',
+
+      // 分销员分组
+      groupDialog: false,
+      groupUserId: '',
+      groupValue: '',
+
+      // 会员备注
+      remarksDialog: false,
+      remarksUserId: '',
+      remarksText: '',
+      remarksList: [
+        // {
+        //   createTime: '2019-12-03 17:36:32',
+        //   remarks: '备注111'
+        // }, {
+        //   createTime: '2019-12-03 17:36:32',
+        //   remarks: '备注222'
+        // }, {
+        //   createTime: '2019-12-03 17:36:32',
+        //   remarks: '备注333'
+        // }
+      ]
     }
   },
   mounted () {
@@ -420,7 +617,6 @@ export default {
     groupList () {
       distributorGroupList().then(res => {
         this.groupNameList = res.content
-        console.log(this.groupNameList)
       })
     },
     // 分销员邀请用户列表
@@ -464,13 +660,97 @@ export default {
     },
 
     // 邀请码设置
-    invitationCodeHandler () {
-
+    invitationCodeHandler (userId) {
+      this.invitationUserId = userId // 要操作的用户
+      this.invitationDialog = !this.invitationDialog
     },
 
-    // 分销员分组编辑
-    groupNameHandler () {
+    // 确定邀请码
+    sureInvitation () {
+      setInviteCode({
+        userId: this.invitationUserId,
+        inviteCode: this.inviteCode
+      }).then(res => {
+        if (res.error === 0) {
+          if (res.content === 1) {
+            this.invitationDialog = false
+            this.$message.success('设置成功')
+            this.initDataList()
+            // this.tableData.filter((item, index) => {
+            //   if (item.userId === this.userId) {
+            //     item.inviteCode = this.inviteCode
+            //   }
+            // })
+            console.log(this.tableData)
+          } else if (res.content === 0) {
+            this.$message.warning('该邀请码已存在')
+          }
+        }
+      })
+    },
 
+    // 取消邀请码
+    cancelInvitation () {
+      this.invitationDialog = false
+    },
+
+    // 分销员分组设置
+    groupNameHandler (userId, groupName) {
+      this.groupDialog = !this.groupDialog
+      this.groupUserId = userId
+
+      this.groupNameList.filter((item, index) => {
+        if (item.groupName === groupName) {
+          this.groupValue = item.id
+        }
+      })
+    },
+
+    // 确定分销员分组
+    sureGroup () {
+      this.groupDialog = false
+    },
+
+    // 取消分销员分组
+    cancelGroup () {
+      this.groupDialog = false
+    },
+
+    // 备注会员信息
+    remarksHandler (userId) {
+      this.remarksUserId = userId // 要操作的用户
+      this.remarksDialog = !this.remarksDialog
+    },
+
+    // 添加备注信息
+    addRemarksHandler () {
+      var d = new Date()
+      var nowTime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds()
+      if (this.remarksText === '') {
+        this.$message.warning('请填写备注信息')
+      } else {
+        this.remarksList.push({
+          createTime: nowTime,
+          remarks: this.remarksText
+        })
+      }
+    },
+
+    // 删除备注信息
+    delRemarksHandler (index) {
+      this.remarksList.splice(index, 1)
+    },
+
+    // 确定会员备注
+    sureremarks () {
+      this.remarksText = ''
+      this.remarksDialog = false
+    },
+
+    // 取消会员备注
+    cancelremarks () {
+      this.remarksText = ''
+      this.remarksDialog = false
     },
 
     // 下级用户数跳转
@@ -481,6 +761,29 @@ export default {
     // 间接邀请用户数跳转
     sublayerNumberHandler () {
 
+    },
+
+    // 全选切换
+    checkChange (val) {
+      if (val === true) {
+        this.tableData.forEach(item => {
+          this.$refs.multipleTable.toggleRowSelection(item)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
+      }
+    },
+
+    // 切换修改选项
+    selectChange (val) {
+      var selected = this.$refs.multipleTable.selection
+      if (selected.length === 0) {
+        this.$message.warning('请选择分销员')
+        this.checkedValue = '0'
+      } else {
+        // 批量设置分组
+        // this.groupDialog = !this.groupDialog
+      }
     }
 
   }
@@ -597,5 +900,8 @@ export default {
 .opt {
   text-align: center;
   color: #5a8bff;
+}
+.opt p {
+  cursor: pointer;
 }
 </style>
