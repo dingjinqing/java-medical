@@ -13,7 +13,7 @@ var decorate = {
       cb(pageContent);
     }, {
       page: page_id,
-      scene: scene || 0,
+      scene: scene || "",
       module_asyn: 1
     }, null, loading);
   },
