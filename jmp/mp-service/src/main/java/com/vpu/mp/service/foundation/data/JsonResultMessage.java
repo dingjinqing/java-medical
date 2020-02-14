@@ -865,4 +865,6 @@ public class JsonResultMessage {
     public static final String USER_CARD_ONOK = "user.card.onok";
     public static final String USER_CARD_TEMPLATE_NAME = "user.card.template.name";
     public static final String USER_CARD_ABOLITION = "user.card.abolition";
+    
+    public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
 }

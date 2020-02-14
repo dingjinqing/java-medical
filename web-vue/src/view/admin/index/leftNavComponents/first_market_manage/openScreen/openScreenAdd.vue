@@ -85,7 +85,10 @@
                   show-word-limit
                 ></el-input>
               </el-form-item>
-              <el-form-item :label="$t('openScreenAdd.eventSlogan')">
+              <el-form-item
+                :label="$t('openScreenAdd.eventSlogan')"
+                prop="title"
+              >
                 <el-input
                   v-model="form.title"
                   style="width:170px;"
@@ -438,9 +441,17 @@ export default {
     addCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
+    let that = this
     var validateSiForever = (rule, value, callback) => {
       if (value === 0 && (!this.form.startDate || !this.form.endDate)) {
         return callback(new Error(this.$t('openScreenAdd.psTime')))
+      }
+      callback()
+    }
+    function validTitle (rule, value, callback) {
+      // 当奖品是优惠券和分类优惠券时，活动宣传语必填
+      if ((that.form.activityAction === 1 || that.form.activityAction === 6) && value === '') {
+        callback(new Error(that.$t('openScreenAdd.piSlogan')))
       }
       callback()
     }
@@ -495,6 +506,9 @@ export default {
         ],
         awardNum: [
           { required: true, message: this.$t('openScreenAdd.piPizesNum'), trigger: 'blur' }
+        ],
+        title: [
+          { validator: validTitle, trigger: 'blur' }
         ]
       },
 
