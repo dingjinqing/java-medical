@@ -209,7 +209,7 @@ public class ShopPledgeService extends ShopBaseService {
           );
       }
       if( !CollectionUtils.isEmpty(param.getSortIds()) ){
-          result.addAll(param.getGoodsIds().stream().
+          result.addAll(param.getSortIds().stream().
               map(x->
                   new PledgeRelatedRecord().
                       value2(pledgeId).value3(PledgeConstant.PLEDGE_RELATE_TYPE_SORT).value4(x)).
@@ -217,7 +217,7 @@ public class ShopPledgeService extends ShopBaseService {
           );
       }
       if( !CollectionUtils.isEmpty(param.getGoodsBrandIds()) ){
-          result.addAll(param.getGoodsIds().stream().
+          result.addAll(param.getGoodsBrandIds().stream().
               map(x->
                   new PledgeRelatedRecord().
                       value2(pledgeId).value3(PledgeConstant.PLEDGE_RELATE_TYPE_BRAND).value4(x)).
