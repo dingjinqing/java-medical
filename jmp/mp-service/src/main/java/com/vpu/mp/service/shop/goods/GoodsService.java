@@ -1032,7 +1032,6 @@ public class GoodsService extends ShopBaseService {
                     return;
                 }
                 BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
-                Integer goodsNumberSum = 0;
                 for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams) {
                     GoodsSpecProductRecord record = new GoodsSpecProductRecord();
                     record.setPrdId(prdPriceNumberParam.getPrdId());
@@ -1040,16 +1039,11 @@ public class GoodsService extends ShopBaseService {
                         record.setPrdPrice(prdPriceNumberParam.getShopPrice());
                         if (smallestShopPrice.compareTo(prdPriceNumberParam.getShopPrice()) > 0) {
                             smallestShopPrice = prdPriceNumberParam.getShopPrice();
-                            goodsRecord.setShopPrice(smallestShopPrice);
                         }
-                    }
-                    if (prdPriceNumberParam.getGoodsNumber() != null) {
-                        record.setPrdNumber(prdPriceNumberParam.getGoodsNumber());
-                        goodsNumberSum += prdPriceNumberParam.getGoodsNumber();
-                        goodsRecord.setGoodsNumber(goodsNumberSum);
                     }
                     goodsSpecProductRecords.add(record);
                 }
+                goodsRecord.setShopPrice(smallestShopPrice);
             });
         }
 
@@ -1079,10 +1073,7 @@ public class GoodsService extends ShopBaseService {
             return;
         }
         List<Integer> goodsIds = operateParam.getGoodsIds();
-
-        List<GoodsLabelCouple> goodsLabelCouples = goodsLabelCouple.calculateGtaLabelDiffer(goodsIds, goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
-
-        goodsLabelCouple.batchInsert(goodsLabelCouples);
+        goodsLabelCouple.batchUpdateLabelCouple(goodsIds, goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
         //更新es
         if (esUtilSearchService.esState()) {
             esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
@@ -1091,56 +1082,49 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
-     * 单独修改某一个商品规格的数量或价格
-     *
-     * @param operateParam
+     * 单独修改某一个商品规格的数量或价格,用于admin商品列表界面修改
+     * @param param
      */
-    public void updateGoodsPrdPriceNumbers(GoodsBatchOperateParam operateParam) {
-        Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
-        // 待修改商品和规格集合
-        List<GoodsRecord> goodsRecordsForUpdate = new ArrayList<>(goodsPriceNumbers.size());
-        List<GoodsSpecProductRecord> specProductRecordsForUpdate = new ArrayList<>(goodsPriceNumbers.size());
+    public void updateGoodsPrdPriceNumbers(PrdPriceNumberParam param) {
+        GoodsSpecProductRecord targetRecord = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(param.getPrdId())).fetchAny();
 
-        for (Map.Entry<Integer, List<PrdPriceNumberParam>> entry : goodsPriceNumbers.entrySet()) {
-            Integer goodsId = entry.getKey();
-            List<PrdPriceNumberParam> prdPriceNumberParams = entry.getValue();
-
-            Map<Integer, GoodsSpecProductRecord> specIdMap = goodsSpecProductService.selectSpecPrdIdMap(goodsId);
-            // 为需要修改的规格项设置规格价格和规格数量
-            for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams) {
-                GoodsSpecProductRecord record = specIdMap.get(prdPriceNumberParam.getPrdId());
-                if (prdPriceNumberParam.getShopPrice() != null) {
-                    record.setPrdPrice(prdPriceNumberParam.getShopPrice());
-                }
-
-                if (prdPriceNumberParam.getGoodsNumber() != null) {
-                    record.setPrdNumber(prdPriceNumberParam.getGoodsNumber());
-                }
-                specProductRecordsForUpdate.add(record);
-            }
-            // 重新计算商品的最低商品价格和总数量
-            Integer goodsNumberSum = 0;
-            BigDecimal shopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
-            for (GoodsSpecProductRecord specProductRecord : specIdMap.values()) {
-                goodsNumberSum += specProductRecord.getPrdNumber();
-                if (shopPrice.compareTo(specProductRecord.getPrdPrice()) > 0) {
-                    shopPrice = specProductRecord.getPrdPrice();
-                }
-            }
-            GoodsRecord goodsRecord = new GoodsRecord();
-            goodsRecord.setGoodsId(goodsId);
-            goodsRecord.setGoodsNumber(goodsNumberSum);
-            goodsRecord.setShopPrice(shopPrice);
-            goodsRecordsForUpdate.add(goodsRecord);
+        if (targetRecord == null) {
+            return;
         }
-        transaction(() -> {
-            db().batchUpdate(goodsRecordsForUpdate).execute();
-            db().batchUpdate(specProductRecordsForUpdate).execute();
+        // 下面两个if其实是或的关系，这样写可以预防接口参数调用错误
+        if (param.getGoodsNumber() != null) {
+            targetRecord.setPrdNumber(param.getGoodsNumber());
+        }
+        if (param.getShopPrice() != null) {
+            targetRecord.setPrdPrice(param.getShopPrice());
+        }
 
+
+        GoodsRecord goodsRecord = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(targetRecord.getGoodsId())).fetchAny();
+
+        Result<GoodsSpecProductRecord> prds = db().selectFrom(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsRecord.getGoodsId()).and(GOODS_SPEC_PRODUCT.PRD_ID.ne(param.getPrdId()))).fetch();
+        prds.add(targetRecord);
+
+        // 从新计算商品总数量和最低价
+        BigDecimal minPrice=prds.get(0).getPrdPrice();
+        int goodsNum = 0;
+        for (GoodsSpecProductRecord prd : prds) {
+            if (minPrice.compareTo(prd.getPrdPrice()) > 0) {
+                minPrice = prd.getPrdPrice();
+            }
+            goodsNum+=prd.getPrdNumber();
+        }
+        goodsRecord.setShopPrice(minPrice);
+        goodsRecord.setGoodsNumber(goodsNum);
+
+        transaction(() -> {
+            // 更新目标规格的数据和对应的商品的数据
+            targetRecord.update();
+            goodsRecord.update();
             //更新es
-            List<Integer> goodsIds = goodsRecordsForUpdate.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
             if (esUtilSearchService.esState()) {
-                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
+                esGoodsCreateService.batchUpdateEsGoodsIndex(Collections.singletonList(goodsRecord.getGoodsId()), getShopId());
             }
         });
     }

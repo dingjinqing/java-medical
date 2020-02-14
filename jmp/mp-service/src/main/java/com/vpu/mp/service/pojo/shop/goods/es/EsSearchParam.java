@@ -28,4 +28,6 @@ public class EsSearchParam {
 
     private boolean queryByPage;
 
+    private Sort sort;
+
 }

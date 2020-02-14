@@ -413,7 +413,7 @@ public class SeckillService extends ShopBaseService{
      * @return bool
      */
     public boolean isOnGoingSecKill(int goodsId,Timestamp startTime,Timestamp endTime){
-        Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchOne();
+        Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchAny();
         return r != null;
     }
 
@@ -425,12 +425,12 @@ public class SeckillService extends ShopBaseService{
     public boolean isOnGoingSecKill(int skId){
         Record3<Integer, Timestamp, Timestamp> seckill = db().select(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne();
 
-        Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(seckill.value1())).and(isConflictingActTime(seckill.value2(),seckill.value3()))).fetchOne();
+        Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(seckill.value1())).and(isConflictingActTime(seckill.value2(),seckill.value3()))).fetchAny();
         return r != null;
     }
 
     private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
-        return (SEC_KILL_DEFINE.START_TIME.gt(startTime).and(SEC_KILL_DEFINE.START_TIME.lt(endTime))).or(SEC_KILL_DEFINE.END_TIME.gt(startTime).and(SEC_KILL_DEFINE.END_TIME.lt(endTime))).or(SEC_KILL_DEFINE.START_TIME.lt(startTime).and(SEC_KILL_DEFINE.END_TIME.gt(endTime)));
+        return (SEC_KILL_DEFINE.START_TIME.ge(startTime).and(SEC_KILL_DEFINE.START_TIME.le(endTime))).or(SEC_KILL_DEFINE.END_TIME.ge(startTime).and(SEC_KILL_DEFINE.END_TIME.le(endTime))).or(SEC_KILL_DEFINE.START_TIME.le(startTime).and(SEC_KILL_DEFINE.END_TIME.ge(endTime)));
     }
 
     /**

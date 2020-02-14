@@ -35,10 +35,11 @@ global.wxComponent({
     },
     init(){
       let moneyPaid = this.data.moneyPaid
-      moneyPaid = moneyPaid * this.data.scoreProportion;
-      let scoreMax = this.data.scoreMax * this.data.scoreProportion
+      moneyPaid = (moneyPaid * this.data.scoreProportion).toFixed(0);
+      let scoreMax = (this.data.scoreMax * this.data.scoreProportion).toFixed(0)
       let userScore = this.data.userScore
       let scoreMin = this.data.scoreMin
+      console.log(scoreMax)
       let useMaxScore = parseInt(moneyPaid > scoreMax ? (scoreMax > userScore ? userScore : scoreMax) : (moneyPaid > userScore ? userScore : moneyPaid));
       let msg = ''
       let canConfirm = true

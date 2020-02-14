@@ -5,14 +5,15 @@
 <!--       实时概况 -->
       <realTime class="distance" />
       <!-- 核心指标 -->
-<!--      <distribution class="distance" />-->
+      <coreIndicator class="distance" />
     </div>
   </div>
 </template>
 <script>
 import realTime from './realTime'
+import coreIndicator from './coreIndicator'
 export default {
-  components: { realTime },
+  components: {realTime, coreIndicator},
   data () {
     return {}
   }

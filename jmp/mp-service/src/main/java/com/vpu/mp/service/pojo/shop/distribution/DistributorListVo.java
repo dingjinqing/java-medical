@@ -14,6 +14,8 @@ public class DistributorListVo {
 	private String realName;
 	private String groupName;
 	private String levelName;
+	private Integer inviteId;
+	private String inviteName;
 	
 	/**
 	 * 直接邀请人

@@ -166,7 +166,7 @@
       <view class="flex_outside_box">
         <view class="flex_box">
           <view class="item_left">{{actRuleText[specParams.activity.activityType].title}}</view>
-          <view class="item_right">详细规则></view>
+          <view class="item_right" data-type="{{specParams.activity.activityType}}" bindtap="goRule">详细规则></view>
         </view>
       </view>
       <view class="item_line"></view>

@@ -49,16 +49,16 @@ var user = {
       }
     })
   },
-  getNeedTemplateId(typs){
+  getNeedTemplateId(typs,cb){
     this.api('/api/wxapp/subscribe/getNeedTemplateId',(res)=>{
       if(res.error === 0){
         // let templateIds = res.content.map(item=>item.templateId)
         // console.log(templateIds)
-        this.toSubscribeMessage(res.content)
+        this.toSubscribeMessage(res.content,cb)
       }
     },{typs:typs})
   },
-  toSubscribeMessage (content, module_name, cb) {
+  toSubscribeMessage (content, cb) {
     var that = this;
     let templateIds = content.map(item=>item.templateId)
     if (wx.requestSubscribeMessage) {

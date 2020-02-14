@@ -99,6 +99,7 @@ import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
@@ -227,6 +228,31 @@ public class UserCardService extends ShopBaseService {
 		if (newCard.getSorce() != null && newCard.getSorce() > 0) {
 			addUserCardScore(userId, newCard);
 		}
+	}
+	
+	/**
+	 * 会员卡升降级记录
+	 */
+	public PageResult<CardUpgradeVo> getGradeList(SearchCardParam param) {
+		logger().info("获取会员的升降级记录");
+		PageResult<CardUpgradeVo> upgradeList = cardUpgradeService.getGradeList(param);
+		List<CardUpgradeVo> upgradeListNew = new ArrayList<>();
+		if(upgradeList.dataList !=null && upgradeList.dataList.size()>0) {
+			UserCardRecord info = userCardDao.getCardByUserCardId(param.getUserId(), upgradeList.dataList.get(0).getNewCardId());
+			if(info!=null) {
+				Integer oldCardId = info.getCardId();
+				for(CardUpgradeVo vo: upgradeList.dataList) {
+					if(oldCardId.equals(vo.getNewCardId())) {
+						upgradeListNew.add(vo);
+						oldCardId = vo.getNewCardId();
+					}else {
+						break;
+					}
+				}
+			}
+		}
+		upgradeList.setDataList(upgradeListNew);
+		return upgradeList;
 	}
 
 

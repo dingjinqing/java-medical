@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -650,6 +651,17 @@ public class UserCardDaoService extends ShopBaseService{
     	}
     	return getUserCard(condition);
     }
+    
+    public UserCardRecord getCardByUserCardId(Integer userId,Integer cardId) {
+    	UserCardRecord res = db().select(USER_CARD.CARD_ID,USER_CARD.CARD_NO).from(USER_CARD)
+    		.where(USER_CARD.USER_ID.eq(userId))
+    		.and(USER_CARD.CARD_ID.eq(cardId))
+    		.and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))
+    		.fetchAnyInto(USER_CARD); 
+    	return res;
+    }
+    
+    
     
 	public UserCardVo getUserCard(Condition condition) {
 		

@@ -45,6 +45,7 @@
   </div>
 </template>
 <script>
+import { getTemplatesData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 export default {
   props: {
     tuneUpMiniPage: Boolean
@@ -168,7 +169,16 @@ export default {
       }
     }
   },
+  mounted () {
+    // 初始获取模板数据
+    this.handleToInitData()
+  },
   methods: {
+    handleToInitData () {
+      getTemplatesData().then(res => {
+        console.log(res)
+      })
+    },
     // 鼠标移入
     enter (index) {
       console.log(index)

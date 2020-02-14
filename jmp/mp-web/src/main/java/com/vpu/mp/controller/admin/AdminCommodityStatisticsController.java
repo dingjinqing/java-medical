@@ -6,12 +6,11 @@ import com.vpu.mp.service.pojo.shop.overview.Tuple2;
 import com.vpu.mp.service.pojo.shop.overview.commodity.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Locale;
@@ -116,6 +115,25 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
             param.defaultValue();
         }
         return success(shop().statisticsService.getGoodsRanking(param));
+    }
+
+    @GetMapping("/api/admin/commoditystatistics/getDate/{unit}")
+    public JsonResult getDate(@PathVariable Byte unit) {
+        RankingParam param = new RankingParam();
+        LocalDate now = LocalDate.now();
+        switch (unit) {
+            case 7:
+                param.setStartTime(Date.valueOf(now.minusDays(7)));
+                break;
+            case 30:
+                param.setStartTime(Date.valueOf(now.minusDays(30)));
+                break;
+            default:
+                param.setStartTime(Date.valueOf(now.minusDays(1)));
+                break;
+        }
+        param.setEndTime(Date.valueOf(now));
+        return success(param);
     }
 
 }

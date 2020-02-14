@@ -1,13 +1,12 @@
 package com.vpu.mp.service.shop.user.message.maConfig;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 
@@ -33,7 +32,7 @@ public enum SubscribeMessageConfig {
 			"变更数量{{character_string1.DATA}}积分余额{{character_string2.DATA}}变更原因{{thing3.DATA}}", new int[] { 1, 2, 3 }),
 
 	order_deliver_307(SubcribeTemplateCategory.ORDER_DELIVER, 307, 855, "订单发货通知",
-			"商品名称{{thing2.DATA}}订单号{{character_string1.DATA}}快递类型{{phrase3.DATA}}快递单号{{character_string4.DATA}}",
+			"商品名称:{{thing2.DATA}}订单号:{{character_string1.DATA}}快递类型:{{phrase3.DATA}}快递单号:{{character_string4.DATA}}",
 			new int[] { 2, 1, 3, 4 }),
 
 	invite_success_307(SubcribeTemplateCategory.INVITE_SUCCESS, 307, 817, "邀请成功通知",

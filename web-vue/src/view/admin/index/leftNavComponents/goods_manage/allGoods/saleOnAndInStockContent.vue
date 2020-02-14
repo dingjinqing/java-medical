@@ -278,7 +278,7 @@
 
         <pagination
           :page-params.sync="pageParams"
-          @pagination="fetchGoodsData"
+          @pagination="paginationFetchGoodsData"
         />
       </div>
 
@@ -408,11 +408,16 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+    <!--批量弹窗设置-->
+    <BatchSetupDialog
+      :checkGoodsData="nowCheckAll"
+      :dialogVisible.sync="batchSetupVisible"
+    />
   </div>
 </template>
 <script>
 
-import { getGoodsList, deleteGoods, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsList, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
@@ -420,7 +425,11 @@ import goodsExportConfirmDialog from './goodsExportConfirmDialog'
 
 export default {
   name: 'saleOnAndInStock',
-  components: { pagination, goodsExportConfirmDialog },
+  components: {
+    pagination,
+    goodsExportConfirmDialog,
+    BatchSetupDialog: () => import('./batchSetupDialog') // 批量设置弹窗
+  },
   data () {
     return {
       filterData: {},
@@ -458,7 +467,8 @@ export default {
       }],
       bottomDialogVisible: false, // 底部点击弹窗flag
       isBottomClickIndex: 0, // 底部按钮点击flag
-      nowCheckAll: [] // 当前选中的总数
+      nowCheckAll: [], // 当前选中的总数
+      batchSetupVisible: false // 批量设置弹窗flag
     }
   },
   watch: {
@@ -527,52 +537,54 @@ export default {
     },
     /* 商品价格输入框处理函数 */
     shopPriceChange (row) {
-      row.shopPriceEdit = false
       if (typeof row.shopPriceOld !== 'number' || row.shopPriceOld < 0) {
         row.shopPriceOld = row.shopPrice
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.shopPriceRequired') })
+        row.shopPriceEdit = false
         return
       }
+      let originPrice = row.shopPrice
       row.shopPrice = row.shopPriceOld
-      let shopPrices = {}
-      shopPrices[row.goodsId] = [{
+
+      let param = {
         prdId: row.prdId,
         shopPrice: row.shopPrice
-      }]
-      batchOperateGoods({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: shopPrices
-      }).then(res => {
+      }
+
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.shopPriceEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
+        } else {
+          row.shopPrice = originPrice
         }
       })
     },
     /* 商品数量输入框处理函数 */
     goodsNumberChange (row, index) {
-      row.goodsNumberEdit = false
       if (typeof row.goodsNumberOld !== 'number' || row.goodsNumberOld < 0) {
         row.goodsNumberOld = row.goodsNumber
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.goodsNumberRequired') })
+        row.goodsNumberEdit = false
         return
       }
+      let originNum = row.goodsNumber
       row.goodsNumber = parseInt(row.goodsNumberOld)
-      row.goodsNumberOld = row.goodsNumber
 
-      let goodsNumbers = {}
-      goodsNumbers[row.goodsId] = [{
+      let param = {
         prdId: row.prdId,
         goodsNumber: row.goodsNumber
-      }]
-      batchOperateGoods({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: goodsNumbers
-      }).then(res => {
+      }
+
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.goodsNumberEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
           if (row.goodsNumber === 0) {
             this.goodsData.splice(index, 1)
           }
+        } else {
+          row.goodsNumber = originNum
         }
       })
     },
@@ -703,7 +715,11 @@ export default {
         }
       })
     },
-    /* 分页查询数据 */
+    /* 分页组件使用的分页方法，为了传递filterData数据 */
+    paginationFetchGoodsData () {
+      this.fetchGoodsData(this.filterData)
+    },
+    /* 分页查询数据方法 */
     fetchGoodsData (filterData) {
       if (filterData !== undefined) {
         this.filterData = filterData
@@ -712,7 +728,6 @@ export default {
         ...this.pageParams,
         ...this.filterData
       }
-      console.log(filterData)
       getGoodsList(params).then(res => {
         let { content: { page, dataList } } = res
 
@@ -750,7 +765,7 @@ export default {
           item.goodsNumberOld = item.goodsNumber
           item.check = false
         })
-        this.goodsData = dataList
+        this.$set(this, 'goodsData', dataList)
       })
     },
     showExportDialog (filterData, filterDataString) {
@@ -781,6 +796,8 @@ export default {
           this.isBottomClickIndex = index
           break
         case 2:
+          this.batchSetupVisible = true
+          console.log(this.batchSetupVisible)
           break
       }
     },
@@ -796,15 +813,11 @@ export default {
       let arr = []
       switch (this.isBottomClickIndex) {
         case 0:
-          console.log(this.nowCheckAll)
           this.nowCheckAll.forEach((item, index) => {
             arr.push(item.goodsId)
           })
           batchOperateGoods({ goodsIds: arr, isOnSale: 0 }).then((res) => {
-            console.log(res)
             if (res.error === 0) {
-              console.log(this.filterData)
-              delete this.pageParams.totalRows
               this.fetchGoodsData(this.filterData)
             }
           })

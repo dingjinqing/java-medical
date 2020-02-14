@@ -15,19 +15,17 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.distribution.*;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 
 /**
  * 分销员列表
@@ -36,22 +34,32 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
  */
 @Service
 public class DistributorListService extends ShopBaseService{
+    @Autowired
+    public MpDistributionService mpDis;
 	/**
 	 * 分销员分页列表
 	 * @param param
 	 */
 	public PageResult<DistributorListVo> getPageList(DistributorListParam param) {
-		SelectJoinStep<Record8<Integer, String, String, Timestamp, String, String, String, Integer>> select = db().select(USER.USER_ID,USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER_DETAIL.REAL_NAME,
-				DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_LEVEL.LEVEL_NAME,USER_TOTAL_FANLI.SUBLAYER_NUMBER)
+		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER_DETAIL.REAL_NAME,
+				DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_LEVEL.LEVEL_NAME,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.INVITE_ID)
 				.from(USER.leftJoin(USER_TOTAL_FANLI).on(USER.USER_ID.eq(USER_TOTAL_FANLI.USER_ID))
 				.leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID))
 				.leftJoin(DISTRIBUTOR_GROUP).on(DISTRIBUTOR_GROUP.ID.eq(USER.INVITE_GROUP))
 				.leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)));
-		SelectConditionStep<Record8<Integer, String, String, Timestamp, String, String, String, Integer>> sql = buildOptions(select,param);
+		SelectConditionStep<? extends Record> sql = buildOptions(select,param);
 		PageResult<DistributorListVo> distributorList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorListVo.class);
 		
 		for(DistributorListVo distributor : distributorList.dataList) {
-			//间接邀请用户数
+		    //邀请人
+            Record1<String> record = db().select(USER.USERNAME).from(USER).where(USER.USER_ID.eq(distributor.getInviteId())).fetchOne();
+            if(record != null){
+                distributor.setInviteName(record.into(String.class));
+            }else{
+                distributor.setInviteName("null");
+            }
+
+            //间接邀请用户数
 			Integer nextNum = db().select(sum(USER_TOTAL_FANLI.SUBLAYER_NUMBER).as("next_num")).from(USER_TOTAL_FANLI).where(USER_TOTAL_FANLI.USER_ID.in(
 					db().select(USER.USER_ID).from(USER).where(USER.INVITE_ID.eq(distributor.getUserId())).fetch().into(Integer.class)))
 					.fetchOne().into(Integer.class);
@@ -90,8 +98,8 @@ public class DistributorListService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public  SelectConditionStep<Record8<Integer, String, String, Timestamp, String, String, String, Integer>> buildOptions(SelectJoinStep<Record8<Integer, String, String, Timestamp, String, String, String, Integer>> select,DistributorListParam param) {
-		SelectConditionStep<Record8<Integer, String, String, Timestamp, String, String, String, Integer>> sql = select.where(USER.IS_DISTRIBUTOR.eq((byte) 1));
+	public  SelectConditionStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select,DistributorListParam param) {
+		SelectConditionStep<? extends Record> sql = select.where(USER.IS_DISTRIBUTOR.eq((byte) 1));
 		//手机号
 		if(param.getUsername() != null) {
 			sql = sql.and(USER.USERNAME.eq(param.getUsername()));
@@ -189,4 +197,19 @@ public class DistributorListService extends ShopBaseService{
 	public int getRebateOrderNum(Integer userId) {
 		return db().fetchCount(USER_FANLI_STATISTICS, USER_FANLI_STATISTICS.FANLI_USER_ID.eq(userId));
 	}
+
+    /**
+     *给分销员设置分销邀请码
+     * @param param
+     * @return
+     */
+	public int setInviteCode(SetInviteCodeParam param){
+        Integer res = mpDis.sentInviteCodeVerify(param.getInviteCode());
+        if(res == 0){
+            db().update(USER).set(USER.INVITATION_CODE,param.getInviteCode()).where(USER.USER_ID.eq(param.getUserId())).execute();
+            return 1;
+        }else{
+            return 0;
+        }
+    }
 }

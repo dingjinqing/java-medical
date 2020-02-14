@@ -118,50 +118,29 @@ public class GoodsLabelCoupleService extends ShopBaseService {
     }
 
     /**
-     * 插入数据关系，但是不包含在数据库中已存在的对应关系
+     * 批量更新标签关联表内信息，先删除旧的相关信息，再插入新的相关信息
      * @param gtas
      * @param labels
      * @param type
      * @author 李晓冰
      * @return
      */
-    public List<GoodsLabelCouple> calculateGtaLabelDiffer(List<Integer> gtas, List<Integer> labels, GoodsLabelCoupleTypeEnum type) {
-        Map<Integer, List<Integer>> gtaLabelMap =
-                db().select(GOODS_LABEL_COUPLE.GTA_ID, GOODS_LABEL_COUPLE.LABEL_ID)
-                .from(GOODS_LABEL_COUPLE)
-                .where(GOODS_LABEL_COUPLE.GTA_ID.in(gtas)).and(GOODS_LABEL_COUPLE.TYPE.eq(type.getCode()))
-                .fetch().intoGroups(GOODS_LABEL_COUPLE.GTA_ID, GOODS_LABEL_COUPLE.LABEL_ID);
-
-        List<GoodsLabelCouple> list=new ArrayList<>(gtas.size());
-
-        gtas.forEach(gtaId->{
-            List<Integer> labelIds = gtaLabelMap.get(gtaId);
-
-            if (labelIds == null) {
-                labels.forEach(id->{
-                    GoodsLabelCouple goodsLabelCouple=new GoodsLabelCouple();
-                    goodsLabelCouple.setGtaId(gtaId);
-                    goodsLabelCouple.setLabelId(id);
-                    goodsLabelCouple.setType(type.getCode());
-                    list.add(goodsLabelCouple);
-                });
-                //从上一层的foreach返回
-                return;
-            }
-
-            for (Integer id : labels) {
-                if (labelIds.contains(id)) {
-                    continue;
+    public void batchUpdateLabelCouple(List<Integer> gtas, List<Integer> labels, GoodsLabelCoupleTypeEnum type) {
+        transaction(()->{
+            db().delete(GOODS_LABEL_COUPLE).where(GOODS_LABEL_COUPLE.GTA_ID.in(gtas).and(GOODS_LABEL_COUPLE.TYPE.eq(type.getCode())))
+                .execute();
+            List<GoodsLabelCoupleRecord> goodsLabelCoupleRecords=new ArrayList<>(labels.size()*gtas.size());
+            for (Integer gta : gtas) {
+                for (Integer labelId : labels) {
+                    GoodsLabelCoupleRecord record = new GoodsLabelCoupleRecord();
+                    record.setType(type.getCode());
+                    record.setGtaId(gta);
+                    record.setLabelId(labelId);
+                    goodsLabelCoupleRecords.add(record);
                 }
-                GoodsLabelCouple goodsLabelCouple=new GoodsLabelCouple();
-                goodsLabelCouple.setGtaId(gtaId);
-                goodsLabelCouple.setLabelId(id);
-                goodsLabelCouple.setType(type.getCode());
-                list.add(goodsLabelCouple);
             }
+            db().batchInsert(goodsLabelCoupleRecords).execute();
         });
-
-        return list;
     }
 
     /**

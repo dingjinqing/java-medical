@@ -224,7 +224,7 @@ export const en = {
   proportionTip2: 'Indirect invitation rebate ratio: B is the distributor of development a. after successful promotion, a can get the invitation reward Commission',
   proportionTip3: 'Rebate ratio of direct invitation',
   proportionTip4: 'Rebate ratio of indirect invitation',
-  proportionTip5: 'The rebate amount available to current level distributors is 0% - 0% of the amount of goods ordered',
+  proportionTip5: 'The rebate amount available to the current level distributor is the amount of the ordered goods',
   proportionTip6: 'Rebate ratio of the first order directly invited to new users',
   proportionTip7: 'This strategy configures that the Commission of all goods is settled according to the current proportion. The Commission value = the actual payment amount of goods * Commission proportion. For example, if the price of distribution goods is 100 yuan and the rebate Commission proportion is 20%, then the user purchases a distribution goods and invites the user distributor to obtain 20 yuan Commission.After the order is paid, the Commission will be rebate to the balance account of the distribution center of the distributor, but the Commission is in the status of to be rebate.After the order is completed, the Commission will be rebate, and the distributor can directly use the Commission for shopping.Limit the number to one decimal place.',
   authority: 'Authority of distributor：',

@@ -12,3 +12,11 @@ export function realTime (data) {
     data: data
   })
 }
+// 核心指标
+export function coreIndicator (data) {
+  return service({
+    url: '/api/admin/realtimeoverview/coreIndicator',
+    method: 'post',
+    data: data
+  })
+}
