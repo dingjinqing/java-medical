@@ -32,7 +32,7 @@ public class DistributorListParam {
     /**
      * 被邀请人姓名
      */
-	private String invitedUsername;
+	private String invitedUserName;
     /**
      * 注册开始时间
      */
