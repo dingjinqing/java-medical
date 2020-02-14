@@ -236,7 +236,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				}
 			});
             //消息推送
-            sendMessage.send(returnOrder.getByRetId(param.getRetId()), returnOrderGoods.getReturnGoods(param.getOrderSn(), param.getRetId()));
+            ReturnOrderRecord rOrder = returnOrder.getByReturnOrderSn((String) result.getResult());
+            sendMessage.send(rOrder, returnOrderGoods.getReturnGoods(rOrder.getOrderSn(), rOrder.getRetId()));
 		} catch (DataAccessException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {

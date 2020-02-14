@@ -65,6 +65,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
     /**
      * 退货状态为终态时发送模板消息
      * @param returnOrder
+     * @param returnGoods
      */
     public void send(ReturnOrderRecord returnOrder, Result<ReturnOrderGoodsRecord> returnGoods) {
         logger().info("退款操作消息推送start");
@@ -102,7 +103,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { refuseReason }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
             //公众号数据
             String[][] mpData = new String[][] { { "您的退款审核被拒绝" }, { returnOrder.getOrderSn() }, { applyTime }, { money }, { refuseReason }, { "具体信息请查看详情" }};
-            //参数
+            //参数：
             param = RabbitMessageParam.builder()
                 .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(maData).build())
                 .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND_FAIL).data(mpData).build())
