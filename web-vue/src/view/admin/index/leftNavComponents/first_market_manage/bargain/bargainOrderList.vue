@@ -1,3 +1,8 @@
+<!--
+***
+*  砍价订单列表
+***
+-->
 <template>
   <div class="content">
     <div class="search-condition">
@@ -209,6 +214,7 @@ export default {
     }
     .goods_info {
       display: flex;
+      justify-content: center;
       border-bottom: 1px solid #ebeef5;
       padding: 8px;
       &:last-of-type {

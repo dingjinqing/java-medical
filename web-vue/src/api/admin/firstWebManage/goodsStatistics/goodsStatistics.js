@@ -23,9 +23,9 @@ export function productoverview (data) {
 }
 
 // 商品排行
-export function cashDetail (data) {
+export function productRanking (data) {
   return service({
-    url: '/api/admin/assetmanagement/assetManageDetail',
+    url: '/api/admin/commoditystatistics/productRanking',
     method: 'post',
     data: data
   })
@@ -47,5 +47,13 @@ export function export2Excel (data) {
     method: 'post',
     data: data,
     responseType: 'blob'
+  })
+}
+
+// 获取指定时间
+export function getDate (data) {
+  return service({
+    url: `/api/admin/commoditystatistics/getDate/${data}`,
+    method: 'get'
   })
 }

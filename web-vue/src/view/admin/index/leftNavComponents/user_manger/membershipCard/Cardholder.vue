@@ -179,7 +179,8 @@
   </div>
 </template>
 <script>
-import { getAllCardHolders } from '@/api/admin/memberManage/memberCard.js'
+import { getAllCardHolders, exportExcel } from '@/api/admin/memberManage/memberCard.js'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
 
@@ -265,6 +266,8 @@ export default {
           this.dateValue = null
           break
         case 2:
+          this.exportInfo()
+          break
       }
     },
     // 3- 处理分页信息传递出来的分页数据
@@ -284,6 +287,28 @@ export default {
         query: {
           userId: row.userId
         }
+      })
+    },
+    exportInfo () {
+      let obj = {
+        'pageRows': this.pageParams.pageRows,
+        'currentPage': this.pageParams.currentPage,
+        'cardId': this.cardId,
+        'userId': this.carIdInput,
+        'username': this.carNameInput,
+        'mobile': this.phoneInput,
+        'cardNo': this.cardNuberInput,
+        'flag': this.statusValue,
+        'firstDateTime': this.dateValue ? this.dateValue[0] : null,
+        'secondDateTime': this.dateValue ? this.dateValue[1] : null
+      }
+      exportExcel(obj).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
+        console.log('文件名：' + fileName)
+        download(res, decodeURIComponent(fileName))
+      }).catch((err, data) => {
+        console.error('err:', err)
       })
     }
 

@@ -2131,6 +2131,9 @@ public class MemberCardService extends ShopBaseService {
 	}
 	
 	
-	
+	public Workbook getCardNoTemplate(String lang) {
+		return null;
+		
+	}
 	
 }

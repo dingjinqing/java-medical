@@ -654,7 +654,9 @@ export default {
     deleteIconClick (row, index) {
       this._$confirm(this.$t('allGoods.allGoodsData.deleteTipMsg'), this.$t('allGoods.allGoodsData.deleteOk'), () => {
         return deleteGoods({ goodsIds: [row.goodsId] }).then((res) => {
-          this.goodsData.splice(index, 1)
+          if (res.error === 0) {
+            this.fetchGoodsData(this.filterData)
+          }
         })
       })
     },
@@ -662,7 +664,7 @@ export default {
     withdrawIconClick (row, index) {
       this._$confirm(this.$t('allGoods.allGoodsData.underCarriageTipMsg'), this.$t('allGoods.allGoodsData.underCarriageOk'), () => {
         return batchOperateGoods({ goodsIds: [row.goodsId], isOnSale: 0 }).then((res) => {
-          this.goodsData.splice(index, 1)
+          this.fetchGoodsData(this.filterData)
         })
       })
     },
@@ -670,7 +672,9 @@ export default {
     upIconClick (row, index) {
       this._$confirm(this.$t('allGoods.allGoodsData.upCarriageTipMsg'), this.$t('allGoods.allGoodsData.upCarriageOk'), () => {
         return batchOperateGoods({ goodsIds: [row.goodsId], isOnSale: 1 }).then((res) => {
-          this.goodsData.splice(index, 1)
+          if (res.error === 0) {
+            this.fetchGoodsData(this.filterData)
+          }
         })
       })
     },

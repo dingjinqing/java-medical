@@ -256,9 +256,19 @@ public class AdminGoodsController extends AdminBaseController {
         }
     }
 
+    /**
+     * 商品批处理操作
+     * @param param
+     * @return
+     */
     @PostMapping("/api/admin/goods/batch")
     public JsonResult batchOperate(@RequestBody GoodsBatchOperateParam param) {
-        shop().goods.batchOperate(param);
+        // 上下价处理，调用的方法同步es时会进行同步处理，而其他的批量处理是异步的
+        if (param.getIsOnSale() != null) {
+            shop().goods.batchIsOnSaleOperate(param);
+        } else {
+            shop().goods.batchOperate(param);
+        }
         return success();
     }
 

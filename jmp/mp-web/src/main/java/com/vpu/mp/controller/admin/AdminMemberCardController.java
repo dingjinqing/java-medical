@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +27,6 @@ import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardHolderExcelVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
@@ -47,7 +47,7 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 @RestController
 @RequestMapping(value = "/api/admin/member")
 public class AdminMemberCardController extends AdminBaseController {
-
+	private static final String LANGUAGE_TYPE_EXCEL = "excel";
 	/**
 	 * 会员卡 - 创建
 	 */
@@ -165,7 +165,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	public void getAllCardHoldersExport(@RequestBody CardHolderParam param,HttpServletResponse response) {
 		logger().info("导出所有持卡会员");
 		Workbook workbook = shop().member.card.getAllCardHolderExport(param,getLang());
-		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_TEMPLATE_NAME, "excel","messages");
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_CARD_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,"messages");
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束导出所有持卡会员");
@@ -298,6 +298,18 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(res);
 	}
 	
-	
-	
+	/**
+	 * 获取模板
+	 * 
+	 * @param response
+	 */
+	@GetMapping(value = "/card/code/getTemplate")
+	public void getTemplate(HttpServletResponse response) {
+		logger().info("开始获取下载导入模板");
+		Workbook workbook = shop().member.card.getCardNoTemplate(getLang());
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.GET_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,
+				"messages");
+		export2Excel(workbook, fileName, response);
+		logger().info("结束获取下载导入模板");
+	}
 }

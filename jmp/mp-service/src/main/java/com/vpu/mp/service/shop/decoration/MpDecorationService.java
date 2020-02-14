@@ -194,10 +194,19 @@ public class MpDecorationService extends ShopBaseService {
         Integer pageId = param.getPageId();
         String pageContent;
         if (pageId == null || pageId == 0) {
-            record = this.getIndex();
-            pageId = record.getPageId();
-            pageContent = param.getSceneId() != null && param.getSceneId() > 0 ? record.getPageContent()
-                : record.getPagePublishContent();
+            if(StringUtil.isNotEmpty(param.getScene())){
+                //scene的格式为page_id=1
+                String[] sceneParam = param.getScene().split("=",2);
+                pageId =  Integer.valueOf(sceneParam[1]);
+                record = getPageById(pageId);
+                //页面预览
+                pageContent = record.getPageContent();
+            }else{
+                //首页
+                record = this.getIndex();
+                pageId = record.getPageId();
+                pageContent = record.getPagePublishContent();
+            }
 
         } else {
             record = this.getPageById(pageId);
@@ -212,7 +221,7 @@ public class MpDecorationService extends ShopBaseService {
         page.setPageInfo(pageInfo);
         page.setIsFirstPage(record.getPageType());
         page.setPageId(pageId);
-        page.setSceneId(param.getSceneId());
+        page.setScene(param.getScene());
         page.setPageName(record.getPageName());
         page.setPageType(record.getPageType());
 //		this.setCollectInfo(page.getCollectInfo(), shop, userRecord);
@@ -655,7 +664,7 @@ public class MpDecorationService extends ShopBaseService {
             pageRecord = this.getPageById(param.getPageId());
         }
 
-        String pageContent = param.getSceneId() != null && param.getSceneId() > 0 ? pageRecord.getPageContent() : pageRecord.getPagePublishContent();
+        String pageContent = StringUtil.isNotEmpty(param.getScene())  ? pageRecord.getPageContent() : pageRecord.getPagePublishContent();
         DistributionParam distributionCfg = config.distributionCfg.getDistributionCfg();
         // 是否是分销员
         boolean isDistributor = 1 == userRecord.getIsDistributor();

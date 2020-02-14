@@ -32,8 +32,8 @@ let actType = {
   },
   3:{
     footerButtonName:{
-      left:{name:'单独购买',event:'checkBuy'},
-      right:{name:'砍价拿',event:'ckeckBargain'}
+      left:{name:'单独购买',event:'checkBuy',},
+      right:{name:'砍价拿',event:'ckeckBargain',}
     },
     dialogButtonName:{
       left:{
@@ -152,6 +152,10 @@ global.wxComponent({
       value: null,
       observer(val) {
       }
+    },
+    products:{
+      type:Array,
+      value:null
     }
   },
   lifetimes:{
@@ -242,11 +246,20 @@ global.wxComponent({
       if(this.data.position === 'footer'){
         buttonData = this.data.activity && [1,3,5].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['footerButtonName'] : actType['default']['footerButtonName']
         if(this.data.activity && this.data.activity.activityType === 1){
+          buttonData['left'].top = `${this.data.isDefaultPrd ? this.data.products[0].prdRealPrice : this.getProducesMinPrice()}`
           buttonData['right'].name = buttonData['right'][`name-${this.data.activity.isGrouperCheap}`]
+          buttonData['right'].top = `￥${this.data.activity.isGrouperCheap === 1 ? this.getGroupPirce('grouper') : this.getGroupPirce()}`
+        }
+        if(this.data.activity && this.data.activity.activityType === 3){
+          buttonData['left'].top = `${this.data.isDefaultPrd ? this.data.products[0].prdRealPrice : this.getProducesMinPrice()}`
+          buttonData['right'].top = `￥${this.data.activity.bargainPrice}`
         }
       } else if (this.data.position === 'spec'){
         let position = this.data.activity && [1,3,5].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['dialogButtonName'] : actType['default']['dialogButtonName']
         buttonData = this.data.triggerButton ? position[this.data.triggerButton] : position['default']
+        if(this.data.activity && this.data.activity.activityType === 3 && this.data.triggerButton === 'right'){
+          buttonData['right'].left = `￥${this.data.activity.bargainPrice}`
+        }
       }
       return buttonData
     },
@@ -296,6 +309,29 @@ global.wxComponent({
         if (index !== 0) UrlStr += `&`
         return UrlStr += `${item}=${obj[item]}`
       }, '?')
+    },
+    getGroupPirce(type){
+      let realPriceArr = null
+      if(type === 'grouper'){
+        realPriceArr = this.data.activity.groupBuyPrdMpVos.map(item=>{return item.grouperPrice})
+      } else {
+        realPriceArr = this.data.activity.groupBuyPrdMpVos.map(item=>{return item.groupPrice})
+      }
+      return this.getMin(realPriceArr)
+    },
+    getProducesMinPrice(){
+     let realPriceArr = this.data.products.map(item => {return item.prdRealPrice})
+     let minPrice = this.getMin(realPriceArr),maxPrice = this.getMax(realPriceArr)
+     if(minPrice === maxPrice){
+       return `￥${minPrice}`
+     }
+     return `￥${minPrice}~${maxPrice}`
+    },
+    getMin(arr) {
+      return Math.min(...arr)
+    },
+    getMax(arr) {
+      return Math.max(...arr)
     },
     // 返回首页
     backHome() {

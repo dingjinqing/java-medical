@@ -1,13 +1,12 @@
 package com.vpu.mp.service.pojo.wxapp.decorate;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.SendCoupon;
 import com.vpu.mp.service.pojo.wxapp.coupon.ShopCollectInfo;
-
 import lombok.Data;
+
+import java.util.Map;
 
 /**
  * 
@@ -32,7 +31,7 @@ public class WxAppPageVo {
 	Byte isFirstPage;
 	
 	@JsonProperty(value = "scene")
-	Integer sceneId;
+	String scene;
 	
 	@JsonProperty(value = "send_coupon")
 	SendCoupon sendCoupon = new SendCoupon();
