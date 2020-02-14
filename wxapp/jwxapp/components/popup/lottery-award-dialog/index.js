@@ -16,6 +16,7 @@ global.wxComponent({
    * 组件的初始数据
    */
   data: {
+    show: false,
     imageUrl: imageUrl
   },
 

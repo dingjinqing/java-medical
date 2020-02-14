@@ -75,7 +75,7 @@
   </view>
 </view>
 <!-- 中奖弹窗 -->
-<v-lottery-award-dialog show="{{awardDialogVisible}}" prizeInfo="{{prizeInfo}}"/>
+<v-lottery-award-dialog show="{{awardDialogVisible}}" prizeInfo="{{prizeInfo}}" bind:close="dialogClose"/>
 <!-- 未中奖弹窗 -->
-<v-lottery-no-award-dialog show="{{noAwardDialogVisible}}"/>
+<v-lottery-no-award-dialog show="{{noAwardDialogVisible}}" bind:drawagain="drawAgain"/>
 <!-- <include src="/pages/common/footer.wxml"/> -->

@@ -24,7 +24,10 @@ global.wxComponent({
    */
   methods: {
     drawAgain () {
-      
+      this.setData({
+        show: false
+      })
+      this.triggerEvent('drawagain')
     }
   }
 })
