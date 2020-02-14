@@ -141,3 +141,12 @@ export function getDialogBargainList (data) {
     data: data
   })
 }
+
+// 砍价用户-导出数据
+export function exportBargainUserData (data) {
+  return service({
+    url: '/api/admin/market/bargain/user/list/export',
+    methods: 'post',
+    data: data
+  })
+}
