@@ -26,6 +26,7 @@ export const cn = {
   luckyDraw: '幸运大抽奖',
   balance: '余额',
   splitCoupon: '分裂优惠券',
+  piSlogan: '请填写活动宣传语',
   custom: '自定义',
   enterIntegral: '请输入积分',
   coupon2: '优惠券：',

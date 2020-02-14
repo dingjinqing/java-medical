@@ -123,12 +123,12 @@
                 @click="handleClickO(row, 0)"
               >{{$t('memberIntroductionList.downFail')}}</div>
               <div
-                v-else-if="row.activateNum > 0"
+                v-if="row.activateNum > 0"
                 class="num"
                 @click="handleClickO(row, 1)"
               >{{$t('memberIntroductionList.downActive')}}</div>
               <div
-                v-else-if="row.successNum - row.activateNum > 0"
+                v-if="row.successNum - row.activateNum > 0"
                 class="num"
                 @click="handleClickO(row, 2)"
               >{{$t('memberIntroductionList.viewInactive')}}</div>

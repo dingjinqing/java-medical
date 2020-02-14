@@ -227,7 +227,7 @@
       <div style="padding: 20px 40px;display:flex;justify-content: center">
         <img
           style="width:180px;height: 180px"
-          src="http://mpdevimg2.weipubao.cn/upload/4748160/unlimitcode/20200207/un_200207152930_102.jpg"
+          :src="previewCodeImg"
         >
       </div>
     </el-dialog>
@@ -286,6 +286,7 @@ export default {
   data () {
     return {
       previewVisible: false, // 扫码预览弹窗flag
+      previewCodeImg: '', // 扫码预览弹窗二维码
       saveTwoDialogVisible: false, // 二次弹窗flag
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
@@ -1191,42 +1192,40 @@ export default {
       }
       params.pageState = pageState
       console.log(flag)
-      if (flag === 0 || flag === 1) {
-        console.log(params)
-        console.log(data)
-        // let id = ''
-        // if ((this.isNewEnterFirstSaveSucess !== -1)) {
-        //   id = this.isNewEnterFirstSaveSucess
-        // } else {
-        //   id = this.page_id
-        // }
-        let editParams = {
-          'pageId': this.page_id,
-          'pageName': this.pageSetData.page_name,
-          'pageTplType': this.page_tpl_type,
-          'pageContent': JSON.stringify(data),
-          'pageState': pageState,
-          'catId': Number(this.pageSetData.cat_id)
-        }
-        editSave(editParams).then((res) => {
-          console.log(res)
 
-          if (res.error === 0) {
+      console.log(params)
+      console.log(data)
+      // let id = ''
+      // if ((this.isNewEnterFirstSaveSucess !== -1)) {
+      //   id = this.isNewEnterFirstSaveSucess
+      // } else {
+      //   id = this.page_id
+      // }
+      let editParams = {
+        'pageId': this.page_id,
+        'pageName': this.pageSetData.page_name,
+        'pageTplType': this.page_tpl_type,
+        'pageContent': JSON.stringify(data),
+        'pageState': pageState,
+        'catId': Number(this.pageSetData.cat_id)
+      }
+      editSave(editParams).then((res) => {
+        console.log(res)
+
+        if (res.error === 0) {
+          if (pageState === 2) {
+            this.previewCodeImg = res.content
+            this.previewVisible = true
+          } else {
             this.$message.success({
               message: '保存成功',
               showClose: true,
               duration: 1000
             })
           }
-        })
-      } else {
-        this.previewVisible = true
-        // this.$message.success({
-        //   message: '预览测试',
-        //   showClose: true,
-        //   duration: 1000
-        // })
-      }
+        }
+      })
+
       this.saveTwoDialogVisible = false
       console.log(params)
     },

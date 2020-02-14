@@ -812,10 +812,10 @@ export default {
           this.$message.warning(this.$t('addBargainAct.vaildExpectationNumberMin'))
           return false
         }
-        if (this.param.bargainMin === '' || !this.param.bargainMax) {
-          this.$message.warning(this.$t('addBargainAct.vaildProportionalinterval1'))
-          return false
-        }
+        // if (this.param.bargainMin === '' || !this.param.bargainMax) {
+        //   this.$message.warning(this.$t('addBargainAct.vaildProportionalinterval1'))
+        //   return false
+        // }
         if (this.param.bargainMin > this.param.bargainMax) {
           this.$message.warning(this.$t('addBargainAct.vaildProportionalinterval2'))
           return false
@@ -847,6 +847,14 @@ export default {
             return false
           }
         }
+      }
+      if (this.shareConfig.shareAction === 2 && !this.param.shareConfig.shareDoc) {
+        this.$message.warning('请填写对应的分享文案')
+        return false
+      }
+      if (this.shareConfig.shareImgAction === 2 && this.param.shareConfig.shareImg === null) {
+        this.$message.warning('请选择自定义图片')
+        return false
       }
       return true
     }
