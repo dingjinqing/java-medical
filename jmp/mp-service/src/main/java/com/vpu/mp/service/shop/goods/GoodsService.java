@@ -1144,6 +1144,16 @@ public class GoodsService extends ShopBaseService {
             //删除商品规格分销信息
             deleteGoodsRebatePrices(goodsIds);
         });
+
+        try {
+            //更新es
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
+            }
+        } catch (Exception e) {
+           logger().debug("商品删除-es同步数据异常："+e.getMessage());
+        }
     }
 
     /**
