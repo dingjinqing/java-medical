@@ -486,7 +486,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             return false;
         }
 
+        //记录页面变化
         recordPageChange(page);
+
         XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
         record.setPageContent(page.getPageContent());
         record.setPageName(page.getPageName());
@@ -509,6 +511,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
 
         //入库
         if(page.getPageId() != null && page.getPageId() > 0){
+            record.setPageId(page.getPageId());
             return record.update() > 0;
         }else {
             if(record.insert() > 0){
