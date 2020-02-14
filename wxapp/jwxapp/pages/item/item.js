@@ -297,8 +297,8 @@ global.wxPage({
       actStatusName: this.getActStatusName(activity),
       prdRealPrice: this.getActBarPrice(products, activity, 'prdRealPrice'),
       prdLinePrice: this.getActBarPrice(products, activity, 'prdLinePrice'),
-      actName: this.getActName(activity, actBarInfo)
     }
+    actBarInfo.actName = this.getActName(activity, actBarInfo)
     this.setData({
       actBarInfo
     })
@@ -310,9 +310,9 @@ global.wxPage({
 
   // 获取actBar活动名称
   getActName({ activityType }, actBarInfo) {
-    if (!activityType || activityType === 3) return null
-    if (activityType === 1)
-      return `开团省${(actBarInfo.prdLinePrice - actBarInfo.prdRealPrice).toFixed(2)}元`
+    if (!activityType || activityType === 3) {return null}
+    console.log(actBarInfo)
+    if (activityType === 1) {return `开团省${(actBarInfo.prdLinePrice - actBarInfo.prdRealPrice).toFixed(2)}元`}
     return actBaseInfo[activityType].actName
   },
   // 获取actBar活动状态
