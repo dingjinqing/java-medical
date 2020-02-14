@@ -860,5 +860,8 @@ public class JsonResultMessage {
     public static final String WX_MA_PRESALE_SHARE_DOC = "wx.ma.presale.share.doc";
     /**"200.00元,限时预售" 分享图片*/
     public static final String WX_MA_PRESALE_PICTORIAL_DOC = "wx.ma.presale.pictorial.doc";
-
+    //持卡会员导出
+    public static final String USER_CARD_OK = "user.card.ok";
+    public static final String USER_CARD_ONOK = "user.card.onok";
+    public static final String USER_CARD_TEMPLATE_NAME = "user.card.template.name";
 }

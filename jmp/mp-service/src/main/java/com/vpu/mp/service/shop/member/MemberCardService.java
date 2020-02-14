@@ -2098,25 +2098,28 @@ public class MemberCardService extends ShopBaseService {
 		return bean;
 	}
 	
-	//会员导出
-	public List<CardHolderExcelVo> getAllCardHolderExport(CardHolderParam param,String lang) {
+	/**
+	 * 持卡会员导出
+	 * @param param
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getAllCardHolderExport(CardHolderParam param,String lang) {
 		List<CardHolderExcelVo> allCardHolderAll = cardDao.getAllCardHolderAll(param);
-		String expire = Util.translateMessage(lang, JsonResultMessage.GET_TEMPLATE_NAME, "excel",
-				"messages");
-		String noOut = Util.translateMessage(lang, JsonResultMessage.GET_TEMPLATE_NAME, "excel",
-				"messages");
+		String expire = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ONOK, "excel","messages");
+		String ok = Util.translateMessage(lang, JsonResultMessage.USER_CARD_OK, "excel","messages");
 		for (CardHolderExcelVo item : allCardHolderAll) {
 			if (item.getExpireTime() != null &&
 					DateUtil.getLocalDateTime().after(item.getExpireTime())) {
 				item.setNflag(expire);
 			}else {
-				item.setNflag(noOut);
+				item.setNflag(ok);
 			}
 		}
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
 		excelWriter.writeModelList(allCardHolderAll, CardHolderExcelVo.class);
-		return allCardHolderAll;
+		return workbook;
 	}
 	
 	
