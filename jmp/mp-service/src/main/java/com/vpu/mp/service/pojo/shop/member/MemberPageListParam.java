@@ -76,4 +76,9 @@ public class MemberPageListParam extends BaseMemberPojo {
 	private Boolean hasImport=false;
 	
 	private String realName;
+	
+	/**
+	 * 获取用户列表排序规则
+	 */
+	private OrderRuleParam orderRule;
 }

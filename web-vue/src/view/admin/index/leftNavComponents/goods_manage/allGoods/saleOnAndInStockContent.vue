@@ -278,7 +278,7 @@
 
         <pagination
           :page-params.sync="pageParams"
-          @pagination="fetchGoodsData"
+          @pagination="paginationFetchGoodsData"
         />
       </div>
 
@@ -654,7 +654,9 @@ export default {
     deleteIconClick (row, index) {
       this._$confirm(this.$t('allGoods.allGoodsData.deleteTipMsg'), this.$t('allGoods.allGoodsData.deleteOk'), () => {
         return deleteGoods({ goodsIds: [row.goodsId] }).then((res) => {
-          this.goodsData.splice(index, 1)
+          if (res.error === 0) {
+            this.fetchGoodsData(this.filterData)
+          }
         })
       })
     },
@@ -662,7 +664,7 @@ export default {
     withdrawIconClick (row, index) {
       this._$confirm(this.$t('allGoods.allGoodsData.underCarriageTipMsg'), this.$t('allGoods.allGoodsData.underCarriageOk'), () => {
         return batchOperateGoods({ goodsIds: [row.goodsId], isOnSale: 0 }).then((res) => {
-          this.goodsData.splice(index, 1)
+          this.fetchGoodsData(this.filterData)
         })
       })
     },
@@ -670,7 +672,9 @@ export default {
     upIconClick (row, index) {
       this._$confirm(this.$t('allGoods.allGoodsData.upCarriageTipMsg'), this.$t('allGoods.allGoodsData.upCarriageOk'), () => {
         return batchOperateGoods({ goodsIds: [row.goodsId], isOnSale: 1 }).then((res) => {
-          this.goodsData.splice(index, 1)
+          if (res.error === 0) {
+            this.fetchGoodsData(this.filterData)
+          }
         })
       })
     },
@@ -715,7 +719,11 @@ export default {
         }
       })
     },
-    /* 分页查询数据 */
+    /* 分页组件使用的分页方法，为了传递filterData数据 */
+    paginationFetchGoodsData () {
+      this.fetchGoodsData(this.filterData)
+    },
+    /* 分页查询数据方法 */
     fetchGoodsData (filterData) {
       if (filterData !== undefined) {
         this.filterData = filterData
@@ -724,7 +732,6 @@ export default {
         ...this.pageParams,
         ...this.filterData
       }
-      console.log(filterData)
       getGoodsList(params).then(res => {
         let { content: { page, dataList } } = res
 
@@ -762,7 +769,7 @@ export default {
           item.goodsNumberOld = item.goodsNumber
           item.check = false
         })
-        this.goodsData = dataList
+        this.$set(this, 'goodsData', dataList)
       })
     },
     showExportDialog (filterData, filterDataString) {
@@ -810,15 +817,11 @@ export default {
       let arr = []
       switch (this.isBottomClickIndex) {
         case 0:
-          console.log(this.nowCheckAll)
           this.nowCheckAll.forEach((item, index) => {
             arr.push(item.goodsId)
           })
           batchOperateGoods({ goodsIds: arr, isOnSale: 0 }).then((res) => {
-            console.log(res)
             if (res.error === 0) {
-              console.log(this.filterData)
-              delete this.pageParams.totalRows
               this.fetchGoodsData(this.filterData)
             }
           })

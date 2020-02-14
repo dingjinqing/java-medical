@@ -297,8 +297,8 @@ global.wxPage({
       actStatusName: this.getActStatusName(activity),
       prdRealPrice: this.getActBarPrice(products, activity, 'prdRealPrice'),
       prdLinePrice: this.getActBarPrice(products, activity, 'prdLinePrice'),
-      actName: this.getActName(activity, actBarInfo)
     }
+    actBarInfo.actName = this.getActName(activity, actBarInfo)
     this.setData({
       actBarInfo
     })
@@ -310,9 +310,9 @@ global.wxPage({
 
   // 获取actBar活动名称
   getActName({ activityType }, actBarInfo) {
-    if (!activityType || activityType === 3) return null
-    if (activityType === 1)
-      return `开团省${(actBarInfo.prdLinePrice - actBarInfo.prdRealPrice).toFixed(2)}元`
+    if (!activityType || activityType === 3) {return null}
+    console.log(actBarInfo)
+    if (activityType === 1) {return `开团省${(actBarInfo.prdLinePrice - actBarInfo.prdRealPrice).toFixed(2)}元`}
     return actBaseInfo[activityType].actName
   },
   // 获取actBar活动状态
@@ -619,33 +619,33 @@ global.wxPage({
         data.desc += `可获得活动奖励`
         return data
       case '21':
+        data.desc = ''
         data.isExclusive = info.isExclusive
-        if (info.type === 1) {
-          if (info.amount > 0) {
-            data.desc = `每满${info.amount}件`
-          } else {
-            data.desc = `每满${info.fullMoney}元`
+        info.rules.forEach((item, index) => {
+          if (index !== 0) data.desc += '，或'
+          if (info.type === 1) {
+            if (item.amount > 0) {
+              data.desc += `每满${item.amount}件`
+            } else {
+              data.desc += `每满${item.fullMoney}元`
+            }
+          } else if (info.type === 2 || info.type === 3) {
+            if (item.amount > 0) {
+              data.desc += `满${item.amount}件`
+            } else {
+              data.desc += `满${item.fullMoney}元`
+            }
+          } else if (info.type === 4) {
+            data.desc += `第${item.amount}件`
           }
-        } else if (info.type === 2 || info.type === 3) {
-          if (info.amount > 0) {
-            data.desc = `满${info.amount}件`
+          if (info.type === 1 || info.type === 2) {
+            data.desc += `，减${item.reduceMoney}元`
           } else {
-            data.desc = `满${info.fullMoney}元`
+            data.desc += `，打${item.discount}折`
           }
-        } else if (info.type === 4) {
-          data.desc = `第${info.amount}件`
-        }
-        if (info.type === 1 || info.type === 2) {
-          data.desc += `，减${info.reduceMoney}元`
-        } else data.desc += `，打${info.discount}折`
+        })
         return data
     }
-  },
-  goPledge() {
-    util.jumpLink(
-      'pages1/pledgeannounce/pledgeannounce?pledgeList=' +
-        JSON.stringify(this.data.pledgeInfo.pledgeListVo)
-    )
   },
   goRule(e) {
     let { type } = e.currentTarget.dataset
@@ -657,6 +657,12 @@ global.wxPage({
         util.jumpToWeb('/wxapp/bargain/help')
         break
     }
+  },
+  goPledge() {
+    util.jumpLink(
+      'pages1/pledgeannounce/pledgeannounce?pledgeList=' +
+        JSON.stringify(this.data.pledgeInfo.pledgeListVo)
+    )
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -148,7 +148,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_SHIP.code }), new String[] {param.getOrderSn()});
 		//发送消息模板
-        sendMessage.send();
+        sendMessage.send(orderRecord, recordList);
 		logger.info("发货完成");
 		return null;
 	}

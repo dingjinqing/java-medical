@@ -2098,28 +2098,54 @@ public class MemberCardService extends ShopBaseService {
 		return bean;
 	}
 	
-	//会员导出
-	public List<CardHolderExcelVo> getAllCardHolderExport(CardHolderParam param,String lang) {
+	/**
+	 * 持卡会员导出
+	 * @param param
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getAllCardHolderExport(CardHolderParam param,String lang) {
 		List<CardHolderExcelVo> allCardHolderAll = cardDao.getAllCardHolderAll(param);
-		String expire = Util.translateMessage(lang, JsonResultMessage.GET_TEMPLATE_NAME, "excel",
-				"messages");
-		String noOut = Util.translateMessage(lang, JsonResultMessage.GET_TEMPLATE_NAME, "excel",
-				"messages");
+		String expire = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ONOK, "excel","messages");
+		String ok = Util.translateMessage(lang, JsonResultMessage.USER_CARD_OK, "excel","messages");
+		String abolition = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ABOLITION, "excel","messages");
 		for (CardHolderExcelVo item : allCardHolderAll) {
 			if (item.getExpireTime() != null &&
 					DateUtil.getLocalDateTime().after(item.getExpireTime())) {
-				item.setNflag(expire);
+				String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, item.getUpdateTime());
+				item.setNflag(abolition+"("+dateFormat+")");
 			}else {
-				item.setNflag(noOut);
+				Byte flag = item.getFlag();
+				if(Objects.equals(flag, (byte)0)) {
+					item.setNflag(ok);
+				}
+				if(Objects.equals(flag, (byte)2)) {
+					item.setNflag(expire);
+				}
 			}
 		}
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
 		excelWriter.writeModelList(allCardHolderAll, CardHolderExcelVo.class);
-		return allCardHolderAll;
+		return workbook;
 	}
 	
-	
-	
+	/**
+	 * 领取码导入模板
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getCardNoTemplate(String lang) {
+		List<CardNoExcelVo> list = new ArrayList<CardNoExcelVo>();
+		for (int i = 11; i < 21; i++) {
+			CardNoExcelVo vo = new CardNoExcelVo();
+			vo.setCardNo("C1111" + i);
+			list.add(vo);
+		}
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(list, CardNoExcelVo.class);
+		return workbook;
+	}
 	
 }

@@ -448,11 +448,11 @@ public class UserImportService extends ShopBaseService {
 		int insert2 = newRecord.insert();
 		logger().info("插入USER_IMPORT"+insert2);
 		for (UserImportPojo userImportPojo2 : list) {
-			UserImportDetailRecord record = db().newRecord(USER_IMPORT_DETAIL);
+			UserImportDetailRecord record = db().newRecord(USER_IMPORT_DETAIL, userImportPojo2);
 			record.setCardId(cardId);
 			record.setTagId(tagId);
 			record.setGroupId(groupId);
-			FieldsUtil.assignNotNull(userImportPojo2, record);
+			//FieldsUtil.assignNotNull(userImportPojo2, record);
 			record.setBatchId(newRecord.getId());
 			int insert = record.insert();
 			logger().info("插入" + insert);

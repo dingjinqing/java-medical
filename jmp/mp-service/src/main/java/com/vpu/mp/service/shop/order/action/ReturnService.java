@@ -35,6 +35,7 @@ import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -103,6 +104,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     public GroupBuyService groupBuyService;
     @Autowired
     public GroupDrawService groupDraw;
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
 
     @Override
 	public OrderServiceCode getServiceCode() {
@@ -180,7 +183,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					//退款商品为空则初始化
 					if(CollectionUtils.isEmpty(returnGoods)) {
                         logger.info("退款商品为空则初始化");
-						returnGoods = returnOrderGoods.getReturnGoods(order.getOrderSn(), rOrder.getRetId());	
+						returnGoods = returnOrderGoods.getReturnGoods(order.getOrderSn(), rOrder.getRetId());
 					}
 					/**
 					 * 买家发起：
@@ -232,6 +235,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					}
 				}
 			});
+            //消息推送
+            sendMessage.send(returnOrder.getByRetId(param.getRetId()), returnOrderGoods.getReturnGoods(param.getOrderSn(), param.getRetId()));
 		} catch (DataAccessException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
@@ -245,10 +250,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
-		return result;
+        return result;
 	}
 
-	@Override
+    @Override
 	public Object query(OrderOperateQueryParam param) throws MpException {
 		logger.info("获取可退款、退货信息参数为:" + param.toString());
 		Byte isMp = param.getIsMp();

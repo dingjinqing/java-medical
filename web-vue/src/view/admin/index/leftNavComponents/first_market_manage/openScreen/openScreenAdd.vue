@@ -85,7 +85,10 @@
                   show-word-limit
                 ></el-input>
               </el-form-item>
-              <el-form-item :label="$t('openScreenAdd.eventSlogan')">
+              <el-form-item
+                :label="$t('openScreenAdd.eventSlogan')"
+                prop="title"
+              >
                 <el-input
                   v-model="form.title"
                   style="width:170px;"
@@ -438,9 +441,17 @@ export default {
     addCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
+    let that = this
     var validateSiForever = (rule, value, callback) => {
       if (value === 0 && (!this.form.startDate || !this.form.endDate)) {
         return callback(new Error(this.$t('openScreenAdd.psTime')))
+      }
+      callback()
+    }
+    function validTitle (rule, value, callback) {
+      // 当奖品是优惠券和分类优惠券时，活动宣传语必填
+      if ((that.form.activityAction === 1 || that.form.activityAction === 6) && value === '') {
+        callback(new Error(that.$t('openScreenAdd.piSlogan')))
       }
       callback()
     }
@@ -495,6 +506,9 @@ export default {
         ],
         awardNum: [
           { required: true, message: this.$t('openScreenAdd.piPizesNum'), trigger: 'blur' }
+        ],
+        title: [
+          { validator: validTitle, trigger: 'blur' }
         ]
       },
 
@@ -506,7 +520,8 @@ export default {
       imageDalogVisible: false, // 选择图片
       selectImg: null,
       uploadHover: false,
-      selectLinksVisible: false // 选择链接
+      selectLinksVisible: false, // 选择链接
+      timer: null
     }
   },
   computed: {
@@ -568,19 +583,39 @@ export default {
       })
     },
     saveOpenScreenHandle () {
-      this.$refs.openScreenForm.validate(valid => {
+      let that = this
+      this.throttle(this.saveRequest, 1000)(that)
+    },
+    saveRequest (that) {
+      console.log('zhixing...')
+      that.$refs.openScreenForm.validate(valid => {
         if (valid) {
-          let params = Object.assign({}, this.form)
-          if (this.id) {
-            this.updateRequest(params)
+          let params = Object.assign({}, that.form)
+          if (that.id) {
+            that.updateRequest(params)
           } else {
-            this.addRequest(params)
+            that.addRequest(params)
           }
         } else {
           console.log('submit error')
           return false
         }
       })
+    },
+    // 节流函数
+    throttle (fn, delay) {
+      let that = this
+      return function () {
+        let context = that
+        let args = arguments
+        if (!that.timer) {
+          that.timer = setTimeout(function () {
+            clearTimeout(that.timer)
+            fn.apply(context, args)
+            that.timer = null
+          }, delay)
+        }
+      }
     },
     addRequest (params) {
       addOpenScreen(params).then(res => {

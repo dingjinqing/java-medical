@@ -7,16 +7,46 @@ import lombok.Data;
 
 @Data
 public class DistributorListVo {
+    /**
+     *用户ID
+     */
 	private Integer userId;
+    /**
+     * 用户名
+     */
 	private String username;
+    /**
+     * 手机号
+     */
 	private String mobile;
+    /**
+     * 邀请码
+     */
+	private String invitationCode;
+    /**
+     * 创建时间
+     */
 	private Timestamp createTime;
+    /**
+     * 真实姓名
+     */
 	private String realName;
+    /**
+     * 分组姓名
+     */
 	private String groupName;
+    /**
+     * 等级名称
+     */
 	private String levelName;
+    /**
+     * 邀请人ID
+     */
 	private Integer inviteId;
+    /**
+     * 邀请人姓名
+     */
 	private String inviteName;
-	
 	/**
 	 * 直接邀请人
 	 */
