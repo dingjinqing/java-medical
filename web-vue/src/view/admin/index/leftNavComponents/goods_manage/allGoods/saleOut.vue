@@ -162,7 +162,7 @@
       </el-table>
       <pagination
         :page-params.sync="pageParams"
-        @pagination="fetchGoodsData"
+        @pagination="paginationFetchGoodsData"
       />
     </div>
 
@@ -438,6 +438,10 @@ export default {
           cancelCallback()
         }
       })
+    },
+    /* 分页组件使用的分页方法，为了传递filterData数据 */
+    paginationFetchGoodsData () {
+      this.fetchGoodsData(this.filterData)
     },
     /* 分页查询数据 */
     fetchGoodsData (filterData) {
