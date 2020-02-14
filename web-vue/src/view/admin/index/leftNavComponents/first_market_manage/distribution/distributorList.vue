@@ -61,6 +61,7 @@
               v-model="param.startCreateTime"
               type="date"
               placeholder="选择日期"
+              value-format="yyyy-MM-dd 00:00:00"
               size="small"
               class="inputWidth"
             >
@@ -70,6 +71,7 @@
               v-model="param.endCreateTime"
               type="date"
               placeholder="选择日期"
+              value-format="yyyy-MM-dd 23:59:59"
               size="small"
               class="inputWidth"
             >
@@ -82,7 +84,7 @@
             class="item"
           >
             <el-input
-              v-model="param.invitedUsername"
+              v-model="param.invitedUserName"
               placeholder="请填写被邀请用户昵称"
               size="small"
               class="inputWidth"
@@ -93,7 +95,7 @@
             class="item"
           >
             <el-select
-              v-model="param.valueLevel"
+              v-model="param.distributorLevel"
               placeholder="请选择等级"
               size="small"
               class="inputWidth"
@@ -102,7 +104,7 @@
                 v-for="level in groupLevelList"
                 :key="level.levelId"
                 :label="level.levelName"
-                :value="level.id"
+                :value="level.levelName"
               >
               </el-option>
             </el-select>
@@ -112,7 +114,7 @@
             class="item"
           >
             <el-select
-              v-model="param.valueGroup"
+              v-model="param.distributorGroup"
               placeholder="请选择分组"
               size="small"
               class="inputWidth"
@@ -121,7 +123,7 @@
                 v-for="group in groupNameList"
                 :key="group.id"
                 :label="group.groupName"
-                :value="group.id"
+                :value="group.groupName"
               >
               </el-option>
             </el-select>
@@ -132,9 +134,21 @@
             class="item"
             style="float: left;"
           >
-            <el-checkbox v-model="param.hasSubordinate">有下级用户</el-checkbox>
-            <el-checkbox v-model="param.hasMobile">有手机号</el-checkbox>
-            <el-checkbox v-model="param.hasRealName">有真实姓名</el-checkbox>
+            <el-checkbox
+              v-model="param.haveNextUset"
+              :true-label="1"
+              :false-label="0"
+            >有下级用户</el-checkbox>
+            <el-checkbox
+              v-model="param.hasMobile"
+              :true-label="1"
+              :false-label="0"
+            >有手机号</el-checkbox>
+            <el-checkbox
+              v-model="param.hasRealName"
+              :true-label="1"
+              :false-label="0"
+            >有真实姓名</el-checkbox>
           </div>
           <div
             class="item"
@@ -532,12 +546,12 @@ export default {
         inviterMobile: '',
         startCreateTime: '',
         endCreateTime: '',
-        invitedUsername: '',
-        valueLevel: '',
-        valueGroup: '',
-        hasSubordinate: false,
-        hasMobile: false,
-        hasRealName: false
+        invitedUserName: '',
+        distributorLevel: '',
+        distributorGroup: '',
+        haveNextUset: 0,
+        hasMobile: 0,
+        hasRealName: 0
       },
       requestParams: {},
       // 表格
@@ -596,7 +610,7 @@ export default {
   methods: {
     // 分销员列表
     initDataList () {
-      // this.requestParams = this.param
+      this.requestParams = this.param
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       distributorList(this.requestParams).then(res => {
