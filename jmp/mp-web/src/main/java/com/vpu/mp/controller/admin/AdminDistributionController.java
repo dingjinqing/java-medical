@@ -432,6 +432,17 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().distributorList.delDistributor(userId);
 		return this.success(result);
 	}
+
+    /**
+     * 分销员设置邀请码
+     * @param param
+     * @return
+     */
+	@PostMapping("/admin/distribution/distributor/inviteCode/set")
+	public JsonResult setInviteCode(@RequestBody SetInviteCodeParam param){
+        int res = shop().distributorList.setInviteCode(param);
+        return this.success(res);
+    }
 	
 	/**
 	 * 佣金统计
