@@ -724,7 +724,6 @@ export default {
         ...this.pageParams,
         ...this.filterData
       }
-      console.log(filterData)
       getGoodsList(params).then(res => {
         let { content: { page, dataList } } = res
 
@@ -762,7 +761,7 @@ export default {
           item.goodsNumberOld = item.goodsNumber
           item.check = false
         })
-        this.goodsData = dataList
+        this.$set(this, 'goodsData', dataList)
       })
     },
     showExportDialog (filterData, filterDataString) {
@@ -810,15 +809,11 @@ export default {
       let arr = []
       switch (this.isBottomClickIndex) {
         case 0:
-          console.log(this.nowCheckAll)
           this.nowCheckAll.forEach((item, index) => {
             arr.push(item.goodsId)
           })
           batchOperateGoods({ goodsIds: arr, isOnSale: 0 }).then((res) => {
-            console.log(res)
             if (res.error === 0) {
-              console.log(this.filterData)
-              delete this.pageParams.totalRows
               this.fetchGoodsData(this.filterData)
             }
           })

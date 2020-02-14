@@ -485,7 +485,8 @@ export default {
           item.prdNumberOld = item.prdNumber
         })
 
-        this.goodsData = dataList
+        // this.goodsData = dataList
+        this.$set(this, 'goodsData', dataList)
       })
     },
     showExportDialog (filterData, filterDataString) {
