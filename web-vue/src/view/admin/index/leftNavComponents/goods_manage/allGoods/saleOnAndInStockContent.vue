@@ -800,6 +800,7 @@ export default {
           this.isBottomClickIndex = index
           break
         case 2:
+
           this.batchSetupVisible = true
           console.log(this.batchSetupVisible)
           break
@@ -826,6 +827,16 @@ export default {
             }
           })
           break
+        case 1:
+          this.nowCheckAll.forEach((item, index) => {
+            arr.push(item.goodsId)
+          })
+          deleteGoods({ goodsIds: arr }).then((res) => {
+            if (res.error === 0) {
+              console.log(res)
+              this.fetchGoodsData(this.filterData)
+            }
+          })
       }
       this.bottomDialogVisible = false
     }
