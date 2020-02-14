@@ -1186,6 +1186,8 @@ export default {
           pageState = 0
           break
         case 2:
+          pageState = 2
+          break
       }
       params.pageState = pageState
       console.log(flag)
