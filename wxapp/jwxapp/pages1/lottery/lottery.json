@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "幸运大抽奖",
   "usingComponents": {
-    "v-lottery-award-dialog": "/components/popup/lottery-award-dialog/index"
+    "v-lottery-award-dialog": "/components/popup/lottery-award-dialog/index",
+    "v-lottery-no-award-dialog": "/components/popup/lottery-no-award-dialog/index"
   }
 }

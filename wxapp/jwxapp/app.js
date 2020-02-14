@@ -33,6 +33,7 @@ global.wxApp({
   },
 
   onShow: function (options) {
+    console.log('onAppShow', options)
     util.setCache('is_login', 1);
   },
 
