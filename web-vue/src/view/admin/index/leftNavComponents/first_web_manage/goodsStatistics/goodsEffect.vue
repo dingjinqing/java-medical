@@ -1,6 +1,26 @@
 <template>
   <div class="label">
-    <div class="labelItem">商品效果</div>
+    <div class="labelItem">商品效果
+      <el-tooltip
+        effect="light"
+        placement="top"
+      >
+        <div
+          slot="content"
+          style="width: 400px;line-height: 30px;font-size: 14px;"
+        >
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">在架商品数</div>
+            <div style="width: 70%;color: #353535">当前时间点，在架的商品数量</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">访客数占比</div>
+            <div style="width: 70%;color: #353535">访客数占比解释</div>
+          </section>
+        </div>
+        <i class="el-icon-warning-outline icons"></i>
+      </el-tooltip>
+    </div>
     <el-form
       label-width="100px"
       :inline="true"
@@ -87,6 +107,13 @@
             :key="index"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="small"
+          type="primary"
+          @click="init"
+        >搜索</el-button>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -221,22 +248,28 @@
           </template>
         </el-table-column>
       </el-table>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="init"
+      ></pagination>
     </div>
   </div>
 </template>
 
 <script>
 import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
-import { producteffect } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
+import { producteffect, getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
+import pagination from '@/components/admin/pagination/pagination'
 export default {
   props: ['initSortCatParams'],
-  components: { sortCatTreeSelect },
+  components: { sortCatTreeSelect, pagination },
   mounted () {
     // 初始化form表单下拉框数据
     this.initFilterData()
     // 初始化国际语言
     this.langDefault()
+    this.getDateValue(1)
     this.init()
   },
   data () {
@@ -279,11 +312,24 @@ export default {
         orderByType: null,
         currentPage: 0,
         pageRows: 20
-      }
+      },
+      pageParams: {}
     }
   },
   methods: {
-    /* 初始化商品品牌/标签下拉框数据 */
+    getDateValue (unit) {
+      getDate(unit).then(res => {
+        if (res.error === 0) {
+          this.startDate.year = res.content.startTime.split('-')[0]
+          this.startDate.month = res.content.startTime.split('-')[1]
+          this.startDate.day = res.content.startTime.split('-')[2]
+          this.endDate.year = res.content.endTime.split('-')[0]
+          this.endDate.month = res.content.endTime.split('-')[1]
+          this.endDate.day = res.content.endTime.split('-')[2]
+        }
+      }).catch(err => console.log(err))
+    },
+    /* 商品效果-初始化商品品牌/标签下拉框数据 */
     initFilterData () {
       getGoodsFilterItem({ needGoodsLabel: true, needGoodsBrand: true }).then(res => {
         let { content } = res
@@ -291,25 +337,36 @@ export default {
         this.goodsLabelOptions = content.goodsLabels
       })
     },
-    // 指定时间段
+    // 商品效果-指定时间段
     dateChangeHandler (time) {
       if (time !== 0) {
         this.effectParam.dynamicDate = time
+        this.getDateValue(time)
         this.init()
       }
     },
-    // 自定义时间
+    // 商品效果-自定义时间
     customDate () {
       this.effectParam.dynamicDate = 0
-      this.effectParam.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8)
-      this.effectParam.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8)
+      this.effectParam.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
+      this.effectParam.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
+      this.startDate.year = this.timeValue[0].substring(0, 4)
+      this.startDate.month = this.timeValue[0].substring(4, 6)
+      this.startDate.day = this.timeValue[0].substring(6, 8)
+
+      this.endDate.year = this.timeValue[1].substring(0, 4)
+      this.endDate.month = this.timeValue[1].substring(4, 6)
+      this.endDate.day = this.timeValue[1].substring(6, 8)
       console.log('选择器的时间：', this.param)
       this.init()
     },
+    // 商品效果
     init () {
-      producteffect(this.effectParam).then(res => {
+      let params = Object.assign({}, this.effectParam, this.pageParams)
+      producteffect(params).then(res => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
+          this.pageParams = Object.assign({}, res.content.page)
           this.tableData.map((item, index) => {
             item.goodsImg = this.imgHost + '/' + item.goodsImg
           })

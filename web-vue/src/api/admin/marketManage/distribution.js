@@ -273,6 +273,7 @@ export function distributionGroupDel (data) {
   })
 }
 
+// -------------分销员审核--------------------
 // 分销员列表
 export function distributorList (data) {
   return service({
@@ -321,6 +322,15 @@ export function delDistributor (data) {
   return service({
     url: `/api/admin/distribution/distributor/del?userId=${data}`,
     method: 'get',
+    data: data
+  })
+}
+
+// 设置邀请码
+export function setInviteCode (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/inviteCode/set',
+    method: 'post',
     data: data
   })
 }

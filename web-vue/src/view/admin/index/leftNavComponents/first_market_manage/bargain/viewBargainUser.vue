@@ -1,12 +1,12 @@
 <!--
-* 砍价 - 用户信息列表页面
+* 砍价 - 砍价用户页面
 *
 * @author:赵鑫
 -->
 <template>
   <div>
     <!-- 上半部分：筛选条件查询部分 -->
-    <wrapper style="padding: 0 30px">
+    <div class="filter-conditions">
       <section class="bargainUserMain">
         <div class="bargainUserInfo">
           <span>{{$t('marketCommon.username')+"："}}</span>
@@ -14,6 +14,7 @@
             v-model="requestParams.username"
             size="small"
             class="inputWidth"
+            clearable
           ></el-input>
         </div>
         <div class="bargainUserInfo">
@@ -22,6 +23,7 @@
             v-model="requestParams.mobile"
             size="small"
             class="inputWidth"
+            clearable
           ></el-input>
         </div>
         <div class="bargainUserInfo">
@@ -31,6 +33,7 @@
             :placeholder="$t('marketCommon.selectPlaceholder')"
             size="small"
             class="inputWidth"
+            clearable
           >
             <el-option
               :value="1"
@@ -66,16 +69,43 @@
           <el-button
             type="primary"
             size="small"
+            @click="initDataList"
           >{{$t('marketCommon.filter')}}</el-button>
         </div>
         <div>
-          <el-button size="small">{{$t('marketCommon.export')}}</el-button>
+          <el-button
+            size="small"
+            @click="exportData"
+          >{{$t('marketCommon.export')}}</el-button>
         </div>
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          width="30%"
+          style="font-size: 20px;"
+        >
+          <div class="tips-content1">根据以下条件筛选出1条数据,是否确认导出？</div>
+          <div class="tips-content2">筛选条件：无</div>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button
+              size="small"
+              @click="dialogVisible = false"
+            >取 消</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="dialogVisible = false"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
       </section>
-    </wrapper>
+    </div>
 
     <!-- 下半部分：表格数据部分 -->
-    <wrapper>
+    <div class="table">
       <div class="table_list">
         <el-table
           v-loading="loading"
@@ -160,19 +190,17 @@
           @pagination="initDataList"
         />
       </div>
-    </wrapper>
+    </div>
 
   </div>
 </template>
 
 <script>
-import wrapper from '@/components/admin/wrapper/wrapper'
-import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import pagination from '@/components/admin/pagination/pagination'
 import { getRecordPageList } from '@/api/admin/marketManage/bargain.js'
 
 export default {
-  components: { wrapper, dateTimePicker, pagination },
+  components: { pagination },
   mounted () {
     this.langDefault()
     if (this.$route.query.id > 0) {
@@ -187,6 +215,7 @@ export default {
       pageParams: {},
       tableData: [],
       createDate: '',
+      dialogVisible: false,
 
       // 表格原始数据
       originalData: []
@@ -236,6 +265,11 @@ export default {
           recordId: id
         }
       })
+    },
+
+    // 表格导出
+    exportData () {
+      this.dialogVisible = true
     }
   },
   watch: {
@@ -253,6 +287,19 @@ export default {
 <style lang="scss" scoped>
 * {
   font-size: 14px;
+}
+.filter-conditions {
+  margin: 10px;
+  padding: 20px 30px;
+  background: #fff;
+}
+.table {
+  margin: 0 10px 10px;
+  padding: 15px;
+  background: #fff;
+}
+.tips-content1 {
+  margin: 0 0 20px;
 }
 .bargainUserMain {
   display: flex;

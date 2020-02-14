@@ -14,6 +14,7 @@ public class TypesNames {
 	public static final String INVITE = "invite";
 	
 	/** 拼团抽奖结果通知 */
+
 	public static final String GROUP_DRAW = "group_draw";
 	
 	/** 送礼 */

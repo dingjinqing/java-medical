@@ -70,7 +70,22 @@ public enum MpTemplateConfig {
     BARGAIN_SUCCESS(
         "OPENTM410292733",
         "砍价成功提醒",
-        "{{first.DATA}}商品名称：{{keyword1.DATA}}底价：{{keyword2.DATA}}{{remark.DATA}}");
+        "{{first.DATA}}商品名称：{{keyword1.DATA}}底价：{{keyword2.DATA}}{{remark.DATA}}"),
+    ORDER_DELIVER(
+        "OPENTM200565259",
+        "订单发货提醒",
+        "{{first.DATA}}订单编号：{{keyword1.DATA}}物流公司：{{keyword2.DATA}}物流单号：{{keyword3.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_REFUND (
+        "TM00004",
+        "退款通知",
+        "{{first.DATA}}退款原因：{{reason.DATA}}退款金额：{{refund.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_REFUND_FAIL (
+        "OPENTM412546294",
+        "退款失败通知",
+        "{{first.DATA}}订单编号：{{keyword1.DATA}}退款时间：{{keyword2.DATA}}退款金额：{{keyword3.DATA}}失败原因：{{keyword4.DATA}}{{remark.DATA}}"
+    );
 	/**
 	 * 模板编号
 	 */
