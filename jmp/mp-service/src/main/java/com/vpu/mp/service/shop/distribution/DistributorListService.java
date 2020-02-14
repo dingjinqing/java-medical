@@ -41,7 +41,7 @@ public class DistributorListService extends ShopBaseService{
 	 * @param param
 	 */
 	public PageResult<DistributorListVo> getPageList(DistributorListParam param) {
-		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER_DETAIL.REAL_NAME,
+		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME,USER.INVITATION_CODE,USER.MOBILE,USER.CREATE_TIME,USER_DETAIL.REAL_NAME,
 				DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_LEVEL.LEVEL_NAME,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.INVITE_ID)
 				.from(USER.leftJoin(USER_TOTAL_FANLI).on(USER.USER_ID.eq(USER_TOTAL_FANLI.USER_ID))
 				.leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID))
@@ -100,7 +100,7 @@ public class DistributorListService extends ShopBaseService{
 	 */
 	public  SelectConditionStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select,DistributorListParam param) {
 		SelectConditionStep<? extends Record> sql = select.where(USER.IS_DISTRIBUTOR.eq((byte) 1));
-		//手机号
+		//微信昵称
 		if(param.getUsername() != null) {
 			sql = sql.and(USER.USERNAME.eq(param.getUsername()));
 		}
@@ -141,6 +141,18 @@ public class DistributorListService extends ShopBaseService{
 		if(param.getDistributorLevel() != null) {
 			sql = sql.and(USER.DISTRIBUTOR_LEVEL.eq(param.getDistributorLevel()));
 		}
+		//有下级用户
+        if(param.getHaveNextUser() !=null &&  param.getHaveNextUser()== 1){
+            sql = sql.and(USER.USER_ID.in(db().select(USER.INVITE_ID).from(USER).fetch()));
+        }
+        //有手机号
+        if(param.getHaveMobile() != null &&  param.getHaveMobile() == 1){
+            sql = sql.and(USER.MOBILE.ne("null"));
+        }
+        //有真是姓名
+        if(param.getHaveRealName() != null && param.getHaveRealName() == 1){
+            sql = sql.and(USER_DETAIL.REAL_NAME.ne("null"));
+        }
 		return sql;
 	}
 	
