@@ -33,6 +33,7 @@ import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -118,7 +119,9 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
      */
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
-
+        //拼团不使用优惠券和会员卡
+        param.setMemberCardNo(StringUtils.EMPTY);
+        param.setCouponSn(StringUtils.EMPTY);
     }
 
     /**

@@ -163,6 +163,10 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      */
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        //不允许使用货到付款
+        if(param.getPaymentList() != null){
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         //拼团不使用优惠券和会员卡
         param.setMemberCardNo(StringUtils.EMPTY);
         param.setCouponSn(StringUtils.EMPTY);
@@ -204,6 +208,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 goods.setGrouperGoodsReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()));
             }
         }
+
     }
 
     /**
