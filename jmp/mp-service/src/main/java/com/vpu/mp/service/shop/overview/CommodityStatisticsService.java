@@ -145,11 +145,18 @@ public class CommodityStatisticsService extends ShopBaseService {
      * 计算统计数据变化率公式 (now-prefix)/prefix
      */
     private BigDecimal getRate(Object now, Object prefix) {
-        if (Objects.isNull(now) || Objects.isNull(prefix)) {
-            return BIGDECIMAL_ZERO;
+        BigDecimal n;
+        BigDecimal p;
+        if (Objects.isNull(now)) {
+            n = BIGDECIMAL_ZERO;
+        } else {
+            n = BigDecimal.valueOf(Double.parseDouble(now.toString()));
         }
-        BigDecimal n = BigDecimal.valueOf(Double.parseDouble(now.toString()));
-        BigDecimal p = BigDecimal.valueOf(Double.parseDouble(prefix.toString()));
+        if (Objects.isNull(prefix)) {
+            p = BIGDECIMAL_ZERO;
+        } else {
+            p = BigDecimal.valueOf(Double.parseDouble(prefix.toString()));
+        }
         return BigDecimalUtil.divideWithOutCheck(n.subtract(p), p);
     }
 
