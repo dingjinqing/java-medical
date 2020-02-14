@@ -2108,12 +2108,20 @@ public class MemberCardService extends ShopBaseService {
 		List<CardHolderExcelVo> allCardHolderAll = cardDao.getAllCardHolderAll(param);
 		String expire = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ONOK, "excel","messages");
 		String ok = Util.translateMessage(lang, JsonResultMessage.USER_CARD_OK, "excel","messages");
+		String abolition = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ABOLITION, "excel","messages");
 		for (CardHolderExcelVo item : allCardHolderAll) {
 			if (item.getExpireTime() != null &&
 					DateUtil.getLocalDateTime().after(item.getExpireTime())) {
-				item.setNflag(expire);
+				String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, item.getUpdateTime());
+				item.setNflag(abolition+"("+dateFormat+")");
 			}else {
-				item.setNflag(ok);
+				Byte flag = item.getFlag();
+				if(Objects.equals(flag, (byte)0)) {
+					item.setNflag(ok);
+				}
+				if(Objects.equals(flag, (byte)2)) {
+					item.setNflag(expire);
+				}
 			}
 		}
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
