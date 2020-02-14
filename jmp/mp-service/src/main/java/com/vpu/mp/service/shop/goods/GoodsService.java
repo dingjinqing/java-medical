@@ -1060,7 +1060,14 @@ public class GoodsService extends ShopBaseService {
         }
     }
 
-
+    /**
+     * 商品批量上下架处理
+     * @param operateParam {@link GoodsBatchOperateParam#getIsOnSale()}==1上架，==0 下架
+     */
+    public void batchIsOnSaleOperate(GoodsBatchOperateParam operateParam) {
+        List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
+        db().batchUpdate(goodsRecords).execute();
+    }
     /**
      * 单独修改某一个商品规格的数量或价格,用于admin商品列表界面修改
      *
