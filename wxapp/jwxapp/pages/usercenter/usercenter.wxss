@@ -640,3 +640,6 @@ view{
   width:70rpx;
   height:70rpx;
 }
+.es_word {
+  height: 40rpx;
+}
