@@ -5,7 +5,7 @@
       <section>
         <el-radio
           v-model="shareConfig.shareAction"
-          label="1"
+          :label=1
         >{{$t('marketCommon.defaultStyle')}}</el-radio>
         <el-popover
           placement="right-start"
@@ -34,12 +34,12 @@
       <section>
         <el-radio
           v-model="shareConfig.shareAction"
-          label="2"
+          :label=2
         >
           {{$t('marketCommon.customStyle')}}
           <div
             style="margin: 15px 0"
-            v-if="shareConfig.shareAction == '2'"
+            v-if="shareConfig.shareAction == 2"
           >
             <span style="color:#606266">{{$t('marketCommon.copywriting')}}:</span>
             <el-input
@@ -48,34 +48,50 @@
               style="width:200px"
             ></el-input>
           </div>
-          <div v-if="shareConfig.shareAction == '2'">
+          <div v-if="shareConfig.shareAction == 2">
             <span style="color:#606266">{{$t('marketCommon.sharedPicture')}}:</span>
             <el-radio
               v-model="shareConfig.shareImgAction"
-              label="1"
+              :label=1
               style="margin-left:10px"
             >{{$t('marketCommon.goodsInformationPicture')}}</el-radio>
 
             <div style="margin: 10px 0 0 60px">
               <el-radio
                 v-model="shareConfig.shareImgAction"
-                label="2"
+                :label=2
               >{{$t('marketCommon.customPicture')}}</el-radio>
             </div>
-            <div style="margin: 10px 0 0 60px; display:flex">
-              <span
+            <div
+              style="margin: 10px 0 0 60px; display:flex"
+              v-if="shareConfig.shareImgAction=== 2"
+            >
+              <!-- <span
                 @click="deleteSelectImg()"
                 v-if="this.srcList.src3 !==`${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`"
                 class="deleteIcon"
-              >×</span>
+              >×</span> -->
               <div
                 class="choose"
                 @click="addGoodsImg"
               >
-                <img
-                  class="selectImage"
-                  :src="srcList.src3"
-                >
+                <!-- :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'" -->
+
+                <!-- :src="srcList.src3" -->
+                <div>
+                  <img
+                    v-if="shareConfig.shareImg === '' || shareConfig.shareImg === null"
+                    :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'"
+                    alt=""
+                    style="width:50%;height: 50%"
+                  >
+                  <img
+                    v-if=" shareConfig.shareImg !== null || shareConfig.shareImg !== ''"
+                    :src="shareConfig.shareImg"
+                    alt=""
+                    class="selectImage"
+                  >
+                </div>
               </div>
               <span style="margin: 30px 0 0 30px">{{$t('marketCommon.customPictureTip')}}</span>
             </div>
@@ -120,14 +136,14 @@ export default {
       console.log(res)
       if (res != null) {
         console.log(res)
-        this.srcList.src3 = res.imgUrl
+        // this.srcList.src3 = res.imgUrl
         this.shareConfig.shareImg = res.imgUrl
       }
-    },
-    // 删除商品图片
-    deleteSelectImg () {
-      this.srcList.src3 = `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
     }
+    // // 删除商品图片
+    // deleteSelectImg () {
+    //   this.srcList.src3 = `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
+    // }
   }
 
 }
@@ -144,21 +160,25 @@ export default {
   cursor: pointer;
   text-align: center;
 }
-.deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: relative;
-  top: -8px;
-  right: -80px;
-  cursor: pointer;
-  opacity: 0.8;
+.selectImage {
+  width: 100%;
+  height: 100%;
 }
+// .deleteIcon {
+//   width: 17px;
+//   height: 17px;
+//   color: #fff;
+//   background: #ccc;
+//   border: 1px solid #ccc;
+//   border-radius: 50%;
+//   line-height: 17px;
+//   text-align: center;
+//   position: relative;
+//   top: -8px;
+//   right: -80px;
+//   cursor: pointer;
+//   opacity: 0.8;
+// }
 .operate {
   cursor: pointer;
   color: #409eff;

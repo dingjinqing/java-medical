@@ -540,10 +540,11 @@ export default {
           this.mrkingVoucherObjs = res.content.mrkingVoucherList
           this.rewardCouponObjs = res.content.rewardCouponList
           this.goodsRow.push(res.content.goods)
-          let resultConfig = JSON.parse(res.content.shareConfig)
+          let resultConfig = res.content.shopShareConfig
           console.log(resultConfig)
-          this.params.shareConfig = resultConfig
-          console.log(this.params.shareConfig)
+          this.shareConfig = resultConfig
+          this.shareConfig.shareImg = resultConfig.shareImgFullUrl
+          console.log(this.shareConfig)
         }
       })
     }
@@ -584,17 +585,17 @@ export default {
         goodsId: 0,
         expectationPrice: 0,
         shareConfig: {
-          'shareAction': '1',
-          'shareDoc': '',
-          'shareImgAction': '1',
-          'shareImg': ''
+          shareAction: 1,
+          shareDoc: '',
+          shareImgAction: 1,
+          shareImg: null
         }
       },
       shareConfig: {
-        'shareAction': '1',
-        'shareDoc': '',
-        'shareImgAction': '1',
-        'shareImg': ''
+        shareAction: 1,
+        shareDoc: '',
+        shareImgAction: 1,
+        shareImg: null
       },
       isEditFlag: false,
       actId: null,
