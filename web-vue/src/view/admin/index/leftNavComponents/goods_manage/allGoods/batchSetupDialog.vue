@@ -246,7 +246,7 @@
                 上下架：
               </div>
               <div class="onSaleTimeRight">
-                <!-- <el-radio
+                <el-radio
                   v-model="onSaleRadio"
                   label="1"
                 >不修改</el-radio>
@@ -254,14 +254,31 @@
                   v-model="onSaleRadio"
                   label="2"
                 >立即上架售卖</el-radio>
-                <el-radio
-                  v-model="onSaleRadio"
-                  label="3"
-                >自定义上架售卖</el-radio>
+                <div class="custom">
+                  <el-radio
+                    v-model="onSaleRadio"
+                    label="3"
+                  >自定义上架售卖</el-radio>
+                  <div class="tips">
+                    <el-date-picker
+                      size="small"
+                      v-model="customTime"
+                      type="datetime"
+                      placeholder="选择日期时间"
+                      default-time="12:00:00"
+                      format="yyyy-MM-dd HH:mm:ss"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                    >
+                    </el-date-picker>
+                    <span style="margin-left:10px">选择上架售卖时间</span>
+                  </div>
+
+                </div>
+
                 <el-radio
                   v-model="onSaleRadio"
                   label="4"
-                >暂不售卖，放入仓库</el-radio> -->
+                >暂不售卖，放入仓库</el-radio>
               </div>
             </div>
           </div>
@@ -334,7 +351,8 @@ export default {
       templateValue: null, // 运费模板selectVal
       MinPurchaseInputVal: '', // 最小限购数量
       MaxPurchaseInputVal: '', // 最大限购数量
-      onSaleRadio: '1' // 上架时间radio
+      onSaleRadio: '1', // 上架时间radio
+      customTime: '' // 自定义上架售卖时间
     }
   },
   watch: {
@@ -349,10 +367,13 @@ export default {
         })
         this.judgeIsEdit = false
       }
+    },
+    customTime (newData) {
+      console.log(newData)
     }
   },
   mounted () {
-    console.log(this.dialogVisible)
+    console.log(new Date().format('yyyy-MM-dd hh:mm:ss'))
   },
   methods: {
     // 内层判断是否编辑弹窗确认事件
@@ -634,6 +655,19 @@ export default {
           .onSaleTimeRight {
             display: flex;
             flex-direction: column;
+            /deep/ .el-radio {
+              margin-bottom: 20px;
+            }
+            .custom {
+              display: flex;
+              align-items: center;
+              .tips {
+                display: flex;
+                align-items: center;
+                position: relative;
+                top: -10px;
+              }
+            }
           }
         }
       }
