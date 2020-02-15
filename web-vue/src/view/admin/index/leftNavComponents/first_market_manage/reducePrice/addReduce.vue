@@ -108,6 +108,8 @@
         >
           <i class="el-icon-plus"></i> {{$t('marketCommon.selectGoods')}}
         </el-button>
+        <span @click="onlyShowChoosingGoods" style="color: #e4393c"
+        >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span>
       </el-form-item>
       <div
         v-if="pageShowGoodsList.length"
@@ -446,6 +448,7 @@
     <choosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="goodsIdList"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       @resultGoodsIds="getGoodsIds"
     />
 
@@ -544,7 +547,8 @@ export default {
       ],
       goodsIdList: [],
       tuneUp: false,
-      tuneUpChooseGoods: false
+      tuneUpChooseGoods: false,
+      isOnlyShowChooseGoods: false
     }
   },
   watch: {
@@ -602,6 +606,12 @@ export default {
 
     // 商品弹窗
     showChoosingGoods () {
+      this.isOnlyShowChooseGoods = false
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    // 商品弹窗部分
+    onlyShowChoosingGoods () {
+      this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
 

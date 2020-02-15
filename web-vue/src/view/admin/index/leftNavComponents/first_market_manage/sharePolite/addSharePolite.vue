@@ -125,7 +125,8 @@
                 @click="showChoosingGoods"
                 class="add_btn specify_goods"
               >{{$t('adSharePolite.chooseGoods')}}</div>
-              <span>{{$t('adSharePolite.alreadyChoose')}}{{selectGoods}}{{$t('adSharePolite.goods')}}</span>
+              <span @click="onlyShowChoosingGoods" style="color: #e4393c"
+              >{{$t('adSharePolite.alreadyChoose')}}{{selectGoods}}{{$t('adSharePolite.goods')}}</span>
             </el-form-item>
             <el-form-item
               prop="goodsPv"
@@ -402,6 +403,7 @@
       @result="choosingGoodsResult"
       :chooseGoodsBack="goodIdList"
       :tuneUpChooseGoods="tuneUpChooseGoods"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
     />
     <!--添加优惠券弹窗-->
     <addCouponDialog
@@ -560,6 +562,7 @@ export default {
         thirdAwardNum: 0
       },
       goodIdList: [],
+      isOnlyShowChooseGoods: false,
       // 表单字段校验
       fieldValidation: {
         // 活动名称
@@ -623,6 +626,12 @@ export default {
     },
     // 选择商品弹窗
     showChoosingGoods () {
+      this.isOnlyShowChooseGoods = false
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    // 初始化商品弹窗部分商品
+    onlyShowChoosingGoods () {
+      this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     //  获取商品ids
