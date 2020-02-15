@@ -210,6 +210,60 @@
 
               </div>
             </div>
+            <!--限购数量-->
+            <div
+              v-if="nowIndex===3"
+              class="limitNum"
+            >
+              <div class="content">
+                <span>最小限购数量：</span>
+                <el-input
+                  v-model="MinPurchaseInputVal"
+                  size="small"
+                  onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                ></el-input>
+                <i>0或不填表示不限制购买数量</i>
+              </div>
+              <div
+                class="content"
+                style="margin-top:10px"
+              >
+                <span>最大限购数量：</span>
+                <el-input
+                  v-model="MaxPurchaseInputVal"
+                  size="small"
+                  onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                ></el-input>
+                <i>0或不填表示不限制购买数量</i>
+              </div>
+            </div>
+            <!--上架时间-->
+            <div
+              v-if="nowIndex===4"
+              class="onSaleTime"
+            >
+              <div class="onSaleTimeLeft">
+                上下架：
+              </div>
+              <div class="onSaleTimeRight">
+                <!-- <el-radio
+                  v-model="onSaleRadio"
+                  label="1"
+                >不修改</el-radio>
+                <el-radio
+                  v-model="onSaleRadio"
+                  label="2"
+                >立即上架售卖</el-radio>
+                <el-radio
+                  v-model="onSaleRadio"
+                  label="3"
+                >自定义上架售卖</el-radio>
+                <el-radio
+                  v-model="onSaleRadio"
+                  label="4"
+                >暂不售卖，放入仓库</el-radio> -->
+              </div>
+            </div>
           </div>
           <!--右侧动态内容end-->
         </div>
@@ -277,7 +331,10 @@ export default {
         value: 1,
         label: '腾飞测试2'
       }],
-      templateValue: null // 运费模板selectVal
+      templateValue: null, // 运费模板selectVal
+      MinPurchaseInputVal: '', // 最小限购数量
+      MaxPurchaseInputVal: '', // 最大限购数量
+      onSaleRadio: '1' // 上架时间radio
     }
   },
   watch: {
@@ -553,6 +610,30 @@ export default {
                 }
               }
             }
+          }
+        }
+        .limitNum {
+          .content {
+            display: flex;
+            /deep/ .el-input {
+              width: 80px;
+              margin: 0 10px;
+            }
+            span,
+            i {
+              display: flex;
+              align-items: center;
+            }
+            i {
+              color: #999;
+            }
+          }
+        }
+        .onSaleTime {
+          display: flex;
+          .onSaleTimeRight {
+            display: flex;
+            flex-direction: column;
           }
         }
       }
