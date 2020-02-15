@@ -6,7 +6,7 @@ export const en = {
   listTypeData: [ // 选择模板列表数据
     {
       typeName: 'Single row picture',
-      isChecked: true
+      isChecked: false
     },
     {
       typeName: 'Double row picture',

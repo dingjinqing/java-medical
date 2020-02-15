@@ -240,10 +240,14 @@ export default {
               item['whetherToExpand'] = 0
             })
           }
-          console.log(this.modulesData)
+          console.log(this.modulesData.image_space)
           this.moduleSaveData = this.modulesData
-          this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
           this.pictureGapValue = this.moduleSaveData.image_space
+          this.$nextTick(() => {
+            console.log(this.listTypeData, this.moduleSaveData)
+            this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
+          })
+
           // })
         }
       },

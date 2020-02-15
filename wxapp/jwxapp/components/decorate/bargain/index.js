@@ -11,7 +11,7 @@ global.wxComponent({
 
       this.startActivityTimer('bargain', this._getLeftSecs(m));
       newVal.bottom = util.getCache("bottom");
-      console.log(m, 'kanjia')
+      console.log(m, 'kanjia0000000000000000000000000000')
       let r = /(http|https):\/\/([\w.]+\/?)\S*/
       m.bargain_goods.forEach(item => {
         if (r.test(item.goods_img)) {
@@ -56,8 +56,8 @@ global.wxComponent({
       } else if (d.act_status == 0 || d.time_state == 2 || d.act_del_flag == 1) {
         this.navigateToItem(d.goods_id);
       } else {
-
-        if (d.prd_id == null) {
+        console.log('触发', d)
+        if (d.is_prd == 1) {
           console.log(d.link)
           util.jumpLink(d.link);
         } else {
@@ -86,7 +86,7 @@ global.wxComponent({
             }
           }, {
             bargainId: d.bargain_id,
-            prdId: d.prd_id
+            prdId: d.is_prd
           })
         }
       }
