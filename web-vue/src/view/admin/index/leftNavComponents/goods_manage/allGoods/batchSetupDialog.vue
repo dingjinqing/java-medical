@@ -145,19 +145,70 @@
               v-if="nowIndex===1"
               class="classification"
             >
-              <div class="name">商家分类：</div>
-              <el-select
-                size="small"
-                v-model="classificationValue"
-              >
-                <el-option
-                  v-for="item in classifiOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+              <sortCatTreeSelect
+                ref="sortTree"
+                :filterGoodsInfo="initSortCatParams"
+                treeType="sort"
+                :selectedId.sync="sortId"
+                :labelStyle="true"
+              />
+            </div>
+            <!--运费模板-->
+            <div
+              v-if="nowIndex===2"
+              class="template"
+            >
+              <div class="title">
+                <div class="name">运费模板：</div>
+                <el-select
+                  v-model="templateValue"
+                  size="small"
                 >
-                </el-option>
-              </el-select>
+                  <el-option
+                    v-for="item in templateOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+                <div class="rightOptions">
+                  <span @click="handleToClickTemplate(0)">刷新</span>|<span
+                    @click="handleToClickTemplate(1)"
+                    style="width:80px"
+                  >新建模板</span>|<span
+                    @click="handleToClickTemplate(2)"
+                    style="width:80px"
+                  >模板管理</span>
+                </div>
+              </div>
+              <!--选中运费模板后显示模块-->
+              <div
+                class="hiddenTemplate"
+                v-if="templateValue!==null"
+              >
+                <div class="content">
+                  <div class="top">
+                    <span>店铺统一运费：0元</span>
+                    <span class="toDetail">查看详情</span>
+                  </div>
+                  <div
+                    class="bottomContent"
+                    v-if="templateValue===1"
+                  >
+                    <div class="title">指定条件包邮可配送区域运费:</div>
+                    <div class="hiddencontent">太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮</div>
+                  </div>
+                  <div
+                    class="bottomContent"
+                    v-if="templateValue===1"
+                  >
+                    <div class="title">指定条件包邮可配送区域运费:</div>
+                    <div class="hiddencontent">：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：满1件包邮太原市、朔州市：</div>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
           <!--右侧动态内容end-->
@@ -186,11 +237,13 @@
         >保存</el-button>
       </span>
     </el-dialog>
-
   </div>
 </template>
 <script>
 export default {
+  components: {
+    sortCatTreeSelect: () => import('@/components/admin/sortCatTreeSelect') // 商家分类
+  },
   props: {
     dialogVisible: {
       type: Boolean,
@@ -205,10 +258,18 @@ export default {
     return {
       liData: ['商品价格', '商家分类', '运费模板', '限购数量', '上架时间', '商品详情', '商品标签', '商品品牌', '会员专属', '发货地'],
       nowIndex: 0,
-      classificationValue: -1, // 商家分类下拉框value
-      classifiOptions: [{
-        value: -1,
-        label: '请选择商家分类'
+      innerVisible: false, // 内层
+      judgeIsEdit: false, // 判断商品价格是否被修改过
+      initSortCatParams: {
+        needGoodsNum: true,
+        isOnSale: 1,
+        isSaleOut: false,
+        selectType: 1
+      },
+      sortId: null,
+      templateOptions: [{
+        value: null,
+        label: '不修改'
       }, {
         value: 0,
         label: '腾飞测试1'
@@ -216,8 +277,7 @@ export default {
         value: 1,
         label: '腾飞测试2'
       }],
-      innerVisible: false, // 内层
-      judgeIsEdit: false // 判断商品价格是否被修改过
+      templateValue: null // 运费模板selectVal
     }
   },
   watch: {
@@ -230,6 +290,7 @@ export default {
           this.$set(this.checkGoodsData[index], 'priceIncreaseVal', '')
           this.$set(this.checkGoodsData[index], 'discountInputVal', '')
         })
+        this.judgeIsEdit = false
       }
     }
   },
@@ -291,6 +352,20 @@ export default {
         this.innerVisible = true
       } else {
         this.$emit('update:dialogVisible', false)
+      }
+    },
+    // 运费模板右侧文字点击综合处理
+    handleToClickTemplate (flag) {
+      switch (flag) {
+        case 0:
+
+          break
+        case 1:
+
+          break
+        case 2:
+
+          break
       }
     }
   }
@@ -423,10 +498,61 @@ export default {
           }
         }
         .classification {
-          display: flex;
-          .name {
+          /deep/ .el-form-item__label {
+            width: 83px !important;
+          }
+        }
+        .template {
+          .title {
             display: flex;
-            align-items: center;
+            .name {
+              display: flex;
+              align-items: center;
+            }
+            .rightOptions {
+              display: flex;
+              width: 230px;
+              color: #5a8bff;
+              align-items: center;
+              span {
+                display: inline-block;
+                width: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                padding: 0 10px;
+              }
+            }
+          }
+          .hiddenTemplate {
+            padding: 10px 0 0 70px;
+            .content {
+              width: 455px;
+              background: #f5f5f5;
+              padding: 10px 10px;
+              max-height: 330px;
+              overflow-y: auto;
+              .top {
+                display: flex;
+                justify-content: space-between;
+                .toDetail {
+                  color: #5a8bff;
+                }
+              }
+              .bottomContent {
+                border-top: 1px solid #e6e6e6;
+                margin-top: 10px;
+                padding-top: 8px;
+                .title {
+                  margin-bottom: 8px;
+                }
+                .hiddencontent {
+                  line-height: 18px;
+                  text-align: justify;
+                }
+              }
+            }
           }
         }
       }
