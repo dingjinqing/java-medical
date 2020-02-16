@@ -281,6 +281,82 @@
                 >暂不售卖，放入仓库</el-radio>
               </div>
             </div>
+            <!--商品详情-->
+            <div
+              v-if="nowIndex===5"
+              class="commodityDetails"
+            >
+              <div class="temPosition">
+                <span>模板位置：</span>
+                <el-radio
+                  v-model="goodsRadio"
+                  label="1"
+                >不修改</el-radio>
+                <el-radio
+                  v-model="goodsRadio"
+                  label="2"
+                >自定义内容在上</el-radio>
+                <el-radio
+                  v-model="goodsRadio"
+                  label="3"
+                >商品详情在上</el-radio>
+              </div>
+              <div class="customContent">
+                <div class="customTitle">
+                  自定义内容：
+                </div>
+                <div class="customMiddle">
+                  <div style="color:#999">设置商品详情页显示的自定义内容</div>
+                  <div class="customFooter">
+                    <el-button
+                      size="small"
+                      @click="handleToClickCustom(0)"
+                    >选择模板</el-button>
+                    <div class="rightContent">
+                      <span @click="handleToClickCustom(1)">刷新</span>|<span
+                        @click="handleToClickCustom(2)"
+                        style="width:80px"
+                      >添加模板</span>|<span
+                        @click="handleToClickCustom(3)"
+                        style="width:80px"
+                      >管理模板</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--商品详情和商品品牌公共表格-->
+            <div v-if="(nowIndex===5&&isShowCommonTable) || (nowIndex===6&&isShowCommonTable)">
+              <div class="tatle">
+                <div class="tableLeft">
+                  <span>页面名称</span>
+                  <el-input
+                    size="small"
+                    v-model="tableInput[0]"
+                    placeholder="请输入品牌名称"
+                  ></el-input>
+                </div>
+                <div class="tableRight">
+                  <span>页面分类</span>
+                  <el-select
+                    size="small"
+                    v-model="commonTableValue[0]"
+                  >
+                    <el-option
+                      v-for="item in commonTableOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <el-button
+                    size="small"
+                    type="primary"
+                  >搜索</el-button>
+                </div>
+              </div>
+            </div>
           </div>
           <!--右侧动态内容end-->
         </div>
@@ -352,7 +428,18 @@ export default {
       MinPurchaseInputVal: '', // 最小限购数量
       MaxPurchaseInputVal: '', // 最大限购数量
       onSaleRadio: '1', // 上架时间radio
-      customTime: '' // 自定义上架售卖时间
+      customTime: '', // 自定义上架售卖时间
+      goodsRadio: '1', // 商品详情头部radio
+      isShowCommonTable: false, // 商品详情和商品品牌公共表格显示
+      tableInput: ['', ''], // 公共表格表头input值
+      commonTableValue: [1, ''], // 商品详情和商品品牌公共selectVal
+      commonTableOptions: [{ // 商品详情和商品品牌公共selectOptions
+        value: -1,
+        label: '腾飞测试1'
+      }, {
+        value: 1,
+        label: '腾飞测试2'
+      }]
     }
   },
   watch: {
@@ -442,6 +529,24 @@ export default {
 
           break
         case 2:
+
+          break
+      }
+    },
+    // 商品详情自定义内容中部综合点击处理
+    handleToClickCustom (flag) {
+      switch (flag) {
+        case 0:
+          console.log(flag)
+          this.isShowCommonTable = true
+          break
+        case 1:
+
+          break
+        case 2:
+
+          break
+        case 3:
 
           break
       }
@@ -667,6 +772,66 @@ export default {
                 position: relative;
                 top: -10px;
               }
+            }
+          }
+        }
+        .commodityDetails {
+          .temPosition {
+            display: flex;
+            margin-bottom: 20px;
+          }
+          .customContent {
+            display: flex;
+            .customMiddle {
+              display: flex;
+              flex-direction: column;
+            }
+            .customFooter {
+              display: flex;
+              margin-top: 20px;
+              .rightContent {
+                display: flex;
+                width: 230px;
+                color: #5a8bff;
+                align-items: center;
+                span {
+                  display: inline-block;
+                  width: 60px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  cursor: pointer;
+                  padding: 0 10px;
+                }
+              }
+            }
+          }
+        }
+        .tatle {
+          display: flex;
+          padding: 20px 0 0 10px;
+          /deep/ .el-input {
+            width: 140px;
+            margin-left: 5px;
+          }
+          /deep/ .el-button {
+            margin-left: 10px;
+          }
+          .tableLeft {
+            display: flex;
+            margin-right: 30px;
+            span {
+              white-space: nowrap;
+              display: flex;
+              align-items: center;
+            }
+          }
+          .tableRight {
+            display: flex;
+            span {
+              white-space: nowrap;
+              display: flex;
+              align-items: center;
             }
           }
         }
