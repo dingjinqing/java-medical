@@ -4,7 +4,7 @@ var util = require('../../../utils/util.js')
 global.wxComponent({
   mixins: [base],
   methods: {
-    onPropChange(newVal, oldVal, changedPath) {
+    onPropChange (newVal, oldVal, changedPath) {
       // 根据背景类型来判断是采用背景颜色还是背景图片
       console.log(newVal, 'cardData11111111111111111111111')
       // 处理背景
@@ -19,7 +19,7 @@ global.wxComponent({
       console.log(newVal)
       // shop_img、activation字段在第二个接口
     },
-    bindGetCard(e) {
+    bindGetCard (e) {
       var d = this.eventData(e)
       var _this = this
       console.log(d)
@@ -36,24 +36,24 @@ global.wxComponent({
       }
       util.api(
         '/api/card/getCard',
-        function(res) {
+        function (res) {
           console.log(res)
           if (res.error == 0) {
             if (res.content.isMostGrade) {
-              util.toast_fail(this.$t('components.decorate.highestGrade'))
+              util.toast_fail(_this.$t('components.decorate.highestGrade'))
               return
             } else if (res.content.gradeCard) {
-              var text = this.$t('components.decorate.conditionsNotMet')
+              var text = _this.$t('components.decorate.conditionsNotMet')
               if (res.content.gradeCard.gradeScore > 0) {
                 text =
-                  this.$t('components.decorate.PointsNotAchieved') +
+                  _this.$t('components.decorate.PointsNotAchieved') +
                   res.content.gradeCard.gradeScore +
-                  this.$t('components.decorate.integral')
+                  _this.$t('components.decorate.integral')
               } else {
                 text =
-                  this.$t('components.decorate.amountNotReached') +
+                  _this.$t('components.decorate.amountNotReached') +
                   res.content.gradeCard.gradeMoney +
-                  this.$t('components.decorate.element')
+                  _this.$t('components.decorate.element')
               }
               util.showModal('', text)
               return
@@ -77,20 +77,20 @@ global.wxComponent({
                 util.jumpLink('/pages/cardinfo/cardinfo?cardNo=' + cardNo)
               } else {
                 util.showModal(
-                  this.$t('components.decorate.tips'),
-                  this.$t('components.decorate.successfulReception'),
-                  function() {
+                  _this.$t('components.decorate.tips'),
+                  _this.$t('components.decorate.successfulReception'),
+                  function () {
                     console.log('触发')
                     util.jumpLink('/pages/cardinfo/cardinfo?cardNo=' + cardNo, 'navigateTo')
                   },
                   true,
-                  this.$t('components.decorate.cancel'),
-                  this.$t('components.decorate.checkNow')
+                  _this.$t('components.decorate.cancel'),
+                  _this.$t('components.decorate.checkNow')
                 )
               }
             }
           } else {
-            util.toast_fail(this.$t('components.decorate.failToRreceive'))
+            util.toast_fail(_this.$t('components.decorate.failToRreceive'))
           }
         },
         {
@@ -98,7 +98,7 @@ global.wxComponent({
         }
       )
     },
-    viewCard(e) {
+    viewCard (e) {
       var d = this.eventData(e)
       console.log(d)
       var _this = this

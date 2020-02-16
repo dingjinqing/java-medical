@@ -69,17 +69,17 @@ global.wxComponent({
                 var url = "/pages/bargaininfo/bargaininfo?record_id=" + data.recordId;
                 util.jumpLink(url);
               } else if (data.resultCode == 1) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.doesNotExist"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.doesNotExist"));
               } else if (data.resultCode == 2) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.activityDeactivated"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.activityDeactivated"));
               } else if (data.resultCode == 3) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.notStart"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.notStart"));
               } else if (data.resultCode == 4) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.activityEnded"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.activityEnded"));
               } else if (data.resultCode == 5) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.insufficientInventory"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.insufficientInventory"));
               } else if (data.resultCode == -1) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.operationFailed"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.operationFailed"));
               }
             } else {
               _this.navigateToItem(d.goods_id);

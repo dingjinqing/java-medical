@@ -25,26 +25,26 @@ global.wxComponent({
 
           if (res.error == 0) {
             if (res.content == 0) {
-              util.toast_success(this.$t("components.decorate.successfulReception"), function () {
+              util.toast_success(_this.$t("components.decorate.successfulReception"), function () {
                 m.isCoupon = 0;
                 m['coupon_arr'][d.coupon_key].status = -1;
                 _this.$set();
               });
             } else {
               if (res.content == 1) {
-                util.toast_fail(this.$t("components.decorate.couponDoesNotExist"));
+                util.toast_fail(_this.$t("components.decorate.couponDoesNotExist"));
               } else if (res.content == 2) {
-                util.toast_fail(this.$t("components.decorate.coupoExpired"));
+                util.toast_fail(_this.$t("components.decorate.coupoExpired"));
               } else if (res.content == 3) {
-                util.toast_fail(this.$t("components.decorate.couponDisabled"));
+                util.toast_fail(_this.$t("components.decorate.couponDisabled"));
               } else if (res.content == 4) {
-                util.toast_fail(this.$t("components.decorate.couponStockIs"));
+                util.toast_fail(_this.$t("components.decorate.couponStockIs"));
               } else if (res.content == 5) {
-                util.toast_fail(this.$t("components.decorate.insufficientPointsAvailable"));
+                util.toast_fail(_this.$t("components.decorate.insufficientPointsAvailable"));
               } else if (res.content == 6) {
-                util.toast_fail(this.$t("components.decorate.pointUpdateFailed"));
+                util.toast_fail(_this.$t("components.decorate.pointUpdateFailed"));
               } else if (res.content == 7) {
-                util.toast_fail(this.$t("components.decorate.reachesTheUpperLimit"));
+                util.toast_fail(_this.$t("components.decorate.reachesTheUpperLimit"));
               }
               util.toast_fail(res.content);
               m.isCoupon = 0;
@@ -65,7 +65,7 @@ global.wxComponent({
             //   });
             // }
           } else {
-            util.toast_fail(this.$t("components.decorate.failToRreceive"));
+            util.toast_fail(_this.$t("components.decorate.failToRreceive"));
           }
         }, {
           code: d.code,
@@ -103,32 +103,32 @@ global.wxComponent({
                 //   _this.$set();
                 // });
               } else if (res.content == 1) {
-                util.toast_fail(this.$t("components.decorate.couponDoesNotExist"));
+                util.toast_fail(_this.$t("components.decorate.couponDoesNotExist"));
               } else if (res.content == 2) {
-                util.toast_fail(this.$t("components.decorate.coupoExpired"));
+                util.toast_fail(_this.$t("components.decorate.coupoExpired"));
               } else if (res.content == 3) {
-                util.toast_fail(this.$t("components.decorate.couponDisabled"));
+                util.toast_fail(_this.$t("components.decorate.couponDisabled"));
               } else if (res.content == 4) {
-                util.toast_fail(this.$t("components.decorate.couponStockIs"));
+                util.toast_fail(_this.$t("components.decorate.couponStockIs"));
               } else if (res.content == 5) {
-                util.toast_fail(this.$t("components.decorate.insufficientPointsAvailable"));
+                util.toast_fail(_this.$t("components.decorate.insufficientPointsAvailable"));
               } else if (res.content == 6) {
-                util.toast_fail(this.$t("components.decorate.pointUpdateFailed"));
+                util.toast_fail(_this.$t("components.decorate.pointUpdateFailed"));
               } else if (res.content == 7) {
-                util.toast_fail(this.$t("components.decorate.reachesTheUpperLimit"));
+                util.toast_fail(_this.$t("components.decorate.reachesTheUpperLimit"));
               }
             } else {
-              util.toast_fail(this.$t("components.decorate.failToRreceive"));
+              util.toast_fail(_this.$t("components.decorate.failToRreceive"));
             }
           }, {
-              couponId: d.coupon_id
-            });
-          
+            couponId: d.coupon_id
+          });
+
         }
       }
 
 
-      
+
     },
 
     bindCodeBlur (e) {
