@@ -20,6 +20,12 @@ global.wxComponent({
     imageUrl: imageUrl
   },
 
+  observers: {
+    prizeInfo: function() {
+      console.log()
+    }
+  },
+
   /**
    * 组件的方法列表
    */

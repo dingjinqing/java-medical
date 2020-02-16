@@ -179,6 +179,9 @@ global.wxPage({
           let startStep = that.data.winIndex;
           let endStep = parseInt(Math.random() * 8 + 1);
           console.log(startStep, endStep);
+          that.setData({
+            prizeInfo: content
+          })
           switch (content.lotteryGrade) {
             case 1:
               endStep = 3
