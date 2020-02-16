@@ -9,7 +9,7 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    
+    prizeInfo: Object
   },
 
   /**
@@ -25,5 +25,8 @@ global.wxComponent({
    */
   methods: {
 
+  },
+  show: function() {
+    console.log(this)
   }
 })

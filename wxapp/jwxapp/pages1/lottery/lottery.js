@@ -41,7 +41,8 @@ global.wxPage({
     lotteryType: '', // 抽奖类型（抽奖次数来源） 1免费,2分享,3积分
     lotterySource: 3, // 活动来源 1开屏有礼,2支付有礼,3分享,4评价有礼,5分享有礼
     btnstatus: 1, // 按钮状态 1立即抽奖，2去分享，3消耗积分抽奖，4抽奖次数用光啦
-    prizeInfo: null // 奖品信息
+    prizeInfo: null, // 奖品信息
+    hasClick: false
   },
 
   /**
@@ -165,6 +166,9 @@ global.wxPage({
   // 立即抽奖
   drawNow () {
     let that = this
+    this.setData({
+      hasClick: true
+    })
     util.api('/api/wxapp/lottery/join', function (res) {
       if (res.error === 0 && res.content.flag) {
         console.log(res.content)
@@ -258,6 +262,14 @@ global.wxPage({
   hitTheJackpot () {
     this.setData({
       awardDialogVisible: true
+    })
+  },
+
+  // 监听关闭
+  dialogClose () {
+    console.log('close...')
+    this.setData({
+      hasClick: false
     })
   },
 

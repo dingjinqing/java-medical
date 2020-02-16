@@ -9,7 +9,7 @@
     </view>
     <view class="l-a-center">
       <view class="l-a-c-top">恭喜您获得</view>
-      <view class="l-a-c-top">1元</view>
+      <view class="l-a-c-top">{{prizeInfo.prizeText}}</view>
       <view class="l-a-c-go">已存入您的余额，快去查看吧</view>
       <view class="l-a-c-btns">
         <button class="l-a-c-btn">立即查看</button>
