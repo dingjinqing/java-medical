@@ -178,6 +178,20 @@ public class JsonResultMessage {
     public static final String BARGAIN_USER_LIST_BARGAIN_MONEY = "bargain.user.list.bargain_money";
 
     /**
+     *  营销-砍价excel导出-砍价订单
+     */
+    public static final String BARGAIN_ORDER_LIST_FILENAME = "bargain.order.list.file_name";
+    public static final String BARGAIN_ORDER_LIST_ORDER_SN = "bargain.order.list.order_sn";
+    public static final String BARGAIN_ORDER_LIST_BARGAIN_GOODS = "bargain.order.list.bargain_goods";
+    public static final String BARGAIN_ORDER_LIST_PRICE = "bargain.user.order.price";
+    public static final String BARGAIN_ORDER_LIST_CREATE_TIME = "bargain.order.list.create_time";
+    public static final String BARGAIN_ORDER_LIST_ORDER_USER = "bargain.order.list.order_user";
+    public static final String BARGAIN_ORDER_LIST_CONSIGNEE = "bargain.order.list.consignee";
+    public static final String BARGAIN_ORDER_LIST_ORDER_STATUS = "bargain.order.list.order_status";
+
+
+
+    /**
      * 营销-优惠券礼包订单excel导出
      */
     public static final String COUPON_PACK_ORDER_FILENAME = "coupon.pack.order.filename";
@@ -872,5 +886,27 @@ public class JsonResultMessage {
     
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
+    public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
+
+    // 商品效果导出
+    public static final String GOODS_EFFECT_FILE_NAME = "overview.commodity.effect.file_name";
+    public static final String GOODS_EFFECT_GOODS_INFO = "overview.commodity.effect.goods_info";
+    public static final String GOODS_EFFECT_GOODS_LABEL = "overview.commodity.effect.goods_label";
+    public static final String GOODS_EFFECT_GOODS_BRAND = "overview.commodity.effect.goods_brand";
+    public static final String GOODS_EFFECT_GOODS_SORT = "overview.commodity.effect.goods_sort";
+    public static final String GOODS_EFFECT_UV = "overview.commodity.effect.uv";
+    public static final String GOODS_EFFECT_PV = "overview.commodity.effect.pv";
+    public static final String GOODS_EFFECT_CART_UV = "overview.commodity.effect.cart_uv";
+    public static final String GOODS_EFFECT_PAID_UV = "overview.commodity.effect.paid_uv";
+    public static final String GOODS_EFFECT_NEW_USER_NUM = "overview.commodity.effect.new_user_num";
+    public static final String GOODS_EFFECT_NEW_USER_PERCENTAGE = "overview.commodity.effect.new_user_percentage";
+    public static final String GOODS_EFFECT_OLD_USER_NUM = "overview.commodity.effect.old_user_num";
+    public static final String GOODS_EFFECT_OLD_USER_PERCENTAGE = "overview.commodity.effect.old_user_percentage";
+    public static final String GOODS_EFFECT_PAID_GOODS_NUM = "overview.commodity.effect.paid_goods_num";
+    public static final String GOODS_EFFECT_UV_2_PAID = "overview.commodity.effect.uv2paid";
+    public static final String GOODS_EFFECT_GOODS_SALES = "overview.commodity.effect.goods_sales";
+    public static final String GOODS_EFFECT_RECONNEND_USER_NUM = "overview.commodity.effect.recommend_user_num";
+    public static final String GOODS_EFFECT_COLLECT_USER_NUM = "overview.commodity.effect.collect_use_num";
+
 
 }

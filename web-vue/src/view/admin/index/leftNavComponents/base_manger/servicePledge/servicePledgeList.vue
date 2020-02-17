@@ -165,11 +165,14 @@
                 <span style="padding-left: 15px;color:#999">{{$t('pledge.nameTip')}}</span>
               </el-form-item>
               <!-- 优先级 -->
-              <el-form-item :label="$t('pledge.priority')+'：'">
+              <el-form-item
+                :label="$t('pledge.priority')+'：'"
+                prop="priority"
+              >
                 <el-input
                   style="width:200px"
                   size="small"
-                  v-model="form.first"
+                  v-model="form.priority"
                   :placeholder="$t('pledge.priorityCheck')"
                 ></el-input>
                 <span style="padding-left: 15px;color:#999">{{$t('pledge.priorityTip')}}</span>
@@ -221,7 +224,11 @@
                   label=2
                 >{{$t('pledge.someGoods')}}</el-radio>
               </el-form-item>
+
+              <!--            选择全部商品部分商品-->
+
             </el-form>
+
           </div>
           <!-- 保存按钮 -->
           <div class="footer">
@@ -251,6 +258,15 @@ export default {
     ImageDalog
   },
   data () {
+    // var checkLevel = (rule, value, callback) => {
+    //   if (!value) {
+    //     return callback(new Error('优先级不能为空'))
+    //   }
+    //
+    //   if (!Number.isInteger(value)) {
+    //     callback(new Error('请输入数字值'))
+    //   }
+    // }
     return {
       tabValue: 'first',
       switchValue: '',
@@ -259,12 +275,15 @@ export default {
       // 表单数据
       form: {
         name: '',
-        first: '',
+        priority: '',
         icon: '',
         desc: '',
         // logos: '',
-
-        goods: '1'
+        type: 1,
+        goods: '1',
+        goodsIds: '',
+        goodsBrandIds: '',
+        sortIds: ''
       },
       // 数据校验
       rules: {
@@ -278,6 +297,10 @@ export default {
         desc: [
           { required: true, message: this.$t('pledge.explanationCheck'), trigger: 'blur' },
           { max: 300, message: this.$t('pledge.explanationTip'), trigger: 'blur' }
+        ],
+        priority: [
+          { required: true, message: '优先级不能为空', trigger: 'blur' }
+          // {validator: checkLevel, trigger: 'blur'}
         ]
         // logos: [
         //   { required: true, message: this.$t('pledge.iconCheck'), trigger: 'blur' }
@@ -303,10 +326,14 @@ export default {
     loadData () {
       this.form = {
         name: '',
-        first: '',
         icon: '',
         desc: '',
-        goods: '1'
+        goods: '1',
+        priority: '',
+        type: 1,
+        goodsIds: '',
+        goodsBrandIds: '',
+        sortIds: ''
       }
       this.id = null
       this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
@@ -340,18 +367,21 @@ export default {
     // 添加服务承诺
     addAct (form) {
       this.$refs[form].validate((valid) => {
+        console.log('form:', this.form)
         if (valid) {
           // 校验通过后...
           let addParam = {
             'pledgeName': this.form.name,
             'pledgeLogo': this.form.icon,
-            'pledgeContent': this.form.desc
+            'pledgeContent': this.form.desc,
+            'level': this.form.priority
           }
           let editParam = {
             'id': this.id,
             'pledgeName': this.form.name,
             'pledgeLogo': this.form.icon.substring(29),
-            'pledgeContent': this.form.desc
+            'pledgeContent': this.form.desc,
+            'level': this.form.priority
           }
           if (this.id !== null) {
             editPledge(editParam).then(res => {
@@ -409,10 +439,13 @@ export default {
     },
     // 编辑服务承诺
     editAct (row) {
+      console.log('row：', row)
       this.tabValue = 'second'
       this.form.name = row.pledgeName
       this.form.icon = row.pledgeLogo
       this.form.desc = row.pledgeContent
+      this.form.priority = row.level
+      this.form.type = row.type
       this.id = row.id
       this.srcList.src = this.form.icon
     },

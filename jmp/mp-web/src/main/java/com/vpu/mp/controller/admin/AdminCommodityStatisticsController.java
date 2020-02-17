@@ -1,7 +1,9 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
 import com.vpu.mp.service.pojo.shop.overview.commodity.*;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -9,12 +11,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Locale;
 import java.util.Objects;
+
+import static com.vpu.mp.service.pojo.shop.order.OrderExportVo.LANGUAGE_TYPE_EXCEL;
 
 /**
  * author liufei
@@ -91,16 +93,9 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/commoditystatistics/export2Excel")
     public void export2Excel(@RequestBody @Validated ProductEffectParam param, HttpServletResponse response) {
-        try {
-            Workbook workbook = shop().statisticsService.export2Excel(param);
-            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            String fileName = "商品效果" + System.currentTimeMillis() + ".xlsx";
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            response.setLocale(Locale.ENGLISH);
-            workbook.write(response.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Workbook workbook = shop().statisticsService.export2Excel(param);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EFFECT_FILE_NAME, LANGUAGE_TYPE_EXCEL, "messages");
+        export2Excel(workbook, fileName, response);
     }
 
     /**
@@ -134,6 +129,18 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
         }
         param.setEndTime(Date.valueOf(now));
         return success(param);
+    }
+
+    /**
+     * 商品排行导出excel
+     *
+     * @param param    the param
+     * @param response the response
+     * @return
+     */
+    @PostMapping("/api/admin/commoditystatistics/rankExport")
+    public void rankExport(@RequestBody @Validated RankingParam param, HttpServletResponse response) {
+
     }
 
 }

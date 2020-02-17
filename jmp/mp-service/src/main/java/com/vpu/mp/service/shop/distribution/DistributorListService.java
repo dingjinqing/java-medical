@@ -8,6 +8,7 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
 import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
+import static com.vpu.mp.db.shop.Tables.USER_REMARK;
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
@@ -15,12 +16,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.db.shop.tables.records.PromotionLanguageRecord;
+import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
 import com.vpu.mp.service.pojo.shop.distribution.*;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record8;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
+import org.jooq.types.UInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -224,4 +224,30 @@ public class DistributorListService extends ShopBaseService{
             return 0;
         }
     }
+
+    /**
+     * 会员备注列表
+     * @param param
+     * @return
+     */
+    public List<UserRemarkListVo> userRemarkList(UserRemarkListVo param){
+        Result<Record> record = db().select().from(USER_REMARK).where(USER_REMARK.USER_ID.eq(param.getUserId())).fetch();
+        if(record != null){
+            return record.into(UserRemarkListVo.class);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     *添加会员备注
+     * @param param
+     * @return
+     */
+    public int addUserRemark(UserRemarkListVo param){
+        UserRemarkRecord record = new UserRemarkRecord();
+        assign(param, record);
+        return db().executeInsert(record);
+    }
+
 }
