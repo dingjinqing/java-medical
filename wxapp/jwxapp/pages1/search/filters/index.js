@@ -45,7 +45,13 @@ global.wxComponent({
    */
   data: {
     showSortDialog:false,
-    showBrandDialog:false
+    showBrandDialog:false,
+    activityName:{
+      1:'多人拼团',
+      3:'砍价',
+      5:'秒杀',
+      6:'限时降价'
+    }
   },
 
   /**
@@ -109,6 +115,17 @@ global.wxComponent({
       }
       this.setData({ selectedBrands })
       console.log(this.data.selectedBrands)
+    },
+    chooseActivity(e){
+      let {activityType} = e.currentTarget.dataset
+      let selectedActTypes = this.data.selectedActTypes
+      let idx = selectedActTypes.indexOf(activityType)
+      if (idx === -1) {
+        selectedActTypes.push(activityType)
+      } else {
+        selectedActTypes.splice(idx,1)
+      }
+      this.setData({ selectedActTypes })
     },
     // 选择标签
     chooseLabels(e){
