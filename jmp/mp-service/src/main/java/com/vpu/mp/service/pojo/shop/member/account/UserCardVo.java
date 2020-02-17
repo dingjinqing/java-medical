@@ -85,9 +85,9 @@ public class UserCardVo {
 	private Boolean isGet;
 	// 卡是否可用  1 可用，-1不可用
 	private Integer status;
-	@JsonProperty("startTime")
+//	@JsonProperty("startTime")
 	private LocalDate startDate;
-	@JsonProperty("endTime")
+//	@JsonProperty("endTime")
 	private LocalDate endDate;
 	// 头像
 	@JsonProperty("avatar")
