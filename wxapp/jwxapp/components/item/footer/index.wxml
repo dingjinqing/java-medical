@@ -16,8 +16,8 @@
   <view class="footer_flex_view" bindtap="rightClick" wx:if="{{rightButtonShow}}" style='color:#fff;background:{{(dealtAct &&!dealtAct.canBuy) ? "#666" : main_setting.comColor}};' >
     <text>{{rightButtonName}}</text>
   </view> -->
-  <block wx:for="{{buttonData}}" wx:key="index">
-    <view class="footer_flex_view" bindtap="{{item.event}}" style='{{index === "left" ? leftStyle : rightStyle}}' >
+  <block wx:for="{{buttonData.buttonInfo}}" wx:key="index">
+    <view class="footer_flex_view" bindtap="{{item.canBuy ? item.event : 'notBuyTips'}}" style='{{index === "left" ? leftStyle : rightStyle}}{{!item.canBuy && notBuyRightStyle}}' >
       <text wx:if="{{item.top}}">{{item.top}}</text>
       <text>{{item.left}}{{item.name}}</text>
     </view>
