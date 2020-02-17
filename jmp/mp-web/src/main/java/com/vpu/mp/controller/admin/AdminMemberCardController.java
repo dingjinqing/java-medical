@@ -347,7 +347,6 @@ public class AdminMemberCardController extends AdminBaseController {
 	public JsonResult getList(@PathVariable Integer batchId) {
 		BatchGroupVo batchGroupList = shop().member.card.getBatchGroupList(batchId);
 		return success(batchGroupList);
-		
 	}
 	
 	/**
@@ -359,7 +358,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping(value = "/card/code/import/fail")
 	public void getErrorExcel(@RequestBody CardBatchDownLoadParam param, HttpServletResponse response) {
 		logger().info("开始下载领取码失败数据");
-		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),false);
+		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),false,param.getIsPwd());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, LANGUAGE_TYPE_EXCEL,
 				"messages");
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
@@ -376,11 +375,26 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping(value = "/card/code/import/success")
 	public void getSuccessExcel(@RequestBody CardBatchDownLoadParam param, HttpServletResponse response) {
 		logger().info("开始下载领取码成功数据");
-		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),true);
+		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),true,param.getIsPwd());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, LANGUAGE_TYPE_EXCEL,
 				"messages");
 		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("结束下载领取码成功数据");
 	}
+	
+	/**
+	 * 获取导入领取码+密码的模板
+	 * 
+	 * @param response
+	 */
+	@GetMapping(value = "/card/codePwd/getTemplate")
+	public void getcodePwdTemplate(HttpServletResponse response) {
+		logger().info("开始获取导入领取码模板");
+		Workbook workbook = shop().member.card.getCardNoPwdTemplate(getLang());
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,"messages");
+		export2Excel(workbook, fileName, response);
+		logger().info("结束获取导入领取码模板");
+	}
+	
 }
