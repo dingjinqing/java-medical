@@ -29,4 +29,8 @@ public class MessageConfigService extends ShopBaseService {
     public List<MessageConfigVo> getAllMessageConfig(){
        return  db().selectFrom(MESSAGE_TEMPLATE_CONFIG).fetch().into(MessageConfigVo.class);
     }
+
+    public MessageConfigVo getMessageConfig(Integer id){
+        return  db().selectFrom(MESSAGE_TEMPLATE_CONFIG).where(MESSAGE_TEMPLATE_CONFIG.ID.eq(id)).fetchOneInto(MessageConfigVo.class);
+    }
 }
