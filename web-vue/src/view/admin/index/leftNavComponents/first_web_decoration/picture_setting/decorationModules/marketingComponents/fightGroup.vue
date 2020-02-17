@@ -21,7 +21,7 @@
           >
             <p class="group-name">{{module_name}}</p>
             <p
-              v-show="data.show_clock === '1'"
+              v-show="data.show_clock === '1'||data.show_clock === 1"
               class="group-time"
             >
               <span v-show="data.group_draw_endtime">{{$t('fightGroup.letEnd')}}{{lastTime}}</span>

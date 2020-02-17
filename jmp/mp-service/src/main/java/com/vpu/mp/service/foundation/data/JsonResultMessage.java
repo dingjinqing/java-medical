@@ -872,5 +872,6 @@ public class JsonResultMessage {
     
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
+    public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
 
 }
