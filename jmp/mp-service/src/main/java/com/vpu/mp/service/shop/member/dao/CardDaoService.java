@@ -43,6 +43,7 @@ import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
+import com.vpu.mp.service.pojo.shop.member.card.BatchGroupVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
@@ -50,6 +51,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderExcelVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardNoImportTemplate;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
@@ -445,13 +447,48 @@ public class CardDaoService extends ShopBaseService {
 		InsertValuesStep3<CardReceiveCodeRecord, Integer, Integer, String> insert = db().insertInto(CARD_RECEIVE_CODE)
 				.columns(CARD_RECEIVE_CODE.BATCH_ID, CARD_RECEIVE_CODE.GROUP_ID, CARD_RECEIVE_CODE.CODE);
 
+		Integer batchId = param.getBatchId();
+		Integer groupId = param.getGroupId();
 		for (String code : codeList) {
-			insert.values(param.getBatchId(), param.getGroupId(), code);
+			insert.values(batchId, groupId, code);
 		}
 		int res = insert.execute();
 		logger().info("成功生成领取码" + res + "条");
 
 	}
+	
+	/**
+	 * 导入文件的插入
+	 * @param param
+	 * @param codeList
+	 * @return 
+	 */
+	public int insertCardReceiveCodeByCheck(CardBatchParam param, List<String> codeList) {
+		InsertValuesStep4<CardReceiveCodeRecord, Integer, Integer, String, String> insert = db().insertInto(CARD_RECEIVE_CODE)
+				.columns(CARD_RECEIVE_CODE.BATCH_ID, CARD_RECEIVE_CODE.GROUP_ID, CARD_RECEIVE_CODE.CODE,CARD_RECEIVE_CODE.ERROR_MSG);
+		Integer batchId = param.getBatchId();
+		Integer groupId = param.getGroupId();
+		String regex = "^[\\w\\d]*$";
+		for (String code : codeList) {
+			String msg=null;
+			if(StringUtils.isEmpty(code)) {
+				msg=CardNoImportTemplate.CARDNO_NULL.getCode();
+			}else {
+				if(!code.matches(regex)) {
+					msg=CardNoImportTemplate.CARDNO_ERROR.getCode();
+				}else if(code.length()>15) {
+					msg=CardNoImportTemplate.CARDNO_LIMIT.getCode();
+					code=code.substring(0,15);
+				}
+			}
+			logger().info("导入batchId："+batchId+" groupId："+groupId+" code："+code+" msg："+msg);
+			insert.values(batchId, groupId, code,msg);
+		}
+		int res = insert.execute();
+		logger().info("成功生成领取码" + res + "条");
+		return res;
+	}
+	
 
 	/**
 	 * 卡号存在 是 true, 否 false
@@ -476,9 +513,10 @@ public class CardDaoService extends ShopBaseService {
 		InsertValuesStep4<CardReceiveCodeRecord, Integer, Integer, String, String> insert = db()
 				.insertInto(CARD_RECEIVE_CODE).columns(CARD_RECEIVE_CODE.BATCH_ID, CARD_RECEIVE_CODE.GROUP_ID,
 						CARD_RECEIVE_CODE.CARD_NO, CARD_RECEIVE_CODE.CARD_PWD);
-
+		Integer batchId = param.getBatchId();
+		Integer groupId = param.getGroupId();
 		for (int i = 0; i < param.getNumber(); i++) {
-			insert.values(param.getBatchId(), param.getGroupId(), cardNoList.get(i), pwdList.get(i));
+			insert.values(batchId, groupId, cardNoList.get(i), pwdList.get(i));
 		}
 		int res = insert.execute();
 		logger().info("成功执行" + res + "条");
@@ -567,4 +605,23 @@ public class CardDaoService extends ShopBaseService {
 		return list;
 	}
 	
+	public List<CodeReceiveVo> getBatchGroupList(Integer batchId) {
+		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.BATCH_ID.eq(batchId).and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO))).fetch();
+		List<CodeReceiveVo> list = new ArrayList<CodeReceiveVo>();
+		if (fetch != null) {
+			list = fetch.into(CodeReceiveVo.class);
+		}
+		return list;
+	}
+	
+	public Result<CardReceiveCodeRecord> getBatchGroupListByMsg(Integer batchId,Boolean success) {
+		SelectConditionStep<CardReceiveCodeRecord> where = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.BATCH_ID.eq(batchId).and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO)));
+		if(success) {
+			where.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull());
+		}else {
+			where.and(CARD_RECEIVE_CODE.ERROR_MSG.isNotNull());
+		}
+		Result<CardReceiveCodeRecord> fetch = where.fetch();
+		return fetch;
+	}
 }

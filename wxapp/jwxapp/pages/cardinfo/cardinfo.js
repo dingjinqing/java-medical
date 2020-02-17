@@ -55,11 +55,11 @@ global.wxPage({
           that.setData({
             carStatus: "已领取"
           })
-        } else if (cardInfo.examine && cardInfo.isExamine.status === 'TODO') {
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 1) {
           that.setData({
             carStatus: "审核中"
           })
-        } else if (cardInfo.examine && cardInfo.isExamine.status === 'TODO') {
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
           that.setData({
             carStatus: "审核失败"
           })
@@ -385,7 +385,7 @@ global.wxPage({
                   })
                 } else if (parseInt(goods_id)) {
                   util.redirectTo({
-                    url: '/pages/item/item?good_id=' + goods_id,
+                    url: '/pages/item/item?gid=' + goods_id,
                   })
                 } else {
                   console.log(111)

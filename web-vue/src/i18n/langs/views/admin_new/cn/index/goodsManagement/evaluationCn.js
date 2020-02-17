@@ -13,6 +13,7 @@ export const cn = {
     evaluationTime: '评价时间',
     anonymousEvaluation: '匿名评价',
     evaluationReward: '评价奖励',
+    evaluationAct: '评价活动',
     operating: '操作'
   },
   userName: '用户名',

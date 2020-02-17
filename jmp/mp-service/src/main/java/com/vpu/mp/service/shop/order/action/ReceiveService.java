@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
@@ -48,6 +49,9 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 	@Autowired
     private ReturnOrderGoodsService returnGoods;
 
+	@Autowired
+    private OrderOperateSendMessage sendMessage;
+
 	@Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.RECEIVE;
@@ -63,11 +67,11 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 	 */
 	@Override
 	public ExecuteResult execute(OrderOperateQueryParam param) {
-		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
+		OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
 		if(order == null) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
 		}
-		if(!OrderOperationJudgment.isReceive(order)) {
+		if(!OrderOperationJudgment.isReceive(order.into(OrderInfoVo.class))) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED, null);
 		}
 		
@@ -80,6 +84,10 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 		orderAction.addRecord(order, param, order.getOrderStatus() , "订单收货");
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RECEIVE.code }), new String[] {param.getOrderSn()});
+		//消息推送
+        if(param.getIsMp() != OrderConstant.IS_MP_AUTO) {
+            sendMessage.sendReceived(order);
+        }
 		return null;
 	}
 

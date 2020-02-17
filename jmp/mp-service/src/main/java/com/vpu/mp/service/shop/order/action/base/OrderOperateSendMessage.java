@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.express.ExpressService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * 订单操作发送模板消息
@@ -35,6 +37,9 @@ public class OrderOperateSendMessage extends ShopBaseService {
     @Autowired
     private ExpressService express;
 
+    @Autowired
+    private OrderGoodsService orderGoods;
+
     /**
      * 发货模板消息
      * @param order
@@ -43,7 +48,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
     public void send(OrderInfoRecord order, ArrayList<OrderGoodsRecord> recordList) {
         logger().info("发货模板消息start");
         //商品名称
-        String goodsName = recordList.get(0).getGoodsName().length() > 20 ? recordList.get(0).getGoodsName().substring(0, 19) : recordList.get(0).getGoodsName();
+        String goodsName = getGoodsName(recordList);
         //快递公司名称
         ExpressVo expressVo = express.get(order.getShippingId());
         String shippingName = expressVo == null ? "other" : expressVo.getShippingName();
@@ -73,7 +78,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         // 跳转到退款页面
         String page = "pages/returnorder/returnorder?order_sn=" + returnOrder.getOrderSn() + "&ret_id=" + returnOrder.getRetId();
         //商品名称
-        String goodsName = returnGoods.get(0).getGoodsName().length() > 20 ? returnGoods.get(0).getGoodsName().substring(0, 19) : returnGoods.get(0).getGoodsName();
+        String goodsName = getReturnGoodsName(returnGoods);
         //金额
         String money = BigDecimalUtil.add(returnOrder.getMoney(), returnOrder.getShippingFee()).toString();
         //申请时间
@@ -85,7 +90,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             //小程序数据
             String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "卖家已同意退款,将原路退回到你的账户" }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
             //公众号数据
-            String[][] mpData = new String[][] { { StringUtils.EMPTY }, { returnOrder.getReasonDesc() }, { money }, { StringUtils.EMPTY }};
+            String[][] mpData = new String[][] { { "退款" }, { returnOrder.getReasonDesc() }, { money }, { StringUtils.EMPTY }};
             //参数
             param = RabbitMessageParam.builder()
                 .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(maData).build())
@@ -118,8 +123,104 @@ public class OrderOperateSendMessage extends ShopBaseService {
         }
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         logger().info("退款操作消息推送end");
-
-
     }
+
+    /**
+     * 订单支付成功模板消息
+     * @param order
+     */
+    public void send(OrderInfoRecord order, Result<OrderGoodsRecord> goods) {
+        logger().info("订单支付成功模板消息start");
+        //TODO 查询配置是否发送模板消息
+
+        //商品名称
+        String goodsName = getGoodsName(goods);
+        //公众号数据
+        String[][] mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, {  }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+        RabbitMessageParam param = RabbitMessageParam.builder()
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_WXPAY_SUCCESS).data(mpData).build())
+            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .shopId(getShopId())
+            .userIdList(Collections.singletonList(order.getUserId()))
+            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        logger().info("订单支付成功模板消息end");
+    }
+
+    /**
+     * 订单未支付提醒模板消息
+     * @param order
+     */
+    public void send(OrderInfoRecord order) {
+        logger().info("订单未支付提醒模板消息start");
+        //TODO 查询配置是否发送模板消息
+        //公众号数据
+        String[][] mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, {  }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+        RabbitMessageParam param = RabbitMessageParam.builder()
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_NOPAY_NOTIFY).data(mpData).build())
+            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .shopId(getShopId())
+            .userIdList(Collections.singletonList(order.getUserId()))
+            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        logger().info("订单未支付提醒模板消息end");
+    }
+
+    /**
+     * 取货成功通知模板消息
+     * @param order
+     */
+    public void sendSelfPickupSuccess(OrderInfoRecord order) {
+        logger().info("订单取货成功通知模板消息start");
+        //TODO 查询配置是否发送模板消息
+        //公众号数据
+        String[][] mpData = new String[][] {{"您好，您的订单已经取货完成"}, {order.getOrderSn()}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getConfirmTime())}, {"感谢您的使用"}};
+        RabbitMessageParam param = RabbitMessageParam.builder()
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_SELFPICKUP_SUCCESS).data(mpData).build())
+            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .shopId(getShopId())
+            .userIdList(Collections.singletonList(order.getUserId()))
+            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        logger().info("订单取货成功通知模板消息end");
+    }
+
+    /**
+     * 用户收货消息模板
+     * @param order
+     */
+    public void sendReceived(OrderInfoRecord order) {
+        logger().info("订单收货模板消息start");
+        //TODO 查询配置是否发送模板消息
+        //公众号数据
+        String[][] mpData = new String[][] {{"亲，您买的宝贝已确认收货"}, {order.getOrderSn()}, {getGoodsName(orderGoods.getByOrderId(order.getOrderId()))}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getCreateTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getShippingTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getConfirmTime())}, {"感谢您的支持与厚爱"}};
+        RabbitMessageParam param = RabbitMessageParam.builder()
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_RECEIVED).data(mpData).build())
+            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .shopId(getShopId())
+            .userIdList(Collections.singletonList(order.getUserId()))
+            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        logger().info("订单收货模板消息end");
+    }
+
+
+    private String getGoodsName(List<OrderGoodsRecord> orderGoods) {
+        return getString(orderGoods.get(0).getGoodsName(), orderGoods.stream().mapToInt(OrderGoodsRecord::getGoodsNumber).sum(), orderGoods.size());
+    }
+
+    private String getReturnGoodsName(List<ReturnOrderGoodsRecord> orderGoods) {
+        return getString(orderGoods.get(0).getGoodsName(), orderGoods.stream().mapToInt(ReturnOrderGoodsRecord::getGoodsNumber).sum(), orderGoods.size());
+    }
+
+    private String getString(String goodsName, int sum, int size) {
+        StringBuilder result = new StringBuilder(goodsName);
+        if(result.length() > 32){
+            result.substring(0, 32);
+        }
+        result.append(size == 1 ? StringUtils.EMPTY : "等").append(sum).append("件");
+        return result.toString();
+    }
+
 
 }

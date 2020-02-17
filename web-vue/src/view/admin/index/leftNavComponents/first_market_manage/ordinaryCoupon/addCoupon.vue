@@ -497,7 +497,7 @@
                         >
                           <i class="el-icon-plus"></i> {{item.name}}
                         </el-button>
-                        <div v-if="index === 0">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip2') }}</div>
+                        <div style="color: #e4393c" v-if="index === 0"  @click="onlyHanldeToAddGoodS(index)" >{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip2') }}</div>
                         <div v-if="index === 1">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }}</div>
                         <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div>
                       </div>
@@ -531,6 +531,7 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       @resultGoodsDatas="choosingGoodsResult"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="goodsInfo"
     />
     <!-- 选择 1商家分类;2平台分类弹窗 -->
@@ -750,6 +751,7 @@ export default {
 
       noneBlockDiscArr: [], // 指定商品
       tuneUpChooseGoods: false, // 商品弹窗
+      isOnlyShowChooseGoods: false,
       tuneUpBusClassDialog: false, // 商家/平台弹窗
       classFlag: 0, // 商家/平台类型
       // 弹窗结果区分标识 1商家分类;2平台分类
@@ -997,6 +999,29 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
+          this.isOnlyShowChooseGoods = false
+          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+          break
+        case 1:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 1
+          this.flag = 1
+          this.commInfo = this.busClass
+          break
+        case 2:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 2
+          this.flag = 2
+          this.commInfo = this.platClass
+          break
+      }
+    },
+    // 点击指定商品出现的添加类弹窗汇总--部分
+    onlyHanldeToAddGoodS (index) {
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.isOnlyShowChooseGoods = true
           this.tuneUpChooseGoods = !this.tuneUpChooseGoods
           break
         case 1:

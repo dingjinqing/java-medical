@@ -342,6 +342,11 @@ export default {
         goodsSn: null,
         brandId: null
       },
+      showItem: {
+        sortId: true,
+        labelIdL: true,
+        brandId: true
+      },
       // 表格数据
       tableData: [],
       // 下拉框数据
@@ -388,12 +393,15 @@ export default {
         switch (this.initialConditionRender[0]) {
           case 0:
             this.requestParam.sortId = this.initialConditionRender[1]
+            this.showItem.sortId = false
             break
           case 1:
             this.requestParam.labelId = this.initialConditionRender[1]
+            this.showItem.labelId = false
             break
           case 2:
             this.requestParam.brandId = this.initialConditionRender[1]
+            this.showItem.brandId = false
             break
         }
       }
@@ -604,9 +612,14 @@ export default {
         })
         if (flag.length === 0) {
           this.checkPageAllFlag = true
+        } else {
+          this.checkPageAllFlag = false
         }
+        console.log('选中添加', this.allGoodsProductId, this.checkedIdList)
         if (this.allGoodsProductId.every(val => this.checkedIdList.includes(val))) {
           this.checkAllFlag = true
+        } else {
+          this.checkAllFlag = false
         }
       }
     },
@@ -649,13 +662,14 @@ export default {
     checkedAllRow (flag) {
       console.log('checkedAllRow')
       this.checkPageAllFlag = flag
-      this.checkedPageRow(flag)
       if (flag) {
         // 选择全部只有全部商品id
         this.checkedIdList = this.allGoodsProductId
       } else {
+        // this.checkedPageRow(flag)
         this.clearCheckedRow()
       }
+      this.hxTableData()
     }
 
   }

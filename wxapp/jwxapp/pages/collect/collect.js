@@ -141,7 +141,7 @@ global.wxPage({
   goodsItem: function (e) {
     var goods_id = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: '../item/item?good_id=' + goods_id
+      url: '../item/item?gid=' + goods_id
     })
   },
   goodspinItem: function (e) {

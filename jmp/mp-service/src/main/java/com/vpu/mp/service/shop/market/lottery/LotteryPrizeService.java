@@ -4,9 +4,11 @@ import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
@@ -70,6 +72,8 @@ public class LotteryPrizeService  extends ShopBaseService {
                 joinValid.setResultsType(record.getLotteryType());
                 joinValid.setLotteryPrize(record);
                 joinValid.setLotteryGrade(record.getLotteryGrade());
+                LotteryPrizeVo into = record.into(LotteryPrizeVo.class);
+                joinValid.setLotteryPrizeInfo(into);
                 return;
             }
             randNumber -= chanceNumerator;

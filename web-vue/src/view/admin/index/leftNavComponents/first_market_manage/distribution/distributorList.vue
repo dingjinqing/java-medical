@@ -104,7 +104,7 @@
                 v-for="level in groupLevelList"
                 :key="level.levelId"
                 :label="level.levelName"
-                :value="level.levelName"
+                :value="level.id"
               >
               </el-option>
             </el-select>
@@ -123,7 +123,7 @@
                 v-for="group in groupNameList"
                 :key="group.id"
                 :label="group.groupName"
-                :value="group.groupName"
+                :value="group.id"
               >
               </el-option>
             </el-select>
@@ -237,7 +237,10 @@
           >
           </el-table-column>
 
-          <el-table-column align="center">
+          <el-table-column
+            align="center"
+            v-if="inviteFlag === true"
+          >
             <template slot="header">
               <el-tooltip
                 effect="dark"
@@ -248,10 +251,10 @@
               </el-tooltip>
             </template>
             <template slot-scope="scope">
-              <!-- <p v-if="scope.row.inviteCode">{{ scope.row.inviteCode }}</p> -->
+              <p v-if="scope.row.invitationCode">{{ scope.row.invitationCode }}</p>
               <p
                 class="nameStyle"
-                @click="invitationCodeHandler(scope.row.userId)"
+                @click="invitationCodeHandler(scope.row.userId, scope.row.invitationCode)"
               >设置</p>
             </template>
           </el-table-column>
@@ -323,7 +326,6 @@
           </el-table-column>
 
           <el-table-column
-            prop=""
             label="操作"
             align="center"
           >
@@ -534,6 +536,12 @@ import pagination from '@/components/admin/pagination/pagination'
 
 export default {
   components: { pagination },
+  props: {
+    inviteFlag: {
+      type: Boolean,
+      default: true
+    }
+  },
   data () {
     return {
       groupNameList: [],
@@ -603,14 +611,22 @@ export default {
   },
   mounted () {
     this.initDataList()
-    this.levelList()
-    this.groupList()
+    this.levelList() // 分销员等级
+    this.groupList() // 分销员分组
   },
 
   methods: {
     // 分销员列表
     initDataList () {
-      this.requestParams = this.param
+      // 搜索条件
+      var obj = {}
+      for (var i in this.param) {
+        if (this.param[i]) {
+          obj[i] = this.param[i]
+        }
+      }
+      this.requestParams = obj
+      // this.requestParams = this.param
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       distributorList(this.requestParams).then(res => {
@@ -674,9 +690,10 @@ export default {
     },
 
     // 邀请码设置
-    invitationCodeHandler (userId) {
-      this.invitationUserId = userId // 要操作的用户
+    invitationCodeHandler (userId, invitationCode) {
       this.invitationDialog = !this.invitationDialog
+      this.invitationUserId = userId // 要操作的用户
+      this.inviteCode = invitationCode
     },
 
     // 确定邀请码
@@ -690,12 +707,6 @@ export default {
             this.invitationDialog = false
             this.$message.success('设置成功')
             this.initDataList()
-            // this.tableData.filter((item, index) => {
-            //   if (item.userId === this.userId) {
-            //     item.inviteCode = this.inviteCode
-            //   }
-            // })
-            console.log(this.tableData)
           } else if (res.content === 0) {
             this.$message.warning('该邀请码已存在')
           }
@@ -713,11 +724,14 @@ export default {
       this.groupDialog = !this.groupDialog
       this.groupUserId = userId
 
-      this.groupNameList.filter((item, index) => {
-        if (item.groupName === groupName) {
-          this.groupValue = item.id
-        }
+      var obj = this.groupNameList.find((item, index) => {
+        return item.groupName === groupName
       })
+      if (obj === undefined) {
+        this.groupValue = ''
+      } else {
+        this.groupValue = obj.id
+      }
     },
 
     // 确定分销员分组

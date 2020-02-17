@@ -206,7 +206,7 @@
               size="small"
               @click="showChoosingGoods"
             >选择商品</el-button>
-            <span class="tips">最多添加20个商品</span>
+            <span class="tips " style="color: #5a8bff" @click="onlyShowChoosingGoods">最多添加20个商品,已选{{this.goodsRow.length}}商品</span>
           </div>
 
           <div v-if="form.goodsIds.length > 0">
@@ -275,6 +275,7 @@
       :checkedNumMax="20"
       :chooseGoodsBack="form.goodsIds"
       :tuneUpChooseGoods="isShowChoosingGoodsDialog"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       @resultGoodsDatas="choosingGoodsResult"
     />
 
@@ -368,6 +369,7 @@ export default {
       imgHost: `${this.$imageHost}`,
 
       isShowChoosingGoodsDialog: false, // 商品弹窗
+      isOnlyShowChooseGoods: false,
       goodsRow: [] // 活动商品
 
     }
@@ -492,11 +494,18 @@ export default {
 
     // 选择商品弹窗
     showChoosingGoods () {
+      this.isOnlyShowChooseGoods = false
+      this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
+    },
+    // 选择商品弹窗-部分显示
+    onlyShowChoosingGoods () {
+      this.isOnlyShowChooseGoods = true
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
 
     // 商品弹窗的回调函数
     choosingGoodsResult (row) {
+      this.form.goodsIds = []
       this.goodsRow = row
       this.goodsRow.forEach((item, index) => {
         this.form.goodsIds.push(item.goodsId)

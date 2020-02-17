@@ -85,6 +85,26 @@ public enum MpTemplateConfig {
         "OPENTM412546294",
         "退款失败通知",
         "{{first.DATA}}订单编号：{{keyword1.DATA}}退款时间：{{keyword2.DATA}}退款金额：{{keyword3.DATA}}失败原因：{{keyword4.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_WXPAY_SUCCESS (
+        "",
+        "",
+        ""
+    ),
+    ORDER_NOPAY_NOTIFY (
+        "",
+        "",
+        ""
+    ),
+    ORDER_SELFPICKUP_SUCCESS (
+        "OPENTM412465579",
+        "取货成功通知",
+        "{{first.DATA}}订单号：{{keyword1.DATA}}取货时间：{{keyword2.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_RECEIVED (
+        "OPENTM202314085",
+        "订单确认收货通知",
+        "{{first.DATA}}订单号：{{keyword1.DATA}}商品名称：{{keyword2.DATA}}下单时间：{{keyword3.DATA}}发货时间：{{keyword4.DATA}}确认收货时间：{{keyword5.DATA}}{{remark.DATA}}"
     );
 	/**
 	 * 模板编号

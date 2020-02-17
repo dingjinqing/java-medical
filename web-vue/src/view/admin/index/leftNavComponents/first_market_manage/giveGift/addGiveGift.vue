@@ -112,7 +112,8 @@
                                 v-model="requestParams.recommendGoodsId"
                                 v-if="false"
                         ></el-input>
-                        <span v-if="goodsNum!== null" style="color: #e4393c">{{this.$t('giveGift.choosingGoodsTips',[this.goodsNum])}}</span>
+                        <span v-if="goodsNum!== null"    @click="onlyShowChoosingGoods()"
+                              style="color: #e4393c">{{this.$t('giveGift.choosingGoodsTips',[this.goodsNum])}}</span>
                         <span style="color: #909399;font-size: small">
                             <ul>
                                 {{this.$t('marketCommon.note')}}:
@@ -135,7 +136,11 @@
             </el-row>
         </el-form>
         <!--添加商品弹窗-->
-        <choosingGoods @resultGoodsIds="choosingGoodsResult" :tuneUpChooseGoods='isShowChoosingGoodsDialog' :chooseGoodsBack="goodsIdArr"/>
+        <choosingGoods
+                @resultGoodsIds="choosingGoodsResult"
+                :tuneUpChooseGoods='isShowChoosingGoodsDialog'
+                :chooseGoodsBack="goodsIdArr"
+                :onlyShowChooseGoods="isOnlyShowChooseGoods"/>
     </wrapper>
 </template>
 
@@ -217,6 +222,7 @@ export default {
       add: true,
       submitStatus: false,
       isShowChoosingGoodsDialog: false,
+      isOnlyShowChooseGoods: false,
       goodsNum: null,
       goodsIdArr: []
     }
@@ -310,6 +316,14 @@ export default {
     showChoosingGoods () {
       console.log('初始化商品弹窗', this.requestParams.recommendGoodsId)
       // this.transmitEditGoodsId(goodsIdArr)
+      this.isOnlyShowChooseGoods = false
+      this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
+    },
+    // 初始化商品弹窗部分商品
+    onlyShowChoosingGoods () {
+      console.log('初始化商品弹窗部分商品', this.requestParams.recommendGoodsId)
+      // this.transmitEditGoodsId(goodsIdArr)
+      this.isOnlyShowChooseGoods = true
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
     // 接收商品弹窗放回数据

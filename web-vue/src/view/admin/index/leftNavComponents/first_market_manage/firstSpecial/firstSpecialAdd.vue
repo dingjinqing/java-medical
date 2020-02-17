@@ -164,7 +164,8 @@
             required
           >
             <el-button @click="selectGoodsHandle">+{{$t('firstSpecialAdd.chooseGoods')}}</el-button>
-            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}}</p>
+            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}} <span @click="onlySelectGoodsHandle" style="color: #e4393c"
+            >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span></p>
           </el-form-item>
           <!-- 设置商品首单优惠 -->
           <div
@@ -453,6 +454,7 @@
     <choosingGoods
       @resultGoodsIds="getGoodsIds"
       :tuneUpChooseGoods="tuneUpChooseGoods"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="goodsIdList"
     />
     <!-- 图片上传 -->
@@ -516,6 +518,7 @@ export default {
       },
       limit: 0,
       tuneUpChooseGoods: false,
+      isOnlyShowChooseGoods: false,
       goodsIdList: [],
       tableData: [],
       selectGoods: [],
@@ -620,6 +623,11 @@ export default {
       this.discountType = String(index)
     },
     selectGoodsHandle () {
+      this.isOnlyShowChooseGoods = false
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    onlySelectGoodsHandle () {
+      this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     // 选择商品后，得到商品id

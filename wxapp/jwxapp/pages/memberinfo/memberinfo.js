@@ -587,7 +587,7 @@ global.wxPage({
         //           })
         //         } else if (parseInt(goods_id)) {
         //           util.redirectTo({
-        //             url: '/pages/item/item?good_id=' + goods_id,
+        //             url: '/pages/item/item?gid=' + goods_id,
         //           })
         //         } else {
         //           util.redirectTo({
