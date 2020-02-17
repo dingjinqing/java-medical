@@ -11,6 +11,13 @@
         >
           <div class="firstDiv">
             <div
+              class="new_card"
+              @click="handleToCardDetail(0)"
+            >
+              <img :src="new_card_img">
+              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
+            </div>
+            <div
               class="firstListDiv"
               v-for="(item,index) in cardData"
               :key="index"
@@ -116,13 +123,7 @@
                 >{{itemC}}{{indexC===item.detailsOfRights.length-1?'':'-'}}</span>
               </div>
             </div>
-            <div
-              class="new_card"
-              @click="handleToCardDetail(0)"
-            >
-              <img :src="new_card_img">
-              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
-            </div>
+
           </div>
         </el-tab-pane>
         <el-tab-pane
@@ -130,6 +131,13 @@
           name="second"
         >
           <div class="firstDiv">
+            <div
+              class="new_card"
+              @click="handleToCardDetail(1)"
+            >
+              <img :src="new_card_img">
+              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
+            </div>
             <div
               class="firstListDiv"
               v-for="(item,index) in cardDataSecond"
@@ -231,13 +239,6 @@
                 >{{itemC}}{{indexC===item.detailsOfRights.length-1?'':'-'}}</span>
               </div>
             </div>
-            <div
-              class="new_card"
-              @click="handleToCardDetail(1)"
-            >
-              <img :src="new_card_img">
-              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
-            </div>
           </div>
         </el-tab-pane>
         <el-tab-pane
@@ -245,6 +246,14 @@
           name="third"
         >
           <div class="firstDiv">
+            <div
+              class="new_card"
+              @click="handleToCardDetail(2)"
+              v-show="addStatus"
+            >
+              <img :src="new_card_img">
+              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
+            </div>
             <div
               class="firstListDiv"
               v-for="(item,index) in cardDataThird"
@@ -352,14 +361,6 @@
                   @click="handleToCardBottom(item,2,itemC)"
                 >{{itemC}}{{indexC===item.detailsOfRights.length-1?'':'-'}}</span>
               </div>
-            </div>
-            <div
-              class="new_card"
-              @click="handleToCardDetail(2)"
-              v-show="addStatus"
-            >
-              <img :src="new_card_img">
-              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
             </div>
           </div>
         </el-tab-pane>
@@ -1036,6 +1037,7 @@ export default {
         padding: 10px 1%;
         background: #f0f0f0;
         border-radius: 10px;
+        margin-right: 1%;
         margin-bottom: 20px;
         display: flex;
         justify-content: center;
