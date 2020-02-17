@@ -471,7 +471,7 @@ public class BargainRecordService extends ShopBaseService {
             if(userNumber == 2){
                 return 7;
             }
-            if(recordInfo.getUserNumber() == 1){
+            if(userNumber == 1){
                 return 8;
             }
         }else {
@@ -527,7 +527,7 @@ public class BargainRecordService extends ShopBaseService {
         //进行砍价
         BigDecimal bargainMoney = bargainUser.addUserBargain(userId,recordId);
         vo.setState((byte)0);
-        vo.setBargainMoney(bargainMoney);
+        vo.setBargainMoney(bargainMoney.setScale(2,BigDecimal.ROUND_HALF_UP));
         return vo;
     }
 

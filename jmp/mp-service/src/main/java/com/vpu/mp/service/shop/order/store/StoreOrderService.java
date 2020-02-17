@@ -334,8 +334,11 @@ public class StoreOrderService extends ShopBaseService {
                 log.error("未开启积分支付");
                 throw new BusinessException(JsonResultCode.CODE_FAIL);
             }
+            //积分兑换比
+            int scoreProportion = baseScoreCfgService.getScoreProportion();
+            BigDecimal proportion = BigDecimal.valueOf(scoreProportion);
             // 积分使用上下限限制
-            int scoreValue = scoreAmount.multiply(HUNDRED).intValue();
+            int scoreValue = scoreAmount.multiply(proportion).intValue();
             if (scoreValue < baseScoreCfgService.getScorePayNum()) {
                 log.debug("低于积分使用下限配置，不可使用积分支付");
                 throw new BusinessException(JsonResultCode.CODE_FAIL);
@@ -347,7 +350,7 @@ public class StoreOrderService extends ShopBaseService {
             }
             if (scoreValue > userInfo.getScore()) {
                 // 积分不足，无法下单
-                log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换率为1:100)，无法下单", userInfo.getScore(), scoreAmount);
+                log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换比为1:{})，无法下单", userInfo.getScore(), scoreAmount, scoreProportion);
                 throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
             }
             scoreParam = new ScoreParam() {{

@@ -200,7 +200,7 @@ public class ShopPledgeService extends ShopBaseService {
 
   private List<PledgeRelatedRecord> getPledgeRelatedRecords(PledgeParam param,Integer pledgeId){
       List<PledgeRelatedRecord> result = Lists.newArrayList();
-      if( CollectionUtils.isEmpty(param.getGoodsIds()) ){
+      if( !CollectionUtils.isEmpty(param.getGoodsIds()) ){
           result.addAll(param.getGoodsIds().stream().
               map(x->
                   new PledgeRelatedRecord().
@@ -208,16 +208,16 @@ public class ShopPledgeService extends ShopBaseService {
               collect(Collectors.toList())
           );
       }
-      if( CollectionUtils.isEmpty(param.getSortIds()) ){
-          result.addAll(param.getGoodsIds().stream().
+      if( !CollectionUtils.isEmpty(param.getSortIds()) ){
+          result.addAll(param.getSortIds().stream().
               map(x->
                   new PledgeRelatedRecord().
                       value2(pledgeId).value3(PledgeConstant.PLEDGE_RELATE_TYPE_SORT).value4(x)).
               collect(Collectors.toList())
           );
       }
-      if( CollectionUtils.isEmpty(param.getGoodsBrandIds()) ){
-          result.addAll(param.getGoodsIds().stream().
+      if( !CollectionUtils.isEmpty(param.getGoodsBrandIds()) ){
+          result.addAll(param.getGoodsBrandIds().stream().
               map(x->
                   new PledgeRelatedRecord().
                       value2(pledgeId).value3(PledgeConstant.PLEDGE_RELATE_TYPE_BRAND).value4(x)).

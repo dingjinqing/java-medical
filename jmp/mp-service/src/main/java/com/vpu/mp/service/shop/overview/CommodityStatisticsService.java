@@ -39,8 +39,11 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsBrand.GOODS_BRAND;
+import static com.vpu.mp.db.shop.tables.GoodsLabel.GOODS_LABEL;
 import static com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
 import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
@@ -424,35 +427,68 @@ public class CommodityStatisticsService extends ShopBaseService {
     }
 
     /**
-     * Export 2 excel workbook.
+     * Export 2 excel workbook.商品效果数据导出
      *
      * @param param the param
      * @return the workbook
      */
     public Workbook export2Excel(ProductEffectParam param) {
-        SelectLimitStep<?> limitStep = createEffectSelect(param, db().select(GOODS_SUMMARY.GOODS_ID
-            , GOODS.GOODS_NAME
-            , GOODS.GOODS_IMG
-            , GOODS.SHOP_PRICE
-            , GOODS_SUMMARY.NEW_USER_NUMBER
-            , GOODS_SUMMARY.OLD_USER_NUMBER
-            , GOODS_SUMMARY.PV
-            , GOODS_SUMMARY.UV
-            , GOODS_SUMMARY.CART_UV
-            , GOODS_SUMMARY.PAID_UV
-            , GOODS_SUMMARY.PAID_GOODS_NUMBER
-            , GOODS_SUMMARY.GOODS_SALES
-            , GOODS_SUMMARY.RECOMMEND_USER_NUM
-            , GOODS_SUMMARY.COLLECT_USE_NUM
-            , GOODS_SUMMARY.SHARE_PV
-            , GOODS_SUMMARY.SHARE_UV
+        Condition tempGoodsCondition = DSL.trueCondition();
+        if (param.getBrandId() > 0) {
+            tempGoodsCondition = tempGoodsCondition.and(GOODS_BRAND.ID.eq(param.getBrandId()));
+        }
+        if (param.getSortId() > 0) {
+            tempGoodsCondition = tempGoodsCondition.and(SORT.SORT_ID.eq(param.getSortId()));
+        }
+        // 左连接以商品为主，获取商品对应的品牌名称和商家分类名称
+        Table<Record6<Integer, String, String, BigDecimal, String, String>> tempGoods = db()
+            .select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHOP_PRICE, GOODS_BRAND.BRAND_NAME, SORT.SORT_NAME)
+            .from(GOODS)
+            .leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+            .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
+            .where(tempGoodsCondition)
+            .asTable("GOODS");
+
+        Condition tempGoodsLabelCondition = DSL.trueCondition();
+        if (param.getLabelId() > 0) {
+            tempGoodsLabelCondition = tempGoodsLabelCondition.and(GOODS_LABEL.ID.eq(param.getLabelId()));
+        }
+        Table<Record2<Integer, String>> tempGoodsLabel = db().select(GOODS.GOODS_ID, GOODS_LABEL.NAME).from(GOODS)
+            .leftJoin(GOODS_LABEL_COUPLE).on(GOODS.GOODS_ID.eq(GOODS_LABEL_COUPLE.GTA_ID))
+            .leftJoin(GOODS_LABEL).on(GOODS_LABEL_COUPLE.LABEL_ID.eq(GOODS_LABEL.ID))
+            .where(GOODS_LABEL_COUPLE.TYPE.eq(BYTE_ONE))
+            .and(tempGoodsLabelCondition)
+            .asTable("GOODS_LABEL");
+
+        SelectLimitStep<?> limitStep;
+        if (param.getDynamicDate() > 0) {
+//        全连接：取交集
+            limitStep = db().select(GOODS_SUMMARY.GOODS_ID
+                , GOODS.GOODS_NAME
+                , GOODS.GOODS_IMG
+                , GOODS.SHOP_PRICE
+                , GOODS_LABEL.NAME
+                , GOODS_BRAND.BRAND_NAME
+                , SORT.SORT_NAME
+                , GOODS_SUMMARY.NEW_USER_NUMBER
+                , GOODS_SUMMARY.OLD_USER_NUMBER
+                , GOODS_SUMMARY.PV
+                , GOODS_SUMMARY.UV
+                , GOODS_SUMMARY.CART_UV
+                , GOODS_SUMMARY.PAID_UV
+                , GOODS_SUMMARY.PAID_GOODS_NUMBER
+                , GOODS_SUMMARY.GOODS_SALES
+                , GOODS_SUMMARY.RECOMMEND_USER_NUM
+                , GOODS_SUMMARY.COLLECT_USE_NUM
+                , GOODS_SUMMARY.SHARE_PV
+                , GOODS_SUMMARY.SHARE_UV
             )
                 .from(GOODS_SUMMARY)
-                .leftJoin(GOODS)
-                .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID))
-            , (GOODS_SUMMARY.REF_DATE.eq(new Date(Util.getEarlyTimeStamp(new java.util.Date(), -1).getTime())))
-                .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate())), true);
-        if (param.getDynamicDate() <= 0) {
+                .innerJoin(tempGoods).on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID))
+                .innerJoin(tempGoodsLabel).on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID))
+                .where(GOODS_SUMMARY.REF_DATE.eq(Date.valueOf(LocalDate.now())))
+                .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate()));
+        } else {
             /** 自定义时间 */
             limitStep = createEffectSelect(param, db().select(max(GOODS_SUMMARY.GOODS_ID).as("goodsId")
                 , max(GOODS.GOODS_NAME).as("goodsName")

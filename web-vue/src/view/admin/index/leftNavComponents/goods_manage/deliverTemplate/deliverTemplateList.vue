@@ -30,22 +30,21 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <!-- 运费 -->
+          <!-- 统一运费 -->
           <el-form-item
-            v-if="isShow === true"
-            prop="price"
+            v-if="formData.templateName === 0"
+            prop="price1"
           >
             <span>运费：</span>
-            <!-- 运费输入框 -->
             <el-input
               size="small"
               v-model="formData.price1"
               style="width:170px"
             ></el-input><span>元</span>
           </el-form-item>
-          <!-- 订单金额 -->
+          <!-- 满额包邮 -->
           <el-form-item
-            v-if="isShow === false"
+            v-if="formData.templateName === 1"
             prop="feeLimit"
           >
             <span> 订单金额>=</span>
@@ -55,14 +54,17 @@
               style="width:80px"
             ></el-input>
             <span>元时包邮,否则运费为</span>
+          </el-form-item>
+          <el-form-item
+            v-if="formData.templateName === 1"
+            prop="price2"
+          >
             <el-input
               size="small"
               v-model="formData.price2"
               style="width:80px"
             ></el-input>
             <span>元</span>
-          </el-form-item>
-          <el-form-item>
           </el-form-item>
         </el-form>
       </section>
@@ -91,26 +93,44 @@ export default {
   components: { deliverTemplateTable },
   data () {
     // 自定义校验规则
-    var checkMoney = (rule, value, callback) => {
+    var checkMoney1 = (rule, value, callback) => {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!this.formData.price1) {
-        callback(new Error('请填写运费'))
-      } else if (!re.test(this.formData.price1)) {
-        callback(new Error('请输入合法数字值'))
+      if (this.formData.templateName === 0) {
+        if (!value && value !== 0) {
+          callback(new Error('请填写运费'))
+        } else if (!re.test(value)) {
+          callback(new Error('运费不合符要求'))
+        } else {
+          callback()
+        }
       } else {
         callback()
       }
     }
     var checkFeeLimit = (rule, value, callback) => {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!value) {
-        callback(new Error('请填写订单金额'))
-      } else if (this.formData.price2 === '') {
-        callback(new Error('请填写运费'))
-      } else if (!re.test(value)) {
-        callback(new Error('订单金额不合符要求'))
-      } else if (!re.test(this.formData.price2)) {
-        callback(new Error('运费不合符要求'))
+      if (this.formData.templateName === 1) {
+        if (!value && value !== 0) {
+          callback(new Error('请填写订单金额'))
+        } else if (!re.test(value)) {
+          callback(new Error('订单金额不合符要求'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
+    var checkMoney2 = (rule, value, callback) => {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (this.formData.templateName === 1) {
+        if (!value && value !== 0) {
+          callback(new Error('请填写包邮运费'))
+        } else if (!re.test(value)) {
+          callback(new Error('包邮运费不合符要求'))
+        } else {
+          callback()
+        }
       } else {
         callback()
       }
@@ -139,10 +159,10 @@ export default {
       }],
       // 表单输入的验证
       formRules: {
-        price: [{ validator: checkMoney, trigger: ['blur', 'change'] }], // 统一运费
-        feeLimit: [{ validator: checkFeeLimit, trigger: ['blur', 'change'] }] // 满额包邮
-      },
-      isShow: true // 用来控制显示隐藏
+        price1: [{ validator: checkMoney1, trigger: ['blur', 'change'] }], // 统一运费
+        feeLimit: [{ validator: checkFeeLimit, trigger: ['blur', 'change'] }], // 满额包邮
+        price2: [{ validator: checkMoney2, trigger: ['blur', 'change'] }]
+      }
 
     }
   },
@@ -157,20 +177,13 @@ export default {
         this.formData.templateName = requestParam.templateName
         this.formData.feeLimit = requestParam.feeLimit
         if (this.formData.templateName === 0) {
-          this.isShow = true
           this.formData.price1 = requestParam.price
           this.formData.price2 = ''
         } else if (this.formData.templateName === 1) {
-          this.isShow = false
           this.formData.price2 = requestParam.price
           this.formData.price1 = ''
         }
 
-        // if (this.formData.templateName === 0) {
-        //   this.isShow = true
-        // } else if (this.formData.templateName === 1) {
-        //   this.isShow = false
-        // }
         let resData = formatTemplateData(dataList)
         this.lists = resData
       }
@@ -180,17 +193,11 @@ export default {
     // 选中运费模板的时候
     handleChange (val) {
       this.$refs.form.resetFields()
-      switch (val) {
-        case 0:
-
-          this.$refs.form.validateField('price')
-          this.isShow = true
-          break
-        case 1:
-
-          this.$refs.form.validateField('feeLimit')
-          this.isShow = false
-          break
+      if (val === 0) {
+        this.$refs.form.validateField('price1')
+      } else {
+        this.$refs.form.validateField('feeLimit')
+        this.$refs.form.validateField('price2')
       }
     },
     // 保存配置

@@ -22,12 +22,13 @@ export default {
 <style scoped>
 .bargainRules {
   height: 100%;
-  line-height: 1.4;
-  padding: 0 0.27rem;
+  line-height: 3;
+  padding: 0 10px;
   background: #fff;
 }
 .bargainRules p {
-  color: #ccc;
-  font-size: 0.29rem;
+  color: #666;
+  font-size: 14px;
+  /* font-size: 0.75rem; */
 }
 </style>

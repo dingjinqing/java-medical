@@ -29,6 +29,10 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
+import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
+import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
+import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
@@ -120,6 +124,14 @@ public class GoodsService extends ShopBaseService {
     private EsUtilSearchService esUtilSearchService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private SecKillProcessorDao secKillProcessorDao;
+    @Autowired
+    private PreSaleProcessorDao preSaleProcessorDao;
+    @Autowired
+    private BargainProcessorDao bargainProcessorDao;
+    @Autowired
+    private GroupBuyProcessorDao groupBuyProcessorDao;
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
@@ -728,30 +740,29 @@ public class GoodsService extends ShopBaseService {
      * @param goods 商品信息
      */
     public void insert(Goods goods) {
+
         transaction(() -> {
-            insertGoods(goods);
-
-            // 商品图片增加
-            if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
-                insertGoodsImgs(goods.getGoodsImgs(), goods.getGoodsId());
+            try {
+                insertGoods(goods);
+                // 商品图片增加
+                if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
+                    insertGoodsImgs(goods.getGoodsImgs(), goods.getGoodsId());
+                }
+                // 商品关联标签添加
+                if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
+                    insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
+                }
+                // 商品规格处理
+                goodsSpecProductService.insert(goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
+                //插入商品规格对应的会员卡价格
+                insertGradePrd(goods.getGoodsGradePrds(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+                //插入商品专属会员信息
+                insertMemberCards(goods);
+                //插入商品分销改价信息
+                insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            // 商品关联标签添加
-            if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
-                insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
-            }
-
-            // 商品规格处理
-            goodsSpecProductService.insert(goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
-
-            //插入商品规格对应的会员卡价格
-            insertGradePrd(goods.getGoodsGradePrds(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-
-            //插入商品专属会员信息
-            insertMemberCards(goods);
-
-            //插入商品分销改价信息
-            insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
         });
             //更新es
         try {
@@ -774,7 +785,8 @@ public class GoodsService extends ShopBaseService {
         calculateGoodsPriceAndNumber(goods);
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
-            goods.setGoodsSn(Util.randomId());
+            int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))+1;
+            goods.setGoodsSn(String.format("G10%08d",count));
         }
 
         // 设置商品分享海报配置信息
@@ -1239,11 +1251,6 @@ public class GoodsService extends ShopBaseService {
         //计算商品的价格和库存量
         calculateGoodsPriceAndNumber(goods);
 
-
-        if (StringUtils.isBlank(goods.getGoodsSn())) {
-            goods.setGoodsSn(Util.randomId());
-        }
-
         //设置商品分享海报配置信息
         setGoodsShareConfig(goods);
 
@@ -1517,14 +1524,19 @@ public class GoodsService extends ShopBaseService {
      * @return GoodsQrCodeVo
      */
     public GoodsQrCodeVo getGoodsQrCode(Integer goodsId) {
-        String paramName = "goods_id=";
-        String urlParam = paramName + goodsId;
-        log.debug("urlParam:{}", urlParam);
-        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, urlParam);
-        log.debug("qrCode img full url:{}", mpQrCode);
+        GoodsActivityType goodsActivityType = getGoodsActivityType(goodsId);
+        String params;
+        if (goodsActivityType == null) {
+            params = "gid=" + goodsId + "&aid=&atp=";
+        } else {
+            params = String.format("gid=%d&aid=%d&atp=%d",goodsId,goodsActivityType.getActivityId(),goodsActivityType.getActivityType());
+        }
+        log.debug("urlParam:{}",params);
+        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, params);
+        log.debug("qrCode img full url:{}",mpQrCode);
         GoodsQrCodeVo goodsQrCodeVo = new GoodsQrCodeVo();
         goodsQrCodeVo.setImgFullUrl(mpQrCode);
-        goodsQrCodeVo.setPageUrl(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(urlParam));
+        goodsQrCodeVo.setPageUrl(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(params));
         return goodsQrCodeVo;
     }
 
@@ -2063,5 +2075,51 @@ public class GoodsService extends ShopBaseService {
      */
     public boolean exist(Integer goodsId) {
         return db().fetchExists(GOODS, GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(BYTE_ZERO)));
+    }
+
+    /**
+     * 查询当前商品所处于的活动类型，秒杀、预售、砍价、拼团或其它
+     * @param goodsId 商品id
+     * @return {@link GoodsActivityType} 活动类型信息,如果商品不属于上述四种活动则返回null
+     */
+    private GoodsActivityType getGoodsActivityType(Integer goodsId) {
+        GoodsActivityType type = new GoodsActivityType();
+        Timestamp now = DateUtil.getLocalDateTime();
+        // 秒杀
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsSecKillListInfo = secKillProcessorDao.getGoodsSecKillListInfo(Collections.singletonList(goodsId), now);
+        if (goodsSecKillListInfo.containsKey(goodsId)) {
+            Record3<Integer, Integer, BigDecimal> record3 = goodsSecKillListInfo.get(goodsId).get(0);
+            type.setActivityId(record3.get(SEC_KILL_DEFINE.SK_ID));
+            type.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+            return type;
+        }
+        // 预售
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(Collections.singletonList(goodsId), now);
+        if (goodsPreSaleListInfo.containsKey(goodsId)) {
+            Record3<Integer, Integer, BigDecimal> record3 = goodsPreSaleListInfo.get(goodsId).get(0);
+            type.setActivityId(record3.get(PRESALE.ID));
+            type.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+            return type;
+        }
+
+        // 砍价
+        Map<Integer, BargainRecord> goodsBargainListInfo = bargainProcessorDao.getGoodsBargainListInfo(Collections.singletonList(goodsId), now);
+        if (goodsBargainListInfo.containsKey(goodsId)) {
+            BargainRecord bargainRecord = goodsBargainListInfo.get(goodsId);
+            type.setActivityId(bargainRecord.getId());
+            type.setActivityType(BaseConstant.ACTIVITY_TYPE_BARGAIN);
+            return type;
+        }
+
+        // 拼团
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(Collections.singletonList(goodsId), now);
+        if (goodsGroupBuyListInfo.containsKey(goodsId)) {
+            Record3<Integer, Integer, BigDecimal> record3 = goodsGroupBuyListInfo.get(goodsId).get(0);
+            type.setActivityId(record3.get(GROUP_BUY_DEFINE.ID));
+            type.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
+            return type;
+        }
+        // 其它普通商品
+        return null;
     }
 }

@@ -117,11 +117,11 @@ public class DistributorListService extends ShopBaseService{
 			sql = sql.and(USER.CREATE_TIME.ge(param.getStartCreateTime())).and(USER.CREATE_TIME.le(param.getStartCreateTime()));
 		}
 		//被邀请人昵称 || 手机号
-		if(param.getInvitedMobile() != null || param.getInvitedUsername() != null) {
+		if(param.getInvitedMobile() != null || param.getInvitedUserName() != null) {
 			SelectConditionStep<Record1<Integer>> selectInvites = db().select(USER.INVITE_ID)
 					.from(USER).where(USER.INVITE_ID.ge(0));
-			if(param.getInvitedUsername() != null) {
-				selectInvites.and(USER.USERNAME.contains(param.getInvitedUsername()));
+			if(param.getInvitedUserName() != null) {
+				selectInvites.and(USER.USERNAME.contains(param.getInvitedUserName()));
 			}
 			if(param.getInvitedMobile() != null) {
 				selectInvites.and(USER.MOBILE.contains(param.getInvitedMobile()));

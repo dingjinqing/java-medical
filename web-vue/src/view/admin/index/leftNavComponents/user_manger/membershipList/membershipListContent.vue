@@ -648,7 +648,7 @@
                   <div>
                     {{item.text}}
                   </div>
-                  <span v-if="index>=setUpSelectVal_threeTmp">
+                  <span v-if="index>100">
                     <img
                     style="cursor:pointer"
                     @click="handleReadd(2,index)"
@@ -951,6 +951,7 @@ export default {
       setUpSelectVal_one: [], // 普通会员卡要提交的会员卡列表
       setUpSelectVal_two: [], // 限次会员卡要提交的会员卡列表
       setUpSelectVal_three: [], // 等级会员卡要提交的会员卡列表
+      setUpGradeCardFlag: false,
       setUpSelectVal_oneTmp: 0, // 普通会员卡要提交的会员卡列表
       setUpSelectVal_twoTmp: 0, // 限次会员卡要提交的会员卡列表
       setUpSelectVal_threeTmp: 0, // 等级会员卡要提交的会员卡列表
@@ -1317,7 +1318,8 @@ export default {
         this.setUpSelectVal_two.splice(0, 1)
       }
 
-      while (this.setUpSelectVal_threeTmp-- > 0) {
+      // 过滤掉原本有的会员卡
+      if (!this.setUpGradeCardFlag) {
         this.setUpSelectVal_three.splice(0, 1)
       }
     },
@@ -1371,6 +1373,7 @@ export default {
       // 清空已经拥有的会员卡
       this.deleteOriginCardInfo()
       // 处理会员卡信息
+
       let cardId = this.setUpSelectVal_one.map(({ id }) => id)
       cardId = cardId.concat(this.setUpSelectVal_two.map(({ id }) => id))
       cardId = cardId.concat(this.setUpSelectVal_three.map(({ id }) => id))
@@ -1410,7 +1413,7 @@ export default {
         case 2:
           this.setUpFalg_3 = false
           this.setUpValThree = ''
-          this.handleGradeCardShow()
+          //  this.handleGradeCardShow()
           break
       }
     },
@@ -1449,7 +1452,7 @@ export default {
               this.setUpSelectVal_threeTmp--
             }
             this.setUpSelectVal_three.splice(index, 1)
-            this.handleGradeCardShow()
+            // this.handleGradeCardShow()
         }
       }
     },
@@ -1500,7 +1503,9 @@ export default {
         case 2:
           // 等级会员卡
           this.setUpFalg_3 = true
-          this.setUpSelectVal_three.push({ text: this.setUpValThree.cardName, id: this.setUpValThree.id })
+          this.setUpGradeCardFlag = true
+          let card = { text: this.setUpValThree.cardName, id: this.setUpValThree.id }
+          this.setUpSelectVal_three.splice(0, 1, card)
       }
     },
     // 禁止登录 || 恢复登录

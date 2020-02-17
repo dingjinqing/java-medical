@@ -11,7 +11,7 @@ global.wxComponent({
 
       this.startActivityTimer('bargain', this._getLeftSecs(m));
       newVal.bottom = util.getCache("bottom");
-      console.log(m, 'kanjia')
+      console.log(m, 'kanjia0000000000000000000000000000')
       let r = /(http|https):\/\/([\w.]+\/?)\S*/
       m.bargain_goods.forEach(item => {
         if (r.test(item.goods_img)) {
@@ -56,8 +56,8 @@ global.wxComponent({
       } else if (d.act_status == 0 || d.time_state == 2 || d.act_del_flag == 1) {
         this.navigateToItem(d.goods_id);
       } else {
-
-        if (d.prd_id == null) {
+        console.log('触发', d)
+        if (d.is_prd == 1) {
           console.log(d.link)
           util.jumpLink(d.link);
         } else {
@@ -69,24 +69,24 @@ global.wxComponent({
                 var url = "/pages/bargaininfo/bargaininfo?record_id=" + data.recordId;
                 util.jumpLink(url);
               } else if (data.resultCode == 1) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.doesNotExist"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.doesNotExist"));
               } else if (data.resultCode == 2) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.activityDeactivated"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.activityDeactivated"));
               } else if (data.resultCode == 3) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.notStart"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.notStart"));
               } else if (data.resultCode == 4) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.activityEnded"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.activityEnded"));
               } else if (data.resultCode == 5) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.insufficientInventory"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.insufficientInventory"));
               } else if (data.resultCode == -1) {
-                util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.operationFailed"));
+                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.operationFailed"));
               }
             } else {
               _this.navigateToItem(d.goods_id);
             }
           }, {
             bargainId: d.bargain_id,
-            prdId: d.prd_id
+            prdId: d.is_prd
           })
         }
       }

@@ -299,17 +299,16 @@ public class AdminMemberCardController extends AdminBaseController {
 	}
 	
 	/**
-	 * 获取模板
+	 * 获取导入领取码模板
 	 * 
 	 * @param response
 	 */
 	@GetMapping(value = "/card/code/getTemplate")
 	public void getTemplate(HttpServletResponse response) {
-		logger().info("开始获取下载导入模板");
+		logger().info("开始获取导入领取码模板");
 		Workbook workbook = shop().member.card.getCardNoTemplate(getLang());
-		String fileName = Util.translateMessage(getLang(), JsonResultMessage.GET_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,
-				"messages");
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,"messages");
 		export2Excel(workbook, fileName, response);
-		logger().info("结束获取下载导入模板");
+		logger().info("结束获取导入领取码模板");
 	}
 }

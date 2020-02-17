@@ -1,10 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import java.sql.Timestamp;
-
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
@@ -17,8 +14,8 @@ import lombok.Data;
 @Data
 @ExcelSheet
 public class CardNoExcelVo {
-	/** - 会员ID */
-	@ExcelColumn(columnIndex = 0, columnName = "usercard.import.userId")
+	/** 领取码 */
+	@ExcelColumn(columnIndex = 0, columnName = "cardReceive.import.cardNo")
 	@ExcelColumnNotNull
-	private Integer userId;
+	private String cardNo;
 }

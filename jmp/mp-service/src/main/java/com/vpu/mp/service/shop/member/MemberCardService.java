@@ -2130,10 +2130,22 @@ public class MemberCardService extends ShopBaseService {
 		return workbook;
 	}
 	
-	
+	/**
+	 * 领取码导入模板
+	 * @param lang
+	 * @return
+	 */
 	public Workbook getCardNoTemplate(String lang) {
-		return null;
-		
+		List<CardNoExcelVo> list = new ArrayList<CardNoExcelVo>();
+		for (int i = 11; i < 21; i++) {
+			CardNoExcelVo vo = new CardNoExcelVo();
+			vo.setCardNo("C1111" + i);
+			list.add(vo);
+		}
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(list, CardNoExcelVo.class);
+		return workbook;
 	}
 	
 }
