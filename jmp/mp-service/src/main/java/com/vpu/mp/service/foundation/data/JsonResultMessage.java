@@ -888,4 +888,25 @@ public class JsonResultMessage {
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
     public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
 
+    // 商品效果导出
+    public static final String GOODS_EFFECT_FILE_NAME = "overview.commodity.effect.file_name";
+    public static final String GOODS_EFFECT_GOODS_INFO = "overview.commodity.effect.goods_info";
+    public static final String GOODS_EFFECT_GOODS_LABEL = "overview.commodity.effect.goods_label";
+    public static final String GOODS_EFFECT_GOODS_BRAND = "overview.commodity.effect.goods_brand";
+    public static final String GOODS_EFFECT_GOODS_SORT = "overview.commodity.effect.goods_sort";
+    public static final String GOODS_EFFECT_UV = "overview.commodity.effect.uv";
+    public static final String GOODS_EFFECT_PV = "overview.commodity.effect.pv";
+    public static final String GOODS_EFFECT_CART_UV = "overview.commodity.effect.cart_uv";
+    public static final String GOODS_EFFECT_PAID_UV = "overview.commodity.effect.paid_uv";
+    public static final String GOODS_EFFECT_NEW_USER_NUM = "overview.commodity.effect.new_user_num";
+    public static final String GOODS_EFFECT_NEW_USER_PERCENTAGE = "overview.commodity.effect.new_user_percentage";
+    public static final String GOODS_EFFECT_OLD_USER_NUM = "overview.commodity.effect.old_user_num";
+    public static final String GOODS_EFFECT_OLD_USER_PERCENTAGE = "overview.commodity.effect.old_user_percentage";
+    public static final String GOODS_EFFECT_PAID_GOODS_NUM = "overview.commodity.effect.paid_goods_num";
+    public static final String GOODS_EFFECT_UV_2_PAID = "overview.commodity.effect.uv2paid";
+    public static final String GOODS_EFFECT_GOODS_SALES = "overview.commodity.effect.goods_sales";
+    public static final String GOODS_EFFECT_RECONNEND_USER_NUM = "overview.commodity.effect.recommend_user_num";
+    public static final String GOODS_EFFECT_COLLECT_USER_NUM = "overview.commodity.effect.collect_use_num";
+
+
 }
