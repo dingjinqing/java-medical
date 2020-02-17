@@ -706,6 +706,15 @@ export default {
               this.defaultValue = this.form.bg_img
             }
           }
+
+          // 邀请码是否选中
+          this.form.activation_cfg.forEach((item, index) => {
+            if (item === '邀请码' || item === 'Invitation code') {
+              this.$emit('inviteCode', true)
+            } else {
+              this.$emit('inviteCode', false)
+            }
+          })
         }
       })
     },

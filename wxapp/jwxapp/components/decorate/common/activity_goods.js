@@ -60,7 +60,7 @@ var activity_goods = {
       util.api("/api/wxapp/goods/detail", function (data) {
         console.log(data, goods_id)
         if (data.error === 0) {
-          util.jumpLink('/pages/item/item?goodsId=' + goods_id)
+          util.jumpLink('/pages/item/item?gid=' + goods_id)
         } else {
           util.showModal('提示', data.message);
           return false;
@@ -121,7 +121,7 @@ var activity_goods = {
         }
       } else {
         console.log(d.sk_id)
-        util.jumpLink(`/pages/item/item?activityId=${d.sk_id}&activityType=5&goodsId=${d.goods_id}`)
+        util.jumpLink(`/pages/item/item?aid=${d.sk_id}&atp=5&gid=${d.goods_id}`)
       }
     },
     bindTopre: function (e) {

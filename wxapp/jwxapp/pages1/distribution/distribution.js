@@ -105,7 +105,7 @@ global.wxPage({
   to_item: function (e) {
     let good_id = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: "/pages/item/item?good_id=" + good_id
+      url: "/pages/item/item?gid=" + good_id
     })
   },
   to_search: function () {

@@ -487,6 +487,8 @@ public class Indexes {
     public static final Index SUBSCRIBE_MESSAGE_WX_OPENID = Indexes0.SUBSCRIBE_MESSAGE_WX_OPENID;
     public static final Index PAY_AWARD_PRIZE_PRIMARY = Indexes0.PAY_AWARD_PRIZE_PRIMARY;
     public static final Index USER_CARD_PRIMARY = Indexes0.USER_CARD_PRIMARY;
+    public static final Index USER_REMARK_PRIMARY = Indexes0.USER_REMARK_PRIMARY;
+    public static final Index USER_REMARK_USER_ID = Indexes0.USER_REMARK_USER_ID;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -951,5 +953,7 @@ public class Indexes {
         public static Index SUBSCRIBE_MESSAGE_WX_OPENID = Internal.createIndex("wx_openid", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.WX_OPENID }, false);
         public static Index CART_PRIMARY = Internal.createIndex("PRIMARY", Cart.CART, new OrderField[] { Cart.CART.CART_ID }, true);
         public static Index CART_USER_ID = Internal.createIndex("user_id", Cart.CART, new OrderField[] { Cart.CART.CART_ID, Cart.CART.STORE_ID }, false);
+        public static Index USER_REMARK_PRIMARY = Internal.createIndex("PRIMARY", UserRemark.USER_REMARK, new OrderField[] { UserRemark.USER_REMARK.ID }, true);
+        public static Index USER_REMARK_USER_ID = Internal.createIndex("user_id", UserRemark.USER_REMARK, new OrderField[] { UserRemark.USER_REMARK.USER_ID }, false);
     }
 }
