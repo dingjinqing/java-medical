@@ -19,7 +19,9 @@ public enum CardNoImportTemplate {
 	/**领取码仅限数字和字母 */
 	CARDNO_ERROR("2", "excel.error.cardNo.error"),
 	/**领取码{0}已存在 */
-	CARDNO_EXIST("3", "excel.error.cardNo.exist");
+	CARDNO_EXIST("3", "excel.error.cardNo.exist"),
+	/**领取码长度应小于15位，展示内容已做裁剪*/
+	CARDNO_LIMIT("4", "excel.error.cardNo.limit");
 	/**
 	 * 得到返回码
 	 */

@@ -476,6 +476,9 @@ public class CardDaoService extends ShopBaseService {
 			}else {
 				if(!code.matches(regex)) {
 					msg=CardNoImportTemplate.CARDNO_ERROR.getCode();
+				}else if(code.length()>15) {
+					msg=CardNoImportTemplate.CARDNO_LIMIT.getCode();
+					code=code.substring(0,15);
 				}
 			}
 			logger().info("导入batchId："+batchId+" groupId："+groupId+" code："+code+" msg："+msg);
