@@ -1350,8 +1350,12 @@ public class UserCardService extends ShopBaseService {
 				}
 
 				if (CardUtil.isCardFixTime(uCard.getExpireType())) {
-					uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
-					uCard.setEndDate(uCard.getEndTime().toLocalDateTime().toLocalDate());
+					if(uCard.getStartTime() != null) {
+						uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
+					}
+					if(uCard.getEndTime() != null) {
+						uCard.setEndDate(uCard.getEndTime().toLocalDateTime().toLocalDate());
+					}
 				}
 			} else {
 				uCard.setStatus(1);
