@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import lombok.Data;
 
 /**
@@ -56,6 +57,10 @@ public class JoinLottery {
      */
     private Byte source=0;
 
+    /**
+     * 中奖奖品
+     */
+    private LotteryPrizeVo lotteryPrizeInfo;
 
     /**
      * 错误信息
