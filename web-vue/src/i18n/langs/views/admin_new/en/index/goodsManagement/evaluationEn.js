@@ -13,6 +13,7 @@ export const en = {
     evaluationTime: 'Evaluation time',
     anonymousEvaluation: 'Anonymous evaluation',
     evaluationReward: 'Evaluation reward',
+    evaluationAct: 'Evaluation activity',
     operating: 'operating'
   },
   userName: 'username',
