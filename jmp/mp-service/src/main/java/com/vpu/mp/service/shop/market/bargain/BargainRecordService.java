@@ -524,7 +524,7 @@ public class BargainRecordService extends ShopBaseService {
         //进行砍价
         BigDecimal bargainMoney = bargainUser.addUserBargain(userId,recordId);
         vo.setState((byte)0);
-        vo.setBargainMoney(bargainMoney);
+        vo.setBargainMoney(bargainMoney.setScale(2));
         return vo;
     }
 
