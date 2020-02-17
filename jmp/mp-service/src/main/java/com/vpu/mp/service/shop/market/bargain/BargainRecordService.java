@@ -471,7 +471,7 @@ public class BargainRecordService extends ShopBaseService {
             if(userNumber == 2){
                 return 7;
             }
-            if(recordInfo.getUserNumber() == 1){
+            if(userNumber == 1){
                 return 8;
             }
         }else {
