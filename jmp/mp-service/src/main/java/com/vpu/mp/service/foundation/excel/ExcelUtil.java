@@ -28,6 +28,7 @@ public class ExcelUtil {
 
     private static final String STR_FLAG = "\"";
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_EXCEL = "m/d/yy";
 
 
     public static String getCellStringValue(Cell cell, Workbook workbook) {
@@ -58,7 +59,13 @@ public class ExcelUtil {
 
                 //不带中文的日期
                 if (DateUtil.isCellDateFormatted(cell)) {
-                    DateFormat formater = new SimpleDateFormat(DATE_FORMAT);
+                	String dataFormatString = cell.getCellStyle().getDataFormatString();
+                	DateFormat formater=null;
+                	if(dataFormatString.equals(DATE_FORMAT_EXCEL)) {
+                		formater = new SimpleDateFormat(com.vpu.mp.service.foundation.util.DateUtil.DATE_FORMAT_SIMPLE);
+                	}else {
+                		formater = new SimpleDateFormat(DATE_FORMAT);                		
+                	}
                     Date date = cell.getDateCellValue();
                     cellValue = formater.format(date);
                 } else {

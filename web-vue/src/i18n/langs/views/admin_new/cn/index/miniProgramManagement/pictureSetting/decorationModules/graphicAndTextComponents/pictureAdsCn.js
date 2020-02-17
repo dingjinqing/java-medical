@@ -6,7 +6,7 @@ export const cn = {
   listTypeData: [ // 选择模板列表数据
     {
       typeName: '单列图片',
-      isChecked: true
+      isChecked: false
     },
     {
       typeName: '双列图片',

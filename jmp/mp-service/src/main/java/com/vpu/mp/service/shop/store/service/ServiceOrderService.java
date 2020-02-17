@@ -409,7 +409,7 @@ public class ServiceOrderService extends ShopBaseService {
                 log.error("会员卡【{}】无效", cardNo);
                 throw new BusinessException(JsonResultCode.CODE_ORDER_CARD_INVALID);
             }
-            // 会员卡余额（门店服务不涉及会员卡折扣）
+            // 会员卡余额（todo 门店服务不涉及会员卡折扣）
             BigDecimal money = userCardService.getSingleField(USER_CARD.MONEY, USER_CARD.CARD_NO.eq(cardNo));
             // 会员卡抵扣金额大于会员卡余额
             if (cardDis.compareTo(money) > 0) {

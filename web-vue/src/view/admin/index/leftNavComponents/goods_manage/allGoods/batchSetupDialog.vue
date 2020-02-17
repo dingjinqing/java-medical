@@ -210,6 +210,400 @@
 
               </div>
             </div>
+            <!--限购数量-->
+            <div
+              v-if="nowIndex===3"
+              class="limitNum"
+            >
+              <div class="content">
+                <span>最小限购数量：</span>
+                <el-input
+                  v-model="MinPurchaseInputVal"
+                  size="small"
+                  onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                ></el-input>
+                <i>0或不填表示不限制购买数量</i>
+              </div>
+              <div
+                class="content"
+                style="margin-top:10px"
+              >
+                <span>最大限购数量：</span>
+                <el-input
+                  v-model="MaxPurchaseInputVal"
+                  size="small"
+                  onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                ></el-input>
+                <i>0或不填表示不限制购买数量</i>
+              </div>
+            </div>
+            <!--上架时间-->
+            <div
+              v-if="nowIndex===4"
+              class="onSaleTime"
+            >
+              <div class="onSaleTimeLeft">
+                上下架：
+              </div>
+              <div class="onSaleTimeRight">
+                <el-radio
+                  v-model="onSaleRadio"
+                  label="1"
+                >不修改</el-radio>
+                <el-radio
+                  v-model="onSaleRadio"
+                  label="2"
+                >立即上架售卖</el-radio>
+                <div class="custom">
+                  <el-radio
+                    v-model="onSaleRadio"
+                    label="3"
+                  >自定义上架售卖</el-radio>
+                  <div class="tips">
+                    <el-date-picker
+                      size="small"
+                      v-model="customTime"
+                      type="datetime"
+                      placeholder="选择日期时间"
+                      default-time="12:00:00"
+                      format="yyyy-MM-dd HH:mm:ss"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                    >
+                    </el-date-picker>
+                    <span style="margin-left:10px">选择上架售卖时间</span>
+                  </div>
+
+                </div>
+
+                <el-radio
+                  v-model="onSaleRadio"
+                  label="4"
+                >暂不售卖，放入仓库</el-radio>
+              </div>
+            </div>
+            <!--商品详情-->
+            <div
+              v-if="nowIndex===5 || nowIndex===7"
+              class="commodityDetails"
+            >
+              <div
+                class="temPosition"
+                v-if="nowIndex===5"
+              >
+                <span>模板位置：</span>
+                <el-radio
+                  v-model="goodsRadio"
+                  label="1"
+                >不修改</el-radio>
+                <el-radio
+                  v-model="goodsRadio"
+                  label="2"
+                >自定义内容在上</el-radio>
+                <el-radio
+                  v-model="goodsRadio"
+                  label="3"
+                >商品详情在上</el-radio>
+              </div>
+              <div class="customContent">
+                <div class="customTitle">
+                  {{nowIndex===5?'自定义内容：':'商品品牌：'}}
+                </div>
+                <div class="customMiddle">
+                  <div style="color:#999">设置商品详情页显示的自定义内容</div>
+                  <div class="customFooter">
+                    <el-button
+                      size="small"
+                      @click="handleToClickCustom(0)"
+                    >{{nowIndex===5?'选择模板':'选择品牌'}}</el-button>
+                    <div class="rightContent">
+                      <span @click="handleToClickCustom(1)">刷新</span>|<span
+                        @click="handleToClickCustom(2)"
+                        style="width:80px"
+                      >{{nowIndex===5?'添加模板':'添加品牌'}}</span>|<span
+                        @click="handleToClickCustom(3)"
+                        style="width:80px"
+                      >{{nowIndex===5?'管理模板':'管理品牌'}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--商品详情和商品品牌公共表格-->
+            <div v-if="(nowIndex===5&&isShowCommonTableFive) || (nowIndex===7&&isShowCommonTableSeven)">
+              <div class="tatle">
+                <div class="tableLeft">
+                  <span>{{nowIndex===5?'页面名称':'品牌名称'}}</span>
+                  <el-input
+                    v-if="nowIndex===5"
+                    size="small"
+                    v-model="tableInput[0]"
+                    :placeholder="'请输入页面名称'"
+                  ></el-input>
+                  <el-input
+                    v-if="nowIndex===7"
+                    size="small"
+                    v-model="tableInput[1]"
+                    :placeholder="'请输入品牌名称'"
+                  ></el-input>
+                </div>
+                <div class="tableRight">
+                  <span>{{nowIndex===5?'页面分类':'品牌分类'}}</span>
+                  <el-select
+                    size="small"
+                    v-if="nowIndex===5"
+                    v-model="commonTableValue[0]"
+                  >
+                    <el-option
+                      v-for="item in commonTableOptionsFive"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <el-select
+                    size="small"
+                    v-if="nowIndex===7"
+                    v-model="commonTableValue[1]"
+                  >
+                    <el-option
+                      v-for="item in commonTableOptionsSeven"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <el-button
+                    size="small"
+                    type="primary"
+                  >搜索</el-button>
+                </div>
+              </div>
+              <!--表格-->
+              <div
+                class="commonTable"
+                v-if="nowIndex===5"
+                :key="1"
+              >
+                <el-table
+                  class="version-manage-table"
+                  header-row-class-name="tableClss"
+                  :data="commonTableDataFive"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    prop="name"
+                    label="页面名称"
+                    align="center"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop="time"
+                    label="创建时间"
+                    align="center"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop="isFirst"
+                    label="是否首页"
+                    align="center"
+                  >
+                  </el-table-column>
+                </el-table>
+              </div>
+              <div
+                class="commonTable"
+                v-if="nowIndex===7"
+                :key="2"
+              >
+                <el-table
+                  class="version-manage-table"
+                  header-row-class-name="tableClss"
+                  :data="commonTableDataSeven"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    prop="name"
+                    label="品牌名称"
+                    align="center"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop="classify"
+                    label="品牌分类"
+                    align="center"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop="time"
+                    label="创建时间"
+                    align="center"
+                  >
+                  </el-table-column>
+                </el-table>
+              </div>
+
+            </div>
+            <!--商品标签-->
+            <div
+              class="commodityDetails"
+              v-if="nowIndex===6"
+            >
+              <div class="customContent">
+                <div class="customMiddle">
+                  <div
+                    class="customFooter"
+                    style="margin-top:0"
+                  >
+                    <div class="label">商品标签：</div>
+                    <el-select
+                      v-model="labelValue"
+                      size="small"
+                      @change="handleToSelect"
+                    >
+                      <el-option
+                        v-for="item in labelOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                    <div
+                      class="rightContent"
+                      style="width:auto"
+                    >
+                      <span @click="handleToClickCustom(1)">刷新</span>|<span
+                        @click="handleToClickCustom(2)"
+                        style="padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
+                      >新建商品标签</span>|<span
+                        @click="handleToClickCustom(3)"
+                        style="padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
+                      >管理商品标签</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--选中商品标签后显示模块-->
+              <div
+                class="showLabelContent"
+                v-if="labelValueCheckArr.length"
+              >
+                <div class="labelLeft">
+                  已选：
+                </div>
+                <div class="labelRight">
+                  <div
+                    v-for="(item,index) in labelValueCheckArr"
+                    :key="index"
+                    class="list"
+                  >{{item.label}}<img
+                      @click="handleToClickDel(index,item)"
+                      :src="$imageHost+'/image/admin/icon_delete.png'"
+                      class="label-delete"
+                    ></div>
+
+                </div>
+              </div>
+            </div>
+            <!--会员专享-->
+            <div
+              v-if="nowIndex===8"
+              class="membershipExclusive"
+            >
+              <div class="membershipTop">
+                <div style="margin-bottom:20px">会员专享商品：</div>
+                <div>
+                  <el-radio
+                    v-model="membershipTopRadio"
+                    label="1"
+                  >将已选商品设置为会员专享商品</el-radio>
+                  <el-radio
+                    v-model="membershipTopRadio"
+                    label="2"
+                  >将已选会员专享商品设置为普通商品</el-radio>
+                </div>
+              </div>
+              <div
+                class="membershipBottom"
+                v-if="membershipTopRadio==='1'"
+              >
+                <div class="membershipTitle">
+                  <span>设置会员卡(非必选)</span>
+                  <i>用户持有指定会员卡才可以购买已选商品</i>
+                </div>
+                <div class="membershipMiddle">
+                  <el-select
+                    v-model="membershipValue"
+                    size="small"
+                    @change="handleToMemberSelect"
+                  >
+                    <el-option
+                      v-for="item in membershipOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <div
+                    class="rightContent"
+                    style="width:auto;color:#5a8bff"
+                  >
+                    <span
+                      @click="handleToClickCustom(1)"
+                      style="padding:0 10px"
+                    >刷新</span>|<span
+                      @click="handleToClickCustom(2)"
+                      style="padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
+                    >新建会员卡</span>|<span
+                      @click="handleToClickCustom(3)"
+                      style="padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
+                    >管理会员卡</span>
+                  </div>
+                </div>
+                <div style="color:#999">注：设置会员卡只增加可购买已选商品的会员卡数量，不会修改商品已设置的会员卡。</div>
+                <!--选中会员卡后显示模块-->
+                <div
+                  class="showLabelContent"
+                  v-if="membershipValueCheckArr.length"
+                >
+                  <div class="labelLeft">
+                    已选：
+                  </div>
+                  <div class="labelRight">
+                    <div
+                      v-for="(item,index) in membershipValueCheckArr"
+                      :key="index"
+                      class="list"
+                    >{{item.label}}<img
+                        @click="handleToClickMemberDel(index,item)"
+                        :src="$imageHost+'/image/admin/icon_delete.png'"
+                        class="label-delete"
+                      ></div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--发货地-->
+            <div
+              v-if="nowIndex===9"
+              class="placeOfDelivery"
+            >
+              <div class="placeOfDeliveryContent">
+                <div class="name">发货地：</div>
+                <el-input
+                  v-model="placeOfDeliveryInput"
+                  :maxlength="15"
+                  placeholder="最多设置15字"
+                  size="small"
+                ></el-input>
+              </div>
+            </div>
           </div>
           <!--右侧动态内容end-->
         </div>
@@ -277,7 +671,134 @@ export default {
         value: 1,
         label: '腾飞测试2'
       }],
-      templateValue: null // 运费模板selectVal
+      templateValue: null, // 运费模板selectVal
+      MinPurchaseInputVal: '', // 最小限购数量
+      MaxPurchaseInputVal: '', // 最大限购数量
+      onSaleRadio: '1', // 上架时间radio
+      customTime: '', // 自定义上架售卖时间
+      goodsRadio: '1', // 商品详情头部radio
+      isShowCommonTableFive: false, // 商品详情和商品品牌公共表格显示
+      tableInput: ['', ''], // 公共表格表头input值
+      commonTableValue: [1, ''], // 商品详情和商品品牌公共selectVal
+      commonTableOptionsFive: [{ // 商品详情和商品品牌公共selectOptions
+        value: -1,
+        label: '腾飞测试1'
+      }, {
+        value: 1,
+        label: '腾飞测试2'
+      }],
+      commonTableOptionsSeven: [{ // 商品详情和商品品牌公共selectOptions
+        value: -1,
+        label: '腾飞测试1'
+      }, {
+        value: 1,
+        label: '腾飞测试2'
+      }],
+      commonTableDataFive: [
+        {
+          time: '2016-05-02 12:00:00',
+          name: '王小虎1',
+          isFirst: '是'
+        }, {
+          time: '2016-05-02 12:00:00',
+          name: '王小虎2',
+          isFirst: '是'
+        }, {
+          time: '2016-05-02 12:00:00',
+          name: '王小虎3',
+          isFirst: '是'
+        }, {
+          time: '2016-05-02 12:00:00',
+          name: '王小虎4',
+          isFirst: '是'
+        }
+      ], // 公共表格数据
+      commonTableDataSeven: [
+        {
+          time: '2016-05-02 12:00:00',
+          name: '王小虎1',
+          classify: '运动系列'
+        }, {
+          time: '2016-05-02 12:00:00',
+          name: '王小虎2',
+          classify: '运动系列'
+        }, {
+          time: '2016-05-02 12:00:00',
+          name: '王小虎3',
+          classify: '运动系列'
+        }, {
+          time: '2016-05-02 12:00:00',
+          name: '王小虎4',
+          classify: '运动系列'
+        }
+      ],
+      isShowCommonTableSeven: false, // 控制显示
+      labelValue: -1,
+      labelOptions: [
+        {
+          value: -1,
+          label: '请选择商品标签'
+        },
+        {
+          value: 1,
+          label: '腾飞测试1'
+        },
+        {
+          value: 2,
+          label: '测试1'
+        },
+        {
+          value: 3,
+          label: '测试22'
+        },
+        {
+          value: 4,
+          label: '测试222'
+        },
+        {
+          value: 5,
+          label: '测试23'
+        },
+        {
+          value: 6,
+          label: '测试244444'
+        }
+      ],
+      labelValueCheckArr: [], // 商品标签下拉框选中集合
+      membershipTopRadio: '', // 会员专享radio
+      membershipValue: -1,
+      membershipOptions: [
+        {
+          value: -1,
+          label: '请选择会员卡'
+        },
+        {
+          value: 1,
+          label: '腾飞测试1'
+        },
+        {
+          value: 2,
+          label: '测试1'
+        },
+        {
+          value: 3,
+          label: '测试22'
+        },
+        {
+          value: 4,
+          label: '测试222'
+        },
+        {
+          value: 5,
+          label: '测试23'
+        },
+        {
+          value: 6,
+          label: '测试244444'
+        }
+      ],
+      membershipValueCheckArr: [], // 会员专享下拉框选中集合
+      placeOfDeliveryInput: '' // 发货地
     }
   },
   watch: {
@@ -292,10 +813,13 @@ export default {
         })
         this.judgeIsEdit = false
       }
+    },
+    customTime (newData) {
+      console.log(newData)
     }
   },
   mounted () {
-    console.log(this.dialogVisible)
+    console.log(new Date().format('yyyy-MM-dd hh:mm:ss'))
   },
   methods: {
     // 内层判断是否编辑弹窗确认事件
@@ -367,6 +891,65 @@ export default {
 
           break
       }
+    },
+    // 商品详情自定义内容中部综合点击处理
+    handleToClickCustom (flag) {
+      switch (flag) {
+        case 0:
+          console.log(flag)
+          if (this.nowIndex === 5) {
+            this.isShowCommonTableFive = true
+          }
+          if (this.nowIndex === 7) {
+            this.isShowCommonTableSeven = true
+          }
+
+          break
+        case 1:
+
+          break
+        case 2:
+
+          break
+        case 3:
+
+          break
+      }
+    },
+    // 商品标签select选中值变化
+    handleToSelect (val) {
+      console.log(val)
+      if (val === -1) return
+      let data = JSON.parse(JSON.stringify(this.labelOptions))
+      data.forEach((item, index) => {
+        if (item.value === val) {
+          this.labelValueCheckArr.push(item)
+          this.labelOptions.splice(index, 1)
+        }
+      })
+      this.labelValue = -1
+    },
+    // 商品标签点击icon删除
+    handleToClickDel (index, item) {
+      this.labelOptions.push(item)
+      this.labelValueCheckArr.splice(index, 1)
+    },
+    // 会员卡选中值变化
+    handleToMemberSelect (val) {
+      if (val === -1) return
+      let data = JSON.parse(JSON.stringify(this.membershipOptions))
+      data.forEach((item, index) => {
+        if (item.value === val) {
+          this.membershipValueCheckArr.push(item)
+          this.membershipOptions.splice(index, 1)
+        }
+      })
+      this.membershipValue = -1
+    },
+    // 点击删除
+    handleToClickMemberDel (index, item) {
+      this.membershipOptions.push(item)
+      this.membershipValueCheckArr.splice(index, 1)
     }
   }
 }
@@ -553,6 +1136,190 @@ export default {
                 }
               }
             }
+          }
+        }
+        .limitNum {
+          .content {
+            display: flex;
+            /deep/ .el-input {
+              width: 80px;
+              margin: 0 10px;
+            }
+            span,
+            i {
+              display: flex;
+              align-items: center;
+            }
+            i {
+              color: #999;
+            }
+          }
+        }
+        .onSaleTime {
+          display: flex;
+          .onSaleTimeRight {
+            display: flex;
+            flex-direction: column;
+            /deep/ .el-radio {
+              margin-bottom: 20px;
+            }
+            .custom {
+              display: flex;
+              align-items: center;
+              .tips {
+                display: flex;
+                align-items: center;
+                position: relative;
+                top: -10px;
+              }
+            }
+          }
+        }
+        .commodityDetails {
+          .temPosition {
+            display: flex;
+            margin-bottom: 20px;
+          }
+          .customContent {
+            display: flex;
+            .customMiddle {
+              display: flex;
+              flex-direction: column;
+            }
+            .customFooter {
+              display: flex;
+              margin-top: 20px;
+              .label {
+                display: flex;
+                align-items: center;
+              }
+              .rightContent {
+                display: flex;
+                width: 230px;
+                color: #5a8bff;
+                align-items: center;
+                span {
+                  display: inline-block;
+                  width: 60px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  cursor: pointer;
+                  padding: 0 10px;
+                }
+              }
+            }
+          }
+        }
+        .tatle {
+          display: flex;
+          padding: 20px 0 10px 10px;
+          /deep/ .el-input {
+            width: 140px;
+            margin-left: 5px;
+          }
+          /deep/ .el-button {
+            margin-left: 10px;
+          }
+          .tableLeft {
+            display: flex;
+            margin-right: 30px;
+            span {
+              white-space: nowrap;
+              display: flex;
+              align-items: center;
+            }
+          }
+          .tableRight {
+            display: flex;
+            span {
+              white-space: nowrap;
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
+        .commonTable {
+          width: 90%;
+          height: 210px;
+          overflow-y: auto;
+          /deep/ .tableClss th {
+            background-color: #f5f5f5;
+            border: none;
+            height: 36px;
+            font-weight: bold;
+            color: #000;
+            padding: 8px 10px;
+          }
+        }
+        .membershipExclusive {
+          .membershipBottom {
+            margin-top: 20px;
+            .membershipTitle {
+              i {
+                color: #999;
+                margin-left: 10px;
+                display: inline-block;
+              }
+            }
+            .membershipMiddle {
+              display: flex;
+              margin: 20px 0;
+              /deep/ .el-input {
+                width: 150px;
+              }
+              .rightContent {
+                display: flex;
+                align-items: center;
+                margin-left: 10px;
+              }
+            }
+            .showLabelContent {
+              padding-left: 10px;
+              background: #f5f5f5;
+              margin-top: 20px;
+            }
+          }
+        }
+        .placeOfDelivery {
+          .placeOfDeliveryContent {
+            display: flex;
+            .name {
+              display: flex;
+              align-items: center;
+            }
+            /deep/ .el-input {
+              width: 180px;
+            }
+          }
+        }
+      }
+    }
+    .showLabelContent {
+      padding: 10px 0 0 70px;
+      display: flex;
+      .labelLeft {
+        display: flex;
+        padding-top: 4px;
+      }
+      .labelRight {
+        width: 350px;
+        display: flex;
+        flex-wrap: wrap;
+        .list {
+          padding: 0 3px;
+          height: 22px;
+          line-height: 22px;
+          text-align: center;
+          margin-left: 10px;
+          border: 1px solid #ccc;
+          margin-bottom: 10px;
+          position: relative;
+          img {
+            position: absolute;
+            right: -10px;
+            top: -7px;
+            cursor: pointer;
           }
         }
       }

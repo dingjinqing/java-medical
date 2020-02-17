@@ -47,7 +47,7 @@
             class="item"
           >
             <el-input
-              v-model="param.inviterMobile"
+              v-model="param.invitedMobile"
               placeholder="请填写被邀请用户手机号"
               size="small"
               class="inputWidth"
@@ -140,12 +140,12 @@
               :false-label="0"
             >有下级用户</el-checkbox>
             <el-checkbox
-              v-model="param.hasMobile"
+              v-model="param.haveMobile"
               :true-label="1"
               :false-label="0"
             >有手机号</el-checkbox>
             <el-checkbox
-              v-model="param.hasRealName"
+              v-model="param.haveRealName"
               :true-label="1"
               :false-label="0"
             >有真实姓名</el-checkbox>
@@ -543,15 +543,15 @@ export default {
         mobile: '',
         username: '',
         realName: '',
-        inviterMobile: '',
+        invitedMobile: '',
         startCreateTime: '',
         endCreateTime: '',
         invitedUserName: '',
         distributorLevel: '',
         distributorGroup: '',
         haveNextUset: 0,
-        hasMobile: 0,
-        hasRealName: 0
+        haveMobile: 0,
+        haveRealName: 0
       },
       requestParams: {},
       // 表格

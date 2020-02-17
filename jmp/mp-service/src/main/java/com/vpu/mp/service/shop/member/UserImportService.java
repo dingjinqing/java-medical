@@ -348,8 +348,8 @@ public class UserImportService extends ShopBaseService {
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
 					// ExcelUtil.DATE_FORMAT
-					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(DATE_FORMATE));
-					userImportPojo.setBirthday(parse.toString());
+					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SIMPLE));
+					//userImportPojo.setBirthday(parse.toString());
 				} catch (Exception e) {
 					logger().info("生日日期格式错误");
 					userImportPojo.setErrorMsg(UserImportTemplate.BIRTHDAY_ERROR.getCode());
