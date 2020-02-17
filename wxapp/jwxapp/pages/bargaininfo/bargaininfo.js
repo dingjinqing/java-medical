@@ -191,11 +191,11 @@ global.wxPage({
         } else {
           util.showModal('提示', res.content);
         }
-      }, { 
-        // choose_list: JSON.stringify(choose_list) 
-        bargainId: bargain_info.recordInfo.bargainId,
-        prdId: bargain_info.recordInfo.prdId
-      })
+      }, {
+          // choose_list: JSON.stringify(choose_list) 
+          bargainId: bargain_info.recordInfo.bargainId,
+          prdId: bargain_info.recordInfo.prdId
+        })
     }
   },
   /**
@@ -274,9 +274,20 @@ global.wxPage({
    */
   onShareAppMessage: function (options) {
     var that = this;
-    that.setData({
-      is_success: 0
-    })
+    if (bargain_info.status == 8 || bargain_info.status == 11) {
+      clearTimeout(set_time_out);
+      util.api("/api/wxapp/bargain/cut", function (res) {
+
+      }, { record_id: record_id });
+      setTimeout(function () {
+        clearTimeout(set_time_out);
+        that.onPullDownRefresh();
+      }, 1000);
+      that.setData({
+        is_success: 0
+      })
+    }
+
     return {
       title: bargain_info.recordShareImg.shareDoc,
       path: 'pages/bargaininfo/bargaininfo?record_id=' + record_id + "&invite_id=" + util.getCache('user_id')
