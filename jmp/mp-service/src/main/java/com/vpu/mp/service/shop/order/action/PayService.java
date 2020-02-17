@@ -34,6 +34,7 @@ import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -100,6 +101,9 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     @Autowired
     private PreSaleProcessorDao preSaleProcessorDao;
+
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
 
     /**
      * 营销活动processorFactory
@@ -278,13 +282,16 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         orderInfo.update();
 
         //订单商品
-        List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
+        Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId());
         //库存销量
-        atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
+        atomicOperation.updateStockAndSalesByLock(orderInfo, goods.into(OrderGoodsBo.class), false);
         //TODO 异常订单处理等等
 
         // 订单生效时营销活动后续处理
         processOrderEffective(orderInfo, orderInfo);
+        //模板消息
+        sendMessage.send(orderInfo, goods);
+
     }
 
     /**
@@ -293,7 +300,8 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     public void autoExpiringNoPayOrderNotify(){
         Result<OrderInfoRecord> orders = orderInfo.getExpiringNoPayOrderList();
         orders.forEach(order->{
-            //TODO 小程序消息推送
+            //模板消息
+            sendMessage.send(order);
         });
 
     }
