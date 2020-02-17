@@ -13,12 +13,14 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.SelectHavingStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -42,6 +44,10 @@ import static org.jooq.impl.DSL.when;
  **/
 @Service
 public class AdminMarketOrderInfoService extends OrderInfoService {
+
+    @Autowired
+    private OrderGoodsService orderGoods;
+
     /**
      *
      *  活动新用户订单
@@ -254,15 +260,17 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     }
 
     /**
-     * 营销活动订单查询
-     *
+     *     营销订单列表-构造select
      * @param param
-     * @return
+     * @param goodsType
      */
-    public PageResult<MarketOrderListVo> getMarketOrderList(MarketOrderListParam param, byte goodsType) {
+    private SelectJoinStep<? extends Record> buildMarketOrderOptions(MarketOrderListParam param, byte goodsType){
         SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.REFUND_STATUS,ORDER_INFO.CONSIGNEE,ORDER_INFO.MOBILE,ORDER_INFO.PAY_CODE,ORDER_INFO.DELIVER_TYPE,ORDER_INFO.CREATE_TIME,ORDER_INFO.SHIPPING_FEE,ORDER_INFO.MONEY_PAID,ORDER_INFO.SCORE_DISCOUNT,ORDER_INFO.USE_ACCOUNT,ORDER_INFO.MEMBER_CARD_BALANCE,ORDER_INFO.USER_ID,USER.USERNAME,USER.MOBILE.as("userMobile")).from(ORDER_INFO).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        buildMarketOrderOptionsParam(select,param, goodsType);
+        return select;
+    }
 
-        /** 构造订单查询通用参数 */
+    private void buildMarketOrderOptionsParam(SelectJoinStep<? extends Record> select,MarketOrderListParam param, byte goodsType){
         OrderPageListQueryParam orderParam = new OrderPageListQueryParam();
         orderParam.setCurrentPage(param.getCurrentPage());
         orderParam.setPageRows(param.getPageRows());
@@ -283,7 +291,56 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
         buildOptions(select, orderParam);
         select.where(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.orderBy(ORDER_INFO.ORDER_ID);
-
-        return getPageResult(select,param.getCurrentPage(),param.getPageRows(),MarketOrderListVo.class);
     }
+
+    /**
+     * 营销活动订单查询
+     *
+     * @param param
+     * @return
+     */
+    public PageResult<MarketOrderListVo> getMarketOrderPageList(MarketOrderListParam param, byte goodsType) {
+        SelectJoinStep<? extends Record> select = buildMarketOrderOptions(param,goodsType);
+
+        PageResult<MarketOrderListVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),MarketOrderListVo.class);
+        /** 填充商品行 */
+        for(MarketOrderListVo order : res.dataList){
+            order.setGoods(orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn()));
+        }
+
+        return res;
+    }
+
+    /**
+     * 营销活动订单查询(不分页)
+     *
+     * @param param
+     * @return
+     */
+    public List<MarketOrderListVo> getMarketOrderList(MarketOrderListParam param, byte goodsType) {
+        SelectJoinStep<? extends Record> select = buildMarketOrderOptions(param,goodsType);
+
+        List<MarketOrderListVo> res = select.fetchInto(MarketOrderListVo.class);
+
+        /** 填充商品行 */
+        for(MarketOrderListVo order : res){
+            order.setGoods(orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn()));
+        }
+
+        return res;
+    }
+
+    /**
+     * 订单的总条数
+     * @param param
+     * @param goodsType
+     * @return
+     */
+    public int getMarketOrderListSize(MarketOrderListParam param, byte goodsType){
+        SelectJoinStep<? extends Record> select = db().selectCount().from(ORDER_INFO).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        buildMarketOrderOptionsParam(select,param,goodsType);
+        return select.fetchOptionalInto(Integer.class).orElse(0);
+    }
+
+
 }
