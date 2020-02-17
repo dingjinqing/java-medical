@@ -124,8 +124,8 @@ global.wxPage({
    */
   onLoad: function(options) {
     console.log(options, '++++++++++++++++++++++++')
-    if (!options.goodsId) return
-    let { goodsId, activityId = null, activityType = null } = options
+    if (!options.gid) return
+    let { gid:goodsId, aid:activityId = null, atp:activityType = null } = options
     this.setData({
       goodsId,
       activityId,
