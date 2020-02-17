@@ -128,7 +128,7 @@ global.wxPage({
                 setTimeout(function () {
                   if (goods_ids) {
                     util.navigateTo({
-                      url: '/pages/item/item?goods_id=' + goods_ids,
+                      url: '/pages/item/item?gid=' + goods_ids,
                     })
                   } else {
                     wx.navigateBack({
@@ -180,7 +180,7 @@ global.wxPage({
             setTimeout(function () {
               if (goods_ids) {
                 util.navigateTo({
-                  url: '/pages/item/item?goods_id=' + goods_ids,
+                  url: '/pages/item/item?gid=' + goods_ids,
                 })
               } else {
                 util.navigateTo({

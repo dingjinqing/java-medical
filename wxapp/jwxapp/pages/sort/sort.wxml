@@ -33,7 +33,7 @@
         </block>
         <block wx:else>
           <block wx:for="{{goodsArry}}" wx:key='key' wx:for-item="item" wx:for-index='index'>
-            <view class='group_container' catchtap="{{item.goods_type == 10 ? 'bindTopre' : 'bindJumpLink'}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goods_type}}' data-url="pages/item/item?good_id={{item.goods_id}}" wx:if='{{item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'>
+            <view class='group_container' catchtap="{{item.goods_type == 10 ? 'bindTopre' : 'bindJumpLink'}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goods_type}}' data-url="pages/item/item?gid={{item.goods_id}}" wx:if='{{item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'>
               <view class='module_img'>
                 <block wx:if="{{item.label_class != null && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 1}}">
                   <block wx:if="{{item.label_pattern == 1}}">

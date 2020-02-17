@@ -100,7 +100,7 @@
               <el-input-number
                 v-model.number="form.level"
                 controls-position="right"
-                :min="0"
+                :min="1"
                 :max="100"
               ></el-input-number>
               <p class="tips">{{$t('evaluationGiftAdd.priorityTip')}}</p>
@@ -191,6 +191,7 @@
               <el-radio-group
                 v-model="form.awardType"
                 class="award-type-radio-group"
+                @change="awardTypeChange"
               >
                 <el-radio :label="1">{{$t('evaluationGiftAdd.score')}}</el-radio>
                 <el-radio :label="2">{{$t('evaluationGiftAdd.coupon')}}</el-radio>
@@ -216,8 +217,8 @@
                 label-width="110px"
                 prop="activityId"
               >
-                <selectCouponAct v-model="form.activityId"></selectCouponAct>
-                <p class="tips">{{$t('evaluationGiftAdd.Canuse0')}}</p>
+                <selectCouponAct v-model="form.activityId" @initData="initCouponList"></selectCouponAct>
+                <p class="tips">{{$t('evaluationGiftAdd.Canuse') + couponLength + $t('evaluationGiftAdd.part')}}</p>
               </el-form-item>
               <el-form-item
                 :label="$t('evaluationGiftAdd.balance')+'：'"
@@ -366,6 +367,17 @@ export default {
       }
       callback()
     }
+    // 验证优先级
+    function validLevel (rule, value, callback) {
+      let reg = /^[+]{0,1}(\d+)$/g
+      if (value === '') {
+        callback(new Error(that.$t('evaluationGiftAdd.pipriority')))
+      } else if (!reg.test(value)) {
+        callback(new Error(that.$t('evaluationGiftAdd.piInteger')))
+      } else {
+        callback()
+      }
+    }
     // 验证触发条件
     function validGoodsType (rule, value, callback) {
       if (that.form.goodsType === 2 && that.form.goodsIds === '') {
@@ -388,7 +400,7 @@ export default {
         isForever: 0,
         startTime: '',
         endTime: '',
-        level: '',
+        level: 1,
         goodsType: 1, // 商品类型 1全部商品 2指定商品 3 实际品论比较少的商品
         goodsIds: '', // 对应商品
         commentNum: '', // 评论数量
@@ -410,26 +422,27 @@ export default {
       rules: {
         name: [{ required: true, message: this.$t('evaluationGiftAdd.piname'), trigger: 'blur' }],
         isForever: [{ required: true }, { validator: validValidityPeriod }],
-        level: [{ required: true, message: this.$t('evaluationGiftAdd.pipriority'), trigger: 'blur' }],
+        level: [{ required: true, validator: validLevel, trigger: 'blur' }],
         goodsType: [{ required: true }, { validator: validGoodsType }],
         score: [
           { required: true, message: this.$t('evaluationGiftAdd.pipoins'), trigger: 'blur' },
-          { type: 'number', min: 1, message: this.$t('evaluationGiftAdd.pigreater0'), trigger: 'blur' }
+          { type: 'number', min: 1, message: this.$t('evaluationGiftAdd.pigreater0'), trigger: 'change' }
         ],
         account: [
           { required: true, message: this.$t('evaluationGiftAdd.pibalance'), trigger: 'blur' },
           { type: 'number', min: 1, message: this.$t('evaluationGiftAdd.pigreater0'), trigger: 'blur' }
         ],
         activityId: [
-          { required: true, message: this.$t('evaluationGiftAdd.psevent'), trigger: 'blur' }
+          { required: true, message: this.$t('evaluationGiftAdd.psevent'), trigger: 'change' }
         ],
-        awardImg: [{ required: true, message: this.$t('evaluationGiftAdd.pspicture'), trigger: 'blur' }],
-        awardPath: [{ required: true, message: this.$t('evaluationGiftAdd.pslink'), trigger: 'blur' }],
+        awardImg: [{ required: true, message: this.$t('evaluationGiftAdd.pspicture'), trigger: 'change' }],
+        awardPath: [{ required: true, message: this.$t('evaluationGiftAdd.pslink'), trigger: 'change' }],
         awardNum: [
-          { required: true, message: this.$t('evaluationGiftAdd.piNumPrizes'), trigger: 'blur' },
-          { type: 'number', min: 1, message: this.$t('evaluationGiftAdd.pigreater0'), trigger: 'blur' }
+          { required: true, message: this.$t('evaluationGiftAdd.piNumPrizes'), trigger: 'change' },
+          { type: 'number', min: 1, message: this.$t('evaluationGiftAdd.pigreater0'), trigger: 'change' }
         ]
       },
+      couponLength: 0,
       tuneUpChooseGoods: false, // 选择商品
       isOnlyShowChooseGoods: false,
       chooseGoods: [], // 商品回显 id数组
@@ -517,15 +530,25 @@ export default {
       this.$set(this.form, 'awardPath', path)
     },
     handleSelectImg (img) {
-      console.log(img)
       this.$set(this.form, 'awardImg', img.imgPath)
+    },
+    initCouponList (data) {
+      this.couponLength = data.length || 0
+    },
+    awardTypeChange (val) {
+      this.$refs.activityInfoForm.clearValidate([
+        'score',
+        'account',
+        'activityId',
+        'awardImg',
+        'awardPath'
+      ])
     },
     saveOrderInfo () {
       let that = this
       that.$refs.activityInfoForm.validate((valid) => {
         if (valid) {
           let params = Object.assign({}, that.form)
-          console.log(params)
           // 不传奖品送出数量
           if (params.hasOwnProperty('sendNum')) {
             delete params.sendNum

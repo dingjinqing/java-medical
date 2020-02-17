@@ -9,7 +9,10 @@
           :label="$t('distribution.distributionCfg')"
           name="first"
         >
-          <distributeSetting @tabChange="tabChange" />
+          <distributeSetting
+            @tabChange="tabChange"
+            @inviteCode="inviteCodeHandler"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorLevelCfg')"
@@ -27,7 +30,7 @@
           :label="$t('distribution.distributorList')"
           name="fouth"
         >
-          <distributorList />
+          <distributorList :inviteFlag="inviteCode" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorGroup')"
@@ -96,7 +99,8 @@ export default {
   },
   data () {
     return {
-      activeName: 'first'
+      activeName: 'first',
+      inviteCode: false
     }
   },
   mounted () {
@@ -113,6 +117,9 @@ export default {
     },
     tabChange () {
       this.activeName = 'fouth'
+    },
+    inviteCodeHandler (val) {
+      this.inviteCode = val
     }
     // advertisementList()
   }

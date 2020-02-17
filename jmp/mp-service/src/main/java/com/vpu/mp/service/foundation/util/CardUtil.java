@@ -127,6 +127,9 @@ public class CardUtil {
 	 * @return true: 已经过期，false: 未过期
 	 */
 	public static boolean isCardExpired(Timestamp endTime) {
+		if(endTime==null) {
+			return false;
+		}
 		return DateUtil.getLocalDateTime().after(endTime);
 	}
 	

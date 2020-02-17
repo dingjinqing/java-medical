@@ -36,6 +36,7 @@
             size="small"
             style="width:170px;"
             @change="goodsSnChangeRepeatCheck"
+            :disabled="isUpdate"
           />
           <span class="inputTip">{{$t("goodsAddEditInfo.basicInfo.goodsSnTip")}}</span>
         </el-form-item>
@@ -465,6 +466,7 @@ export default {
   components: { sortCatTreeSelect, ImageDalog, pagination, VideoSpaceDialog },
   data () {
     return {
+      isUpdate: false,
       // 商品图片弹框控制
       selfImgDialogShow: false,
       goodsProductInfo: {
@@ -940,6 +942,7 @@ export default {
     },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
+      this.isUpdate = true
       // 打开basicForm，否则display = none时会应为组件尚未渲染在this.$refs中取不到
       this.arrorFlag = false
       // 先初始化页面数据再渲染待修改商品数据
@@ -980,6 +983,7 @@ export default {
     },
     /* 新增数据时数据初始化 */
     initDataForInsert () {
+      this.isUpdate = false
       // 初始化第一级平台分类下拉项
       this._catFirstInit()
       // 商家分类和品牌初始化

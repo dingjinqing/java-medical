@@ -116,9 +116,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 
             //TODO 订单完成赠送积分
             orderSendScore(order);
-            //TODO 更新分销员等级
-
-            //TODO 更新分销员等级
+            //新增收支
         });
         //action操作
         orderAction.addRecord(order, param, OrderConstant.ORDER_RECEIVED, "完成订单");

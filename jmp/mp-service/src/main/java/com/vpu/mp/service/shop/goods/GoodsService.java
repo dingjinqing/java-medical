@@ -740,30 +740,29 @@ public class GoodsService extends ShopBaseService {
      * @param goods 商品信息
      */
     public void insert(Goods goods) {
+
         transaction(() -> {
-            insertGoods(goods);
-
-            // 商品图片增加
-            if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
-                insertGoodsImgs(goods.getGoodsImgs(), goods.getGoodsId());
+            try {
+                insertGoods(goods);
+                // 商品图片增加
+                if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
+                    insertGoodsImgs(goods.getGoodsImgs(), goods.getGoodsId());
+                }
+                // 商品关联标签添加
+                if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
+                    insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
+                }
+                // 商品规格处理
+                goodsSpecProductService.insert(goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
+                //插入商品规格对应的会员卡价格
+                insertGradePrd(goods.getGoodsGradePrds(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+                //插入商品专属会员信息
+                insertMemberCards(goods);
+                //插入商品分销改价信息
+                insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            // 商品关联标签添加
-            if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
-                insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
-            }
-
-            // 商品规格处理
-            goodsSpecProductService.insert(goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
-
-            //插入商品规格对应的会员卡价格
-            insertGradePrd(goods.getGoodsGradePrds(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-
-            //插入商品专属会员信息
-            insertMemberCards(goods);
-
-            //插入商品分销改价信息
-            insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
         });
             //更新es
         try {
@@ -786,7 +785,8 @@ public class GoodsService extends ShopBaseService {
         calculateGoodsPriceAndNumber(goods);
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
-            goods.setGoodsSn(Util.randomId());
+            int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))+1;
+            goods.setGoodsSn(String.format("G10%08d",count));
         }
 
         // 设置商品分享海报配置信息
@@ -1250,11 +1250,6 @@ public class GoodsService extends ShopBaseService {
     private void updateGoods(Goods goods) {
         //计算商品的价格和库存量
         calculateGoodsPriceAndNumber(goods);
-
-
-        if (StringUtils.isBlank(goods.getGoodsSn())) {
-            goods.setGoodsSn(Util.randomId());
-        }
 
         //设置商品分享海报配置信息
         setGoodsShareConfig(goods);
