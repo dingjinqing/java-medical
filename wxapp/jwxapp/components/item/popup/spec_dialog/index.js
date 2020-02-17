@@ -95,11 +95,16 @@ global.wxComponent({
               })
             }
           }
+          console.log(this.data.activityPrds)
           this.spec = val.products
           this.defaultSelectSpec()
           this.render()
         }
       }
+    },
+    triggerButton: {
+      type: String,
+      value: ''
     }
   },
   /**
@@ -166,6 +171,8 @@ global.wxComponent({
       for (let n = 0; n < this.spec.length; n++) {
         this.skuList[this.spec[n]['prdDesc']] = this.spec[n]
       }
+      console.log(this.data.activityPrds)
+      console.log(this.skuList)
       this.specList = {}
       Object.keys(this.skuList)
         .map(item => item.split(';'))
@@ -324,62 +331,62 @@ global.wxComponent({
 
     // },
     // 切换规格按钮
-    tapSpec(e) {
-      let d = this.eventData(e)
-      let pastIndex = this.data.specList[d.key].findIndex(item => item.isChecked === true)
-      this.setData({
-        [`specList.${d.key}[${pastIndex !== -1 ? pastIndex : 0}].isChecked`]: false,
-        [`specList.${d.key}[${d.index}].isChecked`]: true
-      })
-      this.getCheckedProduct(this.data.specList)
-    },
-    // 获取选中组合后规格信息
-    getCheckedProduct(specList) {
-      let str = ''
-      for (let i in specList) {
-        str += `;${i}:${specList[i].filter(item => item.isChecked)[0].specName}`
-      }
-      str = str.substring(1)
-      let productTarget = this.data.productsInfo.products.filter(item => item.prdDesc === str)[0]
-      // if(this.data.productsInfo.activity && !actPrdType[this.data.productsInfo.activity.activityType].multiSkuAct){
-      //   productTarget.prdLinePrice = productTarget.prdRealPrice
-      //   productTarget.prdRealPrice = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType].prdRealPrice]
-      // }
-      this.setData({
-        checkedProduct: productTarget
-      })
-      let { limitBuyNum, limitMaxNum } = this.data.productsInfo
-      let actLimit = {}
-      // 活动规格的限购数量
-      if (this.data.productsInfo.activity) {
-        actLimit.activityType = this.data.productsInfo.activity.activityType
-        if (this.data.productsInfo.activity.limitBuyNum) {
-          actLimit.limitMaxNum = this.data.productsInfo.activity.limitMaxNum
-        }
-        if (this.data.activityPrds) {
-          actLimit.prdNumber = this.data.activityPrds.find(
-            item => item.prdId === productTarget.prdId
-          ).prdNumber
-        }
-        if (this.data.productsInfo.activity.limitBuyNum) {
-          actLimit.limitBuyNum = this.data.productsInfo.activity.limitBuyNum
-        }
-      }
-      console.log({
-        goodsId: this.data.productsInfo.goodsId,
-        ...productTarget,
-        limitBuyNum,
-        limitMaxNum,
-        ...actLimit
-      })
-      this.triggerEvent('productData', {
-        goodsId: this.data.productsInfo.goodsId,
-        ...productTarget,
-        limitBuyNum,
-        limitMaxNum,
-        ...actLimit
-      })
-    },
+    // tapSpec(e) {
+    //   let d = this.eventData(e)
+    //   let pastIndex = this.data.specList[d.key].findIndex(item => item.isChecked === true)
+    //   this.setData({
+    //     [`specList.${d.key}[${pastIndex !== -1 ? pastIndex : 0}].isChecked`]: false,
+    //     [`specList.${d.key}[${d.index}].isChecked`]: true
+    //   })
+    //   this.getCheckedProduct(this.data.specList)
+    // },
+    // // 获取选中组合后规格信息
+    // getCheckedProduct(specList) {
+    //   let str = ''
+    //   for (let i in specList) {
+    //     str += `;${i}:${specList[i].filter(item => item.isChecked)[0].specName}`
+    //   }
+    //   str = str.substring(1)
+    //   let productTarget = this.data.productsInfo.products.filter(item => item.prdDesc === str)[0]
+    //   // if(this.data.productsInfo.activity && !actPrdType[this.data.productsInfo.activity.activityType].multiSkuAct){
+    //   //   productTarget.prdLinePrice = productTarget.prdRealPrice
+    //   //   productTarget.prdRealPrice = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType].prdRealPrice]
+    //   // }
+    //   this.setData({
+    //     checkedProduct: productTarget
+    //   })
+    //   let { limitBuyNum, limitMaxNum } = this.data.productsInfo
+    //   let actLimit = {}
+    //   // 活动规格的限购数量
+    //   if (this.data.productsInfo.activity) {
+    //     actLimit.activityType = this.data.productsInfo.activity.activityType
+    //     if (this.data.productsInfo.activity.limitBuyNum) {
+    //       actLimit.limitMaxNum = this.data.productsInfo.activity.limitMaxNum
+    //     }
+    //     if (this.data.activityPrds) {
+    //       actLimit.prdNumber = this.data.activityPrds.find(
+    //         item => item.prdId === productTarget.prdId
+    //       ).prdNumber
+    //     }
+    //     if (this.data.productsInfo.activity.limitBuyNum) {
+    //       actLimit.limitBuyNum = this.data.productsInfo.activity.limitBuyNum
+    //     }
+    //   }
+    //   console.log({
+    //     goodsId: this.data.productsInfo.goodsId,
+    //     ...productTarget,
+    //     limitBuyNum,
+    //     limitMaxNum,
+    //     ...actLimit
+    //   })
+    //   this.triggerEvent('productData', {
+    //     goodsId: this.data.productsInfo.goodsId,
+    //     ...productTarget,
+    //     limitBuyNum,
+    //     limitMaxNum,
+    //     ...actLimit
+    //   })
+    // },
     bindClose() {
       this.triggerEvent('close')
     }

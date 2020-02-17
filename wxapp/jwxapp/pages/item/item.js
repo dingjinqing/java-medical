@@ -274,6 +274,7 @@ global.wxPage({
     this.setData({
       productInfo: data.detail
     })
+    this.setDealtAct()
   },
   // 打开规格弹窗
   showSpecDialog(trigger) {
@@ -311,7 +312,6 @@ global.wxPage({
   // 获取actBar活动名称
   getActName({ activityType }, actBarInfo) {
     if (!activityType || activityType === 3) {return null}
-    console.log(actBarInfo)
     if (activityType === 1) {return `开团省${(actBarInfo.prdLinePrice - actBarInfo.prdRealPrice).toFixed(2)}元`}
     return actBaseInfo[activityType].actName
   },
@@ -357,9 +357,7 @@ global.wxPage({
       [
         { actState: 'endTime', second: true },
         () => {
-          this.setData({
-            'dealtAct.canBuy': true
-          })
+          this.setDealtAct(0)
         }
       ],
       [
@@ -369,9 +367,9 @@ global.wxPage({
             return actBaseInfo[activityType]['actStatus'][k] === '活动已结束'
           })
           this.setData({
-            'dealtAct.canBuy': false,
             'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState })
           })
+          this.setDealtAct(4)
           clearTimeout(this.actBartime)
           this.getCountDown({
             activityType,
@@ -384,9 +382,7 @@ global.wxPage({
       [
         { actState: 'startTime', second: true },
         () => {
-          this.setData({
-            'dealtAct.canBuy': false
-          })
+          this.setDealtAct(3)
         }
       ],
       [
@@ -396,9 +392,9 @@ global.wxPage({
             return actBaseInfo[activityType]['actStatus'][k] === '距结束仅剩'
           })
           this.setData({
-            'dealtAct.canBuy': true,
             'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState })
           })
+          this.setDealtAct(0)
           clearTimeout(this.actBartime)
           this.getCountDown({
             activityType,
@@ -657,6 +653,31 @@ global.wxPage({
         util.jumpToWeb('/wxapp/bargain/help')
         break
     }
+  },
+  setDealtAct(actState){
+    let {activity} = this.data.goodsInfo , productInfo = this.data.productInfo
+    let dealtAct = {
+      error:0
+    }
+    if(actState && actState === 3 || actState === 4){
+      dealtAct = {
+        error:1,
+        errorMessage:`${actBaseInfo[activity.activityType]['actName']}${actState === 4 ? actBaseInfo[activity.activityType]['actStatus'][actState] : '活动未开始'}`
+      }
+    } else if((activity && [1,3,5].includes(activity.activityType) && [1,2,3,4,5,6].includes(activity.actState))){
+      dealtAct = {
+        error:1,
+        errorMessage:`${actBaseInfo[activity.activityType]['actName']}${actBaseInfo[activity.activityType]['actStatus'][activity.actState]}`
+      }
+    }
+    if (productInfo.stock === 0) {
+      dealtAct = {
+        error:2
+      }
+    }
+    this.setData({
+      dealtAct
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
