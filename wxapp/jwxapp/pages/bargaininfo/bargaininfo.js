@@ -166,7 +166,7 @@ global.wxPage({
   // 直接购买
   to_buy: function () {
     util.navigateTo({
-      url: "/pages/item/item?goodsId=" + bargain_info.recordInfo.goodsId
+      url: "/pages/item/item?gid=" + bargain_info.recordInfo.goodsId
     })
   },
   toWhere: function (e) {

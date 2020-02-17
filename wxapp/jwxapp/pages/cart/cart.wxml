@@ -20,7 +20,7 @@
               </view>
 
               <!-- 秒杀活动 -->
-              <view class='sec_kill_area' wx:if="{{item.activityType == 5}}"  bindtap='to_seckill' data-link="pages/item/item?activityId={{item.activityId}}&&activityType=5&&goodsId={{item.goodsId}}" style='background:{{somColor}};'>
+              <view class='sec_kill_area' wx:if="{{item.activityType == 5}}"  bindtap='to_seckill' data-link="pages/item/item?aid={{item.activityId}}&&atp=5&&gid={{item.goodsId}}" style='background:{{somColor}};'>
                 <view class='sec_left'>
                   <view class='sec_icon' style='background:{{comColor}};'>秒杀</view>
                   <view class='sec_tips'>该商品正在参与秒杀</view>

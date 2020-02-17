@@ -166,7 +166,7 @@ global.wxComponent({
     },
     toItem() {
       util.jumpLink(
-        `pages/item/item?goodsId=${this.data.goodsData.goodsId}&activityType=${this.data.goodsData.activityType}&activityId=${this.data.goodsData.activityId}`,
+        `pages/item/item?gid=${this.data.goodsData.goodsId}&atp=${this.data.goodsData.activityType}&aid=${this.data.goodsData.activityId}`,
         'navigateTo'
       );
     }
