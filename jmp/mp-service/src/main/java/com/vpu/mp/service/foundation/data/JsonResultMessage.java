@@ -483,7 +483,11 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_SORRY = "excel.sorry";
 	public static final String CODE_EXCEL_OK = "excel.ok";
 	public static final String BATCHID_NOT_NULL = "batchId.not.null";
-
+	public static final String CODE_EXCEL_READ_ERRO = "code.excel.read.erro";
+	public static final String CODE_EXCEL_NUM_MAX = "code.excel.num.max";
+	public static final String CODE_EXCEL_NUM_MIN = "code.excel.num.min";
+	public static final String CODE_EXCEL_HAVE_SAME = "code.excel.have.same";
+	
 	/**
 	 * 概览
 	 */
@@ -867,4 +871,6 @@ public class JsonResultMessage {
     public static final String USER_CARD_ABOLITION = "user.card.abolition";
     
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
+    public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
+
 }

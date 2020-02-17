@@ -2,6 +2,9 @@ package com.vpu.mp.service.foundation.excel;
 
 import static java.util.regex.Pattern.compile;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -11,14 +14,17 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author 李晓冰
@@ -269,4 +275,30 @@ public class ExcelUtil {
         Pattern pattern = compile("^[-\\+]?[\\d]*\\.[0]*$");
         return pattern.matcher(str).matches();
     }
+    
+    /**
+     * 返回文件类型校验
+     * @param multipartFile
+     * @return
+     */
+	public static ExcelTypeEnum checkFile(MultipartFile multipartFile) {
+		if (multipartFile == null) {
+			return null;
+		}
+		ExcelTypeEnum type = null;
+		try {
+			InputStream inputStream = multipartFile.getInputStream();
+			BufferedInputStream bis = new BufferedInputStream(inputStream);
+			FileMagic fileMagic = FileMagic.valueOf(bis);
+			if (Objects.equals(fileMagic, FileMagic.OLE2)) {
+				type = ExcelTypeEnum.XLS;
+			}
+			if (Objects.equals(fileMagic, FileMagic.OOXML)) {
+				type = ExcelTypeEnum.XLSX;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return type;
+	}
 }
