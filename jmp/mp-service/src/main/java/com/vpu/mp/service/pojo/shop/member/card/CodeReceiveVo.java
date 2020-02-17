@@ -31,4 +31,5 @@ public class CodeReceiveVo {
 	private String cardPwd;
 	/** - 是否废除 0： 没有，1： 已废除 */
 	private Byte delFlag;
+	private String errorMsg;
 }
