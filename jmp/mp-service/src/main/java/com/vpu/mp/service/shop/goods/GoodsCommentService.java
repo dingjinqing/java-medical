@@ -817,6 +817,7 @@ public class GoodsCommentService extends ShopBaseService {
                 setUserId(param.getUserId());
                 setAmount(BigDecimal.valueOf(Double.parseDouble(param.getAward())));
                 setOrderSn(param.getOrderSn());
+                setRemarkId(RemarkTemplate.COMMENT_HAS_GIFT.code);
               }
             },
             TradeOptParam.builder().tradeType((byte)8).tradeFlow((byte)1).build());
