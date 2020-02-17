@@ -714,12 +714,13 @@ public class CommodityStatisticsService extends ShopBaseService {
     }
 
     private <T extends Number> boolean weekRule(Record4<Date, Integer, T, String> t, Tuple2<LocalDate, LocalDate> u) {
-        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u.v1()) > 0 ||
+        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u.v1()) > 0 &&
             t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u.v2()) < 0;
     }
 
     private <T extends Number> boolean monthRule(Record4<Date, Integer, T, String> t, LocalDate u) {
-        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().getYear() == u.getYear();
+        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().getYear() == u.getYear() &&
+            t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().getMonth() == u.getMonth();
     }
 
     private <T extends Number> boolean yearRule(Record4<Date, Integer, T, String> t, LocalDate u) {
