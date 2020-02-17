@@ -1058,4 +1058,9 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_user_rfm_summary</code>.
      */
     public static final UserRfmSummary USER_RFM_SUMMARY = com.vpu.mp.db.shop.tables.UserRfmSummary.USER_RFM_SUMMARY;
+    /**
+     * 会员备注
+     */
+    public static final UserRemark USER_REMARK = com.vpu.mp.db.shop.tables.UserRemark.USER_REMARK;
+
 }
