@@ -75,12 +75,12 @@
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop=""
+                prop="type"
                 :label="$t('pledge.goods')+'：'"
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop=""
+                prop="level"
                 :label="$t('pledge.priority')+'：'"
                 align="center"
               ></el-table-column>
@@ -318,6 +318,18 @@ export default {
             item.pledgeLogo = `${this.$imageHost}` + `/` + item.pledgeLogo
           })
           this.tableData = res.content.list
+          this.tableData.map((item, index) => {
+            if (item.type === 1) {
+              console.log('以前：', item.type)
+              item.type = '全部商品'
+              console.log('以后：', item.type)
+            }
+            if (item.type === 2) {
+              console.log('以前：', item.type)
+              item.type = '部分商品'
+              console.log('以后：', item.type)
+            }
+          })
           console.log('state:', Boolean(res.content.state))
           this.switchValue = Boolean(res.content.state)
         }
