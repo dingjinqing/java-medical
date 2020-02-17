@@ -1356,36 +1356,26 @@ public class UserCardService extends ShopBaseService {
 		}else{
 			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
 			uCard.setIsGet(isGet);
-			if(uCard.getExpireTime()!=null) {
-				if(uCard.getStartTime()!=null) {
-					uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
-				}
-				if(uCard.getEndTime()!=null) {
-					uCard.setEndDate(uCard.getEndTime().toLocalDateTime().toLocalDate());
-				}
-				uCard.setExpireType(NumberUtils.BYTE_ZERO);
+			
+			// 计算用户卡的有效时间
+			EffectTimeParam tp = new EffectTimeParam();
+			tp.setStartTime(uCard.getStartTime());
+			tp.setEndTime(uCard.getEndTime());
+			tp.setExpireTime(uCard.getExpireTime());
+			tp.setExpireType(uCard.getExpireType());
+			tp.setCreateTime(uCard.getUCreateTime());
+			
+			EffectTimeBean tB = CardUtil.getUserCardEffectTime(tp);
+			if(CardUtil.isCardExpired(tB.getEndTime())) {
+				logger().info("卡过期");
+				uCard.setStatus(-1);
 			}else {
-				uCard.setExpireType(CardConstant.MCARD_ET_FOREVER);
-			}
-			if (!CardUtil.isCardTimeForever(uCard.getExpireType())) {
-				if (CardUtil.isCardFixTime(uCard.getExpireType()) && CardUtil.isCardExpired(uCard.getEndTime())) {
-					logger().info("卡过期");
-					uCard.setStatus(-1);
-				} else {
-					uCard.setStatus(1);
-				}
-
-				if (CardUtil.isCardFixTime(uCard.getExpireType())) {
-					if(uCard.getStartTime() != null) {
-						uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
-					}
-					if(uCard.getEndTime() != null) {
-						uCard.setEndDate(uCard.getEndTime().toLocalDateTime().toLocalDate());
-					}
-				}
-			} else {
 				uCard.setStatus(1);
 			}
+			uCard.setStartDate(tB.getStartDate());
+			uCard.setEndDate(tB.getEndDate());
+			uCard.setExpireType(tB.getExpireType());
+			
 			uCard.setScoreAmount(scoreService.getAccumulationScore(param.getUserId()));
 			uCard.setPaidAmount(orderInfoService.getAllConsumpAmount(param.getUserId()));
 			if(CardUtil.isGradeCard(uCard.getCardType())) {
@@ -1403,7 +1393,6 @@ public class UserCardService extends ShopBaseService {
 
 			uCard.setShopAvatar(getCardAvatar());
 			// 背景图片
-
 			logger().info("虚拟卡订单下单时间");
 			VirtualOrderRecord order = virtualOrderService.getInfoByNo(uCard.getCardNo());
 			if(order != null) {
