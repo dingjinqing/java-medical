@@ -98,7 +98,7 @@
                   v-show="param.goodsRange===1"
                   @click="showChoosingGoods"
                 >{{goodsBtnName}}</el-button>
-                <span v-show="param.goodsRange===1">{{ $t('gift.selected') }}：{{goodslength}} {{ $t('gift.selectedNUm') }}</span>
+                <span v-show="param.goodsRange===1" @click="onlyShowChoosingGoods" >{{ $t('gift.selected') }}：{{goodslength}} {{ $t('gift.selectedNUm') }}</span>
               </el-form-item>
               <el-form-item
                 :label="$t('gift.giftConditions') + '：'"
@@ -302,7 +302,7 @@
               type="primary"
               @click="showChoosingGoods"
             >{{ $t('gift.addFreebies') }}</el-button>
-            <span class="remarks">{{ $t('gift.addTip') }}</span>
+            <span class="remarks" >{{ $t('gift.addTip') }}</span>
           </el-col>
         </el-row>
         <el-row style="margin-top: 10px;">
@@ -418,6 +418,7 @@
       <choosingGoods
         :tuneUpChooseGoods="tuneUpGoods"
         @resultGoodsIds="getGoodsIds"
+        :onlyShowChooseGoods="isOnlyShowChooseGoods"
         :chooseGoodsBack="this.param.goodsIds"
       />
 
@@ -617,6 +618,7 @@ export default {
         src1: `${this.$imageHost}/image/admin/new_preview_image/gift.jpg`
       },
       tuneUpChooseGoods: false, // 商品弹窗
+      isOnlyShowChooseGoods: false,
       tuneUpGoods: false,
       // 商品弹窗回调数据
       goodslength: 0, // 商品个数
@@ -864,19 +866,21 @@ export default {
       if (this.step === 1) {
         this.tuneUpGoods = !this.tuneUpGoods
       } else {
+        this.isOnlyShowChooseGoods = false
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
         console.log(this.specsIds)
       }
+    },
 
-      // this.$http.$emit('choosingGoodsFlag', true)
-      // switch (this.step) {
-      //   case 1:
-      //     this.transmitEditGoodsId(this.tmpGoodsIds)
-      //     break
-      //   case 2:
-      //     this.transmitEditGoodsId(this.tmpGiftGoodsIds)
-      //     break
-      // }
+    // 选择商品弹窗
+    onlyShowChoosingGoods () {
+      if (this.step === 1) {
+        this.tuneUpGoods = !this.tuneUpGoods
+      } else {
+        this.isOnlyShowChooseGoods = true
+        this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+        console.log(this.specsIds)
+      }
     },
 
     // 选择商品弹窗回调显示

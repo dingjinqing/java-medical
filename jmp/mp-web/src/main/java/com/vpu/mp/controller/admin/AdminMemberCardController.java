@@ -13,16 +13,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.BatchGroupVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchDownLoadParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
@@ -310,5 +315,72 @@ public class AdminMemberCardController extends AdminBaseController {
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,"messages");
 		export2Excel(workbook, fileName, response);
 		logger().info("结束获取导入领取码模板");
+	}
+	
+	/**
+	 * 导入领取码模板
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/card/code/import/insert")
+	public JsonResult importUser(CardBatchParam param) {
+		logger().info("导入领取码模板");
+		MultipartFile file = param.getFile();
+		logger().info("上传文件:" + file.getName());
+		ExcelTypeEnum checkFile = shop().member.userImportService.checkFile(file);
+		if (checkFile == null) {
+			return fail(JsonResultCode.CODE_EXCEL_ERRO);
+		}
+		JsonResultCode insertCardNo = shop().member.card.insertCardNo(getLang(), param);
+		if(insertCardNo.equals(JsonResultCode.CODE_SUCCESS)) {
+			return success();
+		}
+		return fail(insertCardNo);
+	}
+	
+	/**
+	 * 获得生成/导入记录
+	 * @param batchId
+	 * @return
+	 */
+	@GetMapping(value = "/card/code/importlist/{batchId}")
+	public JsonResult getList(@PathVariable Integer batchId) {
+		BatchGroupVo batchGroupList = shop().member.card.getBatchGroupList(batchId);
+		return success(batchGroupList);
+		
+	}
+	
+	/**
+	 * 下载失败数据
+	 * 
+	 * @param param
+	 * @param response
+	 */
+	@PostMapping(value = "/card/code/import/fail")
+	public void getErrorExcel(@RequestBody CardBatchDownLoadParam param, HttpServletResponse response) {
+		logger().info("开始下载领取码失败数据");
+		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),false);
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, LANGUAGE_TYPE_EXCEL,
+				"messages");
+		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		export2Excel(workbook, fileName + dateFormat, response);
+		logger().info("结束下载领取码失败数据");
+	}
+	
+	/**
+	 * 下载成功数据
+	 * 
+	 * @param param
+	 * @param response
+	 */
+	@PostMapping(value = "/card/code/import/success")
+	public void getSuccessExcel(@RequestBody CardBatchDownLoadParam param, HttpServletResponse response) {
+		logger().info("开始下载领取码成功数据");
+		Workbook workbook = shop().member.card.getExcel(param.getBatchId(), getLang(),true);
+		String fileName = Util.translateMessage(getLang(), JsonResultMessage.CARD_NO_IMPORT_NAME, LANGUAGE_TYPE_EXCEL,
+				"messages");
+		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		export2Excel(workbook, fileName + dateFormat, response);
+		logger().info("结束下载领取码成功数据");
 	}
 }

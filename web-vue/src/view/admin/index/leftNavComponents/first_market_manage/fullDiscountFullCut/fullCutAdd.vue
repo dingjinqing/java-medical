@@ -536,6 +536,8 @@
                 @click="chooseGoodsHandler"
                 v-if="!params.id"
               > + 选择商品</div>
+              <span @click="onlyChooseGoodsHandler" style="color: #e4393c"
+              >{{$t('adSharePolite.alreadyChoose')}}{{this.selectedGoodsIdList.length}}{{$t('adSharePolite.goods')}}</span>
               <div
                 class="goods_area"
                 v-if="goodsList && goodsList.length > 0"
@@ -817,6 +819,7 @@
       <ChoosingGoods
         :tuneUpChooseGoods='tuneUpChooseGoodsDialog'
         :chooseGoodsBack="selectedGoodsIdList"
+        :onlyShowChooseGoods="isOnlyShowChooseGoods"
         @resultGoodsDatas="returnGoodsData"
       />
 
@@ -972,6 +975,7 @@ export default {
       }],
       // 选择商品
       tuneUpChooseGoodsDialog: false,
+      isOnlyShowChooseGoodsL: false,
       selectedGoodsIdList: [],
       goodsList: [],
       // 选择商品品牌
@@ -1177,6 +1181,12 @@ export default {
     },
     // 选择商品数据处理
     chooseGoodsHandler () {
+      this.isOnlyShowChooseGoods = false
+      this.tuneUpChooseGoodsDialog = !this.tuneUpChooseGoodsDialog
+    },
+    // 选择商品数据处理-部分
+    onlyChooseGoodsHandler () {
+      this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoodsDialog = !this.tuneUpChooseGoodsDialog
     },
     returnGoodsData (val) {

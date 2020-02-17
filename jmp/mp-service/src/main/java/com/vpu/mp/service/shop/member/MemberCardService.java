@@ -7,7 +7,9 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelReader;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelUtil;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -26,6 +28,9 @@ import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -41,6 +46,7 @@ import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.card.NormalCardOpt;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
+import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
@@ -56,8 +62,12 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -2139,13 +2149,161 @@ public class MemberCardService extends ShopBaseService {
 		List<CardNoExcelVo> list = new ArrayList<CardNoExcelVo>();
 		for (int i = 11; i < 21; i++) {
 			CardNoExcelVo vo = new CardNoExcelVo();
-			vo.setCardNo("C1111" + i);
+			vo.setCode("C1111" + i);
 			list.add(vo);
 		}
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
 		excelWriter.writeModelList(list, CardNoExcelVo.class);
 		return workbook;
+	}
+	/**
+	 * 文件导入领取码
+	 * @param lang
+	 * @param param
+	 * @return
+	 */
+	public JsonResultCode insertCardNo(String lang, CardBatchParam param) {
+		MultipartFile multipartFile = param.getFile();
+		ExcelTypeEnum type = ExcelUtil.checkFile(multipartFile);
+		if (type == null) {
+			// 文件类型不正确，请上传Excel文件
+			return JsonResultCode.CODE_EXCEL_ERRO;
+		}
+		Workbook workbook = null;
+		try {
+			InputStream inputStream = multipartFile.getInputStream();
+			workbook = ExcelFactory.createWorkbook(inputStream, type);
+		} catch (IOException e) {
+			logger().info("excel读取错误");
+			logger().info(e.getMessage(), e);
+			return JsonResultCode.CODE_EXCEL_READ_ERRO;
+		}
+		UserImExcelWrongHandler handler = new UserImExcelWrongHandler();
+		ExcelReader excelReader = new ExcelReader(lang, workbook, handler);
+		List<CardNoExcelVo> models = excelReader.readModelList(CardNoExcelVo.class);
+		return importCardCode(models, param);
+	}
+	
+	/**
+	 * 插入领取码
+	 * @param list
+	 * @param param
+	 * @return
+	 */
+	public JsonResultCode importCardCode(List<CardNoExcelVo> list,CardBatchParam param) {
+		int newNumber = list.size();
+		if (newNumber > 10000) {
+			// return 单个批次不能超过10000';
+			return JsonResultCode.CODE_EXCEL_NUM_MAX;
+		}
+		if (newNumber == 0) {
+			// return 单个批次不能为0';
+			return JsonResultCode.CODE_EXCEL_NUM_MIN;
+		}
+		List<String> list2 = new ArrayList<String>();
+		for (CardNoExcelVo cardNoExcelVo : list) {
+			list2.add(cardNoExcelVo.getCode());
+		}
+		boolean isRepeat = list2.size() != new HashSet<String>(list2).size();
+		if (isRepeat) {
+			// return "存在重复的领取码，请检查！";
+			return JsonResultCode.CODE_EXCEL_HAVE_SAME;
+		}
+		CardBatchParam param2=new CardBatchParam();
+		param2.setAction((byte)2);
+		param2.setNumber(newNumber);
+		param2.setBatchName(param.getBatchName());
+		Integer batchId = cardDao.createCardBatch(param2);
+		if(batchId==0) {
+			logger().info("生成batchId错误");
+			return JsonResultCode.CODE_FAIL;
+		}
+		Integer groupId = cardDao.generateGroupId(batchId);
+		param2.setBatchId(batchId);
+		param2.setGroupId(groupId);
+		int num = cardDao.insertCardReceiveCodeByCheck(param2, list2);
+		if(num==0) {
+			logger().info("导入存在问题");
+			return JsonResultCode.CODE_FAIL;
+		}
+		return JsonResultCode.CODE_SUCCESS;
+	}
+	
+
+	/**
+	 * 获得生成/导入记录
+	 * @param batchId
+	 * @return
+	 */
+	public BatchGroupVo getBatchGroupList(Integer batchId) {
+		List<CodeReceiveVo> list = cardDao.getBatchGroupList(batchId);
+		int successNum = 0;
+		int failNum = 0;
+		for (CodeReceiveVo vo : list) {
+			String errorMsg = vo.getErrorMsg();
+			if (StringUtils.isEmpty(errorMsg)) {
+				successNum++;
+			} else {
+				failNum++;
+			}
+		}
+		return new BatchGroupVo(batchId, successNum, failNum);
+	}
+	
+	
+	/**
+	 * 返回Excel信息
+	 * 
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getExcel(Integer batchId, String lang, Boolean success) {
+		if (success) {
+			logger().info("获取导入成功的信息");
+			return getModelMsg(lang, null, getSuccessById(batchId, lang));
+		} else {
+			logger().info("获取导入失败的信息");
+			return getModelMsg(lang, getErrorMsgById(batchId, lang), null);
+		}
+
+	}
+
+	public Workbook getModelMsg(String lang, List<CardNoExcelFailVo> list, List<CardNoExcelVo> list2) {
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		if (null == list) {
+			excelWriter.writeModelList(list2, CardNoExcelVo.class);
+		}
+		if (null == list2) {
+			excelWriter.writeModelList(list, CardNoExcelFailVo.class);
+		}
+		return workbook;
+	}
+
+	private List<CardNoExcelFailVo> getErrorMsgById(Integer batchId, String lang) {
+		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, false);
+		List<CardNoExcelFailVo> list = new ArrayList<CardNoExcelFailVo>();
+		if (fetch != null) {
+			list = fetch.into(CardNoExcelFailVo.class);
+		}
+		for (CardNoExcelFailVo vo : list) {
+			String errorMsg = CardNoImportTemplate.getNameByCode(vo.getErrorMsg(), lang);
+			if (StringUtil.isNotEmpty(errorMsg)) {
+				vo.setErrorMsg(errorMsg);
+			}
+		}
+		return list;
+	}
+
+	private List<CardNoExcelVo> getSuccessById(Integer batchId, String lang) {
+		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, true);
+		List<CardNoExcelVo> list = new ArrayList<CardNoExcelVo>();
+		if (fetch != null) {
+			list = fetch.into(CardNoExcelVo.class);
+		}
+		return list;
 	}
 	
 }

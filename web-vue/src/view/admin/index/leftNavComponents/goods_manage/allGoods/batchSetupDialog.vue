@@ -33,7 +33,7 @@
                 <el-table
                   class="version-manage-table"
                   header-row-class-name="tableClss"
-                  :data="checkGoodsData"
+                  :data="goodsPriceShowData"
                   border
                   style="width: 100%"
                 >
@@ -51,10 +51,7 @@
                         <div class="goods_message">
                           <div class="item_goods_name">{{scope.row.goodsName}}</div>
                           <div class="item_goods_desc">
-                            <span
-                              v-for="(item,index) in scope.row.goodsSpecProducts"
-                              :key="index"
-                            >{{item.prdSpecs}}{{index!==scope.row.goodsSpecProducts.length-1?';':''}}</span>
+                            <span>{{scope.row.prdDesc}}</span>
                           </div>
                         </div>
 
@@ -66,21 +63,7 @@
                     label="原价"
                     align="center"
                   >
-                    <template slot-scope="scope">
-                      <div>
-                        <span>
-                          <!-- <template v-if="scope.row.prdMinShopPrice === scope.row.prdMaxShopPrice">
-                            {{scope.row.prdMinShopPrice}}
-                          </template>
-                          <template v-else>
-                            {{scope.row.prdMinShopPrice}}~{{scope.row.prdMaxShopPrice}}
-                          </template> -->
-                          <template>
-                            {{scope.row.prdMinShopPrice.toFixed(2)}}
-                          </template>
-                        </span>
-                      </div>
-                    </template>
+
                   </el-table-column>
                   <el-table-column
                     label="折扣"
@@ -634,6 +617,7 @@
   </div>
 </template>
 <script>
+import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 export default {
   components: {
     sortCatTreeSelect: () => import('@/components/admin/sortCatTreeSelect') // 商家分类
@@ -798,7 +782,8 @@ export default {
         }
       ],
       membershipValueCheckArr: [], // 会员专享下拉框选中集合
-      placeOfDeliveryInput: '' // 发货地
+      placeOfDeliveryInput: '', // 发货地
+      goodsPriceShowData: [] // 商品价格模块渲染数据
     }
   },
   watch: {
@@ -812,6 +797,7 @@ export default {
           this.$set(this.checkGoodsData[index], 'discountInputVal', '')
         })
         this.judgeIsEdit = false
+        this.handleToInit()
       }
     },
     customTime (newData) {
@@ -822,6 +808,27 @@ export default {
     console.log(new Date().format('yyyy-MM-dd hh:mm:ss'))
   },
   methods: {
+    // 初始请求数据
+    handleToInit () {
+      let params = []
+      this.checkGoodsData.forEach((item, index) => {
+        params.push(item.goodsId)
+      })
+      getGoodsInfosByGoodIds({ goodsIds: params }).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          res.content.forEach((item, index) => {
+            item.goodsSpecProducts.forEach((itemC, indexC) => {
+              console.log(itemC)
+              let obj = Object.assign(item, itemC)
+              console.log(item, itemC, obj)
+              this.goodsPriceShowData.push(obj)
+            })
+          })
+        }
+      })
+      console.log(this.goodsPriceShowData)
+    },
     // 内层判断是否编辑弹窗确认事件
     handleToCloseInnerDialog () {
       this.innerVisible = false

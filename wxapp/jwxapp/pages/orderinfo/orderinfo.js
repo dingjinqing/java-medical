@@ -72,7 +72,7 @@ global.wxPage({
   },
   itemPage (e) {
     util.jumpLink(
-      `pages/item/item?goodsId=${e.currentTarget.dataset.goods_id}`,
+      `pages/item/item?gid=${e.currentTarget.dataset.goods_id}`,
       "navigateTo"
     );
   },
