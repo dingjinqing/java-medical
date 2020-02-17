@@ -56,14 +56,14 @@ ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAU
 ALTER TABLE `b2c_pledge` ADD COLUMN `type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '商品范围:1全部商品,2指定商品' ;
 ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '商品优先级' ;
 
-CREATE TABLE `b2c_user_remark` (
-  `id`          mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id`     mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `remark`      TEXT COMMENT '会员备注',
-  `add_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_delete`   tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除',
-  PRIMARY KEY (`id`),
-  key `user_id` (`user_id`)
-)COMMENT='会员备注';
+-- CREATE TABLE `b2c_user_remark` (
+--   `id`          mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
+--   `user_id`     mediumint(8) unsigned NOT NULL DEFAULT '0',
+--   `remark`      TEXT COMMENT '会员备注',
+--   `add_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   `is_delete`   tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除',
+--   PRIMARY KEY (`id`),
+--   key `user_id` (`user_id`)
+-- )COMMENT='会员备注';
 
 /***********************2.9*********************END*/
