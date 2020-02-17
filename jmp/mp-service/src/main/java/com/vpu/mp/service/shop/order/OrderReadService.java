@@ -134,7 +134,7 @@ public class OrderReadService extends ShopBaseService {
 	@Autowired
 	public OrderInfoService orderInfo;
     @Autowired
-    private AdminMarketOrderInfoService marketOrderInfo;
+    public AdminMarketOrderInfoService marketOrderInfo;
 	@Autowired
 	private OrderGoodsService orderGoods;
 	@Autowired
@@ -907,14 +907,7 @@ public class OrderReadService extends ShopBaseService {
      * @return
      */
     public PageResult<MarketOrderListVo> getMarketOrderList(MarketOrderListParam param, byte goodsType) {
-        PageResult<MarketOrderListVo> res = marketOrderInfo.getMarketOrderList(param,goodsType);
-
-        /** 填充商品行 */
-        for(MarketOrderListVo order : res.dataList){
-            order.setGoods(orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn()));
-        }
-
-        return res;
+        return marketOrderInfo.getMarketOrderPageList(param,goodsType);
     }
 
     /**

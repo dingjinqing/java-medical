@@ -178,6 +178,20 @@ public class JsonResultMessage {
     public static final String BARGAIN_USER_LIST_BARGAIN_MONEY = "bargain.user.list.bargain_money";
 
     /**
+     *  营销-砍价excel导出-砍价订单
+     */
+    public static final String BARGAIN_ORDER_LIST_FILENAME = "bargain.order.list.file_name";
+    public static final String BARGAIN_ORDER_LIST_ORDER_SN = "bargain.order.list.order_sn";
+    public static final String BARGAIN_ORDER_LIST_BARGAIN_GOODS = "bargain.order.list.bargain_goods";
+    public static final String BARGAIN_ORDER_LIST_PRICE = "bargain.user.order.price";
+    public static final String BARGAIN_ORDER_LIST_CREATE_TIME = "bargain.order.list.create_time";
+    public static final String BARGAIN_ORDER_LIST_ORDER_USER = "bargain.order.list.order_user";
+    public static final String BARGAIN_ORDER_LIST_CONSIGNEE = "bargain.order.list.consignee";
+    public static final String BARGAIN_ORDER_LIST_ORDER_STATUS = "bargain.order.list.order_status";
+
+
+
+    /**
      * 营销-优惠券礼包订单excel导出
      */
     public static final String COUPON_PACK_ORDER_FILENAME = "coupon.pack.order.filename";
@@ -872,5 +886,6 @@ public class JsonResultMessage {
     
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
+    public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
 
 }

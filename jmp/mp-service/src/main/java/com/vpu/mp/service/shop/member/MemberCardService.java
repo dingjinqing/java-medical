@@ -2181,8 +2181,19 @@ public class MemberCardService extends ShopBaseService {
 		}
 		UserImExcelWrongHandler handler = new UserImExcelWrongHandler();
 		ExcelReader excelReader = new ExcelReader(lang, workbook, handler);
-		List<CardNoExcelVo> models = excelReader.readModelList(CardNoExcelVo.class);
-		return importCardCode(models, param);
+		Byte receiveAction = param.getReceiveAction();
+		if (Objects.equals(receiveAction, (byte) 1)) {
+			logger().info("领取码");
+			List<CardNoExcelVo> models = excelReader.readModelList(CardNoExcelVo.class);
+			return importCardCode(models, param);
+		}
+		if (Objects.equals(receiveAction, (byte) 2)) {
+			logger().info("卡号+密码");
+			List<CardNoPwdExcelVo> models = excelReader.readModelList(CardNoPwdExcelVo.class);
+			return importCardPwd(models, param);
+		}
+		logger().info("excelReader："+excelReader);
+		return JsonResultCode.CODE_FAIL;
 	}
 	
 	/**
@@ -2230,6 +2241,53 @@ public class MemberCardService extends ShopBaseService {
 		return JsonResultCode.CODE_SUCCESS;
 	}
 	
+	
+	/**
+	 * 插入卡号密码
+	 * @param list
+	 * @param param
+	 * @return
+	 */
+	public JsonResultCode importCardPwd(List<CardNoPwdExcelVo> list,CardBatchParam param) {
+		int newNumber = list.size();
+		if (newNumber > 10000) {
+			// return 单个批次不能超过10000';
+			return JsonResultCode.CODE_EXCEL_NUM_MAX;
+		}
+		if (newNumber == 0) {
+			// return 单个批次不能为0';
+			return JsonResultCode.CODE_EXCEL_NUM_MIN;
+		}
+		List<String> list2 = new ArrayList<String>();
+		List<String> list3 = new ArrayList<String>();
+		for (CardNoPwdExcelVo cardNoExcelVo : list) {
+			list2.add(cardNoExcelVo.getCodeNo());
+			list3.add(cardNoExcelVo.getCardPwd());
+		}
+//		boolean isRepeat = list2.size() != new HashSet<String>(list2).size();
+//		if (isRepeat) {
+//			// return "存在重复的卡号，请检查！";
+//			return JsonResultCode.CODE_EXCEL_HAVE_SAME;
+//		}
+		CardBatchParam param2=new CardBatchParam();
+		param2.setAction((byte)1);
+		param2.setNumber(newNumber);
+		param2.setBatchName(param.getBatchName());
+		Integer batchId = cardDao.createCardBatch(param2);
+		if(batchId==0) {
+			logger().info("生成batchId错误");
+			return JsonResultCode.CODE_FAIL;
+		}
+		Integer groupId = cardDao.generateGroupId(batchId);
+		param2.setBatchId(batchId);
+		param2.setGroupId(groupId);
+		int num = cardDao.insertIntoCardReceiveCodeByCheck(param2, list2,list3);
+		if(num==0) {
+			logger().info("导入存在问题");
+			return JsonResultCode.CODE_FAIL;
+		}
+		return JsonResultCode.CODE_SUCCESS;
+	}
 
 	/**
 	 * 获得生成/导入记录
@@ -2237,6 +2295,11 @@ public class MemberCardService extends ShopBaseService {
 	 * @return
 	 */
 	public BatchGroupVo getBatchGroupList(Integer batchId) {
+		CardReceiveCodeRecord batch = cardDao.getBatch(batchId);
+		if(batch==null) {
+			return new BatchGroupVo();
+		}
+		CodeReceiveVo into = batch.into(CodeReceiveVo.class);
 		List<CodeReceiveVo> list = cardDao.getBatchGroupList(batchId);
 		int successNum = 0;
 		int failNum = 0;
@@ -2248,7 +2311,7 @@ public class MemberCardService extends ShopBaseService {
 				failNum++;
 			}
 		}
-		return new BatchGroupVo(batchId, successNum, failNum);
+		return new BatchGroupVo(batchId, successNum, failNum,into.getName());
 	}
 	
 	
@@ -2259,17 +2322,36 @@ public class MemberCardService extends ShopBaseService {
 	 * @param lang
 	 * @return
 	 */
-	public Workbook getExcel(Integer batchId, String lang, Boolean success) {
+	public Workbook getExcel(Integer batchId, String lang, Boolean success, Boolean isPwd) {
 		if (success) {
 			logger().info("获取导入成功的信息");
-			return getModelMsg(lang, null, getSuccessById(batchId, lang));
+			if (isPwd) {
+				logger().info("卡号+密码领取导出");
+				return getModelPwdMsg(lang, null, getSuccessPwdById(batchId, lang));
+			} else {
+				logger().info("领取码领取导出");
+				return getModelMsg(lang, null, getSuccessById(batchId, lang));
+			}
 		} else {
 			logger().info("获取导入失败的信息");
-			return getModelMsg(lang, getErrorMsgById(batchId, lang), null);
+			if (isPwd) {
+				logger().info("卡号+密码领取导出");
+				return getModelPwdMsg(lang, getErrorMsgPwdById(batchId, lang), null);
+			} else {
+				logger().info("领取码领取导出");
+				return getModelMsg(lang, getErrorMsgById(batchId, lang), null);
+			}
 		}
 
 	}
 
+	/**
+	 * 领取码领取导出
+	 * @param lang
+	 * @param list
+	 * @param list2
+	 * @return
+	 */
 	public Workbook getModelMsg(String lang, List<CardNoExcelFailVo> list, List<CardNoExcelVo> list2) {
 		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
@@ -2282,6 +2364,12 @@ public class MemberCardService extends ShopBaseService {
 		return workbook;
 	}
 
+	/**
+	 * 查询领取码错误的
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
 	private List<CardNoExcelFailVo> getErrorMsgById(Integer batchId, String lang) {
 		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, false);
 		List<CardNoExcelFailVo> list = new ArrayList<CardNoExcelFailVo>();
@@ -2297,6 +2385,12 @@ public class MemberCardService extends ShopBaseService {
 		return list;
 	}
 
+	/**
+	 * 查询领取码正确的
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
 	private List<CardNoExcelVo> getSuccessById(Integer batchId, String lang) {
 		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, true);
 		List<CardNoExcelVo> list = new ArrayList<CardNoExcelVo>();
@@ -2304,6 +2398,80 @@ public class MemberCardService extends ShopBaseService {
 			list = fetch.into(CardNoExcelVo.class);
 		}
 		return list;
+	}
+	
+	/**
+	 * 卡号+密码领取导出
+	 * @param lang
+	 * @param list
+	 * @param list2
+	 * @return
+	 */
+	public Workbook getModelPwdMsg(String lang, List<CardNoPwdExcelFailVo> list, List<CardNoPwdExcelVo> list2) {
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		if (null == list) {
+			excelWriter.writeModelList(list2, CardNoPwdExcelVo.class);
+		}
+		if (null == list2) {
+			excelWriter.writeModelList(list, CardNoPwdExcelFailVo.class);
+		}
+		return workbook;
+	}
+	
+	/**
+	 * 查询卡号+密码错误的
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	private List<CardNoPwdExcelFailVo> getErrorMsgPwdById(Integer batchId, String lang) {
+		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, false);
+		List<CardNoPwdExcelFailVo> list = new ArrayList<CardNoPwdExcelFailVo>();
+		if (fetch != null) {
+			list = fetch.into(CardNoPwdExcelFailVo.class);
+		}
+		for (CardNoPwdExcelFailVo vo : list) {
+			String errorMsg = CardNoImportTemplate.getNameByCode(vo.getErrorMsg(), lang);
+			if (StringUtil.isNotEmpty(errorMsg)) {
+				vo.setErrorMsg(errorMsg);
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * 查询卡号+密码正确的
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	private List<CardNoPwdExcelVo> getSuccessPwdById(Integer batchId, String lang) {
+		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, true);
+		List<CardNoPwdExcelVo> list = new ArrayList<CardNoPwdExcelVo>();
+		if (fetch != null) {
+			list = fetch.into(CardNoPwdExcelVo.class);
+		}
+		return list;
+	}
+	
+	/**
+	 * 会员卡号+密码模板
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getCardNoPwdTemplate(String lang) {
+		List<CardNoPwdExcelVo> list = new ArrayList<CardNoPwdExcelVo>();
+		for (int i = 11; i < 21; i++) {
+			CardNoPwdExcelVo vo = new CardNoPwdExcelVo();
+			vo.setCodeNo("C1111" + i);
+			vo.setCardPwd("123456");
+			list.add(vo);
+		}
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(list, CardNoPwdExcelVo.class);
+		return workbook;
 	}
 	
 }

@@ -9,6 +9,8 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.config.message.MessageConfigVo;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -16,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.shop.config.message.MessageConfigService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
@@ -40,6 +43,9 @@ public class OrderOperateSendMessage extends ShopBaseService {
     @Autowired
     private OrderGoodsService orderGoods;
 
+    @Autowired
+    private MessageConfigService messageConfig;
+
     /**
      * 发货模板消息
      * @param order
@@ -55,7 +61,10 @@ public class OrderOperateSendMessage extends ShopBaseService {
         //小程序数据
         String[][] maData = new String[][] { { goodsName }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, { order.getCompleteAddress() }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
         //公众号数据
-        String[][] mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+        String[][] mpData = null;
+        if(isSendMp(MessageTemplateConfigConstant.ORDER_SEND)) {
+            mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+        }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_DELIVER).data(maData).build())
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_DELIVER).data(mpData).build())
@@ -90,7 +99,10 @@ public class OrderOperateSendMessage extends ShopBaseService {
             //小程序数据
             String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "卖家已同意退款,将原路退回到你的账户" }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
             //公众号数据
-            String[][] mpData = new String[][] { { "退款" }, { returnOrder.getReasonDesc() }, { money }, { StringUtils.EMPTY }};
+            String[][] mpData = null;
+            if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
+                mpData = new String[][] { { "退款" }, { returnOrder.getReasonDesc() }, { money }, { StringUtils.EMPTY }};
+            }
             //参数
             param = RabbitMessageParam.builder()
                 .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(maData).build())
@@ -107,7 +119,10 @@ public class OrderOperateSendMessage extends ShopBaseService {
             //小程序数据
             String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { refuseReason }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
             //公众号数据
-            String[][] mpData = new String[][] { { "您的退款审核被拒绝" }, { returnOrder.getOrderSn() }, { applyTime }, { money }, { refuseReason }, { "具体信息请查看详情" }};
+            String[][] mpData = null;
+            if(isSendMp(MessageTemplateConfigConstant.FAIL_RETURN_MONEY)) {
+                mpData = new String[][] { { "您的退款审核被拒绝" }, { returnOrder.getOrderSn() }, { applyTime }, { money }, { refuseReason }, { "具体信息请查看详情" }};
+            }
             //参数：
             param = RabbitMessageParam.builder()
                 .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(maData).build())
@@ -126,17 +141,18 @@ public class OrderOperateSendMessage extends ShopBaseService {
     }
 
     /**
-     * 订单支付成功模板消息
+     * TODO 订单支付成功模板消息
      * @param order
      */
     public void send(OrderInfoRecord order, Result<OrderGoodsRecord> goods) {
         logger().info("订单支付成功模板消息start");
-        //TODO 查询配置是否发送模板消息
-
         //商品名称
         String goodsName = getGoodsName(goods);
         //公众号数据
-        String[][] mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, {  }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+        String[][] mpData = null;
+        if(isSendMp(MessageTemplateConfigConstant.ORDER_SUCCESS_PAY)) {
+            mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, {  }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+        }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_WXPAY_SUCCESS).data(mpData).build())
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
@@ -148,14 +164,16 @@ public class OrderOperateSendMessage extends ShopBaseService {
     }
 
     /**
-     * 订单未支付提醒模板消息
+     * TODO 订单未支付提醒模板消息
      * @param order
      */
     public void send(OrderInfoRecord order) {
         logger().info("订单未支付提醒模板消息start");
-        //TODO 查询配置是否发送模板消息
         //公众号数据
-        String[][] mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, {  }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+        String[][] mpData = null;
+        if(isSendMp(MessageTemplateConfigConstant.ORDER_NO_PAY)) {
+            mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, {  }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+        }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_NOPAY_NOTIFY).data(mpData).build())
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
@@ -172,9 +190,11 @@ public class OrderOperateSendMessage extends ShopBaseService {
      */
     public void sendSelfPickupSuccess(OrderInfoRecord order) {
         logger().info("订单取货成功通知模板消息start");
-        //TODO 查询配置是否发送模板消息
         //公众号数据
-        String[][] mpData = new String[][] {{"您好，您的订单已经取货完成"}, {order.getOrderSn()}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getConfirmTime())}, {"感谢您的使用"}};
+        String[][] mpData = null;
+        if(isSendMp(MessageTemplateConfigConstant.SUCCESS_GET_GOODS)) {
+            mpData = new String[][] {{"您好，您的订单已经取货完成"}, {order.getOrderSn()}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getConfirmTime())}, {"感谢您的使用"}};
+        }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_SELFPICKUP_SUCCESS).data(mpData).build())
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
@@ -193,7 +213,10 @@ public class OrderOperateSendMessage extends ShopBaseService {
         logger().info("订单收货模板消息start");
         //TODO 查询配置是否发送模板消息
         //公众号数据
-        String[][] mpData = new String[][] {{"亲，您买的宝贝已确认收货"}, {order.getOrderSn()}, {getGoodsName(orderGoods.getByOrderId(order.getOrderId()))}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getCreateTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getShippingTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getConfirmTime())}, {"感谢您的支持与厚爱"}};
+        String[][] mpData = null;
+        if(isSendMp(MessageTemplateConfigConstant.GET_GOODS)) {
+            mpData = new String[][] {{"亲，您买的宝贝已确认收货"}, {order.getOrderSn()}, {getGoodsName(orderGoods.getByOrderId(order.getOrderId()))}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getCreateTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getShippingTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getConfirmTime())}, {"感谢您的支持与厚爱"}};
+        }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_RECEIVED).data(mpData).build())
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
@@ -222,5 +245,12 @@ public class OrderOperateSendMessage extends ShopBaseService {
         return result.toString();
     }
 
+    private boolean isSendMp(Integer id) {
+        MessageConfigVo messageConfig = this.messageConfig.getMessageConfig(id);
+        if(messageConfig != null && messageConfig.getOpenMp().equals(OrderConstant.YES)) {
+            return true;
+        }
+        return false;
+    }
 
 }

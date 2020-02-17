@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
+import org.jooq.InsertValuesStep5;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -56,6 +57,8 @@ import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
+
+import ch.qos.logback.classic.db.DBAppender;
 
 /**
  * @author 黄壮壮
@@ -523,6 +526,53 @@ public class CardDaoService extends ShopBaseService {
 	}
 
 	/**
+	 * 带校验的导入
+	 * @param param
+	 * @param cardNoList
+	 * @param pwdList
+	 * @return
+	 */
+	public int insertIntoCardReceiveCodeByCheck(CardBatchParam param, List<String> cardNoList, List<String> pwdList) {
+		InsertValuesStep5<CardReceiveCodeRecord, Integer, Integer, String, String, String> insert = db()
+				.insertInto(CARD_RECEIVE_CODE).columns(CARD_RECEIVE_CODE.BATCH_ID, CARD_RECEIVE_CODE.GROUP_ID,
+						CARD_RECEIVE_CODE.CARD_NO, CARD_RECEIVE_CODE.CARD_PWD,CARD_RECEIVE_CODE.ERROR_MSG);
+		Integer batchId = param.getBatchId();
+		Integer groupId = param.getGroupId();
+		int size = cardNoList.size();
+		int size2 = pwdList.size();
+		int length = size > size2 ? size : size2;
+		String regex = "^[\\w\\d]*$";
+		for (int i = 0; i < length; i++) {
+			String msg = null;
+			String code = cardNoList.get(i);
+			String pwd = pwdList.get(i);
+			if (StringUtils.isEmpty(code)) {
+				msg = CardNoImportTemplate.CARDNO_NULL.getCode();
+			} else {
+				if (!code.matches(regex)) {
+					msg = CardNoImportTemplate.CARDNO_ERROR.getCode();
+				} else if (code.length() > 15) {
+					msg = CardNoImportTemplate.CARDNO_LIMIT.getCode();
+					code = code.substring(0, 15);
+				}
+			}
+			if (StringUtils.isEmpty(pwd)) {
+				msg = CardNoImportTemplate.CARDPWD_NULL.getCode();
+			} else {
+				if (!pwd.matches(regex)) {
+					msg = CardNoImportTemplate.CARDPWD_ERROR.getCode();
+				} else if (pwd.length() > 20) {
+					msg = CardNoImportTemplate.CARDPWD_LIMIT.getCode();
+					pwd = code.substring(0, 20);
+				}
+			}
+			insert.values(batchId, groupId, code, pwd,msg);
+		}
+		int res = insert.execute();
+		logger().info("成功执行" + res + "条");
+		return res;
+	}
+	/**
 	 * 根据会员卡类型查询会员卡
 	 */
 	public List<Integer> getCardIdByType(Byte type) {
@@ -623,5 +673,9 @@ public class CardDaoService extends ShopBaseService {
 		}
 		Result<CardReceiveCodeRecord> fetch = where.fetch();
 		return fetch;
+	}
+	
+	public CardReceiveCodeRecord  getBatch(Integer batchId) {
+		return db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.ID.eq(batchId)).fetchAny();
 	}
 }

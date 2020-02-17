@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.shop.ShopApplication;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -410,6 +411,28 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<DistributorListVo> distributorList = shop().distributorList.getPageList(param);
 		return this.success(distributorList); 
 	}
+
+    /**
+     * 添加会员备注
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/distrobutor/userRemark/add")
+	public JsonResult addUserRemark(@RequestBody UserRemarkListVo param){
+        int res = shop().distributorList.addUserRemark(param);
+        return this.success(res);
+    }
+
+    /**
+     * 会员备注列表
+     * @param param
+     * @return
+     */
+	@PostMapping("/admin/distribution/distrobutor/userRemark/list")
+	public JsonResult userRemarkList(@RequestBody UserRemarkListVo param){
+        List<UserRemarkListVo> userRemarkListVos = shop().distributorList.userRemarkList(param);
+        return this.success(userRemarkListVos);
+    }
 	
 	/**
 	 * 分销员已邀请用户列表

@@ -31,7 +31,7 @@
           :range-separator="$t('marketCommon.to')"
           :start-placeholder="$t('marketCommon.startTime')"
           :end-placeholder="$t('marketCommon.endTime')"
-          format="yyyy-MM-dd HH:mm:ss"
+          :default-time="['00:00:00','23:59:59']"
           value-format="yyyy-MM-dd HH:mm:ss"
           size="small"
         ></el-date-picker>

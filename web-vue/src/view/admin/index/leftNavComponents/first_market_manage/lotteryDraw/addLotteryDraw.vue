@@ -120,14 +120,25 @@
             controls-position="right"
           ></el-input-number>
           <span class="tips">活动时间内,参与用户数达到设置的数量时,小程序前端展示活动参与人数</span>
-          <span style="color: #5a8bff;cursor: pointer;">查看示例</span>
+          <el-popover
+            placement="right-start"
+            width="220"
+            trigger="hover"
+          >
+            <el-image src="http://jmpdevimg.weipubao.cn/image/admin/new_preview_image/pin_lottery.jpg"></el-image>
+            <el-button
+              slot="reference"
+              type="text"
+              style="margin: 0 20 0 0px"
+            >查看示例</el-button>
+          </el-popover>
         </el-form-item>
         <el-form-item
           label="鼓励奖："
           prop=""
         >
           <el-card class="box-card">
-            <div class="fontColor"> {{$t('groupBuy.consolationPrizeComment1')}}</div>
+            <div class="fontColor">{{$t('groupBuy.consolationPrizeComment1')}}</div>
             <div class="middleContainer">
               <div
                 v-for="(item,index) in rewardCouponList"
@@ -153,10 +164,15 @@
                     <span>{{item.denomination}}</span>
                     <span>{{$t('payReward.discount')}}</span>
                   </div>
-                  <div class="coupon_center_limit">{{item.useConsumeRestrict |
-                      formatLeastConsume(item.leastConsume)}}
-                  </div>
-                  <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                  <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                  <div
+                    class="coupon_center_number"
+                    v-if="item.surplus !==0"
+                  >剩余{{item.surplus}}张</div>
+                  <div
+                    class="coupon_center_number"
+                    v-if="item.surplus ===0"
+                  >库存不限制</div>
                   <div
                     class="coupon_list_bottom"
                     :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
@@ -170,7 +186,11 @@
                 <span
                   class="deleteIcon"
                   @click="deleteCouponImg(index)"
-                >×
+                >
+                  <img
+                    :src="imgHost+'/image/admin/sign_del.png'"
+                    alt=""
+                  >
                 </span>
               </div>
 
@@ -191,7 +211,6 @@
                 <p class="textDesc">{{$t('groupBuy.addCoupon')}}</p>
               </div>
             </div>
-
             <div class="fontColor">{{$t('groupBuy.consolationPrizeComment2')}}</div>
           </el-card>
         </el-form-item>
@@ -603,15 +622,15 @@ export default {
   position: relative;
   width: 17px;
   height: 17px;
-  top: -118px;
+  top: -110px;
   left: 45px;
   cursor: pointer;
   opacity: 0.8;
-  color: #fff;
+  /* color: #fff;
   background: #ccc;
   border: 1px solid #ccc;
   border-radius: 50%;
-  text-align: center;
+  text-align: center; */
 }
 .textDesc {
   line-height: normal;
