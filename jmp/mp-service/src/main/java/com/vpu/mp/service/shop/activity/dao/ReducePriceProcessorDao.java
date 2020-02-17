@@ -71,6 +71,24 @@ public class ReducePriceProcessorDao extends ShopBaseService {
     }
 
     /**
+     * 获取商品的限时降价最低价格信息（正在进行或者将会进行的限时降价信息）
+     * @param productIds 商品id集合
+     * @param date 时间
+     * */
+    public  Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsProductReduceList(List<Integer> productIds, Timestamp date) {
+        // 获取正在进行或未来有效的限时降价活动
+        return db().select(REDUCE_PRICE.ID, REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID, REDUCE_PRICE_PRODUCT.PRD_PRICE)
+                .from(REDUCE_PRICE)
+            .innerJoin(REDUCE_PRICE_PRODUCT).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID))
+            .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(REDUCE_PRICE_PRODUCT.PRD_ID.in(productIds))
+            .and(REDUCE_PRICE.END_TIME.gt(date))
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID)));
+
+    }
+
+    /**
      * 获取限时降价信息
      * @param goodsId 商品ID
      * @param date 日期

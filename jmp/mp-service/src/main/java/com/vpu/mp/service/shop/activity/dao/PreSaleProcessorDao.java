@@ -19,6 +19,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record3;
+import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +64,26 @@ public class PreSaleProcessorDao extends PreSaleService {
             .and(condition)
             .orderBy(PRESALE_PRODUCT.PRESALE_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE.GOODS_ID)));
+    }
+    /**
+     * 获取商品规格集合内的预售信息
+     *
+     * @param productIds 商品规格id集合
+     * @param date     日期
+     * @return
+     */
+    public Map<Integer, List<Record4<Integer, Integer, Integer, BigDecimal>>> getGoodsPreSaleList(List<Integer> productIds, Timestamp date) {
+        // 一阶段或二阶段付定金时间限制
+        // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
+        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.gt(date).and(PRESALE.PRE_END_TIME_2.lt(date)));
+
+        return db().select(PRESALE.ID,PRESALE_PRODUCT.PRESALE_ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
+            .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
+            .where(PRESALE_PRODUCT.PRESALE_ID.in(productIds))
+            .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(condition)
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE_PRODUCT.PRESALE_ID)));
     }
 
     /**
