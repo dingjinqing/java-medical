@@ -83,15 +83,18 @@ public class ShareRewardService extends BaseShopConfigService {
         Table<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
             select(AWARD.ID, AWARD.NAME, AWARD.CONDITION, AWARD.GOODS_PV, AWARD.IS_FOREVER, AWARD.START_TIME
                 , AWARD.END_TIME, AWARD.FIRST_LEVEL_RULE, AWARD.SECOND_LEVEL_RULE, AWARD.THIRD_LEVEL_RULE, AWARD.PRIORITY, AWARD.STATUS)
-            .from(AWARD).where(categoryConditon).asTable("AWARD");
+            .from(AWARD).where(categoryConditon).orderBy(AWARD.PRIORITY.desc()).asTable("AWARD");
 
         Condition selectConditon = AWARD.ID.isNotNull();
         // TODO 页面筛选条件待定，此处省略筛选condition
 
         SelectConditionStep<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> resultStep = db().
-            select(AWARD.ID, AWARD.NAME, AWARD.CONDITION, AWARD.GOODS_PV, AWARD.IS_FOREVER, AWARD.START_TIME, AWARD.END_TIME, AWARD.FIRST_LEVEL_RULE
-                , AWARD.SECOND_LEVEL_RULE, AWARD.THIRD_LEVEL_RULE, AWARD.PRIORITY, AWARD.STATUS).from(conditionStep).where(selectConditon);
-        PageResult<ShareRewardShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), ShareRewardShowVo.class);
+            select(AWARD.ID, AWARD.NAME, AWARD.CONDITION, AWARD.GOODS_PV, AWARD.IS_FOREVER
+                , AWARD.START_TIME, AWARD.END_TIME, AWARD.FIRST_LEVEL_RULE
+                , AWARD.SECOND_LEVEL_RULE, AWARD.THIRD_LEVEL_RULE, AWARD.PRIORITY, AWARD.STATUS)
+            .from(conditionStep)
+            .where(selectConditon);
+        PageResult<ShareRewardShowVo> pageResult = this.getPageResult(resultStep.orderBy(AWARD.PRIORITY.desc()), param.getCurrentPage(), param.getPageRows(), ShareRewardShowVo.class);
 
         for (ShareRewardShowVo vo : pageResult.getDataList()) {
             if (vo.getIsForever() == 1) {
