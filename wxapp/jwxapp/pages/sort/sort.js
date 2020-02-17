@@ -412,7 +412,7 @@ global.wxPage({
     var sort_ids = e.currentTarget.dataset.sord_ids;
     var sort_names = e.currentTarget.dataset.sort_names;
     util.navigateTo({
-      url: '/pages/searchs/search?sort_id=' + sort_ids + "&sort_names=" + sort_names + "&type=" + 1,
+      url: `/pages1/search/search?sortId=${sort_ids}`,
     })
   },
   onSearchConfirm: function (event) {
