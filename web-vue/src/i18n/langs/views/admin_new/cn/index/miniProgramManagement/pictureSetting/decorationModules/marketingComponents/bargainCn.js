@@ -3,6 +3,7 @@ export const cn = {
   pieces: '件',
   goPrice: '去砍价',
   endOfLeft: '距离结束还剩',
+  begainTime: '开始时间',
   bargain: '砍价',
   over: '已结束',
   day: '天',

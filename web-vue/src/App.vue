@@ -2,6 +2,7 @@
   <div
     id="app"
     class="fillcontain"
+    :style="isFillcontain?'position: absolute':''"
   >
     <router-view v-if="isRouterAlive"></router-view>
   </div>
@@ -12,12 +13,14 @@ export default {
   name: 'App',
   data () {
     return {
-      isRouterAlive: true
+      isRouterAlive: true,
+      isFillcontain: true
     }
   },
   provide () { // 提供
     return {
-      reload: this.reload
+      reload: this.reload,
+      changeIsFillcontain: this.changeIsFillcontain
     }
   },
   methods: {
@@ -26,6 +29,9 @@ export default {
       this.$nextTick(function () {
         this.isRouterAlive = true
       })
+    },
+    changeIsFillcontain () {
+      this.isFillcontain = false
     }
   }
 }
@@ -35,7 +41,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .fillcontain {
-  position: absolute;
+  // position: absolute;
   top: 0;
   bottom: 0;
   left: 0;

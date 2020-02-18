@@ -35,17 +35,26 @@
 
       <!-- 右侧内容部分 -->
       <section class="right_main">
-        <!-- 活动信息部分 -->
-        <div class="contentRight">
-          <div class="actInfo">{{$t('adSharePolite.activityInfo')}}</div>
-          <el-form
+        <el-form
+          :model="param"
+          ref="param"
+          label-position="right"
+          label-width="100px"
+          style="margin-top:20px;"
+          :rules="fieldValidation"
+        >
+
+          <!-- 活动信息部分 -->
+          <div class="contentRight">
+            <div class="actInfo">{{$t('adSharePolite.activityInfo')}}</div>
+            <!-- <el-form
             :model="param"
             ref="param"
             label-position="right"
             label-width="100px"
             style="margin-top:20px;"
             :rules="fieldValidation"
-          >
+            > -->
             <el-form-item
               :label="$t('adSharePolite.activityName')+'：'"
               prop="name"
@@ -142,38 +151,35 @@
                 ></el-input> {{$t('adSharePolite.pvGoods')}}
               </div>
             </el-form-item>
-          </el-form>
-        </div>
-
-        <!-- 分享奖励部分 -->
-        <div
-          class="contentRight"
-          style="margin-top:10px;"
-        >
-          <div style="display:flex;border-bottom:1px solid #e5e5e5;">
-            <div class="actInfo">{{$t('adSharePolite.shareReward')}}</div>
-            <div style="display:flex">
-              <span style="width: 120px">{{$t('adSharePolite.limitRule')}}</span>
-              <span
-                class="addRules"
-                @click="addItem()"
-              >{{$t('adSharePolite.addRule')}}</span>
-            </div>
+            <!-- </el-form> -->
           </div>
-          <el-form
-            ref="shareRules"
-            label-position="right"
+
+          <!-- 分享奖励部分 -->
+          <div
+            class="contentRight"
+            style="margin-top:10px;"
           >
-            <el-form-item>
-              <el-checkbox v-model="param.visitFirst">{{$t('adSharePolite.visitNew')}}</el-checkbox>
-            </el-form-item>
+            <div style="display:flex;border-bottom:1px solid #e5e5e5;">
+              <div class="actInfo">{{$t('adSharePolite.shareReward')}}</div>
+              <div style="display:flex">
+                <span style="width: 120px">{{$t('adSharePolite.limitRule')}}</span>
+                <span
+                  class="addRules"
+                  @click="addItem()"
+                >{{$t('adSharePolite.addRule')}}</span>
+              </div>
+            </div>
+
+            <el-checkbox v-model="param.visitFirst">{{$t('adSharePolite.visitNew')}}</el-checkbox>
 
             <section
-              v-for="(item,index) in shareRules"
+              v-for="(item,index) in param.shareRules"
               :key="index"
               class="rules_part"
+              style="display: flex;"
             >
-              <el-form-item :label="(index+1)+$t('adSharePolite.level')">
+              <div style="flex: 0.1; margin-top: 10px;">{{ (index+1)+$t('adSharePolite.level') }}</div>
+              <div style="flex: 0.9;">
                 <el-form-item
                   :label="$t('adSharePolite.invite')"
                   label-width="70px"
@@ -262,7 +268,7 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="refreshCoupn(index)"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.refresh')}}
                   </el-link>
@@ -270,31 +276,30 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="jumpToAddCoupon"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.createLabel')}}</el-link>
                   |
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="jumpToOrdinaryCoupon"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                   <el-row style="padding: 10px 0">
                     <el-col :offset="4">
                       <el-input
                         size="small"
-                        style="width:100px"
+                        style="width: 140px;"
                         v-model="item.coupon_name"
                         :disabled="true"
                       ></el-input>
                       <span style="color:#999">{{$t('adSharePolite.couponStock')}}</span>
                       <el-input
                         size="small"
-                        style="width:70px"
-                        v-model.number="item.coupon_num"
+                        style="width:80px"
+                        v-model.number="item.couponStock"
                         :disabled="true"
-                        placeholder="0"
                       ></el-input>
                       {{$t('adSharePolite.number')}}
                     </el-col>
@@ -345,7 +350,7 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="refreshCoupn"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.refresh')}}
                   </el-link>
@@ -353,14 +358,14 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="jumpToAddCoupon"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.createLabel')}}</el-link>
                   |
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="jumpToOrdinaryCoupon"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                 </el-form-item>
@@ -382,10 +387,12 @@
                   ></el-input>
                   {{$t('adSharePolite.number')}}
                 </el-form-item>
-              </el-form-item>
+              </div>
+
             </section>
-          </el-form>
-        </div>
+          </div>
+
+        </el-form>
       </section>
 
       <!--保存-->
@@ -408,6 +415,7 @@
       :singleElection="true"
       :tuneUpCoupon="tuneUpCoupon"
       @handleToCheck="handleToCheck"
+      ref="templateRefresh"
     />
   </div>
 </template>
@@ -522,22 +530,22 @@ export default {
       // 已选择商品件数
       selectGoods: 0,
       // 分享奖励规则数组，最多定义三个规则
-      shareRules: [
-        {
-          invite_num: '',
-          reward_type: 1,
-          score: '',
-          coupon: '',
-          lottery: '',
-          score_num: '',
-          coupon_num: '',
-          lottery_num: '',
-          // 优惠券可用库存
-          couponStock: 0,
-          // 优惠券名字
-          coupon_name: ''
-        }
-      ],
+      // shareRules: [
+      //   {
+      //     invite_num: '', // 邀请数量
+      //     reward_type: 1, // 奖励类型
+      //     score: '', // 积分
+      //     coupon: '', // 优惠券
+      //     lottery: '', // 幸运大抽奖
+      //     score_num: '', // 积分数量
+      //     coupon_num: '', // 优惠券数量
+      //     lottery_num: '', // 幸运大抽奖数量
+      //     // 优惠券可用库存
+      //     couponStock: '',
+      //     // 优惠券名字
+      //     coupon_name: ''
+      //   }
+      // ],
       index: 0,
       param: {
         id: this.$route.params.id,
@@ -551,7 +559,20 @@ export default {
         goodsIds: '',
         goodsPv: '',
         visitFirst: false,
-        shareRules: [],
+        shareRules: [{
+          invite_num: '', // 邀请数量
+          reward_type: 1, // 奖励类型
+          score: '', // 积分
+          coupon: '', // 优惠券
+          lottery: '', // 幸运大抽奖
+          score_num: '', // 积分数量
+          coupon_num: '', // 优惠券数量
+          lottery_num: '', // 幸运大抽奖数量
+          // 优惠券可用库存
+          couponStock: '',
+          // 优惠券名字
+          coupon_name: ''
+        }],
         firstRule: null,
         secondRule: null,
         thirdRule: null,
@@ -614,11 +635,19 @@ export default {
       data.forEach(item => {
         name.push(item.actName)
         arr.push(item.id)
-        stock.push(item.surplus)
+        // stock.push(item.surplus)
+        // this.$nextTick(() => {
+        if (item.surplus === 0) {
+          stock.push('不限制')
+        } else {
+          stock.push(item.surplus)
+        }
+        // })
       })
-      this.shareRules[this.index].coupon_name = name.toString()
-      this.shareRules[this.index].coupon = arr.toString()
-      this.shareRules[this.index].coupon_num = stock.toString()
+      console.log(stock, 'stock')
+      this.param.shareRules[this.index].coupon_name = name.toString()
+      this.param.shareRules[this.index].coupon = arr.toString()
+      this.param.shareRules[this.index].couponStock = stock.toString()
       console.log('conpon', arr.toString())
     },
     // 选择商品弹窗
@@ -637,35 +666,35 @@ export default {
       let obj = {
         coupon: ''
       }
-      if (this.shareRules.length < 3) {
-        this.shareRules.push(obj)
+      if (this.param.shareRules.length < 3) {
+        this.param.shareRules.push(obj)
       } else {
         this.$message.warning('最多可添加3个规则！')
       }
     },
     deleteItem (index) {
-      console.log(this.shareRules)
-      this.shareRules.splice(index, 1)
+      console.log(this.param.shareRules)
+      this.param.shareRules.splice(index, 1)
       console.log(index)
     },
     add () {
       // 分享规则处理逻辑
-      this.shareRules.map((item, index) => {
-        switch (this.shareRules.length) {
+      this.param.shareRules.map((item, index) => {
+        switch (this.param.shareRules.length) {
           case 0:
             break
           case 1:
-            this.param.firstRule = this.shareRules[0]
+            this.param.firstRule = this.param.shareRules[0]
             console.log(this.param.firstRule, 'firstRule')
             break
           case 2:
-            this.param.firstRule = this.shareRules[0]
-            this.param.secondRule = this.shareRules[1]
+            this.param.firstRule = this.param.shareRules[0]
+            this.param.secondRule = this.param.shareRules[1]
             break
           case 3:
-            this.param.firstRule = this.shareRules[0]
-            this.param.secondRule = this.shareRules[1]
-            this.param.thirdRule = this.shareRules[2]
+            this.param.firstRule = this.param.shareRules[0]
+            this.param.secondRule = this.param.shareRules[1]
+            this.param.thirdRule = this.param.shareRules[2]
             break
         }
       })
@@ -735,13 +764,13 @@ export default {
           console.log(JSON.parse(JSON.stringify(res)))
           if (res.error === 0) {
             this.param = res.content
-            this.shareRules = res.content.shareRules
+            this.param.shareRules = res.content.shareRules
             // 获取优惠券库存
-            this.shareRules.map((item, index) => {
+            this.param.shareRules.map((item, index) => {
               if (item.reward_type === 2) {
                 coupondetail(item.coupon).then((res) => {
                   console.log(JSON.parse(JSON.stringify(res)))
-                  item.coupon_num = res.content['0'].surplus
+                  item.couponStock = res.content['0'].surplus
                 }).catch(() => {
                   this.$message.error('优惠券库存查询失败！')
                 })
@@ -782,10 +811,11 @@ export default {
     },
     // 校验邀请人数
     validatePersonNumber (rule, value, callback, inviteNum) {
+      console.log(inviteNum, 'inviteNum')
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (!inviteNum) {
         callback(new Error('请输入要邀请的人数'))
-      } else if (re.test(value)) {
+      } else if (!re.test(value)) {
         callback(new Error('请输入正整数'))
       } else {
         return callback()
@@ -816,12 +846,13 @@ export default {
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (!lotteryNum) {
         callback(new Error('请输入奖品份数'))
-      } else if (re.test(value)) {
+      } else if (!re.test(value)) {
         callback(new Error('请输入正整数'))
       } else {
         callback()
       }
     },
+    // 验证幸运大抽奖
     validatelottery (rule, value, callback, lottery) {
       if (!lottery) {
         callback(new Error('请选择幸运大抽奖活动'))
@@ -839,8 +870,30 @@ export default {
       } else {
         callback()
       }
-    }
+    },
 
+    // 跳转到添加优惠券页面
+    jumpToAddCoupon () {
+      console.log('jump test')
+      this.$router.push({
+        name: 'add_coupon'
+      })
+    },
+
+    // 跳转到优惠券列表页面
+    jumpToOrdinaryCoupon () {
+      this.$router.push({
+        name: 'ordinary_coupon'
+      })
+    },
+
+    // 优惠券刷新
+    refreshCoupn () {
+      this.$refs.templateRefresh.handleToSure()
+      this.$nextTick(() => {
+        this.$message.success('刷新成功')
+      })
+    }
   }
 }
 </script>

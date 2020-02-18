@@ -79,6 +79,7 @@
         "shoporderinfo/shoporderinfo",
         "usercardrecord/usercardrecord",
         "lottery/lottery",
+        "lotteryrule/lotteryrule",
         "pinlotterylist/pinlotterylist",
         "pinlotteryinfo/pinlotteryinfo"
       ]

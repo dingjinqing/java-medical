@@ -166,7 +166,7 @@ global.wxPage({
   // 直接购买
   to_buy: function () {
     util.navigateTo({
-      url: "/pages/item/item?goodsId=" + bargain_info.recordInfo.goodsId
+      url: "/pages/item/item?gid=" + bargain_info.recordInfo.goodsId
     })
   },
   toWhere: function (e) {
@@ -176,21 +176,26 @@ global.wxPage({
         url: '/pages/bargainitem/bargainitem?bargain_id=' + bargain_id,
       })
     } else if (bargain_info.recordInfo.prdDesc == "") {
-      var choose_list = {};
-      choose_list.user_id = util.getCache('user_id');
-      choose_list.goods_id = bargain_info.recordInfo.goodsId;
-      choose_list.prd_id = bargain_info.recordInfo.prdId;
-      choose_list.bargain_id = bargain_info.recordInfo.bargainId;
-      choose_list.goods_price = bargain_info.recordInfo.goodsPrice;
+      // var choose_list = {};
+      // choose_list.user_id = util.getCache('user_id');
+      // choose_list.goods_id = bargain_info.recordInfo.goodsId;
+      // choose_list.prd_id = bargain_info.recordInfo.prdId;
+      // choose_list.bargain_id = bargain_info.recordInfo.bargainId;
+      // choose_list.goods_price = bargain_info.recordInfo.goodsPrice;
       util.api("/api/wxapp/bargain/apply", function (res) {
         if (res.error == 0) {
           util.reLaunch({
-            url: "/pages/bargaininfo/bargaininfo?record_id=" + res.content.record_id + "&bargain_money=" + res.content.bargain_money
+            // url: "/pages/bargaininfo/bargaininfo?record_id=" + res.content.record_id + "&bargain_money=" + res.content.bargain_money
+            url: "/pages/bargaininfo/bargaininfo?record_id=" + res.content.recordId
           })
         } else {
           util.showModal('提示', res.content);
         }
-      }, { choose_list: JSON.stringify(choose_list) })
+      }, { 
+        // choose_list: JSON.stringify(choose_list) 
+        bargainId: bargain_info.recordInfo.bargainId,
+        prdId: bargain_info.recordInfo.prdId
+      })
     }
   },
   /**
@@ -231,7 +236,7 @@ global.wxPage({
     // var form_info = {};
     // var open_id = util.getCache("openid");
     // var form_id = e.detail.formId;
-    if (util.getCache('mobile') == '' && bargain_info.recordInfo.need_bind_mobile == 1) {
+    if (util.getCache('mobile') == '' && bargain_info.recordInfo.needBindMobile == 1) {
       util.checkSession(function () {
         that.setData({
           is_block: is_block = 1

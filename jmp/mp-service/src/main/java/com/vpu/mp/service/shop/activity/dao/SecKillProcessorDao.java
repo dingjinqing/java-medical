@@ -170,6 +170,11 @@ public class SecKillProcessorDao extends ShopBaseService {
      * @param orderBeforeParam
      */
     public void setOrderPrdSeckillPrice(OrderBeforeParam orderBeforeParam){
+        SecKillDefineRecord seckill = db().selectFrom(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(orderBeforeParam.getActivityId())).fetchAny();
+        //是否免运费
+        orderBeforeParam.setIsFreeShippingAct(seckill.getFreeFreight());
+
+        //秒杀规格价
         for(OrderBeforeParam.Goods prd : orderBeforeParam.getGoods()){
             Record2<BigDecimal, BigDecimal> record = db().select(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,GOODS_SPEC_PRODUCT.PRD_PRICE).from(SEC_KILL_PRODUCT_DEFINE).leftJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(orderBeforeParam.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(prd.getProductId()))).fetchSingle();
 

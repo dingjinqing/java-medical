@@ -312,19 +312,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(param.getMust() == null) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getOrderRealName() == YES && StringUtils.isNotBlank(param.getMust().getOrderRealName())) {
+        if(orderMust.getOrderRealName() == YES && StringUtils.isBlank(param.getMust().getOrderRealName())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getConsigneeCid() == YES && StringUtils.isNotBlank(param.getMust().getConsigneeCid())) {
+        if(orderMust.getConsigneeCid() == YES && StringUtils.isBlank(param.getMust().getConsigneeCid())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getConsigneeRealName() == YES && StringUtils.isNotBlank(param.getMust().getConsigneeRealName())) {
+        if(orderMust.getConsigneeRealName() == YES && StringUtils.isBlank(param.getMust().getConsigneeRealName())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getCustom() == YES && StringUtils.isNotBlank(param.getMust().getCustom())) {
+        if(orderMust.getCustom() == YES && StringUtils.isBlank(param.getMust().getCustom())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
-        if(orderMust.getOrderCid() == YES && StringUtils.isNotBlank(param.getMust().getOrderCid())) {
+        if(orderMust.getOrderCid() == YES && StringUtils.isBlank(param.getMust().getOrderCid())) {
             throw new MpException(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
         }
     }
@@ -721,7 +721,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //处理当前优惠卷
         BigDecimal couponDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultCoupon(), bos, OrderConstant.D_T_COUPON);
         //包邮策略
-        if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER)&& BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType())){
+        if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER) && (param.getActivityType() == null || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType()))){
             List<Integer> goodsIds = fullPackage(vo.getAddress(), bos, tolalNumberAndPrice, param.getDate());
             bos.forEach(bo->{
                 if (goodsIds.contains(bo.getGoodsId())){
@@ -740,8 +740,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //判断是否可以发货
             vo.setCanShipping(NO);
         }
-
-        //freeDeliveryLogic();
+        //活动免运费
+        activityFreeDelivery(vo, param.getIsFreeShippingAct());
         //折扣金额
         BigDecimal tolalDiscountAfterPrice = BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.subtrac),
@@ -814,6 +814,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
         logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
+
+    /**
+     * 活动免运费
+     * @param vo
+     * @param isFreeShippingAct
+     */
+    private void activityFreeDelivery(OrderBeforeVo vo, Byte isFreeShippingAct) {
+        if(isFreeShippingAct != null && isFreeShippingAct == YES) {
+            vo.setShippingFee(BigDecimal.ZERO);
+        }
+    }
+
+
 
     /**
      * 校验

@@ -26,7 +26,7 @@
         >
           <template slot-scope="scope">
             <el-input
-              v-model="scope.row.prdPrice"
+              v-model="scope.row.lastPrice"
               :disabled="isEdit"
               size="small"
               class="small_input"
@@ -91,6 +91,9 @@ export default {
       this.$emit('update:productDialog', val)
       if (val === true) {
         this.reducePriceProduct = JSON.parse(JSON.stringify(this.productInfo.reducePriceProduct))
+        this.reducePriceProduct.forEach((item, index) => {
+          item.lastPrice = item.originalPrice - this.productInfo.reducePrice
+        })
       }
     },
     productDialog (val) {

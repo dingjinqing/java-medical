@@ -31,8 +31,13 @@ var order = {
     );
   },
   // 查看评价
-  viewComment ({ order_sn: orderSn, order_id: orderId }) {
-    util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
+  viewComment({ order_sn: orderSn, order_id: orderId, operate_info: operate_info }) {
+    console.log(operate_info)
+    if (operate_info === 'isShowCommentType-2') {
+      util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
+    } else {
+      util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}&hasComment=1`, "navigateTo");
+    }
   },
   //发货
   confirmation ({ order_sn: orderSn, order_id: orderId }) {

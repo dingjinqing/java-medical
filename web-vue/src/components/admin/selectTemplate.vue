@@ -12,37 +12,45 @@
         <el-form
           ref="formDialog"
           :model="formDialog"
-          label-width="90px"
+          label-width="100px"
         >
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="页面名称：">
-                <el-input
-                  v-model="formDialog.pageName"
-                  style="width: 150px;"
-                  size="small"
-                  placeholder="请输入页面名称"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="页面分类：">
-                <el-input
-                  v-model="formDialog.catId"
-                  style="width: 150px;"
-                  size="small"
-                  placeholder="请选择页面分类"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-button
-                type="primary"
-                size="small"
-                style="margin-top: 5px;"
-              >搜索</el-button>
-            </el-col>
-          </el-row>
+          <el-form-item
+            label="页面名称："
+            class="item"
+          >
+            <el-input
+              v-model="formDialog.pageName"
+              class="inputWidth"
+              size="small"
+              placeholder="请输入页面名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="页面分类："
+            class="item"
+          >
+            <el-select
+              v-model="formDialog.catId"
+              placeholder="请选择"
+              size="small"
+              class="inputWidth"
+            >
+              <el-option
+                v-for="item in sortList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="item">
+            <el-button
+              type="primary"
+              size="small"
+              @click="getTemplateData"
+            >搜索</el-button>
+          </el-form-item>
         </el-form>
 
         <el-table
@@ -96,6 +104,7 @@
 
 <script>
 import { shopDecorateList } from '@/api/admin/marketManage/distribution.js'
+import { getPageCate } from '@/api/admin/decoration/pageSet.js'
 
 export default {
   components: {
@@ -118,7 +127,8 @@ export default {
       formDialog: {
         pageName: null,
         catId: null
-      }
+      },
+      sortList: [] // 页面分类列表
     }
   },
   watch: {
@@ -128,6 +138,8 @@ export default {
   },
   mounted () {
     this.getTemplateData()
+    // 页面分类
+    this.getPageSort()
   },
   methods: {
 
@@ -165,10 +177,25 @@ export default {
           })
         }
       })
+    },
+
+    // 获取页面分类
+    getPageSort () {
+      getPageCate().then(res => {
+        if (res.error === 0) {
+          this.sortList = res.content
+        }
+      })
     }
   }
 }
 
 </script>
 <style lang="scss" scoped>
+.inputWidth {
+  width: 170px;
+}
+.item {
+  display: inline-block;
+}
 </style>

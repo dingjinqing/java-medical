@@ -636,7 +636,9 @@ public class GoodsMpService extends ShopBaseService {
                 goodsIds.addAll(goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
                 catIds.addAll(goodsLabelMpService.getGoodsLabelCouple(labelIds, GoodsLabelCoupleTypeEnum.CATTYPE.getCode()));
             } else {
-                return findActivityGoodsListCapsulesDao(condition,null,0,GoodsGroupListMpParam.NUM_TO_SHOW,null);
+                List<GoodsListMpBo> capsuleList = findActivityGoodsListCapsulesDao(condition, null, 0, GoodsGroupListMpParam.NUM_TO_SHOW, null);
+                disposeGoodsList(capsuleList, param.getUserId());
+                return capsuleList;
             }
         }
         Condition idCondition = DSL.falseCondition();
@@ -656,7 +658,7 @@ public class GoodsMpService extends ShopBaseService {
 
         condition = condition.and(idCondition);
         List<GoodsListMpBo> goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, 0, GoodsGroupListMpParam.NUM_TO_SHOW, null);
-        disposeGoodsList(goodsListCapsules, null);
+        disposeGoodsList(goodsListCapsules, param.getUserId());
         return goodsListCapsules;
     }
 

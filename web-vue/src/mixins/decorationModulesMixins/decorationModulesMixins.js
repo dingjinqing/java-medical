@@ -400,7 +400,7 @@ export default {
             'shop_name': localStorage.getItem('V-shopName'),
             'shop_notice': '',
             'shop_bg_path': localStorage.getItem('V-shopAvatar'),
-            'bg_url': this.$imageHost + '/image/admin/shop_beautify/beau1.png',
+            'bg_url': 'image/admin/shop_beautify/beau1.png',
             'bg_fullUrl': '',
             'ok_ajax': 1
           }
@@ -592,6 +592,7 @@ export default {
             }
             break
           case 'm_text_image':
+
             if (!item.img_url) {
               this.$message.error({
                 message: '请上传图片',
@@ -612,6 +613,15 @@ export default {
             if (!item.shop_text) {
               this.$message.error({
                 message: '请输入店铺公告内容',
+                showClose: true
+              })
+              flag = false
+            }
+            break
+          case 'm_goods_group':
+            if (!item.sort_group_arr.length) {
+              this.$message.error({
+                message: '请添加商品分组',
                 showClose: true
               })
               flag = false

@@ -242,7 +242,7 @@ public class BargainRecordService extends ShopBaseService {
     public PageResult<BargainRecordListQueryVo> getRecordPageList(Integer userId,BargainRecordListQueryParam param){
         SelectWhereStep<? extends Record> select = db().select(
             BARGAIN_RECORD.ID,BARGAIN_RECORD.GOODS_PRICE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
-            BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,GOODS.GOODS_NAME,GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.STOCK,BARGAIN.END_TIME,ORDER_INFO.ORDER_STATUS
+            BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN_RECORD.PRD_ID,BARGAIN_RECORD.BARGAIN_ID,GOODS.GOODS_NAME,GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.STOCK,BARGAIN.END_TIME,ORDER_INFO.ORDER_STATUS,ORDER_INFO.ORDER_SN
         ).
             from(BARGAIN_RECORD).
             leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
@@ -295,7 +295,7 @@ public class BargainRecordService extends ShopBaseService {
      * @return
      */
     public BargainApplyVo getUserBargainRecordId(int userId, BargainApplyParam param){
-        Integer recordId = db().select(BARGAIN_RECORD.ID).from(BARGAIN_RECORD).where(BARGAIN_RECORD.USER_ID.eq(userId).and(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.PRD_ID.eq(param.getPrdId()))).fetchOptionalInto(Integer.class).orElse(0);
+        Integer recordId = db().select(BARGAIN_RECORD.ID).from(BARGAIN_RECORD).where(BARGAIN_RECORD.USER_ID.eq(userId).and(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.PRD_ID.eq(param.getPrdId())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOptionalInto(Integer.class).orElse(0);
 
         return recordId > 0 ? BargainApplyVo.builder().recordId(recordId).resultCode((byte)0).build() : BargainApplyVo.builder().resultCode((byte)-1).build();
     }
@@ -388,7 +388,7 @@ public class BargainRecordService extends ShopBaseService {
             GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,
             USER_DETAIL.USER_AVATAR,
             GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_NUMBER,
-            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,
+            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,BARGAIN.FREE_FREIGHT,
             USER.WX_OPENID,USER.USERNAME).from(
             BARGAIN_RECORD
             .leftJoin(USER_DETAIL).on(BARGAIN_RECORD.USER_ID.eq(USER_DETAIL.USER_ID))
@@ -468,7 +468,7 @@ public class BargainRecordService extends ShopBaseService {
             if(userNumber == 2){
                 return 7;
             }
-            if(recordInfo.getUserNumber() == 1){
+            if(userNumber == 1){
                 return 8;
             }
         }else {
@@ -524,7 +524,7 @@ public class BargainRecordService extends ShopBaseService {
         //进行砍价
         BigDecimal bargainMoney = bargainUser.addUserBargain(userId,recordId);
         vo.setState((byte)0);
-        vo.setBargainMoney(bargainMoney);
+        vo.setBargainMoney(bargainMoney.setScale(2,BigDecimal.ROUND_HALF_UP));
         return vo;
     }
 

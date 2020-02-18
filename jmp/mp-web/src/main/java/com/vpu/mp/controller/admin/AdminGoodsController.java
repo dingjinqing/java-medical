@@ -88,6 +88,7 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/listAllIds")
     public JsonResult getGoodsIdsListAll(@RequestBody GoodsPageListParam param) {
+        param.setSelectType(GoodsPageListParam.GOODS_LIST);
         List<Integer> goodsIds = shop().goods.getGoodsIdsListAll(param);
         return success(goodsIds);
     }

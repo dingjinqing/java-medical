@@ -66,7 +66,7 @@
               ></el-input-number>
             </div>
             <div>
-              <el-checkbox>{{$t('activationNotificationDialog.coupon')}}</el-checkbox>
+              <el-checkbox v-model="form.coupon">{{$t('activationNotificationDialog.coupon')}}</el-checkbox>
               <div class="coupon-wrap">
                 <div class="coupons">
                   <div
@@ -173,6 +173,7 @@ export default {
     return {
       form: {
         score: '',
+        coupon: false,
         explain: that.$t('activationNotificationDialog.thank'),
         couponIds: []
       },
@@ -222,6 +223,16 @@ export default {
     initData () {
       getnoticeApi().then(res => {
         if (res.error === 0) {
+          let mrkingVoucherId = res.content.mrkingVoucherId.split(',')
+          if (mrkingVoucherId.length > 0 && mrkingVoucherId[0] !== '') {
+            this.form.coupon = true
+            this.form.couponIds = mrkingVoucherId
+            this.coupons = res.content.mrkingVoucherList
+          } else {
+            this.form.coupon = false
+            this.form.couponIds = []
+            this.coupons = []
+          }
           this.form = Object.assign({}, this.form, res.content)
         }
       })
@@ -243,6 +254,9 @@ export default {
     // 设置激活通知
     saveActivationNotification () {
       let that = this
+      if (!that.form.coupon) {
+        that.form.couponIds = []
+      }
       let params = Object.assign({}, that.form)
       setnoticeApi(params).then(res => {
         if (res.error === 0) {

@@ -76,9 +76,16 @@ global.wxPage({
   onLoad: function (opt) {
     if (!util.check_setting(opt)) return;
     var that = this;
-    order_sn = opt.order_sn || opt.orderSn;
     wx.hideShareMenu(); // 隐藏转发按钮
-    this.get_comment(that, 0);
+    order_sn = opt.order_sn || opt.orderSn;
+    if(opt.hasComment) {
+      this.setData({
+        currentTab: 1
+      })
+      this.get_comment(that, 1);
+    } else {
+      this.get_comment(that, 0);
+    }
   },
   // 初始化数据
   get_comment: function (that, i) {
@@ -345,7 +352,7 @@ global.wxPage({
     }
     if (item.id) {
       if (item.awardType === 2) {
-        params.award = item.id
+        params.award = item.award.id?Number(item.award.id):item.award
       } else if (item.awardType === 5) {
         params.award = JSON.stringify(item.award)
       }

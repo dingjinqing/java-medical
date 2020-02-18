@@ -80,7 +80,7 @@ public class WxAppLotteryController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/user/list")
-    private JsonResult lotteryListByUser(@RequestBody @Valid LotteryListUserParam param){
+    public JsonResult lotteryListByUser(@RequestBody @Valid LotteryListUserParam param){
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
         PageResult<LotteryRecordPageListVo> lotteryRecordPageListVoPageResult = shop().lottery.lotteryListByUser(param);

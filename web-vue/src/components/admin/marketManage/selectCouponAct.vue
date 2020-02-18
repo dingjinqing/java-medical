@@ -71,6 +71,7 @@ export default {
       getAllCoupon(params).then(res => {
         if (res.error === 0) {
           this.selects = res.content
+          this.$emit('initData', res.content)
         }
       })
     },

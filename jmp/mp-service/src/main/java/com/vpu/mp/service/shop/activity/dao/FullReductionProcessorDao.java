@@ -16,15 +16,14 @@ import com.vpu.mp.service.shop.member.UserCardService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Record7;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.MRKING_STRATEGY;
@@ -92,21 +91,41 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             .or(DslPlus.findInSet(catId, MRKING_STRATEGY.RECOMMEND_CAT_ID)).or(DslPlus.findInSet(brandId, MRKING_STRATEGY.RECOMMEND_BRAND_ID))
             .or(DslPlus.findInSet(sortId, MRKING_STRATEGY.RECOMMEND_SORT_ID)));
         logger().debug("小程序-商品详情-获取满折满减促销");
-        return db().select(MRKING_STRATEGY.ID, MRKING_STRATEGY.CARD_ID, MRKING_STRATEGY.TYPE, MRKING_STRATEGY_CONDITION.FULL_MONEY, MRKING_STRATEGY_CONDITION.REDUCE_MONEY,
+        Map<Integer, List<Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal>>> groups =
+            db().select(MRKING_STRATEGY.ID, MRKING_STRATEGY.CARD_ID, MRKING_STRATEGY.TYPE, MRKING_STRATEGY_CONDITION.FULL_MONEY, MRKING_STRATEGY_CONDITION.REDUCE_MONEY,
             MRKING_STRATEGY_CONDITION.AMOUNT, MRKING_STRATEGY_CONDITION.DISCOUNT)
             .from(MRKING_STRATEGY).innerJoin(MRKING_STRATEGY_CONDITION).on(MRKING_STRATEGY.ID.eq(MRKING_STRATEGY_CONDITION.STRATEGY_ID))
             .where(condition.and(idCondition)).orderBy(MRKING_STRATEGY.STRATEGY_PRIORITY.desc(), MRKING_STRATEGY.START_TIME.desc())
-            .stream().map(record -> {
-                FullReductionPromotion promotion = record.into(FullReductionPromotion.class);
-                promotion.setPromotionId(record.get(MRKING_STRATEGY.ID));
-                if (StringUtils.isNotBlank(record.get(MRKING_STRATEGY.CARD_ID))) {
-                    promotion.setIsExclusive(true);
-                } else {
-                    promotion.setIsExclusive(false);
-                }
-                return promotion;
-            }).collect(Collectors.toList());
+            .stream().collect(Collectors.groupingBy(x -> x.get(MRKING_STRATEGY.ID)));
 
+        List<FullReductionPromotion> returnList = new ArrayList<>(groups.size());
+
+        for (Map.Entry<Integer, List<Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal>>> entry : groups.entrySet()) {
+            Integer key = entry.getKey();
+            List<Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal>> values = entry.getValue();
+
+            FullReductionPromotion promotion = new FullReductionPromotion();
+            promotion.setPromotionId(key);
+            promotion.setRules(new ArrayList<>(values.size()));
+
+            Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal> record = values.get(0);
+            promotion.setType(record.get(MRKING_STRATEGY.TYPE));
+            if (StringUtils.isNotBlank(record.get(MRKING_STRATEGY.CARD_ID))) {
+                promotion.setIsExclusive(true);
+            } else {
+                promotion.setIsExclusive(false);
+            }
+            for (Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal> value : values) {
+                FullReductionPromotion.FullReductionRule rule =new FullReductionPromotion.FullReductionRule();
+                rule.setAmount(value.get(MRKING_STRATEGY_CONDITION.AMOUNT));
+                rule.setDiscount(value.get(MRKING_STRATEGY_CONDITION.DISCOUNT));
+                rule.setFullMoney(value.get(MRKING_STRATEGY_CONDITION.FULL_MONEY));
+                rule.setReduceMoney(value.get(MRKING_STRATEGY_CONDITION.REDUCE_MONEY));
+                promotion.getRules().add(rule);
+            }
+            returnList.add(promotion);
+        }
+        return returnList;
     }
 
     /**

@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import lombok.Data;
 
 /**
@@ -24,6 +25,10 @@ public class JoinLottery {
      * 免费抽奖分享抽奖,积分抽奖
      */
     private Byte chanceSource;
+    /**
+     * 中奖等级
+     */
+    private Byte lotteryGrade;
     /**
      * 抽奖结果
      */
@@ -51,6 +56,14 @@ public class JoinLottery {
      * 来源,支付,登陆,扫码
      */
     private Byte source=0;
+    /**
+     * 抽奖信息
+     */
+    private String lotteryAward;
+    /**
+     * 奖品id
+     */
+    private Integer prizeId;
 
 
     /**

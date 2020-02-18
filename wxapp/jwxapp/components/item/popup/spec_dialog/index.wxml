@@ -28,7 +28,7 @@
             <text class="price">￥{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdRealPrice :checkedProduct.prdRealPrice}}</text>
           </text>
           <text class="marking-price">￥{{activityPrds ? filter.getActPrd(checkedProduct,activityPrds).prdLinePrice :checkedProduct.prdLinePrice}}</text>
-          <text>库存：{{activityPrds && filter.includes([1,3,5],productsInfo.activity.activityType) ? filter.getActPrd(checkedProduct,activityPrds).prdNumber :checkedProduct.prdNumber}}</text>
+          <text>库存：{{activityPrds && filter.includes([1,3,5],productsInfo.activity.activityType && (!triggerButton || triggerButton === 'right')) ? filter.getActPrd(checkedProduct,activityPrds).prdNumber : checkedProduct.prdNumber}}</text>
         </view>
         <image class="close-img" src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="bindClose"></image>
       </view>

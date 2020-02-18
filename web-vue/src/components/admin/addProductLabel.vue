@@ -4,7 +4,7 @@
       <el-dialog
         title="添加商品标签"
         :visible.sync="visible"
-        width="40%"
+        width="45%"
         :modal-append-to-body='false'
       >
         <div class="dialogTop">

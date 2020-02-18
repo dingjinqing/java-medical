@@ -12,7 +12,11 @@ global.wxComponent({
         newVal.table_size.rows = 4;
       }
       var min_block_size = tmpl_width / newVal.table_size.cols;
+      if (newVal.table_type == 2) {
+        min_block_size = min_block_size / 2
+      }
       newVal.all_height = min_block_size * newVal.table_size.rows;
+      console.log(newVal)
       var windowData = newVal['data'];
       for (var w_idx in windowData) {
         if (windowData[w_idx].rows > 0 && windowData[w_idx].cols > 0) {

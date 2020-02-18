@@ -15,6 +15,7 @@ public class BargainRecordListQueryVo {
      * 主键
      */
     private Integer id;
+    private Integer bargainId;
     private Timestamp createTime;
     /**
      * 已砍金额
@@ -26,6 +27,7 @@ public class BargainRecordListQueryVo {
     private Integer userNumber;
 
 
+    private Integer prdId;
     private Integer goodsId;
     private String goodsName;
     private BigDecimal goodsPrice;
@@ -61,4 +63,5 @@ public class BargainRecordListQueryVo {
      * 订单状态（未结算时没有订单）
      */
     private Byte orderStatus;
+    private String orderSn;
 }

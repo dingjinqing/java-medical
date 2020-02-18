@@ -3,6 +3,7 @@ export const en = {
   pieces: 'pieces',
   goPrice: 'go to bargain',
   endOfLeft: 'left at the end of the distance',
+  begainTime: 'Starting time',
   bargain: 'bargain',
   over: 'over',
   day: 'day',

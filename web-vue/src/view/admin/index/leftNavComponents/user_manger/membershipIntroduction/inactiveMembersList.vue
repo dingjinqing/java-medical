@@ -74,6 +74,7 @@
             type="datetime"
             :placeholder="$t('memberIntroductionList.selectTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
+            default-time='23:59:59'
           >
           </el-date-picker>
         </el-form-item>
@@ -191,9 +192,9 @@ export default {
     // 格式化table
     formatIsDistributor (row, column, value, index) {
       if (value === 0 || value === '0') {
-        return this.$t('memberIntroductionList.yes')
-      } else if (value === 1 || value === '1') {
         return this.$t('memberIntroductionList.no')
+      } else if (value === 1 || value === '1') {
+        return this.$t('memberIntroductionList.yes')
       }
     },
     formatGroupName (row, column, value, index) {

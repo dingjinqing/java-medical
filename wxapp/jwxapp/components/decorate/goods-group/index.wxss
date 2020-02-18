@@ -13,6 +13,7 @@
   line-height: 80rpx;
   display: flex;
   /* overflow: hidden; */
+  
 }
 
 .goods_group_scroll {

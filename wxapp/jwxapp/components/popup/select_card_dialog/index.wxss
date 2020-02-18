@@ -30,6 +30,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
 }
 .card_item {
   display: flex;
@@ -37,6 +38,7 @@
   margin-bottom: 20rpx;
   flex-shrink: 0;
   padding-right: 16rpx;
+  -webkit-overflow-scrolling: touch;
 }
 .card_item:first-of-type {
   margin-top: 20rpx;

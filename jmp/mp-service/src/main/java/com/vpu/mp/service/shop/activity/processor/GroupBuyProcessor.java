@@ -163,9 +163,18 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      */
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        //不允许使用货到付款
+        if(param.getPaymentList() != null){
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         //拼团不使用优惠券和会员卡
         param.setMemberCardNo(StringUtils.EMPTY);
         param.setCouponSn(StringUtils.EMPTY);
+        //不允许使用积分支付和货到付款
+        if(param.getPaymentList() != null){
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         //团长,团id
         Byte isGrouper = param.getGroupId() == null ? IS_GROUPER_Y : IS_GROUPER_N;
         log.debug("拼团订单");
@@ -204,6 +213,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 goods.setGrouperGoodsReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()));
             }
         }
+
     }
 
     /**

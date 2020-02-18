@@ -63,8 +63,8 @@ public class UserImportController extends AdminBaseController {
 	 */
 	@GetMapping(value = "/admin/user/import/getnotice")
 	public JsonResult getActivationNotice() {
-		SetNoticeJson resCode = shop().member.userImportService.getActivationNotice();
-		return success(new SetNoticeJsonVo(resCode.getExplain(),resCode.getScore(),resCode.getMrkingVoucherId()));
+		SetNoticeJsonVo resCode = shop().member.userImportService.getAllActivationNotice();
+		return success(resCode);
 	}
 	/**
 	 * 获取模板

@@ -20,8 +20,8 @@ export const cn = {
   bargainUserNumber: '发起砍价人数',
   getBargainOrders: '查看砍价订单',
   bargainRecordList: '查看发起砍价用户',
-  bargainType0: '定人',
-  bargainType1: '任意价',
+  bargainType0: '砍到指定金额结算',
+  bargainType1: '砍到任意金额结算',
 
   // 发起砍价用户列表
   bargainStatus: '砍价状态',

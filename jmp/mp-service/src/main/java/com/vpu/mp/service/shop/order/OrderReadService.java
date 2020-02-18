@@ -134,7 +134,7 @@ public class OrderReadService extends ShopBaseService {
 	@Autowired
 	public OrderInfoService orderInfo;
     @Autowired
-    private AdminMarketOrderInfoService marketOrderInfo;
+    public AdminMarketOrderInfoService marketOrderInfo;
 	@Autowired
 	private OrderGoodsService orderGoods;
 	@Autowired
@@ -394,7 +394,9 @@ public class OrderReadService extends ShopBaseService {
 		//退运费校验
 		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo().getShippingFee(), returnShipingFee, true)){
 			vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
-		}
+		} else {
+            vo.setCanReturnShippingFee(BigDecimal.ZERO);
+        }
 		//退款商品
 		if(rOrder.getReturnType() != OrderConstant.RT_ONLY_SHIPPING_FEE) {
 			List<OrderReturnGoodsVo> goods = returnOrderGoods.getReturnGoods(rOrder.getOrderSn(),rOrder.getRetId()).into(OrderReturnGoodsVo.class);
@@ -812,6 +814,8 @@ public class OrderReadService extends ShopBaseService {
         //退运费校验
         if(OrderOperationJudgment.adminIsReturnShipingFee(order.getShippingFee(), returnShipingFee, true)){
             vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
+        }else {
+            vo.setCanReturnShippingFee(BigDecimal.ZERO);
         }
         //退款记录
         Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());
@@ -903,14 +907,7 @@ public class OrderReadService extends ShopBaseService {
      * @return
      */
     public PageResult<MarketOrderListVo> getMarketOrderList(MarketOrderListParam param, byte goodsType) {
-        PageResult<MarketOrderListVo> res = marketOrderInfo.getMarketOrderList(param,goodsType);
-
-        /** 填充商品行 */
-        for(MarketOrderListVo order : res.dataList){
-            order.setGoods(orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn()));
-        }
-
-        return res;
+        return marketOrderInfo.getMarketOrderPageList(param,goodsType);
     }
 
     /**

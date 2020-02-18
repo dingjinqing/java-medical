@@ -36,8 +36,12 @@ global.wxPage({
     minturns: 2, // 最少转几圈(当为2时，最少转1圈)
     speed: 100, // 抽奖转动速度
     awardDialogVisible: false, // 奖品弹窗
+    noAwardDialogVisible: false, // 未中奖弹窗
     lotteryId: '', 
-    lotteryType: ''
+    lotteryType: '', // 抽奖类型（抽奖次数来源） 1免费,2分享,3积分
+    lotterySource: 3, // 活动来源 1开屏有礼,2支付有礼,3分享,4评价有礼,5分享有礼
+    btnstatus: 1, // 按钮状态 1立即抽奖，2去分享，3消耗积分抽奖，4抽奖次数用光啦
+    prizeInfo: null // 奖品信息
   },
 
   /**
@@ -47,22 +51,39 @@ global.wxPage({
     // 初始化奖品，拿到奖品数据，加上谢谢参与
     let that = this
     let lotteryId = options.lotteryId
-    that.setData({
-      lotteryId: lotteryId
+    let lotterySource = options.lotterySource || 3
+    this.setData({
+      lotteryId: lotteryId,
+      lotterySource: lotterySource
     })
-    util.api('/api/wxapp/lottery/get', function(res) {
+    // 可以获取到进入小程序的场景值，例如从分享卡片进来的
+    let res = wx.getEnterOptionsSync()
+    console.log('场景值：', res)
+    this.lotteryRequest()
+  },
+
+  // 请求抽奖信息
+  lotteryRequest() {
+    let that = this
+    util.api('/api/wxapp/lottery/get', function (res) {
       console.log(res)
       if (res.error === 0) {
         let content = res.content
         that.initRawards(content.lotteryInfo.prizeList)
+        that.initRaffleButton(content.lotteryUserTimeInfo)
         that.setData({
           lotteryInfo: content.lotteryInfo,
           userInfo: content.lotteryUserTimeInfo
         })
+      } else {
+        util.showModal('提示', res.message, function () {
+          wx.navigateBack({})
+        })
       }
-    }, {id: lotteryId})
+    }, { id: that.data.lotteryId })
   },
 
+  // 初始化奖品
   initRawards (rawards) {
     let lotteryRawards = []
     for(let i = 0; i<9; i++) {
@@ -109,29 +130,93 @@ global.wxPage({
     })
   },
 
+  /**
+   * 初始化抽奖按钮
+   * 1.免费抽奖
+   * 2.分享抽奖
+   * 3.积分抽奖
+   * 4.不能抽奖
+   */
+  initRaffleButton(userInfo) {
+    let raffleInfo = userInfo
+    let btnstatus = 4
+    let canFreeTime = raffleInfo.freeTime - raffleInfo.usedFreeTime
+    let canShareTime = 0
+    if (raffleInfo.shareTime < raffleInfo.shareMaximum) {
+      canShareTime = raffleInfo.shareTime - raffleInfo.usedShareTime
+    } else {
+      canShareTime = raffleInfo.shareMaximum - raffleInfo.usedShareTime
+    }
+    console.log('canFreeTime:', canFreeTime, 'canShareTime', canShareTime)
+    if (canFreeTime + canShareTime > 0) {
+      btnstatus = 1
+    } else if (raffleInfo.shareMaximum > raffleInfo.shareTime && canShareTime === 0) {
+      btnstatus = 2
+    } else if (raffleInfo.scoreMaximum > raffleInfo.usedScoreTime) {
+      btnstatus = 3
+    } else {
+      btnstatus = 4
+    }
+    this.setData({
+      btnstatus: btnstatus
+    })
+  },
+
   // 立即抽奖
   drawNow () {
-    // 抽奖动画
     let that = this
-    let startStep = this.data.winIndex;
-    let endStep = parseInt(Math.random()*8+1);
-    console.log(startStep, endStep);
-    this.rolling(startStep, endStep)
-    util.api('/api/wxapp/lottery/join', function(res) {
-      if (res.error === 0) {
+    util.api('/api/wxapp/lottery/join', function (res) {
+      if (res.error === 0 && res.content.flag) {
         console.log(res.content)
+        let content = res.content
+        // 是否抽奖成功
+        if (content.flag) {
+          // 抽奖动画
+          let startStep = that.data.winIndex;
+          let endStep = parseInt(Math.random() * 8 + 1);
+          console.log(startStep, endStep);
+          switch (content.lotteryGrade) {
+            case 1:
+              endStep = 3
+              break
+            case 2:
+              let steps2 = [4, 8]
+              let random2 = parseInt(Math.random() * 2)
+              endStep = steps2[random2]
+              break
+            case 3:
+              let steps3 = [2, 6]
+              let random3 = parseInt(Math.random() * 2)
+              endStep = steps3[random3]
+              break
+            case 4:
+              let steps4 = [0, 5, 7]
+              let random4 = parseInt(Math.random() * 3)
+              endStep = steps4[random4]
+            default:
+              endStep = 1
+          }
+          that.rolling(startStep, endStep, content)
+        } else {
+          that.$message.error(content.msg)
+        }
+      } else {
+        that.$message.error(res.message)
       }
-    },{
-      lotteryId: Number(that.data.lotteryId),
-      lotteryType: that.data.lotteryType
-    })
+    }, {
+        lotteryId: Number(that.data.lotteryId),
+        lotteryType: that.data.lotteryType,
+        lotterySource: that.data.lotterySource
+      }
+    )
+    
   },
 
   /**
    * 抽奖动画
-   * params(开始位置（0~8），结束位置（0~8))
+   * params(开始位置（0~8），结束位置（0~8), 奖品信息)
    */
-  rolling(startStep, endStep) {
+  rolling(startStep, endStep, prizeInfo) {
     let that = this;
     // 从winIndex开始，总共要走多少步
     let totalStep = that.data.minturns *9 + endStep - startStep;
@@ -152,16 +237,34 @@ global.wxPage({
       if (hasRunStep === totalStep) {
         // 动画停止
         clearInterval(timer)
-        // 中奖弹窗
-        that.hitTheJackpot()
+        // 弹出奖励
+        if (prizeInfo.flag && prizeInfo.lotteryGrade > 0) {
+          that.hitTheJackpot(prizeInfo)
+        } else {
+          that.noDraw()
+        }
       }
     }, that.data.speed)
+  },
+
+  // 未中奖弹窗
+  noDraw() {
+    this.setData({
+      noAwardDialogVisible: true
+    })
   },
 
   // 中奖弹窗
   hitTheJackpot () {
     this.setData({
       awardDialogVisible: true
+    })
+  },
+
+  // 抽奖记录
+  toList () {
+    util.navigateTo({
+      url: '/pages1/lotteryrule/lotteryrule?lotteryId=' + this.data.lotteryId,
     })
   },
 
@@ -175,8 +278,8 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-
+  onShow: function (res) {
+    console.log(res)
   },
 
   /**
@@ -211,6 +314,29 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
+    let that = this
+    let username = util.getCache('nickName')
+    if (username === "" || username === null) {
+      username = "神秘的小伙伴"
+    }
+    util.api('/api/wxapp/lottery/share', function(res) {
+      if (res.error === 0) {
+        that.lotteryRequest()
+      }
+    }, { lotteryId: that.data.lotteryId })
+    return {
+      path: '/pages1/lottery/lottery?lotteryId='+ that.data.lotteryId,
+      title: username + '邀你免费拿大奖，限时免费立即参加吧！！！',
+      imageUrl: imageUrl + '/image/wxapp/share_lott1.jpg'
+    }
+  },
 
+  /**
+   * 监听用户某些操作触发的事件，用于统计用途，目前仅支持转发事件
+   */
+  onUserOpStatistic: function (e) {
+    if (e.op == 'share') {
+      console.log(e)
+    }
   }
 })

@@ -27,7 +27,9 @@ export default {
       htmlData: []
     }
   },
+  inject: ['changeIsFillcontain'],
   mounted () {
+    this.changeIsFillcontain()
     console.log(window.location.href)
     let part = window.location.href.split('?')[1].split('&')
     let shopId = Number(part[0].split('=')[1])

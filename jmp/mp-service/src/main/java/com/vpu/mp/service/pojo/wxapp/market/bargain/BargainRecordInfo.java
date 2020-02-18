@@ -41,6 +41,7 @@ public class BargainRecordInfo {
     private String shareConfig;
     private Integer stock;
     private Timestamp updateTime;
+    private Byte freeFreight;
 
     private String wxOpenid;
     private String username;
