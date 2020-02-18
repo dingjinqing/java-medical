@@ -49,47 +49,56 @@ export const en = {
     {
       value: 1,
       label: 'To be shipped',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/waiting?orderStatus=3'
     },
     {
       value: 2,
       label: 'Pending disposal',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/refund/list'
     },
     {
       value: 3,
       label: 'Sold out',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/goodsManage/goodsForSaleOut'
     },
     {
       value: 4,
       label: 'To be audited',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/goodsManage/evaluationManagement'
     },
     {
       value: 5,
       label: 'Waiting for delivery',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/self'
     },
     {
       value: 6,
       label: 'Reviewed by distributor',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/distribution'
     },
     {
       value: 7,
       label: 'Membership activation',
-      isCheck: false
+      isCheck: false,
+      link: ''
     },
     {
       value: 8,
       label: 'Cash withdrawal',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/distribution'
     },
     {
       value: 9,
       label: 'Service evaluation',
-      isCheck: false
+      isCheck: false,
+      link: ''
     }
   ],
 
@@ -164,12 +173,12 @@ export const en = {
     {
       icon: '/image/admin/new_ov/hdyl.png',
       title: 'Kaiping is polite',
-      link: ''
+      link: '/admin/home/main/openScreen/list'
     },
     {
       icon: '/image/admin/new_ov/kj.png',
       title: 'Bargain',
-      link: ''
+      link: '/admin/home/main/bargain'
     },
     {
       icon: '/image/admin/new_ov/ptcj.png',
@@ -179,12 +188,12 @@ export const en = {
     {
       icon: '/image/admin/new_ov/yhqlb.png',
       title: 'Coupon pack',
-      link: ''
+      link: '/admin/home/main/couponPackage'
     },
     {
       icon: '/image/admin/new_ov/zfyl.png',
       title: 'Payment of courtesy',
-      link: '/admin/home/main/admin/home/main/payReward'
+      link: '/admin/home/main/payReward'
     }
   ],
 

@@ -420,6 +420,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceOrderList'
       )
   },
+  // 限时降价活动数据
+  {
+    path: '/admin/home/main/reduce/reduceEffect',
+    name: 'reduce_effect_view',
+    meta: {
+      crumbTitle: 'router.reduceEffect',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceEffect'
+      )
+  },
   // 好友助力
   {
     path: '/admin/home/main/friendHelp',

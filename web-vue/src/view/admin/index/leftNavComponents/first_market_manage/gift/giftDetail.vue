@@ -35,7 +35,8 @@
                 v-model="requestParams.statrTime"
                 size="small"
                 value-format="yyyy-MM-dd HH:mm:ss"
-                class="date_picker inputWidth"
+                class="date_picker"
+                style="width: 190px;"
               ></el-date-picker>
               {{ $t('gift.to') }}
               <el-date-picker
@@ -44,7 +45,8 @@
                 v-model="requestParams.endTime"
                 size="small"
                 value-format="yyyy-MM-dd HH:mm:ss"
-                class="date_picker inputWidth"
+                class="date_picker"
+                style="width: 190px;"
               ></el-date-picker>
             </el-form-item>
           </el-col>
