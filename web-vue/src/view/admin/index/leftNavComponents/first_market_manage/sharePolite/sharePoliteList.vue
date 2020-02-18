@@ -71,6 +71,7 @@
           prop="validityPeriod"
           :label="$t('sharePolite.validityPeriod')"
           align="center"
+          width="160"
         >
           <template slot-scope="scope">
             <div v-if="scope.row.validityPeriod === '1'"> {{$t('marketCommon.permanent')}}</div>
@@ -96,7 +97,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="pageStatus"
+          prop="statusName"
           :label="$t('sharePolite.activityStatus')"
           align="center"
           width="140px"
@@ -128,7 +129,7 @@
               <el-tooltip
                 :content="$t('sharePolite.edit')"
                 placement="top"
-                v-if="scope.row.pageStatus != '已停用'"
+                v-if="scope.row.pageStatus !== 4"
               >
                 <span
                   class="el-icon-edit-outline iconSpn"
@@ -138,7 +139,7 @@
               <el-tooltip
                 :content="$t('sharePolite.terminate')"
                 placement="top"
-                v-if="scope.row.status === 0"
+                v-if="scope.row.pageStatus !== 3"
               >
                 <span
                   class="el-icon-circle-close iconSpn"
@@ -148,7 +149,7 @@
               <el-tooltip
                 :content="$t('sharePolite.open')"
                 placement="top"
-                v-if="scope.row.status === 1"
+                v-if="scope.row.pageStatus === 3"
               >
                 <span
                   class="el-icon-circle-check iconSpn"
@@ -173,12 +174,6 @@
                   class="el-icon-s-cooperation iconSpn"
                 ></span>
               </el-tooltip>
-              <!--              <el-tooltip
-                :content="$t('sharePolite.share')"
-                placement="top"
-              >
-                <span class="el-icon-share iconSpn"></span>
-              </el-tooltip>-->
             </div>
           </template>
         </el-table-column>
@@ -252,7 +247,7 @@ export default {
       }
       console.log(JSON.parse(JSON.stringify(this.param)))
       getList(this.param).then((res) => {
-        console.log(res)
+        console.log(res, 'res data')
         if (res.error === 0) {
           this.handleData(res.content)
           this.dailyLimit = res.content.dailyShareAward
@@ -275,6 +270,7 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.pageResult.dataList.map((item, index) => {
+        item.statusName = this.getActStatusString(item.pageStatus)
         // 触发条件
         switch (item.condition) {
           case 1:
@@ -290,34 +286,20 @@ export default {
             item.condition = ''
             break
         }
-        // 活动状态
-        switch (item.pageStatus) {
-          case 4:
-            item.pageStatus = '已停用'
-            break
-          case 3:
-            item.pageStatus = '已过期'
-            break
-          case 2:
-            item.pageStatus = '未开始'
-            break
-          case 1:
-            item.pageStatus = '进行中'
-            break
-        }
         // 活动奖励类型
         item.rewardType.forEach((itemC, indexC) => {
           switch (itemC) {
             case 1:
-              item.rewardType[indexC] = '积分、'
+              item.rewardType[indexC] = '积分'
               break
             case 2:
-              item.rewardType[indexC] = '优惠券、'
+              item.rewardType[indexC] = '优惠券'
               break
             case 3:
               item.rewardType[indexC] = '幸运大转盘'
           }
         })
+        item.rewardType = item.rewardType.join('、')
       })
       this.tableData = data.pageResult.dataList
     },
@@ -346,6 +328,7 @@ export default {
     },
     // 停用分享有礼活动
     shutdown (shareId) {
+      console.log(shareId, 'shareId')
       let obj = {
         'shareId': shareId,
         'status': 1
