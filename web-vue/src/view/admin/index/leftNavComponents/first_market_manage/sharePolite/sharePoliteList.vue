@@ -126,36 +126,40 @@
         >
           <template slot-scope="scope">
             <div class="operation">
+              <!-- 编辑按钮 -->
               <el-tooltip
                 :content="$t('sharePolite.edit')"
                 placement="top"
-                v-if="scope.row.pageStatus !== 4"
+                v-if="scope.row.pageStatus === 1 || scope.row.pageStatus === 2"
               >
                 <span
                   class="el-icon-edit-outline iconSpn"
                   @click="updateActivity(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <!-- 停用按钮 -->
               <el-tooltip
                 :content="$t('sharePolite.terminate')"
                 placement="top"
-                v-if="scope.row.pageStatus !== 3"
+                v-if="scope.row.pageStatus === 1 || scope.row.pageStatus === 2"
               >
                 <span
                   class="el-icon-circle-close iconSpn"
                   @click="shutdown(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <!-- 启用按钮 -->
               <el-tooltip
                 :content="$t('sharePolite.open')"
                 placement="top"
-                v-if="scope.row.pageStatus === 3"
+                v-if="scope.row.pageStatus === 4"
               >
                 <span
                   class="el-icon-circle-check iconSpn"
                   @click="open(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <!-- 删除按钮 -->
               <el-tooltip
                 :content="$t('sharePolite.delete')"
                 placement="top"
@@ -165,6 +169,7 @@
                   class="el-icon-delete iconSpn"
                 ></span>
               </el-tooltip>
+              <!-- 领取明细按钮 -->
               <el-tooltip
                 :content="$t('sharePolite.detail')"
                 placement="top"

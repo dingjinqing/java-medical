@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.order.OrderExportVo.LANGUAGE_TYPE_EXCEL;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * author liufei
@@ -140,7 +141,22 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/commoditystatistics/rankExport")
     public void rankExport(@RequestBody @Validated RankingParam param, HttpServletResponse response) {
-
+        if (Objects.isNull(param.getStartTime()) || Objects.isNull(param.getEndTime())) {
+            // 默认获取最近30天的数据
+            param.defaultValue();
+        }
+        if (Objects.isNull(param.getUnit())) {
+            // 默认粒度为天
+            param.setUnit(BYTE_ZERO);
+        }
+        String message;
+        if (BYTE_ZERO.equals(param.getFlag())) {
+            message = JsonResultMessage.GOODS_RANKING_SALES_TOP10;
+        } else {
+            message = JsonResultMessage.GOODS_RANKING_SALES_ORDER_TOP10;
+        }
+        Workbook workbook = shop().statisticsService.rankExport(param);
+        String fileName = Util.translateMessage(getLang(), message, LANGUAGE_TYPE_EXCEL, "messages");
+        export2Excel(workbook, fileName, response);
     }
-
 }

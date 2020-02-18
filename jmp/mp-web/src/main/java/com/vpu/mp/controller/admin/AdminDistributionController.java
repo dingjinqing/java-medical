@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.shop.ShopApplication;
 import org.hibernate.validator.constraints.pl.REGON;
+import org.jooq.types.UInteger;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -433,7 +434,18 @@ public class AdminDistributionController extends AdminBaseController{
         List<UserRemarkListVo> userRemarkListVos = shop().distributorList.userRemarkList(param);
         return this.success(userRemarkListVos);
     }
-	
+
+    /**
+     * 删除会员备注
+     * @param id
+     * @return
+     */
+    @GetMapping("/admin/distribution/distrobutor/userRemark/del")
+    public JsonResult delUserRemark(Integer id){
+        int res = shop().distributorList.delUserRemark(id);
+        return this.success(res);
+    }
+
 	/**
 	 * 分销员已邀请用户列表
 	 * @param param

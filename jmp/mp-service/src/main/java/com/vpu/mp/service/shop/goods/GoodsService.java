@@ -45,7 +45,9 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -289,14 +291,26 @@ public class GoodsService extends ShopBaseService {
      * @return 商品id结合
      */
     public List<Integer> getGoodsIdsListAll(GoodsPageListParam goodsPageListParam) {
+//        PageResult<GoodsPageListVo> pageResult;
+//        if (esUtilSearchService.esState()) {
+//            try {
+//                pageResult = esGoodsSearchService.searchGoodsByParam(goodsPageListParam);
+//            } catch (IOException e) {
+//                logger().info("es");
+//                pageResult = getGoodsPageByDb(goodsPageListParam);
+//            }
+//        }else{
+//            pageResult = getGoodsPageByDb(goodsPageListParam);
+//        }
+//        return pageResult.getDataList().stream().map(GoodsPageListVo::getGoodsId).collect(Collectors.toList());
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
         List<Integer> goodsIds = db().select(GOODS.GOODS_ID)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
-
         return goodsIds;
+
     }
 
     /**
@@ -710,6 +724,17 @@ public class GoodsService extends ShopBaseService {
     public GoodsView getGoodsView(Integer goodsId) {
         GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
             from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
+            fetchOne().into(GoodsView.class);
+        goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
+        return goodsView;
+    }
+    /**
+     * 取单个GoodsView
+     */
+    public GoodsView getGoodsViewByProductId(Integer productId) {
+        GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
+            from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
             fetchOne().into(GoodsView.class);
         goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
         return goodsView;
@@ -1516,6 +1541,14 @@ public class GoodsService extends ShopBaseService {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
             fetchMap(GOODS.GOODS_ID);
     }
+    /**
+     * 通过商品id数组查询商品
+     */
+    public Map<Integer, GoodsRecord> getIsSaleGoodsByIds(List<Integer> goodsIds) {
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
+            and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+            fetchMap(GOODS.GOODS_ID);
+    }
 
     /**
      * 获取商品小程序展示页面
@@ -1632,7 +1665,6 @@ public class GoodsService extends ShopBaseService {
     public List<Integer> getAllGoodsId() {
         return db().select(GOODS.GOODS_ID)
             .from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetch()
             .getValues(GOODS.GOODS_ID);
     }
@@ -1873,7 +1905,7 @@ public class GoodsService extends ShopBaseService {
             bo.setUrl(getVideoFullUrlUtil(bo.getUrl(), true));
             bos.add(bo);
         });
-        return bos.stream().collect(Collectors.toMap(GoodsVideoBo::getId, Function.identity()));
+        return bos.stream().collect(Collectors.toMap(GoodsVideoBo::getGoodsId, Function.identity()));
     }
 
     /**
@@ -2121,5 +2153,44 @@ public class GoodsService extends ShopBaseService {
         }
         // 其它普通商品
         return null;
+    }
+
+    /**
+     * 得到在售商品id集合
+     *
+     * @param catIds   指定平台分类id,逗号分隔的字符串
+     * @param sortIds  指定商家分类id,逗号分隔的字符串
+     * @param brandIds  指定品牌id,逗号分隔的字符串
+     *                  多种条件取并集
+     * @return 商品id
+     */
+    public List<Integer> getOnShelfGoodsIdList(List<Integer> catIds, List<Integer> sortIds,List<Integer> brandIds) {
+        SelectConditionStep<Record1<Integer>> selectConditionStep = db().select(GOODS.GOODS_ID)
+            .from(GOODS)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+
+        Condition filterCondition = DSL.noCondition();
+        //指定平台分类
+        if (CollectionUtils.isNotEmpty(catIds)) {
+            filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIds)));
+        }
+        //指定商家分类
+        if (CollectionUtils.isNotEmpty(sortIds)) {
+            //在所有父子节点中查找
+            filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIds)));
+        }
+        //指定品牌
+        if (CollectionUtils.isNotEmpty(brandIds)) {
+            filterCondition.or(GOODS.BRAND_ID.in(brandIds));
+        }
+        selectConditionStep.and(filterCondition);
+
+        // 是否展示售罄
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (soldOutGoods == null || soldOutGoods.equals(NumberUtils.BYTE_ZERO)) {
+            selectConditionStep.and(GOODS.GOODS_NUMBER.greaterThan(NumberUtils.INTEGER_ZERO));
+        }
+        return selectConditionStep.fetchInto(Integer.class);
     }
 }

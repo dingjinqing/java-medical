@@ -32,7 +32,9 @@
     "pages/storeinfo/storeinfo",
     "pages/checkout/checkout",
     "pages/servicecomment/servicecomment",
-    "pages/cardrecord/cardrecord"
+    "pages/cardrecord/cardrecord",
+    "pages/fullprice/fullprice",
+    "pages/maingoodslist/maingoodslist"
   ],
   "window": {
     "backgroundTextStyle": "dark",

@@ -1,0 +1,22 @@
+<!-- 幸运大抽奖未中奖弹窗：components/popup/lottery-no-award-dialog/index.wxml-->
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<view class="lottery-award-page" wx:if="{{show}}">
+  <view class="l-a-cover" bindtap="bindClose"></view>
+  <view class="l-a-content">
+    <view class="l-a-top">
+      <image class="l-a-top-img" src="{{imageUrl + '/image/wxapp/not_award1.png'}}" mode="scaleToFill"></image>
+      <text class="l-a-top-title">好遗憾</text>
+    </view>
+    <view class="l-a-center">
+      <view>抱歉啦，这次没有中奖</view>
+      <view style="margin:24rpx auto 20rpx;">再接再厉吧！</view>
+      <view class="l-a-c-btns">
+        <button class="l-a-c-btn" bindtap="drawAgain">再抽一次</button>
+      </view>
+    </view>
+    <view class="l-a-close" bindtap="bindClose">
+      <image class="l-a-close-img" mode="widthFix" src="{{imageUrl + '/image/wxapp/split_btn1.png'}}" role="img"></image>
+    </view>
+  </view>
+</view>
+

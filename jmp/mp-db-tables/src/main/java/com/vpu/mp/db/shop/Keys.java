@@ -263,7 +263,8 @@ public class Keys {
     public static final Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Identities0.IDENTITY_SUBSCRIBE_MESSAGE;
     public static final Identity<CartRecord, Integer> IDENTITY_CART = Identities0.IDENTITY_CART;
     public static final Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Identities0.IDENTITY_PAY_AWARD_PRIZE;
-    public static final Identity<UserRemarkRecord, UInteger> IDENTITY_USER_REMARK = Identities0.IDENTITY_USER_REMARK;
+    public static final Identity<UserRemarkRecord, Integer> IDENTITY_USER_REMARK = Identities0.IDENTITY_USER_REMARK;
+
 
 
     // -------------------------------------------------------------------------
@@ -517,6 +518,7 @@ public class Keys {
     public static final UniqueKey<UserRemarkRecord> KEY_B2C_USER_REMARK_PRIMARY = UniqueKeys0.KEY_B2C_USER_REMARK_PRIMARY;
 
 
+
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -745,7 +747,7 @@ public class Keys {
         public static Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Internal.createIdentity(SubscribeMessage.SUBSCRIBE_MESSAGE, SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID);
         public static Identity<CartRecord, Integer> IDENTITY_CART = Internal.createIdentity(Cart.CART, Cart.CART.CART_ID);
         public static Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Internal.createIdentity(PayAwardPrize.PAY_AWARD_PRIZE, PayAwardPrize.PAY_AWARD_PRIZE.ID);
-        public static Identity<UserRemarkRecord, UInteger> IDENTITY_USER_REMARK = Internal.createIdentity(UserRemark.USER_REMARK, UserRemark.USER_REMARK.ID);
+        public static Identity<UserRemarkRecord, Integer> IDENTITY_USER_REMARK = Internal.createIdentity(UserRemark.USER_REMARK, UserRemark.USER_REMARK.ID);
     }
 
     private static class UniqueKeys0 {

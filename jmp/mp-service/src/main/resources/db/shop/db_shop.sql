@@ -4721,11 +4721,11 @@ CREATE TABLE `b2c_xcx_customer_page` (
 )COMMENT='微信小程序自定义页面表';
 
 CREATE TABLE `b2c_user_remark` (
-  `id`          mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id`     mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `id`          mediumint(10)  NOT NULL AUTO_INCREMENT,
+  `user_id`     mediumint(8)  NOT NULL DEFAULT '0',
   `remark`      TEXT COMMENT '会员备注',
   `add_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_delete`   tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除',
+  `is_delete`   tinyint(1)  NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除',
   PRIMARY KEY (`id`),
   key `user_id` (`user_id`)
 )COMMENT='会员备注';

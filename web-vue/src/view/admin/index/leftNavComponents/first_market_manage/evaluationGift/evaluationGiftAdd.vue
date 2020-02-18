@@ -192,6 +192,7 @@
                 v-model="form.awardType"
                 class="award-type-radio-group"
                 @change="awardTypeChange"
+                :disabled="!!id"
               >
                 <el-radio :label="1">{{$t('evaluationGiftAdd.score')}}</el-radio>
                 <el-radio :label="2">{{$t('evaluationGiftAdd.coupon')}}</el-radio>
@@ -209,6 +210,7 @@
                   v-model="form.score"
                   controls-position="right"
                   :min="0"
+                  :disabled="!!id"
                 ></el-input-number>
               </el-form-item>
               <el-form-item
@@ -217,7 +219,7 @@
                 label-width="110px"
                 prop="activityId"
               >
-                <selectCouponAct v-model="form.activityId" @initData="initCouponList"></selectCouponAct>
+                <selectCouponAct v-model="form.activityId" @initData="initCouponList" :disabled="!!id"></selectCouponAct>
                 <p class="tips">{{$t('evaluationGiftAdd.Canuse') + couponLength + $t('evaluationGiftAdd.part')}}</p>
               </el-form-item>
               <el-form-item
@@ -231,6 +233,7 @@
                   :placeholder="$t('evaluationGiftAdd.inputAmount')"
                   controls-position="right"
                   :min="0"
+                  :disabled="!!id"
                 ></el-input-number>
               </el-form-item>
               <el-form-item
@@ -239,7 +242,7 @@
                 label-width="110px"
                 prop="activityId"
               >
-                <selectPayRewardAct v-model="form.activityId"></selectPayRewardAct>
+                <selectPayRewardAct v-model="form.activityId" :disabled="!!id"></selectPayRewardAct>
               </el-form-item>
               <div v-else-if="form.awardType === 5">
                 <el-form-item
@@ -281,9 +284,11 @@
                     v-model="form.awardPath"
                     size="small"
                     style="width:170px;"
+                    :disabled="!!id"
                   ></el-input>
                   <el-button
                     size="small"
+                    :disabled="!!id"
                     @click="selectLinksVisible = !selectLinksVisible"
                   >{{$t('evaluationGiftAdd.selectLink')}}</el-button>
                 </el-form-item>
@@ -297,6 +302,7 @@
                   v-model="form.awardNum"
                   controls-position="right"
                   :min="0"
+                  :disabled="!!id"
                 ></el-input-number>
               </el-form-item>
             </el-form-item>
@@ -521,6 +527,7 @@ export default {
     },
     // 选择图片
     selectImgHandle () {
+      if (this.id) return false
       this.imageDalogVisible = !this.imageDalogVisible
     },
     hoverImgHandle () {

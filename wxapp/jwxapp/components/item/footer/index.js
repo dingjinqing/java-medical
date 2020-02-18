@@ -353,8 +353,7 @@ global.wxComponent({
             buttonInfo['left']['canBuy'] = true
             buttonInfo['right']['canBuy'] = true
           }
-        }
-        if(buttonData.activityType && buttonData.activityType === 3){
+        } else if (buttonData.activityType && buttonData.activityType === 3){
           if(dealtAct && dealtAct.error === 1){
             buttonInfo['left']['canBuy'] = true
             buttonInfo['right']['canBuy'] = false
@@ -368,8 +367,7 @@ global.wxComponent({
             buttonInfo['left']['canBuy'] = true
             buttonInfo['right']['canBuy'] = true
           }
-        }
-        if(buttonData.activityType && buttonData.activityType === 5){
+        } else if (buttonData.activityType && buttonData.activityType === 5){
           if(dealtAct && dealtAct.error === 1){
             buttonInfo['right']['canBuy'] = false
             buttonInfo['right']['errorMessage'] = dealtAct.errorMessage
@@ -379,8 +377,7 @@ global.wxComponent({
           } else {
             buttonInfo['right']['canBuy'] = true
           }
-        }
-        if(!buttonData.activityType){
+        } else {
           buttonInfo['left']['canBuy'] = true
           buttonInfo['right']['canBuy'] = true
         }
@@ -399,8 +396,7 @@ global.wxComponent({
               buttonInfo['right']['canBuy'] = true
             }
           }
-        }
-        if(buttonData.activityType && buttonData.activityType === 3){
+        } else if (buttonData.activityType && buttonData.activityType === 3){
           if(triggerButton === 'right' || !triggerButton){
             buttonInfo['right']['canBuy'] = true
           } else if (triggerButton === 'left') {
@@ -414,8 +410,7 @@ global.wxComponent({
               buttonInfo['right']['canBuy'] = true
             }
           }
-        }
-        if(buttonData.activityType && buttonData.activityType === 5){
+        } else if (buttonData.activityType && buttonData.activityType === 5){
           if(triggerButton === 'right' || !triggerButton){
             if(dealtAct && dealtAct.error === 1){
               buttonInfo['right']['canBuy'] = false
@@ -427,8 +422,7 @@ global.wxComponent({
               buttonInfo['right']['canBuy'] = true
             }
           }
-        }
-        if(!buttonData.activityType){
+        } else {
           if(triggerButton === 'right'){
             buttonInfo['right']['canBuy'] = true
           } else if (triggerButton === 'left'){
