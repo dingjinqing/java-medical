@@ -283,6 +283,11 @@ export default {
     },
     // 弹出窗口
     tuneUpChooseGoods: Boolean,
+    // 只回显已选商品
+    onlyShowChooseGoods: {
+      type: Boolean,
+      default: false
+    },
     // 选择的商品id
     chooseGoodsBack: {
       type: Array,
@@ -337,6 +342,11 @@ export default {
         goodsSn: null,
         brandId: null
       },
+      showItem: {
+        sortId: true,
+        labelIdL: true,
+        brandId: true
+      },
       // 表格数据
       tableData: [],
       // 下拉框数据
@@ -357,13 +367,15 @@ export default {
     }
   },
   watch: {
-    chooseGoodsBack (newData) {
+    chooseGoodsBack: function (newData) {
       console.log(newData)
       console.log('chooseGoodsBack')
-      this.checkedIdList = this.chooseGoodsBack
+      let uniqGoodsIds = Array.from(new Set(this.chooseGoodsBack))
+      // this.chooseGoodsBack = uniqGoodsIds
+      this.checkedIdList = uniqGoodsIds
     },
     tuneUpChooseGoods () {
-      console.log('tuneUpChooseGoods', this.chooseGoodsBack, this.initialConditionRender)
+      console.log('tuneUpChooseGoods', this.checkedIdList, this.initialConditionRender)
       // 如果外部有初始渲染条件传入
       if (this.initialConditionRender.length) {
         this.requestParam = {
@@ -383,19 +395,22 @@ export default {
         switch (this.initialConditionRender[0]) {
           case 0:
             this.requestParam.sortId = this.initialConditionRender[1]
+            this.showItem.sortId = false
             break
           case 1:
             this.requestParam.labelId = this.initialConditionRender[1]
+            this.showItem.labelId = false
             break
           case 2:
             this.requestParam.brandId = this.initialConditionRender[1]
+            this.showItem.brandId = false
             break
         }
       }
       this.choiseGooddialogVisible = true
       this.selectGoodsData()
       if (this.loadProduct) {
-        getProductListByIds({ productId: this.chooseGoodsBack }).then(res => {
+        getProductListByIds({ productId: this.checkedIdList }).then(res => {
           console.log('getGoodslistByIds', res)
           this.clearCheckedRow()
           res.content.forEach(item => {
@@ -403,7 +418,7 @@ export default {
           })
         })
       } else {
-        getGoodsListByIds({ goodsIds: this.chooseGoodsBack }).then(res => {
+        getGoodsListByIds({ goodsIds: this.checkedIdList }).then(res => {
           console.log('getGoodslistByIds', res)
           this.clearCheckedRow()
           res.content.forEach(item => {
@@ -450,6 +465,11 @@ export default {
       }
       this.requestParam.currentPage = this.pageParams.currentPage
       this.requestParam.pageRows = this.pageParams.pageRows
+      if (this.onlyShowChooseGoods) {
+        this.requestParam.goodsIds = this.checkedIdList
+      } else {
+        this.requestParam.goodsIds = []
+      }
       // 分页请求
       query(this.requestParam).then((res) => {
         if (!res) return
@@ -541,9 +561,31 @@ export default {
       this.transmitGoodsIds(this.checkedIdList)
       this.$emit('resultGoodsIds', this.checkedIdList)
       this.$emit('result', this.checkedIdList)
-      this.$emit('resultGoodsDatas', this.checkedRowList)
-      // 把选中的id集合和url集合回传
-      this.$emit('res', this.checkedIdList, this.checkedUrlList)
+      let residueIds = this.checkedIdList
+      this.checkedRowList.forEach(itme => {
+        var index = residueIds.indexOf(this.getRowId(itme))
+        if (index > -1) {
+          residueIds.splice(index, 1)
+        }
+      })
+      if (this.loadProduct) {
+        getProductListByIds({ productId: residueIds }).then(res => {
+          this.clearCheckedRow()
+          res.content.forEach(item => {
+            this.checkedRowList.push(item)
+          })
+        })
+      } else {
+        getGoodsListByIds({ goodsIds: residueIds }).then(res => {
+          res.content.forEach(item => {
+            this.checkedRowList.push(item)
+          })
+          console.log('返回参数', this.checkedRowList, Array.from(this.checkedRowList))
+          this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
+          // 把选中的id集合和url集合回传
+          this.$emit('res', this.checkedIdList, this.checkedUrlList)
+        })
+      }
     },
     /* 翻页方法 */
     paginationChange () {
@@ -594,9 +636,14 @@ export default {
         })
         if (flag.length === 0) {
           this.checkPageAllFlag = true
+        } else {
+          this.checkPageAllFlag = false
         }
+        console.log('选中添加', this.allGoodsProductId, this.checkedIdList)
         if (this.allGoodsProductId.every(val => this.checkedIdList.includes(val))) {
           this.checkAllFlag = true
+        } else {
+          this.checkAllFlag = false
         }
       }
     },
@@ -639,13 +686,13 @@ export default {
     checkedAllRow (flag) {
       console.log('checkedAllRow')
       this.checkPageAllFlag = flag
-      this.checkedPageRow(flag)
       if (flag) {
         // 选择全部只有全部商品id
         this.checkedIdList = this.allGoodsProductId
       } else {
         this.clearCheckedRow()
       }
+      this.hxTableData()
     }
 
   }
