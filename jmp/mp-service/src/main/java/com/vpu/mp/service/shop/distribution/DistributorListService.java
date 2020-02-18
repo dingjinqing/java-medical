@@ -12,15 +12,13 @@ import static com.vpu.mp.db.shop.Tables.USER_REMARK;
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vpu.mp.db.shop.tables.records.PromotionLanguageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import org.jooq.*;
-import org.jooq.types.UInteger;
+import org.jooq.types.UByte;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -231,7 +229,7 @@ public class DistributorListService extends ShopBaseService{
      * @return
      */
     public List<UserRemarkListVo> userRemarkList(UserRemarkListVo param){
-        Result<Record> record = db().select().from(USER_REMARK).where(USER_REMARK.USER_ID.eq(param.getUserId())).fetch();
+        Result<Record> record = db().select().from(USER_REMARK).where(USER_REMARK.USER_ID.eq(param.getUserId())).and(USER_REMARK.IS_DELETE.eq((byte)0)).fetch();
         if(record != null){
             return record.into(UserRemarkListVo.class);
         }else{
@@ -249,5 +247,16 @@ public class DistributorListService extends ShopBaseService{
         assign(param, record);
         return db().executeInsert(record);
     }
+
+    /**
+     * 删除会员备注
+     * @param id
+     * @return
+     */
+    public int delUserRemark(Integer id){
+        int res = db().update(USER_REMARK).set(USER_REMARK.IS_DELETE, (byte) 1).where(USER_REMARK.ID.eq(id)).execute();
+        return res;
+    }
+
 
 }

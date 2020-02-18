@@ -289,14 +289,26 @@ public class GoodsService extends ShopBaseService {
      * @return 商品id结合
      */
     public List<Integer> getGoodsIdsListAll(GoodsPageListParam goodsPageListParam) {
+//        PageResult<GoodsPageListVo> pageResult;
+//        if (esUtilSearchService.esState()) {
+//            try {
+//                pageResult = esGoodsSearchService.searchGoodsByParam(goodsPageListParam);
+//            } catch (IOException e) {
+//                logger().info("es");
+//                pageResult = getGoodsPageByDb(goodsPageListParam);
+//            }
+//        }else{
+//            pageResult = getGoodsPageByDb(goodsPageListParam);
+//        }
+//        return pageResult.getDataList().stream().map(GoodsPageListVo::getGoodsId).collect(Collectors.toList());
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
         List<Integer> goodsIds = db().select(GOODS.GOODS_ID)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
-
         return goodsIds;
+
     }
 
     /**
@@ -710,6 +722,17 @@ public class GoodsService extends ShopBaseService {
     public GoodsView getGoodsView(Integer goodsId) {
         GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
             from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
+            fetchOne().into(GoodsView.class);
+        goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
+        return goodsView;
+    }
+    /**
+     * 取单个GoodsView
+     */
+    public GoodsView getGoodsViewByProductId(Integer productId) {
+        GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
+            from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
             fetchOne().into(GoodsView.class);
         goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
         return goodsView;
@@ -1516,6 +1539,14 @@ public class GoodsService extends ShopBaseService {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
             fetchMap(GOODS.GOODS_ID);
     }
+    /**
+     * 通过商品id数组查询商品
+     */
+    public Map<Integer, GoodsRecord> getIsSaleGoodsByIds(List<Integer> goodsIds) {
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
+            and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+            fetchMap(GOODS.GOODS_ID);
+    }
 
     /**
      * 获取商品小程序展示页面
@@ -1632,7 +1663,6 @@ public class GoodsService extends ShopBaseService {
     public List<Integer> getAllGoodsId() {
         return db().select(GOODS.GOODS_ID)
             .from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetch()
             .getValues(GOODS.GOODS_ID);
     }
@@ -1873,7 +1903,7 @@ public class GoodsService extends ShopBaseService {
             bo.setUrl(getVideoFullUrlUtil(bo.getUrl(), true));
             bos.add(bo);
         });
-        return bos.stream().collect(Collectors.toMap(GoodsVideoBo::getId, Function.identity()));
+        return bos.stream().collect(Collectors.toMap(GoodsVideoBo::getGoodsId, Function.identity()));
     }
 
     /**

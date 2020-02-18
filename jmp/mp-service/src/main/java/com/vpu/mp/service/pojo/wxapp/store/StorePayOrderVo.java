@@ -68,4 +68,8 @@ public class StorePayOrderVo {
      * 积分抵扣比例
      */
     private Integer scorePayNum;
+    /**
+     * 积分兑换比
+     */
+    private Integer scoreProportion;
 }

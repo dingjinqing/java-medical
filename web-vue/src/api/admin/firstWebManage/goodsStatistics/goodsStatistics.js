@@ -43,7 +43,7 @@ export function scoreDetail (data) {
 // 商品效果导出
 export function export2Excel (data) {
   return service({
-    url: '/api/admin/assetmanagement/export2Excel',
+    url: '/api/admin/commoditystatistics/export2Excel',
     method: 'post',
     data: data,
     responseType: 'blob'
