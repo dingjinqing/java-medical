@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.action;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -106,6 +108,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     public GroupDrawService groupDraw;
     @Autowired
     private OrderOperateSendMessage sendMessage;
+    @Autowired
+    private CouponService coupon;
 
     @Override
 	public OrderServiceCode getServiceCode() {
@@ -541,8 +545,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		orderGoods.updateInReturn(order.getOrderSn(), returnGoodsRecord, returnOrderRecord);
 		//可退款退货商品数量是否为0(有状态依赖于ordergoods表的商品数量与已经退货退款数量)
 		boolean canReturnGoodsNumber = orderGoods.canReturnGoodsNumber(order.getOrderSn());
-		//更新orderinfo主表信息
+		//更新ordrinfo主表信息
 		orderInfo.updateInReturn(returnOrderRecord,order,canReturnGoodsNumber);
+		//退优惠券
+        returnCoupon(order);
 		//TODO 拆单逻辑特殊处理
 		
 		//部分发货退款完成,检查是否需要设置状态为已发货
@@ -594,7 +600,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 * 	更新库存和销量
 	 * @param returnGoods
 	 * @param order
-	 * @param goodsType
 	 * @param isRestore 是否恢复库存
 	 */
 	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, boolean isRestore) {
@@ -757,6 +762,17 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                     logger().error("订单自动任务,完成失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());
                 }
             });
+        }
+    }
+
+    private void returnCoupon(OrderInfoVo order){
+        if(order.getOrderStatus().equals(OrderConstant.ORDER_FINISHED)) {
+            logger.info("订单完成，不可退优惠券");
+            return;
+        }
+        OrderInfoRecord orderInfoRecord = orderInfo.getOrderByOrderSn(order.getOrderSn());
+        if(BigDecimalUtil.compareTo(order.getDiscount(), BigDecimal.ZERO) > 0 && orderInfoRecord.getIsRefundCoupon().equals(OrderConstant.YES)) {
+            coupon.releaserCoupon(order.getOrderSn());
         }
     }
 }

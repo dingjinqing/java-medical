@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.coupon;
 
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
+import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -708,6 +709,51 @@ public class CouponService extends ShopBaseService {
             .set(CUSTOMER_AVAIL_COUPONS.ORDER_SN, orderSn)
             .where(CUSTOMER_AVAIL_COUPONS.ID.eq(id))
             .execute();
+    }
+
+    /**
+     * 王帅
+     * 释放使用优惠券
+     * @param orderSn
+     */
+    public void releaserCoupon(String orderSn){
+        logger().info("释放优惠券start");
+        CustomerAvailCouponsRecord couponInfo= getCouponByOrderSn(orderSn);
+        if(couponInfo == null) {
+            logger().info("优惠券不存在，释放优惠券结束");
+            return;
+        }
+        MrkingVoucherRecord couponInfoCfg = getCouponByOrderSn(couponInfo.getActId());
+        if(couponInfoCfg == null) {
+            logger().info("优惠券不存在，释放优惠券结束");
+            return;
+        }
+        //释放使用数量
+        couponInfoCfg.setUsedAmount(Integer.valueOf(couponInfoCfg.getUsedAmount() > 0 ? couponInfoCfg.getUsedAmount() - 1 : couponInfoCfg.getUsedAmount()).shortValue());
+        couponInfoCfg.update();
+        //恢复未使用
+        couponInfo.setIsUsed(OrderConstant.NO);
+        couponInfo.setUsedTime(null);
+        couponInfo.setOrderSn(org.apache.commons.lang3.StringUtils.EMPTY);
+        couponInfo.update();
+    }
+
+    /**
+     * 王帅
+     * @param orderSn
+     * @return
+     */
+    private CustomerAvailCouponsRecord getCouponByOrderSn(String orderSn) {
+        return db().selectFrom(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ORDER_SN.eq(orderSn)).fetchAny();
+    }
+
+    /**
+     * 王帅
+     * @param id
+     * @return
+     */
+    private MrkingVoucherRecord getCouponByOrderSn(Integer id) {
+        return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchAny();
     }
 
     /**
