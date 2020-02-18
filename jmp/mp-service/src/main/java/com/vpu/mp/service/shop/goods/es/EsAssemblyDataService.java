@@ -96,7 +96,7 @@ public class EsAssemblyDataService extends ShopBaseService {
         for (Integer goodsId : goodsIds) {
             if (!goodsMap.containsKey(goodsId)) {
                 log.error("\n+批量建立索引--->商品【{}】未找到无法建立索引", goodsId);
-                break;
+                continue;
             }
             Map<Byte, List<Integer>> goodsLabelFilter = new HashMap<>();
             goodsLabelFilter.put(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(), Collections.singletonList(goodsId));
