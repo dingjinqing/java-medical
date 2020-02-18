@@ -31,7 +31,7 @@
           :range-separator="$t('marketCommon.to')"
           :start-placeholder="$t('marketCommon.startTime')"
           :end-placeholder="$t('marketCommon.endTime')"
-          format="yyyy-MM-dd HH:mm:ss"
+          :default-time="['00:00:00','23:59:59']"
           value-format="yyyy-MM-dd HH:mm:ss"
           size="small"
         ></el-date-picker>
@@ -60,7 +60,6 @@
           class="inputWidth"
           controls-position="right"
         ></el-input-number>
-        <p style="color: #999;">{{$t('reducePriceList.actNameTip')}}</p>
       </el-form-item>
       <el-form-item
         :label="$t('reducePriceList.purchaseQuantity') + '：'"
@@ -98,7 +97,7 @@
       </el-form-item>
       <el-form-item
         :label="$t('marketCommon.activityGoods') + '：'"
-        prop=""
+        prop="showGoodsList"
       >
         <el-button
           :disabled="isEditFlag"
@@ -204,7 +203,7 @@
               <template slot-scope="scope">
                 <div class="goods_info">
                   <img
-                    :src="$imageHost+scope.row.goodsImg"
+                    :src="scope.row.goodsImg"
                     alt=""
                     class="goods_img"
                   >
@@ -476,6 +475,15 @@ export default {
   },
   props: ['isEdite', 'editId'],
   data () {
+    // 自定义活动商品
+    var validateGoods = (rule, value, callback) => {
+      console.log(this.pageShowGoodsList)
+      if (!this.pageShowGoodsList || this.pageShowGoodsList.length === 0) {
+        callback(new Error('请选择活动商品'))
+      } else {
+        callback()
+      }
+    }
     return {
       // 展开设置箭头
       ArrowArr: [{
@@ -529,6 +537,9 @@ export default {
         ],
         isLimit: [
           { required: true, message: '请填写限购数量', trigger: 'change' }
+        ],
+        showGoodsList: [
+          { required: true, validator: validateGoods, trigger: 'change' }
         ]
       },
 
@@ -636,6 +647,8 @@ export default {
           })
           this.pageShowGoodsList = res.content
           console.log(this.pageShowGoodsList)
+
+          this.$refs.reduceData.validateField('showGoodsList')
         }
       })
     },
@@ -644,6 +657,7 @@ export default {
         return id === item.goodsId
       })
       this.pageShowGoodsList.splice(goodsTarget, 1)
+      this.$refs.reduceData.validateField('showGoodsList')
     },
     getProductInfo (data) {
       this.productDialogFlag = true
@@ -871,10 +885,10 @@ export default {
             // 添加限时降价
             addReducePrice(this.reduceData).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: this.$t('marketCommon.successfulOperation') })
+                this.$message.success({ message: '添加成功' })
                 this.$emit('addReduceSubmit')
               } else {
-                this.$message.warning({ message: this.$t('marketCommon.failureOperation') })
+                this.$message.warning({ message: '添加失败' })
               }
             })
           } else {

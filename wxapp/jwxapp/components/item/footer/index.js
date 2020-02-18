@@ -283,7 +283,6 @@ global.wxComponent({
         "/api/wxapp/cart/add",
         res => {
           if (res.error == 0) {
-            this.getCartNum()
             util.toast_success('添加成功')
           } else {
             util.toast_fail('添加失败')
@@ -381,6 +380,10 @@ global.wxComponent({
             buttonInfo['right']['canBuy'] = true
           }
         }
+        if(!buttonData.activityType){
+          buttonInfo['left']['canBuy'] = true
+          buttonInfo['right']['canBuy'] = true
+        }
       } else if(this.data.position === 'spec') {
         if(buttonData.activityType && buttonData.activityType === 1){
           if(triggerButton === 'right' || !triggerButton){
@@ -399,8 +402,7 @@ global.wxComponent({
         }
         if(buttonData.activityType && buttonData.activityType === 3){
           if(triggerButton === 'right' || !triggerButton){
-
-
+            buttonInfo['right']['canBuy'] = true
           } else if (triggerButton === 'left') {
             if(dealtAct && dealtAct.error === 2){
               buttonInfo['left']['canBuy'] = false
@@ -424,6 +426,16 @@ global.wxComponent({
             } else {
               buttonInfo['right']['canBuy'] = true
             }
+          }
+        }
+        if(!buttonData.activityType){
+          if(triggerButton === 'right'){
+            buttonInfo['right']['canBuy'] = true
+          } else if (triggerButton === 'left'){
+            buttonInfo['left']['canBuy'] = true
+          } else {
+            buttonInfo['left']['canBuy'] = true
+            buttonInfo['right']['canBuy'] = true
           }
         }
       }

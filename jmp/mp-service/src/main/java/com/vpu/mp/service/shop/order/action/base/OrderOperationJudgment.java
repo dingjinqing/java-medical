@@ -1,7 +1,17 @@
 package com.vpu.mp.service.shop.order.action.base;
 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -10,20 +20,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.CollectionUtils;
-
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
-
-import lombok.extern.slf4j.Slf4j;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
 /**
  * 	订单操作判断
@@ -193,14 +191,14 @@ public class OrderOperationJudgment {
 	 */
 	public static boolean mpIsClose(OrderListInfoVo order) {
 		if(//待支付不存在补款或补款未支付
-			order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && (order.getBkOrderPaid() == OrderConstant.BK_PAY_NO || order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT)
+            (order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && (order.getBkOrderPaid() == OrderConstant.BK_PAY_NO || order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT))
 			//待发货 且 货到付款 且 系统支付0
-			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0 && order.getPayCode() == OrderConstant.PAY_CODE_COD) {
+			|| (order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0 && OrderConstant.PAY_CODE_COD.equals(order.getPayCode()))) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 订单是否可以完成
 	 * @param order

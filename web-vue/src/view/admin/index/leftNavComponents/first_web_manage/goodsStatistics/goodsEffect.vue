@@ -119,6 +119,7 @@
         <el-button
           size="small"
           type="primary"
+          @click="dataExport"
         >导出商品</el-button>
       </el-form-item>
     </el-form>
@@ -258,12 +259,14 @@
 
 <script>
 import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
-import { producteffect, getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
+import { producteffect, getDate, export2Excel } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
+import effectExportDialog from './effectExportDialog'
+import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   props: ['initSortCatParams'],
-  components: { sortCatTreeSelect, pagination },
+  components: { sortCatTreeSelect, pagination, effectExportDialog, download },
   mounted () {
     // 初始化form表单下拉框数据
     this.initFilterData()
@@ -317,6 +320,15 @@ export default {
     }
   },
   methods: {
+    // 商品效果导出
+    dataExport () {
+      let params = Object.assign({}, this.effectParam)
+      export2Excel(params).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      })
+    },
     getDateValue (unit) {
       getDate(unit).then(res => {
         if (res.error === 0) {

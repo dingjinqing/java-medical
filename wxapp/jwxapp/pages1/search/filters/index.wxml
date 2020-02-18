@@ -50,17 +50,14 @@
         <view class="item brand more" bindtap="showBrand">更多...</view>
       </view>
     </view>
-    <view class="filter-item" wx:if="{{false}}">
+    <view class="filter-item" wx:if="{{activityTypes.length > 0}}">
       <view class="item-title-content">
         <text class="title">活动商品</text>
       </view>
       <view class="item-content">
-        <view class="item">多人拼团</view>
-        <view class="item">砍价</view>
-        <view class="item">秒杀</view>
-        <view class="item">限时降价</view>
-        <view class="item">一口价</view>
-        <view class="item">支付有礼</view>
+       <block wx:for="{{activityTypes}}" wx:key="*this">
+        <view bindtap="chooseActivity" style="{{filter.includes(selectedActTypes,item) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}" data-activity-type="{{item}}" class="item" wx:if="{{item !== 0}}">{{activityName[item]}}</view>
+       </block>
       </view>
     </view>
     <view class="filter-item" wx:if="{{goodsLabels}}">

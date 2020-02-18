@@ -29,6 +29,7 @@
             <el-select
               size="small"
               v-model="value"
+              @change="selectChange"
             >
               <el-option
                 v-for="(item, index) in options"
@@ -50,7 +51,7 @@
               >
               <img
                 v-if="data.bg_url !== ''"
-                :src="data.bg_url"
+                :src="imageHost + data.bg_url"
                 alt=""
                 style="width: 200px; height: 100px;"
               >
@@ -125,22 +126,22 @@ export default {
       moduleSaveData: {
         is_preview: '0' //  预览原图radio
       },
-      value: '/image/admin/shop_beautify/beau1.png',
+      value: 'image/admin/shop_beautify/beau1.png',
       options: [{
         label: '背景图1',
-        value: '/image/admin/shop_beautify/beau1.png'
+        value: 'image/admin/shop_beautify/beau1.png'
       }, {
         label: '背景图2',
-        value: '/image/admin/shop_beautify/beau2.png'
+        value: 'image/admin/shop_beautify/beau2.png'
       }, {
         label: '背景图3',
-        value: '/image/admin/shop_beautify/beau3.png'
+        value: 'image/admin/shop_beautify/beau3.png'
       }, {
         label: '背景图4',
-        value: '/image/admin/shop_beautify/beau4.png'
+        value: 'image/admin/shop_beautify/beau4.png'
       }, {
         label: '背景图5',
-        value: '/image/admin/shop_beautify/beau5.png'
+        value: 'image/admin/shop_beautify/beau5.png'
       }],
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
@@ -169,6 +170,12 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         this.data = this.modulesData
+        var url = this.data.shop_bg_path
+        if (url !== null || url !== '') {
+          var str = url.split('http://')
+          var index = str[1].indexOf('/') + 1
+          this.data.shop_bg_path = str[1].substring(index)
+        }
       },
       immediate: true
     },
@@ -189,24 +196,11 @@ export default {
     // 添加图片弹窗选中图片数据回传
     handleSelectImg (imgData) {
       console.log(imgData)
-      this.data.bg_url = imgData.imgUrl
-      // if (this.isAddImgOrChangeFlga) {
-      //   imgData.forEach((item, index) => {
-      //     let obj = {
-      //       'image': item.imgUrl,
-      //       'width': item.imgWidth, // 图片宽度
-      //       'height': item.imgHeight, // 图片高度
-      //       'title': '', // 文本
-      //       'link': '', //   链接
-      //       'can_show': '0', //  显示设置raido
-      //       'whetherToExpand': '0'
-      //     }
-      //     this.moduleSaveData.image_list.push(obj)
-      //   })
-      // } else {
-      //   console.log(imgData)
-      //   this.moduleSaveData.image_list[this.changeListImgIndex].image = imgData.imgUrl
-      // }
+      this.data.bg_url = imgData.imgPath
+    },
+    // 背景切换
+    selectChange (value) {
+      this.data.bg_url = value
     },
     // 点击重置
     handleToReset (index) {

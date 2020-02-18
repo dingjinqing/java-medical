@@ -67,17 +67,20 @@ public class ShareRewardService extends BaseShopConfigService {
                 break;
             // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(AWARD.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(AWARD.IS_FOREVER.eq(FLAG_ZERO));
+                categoryConditon = categoryConditon.and(AWARD.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(AWARD.IS_FOREVER.eq(FLAG_ZERO)).and(AWARD.STATUS.eq(FLAG_ZERO));
                 break;
             // 未开始2
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(AWARD.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(AWARD.IS_FOREVER.eq(FLAG_ZERO));
+                categoryConditon = categoryConditon.and(AWARD.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(AWARD.IS_FOREVER.eq(FLAG_ZERO)).and(AWARD.STATUS.eq(FLAG_ZERO));
                 break;
             // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(AWARD.IS_FOREVER.eq(FLAG_ONE)).
+                categoryConditon = categoryConditon.and(AWARD.IS_FOREVER.eq(FLAG_ONE).
                     or(AWARD.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))
-                        .and(AWARD.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))));
+                        .and(AWARD.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())))))
+                    .and(AWARD.STATUS.eq(FLAG_ZERO));
                 break;
         }
         Table<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().

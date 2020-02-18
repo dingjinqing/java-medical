@@ -47,8 +47,22 @@ global.wxPage({
   continueBargain(e){
     util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${e.currentTarget.dataset.recordId}`,'navigateTo')
   },
-  checkOut(){
-    console.log(123)
+  checkOut(e){
+    let {recordId} = e.currentTarget.dataset
+    let targetData = this.data.dataList.flat(Infinity).find(item => { return item.id == recordId})
+    let goodsList = [{
+      goodsId: targetData.goodsId,
+      prdRealPrice: targetData.expectationPrice,
+      goodsPrice: targetData.goodsPrice,
+      goodsNum: 1,
+      prdId: targetData.prdId
+    }]
+    util.jumpLink(`/pages/checkout/checkout?activityType=3&activityId=${targetData.bargainId}&recordId=${targetData.id}&goodsList=${JSON.stringify(goodsList)}`,'navigateTo')
+  },
+  viewOrder(e){
+    let {recordId} = e.currentTarget.dataset
+    let targetData = this.data.dataList.flat(Infinity).find(item => { return item.id == recordId})
+    util.jumpLink(`pages/orderinfo/orderinfo?orderSn=${targetData.orderSn}`,'navigateTo')
   },
   /**
    * 生命周期函数--监听页面加载

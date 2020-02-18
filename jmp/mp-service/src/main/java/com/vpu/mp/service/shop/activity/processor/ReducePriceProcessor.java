@@ -3,6 +3,10 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -12,6 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePriceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePricePrdMpVo;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import org.jooq.Record3;
+import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +26,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
+import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
+import static com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
 import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
 
 /**
@@ -30,7 +38,7 @@ import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
  * 限时降价 返利
  */
 @Service
-public class ReducePriceProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor{
+public class ReducePriceProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy{
     @Autowired
     ReducePriceProcessorDao reducePriceProcessorDao;
 
@@ -95,5 +103,28 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
 
         reducePriceInfo.setReducePricePrdMpVos(newReducePrds);
         capsule.setActivity(reducePriceInfo);
+    }
+
+    //****************购物车***********************
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        // 是限时降价商品且不是会员专享
+        List<Integer> productList = cartBo.getCartGoodsList().stream()
+                .filter(goods -> BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsRecord().getGoodsType()))
+                .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtil.getLocalDateTime());
+
+        if (goodsReduceListInfo!=null&&goodsReduceListInfo.size()>0){
+            cartBo.getCartGoodsList().stream().filter(goods -> goodsReduceListInfo.get(goods.getProductId()) != null).forEach(goods -> {
+                Record3<Integer, Integer, BigDecimal> record3 = goodsReduceListInfo.get(goods.getProductId()).get(0);
+                CartActivityInfo activityInfo = new CartActivityInfo();
+                activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                activityInfo.setActivityId(record3.get(REDUCE_PRICE.ID));
+                activityInfo.setSecKillPrice(record3.get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
+                goods.getCartActivityInfos().add(activityInfo);
+                goods.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                goods.setActivityId(record3.get(REDUCE_PRICE.ID));
+            });
+        }
     }
 }

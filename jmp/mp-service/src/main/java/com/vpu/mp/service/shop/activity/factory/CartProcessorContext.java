@@ -1,13 +1,7 @@
 package com.vpu.mp.service.shop.activity.factory;
 
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
-import com.vpu.mp.service.shop.activity.processor.ActivityCartListStrategy;
-import com.vpu.mp.service.shop.activity.processor.ExclusiveProcessor;
-import com.vpu.mp.service.shop.activity.processor.FirstSpecialProcessor;
-import com.vpu.mp.service.shop.activity.processor.GoodsBeginProcessor;
-import com.vpu.mp.service.shop.activity.processor.GoodsTailProcessor;
-import com.vpu.mp.service.shop.activity.processor.GradeCardProcessor;
-import com.vpu.mp.service.shop.activity.processor.SecKillProcessor;
+import com.vpu.mp.service.shop.activity.processor.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +27,10 @@ public class CartProcessorContext {
     private FirstSpecialProcessor firstSpecial;
     @Autowired
     private SecKillProcessor seckill;
+    @Autowired
+    private PreSaleProcessor preSale;
+    @Autowired
+    private ReducePriceProcessor reducePrice;
 
 
     /**
@@ -43,6 +41,10 @@ public class CartProcessorContext {
         // 数据初始化
         executeStrategy(goodsBegin,cartBo);
         executeStrategy(seckill,cartBo);
+        //预售
+        executeStrategy(preSale,cartBo);
+        //限时降价
+        executeStrategy(reducePrice,cartBo);
         executeStrategy(exclusive,cartBo);
         executeStrategy(firstSpecial,cartBo);
         executeStrategy(gradeCard,cartBo);

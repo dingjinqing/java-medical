@@ -40,7 +40,7 @@ global.wxComponent({
     },
     to_search(e){
       let brand_id = e.currentTarget.dataset.brand_id
-      util.jumpLink('/pages/searchs/search?brand_id=' + brand_id,'navigateTo')
+      util.jumpLink(`pages1/search/search?brandIds=${JSON.stringify([brand_id])}`,'navigateTo')
     },
     search_brand(e){
       var brand_id = e.currentTarget.dataset.brand_id

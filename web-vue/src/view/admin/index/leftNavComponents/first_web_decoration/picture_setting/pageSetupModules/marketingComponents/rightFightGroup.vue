@@ -20,8 +20,9 @@
                 :label="1"
               >{{$t('fightGroup.customize')}}<el-input
                   v-model="data.group_draw_name"
-                  :disabled="data.name_set !== '1'"
+                  :disabled="data.name_set === 0 || data.name_set === '0'"
                   style="width:150px;"
+                  maxlength="8"
                 ></el-input>
               </el-radio>
             </el-radio-group>

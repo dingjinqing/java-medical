@@ -102,8 +102,14 @@ public class AdminGoodsController extends AdminBaseController {
         return success(shop().goods.getProductPageList(param));
     }
 
+    /**
+     * 商品规格分页查询id
+     * @param param
+     * @return
+     */
     @PostMapping("/api/admin/goods/product/listAllIds")
     public JsonResult getProductIdsListAll(@RequestBody GoodsPageListParam param) {
+        param.setSelectType(GoodsPageListParam.GOODS_PRD_LIST);
         return success(shop().goods.getProductIdsListAll(param));
     }
 

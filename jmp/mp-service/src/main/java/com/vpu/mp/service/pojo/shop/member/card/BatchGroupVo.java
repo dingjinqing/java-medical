@@ -16,4 +16,5 @@ public class BatchGroupVo {
 	private Integer batchId;
 	private Integer successNum;
 	private Integer failNum;
+	private String batchName;
 }
