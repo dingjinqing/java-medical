@@ -66,4 +66,8 @@ ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '�
 --   key `user_id` (`user_id`)
 -- )COMMENT='会员备注';
 
+
+-- 2020年2月18日14:50:58 孔德成 抽奖奖品增加账户余额
+ALTER TABLE `b2c_lottery_prize` ADD COLUMN `award_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户余额',
+
 /***********************2.9*********************END*/
