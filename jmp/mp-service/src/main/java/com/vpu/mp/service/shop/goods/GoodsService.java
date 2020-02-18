@@ -1530,6 +1530,14 @@ public class GoodsService extends ShopBaseService {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
             fetchMap(GOODS.GOODS_ID);
     }
+    /**
+     * 通过商品id数组查询商品
+     */
+    public Map<Integer, GoodsRecord> getIsSaleGoodsByIds(List<Integer> goodsIds) {
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
+            and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+            fetchMap(GOODS.GOODS_ID);
+    }
 
     /**
      * 获取商品小程序展示页面

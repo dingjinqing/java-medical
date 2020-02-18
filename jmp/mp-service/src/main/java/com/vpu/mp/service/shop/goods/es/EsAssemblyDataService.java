@@ -67,7 +67,7 @@ public class EsAssemblyDataService extends ShopBaseService {
 
     public List<EsGoods> assemblyEsGoods(List<Integer> goodsIds, Integer shopId) {
         List<EsGoods> esGoodsList = new ArrayList<>(goodsIds.size());
-        Map<Integer, GoodsRecord> goodsMap = goodsService.getGoodsByIds(goodsIds);
+        Map<Integer, GoodsRecord> goodsMap = goodsService.getIsSaleGoodsByIds(goodsIds);
         Map<Integer, Byte> goodsTypeMap = new HashMap<>(goodsMap.size());
         Map<Integer, Integer> goodsCatMap = new HashMap<>(goodsMap.size());
         Set<Integer> goodsSortIdSet = new HashSet<>(goodsMap.size());
