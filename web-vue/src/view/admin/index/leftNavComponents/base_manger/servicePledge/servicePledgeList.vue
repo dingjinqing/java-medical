@@ -217,15 +217,29 @@
               <el-form-item :label="$t('pledge.chooseGoods')+'：'">
                 <el-radio
                   v-model="form.goods"
-                  label=1
+                  label='1'
                 >{{$t('pledge.allGoods')}}</el-radio>
                 <el-radio
                   v-model="form.goods"
-                  label=2
+                  label='2'
                 >{{$t('pledge.someGoods')}}</el-radio>
-              </el-form-item>
 
-              <!--            选择全部商品部分商品-->
+                <!-- 选择全部商品部分商品-->
+                <div v-if="form.goods === '2'">
+                  <div
+                    v-for="(item,index) in storeArr"
+                    :key="index"
+                  >
+                    <el-button
+                      style="margin: 10px 0;margin-right: 10px;"
+                      size="small"
+                    >
+                      <i class="el-icon-plus"></i> {{ item.name }}
+                    </el-button>
+                  </div>
+                </div>
+
+              </el-form-item>
 
             </el-form>
 
@@ -311,11 +325,19 @@ export default {
         src: `${this.$imageHost}/image/admin/add_img.png`
       },
       showImageDialog: false,
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+
+      storeArr: [] // 添加商品数据
+    }
+  },
+  watch: {
+    lang () {
+      this.storeArr = this.$t('shipping.storeArr')
     }
   },
   created () {
     this.loadData()
+    this.langDefault()
   },
   methods: {
     clickTabs (tab, event) {
@@ -544,7 +566,7 @@ export default {
     }
     .footer {
       position: fixed;
-      bottom: 0;
+      bottom: -10px;
       right: 27px;
       left: 160px;
       height: 52px;
