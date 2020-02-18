@@ -6,6 +6,7 @@
       @change="changeHandle"
       style="width:170px;"
       size="small"
+      :disabled="disabled"
     >
       <el-option
         v-for="(item,index) in selects"
@@ -35,7 +36,8 @@
 import { selectPayRewardApi } from '@/api/admin/marketManage/openScreen.js'
 export default {
   props: {
-    value: [Number, String]
+    value: [Number, String],
+    disabled: Boolean
   },
   model: {
     prop: 'value',
@@ -61,6 +63,7 @@ export default {
   },
   methods: {
     initSelectData () {
+      if (this.disabled) return false
       selectPayRewardApi().then(res => {
         if (res.error === 0) {
           console.log(res)
