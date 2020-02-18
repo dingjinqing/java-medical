@@ -28,10 +28,6 @@ ALTER TABLE `b2c_lottery_prize` ADD COLUMN `award_account` decimal(10,2) DEFAULT
 -- 修复table
 
 
-
-
-
-
 /***********************2.8*********************END*/
 
 /***********************2.9********************BEGIN*/
@@ -69,5 +65,8 @@ ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '�
 --   key `user_id` (`user_id`)
 -- )COMMENT='会员备注';
 
+ALTER TABLE `b2c_user_remark` MODIFY COLUMN `id` mediumint(10)  NOT NULL AUTO_INCREMENT;
+ALTER TABLE `b2c_user_remark` MODIFY COLUMN `user_id` mediumint(8)  NOT NULL DEFAULT '0';
+ALTER TABLE `b2c_user_remark` MODIFY COLUMN `is_delete` tinyint(1)  NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除';
 
 /***********************2.9*********************END*/
