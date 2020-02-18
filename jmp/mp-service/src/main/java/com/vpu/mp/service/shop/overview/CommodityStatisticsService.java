@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.commodity.*;
 import com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
@@ -532,7 +533,13 @@ public class CommodityStatisticsService extends ShopBaseService {
         return workbook;
     }
 
-    // b2c_goods_summary
+    /**
+     * Gets goods ranking.商品排行
+     * b2c_goods_summary
+     *
+     * @param param the param
+     * @return the goods ranking
+     */
     public RankingVo getGoodsRanking(RankingParam param) {
         if (Objects.isNull(param.getUnit())) {
             return getAllData(param);
@@ -557,8 +564,55 @@ public class CommodityStatisticsService extends ShopBaseService {
             .build();
     }
 
-    public ChartData getChartData() {
-        return null;
+    /**
+     * Gets chart data.使用于：天，月，年
+     *
+     * @param <T>    the type parameter
+     * @param source the source
+     * @param param  the param
+     * @param field  the field
+     * @param unit   the unit
+     * @param rule   the rule
+     * @return the chart data
+     */
+    public <T extends Number> ChartData getChartData(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
+                                                     RankingParam param,
+                                                     Field<T> field, byte unit,
+                                                     BiPredicate<Record4<Date, Integer, T, String>, LocalDate> rule) {
+        List<String> columns = new ArrayList<String>() {{
+            add("Date");
+        }};
+        List<Map<String, Object>> rows = new ArrayList<>();
+        source.forEach((k, v) -> {
+            columns.add(v.getValue(INTEGER_ZERO, GOODS.GOODS_NAME));
+            param.setUnit(unit);
+            dayCharData(rows, v, getRefDateList(param), rule, field);
+        });
+        return ChartData.builder().columns(columns).rows(rows).build();
+    }
+
+    /**
+     * Gets chart data 1.使用于：周
+     *
+     * @param <T>    the type parameter
+     * @param source the source
+     * @param param  the param
+     * @param field  the field
+     * @return the chart data 1
+     */
+    public <T extends Number> ChartData getChartData1(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
+                                                      RankingParam param,
+                                                      Field<T> field) {
+        List<String> columns = new ArrayList<String>() {{
+            add("Date");
+        }};
+        List<Map<String, Object>> rows = new ArrayList<>();
+        source.forEach((k, v) -> {
+            columns.add(v.getValue(INTEGER_ZERO, GOODS.GOODS_NAME));
+            param.setUnit(BYTE_THREE);
+            weekCharData(rows, v, getRefDateList1(param), this::weekRule, field);
+        });
+        return ChartData.builder().columns(columns).rows(rows).build();
     }
 
     public <T extends Number> Map<String, ChartData> getAllChartData(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
@@ -603,13 +657,37 @@ public class CommodityStatisticsService extends ShopBaseService {
     }
 
     public List<List<Object>> getTableArrayData(final List<Map<String, Object>> rows) {
-        List<Map<String, Object>> copy = new ArrayList<>(rows);
-        return new ArrayList<List<Object>>() {{
+
+        List<Map<String, Object>> copy = rowCopy(rows);
+        List<List<Object>> list = new ArrayList<List<Object>>() {{
             copy.forEach(e -> {
-//                e.remove("Date");
+                e.remove("Date");
                 add(new ArrayList<>(e.values()));
             });
         }};
+        swapHV(list);
+        return list;
+    }
+
+    // 二维数组行列转换
+    private void swapHV(List<List<Object>> array) {
+        for (int i = 0; i < array.size(); i++) {
+            for (int j = i; j < array.get(i).size(); j++) {
+                Object temp = array.get(i).get(j);
+                array.get(i).set(j, array.get(j).get(i));
+                array.get(j).set(i, temp);
+            }
+        }
+    }
+
+    private List<Map<String, Object>> rowCopy(final List<Map<String, Object>> rows) {
+        List<Map<String, Object>> copy = new ArrayList<>(rows.size());
+        rows.forEach(e -> {
+            Map<String, Object> map = new HashMap<>(e.size());
+            e.forEach(map::put);
+            copy.add(map);
+        });
+        return copy;
     }
 
     public Map<String, TableData> getAllTableData(RankingParam param, Map<String, ChartData> chartData) {
@@ -799,5 +877,84 @@ public class CommodityStatisticsService extends ShopBaseService {
 
     private Date dateDecrement(Date date) {
         return Date.valueOf(date.toLocalDate().minusDays(INTEGER_ONE));
+    }
+
+    /**
+     * Rank export workbook.商品排行导出
+     *
+     * @param param the param
+     * @return the workbook
+     */
+    public Workbook rankExport(RankingParam param) {
+        List<GoodsEffectExportVo> list;
+        if (BYTE_ZERO.equals(param.getFlag())) {
+            // 销售额
+            Map<Integer, Result<Record4<Date, Integer, BigDecimal, String>>> sales = getGoodsGroupData(param, GOODS_SUMMARY.GOODS_SALES);
+            list = getExportVo(sales, param, GOODS_SUMMARY.GOODS_SALES);
+        } else {
+            // 销售订单
+            Map<Integer, Result<Record4<Date, Integer, Integer, String>>> salesOrder = getGoodsGroupData(param, GOODS_SUMMARY.PAID_GOODS_NUMBER);
+            list = getExportVo(salesOrder, param, GOODS_SUMMARY.PAID_GOODS_NUMBER);
+
+        }
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(workbook);
+        excelWriter.writeModelListWithDynamicColumn(list, GoodsEffectExportVo.class);
+        return workbook;
+    }
+
+    private <T extends Number> List<GoodsEffectExportVo> getExportVo(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
+                                                                     RankingParam param, Field<T> field) {
+        if (MapUtils.isEmpty(source)) {
+            return new ArrayList<>();
+        }
+        ChartData chartData;
+        List<GoodsEffectExportVo> exportVos = new ArrayList<>();
+        switch (param.getUnit()) {
+            case 1:
+                chartData = getChartData(source, param, field, param.getUnit(), this::monthRule);
+                break;
+            case 2:
+                chartData = getChartData(source, param, field, param.getUnit(), this::yearRule);
+                break;
+            case 3:
+                chartData = getChartData1(source, param, field);
+                break;
+            default:
+                chartData = getChartData(source, param, field, param.getUnit(), this::dayRule);
+                break;
+        }
+        chartData.getRows().forEach(e -> {
+            String date = e.get("Date").toString();
+            AtomicBoolean flag = new AtomicBoolean(false);
+            e.forEach((k, v) -> {
+                if ("Date".equals(k)) {
+                    return;
+                }
+                GoodsEffectExportVo exportVo;
+                Optional<GoodsEffectExportVo> optional = exportVos.stream().filter((t) -> filter(k, t)).findFirst();
+                if (optional.isPresent()) {
+                    exportVo = optional.get();
+                } else {
+                    exportVo = new GoodsEffectExportVo();
+                    flag.set(true);
+                    exportVo.setGoodsName(k);
+                }
+                LinkedHashMap<String, Object> map = exportVo.getDynamicValue();
+                if (Objects.isNull(map)) {
+                    map = new LinkedHashMap<>();
+                }
+                map.put(date, v);
+                exportVo.setDynamicValue(map);
+                if (flag.get()) {
+                    exportVos.add(exportVo);
+                }
+            });
+        });
+        return exportVos;
+    }
+
+    private boolean filter(String source, GoodsEffectExportVo target) {
+        return source.equals(target.getGoodsName());
     }
 }

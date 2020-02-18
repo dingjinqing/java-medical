@@ -174,3 +174,8 @@
   height: 0;
   color: transparent;
 }
+.goods-tag{
+  border: 1rpx solid;
+  margin-right: 10rpx;
+  padding: 0 4rpx;
+}

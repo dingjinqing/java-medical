@@ -228,7 +228,7 @@ public class ShopPledgeService extends ShopBaseService {
   }
 
   private void deletePledgeRelatedByPledgeId(Integer pledgeId){
-      db().delete(PLEDGE_RELATED).where(PLEDGE_RELATED.PLEDGE_ID.eq(pledgeId));
+      db().delete(PLEDGE_RELATED).where(PLEDGE_RELATED.PLEDGE_ID.eq(pledgeId)).execute();
   }
 
 }
