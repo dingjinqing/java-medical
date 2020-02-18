@@ -21,7 +21,7 @@
         <div class="shop_logo">
           <img
             v-if="data.shop_bg_path"
-            :src="data.shop_bg_path"
+            :src="imageHost + data.shop_bg_path"
             alt=""
           >
         </div>
