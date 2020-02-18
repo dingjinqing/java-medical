@@ -657,13 +657,37 @@ public class CommodityStatisticsService extends ShopBaseService {
     }
 
     public List<List<Object>> getTableArrayData(final List<Map<String, Object>> rows) {
-        List<Map<String, Object>> copy = new ArrayList<>(rows);
-        return new ArrayList<List<Object>>() {{
+
+        List<Map<String, Object>> copy = rowCopy(rows);
+        List<List<Object>> list = new ArrayList<List<Object>>() {{
             copy.forEach(e -> {
-//                e.remove("Date");
+                e.remove("Date");
                 add(new ArrayList<>(e.values()));
             });
         }};
+        swapHV(list);
+        return list;
+    }
+
+    // 二维数组行列转换
+    private void swapHV(List<List<Object>> array) {
+        for (int i = 0; i < array.size(); i++) {
+            for (int j = i; j < array.get(i).size(); j++) {
+                Object temp = array.get(i).get(j);
+                array.get(i).set(j, array.get(j).get(i));
+                array.get(j).set(i, temp);
+            }
+        }
+    }
+
+    private List<Map<String, Object>> rowCopy(final List<Map<String, Object>> rows) {
+        List<Map<String, Object>> copy = new ArrayList<>(rows.size());
+        rows.forEach(e -> {
+            Map<String, Object> map = new HashMap<>(e.size());
+            e.forEach(map::put);
+            copy.add(map);
+        });
+        return copy;
     }
 
     public Map<String, TableData> getAllTableData(RankingParam param, Map<String, ChartData> chartData) {
