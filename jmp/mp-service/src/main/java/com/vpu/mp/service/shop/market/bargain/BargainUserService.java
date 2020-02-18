@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
@@ -379,7 +380,7 @@ public class BargainUserService extends ShopBaseService{
      * @return
      */
     public int getUserTodayCutTimes(int userId){
-        return db().selectCount().from(BARGAIN_USER_LIST).leftJoin(BARGAIN_RECORD).on(BARGAIN_USER_LIST.RECORD_ID.eq(BARGAIN_RECORD.ID)).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_USER_LIST.CREATE_TIME.gt(DateUtil.getLocalDateTime()))).fetchOptionalInto(Integer.class).orElse(0);
+        return db().selectCount().from(BARGAIN_USER_LIST).leftJoin(BARGAIN_RECORD).on(BARGAIN_USER_LIST.RECORD_ID.eq(BARGAIN_RECORD.ID)).where(BARGAIN_USER_LIST.USER_ID.eq(userId).and(BARGAIN_RECORD.USER_ID.notEqual(userId)).and(BARGAIN_USER_LIST.CREATE_TIME.ge(Util.getStartToday(new Date())))).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
