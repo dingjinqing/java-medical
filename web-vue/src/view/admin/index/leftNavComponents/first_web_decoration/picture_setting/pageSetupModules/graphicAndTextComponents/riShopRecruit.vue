@@ -170,6 +170,12 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         this.data = this.modulesData
+        var url = this.data.shop_bg_path
+        if (url !== null || url !== '') {
+          var str = url.split('http://')
+          var index = str[1].indexOf('/') + 1
+          this.data.shop_bg_path = str[1].substring(index)
+        }
       },
       immediate: true
     },
