@@ -219,7 +219,7 @@
                 label-width="110px"
                 prop="activityId"
               >
-                <selectCouponAct v-model="form.activityId" @initData="initCouponList" :disabled="!!id"></selectCouponAct>
+                <selectCouponAct v-model="form.activityId" @initItem="initCouponItem" :disabled="!!id"></selectCouponAct>
                 <p class="tips">{{$t('evaluationGiftAdd.Canuse') + couponLength + $t('evaluationGiftAdd.part')}}</p>
               </el-form-item>
               <el-form-item
@@ -463,21 +463,21 @@ export default {
         this.$set(this.form, 'startTime', newVal[0].format('yyyy-MM-dd hh:mm:ss'))
         this.$set(this.form, 'endTime', newVal[1].format('yyyy-MM-dd hh:mm:ss'))
       }
-    },
-    'form.commentWords': {
-      handler: function (newVal) {
-        if (newVal > 0) {
-          if (this.form.hasCommentWords === 0) {
-            this.$set(this.form, 'hasCommentWords', 1)
-          }
-        } else {
-          if (this.form.hasCommentWords === 1) {
-            this.$set(this.form, 'hasCommentWords', 0)
-          }
-        }
-      },
-      immediate: true
     }
+    // 'form.commentWords': {
+    //   handler: function (newVal) {
+    //     if (newVal >= 0) {
+    //       if (this.form.hasCommentWords === 0) {
+    //         this.$set(this.form, 'hasCommentWords', 1)
+    //       }
+    //     } else {
+    //       if (this.form.hasCommentWords === 1) {
+    //         this.$set(this.form, 'hasCommentWords', 0)
+    //       }
+    //     }
+    //   },
+    //   immediate: false
+    // }
   },
   mounted () {
     if (this.$route.query.id) {
@@ -495,6 +495,11 @@ export default {
           if (res.content.goodsIds) {
             this.chooseGoods = JSON.parse(res.content.goodsIds)
           }
+          if (res.content.commentWords !== '' && res.content.commentWords !== null) {
+            this.form.hasCommentWords = 1
+          } else {
+            this.form.hasCommentWords = 0
+          }
           this.period = [new Date(res.content.startTime), new Date(res.content.endTime)]
           this.form = Object.assign({}, this.form, res.content)
         }
@@ -509,6 +514,12 @@ export default {
     onlyChooseGoodsDialog () {
       this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    initCouponItem (item) {
+      console.log('反写:', item)
+      if (item && Object.keys(item).length > 0) {
+        this.couponLength = Number(item.surplus)
+      }
     },
     // 选择商品回调
     chooseGoodsHandle (goods) {
@@ -539,9 +550,6 @@ export default {
     handleSelectImg (img) {
       this.$set(this.form, 'awardImg', img.imgPath)
     },
-    initCouponList (data) {
-      this.couponLength = data.length || 0
-    },
     awardTypeChange (val) {
       this.$refs.activityInfoForm.clearValidate([
         'score',
@@ -559,6 +567,10 @@ export default {
           // 不传奖品送出数量
           if (params.hasOwnProperty('sendNum')) {
             delete params.sendNum
+          }
+          // 如果没有勾选心得多选框
+          if (!that.form.hasCommentWords) {
+            params.commentWords = 0
           }
           if (this.id) {
             // 修改

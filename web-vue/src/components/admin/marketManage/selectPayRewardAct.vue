@@ -63,7 +63,6 @@ export default {
   },
   methods: {
     initSelectData () {
-      if (this.disabled) return false
       selectPayRewardApi().then(res => {
         if (res.error === 0) {
           console.log(res)
