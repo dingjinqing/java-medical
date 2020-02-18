@@ -402,8 +402,7 @@ global.wxComponent({
         }
         if(buttonData.activityType && buttonData.activityType === 3){
           if(triggerButton === 'right' || !triggerButton){
-
-
+            buttonInfo['right']['canBuy'] = true
           } else if (triggerButton === 'left') {
             if(dealtAct && dealtAct.error === 2){
               buttonInfo['left']['canBuy'] = false
