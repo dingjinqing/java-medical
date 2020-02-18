@@ -229,9 +229,35 @@ global.wxPage({
     // cart_request(that);
   },
 
-  // 秒杀抢购
+  // 跳转秒杀抢购
   to_seckill: function (e) {
     util.jumpLink(e.currentTarget.dataset.link);
-  }
+  },
+
+  // 跳转满折满减商品
+  to_fullpage: function (e) {
+    console.log(e.currentTarget.dataset.item)
+    util.navigateTo({
+      url: '/pages/fullprice/fullprice',
+    })
+    // var iden_id = e.currentTarget.dataset.ids;
+    // var store_id = this.data.options.store_id ? this.data.options.store_id : 0;
+    // util.navigateTo({
+    //   url: '/pages/fullprice/fullprice?identity_id=' + iden_id + '&store_id=' + store_id,
+    // })
+  },
+
+  // 跳转加价购商品列表
+  to_purchase: function (e) {
+    console.log(e.currentTarget.dataset.item)
+    util.navigateTo({
+      url: '/pages/maingoodslist/maingoodslist',
+    })
+    // var iden_id = e.currentTarget.dataset.ids;
+    // var store_id = this.data.options.store_id ? this.data.options.store_id : 0;
+    // util.navigateTo({
+    //   url: '/pages/maingoodslist/maingoodslist?identity_id=' + iden_id + '&store_id=' + store_id,
+    // })
+  },
 
 })

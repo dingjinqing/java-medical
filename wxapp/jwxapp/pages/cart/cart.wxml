@@ -4,20 +4,31 @@
         <!-- 可购买商品列表 -->
         <view class="list_box" wx:if="{{canBuyGoodsList.length > 0}}">
             <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index">
-              <!-- 加价购 / 满折满减 -->
-              <view class='act_info clearfix' wx:if="{{item.activityType == 7 || item.activityType == 21}}">
+              <!-- 满折满减 -->
+              <!-- wx:if="{{item.activityType == 21}}" -->
+              <view class='act_info clearfix' bindtap='to_fullpage' data-item="{{ item }}" data-ids='{{item1.identity_id}}'>
                 <view class='ai_left'>
-                  <view class='full_member_icon'>会员</view>
-                  <view class='full_icon' wx:if="{{item.activityType == 7}}" style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
-                  <view class='full_icon' wx:if="{{item.activityType == 21}}" style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
-                  <view class='act_content' wx:if="{{item.activityType == 7}}" style='width:350rpx;'>满1.00元另加1.00元即可换购商品</view>
-                  <view class='act_content' wx:if="{{item.activityType == 21}}" style='width:350rpx;'>每满100.00元减5.00元</view>
+                  <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
+                  <view class='act_content' style='width:350rpx;'>每满100.00元减5.00元</view>
                 </view>
                 <view class='go_full clearfix'>
-                  <view style='color:{{comColor}}'>去凑单</view>
+                  <view style='color:{{comColor}}'>再逛逛</view>
                   <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
                 </view>
               </view>
+            
+              <!-- 加价购 -->
+              <!-- wx:if="{{item.activityType == 7}}" -->
+              <!-- <view class='act_info clearfix' bindtap='to_purchase' data-item="{{ item }}" data-ids='{{item3.identity_id}}'>
+                <view class='ai_left'>
+                  <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
+                  <view class='act_content' style='width:350rpx;'>满1.00元另加1.00元即可换购商品</view>
+                </view>
+                <view class='go_full clearfix'>
+                  <view style='color:{{comColor}}'>去换购</view>
+                  <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+                </view>
+              </view> -->
 
               <!-- 秒杀活动 -->
               <view class='sec_kill_area' wx:if="{{item.activityType == 5}}"  bindtap='to_seckill' data-link="pages/item/item?aid={{item.activityId}}&&atp=5&&gid={{item.goodsId}}" style='background:{{somColor}};'>
@@ -100,7 +111,8 @@
               </view> 
 
               <!-- 促销活动 -->
-              <view class='change_fullact' bindtap='proClcik' wx:if="{{(item.activityType == 7 || item.activityType == 21) && item.cartActivityInfos.length > 0}}" data-cart_id="{{item.cartId}}" data-activity_type="{{item.activityType}}">
+              <!-- wx:if="{{(item.activityType == 7 || item.activityType == 21) && item.cartActivityInfos.length > 0}}"  -->
+              <view class='change_fullact' bindtap='proClcik' data-cart_id="{{item.cartId}}" data-activity_type="{{item.activityType}}">
                 <view class='cf_left'>
                   <view>促销</view>
                   <view wx:if="{{item.activityType == null}}">不参与促销活动</view>
@@ -231,10 +243,10 @@
                 </view>
                 <view class='for_style' wx:if="{{item.status == 1}}">
                   <!-- <view>不参与活动</view> -->
-                  <view class='pro_list_span jiajiagou_icon' wx:if="{{item.activityType == 5}}" style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
-                  <view class='pro_list_span jiajiagou_icon' wx:if="{{item.activityType == 23}}" style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
-                  <view wx:if="{{item.activityType == 5}}">满1.00元另加1.00元即可换购商品</view>
-                  <view wx:if="{{item.activityType == 23}}">每满100.00元减5.00元即可换购商品</view>
+                  <view class='pro_list_span jiajiagou_icon' wx:if="{{item.activityType == 7}}" style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
+                  <view class='pro_list_span jiajiagou_icon' wx:if="{{item.activityType == 21}}" style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
+                  <view wx:if="{{item.activityType == 7}}">满1.00元另加1.00元即可换购商品</view>
+                  <view wx:if="{{item.activityType == 21}}">每满100.00元减5.00元即可换购商品</view>
                 </view>
               </view>
               

@@ -21,6 +21,9 @@ ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `base_sale` int(8) DEFAULT '0' COMM
 --20200207 申请分销员审核字段类型优化
 ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAULT NULL COMMENT '审核校验';
 
+-- 2020年2月18日14:50:58 孔德成 抽奖奖品增加账户余额
+ALTER TABLE `b2c_lottery_prize` ADD COLUMN `award_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户余额';
+
 
 -- 修复table
 
@@ -65,5 +68,6 @@ ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '�
 --   PRIMARY KEY (`id`),
 --   key `user_id` (`user_id`)
 -- )COMMENT='会员备注';
+
 
 /***********************2.9*********************END*/
