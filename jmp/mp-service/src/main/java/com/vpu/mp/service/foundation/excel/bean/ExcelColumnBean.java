@@ -14,6 +14,8 @@ public class ExcelColumnBean {
 
     public boolean notNull=false;
 
+    public boolean isDynamicColumn = false;
+
     public Class<?> fieldClazz;
 
     public String[] args;

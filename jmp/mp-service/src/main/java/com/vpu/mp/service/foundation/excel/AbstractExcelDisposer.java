@@ -1,14 +1,6 @@
 package com.vpu.mp.service.foundation.excel;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
+import com.vpu.mp.service.foundation.excel.annotation.*;
 import com.vpu.mp.service.foundation.excel.bean.ExcelColumnBean;
 import com.vpu.mp.service.foundation.excel.bean.ExcelSheetBean;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
@@ -16,6 +8,12 @@ import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
 import com.vpu.mp.service.foundation.excel.exception.NotExcelModelException;
 import com.vpu.mp.service.foundation.util.Util;
+import org.apache.commons.lang3.StringUtils;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author 李晓冰
@@ -52,22 +50,26 @@ public abstract class AbstractExcelDisposer {
             throw new NotExcelModelException();
         }
 
+        // 读取ExcelSheet注解内容，创建并初始化ExcelSheetBean类
         ExcelSheet sheetAnnotation = clazz.getAnnotation(ExcelSheet.class);
-
         ExcelSheetBean sheetBean = new ExcelSheetBean();
-
         sheetBean.sheetNum = sheetAnnotation.sheetNum();
-
         sheetBean.beginDataNum = sheetAnnotation.beginDataNum();
-
         sheetBean.headLineNum = sheetAnnotation.headLineNum();
+
 
         Field[] fields = clazz.getDeclaredFields();
 
         for (Field field : fields) {
+            // 字段需要忽略则跳过
             if (field.isAnnotationPresent(ExcelIgnore.class)) {
                 continue;
             }
+            // 不处理动态字段
+            if (field.isAnnotationPresent(ExcelDynamicColumn.class)) {
+                continue;
+            }
+            // 指定了需要的字段，而当前字段不在指定的字段中则跳过
             if (neededColumns != null && !neededColumns.contains(field.getName())) {
                 continue;
             }
@@ -107,6 +109,39 @@ public abstract class AbstractExcelDisposer {
         }
 
         return sheetBean;
+    }
+
+    /**
+     * 当需要添加动态列表示，ExcelSheetBean追加对应的ExcelColumnBean
+     * @param sheetBean excel 中的sheet映射类
+     * @param dynamicColumns 动态列的信息，key列名，value值的类型
+     */
+    protected void appendDynamicColumns(ExcelSheetBean sheetBean, Map<String,Class> dynamicColumns){
+        // 寻找动态字段的开始位置
+        int maxColumnIndex = -1;
+        Set<Map.Entry<String, ExcelColumnBean>> entries = sheetBean.columnMap.entrySet();
+        for (Map.Entry<String, ExcelColumnBean> entry : entries) {
+            if (maxColumnIndex < entry.getValue().columnIndex) {
+                maxColumnIndex = entry.getValue().columnIndex;
+            }
+        }
+        maxColumnIndex++;
+        // 将动态字段映射成对应的值
+        for (Map.Entry<String, Class> stringClassEntry : dynamicColumns.entrySet()) {
+            ExcelColumnBean columnBean = new ExcelColumnBean();
+            columnBean.columnIndex = maxColumnIndex++;
+            columnBean.columnName = stringClassEntry.getKey();
+            columnBean.fieldClazz = stringClassEntry.getValue();
+            columnBean.isDynamicColumn = true;
+            sheetBean.columnMap.put(columnBean.columnName,columnBean);
+        }
+    }
+    /**
+     * 处理model类型属性字段是Map的情况，将其视为动态添加表头，
+     * Map的key作为表头，
+     */
+    private void processMapClazzField(){
+
     }
 
 }
