@@ -291,14 +291,26 @@ public class GoodsService extends ShopBaseService {
      * @return 商品id结合
      */
     public List<Integer> getGoodsIdsListAll(GoodsPageListParam goodsPageListParam) {
+//        PageResult<GoodsPageListVo> pageResult;
+//        if (esUtilSearchService.esState()) {
+//            try {
+//                pageResult = esGoodsSearchService.searchGoodsByParam(goodsPageListParam);
+//            } catch (IOException e) {
+//                logger().info("es");
+//                pageResult = getGoodsPageByDb(goodsPageListParam);
+//            }
+//        }else{
+//            pageResult = getGoodsPageByDb(goodsPageListParam);
+//        }
+//        return pageResult.getDataList().stream().map(GoodsPageListVo::getGoodsId).collect(Collectors.toList());
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
         List<Integer> goodsIds = db().select(GOODS.GOODS_ID)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
-
         return goodsIds;
+
     }
 
     /**
@@ -1634,7 +1646,6 @@ public class GoodsService extends ShopBaseService {
     public List<Integer> getAllGoodsId() {
         return db().select(GOODS.GOODS_ID)
             .from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetch()
             .getValues(GOODS.GOODS_ID);
     }
