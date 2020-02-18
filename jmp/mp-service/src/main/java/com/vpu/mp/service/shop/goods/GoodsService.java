@@ -1892,7 +1892,7 @@ public class GoodsService extends ShopBaseService {
             bo.setUrl(getVideoFullUrlUtil(bo.getUrl(), true));
             bos.add(bo);
         });
-        return bos.stream().collect(Collectors.toMap(GoodsVideoBo::getId, Function.identity()));
+        return bos.stream().collect(Collectors.toMap(GoodsVideoBo::getGoodsId, Function.identity()));
     }
 
     /**

@@ -27,6 +27,13 @@ public class MessageTemplateConfigConstant {
     public static final Integer OWNER_GET_GOODS = 2011;
     /** 取货成功通知 */
     public static final Integer SUCCESS_GET_GOODS = 2012;
+    /** 积分消费提醒 */
+    public static final Integer POINTS_CONSUMPTION = 2013;
+    /** 提现申请通知	 */
+    public static final Integer GET_MONEY = 2014;
+    /** 会员升级通知 */
+    public static final Integer MEMBER_LEVEL_UP = 2015;
+
     /** 会员卡余额变动提醒 */
     public static final Integer CHANGE_MEMBER_CARD_MONEY = 3001;
     /** 会员卡领取成功通知 */
