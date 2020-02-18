@@ -9,13 +9,16 @@ var base = {
    */
   methods: {
     bindClose(e) {
+      debugger
       this.setData({
         show: false
       });
-      this.$emit("close");
+      // this.$emit("close");
+      this.triggerEvent("close")
     },
     bindNullClick(e) { },
     bindBackTap(e) {
+      debugger
       if (this.data.click_back_close) {
         this.setData({
           show: false

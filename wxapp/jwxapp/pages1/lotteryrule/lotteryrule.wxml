@@ -10,7 +10,7 @@
                 <image bindtap='to_detail' data-mingxi='{{item.lottery_award}}' wx:if='{{item.lotteryType == 3 && item.is_length == 1}}' src='{{imageUrl}}/image/wxapp/lottery_path.png' mode='widthFix' class='btn_more'></image>
                 <view class='get_namae'>{{item.lottery_grade_name}}</view>
             </view>
-            <view class='each_bottom'>{{item.add_time}}</view>
+            <view class='each_bottom'>{{item.createTime}}</view>
         </view>
     </view>
 </view>

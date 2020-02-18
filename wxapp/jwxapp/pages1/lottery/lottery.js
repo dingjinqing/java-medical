@@ -276,6 +276,12 @@ global.wxPage({
     })
   },
 
+  drawAgain () {
+    this.setData({
+      hasClick: false
+    })
+  },
+
   // 抽奖记录
   toList () {
     util.navigateTo({
