@@ -431,6 +431,8 @@ public class StoreWxService extends ShopBaseService {
         // 积分使用规则
         payOrderVo.setScoreDiscountRatio(baseScoreCfgService.getScoreDiscountRatio());
         payOrderVo.setScorePayNum(baseScoreCfgService.getScorePayNum());
+        //积分兑换比
+        payOrderVo.setScoreProportion(baseScoreCfgService.getScoreProportion());
         return payOrderVo;
     }
 
