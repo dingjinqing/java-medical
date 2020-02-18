@@ -17,8 +17,57 @@ ALTER TABLE `b2c_cart` MODIFY COLUMN `prd_desc` varchar(1024) NOT NULL DEFAULT '
 --订单必填增加默认
 ALTER TABLE `b2c_order_must` MODIFY COLUMN `must_content` varchar(100) NOT NULL DEFAULT '' COMMENT '必填信息';
 -- 2020年2月6日 秒杀表添加初始销量字段
--- ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `base_sale` int(8) DEFAULT '0' COMMENT '初始销量';
+ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `base_sale` int(8) DEFAULT '0' COMMENT '初始销量';
 --20200207 申请分销员审核字段类型优化
 ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAULT NULL COMMENT '审核校验';
 
+
+-- 修复table
+
+
+
+
+
+
 /***********************2.8*********************END*/
+
+/***********************2.9********************BEGIN*/
+
+-- 2020年2月11日 砍价杀表添加初始销量、绑定手机号字段
+ALTER TABLE `b2c_bargain` ADD COLUMN `need_bind_mobile` tinyint(1) DEFAULT '0' COMMENT '是否需要绑定手机号，1是';
+ALTER TABLE `b2c_bargain` ADD COLUMN `initial_sales` int(9) DEFAULT '0' COMMENT '初始销量';
+
+-- 2020年2月11日 pictorial 分享图片缓存表添加活动id字段
+ALTER TABLE `b2c_pictorial` ADD COLUMN `activity_id` int(10) DEFAULT NULL COMMENT '活动id';
+-- 2020年2月10日15:46:57  拼团表增加字段
+ALTER TABLE `b2c_group_buy_define` ADD  COLUMN `level` int(11) NOT NULL DEFAULT 0 COMMENT '优先级' ;
+ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAULT 0 COMMENT '初始成团数' ;
+-- 2020-02-11 新加服务承诺关联表和服务承诺表新加类型和优先级字段
+-- CREATE TABLE if not exists `b2c_pledge_related` (
+--   `id` int(9) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+--   `pledge_id` int(9) NOT NULL DEFAULT '0' COMMENT '承诺id',
+--   `type` tinyint(1) DEFAULT NULL COMMENT '指定商品范围:1 商品id,2 商家分类id,3 商品品牌id',
+--   `related_id` int(9) NOT NULL DEFAULT '0' COMMENT '相关的id',
+--   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+--   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+--   PRIMARY KEY (`id`),
+--   key `bpr_pledge_id`(`pledge_id`)
+-- )COMMENT='服务承诺关联表';
+ALTER TABLE `b2c_pledge` ADD COLUMN `type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '商品范围:1全部商品,2指定商品' ;
+ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '商品优先级' ;
+
+-- CREATE TABLE `b2c_user_remark` (
+--   `id`          mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
+--   `user_id`     mediumint(8) unsigned NOT NULL DEFAULT '0',
+--   `remark`      TEXT COMMENT '会员备注',
+--   `add_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   `is_delete`   tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除',
+--   PRIMARY KEY (`id`),
+--   key `user_id` (`user_id`)
+-- )COMMENT='会员备注';
+
+
+-- 2020年2月18日14:50:58 孔德成 抽奖奖品增加账户余额
+ALTER TABLE `b2c_lottery_prize` ADD COLUMN `award_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户余额',
+
+/***********************2.9*********************END*/
