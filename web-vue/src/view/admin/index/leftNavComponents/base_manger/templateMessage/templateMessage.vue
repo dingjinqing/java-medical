@@ -3,13 +3,18 @@
     <el-card>
       <div class="header">
         <span>{{$t('templateMessage.title')}}</span>
-        <span>
-          {{$t('templateMessage.tips')}}
+        <span>{{$t('templateMessage.templateContent1')}}</span>
+        <span @click="toWXCommunity">
+          {{$t('templateMessage.templateContent2')}}
         </span>
+        <span>{{$t('templateMessage.templateContent3')}}</span>
+        <span>{{$t('templateMessage.templateContent4')}}</span>
+        <span @click="toViewDocument">{{$t('templateMessage.templateContent5')}}</span>
       </div>
       <el-divider></el-divider>
       <div class="title">
-        {{$t('templateMessage.openMpNum')}}{{openMpNum}}{{$t('templateMessage.tiao')}}, {{$t('templateMessage.openMaNum')}}{{openMaNum}}{{$t('templateMessage.tiao')}}
+        {{$t('templateMessage.openMpNum')}}{{openMpNum}}{{$t('templateMessage.tiao')}}
+        <span style="font-size:13px">{{$t('templateMessage.tips')}}</span>
       </div>
       <!-- 交易物流提醒|营销信息提醒 -->
       <div class="main">
@@ -57,7 +62,7 @@
                     </el-popover>
                   </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                   prop="appletMessage"
                   :label="$t('templateMessage.openMaMessage')"
                   align="center"
@@ -77,7 +82,7 @@
                       >{{scope.row.preview}}</el-button>
                     </el-popover>
                   </template>
-                </el-table-column>
+                </el-table-column> -->
               </el-table>
             </div>
           </el-collapse-item>
@@ -124,7 +129,7 @@
                     </el-popover>
                   </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                   prop="appletMessage"
                   :label="$t('templateMessage.openMaMessage')"
                   align="center"
@@ -144,7 +149,7 @@
                       >{{scope.row.preview}}</el-button>
                     </el-popover>
                   </template>
-                </el-table-column>
+                </el-table-column> -->
               </el-table>
             </div>
           </el-collapse-item>
@@ -480,6 +485,12 @@ export default {
           this.$message.success('更新成功')
         }
       }).catch(err => console.log(err))
+    },
+    toWXCommunity () {
+
+    },
+    toViewDocument () {
+
     }
   }
 }
@@ -490,9 +501,29 @@ export default {
   padding: 10px;
   .header {
     span {
+      color: #999;
+      font-size: 12px;
+      &:nth-of-type(1) {
+        font-size: 14px;
+        color: #333;
+      }
       &:nth-of-type(2) {
-        color: #999;
-        font-size: 12px;
+        margin-left: 10px;
+      }
+      &:nth-of-type(3) {
+        color: #5a8bff;
+        margin-left: -5px;
+        cursor: pointer;
+      }
+      &:nth-of-type(4) {
+        margin-left: -5px;
+      }
+      &:nth-of-type(5) {
+        color: red;
+      }
+      &:nth-of-type(6) {
+        color: #5a8bff;
+        cursor: pointer;
       }
     }
   }

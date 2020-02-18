@@ -3,7 +3,12 @@ export const cn = {
 
   // 标题部分文字内容
   title: '微信模板消息',
-  tips: '因微信平台限制，公众号消息最多可发送25类，小程序消息最多可发送25类，请谨慎选择',
+  templateContent1: '根据微信官方发布的',
+  templateContent2: '小程序模板消息能力调整通知，',
+  templateContent3: '“店+小程序”开通一次性订阅消息，代替原有小程序模板消息。',
+  templateContent4: '即日起“小程序模板消息”全面下线，原有小程序消息推送方式失效。',
+  templateContent5: '查看订阅消息说明文档 >',
+  tips: '(因微信平台限制，公众号消息最多可发送25类，请谨慎选择)',
   openMpNum: '公众号消息已选',
   openMaNum: '小程序消息已选',
   tiao: '条',
@@ -14,7 +19,6 @@ export const cn = {
   templateMessage: '模板消息',
   sendConditions: '发送条件',
   openMpContent: '公众号消息',
-  openMaMessage: '小程序消息',
   preview: '预览',
 
   // 交易物流 -> 模板消息
