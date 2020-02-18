@@ -1,6 +1,8 @@
 package com.vpu.mp.service.foundation.excel;
 
-import static java.util.regex.Pattern.compile;
+import org.apache.poi.poifs.filesystem.FileMagic;
+import org.apache.poi.ss.usermodel.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -14,17 +16,11 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.apache.poi.poifs.filesystem.FileMagic;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.web.multipart.MultipartFile;
+import static java.util.regex.Pattern.compile;
 
 /**
  * @author 李晓冰
@@ -157,6 +153,15 @@ public class ExcelUtil {
         Object value=declaredField.get(it);
 
         return value;
+    }
+
+    public static Object getFieldValue(String keyName, Object it, Field dynamicField) throws Exception {
+        Object o = dynamicField.get(it);
+        if (!(o instanceof Map)) {
+            throw new  Exception("动态字段类型错误，仅支持Map类型");
+        }
+        Map map = (Map) o;
+        return map.get(keyName);
     }
     /**
      * 根据java类型获得对应的cell类型
