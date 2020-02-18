@@ -44,8 +44,8 @@ import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
-import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -2164,7 +2164,7 @@ public class GoodsService extends ShopBaseService {
      *                  多种条件取并集
      * @return 商品id
      */
-    public List<Integer> getOnShelfGoodsIdList(String catIds, String sortIds,String brandIds) {
+    public List<Integer> getOnShelfGoodsIdList(List<Integer> catIds, List<Integer> sortIds,List<Integer> brandIds) {
         SelectConditionStep<Record1<Integer>> selectConditionStep = db().select(GOODS.GOODS_ID)
             .from(GOODS)
             .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
@@ -2172,20 +2172,17 @@ public class GoodsService extends ShopBaseService {
 
         Condition filterCondition = DSL.noCondition();
         //指定平台分类
-        if (StringUtil.isNotEmpty(catIds)) {
-            List<Integer> catIdsList = Util.splitValueToList(catIds);
-            filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIdsList)));
+        if (CollectionUtils.isNotEmpty(catIds)) {
+            filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIds)));
         }
         //指定商家分类
-        if (StringUtil.isNotEmpty(sortIds)) {
-            List<Integer> sortIdsList = Util.splitValueToList(sortIds);
+        if (CollectionUtils.isNotEmpty(sortIds)) {
             //在所有父子节点中查找
-            filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIdsList)));
+            filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIds)));
         }
         //指定品牌
-        if (StringUtil.isNotEmpty(brandIds)) {
-            List<Integer> brandIdsList = Util.splitValueToList(brandIds);
-            filterCondition.or(GOODS.BRAND_ID.in(brandIdsList));
+        if (CollectionUtils.isNotEmpty(brandIds)) {
+            filterCondition.or(GOODS.BRAND_ID.in(brandIds));
         }
         selectConditionStep.and(filterCondition);
 

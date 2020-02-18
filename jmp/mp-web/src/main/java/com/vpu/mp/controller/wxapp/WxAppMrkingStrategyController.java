@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WxAppMrkingStrategyController extends WxAppBaseController {
     /**
-     * 	校验秒杀规格当前可用状态
+     * 	满折满减活动页的商品列表接口
      */
-    @PostMapping("/api/wxapp/seckill/check")
+    @PostMapping("/api/wxapp/fullprice/goodslist")
     public JsonResult mrkingStrategyGoodsList(@RequestBody @Validated MrkingStrategyGoodsListParam param) {
-
-        return fail();
+        return success(shop().mrkingStrategy.getWxAppGoodsList(param,wxAppAuth.user().getUserId()));
     }
 }
