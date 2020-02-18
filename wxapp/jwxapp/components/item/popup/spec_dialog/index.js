@@ -19,6 +19,12 @@ const actPrdType = {
     prdLinePrice: 'prdPrice',
     multiSkuAct: true
   },
+  10: {
+    prdListName: 'preSalePrdMpVos',
+    prdRealPrice: 'preSalePrice',
+    prdLinePrice: 'prdPrice',
+    multiSkuAct: true
+  },
   18: {
     prdListName: 'firstSpecialPrdMpVos',
     prdRealPrice: 'firsSpecialPrice',

@@ -65,6 +65,25 @@ const actBaseInfo = {
       0: 'endTime'
     }
   },
+  10:{
+    actName:'定金膨胀',
+    multiSkuAct:true,
+    actStatus: {
+      0: '距结束仅剩',
+      1: '活动不存在',
+      2: '活动已停用',
+      3: '据开始仅剩',
+      4: '活动已结束',
+      5: '商品已抢光',
+      6: '超购买上限'
+    },
+    prdListName:'preSalePrdMpVos',
+    countDownInfo: {
+      canCountDown: [0, 3],
+      3: 'startTime',
+      0: 'endTime'
+    }
+  },
   18: {
     actName: '首单特惠',
     multiSkuAct: true,
@@ -697,6 +716,11 @@ global.wxPage({
       'pages1/pledgeannounce/pledgeannounce?pledgeList=' +
         JSON.stringify(this.data.pledgeInfo.pledgeListVo)
     )
+  },
+  viewPreSaleRule(){
+    this.setData({
+      preSaleRuleShow:true
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

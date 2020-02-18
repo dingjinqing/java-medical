@@ -1,0 +1,21 @@
+.selected-content{
+  background-color: #fff;
+  position: relative;
+  width:750rpx;
+}
+.title{
+  line-height: 80rpx;
+  text-align: center;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #eee;
+}
+.rule-content{
+  display: flex;
+  flex-direction: column;
+  color: #888;
+  height: 500rpx;
+  padding: 25rpx 25rpx 0;
+}
+.rule-content > view{
+  line-height: 50rpx;
+}
