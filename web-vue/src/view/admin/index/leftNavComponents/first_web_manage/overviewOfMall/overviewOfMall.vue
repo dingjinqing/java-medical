@@ -138,7 +138,10 @@
               :key="index"
               v-if="item.isCheck === true"
             >
-              <a href="javascript:void(0);">
+              <a
+                href="javascript: void(0);"
+                @click="item.link ? jumpHandler(item.link) : sleectHandler(item.value)"
+              >
                 <div class="order_top">{{ item.num }}</div>
                 <p>{{ item.label }}</p>
               </a>
@@ -341,7 +344,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/base_manger/-1"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -349,7 +355,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/shopAuthority"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -357,7 +366,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/shopMain?change_components=3"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -365,7 +377,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip4') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/pictureSetting"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -373,7 +388,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/base_manger/-1"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -389,7 +407,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/deliverTemplate/list"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -397,7 +418,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsForSale"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -405,7 +429,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsStoreConf }} {{ $t('overview.unStoreTip3') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsForSale"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -413,7 +440,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf }} {{ $t('overview.unStoreTip4') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsForSale"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -421,7 +451,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unStoreTip5') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/evaluationManagement"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -429,7 +462,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip6') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsRecommend"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -437,7 +473,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip7') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -445,7 +484,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.deliver }} {{ $t('overview.unOrderTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/orders/waiting?orderStatus=3"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -453,7 +495,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.refund }} {{ $t('overview.unOrderTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/orders/refund/list"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -461,7 +506,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.unMarketTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/distribution"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div v-if="storeList.dataMarket.member !== null">
                     <div class="task_list_item">
@@ -478,7 +526,10 @@
                     >
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                       <span class="task_list_desc">{{ $t('overview.unMarketTip3') }} "{{ val }}" {{ $t('overview.unMarketTip4') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                      <a
+                        href="/admin/home/main/ordinaryCoupon"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
                 </div>
@@ -497,7 +548,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/base_manger/-1"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -505,7 +559,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/shopAuthority"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -513,7 +570,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/shopMain?change_components=3"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -521,7 +581,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip4') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/pictureSetting"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -529,7 +592,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/base_manger/-1"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -555,7 +621,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/deliverTemplate/list"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -563,7 +632,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsForSale"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -571,7 +643,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsStoreConf }} {{ $t('overview.unStoreTip3') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsForSale"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -579,7 +654,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf }} {{ $t('overview.unStoreTip4') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsForSale"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -587,7 +665,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unStoreTip5') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/evaluationManagement"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -595,7 +676,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip6') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsRecommend"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -603,7 +687,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip7') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                 </div>
               </div>
@@ -621,7 +708,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.deliver }} {{ $t('overview.unOrderTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/orders/waiting?orderStatus=3"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -629,7 +719,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.refund }} {{ $t('overview.unOrderTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/orders/refund/list"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                 </div>
               </div>
@@ -647,7 +740,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.unMarketTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a
+                      href="/admin/home/main/distribution"
+                      target="_blank"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div v-if="storeList.dataMarket.member !== null">
                     <!-- <div
@@ -673,7 +769,10 @@
                     >
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                       <span class="task_list_desc">{{ $t('overview.unMarketTip3') }} "{{ val }}" {{ $t('overview.unMarketTip4') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                      <a
+                        href="/admin/home/main/ordinaryCoupon"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
 
@@ -820,6 +919,95 @@
           style="margin-bottom: 10px;width: 25%;"
         ></el-checkbox>
       </el-checkbox-group>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="cancelDataHandler"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureDataHandler"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 会员卡弹窗 -->
+    <el-dialog
+      title="请选择会员卡"
+      :visible.sync="cardDialog"
+      width="20%"
+      center
+    >
+      <el-select
+        v-model="cardValue"
+        size="small"
+        style="width: 170px;"
+        placeholder="请选择"
+      >
+        <el-option
+          v-for="item in cardList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="sureCardActive"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="cancelCardActive"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 门店弹窗 -->
+    <el-dialog
+      title="请选择门店"
+      :visible.sync="storeDialog"
+      width="20%"
+      center
+    >
+      <el-select
+        v-model="storeValue"
+        size="small"
+        style="width: 170px;"
+        placeholder="请选择"
+      >
+        <el-option
+          v-for="item in storeRevieweList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="cancelStoreReviewe"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureStoreReviewe"
+        >确 定</el-button>
+      </span>
     </el-dialog>
 
   </div>
@@ -828,7 +1016,7 @@
 // 引入组件
 import VCharts from 'v-charts'
 import bindAccount from './overviewBindAccount.vue'
-import { getAllOverview, shopShareRequest, toDoItemRequest, dataRequest, shopInfoRequest } from '@/api/admin/survey.js'
+import { getAllOverview, shopShareRequest, toDoItemRequest, dataRequest, shopInfoRequest, getAllStore } from '@/api/admin/survey.js'
 export default {
   components: {
     VCharts,
@@ -841,6 +1029,16 @@ export default {
       dataDialog: false, // 自定义事项弹框
       // 选中自定义事项
       checkData: this.$t('overview.checkData'),
+      // 记录选中数据
+      selectData: [],
+      // 会员卡
+      cardDialog: false,
+      cardValue: '',
+      cardList: [],
+      // 门店
+      storeDialog: false,
+      storeValue: '',
+      storeRevieweList: [],
       // 自定义列表
       checkList: this.$t('overview.checkList'),
       screeningTime: 1, // 数据日期范围
@@ -885,6 +1083,9 @@ export default {
     this.getAllOverview()
     this.getShopShare()
     this.getShopInfo()
+
+    // 获取服务门店
+    this.getAllStore()
   },
   mounted () {
     this.langDefault()
@@ -902,6 +1103,7 @@ export default {
       this.getAllOverview()
       this.getShopShare()
       this.getShopInfo()
+      this.getAllStore()
     }
   },
   methods: {
@@ -975,6 +1177,15 @@ export default {
       })
     },
 
+    // 获取服务门店
+    getAllStore () {
+      getAllStore().then(res => {
+        if (res.error === 0) {
+          this.storeRevieweList = res.content
+        }
+      })
+    },
+
     // 店铺分享
     getShopShare () {
       shopShareRequest().then((res) => {
@@ -1028,6 +1239,67 @@ export default {
     // 自定义事项弹框
     customizeHandler () {
       this.dataDialog = true
+      this.selectData = this.checkData
+    },
+
+    // 取消自定义事项弹窗
+    cancelDataHandler () {
+      this.checkData = this.selectData
+      this.dataDialog = false
+    },
+
+    // 确定自定义事项弹窗
+    sureDataHandler () {
+      if (this.checkData.length === 5) {
+        this.getTodoDate()
+        this.$nextTick(() => {
+          this.dataDialog = false
+        })
+      } else {
+        this.$message.warning({ message: this.$t('overview.agencyTip') })
+      }
+    },
+
+    // 跳转对应页面
+    jumpHandler (link) {
+      window.open(link)
+    },
+
+    // 自定义选值
+    sleectHandler (value) {
+      if (value === 7) {
+        // 会员卡激活 (选择会员卡)
+        this.cardDialog = !this.cardDialog
+      } else if (value === 9) {
+        // 服务审核 (选择门店)
+        this.storeDialog = !this.storeDialog
+      }
+    },
+
+    // 确定会员激活
+    sureCardActive () {
+      this.cardDialog = false
+      window.open('/admin/home/main/activateAudit?cardId=' + this.cardValue)
+      this.cardValue = ''
+    },
+
+    // 取消会员激活
+    cancelCardActive () {
+      this.cardDialog = false
+      this.cardValue = ''
+    },
+
+    // 确定服务门店
+    sureStoreReviewe () {
+      this.storeDialog = false
+      window.open('/admin/home/main/store/storemanage/comment/review?id=' + this.storeValue)
+      this.storeValue = ''
+    },
+
+    // 取消服务门店
+    cancelStoreReviewe () {
+      this.storeDialog = false
+      this.storeValue = ''
     },
 
     // 关闭弹窗

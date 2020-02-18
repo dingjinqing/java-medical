@@ -326,6 +326,8 @@ export const en = {
     'Limited Time Price Reduction',
     'Order List'
   ],
+  // 营销管理 限时降价 效果数据
+  reduceEffect: ['Marketing management', 'Limited Time Price Reduction', 'Effect Data'],
   // 营销管理 打包一口价
   package_price: ['Marketing management', 'Package Price'],
   // 营销管理 打包一口价 参与明细

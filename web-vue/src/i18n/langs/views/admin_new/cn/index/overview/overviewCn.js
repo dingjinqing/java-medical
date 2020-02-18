@@ -45,47 +45,56 @@ export const cn = {
     {
       value: 1,
       label: '待发货订单',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/waiting?orderStatus=3'
     },
     {
       value: 2,
       label: '待处理退款退货',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/refund/list'
     },
     {
       value: 3,
       label: '已售罄商品',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/goodsManage/goodsForSaleOut'
     },
     {
       value: 4,
       label: '商品评价待审核',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/goodsManage/evaluationManagement'
     },
     {
       value: 5,
       label: '待提货订单',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/self'
     },
     {
       value: 6,
       label: '分销员待审核',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/distribution'
     },
     {
       value: 7,
       label: '会员卡激活待审核',
-      isCheck: false
+      isCheck: false,
+      link: ''
     },
     {
       value: 8,
       label: '分销提现待审核',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/distribution'
     },
     {
       value: 9,
       label: '服务评价待审核',
-      isCheck: false
+      isCheck: false,
+      link: ''
     }
   ],
 
@@ -157,12 +166,12 @@ export const cn = {
     {
       icon: '/image/admin/new_ov/hdyl.png',
       title: '开屏有礼',
-      link: ''
+      link: '/admin/home/main/openScreen/list'
     },
     {
       icon: '/image/admin/new_ov/kj.png',
       title: '砍价',
-      link: ''
+      link: '/admin/home/main/bargain'
     },
     {
       icon: '/image/admin/new_ov/ptcj.png',
@@ -172,12 +181,12 @@ export const cn = {
     {
       icon: '/image/admin/new_ov/yhqlb.png',
       title: '优惠券礼包',
-      link: ''
+      link: '/admin/home/main/couponPackage'
     },
     {
       icon: '/image/admin/new_ov/zfyl.png',
       title: '支付有礼',
-      link: '/admin/home/main/admin/home/main/payReward'
+      link: '/admin/home/main/payReward'
     }
   ],
 
