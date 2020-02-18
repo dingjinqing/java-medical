@@ -44,8 +44,10 @@ import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -2121,5 +2123,47 @@ public class GoodsService extends ShopBaseService {
         }
         // 其它普通商品
         return null;
+    }
+
+    /**
+     * 得到在售商品id集合
+     *
+     * @param catIds   指定平台分类id,逗号分隔的字符串
+     * @param sortIds  指定商家分类id,逗号分隔的字符串
+     * @param brandIds  指定品牌id,逗号分隔的字符串
+     *                  多种条件取并集
+     * @return 商品id
+     */
+    public List<Integer> getOnShelfGoodsIdList(String catIds, String sortIds,String brandIds) {
+        SelectConditionStep<Record1<Integer>> selectConditionStep = db().select(GOODS.GOODS_ID)
+            .from(GOODS)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+
+        Condition filterCondition = DSL.noCondition();
+        //指定平台分类
+        if (StringUtil.isNotEmpty(catIds)) {
+            List<Integer> catIdsList = Util.splitValueToList(catIds);
+            filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIdsList)));
+        }
+        //指定商家分类
+        if (StringUtil.isNotEmpty(sortIds)) {
+            List<Integer> sortIdsList = Util.splitValueToList(sortIds);
+            //在所有父子节点中查找
+            filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIdsList)));
+        }
+        //指定品牌
+        if (StringUtil.isNotEmpty(brandIds)) {
+            List<Integer> brandIdsList = Util.splitValueToList(brandIds);
+            filterCondition.or(GOODS.BRAND_ID.in(brandIdsList));
+        }
+        selectConditionStep.and(filterCondition);
+
+        // 是否展示售罄
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (soldOutGoods == null || soldOutGoods.equals(NumberUtils.BYTE_ZERO)) {
+            selectConditionStep.and(GOODS.GOODS_NUMBER.greaterThan(NumberUtils.INTEGER_ZERO));
+        }
+        return selectConditionStep.fetchInto(Integer.class);
     }
 }
