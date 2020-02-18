@@ -3,7 +3,12 @@ export const en = {
 
   // 标题部分文字内容
   title: 'WeChat template message',
-  tips: 'due to the WeChat platform limitation, public message can be sent up to 25 categories, and small program messages can be sent up to 25 categories. Please choose carefully.',
+  templateContent1: 'According to WeChat official release',
+  templateContent2: 'Applet template message capability adjustment notification,',
+  templateContent3: '"Shop + Applet" opens a one-time subscription message to replace the original applet template message. ',
+  templateContent4: 'From now on, the "Mini Program Template Message" is fully offline, and the original Mini Program message push method is invalid. ',
+  templateContent5: 'View subscription message documentation>',
+  tips: '(Due to WeChat platform restrictions, public account messages can be sent up to 25 types, please choose carefully)',
   openMpNum: 'public number message has been selected',
   openMaNum: 'Applet message selected',
   tiao: 'article',
@@ -14,7 +19,6 @@ export const en = {
   templateMessage: 'Template message',
   sendConditions: 'Sending condition',
   openMpContent: 'Public number message',
-  openMaMessage: 'Applet message',
   preview: 'Preview',
 
   // 交易物流 -> 模板消息
