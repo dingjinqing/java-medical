@@ -262,7 +262,7 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="refreshCoupn(index)"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.refresh')}}
                   </el-link>
@@ -270,31 +270,30 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="jumpToAddCoupon"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.createLabel')}}</el-link>
                   |
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="jumpToOrdinaryCoupon"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                   <el-row style="padding: 10px 0">
                     <el-col :offset="4">
                       <el-input
                         size="small"
-                        style="width:100px"
+                        style="width: 140px;"
                         v-model="item.coupon_name"
                         :disabled="true"
                       ></el-input>
                       <span style="color:#999">{{$t('adSharePolite.couponStock')}}</span>
                       <el-input
                         size="small"
-                        style="width:70px"
-                        v-model.number="item.coupon_num"
+                        style="width:80px"
+                        v-model.number="item.couponStock"
                         :disabled="true"
-                        placeholder="0"
                       ></el-input>
                       {{$t('adSharePolite.number')}}
                     </el-col>
@@ -345,7 +344,7 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="refreshCoupn"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.refresh')}}
                   </el-link>
@@ -353,14 +352,14 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="jumpToAddCoupon"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.createLabel')}}</el-link>
                   |
                   <el-link
                     type="primary"
                     :underline="false"
-                    href="#"
+                    @click="jumpToOrdinaryCoupon"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                 </el-form-item>
@@ -408,6 +407,7 @@
       :singleElection="true"
       :tuneUpCoupon="tuneUpCoupon"
       @handleToCheck="handleToCheck"
+      ref="templateRefresh"
     />
   </div>
 </template>
@@ -524,16 +524,16 @@ export default {
       // 分享奖励规则数组，最多定义三个规则
       shareRules: [
         {
-          invite_num: '',
-          reward_type: 1,
-          score: '',
-          coupon: '',
-          lottery: '',
-          score_num: '',
-          coupon_num: '',
-          lottery_num: '',
+          invite_num: '', // 邀请数量
+          reward_type: 1, // 奖励类型
+          score: '', // 积分
+          coupon: '', // 优惠券
+          lottery: '', // 幸运大抽奖
+          score_num: '', // 积分数量
+          coupon_num: '', // 优惠券数量
+          lottery_num: '', // 幸运大抽奖数量
           // 优惠券可用库存
-          couponStock: 0,
+          couponStock: '',
           // 优惠券名字
           coupon_name: ''
         }
@@ -614,11 +614,19 @@ export default {
       data.forEach(item => {
         name.push(item.actName)
         arr.push(item.id)
-        stock.push(item.surplus)
+        // stock.push(item.surplus)
+        // this.$nextTick(() => {
+        if (item.surplus === 0) {
+          stock.push('不限制')
+        } else {
+          stock.push(item.surplus)
+        }
+        // })
       })
+      console.log(stock, 'stock')
       this.shareRules[this.index].coupon_name = name.toString()
       this.shareRules[this.index].coupon = arr.toString()
-      this.shareRules[this.index].coupon_num = stock.toString()
+      this.shareRules[this.index].couponStock = stock.toString()
       console.log('conpon', arr.toString())
     },
     // 选择商品弹窗
@@ -741,7 +749,7 @@ export default {
               if (item.reward_type === 2) {
                 coupondetail(item.coupon).then((res) => {
                   console.log(JSON.parse(JSON.stringify(res)))
-                  item.coupon_num = res.content['0'].surplus
+                  item.couponStock = res.content['0'].surplus
                 }).catch(() => {
                   this.$message.error('优惠券库存查询失败！')
                 })
@@ -782,10 +790,11 @@ export default {
     },
     // 校验邀请人数
     validatePersonNumber (rule, value, callback, inviteNum) {
+      console.log(inviteNum, 'inviteNum')
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (!inviteNum) {
         callback(new Error('请输入要邀请的人数'))
-      } else if (re.test(value)) {
+      } else if (!re.test(value)) {
         callback(new Error('请输入正整数'))
       } else {
         return callback()
@@ -816,12 +825,13 @@ export default {
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (!lotteryNum) {
         callback(new Error('请输入奖品份数'))
-      } else if (re.test(value)) {
+      } else if (!re.test(value)) {
         callback(new Error('请输入正整数'))
       } else {
         callback()
       }
     },
+    // 验证幸运大抽奖
     validatelottery (rule, value, callback, lottery) {
       if (!lottery) {
         callback(new Error('请选择幸运大抽奖活动'))
@@ -839,8 +849,30 @@ export default {
       } else {
         callback()
       }
-    }
+    },
 
+    // 跳转到添加优惠券页面
+    jumpToAddCoupon () {
+      console.log('jump test')
+      this.$router.push({
+        name: 'add_coupon'
+      })
+    },
+
+    // 跳转到优惠券列表页面
+    jumpToOrdinaryCoupon () {
+      this.$router.push({
+        name: 'ordinary_coupon'
+      })
+    },
+
+    // 优惠券刷新
+    refreshCoupn () {
+      this.$refs.templateRefresh.handleToSure()
+      this.$nextTick(() => {
+        this.$message.success('刷新成功')
+      })
+    }
   }
 }
 </script>

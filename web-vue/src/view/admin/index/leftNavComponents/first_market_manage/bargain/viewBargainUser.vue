@@ -81,11 +81,35 @@
         <el-dialog
           title="提示"
           :visible.sync="dialogVisible"
+          custom-class="custom"
           width="30%"
           style="font-size: 20px;"
+          center
         >
-          <div class="tips-content1">根据以下条件筛选出1条数据,是否确认导出？</div>
-          <div class="tips-content2">筛选条件：无</div>
+          <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div>
+          <!-- <div class="tips-content2">筛选条件：无</div> -->
+          <div>筛选条件：</div>
+          <div
+            v-for="(item, key, index) in param"
+            :key="index"
+          >
+            <div v-if="ok(key,item)">
+              <div v-if="key === 'orderStatus'">
+                {{$t('orderSearch.'+key)}}:
+                <span
+                  v-for="status in item"
+                  :key="status"
+                >
+                  {{orderStatusMap.get(status)}}
+                </span>
+              </div>
+              <div
+                v-else
+                style="margin-top: 10px;"
+              >{{$t('orderSearch.'+key)}}:{{item}}</div>
+            </div>
+          </div>
+
           <span
             slot="footer"
             class="dialog-footer"
@@ -97,7 +121,7 @@
             <el-button
               type="primary"
               size="small"
-              @click="dialogVisible = false"
+              @click="handelConfirm"
             >确 定</el-button>
           </span>
         </el-dialog>
@@ -197,13 +221,15 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getRecordPageList } from '@/api/admin/marketManage/bargain.js'
+import { getRecordPageList, exportBargainUserData } from '@/api/admin/marketManage/bargain.js'
+import { download } from '@/util/excelUtil.js'
 
 export default {
   components: { pagination },
   mounted () {
     this.langDefault()
     if (this.$route.query.id > 0) {
+      console.log(this.$route, 'get id')
       this.actId = this.$route.query.id
       this.initDataList()
     }
@@ -215,10 +241,14 @@ export default {
       pageParams: {},
       tableData: [],
       createDate: '',
-      dialogVisible: false,
+      actId: '',
 
       // 表格原始数据
-      originalData: []
+      originalData: [],
+
+      // 导出数据接口参数
+      dialogVisible: false,
+      param: Object
     }
   },
   methods: {
@@ -230,6 +260,7 @@ export default {
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       getRecordPageList(this.requestParams).then((res) => {
+        console.log(res, 'get res')
         if (res.error === 0) {
           this.originalData = res.content.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))
@@ -270,6 +301,21 @@ export default {
     // 表格导出
     exportData () {
       this.dialogVisible = true
+    },
+    handelConfirm () {
+      console.log(this.tableData, 'get tableData')
+      exportBargainUserData({
+        // 'bargainId': this.actId,
+        // 'status': this.tableData.status[1],
+        // 'username': this.tableData.username[1]
+      }).then(res => {
+        if (res.error === 0) {
+          console.log(res, 'excle-res')
+          let fileName = localStorage.getItem('V-content-disposition')
+          fileName = fileName.split(';')[1].split('=')[1]
+          download(res, decodeURIComponent(fileName))
+        }
+      }).catch(err => console.log(err))
     }
   },
   watch: {
@@ -300,6 +346,21 @@ export default {
 }
 .tips-content1 {
   margin: 0 0 20px;
+}
+/deep/ .custom {
+  .el-dialog__header {
+    background: #f3f3f3;
+    padding-top: 10px;
+    .el-dialog__title {
+      font-size: 14px;
+    }
+    .el-dialog__headerbtn {
+      top: 10px;
+    }
+  }
+  .el-checkbox-button.is-disabled .el-checkbox-button__inner {
+    background-color: #f5f7fa;
+  }
 }
 .bargainUserMain {
   display: flex;
