@@ -73,7 +73,6 @@ public class LotteryPrizeService  extends ShopBaseService {
                 joinValid.setLotteryPrize(record);
                 joinValid.setLotteryGrade(record.getLotteryGrade());
                 LotteryPrizeVo into = record.into(LotteryPrizeVo.class);
-                joinValid.setLotteryPrizeInfo(into);
                 return;
             }
             randNumber -= chanceNumerator;

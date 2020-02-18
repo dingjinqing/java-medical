@@ -6,6 +6,7 @@
       @change="changeHandle"
       style="width:170px;"
       size="small"
+      :disabled="disabled"
     >
       <el-option
         v-for="item in selects"
@@ -39,7 +40,8 @@ export default {
     isHasStock: { // 是否限制库存 默认true限制
       type: Boolean,
       default: true
-    }
+    },
+    disabled: Boolean
   },
   model: {
     prop: 'value',
@@ -65,6 +67,7 @@ export default {
   },
   methods: {
     initSelectData () {
+      if (this.disabled) return false
       let params = {
         isHasStock: this.isHasStock
       }
