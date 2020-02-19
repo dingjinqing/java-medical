@@ -196,14 +196,14 @@
           <div
             class="cateTitle"
             style="color: rgb(47, 174, 68)"
-          >商品<br>访问</div>
+          >{{$t('goodsStaticties.goods')}}<br>{{$t('goodsStaticties.fangwen')}}</div>
         </div>
         <div class="fromItem">
           <div
             class="fromInfo"
             style="display: flex;"
           >
-            <div>被访问商品数</div>
+            <div>{{$t('goodsStaticties.beifangwen')}}</div>
           </div>
           <div
             class="num"
@@ -226,7 +226,7 @@
             class="fromInfo"
             style="display: flex;"
           >
-            <div>商品访客数 (商品UV)</div>
+            <div>{{$t('goodsStaticties.fangkeshu')}}</div>
           </div>
           <div
             class="num"
@@ -249,7 +249,7 @@
             class="fromInfo"
             style="display: flex;"
           >
-            <div>商品浏览量 (商品pv)</div>
+            <div>{{$t('goodsStaticties.liulanliang')}}</div>
           </div>
           <div
             class="num"
@@ -277,14 +277,14 @@
           <div
             class="cateTitle"
             style="color: #ffaf5a"
-          >商品<br>转化</div>
+          >{{$t('goodsStaticties.goods')}}<br>{{$t('goodsStaticties.zhuanhua')}}</div>
         </div>
         <div class="fromItem">
           <div
             class="fromInfo"
             style="display: flex;"
           >
-            <div>加购人数</div>
+            <div>{{$t('goodsStaticties.jiagou')}}</div>
           </div>
           <div
             class="num"
@@ -307,7 +307,7 @@
             class="fromInfo"
             style="display: flex;"
           >
-            <div>加购件数</div>
+            <div>{{$t('goodsStaticties.jiagoujianshu')}}</div>
           </div>
           <div
             class="num"
@@ -330,7 +330,7 @@
             class="fromInfo"
             style="display: flex;"
           >
-            <div>下单商品数</div>
+            <div>{{$t('goodsStaticties.xiadan')}}</div>
             <el-tooltip
               effect="light"
               placement="top"
@@ -340,8 +340,8 @@
                 style="width: 400px;line-height: 30px;font-size: 14px;"
               >
                 <section style="display: flex">
-                  <div style="width: 30%;color:#999">下单商品数</div>
-                  <div style="width: 70%;color: #353535">统计时间内，下单的商品总件数(包括退货/退款部分)</div>
+                  <div style="width: 30%;color:#999">{{$t('goodsStaticties.xiadan')}}</div>
+                  <div style="width: 70%;color: #353535">{{$t('goodsStaticties.xiadan_content')}}</div>
                 </section>
               </div>
               <i class="el-icon-warning-outline icons"></i>
@@ -368,7 +368,7 @@
             class="fromInfo"
             style="display: flex;"
           >
-            <div>付款商品数</div>
+            <div>{{$t('goodsStaticties.fukuan')}}</div>
             <el-tooltip
               effect="light"
               placement="top"
@@ -378,8 +378,8 @@
                 style="width: 400px;line-height: 30px;font-size: 14px;"
               >
                 <section style="display: flex">
-                  <div style="width: 30%;color:#999">付款商品数</div>
-                  <div style="width: 70%;color: #353535">统计时间内，成功付款的商品总件数(包括退货/退款部分)</div>
+                  <div style="width: 30%;color:#999">{{$t('goodsStaticties.fukuan')}}</div>
+                  <div style="width: 70%;color: #353535">{{$t('goodsStaticties.fukuan_content')}}</div>
                 </section>
               </div>
               <i class="el-icon-warning-outline icons"></i>
@@ -406,7 +406,7 @@
             class="fromInfo"
             style="display: flex;"
           >
-            <div>商品访问付款转化率</div>
+            <div>{{$t('goodsStaticties.fangwen2fukaun')}}</div>
           </div>
           <div
             class="num"
@@ -432,9 +432,9 @@
         class="labelItem"
         style="display: flex;"
       >
-        <div class="tc_left">商品排行</div>
+        <div class="tc_left">{{$t('goodsStaticties.rank')}}</div>
         <div class="tc_right">
-          查询时间
+          {{$t('goodsStaticties.querytime')}}
           <el-date-picker
             v-model="rangeDate"
             type="daterange"
@@ -453,31 +453,31 @@
         <!-- 销售额TOP10 -->
         <div class="tc_content">
           <div class="tc_left">
-            <div class="tl_title">商品销售额TOP10</div>
+            <div class="tl_title">{{$t('goodsStaticties.salestop')}}</div>
             <div class="tl_change">
               <el-button
                 size="small"
                 @click="unitChange(1)"
-              >日</el-button>
+              >{{$t('userStatistics.day')}}</el-button>
               <el-button
                 size="small"
                 @click="unitChange(2)"
-              >周</el-button>
+              >{{$t('goodsStaticties.week')}}</el-button>
               <el-button
                 size="small"
                 @click="unitChange(3)"
-              >月</el-button>
+              >{{$t('userStatistics.month')}}</el-button>
               <el-button
                 size="small"
                 @click="unitChange(4)"
-              >年</el-button>
+              >{{$t('userStatistics.year')}}</el-button>
             </div>
           </div>
           <div class="tc_right">
             <el-button
               size="small"
               @click="dataExport(0)"
-            >数据导出</el-button>
+            >{{$t('goodsStaticties.export')}}</el-button>
           </div>
         </div>
         <!-- 销售额折线/柱状图 -->
@@ -529,31 +529,31 @@
         <!-- 销售订单TOP10 -->
         <div class="tc_content">
           <div class="tc_left">
-            <div class="tl_title">商品销售订单TOP10</div>
+            <div class="tl_title">{{$t('goodsStaticties.salesordertop')}}</div>
             <div class="tl_change">
               <el-button
                 size="small"
                 @click="unitChange(5)"
-              >日</el-button>
+              >{{$t('userStatistics.day')}}</el-button>
               <el-button
                 size="small"
                 @click="unitChange(6)"
-              >周</el-button>
+              >{{$t('goodsStaticties.week')}}</el-button>
               <el-button
                 size="small"
                 @click="unitChange(7)"
-              >月</el-button>
+              >{{$t('userStatistics.month')}}</el-button>
               <el-button
                 size="small"
                 @click="unitChange(8)"
-              >年</el-button>
+              >{{$t('userStatistics.year')}}</el-button>
             </div>
           </div>
           <div class="tc_right">
             <el-button
               size="small"
               @click="dataExport(1)"
-            >数据导出</el-button>
+            >{{$t('goodsStaticties.export')}}</el-button>
           </div>
         </div>
         <!-- 销售订单折线/柱状图 -->
