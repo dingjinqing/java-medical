@@ -10,12 +10,44 @@
           style="width: 400px;line-height: 30px;font-size: 14px;"
         >
           <section style="display: flex">
-            <div style="width: 30%;color:#999">在架商品数</div>
-            <div style="width: 70%;color: #353535">当前时间点，在架的商品数量</div>
+            <div style="width: 30%;color:#999">访客数</div>
+            <div style="width: 70%;color: #353535">统计时间内，商品详情页被访问的去重人数，一个人在统计时间范围内访问多次只记为一个。</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">访客数占比</div>
-            <div style="width: 70%;color: #353535">访客数占比解释</div>
+            <div style="width: 30%;color:#999">浏览量</div>
+            <div style="width: 70%;color: #353535">统计时间内，商品详情页被访问的次数，一个人在统计时间内访问多次记为多次。</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">加购人数</div>
+            <div style="width: 70%;color: #353535">统计时间内，添加该商品进入购物车的去重人数，一个人在统计时间内多次添加商品到购物车只记为一人。</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">付款人数</div>
+            <div style="width: 70%;color: #353535">统计时间内，成功付款的客户数（拼团在成团时计入付款订单；货到付款在发货时计入付款订单，不剔除退款订单）</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">单品转化率</div>
+            <div style="width: 70%;color: #353535">统计时间内，商品付款人数/商品访客数。</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">付款商品件数</div>
+            <div style="width: 70%;color: #353535">统计时间内，成功付款订单的商品件数之和（拼团在成团时计入付款订单；货到付款在发货时计入付款订单，不剔除退款订单）</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">新成交客户数</div>
+            <div style="width: 70%;color: #353535">没有购买，在筛选时间内首次在店铺付款的客户数量。</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">新成交客户数占比</div>
+            <div style="width: 70%;color: #353535">新成交客户数/全部成交客户数</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">老成交客户数</div>
+            <div style="width: 70%;color: #353535">购买过，在筛选时间内在店铺再次付款的客户数量</div>
+          </section>
+          <section style="display: flex">
+            <div style="width: 30%;color:#999">老成交客户数占比</div>
+            <div style="width: 70%;color: #353535">老成交客户数/全部成交客户数</div>
           </section>
         </div>
         <i class="el-icon-warning-outline icons"></i>
