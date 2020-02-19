@@ -80,7 +80,7 @@
       </div>
       <div class="table_box">
         <el-tabs
-          v-model="searchParams.tabIndex"
+          v-model="tabIndex"
           @tab-click="handleClick"
         >
           <el-tab-pane
@@ -268,7 +268,7 @@ export default {
         returnEnd: null,
         currentPage: null,
         pageRows: null,
-        tabIndex: null
+        stateCollection: null
       },
       returnTypeMap: null,
       returnStatusMap: null,
@@ -294,6 +294,7 @@ export default {
           }
         ]
       },
+      tabIndex: '-1',
       tabList: [
         { value: '-1', label: '全部' },
         { value: '1', label: '商家待处理' },
@@ -320,6 +321,14 @@ export default {
     applyTime (val) {
       this.searchParams.returnStart = val ? val[0] : null
       this.searchParams.returnEnd = val ? val[1] : null
+    },
+    tabIndex (val) {
+      if (val === -1) {
+        this.searchParams.stateCollection = null
+      } else {
+        this.searchParams.stateCollection = val
+      }
+      this.initDataList()
     }
   },
   methods: {
