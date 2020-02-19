@@ -3,13 +3,13 @@
     <div class="userStatistics_content">
       <el-tabs v-model="userStatistics">
         <el-tab-pane
-          label="商品概览"
+          :label="$t('goodsStaticties.goodsOverview')"
           name="first"
         >
         </el-tab-pane>
 
         <el-tab-pane
-          label="商品效果"
+          :label="$t('goodsStaticties.goodsEffect')"
           name="second"
         >
           <goodsEffect />

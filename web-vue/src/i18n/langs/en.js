@@ -93,7 +93,10 @@ import {
 import {
   en as assetsManage
 } from './views/admin_new/en/index/overview/assetsManage/assetsManageEn'
-
+// 商品统计
+import {
+  en as goodsStaticties
+} from './views/admin_new/en/index/overview/goodsStaticties/goodsStictiesEn'
 // 用户画像
 import {
   en as userportrait
@@ -1082,6 +1085,7 @@ const en = {
   integralExchange, // 积分兑换
   divideScorePoints, // 瓜分积分
   pictureHotSpot, // 图片热区
-  carouselPicture // 轮播图模块
+  carouselPicture, // 轮播图模块
+  goodsStaticties // 商品统计
 }
 export default en

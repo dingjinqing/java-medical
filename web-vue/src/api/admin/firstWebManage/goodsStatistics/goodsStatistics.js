@@ -32,11 +32,12 @@ export function productRanking (data) {
 }
 
 // 商品排行导出
-export function scoreDetail (data) {
+export function rankExport (data) {
   return service({
-    url: '/api/admin/assetmanagement/assetManageDetail',
+    url: '/api/admin/commoditystatistics/rankExport',
     method: 'post',
-    data: data
+    data: data,
+    responseType: 'blob'
   })
 }
 

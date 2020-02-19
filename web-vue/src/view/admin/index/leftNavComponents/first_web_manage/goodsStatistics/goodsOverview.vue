@@ -2,7 +2,7 @@
   <div>
     <!-- 商品概况 -->
     <div class="label">
-      <div class="labelItem">商品概况</div>
+      <div class="labelItem">{{$t('goodsStaticties.goodsOverview')}}</div>
       <el-form
         label-width="100px"
         :inline="true"
@@ -32,8 +32,8 @@
             @change="customDate"
             value-format="yyyyMMdd"
             range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :start-placeholder="$t('goodsStaticties.startTime')"
+            :end-placeholder="$t('goodsStaticties.endTime')"
             class="custom"
           >
           </el-date-picker>
@@ -95,7 +95,7 @@
             size="small"
             type="primary"
             @click="overviewInit"
-          >搜索</el-button>
+          >{{$t('goodsStaticties.query')}}</el-button>
         </el-form-item>
       </el-form>
       <!-- 表格数据部分 -->
@@ -108,14 +108,14 @@
           <div
             class="cateTitle"
             style="color: #5A8BFF"
-          >商品<br>分布</div>
+          >{{$t('goodsStaticties.goods')}}<br>{{$t('goodsStaticties.fenbu')}}</div>
         </div>
         <div class="fromItem">
           <div
             class="fromInfo"
             style="display: flex;"
           >
-            <div>在架商品数</div>
+            <div>{{$t('goodsStaticties.zaijiashangpinshu')}}</div>
             <el-tooltip
               effect="light"
               placement="top"
@@ -125,8 +125,8 @@
                 style="width: 400px;line-height: 30px;font-size: 14px;"
               >
                 <section style="display: flex">
-                  <div style="width: 30%;color:#999">在架商品数</div>
-                  <div style="width: 70%;color: #353535">当前时间点，在架的商品数量</div>
+                  <div style="width: 30%;color:#999">{{$t('goodsStaticties.zaijiashangpinshu')}}</div>
+                  <div style="width: 70%;color: #353535">{{$t('goodsStaticties.zaijiashangpinshu_content')}}</div>
                 </section>
               </div>
               <i class="el-icon-warning-outline icons"></i>
@@ -136,7 +136,7 @@
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.onShelfGoodsNum}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.onShelfGoodsNum > 0"
@@ -153,7 +153,7 @@
             class="fromInfo"
             style="display: flex;"
           >
-            <div>动销商品数</div>
+            <div>{{$t('goodsStaticties.dongxiao')}}</div>
             <el-tooltip
               effect="light"
               placement="top"
@@ -163,8 +163,8 @@
                 style="width: 400px;line-height: 30px;font-size: 14px;"
               >
                 <section style="display: flex">
-                  <div style="width: 30%;color:#999">动销商品数</div>
-                  <div style="width: 70%;color: #353535">统计时间内，销量不为0的商品数量</div>
+                  <div style="width: 30%;color:#999">{{$t('goodsStaticties.dongxiao')}}</div>
+                  <div style="width: 70%;color: #353535">{{$t('goodsStaticties.dongxiao_content')}}</div>
                 </section>
               </div>
               <i class="el-icon-warning-outline icons"></i>
@@ -174,7 +174,7 @@
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.soldGoodsNum}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.soldGoodsNum > 0"
@@ -204,27 +204,12 @@
             style="display: flex;"
           >
             <div>被访问商品数</div>
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
-              <div
-                slot="content"
-                style="width: 400px;line-height: 30px;font-size: 14px;"
-              >
-                <section style="display: flex">
-                  <div style="width: 30%;color:#999">被访问商品数</div>
-                  <div style="width: 70%;color: #353535">被访问商品数</div>
-                </section>
-              </div>
-              <i class="el-icon-warning-outline icons"></i>
-            </el-tooltip>
           </div>
           <div
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.visitedGoodsNum}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.visitedGoodsNum > 0"
@@ -242,27 +227,12 @@
             style="display: flex;"
           >
             <div>商品访客数 (商品UV)</div>
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
-              <div
-                slot="content"
-                style="width: 400px;line-height: 30px;font-size: 14px;"
-              >
-                <section style="display: flex">
-                  <div style="width: 30%;color:#999">商品访客数</div>
-                  <div style="width: 70%;color: #353535">商品UV</div>
-                </section>
-              </div>
-              <i class="el-icon-warning-outline icons"></i>
-            </el-tooltip>
           </div>
           <div
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.goodsUserVisit}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.goodsUserVisit > 0"
@@ -280,27 +250,12 @@
             style="display: flex;"
           >
             <div>商品浏览量 (商品pv)</div>
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
-              <div
-                slot="content"
-                style="width: 400px;line-height: 30px;font-size: 14px;"
-              >
-                <section style="display: flex">
-                  <div style="width: 30%;color:#999">商品浏览量</div>
-                  <div style="width: 70%;color: #353535">商品pv</div>
-                </section>
-              </div>
-              <i class="el-icon-warning-outline icons"></i>
-            </el-tooltip>
           </div>
           <div
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.goodsPageviews}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.goodsPageviews > 0"
@@ -330,27 +285,12 @@
             style="display: flex;"
           >
             <div>加购人数</div>
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
-              <div
-                slot="content"
-                style="width: 400px;line-height: 30px;font-size: 14px;"
-              >
-                <section style="display: flex">
-                  <div style="width: 30%;color:#999">加购人数</div>
-                  <div style="width: 70%;color: #353535">加购人数</div>
-                </section>
-              </div>
-              <i class="el-icon-warning-outline icons"></i>
-            </el-tooltip>
           </div>
           <div
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.purchaseNum}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.purchaseNum > 0"
@@ -368,27 +308,12 @@
             style="display: flex;"
           >
             <div>加购件数</div>
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
-              <div
-                slot="content"
-                style="width: 400px;line-height: 30px;font-size: 14px;"
-              >
-                <section style="display: flex">
-                  <div style="width: 30%;color:#999">加购件数</div>
-                  <div style="width: 70%;color: #353535">加购件数</div>
-                </section>
-              </div>
-              <i class="el-icon-warning-outline icons"></i>
-            </el-tooltip>
           </div>
           <div
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.purchaseQuantity}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.purchaseQuantity > 0"
@@ -416,7 +341,7 @@
               >
                 <section style="display: flex">
                   <div style="width: 30%;color:#999">下单商品数</div>
-                  <div style="width: 70%;color: #353535">下单商品数</div>
+                  <div style="width: 70%;color: #353535">统计时间内，下单的商品总件数(包括退货/退款部分)</div>
                 </section>
               </div>
               <i class="el-icon-warning-outline icons"></i>
@@ -426,7 +351,7 @@
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.orderGoodsNum}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.orderGoodsNum > 0"
@@ -454,7 +379,7 @@
               >
                 <section style="display: flex">
                   <div style="width: 30%;color:#999">付款商品数</div>
-                  <div style="width: 70%;color: #353535">付款商品数</div>
+                  <div style="width: 70%;color: #353535">统计时间内，成功付款的商品总件数(包括退货/退款部分)</div>
                 </section>
               </div>
               <i class="el-icon-warning-outline icons"></i>
@@ -464,7 +389,7 @@
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.paidGoodsNum}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.paidGoodsNum > 0"
@@ -482,27 +407,12 @@
             style="display: flex;"
           >
             <div>商品访问付款转化率</div>
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
-              <div
-                slot="content"
-                style="width: 400px;line-height: 30px;font-size: 14px;"
-              >
-                <section style="display: flex">
-                  <div style="width: 30%;color:#999">商品访问付款转化率</div>
-                  <div style="width: 70%;color: #353535">商品访问付款转化率</div>
-                </section>
-              </div>
-              <i class="el-icon-warning-outline icons"></i>
-            </el-tooltip>
           </div>
           <div
             class="num"
             style="color: #5A8BFF"
           >{{overviewVo.visit2paid}}</div>
-          <div>较前{{dayNum}}日
+          <div>{{$t('goodsStaticties.compare')}}{{dayNum}}{{$t('goodsStaticties.day')}}
             <span
               style="color: #ff0808;"
               v-if="overviewVo.changeRate.visit2paid > 0"
@@ -564,7 +474,10 @@
             </div>
           </div>
           <div class="tc_right">
-            <el-button size="small">数据导出</el-button>
+            <el-button
+              size="small"
+              @click="dataExport(0)"
+            >数据导出</el-button>
           </div>
         </div>
         <!-- 销售额折线/柱状图 -->
@@ -591,7 +504,7 @@
               <tr>
                 <th></th>
                 <th
-                  v-for="(item, index) in goodsName"
+                  v-for="(item, index) in refDate"
                   :key="index"
                 >{{item}}</th>
               </tr>
@@ -601,7 +514,7 @@
                 v-for="(item, index) in tableData"
                 :key="index"
               >
-                <td>{{refDate[index]}}</td>
+                <td style="text-align: left;">{{goodsName[index]}}</td>
                 <td
                   v-for="(item1, index1) in item"
                   :key="index1"
@@ -637,7 +550,10 @@
             </div>
           </div>
           <div class="tc_right">
-            <el-button size="small">数据导出</el-button>
+            <el-button
+              size="small"
+              @click="dataExport(1)"
+            >数据导出</el-button>
           </div>
         </div>
         <!-- 销售订单折线/柱状图 -->
@@ -664,7 +580,7 @@
               <tr>
                 <th></th>
                 <th
-                  v-for="(item, index) in goodsName1"
+                  v-for="(item, index) in refDate1"
                   :key="index"
                 >{{item}}</th>
               </tr>
@@ -674,7 +590,7 @@
                 v-for="(item, index) in tableData1"
                 :key="index"
               >
-                <td>{{refDate1[index]}}</td>
+                <td style="text-align: left;">{{goodsName1[index]}}</td>
                 <td
                   v-for="(item1, index1) in item"
                   :key="index1"
@@ -690,9 +606,10 @@
 
 <script>
 // 组件导入
-import { productoverview, getDate, productRanking } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
+import { productoverview, getDate, productRanking, rankExport } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
+import { download } from '@/util/excelUtil.js'
 export default {
   props: ['initSortCatParams'],
   components: { sortCatTreeSelect },
@@ -712,21 +629,13 @@ export default {
     this.index1 = 0
     return {
       // 销售额表格数据
-      refDate: ['2020-10-10', '2020-10-11', '2020-10-12'],
-      goodsName: ['花露水', '毛衣', '手机'],
-      tableData: [
-        [12, 13, 14],
-        [13, 14, 12],
-        [13, 14, 12]
-      ],
+      refDate: [],
+      goodsName: [],
+      tableData: [],
       // 销售订单表格数据
-      refDate1: ['2020-10-10', '2020-10-11', '2020-10-12'],
-      goodsName1: ['花露水', '毛衣', '手机'],
-      tableData1: [
-        [12, 13, 14],
-        [13, 14, 12],
-        [13, 14, 12]
-      ],
+      refDate1: [],
+      goodsName1: [],
+      tableData1: [],
       search: '',
       timeSelect: 1,
       timeValue: [],
@@ -791,7 +700,8 @@ export default {
       // 销售额折线/柱状图数据
       rankParam: {
         startTime: '',
-        endTime: ''
+        endTime: '',
+        flag: 0
       },
       chartData: {
         columns: [],
@@ -810,6 +720,16 @@ export default {
     }
   },
   methods: {
+    // 商品排行导出
+    dataExport (flag) {
+      this.rankParam.flag = flag
+      let params = Object.assign({}, this.rankParam)
+      rankExport(params).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      })
+    },
     getDateValue (unit) {
       getDate(unit).then(res => {
         if (res.error === 0) {
@@ -885,14 +805,6 @@ export default {
         if (res.error === 0) {
           this.chartData = res.content.salesChar.DAY_CHAR_DATA
           this.chartData1 = res.content.salesOrderChar.DAY_CHAR_DATA
-
-          // this.refDate = res.content.salesTable.DAY_TABLE_DATA.refDate
-          // this.goodsName = res.content.salesTable.DAY_TABLE_DATA.goodsName
-          // this.tableData = res.content.salesTable.DAY_TABLE_DATA.arrayData
-          // this.refDate1 = res.content.salesOrderTable.DAY_TABLE_DATA.refDate
-          // this.goodsName1 = res.content.salesOrderTable.DAY_TABLE_DATA.goodsName
-          // this.tableData1 = res.content.salesOrderTable.DAY_TABLE_DATA.arrayData
-
           this.salesChar = res.content.salesChar
           this.salesOrderChar = res.content.salesOrderChar
           this.salesTable = res.content.salesTable
@@ -1072,7 +984,7 @@ export default {
 .table {
   width: 98%;
   min-height: 100px;
-  max-height: 600px;
+  max-height: 900px;
   overflow: auto;
   margin-top: 20px;
   margin-left: 15px;
@@ -1080,14 +992,16 @@ export default {
     width: 100%;
     tr {
       th {
-        height: 60px;
-        line-height: 60px;
+        height: 20px;
+        line-height: 20px;
         background: #f5f5f5;
+        font-size: 12px;
         border: 1px solid #efedee;
       }
     }
     td {
       text-align: center;
+      font-size: 12px;
       height: 40px;
       line-height: 40px;
       border: 1px solid #efedee;

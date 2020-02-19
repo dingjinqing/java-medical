@@ -1041,7 +1041,7 @@ export default {
       storeRevieweList: [],
       // 自定义列表
       checkList: this.$t('overview.checkList'),
-      screeningTime: 1, // 数据日期范围
+      screeningTime: 0, // 数据日期范围
       // 数据日期列表
       options: this.$t('overview.options'),
       // 数据列表信息

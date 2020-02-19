@@ -124,11 +124,11 @@ export const cn = {
   order2paid: '下单-支付转化率',
   options: [
     {
-      value: 1,
+      value: 0,
       label: '今日'
     },
     {
-      value: 2,
+      value: 1,
       label: '昨日'
     },
     {
