@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.tables.DistributionTag.DISTRIBUTION_TAG;
 import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TYPE_LIST;
+import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TYPE_LIST_1;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
@@ -120,7 +121,7 @@ public class StatisticalTableInsert extends ShopBaseService {
         UserSummaryTrendRecord record = new UserSummaryTrendRecord();
         LocalDateTime today = LocalDate.now().atStartOfDay();
         Timestamp end = Timestamp.valueOf(today);
-        TYPE_LIST.forEach((e) ->
+        TYPE_LIST_1.forEach((e) ->
             db().executeInsert(createUserSummaryTrendRecord(Timestamp.valueOf(today.minusDays(e)), end, e, record, param)
             ));
     }

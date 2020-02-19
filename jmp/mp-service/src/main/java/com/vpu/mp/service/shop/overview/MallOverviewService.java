@@ -81,8 +81,8 @@ public class MallOverviewService extends ShopBaseService {
     public CardDaoService cardDaoService;
 
     public static final List<Byte> RECENT_DATE = new ArrayList<Byte>() {{
+        add(Byte.valueOf("0"));
         add(Byte.valueOf("1"));
-        add(Byte.valueOf("2"));
         add(Byte.valueOf("7"));
         add(Byte.valueOf("30"));
         add(Byte.valueOf("90"));
@@ -94,13 +94,13 @@ public class MallOverviewService extends ShopBaseService {
     public DataDemonstrationVo dataDemonstration(DataDemonstrationParam param){
         byte screenTime = param.getScreeningTime();
         if (!RECENT_DATE.contains(screenTime)) {
-            screenTime = 1;
+            screenTime = 0;
         }
         return getDataDemonstration(screenTime);
     }
     private DataDemonstrationVo getDataDemonstration(byte screeningTime){
         DataDemonstrationVo vo = new DataDemonstrationVo();
-        // 当天数据实时统计返回
+        // 0当天数据实时统计返回
         if (screeningTime == 0) {
             Condition orderInfoTime = OrderInfo.ORDER_INFO.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
             Condition userLoginRecordTime = UserLoginRecord.USER_LOGIN_RECORD.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
