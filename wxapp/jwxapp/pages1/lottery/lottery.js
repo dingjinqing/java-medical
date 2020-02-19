@@ -202,6 +202,7 @@ global.wxPage({
             default:
               endStep = 1
           }
+          that.lotteryRequest()
           that.rolling(startStep, endStep, content)
         } else {
           that.$message.error(content.msg)
@@ -276,14 +277,12 @@ global.wxPage({
     this.setData({
       hasClick: false
     })
-    this.lotteryRequest()
   },
 
   drawAgain () {
     this.setData({
       hasClick: false
     })
-    this.lotteryRequest()
   },
 
   // 抽奖记录

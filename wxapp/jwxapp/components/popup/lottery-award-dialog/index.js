@@ -9,7 +9,8 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    prizeInfo: Object
+    prizeInfo: Object,
+    btnstatus: [String, Number]
   },
 
   /**
