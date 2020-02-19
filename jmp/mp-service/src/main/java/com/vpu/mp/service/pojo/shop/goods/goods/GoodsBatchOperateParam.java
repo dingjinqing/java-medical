@@ -64,6 +64,9 @@ public class GoodsBatchOperateParam {
     /**会员专享卡id集合*/
     private List<Integer> cardIds;
 
+    /**发货地址*/
+    private String deliverPlace;
+
     /**
      * 未处理goodsLabel,和shopPrice,goodsNumber，仅处理商品表内数据的变化
      * @return
@@ -85,6 +88,7 @@ public class GoodsBatchOperateParam {
         Optional<Integer> goodsPageIdOptional = Optional.ofNullable(goodsPageId);
         Optional<Integer> brandIdOptional = Optional.ofNullable(brandId);
         Optional<Byte> isCardExclusiveOptional = Optional.ofNullable(this.isCardExclusive);
+        Optional<String> deliverPlaceOptional = Optional.ofNullable(this.deliverPlace);
 
         goodsIds.forEach(goodsId->{
             GoodsRecord goodsRecord=new GoodsRecord();
@@ -101,6 +105,7 @@ public class GoodsBatchOperateParam {
             goodsPageIdOptional.ifPresent(goodsRecord::setGoodsPageId);
             brandIdOptional.ifPresent(goodsRecord::setBrandId);
             isCardExclusiveOptional.ifPresent(goodsRecord::setIsCardExclusive);
+            deliverPlaceOptional.ifPresent(goodsRecord::setDeliverPlace);
 
             list.add(goodsRecord);
         });
