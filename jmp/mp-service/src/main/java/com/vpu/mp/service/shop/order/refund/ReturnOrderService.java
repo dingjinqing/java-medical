@@ -100,10 +100,10 @@ public class ReturnOrderService extends ShopBaseService{
 		select.orderBy(TABLE.RET_ID.desc());
 
 		if (!StringUtils.isEmpty(param.getOrderSn())) {
-			select.where(TABLE.ORDER_SN.eq(param.getOrderSn()));
+			select.where(TABLE.ORDER_SN.like(likeValue(param.getOrderSn())));
 		}
 		if (!StringUtils.isEmpty(param.getReturnOrderSn())) {
-			select.where(TABLE.RETURN_ORDER_SN.eq(param.getReturnOrderSn()));
+			select.where(TABLE.RETURN_ORDER_SN.like(likeValue(param.getReturnOrderSn())));
 		}
 		if (param.getRefundStatus() != null) {
 			switch (param.getRefundStatus()) {
@@ -130,7 +130,7 @@ public class ReturnOrderService extends ShopBaseService{
 			select.where(TABLE.APPLY_TIME.ge(param.getReturnStart()));
 		}
 		if (param.getReturnEnd() != null) {
-			select.where(TABLE.APPLY_TIME.le(param.getReturnStart()));
+			select.where(TABLE.APPLY_TIME.le(param.getReturnEnd()));
 		}
 		return select;
 	}
