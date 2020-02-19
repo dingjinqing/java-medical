@@ -5,11 +5,15 @@
   <view class="l-a-content">
     <view class="l-a-top">
       <image class="l-a-top-img" src="{{imageUrl + '/image/wxapp/is_award1.png'}}" mode="scaleToFill"></image>
-      <text class="l-a-top-title">中奖啦！</text>
+      <text class="l-a-top-title">{{title}}</text>
     </view>
     <view class="l-a-center">
       <view class="l-a-c-top">恭喜您获得</view>
-      <view class="l-a-c-top">{{prizeInfo.prizeText}}</view>
+      <block wx:if="lotteryInfo.lotteryType === 4">
+        <view class="gift-name">{{lotteryInfo.goodsName}}</view>
+        <view class="gift-img"><image src="{{lotteryInfo.goodsImg}}"></image></view>
+      </block>
+      <view class="l-a-c-top">{{lotteryAward}}</view>
       <view class="l-a-c-go">已存入您的余额，快去查看吧</view>
       <view class="l-a-c-btns">
         <button class="l-a-c-btn">立即查看</button>

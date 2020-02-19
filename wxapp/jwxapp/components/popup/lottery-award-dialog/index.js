@@ -17,12 +17,22 @@ global.wxComponent({
    */
   data: {
     show: false,
-    imageUrl: imageUrl
+    imageUrl: imageUrl,
+    title: '中奖啦!',
+    lotteryAward: '',
+    lotteryInfo: {}
   },
 
   observers: {
-    prizeInfo: function() {
-      console.log()
+    prizeInfo: function(info) {
+      console.log(info)
+      if (info !== null) {
+        this.setData({
+          title: info.prizeText,
+          lotteryAward: info.lotteryAward,
+          lotteryInfo: info
+        })
+      }
     }
   },
 

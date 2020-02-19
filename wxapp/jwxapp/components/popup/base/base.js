@@ -9,7 +9,6 @@ var base = {
    */
   methods: {
     bindClose(e) {
-      debugger
       this.setData({
         show: false
       });
@@ -18,7 +17,6 @@ var base = {
     },
     bindNullClick(e) { },
     bindBackTap(e) {
-      debugger
       if (this.data.click_back_close) {
         this.setData({
           show: false
