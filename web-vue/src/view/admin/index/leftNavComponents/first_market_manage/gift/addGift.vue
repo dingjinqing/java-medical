@@ -425,7 +425,8 @@
       <choosingGoods
         :tuneUpChooseGoods="tuneUpChooseGoods"
         :loadProduct="true"
-        :chooseGoodsBack="specsIds"
+        :checkedNumMax=20
+        :chooseGoodsBack="this.specsIds"
         @resultGoodsIds="getSpecsIds"
         @resultGoodsDatas="getSpecsData"
       />
@@ -887,13 +888,18 @@ export default {
 
     // 选择规格弹窗回调显示
     getSpecsIds (ids) {
-      this.specsIds = ids
+      console.log('getSpecsIds', ids)
+      // this.specsIds = ids
     },
 
     // 规格弹窗数据
     getSpecsData (data) {
+      console.log('getSpecsData', data)
       // this.specsData = data
       this.tableData = data
+      this.tableData.forEach(row => {
+        this.specsIds.push(row.prdId)
+      })
       console.log(data)
     },
 
