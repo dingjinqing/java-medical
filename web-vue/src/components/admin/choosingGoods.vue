@@ -544,19 +544,27 @@ export default {
       this.transmitGoodsIds(this.checkedIdList)
       this.$emit('resultGoodsIds', this.checkedIdList)
       this.$emit('result', this.checkedIdList)
-      let residueIds = this.checkedIdList
-      this.checkedRowList.forEach(itme => {
-        var index = residueIds.indexOf(this.getRowId(itme))
-        if (index > -1) {
-          residueIds.splice(index, 1)
+      let residueIds = []
+      this.checkedIdList.forEach(id => {
+        let flag = false
+        this.checkedRowList.forEach(itme => {
+          if (this.getRowId(itme) === id) {
+            flag = true
+          }
+        })
+        if (!flag) {
+          residueIds.push(id)
         }
       })
+      console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
       if (this.loadProduct) {
         getProductListByIds({ productId: residueIds }).then(res => {
-          this.clearCheckedRow()
           res.content.forEach(item => {
             this.checkedRowList.push(item)
           })
+          this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
+          // 把选中的id集合和url集合回传
+          this.$emit('res', this.checkedIdList, this.checkedUrlList)
         })
       } else {
         getGoodsListByIds({ goodsIds: residueIds }).then(res => {
@@ -637,9 +645,11 @@ export default {
       this.checkedId = {}
       this.checkedRow = {}
       this.checkedIdList.splice(this.checkedIdList.lastIndexOf(this.getRowId(row)), 1)
+      console.log('removeCheckedRow', this.checkedRowList)
       this.checkedRowList = this.checkedRowList.filter(item => {
         return this.getRowId(item) !== this.getRowId(row)
       })
+      console.log('removeCheckedRow', this.checkedRowList)
       this.checkedUrlList = this.checkedUrlList.filter(item => {
         return item.goodsId !== this.getRowId(row)
       })
@@ -816,9 +826,6 @@ img {
   margin-top: 9px;
   margin-left: 5px;
 }
-.tdCenter {
-  text-align: center;
-}
 .noData {
   height: 100px;
   display: flex;
@@ -843,7 +850,10 @@ img {
 .tdCenter {
   width: 100%;
   height: 100%;
-  display: flex;
+  text-align: center;
+  display:-webkit-box;
+  -webkit-box-pack:center;
+  -webkit-box-align:center;
   justify-content: center;
 }
 .level_1 {
@@ -859,7 +869,6 @@ img {
 }
 .table_container .el-checkbox {
   width: 14px !important;
-  float: left !important;
   margin-right: 0 !important;
 }
 ._Container .rangeLi .el-input__inner {
