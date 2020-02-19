@@ -220,7 +220,7 @@
                 prop="activityId"
               >
                 <selectCouponAct v-model="form.activityId" @initItem="initCouponItem" :disabled="!!id"></selectCouponAct>
-                <p class="tips">{{$t('evaluationGiftAdd.Canuse') + couponLength + $t('evaluationGiftAdd.part')}}</p>
+                <p class="tips">{{$t('evaluationGiftAdd.Canuse')}}<span style="color:#5a8bff;">{{couponLength}}</span>{{$t('evaluationGiftAdd.part')}}</p>
               </el-form-item>
               <el-form-item
                 :label="$t('evaluationGiftAdd.balance')+'：'"
@@ -510,7 +510,11 @@ export default {
     initCouponItem (item) {
       console.log('反写:', item)
       if (item && Object.keys(item).length > 0) {
-        this.couponLength = Number(item.surplus)
+        if (item.limitSurplusFlag === 1) {
+          this.couponLength = this.$t('evaluationGiftAdd.noLimit')
+        } else {
+          this.couponLength = Number(item.surplus)
+        }
       }
     },
     // 选择商品回调

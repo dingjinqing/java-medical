@@ -58,5 +58,6 @@ export const en = {
   pslink: 'Please set an active link',
   piNumPrizes: 'Please enter the number of prizes',
   updateSuccessed: 'Update succeeded',
-  addSuccessed: 'Added successfully'
+  addSuccessed: 'Added successfully',
+  noLimit: 'not limited'
 }
