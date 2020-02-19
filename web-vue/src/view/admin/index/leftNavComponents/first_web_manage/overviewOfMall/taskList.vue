@@ -30,32 +30,47 @@
             <div v-if="storeList.dataShop.wxPayConfigInfo === 2">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip1') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="/admin/home/main/base_manger/-1"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.childAccountConf !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="/admin/home/main/shopAuthority"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.officialAccountConf !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="/admin/home/shopMain?change_components=3"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.homePageConf !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip4') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="/admin/home/main/pictureSetting"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.shopRecommendConf !== 1">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="/admin/home/main/base_manger/-1"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.customServiceConf !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip6') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
             </div>
           </div>
         </div>
@@ -72,38 +87,59 @@
           >
             <div v-if="storeList.dataGoods.shipTemplateConf !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
-              <span class=" task_list_desc">{{ $t('overview.unShopTip1') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <span class=" task_list_desc">{{ $t('overview.unStoreTip1') }}</span>
+              <a
+                href="/admin/home/main/goodsManage/deliverTemplate/list"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsConf !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
-              <span class=" task_list_desc">{{ $t('overview.unShopTip2') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <span class=" task_list_desc">{{ $t('overview.unStoreTip2') }}</span>
+              <a
+                href="/admin/home/main/goodsManage/goodsForSale"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsStoreConf !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
-              <span class=" task_list_desc">{{ storeList.dataGoods.goodsStoreConf }} {{ $t('overview.unShopTip3') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <span class=" task_list_desc">{{ storeList.dataGoods.goodsStoreConf }} {{ $t('overview.unStoreTip3') }}</span>
+              <a
+                href="/admin/home/main/goodsManage/goodsForSale"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsUnsalableConf !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
-              <span class=" task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf }} {{ $t('overview.unShopTip4') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <span class=" task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf }} {{ $t('overview.unStoreTip4') }}</span>
+              <a
+                href="/admin/home/main/goodsManage/goodsForSale"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsComment !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
-              <span class=" task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unShopTip5') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <span class=" task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unStoreTip5') }}</span>
+              <a
+                href="/admin/home/main/goodsManage/evaluationManagement"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsRecommend === 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
-              <span class=" task_list_desc">{{ $t('overview.storeRecommend') }} {{ $t('overview.unShopTip6') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <span class=" task_list_desc">{{ $t('overview.storeRecommend') }} {{ $t('overview.unStoreTip6') }}</span>
+              <a
+                href="/admin/home/main/goodsManage/goodsRecommend"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.shopSort === 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
-              <span class=" task_list_desc">{{ $t('overview.unShopTip7') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <span class=" task_list_desc">{{ $t('overview.unStoreTip7') }}</span>
+              <a
+                href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
           </div>
         </div>
@@ -121,12 +157,18 @@
             <div v-if="storeList.dataOrder.deliver !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class=" task_list_desc">{{ storeList.dataOrder.deliver }} {{ $t('overview.unOrderTip1') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <a
+                href="/admin/home/main/orders/waiting?orderStatus=3"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataOrder.refund !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class=" task_list_desc">{{ storeList.dataOrder.refund }} {{ $t('overview.unOrderTip2') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <a
+                href="/admin/home/main/orders/refund/list"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
           </div>
         </div>
@@ -144,7 +186,10 @@
             <div v-if="storeList.dataMarket.examine !== 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class=" task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.unMarketTip1') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <a
+                href="/admin/home/main/distribution"
+                target="_blank"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div
               v-if="storeList.dataMarket.member !== null"
@@ -166,7 +211,10 @@
               >
                 <span class="tips">{{ $t('overview.storeTip') }}</span>
                 <span class=" task_list_desc">{{ $t('overview.unMarketTip3') }} "{{ val }}" {{ $t('overview.unMarketTip4') }}</span>
-                <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                <a
+                  href="/admin/home/main/ordinaryCoupon"
+                  target="_blank"
+                >{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
           </div>
@@ -188,32 +236,47 @@
             <div v-if="storeList.dataShop.wxPayConfigInfo !== 2">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class="task_list_desc">{{ $t('overview.enShopTip1') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=685&extra=page%3D1%26filter%3Dsortid%26sortid%3D17"
+                target="_blank"
+              >{{ $t('overview.storeCourse') }}</a>
             </div>
             <div v-if="storeList.dataShop.childAccountConf === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class="task_list_desc">{{ $t('overview.enShopTip2') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=1&fromuid=1"
+                target="_blank"
+              >{{ $t('overview.storeCourse') }}</a>
             </div>
             <div v-if="storeList.dataShop.officialAccountConf === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class="task_list_desc">{{ $t('overview.enShopTip3') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=733&fromuid=1"
+                target="_blank"
+              >{{ $t('overview.storeCourse') }}</a>
             </div>
             <div v-if="storeList.dataShop.homePageConf === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class="task_list_desc">{{ $t('overview.enShopTip4') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <!-- <a href="javascript:void(0);" target="_blank">{{ $t('overview.storeCourse') }}</a> -->
             </div>
             <div v-if="storeList.dataShop.shopRecommendConf === 1">
               <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.enShopTip5') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="/admin/home/main/wechateGoodsCicle"
+                target="_blank"
+              >{{ $t('overview.storeCourse') }}</a>
             </div>
             <div v-if="storeList.dataShop.customServiceConf === 0">
               <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.enShopTip6') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+              <a
+                href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=685&fromuid=1"
+                target="_blank"
+              >{{ $t('overview.storeCourse') }}</a>
             </div>
           </div>
         </div>
@@ -231,37 +294,37 @@
             <div v-if="storeList.dataGoods.shipTemplateConf === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class=" task_list_desc">{{ $t('overview.enStoreTip1') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataGoods.goodsConf === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class=" task_list_desc">{{ $t('overview.enStoreTip2') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataGoods.goodsStoreConf === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class=" task_list_desc">{{ $t('overview.enStoreTip3') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataGoods.goodsUnsalableConf === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class=" task_list_desc">{{ $t('overview.enStoreTip4') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataGoods.goodsComment === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class=" task_list_desc">{{ $t('overview.enStoreTip5') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataGoods.goodsRecommend !== 0">
               <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.storeRecommend') }} {{ $t('overview.enStoreTip6') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataGoods.shopSort !== 0">
               <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.enStoreTip7') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
           </div>
         </div>
@@ -279,12 +342,12 @@
             <div v-if="storeList.dataOrder.deliver === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class=" task_list_desc">{{ $t('overview.enOrderTip1') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataOrder.refund === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class=" task_list_desc">{{ $t('overview.enOrderTip2') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
           </div>
         </div>
@@ -302,7 +365,7 @@
             <div v-if="storeList.dataMarket.examine === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
               <span class="task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.enMarketTip1') }}</span>
-              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div
               v-if="storeList.dataMarket.member === null"
@@ -311,7 +374,7 @@
               <div>
                 <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
                 <span class="task_list_desc">{{ $t('overview.enMarketTip2') }}</span>
-                <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
               </div>
             </div>
             <div
@@ -321,7 +384,7 @@
               <div>
                 <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
                 <span class="task_list_desc">{{ $t('overview.enMarketTip3') }}</span>
-                <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
               </div>
             </div>
           </div>

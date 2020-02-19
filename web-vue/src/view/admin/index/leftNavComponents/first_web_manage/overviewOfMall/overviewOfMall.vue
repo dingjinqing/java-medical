@@ -140,7 +140,7 @@
             >
               <a
                 href="javascript: void(0);"
-                @click="item.link ? jumpHandler(item.link) : sleectHandler(item.value)"
+                @click="item.link ? jumpHandler(item.link) : selectHandler(item.value)"
               >
                 <div class="order_top">{{ item.num }}</div>
                 <p>{{ item.label }}</p>
@@ -1266,7 +1266,7 @@ export default {
     },
 
     // 自定义选值
-    sleectHandler (value) {
+    selectHandler (value) {
       if (value === 7) {
         // 会员卡激活 (选择会员卡)
         this.cardDialog = !this.cardDialog
@@ -1279,7 +1279,7 @@ export default {
     // 确定会员激活
     sureCardActive () {
       this.cardDialog = false
-      window.open('/admin/home/main/activateAudit?cardId=' + this.cardValue)
+      // window.open('/admin/home/main/activateAudit?cardId=' + this.cardValue)
       this.cardValue = ''
     },
 

@@ -80,7 +80,7 @@ export const en = {
       value: 6,
       label: 'Reviewed by distributor',
       isCheck: false,
-      link: '/admin/home/main/distribution'
+      link: '/admin/home/main/distributorCheck'
     },
     {
       value: 7,
@@ -92,7 +92,7 @@ export const en = {
       value: 8,
       label: 'Cash withdrawal',
       isCheck: false,
-      link: '/admin/home/main/distribution'
+      link: '/admin/home/main/withdrawDepositCheck'
     },
     {
       value: 9,
