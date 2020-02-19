@@ -10,44 +10,44 @@
           style="width: 400px;line-height: 30px;font-size: 14px;"
         >
           <section style="display: flex">
-            <div style="width: 30%;color:#999">访客数</div>
-            <div style="width: 70%;color: #353535">统计时间内，商品详情页被访问的去重人数，一个人在统计时间范围内访问多次只记为一个。</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.fangkeshu1')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.fangkeshu1_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">浏览量</div>
-            <div style="width: 70%;color: #353535">统计时间内，商品详情页被访问的次数，一个人在统计时间内访问多次记为多次。</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.liulan')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.liulan_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">加购人数</div>
-            <div style="width: 70%;color: #353535">统计时间内，添加该商品进入购物车的去重人数，一个人在统计时间内多次添加商品到购物车只记为一人。</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.jiagouren')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.jiagouren_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">付款人数</div>
-            <div style="width: 70%;color: #353535">统计时间内，成功付款的客户数（拼团在成团时计入付款订单；货到付款在发货时计入付款订单，不剔除退款订单）</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.fukuanren')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.fukuanren_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">单品转化率</div>
-            <div style="width: 70%;color: #353535">统计时间内，商品付款人数/商品访客数。</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.goodsrate')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.goodsrate_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">付款商品件数</div>
-            <div style="width: 70%;color: #353535">统计时间内，成功付款订单的商品件数之和（拼团在成团时计入付款订单；货到付款在发货时计入付款订单，不剔除退款订单）</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.fukuangoods')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.fukuangoods_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">新成交客户数</div>
-            <div style="width: 70%;color: #353535">没有购买，在筛选时间内首次在店铺付款的客户数量。</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.newdownuser')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.newdownuser_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">新成交客户数占比</div>
-            <div style="width: 70%;color: #353535">新成交客户数/全部成交客户数</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.newdownuserrate')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.newdownuserrate_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">老成交客户数</div>
-            <div style="width: 70%;color: #353535">购买过，在筛选时间内在店铺再次付款的客户数量</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.olddowmuser')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.olddowmuser_content')}}</div>
           </section>
           <section style="display: flex">
-            <div style="width: 30%;color:#999">老成交客户数占比</div>
-            <div style="width: 70%;color: #353535">老成交客户数/全部成交客户数</div>
+            <div style="width: 30%;color:#999">{{$t('goodsStaticties.olddowmuserrate')}}</div>
+            <div style="width: 70%;color: #353535">{{$t('goodsStaticties.olddowmuserrate_content')}}</div>
           </section>
         </div>
         <i class="el-icon-warning-outline icons"></i>
@@ -145,14 +145,14 @@
           size="small"
           type="primary"
           @click="init"
-        >搜索</el-button>
+        >{{$t('goodsStaticties.query')}}</el-button>
       </el-form-item>
       <el-form-item>
         <el-button
           size="small"
           type="primary"
           @click="dataExport"
-        >导出商品</el-button>
+        >{{$t('goodsStaticties.export')}}</el-button>
       </el-form-item>
     </el-form>
     <!-- 表格数据部分 -->
@@ -164,7 +164,7 @@
         align="center"
       >
         <el-table-column
-          label="商品信息"
+          :label="$t('goodsStaticties.goodsinfo')"
           width="200"
           align="center"
         >
@@ -186,94 +186,94 @@
         </el-table-column>
         <el-table-column
           prop="uv"
-          label="访客数"
+          :label="$t('goodsStaticties.fangkeshu1')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="pv"
-          label="浏览量"
+          :label="$t('goodsStaticties.liulan')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="cartUv"
-          label="加购人数"
+          :label="$t('goodsStaticties.jiagouren')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="paidUv"
-          label="付款人数"
+          :label="$t('goodsStaticties.fukuanren')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="newUserNumber"
-          label="新成交客户数"
+          :label="$t('goodsStaticties.newdownuser')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="newUserPercentage"
-          label="新成交客户数占比"
+          :label="$t('goodsStaticties.newdownuserrate')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="oldUserNumber"
-          label="老成交客户数"
+          :label="$t('goodsStaticties.olddowmuser')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="oldUserPercentage"
-          label="老成交客户数占比"
+          :label="$t('goodsStaticties.olddowmuserrate')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="uv2paidGoods"
-          label="商品转化率"
+          :label="$t('goodsStaticties.goodsrate')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="paidGoodsNumber"
-          label="付款商品数"
+          :label="$t('goodsStaticties.fukuangoods')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="goodsSales"
-          label="销售额"
+          :label="$t('goodsStaticties.sales')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="recommendUserNum"
-          label="推荐人数"
+          :label="$t('goodsStaticties.recom')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
           prop="collectUserNum"
-          label="收藏人数"
+          :label="$t('goodsStaticties.collec')"
           align="center"
           sortable
         >
         </el-table-column>
         <el-table-column
-          label="分享次数/人数"
+          :label="$t('goodsStaticties.shareuser')"
           align="center"
         >
           <template slot-scope="{ row }">
