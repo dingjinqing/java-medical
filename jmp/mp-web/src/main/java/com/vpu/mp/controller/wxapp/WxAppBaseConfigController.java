@@ -5,7 +5,6 @@ import com.vpu.mp.service.pojo.wxapp.config.pledge.PledgeListParam;
 import com.vpu.mp.service.pojo.wxapp.config.pledge.PledgeListVo;
 import com.vpu.mp.service.pojo.wxapp.config.pledge.PledgeShowVo;
 import com.vpu.mp.service.shop.config.PledgeConfigService;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,18 +27,18 @@ public class WxAppBaseConfigController extends WxAppBaseController {
    * @return JsonResult
    */
   @PostMapping("/list")
-  public JsonResult getPledgeList() {
+  public JsonResult getPledgeList(@RequestBody PledgeListParam param) {
     // 声明出参
     PledgeShowVo pledgeShowVo = new PledgeShowVo();
     // 得到当前配置开关信息
     String pledgeSwitch = shop().config.pledgeCfg.getPledgeConfig();
     pledgeShowVo.setPledgeSwitch(pledgeSwitch);
     // 若开关状态为0-关闭
-    if (PledgeConfigService.V_PLEDGE_OPEN.equals(pledgeSwitch)) {
+    if (PledgeConfigService.V_PLEDGE_CLOSE.equals(pledgeSwitch)) {
       return success(pledgeShowVo);
     }
     // 否则为1-开启
-    List<PledgeListVo> result = shop().shopBasicConfig.shopPledge.wxAppPledgeList();
+    List<PledgeListVo> result = shop().shopBasicConfig.shopPledge.wxAppPledgeList(param);
     pledgeShowVo.setPledgeListVo(result);
     return success(pledgeShowVo);
   }
