@@ -86,7 +86,7 @@
           style="font-size: 20px;"
           center
         >
-          <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div>
+          <!-- <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div> -->
           <!-- <div class="tips-content2">筛选条件：无</div> -->
           <div>筛选条件：</div>
           <div
