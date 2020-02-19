@@ -65,11 +65,12 @@ public class PreSaleProcessorDao extends PreSaleService {
             .orderBy(PRESALE_PRODUCT.PRESALE_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE.GOODS_ID)));
     }
+
     /**
      * 获取商品规格集合内的预售信息
      *
      * @param productIds 商品规格id集合
-     * @param date     日期
+     * @param date       日期
      * @return
      */
     public Map<Integer, List<Record4<Integer, Integer, Integer, BigDecimal>>> getGoodsPreSaleList(List<Integer> productIds, Timestamp date) {
@@ -77,7 +78,7 @@ public class PreSaleProcessorDao extends PreSaleService {
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
         Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.gt(date).and(PRESALE.PRE_END_TIME_2.lt(date)));
 
-        return db().select(PRESALE.ID,PRESALE_PRODUCT.PRESALE_ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
+        return db().select(PRESALE.ID, PRESALE_PRODUCT.PRESALE_ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
             .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
             .where(PRESALE_PRODUCT.PRESALE_ID.in(productIds))
             .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
@@ -90,7 +91,7 @@ public class PreSaleProcessorDao extends PreSaleService {
      * 商品的预售信息
      *
      * @param activityId 活动ID
-     * @param now 限制时间
+     * @param now        限制时间
      * @return 预售信息
      */
     public PreSaleMpVo getGoodsPreSaleInfo(Integer activityId, Timestamp now) {
@@ -118,7 +119,7 @@ public class PreSaleProcessorDao extends PreSaleService {
             logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动已停用");
         }
         // 处理活动的开始或结束状态
-        setPreSaleActState(presaleRecord,vo,now);
+        setPreSaleActState(presaleRecord, vo, now);
         //设置相关属性
         vo.setPreSaleType(presaleRecord.getPresaleType());
         vo.setDeliverType(presaleRecord.getDeliverType());
@@ -136,8 +137,8 @@ public class PreSaleProcessorDao extends PreSaleService {
         List<PresaleProductRecord> presaleProductRecords = db().selectFrom(PRESALE_PRODUCT).where(PRESALE_PRODUCT.PRESALE_ID.eq(presaleRecord.getId()))
             .fetchInto(PresaleProductRecord.class);
         List<PreSalePrdMpVo> prdMpVos = new ArrayList<>(presaleProductRecords.size());
-        presaleProductRecords.forEach(record->{
-            PreSalePrdMpVo v= new PreSalePrdMpVo();
+        presaleProductRecords.forEach(record -> {
+            PreSalePrdMpVo v = new PreSalePrdMpVo();
             v.setProductId(record.getProductId());
             v.setStock(record.getPresaleNumber());
             v.setSaleNumber(record.getSaleNumber());
@@ -161,15 +162,16 @@ public class PreSaleProcessorDao extends PreSaleService {
 
     /**
      * 设置活动的开始或结束状态
+     *
      * @param presaleRecord 预售活动数据
-     * @param vo 处理结果
-     * @param now 时间
+     * @param vo            处理结果
+     * @param now           时间
      */
-    private void setPreSaleActState(PresaleRecord presaleRecord, PreSaleMpVo vo, Timestamp now){
+    private void setPreSaleActState(PresaleRecord presaleRecord, PreSaleMpVo vo, Timestamp now) {
         Integer activityId = presaleRecord.getId();
 
         // 两种类型活动都未开始
-        if (presaleRecord.getPreStartTime().compareTo(now) < 0) {
+        if (presaleRecord.getPreStartTime().compareTo(now) > 0) {
             vo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_START);
             logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动未开始");
             vo.setStartTime((presaleRecord.getPreStartTime().getTime() - now.getTime()) / 1000);
@@ -177,29 +179,38 @@ public class PreSaleProcessorDao extends PreSaleService {
         } else {
             // 全款付活动结束
             if (PreSaleService.PRE_SALE_TYPE_ALL_MONEY.equals(presaleRecord.getPresaleType())) {
-                if (presaleRecord.getPreEndTime().compareTo(now) > 0) {
+                if (presaleRecord.getPreEndTime().compareTo(now) < 0) {
                     vo.setActState(BaseConstant.ACTIVITY_STATUS_STOP);
                     logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动已结束");
+                } else {
+                    vo.setEndTime((presaleRecord.getPreEndTime().getTime() - now.getTime()) / 1000);
+                    logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动进行中");
                 }
             } else {
                 // 阶段付款
                 // 只有一个阶段
                 if (PreSaleService.PRE_SALE_ONE_PHASE.equals(presaleRecord.getPrePayStep())) {
                     // 活动已结束
-                    if (presaleRecord.getPreEndTime().compareTo(now) > 0) {
+                    if (presaleRecord.getPreEndTime().compareTo(now) < 0) {
                         vo.setActState(BaseConstant.ACTIVITY_STATUS_STOP);
                         logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动已结束");
+                    } else {
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动进行中");
+                        vo.setEndTime((presaleRecord.getPreEndTime().getTime() - now.getTime()) / 1000);
                     }
-                }else{
+                } else {
                     // 有两个阶段 且处于第一阶段结束，第二阶段未开始 活动未开始状态
                     if (presaleRecord.getPreEndTime().compareTo(now) < 0 && presaleRecord.getPreStartTime_2().compareTo(now) > 0) {
                         vo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_START);
                         logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动未开始");
                         vo.setStartTime((presaleRecord.getPreStartTime_2().getTime() - now.getTime()) / 1000);
                         vo.setEndTime((presaleRecord.getPreEndTime_2().getTime() - now.getTime()) / 1000);
-                    }
-                    // 第二阶段都结束了
-                    if (presaleRecord.getPreEndTime_2().compareTo(now) < 0) {
+                    } else if (presaleRecord.getPreStartTime_2().compareTo(now) < 0 && presaleRecord.getPreEndTime_2().compareTo(now) > 0) {
+                        // 第二阶段活动进行中
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动进行中");
+                        vo.setEndTime((presaleRecord.getPreEndTime_2().getTime() - now.getTime()) / 1000);
+                    } else {
+                        // 第二阶段都结束了
                         vo.setActState(BaseConstant.ACTIVITY_STATUS_STOP);
                         logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动已结束");
                     }
@@ -210,13 +221,14 @@ public class PreSaleProcessorDao extends PreSaleService {
 
     /**
      * 下单校验
+     *
      * @param param
      * @param activityInfo
      * @throws MpException
      */
     public void orderCheck(OrderBeforeParam param, PreSaleVo activityInfo) throws MpException {
         log.info("下单：预售校验start");
-        if(activityInfo == null ||
+        if (activityInfo == null ||
             DelFlag.DISABLE_VALUE.equals(activityInfo.getDelFlag()) ||
             BaseConstant.ACTIVITY_STATUS_DISABLE.equals(activityInfo.getStatus()) ||
             activityInfo.getGoodsId() == null ||
@@ -225,30 +237,30 @@ public class PreSaleProcessorDao extends PreSaleService {
             log.error("活动停用");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_DISABLE);
         }
-        if(param.getDate().before(activityInfo.getStartTime())) {
+        if (param.getDate().before(activityInfo.getStartTime())) {
             log.error("活动未开始");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NO_START);
         }
-        if(PreSaleService.PRESALE_MONEY_INTERVAL.equals(activityInfo.getPrePayStep())) {
+        if (PreSaleService.PRESALE_MONEY_INTERVAL.equals(activityInfo.getPrePayStep())) {
             //定金期数2
-            if((param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
+            if ((param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
                 || param.getDate().after(activityInfo.getPreEndTime2())) {
                 log.error("活动已结束");
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
             }
-        }else if(param.getDate().after(activityInfo.getPreEndTime())){
+        } else if (param.getDate().after(activityInfo.getPreEndTime())) {
             //定金期数1
             log.error("活动已结束");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
         }
-        if(activityInfo.getBuyNumber() != null && activityInfo.getBuyNumber() > 0){
+        if (activityInfo.getBuyNumber() != null && activityInfo.getBuyNumber() > 0) {
             Integer hasBuyNumber = order.getPreSaletUserBuyNumber(param.getWxUserInfo().getUserId(), activityInfo.getId());
-            if(hasBuyNumber >= activityInfo.getBuyNumber()) {
+            if (hasBuyNumber >= activityInfo.getBuyNumber()) {
                 log.error("购买数量已达活动上限");
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NUMBER_LIMIT);
             }
         }
-        if(activityInfo.getGoodsId().equals(param.getGoodsIds().get(0))) {
+        if (activityInfo.getGoodsId().equals(param.getGoodsIds().get(0))) {
             //预售商品只支持一个商品,所以get(0)
             log.error("该商品不支持预售");
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_SUPORT_PRESALE);
@@ -256,13 +268,13 @@ public class PreSaleProcessorDao extends PreSaleService {
         boolean flag = false;
         for (ProductVo productVo : activityInfo.getProducts()) {
             //库存校验
-            if(productVo.getProductId().equals(param.getGoods().get(0).getProductId())){
-                if(productVo.getPresaleNumber() >= param.getGoods().get(0).getGoodsNumber()) {
+            if (productVo.getProductId().equals(param.getGoods().get(0).getProductId())) {
+                if (productVo.getPresaleNumber() >= param.getGoods().get(0).getGoodsNumber()) {
                     flag = true;
                 }
             }
         }
-        if(flag == false) {
+        if (flag == false) {
             log.error("预售活动库存不足");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK);
         }
@@ -271,23 +283,24 @@ public class PreSaleProcessorDao extends PreSaleService {
 
     /**
      * 初始化营销价格
+     *
      * @param param
      * @param activityInfo
      */
     public void orderInit(OrderBeforeParam param, PreSaleVo activityInfo) {
         log.info("下单：预售初始化start");
         //优惠是否叠加
-        if(!PreSaleService.PRE_SALE_USE_COUPON.equals(activityInfo.getDiscountType())) {
+        if (!PreSaleService.PRE_SALE_USE_COUPON.equals(activityInfo.getDiscountType())) {
             param.setMemberCardNo(StringUtils.EMPTY);
             param.setCouponSn(StringUtils.EMPTY);
         }
         //禁止货到付款
-        if(param.getPaymentList() != null){
+        if (param.getPaymentList() != null) {
             param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
         }
         OrderBeforeParam.Goods goods = param.getGoods().get(0);
         for (ProductVo productVo : activityInfo.getProducts()) {
-            if(productVo.getProductId().equals(goods.getProductId())){
+            if (productVo.getProductId().equals(goods.getProductId())) {
                 goods.setProductPrice(new BigDecimal((productVo.getPresalePrice().toString())));
                 break;
             }
@@ -299,17 +312,17 @@ public class PreSaleProcessorDao extends PreSaleService {
         log.info("预售更新活动库存start");
         Map<Integer, PresaleProductRecord> records = db().selectFrom(SUB_TABLE).where(SUB_TABLE.PRESALE_ID.eq(activityId).and(SUB_TABLE.PRODUCT_ID.in(updateParam.keySet()))).fetchMap(SUB_TABLE.PRODUCT_ID);
         List<PresaleProductRecord> executeParam = new ArrayList<>(records.size());
-        for (Map.Entry<Integer, Integer> entry: updateParam.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : updateParam.entrySet()) {
             PresaleProductRecord record = records.get(entry.getKey());
-            if(record == null){
-                if(entry.getValue() < 0 ) {
+            if (record == null) {
+                if (entry.getValue() < 0) {
                     continue;
-                }else {
+                } else {
                     logger().error("updateStockAndSales.预售下单,商品不存在，id:{}", entry.getKey());
                     throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null);
                 }
             }
-            if(entry.getValue() > 0 && record.getPresaleNumber() < entry.getValue()){
+            if (entry.getValue() > 0 && record.getPresaleNumber() < entry.getValue()) {
                 logger().error("updateStockAndSales.预售下单,库存不足，id:{}", entry.getKey());
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, null);
             }
