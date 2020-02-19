@@ -48,14 +48,6 @@ public class FirstSpecialService extends ShopBaseService {
      * 停用状态
      */
     public static final byte STATUS_DISABLED = 0;
-    /**
-     *  永久有效
-     */
-    public static final byte FOREVER_YES =1;
-    /**
-     *  非永久有效
-     */
-    public static final byte FOREVER_NO =0;
 
     /**
      * 开启超购限制
@@ -109,7 +101,7 @@ public class FirstSpecialService extends ShopBaseService {
             Timestamp now = DateUtil.getLocalDateTime();
             switch(param.getState()) {
                 case (byte)1:
-                    select.where(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL)).and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES).or(FIRST_SPECIAL.START_TIME.lt(now).and(FIRST_SPECIAL.END_TIME.gt(now))));
+                    select.where(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL)).and(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_IS_FOREVER).or(FIRST_SPECIAL.START_TIME.lt(now).and(FIRST_SPECIAL.END_TIME.gt(now))));
                     break;
                 case (byte)2:
                     select.where(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL)).and(FIRST_SPECIAL.START_TIME.gt(now));
@@ -211,8 +203,8 @@ public class FirstSpecialService extends ShopBaseService {
         Timestamp nowDate =new Timestamp(System.currentTimeMillis());
         return db().select(FIRST_SPECIAL_PRODUCT.PRD_ID).from(FIRST_SPECIAL_PRODUCT).leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL.ID.ge(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
                 .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL))
-                .and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES)
-                        .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(nowDate)).and(FIRST_SPECIAL.END_TIME.gt(nowDate))))
+                .and(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_IS_FOREVER)
+                        .or(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_NOT_FOREVER).and(FIRST_SPECIAL.START_TIME.lt(nowDate)).and(FIRST_SPECIAL.END_TIME.gt(nowDate))))
                 .groupBy(FIRST_SPECIAL_PRODUCT.PRD_ID).fetch().getValues(FIRST_SPECIAL_PRODUCT.PRD_ID);
 
     }
@@ -254,5 +246,31 @@ public class FirstSpecialService extends ShopBaseService {
     public FirstSpecialRecord getFirstSpecialRecord(Integer activityId) {
         return db().selectFrom(FIRST_SPECIAL).where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FIRST_SPECIAL.ID.eq(activityId)))
             .fetchAny();
+    }
+
+    /**
+     * 该商品正在进行的首单特惠信息
+     * @param goodsId
+     * @return
+     */
+    public FirstSpecialRecord getActInfoByGoodsId(Integer goodsId){
+        Timestamp now = DateUtil.getLocalDateTime();
+        return db().select(FIRST_SPECIAL_GOODS.fields()).
+            from(FIRST_SPECIAL_GOODS.leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(FIRST_SPECIAL.ID))).
+            where(FIRST_SPECIAL_GOODS.GOODS_ID.eq(goodsId)).
+            and(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+            and(FIRST_SPECIAL.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).
+            and(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_IS_FOREVER).or(FIRST_SPECIAL.IS_FOREVER.eq(BaseConstant.ACTIVITY_NOT_FOREVER).and(FIRST_SPECIAL.START_TIME.lt(now)).and(FIRST_SPECIAL.END_TIME.gt(now)))).
+            orderBy(FIRST_SPECIAL.FIRST.desc(),FIRST_SPECIAL.ID.desc()).fetchAny().into(FirstSpecialRecord.class);
+    }
+
+    /**
+     *获得某个商品下的首单特惠规格商品
+     * @param firstSpecialId
+     * @param goodsId
+     * @return
+     */
+    public List<FirstSpecialProductRecord> getProductListById(Integer firstSpecialId, Integer goodsId){
+        return db().selectFrom(FIRST_SPECIAL_PRODUCT).where(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(firstSpecialId)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(goodsId)).fetch();
     }
 }

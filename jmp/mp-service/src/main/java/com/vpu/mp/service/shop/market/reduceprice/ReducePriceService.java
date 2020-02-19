@@ -1,9 +1,7 @@
 package com.vpu.mp.service.shop.market.reduceprice;
 
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -477,7 +475,40 @@ public class ReducePriceService extends ShopBaseService {
             .fetchAny();
     }
 
-    public GoodsPriceBo parseGoodsPrice(){
+    /**
+     * 考虑限时降价、首单特惠、等级会员价三种情况下，得出的商品价格
+     * 首单特惠最高优先级，限时降价与等级会员之间价取低价
+     * @param goodsId
+     * @param userId
+     * @return
+     */
+    public GoodsPriceBo parseGoodsPrice(Integer goodsId,Integer userId){
+        GoodsPriceBo res = new GoodsPriceBo();
+
+        //处理首单特惠
+        if(saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(userId)){
+            FirstSpecialRecord firstSpecialRecord = saas.getShopApp(getShopId()).firstSpecial.getActInfoByGoodsId(goodsId);
+            if(null != firstSpecialRecord){
+                List<FirstSpecialProductRecord> firstSpecialProductRecordList = saas.getShopApp(getShopId()).firstSpecial.getProductListById(firstSpecialRecord.getId(),goodsId);
+                List<BigDecimal> prdPriceList = firstSpecialProductRecordList.stream().map(FirstSpecialProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
+
+                res.setGoodsPrice(prdPriceList.get(0));
+                res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                res.setGoodsPriceAction((byte)3);
+                return res;
+            }
+        }
+
+        GoodsRecord goodsInfo = goodsService.getGoodsRecordById(goodsId);
+
+        //处理限时降价
+        if(goodsInfo.getGoodsType() == BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE){
+
+        }
+
+
+
+
         return null;
     }
 

@@ -13,6 +13,12 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class GoodsPriceBo {
+    /**
+     * 取价结果类型，0商品原价，1等级会员价，2限时降价，3首单特惠价
+     */
     private Byte goodsPriceAction;
+
     private BigDecimal goodsPrice;
+
+    private BigDecimal maxPrice;
 }
