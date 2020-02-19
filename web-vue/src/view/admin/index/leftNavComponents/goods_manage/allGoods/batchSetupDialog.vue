@@ -174,7 +174,10 @@
                 <div class="content">
                   <div class="top">
                     <span>{{templateValue===0?'店铺统一运费：0元':templateShowContentData&&templateShowContentData.limitParam.limit_deliver_area===1?'除可配送区域外，不可配送':`全国其他区域运费：${templateShowContentData.limitParam.first_num} 件内${templateShowContentData.limitParam.first_fee}元，每增加${templateShowContentData.limitParam.continue_num}件，加${templateShowContentData.limitParam.continue_fee}元`}}</span>
-                    <span class="toDetail">查看详情</span>
+                    <span
+                      @click="handelToTurnTemDetail(templateShowContentData)"
+                      class="toDetail"
+                    >查看详情</span>
                   </div>
                   <div
                     class="bottomContent"
@@ -320,7 +323,7 @@
                       <span @click="handleToClickCustom(1)">刷新</span>|<span
                         @click="handleToClickCustom(2)"
                         style="width:80px"
-                      >{{nowIndex===5?'添加模板':'添加品牌'}}</span>|<span
+                      >{{nowIndex===5?'添加模板':'新建品牌'}}</span>|<span
                         @click="handleToClickCustom(3)"
                         style="width:80px"
                       >{{nowIndex===5?'管理模板':'管理品牌'}}</span>
@@ -356,9 +359,9 @@
                   >
                     <el-option
                       v-for="item in commonTableOptionsFive"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
                     >
                     </el-option>
                   </el-select>
@@ -369,15 +372,16 @@
                   >
                     <el-option
                       v-for="item in commonTableOptionsSeven"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      :key="item.classifyId"
+                      :label="item.classifyName"
+                      :value="item.classifyId"
                     >
                     </el-option>
                   </el-select>
                   <el-button
                     size="small"
                     type="primary"
+                    @click="handleToClickSearch()"
                   >搜索</el-button>
                 </div>
               </div>
@@ -395,24 +399,37 @@
                   style="width: 100%"
                 >
                   <el-table-column
-                    prop="name"
+                    prop="pageName"
                     label="页面名称"
                     align="center"
                   >
                   </el-table-column>
                   <el-table-column
-                    prop="time"
+                    prop="createTime"
                     label="创建时间"
                     align="center"
                   >
                   </el-table-column>
                   <el-table-column
-                    prop="isFirst"
+                    prop="pageType"
                     label="是否首页"
                     align="center"
                   >
+                    <template slot-scope="scope">
+                      {{scope.row.pageType===1?'是':'否'}}
+                    </template>
                   </el-table-column>
                 </el-table>
+                <div class="footer">
+                  <el-pagination
+                    @current-change="handleDetailCurrentChange"
+                    :current-page.sync="pageDataFive.currentPage"
+                    :page-size="20"
+                    layout="prev, pager, next, jumper"
+                    :total="pageDataFive.totalRows"
+                  >
+                  </el-pagination>
+                </div>
               </div>
               <div
                 class="commonTable"
@@ -424,27 +441,39 @@
                   header-row-class-name="tableClss"
                   :data="commonTableDataSeven"
                   border
+                  highlight-current-row
                   style="width: 100%"
+                  @current-change="handleCurrentChangeSeven"
                 >
                   <el-table-column
-                    prop="name"
+                    prop="brandName"
                     label="品牌名称"
                     align="center"
                   >
                   </el-table-column>
                   <el-table-column
-                    prop="classify"
+                    prop="classifyName"
                     label="品牌分类"
                     align="center"
                   >
                   </el-table-column>
                   <el-table-column
-                    prop="time"
+                    prop="createTime"
                     label="创建时间"
                     align="center"
                   >
                   </el-table-column>
                 </el-table>
+                <div class="footer">
+                  <el-pagination
+                    @current-change="handleCurrentChange"
+                    :current-page.sync="pageDataSeven.currentPage"
+                    :page-size="20"
+                    layout="prev, pager, next, jumper"
+                    :total="pageDataSeven.totalRows"
+                  >
+                  </el-pagination>
+                </div>
               </div>
 
             </div>
@@ -637,6 +666,8 @@
 <script>
 import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { deliverTemplateNameListApi, getDeliverTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import { brandAllGetRequest, classificationSelectRequest } from '@/api/admin/brandManagement'
+import { getPageCate, pageList } from '@/api/admin/decoration/pageSet'
 export default {
   components: {
     sortCatTreeSelect: () => import('@/components/admin/sortCatTreeSelect') // 商家分类
@@ -672,8 +703,8 @@ export default {
       customTime: '', // 自定义上架售卖时间
       goodsRadio: '1', // 商品详情头部radio
       isShowCommonTableFive: false, // 商品详情和商品品牌公共表格显示
-      tableInput: ['', ''], // 公共表格表头input值
-      commonTableValue: [1, ''], // 商品详情和商品品牌公共selectVal
+      tableInput: ['', null], // 公共表格表头input值
+      commonTableValue: [null, null], // 商品详情和商品品牌公共selectVal
       commonTableOptionsFive: [{ // 商品详情和商品品牌公共selectOptions
         value: -1,
         label: '腾飞测试1'
@@ -681,13 +712,7 @@ export default {
         value: 1,
         label: '腾飞测试2'
       }],
-      commonTableOptionsSeven: [{ // 商品详情和商品品牌公共selectOptions
-        value: -1,
-        label: '腾飞测试1'
-      }, {
-        value: 1,
-        label: '腾飞测试2'
-      }],
+      commonTableOptionsSeven: [], // 商品详情和商品品牌公共selectOptions
       commonTableDataFive: [
         {
           time: '2016-05-02 12:00:00',
@@ -707,25 +732,7 @@ export default {
           isFirst: '是'
         }
       ], // 公共表格数据
-      commonTableDataSeven: [
-        {
-          time: '2016-05-02 12:00:00',
-          name: '王小虎1',
-          classify: '运动系列'
-        }, {
-          time: '2016-05-02 12:00:00',
-          name: '王小虎2',
-          classify: '运动系列'
-        }, {
-          time: '2016-05-02 12:00:00',
-          name: '王小虎3',
-          classify: '运动系列'
-        }, {
-          time: '2016-05-02 12:00:00',
-          name: '王小虎4',
-          classify: '运动系列'
-        }
-      ],
+      commonTableDataSeven: [], // 商品品牌列表数据
       isShowCommonTableSeven: false, // 控制显示
       labelValue: -1,
       labelOptions: [
@@ -794,7 +801,17 @@ export default {
       membershipValueCheckArr: [], // 会员专享下拉框选中集合
       placeOfDeliveryInput: '', // 发货地
       goodsPriceShowData: [], // 商品价格模块渲染数据
-      templateShowContentData: {} // 选中模板后显示的数据
+      templateShowContentData: {}, // 选中模板后显示的数据
+      turnType: 0, // 跳转模板详情type值
+      pageDataFive: {
+        currentPage: 1,
+        total: 0
+      },
+      pageDataSeven: {
+        currentPage: 1,
+        total: 0
+      },
+      tableBrandClickRow: '' // 商品品牌表格选中值
     }
   },
   watch: {
@@ -851,6 +868,62 @@ export default {
       console.log(this.goodsPriceShowData)
       // 运费模板模块
       this.handleToQueryTemplate()
+      // 商品品牌列表数据查询
+      this.handleToQueryBrandSelect()
+      // 商品品牌表格数据
+      this.handdleToQueryBrandList()
+      // 商品详情下拉框数据
+      this.handleDetailSelectData()
+      // 商品详情表格数据
+      this.handleToDetailTableData()
+    },
+    // 商品详情表格数据
+    handleToDetailTableData () {
+      let params = {
+        pageName: this.tableInput[0],
+        catId: this.commonTableValue[0],
+        currentPage: this.pageDataFive.currentPage,
+        pageRows: 20
+      }
+      pageList(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.commonTableDataFive = res.content.dataList
+          this.pageDataFive.totalRows = res.content.page.totalRows
+        }
+      })
+    },
+    // 商品详情表格当前页变化
+    handleDetailCurrentChange () {
+      this.handleToDetailTableData()
+    },
+    // 商品详情下拉框数据
+    handleDetailSelectData () {
+      getPageCate().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let obj = {
+            id: null,
+            name: '请选择分类'
+          }
+          res.content.unshift(obj)
+          this.commonTableOptionsFive = res.content
+        }
+      })
+    },
+    // 商品品牌列表数据查询
+    handleToQueryBrandSelect () {
+      classificationSelectRequest().then(res => { // 品牌下拉框数据
+        console.log(res)
+        if (res.error === 0) {
+          let obj = {
+            classifyId: null,
+            classifyName: '请选择'
+          }
+          res.content.unshift(obj)
+          this.commonTableOptionsSeven = res.content
+        }
+      })
     },
     // 运费模板模块
     handleToQueryTemplate () {
@@ -869,6 +942,42 @@ export default {
           this.templateOptions = res.content
         }
       })
+    },
+    // 商品品牌列表数据查询
+    handdleToQueryBrandList () {
+      console.log(this.tableInput[1], this.commonTableValue[1])
+      let params = {
+        currentPage: this.pageDataSeven.currentPage,
+        pageRows: 20,
+        brandName: this.tableInput[1],
+        classifyId: this.commonTableValue[1]
+      }
+
+      brandAllGetRequest(params).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.commonTableDataSeven = res.content.dataList
+          this.pageDataSeven.totalRows = res.content.page.totalRows
+        }
+      })
+    },
+    // 商品品牌及页面详情点击搜索
+    handleToClickSearch () {
+      if (this.nowIndex === 7) {
+        this.handdleToQueryBrandList()
+      }
+      if (this.nowIndex === 5) {
+        this.handleToDetailTableData()
+      }
+    },
+    // 商品品牌表格选中
+    handleCurrentChangeSeven (val) {
+      console.log(val)
+      this.tableBrandClickRow = val
+    },
+    // 商品品牌列表页面变化
+    handleCurrentChange () {
+      this.handdleToQueryBrandList()
     },
     // 内层判断是否编辑弹窗确认事件
     handleToCloseInnerDialog () {
@@ -961,13 +1070,41 @@ export default {
 
           break
         case 1:
-
+          if (this.nowIndex === 5) {
+            this.handleDetailSelectData()
+            this.handleToDetailTableData()
+          }
+          if (this.nowIndex === 7) {
+            this.handleToQueryBrandSelect()
+            this.handdleToQueryBrandList()
+          }
           break
         case 2:
-
+          if (this.nowIndex === 5) {
+            this.$router.push({
+              path: '/admin/home/main/decorationHome',
+              query: {
+                pageId: -1
+              }
+            })
+          }
+          if (this.nowIndex === 7) {
+            this.$router.push({
+              name: 'addBrand'
+            })
+          }
           break
         case 3:
-
+          if (this.nowIndex === 5) {
+            this.$router.push({
+              name: 'picture_setting'
+            })
+          }
+          if (this.nowIndex === 7) {
+            this.$router.push({
+              name: 'brand'
+            })
+          }
           break
       }
     },
@@ -1012,10 +1149,22 @@ export default {
       getDeliverTemplateApi({ deliverTemplateId: val }).then(res => {
         console.log(res)
         if (res.error === 0) {
+          this.turnType = res.content.flag
           let obj = {}
           obj = res.content.content
           this.templateShowContentData = obj
           console.log(this.templateShowContentData)
+        }
+      })
+    },
+    // 跳转模板详情页
+    handelToTurnTemDetail (to) {
+      console.log(to, this.templateValue)
+      this.$router.push({
+        path: '/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate',
+        query: {
+          deliverTemplateId: this.templateValue,
+          type: this.turnType
         }
       })
     }
@@ -1189,6 +1338,7 @@ export default {
                 justify-content: space-between;
                 .toDetail {
                   color: #5a8bff;
+                  cursor: pointer;
                 }
               }
               .bottomContent {
