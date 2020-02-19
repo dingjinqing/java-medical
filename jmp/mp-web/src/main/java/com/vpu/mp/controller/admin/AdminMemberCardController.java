@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -134,7 +135,7 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(allUserCard);
 	}
 	
-	
+
 	/**
 	 * 获取所有专属会员卡弹窗
 	 */
@@ -144,7 +145,17 @@ public class AdminMemberCardController extends AdminBaseController {
 		List<CardBasicVo> allUserCard = shop().member.card.getCardExclusive();
 		return success(allUserCard);
 	}
-	
+
+	/**
+	 * 获取可用会员卡列表
+	 */
+	@PostMapping("/card/usable/list")
+	public JsonResult getMemberCardList() {
+		logger().info("获取可用会员卡列表");
+		List<UserAction> userActions = shop().member.card.getUsableMemberCardList();
+		return success(userActions);
+	}
+
 	/**
 	 * 获取持卡会员
 	 */
@@ -154,7 +165,6 @@ public class AdminMemberCardController extends AdminBaseController {
 		PageResult<CardHolderVo> result = shop().member.card.getAllCardHolder(param);
 		return success(result);
 	}
-	
 	
 	
 	/**
