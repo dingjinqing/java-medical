@@ -275,7 +275,6 @@ public class LotteryRecordService extends ShopBaseService {
                 recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                 recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
                 recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                goodsService.getGoodsView(lotteryPrizeRecord.getPrdId());
                 Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
                 recordRecord.setLotteryExpiredTime(timeStampPlus);
                 recordRecord.insert();
@@ -284,10 +283,12 @@ public class LotteryRecordService extends ShopBaseService {
                         PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue());
                 joinValid.setPrizeId(prizeRecordRecord.getId());
                 joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
+                joinValid.setGoodsImage(goodsView.getGoodsImg());
                 break;
             case LOTTERY_TYPE_CUSTOM:
                 logger().info("自定义");
-
+                joinValid.setLotteryAward(lotteryPrizeRecord.getIconImgs());
+                recordRecord.setLotteryAward(lotteryPrizeRecord.getIconImgs());
                 break;
             default:
         }
