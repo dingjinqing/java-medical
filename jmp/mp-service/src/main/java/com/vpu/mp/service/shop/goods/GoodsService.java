@@ -789,14 +789,14 @@ public class GoodsService extends ShopBaseService {
                 e.printStackTrace();
             }
         });
-            //更新es
+        //更新es
         try {
             if (esUtilSearchService.esState()) {
                 esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
             }
         } catch (Exception e) {
-           logger().debug("商品新增-同步es数据异常："+e.getMessage());
+            logger().debug("商品新增-同步es数据异常：" + e.getMessage());
         }
     }
 
@@ -810,8 +810,8 @@ public class GoodsService extends ShopBaseService {
         calculateGoodsPriceAndNumber(goods);
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
-            int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))+1;
-            goods.setGoodsSn(String.format("G10%08d",count));
+            int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)) + 1;
+            goods.setGoodsSn(String.format("G10%08d", count));
         }
 
         // 设置商品分享海报配置信息
@@ -1049,10 +1049,16 @@ public class GoodsService extends ShopBaseService {
      */
     public void batchOperate(GoodsBatchOperateParam operateParam) {
         List<Integer> goodsLabels = operateParam.getGoodsLabels();
-        List<Integer> goodsIds;
         if (goodsLabels != null && goodsLabels.size() > 0) {
-            goodsIds = operateParam.getGoodsIds();
-            goodsLabelCouple.batchUpdateLabelCouple(goodsIds, goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
+            goodsLabelCouple.batchUpdateLabelCouple(operateParam.getGoodsIds(), goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
+        } else if (operateParam.getIsCardExclusive() != null) {
+            transaction(()->{
+                db().batchUpdate(operateParam.toUpdateGoodsRecord()).execute();
+                memberCardService.deleteOwnEnjoyGoodsByGcta(operateParam.getGoodsIds(), CardConstant.COUPLE_TP_GOODS);
+                if (GoodsConstant.CARD_EXCLUSIVE.equals(operateParam.getIsCardExclusive())) {
+                    memberCardService.batchUpdateGoods(operateParam.getGoodsIds(),operateParam.getCardIds(), CardConstant.COUPLE_TP_GOODS);
+                }
+            });
         } else {
             List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
             Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
@@ -1084,13 +1090,13 @@ public class GoodsService extends ShopBaseService {
                 db().batchUpdate(goodsSpecProductRecords).execute();
                 db().batchUpdate(goodsRecords).execute();
             });
-            //更新es
-            goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
+
         }
+        //更新es
         try {
             if (esUtilSearchService.esState()) {
-                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+                esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
             }
         } catch (Exception e) {
             logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
@@ -1099,12 +1105,14 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品批量上下架处理
+     *
      * @param operateParam {@link GoodsBatchOperateParam#getIsOnSale()}==1上架，==0 下架
      */
     public void batchIsOnSaleOperate(GoodsBatchOperateParam operateParam) {
         List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
         db().batchUpdate(goodsRecords).execute();
     }
+
     /**
      * 单独修改某一个商品规格的数量或价格,用于admin商品列表界面修改
      *
@@ -1153,7 +1161,7 @@ public class GoodsService extends ShopBaseService {
             if (esUtilSearchService.esState()) {
                 esGoodsCreateService.updateEsGoodsIndex(goodsRecord.getGoodsId(), getShopId());
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger().debug("更新商品规格库存价格-同步es数据异常:" + e.getMessage());
         }
     }
@@ -1196,7 +1204,7 @@ public class GoodsService extends ShopBaseService {
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
             }
         } catch (Exception e) {
-           logger().debug("商品删除-es同步数据异常："+e.getMessage());
+            logger().debug("商品删除-es同步数据异常：" + e.getMessage());
         }
     }
 
@@ -1562,11 +1570,11 @@ public class GoodsService extends ShopBaseService {
         if (goodsActivityType == null) {
             params = "gid=" + goodsId + "&aid=&atp=";
         } else {
-            params = String.format("gid=%d&aid=%d&atp=%d",goodsId,goodsActivityType.getActivityId(),goodsActivityType.getActivityType());
+            params = String.format("gid=%d&aid=%d&atp=%d", goodsId, goodsActivityType.getActivityId(), goodsActivityType.getActivityType());
         }
-        log.debug("urlParam:{}",params);
+        log.debug("urlParam:{}", params);
         String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, params);
-        log.debug("qrCode img full url:{}",mpQrCode);
+        log.debug("qrCode img full url:{}", mpQrCode);
         GoodsQrCodeVo goodsQrCodeVo = new GoodsQrCodeVo();
         goodsQrCodeVo.setImgFullUrl(mpQrCode);
         goodsQrCodeVo.setPageUrl(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(params));
@@ -1755,6 +1763,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 批量更新商品、规格的数量和销量
+     *
      * @param params 待更新商品、规格数量销量信息
      */
     public void batchUpdateGoodsNumsAndSaleNumsForOrder(List<BatchUpdateGoodsNumAndSaleNumForOrderParam> params) {
@@ -1795,7 +1804,7 @@ public class GoodsService extends ShopBaseService {
                     esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 }
             } catch (Exception e) {
-                logger().debug("批量更新商品、规格的数量和销量-同步es数据异常："+e.getMessage());
+                logger().debug("批量更新商品、规格的数量和销量-同步es数据异常：" + e.getMessage());
             }
         });
 
@@ -1871,7 +1880,7 @@ public class GoodsService extends ShopBaseService {
      * 商品图片列表
      *
      * @param goodsIds goods id
-     * @return Map<goodsid               ,               List               <               url>>
+     * @return Map<goodsid                               ,                               List                               <                               url>>
      */
     public Map<Integer, List<String>> getGoodsImageList(List<Integer> goodsIds) {
         Map<Integer, Result<GoodsImgRecord>> fetch = db().selectFrom(GOODS_IMG)
@@ -1947,7 +1956,9 @@ public class GoodsService extends ShopBaseService {
             .and(GOODS.SALE_TYPE.eq(GoodsConstant.POINT_TIME_TO_ON_SALE)).and(GOODS.SALE_TIME.le(DateUtil.getLocalDateTime()))
             .fetch(GOODS.GOODS_ID);
 
-        db().update(GOODS).set(GOODS.IS_ON_SALE, GoodsConstant.ON_SALE).where(GOODS.GOODS_ID.in(goodsIds)).execute();
+        db().update(GOODS).set(GOODS.IS_ON_SALE, GoodsConstant.ON_SALE)
+            .set(GOODS.SALE_TYPE, GoodsConstant.NOT_TIME_TO_ON_SALE)
+            .where(GOODS.GOODS_ID.in(goodsIds)).execute();
 
         try {
             if (!goodsIds.isEmpty() && esUtilSearchService.esState()) {
@@ -1955,7 +1966,7 @@ public class GoodsService extends ShopBaseService {
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
             }
         } catch (Exception e) {
-            logger().debug("手动上架所有待上架商品-同步es数据异常："+e.getMessage());
+            logger().debug("手动上架所有待上架商品-同步es数据异常：" + e.getMessage());
         }
     }
 
@@ -1996,7 +2007,7 @@ public class GoodsService extends ShopBaseService {
                 esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
             }
         } catch (Exception e) {
-           logger().debug("同步es数据异常："+e.getMessage());
+            logger().debug("同步es数据异常：" + e.getMessage());
         }
     }
 
@@ -2111,6 +2122,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 查询当前商品所处于的活动类型，秒杀、预售、砍价、拼团或其它
+     *
      * @param goodsId 商品id
      * @return {@link GoodsActivityType} 活动类型信息,如果商品不属于上述四种活动则返回null
      */

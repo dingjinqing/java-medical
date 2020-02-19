@@ -128,7 +128,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             newPreSalePrds.add(preSalePrd);
         }
         if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(goodsPreSaleInfo.getActState())) {
-            log.debug("小程序-商品详情-砍价商品数量已用完");
+            log.debug("小程序-商品详情-预售商品数量已用完");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
         capsule.setGoodsNumber(goodsNum);

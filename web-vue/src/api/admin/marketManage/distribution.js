@@ -335,6 +335,33 @@ export function setInviteCode (data) {
   })
 }
 
+// 添加备注信息
+export function addRemarks (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/userRemark/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除备注信息
+export function delRemarks (data) {
+  return service({
+    url: `/api/admin/distribution/distrobutor/userRemark/del?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 获取备注列表
+export function getRemarksList (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/userRemark/list',
+    method: 'post',
+    data: data
+  })
+}
+
 // 分销员分组添加分销员
 export function addDistributor (data) {
   return service({

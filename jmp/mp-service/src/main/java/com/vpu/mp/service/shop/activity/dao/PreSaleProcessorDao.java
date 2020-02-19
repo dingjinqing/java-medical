@@ -133,7 +133,7 @@ public class PreSaleProcessorDao extends PreSaleService {
         vo.setFinalPaymentEnd(presaleRecord.getEndTime());
 
         // 处理对应的规格信息
-        List<PresaleProductRecord> presaleProductRecords = db().selectFrom(PRESALE_PRODUCT).where(PRESALE_PRODUCT.PRESALE_ID.eq(presaleRecord.getId()).and(PRESALE_PRODUCT.GOODS_ID.eq(presaleRecord.getGoodsId())))
+        List<PresaleProductRecord> presaleProductRecords = db().selectFrom(PRESALE_PRODUCT).where(PRESALE_PRODUCT.PRESALE_ID.eq(presaleRecord.getId()))
             .fetchInto(PresaleProductRecord.class);
         List<PreSalePrdMpVo> prdMpVos = new ArrayList<>(presaleProductRecords.size());
         presaleProductRecords.forEach(record->{
