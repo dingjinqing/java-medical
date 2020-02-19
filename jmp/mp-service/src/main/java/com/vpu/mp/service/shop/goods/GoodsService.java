@@ -1111,6 +1111,14 @@ public class GoodsService extends ShopBaseService {
     public void batchIsOnSaleOperate(GoodsBatchOperateParam operateParam) {
         List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
         db().batchUpdate(goodsRecords).execute();
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(operateParam.getGoodsIds(), getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(operateParam.getGoodsIds(), DBOperating.UPDATE);
+            }
+        } catch (Exception e) {
+            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
+        }
     }
 
     /**
