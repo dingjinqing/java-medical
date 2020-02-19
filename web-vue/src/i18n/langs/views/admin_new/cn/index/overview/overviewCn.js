@@ -76,7 +76,7 @@ export const cn = {
       value: 6,
       label: '分销员待审核',
       isCheck: false,
-      link: '/admin/home/main/distribution'
+      link: '/admin/home/main/distributorCheck'
     },
     {
       value: 7,
@@ -88,7 +88,7 @@ export const cn = {
       value: 8,
       label: '分销提现待审核',
       isCheck: false,
-      link: '/admin/home/main/distribution'
+      link: '/admin/home/main/withdrawDepositCheck'
     },
     {
       value: 9,
