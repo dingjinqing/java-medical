@@ -81,6 +81,9 @@ INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (20
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (2010, 1, 1);
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (2011, 1, 1);
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (2012, 1, 1);
+INSERT INTO `b2c_message_template_config` (`id`, `open_ma`, `open_mp`) VALUES (2013, 1, 1);
+INSERT INTO `b2c_message_template_config` (`id`, `open_ma`, `open_mp`) VALUES (2014, 1, 1);
+INSERT INTO `b2c_message_template_config` (`id`, `open_ma`, `open_mp`) VALUES (2015, 1, 1);
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (3001, 1, 1);
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (3002, 1, 1);
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (3003, 1, 1);
