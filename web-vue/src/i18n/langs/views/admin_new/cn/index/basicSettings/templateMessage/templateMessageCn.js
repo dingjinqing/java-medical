@@ -34,6 +34,9 @@ export const cn = {
   refundState: '退款状态通知',
   storeRemind: '门店自提到期提醒',
   pickUpGoodsSucess: '取货成功通知',
+  integralCustomRemind: '积分消费提醒',
+  getMoneyApply: '提现申请通知',
+  memberUpdate: '会员升级通知',
 
   // 交易物流 -> 发送条件
   sendOnCanellationNotice: '预约订单取消时立即发送',
@@ -48,6 +51,9 @@ export const cn = {
   sendOnRefundState: '退款时发送',
   sendOnStoreRemind: '门店自提时间到期前半小时发送',
   sendOnPickUpGoodsSucess: '取货完成时发送',
+  sendOnIntegralChange: '账户积分发生变动时立即发送',
+  sendOnGetMoney: '提现',
+  sendOnMemberUpdate: '会员升级通知',
 
   // 交易物流 -> 公众号消息
   sendMessagePublice: '发送公众号消息',
