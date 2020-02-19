@@ -349,6 +349,12 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                         moduleShop.setBgUrl(imageUrl(moduleShop.getBgUrl()));
                     }
                     return moduleShop;
+                case ModuleConstant.M_GROUP_DRAW:
+                    ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+                    if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
+                        moduleGroupDraw.setModuleImg(imageUrl(moduleGroupDraw.getModuleImg()));
+                    }
+                    return moduleGroupDraw;
 
 
                     /**
@@ -641,6 +647,12 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                         moduleCard.setBgImg(new URL(moduleCard.getBgImg()).getPath());
                     }
                     return moduleCard;
+                case ModuleConstant.M_GROUP_DRAW:
+                    ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+                    if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
+                        moduleGroupDraw.setModuleImg(new URL(moduleGroupDraw.getModuleImg()).getPath());
+                    }
+                    return moduleGroupDraw;
 
                 //TODO 其他保存前需要处理的模块
                 default:
