@@ -159,7 +159,7 @@ global.wxPage({
   //  去结算
   toCheckOut(){
     let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item=>{
-      let { goodsId, cartPrice: prdRealPrice, cartNumber: goodsNum, prdId } = item
+      let { goodsId, prdPrice: prdRealPrice, cartNumber: goodsNum, productId: prdId } = item
       return { goodsId, prdRealPrice, goodsNum, prdId, isCart:1 }
     })
     util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify(goodsList)}`, "navigateTo")

@@ -76,6 +76,7 @@ public class LotteryService extends ShopBaseService {
         param.getPrizeList().forEach(prize -> {
             LotteryPrizeRecord prizeRecord = db().newRecord(LOTTERY_PRIZE, prize);
             prizeRecord.setLotteryId(record.getId());
+            prizeRecord.setAwardAccount(prize.getAccount());
             prizeRecord.setAwardTimes(0);
             prizeRecord.insert();
         });
@@ -96,6 +97,7 @@ public class LotteryService extends ShopBaseService {
             param.getPrizeList().forEach(prize -> {
                 LotteryPrizeRecord prizeRecord = db().newRecord(LOTTERY_PRIZE, prize);
                 prizeRecord.setLotteryId(record.getId());
+                prizeRecord.setAwardAccount(prize.getAccount());
                 if (prizeRecord.getId() == null) {
                     prizeRecord.insert();
                 } else {

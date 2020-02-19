@@ -370,6 +370,13 @@ public class GoodsStatisticTaskService extends ShopBaseService {
         add(Byte.valueOf("30"));
     }};
 
+    public static final List<Byte> TYPE_LIST_1 = new ArrayList<Byte>() {{
+        add(Byte.valueOf("1"));
+        add(Byte.valueOf("7"));
+        add(Byte.valueOf("30"));
+        add(Byte.valueOf("90"));
+    }};
+
     /**
      * Insert overview.
      * 往表b2c_goods_overview_summary中插入统计数据(昨天, 前一星期, 前一个月)
