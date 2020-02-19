@@ -340,6 +340,15 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                        moduleCard.setBgImg(imageUrl(moduleCard.getBgImg()));
                    }
                     return moduleCard;
+                case ModuleConstant.M_SHOP:
+                    ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+                    if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
+                        moduleShop.setShopBgPath(imageUrl(moduleShop.getShopBgPath()));
+                    }
+                    if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
+                        moduleShop.setBgUrl(imageUrl(moduleShop.getBgUrl()));
+                    }
+                    return moduleShop;
 
 
                     /**
