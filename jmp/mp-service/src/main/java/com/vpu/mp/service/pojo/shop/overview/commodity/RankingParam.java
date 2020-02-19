@@ -19,6 +19,9 @@ public class RankingParam {
     // 0天，1月，2年 3周
     private Byte unit;
 
+    // 0 商品销售额；1 商品销售订单
+    private Byte flag;
+
     /**
      * 默认获取30天的数据
      */

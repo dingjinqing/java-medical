@@ -33,10 +33,12 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
             if (goods.getGoodsId() == null || goods.getProductId() == null|| goods.getGoodsRecord().getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
                 log.debug("商品删除的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+ goods.getGoodsRecord().getDelFlag()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DELETE);
+                goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                 return true;
             }else if (goods.getGoodsRecord().getIsOnSale().equals(GoodsConstant.OFF_SALE)){
                 log.debug("商品下架的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getIsOnSale:"+ goods.getGoodsRecord().getDelFlag()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_OFF_SALE);
+                goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                 return true;
             }
             return false;

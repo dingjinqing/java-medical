@@ -78,3 +78,12 @@ export function shopInfoRequest () {
     method: 'get'
   })
 }
+
+// 获取所有门店
+export function getAllStore (data) {
+  return service({
+    url: '/api/admin/store/all/get',
+    method: 'post',
+    data: data
+  })
+}

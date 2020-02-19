@@ -174,7 +174,8 @@ export default {
       console.log(data, this.titleList)
     },
     handleToClickCrumb (name, flag) {
-      console.log(this.$route)
+      console.log(this.titleList.length)
+      if (this.titleList.length < 3) return
       if (flag) {
         if (this.$route.meta.meta === 'user_manger') {
           this.$router.push({

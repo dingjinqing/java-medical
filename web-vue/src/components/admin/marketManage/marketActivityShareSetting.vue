@@ -81,9 +81,8 @@
                 <div>
                   <img
                     v-if="shareConfig.shareImg === '' || shareConfig.shareImg === null"
-                    :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'"
+                    :src="$imageHost+'/image/admin/btn_add.png'"
                     alt=""
-                    style="width:50%;height: 50%"
                   >
                   <img
                     v-if=" shareConfig.shareImg !== null || shareConfig.shareImg !== ''"

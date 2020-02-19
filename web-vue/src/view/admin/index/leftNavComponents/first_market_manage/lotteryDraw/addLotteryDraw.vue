@@ -526,6 +526,8 @@ export default {
     choosingGoodsResult (row) {
       this.form.goodsIds = []
       this.goodsRow = row
+      this.form.goodsIds = []
+      console.log('商品弹窗行信息回显', row)
       this.goodsRow.forEach((item, index) => {
         this.form.goodsIds.push(item.goodsId)
         // item.name = item.goodsName + item.prdDesc

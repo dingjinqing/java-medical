@@ -1,27 +1,25 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.db.shop.tables.GoodsCardCouple;
 import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.dao.GoodsCardCoupleDao;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_PLAT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BRAND;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 
 /**
  * 会员卡商品(分类,商家分类...)关联类
@@ -33,9 +31,11 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BR
 public class GoodsCardCoupleService extends ShopBaseService {
 
 	@Autowired
-	public UserCardDaoService userCardDao;
+	private UserCardDaoService userCardDao;
 	@Autowired
-	public GoodsCardCoupleDao goodsCardDao;
+    private GoodsCardCoupleDao goodsCardDao;
+    @Autowired
+    private GoodsService goodsService;
 
 	/**
 	 *
@@ -133,5 +133,48 @@ public class GoodsCardCoupleService extends ShopBaseService {
 		 return goodsCardDao.selectGoodsCardCouple(cardId, type);
 	}
 
+    /**
+     * 用户所有的专享商品的ID
+     * @param userId
+     * @return
+     */
+	protected List<Integer> getUserExclusiveGoodsIds(Integer userId){
+        Map<Byte, List<Integer>> userGoodsCardCoupleGctaIds = getGoodsCardCouple(userId);
+        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(userGoodsCardCoupleGctaIds.get(3),userGoodsCardCoupleGctaIds.get(2),userGoodsCardCoupleGctaIds.get(4));
+        List<Integer> res = userGoodsCardCoupleGctaIds.get(1);
+        if(CollectionUtils.isNotEmpty(res)){
+            if(CollectionUtils.isNotEmpty(goodsIds)){
+                res.removeAll(goodsIds);
+                res.addAll(goodsIds);
+            }
+            return res;
+        }else {
+            if(CollectionUtils.isNotEmpty(goodsIds)){
+                return goodsIds;
+            }else {
+                return Collections.emptyList();
+            }
+        }
+    }
 
+    /**
+     * 所有专享商品中用户不能买的商品ID
+     * @param userId
+     * @return
+     */
+    public List<Integer> getGoodsUserNotExclusive(Integer userId){
+	    //所有的专享商品
+        List<Integer> allExclusiveGoodsIds = goodsService.getAllExclusiveGoodsIds();
+        if(CollectionUtils.isEmpty(allExclusiveGoodsIds)){
+            return Collections.emptyList();
+        }
+
+        //用户的专享商品
+        List<Integer> userExclusiveGoodsIds = getUserExclusiveGoodsIds(userId);
+        if(CollectionUtils.isEmpty(userExclusiveGoodsIds)){
+            return allExclusiveGoodsIds;
+        }
+
+        return Util.diffList(allExclusiveGoodsIds,userExclusiveGoodsIds);
+    }
 }

@@ -942,6 +942,10 @@ public class OrderInfoService extends ShopBaseService {
             .fetchAnyInto(Integer.class);
     }
 
+    public Byte getOrderIsReturnCoupon(Integer orderId) {
+        return db().select(TABLE.IS_REFUND_COUPON).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(Byte.class);
+    }
+
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
@@ -1419,5 +1423,4 @@ public class OrderInfoService extends ShopBaseService {
 														.and(DslPlus.findInSet(goodsType, TABLE.GOODS_TYPE)))))))
 				.fetchAnyInto(TABLE);
     }
-
 }

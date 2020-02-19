@@ -15,5 +15,5 @@ import java.util.Set;
 public class TableData {
     List<String> refDate;
     Set<String> goodsName;
-    List<List<Object>> arrayData;
+    Object[][] arrayData;
 }

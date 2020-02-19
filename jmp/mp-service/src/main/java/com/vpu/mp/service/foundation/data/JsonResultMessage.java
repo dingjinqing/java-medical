@@ -908,5 +908,9 @@ public class JsonResultMessage {
     public static final String GOODS_EFFECT_RECONNEND_USER_NUM = "overview.commodity.effect.recommend_user_num";
     public static final String GOODS_EFFECT_COLLECT_USER_NUM = "overview.commodity.effect.collect_use_num";
 
+    // 商品排行导出
+    public static final String GOODS_RANKING_SALES_TOP10 = "overview.commodity.rank.sales_top10";
+    public static final String GOODS_RANKING_SALES_ORDER_TOP10 = "overview.commodity.rank.sales_order_top10";
+    public static final String GOODS_RANKING_GOODS_NAME = "overview.commodity.rank.goods_name";
 
 }

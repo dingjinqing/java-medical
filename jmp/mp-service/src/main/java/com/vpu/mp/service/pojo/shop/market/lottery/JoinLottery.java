@@ -56,11 +56,19 @@ public class JoinLottery {
      * 来源,支付,登陆,扫码
      */
     private Byte source=0;
-
     /**
-     * 中奖奖品
+     * 抽奖信息
      */
-    private LotteryPrizeVo lotteryPrizeInfo;
+    private String lotteryAward;
+    /**
+     * 奖品id
+     */
+    private Integer prizeId;
+    /**
+     * 商品图片
+     */
+    private String goodsImage;
+
 
     /**
      * 错误信息

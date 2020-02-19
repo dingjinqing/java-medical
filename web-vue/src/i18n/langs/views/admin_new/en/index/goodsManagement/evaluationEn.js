@@ -25,7 +25,7 @@ export const en = {
   deleteReply: 'Delete reply',
   yes: 'yes',
   no: 'no',
-  null: 'null',
+  nothing: 'nothing',
   deleteEvaluation: 'Delete evaluation',
   orderSn: 'orderSn',
   goodsName: 'Goods name',

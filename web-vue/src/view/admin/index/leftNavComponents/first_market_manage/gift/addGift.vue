@@ -453,11 +453,11 @@ export default {
   },
   data () {
     var validatelevel = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (!value) {
         callback(new Error('请填写活动优先级'))
       } else if (!re.test(value)) {
-        callback(new Error('请填写0或者正整数'))
+        callback(new Error('请填写正整数'))
       } else {
         callback()
       }

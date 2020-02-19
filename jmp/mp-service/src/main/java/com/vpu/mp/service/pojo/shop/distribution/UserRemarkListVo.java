@@ -18,7 +18,7 @@ public class UserRemarkListVo {
     /**
      * 用户ID
      */
-    private UInteger userId;
+    private Integer userId;
     /**
      * 备注内容
      */

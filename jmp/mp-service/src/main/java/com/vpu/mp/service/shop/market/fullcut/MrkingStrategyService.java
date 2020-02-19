@@ -1,24 +1,38 @@
 package com.vpu.mp.service.shop.market.fullcut;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyConditionRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.fullcut.*;
+import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.wxapp.market.fullcut.MrkingStrategyGoodsListParam;
+import com.vpu.mp.service.pojo.wxapp.market.fullcut.MrkingStrategyGoodsListVo;
+import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import jodd.util.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
 import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
 
@@ -38,6 +52,27 @@ public class MrkingStrategyService extends ShopBaseService {
      * 停用状态
      */
     public static final byte STATUS_DISABLED = 0;
+
+    //活动选定的商品范围
+    /**
+     * 全部商品
+     */
+    public final static Byte ACT_TYPE_ALL = 0;
+    /**
+     * 部分商品
+     */
+    public final static Byte ACT_TYPE_SECTION = 1;
+
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private GoodsService goodsService;
+    @Autowired
+    private MemberCardProcessorDao memberCardProcessorDao;
+    @Autowired
+    private GoodsCardCoupleService goodsCardCoupleService;
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 新建满折满减活动
@@ -162,30 +197,113 @@ public class MrkingStrategyService extends ShopBaseService {
             execute();
     }
 
-    /**
-     * 判断商品是否参与满减活动了 活动处理后需删除
-     * @param goodsId
-     */
-    @Deprecated
-    public boolean getGoodsAct(Integer goodsId,Integer catId,Integer sortId){
-        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+    public MrkingStrategyGoodsListVo getWxAppGoodsList(MrkingStrategyGoodsListParam param,Integer userId){
+        MrkingStrategyGoodsListVo vo = new MrkingStrategyGoodsListVo();
 
-        MrkingStrategyRecord mrkingStrategyRecord =null;
-
-        mrkingStrategyRecord = db().selectFrom(MRKING_STRATEGY)
-            .where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(MRKING_STRATEGY.START_TIME.le(now)).and(MRKING_STRATEGY.END_TIME.gt(now)))
-            .and(
-                DslPlus.findInSet(goodsId, MRKING_STRATEGY.RECOMMEND_GOODS_ID)
-                    .or(DslPlus.findInSet(catId, MRKING_STRATEGY.RECOMMEND_CAT_ID))
-                    .or(DslPlus.findInSet(sortId, MRKING_STRATEGY.RECOMMEND_SORT_ID))
-            ).fetchAny();
-
-        if (mrkingStrategyRecord == null) {
-            mrkingStrategyRecord = db().selectFrom(MRKING_STRATEGY)
-                .where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(MRKING_STRATEGY.START_TIME.le(now)).and(MRKING_STRATEGY.END_TIME.gt(now)))
-                .and(MRKING_STRATEGY.RECOMMEND_GOODS_ID.isNull()).and(MRKING_STRATEGY.RECOMMEND_CAT_ID.isNull()).and(MRKING_STRATEGY.RECOMMEND_SORT_ID.isNull())
-                .fetchAny();
+        //校验活动
+        MrkingStrategyRecord MrkingStrategyAct = db().selectFrom(MRKING_STRATEGY).where(MRKING_STRATEGY.ID.eq(param.getStrategyId())).fetchAny();
+        if(MrkingStrategyAct == null || MrkingStrategyAct.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+            vo.setState((byte)1);
+            return vo;
+        }else if(MrkingStrategyAct.getStartTime().after(DateUtil.getLocalDateTime())){
+            vo.setState((byte)2);
+            return vo;
+        }else if(MrkingStrategyAct.getEndTime().before(DateUtil.getLocalDateTime())){
+            vo.setState((byte)3);
+            return vo;
         }
-        return mrkingStrategyRecord !=null;
+
+        if(StringUtil.isNotEmpty(MrkingStrategyAct.getCardId())){
+            //设置了持有会员卡才可以参与活动
+            List<Integer> cardIds = Util.splitValueToList(MrkingStrategyAct.getCardId());
+            List<ValidUserCardBean> cards = saas.getShopApp(getShopId()).userCard.userCardDao.getValidCardList(userId);
+            List<Integer> validCardIds = cards.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
+            validCardIds.removeAll(cardIds);
+
+            if(validCardIds == null || validCardIds.size() == 0){
+                vo.setState((byte)4);
+            }
+        }
+
+        PageResult<MrkingStrategyGoodsListVo.Goods> goodsPageResult;
+        //过滤掉其中用户不能买的会员专享商品
+        if (MrkingStrategyAct.getActType().equals(ACT_TYPE_SECTION)) {
+            List<Integer> inGoodsIds = getMrkingStrategyGoodsIds(MrkingStrategyAct);
+            List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
+            inGoodsIds = Util.diffList(inGoodsIds,userExclusiveGoodsIds);
+            goodsPageResult = getGoods(inGoodsIds,Collections.emptyList(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
+        }else {
+            List<Integer> notInGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
+            goodsPageResult = getGoods(Collections.emptyList(),notInGoodsIds,param.getSearch(),param.getCurrentPage(),param.getPageRows());
+        }
+
+        goodsPageResult.getDataList().forEach(goods -> {
+            if(StringUtil.isNotEmpty(goods.getGoodsImg())){
+                goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+            }
+
+            //TODO 处理限时降价、首单特惠、会员等价卡价格 对商品价格的覆盖
+            
+        });
+        vo.setGoods(goodsPageResult);
+        vo.setCondition(getMrkingStrategyCondition(param.getStrategyId()));
+        vo.setType(MrkingStrategyAct.getType());
+
+        //TODO 根据购物车里的商品计算底边条的提醒文案
+        //vo.setFullPriceDoc();
+
+        return vo;
     }
+
+    /**
+     * 活动包含的所有商品ID（指定部分商品类型的活动）
+     * @param record
+     * @return
+     */
+    private List<Integer> getMrkingStrategyGoodsIds(MrkingStrategyRecord record){
+        List<Integer> res = new ArrayList<>();
+
+        if(StringUtil.isNotEmpty(record.getRecommendGoodsId())){
+            List<Integer> goodsIds = Util.splitValueToList(record.getRecommendGoodsId());
+            res.removeAll(goodsIds);
+            res.addAll(goodsIds);
+        }
+
+        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(Util.splitValueToList(record.getRecommendCatId()),Util.splitValueToList(record.getRecommendSortId()),Util.splitValueToList(record.getRecommendBrandId()));
+        res.removeAll(goodsIds);
+        res.addAll(goodsIds);
+
+        return res;
+    }
+
+    /**
+     * 查出goods列表
+     * @param inGoodsIds
+     * @param search
+     * @param currentPage
+     * @param pageRows
+     * @return
+     */
+    private PageResult<MrkingStrategyGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,List<Integer> notInGoodsIds,String search,Integer currentPage,Integer pageRows){
+        Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
+        select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        if(soldOutGoods != NumberUtils.BYTE_ONE){
+            select.where(GOODS.GOODS_NUMBER.gt(0));
+        }
+        if(StringUtil.isNotEmpty(search)){
+            select.where(GOODS.GOODS_NAME.contains(search));
+        }
+        if(CollectionUtils.isNotEmpty(inGoodsIds)){
+            select.where(GOODS.GOODS_ID.in(inGoodsIds));
+        }
+        if(CollectionUtils.isNotEmpty(notInGoodsIds)){
+            select.where(GOODS.GOODS_ID.notIn(notInGoodsIds));
+        }
+        return getPageResult(select,currentPage,pageRows,MrkingStrategyGoodsListVo.Goods.class);
+    }
+
+
+
 }

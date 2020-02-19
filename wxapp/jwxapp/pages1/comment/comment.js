@@ -352,7 +352,7 @@ global.wxPage({
     }
     if (item.id) {
       if (item.awardType === 2) {
-        params.award = item.id
+        params.award = item.award.id?Number(item.award.id):item.award
       } else if (item.awardType === 5) {
         params.award = JSON.stringify(item.award)
       }

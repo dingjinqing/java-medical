@@ -541,7 +541,9 @@ public class GoodsCommentService extends ShopBaseService {
         actIds.add(vo.getId());
       } // 触发条件：指定商品
       else if (vo.getGoodsType().equals(NumberUtils.INTEGER_TWO)) {
-        String[] arr = vo.getGoodsIds().split(",");
+          logger().info("before:"+vo.getGoodsIds());
+          logger().info("after:"+vo.getGoodsIds().substring(1,vo.getGoodsIds().length()-1));
+        String[] arr = vo.getGoodsIds().substring(1,vo.getGoodsIds().length()-1).split(",");
         if (Arrays.asList(arr).contains(goodsId.toString())) {
           actIds.add(vo.getId());
         }

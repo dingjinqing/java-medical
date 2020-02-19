@@ -9,6 +9,7 @@
     "v-sel-spec":"/components/item/spec/index",
     "v-item-footer":"/components/item/footer/index",
     "v-share":"/components/item/popup/share/index",
-    "v-recommend":"/components/item/recommend/index"
+    "v-recommend":"/components/item/recommend/index",
+    "v-pre-sale-rule":"/components/item/popup/pre_sale_rule/index"
   }
 }

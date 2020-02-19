@@ -3,13 +3,18 @@
     <el-card>
       <div class="header">
         <span>{{$t('templateMessage.title')}}</span>
-        <span>
-          {{$t('templateMessage.tips')}}
+        <span>{{$t('templateMessage.templateContent1')}}</span>
+        <span @click="toWXCommunity">
+          {{$t('templateMessage.templateContent2')}}
         </span>
+        <span>{{$t('templateMessage.templateContent3')}}</span>
+        <span>{{$t('templateMessage.templateContent4')}}</span>
+        <span @click="toViewDocument">{{$t('templateMessage.templateContent5')}}</span>
       </div>
       <el-divider></el-divider>
       <div class="title">
-        {{$t('templateMessage.openMpNum')}}{{openMpNum}}{{$t('templateMessage.tiao')}}, {{$t('templateMessage.openMaNum')}}{{openMaNum}}{{$t('templateMessage.tiao')}}
+        {{$t('templateMessage.openMpNum')}}{{openMpNum}}{{$t('templateMessage.tiao')}}
+        <span style="font-size:13px">{{$t('templateMessage.tips')}}</span>
       </div>
       <!-- 交易物流提醒|营销信息提醒 -->
       <div class="main">
@@ -50,27 +55,6 @@
                       trigger="hover"
                     >
                       <el-image :src="scope.row.src"></el-image>
-                      <el-button
-                        slot="reference"
-                        type="text"
-                      >{{scope.row.preview}}</el-button>
-                    </el-popover>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="appletMessage"
-                  :label="$t('templateMessage.openMaMessage')"
-                  align="center"
-                >
-                  <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.openMa"></el-checkbox>
-                    <span>{{$t('templateMessage.sendMessageApplets')}}</span>
-                    <el-popover
-                      placement="right"
-                      width="200"
-                      trigger="hover"
-                    >
-                      <el-image :src="scope.row.xcxSrc"></el-image>
                       <el-button
                         slot="reference"
                         type="text"
@@ -124,27 +108,6 @@
                     </el-popover>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="appletMessage"
-                  :label="$t('templateMessage.openMaMessage')"
-                  align="center"
-                >
-                  <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.openMa"></el-checkbox>
-                    <span>{{$t('templateMessage.sendMessageApplets')}}</span>
-                    <el-popover
-                      placement="right"
-                      width="200"
-                      trigger="hover"
-                    >
-                      <el-image :src="scope.row.xcxSrc"></el-image>
-                      <el-button
-                        slot="reference"
-                        type="text"
-                      >{{scope.row.preview}}</el-button>
-                    </el-popover>
-                  </template>
-                </el-table-column>
               </el-table>
             </div>
           </el-collapse-item>
@@ -186,10 +149,6 @@ export default {
     openMpNum () {
       let openMpNum = this.tableData.filter(item => item.openMp === true).length + this.tableData1.filter(item => item.openMp === true).length
       return openMpNum
-    },
-    openMaNum () {
-      let openMaNum = this.tableData.filter(item => item.openMa === true).length + this.tableData1.filter(item => item.openMa === true).length
-      return openMaNum
     }
   },
   mounted () {
@@ -205,8 +164,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/qx_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/qx_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/qx_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.appointSuccessRemind'),
@@ -214,8 +172,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/cg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/cg_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/cg_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.appointExpiredRemind'),
@@ -223,8 +180,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/yydq_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/yydq_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/yydq_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.accountChangeRemind'),
@@ -232,8 +188,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/zhye_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/zhye_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/zhye_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.orderDeliveryRemind'),
@@ -241,8 +196,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/ddfh_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddfh_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ddfh_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.oredrNoPayNotice'),
@@ -250,8 +204,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublice'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/ddwzf_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddwzf_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ddwzf_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.orderPaySuccessNotice'),
@@ -259,8 +212,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/ddzfcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddzfcg_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ddzfcg_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.confirmReceiveGoods'),
@@ -268,8 +220,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/qrsh_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/qrsh_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/qrsh_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.refundFailed'),
@@ -277,8 +228,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/tksb_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/tksb_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/tksb_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.refundState'),
@@ -286,8 +236,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/tktz_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/tktz_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/tktz_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.storeRemind'),
@@ -295,8 +244,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/mdzt_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/mdzt_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/mdzt_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.pickUpGoodsSucess'),
@@ -304,8 +252,31 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/qhcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/qhcg_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/qhcg_gzh.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.integralCustomRemind'),
+          sendingCondition: this.$t('templateMessage.sendOnIntegralChange'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/jfxf_gzh.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.getMoneyApply'),
+          sendingCondition: this.$t('templateMessage.sendOnGetMoney'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/txsq_gzh.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.memberUpdate'),
+          sendingCondition: this.$t('templateMessage.sendOnMemberUpdate'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/hysj_gzh.jpg`
         }
       ]
       this.tableData1 = [
@@ -315,8 +286,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/viptx_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/viptx_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/viptx_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.vipReceiveSucess'),
@@ -324,8 +294,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/vipcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/vipcg_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/vipcg_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.cardTimesReduce'),
@@ -333,8 +302,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/xckj_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/xckj_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/xckj_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.couponExpiration'),
@@ -342,8 +310,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/kqdq_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/kqdq_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/kqdq_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.couponReceiveSucess'),
@@ -351,8 +318,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/kqcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/kqcg_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/kqcg_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.spellGroupFail'),
@@ -360,8 +326,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/ptsb_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptsb_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ptsb_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.spellGroupSucess'),
@@ -369,8 +334,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/ptcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptcg_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ptcg_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.customMessage'),
@@ -378,8 +342,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/ywcl_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ywcl_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ywcl_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.bargainSucess'),
@@ -387,8 +350,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/kjcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/kjcg_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/kjcg_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.bargainProcess'),
@@ -396,32 +358,28 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/kjjd_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/kjjd_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/kjjd_gzh.jpg`
         }, {
           templateMessage: this.$t('templateMessage.checkPass'),
           sendingCondition: this.$t('templateMessage.sendOnCheckPass'),
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/official_audit_success.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/mp_audit_success.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/official_audit_success.jpg`
         }, {
           templateMessage: this.$t('templateMessage.checkFail'),
           sendingCondition: this.$t('templateMessage.sendOnCheckFail'),
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/official_audit_fail.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/mp_audit_fail.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/official_audit_fail.jpg`
         }, {
           templateMessage: this.$t('templateMessage.vipLevelUpgrade'),
           sendingCondition: this.$t('templateMessage.sendOnVipLevelUpgrade'),
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/fxdj_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/fxdj_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/fxdj_gzh.jpg`
         },
         {
           templateMessage: this.$t('templateMessage.spellGroupResults'),
@@ -429,8 +387,7 @@ export default {
           publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
           appletMessage: this.$t('templateMessage.sendMessageApplets'),
           preview: this.$t('templateMessage.preview'),
-          src: `${this.$imageHost}/image/admin/template_message/ptcj_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptcj_xcx.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ptcj_gzh.jpg`
         }
       ]
     }
@@ -439,21 +396,21 @@ export default {
     // 模板消息查询数据初始化
     fetchData () {
       templateQueryApi().then(res => {
-        // console.log(res, 'templateQueryApi data---')
+        console.log(res, 'templateQueryApi data')
         // console.log(res.content)
         // 合并定义的数据和返回的数据
         let list = [...res.content]
         let list1 = [...res.content]
         // console.log(list, '----', list1, 'list data')
 
-        let resultData = list.slice(0, 12).map((item, index) => {
-          return { ...item, ...this.tableData[index], openMp: !!item.openMp, openMa: !!item.openMa }
+        let resultData = list.slice(0, 15).map((item, index) => {
+          return { ...item, ...this.tableData[index], openMp: !!item.openMp }
         })
         this.tableData = resultData
         console.log(this.tableData, 'this.tableData')
 
-        let resultData1 = list1.splice(12).map((item, index) => {
-          return { ...item, ...this.tableData1[index], openMp: !!item.openMp, openMa: !!item.openMa }
+        let resultData1 = list1.splice(15).map((item, index) => {
+          return { ...item, ...this.tableData1[index], openMp: !!item.openMp }
         })
         this.tableData1 = resultData1
         console.log(this.tableData1, 'this.tableData1')
@@ -463,14 +420,10 @@ export default {
     // 保存-更新数据
     handleSave () {
       let configs = this.tableData.concat(this.tableData1).map(item => {
-        return { ...item, openMp: Number(item.openMp), openMa: Number(item.openMa) }
+        return { ...item, openMp: Number(item.openMp) }
       })
       let params = { configs }
 
-      if (this.openMaNum > 25) {
-        this.$message.warning('小程序消息不能超过25条!')
-        return
-      }
       if (this.openMpNum > 25) {
         this.$message.warning('公众号消息不能超过25条!')
         return
@@ -480,6 +433,12 @@ export default {
           this.$message.success('更新成功')
         }
       }).catch(err => console.log(err))
+    },
+    toWXCommunity () {
+
+    },
+    toViewDocument () {
+
     }
   }
 }
@@ -490,9 +449,29 @@ export default {
   padding: 10px;
   .header {
     span {
+      color: #999;
+      font-size: 12px;
+      &:nth-of-type(1) {
+        font-size: 14px;
+        color: #333;
+      }
       &:nth-of-type(2) {
-        color: #999;
-        font-size: 12px;
+        margin-left: 10px;
+      }
+      &:nth-of-type(3) {
+        color: #5a8bff;
+        margin-left: -5px;
+        cursor: pointer;
+      }
+      &:nth-of-type(4) {
+        margin-left: -5px;
+      }
+      &:nth-of-type(5) {
+        color: red;
+      }
+      &:nth-of-type(6) {
+        color: #5a8bff;
+        cursor: pointer;
       }
     }
   }
