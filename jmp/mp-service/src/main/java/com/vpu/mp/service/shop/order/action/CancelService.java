@@ -1,21 +1,9 @@
 package com.vpu.mp.service.shop.order.action;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -34,14 +22,25 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * mp取消订单
@@ -69,6 +68,9 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private GoodsSpecProductService goodsSpecProduct;
 
+    @Autowired
+    private CouponService coupon;
+
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.CANCEL;
@@ -94,9 +96,9 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
                 //退支付金额
                 returnOrder(order);
                 orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_CANCELLED);
-                //TODO 退优惠卷后续
+                //退优惠卷
                 if(BigDecimalUtil.compareTo(order.getDiscount() , null) > 0) {
-
+                    coupon.releaserCoupon(order.getOrderSn());
                 }
                 //库存更新
             });

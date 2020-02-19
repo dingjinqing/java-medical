@@ -765,13 +765,19 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
+    /**
+     * 退款时释放优惠券
+     * @param order
+     */
     private void returnCoupon(OrderInfoVo order){
         if(order.getOrderStatus().equals(OrderConstant.ORDER_FINISHED)) {
             logger.info("订单完成，不可退优惠券");
             return;
         }
         OrderInfoRecord orderInfoRecord = orderInfo.getOrderByOrderSn(order.getOrderSn());
-        if(BigDecimalUtil.compareTo(order.getDiscount(), BigDecimal.ZERO) > 0 && orderInfoRecord.getIsRefundCoupon().equals(OrderConstant.YES)) {
+        if(BigDecimalUtil.compareTo(order.getDiscount(), BigDecimal.ZERO) > 0
+            && orderInfoRecord.getIsRefundCoupon().equals(OrderConstant.YES)
+            && (orderInfoRecord.getRefundStatus().equals(OrderConstant.ORDER_REFUND_FINISHED) || orderInfoRecord.getRefundStatus().equals(OrderConstant.ORDER_RETURN_FINISHED))) {
             coupon.releaserCoupon(order.getOrderSn());
         }
     }
