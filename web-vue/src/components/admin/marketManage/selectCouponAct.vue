@@ -55,7 +55,14 @@ export default {
   computed: {
     selectValue: {
       get () {
-        return Number(this.value)
+        if (this.value === '') {
+          return this.value
+        } else {
+          let val = Number(this.value)
+          let item = this.selects.find(item => item.id === val)
+          this.$emit('initItem', item)
+          return Number(this.value)
+        }
       },
       set (val) {
         this.$emit('change', val)
@@ -67,7 +74,6 @@ export default {
   },
   methods: {
     initSelectData () {
-      if (this.disabled) return false
       let params = {
         isHasStock: this.isHasStock
       }

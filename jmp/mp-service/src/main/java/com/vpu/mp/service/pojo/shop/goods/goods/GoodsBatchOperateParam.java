@@ -15,35 +15,41 @@ import java.util.Optional;
  */
 @Data
 public class GoodsBatchOperateParam {
-
     private List<Integer> goodsIds;
+
+    /**
+     * goodsId 和价格 key商品价格 value对应商品的规格信息集合
+     */
+    private Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers;
+
+    /**
+     * 商家分类id
+     */
+    private Integer sortId;
+    /**
+     * 运费模板
+     */
+    private Integer deliverTemplateId;
+    /**
+     * 限购数量最小值，最大值
+     */
+    private Integer limitBuyNum;
+    private Integer limitMaxNum;
 
     /**
      * 销售状态
      */
     private Byte isOnSale;
+    /**当指定时间上架时该字段是1，否则是0*/
+    private Byte saleType;
+    /**指定的上架时间*/
     private Timestamp saleTime;
+
     /**
-     * goodsId 和价格，数量映射
-     */
-    private Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers;
-    /**
-     * 平台分类
-     */
-    private Integer catId;
-    /**
-     * 运费信息
-     */
-    private Integer deliverTemplateId;
-    /**
-     * 限购数量
-     */
-    private Integer limitBuyNum;
-    private Integer limitMaxNum;
-    /**
-     * 模板信息
+     * 商品详情模板信息，自定义内容在上面0,商品详情在上1
      */
     private Byte isPageUp;
+    /**商品详情模板*/
     private Integer goodsPageId;
     /**
      * 标签
@@ -55,6 +61,8 @@ public class GoodsBatchOperateParam {
      * 是否会员专享
      */
     private Byte isCardExclusive;
+    /**会员专享卡id集合*/
+    private List<Integer> cardIds;
 
     /**
      * 未处理goodsLabel,和shopPrice,goodsNumber，仅处理商品表内数据的变化
@@ -67,28 +75,32 @@ public class GoodsBatchOperateParam {
         List<GoodsRecord> list=new ArrayList<>(goodsIds.size());
 
         Optional<Byte> isOnSaleOptional = Optional.ofNullable(isOnSale);
+        Optional<Byte> saleTypeOptional = Optional.ofNullable(saleType);
         Optional<Timestamp> saleTimeOptional = Optional.ofNullable(saleTime);
-        Optional<Integer> catIdOptional = Optional.ofNullable(catId);
+        Optional<Integer> sortIdIdOptional = Optional.ofNullable(sortId);
         Optional<Integer> deliverTemplateIdOptional = Optional.ofNullable(deliverTemplateId);
         Optional<Integer> limitBuyNumOptional = Optional.ofNullable(limitBuyNum);
         Optional<Integer> limitMaxNumOptional = Optional.ofNullable(limitMaxNum);
         Optional<Byte> isPageUpOptional = Optional.ofNullable(isPageUp);
         Optional<Integer> goodsPageIdOptional = Optional.ofNullable(goodsPageId);
         Optional<Integer> brandIdOptional = Optional.ofNullable(brandId);
+        Optional<Byte> isCardExclusiveOptional = Optional.ofNullable(this.isCardExclusive);
 
         goodsIds.forEach(goodsId->{
             GoodsRecord goodsRecord=new GoodsRecord();
             goodsRecord.setGoodsId(goodsId);
 
-            isOnSaleOptional.ifPresent(goodsRecord::setIsOnSale);
-            saleTimeOptional.ifPresent(goodsRecord::setSaleTime);
-            catIdOptional.ifPresent(goodsRecord::setCatId);
+            sortIdIdOptional.ifPresent(goodsRecord::setSortId);
             deliverTemplateIdOptional.ifPresent(goodsRecord::setDeliverTemplateId);
             limitBuyNumOptional.ifPresent(goodsRecord::setLimitBuyNum);
             limitMaxNumOptional.ifPresent(goodsRecord::setLimitMaxNum);
+            isOnSaleOptional.ifPresent(goodsRecord::setIsOnSale);
+            saleTypeOptional.ifPresent(goodsRecord::setSaleType);
+            saleTimeOptional.ifPresent(goodsRecord::setSaleTime);
             isPageUpOptional.ifPresent(goodsRecord::setIsPageUp);
             goodsPageIdOptional.ifPresent(goodsRecord::setGoodsPageId);
             brandIdOptional.ifPresent(goodsRecord::setBrandId);
+            isCardExclusiveOptional.ifPresent(goodsRecord::setIsCardExclusive);
 
             list.add(goodsRecord);
         });
