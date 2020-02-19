@@ -178,8 +178,10 @@
                       :max="scope.row.shopPrice"
                     >
                     </el-input-number>
-                    <span>({{$t('addBargainAct.default0')}})</span>
-                    <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
+                    <div style="margin-top:5px;">
+                      <span>({{$t('addBargainAct.default0')}})</span>
+                      <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
+                    </div>
                     <!-- <div style="margin: 4px 6px">({{$t('addBargainAct.default0')}})
                       <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
                     </div> -->
