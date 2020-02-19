@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,12 +36,12 @@ import static com.vpu.mp.db.shop.tables.RecommendGoods.RECOMMEND_GOODS;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.DEFAULT_SCALE;
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
+import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
+import static org.jooq.impl.DSL.*;
 
 /**
  * author liufei
@@ -108,13 +109,13 @@ public class MallOverviewService extends ShopBaseService {
 
             vo.setUserVisitNum(db().fetchCount(UserLoginRecord.USER_LOGIN_RECORD, userLoginRecordTime));
             vo.setPaidOrderNum(db().fetchCount(OrderInfo.ORDER_INFO, orderInfoTime.and(payOrderCon)));
-            vo.setOrderUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
+            vo.setOrderUserNum(db().select(countDistinct(OrderInfo.ORDER_INFO.USER_ID))
                 .from(OrderInfo.ORDER_INFO).where(orderInfoTime).fetchOneInto(Integer.class));
             vo.setOrderNum(db().fetchCount(OrderInfo.ORDER_INFO, orderInfoTime));
             vo.setTotalPaidSum(db().select(sum(OrderInfo.ORDER_INFO.MONEY_PAID))
                 .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
-                .fetchOneInto(Integer.class));
-            vo.setPaidUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
+                .fetchOneInto(BigDecimal.class));
+            vo.setPaidUserNum(db().select(countDistinct(OrderInfo.ORDER_INFO.USER_ID))
                 .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
                 .fetchOneInto(Integer.class));
         } else {
@@ -131,10 +132,20 @@ public class MallOverviewService extends ShopBaseService {
         BigDecimal orderNum = BigDecimalUtil.valueOf(vo.getOrderNum());
         BigDecimal userVisitNum = BigDecimalUtil.valueOf(vo.getUserVisitNum());
         BigDecimal paidNum = BigDecimalUtil.valueOf(vo.getPaidOrderNum());
-        vo.setUv2order(divideWithOutCheck(orderNum, userVisitNum));
-        vo.setUv2paid(divideWithOutCheck(paidNum, userVisitNum));
-        vo.setOrder2paid(divideWithOutCheck(paidNum, orderNum));
+        vo.setUv2order(specialDivide(orderNum, userVisitNum));
+        vo.setUv2paid(specialDivide(paidNum, userVisitNum));
+        vo.setOrder2paid(specialDivide(paidNum, orderNum));
         return vo;
+    }
+
+    private BigDecimal specialDivide(BigDecimal left, BigDecimal right) {
+        if (left == null || left.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        if (right == null || right.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        return left.divide(right, 6, RoundingMode.HALF_UP).multiply(HUNDRED).setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     /**

@@ -1,6 +1,6 @@
 <template>
   <div class="label">
-    <div class="labelItem">商品效果
+    <div class="labelItem">{{$t('goodsStaticties.goodsEffect')}}
       <el-tooltip
         effect="light"
         placement="top"

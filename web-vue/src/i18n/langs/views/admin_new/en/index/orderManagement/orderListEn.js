@@ -198,6 +198,22 @@ export const en = {
     [12, 'has become a group'],
     [13, 'Gift completion']
   ],
+  orderStatus: [
+    [null, 'All orders'],
+    [0, 'Pending payment'],
+    [1, 'Order cancelled'],
+    [2, 'Order closed'],
+    [3, 'To be shipped / to be written off'],
+    [4, 'shipped'],
+    [5, 'Received / Picked up'],
+    [6, 'Order completed'],
+    [7, 'After sale'],
+    [8, 'After sale completed'],
+    [9, 'Gift completed'],
+    [10, 'Pending orders'],
+    [11, 'Received order-pickup in progress'],
+    [12, 'Picked up-shipping']
+  ],
   goodsTypeList: [
     [null, 'all orders'],
     [0, 'Ordinary order'],

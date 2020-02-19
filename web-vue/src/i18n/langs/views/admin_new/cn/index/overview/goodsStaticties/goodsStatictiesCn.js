@@ -11,6 +11,7 @@ export const cn = {
   zaijiashangpinshu_content: '当前时间点，在架的商品数量',
   compare: '较前',
   day: '日',
+  week: '周',
   dongxiao: '动销商品数',
   dongxiao_content: '统计时间内，销量不为0的商品数量',
   fangwen: '访问',
@@ -29,6 +30,8 @@ export const cn = {
   querytime: '查询时间',
   salestop: '商品销售额TOP10',
   export: '数据导出',
-  salesordertop: '商品销售订单TOP10'
+  salesordertop: '商品销售订单TOP10',
+  fangkeshu1: '访客数',
+  fangkeshu1_content: '统计时间内，商品详情页被访问的去重人数，一个人在统计时间范围内访问多次只记为一个。'
 
 }

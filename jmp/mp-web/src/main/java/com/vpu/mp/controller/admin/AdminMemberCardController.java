@@ -35,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardInsertVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
@@ -331,11 +332,12 @@ public class AdminMemberCardController extends AdminBaseController {
 		if (checkFile == null) {
 			return fail(JsonResultCode.CODE_EXCEL_ERRO);
 		}
-		JsonResultCode insertCardNo = shop().member.card.insertCardNo(getLang(), param);
-		if(insertCardNo.equals(JsonResultCode.CODE_SUCCESS)) {
-			return success();
+		CardInsertVo vo = shop().member.card.insertCardNo(getLang(), param);
+		JsonResultCode code = vo.getCode();
+		if(code.equals(JsonResultCode.CODE_SUCCESS)) {
+			return success(vo.getBatchId());
 		}
-		return fail(insertCardNo);
+		return fail(code);
 	}
 	
 	/**
