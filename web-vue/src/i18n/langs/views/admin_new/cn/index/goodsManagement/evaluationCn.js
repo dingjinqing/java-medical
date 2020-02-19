@@ -25,7 +25,7 @@ export const cn = {
   deleteReply: '删除回复',
   yes: '是',
   no: '否',
-  null: '无',
+  nothing: '无',
   deleteEvaluation: '删除评价',
   orderSn: '订单编号',
   goodsName: '商品名称',
