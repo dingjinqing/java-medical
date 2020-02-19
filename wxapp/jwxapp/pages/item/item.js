@@ -78,6 +78,10 @@ const actBaseInfo = {
       6: '超购买上限'
     },
     prdListName:'preSalePrdMpVos',
+    prdPriceName: {
+      prdRealPrice: 'preSalePrice',
+      prdLinePrice: 'prdPrice'
+    },
     countDownInfo: {
       canCountDown: [0, 3],
       3: 'startTime',
@@ -159,7 +163,7 @@ global.wxPage({
         '/api/wxapp/goods/detail',
         res => {
           if (res.error === 0) {
-            if (res.content.activity && [1, 3, 5].includes(res.content.activity.activityType))
+            if (res.content.activity && [1, 3, 5, 10].includes(res.content.activity.activityType))
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             let {
               comment,
@@ -293,6 +297,9 @@ global.wxPage({
     this.setData({
       productInfo: data.detail
     })
+    if(this.data.specParams.activity && this.data.specParams.activity.activityType === 10){
+      this.getPreSaleAct()
+    }
     this.setDealtAct()
   },
   // 打开规格弹窗
@@ -397,8 +404,8 @@ global.wxPage({
           this.getCountDown({
             activityType,
             actState,
-            endTime: this.specParams.activity.endTime,
-            startTime: this.specParams.activity.endTime
+            endTime: this.data.specParams.activity.endTime,
+            startTime: this.data.specParams.activity.endTime
           })
         }
       ],
@@ -422,8 +429,8 @@ global.wxPage({
           this.getCountDown({
             activityType,
             actState,
-            endTime: this.specParams.activity.endTime,
-            startTime: this.specParams.activity.endTime
+            endTime: this.data.specParams.activity.endTime,
+            startTime: this.data.specParams.activity.endTime
           })
         }
       ]
@@ -709,6 +716,17 @@ global.wxPage({
     }
     this.setData({
       dealtAct
+    })
+  },
+  getPreSaleAct(){
+    let preActBarStr = ''
+    if(this.data.specParams.activity.preSaleType !== 1){
+      preActBarStr = `付定金立减:￥${this.data.productInfo.discountPrice - this.data.productInfo.depositPrice}`
+    } else {
+      preActBarStr = `定金:￥${this.data.productInfo.depositPrice}`
+    }
+    this.setData({
+      'actBarInfo.preSaleActInfo':preActBarStr
     })
   },
   goPledge() {
