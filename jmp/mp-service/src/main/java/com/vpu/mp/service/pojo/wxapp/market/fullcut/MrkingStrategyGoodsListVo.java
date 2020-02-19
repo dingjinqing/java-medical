@@ -33,9 +33,9 @@ public class MrkingStrategyGoodsListVo {
     @Setter
     @Getter
     public static class Goods{
+        //商品原数据
         private Integer goodsId;
         private String goodsName;
-
         /**
          * 在售状态1在售,0下架
          */
@@ -64,6 +64,16 @@ public class MrkingStrategyGoodsListVo {
         private Byte isCardExclusive;
         private Integer sortId;
         private Integer catId;
+
+
+        //活动数据
+        /**
+         * 取价结果类型，0商品原价，1等级会员价，2限时降价，3首单特惠价
+         */
+        private Byte goodsPriceAction;
+        private BigDecimal goodsPrice;
+
+        private BigDecimal maxPrice;
     }
 
     /**

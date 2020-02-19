@@ -15,8 +15,10 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -58,6 +60,8 @@ public class ReducePriceService extends ShopBaseService {
     GoodsService goodsService;
     @Autowired
     DomainConfig domainConfig;
+    @Autowired
+    private MemberCardProcessorDao memberCardProcessorDao;
     /**
      * 新建限时降价活动
      */
@@ -261,7 +265,7 @@ public class ReducePriceService extends ShopBaseService {
      * @param date    当前时间
      * @return 在活动有效期内返回价格否则返回null
      */
-    public BigDecimal getShowPriceByGoodsId(Integer goodsId, Timestamp date) {
+    public List<ReducePriceProductRecord> getShowPriceByGoodsId(Integer goodsId, Timestamp date) {
         Integer reducePriceId = db().select(REDUCE_PRICE.ID)
             .from(REDUCE_PRICE_GOODS)
             .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
@@ -270,29 +274,17 @@ public class ReducePriceService extends ShopBaseService {
             .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
-            .orderBy(REDUCE_PRICE.CREATE_TIME.asc())
+            .orderBy(REDUCE_PRICE.FIRST.desc())
             .fetchOne(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID);
         if (reducePriceId == null) {
             return null;
         }
         Optional<ReducePriceRecord> reducePriceRecordOptional =
             db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(reducePriceId)).fetchOptional();
-        if (!reducePriceRecordOptional.isPresent()) {
+        if (!reducePriceRecordOptional.isPresent() || !isActivityGoingOn(reducePriceRecordOptional.get())) {
             return null;
-        }
-        ReducePriceRecord reducePriceRecord = reducePriceRecordOptional.get();
-
-        Optional<ReducePriceProductRecord> priceProductRecordOptional =
-            getReducePriceProductRecordByGoodsId(reducePriceId, goodsId);
-        if (!priceProductRecordOptional.isPresent()) {
-            return null;
-        }
-        ReducePriceProductRecord reducePriceProductRecord = priceProductRecordOptional.get();
-        BigDecimal price = reducePriceProductRecord.getPrdPrice();
-        if (!isActivityGoingOn(reducePriceRecord)) {
-            return null;
-        } else {
-            return price;
+        }else{
+            return getReducePriceProductRecordByGoodsId(reducePriceId, goodsId);
         }
     }
 
@@ -442,12 +434,12 @@ public class ReducePriceService extends ShopBaseService {
         return false;
     }
 
-    private Optional<ReducePriceProductRecord> getReducePriceProductRecordByGoodsId(Integer reducePriceId, Integer goodsId) {
+    private List<ReducePriceProductRecord> getReducePriceProductRecordByGoodsId(Integer reducePriceId, Integer goodsId) {
         return db().selectFrom(REDUCE_PRICE_PRODUCT)
             .where(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(reducePriceId))
             .and(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(goodsId))
             .orderBy(REDUCE_PRICE_PRODUCT.PRD_PRICE.asc())
-            .fetchOptional();
+            .fetch();
     }
 
     private Optional<ReducePriceProductRecord> getReducePriceProductRecordByGoodsIds(List<Integer> reducePriceId, Integer goodsId) {
@@ -503,13 +495,48 @@ public class ReducePriceService extends ShopBaseService {
 
         //处理限时降价
         if(goodsInfo.getGoodsType() == BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE){
+            //当前生效的
+            List<ReducePriceProductRecord> reducePriceProductRecords = getShowPriceByGoodsId(goodsId,DateUtil.getLocalTimeDate());
+            if(CollectionUtils.isNotEmpty(reducePriceProductRecords)){
+                List<BigDecimal> prdPriceList = reducePriceProductRecords.stream().map(ReducePriceProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
 
+                res.setGoodsPrice(prdPriceList.get(0));
+                res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                res.setGoodsPriceAction((byte)2);
+            }
         }
 
+        //处理会员等级
+        String userCardGrade = saas.getShopApp(getShopId()).userCard.userCardDao.getUserCardGrade(userId);
+        if(StringUtil.isNotEmpty(userCardGrade)){
+            List<GradePrdRecord> gradePrdRecords = memberCardProcessorDao.getGoodsGradePrdListByGrade(goodsId,userCardGrade);
+            if(CollectionUtils.isNotEmpty(gradePrdRecords)){
+                List<BigDecimal> prdPriceList = gradePrdRecords.stream().map(GradePrdRecord::getGradePrice).sorted().collect(Collectors.toList());
 
+                //有生效的限时降价价格，需要比较价格，取低的一个
+                if(res.getGoodsPrice() != null && res.getGoodsPrice().compareTo(BigDecimal.ZERO) > 0){
+                    if(prdPriceList.get(0).compareTo(res.getGoodsPrice()) < 0){
+                        res.setGoodsPrice(prdPriceList.get(0));
+                        res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                        res.setGoodsPriceAction((byte)1);
+                    }
+                }
+            }
+        }
 
+        if(res.getGoodsPriceAction() != null && res.getGoodsPriceAction() > 0){
+            return res;
+        }else{
+            //没有可参与的活动，取商品原价
+            List<GoodsSpecProductRecord> goodsSpecProductRecords = goodsService.goodsSpecProductService.getGoodsDetailPrds(goodsId);
+            List<BigDecimal> prdPriceList = goodsSpecProductRecords.stream().map(GoodsSpecProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
 
-        return null;
+            res.setGoodsPrice(prdPriceList.get(0));
+            res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+            res.setGoodsPriceAction((byte)0);
+
+            return res;
+        }
     }
 
 }
