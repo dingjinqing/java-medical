@@ -44,7 +44,7 @@
   letter-spacing: 6rpx;
 }
 .l-a-center {
-  padding-top: 80rpx;
+  padding-top: 70rpx;
   padding-bottom: 34rpx;
 }
 .l-a-close {
@@ -79,4 +79,21 @@
   border-radius:35rpx;
   font-size: 32rpx;
   color: #fff;
+}
+.gift-name{
+  font-weight: normal;
+  width: 370rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 24rpx;
+}
+.gift-img {
+  width: 176rpx;
+  height: 176rpx;
+  border: 6rpx solid #fff;
+  border-radius: 10rpx;
+  margin: 0 auto;
+  overflow: hidden;
+  margin-bottom: 24rpx;
 }

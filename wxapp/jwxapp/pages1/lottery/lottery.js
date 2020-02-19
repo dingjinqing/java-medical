@@ -171,7 +171,6 @@ global.wxPage({
     })
     util.api('/api/wxapp/lottery/join', function (res) {
       if (res.error === 0 && res.content.flag) {
-        console.log(res.content)
         let content = res.content
         // 是否抽奖成功
         if (content.flag) {
@@ -208,7 +207,10 @@ global.wxPage({
           that.$message.error(content.msg)
         }
       } else {
-        that.$message.error(res.message)
+        util.toast_fail(res.message)
+        that.setData({
+          hasClick: false
+        })
       }
     }, {
         lotteryId: Number(that.data.lotteryId),
@@ -274,12 +276,14 @@ global.wxPage({
     this.setData({
       hasClick: false
     })
+    this.lotteryRequest()
   },
 
   drawAgain () {
     this.setData({
       hasClick: false
     })
+    this.lotteryRequest()
   },
 
   // 抽奖记录
