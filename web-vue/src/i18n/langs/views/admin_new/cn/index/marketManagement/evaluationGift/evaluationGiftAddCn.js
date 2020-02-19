@@ -58,5 +58,6 @@ export const cn = {
   pslink: '请设置活动链接',
   piNumPrizes: '请输入奖品份数',
   updateSuccessed: '更新成功',
-  addSuccessed: '添加成功'
+  addSuccessed: '添加成功',
+  noLimit: '不限制'
 }
