@@ -24,7 +24,7 @@ public class DataDemonstrationVo {
      */
     private int orderNum;
     /** 总支付金额 */
-    private int totalPaidSum;
+    private BigDecimal totalPaidSum;
     /** 支付用户数 */
     private int paidUserNum;
     /** 访问下单转化率 */
