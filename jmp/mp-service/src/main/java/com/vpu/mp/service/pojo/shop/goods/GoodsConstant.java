@@ -106,6 +106,8 @@ public class GoodsConstant {
      * 指定时间上架
      */
     public static final Byte POINT_TIME_TO_ON_SALE = 1;
+    /**非指定时间上架*/
+    public static final Byte NOT_TIME_TO_ON_SALE = 0;
 
     /*** 会员专享状态：是*/
     public static final Byte CARD_EXCLUSIVE = 1;
