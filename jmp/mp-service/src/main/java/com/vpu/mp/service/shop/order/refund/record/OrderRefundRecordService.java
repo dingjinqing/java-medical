@@ -8,7 +8,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,7 +23,8 @@ import static com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
 public class OrderRefundRecordService extends ShopBaseService{
 	
 	public final OrderRefundRecord TABLE = ORDER_REFUND_RECORD;
-
+    private static final byte success = 1;
+    private static final byte fail = 2;
     /**
      * 非系统金额退款记录
      * @param refundSn 退款流水号
@@ -44,19 +44,33 @@ public class OrderRefundRecordService extends ShopBaseService{
 
         if(refundResult != null) {
             //成功
-            record.setDealStatus(NumberUtils.BYTE_ONE);
-            record.setDealStatusName("退款成功");
+            record.setDealStatus(success);
+            record.setDealStatusName("非系统金额退款成功");
             record.setDealRemark(refundResult.toString());
             record.setRefundAmount(
                 BigDecimalUtil.divide(new BigDecimal(refundResult.getRefundFee().toString()), new BigDecimal("100"))
             );
         }else {
             //失败
-            record.setDealStatus((byte)2);
-            record.setDealStatusName("退款失败");
+            record.setDealStatus(fail);
+            record.setDealStatusName("非系统金额退款失败");
             record.setDealRemark("见日志");
             record.setRefundAmount(BigDecimal.ZERO);
         }
         record.insert();
     }
+
+    /**
+     * 判断改退款订单是否存在非系统金额退款失败情况
+     * @param retId
+     * @return
+     */
+    public boolean isReturnSucess(Integer retId){
+        OrderRefundRecordRecord count = db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(fail))).fetchAny();
+        if(count != null) {
+            return false;
+        }
+        return true;
+	}
+
 }

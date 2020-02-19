@@ -46,6 +46,7 @@ import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
+import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Result;
@@ -110,6 +111,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     private OrderOperateSendMessage sendMessage;
     @Autowired
     private CouponService coupon;
+    @Autowired
+    private OrderRefundRecordService orderRefundRecord;
 
     @Override
 	public OrderServiceCode getServiceCode() {
@@ -181,8 +184,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						orderInfo.updateInReturn(rOrder, null, null);
 						//退款订单记录
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), "生成退款退货订单信息："+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
-					    //返回退款订单号
-                        result.setResult(rOrder.getReturnOrderSn());
 					}
 					//退款商品为空则初始化
 					if(CollectionUtils.isEmpty(returnGoods)) {
@@ -227,6 +228,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						//需要执行 完成后更新信息
 						finishUpdateInfo(order , rOrder , param);
 					}
+                    //暂存退款订单
+                    result.setResult(rOrder);
 				} catch (MpException e) {
 				    //TODO 处理异常状态，判断是否需要回滚
 					throw new MpException(e.getErrorCode());
@@ -239,9 +242,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					}
 				}
 			});
-            //消息推送
-            ReturnOrderRecord rOrder = returnOrder.getByReturnOrderSn((String) result.getResult());
-            sendMessage.send(rOrder, returnOrderGoods.getReturnGoods(rOrder.getOrderSn(), rOrder.getRetId()));
 		} catch (DataAccessException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
@@ -255,7 +255,19 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
-        return result;
+        //消息推送
+        ReturnOrderRecord rOrder = (ReturnOrderRecord)result.getResult();
+        sendMessage.send(rOrder, returnOrderGoods.getReturnGoods(rOrder.getOrderSn(), rOrder.getRetId()));
+        //判断
+        if(orderRefundRecord.isReturnSucess(rOrder.getRetId())) {
+            result.setResult(rOrder.getReturnOrderSn());
+            return result;
+        }else {
+            result.setErrorCode(JsonResultCode.CODE_ORDER_RETURN_WX_FAIL);
+            result.setResult(null);
+            return result;
+        }
+
 	}
 
     @Override

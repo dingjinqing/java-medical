@@ -547,7 +547,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_RETURN_ORDER_SN_NOT_NULL = "order.return.order.sn.not.null";
     public static final String MSG_ORDER_REMARK_NOT_NULL = "order.remark.not.null";
     public static final String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order.remark.type.not.null";
-    public static final String MSG_ORDER_RETURN_WX_FAILL = "order.return.wx.fail";
+    public static final String MSG_ORDER_RETURN_WX_FAIL = "order.return.wx.fail";
     public static final String MSG_ORDER_RETURN_METHOD_REFLECT_ERROR = "order.return.method.reflect.error";
     public static final String MSG_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO = "order.return.after.returnamount.great.than.zero";
     public static final String MSG_ORDER_RETURNING_RETURN_METHOD_ERROR = "order.returning.return.method.error";
