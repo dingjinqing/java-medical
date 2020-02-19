@@ -74,6 +74,10 @@ import {
 import {
   cn as assetsManage
 } from './views/admin_new/cn/index/overview/assetsManage/assetsManageCn'
+// 商品统计
+import {
+  cn as goodsStaticties
+} from './views/admin_new/cn/index/overview/goodsStaticties/goodsStatictiesCn'
 
 // 用户画像
 import {
@@ -1088,7 +1092,8 @@ const cn = {
   integralExchange, // 积分兑换
   divideScorePoints, // 瓜分积分
   pictureHotSpot, //  图片热区
-  carouselPicture // 轮播图模块
+  carouselPicture, // 轮播图模块
+  goodsStaticties // 商品统计
 }
 
 export default cn
