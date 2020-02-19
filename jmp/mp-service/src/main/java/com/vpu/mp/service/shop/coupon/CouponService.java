@@ -536,6 +536,7 @@ public class CouponService extends ShopBaseService {
     public Integer getCanUseCouponNum(Integer userId) {
         Result<Record1<Integer>> record = db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
             .where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)
+            		.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(DateUtil.getSqlTimestamp()))))
             .fetch();
         return record.get(0).into(Integer.class);
