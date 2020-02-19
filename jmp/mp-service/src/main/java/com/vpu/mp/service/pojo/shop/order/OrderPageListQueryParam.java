@@ -59,7 +59,7 @@ public class OrderPageListQueryParam {
 	public Byte[] pinStatus;
 
 	/**
-	 * 退货退款订单特色参数
+	 * 退货退款订单特色参数start
 	 */
 	/** 退-退款编号 */
 	public String returnOrderSn;
@@ -71,6 +71,11 @@ public class OrderPageListQueryParam {
 	public Timestamp returnEnd;
 	/** 退款退货状态*/
 	public Byte refundStatus;
+	/**状态集合:null全部；1商家待处理；2买家待处理；3已完成*/
+	public Byte stateCollection;
+    /**
+     * 退货退款订单特色参数end
+     */
     /**营销活动主键 过滤某营销活动订单*/
 	public Integer activityId;
 	/**用户id*/

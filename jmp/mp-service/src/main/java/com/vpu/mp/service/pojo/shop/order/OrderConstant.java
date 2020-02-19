@@ -355,6 +355,15 @@ public class OrderConstant {
 	public static final byte SEARCH_RETURNSTATUS_61 = 61;
 	/**商家拒绝退款申请*/
 	public static final byte SEARCH_RETURNSTATUS_60 = 60;
+    /**
+     * 	前端搜索退款订单的stateCollection与sql对应的关系(/**状态集合:1商家待处理；2买家待处理；3已完成)
+     */
+    /**1商家待处理*/
+    public static final byte STATE_COLLECTION_1 = 1;
+    /**2买家待处理*/
+    public static final byte STATE_COLLECTION_2 = 2;
+    /**3已完成*/
+    public static final byte STATE_COLLECTION_3 = 3;
 
 	/**
 	 * 买单订单状态

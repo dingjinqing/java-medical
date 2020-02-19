@@ -132,6 +132,20 @@ public class ReturnOrderService extends ShopBaseService{
 		if (param.getReturnEnd() != null) {
 			select.where(TABLE.APPLY_TIME.le(param.getReturnEnd()));
 		}
+		if (param.getStateCollection() != null) {
+            switch (param.getStateCollection()) {
+                case OrderConstant.STATE_COLLECTION_1:
+                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDITING).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    break;
+                case OrderConstant.STATE_COLLECTION_2:
+                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDIT_PASS));
+                    break;
+                case OrderConstant.STATE_COLLECTION_3:
+                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH)).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_REFUSE)).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_CLOSE)));
+                    break;
+                default:
+            }
+        }
 		return select;
 	}
 
