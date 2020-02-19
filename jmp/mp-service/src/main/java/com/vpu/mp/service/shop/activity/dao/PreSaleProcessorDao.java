@@ -140,6 +140,7 @@ public class PreSaleProcessorDao extends PreSaleService {
             PreSalePrdMpVo v= new PreSalePrdMpVo();
             v.setProductId(record.getProductId());
             v.setStock(record.getPresaleNumber());
+            v.setSaleNumber(record.getSaleNumber());
             v.setPreSalePrice(record.getPresalePrice());
             // 阶段付款
             if (PreSaleService.PRE_SALE_TYPE_SPLIT.equals(vo.getPreSaleType())) {
