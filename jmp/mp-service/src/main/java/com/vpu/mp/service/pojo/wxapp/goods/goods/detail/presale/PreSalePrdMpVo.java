@@ -15,7 +15,8 @@ public class PreSalePrdMpVo {
     private Integer productId;
     /**规格库存*/
     private Integer stock;
-
+    /**当前规格已售数量*/
+    private Integer saleNumber;
     /**预售价格*/
     private BigDecimal preSalePrice;
     /**定金*/

@@ -34,10 +34,12 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -578,7 +580,9 @@ public class CommodityStatisticsService extends ShopBaseService {
     public <T extends Number> ChartData getChartData(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
                                                      RankingParam param,
                                                      Field<T> field, byte unit,
-                                                     BiPredicate<Record4<Date, Integer, T, String>, LocalDate> rule) {
+                                                     BiPredicate<Record4<Date, Integer, T, String>, LocalDate> rule,
+                                                     Function<LocalDate, String> func,
+                                                     BiPredicate<String, LocalDate> compare) {
         List<String> columns = new ArrayList<String>() {{
             add("Date");
         }};
@@ -586,7 +590,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         source.forEach((k, v) -> {
             columns.add(v.getValue(INTEGER_ZERO, GOODS.GOODS_NAME));
             param.setUnit(unit);
-            dayCharData(rows, v, getRefDateList(param), rule, field);
+            dayCharData(rows, v, getRefDateList(param), rule, field, func, compare);
         });
         return ChartData.builder().columns(columns).rows(rows).build();
     }
@@ -629,12 +633,12 @@ public class CommodityStatisticsService extends ShopBaseService {
         source.forEach((k, v) -> {
             columns.add(v.getValue(INTEGER_ZERO, GOODS.GOODS_NAME));
             param.setUnit(BYTE_ZERO);
-            dayCharData(dayRows, v, getRefDateList(param), this::dayRule, field);
+            dayCharData(dayRows, v, getRefDateList(param), this::dayRule, field, this::dayDate, this::dayCompare);
             weekCharData(weekRows, v, getRefDateList1(param), this::weekRule, field);
             param.setUnit(BYTE_ONE);
-            dayCharData(monthRows, v, getRefDateList(param), this::monthRule, field);
+            dayCharData(monthRows, v, getRefDateList(param), this::monthRule, field, this::monthDate, this::monthCompare);
             param.setUnit(BYTE_TWO);
-            dayCharData(yearRows, v, getRefDateList(param), this::yearRule, field);
+            dayCharData(yearRows, v, getRefDateList(param), this::yearRule, field, this::yearDate, this::yearCompare);
         });
 
         return new HashMap<String, ChartData>(4) {{
@@ -645,62 +649,57 @@ public class CommodityStatisticsService extends ShopBaseService {
         }};
     }
 
-    public TableData getTableData(RankingParam param, List<Map<String, Object>> rows) {
+    public TableData getTableData(RankingParam param, List<Map<String, Object>> rows, Function<LocalDate, String> func) {
         Set<String> goodsName = rows.stream().findAny().orElse(EMPTY_MAP).keySet();
+        goodsName.remove("Date");
         List<String> refDate;
         if (BYTE_THREE.equals(param.getUnit())) {
             refDate = getRefDateList1(param).stream().map(Object::toString).collect(Collectors.toList());
         } else {
-            refDate = getRefDateList(param).stream().map(Object::toString).collect(Collectors.toList());
+            refDate = getRefDateList(param).stream().map(func).collect(Collectors.toList());
         }
         return TableData.builder().refDate(refDate).goodsName(goodsName).arrayData(getTableArrayData(rows)).build();
     }
 
-    public List<List<Object>> getTableArrayData(final List<Map<String, Object>> rows) {
+    public Object[][] getTableArrayData(final List<Map<String, Object>> rows) {
 
-        List<Map<String, Object>> copy = rowCopy(rows);
-        List<List<Object>> list = new ArrayList<List<Object>>() {{
-            copy.forEach(e -> {
-                e.remove("Date");
-                add(new ArrayList<>(e.values()));
-            });
-        }};
-        swapHV(list);
-        return list;
+        Object[][] list = new Object[rows.size()][];
+
+        for (int i = 0; i < rows.size(); i++) {
+            Map<String, Object> tempMap = rows.get(i);
+            Object dateValue = tempMap.get("Date");
+            tempMap.remove("Date");
+            list[i] = tempMap.values().toArray();
+            tempMap.put("Date", dateValue);
+        }
+        return swapHV(list);
     }
 
     // 二维数组行列转换
-    private void swapHV(List<List<Object>> array) {
-        for (int i = 0; i < array.size(); i++) {
-            for (int j = i; j < array.get(i).size(); j++) {
-                Object temp = array.get(i).get(j);
-                array.get(i).set(j, array.get(j).get(i));
-                array.get(j).set(i, temp);
+    private Object[][] swapHV(Object[][] array) {
+        if (array.length <= 0) {
+            return array;
+        }
+        Object[][] result = new Object[array[0].length][array.length];
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[0].length; j++) {
+                result[j][i] = array[i][j];
             }
         }
-    }
-
-    private List<Map<String, Object>> rowCopy(final List<Map<String, Object>> rows) {
-        List<Map<String, Object>> copy = new ArrayList<>(rows.size());
-        rows.forEach(e -> {
-            Map<String, Object> map = new HashMap<>(e.size());
-            e.forEach(map::put);
-            copy.add(map);
-        });
-        return copy;
+        return result;
     }
 
     public Map<String, TableData> getAllTableData(RankingParam param, Map<String, ChartData> chartData) {
-        return new HashMap<String, TableData>(4) {{
-            param.setUnit(BYTE_ZERO);
-            put(DAY_TABLE_DATA, getTableData(param, chartData.get(DAY_CHAR_DATA).getRows()));
-            param.setUnit(BYTE_THREE);
-            put(WEEK_TABLE_DATA, getTableData(param, chartData.get(WEEK_CHAR_DATA).getRows()));
-            param.setUnit(BYTE_ONE);
-            put(MONTH_TABLE_DATA, getTableData(param, chartData.get(MONTH_CHAR_DATA).getRows()));
-            param.setUnit(BYTE_TWO);
-            put(YEAR_TABLE_DATA, getTableData(param, chartData.get(YEAR_CHAR_DATA).getRows()));
-        }};
+        Map<String, TableData> map = new HashMap<>(4);
+        param.setUnit(BYTE_ZERO);
+        map.put(DAY_TABLE_DATA, getTableData(param, chartData.get(DAY_CHAR_DATA).getRows(), this::dayDate));
+        param.setUnit(BYTE_THREE);
+        map.put(WEEK_TABLE_DATA, getTableData(param, chartData.get(WEEK_CHAR_DATA).getRows(), this::dayDate));
+        param.setUnit(BYTE_ONE);
+        map.put(MONTH_TABLE_DATA, getTableData(param, chartData.get(MONTH_CHAR_DATA).getRows(), this::monthDate));
+        param.setUnit(BYTE_TWO);
+        map.put(YEAR_TABLE_DATA, getTableData(param, chartData.get(YEAR_CHAR_DATA).getRows(), this::yearDate));
+        return map;
     }
 
     /**
@@ -811,12 +810,14 @@ public class CommodityStatisticsService extends ShopBaseService {
                                                 final Result<Record4<Date, Integer, T, String>> results,
                                                 List<LocalDate> showDate,
                                                 BiPredicate<Record4<Date, Integer, T, String>, LocalDate> rule,
-                                                Field<T> field) {
+                                                Field<T> field,
+                                                Function<LocalDate, String> func,
+                                                BiPredicate<String, LocalDate> compare) {
         String name = results.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME);
         AtomicBoolean flag = new AtomicBoolean(false);
 
         showDate.forEach(d -> {
-            Optional<Map<String, Object>> optional = rows.stream().filter(m -> LocalDate.parse(m.get("Date").toString()).compareTo(d) == 0).findFirst();
+            Optional<Map<String, Object>> optional = rows.stream().filter(m -> compare.test(m.get("Date").toString(), d)).findFirst();
             Map<String, Object> map;
             if (optional.isPresent()) {
                 map = optional.get();
@@ -825,7 +826,7 @@ public class CommodityStatisticsService extends ShopBaseService {
                 flag.set(true);
             }
             List<Record4<Date, Integer, T, String>> temp = results.stream().filter(e -> rule.test(e, d)).collect(Collectors.toList());
-            map.putIfAbsent("Date", Date.valueOf(d));
+            map.putIfAbsent("Date", func.apply(d));
             Class<T> clazz = field.getType();
             if (clazz.equals(BigDecimal.class)) {
                 map.put(name, temp.stream().map(e -> e.getValue(field)).map(Number::doubleValue).reduce(DOUBLE_ZERO, Double::sum));
@@ -839,6 +840,30 @@ public class CommodityStatisticsService extends ShopBaseService {
             }
             flag.set(false);
         });
+    }
+
+    private String dayDate(LocalDate date) {
+        return date.toString();
+    }
+
+    private boolean dayCompare(String s, LocalDate date) {
+        return s.equals(dayDate(date));
+    }
+
+    private String monthDate(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+    }
+
+    private boolean monthCompare(String s, LocalDate date) {
+        return s.equals(monthDate(date));
+    }
+
+    private String yearDate(LocalDate date) {
+        return String.valueOf(date.getYear());
+    }
+
+    private boolean yearCompare(String s, LocalDate date) {
+        return s.equals(yearDate(date));
     }
 
     // 构造每周的图形数据
@@ -912,16 +937,16 @@ public class CommodityStatisticsService extends ShopBaseService {
         List<GoodsEffectExportVo> exportVos = new ArrayList<>();
         switch (param.getUnit()) {
             case 1:
-                chartData = getChartData(source, param, field, param.getUnit(), this::monthRule);
+                chartData = getChartData(source, param, field, param.getUnit(), this::monthRule, this::monthDate, this::monthCompare);
                 break;
             case 2:
-                chartData = getChartData(source, param, field, param.getUnit(), this::yearRule);
+                chartData = getChartData(source, param, field, param.getUnit(), this::yearRule, this::yearDate, this::yearCompare);
                 break;
             case 3:
                 chartData = getChartData1(source, param, field);
                 break;
             default:
-                chartData = getChartData(source, param, field, param.getUnit(), this::dayRule);
+                chartData = getChartData(source, param, field, param.getUnit(), this::dayRule, this::dayDate, this::dayCompare);
                 break;
         }
         chartData.getRows().forEach(e -> {

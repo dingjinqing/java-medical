@@ -34,6 +34,9 @@ export const en = {
   refundState: 'Refund status notification',
   storeRemind: 'Store self-mention period reminder',
   pickUpGoodsSucess: 'Pickup success notification',
+  integralCustomRemind: 'Integral Consumption Reminder',
+  getMoneyApply: 'Withdrawal Application Notice',
+  memberUpdate: 'Member Update Notification',
 
   // 交易物流 -> 发送条件
   sendOnCanellationNotice: 'Send immediately when the reservation is cancelled',
@@ -48,6 +51,9 @@ export const en = {
   sendOnRefundState: 'Sent when refunding',
   sendOnStoreRemind: 'The store sends half an hour before the due date expires.',
   sendOnPickUpGoodsSucess: 'Sent when the pickup is completed',
+  sendOnIntegralChange: 'Send immediately when account points change',
+  sendOnGetMoney: 'Withdraw',
+  sendOnMemberUpdate: 'Member Upgrade Notification',
 
   // 交易物流 -> 公众号消息
   sendMessagePublice: 'Send a public message',

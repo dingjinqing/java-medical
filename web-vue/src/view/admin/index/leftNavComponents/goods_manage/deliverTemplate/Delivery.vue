@@ -241,12 +241,20 @@ export default {
 
       // 数据处理
       if (this.delivery.contentParam.areaParam.length > 0) {
-        this.delivery.contentParam.areaParam[0].area_list = this.delivery.contentParam.areaParam[0].area_list.join(',')
-        this.delivery.contentParam.areaParam[0].area_text = this.delivery.contentParam.areaParam[0].area_text.join(',')
+        this.delivery.contentParam.areaParam.forEach((item, index) => {
+          item.area_list = item.area_list.join(',')
+          item.area_text = item.area_text.join(',')
+        })
+        // this.delivery.contentParam.areaParam[0].area_list = this.delivery.contentParam.areaParam[0].area_list.join(',')
+        // this.delivery.contentParam.areaParam[0].area_text = this.delivery.contentParam.areaParam[0].area_text.join(',')
       }
       if (this.delivery.contentParam.feeConditionParam.length > 0) {
-        this.delivery.contentParam.feeConditionParam[0].area_list = this.delivery.contentParam.feeConditionParam[0].area_list.join(',')
-        this.delivery.contentParam.feeConditionParam[0].area_text = this.delivery.contentParam.feeConditionParam[0].area_text.join(',')
+        this.delivery.contentParam.feeConditionParam.forEach((item, index) => {
+          item.area_list = item.area_list.join(',')
+          item.area_text = item.area_text.join(',')
+        })
+        // this.delivery.contentParam.feeConditionParam[0].area_list = this.delivery.contentParam.feeConditionParam[0].area_list.join(',')
+        // this.delivery.contentParam.feeConditionParam[0].area_text = this.delivery.contentParam.feeConditionParam[0].area_text.join(',')
       }
 
       console.log(this.delivery)
@@ -275,12 +283,20 @@ export default {
         }
         if (regionData[1].length > 0) {
           // 数据转换为数组
-          if (Array.isArray(this.delivery.contentParam.areaParam[0].area_list) === false) {
-            this.delivery.contentParam.areaParam[0].area_list = this.delivery.contentParam.areaParam[0].area_list.split(',')
-          }
-          if (Array.isArray(this.delivery.contentParam.areaParam[0].area_text) === false) {
-            this.delivery.contentParam.areaParam[0].area_text = this.delivery.contentParam.areaParam[0].area_text.split(',')
-          }
+          this.delivery.contentParam.areaParam.forEach((item, index) => {
+            if (Array.isArray(item.area_list) === false) {
+              item.area_list = item.area_list.split(',')
+            }
+            if (Array.isArray(item.area_text) === false) {
+              item.area_text = item.area_text.split(',')
+            }
+          })
+          // if (Array.isArray(this.delivery.contentParam.areaParam[0].area_list) === false) {
+          //   this.delivery.contentParam.areaParam[0].area_list = this.delivery.contentParam.areaParam[0].area_list.split(',')
+          // }
+          // if (Array.isArray(this.delivery.contentParam.areaParam[0].area_text) === false) {
+          //   this.delivery.contentParam.areaParam[0].area_text = this.delivery.contentParam.areaParam[0].area_text.split(',')
+          // }
         }
       } else {
         this.$message.warning('输入格式不正确, 请正确填写可配送区域')
@@ -297,12 +313,20 @@ export default {
             return stats++
           } else {
             // 数据转换为数组
-            if (Array.isArray(this.delivery.contentParam.feeConditionParam[0].area_list) === false) {
-              this.delivery.contentParam.feeConditionParam[0].area_list = this.delivery.contentParam.feeConditionParam[0].area_list.split(',')
-            }
-            if (Array.isArray(this.delivery.contentParam.feeConditionParam[0].area_text) === false) {
-              this.delivery.contentParam.feeConditionParam[0].area_text = this.delivery.contentParam.feeConditionParam[0].area_text.split(',')
-            }
+            this.delivery.contentParam.feeConditionParam.forEach((item, index) => {
+              if (Array.isArray(item.area_list) === false) {
+                item.area_list = item.area_list.split(',')
+              }
+              if (Array.isArray(item.area_text) === false) {
+                item.area_text = item.area_text.split(',')
+              }
+            })
+            // if (Array.isArray(this.delivery.contentParam.feeConditionParam[0].area_list) === false) {
+            //   this.delivery.contentParam.feeConditionParam[0].area_list = this.delivery.contentParam.feeConditionParam[0].area_list.split(',')
+            // }
+            // if (Array.isArray(this.delivery.contentParam.feeConditionParam[0].area_text) === false) {
+            //   this.delivery.contentParam.feeConditionParam[0].area_text = this.delivery.contentParam.feeConditionParam[0].area_text.split(',')
+            // }
           }
         } else {
           this.$message.warning('输入格式不正确, 请正确填写包邮条件')

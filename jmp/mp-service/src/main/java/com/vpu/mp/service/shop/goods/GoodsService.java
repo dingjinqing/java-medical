@@ -2168,7 +2168,7 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
-     * 得到在售商品id集合
+     * 得到指定条件下的商品id集合
      *
      * @param catIds   指定平台分类id,逗号分隔的字符串
      * @param sortIds  指定商家分类id,逗号分隔的字符串
@@ -2204,5 +2204,13 @@ public class GoodsService extends ShopBaseService {
             selectConditionStep.and(GOODS.GOODS_NUMBER.greaterThan(NumberUtils.INTEGER_ZERO));
         }
         return selectConditionStep.fetchInto(Integer.class);
+    }
+
+    /**
+     * 所有设置了专享商品标志的商品ID
+     * @return
+     */
+    public List<Integer> getAllExclusiveGoodsIds(){
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(GOODS.IS_CARD_EXCLUSIVE.eq(GoodsConstant.CARD_EXCLUSIVE)).fetchInto(Integer.class);
     }
 }

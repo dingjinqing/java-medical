@@ -114,6 +114,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         List<PreSalePrdMpVo> preSalePrdMpVos = goodsPreSaleInfo.getPreSalePrdMpVos();
 
         int goodsNum = 0;
+        int saleNumber = 0;
         List<PreSalePrdMpVo> newPreSalePrds = new ArrayList<>(prdMap.size());
         for (PreSalePrdMpVo preSalePrd : preSalePrdMpVos) {
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(preSalePrd.getProductId());
@@ -124,14 +125,16 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             int stock = preSalePrd.getStock()>goodsPrdMpVo.getPrdNumber()? goodsPrdMpVo.getPrdNumber():preSalePrd.getStock();
             preSalePrd.setStock(stock);
             goodsNum+=stock;
+            saleNumber+=preSalePrd.getSaleNumber();
             preSalePrd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
             newPreSalePrds.add(preSalePrd);
         }
         if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(goodsPreSaleInfo.getActState())) {
-            log.debug("小程序-商品详情-砍价商品数量已用完");
+            log.debug("小程序-商品详情-预售商品数量已用完");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
         capsule.setGoodsNumber(goodsNum);
+        capsule.setGoodsSaleNum(saleNumber);
         goodsPreSaleInfo.setPreSalePrdMpVos(newPreSalePrds);
         capsule.setActivity(goodsPreSaleInfo);
     }

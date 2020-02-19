@@ -1,9 +1,7 @@
 package com.vpu.mp.service.shop.market.reduceprice;
 
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -11,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
@@ -28,8 +27,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
 import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -474,6 +473,43 @@ public class ReducePriceService extends ShopBaseService {
     public ReducePriceRecord getReducePriceRecord(Integer activityId){
        return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(REDUCE_PRICE.ID.eq(activityId)))
             .fetchAny();
+    }
+
+    /**
+     * 考虑限时降价、首单特惠、等级会员价三种情况下，得出的商品价格
+     * 首单特惠最高优先级，限时降价与等级会员之间价取低价
+     * @param goodsId
+     * @param userId
+     * @return
+     */
+    public GoodsPriceBo parseGoodsPrice(Integer goodsId,Integer userId){
+        GoodsPriceBo res = new GoodsPriceBo();
+
+        //处理首单特惠
+        if(saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(userId)){
+            FirstSpecialRecord firstSpecialRecord = saas.getShopApp(getShopId()).firstSpecial.getActInfoByGoodsId(goodsId);
+            if(null != firstSpecialRecord){
+                List<FirstSpecialProductRecord> firstSpecialProductRecordList = saas.getShopApp(getShopId()).firstSpecial.getProductListById(firstSpecialRecord.getId(),goodsId);
+                List<BigDecimal> prdPriceList = firstSpecialProductRecordList.stream().map(FirstSpecialProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
+
+                res.setGoodsPrice(prdPriceList.get(0));
+                res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                res.setGoodsPriceAction((byte)3);
+                return res;
+            }
+        }
+
+        GoodsRecord goodsInfo = goodsService.getGoodsRecordById(goodsId);
+
+        //处理限时降价
+        if(goodsInfo.getGoodsType() == BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE){
+
+        }
+
+
+
+
+        return null;
     }
 
 }

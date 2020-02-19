@@ -483,13 +483,13 @@
               <template slot-scope="scope">{{ scope.$index + 1 }}</template>
             </el-table-column>
             <el-table-column
-              prop="createTime"
+              prop="addTime"
               label="添加时间"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              prop="remarks"
+              prop="remark"
               label="内容"
               align="center"
             >
@@ -502,7 +502,7 @@
                 <span
                   style="font-size: 22px;color: #5a8bff;"
                   class="el-icon-delete"
-                  @click="delRemarksHandler(scope.$index)"
+                  @click="delRemarksHandler(scope.row.id)"
                 ></span>
               </template>
             </el-table-column>
@@ -515,13 +515,13 @@
         class="dialog-footer"
       >
         <el-button
-          @click="cancelremarks"
+          @click="closeremarks"
           size="small"
         >取 消</el-button>
         <el-button
           type="primary"
           size="small"
-          @click="sureremarks"
+          @click="closeremarks"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -530,7 +530,7 @@
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList, delDistributor, setInviteCode } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorGroupList, delDistributor, setInviteCode, addRemarks, getRemarksList, delRemarks } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 
@@ -595,18 +595,7 @@ export default {
       remarksDialog: false,
       remarksUserId: '',
       remarksText: '',
-      remarksList: [
-        // {
-        //   createTime: '2019-12-03 17:36:32',
-        //   remarks: '备注111'
-        // }, {
-        //   createTime: '2019-12-03 17:36:32',
-        //   remarks: '备注222'
-        // }, {
-        //   createTime: '2019-12-03 17:36:32',
-        //   remarks: '备注333'
-        // }
-      ]
+      remarksList: []
     }
   },
   mounted () {
@@ -748,35 +737,47 @@ export default {
     remarksHandler (userId) {
       this.remarksUserId = userId // 要操作的用户
       this.remarksDialog = !this.remarksDialog
+      this.getRemarksList()
+    },
+
+    // 获取备注列表
+    getRemarksList () {
+      getRemarksList({ userId: this.remarksUserId }).then(res => {
+        if (res.error === 0) {
+          this.remarksList = res.content
+          this.remarksText = ''
+        }
+      })
     },
 
     // 添加备注信息
     addRemarksHandler () {
-      var d = new Date()
-      var nowTime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds()
       if (this.remarksText === '') {
         this.$message.warning('请填写备注信息')
       } else {
-        this.remarksList.push({
-          createTime: nowTime,
-          remarks: this.remarksText
+        addRemarks({
+          userId: this.remarksUserId,
+          remark: this.remarksText
+        }).then(res => {
+          if (res.error === 0) {
+            this.getRemarksList()
+          }
         })
       }
     },
 
     // 删除备注信息
-    delRemarksHandler (index) {
-      this.remarksList.splice(index, 1)
+    delRemarksHandler (id) {
+      delRemarks(id).then(res => {
+        if (res.error === 0) {
+          this.$message.success('删除成功')
+          this.getRemarksList()
+        }
+      })
     },
 
-    // 确定会员备注
-    sureremarks () {
-      this.remarksText = ''
-      this.remarksDialog = false
-    },
-
-    // 取消会员备注
-    cancelremarks () {
+    // 关闭会员备注弹窗
+    closeremarks () {
       this.remarksText = ''
       this.remarksDialog = false
     },

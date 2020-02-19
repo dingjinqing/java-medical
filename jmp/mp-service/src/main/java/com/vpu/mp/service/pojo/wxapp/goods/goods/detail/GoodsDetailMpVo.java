@@ -44,8 +44,11 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private String goodsDesc;
     /**商品广告词*/
     private String goodsAd;
+    /**品牌id，平台分类id，商家分类id*/
     private Integer brandId;
     private String brandName;
+    private Integer catId;
+    private Integer sortId;
     /**商品使用的运费模板id*/
     private Integer deliverTemplateId;
     /**商品发货地*/
@@ -106,6 +109,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
             ", goodsAd='" + goodsAd + '\'' +
             ", brandId=" + brandId +
             ", brandName='" + brandName + '\'' +
+            ", catId=" + catId +
+            ", sortId=" + sortId +
             ", deliverTemplateId=" + deliverTemplateId +
             ", deliverPlace='" + deliverPlace + '\'' +
             ", goodsWeight=" + goodsWeight +
@@ -116,9 +121,11 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
             ", delFlag=" + delFlag +
             ", isCollected=" + isCollected +
             ", comment=" + comment +
+            ", goodsGifts=" + goodsGifts +
             ", coupons=" + coupons +
             ", memberCards=" + memberCards +
             ", activity=" + activity +
+            ", promotions=" + promotions +
             ", pledgeSwitch=" + pledgeSwitch +
             ", pledgeList=" + pledgeList +
             '}'+super.toString();

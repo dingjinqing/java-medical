@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.dao.GoodsCardCoupleDao;
@@ -137,7 +138,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
      * @param userId
      * @return
      */
-	public List<Integer> getUserExclusiveGoodsIds(Integer userId){
+	protected List<Integer> getUserExclusiveGoodsIds(Integer userId){
         Map<Byte, List<Integer>> userGoodsCardCoupleGctaIds = getGoodsCardCouple(userId);
         List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(userGoodsCardCoupleGctaIds.get(3),userGoodsCardCoupleGctaIds.get(2),userGoodsCardCoupleGctaIds.get(4));
         List<Integer> res = userGoodsCardCoupleGctaIds.get(1);
@@ -154,5 +155,26 @@ public class GoodsCardCoupleService extends ShopBaseService {
                 return Collections.emptyList();
             }
         }
+    }
+
+    /**
+     * 所有专享商品中用户不能买的商品ID
+     * @param userId
+     * @return
+     */
+    public List<Integer> getGoodsUserNotExclusive(Integer userId){
+	    //所有的专享商品
+        List<Integer> allExclusiveGoodsIds = goodsService.getAllExclusiveGoodsIds();
+        if(CollectionUtils.isEmpty(allExclusiveGoodsIds)){
+            return Collections.emptyList();
+        }
+
+        //用户的专享商品
+        List<Integer> userExclusiveGoodsIds = getUserExclusiveGoodsIds(userId);
+        if(CollectionUtils.isEmpty(userExclusiveGoodsIds)){
+            return allExclusiveGoodsIds;
+        }
+
+        return Util.diffList(allExclusiveGoodsIds,userExclusiveGoodsIds);
     }
 }

@@ -136,12 +136,20 @@ export default {
               if (item.content.limitParam.limit_deliver_area === 0) {
                 this.tableData.push(item.content.limitParam)
                 if (item.content.areaParam.length > 0) {
-                  this.tableData.push(item.content.areaParam[0])
-                  item.content.areaParam[0].area_text = item.content.areaParam[0].area_text.join('，')
+                  item.content.areaParam.forEach((val, key) => {
+                    val.area_text = val.area_text.join(',')
+                    this.tableData.push(val)
+                  })
+                  // this.tableData.push(item.content.areaParam[0])
+                  // item.content.areaParam[0].area_text = item.content.areaParam[0].area_text.join(',')
                 }
               } else {
-                this.tableData.push(item.content.areaParam[0])
-                item.content.areaParam[0].area_text = item.content.areaParam[0].area_text.join('，')
+                item.content.areaParam.forEach((val, key) => {
+                  val.area_text = val.area_text.join(',')
+                  this.tableData.push(val)
+                })
+                // this.tableData.push(item.content.areaParam[0])
+                // item.content.areaParam[0].area_text = item.content.areaParam[0].area_text.join(',')
               }
               this.tableList.push(this.tableData)
               item.tableList = this.tableList

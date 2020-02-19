@@ -29,6 +29,8 @@ public class PreSaleMpVo extends GoodsActivityDetailMp {
     private Boolean returnDeposit;
     /**是否展示预售数量 true 是，false 否*/
     private Boolean showPreSaleNumber;
+    /**已预订数量（直接去取的数据库sale_number之和）*/
+    private Integer saleNumber;
     /**是否支持原价购买true 支持，false否*/
     private Boolean originalBuy;
     /**用户单次可购买数量*/
