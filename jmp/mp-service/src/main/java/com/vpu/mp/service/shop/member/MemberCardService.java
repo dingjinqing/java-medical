@@ -2163,12 +2163,12 @@ public class MemberCardService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public JsonResultCode insertCardNo(String lang, CardBatchParam param) {
+	public CardInsertVo insertCardNo(String lang, CardBatchParam param) {
 		MultipartFile multipartFile = param.getFile();
 		ExcelTypeEnum type = ExcelUtil.checkFile(multipartFile);
 		if (type == null) {
 			// 文件类型不正确，请上传Excel文件
-			return JsonResultCode.CODE_EXCEL_ERRO;
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_ERRO,0);
 		}
 		Workbook workbook = null;
 		try {
@@ -2177,7 +2177,7 @@ public class MemberCardService extends ShopBaseService {
 		} catch (IOException e) {
 			logger().info("excel读取错误");
 			logger().info(e.getMessage(), e);
-			return JsonResultCode.CODE_EXCEL_READ_ERRO;
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_READ_ERRO,0);
 		}
 		UserImExcelWrongHandler handler = new UserImExcelWrongHandler();
 		ExcelReader excelReader = new ExcelReader(lang, workbook, handler);
@@ -2193,7 +2193,7 @@ public class MemberCardService extends ShopBaseService {
 			return importCardPwd(models, param);
 		}
 		logger().info("excelReader："+excelReader);
-		return JsonResultCode.CODE_FAIL;
+		return new CardInsertVo(JsonResultCode.CODE_FAIL,0);
 	}
 	
 	/**
@@ -2202,15 +2202,15 @@ public class MemberCardService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public JsonResultCode importCardCode(List<CardNoExcelVo> list,CardBatchParam param) {
+	public CardInsertVo importCardCode(List<CardNoExcelVo> list,CardBatchParam param) {
 		int newNumber = list.size();
 		if (newNumber > 10000) {
 			// return 单个批次不能超过10000';
-			return JsonResultCode.CODE_EXCEL_NUM_MAX;
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_NUM_MAX,0);
 		}
 		if (newNumber == 0) {
 			// return 单个批次不能为0';
-			return JsonResultCode.CODE_EXCEL_NUM_MIN;
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_NUM_MIN,0);
 		}
 		List<String> list2 = new ArrayList<String>();
 		for (CardNoExcelVo cardNoExcelVo : list) {
@@ -2219,7 +2219,7 @@ public class MemberCardService extends ShopBaseService {
 		boolean isRepeat = list2.size() != new HashSet<String>(list2).size();
 		if (isRepeat) {
 			// return "存在重复的领取码，请检查！";
-			return JsonResultCode.CODE_EXCEL_HAVE_SAME;
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_HAVE_SAME,0);
 		}
 		CardBatchParam param2=new CardBatchParam();
 		param2.setAction((byte)2);
@@ -2228,7 +2228,7 @@ public class MemberCardService extends ShopBaseService {
 		Integer batchId = cardDao.createCardBatch(param2);
 		if(batchId==0) {
 			logger().info("生成batchId错误");
-			return JsonResultCode.CODE_FAIL;
+			return new CardInsertVo(JsonResultCode.CODE_FAIL,0);
 		}
 		Integer groupId = cardDao.generateGroupId(batchId);
 		param2.setBatchId(batchId);
@@ -2236,9 +2236,9 @@ public class MemberCardService extends ShopBaseService {
 		int num = cardDao.insertCardReceiveCodeByCheck(param2, list2);
 		if(num==0) {
 			logger().info("导入存在问题");
-			return JsonResultCode.CODE_FAIL;
+			return new CardInsertVo(JsonResultCode.CODE_FAIL,0);
 		}
-		return JsonResultCode.CODE_SUCCESS;
+		return new CardInsertVo(JsonResultCode.CODE_SUCCESS,batchId);
 	}
 	
 	
@@ -2248,15 +2248,16 @@ public class MemberCardService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public JsonResultCode importCardPwd(List<CardNoPwdExcelVo> list,CardBatchParam param) {
+	public CardInsertVo importCardPwd(List<CardNoPwdExcelVo> list,CardBatchParam param) {
+		CardInsertVo vo=null;
 		int newNumber = list.size();
 		if (newNumber > 10000) {
 			// return 单个批次不能超过10000';
-			return JsonResultCode.CODE_EXCEL_NUM_MAX;
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_NUM_MAX, 0);
 		}
 		if (newNumber == 0) {
 			// return 单个批次不能为0';
-			return JsonResultCode.CODE_EXCEL_NUM_MIN;
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_NUM_MIN, 0);
 		}
 		List<String> list2 = new ArrayList<String>();
 		List<String> list3 = new ArrayList<String>();
@@ -2276,7 +2277,7 @@ public class MemberCardService extends ShopBaseService {
 		Integer batchId = cardDao.createCardBatch(param2);
 		if(batchId==0) {
 			logger().info("生成batchId错误");
-			return JsonResultCode.CODE_FAIL;
+			return new CardInsertVo(JsonResultCode.CODE_FAIL, 0);
 		}
 		Integer groupId = cardDao.generateGroupId(batchId);
 		param2.setBatchId(batchId);
@@ -2284,9 +2285,9 @@ public class MemberCardService extends ShopBaseService {
 		int num = cardDao.insertIntoCardReceiveCodeByCheck(param2, list2,list3);
 		if(num==0) {
 			logger().info("导入存在问题");
-			return JsonResultCode.CODE_FAIL;
+			return new CardInsertVo(JsonResultCode.CODE_FAIL, 0);
 		}
-		return JsonResultCode.CODE_SUCCESS;
+		return new CardInsertVo(JsonResultCode.CODE_SUCCESS, batchId);
 	}
 
 	/**

@@ -229,7 +229,6 @@ global.wxComponent({
       }
       if (this.select_prd) this.getPrdInfo()
     },
-    // 获得价格
     getPrdInfo() {
       let select_prd = this.select_prd
       let { limitBuyNum, limitMaxNum } = this.data.productsInfo
@@ -249,6 +248,9 @@ global.wxComponent({
       this.setData({
         checkedProduct: select_prd
       })
+      if(this.data.productsInfo.activity){
+        actLimit = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']].find(item => {return item.productId === select_prd.prdId})
+      }
       this.triggerEvent('productData', {
         goodsId: this.data.productsInfo.goodsId,
         ...select_prd,

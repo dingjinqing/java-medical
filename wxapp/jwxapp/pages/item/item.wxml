@@ -104,7 +104,7 @@
           参与砍价人数：{{goodsInfo.activity.bargainJoinNum}}
         </view>
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 10 && goodsInfo.activity.showPreSaleNumber}}">
-          已预定：{{goodsInfo.activity.bargainJoinNum}}
+          已预定：{{goodsInfo.activity.saleNumber || 0}}
         </view>
         <view class="flex-item" wx:if="{{!filter.includes([1,3,5,10],goodsInfo.activity.activityType)}}">
           销量：{{goodsInfo.goodsSaleNum}}

@@ -9,11 +9,11 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.*;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.wxapp.market.fullcut.MrkingStrategyGoodsListParam;
 import com.vpu.mp.service.pojo.wxapp.market.fullcut.MrkingStrategyGoodsListVo;
-import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
@@ -67,8 +67,6 @@ public class MrkingStrategyService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private GoodsService goodsService;
-    @Autowired
-    private MemberCardProcessorDao memberCardProcessorDao;
     @Autowired
     private GoodsCardCoupleService goodsCardCoupleService;
     @Autowired
@@ -242,8 +240,12 @@ public class MrkingStrategyService extends ShopBaseService {
                 goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
             }
 
-            //TODO 处理限时降价、首单特惠、会员等价卡价格 对商品价格的覆盖
-            
+            //处理限时降价、首单特惠、会员等级价对商品价格的覆盖
+            GoodsPriceBo goodsPriceBo = saas.getShopApp(getShopId()).reducePrice.parseGoodsPrice(goods.getGoodsId(),userId);
+            goods.setGoodsPriceAction(goodsPriceBo.getGoodsPriceAction());
+            goods.setGoodsPrice(goodsPriceBo.getGoodsPrice());
+            goods.setMaxPrice(goodsPriceBo.getMaxPrice());
+            goods.setMarketPrice(goodsPriceBo.getMaxPrice());
         });
         vo.setGoods(goodsPageResult);
         vo.setCondition(getMrkingStrategyCondition(param.getStrategyId()));
@@ -302,6 +304,15 @@ public class MrkingStrategyService extends ShopBaseService {
             select.where(GOODS.GOODS_ID.notIn(notInGoodsIds));
         }
         return getPageResult(select,currentPage,pageRows,MrkingStrategyGoodsListVo.Goods.class);
+    }
+
+    /**
+     *满折满减主商品文案
+     * @return
+     */
+    private MrkingStrategyGoodsListVo.FullPriceDoc getStrategyGoodsDoc(){
+        //TODO
+        return null;
     }
 
 

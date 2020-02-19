@@ -17,4 +17,6 @@ public class PledgeListVo {
   private String pledgeLogo;
   /** 承诺内容 */
   private String pledgeContent;
+    /** 优先级 */
+    private Integer level;
 }

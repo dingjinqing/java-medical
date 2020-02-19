@@ -156,4 +156,14 @@ public class MemberCardProcessorDao extends ShopBaseService {
 
         return gradeCard;
     }
+
+    /**
+     * 某商品、某等级的所有等级价格
+     * @param goodsId
+     * @param grade
+     * @return
+     */
+    public List<GradePrdRecord> getGoodsGradePrdListByGrade(Integer goodsId,String grade){
+        return db().selectFrom(GRADE_PRD).where(GRADE_PRD.GOODS_ID.eq(goodsId)).and(GRADE_PRD.GRADE.eq(grade)).fetch();
+    }
 }

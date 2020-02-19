@@ -397,6 +397,7 @@
                   :data="commonTableDataFive"
                   border
                   style="width: 100%"
+                  @current-change="handleCurrentChangeFive"
                 >
                   <el-table-column
                     prop="pageName"
@@ -496,9 +497,9 @@
                     >
                       <el-option
                         v-for="item in labelOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
                       >
                       </el-option>
                     </el-select>
@@ -530,7 +531,7 @@
                     v-for="(item,index) in labelValueCheckArr"
                     :key="index"
                     class="list"
-                  >{{item.label}}<img
+                  >{{item.name}}<img
                       @click="handleToClickDel(index,item)"
                       :src="$imageHost+'/image/admin/icon_delete.png'"
                       class="label-delete"
@@ -573,9 +574,9 @@
                   >
                     <el-option
                       v-for="item in membershipOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      :key="item.id"
+                      :label="item.cardName"
+                      :value="item.id"
                     >
                     </el-option>
                   </el-select>
@@ -585,13 +586,13 @@
                   >
                     <span
                       @click="handleToClickCustom(1)"
-                      style="padding:0 10px"
+                      style="padding:0 10px;cursor:pointer"
                     >刷新</span>|<span
                       @click="handleToClickCustom(2)"
-                      style="padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
+                      style="cursor:pointer;padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
                     >新建会员卡</span>|<span
                       @click="handleToClickCustom(3)"
-                      style="padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
+                      style="cursor:pointer;padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
                     >管理会员卡</span>
                   </div>
                 </div>
@@ -609,7 +610,7 @@
                       v-for="(item,index) in membershipValueCheckArr"
                       :key="index"
                       class="list"
-                    >{{item.label}}<img
+                    >{{item.cardName}}<img
                         @click="handleToClickMemberDel(index,item)"
                         :src="$imageHost+'/image/admin/icon_delete.png'"
                         class="label-delete"
@@ -664,10 +665,11 @@
   </div>
 </template>
 <script>
-import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsInfosByGoodIds, getGoodsFilterItem, batchOperateGoods } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { deliverTemplateNameListApi, getDeliverTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 import { brandAllGetRequest, classificationSelectRequest } from '@/api/admin/brandManagement'
 import { getPageCate, pageList } from '@/api/admin/decoration/pageSet'
+import { getExclusiveCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 export default {
   components: {
     sortCatTreeSelect: () => import('@/components/admin/sortCatTreeSelect') // 商家分类
@@ -697,107 +699,25 @@ export default {
       sortId: null,
       templateOptions: [],
       templateValue: null, // 运费模板selectVal
-      MinPurchaseInputVal: '', // 最小限购数量
-      MaxPurchaseInputVal: '', // 最大限购数量
+      MinPurchaseInputVal: null, // 最小限购数量
+      MaxPurchaseInputVal: null, // 最大限购数量
       onSaleRadio: '1', // 上架时间radio
       customTime: '', // 自定义上架售卖时间
       goodsRadio: '1', // 商品详情头部radio
       isShowCommonTableFive: false, // 商品详情和商品品牌公共表格显示
       tableInput: ['', null], // 公共表格表头input值
       commonTableValue: [null, null], // 商品详情和商品品牌公共selectVal
-      commonTableOptionsFive: [{ // 商品详情和商品品牌公共selectOptions
-        value: -1,
-        label: '腾飞测试1'
-      }, {
-        value: 1,
-        label: '腾飞测试2'
-      }],
+      commonTableOptionsFive: [], // 商品详情和商品品牌公共selectOptions
       commonTableOptionsSeven: [], // 商品详情和商品品牌公共selectOptions
-      commonTableDataFive: [
-        {
-          time: '2016-05-02 12:00:00',
-          name: '王小虎1',
-          isFirst: '是'
-        }, {
-          time: '2016-05-02 12:00:00',
-          name: '王小虎2',
-          isFirst: '是'
-        }, {
-          time: '2016-05-02 12:00:00',
-          name: '王小虎3',
-          isFirst: '是'
-        }, {
-          time: '2016-05-02 12:00:00',
-          name: '王小虎4',
-          isFirst: '是'
-        }
-      ], // 公共表格数据
+      commonTableDataFive: [], // 公共表格数据
       commonTableDataSeven: [], // 商品品牌列表数据
       isShowCommonTableSeven: false, // 控制显示
-      labelValue: -1,
-      labelOptions: [
-        {
-          value: -1,
-          label: '请选择商品标签'
-        },
-        {
-          value: 1,
-          label: '腾飞测试1'
-        },
-        {
-          value: 2,
-          label: '测试1'
-        },
-        {
-          value: 3,
-          label: '测试22'
-        },
-        {
-          value: 4,
-          label: '测试222'
-        },
-        {
-          value: 5,
-          label: '测试23'
-        },
-        {
-          value: 6,
-          label: '测试244444'
-        }
-      ],
+      labelValue: null,
+      labelOptions: [],
       labelValueCheckArr: [], // 商品标签下拉框选中集合
       membershipTopRadio: '', // 会员专享radio
-      membershipValue: -1,
-      membershipOptions: [
-        {
-          value: -1,
-          label: '请选择会员卡'
-        },
-        {
-          value: 1,
-          label: '腾飞测试1'
-        },
-        {
-          value: 2,
-          label: '测试1'
-        },
-        {
-          value: 3,
-          label: '测试22'
-        },
-        {
-          value: 4,
-          label: '测试222'
-        },
-        {
-          value: 5,
-          label: '测试23'
-        },
-        {
-          value: 6,
-          label: '测试244444'
-        }
-      ],
+      membershipValue: null,
+      membershipOptions: [],
       membershipValueCheckArr: [], // 会员专享下拉框选中集合
       placeOfDeliveryInput: '', // 发货地
       goodsPriceShowData: [], // 商品价格模块渲染数据
@@ -811,7 +731,8 @@ export default {
         currentPage: 1,
         total: 0
       },
-      tableBrandClickRow: '' // 商品品牌表格选中值
+      tableClassifyClickRow: null, // 模板表格选中
+      tableBrandClickRow: null // 商品品牌表格选中值
     }
   },
   watch: {
@@ -876,6 +797,38 @@ export default {
       this.handleDetailSelectData()
       // 商品详情表格数据
       this.handleToDetailTableData()
+      // 商品标签
+      this.handleToQueryLabel()
+      // 会员专属
+      this.handleToQueryCardList()
+    },
+    // 会员专属
+    handleToQueryCardList () {
+      getExclusiveCardList().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let obj = {
+            id: null,
+            cardName: '请选择会员卡'
+          }
+          res.content.unshift(obj)
+          this.membershipOptions = res.content
+        }
+      })
+    },
+    // 商品标签
+    handleToQueryLabel () {
+      getGoodsFilterItem({ needGoodsLabel: true }).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          let obj = {
+            id: null,
+            name: '请选择商品标签'
+          }
+          res.content.goodsLabels.unshift(obj)
+          this.labelOptions = res.content.goodsLabels
+        }
+      })
     },
     // 商品详情表格数据
     handleToDetailTableData () {
@@ -970,6 +923,11 @@ export default {
         this.handleToDetailTableData()
       }
     },
+    // 商品模板表格选中
+    handleCurrentChangeFive (val) {
+      console.log(val)
+      this.tableClassifyClickRow = val
+    },
     // 商品品牌表格选中
     handleCurrentChangeSeven (val) {
       console.log(val)
@@ -1026,8 +984,119 @@ export default {
     },
     // 保存点击
     handleToSave () {
+      let params = {}
       console.log('触发', this.nowIndex)
-      this.$emit('update:dialogVisible', false)
+      params.goodsIds = []
+      this.checkGoodsData.forEach((item, index) => {
+        params.goodsIds.push(item.goodsId)
+      })
+      switch (this.nowIndex) {
+        case 0:
+          params.godsPriceNumber = {}
+          console.log(this.goodsPriceShowData)
+          this.goodsPriceShowData.forEach((item, index) => {
+            if (!params.godsPriceNumber[item.goodsId]) params.godsPriceNumber[item.goodsId] = []
+            let obj = {
+              prdId: item.prdId
+            }
+            if (item.priceRevisionVal) {
+              obj.shopPrice = Number(item.priceRevisionVal)
+            } else {
+              obj.shopPrice = item.shopPrice
+            }
+            params.godsPriceNumber[item.goodsId].push(obj)
+          })
+          console.log(this.checkGoodsData)
+          break
+        case 1:
+          params.sortId = this.sortId
+          break
+        case 2:
+          params.deliverTemplateId = this.templateValue
+          break
+        case 3:
+          params.limitBuyNum = this.MinPurchaseInputVal
+          params.limitMaxNum = this.MaxPurchaseInputVal
+          break
+        case 4:
+          switch (this.onSaleRadio) {
+            case '1':
+              params.isOnSale = null
+              break
+            case '2':
+              params.isOnSale = 1
+              break
+            case '3':
+              params.isOnSale = 0
+              params.saleType = 1
+              params.saleTime = this.customTime
+              break
+            case '4':
+              params.isOnSale = 0
+              params.saleType = 0
+              break
+          }
+          break
+        case 5:
+          switch (this.goodsRadio) {
+            case '1':
+              params.isPageUp = null
+              break
+            case '2':
+              params.isPageUp = 1
+              break
+            case '3':
+              params.isPageUp = 0
+              break
+          }
+          if (this.tableClassifyClickRow !== null) {
+            params.goodsPageId = this.tableClassifyClickRow.pageId
+          }
+          break
+        case 6:
+          console.log(this.labelValueCheckArr)
+          params.goodsLabels = []
+          this.labelValueCheckArr.forEach((item, index) => {
+            params.goodsLabels.push(item.id)
+          })
+          break
+        case 7:
+          if (this.tableBrandClickRow !== null) {
+            params.brandId = this.tableBrandClickRow.id
+          }
+          break
+        case 8:
+          if (this.membershipTopRadio === '1') {
+            params.isCardExclusive = 1
+            params.cardIds = []
+            console.log(this.membershipValueCheckArr)
+            this.membershipValueCheckArr.forEach((item, index) => {
+              params.cardIds.push(item.id)
+            })
+          } else if (this.membershipTopRadio === '2') {
+            params.isCardExclusive = 0
+          }
+          break
+        case 9:
+          params.deliverPlace = this.placeOfDeliveryInput
+          break
+      }
+      console.log(params)
+      batchOperateGoods(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '保存成功',
+            showClose: true
+          })
+        } else {
+          this.$message.error({
+            message: '保存失败',
+            showClose: true
+          })
+        }
+      })
+      // this.$emit('update:dialogVisible', false)
     },
     // 父弹窗右上角点击关闭icon
     handleToCloseDialog () {
@@ -1074,9 +1143,15 @@ export default {
             this.handleDetailSelectData()
             this.handleToDetailTableData()
           }
+          if (this.nowIndex === 6) {
+            this.handleToQueryLabel()
+          }
           if (this.nowIndex === 7) {
             this.handleToQueryBrandSelect()
             this.handdleToQueryBrandList()
+          }
+          if (this.nowIndex === 8) {
+            this.handleToQueryCardList()
           }
           break
         case 2:
@@ -1088,9 +1163,22 @@ export default {
               }
             })
           }
+          if (this.nowIndex === 6) {
+            this.$router.push({
+              name: 'addGoodsLabel'
+            })
+          }
           if (this.nowIndex === 7) {
             this.$router.push({
               name: 'addBrand'
+            })
+          }
+          if (this.nowIndex === 8) {
+            this.$router.push({
+              path: '/admin/home/main/normalCardDetail',
+              query: {
+                cardType: 0
+              }
             })
           }
           break
@@ -1100,9 +1188,19 @@ export default {
               name: 'picture_setting'
             })
           }
+          if (this.nowIndex === 6) {
+            this.$router.push({
+              name: 'label'
+            })
+          }
           if (this.nowIndex === 7) {
             this.$router.push({
               name: 'brand'
+            })
+          }
+          if (this.nowIndex === 8) {
+            this.$router.push({
+              name: 'user_card'
             })
           }
           break
@@ -1111,15 +1209,15 @@ export default {
     // 商品标签select选中值变化
     handleToSelect (val) {
       console.log(val)
-      if (val === -1) return
+      if (val === null) return
       let data = JSON.parse(JSON.stringify(this.labelOptions))
       data.forEach((item, index) => {
-        if (item.value === val) {
+        if (item.id === val) {
           this.labelValueCheckArr.push(item)
           this.labelOptions.splice(index, 1)
         }
       })
-      this.labelValue = -1
+      this.labelValue = null
     },
     // 商品标签点击icon删除
     handleToClickDel (index, item) {
@@ -1128,15 +1226,15 @@ export default {
     },
     // 会员卡选中值变化
     handleToMemberSelect (val) {
-      if (val === -1) return
+      if (val === null) return
       let data = JSON.parse(JSON.stringify(this.membershipOptions))
       data.forEach((item, index) => {
-        if (item.value === val) {
+        if (item.id === val) {
           this.membershipValueCheckArr.push(item)
           this.membershipOptions.splice(index, 1)
         }
       })
-      this.membershipValue = -1
+      this.membershipValue = null
     },
     // 点击删除
     handleToClickMemberDel (index, item) {
