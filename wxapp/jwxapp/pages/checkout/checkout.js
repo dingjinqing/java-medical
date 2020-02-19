@@ -588,7 +588,8 @@ global.wxPage({
       activityType,
       activityId,
       recordId: this.data.params.recordId,
-      groupId: this.data.params.groupId
+      groupId: this.data.params.groupId,
+      isCart:this.data.params.isCart
     }
     this.getMust(params)
     util.api(
