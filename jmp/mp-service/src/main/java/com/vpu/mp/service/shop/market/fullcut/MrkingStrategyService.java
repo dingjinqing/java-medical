@@ -225,20 +225,18 @@ public class MrkingStrategyService extends ShopBaseService {
             }
         }
 
-        List<Integer> goodsIds = new ArrayList<>();
-        if (MrkingStrategyAct.getActType().equals(ACT_TYPE_SECTION)) {
-            goodsIds = getMrkingStrategyGoodsIds(MrkingStrategyAct);
-        }
-
+        PageResult<MrkingStrategyGoodsListVo.Goods> goodsPageResult;
         //过滤掉其中用户不能买的会员专享商品
-        List<Integer> exclusiveGoodsIds = memberCardProcessorDao.getExclusiveInfo(goodsIds, Collections.emptyList(),Collections.emptyList(),Collections.emptyList()).get(1);
-        List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getUserExclusiveGoodsIds(userId);
-        if(CollectionUtils.isNotEmpty(exclusiveGoodsIds)){
-            exclusiveGoodsIds.removeAll(userExclusiveGoodsIds);
-            goodsIds.removeAll(exclusiveGoodsIds);
+        if (MrkingStrategyAct.getActType().equals(ACT_TYPE_SECTION)) {
+            List<Integer> inGoodsIds = getMrkingStrategyGoodsIds(MrkingStrategyAct);
+            List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
+            inGoodsIds = Util.diffList(inGoodsIds,userExclusiveGoodsIds);
+            goodsPageResult = getGoods(inGoodsIds,Collections.emptyList(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
+        }else {
+            List<Integer> notInGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
+            goodsPageResult = getGoods(Collections.emptyList(),notInGoodsIds,param.getSearch(),param.getCurrentPage(),param.getPageRows());
         }
 
-        PageResult<MrkingStrategyGoodsListVo.Goods> goodsPageResult = getGoods(goodsIds,param.getSearch(),param.getCurrentPage(),param.getPageRows());
         goodsPageResult.getDataList().forEach(goods -> {
             if(StringUtil.isNotEmpty(goods.getGoodsImg())){
                 goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
@@ -258,7 +256,7 @@ public class MrkingStrategyService extends ShopBaseService {
     }
 
     /**
-     * 活动包含的所有商品ID
+     * 活动包含的所有商品ID（指定部分商品类型的活动）
      * @param record
      * @return
      */
@@ -280,15 +278,15 @@ public class MrkingStrategyService extends ShopBaseService {
 
     /**
      * 查出goods列表
-     * @param goodsIds
+     * @param inGoodsIds
      * @param search
      * @param currentPage
      * @param pageRows
      * @return
      */
-    private PageResult<MrkingStrategyGoodsListVo.Goods> getGoods(List<Integer> goodsIds,String search,Integer currentPage,Integer pageRows){
+    private PageResult<MrkingStrategyGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,List<Integer> notInGoodsIds,String search,Integer currentPage,Integer pageRows){
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
-        SelectWhereStep<? extends Record> select= (SelectWhereStep<? extends Record>) db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
         if(soldOutGoods != NumberUtils.BYTE_ONE){
@@ -297,8 +295,11 @@ public class MrkingStrategyService extends ShopBaseService {
         if(StringUtil.isNotEmpty(search)){
             select.where(GOODS.GOODS_NAME.contains(search));
         }
-        if(CollectionUtils.isNotEmpty(goodsIds)){
-            select.where(GOODS.GOODS_ID.in(goodsIds));
+        if(CollectionUtils.isNotEmpty(inGoodsIds)){
+            select.where(GOODS.GOODS_ID.in(inGoodsIds));
+        }
+        if(CollectionUtils.isNotEmpty(notInGoodsIds)){
+            select.where(GOODS.GOODS_ID.notIn(notInGoodsIds));
         }
         return getPageResult(select,currentPage,pageRows,MrkingStrategyGoodsListVo.Goods.class);
     }

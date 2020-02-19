@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
@@ -28,8 +29,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
 import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -474,6 +475,10 @@ public class ReducePriceService extends ShopBaseService {
     public ReducePriceRecord getReducePriceRecord(Integer activityId){
        return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(REDUCE_PRICE.ID.eq(activityId)))
             .fetchAny();
+    }
+
+    public GoodsPriceBo parseGoodsPrice(){
+        return null;
     }
 
 }
