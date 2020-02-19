@@ -409,6 +409,7 @@ export default {
       this.$set(this.searchParams, 'orderSn', this.$route.query.orderSn)
     }
     this.initDataList()
+    this.langDefault()
   },
   methods: {
     // 初始化列表 评价列表 待评价列表
@@ -562,7 +563,7 @@ export default {
         case 5:
           return `自定义`
         default:
-          return this.$t('evaluation.null')
+          return '无'
       }
     }
   }
