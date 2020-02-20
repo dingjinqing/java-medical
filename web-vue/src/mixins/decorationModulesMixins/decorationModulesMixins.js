@@ -627,6 +627,15 @@ export default {
               })
               flag = false
             }
+            break
+          case 'm_title':
+            if (!item.title) {
+              this.$message.error({
+                message: '请添加标题',
+                showClose: true
+              })
+              flag = false
+            }
         }
       })
       console.log(flag)
