@@ -29,6 +29,7 @@ public class FreeShippingVo {
     private String    recommendGoodsId;
     private String    recommendCatId;
     private String    recommendSortId;
+    private Timestamp createTime;
 
     private List<FreeShippingRuleVo> ruleList;
 
