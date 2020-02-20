@@ -290,15 +290,15 @@ public class GiftProcessorDao extends GiftService {
         for (Map.Entry<Integer, Map<Integer, Integer>> entry : param.entrySet()) {
             for (Map.Entry<Integer, Integer> entry1 : entry.getValue().entrySet()) {
                 GiftProductRecord giftProductRecord = db().newRecord(SUB_TABLE);
-                while (iterator.hasNext()){
-                    ProductVo next = iterator.next();
-                    if(next.getGiftId().equals(entry.getKey()) && next.getProductId().equals(entry1.getKey())){
-                        if(entry1.getValue() > 0 && next.getProductNumber() < entry1.getValue()){
+                while (iterator.hasNext() || iterator.hasPrevious()){
+                    ProductVo crt = iterator.hasNext() ? iterator.next() : iterator.previous();
+                    if(crt.getGiftId().equals(entry.getKey()) && crt.getProductId().equals(entry1.getKey())){
+                        if(entry1.getValue() > 0 && crt.getProductNumber() < entry1.getValue()){
                             logger().error("下单时赠品已经送完，请重新下单");
                             throw new MpException(JsonResultCode.CODE_ORDER_GIFT_GOODS_ZERO);
                         }
-                        giftProductRecord.setId(next.getId());
-                        giftProductRecord.setProductNumber(next.getProductNumber() - entry1.getValue());
+                        giftProductRecord.setId(crt.getId());
+                        giftProductRecord.setProductNumber(crt.getProductNumber() - entry1.getValue());
                         iterator.remove();
                         break;
                     }
