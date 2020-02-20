@@ -1,12 +1,11 @@
 package com.vpu.mp.service.pojo.shop.order.refund;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 /**
  * 
  * @author wangshuai
@@ -20,5 +19,4 @@ public class OrderReturnGoodsVo extends OrderGoodsVo{
 	private Byte success;
 	@JsonIgnore
 	private BigDecimal returnMoney;
-	private Integer isGift;
 }
