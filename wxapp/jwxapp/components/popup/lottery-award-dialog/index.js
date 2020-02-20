@@ -10,7 +10,7 @@ global.wxComponent({
    */
   properties: {
     prizeInfo: Object,
-    btnstatus: [String, Number]
+    btnstatus: String
   },
 
   /**
