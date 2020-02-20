@@ -484,7 +484,7 @@ public class GiftService extends ShopBaseService {
         if (isNotEmpty(mobile)) {
             query.and(USER.MOBILE.like(format("%s%%", mobile)));
         }
-        query.and(ORDER_GOODS.ACTIVITY_ID.eq(giftId).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_GIFT)));
+        query.and(ORDER_GOODS.GIFT_ID.eq(giftId));
     }
 
     /**
