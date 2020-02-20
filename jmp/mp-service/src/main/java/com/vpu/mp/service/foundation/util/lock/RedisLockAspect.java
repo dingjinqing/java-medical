@@ -19,7 +19,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -46,9 +45,9 @@ public final class RedisLockAspect extends ShopBaseService {
 
     private String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
-    private ThreadLocal<String> currentValue = ThreadLocal.withInitial(StringUtils.EMPTY::toString);
+    private ThreadLocal<String> currentValue = new ThreadLocal<>();
 
-    private ThreadLocal<List<String>> currentKeys = ThreadLocal.withInitial(Lists::newArrayList);
+    private ThreadLocal<List<String>> currentKeys = new ThreadLocal<>();
 
     @Around("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.RedisLock)")
     public void around(ProceedingJoinPoint joinPoint) throws MpException {
@@ -105,7 +104,7 @@ public final class RedisLockAspect extends ShopBaseService {
             //集合类
             List<Object> keyObjs = (List<Object>) args[keyIndex];
             if(keyObjs.get(0).getClass().getClassLoader() == null){
-                //jdk自带类型
+                //非开发设计的类
                 for (Object keyObj : keyObjs) {
                     keys.add(keyObj.toString());
                 }
