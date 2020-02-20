@@ -11,7 +11,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleSecKill;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleSeckill;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -577,7 +577,7 @@ public class SeckillService extends ShopBaseService{
      * @param moduleSecKill
      * @return
      */
-    public ModuleSecKill getPageIndexSeckill(ModuleSecKill moduleSecKill){
+    public ModuleSeckill getPageIndexSeckill(ModuleSeckill moduleSecKill){
         moduleSecKill.getSeckillGoods().forEach(seckillGoods->{
             SecKillDefineRecord seckill = getSeckillActById(seckillGoods.getActId());
             GoodsRecord goodsInfo = saas.getShopApp(getShopId()).goods.getGoodsRecordById(seckill.getGoodsId());

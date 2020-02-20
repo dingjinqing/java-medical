@@ -16,48 +16,48 @@ import java.math.BigDecimal;
 public class ModuleCard extends ModuleBase {
 
     @JsonProperty("card_id")
-    private Integer cardId;
+    private Integer cardId=0;
 
     @JsonProperty("hidden_card")
-    private Byte hiddenCard;
+    private Byte hiddenCard=0;
 
     @JsonProperty("card_name")
-    private String cardName;
+    private String cardName="";
 
     @JsonProperty("card_state")
-    private Byte cardState;
+    private Byte cardState=1;
 
     @JsonProperty("card_grade")
-    private String cardGrade;
+    private String cardGrade="v1";
 
     @JsonProperty("receive_day")
-    private String receiveDay;
+    private String receiveDay="";
 
     @JsonProperty("card_type")
-    private Byte cardType;
+    private Byte cardType=0;
 
     @JsonProperty("legal")
-    private String legal;
+    private String legal="";
 
     @JsonProperty("exchang_count_legal")
-    private String exchangCountLegal;
+    private String exchangCountLega="";
 
     @JsonProperty("bg_type")
-    private Byte bgType;
+    private Byte bgType=0;
 
     @JsonProperty("bg_color")
-    private String bgColor;
+    private String bgColor="";
 
     @JsonProperty("bg_img")
-    private String bgImg;
+    private String bgImg="";
 
     @JsonProperty("is_pay")
-    private Byte isPay;
+    private Byte isPay=2;
 
     @JsonProperty("pay_type")
-    private Byte payType;
+    private Byte payType=0;
 
     @JsonProperty("pay_fee")
-    private BigDecimal payFee;
+    private BigDecimal payFee=BigDecimal.ZERO;
 
 }

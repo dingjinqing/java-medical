@@ -1,13 +1,11 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -28,19 +26,19 @@ public class ModuleHotArea extends ModuleBase {
          * 背景图片
          */
         @JsonProperty(value = "bg_img_url")
-        String bgImgUrl;
+        String bgImgUrl="";
 
         /**
          * 背景图片宽度
          */
         @JsonProperty(value = "bg_img_width")
-        Integer bgImgWidth;
+        Integer bgImgWidth=533;
 
         /**
          * 背景图片高度
          */
         @JsonProperty(value = "bg_img_height")
-        Integer bgImgHeight;
+        Integer bgImgHeight=533;
 
         /**
          * 热区列表

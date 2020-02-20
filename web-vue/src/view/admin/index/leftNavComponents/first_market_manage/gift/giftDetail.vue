@@ -35,7 +35,7 @@
           <el-date-picker
             type="datetime"
             :placeholder="$t('gift.startTime')"
-            v-model="requestParams.statrTime"
+            v-model="requestParams.startTime"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
             class="date_picker"
