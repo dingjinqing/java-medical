@@ -68,7 +68,7 @@ export const en = {
       value: 4,
       label: 'To be audited',
       isCheck: false,
-      link: '/admin/home/main/goodsManage/evaluationManagement'
+      link: '/admin/home/main/goodsManage/evaluationManagement?activeName=second'
     },
     {
       value: 5,
@@ -253,8 +253,7 @@ export const en = {
     'Membership card activation application has not been processed for more than 2 days',
   unMarketTip3: 'Coupon',
   unMarketTip4: 'Soon to be completed',
-  unMarketTip5: 'over',
-  unMarketTip6: 'days not handled',
+  unMarketTip5: 'cards have',
   // 已完成
   tabInfo: [
     {

@@ -51,7 +51,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="startTime"
+          prop=""
           :label="$t('shipping.startTime')"
           align="center"
         >

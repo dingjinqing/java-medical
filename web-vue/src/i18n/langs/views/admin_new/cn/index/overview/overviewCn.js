@@ -64,7 +64,7 @@ export const cn = {
       value: 4,
       label: '商品评价待审核',
       isCheck: false,
-      link: '/admin/home/main/goodsManage/evaluationManagement'
+      link: '/admin/home/main/goodsManage/evaluationManagement?activeName=second'
     },
     {
       value: 5,
@@ -243,8 +243,7 @@ export const cn = {
   unMarketTip2: '个会员卡激活申请超过2天未处理',
   unMarketTip3: '优惠券',
   unMarketTip4: '即将发完',
-  unMarketTip5: '超过',
-  unMarketTip6: '天未处理',
+  unMarketTip5: '类会员卡有',
   // 已完成
   tabInfo: [
     {
