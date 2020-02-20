@@ -25,6 +25,9 @@ ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAU
 ALTER TABLE `b2c_lottery_prize` ADD COLUMN `award_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户余额';
 
 
+-- 2020年2月20日17:11:57  字段默认存储从{}改为[]
+ALTER TABLE `b2c_member_card` MODIFY COLUMN `store_list` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '[]' COMMENT '可用门店' AFTER `use_time`;
+
 -- 修复table
 
 
@@ -69,10 +72,6 @@ ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '�
 -- ALTER TABLE `b2c_user_remark` MODIFY COLUMN `user_id` mediumint(8)  NOT NULL DEFAULT '0';
 -- ALTER TABLE `b2c_user_remark` MODIFY COLUMN `is_delete` tinyint(1)  NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除';
 
--- 2020年2月20日17:11:57  字段默认存储从{}改为[]
-ALTER TABLE `b2c_member_card` MODIFY COLUMN `store_list` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '[]' COMMENT '可用门店' AFTER `use_time`;
 --2020-02-20 常乐 分销分组表添加 用户是否可选择
 ALTER TABLE `b2c_distributor_group` ADD  COLUMN `can_select` tinyint(1) DEFAULT 1 NULL   COMMENT '支持用户选择 1：支持；0：不支持';
-
-
 /***********************2.9*********************END*/
