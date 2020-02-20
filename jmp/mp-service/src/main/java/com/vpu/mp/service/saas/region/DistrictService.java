@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- *
+ * 区县
  * @author 新国
  *
  */
@@ -123,5 +126,15 @@ public class DistrictService extends MainBaseService {
 		}
 		return db().insertInto(DICT_DISTRICT, DICT_DISTRICT.DISTRICT_ID, DICT_DISTRICT.CITY_ID, DICT_DISTRICT.NAME)
 				.values(districtId, cityId, districtName).execute();
+	}
+
+	/**
+	 * 获取区县名称
+	 * @param ids
+	 * @return
+	 */
+	public Map<Integer, String> getDictrictNameByids(List<Integer> ids){
+		return db().select(DICT_DISTRICT.DISTRICT_ID,DICT_DISTRICT.NAME).from(DICT_DISTRICT).where(DICT_DISTRICT.DISTRICT_ID.in(ids))
+				.fetchMap(DICT_DISTRICT.DISTRICT_ID,DICT_DISTRICT.NAME);
 	}
 }

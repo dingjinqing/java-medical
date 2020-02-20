@@ -29,13 +29,13 @@ public class FreeShippingRuleService extends ShopBaseService {
     /**
      * 根据freeShippingId查询freeShipppingrule
      *
-     * @param freeShippingId
+     * @param ruleId
      * @return
      */
-    public Result<FreeShippingRuleRecord> getRuleListByFreeShippingId(Integer freeShippingId) {
-        Result<FreeShippingRuleRecord> result = db().selectFrom(FREE_SHIPPING_RULE)
-                .where(FREE_SHIPPING_RULE.SHIPPING_ID.eq(freeShippingId))
-                .fetch();
+    public FreeShippingRuleRecord getRuleByRuleId(Integer ruleId) {
+        FreeShippingRuleRecord result = db().selectFrom(FREE_SHIPPING_RULE)
+                .where(FREE_SHIPPING_RULE.ID.eq(ruleId))
+                .fetchAny();
         return result;
     }
 

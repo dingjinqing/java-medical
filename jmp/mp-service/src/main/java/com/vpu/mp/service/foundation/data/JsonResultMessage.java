@@ -295,7 +295,19 @@ public class JsonResultMessage {
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_SCORE = "pay.award.activity.message.amount.score";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_CUSTOM = "pay.award.activity.message.amount.custom";
 
-    /**
+	/**
+	 * 营销--满包邮
+	 */
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_FIXED = "free.shipping.activity.message.expire.fixed";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_NEVER = "free.shipping.activity.message.expire.never";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_ALL = "free.shipping.activity.message.goods.all";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_PART = "free.shipping.activity.message.goods.part";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT = "free.shipping.activity.message.condition.account";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_NUM = "free.shipping.activity.message.condition.num";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT_OR_NUM = "free.shipping.activity.message.condition.account.or.num";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_RULE_TEXT = "free.shipping.activity.message.ruleText";
+
+	/**
      * 文章_分类
      */
     public static final String ARTICLE_CATEGORY_IS_EXIST = "api.code.article_category_is_exist";
