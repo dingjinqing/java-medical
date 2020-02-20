@@ -532,16 +532,8 @@ public class OrderReadService extends ShopBaseService {
 			order.setGoods(goods.get(order.getOrderId()));
 			//订单操作设置（商品订单类型需要提前计算好）
 			setMpOrderOperation(order);
-			for (OrderGoodsMpVo temp : order.getGoods()) {
-				if(StringUtils.isBlank(temp.getGoodsImg())) {
-					//默认图片
-					temp.setGoodsImg("image/default.jpg");
-				}
-				temp.setIsGift(order.getIsLotteryGift().intValue());
-
-			}
 			//拼团
-			if(true) {
+			if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY.toString())) {
 				order.setGroupBuyInfo(groupBuyList.getByOrder(order.getOrderSn()));
 			}
 			//补款设置时间
