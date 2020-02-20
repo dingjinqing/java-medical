@@ -240,7 +240,7 @@ import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import { editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import { editSave, getModulesJusList, getHandleTemplatesData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 import { pageEdit } from '@/api/admin/decoration/pageSet.js'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
@@ -431,24 +431,34 @@ export default {
       })
     } else if (Number(this.$route.query.pageParams.pageId) !== -1) {
       console.log(this.$route.query.pageParams)
-      let { pageId, pageContent } = this.$route.query.pageParams
-      this.page_id = pageId
-      // 处理last_cur_idx
-      let content = JSON.parse(pageContent)
-      let maxIdx = this.handleToMaxCuridx(content)
-      this.cur_idx = maxIdx
-      this.pageSetData = content.page_cfg
-      delete content.page_cfg
-      let moduleDataArr = []
-      Object.keys(content).forEach((item, index) => {
-        moduleDataArr.push(content[item])
+      let { pageId } = this.$route.query.pageParams
+      getHandleTemplatesData(pageId).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let content = JSON.parse(res.content.pageContent)
+          // 处理last_cur_idx
+          let maxIdx = this.handleToMaxCuridx(content)
+          this.cur_idx = maxIdx
+          content.page_cfg['last_cur_idx'] = maxIdx
+          this.pageSetData = content.page_cfg
+          delete content.page_cfg
+          let moduleDataArr = []
+          console.log(content)
+          Object.keys(content).forEach((item, index) => {
+            moduleDataArr.push(content[item])
+          })
+          this.handleToTurnModulesName(moduleDataArr)
+          let moduleArr = []
+          Object.keys(content).forEach((item, index) => {
+            moduleArr.push(content[item])
+          })
+          this.$nextTick(() => {
+            console.log(moduleArr)
+            this.modulesData = moduleArr
+          })
+        }
       })
-      this.$nextTick(() => {
-        console.log(content)
-        this.modulesData = content
-      })
-      console.log(content)
-      this.handleToTurnModulesName(moduleDataArr)
+      // this.page_id = pageId
     } else {
       this.pageSetData = {
         'is_ok': 1,

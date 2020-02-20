@@ -366,7 +366,7 @@ export default {
           this.data = turnToString
           this.$nextTick(() => {
             let arr = JSON.parse(JSON.stringify(turnToString.goodsListData))
-            if (arr.length) {
+            if (arr && arr.length) {
               this.goodsFlag = true
             } else {
               this.goodsFlag = false
@@ -375,9 +375,11 @@ export default {
           if (!this.initLoad) return
           let obj = {}
           let goodsId = []
-          this.data.goodsListData.forEach(item => {
-            goodsId.push(item.goodsId)
-          })
+          if (this.data.goodsListData) {
+            this.data.goodsListData.forEach(item => {
+              goodsId.push(item.goodsId)
+            })
+          }
 
           if (this.data.recommend_type === '1') {
             obj['goods_num'] = this.data.goods_num

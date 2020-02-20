@@ -25,6 +25,9 @@ ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAU
 ALTER TABLE `b2c_lottery_prize` ADD COLUMN `award_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户余额';
 
 
+-- 2020年2月20日17:11:57  字段默认存储从{}改为[]
+ALTER TABLE `b2c_member_card` MODIFY COLUMN `store_list` varchar(191) NOT NULL DEFAULT '[]' COMMENT '可用门店';
+
 -- 修复table
 
 
@@ -42,7 +45,7 @@ ALTER TABLE `b2c_pictorial` ADD COLUMN `activity_id` int(10) DEFAULT NULL COMMEN
 ALTER TABLE `b2c_group_buy_define` ADD  COLUMN `level` int(11) NOT NULL DEFAULT 0 COMMENT '优先级' ;
 ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAULT 0 COMMENT '初始成团数' ;
 -- 2020-02-11 新加服务承诺关联表和服务承诺表新加类型和优先级字段
--- CREATE TABLE if not exists `b2c_pledge_related` (
+-- CREATE TABLE `b2c_pledge_related` (
 --   `id` int(9) NOT NULL AUTO_INCREMENT COMMENT 'ID',
 --   `pledge_id` int(9) NOT NULL DEFAULT '0' COMMENT '承诺id',
 --   `type` tinyint(1) DEFAULT NULL COMMENT '指定商品范围:1 商品id,2 商家分类id,3 商品品牌id',
@@ -55,7 +58,7 @@ ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAU
 ALTER TABLE `b2c_pledge` ADD COLUMN `type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '商品范围:1全部商品,2指定商品' ;
 ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '商品优先级' ;
 
--- CREATE TABLE `b2c_user_remark` (
+-- CREATE TABLE  `b2c_user_remark` (
 --   `id`          mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
 --   `user_id`     mediumint(8) unsigned NOT NULL DEFAULT '0',
 --   `remark`      TEXT COMMENT '会员备注',
@@ -64,7 +67,7 @@ ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '�
 --   PRIMARY KEY (`id`),
 --   key `user_id` (`user_id`)
 -- )COMMENT='会员备注';
-
+--
 -- ALTER TABLE `b2c_user_remark` MODIFY COLUMN `id` mediumint(10)  NOT NULL AUTO_INCREMENT;
 -- ALTER TABLE `b2c_user_remark` MODIFY COLUMN `user_id` mediumint(8)  NOT NULL DEFAULT '0';
 -- ALTER TABLE `b2c_user_remark` MODIFY COLUMN `is_delete` tinyint(1)  NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除';
@@ -72,6 +75,8 @@ ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '�
 --2020-02-20 常乐 分销分组表添加 用户是否可选择
 ALTER TABLE `b2c_distributor_group` ADD  COLUMN `can_select` tinyint(1) DEFAULT 1 NULL   COMMENT '支持用户选择 1：支持；0：不支持';
 
-
+--2020-02-20 一口价 支持打包一口价折扣和减金额两种方式
+ALTER TABLE `b2c_package_sale` ADD  COLUMN `package_type` tinyint(1) DEFAULT '0' COMMENT '活动类型0金额1折扣';
+ALTER TABLE `b2c_package_sale` ADD  COLUMN `total_ratio` decimal(4,2) DEFAULT '0.00' COMMENT '结算比例';
 
 /***********************2.9*********************END*/

@@ -128,6 +128,7 @@ export default {
     // 右侧模块点击传回中间当前高亮模块的数据
     backData: { // 模块公共
       handler (newData) {
+        console.log(newData)
         if (newData) {
           let turnToString = this.handleToTurnNumToStr(newData)
           console.log(turnToString)

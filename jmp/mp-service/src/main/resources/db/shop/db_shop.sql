@@ -2037,7 +2037,7 @@ CREATE TABLE `b2c_member_card` (
   `send_money` int(11) DEFAULT NULL COMMENT '开卡送钱',
   `charge_money` text COMMENT '充值活动策略',
   `use_time` int(11) DEFAULT NULL COMMENT '使用时间 1工作日 2双休 0不限制',
-  `store_list` varchar(191) NOT NULL DEFAULT '{}' COMMENT '可用门店',
+  `store_list` varchar(191) NOT NULL DEFAULT '[]' COMMENT '可用门店',
   `count` int(11) DEFAULT NULL COMMENT '卡总次数',
   `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1为删除状态',
   `grade` char(10) NOT NULL DEFAULT '' COMMENT '等级卡的等级',

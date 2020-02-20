@@ -41,9 +41,9 @@ global.wxPage({
       } else {
         util.showModal("提示", res.message);
       }
-    }, { 
+    }, {
       userId: userId,
-      num: 10 
+      num: 10
     })
 
     // 获取搜索配置, 热词搜索
@@ -62,7 +62,7 @@ global.wxPage({
         }
       }
     })
-    
+
   },
   bindSearchConfirm: function (e) {
     var search_text = e.detail.value;
@@ -98,7 +98,7 @@ global.wxPage({
       userId: userId,
       hotWords: search_word
     })
-    
+
   },
   to_search: function (e) {
     var search_text = e.currentTarget.dataset.value;

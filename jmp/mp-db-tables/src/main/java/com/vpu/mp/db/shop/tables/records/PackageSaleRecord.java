@@ -5,14 +5,12 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.PackageSale;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
 
-    private static final long serialVersionUID = -1784770106;
+    private static final long serialVersionUID = -612519939;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_package_sale.id</code>.
@@ -408,6 +406,34 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
         return (Timestamp) get(26);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_package_sale.package_type</code>. 活动类型0金额1折扣
+     */
+    public void setPackageType(Byte value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_package_sale.package_type</code>. 活动类型0金额1折扣
+     */
+    public Byte getPackageType() {
+        return (Byte) get(27);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_package_sale.total_ratio</code>. 结算比例
+     */
+    public void setTotalRatio(BigDecimal value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_package_sale.total_ratio</code>. 结算比例
+     */
+    public BigDecimal getTotalRatio() {
+        return (BigDecimal) get(28);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -434,7 +460,7 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
     /**
      * Create a detached, initialised PackageSaleRecord
      */
-    public PackageSaleRecord(Integer id, String packageName, Timestamp startTime, Timestamp endTime, BigDecimal totalMoney, Byte goodsGroup_1, String groupName_1, Integer goodsNumber_1, String goodsIds_1, String catIds_1, String sortIds_1, Byte goodsGroup_2, String groupName_2, Integer goodsNumber_2, String goodsIds_2, String catIds_2, String sortIds_2, Byte goodsGroup_3, String groupName_3, Integer goodsNumber_3, String goodsIds_3, String catIds_3, String sortIds_3, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
+    public PackageSaleRecord(Integer id, String packageName, Timestamp startTime, Timestamp endTime, BigDecimal totalMoney, Byte goodsGroup_1, String groupName_1, Integer goodsNumber_1, String goodsIds_1, String catIds_1, String sortIds_1, Byte goodsGroup_2, String groupName_2, Integer goodsNumber_2, String goodsIds_2, String catIds_2, String sortIds_2, Byte goodsGroup_3, String groupName_3, Integer goodsNumber_3, String goodsIds_3, String catIds_3, String sortIds_3, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, Byte packageType, BigDecimal totalRatio) {
         super(PackageSale.PACKAGE_SALE);
 
         set(0, id);
@@ -464,5 +490,7 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
         set(24, delFlag);
         set(25, createTime);
         set(26, updateTime);
+        set(27, packageType);
+        set(28, totalRatio);
     }
 }

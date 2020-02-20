@@ -13,34 +13,16 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.coupon.CouponAllVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
+import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.ExpireTimeVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import jodd.util.StringUtil;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record6;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,20 +34,9 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
-import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.foundation.util.Util.listToString;
 import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -758,16 +729,24 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
-     * Get small inventory coupon map.获取库存偏小的优惠券
-     *
+     * Get small inventory coupon map.获取库存偏小的优惠券（排除已过期和已停用的）
+     * （limit_surplus_flag：是否限制库存）不限制库存的排外
      * @param num the num
      * @return the map
      */
     public Map<Integer, String> getSmallInventoryCoupon(Integer num) {
+        Condition condition = MRKING_VOUCHER.VALIDITY_TYPE.eq(BYTE_ZERO)
+            .and(MRKING_VOUCHER.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+        Condition condition1 = MRKING_VOUCHER.VALIDITY_TYPE.eq(BYTE_ONE);
         return db().select(MRKING_VOUCHER.ID, MrkingVoucher.MRKING_VOUCHER.ACT_NAME)
             .from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.SURPLUS.lessOrEqual(num))
+            // 已启用
             .and(MRKING_VOUCHER.ENABLED.eq(BYTE_ONE))
+            // 未过期
+            .and(condition.or(condition1))
+            // 不限制库存的排外
+            .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq(BYTE_ZERO))
             .and(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
             .and(MRKING_VOUCHER.CREATE_TIME.add(MRKING_VOUCHER.VALIDATION_CODE).greaterThan(Timestamp.valueOf(LocalDateTime.now())))
             .orderBy(MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.CREATE_TIME)

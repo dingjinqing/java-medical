@@ -83,7 +83,7 @@
         </text>
       </view>
       <view wx:if="{{goodsInfo.activity.activityType === 10}}" class="flex-wrap pre-sale-content" style="background-color:{{speColor}};">
-        <view wx:if="{{goodsInfo.activity.preSaleType !== 1}}">现在支付定金可抵：￥{{}}</view>
+        <view wx:if="{{goodsInfo.activity.preSaleType !== 1}}">现在支付定金可抵：￥{{PreSaleDiscountPrice}}</view>
         <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">尾款支付时间：{{filter.substring(goodsInfo.activity.finalPaymentStart,5,16)}} - {{filter.substring(goodsInfo.activity.finalPaymentEnd,5,16)}}</view>
         <view>{{goodsInfo.activity.deliverType === 0 ? '发货时间：' + filter.substring(goodsInfo.activity.deliverTime,0,10)  : '发货时间：尾款支付完成'+goodsInfo.activity.deliverDays+'天后发货'}}</view>
         <view bindtap="viewPreSaleRule">

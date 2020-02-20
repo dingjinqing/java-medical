@@ -10,21 +10,21 @@ import lombok.Data;
 @Data
 public class FriendPromoteReceiveVo {
 	
-	/* 领取用户昵称 */
+	/** 领取用户昵称 */
 	private String username;
 	
-	/* 领取用户手机号 */
+	/** 领取用户手机号 */
 	private String mobile;
 	
-	/* 助力活动Id（用户发起） */
+	/** 助力活动Id（用户发起） */
 	private Integer id;
 
-	/* 是否已领取 */
+	/** 是否已领取 */
 	private Integer promoteStatus;
 	
-	/* 领取时间 */
+	/** 领取时间 */
 	private Timestamp recTime;
 	
-	/* 订单号 */
+	/** 订单号 */
 	private String orderSn;
 }

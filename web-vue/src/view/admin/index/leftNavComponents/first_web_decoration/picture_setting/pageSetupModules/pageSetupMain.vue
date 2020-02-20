@@ -394,25 +394,34 @@ export default {
               })
             }
           })
-
-          console.log(this.pageClassify)
-          Object.keys(this.ruleForm).forEach((item, index) => {
-            Object.keys(newData).forEach((itemC, indexC) => {
-              console.log(item, itemC)
-              if (JSON.stringify(item) === JSON.stringify(itemC)) {
-                console.log(itemC)
-                this.ruleForm[item] = newData[itemC]
-              }
-            })
-          })
-          Object.keys(this.ruleForm.pictorial).forEach((item, index) => {
-            Object.keys(newData).forEach((itemC, indexC) => {
-              if (JSON.stringify(item) === JSON.stringify(itemC)) {
-                console.log(itemC)
-                this.ruleForm.pictorial[item] = newData[itemC]
-              }
-            })
-          })
+          if (newData.pictorial === null) {
+            newData.pictorial = { // 分享海报相关配置
+              'is_add': 0, // 是否添加分享海报
+              'user_visibility': 0, // 是所有用户可见还是仅分销员可见
+              'share_btn_name': '', // 按钮名称
+              'share_desc': '', // 分享语
+              'share_img_path': '', // 分享图片路径
+              'name_length': 0 // 按钮名称长度
+            }
+          }
+          this.ruleForm = newData
+          // Object.keys(this.ruleForm).forEach((item, index) => {
+          //   Object.keys(newData).forEach((itemC, indexC) => {
+          //     console.log(item, itemC)
+          //     if (JSON.stringify(item) === JSON.stringify(itemC)) {
+          //       console.log(itemC)
+          //       this.ruleForm[item] = newData[itemC]
+          //     }
+          //   })
+          // })
+          // Object.keys(this.ruleForm.pictorial).forEach((item, index) => {
+          //   Object.keys(newData).forEach((itemC, indexC) => {
+          //     if (JSON.stringify(item) === JSON.stringify(itemC)) {
+          //       console.log(itemC)
+          //       this.ruleForm.pictorial[item] = newData[itemC]
+          //     }
+          //   })
+          // })
           // this.ruleForm = newData
         }
       },

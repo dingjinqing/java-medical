@@ -15,7 +15,7 @@
   <view class="new-container" catchtap="bindJumpLink" data-url="{{m.title_link}}" data-idx='{{m.cur_idx}}' style="margin-bottom:{{m.margin_bot}}rpx;">
     <view class="new-titles" style="text-align:{{m.pos}};">
       <view class='head-title'>{{m.title}}</view>
-      <view class='new_content'  wx:if='{{m.title_date !="" || m.title_author != "" || m.link_title != "" }}'>
+      <view class='new_content'  wx:if='{{m.title_date|| m.title_author != "" || m.link_title != "" }}'>
         <text class='time'>{{m.title_date}}</text>
         <text class='author'>{{m.title_author}}</text>
         <text class='link_t'>{{m.link_title}}</text>
