@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class ModuleSeckill extends ModuleBase {
+public class ModuleSecKill extends ModuleBase {
     /**
      * 0|1 列表样式: 双列，单列
      */
