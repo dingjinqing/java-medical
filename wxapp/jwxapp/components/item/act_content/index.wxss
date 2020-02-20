@@ -44,7 +44,7 @@
 .countdown > .count {
   display: inline-block;
   background: #fff;
-  width: 33rpx;
+  min-width: 33rpx;
   margin: 0 6rpx;
   border-radius: 6rpx;
   text-align: center;

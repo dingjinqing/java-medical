@@ -12,7 +12,6 @@
     <text class="goods_price" wx:if="{{actBarInfo.activityType!==10}}">￥<text class="price">{{actBarInfo.prdRealPrice}}</text></text>
     <text wx:if="{{actBarInfo.activityType === 3}}">砍走</text>
     <text class="marking_price" wx:if="{{actBarInfo.activityType!==10}}">￥{{actBarInfo.prdLinePrice}}</text>
-    
     <text wx:if="{{actBarInfo.activityType===10}}" class="pre-sale">{{actBarInfo.preSaleActInfo}}</text>
   </view>
   <view class="act_right" wx:if="{{actBarInfo.actStatusName}}">

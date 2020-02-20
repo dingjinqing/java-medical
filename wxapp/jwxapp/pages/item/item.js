@@ -244,6 +244,10 @@ global.wxPage({
                 reduceActBarPrice: this.getActBarPrice(products, activity, 'prdRealPrice')
               })
             }
+            // 定金膨胀价格
+            if(res.content.activity && res.content.activity.activityType === 10){
+              this.getPreSaleDiscount(res.content.activity.preSalePrdMpVos)
+            }
             this.getPromotions(res.content)
             resolve(res.content)
           }
@@ -728,6 +732,19 @@ global.wxPage({
     this.setData({
       'actBarInfo.preSaleActInfo':preActBarStr
     })
+  },
+  getPreSaleDiscount(prdList){
+    if(this.defaultPrd){
+      this.setData({
+        PreSaleDiscountPrice : prdList[0].discountPrice
+      })
+    } else {
+      let priceArr = prdList.map(item=>{return item.discountPrice});
+      let minPrice = this.getMin(priceArr),maxPrice = this.getMax(priceArr)
+      this.setData({
+        PreSaleDiscountPrice : minPrice === maxPrice ? minPrice : `${minPrice}~${maxPrice}`
+      })
+    }
   },
   goPledge() {
     util.jumpLink(
