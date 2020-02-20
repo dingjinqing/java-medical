@@ -94,7 +94,7 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  line-height: 36rpx;
+  line-height: 40rpx;
 }
 .goods_info > .goods_spec {
   color: #888;
