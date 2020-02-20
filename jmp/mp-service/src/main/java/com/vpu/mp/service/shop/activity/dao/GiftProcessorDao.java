@@ -151,7 +151,7 @@ public class GiftProcessorDao extends GiftService {
             //转化
             transformVo(activity);
             goodsBo.forEach(goods->{
-                if(CollectionUtils.isEmpty(activity.getGoodsIds()) || activity.getGoodsIds().contains(goods.getGoodsId())){
+                if(goods.getIsGift() == OrderConstant.NO && (CollectionUtils.isEmpty(activity.getGoodsIds()) || activity.getGoodsIds().contains(goods.getGoodsId()))){
                     number[0] = number[0] + goods.getGoodsNumber();
                     price[0] = price[0].add(goods.getDiscountedTotalPrice());
                     joinRecord.add(goods.getGoodsId());
