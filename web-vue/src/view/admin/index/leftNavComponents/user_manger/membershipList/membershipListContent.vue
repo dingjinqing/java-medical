@@ -226,6 +226,7 @@
             type="info"
             size="small"
             plain
+            @click="membershipExportVisible = !membershipExportVisible"
           >{{$t('membershipIntroduction.membershipExport')}}</el-button>
         </li>
       </ul>
@@ -848,6 +849,8 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 会员导出弹窗 -->
+    <membershipExportDialog :dialogVisible.sync="membershipExportVisible"/>
   </div>
 </template>
 <script>
@@ -857,9 +860,10 @@ import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/setUpMemCDialog'
 import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
+import membershipExportDialog from './membershipExportDialog'
 import ModifyData from './modifyData'
 export default {
-  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog, ModifyData },
+  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog, ModifyData, membershipExportDialog },
   props: ['labelText'],
   data () {
     return {
@@ -977,7 +981,8 @@ export default {
       scoreDesc: false,
       scoreArrow: false,
       registArrow: false,
-      registTimeDesc: false
+      registTimeDesc: false,
+      membershipExportVisible: false
     }
   },
   watch: {
