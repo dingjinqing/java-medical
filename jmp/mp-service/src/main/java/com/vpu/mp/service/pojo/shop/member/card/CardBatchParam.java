@@ -32,4 +32,6 @@ public class CardBatchParam {
 	private Integer groupId;
 	
 	private MultipartFile file;
+	/** 已经生成的批次的batchId */
+	private Integer[] batchIdStr;
 }
