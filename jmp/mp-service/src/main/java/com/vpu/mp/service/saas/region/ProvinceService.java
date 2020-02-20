@@ -9,6 +9,8 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
@@ -16,7 +18,7 @@ import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
 import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 
 /**
- *
+ * 省
  * @author 新国
  *
  */
@@ -89,5 +91,16 @@ public class ProvinceService extends MainBaseService {
 
     public String getDistrictPinYinByCode(String code) {
         return db().select(DICT_DISTRICT.PINYIN).from(DICT_DISTRICT).where(DICT_DISTRICT.DISTRICT_ID.eq(Integer.valueOf(code))).fetchOneInto(String.class);
+    }
+
+
+    /**
+     * 获取省级名称
+     * @param ids
+     * @return
+     */
+    public Map<Integer, String> getProvinceNameByIds(List<Integer> ids){
+        return db().select(DICT_PROVINCE.PROVINCE_ID,DICT_PROVINCE.NAME).from(DICT_PROVINCE).where(DICT_PROVINCE.PROVINCE_ID.in(ids))
+                .fetchMap(DICT_PROVINCE.PROVINCE_ID,DICT_PROVINCE.NAME);
     }
 }
