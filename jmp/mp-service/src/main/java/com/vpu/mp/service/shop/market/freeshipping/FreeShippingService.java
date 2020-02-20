@@ -186,7 +186,6 @@ public class FreeShippingService extends ShopBaseService {
         SelectConditionStep<Record> select = db()
                 .select(FREE_SHIPPING.asterisk())
                 .from(FREE_SHIPPING)
-                .leftJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
                 .where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOption(select, param);
         select.orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.ID.desc());
