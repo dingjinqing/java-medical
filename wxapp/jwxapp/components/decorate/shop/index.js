@@ -5,8 +5,9 @@ global.wxComponent({
   methods: {
     onPropChange(newVal, oldVal, changedPath) {
       console.log(newVal, newVal.bg_url)
-      newVal.bg_url = 'http://jmpdevimg.weipubao.cn' + newVal.bg_url;
-      newVal.shop_bg_path = 'http://jmpdevimg.weipubao.cn' + newVal.shop_bg_path;
+
+      newVal.bg_url = newVal.imageUrl + newVal.bg_url;
+      newVal.shop_bg_path = newVal.imageUrl + newVal.shop_bg_path;
     },
 
   }

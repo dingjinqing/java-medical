@@ -277,6 +277,7 @@ export const cn = {
   enMarketTip1: '个分销员申请超过3天未处理',
   enMarketTip2: '会员卡激活审核进度良好',
   enMarketTip3: '没有库存偏小(小于指定值)的优惠券',
+  enMarketTip4: '分销员审核进度良好',
 
   // 公告
   noticeTitle: '公告',
