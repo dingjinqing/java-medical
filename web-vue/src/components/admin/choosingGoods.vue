@@ -544,17 +544,23 @@ export default {
       this.transmitGoodsIds(this.checkedIdList)
       this.$emit('resultGoodsIds', this.checkedIdList)
       this.$emit('result', this.checkedIdList)
-      let residueIds = []
-      this.checkedIdList.forEach(id => {
-        let flag = false
+      // 找出差异数据
+      let residueIds = this.checkedIdList.filter(id => {
         this.checkedRowList.forEach(itme => {
           if (this.getRowId(itme) === id) {
-            flag = true
+            return false
           }
         })
-        if (!flag) {
-          residueIds.push(id)
-        }
+        return true
+      })
+      // 删除多余数据
+      this.checkedRowList = this.checkedRowList.filter(item => {
+        this.checkedIdList.forEach(id => {
+          if (this.getRowId(item) === id) {
+            return true
+          }
+        })
+        return false
       })
       console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
       if (this.loadProduct) {
@@ -562,6 +568,7 @@ export default {
           res.content.forEach(item => {
             this.checkedRowList.push(item)
           })
+          console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
           this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
           // 把选中的id集合和url集合回传
           this.$emit('res', this.checkedIdList, this.checkedUrlList)

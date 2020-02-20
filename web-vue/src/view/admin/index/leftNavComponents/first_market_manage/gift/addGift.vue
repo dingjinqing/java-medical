@@ -889,7 +889,7 @@ export default {
     // 选择规格弹窗回调显示
     getSpecsIds (ids) {
       console.log('getSpecsIds', ids)
-      // this.specsIds = ids
+      this.specsIds = ids
     },
 
     // 规格弹窗数据
@@ -897,10 +897,6 @@ export default {
       console.log('getSpecsData', data)
       // this.specsData = data
       this.tableData = data
-      this.tableData.forEach(row => {
-        this.specsIds.push(row.prdId)
-      })
-      console.log(data)
     },
 
     // 规格表格删除
