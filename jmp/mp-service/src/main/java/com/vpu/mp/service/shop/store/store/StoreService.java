@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.store.store;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -424,7 +423,7 @@ public class StoreService extends ShopBaseService {
             having(DSL.count(STORE.STORE_ID).eq(productIds.size())).
             fetch(STORE.STORE_ID);
         if (CollectionUtils.isEmpty(storeIds)) {
-            RETURN NULL;
+            return null;
         }
         List<StorePojo> storeList = db().select().from(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StorePojo.class);
         if(express == OrderConstant.CITY_EXPRESS_SERVICE){
