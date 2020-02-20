@@ -80,6 +80,7 @@ public class CommodityStatisticsService extends ShopBaseService {
      * 默认排序规则，升序asc
      */
     private static final String DEFAULT_ORDER_BY_TYPE = "asc";
+    private static final String STRING_DATE = "Date";
 
     /**
      * The constant GOS.
@@ -549,7 +550,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         return null;
     }
 
-    public RankingVo getAllData(RankingParam param) {
+    private RankingVo getAllData(RankingParam param) {
         // 销售额
         Map<Integer, Result<Record4<Date, Integer, BigDecimal, String>>> sales = getGoodsGroupData(param, GOODS_SUMMARY.GOODS_SALES);
         // 销售订单
@@ -577,14 +578,14 @@ public class CommodityStatisticsService extends ShopBaseService {
      * @param rule   the rule
      * @return the chart data
      */
-    public <T extends Number> ChartData getChartData(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
-                                                     RankingParam param,
-                                                     Field<T> field, byte unit,
-                                                     BiPredicate<Record4<Date, Integer, T, String>, LocalDate> rule,
-                                                     Function<LocalDate, String> func,
-                                                     BiPredicate<String, LocalDate> compare) {
+    private <T extends Number> ChartData getChartData(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
+                                                      RankingParam param,
+                                                      Field<T> field, byte unit,
+                                                      BiPredicate<Record4<Date, Integer, T, String>, LocalDate> rule,
+                                                      Function<LocalDate, String> func,
+                                                      BiPredicate<String, LocalDate> compare) {
         List<String> columns = new ArrayList<String>() {{
-            add("Date");
+            add(STRING_DATE);
         }};
         List<Map<String, Object>> rows = new ArrayList<>();
         source.forEach((k, v) -> {
@@ -604,11 +605,11 @@ public class CommodityStatisticsService extends ShopBaseService {
      * @param field  the field
      * @return the chart data 1
      */
-    public <T extends Number> ChartData getChartData1(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
-                                                      RankingParam param,
-                                                      Field<T> field) {
+    private <T extends Number> ChartData getChartData1(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
+                                                       RankingParam param,
+                                                       Field<T> field) {
         List<String> columns = new ArrayList<String>() {{
-            add("Date");
+            add(STRING_DATE);
         }};
         List<Map<String, Object>> rows = new ArrayList<>();
         source.forEach((k, v) -> {
@@ -619,11 +620,11 @@ public class CommodityStatisticsService extends ShopBaseService {
         return ChartData.builder().columns(columns).rows(rows).build();
     }
 
-    public <T extends Number> Map<String, ChartData> getAllChartData(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
-                                                                     RankingParam param,
-                                                                     Field<T> field) {
+    private <T extends Number> Map<String, ChartData> getAllChartData(Map<Integer, Result<Record4<Date, Integer, T, String>>> source,
+                                                                      RankingParam param,
+                                                                      Field<T> field) {
         List<String> columns = new ArrayList<String>() {{
-            add("Date");
+            add(STRING_DATE);
         }};
         List<Map<String, Object>> dayRows = new ArrayList<>();
         List<Map<String, Object>> weekRows = new ArrayList<>();
@@ -640,7 +641,6 @@ public class CommodityStatisticsService extends ShopBaseService {
             param.setUnit(BYTE_TWO);
             dayCharData(yearRows, v, getRefDateList(param), this::yearRule, field, this::yearDate, this::yearCompare);
         });
-
         return new HashMap<String, ChartData>(4) {{
             put(DAY_CHAR_DATA, ChartData.builder().columns(columns).rows(dayRows).build());
             put(WEEK_CHAR_DATA, ChartData.builder().columns(columns).rows(weekRows).build());
@@ -649,9 +649,9 @@ public class CommodityStatisticsService extends ShopBaseService {
         }};
     }
 
-    public TableData getTableData(RankingParam param, List<Map<String, Object>> rows, Function<LocalDate, String> func) {
-        Set<String> goodsName = rows.stream().findAny().orElse(EMPTY_MAP).keySet();
-        goodsName.remove("Date");
+    private TableData getTableData(RankingParam param, List<Map<String, Object>> rows, Function<LocalDate, String> func) {
+        Set<String> goodsName = rows.stream().findAny().orElse(EMPTY_MAP).keySet()
+            .stream().filter(e -> !STRING_DATE.equals(e)).collect(Collectors.toSet());
         List<String> refDate;
         if (BYTE_THREE.equals(param.getUnit())) {
             refDate = getRefDateList1(param).stream().map(Object::toString).collect(Collectors.toList());
@@ -661,16 +661,16 @@ public class CommodityStatisticsService extends ShopBaseService {
         return TableData.builder().refDate(refDate).goodsName(goodsName).arrayData(getTableArrayData(rows)).build();
     }
 
-    public Object[][] getTableArrayData(final List<Map<String, Object>> rows) {
+    private Object[][] getTableArrayData(final List<Map<String, Object>> rows) {
 
         Object[][] list = new Object[rows.size()][];
 
         for (int i = 0; i < rows.size(); i++) {
             Map<String, Object> tempMap = rows.get(i);
-            Object dateValue = tempMap.get("Date");
-            tempMap.remove("Date");
+            Object dateValue = tempMap.get(STRING_DATE);
+            tempMap.remove(STRING_DATE);
             list[i] = tempMap.values().toArray();
-            tempMap.put("Date", dateValue);
+            tempMap.put(STRING_DATE, dateValue);
         }
         return swapHV(list);
     }
@@ -710,7 +710,7 @@ public class CommodityStatisticsService extends ShopBaseService {
      * @param field the field
      * @return the goods group data
      */
-    public <T extends Number> Map<Integer, Result<Record4<Date, Integer, T, String>>> getGoodsGroupData(RankingParam param, Field<T> field) {
+    private <T extends Number> Map<Integer, Result<Record4<Date, Integer, T, String>>> getGoodsGroupData(RankingParam param, Field<T> field) {
         // 获取销售额/销售订单排行前10的商品id
         Map<Integer, Result<Record1<Integer>>> ids = db()
             .select(min(GOODS_SUMMARY.GOODS_ID))
@@ -727,14 +727,14 @@ public class CommodityStatisticsService extends ShopBaseService {
         log.debug("销售额/销售订单排行前10的商品id为：{}", Util.toJson(goodsIds));
 
         Map<Integer, Result<Record4<Date, Integer, T, String>>> sales = db()
-            .select(GOODS_SUMMARY.REF_DATE, GOODS_SUMMARY.GOODS_ID, field, GOODS.GOODS_NAME)
+            .select(GOODS_SUMMARY.REF_DATE.sub(INTEGER_ONE), GOODS_SUMMARY.GOODS_ID, field, GOODS.GOODS_NAME)
             .from(GOODS_SUMMARY)
             .leftJoin(GOODS).on(GOODS_SUMMARY.GOODS_ID.eq(GOODS.GOODS_ID))
             .where(GOODS_SUMMARY.REF_DATE.greaterThan(param.getStartTime()))
             .and(GOODS_SUMMARY.REF_DATE.le(param.getEndTime()))
             .and(GOODS_SUMMARY.TYPE.eq(BYTE_ONE))
             .and(GOODS_SUMMARY.GOODS_ID.in(goodsIds))
-            .orderBy(GOODS_SUMMARY.REF_DATE)
+            .orderBy(GOODS_SUMMARY.REF_DATE.sub(INTEGER_ONE))
             .fetchGroups(GOODS_SUMMARY.GOODS_ID);
         return sales;
     }
@@ -766,8 +766,8 @@ public class CommodityStatisticsService extends ShopBaseService {
                 return result;
             default:
                 // 0天
-                for (LocalDate date = param.getStartTime().toLocalDate().plusDays(INTEGER_ONE);
-                     date.isBefore(param.getEndTime().toLocalDate().plusDays(INTEGER_ONE));
+                for (LocalDate date = param.getStartTime().toLocalDate();
+                     date.isBefore(param.getEndTime().toLocalDate());
                      date = date.plusDays(INTEGER_ONE)) {
                     result.add(date);
                 }
@@ -778,8 +778,8 @@ public class CommodityStatisticsService extends ShopBaseService {
     private List<Tuple2<LocalDate, LocalDate>> getRefDateList1(RankingParam param) {
         List<Tuple2<LocalDate, LocalDate>> result = new ArrayList<>();
         // 周
-        for (LocalDate date = param.getStartTime().toLocalDate().plusDays(INTEGER_ONE);
-             date.isBefore(param.getEndTime().toLocalDate().plusDays(INTEGER_ONE));
+        for (LocalDate date = param.getStartTime().toLocalDate();
+             date.isBefore(param.getEndTime().toLocalDate());
              date = date.plusDays(7)) {
             result.add(new Tuple2<>(date, date.plusDays(7).compareTo(param.getEndTime().toLocalDate()) > 0 ? param.getEndTime().toLocalDate() : date.plusDays(7)));
         }
@@ -787,21 +787,21 @@ public class CommodityStatisticsService extends ShopBaseService {
     }
 
     private <T extends Number> boolean dayRule(Record4<Date, Integer, T, String> t, LocalDate u) {
-        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u) == 0;
+        return t.value1().toLocalDate().compareTo(u) == 0;
     }
 
     private <T extends Number> boolean weekRule(Record4<Date, Integer, T, String> t, Tuple2<LocalDate, LocalDate> u) {
-        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u.v1()) > 0 &&
-            t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().compareTo(u.v2()) < 0;
+        return t.value1().toLocalDate().compareTo(u.v1()) > 0 &&
+            t.value1().toLocalDate().compareTo(u.v2()) < 0;
     }
 
     private <T extends Number> boolean monthRule(Record4<Date, Integer, T, String> t, LocalDate u) {
-        return t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().getYear() == u.getYear() &&
-            t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate().getMonth() == u.getMonth();
+        return t.value1().toLocalDate().getYear() == u.getYear() &&
+            t.value1().toLocalDate().getMonth() == u.getMonth();
     }
 
     private <T extends Number> boolean yearRule(Record4<Date, Integer, T, String> t, LocalDate u) {
-        LocalDate tDate = t.getValue(GOODS_SUMMARY.REF_DATE).toLocalDate();
+        LocalDate tDate = t.value1().toLocalDate();
         return tDate.getYear() == u.getYear();
     }
 
@@ -815,9 +815,8 @@ public class CommodityStatisticsService extends ShopBaseService {
                                                 BiPredicate<String, LocalDate> compare) {
         String name = results.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME);
         AtomicBoolean flag = new AtomicBoolean(false);
-
         showDate.forEach(d -> {
-            Optional<Map<String, Object>> optional = rows.stream().filter(m -> compare.test(m.get("Date").toString(), d)).findFirst();
+            Optional<Map<String, Object>> optional = rows.stream().filter(m -> compare.test(m.get(STRING_DATE).toString(), d)).findFirst();
             Map<String, Object> map;
             if (optional.isPresent()) {
                 map = optional.get();
@@ -826,7 +825,7 @@ public class CommodityStatisticsService extends ShopBaseService {
                 flag.set(true);
             }
             List<Record4<Date, Integer, T, String>> temp = results.stream().filter(e -> rule.test(e, d)).collect(Collectors.toList());
-            map.putIfAbsent("Date", func.apply(d));
+            map.putIfAbsent(STRING_DATE, func.apply(d));
             Class<T> clazz = field.getType();
             if (clazz.equals(BigDecimal.class)) {
                 map.put(name, temp.stream().map(e -> e.getValue(field)).map(Number::doubleValue).reduce(DOUBLE_ZERO, Double::sum));
@@ -875,7 +874,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         String name = results.get(INTEGER_ZERO).getValue(GOODS.GOODS_NAME);
         AtomicBoolean flag = new AtomicBoolean(false);
         showDate.forEach(d -> {
-            Optional<Map<String, Object>> optional = rows.stream().filter(m -> m.get("Date").toString().equals(d.v1() + "~" + d.v2())).findFirst();
+            Optional<Map<String, Object>> optional = rows.stream().filter(m -> m.get(STRING_DATE).toString().equals(d.v1() + "~" + d.v2())).findFirst();
             Map<String, Object> map;
             if (optional.isPresent()) {
                 map = optional.get();
@@ -884,7 +883,7 @@ public class CommodityStatisticsService extends ShopBaseService {
                 flag.set(true);
             }
             List<Record4<Date, Integer, T, String>> temp = results.stream().filter(e -> rule.test(e, d)).collect(Collectors.toList());
-            map.putIfAbsent("Date", d.v1() + "~" + d.v2());
+            map.putIfAbsent(STRING_DATE, d.v1() + "~" + d.v2());
             Class<T> clazz = field.getType();
             if (clazz.equals(BigDecimal.class)) {
                 map.put(name, temp.stream().map(e -> e.getValue(field)).map(Number::doubleValue).reduce(DOUBLE_ZERO, Double::sum));
@@ -898,10 +897,6 @@ public class CommodityStatisticsService extends ShopBaseService {
             }
             flag.set(false);
         });
-    }
-
-    private Date dateDecrement(Date date) {
-        return Date.valueOf(date.toLocalDate().minusDays(INTEGER_ONE));
     }
 
     /**
@@ -950,10 +945,10 @@ public class CommodityStatisticsService extends ShopBaseService {
                 break;
         }
         chartData.getRows().forEach(e -> {
-            String date = e.get("Date").toString();
+            String date = e.get(STRING_DATE).toString();
             AtomicBoolean flag = new AtomicBoolean(false);
             e.forEach((k, v) -> {
-                if ("Date".equals(k)) {
+                if (STRING_DATE.equals(k)) {
                     return;
                 }
                 GoodsEffectExportVo exportVo;
