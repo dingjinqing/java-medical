@@ -267,4 +267,13 @@ public class AdminShopDecorateController extends AdminBaseController {
     public JsonResult getTemplates() {
         return success(saas.shop.decoration.getAll());
     }
+
+    /**
+     * 模板
+     * @return
+     */
+    @GetMapping(value = "/admin/decorate/templates/get")
+    public JsonResult getTemplateContent(Integer id) {
+        return success(shop().adminDecoration.covertTemplate(id));
+    }
 }

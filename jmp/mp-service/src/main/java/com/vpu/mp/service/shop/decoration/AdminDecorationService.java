@@ -10,12 +10,15 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -327,7 +330,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     moduleBargain = saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
                     return moduleBargain;
                 case ModuleConstant.M_SECKILL:
-                    ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+                    ModuleSeckill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSeckill.class);
                     moduleSecKill = saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
                     return moduleSecKill;
                 case ModuleConstant.M_INTEGRAL:
@@ -736,5 +739,65 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     @Override
     public UpYun getUpYunClient() {
         return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
+    }
+
+    /**
+     * 将页面模板数据处理成前端可以直接用的
+     * @param templateId
+     * @return
+     */
+    public DecorationTemplatePojo covertTemplate(int templateId){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        DecorationTemplateRecord decorationTemplateRecord = saas.shop.decoration.getRow(templateId);
+        String pageContent = StringUtils.isBlank(decorationTemplateRecord.getPageContent()) ? "{}" : decorationTemplateRecord.getPageContent();
+        Map<String, Object> result = new LinkedHashMap<>();
+
+        try {
+            JsonNode root = objectMapper.readTree(pageContent);
+            Iterator<Map.Entry<String, JsonNode>> elements = root.fields();
+
+            while (elements.hasNext()) {
+                Map.Entry<String, JsonNode> node = elements.next();
+                String key = node.getKey();
+                Object element = this.processTemplateModuleForGet(objectMapper, node);
+                result.put(key, element);
+            }
+        } catch (Exception e) {
+            logger().error("装修模板转换错误:",e);
+        }
+
+        try {
+            DecorationTemplatePojo vo = new DecorationTemplatePojo();
+            vo.setPageName(decorationTemplateRecord.getPageName());
+            vo.setPageId(decorationTemplateRecord.getPageId());
+            vo.setPageImg(decorationTemplateRecord.getPageImg());
+            vo.setPageContent(objectMapper.writeValueAsString(result));
+            return vo;
+        } catch (IOException e) {
+            logger().error("装修模板",e);
+            return null;
+        }
+    }
+
+    private Object processTemplateModuleForGet(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException, ClassNotFoundException {
+        if (node.getKey().startsWith("c_")) {
+            String moduleName = node.getValue().get("module_name").asText();
+
+            String moduleClassName = Util.underlineToHump(moduleName.split("_",2)[1]);
+            moduleClassName = moduleClassName.substring(0, 1).toUpperCase() + moduleClassName.substring(1);
+            moduleClassName = "com.vpu.mp.service.pojo.shop.decoration.module." + "Module" + moduleClassName;
+            Class m = Class.forName(moduleClassName);
+            return objectMapper.readValue(node.getValue().toString(), m);
+        }
+        if("page_cfg".equals(node.getKey())){
+            PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+            if(pageCfg.getPictorial() != null && StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
+                pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
+            }
+            return pageCfg;
+        }
+        return objectMapper.readValue(node.getValue().toString(), Object.class);
     }
 }
