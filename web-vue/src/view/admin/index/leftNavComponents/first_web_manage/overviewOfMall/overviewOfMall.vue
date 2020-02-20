@@ -993,8 +993,8 @@
         placeholder="请选择"
       >
         <el-option
-          v-for="item in storeRevieweList"
-          :key="item.value"
+          v-for="(item, index) in storeRevieweList"
+          :key="index"
           :label="item.label"
           :value="item.value"
         >
@@ -1187,7 +1187,16 @@ export default {
     getAllStore () {
       getAllStore().then(res => {
         if (res.error === 0) {
-          this.storeRevieweList = res.content
+          // this.storeRevieweList = res.content
+
+          this.storeRevieweList = []
+          var obj = res.content
+          for (var key in obj) {
+            this.storeRevieweList.push({
+              value: key,
+              label: obj[key]
+            })
+          }
         }
       })
     },
