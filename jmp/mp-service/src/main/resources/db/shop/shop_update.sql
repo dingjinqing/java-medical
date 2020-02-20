@@ -23,6 +23,10 @@ ALTER TABLE `b2c_distributor_apply` MODIFY COLUMN `activation_fields` text DEFAU
 
 -- 2020年2月18日14:50:58 孔德成 抽奖奖品增加账户余额
 ALTER TABLE `b2c_lottery_prize` ADD COLUMN `award_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户余额';
+
+-- 2020年2月20日17:11:57  字段默认存储从{}改为[]
+ALTER TABLE `b2c_member_card` MODIFY COLUMN `store_list` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '[]' COMMENT '可用门店' AFTER `use_time`;
+
 -- 修复table
 /***********************2.8*********************END*/
 
