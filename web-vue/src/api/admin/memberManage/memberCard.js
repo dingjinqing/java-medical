@@ -233,3 +233,18 @@ export function chargeConsume (data) {
     data
   })
 }
+
+// 持卡会员导出
+export function exportExcel (data) {
+  return service({
+    url: '/api/admin/member/cardholder/import/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+// 查询可用会员卡列表
+export const getUsableMemberCardList = () => service({
+  url: `/api/admin/member/card/usable/list`,
+  method: 'post'
+})

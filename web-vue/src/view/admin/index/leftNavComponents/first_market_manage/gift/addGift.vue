@@ -443,8 +443,8 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
 // import { format, range } from '@/util/date'
 // import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
-
+import { addGift, getGiftDetail, updateGift, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
+import { getUsableMemberCardList } from '@/api/admin/memberManage/memberCard'
 export default {
   components: {
     wrapper,
@@ -660,7 +660,7 @@ export default {
       }
     })
     // 获取会员卡数据
-    getMemberCardList().then((res) => {
+    getUsableMemberCardList().then((res) => {
       if (res.error === 0) {
         this.cardList = res.content
       }
