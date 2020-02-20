@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.upyun.UpAPIException;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
@@ -14,19 +13,20 @@ import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.apache.commons.lang3.math.NumberUtils;
+
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_OFF;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 /**
  * 积分配置Service
  *
@@ -312,7 +312,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		if(null==userScore) {
 			userScore=new UserScoreSetValue(ZERO, new String[] {"0"}, ZERO);
 		}
-		if(userScore.getEnable()!=null && ONE == userScore.getEnable()) {
+		if(userScore.getEnable()!=null && ONE.equals(userScore.getEnable())) {
 			vo.setSignInScore(BUTTON_ON);
 		}else {
 			vo.setSignInScore(BUTTON_OFF);

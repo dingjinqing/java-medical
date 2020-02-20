@@ -1622,7 +1622,7 @@ public class UserCardService extends ShopBaseService {
 			}
 		}
 
-		if (cardId == userGradeCard.getId()) {
+		if (cardId.equals(userGradeCard.getId())) {
 			return null;
 		}
 
