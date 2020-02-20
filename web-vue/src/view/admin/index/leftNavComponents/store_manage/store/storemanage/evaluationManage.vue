@@ -51,6 +51,9 @@ export default {
   },
   mounted () {
     this.id = this.$route.query.id
+    if (this.$route.query.name) {
+      this.tab.name = this.$route.query.name
+    }
     this.langDefault()
     this.initStatus()
     this.tabClickHandle(this.tab)
@@ -95,9 +98,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .service_manage_page {
-    .service_manage_tabs {
-      margin: 0 25px;
-    }
+.service_manage_page {
+  .service_manage_tabs {
+    margin: 0 25px;
   }
+}
 </style>
