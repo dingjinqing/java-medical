@@ -20,12 +20,12 @@ public class PackSaleConstant {
 		/** 已停用 */
 		public final static int STOPPED=4;
 	}
-	/**活动状态 （启用/停用）*/
+	/**第二三分组状态 （启用/停用）*/
 	public class Status{
 		/** 启用 */
 		public static final byte NORMAL=1;
 		/** 停用 */
-		public final static byte STOPED=0;
+		public final static byte DISABLED=0;
 	}
 }
 

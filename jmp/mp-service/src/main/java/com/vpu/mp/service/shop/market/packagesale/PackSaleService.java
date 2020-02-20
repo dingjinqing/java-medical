@@ -4,24 +4,19 @@ import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
+import com.vpu.mp.service.pojo.shop.market.packagesale.*;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.Status;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo.GoodsGroupVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDetailParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDetailVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleOrderPageParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleShareVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
@@ -53,6 +48,7 @@ public class PackSaleService extends ShopBaseService {
 	@Autowired public QrCodeService qrCodeService;
 	@Autowired public GoodsService goodsService;
 	@Autowired public OrderReadService orderReadService;
+    @Autowired public PackageGoodsCartService packageGoodsCartService;
 	
 	/**
 	 * 分页查询一口价活动列表
@@ -188,7 +184,7 @@ public class PackSaleService extends ShopBaseService {
 		if(id == null) {
 			return 0;
 		}
-		return changeStatus(id, Status.NORMAL);
+		return changeStatus(id, BaseConstant.ACTIVITY_STATUS_NORMAL);
 	}
 	/**
 	 * 停用活动
@@ -199,7 +195,7 @@ public class PackSaleService extends ShopBaseService {
 		if(id == null) {
 			return 0;
 		}
-		return changeStatus(id, Status.STOPED);
+		return changeStatus(id, BaseConstant.ACTIVITY_STATUS_DISABLE);
 	}
 	
 	private int changeStatus(Integer id,Byte status) {
@@ -325,5 +321,56 @@ public class PackSaleService extends ShopBaseService {
 		step.orderBy(ORDER_INFO.CREATE_TIME);
 		return step;
 	}
+
+	private List<PackSaleParam.GoodsGroup> getPackageGroups(PackageSaleRecord packageSaleRecord){
+	    List<PackSaleParam.GoodsGroup> res = new ArrayList<>();
+        PackSaleParam.GoodsGroup g1 = new PackSaleParam.GoodsGroup();
+        g1.setGroupName(packageSaleRecord.getGroupName_1());
+        g1.setGoodsNumber(packageSaleRecord.getGoodsNumber_1());
+        g1.setGoodsIdList(Util.splitValueToList(packageSaleRecord.getGoodsIds_1()));
+        g1.setSortIdList(Util.splitValueToList(packageSaleRecord.getSortIds_1()));
+        g1.setCatIdList(Util.splitValueToList(packageSaleRecord.getCatIds_1()));
+        res.add(g1);
+
+        if(packageSaleRecord.getGoodsGroup_2() == Status.NORMAL){
+            PackSaleParam.GoodsGroup g2 = new PackSaleParam.GoodsGroup();
+            g2.setGroupName(packageSaleRecord.getGroupName_2());
+            g2.setGoodsNumber(packageSaleRecord.getGoodsNumber_2());
+            g2.setGoodsIdList(Util.splitValueToList(packageSaleRecord.getGoodsIds_2()));
+            g2.setSortIdList(Util.splitValueToList(packageSaleRecord.getSortIds_2()));
+            g2.setCatIdList(Util.splitValueToList(packageSaleRecord.getCatIds_2()));
+        }
+
+        if(packageSaleRecord.getGoodsGroup_3() == Status.NORMAL){
+            PackSaleParam.GoodsGroup g3 = new PackSaleParam.GoodsGroup();
+            g3.setGroupName(packageSaleRecord.getGroupName_3());
+            g3.setGoodsNumber(packageSaleRecord.getGoodsNumber_3());
+            g3.setGoodsIdList(Util.splitValueToList(packageSaleRecord.getGoodsIds_3()));
+            g3.setSortIdList(Util.splitValueToList(packageSaleRecord.getSortIds_3()));
+            g3.setCatIdList(Util.splitValueToList(packageSaleRecord.getCatIds_3()));
+        }
+
+        return res;
+    }
+
+	public PackageSaleGoodsListVo getWxAppGoodsList(PackageSaleGoodsListParam param,Integer userId){
+        PackageSaleGoodsListVo vo = new PackageSaleGoodsListVo();
+        PackageSaleRecord packageSaleRecord = db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(param.getPackageId())).fetchAny();
+        if(packageSaleRecord == null || packageSaleRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+            vo.setState((byte)1);
+            return vo;
+        }else if(packageSaleRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+            vo.setState((byte)2);
+            return vo;
+        }else if(packageSaleRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+            vo.setState((byte)3);
+            return vo;
+        }
+
+        List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
+        int totalGoodsNumber = groups.stream().mapToInt(PackSaleParam.GoodsGroup::getGoodsNumber).sum();
+
+	    return null;
+    }
 }
 

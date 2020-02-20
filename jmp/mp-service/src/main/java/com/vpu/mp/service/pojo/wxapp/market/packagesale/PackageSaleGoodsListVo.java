@@ -1,7 +1,6 @@
-package com.vpu.mp.service.pojo.wxapp.market.fullcut;
+package com.vpu.mp.service.pojo.wxapp.market.packagesale;
 
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,25 +9,28 @@ import java.util.List;
 
 /**
  * @author: 王兵兵
- * @create: 2020-02-18 10:12
+ * @create: 2020-02-20 10:40
  **/
 @Getter
 @Setter
-public class MrkingStrategyGoodsListVo {
+public class PackageSaleGoodsListVo {
     /** 状态，0正常可用，1活动不存在，2活动未开始，3活动已过期 ，4活动设置了专属会员卡可参与，但该会员没有对应的卡，  */
     private Byte state;
 
+    /**
+     * 当前分组下可选的商品列表
+     */
     private PageResult<Goods> goods;
 
-    /** 活动类型：类型,1每满减 2满件 3满折 4仅第X件打折 */
-    private Byte type;
-    /** 优惠规则 */
-    private List<MrkingStrategyCondition> condition;
+    /**
+     * tab切换栏数据
+     */
+    private List<GoodsGroup>  tabList;
 
     /**
-     * 底边条输出的文案，根据当前购物车里的商品计算出
+     * 顶部活动解释文本
      */
-    private FullPriceDoc fullPriceDoc;
+    private Title title;
 
     @Setter
     @Getter
@@ -76,23 +78,33 @@ public class MrkingStrategyGoodsListVo {
         private BigDecimal maxPrice;
     }
 
-    /**
-     * 底边条输出的文案类，根据当前购物车里的商品计算出
-     */
+    @Setter
+    @Getter
+    public static class GoodsGroup{
+        /** 商品组名称 */
+        private String groupName;
+        /** 至少需要选择件数 */
+        private Integer goodsNumber;
+        /** 用户已经选择件数 */
+        private Integer selectNumber;
+    }
+
     @Getter
     @Setter
-    public static class FullPriceDoc{
+    public static class Title{
+        private Byte packageType;
+
         /**
-         * 类型，0“快选择商品参加满折满减活动吧”，购物车里没有东西；1"下单立减reduceMoney元"；2"再选diffPrice元，即可减reduceMoney元"；3"再选diffPrice元，即可打discount折"；4"再选diffNumber件，即可减reduceMoney元"；5"再选diffNumber件，即可打discount折"
+         * 满件数折扣类型
          */
-        private Byte docType;
+        private Integer discountTotalGoodsNumber;
+        private BigDecimal discountTotalRatio;
 
-        private BigDecimal diffPrice;
+        /**
+         * 几件一口价类型
+         */
+        private BigDecimal totalMoney;
+        private Integer totalGoodsNumber;
 
-        private BigDecimal reduceMoney;
-
-        private BigDecimal discount;
-
-        private Integer diffNumber;
     }
 }

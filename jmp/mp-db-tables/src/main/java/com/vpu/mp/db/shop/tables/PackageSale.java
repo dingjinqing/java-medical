@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PackageSale extends TableImpl<PackageSaleRecord> {
 
-    private static final long serialVersionUID = -1763790359;
+    private static final long serialVersionUID = 1035373142;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_package_sale</code>
@@ -186,12 +186,22 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.create_time</code>.
      */
-    public final TableField<PackageSaleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<PackageSaleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.update_time</code>. 最后修改时间
      */
-    public final TableField<PackageSaleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<PackageSaleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_package_sale.package_type</code>. 活动类型0金额1折扣
+     */
+    public final TableField<PackageSaleRecord, Byte> PACKAGE_TYPE = createField("package_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型0金额1折扣");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_package_sale.total_ratio</code>. 结算比例
+     */
+    public final TableField<PackageSaleRecord, BigDecimal> TOTAL_RATIO = createField("total_ratio", org.jooq.impl.SQLDataType.DECIMAL(4, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "结算比例");
 
     /**
      * Create a <code>mini_shop_471752.b2c_package_sale</code> table reference

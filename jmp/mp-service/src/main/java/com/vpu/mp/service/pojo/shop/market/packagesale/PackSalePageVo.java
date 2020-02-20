@@ -1,15 +1,14 @@
 package com.vpu.mp.service.pojo.shop.market.packagesale;
 
+import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-
-import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.Status;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author huangronggang
@@ -68,7 +67,7 @@ public class PackSalePageVo {
 	 * @return
 	 */
 	public Byte activityStatus() {
-		if(Status.NORMAL == this.getStatus()) {
+		if(BaseConstant.ACTIVITY_STATUS_NORMAL == this.getStatus()) {
 			Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
 			if(currentTime.before(this.getStartTime())){
 				return ActivityStatus.UNSTARTED;
