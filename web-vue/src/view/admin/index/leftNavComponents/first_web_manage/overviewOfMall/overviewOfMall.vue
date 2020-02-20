@@ -452,7 +452,7 @@
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unStoreTip5') }}</span>
                     <a
-                      href="/admin/home/main/goodsManage/evaluationManagement"
+                      href="/admin/home/main/goodsManage/evaluationManagement?activeName=second"
                       target="_blank"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
@@ -514,7 +514,10 @@
                   <div v-if="storeList.dataMarket.member !== null">
                     <div class="task_list_item">
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }}</span>
+                      <span
+                        class="task_list_desc"
+                        v-if="storeList.dataMarket.member.card_num === 0"
+                      >{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
                       <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
@@ -666,7 +669,7 @@
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unStoreTip5') }}</span>
                     <a
-                      href="/admin/home/main/goodsManage/evaluationManagement"
+                      href="/admin/home/main/goodsManage/evaluationManagement?activeName=second"
                       target="_blank"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
@@ -757,7 +760,10 @@
                     </div> -->
                     <div class="task_list_item">
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }}</span>
+                      <span
+                        class="task_list_desc"
+                        v-if="storeList.dataMarket.member.card_num === 0"
+                      >{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
                       <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
@@ -1292,7 +1298,13 @@ export default {
     // 确定服务门店
     sureStoreReviewe () {
       this.storeDialog = false
-      window.open('/admin/home/main/store/storemanage/comment/review?id=' + this.storeValue)
+      // window.open('/admin/home/main/store/storemanage/comment/review?id=' + this.storeValue)
+      this.$router.push({
+        path: '/admin/home/main/store/storemanage/comment/review',
+        query: {
+          id: this.storeValue
+        }
+      })
       this.storeValue = ''
     },
 

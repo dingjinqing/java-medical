@@ -147,9 +147,9 @@
               <el-form-item
                 :label="$t('shipping.shippingArea') + '：'"
                 style="margin: 20px 0;"
-                :prop="`ruleList[${index}].areaList`"
+                :prop="`ruleList[${index}].area`"
                 :rules="[
-                    { required: true, validator: (rule, value, callback)=>{validateArea(rule, value, callback, item.areaList)}, trigger: ['blur', 'change'] },
+                    { required: true, validator: (rule, value, callback)=>{validateArea(rule, value, callback, item.area)}, trigger: ['blur', 'change'] },
                   ]"
               >
                 <el-button
@@ -157,6 +157,10 @@
                   type="primary"
                   @click="areaHandler(index)"
                 >{{ $t('shipping.areaTip') }}</el-button>
+                <el-input
+                  v-model="item.area"
+                  style="display: none;"
+                ></el-input>
                 <div>
                   <span
                     v-for="(val, key) in item.areaList"
@@ -275,7 +279,8 @@ export default {
           conType: 0,
           money: 0,
           num: 0,
-          area: ''
+          area: '',
+          areaList: ''
         }]
       },
       // 校验表单

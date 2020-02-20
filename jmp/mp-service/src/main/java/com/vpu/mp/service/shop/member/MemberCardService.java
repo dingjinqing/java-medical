@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
@@ -75,6 +76,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -1081,7 +1083,18 @@ public class MemberCardService extends ShopBaseService {
 
 		return cardList;
 	}
-
+	/**
+	 * 获取可用会员卡列表
+	 */
+	public List<UserAction> getUsableMemberCardList() {
+		Timestamp localDateTime = DateUtil.getLocalDateTime();
+		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME.as("name")).from(MEMBER_CARD)
+				.where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+				.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
+				.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.END_TIME.ge(localDateTime)))
+						.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
+				.fetchInto(UserAction.class);
+	}
 	/**
 	 * 会员卡列表
 	 *
