@@ -111,3 +111,10 @@ export function getTemplatesData () {
     method: 'get'
   })
 }
+// 获取处理过得装修弹窗数据
+export function getHandleTemplatesData (data) {
+  return service({
+    url: `/api/admin/decorate/templates/get?id=${data}`,
+    method: 'get'
+  })
+}

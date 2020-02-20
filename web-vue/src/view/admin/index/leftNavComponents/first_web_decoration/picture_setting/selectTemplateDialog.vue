@@ -18,7 +18,7 @@
               @mouseleave="leave(index)"
             >
               <div class="width:150px;height:210px">
-                <img :src="item.imgUrl">
+                <img :src="item.pageImg">
                 <div
                   class="template_li_hidden"
                   :class="item.flag === index?'hiddleFlag':''"
@@ -34,7 +34,7 @@
                 </div>
               </div>
 
-              <div class="title">{{item.title}}</div>
+              <div class="title">{{item.pageName}}</div>
             </div>
 
           </div>

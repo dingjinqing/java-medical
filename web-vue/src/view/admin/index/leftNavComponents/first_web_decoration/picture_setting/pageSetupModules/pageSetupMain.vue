@@ -394,25 +394,24 @@ export default {
               })
             }
           })
-
-          console.log(this.pageClassify)
-          Object.keys(this.ruleForm).forEach((item, index) => {
-            Object.keys(newData).forEach((itemC, indexC) => {
-              console.log(item, itemC)
-              if (JSON.stringify(item) === JSON.stringify(itemC)) {
-                console.log(itemC)
-                this.ruleForm[item] = newData[itemC]
-              }
-            })
-          })
-          Object.keys(this.ruleForm.pictorial).forEach((item, index) => {
-            Object.keys(newData).forEach((itemC, indexC) => {
-              if (JSON.stringify(item) === JSON.stringify(itemC)) {
-                console.log(itemC)
-                this.ruleForm.pictorial[item] = newData[itemC]
-              }
-            })
-          })
+          this.ruleForm = newData
+          // Object.keys(this.ruleForm).forEach((item, index) => {
+          //   Object.keys(newData).forEach((itemC, indexC) => {
+          //     console.log(item, itemC)
+          //     if (JSON.stringify(item) === JSON.stringify(itemC)) {
+          //       console.log(itemC)
+          //       this.ruleForm[item] = newData[itemC]
+          //     }
+          //   })
+          // })
+          // Object.keys(this.ruleForm.pictorial).forEach((item, index) => {
+          //   Object.keys(newData).forEach((itemC, indexC) => {
+          //     if (JSON.stringify(item) === JSON.stringify(itemC)) {
+          //       console.log(itemC)
+          //       this.ruleForm.pictorial[item] = newData[itemC]
+          //     }
+          //   })
+          // })
           // this.ruleForm = newData
         }
       },
