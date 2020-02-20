@@ -16,9 +16,12 @@
     "vue"
   ],
   "eslint.autoFixOnSave": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
   "editor.formatOnSave": true,
   "javascript.format.enable": true,
   "prettier.singleQuote": true,
+  "prettier.semi": true,
   "files.associations": {
     "*.cjson": "jsonc",
     "*.wxss": "css",
