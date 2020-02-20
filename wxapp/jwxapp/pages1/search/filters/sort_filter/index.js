@@ -8,7 +8,7 @@ global.wxComponent({
    */
   properties: {
     sorts:Array,
-    selectedSort:Number
+    selectedSort:Array
   },
 
   /**

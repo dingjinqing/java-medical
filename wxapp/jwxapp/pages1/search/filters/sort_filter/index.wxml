@@ -1,3 +1,4 @@
+<wxs src="../filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="sort-item">
@@ -14,11 +15,11 @@
         </view>
       </view>
       <view class="sort-item" data-sort-id="{{parentItem.sortId}}" bindtap="chooseSort" wx:if="{{parentItem.sortId === showParentId}}">
-        <view class="sort-name second" style="{{parentItem.sortId === selectedSort ? 'color:'+main_setting.comColor : ''}}">全部</view>
+        <view class="sort-name second" style="{{filter.includes(selectedSort,parentItem.sortId) && 'color:'+main_setting.comColor+';'}}">全部</view>
       </view>
       <block wx:for="{{parentItem.children}}" wx:for-item="childItem" wx:for-index="childIndex" wx:key="sortId">
         <view class="sort-item" bindtap="chooseSort" data-sort-id="{{childItem.sortId}}" wx:if="{{parentItem.sortId === showParentId}}">
-          <view class="sort-name second" style="{{childItem.sortId === selectedSort ? 'color:'+main_setting.comColor : ''}}">{{childItem.sortName}}({{childItem.goodsNum || '0'}})</view>
+          <view class="sort-name second" style="{{filter.includes(selectedSort,childItem.sortId) && 'color:'+main_setting.comColor+';'}}">{{childItem.sortName}}({{childItem.goodsNum || '0'}})</view>
         </view>
       </block>
     </block>
