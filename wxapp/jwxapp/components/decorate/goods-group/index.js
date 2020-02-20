@@ -84,7 +84,7 @@ global.wxComponent({
         }
       })
       if (d.click == 1) {
-        util.jumpLink('/pages/newsearch/newsearch?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds));
+        util.jumpLink('/pages1/search/search?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds));
       } else {
         m.group_nav_index = d.index;
         m.page_num = 1;
