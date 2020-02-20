@@ -4,11 +4,12 @@
     <view class='rule_container'>
         <view class='each_item' wx:for='{{lotteryList}}' wx:key='key'>
             <view class='each_top clearfix'>
-                <view class='award' wx:if='{{item.lotteryType != 3 && item.lotteryType != 4}}' bindtap='to_details' data-types="{{item.lotteryType}}" >获得<text>{{item.lottery_award}}</text></view>
-                <view class='award' wx:if='{{item.lotteryType == 4}}' bindtap='to_details' data-types="{{item.lotteryType}}" >获得<text>{{item.goods_name}}</text></view>
-                <view class='award' wx:if='{{item.lotteryType == 3}}'>{{item.lottery_award}}</view>
-                <image bindtap='to_detail' data-mingxi='{{item.lottery_award}}' wx:if='{{item.lotteryType == 3 && item.is_length == 1}}' src='{{imageUrl}}/image/wxapp/lottery_path.png' mode='widthFix' class='btn_more'></image>
-                <view class='get_namae'>{{item.lottery_grade_name}}</view>
+                <view class='award' wx:if='{{item.lotteryPrize == null}}'>{{item.lotteryAward}}</view>
+                <view class='award' wx:elif='{{item.lotteryPrize.lotteryType == 4}}'>获得<text>{{item.lotteryAward}}</text></view>
+                <view class='award' wx:elif='{{item.lotteryPrize.lotteryType == 5}}'>{{item.lotteryAward}}</view>
+                <view class='award' wx:else bindtap='to_details' data-types="{{item.lotteryPrize.lotteryType}}" >获得<text>{{item.lotteryAward}}</text></view>
+                <image wx:if='{{item.lotteryPrize && item.lotteryPrize.lotteryType == 4 && item.lotteryAward.length >= 20}}' bindtap='to_detail' data-mingxi='{{item.lotteryAward}}' src='{{imageUrl}}/image/wxapp/lottery_path.png' mode='widthFix' class='btn_more'></image>
+                <view class='get_namae'>{{item.lotteryPrize==null?'未获奖':item.lotteryPrize.iconImgs}}</view>
             </view>
             <view class='each_bottom'>{{item.createTime}}</view>
         </view>
