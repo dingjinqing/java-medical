@@ -17,41 +17,41 @@ public class ModuleGoodsSearch extends ModuleBase {
      *
      */
     @JsonProperty("list_style")
-    private Byte searchStyle;
+    private Byte searchStyle=1;
 
     /**
      *
      */
     @JsonProperty("search_font")
-    private Byte searchFont;
+    private Byte searchFont=1;
 
     /**
      *
      */
     @JsonProperty("box_color")
-    private String boxColor;
+    private String boxColo="#eee";
 
     /**
      *
      */
     @JsonProperty("back_color")
-    private String backColor;
+    private String backColor="#fff";
 
     /**
      *
      */
     @JsonProperty("search_sort")
-    private Byte searchSort;
+    private Byte searchSort=0;
 
     /**
      *
      */
     @JsonProperty("sort_bg_color")
-    private String sortBgColor;
+    private String sortBgColor="#666666";
 
     /**
      *
      */
     @JsonProperty("search_position")
-    private Byte searchPosition;
+    private Byte searchPosition=0;
 }

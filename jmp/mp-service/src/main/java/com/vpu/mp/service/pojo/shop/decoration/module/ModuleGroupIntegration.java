@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,31 +16,31 @@ import java.sql.Timestamp;
 public class ModuleGroupIntegration extends ModuleBase {
     /**活动ID */
     @JsonProperty("act_id")
-    private Integer actId;
+    private Integer actId=-1;
 
     /** 1默认标题 ，0自定义标题*/
     @JsonProperty("pin_title")
-    private Byte pinTitle;
+    private Byte pinTitle=1;
 
     /**自定义标题*/
     @JsonProperty("pin_title_text")
-    private String pinTitleText;
+    private String pinTitleTex="";
 
     /**隐藏内容：活动内容*/
     @JsonProperty("hide_active")
-    private Byte hideActive;
+    private Byte hideActive=0;
 
     /**隐藏内容：有效期*/
     @JsonProperty("hide_time")
-    private Byte hideTime;
+    private Byte hideTime=0;
 
     /**活动底图 0默认，1自定义*/
     @JsonProperty("module_bg")
-    private Byte moduleBg;
+    private Byte moduleBg=0;
 
     /**自定义底图*/
     @JsonProperty("module_img")
-    private String moduleImg;
+    private String moduleIm="";
 
     /**字体颜色*/
     @JsonProperty("font_color")

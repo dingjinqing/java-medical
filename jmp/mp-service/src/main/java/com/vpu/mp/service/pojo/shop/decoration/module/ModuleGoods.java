@@ -18,17 +18,17 @@ import java.util.List;
 public class ModuleGoods extends ModuleBase {
 
     @JsonProperty("cart_btn")
-    private Byte cartBtn;
+    private Byte cartBtn=1;
     @JsonProperty("cart_btn_choose")
-    private Byte cartBtnChoose;
+    private Byte cartBtnChoose=0;
     @JsonProperty("col_type")
-    private Byte colType;
+    private Byte colType=4;
 
     /**
      * 商品范围：all,sort,cat,brand,label
      */
     @JsonProperty("goods_area")
-    private String goodsArea;
+    private String goodsArea="sort";
     /**
      * 范围集合
      */
@@ -39,7 +39,7 @@ public class ModuleGoods extends ModuleBase {
     private String goodsBgColor;
 
     @JsonProperty("goods_display")
-    private Byte goodsDisplay;
+    private Byte goodsDisplay=0;
 
     @JsonProperty("goods_items")
     private List<PhpPointGoodsConverter> goodsItems;
@@ -60,40 +60,40 @@ public class ModuleGoods extends ModuleBase {
     }
 
     @JsonProperty("goods_module_bg")
-    private Byte goodsModuleBg;
+    private Byte goodsModuleBg=0;
 
     @JsonProperty("goods_module_title")
-    private Byte goodsModuleTitle;
+    private Byte goodsModuleTitle=0;
 
     @JsonProperty("goods_num")
-    private Integer goodsNum;
+    private Integer goodsNum=4;
 
     @JsonProperty("goods_module_style")
-    private Integer goodsModuleStyle;
+    private Integer goodsModuleStyle=0;
 
     /**
      *  商品活动类型默认0，1拼团，2 会员专享，3砍价，5秒杀，6限时降价
      */
     @JsonProperty("goods_type")
-    private Byte goodsType;
+    private Byte goodsType=0;
 
     @JsonProperty("hide_label")
-    private Byte hideLabel;
+    private Byte hideLabel=0;
 
     @JsonProperty("hide_name")
-    private Byte hideName;
+    private Byte hideName=1;
 
     @JsonProperty("hide_price")
-    private Byte hidePrice;
+    private Byte hidePrice=0;
 
     @JsonProperty("if_radius")
-    private Byte ifRadius;
+    private Byte ifRadius=0;
 
     @JsonProperty("img_title_url")
-    private String imgTitleUrl;
+    private String imgTitleUr="";
 
     @JsonProperty("img_url")
-    private String imgUrl;
+    private String imgUrl="";
 
     @JsonProperty("is_more")
     private Byte isMore;
@@ -118,23 +118,23 @@ public class ModuleGoods extends ModuleBase {
      * 1展示其他信息
      */
     @JsonProperty("other_message")
-    private Byte otherMessage;
+    private Byte otherMessage=0;
     /**
      * 0 自动推荐 1手动推荐
      */
     @JsonProperty("recommend_type")
-    private Byte recommendType;
+    private Byte recommendType=0;
 
     @JsonProperty("show_market")
-    private Byte showMarket;
+    private Byte showMarket=1;
 
     @JsonProperty("sort_type")
-    private Byte sortType;
+    private Byte sortType=1;
 
-    private String title;
+    private String title="";
 
     @JsonProperty("title_link")
-    private String titleLink;
+    private String titleLink="";
 
     private List<?> goodsListData;
 }

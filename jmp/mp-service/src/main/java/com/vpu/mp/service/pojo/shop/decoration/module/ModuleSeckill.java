@@ -21,17 +21,17 @@ public class ModuleSeckill extends ModuleBase {
      * 0|1 列表样式: 双列，单列
      */
     @JsonProperty("list_style")
-    private Byte listStyle;
+    private Byte listStyle=0;
     /**
      * 是否显示 商品原价
      */
     @JsonProperty("goods_price")
-    private boolean goodsPrice;
+    private boolean goodsPrice=true;
     /**
      * 是否显示活动倒计时
      */
     @JsonProperty("goods_count_down")
-    private boolean goodsCountDown;
+    private boolean goodsCountDown=true;
 
 
     /**

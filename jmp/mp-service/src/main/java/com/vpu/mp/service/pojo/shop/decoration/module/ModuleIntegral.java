@@ -18,10 +18,10 @@ import java.sql.Timestamp;
 public class ModuleIntegral extends ModuleBase {
 
     @JsonProperty("list_styles")
-    private Byte listStyles;
+    private Byte listStyles=1;
 
     @JsonProperty("show_goods_price")
-    private Boolean showGoodsPrice;
+    private Boolean showGoodsPrice=true;
 
     @Getter
     @Setter

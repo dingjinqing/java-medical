@@ -21,22 +21,22 @@ public class ModuleBargain extends ModuleBase {
      * 0|1 列表样式: 双列，单列
      */
     @JsonProperty("list_style")
-    private Byte listStyle;
+    private Byte listStyle=0;
     /**
      * 是否显示 商品原价
      */
     @JsonProperty("goods_price")
-    private boolean goodsPrice;
+    private boolean goodsPrice=true;
     /**
      * 是否显示活动倒计时
      */
     @JsonProperty("goods_count_down")
-    private boolean goodsCountDown;
+    private boolean goodsCountDown=true;
     /**
      * 是否显示去砍价按钮
      */
     @JsonProperty("free_btn")
-    private boolean freeBtn;
+    private boolean freeBtn=true;
 
     /**
      * 砍价商品
