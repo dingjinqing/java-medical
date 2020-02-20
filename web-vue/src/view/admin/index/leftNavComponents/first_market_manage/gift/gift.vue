@@ -100,18 +100,18 @@
           :label="$t('gift.level')"
           align="center"
         >
+          <template slot-scope="scope">
+            <inputEdit
+                    v-model="scope.row.level"
+                    @update="updateGiftLevel(scope.row.id, scope.row.level)"
+            />
+          </template>
         </el-table-column>
         <el-table-column
           prop="giftTimes"
           :label="$t('gift.giftTimes')"
           align="center"
         >
-          <template slot-scope="scope">
-            <inputEdit
-              v-model="scope.row.level"
-              @update="updateGiftLevel(scope.row.id, scope.row.level)"
-            />
-          </template>
         </el-table-column>
         <el-table-column
           prop="statusText"
