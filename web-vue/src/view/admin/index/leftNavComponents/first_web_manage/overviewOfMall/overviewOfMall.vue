@@ -1298,11 +1298,11 @@ export default {
     // 确定服务门店
     sureStoreReviewe () {
       this.storeDialog = false
-      // window.open('/admin/home/main/store/storemanage/comment/review?id=' + this.storeValue)
       this.$router.push({
-        path: '/admin/home/main/store/storemanage/comment/review',
+        path: '/admin/home/main/store/storemanage/comment',
         query: {
-          id: this.storeValue
+          id: this.storeValue,
+          name: 'second'
         }
       })
       this.storeValue = ''
