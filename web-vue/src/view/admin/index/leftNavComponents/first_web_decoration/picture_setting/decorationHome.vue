@@ -443,15 +443,19 @@ export default {
           this.pageSetData = content.page_cfg
           delete content.page_cfg
           let moduleDataArr = []
+          console.log(content)
           Object.keys(content).forEach((item, index) => {
             moduleDataArr.push(content[item])
           })
-          this.$nextTick(() => {
-            console.log(content)
-            this.modulesData = content
-          })
-          console.log(content)
           this.handleToTurnModulesName(moduleDataArr)
+          let moduleArr = []
+          Object.keys(content).forEach((item, index) => {
+            moduleArr.push(content[item])
+          })
+          this.$nextTick(() => {
+            console.log(moduleArr)
+            this.modulesData = moduleArr
+          })
         }
       })
       // this.page_id = pageId
