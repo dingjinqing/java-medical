@@ -121,7 +121,7 @@
               <span class="tips">{{ $t('overview.storeTip') }}</span>
               <span class=" task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unStoreTip5') }}</span>
               <a
-                href="/admin/home/main/goodsManage/evaluationManagement"
+                href="/admin/home/main/goodsManage/evaluationManagement?activeName=second"
                 target="_blank"
               >{{ $t('overview.storeGo') }}</a>
             </div>
@@ -197,7 +197,11 @@
             >
               <div class="task_list_item">
                 <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }}</span>
+                <span
+                  class="task_list_desc"
+                  v-if="storeList.dataMarket.member.card_num === 0"
+                >{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
+                <!-- {{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }} -->
                 <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
@@ -373,7 +377,10 @@
             >
               <div>
                 <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
-                <span class="task_list_desc">{{ $t('overview.enMarketTip2') }}</span>
+                <span
+                  class="task_list_desc"
+                  v-if="storeList.dataMarket.member.card_num === 0"
+                >{{ $t('overview.enMarketTip2') }}</span>
                 <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
               </div>
             </div>
