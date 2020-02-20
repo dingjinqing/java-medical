@@ -36,6 +36,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -675,7 +676,7 @@ public class CardDaoService extends ShopBaseService {
 		return fetch;
 	}
 	
-	public CardReceiveCodeRecord  getBatch(Integer batchId) {
-		return db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.ID.eq(batchId)).fetchAny();
+	public CardBatchRecord  getBatch(Integer batchId) {
+		return db().selectFrom(CARD_BATCH).where(CARD_BATCH.ID.eq(batchId)).fetchAny();
 	}
 }
