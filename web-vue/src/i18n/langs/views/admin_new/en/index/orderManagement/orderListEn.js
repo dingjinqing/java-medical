@@ -209,10 +209,9 @@ export const en = {
     [6, 'Order completed'],
     [7, 'After sale'],
     [8, 'After sale completed'],
-    [9, 'Gift completed'],
-    [10, 'Pending orders'],
-    [11, 'Received order-pickup in progress'],
-    [12, 'Picked up-shipping']
+    [9, 'Pending orders'],
+    [10, 'Received order-pickup in progress'],
+    [11, 'Picked up-shipping']
   ],
   goodsTypeList: [
     [null, 'all orders'],
