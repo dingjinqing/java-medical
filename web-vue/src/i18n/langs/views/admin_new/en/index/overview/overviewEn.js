@@ -288,6 +288,7 @@ export const en = {
     'Distributor application has not been processed for more than 3 days',
   enMarketTip2: 'Membership card activation audit progress is good',
   enMarketTip3: 'No coupon with small stock (less than the specified value)',
+  enMarketTip4: 'Good progress of distributor audit',
 
   // 公告
   noticeTitle: 'Notice',

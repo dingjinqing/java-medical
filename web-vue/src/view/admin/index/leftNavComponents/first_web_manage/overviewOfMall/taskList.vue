@@ -127,7 +127,7 @@
             </div>
             <div v-if="storeList.dataGoods.goodsRecommend === 0">
               <span class="tips">{{ $t('overview.storeTip') }}</span>
-              <span class=" task_list_desc">{{ $t('overview.storeRecommend') }} {{ $t('overview.unStoreTip6') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.unStoreTip6') }}</span>
               <a
                 href="/admin/home/main/goodsManage/goodsRecommend"
                 target="_blank"
@@ -199,10 +199,12 @@
                 <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                 <span
                   class="task_list_desc"
-                  v-if="storeList.dataMarket.member.card_num === 0"
+                  v-if="storeList.dataMarket.member.card_num !== 0"
                 >{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
-                <!-- {{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }} -->
-                <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                <a
+                  :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
+                  target="_blank"
+                >{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
             <div
@@ -322,7 +324,7 @@
             </div>
             <div v-if="storeList.dataGoods.goodsRecommend !== 0">
               <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
-              <span class=" task_list_desc">{{ $t('overview.storeRecommend') }} {{ $t('overview.enStoreTip6') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enStoreTip6') }}</span>
               <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataGoods.shopSort !== 0">
@@ -368,7 +370,7 @@
           >
             <div v-if="storeList.dataMarket.examine === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
-              <span class="task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.enMarketTip1') }}</span>
+              <span class="task_list_desc">{{ $t('overview.enMarketTip4') }}</span>
               <!-- <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div
