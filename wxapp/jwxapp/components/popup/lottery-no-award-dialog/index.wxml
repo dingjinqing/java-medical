@@ -4,6 +4,7 @@
   <view class="l-a-cover" bindtap="bindClose"></view>
   <view class="l-a-content">
     <view class="l-a-top">
+      <image class="l-a-top-back" src='{{imageUrl}}/image/wxapp/award_bg.png' mode='widthFix'></image>
       <image class="l-a-top-img" src="{{imageUrl + '/image/wxapp/not_award1.png'}}" mode="scaleToFill"></image>
       <text class="l-a-top-title">好遗憾</text>
     </view>

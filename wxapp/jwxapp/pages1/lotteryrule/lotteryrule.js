@@ -16,6 +16,9 @@ global.wxPage({
     page: 1,
     last_page: 1,
     lotteryList:[],
+    pageParams: {
+      currentPage: 0
+    }
   },
 
   /**
@@ -23,8 +26,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    var that = this;
-    lotteryId = options.lotteryId;
+    let lotteryId = options.lotteryId;
     this.setData({
       lotteryId: lotteryId
     })
@@ -34,14 +36,21 @@ global.wxPage({
 
   lotteryListRequest () {
     let that = this
+    let params = Object.assign({}, {
+      lotteryId: Number(this.data.lotteryId),
+      currentPage: this.data.pageParams.currentPage + 1,
+      pageRows: this.data.pageParams.pageRows?this.data.pageParams.pageRows:20
+    })
     util.api('/api/wxapp/lottery/user/list', function(res) {
       if (res.error === 0) {
-        console.log(res)
+        let lotteryList = that.data.lotteryList
+        lotteryList.push(...res.content.dataList)
         that.setData({
-          lotteryList: res.content.dataList
+          lotteryList: lotteryList,
+          pageParams: res.content.page
         })
       }
-    }, {lotteryId: Number(this.data.lotteryId)})
+    }, params)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -82,29 +91,6 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    var that = this;
-    if (that.data.page == that.data.last_page) return;
-    that.data.page = that.data.page + 1;
-    util.api('/api/wxapp/lottery/records', function (res) {
-      var lottL = res.content;
-      that.data.last_page = lottL.last_page;
-      var server_list_r = res.content.data;
-      var lotteryList = [];
-      if (server_list_r.length > 0) {
-        lotteryList = server_list_r;
-        if (lotteryList[i].lotteryType == 3) {
-          if (lotteryList[i].lottery_award.length > 20) {
-            lotteryList[i].lottery_award = lotteryList[i].lottery_award.substring(0, 19) + "...";
-            lotteryList[i].is_length = 1
-          }
-        }
-      }
-      that.setData({
-        lotteryList: that.data.lotteryList.concat(lotteryList),
-        page_num: lottL.last_page,
-        curpage: lottL.current_page,
-      });
-    }, {   lotteryId: lotteryId, pageNo: that.data.page });
   },
 
   to_detail:function(e){
@@ -112,18 +98,18 @@ global.wxPage({
     util.showModal("明细", mingxi);
   },
   to_details:function(e){
-    var tyes = e.currentTarget.dataset.types;
-    if(tyes == 0){
+    var type = e.currentTarget.dataset.types;
+    if(type == 1){
       util.navigateTo({
         url: '/pages/integral/integral',
       })
-    }else if(tyes == 1){
+    }else if(type == 2){
       util.navigateTo({
         url: '/pages/account/account',
       })
-    } else if (tyes == 2) {
+    } else if (type == 3) {
       util.navigateTo({
-        url: '/pages/couponlist/couponlist',
+        url: '/pages/coupon/coupon',
       })
     }
   },
@@ -138,8 +124,8 @@ function lottery_user_request(that){
       lotteryList = server_list_r;
       for (var i = 0; i < lotteryList.length;i++){
         if (lotteryList[i].lotteryType == 3){
-          if (lotteryList[i].lottery_award.length > 20){
-            lotteryList[i].lottery_award = lotteryList[i].lottery_award.substring(0,19) + "...";
+          if (lotteryList[i].lotteryAward.length > 20){
+            lotteryList[i].lotteryAward = lotteryList[i].lotteryAward.substring(0,19) + "...";
             lotteryList[i].is_length = 1
           }
         }
