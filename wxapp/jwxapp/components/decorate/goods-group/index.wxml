@@ -417,7 +417,7 @@
 		>
 			<view class='click_see'>
 				<text>{{i18n.$t(localePack,'components.decorate.viewMore')}}</text>
-				<image lazy-load='{{true}}' src='{{m.imgUrl}}image/wxapp/see_more_down.png' />
+				<image lazy-load='{{true}}' src='{{m.imageUrl}}image/wxapp/see_more_down.png' />
 			</view>
 		</view>
 	</block>
@@ -538,7 +538,7 @@
 				>
 					<view class='click_see'>
 						<text>{{i18n.$t(localePack,'components.decorate.viewMore')}}</text>
-						<image lazy-load='{{true}}' src='{{m.imgUrl}}image/wxapp/see_more_down.png' />
+						<image lazy-load='{{true}}' src='{{m.imageUrl}}image/wxapp/see_more_down.png' />
 					</view>
 				</view>
 			</view>

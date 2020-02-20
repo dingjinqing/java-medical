@@ -18,7 +18,7 @@
               @mouseleave="leave(index)"
             >
               <div class="width:150px;height:210px">
-                <img :src="item.imgUrl">
+                <img :src="item.pageImg">
                 <div
                   class="template_li_hidden"
                   :class="item.flag === index?'hiddleFlag':''"
@@ -34,7 +34,7 @@
                 </div>
               </div>
 
-              <div class="title">{{item.title}}</div>
+              <div class="title">{{item.pageName}}</div>
             </div>
 
           </div>
@@ -177,6 +177,18 @@ export default {
     handleToInitData () {
       getTemplatesData().then(res => {
         console.log(res)
+        if (res.error === 0) {
+          let obj = {
+            pageImg: this.$imageHost + '/image/admin/shop_beautify/shop_decorate_module1.jpg',
+            pageName: '自定义模板',
+            pageId: -1
+          }
+          res.content.unshift(obj)
+          res.content.forEach((item, index) => {
+            item.flag = ''
+          })
+          this.dialogData = res.content
+        }
       })
     },
     // 鼠标移入
@@ -196,6 +208,7 @@ export default {
       this.$router.push({
         path: '/admin/home/main/decorationHome',
         query: {
+          pageParams: item,
           pageId: -1
         }
       })

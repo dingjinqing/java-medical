@@ -335,6 +335,15 @@ export function setInviteCode (data) {
   })
 }
 
+// 批量设置分组
+export function setBatchGroup (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/group/set',
+    method: 'post',
+    data: data
+  })
+}
+
 // 添加备注信息
 export function addRemarks (data) {
   return service({

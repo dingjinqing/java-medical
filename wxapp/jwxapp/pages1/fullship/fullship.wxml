@@ -1,5 +1,9 @@
 <include src="/pages/common/header.wxml" />
 <v-container bindsearch="getSearchText">
+  <view slot="rule" class="rule">
+    <text>以下商品；{{ruleInfo.ruleCondition}}</text>
+    <text bindtap="goRuleInfo">活动规则</text>
+  </view>
   <view slot="goods-content" class="goods-content">
     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
       <block wx:for="{{pageItem}}" wx:key="goodsId" wx:for-index="itemIndex">

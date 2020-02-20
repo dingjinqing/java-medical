@@ -25,91 +25,91 @@ public class ModuleGoodsGroup extends ModuleBase {
      *菜单样式radio，0顶部展示商品分组，1左侧展示商品分组
      */
     @JsonProperty("menu_style")
-    private Byte menuStyle;
+    private Byte menuStyle=0;
 
     /**
      *菜单位置radio，0 顶部固定，1左侧固定
      */
     @JsonProperty("position_style")
-    private Byte positionStyle;
+    private Byte positionStyle=0;
 
     /**
      *商品列表样式radio，0大图展示，1一行两个，2一行三个，3商品列表，4一行横滑
      */
     @JsonProperty("shop_style")
-    private Byte shopStyle;
+    private Byte shopStyle=1;
 
     /**
      *模块角度radio，0直角，1圆角
      */
     @JsonProperty("if_radius")
-    private Byte ifRadius;
+    private Byte ifRadius=0;
 
     /**
      *
      */
     @JsonProperty("sort_length")
-    private Integer sortLength;
+    private Integer sortLength=1;
 
     /**
      *模块样式radio，1白底无边框，2边框投影，3白底有边框
      */
     @JsonProperty("module_style")
-    private Byte moduleStyle;
+    private Byte moduleStyle=1;
 
     /**
      * 是否展示"全部商品"栏位 1展示 0不展示
      */
     @JsonProperty("group_display")
-    private Byte groupDisplay;
+    private Byte groupDisplay=1;
 
     /**
      *其它信息按钮下隐藏模块radio，1市场价，2销量，3评价数
      */
     @JsonProperty("show_market")
-    private Byte showMarket;
+    private Byte showMarket=1;
 
     /**
      *
      */
     @JsonProperty("goods_module_bg")
-    private Byte goodsModuleBg;
+    private Byte goodsModuleBg=0;
 
     /**
      *
      */
     @JsonProperty("goods_bg_color")
-    private String goodsBgColor;
+    private String goodsBgColor="#f5f5f5";
 
     /**
      * 显示商品名称
      */
     @JsonProperty("show_name")
-    private Byte showName;
+    private Byte showName=1;
 
     /**
      * 显示商品价格
      */
     @JsonProperty("show_price")
-    private Byte showPrice;
+    private Byte showPrice=1;
 
     /**
      *显示购买按钮
      */
     @JsonProperty("cart_btn")
-    private Byte cartBtn;
+    private Byte cartBtn=1;
 
     /**
      * 按钮形状
      */
     @JsonProperty("cart_btn_choose")
-    private Byte cartBtnChoose;
+    private Byte cartBtnChoose=0;
 
     /**
      * 是否展示其它信息0展示 1不展示
      */
     @JsonProperty("other_message")
-    private Byte otherMessage;
+    private Byte otherMessage=0;
 
     private List<?> goodsListData;
 

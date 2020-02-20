@@ -516,9 +516,12 @@
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                       <span
                         class="task_list_desc"
-                        v-if="storeList.dataMarket.member.card_num === 0"
+                        v-if="storeList.dataMarket.member.card_num !== 0"
                       >{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                      <a
+                        :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
                   <div v-if="storeList.dataMarket.voucher !== null">
@@ -749,22 +752,16 @@
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div v-if="storeList.dataMarket.member !== null">
-                    <!-- <div
-                      class="task_list_item"
-                      v-for="(val, key, index) in storeList.dataMarket.member"
-                      :key="index"
-                    >
-                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span class="task_list_desc">{{ val }} {{ $t('overview.unMarketTip2') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
-                    </div> -->
                     <div class="task_list_item">
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                       <span
                         class="task_list_desc"
-                        v-if="storeList.dataMarket.member.card_num === 0"
+                        v-if="storeList.dataMarket.member.card_num !== 0"
                       >{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                      <a
+                        :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
                   <div v-if="storeList.dataMarket.voucher !== null">
@@ -993,8 +990,8 @@
         placeholder="请选择"
       >
         <el-option
-          v-for="item in storeRevieweList"
-          :key="item.value"
+          v-for="(item, index) in storeRevieweList"
+          :key="index"
           :label="item.label"
           :value="item.value"
         >
@@ -1187,7 +1184,16 @@ export default {
     getAllStore () {
       getAllStore().then(res => {
         if (res.error === 0) {
-          this.storeRevieweList = res.content
+          // this.storeRevieweList = res.content
+
+          this.storeRevieweList = []
+          var obj = res.content
+          for (var key in obj) {
+            this.storeRevieweList.push({
+              value: key,
+              label: obj[key]
+            })
+          }
         }
       })
     },
@@ -1298,11 +1304,11 @@ export default {
     // 确定服务门店
     sureStoreReviewe () {
       this.storeDialog = false
-      // window.open('/admin/home/main/store/storemanage/comment/review?id=' + this.storeValue)
       this.$router.push({
-        path: '/admin/home/main/store/storemanage/comment/review',
+        path: '/admin/home/main/store/storemanage/comment',
         query: {
-          id: this.storeValue
+          id: this.storeValue,
+          name: 'second'
         }
       })
       this.storeValue = ''

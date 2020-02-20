@@ -653,4 +653,13 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getUserAccount(@PathVariable Integer userId) {
         return success(shop().user.getUserByUserId(userId).getAccount());
     }
+
+    /**
+     * 所有服务评价待审核的门店列表
+     *
+     */
+    @GetMapping(value = "/api/admin/store/servicecharge/list")
+    public JsonResult getChargeStoreList() {
+        return success(shop().store.getChargeStoreList());
+    }
 }

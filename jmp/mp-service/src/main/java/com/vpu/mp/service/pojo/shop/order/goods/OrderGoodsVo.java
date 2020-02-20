@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.shop.order.goods;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 /**
  * 
@@ -43,4 +42,5 @@ public class OrderGoodsVo {
 	
 	private String productSn;
 	private BigDecimal marketPrice;
+	private Integer isGift;
 }

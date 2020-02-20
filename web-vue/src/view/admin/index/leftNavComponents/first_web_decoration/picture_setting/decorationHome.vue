@@ -240,7 +240,7 @@ import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import { editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import { editSave, getModulesJusList, getHandleTemplatesData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 import { pageEdit } from '@/api/admin/decoration/pageSet.js'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
@@ -429,6 +429,32 @@ export default {
           this.handleToTurnModulesName(arr)
         }
       })
+    } else if (Number(this.$route.query.pageParams.pageId) !== -1) {
+      console.log(this.$route.query.pageParams)
+      let { pageId } = this.$route.query.pageParams
+      getHandleTemplatesData(pageId).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let content = JSON.parse(res.content.pageContent)
+          // 处理last_cur_idx
+          let maxIdx = this.handleToMaxCuridx(content)
+          this.cur_idx = maxIdx
+          content.page_cfg['last_cur_idx'] = maxIdx
+          this.pageSetData = content.page_cfg
+          delete content.page_cfg
+          let moduleDataArr = []
+          Object.keys(content).forEach((item, index) => {
+            moduleDataArr.push(content[item])
+          })
+          this.$nextTick(() => {
+            console.log(content)
+            this.modulesData = content
+          })
+          console.log(content)
+          this.handleToTurnModulesName(moduleDataArr)
+        }
+      })
+      // this.page_id = pageId
     } else {
       this.pageSetData = {
         'is_ok': 1,
@@ -453,6 +479,20 @@ export default {
     }
   },
   methods: {
+    // 算出最大值last_cur_idx
+    handleToMaxCuridx (res) {
+      let copyData = JSON.parse(JSON.stringify(res))
+      let arr = []
+      delete copyData.page_cfg
+      Object.keys(copyData).forEach((item, index) => {
+        console.log(item)
+        let idx = Number(item.split('_')[1])
+        arr.push(idx)
+      })
+      Math.max.apply(null, arr)
+      console.log(arr, Math.max.apply(null, arr))
+      return Math.max.apply(null, arr)
+    },
     // 模块名称转化
     handleToTurnModulesName (data) {
       let showModuleArr = []

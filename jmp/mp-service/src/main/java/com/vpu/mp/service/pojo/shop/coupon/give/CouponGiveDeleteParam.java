@@ -8,6 +8,6 @@ import lombok.Data;
  */
 @Data
 public class CouponGiveDeleteParam {
-	/* 用户-优惠券关联id */
+	/** 用户-优惠券关联id */
 	private Integer id;
 }

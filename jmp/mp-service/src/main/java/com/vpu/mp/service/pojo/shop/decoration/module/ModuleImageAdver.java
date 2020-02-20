@@ -37,7 +37,7 @@ public class ModuleImageAdver extends ModuleBase {
 	 * 模块名称
 	 */
 	@JsonProperty(value = "module_title")
-	String moduleTitle;
+	String moduleTitle="";
 	
 	/**
 	 * 图片列表

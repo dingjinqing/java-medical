@@ -21,4 +21,5 @@ public class CardBatchDetailVo {
 	private Integer number;
 	private String codePrefix;
 	private String cardPrefix;
+	private Timestamp createTime;
 }

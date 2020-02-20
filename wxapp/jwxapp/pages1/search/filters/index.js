@@ -12,7 +12,7 @@ global.wxComponent({
     filterData:{
       type:Object,
       observer(val){
-        let {minPrice,maxPrice,sortId:selectedSort,brandIds:selectedBrands,labelIds:selectedLabels,activityTypes:selectedActTypes} = val
+        let {minPrice,maxPrice,sortIds:selectedSort,brandIds:selectedBrands,labelIds:selectedLabels,activityTypes:selectedActTypes} = val
         this.setData({
           minPrice,
           maxPrice,
@@ -50,7 +50,8 @@ global.wxComponent({
       1:'多人拼团',
       3:'砍价',
       5:'秒杀',
-      6:'限时降价'
+      6:'限时降价',
+      10:'定金膨胀'
     }
   },
 
@@ -74,7 +75,7 @@ global.wxComponent({
       this.setData({
         minPrice: null,
         maxPrice: null,
-        selectedSort: null,
+        selectedSort: [],
         selectedBrands: [],
         selectedLabels: [],
         selectedActTypes: []
@@ -94,13 +95,14 @@ global.wxComponent({
       let { sortId } = e.detail.sortId ? e.detail : e.currentTarget.dataset
       let selectedSort = this.data.selectedSort
       if(sortId === selectedSort){
-        selectedSort = null
+        selectedSort = []
       } else {
-        selectedSort = sortId
+        selectedSort = [sortId]
       }
       this.setData({
         selectedSort
       })
+      console.log(selectedSort)
     },
     // 选择品牌
     chooseBrands(e){

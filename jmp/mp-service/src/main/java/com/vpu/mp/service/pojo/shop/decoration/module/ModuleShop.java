@@ -16,23 +16,23 @@ public class ModuleShop extends ModuleBase {
      *
      */
     @JsonProperty("shop_name")
-    private String shopName;
+    private String shopName="";
 
     /***
      *
      */
     @JsonProperty("shop_notice")
-    private String shopNotice;
+    private String shopNotice="";
 
     /***
      *
      */
     @JsonProperty("shop_bg_path")
-    private String shopBgPath;
+    private String shopBgPath="";
 
     /***
      *
      */
     @JsonProperty("bg_url")
-    private String bgUrl;
+    private String bgUrl="";
 }

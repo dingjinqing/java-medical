@@ -28,8 +28,12 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**商品最高价格*/
     private BigDecimal maxPrice;
 
-    /**商家分类id*/
+    /**卢光耀修改后需要删除本字段*/
+    @Deprecated
     private Integer sortId;
+
+    /**商家分类id集合*/
+    private List<Integer> sortIds;
 
     /**品牌id集合*/
     private List<Integer> brandIds;

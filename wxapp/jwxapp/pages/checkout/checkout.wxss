@@ -81,7 +81,7 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
   box-sizing: border-box;
-  line-height: 40rpx;
+  line-height: 42rpx;
 }
 .goods_item > .goods_info > .goods_name > .spec{
   color: #888;

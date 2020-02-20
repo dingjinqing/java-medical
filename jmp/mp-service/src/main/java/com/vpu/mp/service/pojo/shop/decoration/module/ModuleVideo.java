@@ -13,10 +13,10 @@ import lombok.Setter;
 @Setter
 public class ModuleVideo extends ModuleBase {
     @JsonProperty("video_url")
-    private String videoUrl;
+    private String videoUrl="";
 
     @JsonProperty("video_img")
-    private String videoImg;
+    private String videoImg="";
 
     @JsonProperty("video_size")
     private Integer videoSize;
@@ -28,14 +28,14 @@ public class ModuleVideo extends ModuleBase {
     private Integer videoHeight;
 
     @JsonProperty("video_title")
-    private String videoTitle;
+    private String videoTitl="";
 
     @JsonProperty("video_poster")
-    private Byte videoPoster;
+    private Byte videoPoster=1;
 
     /**
      * 自定义
      */
     @JsonProperty("img_url")
-    private String imgUrl;
+    private String imgUrl="";
 }

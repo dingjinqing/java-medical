@@ -83,7 +83,8 @@
         "lottery/lottery",
         "pinlotterylist/pinlotterylist",
         "pinlotteryinfo/pinlotteryinfo",
-        "pledgeannounce/pledgeannounce"
+        "pledgeannounce/pledgeannounce",
+        "fullshiprule/fullshiprule"
       ]
     }
   ],

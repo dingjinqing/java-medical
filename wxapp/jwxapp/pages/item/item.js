@@ -261,7 +261,7 @@ global.wxPage({
     this.requestPledge(await result)
   },
   // 服务承诺请求
-  requestPledge({ brandId = null, goodsId, sortId = null }) {
+  requestPledge({ brandId = null, goodsId, catId = null }) {
     util.api(
       '/api/wxapp/config/pledge/list',
       res => {
@@ -273,7 +273,7 @@ global.wxPage({
       },
       {
         goodsId: goodsId,
-        sortId: sortId,
+        catId: catId,
         brandId: brandId
       }
     )

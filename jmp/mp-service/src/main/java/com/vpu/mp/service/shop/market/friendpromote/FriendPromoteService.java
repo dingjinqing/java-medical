@@ -45,7 +45,7 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 好友助力活动列表
 	 *
-	 * @param FriendPromoteListParam
+	 * @param param
 	 * @return pageResult
 	 */
 	public PageResult<FriendPromoteListVo> friendPromoteList(FriendPromoteListParam param) {
@@ -122,7 +122,7 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 启用或停用活动
 	 *
-	 * @param FriendPromoteOptionParam
+	 * @param param
 	 * @return void
 	 */
 	public void startOrBlock(FriendPromoteOptionParam param) {
@@ -131,12 +131,12 @@ public class FriendPromoteService extends ShopBaseService {
 				.fetchOptionalInto(Integer.class).get();
 		/* 若未停用，则停用 */
 		if (isBlock == FriendPromoteOptionParam.BLOCKED) {
-			db().update(fpa).set(fpa.IS_BLOCK, (byte) FriendPromoteOptionParam.NOT_BLOCK)
+			db().update(fpa).set(fpa.IS_BLOCK, FriendPromoteOptionParam.NOT_BLOCK)
 					.where(fpa.ID.eq(param.getId())).execute();
 		}
 		/* 若已停用，则启用 */
 		if (isBlock == FriendPromoteOptionParam.NOT_BLOCK) {
-			db().update(fpa).set(fpa.IS_BLOCK, (byte) FriendPromoteOptionParam.BLOCKED).where(fpa.ID.eq(param.getId()))
+			db().update(fpa).set(fpa.IS_BLOCK, FriendPromoteOptionParam.BLOCKED).where(fpa.ID.eq(param.getId()))
 					.execute();
 		}
 	}
@@ -144,7 +144,7 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 删除单个活动
 	 *
-	 * @param FriendPromoteOptionParam
+	 * @param param
 	 * @return void
 	 */
 	public void deleteAct(FriendPromoteOptionParam param) {
@@ -156,7 +156,7 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 查询领取明细
 	 *
-	 * @param FriendPromoteReceiveParam
+	 * @param param
 	 * @return PageResult<FriendPromoteReceiveVo>
 	 */
 	public PageResult<FriendPromoteReceiveVo> receiveDetail(FriendPromoteReceiveParam param) {
@@ -209,7 +209,7 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 发起明细
 	 *
-	 * @param FriendPromoteLaunchParam
+	 * @param param
 	 * @return PageResult<FriendPromoteLaunchVo>
 	 */
 	public PageResult<FriendPromoteLaunchVo> launchDetail(FriendPromoteLaunchParam param) {
@@ -230,9 +230,9 @@ public class FriendPromoteService extends ShopBaseService {
 		if (param.getId() != null) {
 			sql.having(fpl.ID.eq(param.getId()));
 		}
-		if (param.getPromoteStatus() != FriendPromoteReceiveParam.PROMOTE_STATUS_DEFAULT) {
-			if (param.getPromoteStatus()==FriendPromoteReceiveParam.RECEIVED) {
-				sql.having(fpl.PROMOTE_STATUS.equal((byte) param.getPromoteStatus()));
+		if ( ! FriendPromoteReceiveParam.PROMOTE_STATUS_DEFAULT.equals(param.getPromoteStatus())) {
+			if (FriendPromoteReceiveParam.RECEIVED.equals(param.getPromoteStatus())) {
+				sql.having(fpl.PROMOTE_STATUS.equal( param.getPromoteStatus()));
 			}else {
 				sql.having(fpl.PROMOTE_STATUS.notEqual((byte) FriendPromoteReceiveParam.RECEIVED));
 			}
@@ -293,7 +293,7 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 添加好友助力活动
 	 *
-	 * @param FriendPromoteAddParam
+	 * @param param
 	 * @return void
 	 */
 	public void addActivity(FriendPromoteAddParam param) {
@@ -332,7 +332,7 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 修改好友助力活动信息
 	 *
-	 * @param FriendPromoteUpdateParam
+	 * @param param
 	 * @return void
 	 */
 	public void updateActivity(FriendPromoteUpdateParam param) {

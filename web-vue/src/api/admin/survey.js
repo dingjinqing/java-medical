@@ -79,11 +79,10 @@ export function shopInfoRequest () {
   })
 }
 
-// 获取所有门店
-export function getAllStore (data) {
+// 获取所有服务评价待审核门店
+export function getAllStore () {
   return service({
-    url: '/api/admin/store/all/get',
-    method: 'post',
-    data: data
+    url: '/api/admin/store/servicecharge/list',
+    method: 'get'
   })
 }

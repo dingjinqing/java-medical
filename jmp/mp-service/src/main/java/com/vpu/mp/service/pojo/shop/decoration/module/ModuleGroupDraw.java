@@ -16,31 +16,31 @@ public class ModuleGroupDraw extends ModuleBase {
 
     /**活动ID */
     @JsonProperty("group_draw_id")
-    private Integer groupDrawId;
+    private Integer groupDrawId=0;
 
     /** 是否使用默认活动标题 0 使用 1不使用*/
     @JsonProperty("name_set")
-    private Byte nameSet;
+    private Byte nameSet=0;
 
     /** 自定义活动标题*/
     @JsonProperty("group_draw_name")
-    private String groupDrawName;
+    private String groupDrawName="";
 
     /** 是否显示活动倒计时 0 隐藏 1显示*/
     @JsonProperty("show_clock")
-    private Byte showClock;
+    private Byte showClock=1;
 
     /** 字体颜色*/
     @JsonProperty("font_color")
-    private String fontColor;
+    private String fontColor="#ffffff";
 
     /** 活动底图 0 默认 1自定义*/
     @JsonProperty("module_bg")
-    private Byte moduleBg;
+    private Byte moduleBg=0;
 
     /** 活动底图路径*/
     @JsonProperty("module_img")
-    private String moduleImg;
+    private String moduleImg="";
 
     //输出属性
     /** */

@@ -18,7 +18,6 @@ import java.util.List;
 import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import org.jooq.*;
-import org.jooq.types.UByte;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -255,6 +254,16 @@ public class DistributorListService extends ShopBaseService{
      */
     public int delUserRemark(Integer id){
         int res = db().update(USER_REMARK).set(USER_REMARK.IS_DELETE, (byte) 1).where(USER_REMARK.ID.eq(id)).execute();
+        return res;
+    }
+
+    /**
+     * 分销员设置分组
+     * @param param
+     * @return
+     */
+    public int setGroup(DistributorSetGroupParam param){
+        int res = db().update(USER).set(USER.INVITE_GROUP, param.getGroupId()).where(USER.USER_ID.in(param.getUserId())).execute();
         return res;
     }
 

@@ -414,6 +414,17 @@ public class AdminDistributionController extends AdminBaseController{
 	}
 
     /**
+     * 分销员编辑设置分组（支持批量设置）
+     * @param param
+     * @return
+     */
+	@PostMapping("/admin/distribution/distrobutor/group/set")
+	public JsonResult setGroup(@RequestBody DistributorSetGroupParam param){
+        int res = shop().distributorList.setGroup(param);
+        return this.success(res);
+    }
+
+    /**
      * 添加会员备注
      * @param param
      * @return

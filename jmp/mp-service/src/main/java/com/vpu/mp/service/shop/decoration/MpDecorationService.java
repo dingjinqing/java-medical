@@ -442,8 +442,8 @@ public class MpDecorationService extends ShopBaseService {
      * @return
      * @throws IOException
      */
-    private ModuleSecKill convertSeckillForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+    private ModuleSeckill convertSeckillForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleSeckill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSeckill.class);
         moduleSecKill.setNeedRequest(true);
         return moduleSecKill;
     }
@@ -851,8 +851,8 @@ public class MpDecorationService extends ShopBaseService {
      * @return
      * @throws IOException
      */
-    private ModuleSecKill convertSeckillForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+    private ModuleSeckill convertSeckillForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleSeckill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSeckill.class);
 
         // 转换实时信息
         return saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
