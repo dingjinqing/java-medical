@@ -429,6 +429,26 @@ export default {
           this.handleToTurnModulesName(arr)
         }
       })
+    } else if (Number(this.$route.query.pageParams.pageId) !== -1) {
+      console.log(this.$route.query.pageParams)
+      let { pageId, pageContent } = this.$route.query.pageParams
+      this.page_id = pageId
+      // 处理last_cur_idx
+      let content = JSON.parse(pageContent)
+      let maxIdx = this.handleToMaxCuridx(content)
+      this.cur_idx = maxIdx
+      this.pageSetData = content.page_cfg
+      delete content.page_cfg
+      let moduleDataArr = []
+      Object.keys(content).forEach((item, index) => {
+        moduleDataArr.push(content[item])
+      })
+      this.$nextTick(() => {
+        console.log(content)
+        this.modulesData = content
+      })
+      console.log(content)
+      this.handleToTurnModulesName(moduleDataArr)
     } else {
       this.pageSetData = {
         'is_ok': 1,
@@ -453,6 +473,20 @@ export default {
     }
   },
   methods: {
+    // 算出最大值last_cur_idx
+    handleToMaxCuridx (res) {
+      let copyData = JSON.parse(JSON.stringify(res))
+      let arr = []
+      delete copyData.page_cfg
+      Object.keys(copyData).forEach((item, index) => {
+        console.log(item)
+        let idx = Number(item.split('_')[1])
+        arr.push(idx)
+      })
+      Math.max.apply(null, arr)
+      console.log(arr, Math.max.apply(null, arr))
+      return Math.max.apply(null, arr)
+    },
     // 模块名称转化
     handleToTurnModulesName (data) {
       let showModuleArr = []
