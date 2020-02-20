@@ -533,6 +533,11 @@ public class GoodsMpService extends ShopBaseService {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
         }
 
+        // 当es挂掉的时候，只查询和商家分类直接关联的商品，不进行子项查询。（功能退级）
+        if (param.getSortIds() != null && param.getSortIds().size() > 0) {
+            condition = condition.and(GOODS.SORT_ID.in(param.getSortIds()));
+        }
+
         if (param.getBrandIds() != null && param.getBrandIds().size() > 0) {
             condition = condition.and(GOODS.BRAND_ID.in(param.getBrandIds()));
         }
