@@ -15,7 +15,7 @@ global.wxPage({
     filterData: {
       minPrice: null,
       maxPrice: null,
-      sortId: null,
+      sortIds: [],
       brandIds: [],
       activityTypes: [],
       labelIds: []
@@ -68,13 +68,13 @@ global.wxPage({
   },
   // 获取右侧筛选信息
   getSelectedData (data) {
-    let { selectedSort: sortId, selectedBrands: brandIds, selectedLabels: labelIds, selectedActTypes: activityTypes, minPrice, maxPrice } = data.detail
+    let { selectedSort: sortIds, selectedBrands: brandIds, selectedLabels: labelIds, selectedActTypes: activityTypes, minPrice, maxPrice } = data.detail
     console.log(data)
     this.setData({
       filterData: {
         minPrice,
         maxPrice,
-        sortId,
+        sortIds,
         brandIds,
         labelIds,
         activityTypes
