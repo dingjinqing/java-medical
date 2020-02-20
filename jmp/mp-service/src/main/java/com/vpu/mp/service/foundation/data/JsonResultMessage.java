@@ -375,8 +375,10 @@ public class JsonResultMessage {
     public static final String CODE_DATA_ALREADY_EXIST = "data.already.exist";
     public static final String CODE_ORDER_AMOUNT_NOT_EQUALS_SERVICE_SUBSIST = "code.order.amount.not.equals.service.subsist";
     public static final String CODE_WX_LOGISTICS_API_CALL_FAILED = "wx.logistics.api.call.failed";
+    public static final String CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG = "wx.store.pay.lower.score.down.config";
+    public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
 
-	/**
+    /**
 	 * 门店技师管理
 	 */
 	public static final String STORE_STORE_ID_NULL = "store.store.id.null";
