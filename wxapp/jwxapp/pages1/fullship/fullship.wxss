@@ -39,3 +39,13 @@
   align-items: center;
   justify-content: center;
 }
+.rule{
+  padding: 20rpx;
+  font-size: 24rpx;
+  color: #f60;
+  background: #fcf9dd;
+  display: flex;
+}
+.rule > text:first-of-type{
+  flex: 1;
+}
