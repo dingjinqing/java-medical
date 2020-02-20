@@ -4,27 +4,28 @@
   <view class="l-a-cover" bindtap="bindClose"></view>
   <view class="l-a-content">
     <view class="l-a-top">
+      <image class='l-a-top-back' src='{{imageUrl}}/image/wxapp/award_bg.png' mode='widthFix'></image>
       <image class="l-a-top-img" src="{{imageUrl + '/image/wxapp/is_award1.png'}}" mode="scaleToFill"></image>
       <text class="l-a-top-title">{{title}}</text>
     </view>
     <view class="l-a-center">
       <view class="l-a-c-top">恭喜您获得</view>
       <block wx:if="{{lotteryInfo.lotteryGrade === 4}}">
-        <view class="gift-name">{{lotteryInfo.goodsName}}</view>
-        <view class="gift-img"><image src="{{lotteryInfo.goodsImg}}"></image></view>
-        <view>已放入“我的奖品”快领取吧</view>
+        <view class="gift-name">{{lotteryInfo.lotteryAward}}</view>
+        <view class="gift-img"><image src="{{lotteryInfo.goodsImage}}"></image></view>
+        <view class="gift-tips">已放入“我的奖品”快领取吧</view>
         <view class="l-a-btns">
-          <button class="l-a-c-btn">立即领取</button>
+          <button class="l-a-c-btn" bindtap="goToOrder">立即领取</button>
         </view>
       </block>
       <block wx:else>
         <view class="l-a-c-top" style="font-weight:bold">{{lotteryInfo.lotteryAward}}</view>
-        <view class="l-a-c-go">快去查看吧</view>
+        <view class="l-a-c-go" bindtap="goLotteryList">快去查看吧</view>
         <view class="l-a-c-btns">
-          <button class="l-a-c-btn">继续抽奖</button>
-          <button class="l-a-c-btn">去分享</button>
-          <button class="l-a-c-btn">消耗积分抽奖</button>
-          <button class="l-a-c-btn">抽奖次数用光啦</button>
+          <button class="l-a-c-btn" wx:if="{{btnstatus === 1}}" bindtap="bindClose">继续抽奖</button>
+          <button class="l-a-c-btn" wx:elif="{{btnstatus === 2}}" bindtap="bindClose">去分享</button>
+          <button class="l-a-c-btn" wx:elif="{{btnstatus === 3}}" bindtap="bindClose">消耗{{score}}积分抽奖</button>
+          <button class="l-a-c-btn" wx:else bindtap="bindClose">抽奖次数用光啦</button>
         </view>
       </block>
     </view>

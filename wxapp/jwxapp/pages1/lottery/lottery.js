@@ -66,6 +66,7 @@ global.wxPage({
   // 请求抽奖信息
   lotteryRequest() {
     let that = this
+    console.log('lotteryRequest')
     util.api('/api/wxapp/lottery/get', function (res) {
       console.log(res)
       if (res.error === 0) {
@@ -163,63 +164,77 @@ global.wxPage({
     })
   },
 
+  // 调用抽奖接口
+  lotteryJoinRequest () {
+    let that = this
+    return new Promise(function(resolve){
+      util.api('/api/wxapp/lottery/join', function (res) {
+        if (res.error === 0 && res.content.flag) {
+          let content = res.content
+          // 是否抽奖成功
+          if (content.flag) {
+            // 抽奖动画
+            let startStep = that.data.winIndex;
+            let endStep = parseInt(Math.random() * 8 + 1);
+            console.log(startStep, endStep);
+            that.setData({
+              prizeInfo: content
+            })
+            switch (content.lotteryGrade) {
+              case 1:
+                endStep = 3
+                break
+              case 2:
+                let steps2 = [4, 8]
+                let random2 = parseInt(Math.random() * 2)
+                endStep = steps2[random2]
+                break
+              case 3:
+                let steps3 = [2, 6]
+                let random3 = parseInt(Math.random() * 2)
+                endStep = steps3[random3]
+                break
+              case 4:
+                let steps4 = [0, 5, 7]
+                let random4 = parseInt(Math.random() * 3)
+                endStep = steps4[random4]
+              default:
+                endStep = 1
+            }
+            resolve({
+              startStep: startStep,
+              endStep: endStep,
+              content: content
+            })
+          } else {
+            that.$message.error(content.msg)
+          }
+        } else {
+          util.toast_fail(res.message)
+          that.setData({
+            hasClick: false
+          })
+        }
+      }, {
+          lotteryId: Number(that.data.lotteryId),
+          lotteryType: that.data.lotteryType,
+          lotterySource: that.data.lotterySource
+        }
+      )
+    })
+    
+  },
+
   // 立即抽奖
-  drawNow () {
+  async drawNow () {
     let that = this
     this.setData({
       hasClick: true
     })
-    util.api('/api/wxapp/lottery/join', function (res) {
-      if (res.error === 0 && res.content.flag) {
-        let content = res.content
-        // 是否抽奖成功
-        if (content.flag) {
-          // 抽奖动画
-          let startStep = that.data.winIndex;
-          let endStep = parseInt(Math.random() * 8 + 1);
-          console.log(startStep, endStep);
-          that.setData({
-            prizeInfo: content
-          })
-          switch (content.lotteryGrade) {
-            case 1:
-              endStep = 3
-              break
-            case 2:
-              let steps2 = [4, 8]
-              let random2 = parseInt(Math.random() * 2)
-              endStep = steps2[random2]
-              break
-            case 3:
-              let steps3 = [2, 6]
-              let random3 = parseInt(Math.random() * 2)
-              endStep = steps3[random3]
-              break
-            case 4:
-              let steps4 = [0, 5, 7]
-              let random4 = parseInt(Math.random() * 3)
-              endStep = steps4[random4]
-            default:
-              endStep = 1
-          }
-          that.lotteryRequest()
-          that.rolling(startStep, endStep, content)
-        } else {
-          that.$message.error(content.msg)
-        }
-      } else {
-        util.toast_fail(res.message)
-        that.setData({
-          hasClick: false
-        })
-      }
-    }, {
-        lotteryId: Number(that.data.lotteryId),
-        lotteryType: that.data.lotteryType,
-        lotterySource: that.data.lotterySource
-      }
-    )
-    
+    let join = await that.lotteryJoinRequest()
+    that.lotteryRequest()
+    let {startStep, endStep, content} = join
+    that.rolling(startStep, endStep, content)
   },
 
   /**
