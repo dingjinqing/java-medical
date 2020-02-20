@@ -530,7 +530,7 @@
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList, delDistributor, setInviteCode, addRemarks, getRemarksList, delRemarks } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorGroupList, delDistributor, setInviteCode, setBatchGroup, addRemarks, getRemarksList, delRemarks } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 
@@ -577,7 +577,7 @@ export default {
         label: '对选中的分销员修改分组',
         value: '1'
       }, {
-        label: '对筛选出的66人修改分组',
+        label: '对筛选出的0人修改分组',
         value: '2'
       }],
 
@@ -588,7 +588,7 @@ export default {
 
       // 分销员分组
       groupDialog: false,
-      groupUserId: '',
+      groupUserId: [],
       groupValue: '',
 
       // 会员备注
@@ -622,6 +622,7 @@ export default {
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
+          this.checkList[2].label = '对筛选出的' + res.content.page.totalRows + '人修改分组'
         }
       })
     },
@@ -711,7 +712,8 @@ export default {
     // 分销员分组设置
     groupNameHandler (userId, groupName) {
       this.groupDialog = !this.groupDialog
-      this.groupUserId = userId
+      this.groupUserId = []
+      this.groupUserId.push(userId)
 
       var obj = this.groupNameList.find((item, index) => {
         return item.groupName === groupName
@@ -725,12 +727,29 @@ export default {
 
     // 确定分销员分组
     sureGroup () {
-      this.groupDialog = false
+      setBatchGroup({
+        userId: this.groupUserId,
+        groupId: this.groupValue
+      }).then(res => {
+        if (res.error === 0) {
+          this.groupDialog = false
+          this.$message.success('设置成功')
+          this.initDataList()
+          // 复原
+          this.allChecked = false
+          this.checkedValue = '0'
+          this.groupValue = ''
+        }
+      })
     },
 
     // 取消分销员分组
     cancelGroup () {
       this.groupDialog = false
+      // 复原
+      this.allChecked = false
+      this.checkedValue = '0'
+      this.groupValue = ''
     },
 
     // 备注会员信息
@@ -799,6 +818,7 @@ export default {
           this.$refs.multipleTable.toggleRowSelection(item)
         })
       } else {
+        this.checkedValue = '0'
         this.$refs.multipleTable.clearSelection()
       }
     },
@@ -806,12 +826,26 @@ export default {
     // 切换修改选项
     selectChange (val) {
       var selected = this.$refs.multipleTable.selection
-      if (selected.length === 0) {
+      if (this.checkedValue === '1' && selected.length === 0) {
         this.$message.warning('请选择分销员')
         this.checkedValue = '0'
       } else {
         // 批量设置分组
-        // this.groupDialog = !this.groupDialog
+        if (this.checkedValue === '1') {
+          this.groupDialog = !this.groupDialog
+          this.groupUserId = []
+          selected.forEach((item, index) => {
+            this.groupUserId.push(item.userId)
+          })
+        }
+        // 筛选数据设置
+        if (this.checkedValue === '2') {
+          this.groupDialog = !this.groupDialog
+          this.groupUserId = []
+          this.tableData.forEach((item, index) => {
+            this.groupUserId.push(item.userId)
+          })
+        }
       }
     }
 
