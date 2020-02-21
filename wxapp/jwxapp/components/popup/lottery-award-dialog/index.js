@@ -43,10 +43,10 @@ global.wxComponent({
     goToOrder () {
       let info = this.data.lotteryInfo
       let goodsList = [{
-        goodsId: 94,
+        goodsId: info.goodsId,
         prdRealPrice: 0,
         goodsNum: 1,
-        prdId: 7563,
+        prdId: info.productId,
         isCart: 0
       }]
       util.navigateTo({
