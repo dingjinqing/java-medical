@@ -38,7 +38,9 @@ global.wxPage({
     showCardDialog: false, // 会员卡弹窗是否显示
     useCard: {}, // 选中的会员卡
     invoiceInfo: {}, // 选择的发票
-    discount_block: 0 // 是否展开折扣详情
+    discount_block: 0, // 是否展开折扣详情
+
+    scoreProportion: 100, // 积分兑换比
   },
 
   /**
@@ -46,7 +48,6 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    let that = this
     let storeId = options.storeId
     this.setData({
       storeId: storeId,
@@ -55,8 +56,8 @@ global.wxPage({
     this.initOrderInfo()
   },
 
+  // 请求用户信息
   initOrderInfo () {
-    // 请求用户信息
     let params = {
       storeId: this.data.storeId,
       userId: util.getCache('user_id')
@@ -64,8 +65,8 @@ global.wxPage({
     let that = this
     util.api('/api/wxapp/store/payOrder', function (res) {
       if (res.error === 0) {
-        console.log(res)
         let info = res.content;
+        // 门店买单开关是否关闭
         if (info.storeBuy === 0) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.noPayment'), function () {
             util.reLaunch({
@@ -74,6 +75,7 @@ global.wxPage({
           });
           return;
         }
+        // 门店是否被删除
         if (info.delFlag == 1) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.hasDeleteStore'), function () {
             util.reLaunch({
@@ -82,6 +84,7 @@ global.wxPage({
           });
           return;
         }
+        // 门店是否营业
         if (info.shopBusinessState == 0) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.wanderAround'), function () {
             util.reLaunch({
@@ -90,6 +93,7 @@ global.wxPage({
           });
           return;
         }
+        // 店铺是否营业
         if (info.storeBusinessState == 0) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.wanderAround'), function () {
             util.reLaunch({
@@ -102,13 +106,26 @@ global.wxPage({
         var src_no = that.data.imageUrl + 'image/wxapp/icon_rectangle.png';
         var useCard = {}
         if (info.memberCardList && info.memberCardList.length > 0) {
-          info.memberCardList.forEach((item, i) => {
+          // 会员卡处理
+          info.memberCardList.forEach(item => {
+            // 有效期
+            if (item.startDate === null || item.endDate === null) {
+              item.startDate = item.updateTime.split(' ')[0]
+              item.endDate = item.expireTime.split(' ')[0]
+            }
+            // 折扣
             if (item.discount == null) {
               item.discount = 10
             }
+            // 样式
             item.src_yes = src_yes
             item.src_no = src_no
+            // 背景
+            if (item.bgImg != '') {
+              item.bgImg = that.data.imageUrl+item.bgImg
+            }
           })
+          // 默认使用的会员卡
           useCard = info.memberCardList.find(item => item.isDefault == 1)
           if (typeof (useCard) === 'undefined') {
             useCard = info.memberCardList[0]
@@ -164,11 +181,13 @@ global.wxPage({
     let money = payInfo.orderAmount
     let useCard = this.data.useCard
     // 如果会员卡有折扣
-    if (useCard) {
+    if (useCard && Object.keys(useCard).length != 0) {
       let discount = this.data.useCard.discount
       if (discount) {
         payInfo.cardDisAmount = ((1 - discount / 10) * money).toFixed(2)
       }
+    } else {
+      payInfo.cardDisAmount = 0
     }
     payInfo.totalDiscount = parseFloat(Number(payInfo.cardDisAmount) + Number(payInfo.cardAmount) + Number(payInfo.scoreAmount) + Number(payInfo.balanceAmount)).toFixed(2)
     payInfo.moneyPaid = parseFloat(payInfo.orderAmount - payInfo.totalDiscount).toFixed(2)
@@ -202,14 +221,22 @@ global.wxPage({
   },
 
   // 选择会员卡回调
+  // 允许取消使用会员卡
   getSelectCard (e) {
     let cardNo = e.detail
-    let useCard = this.data.orderInfo.memberCardList.find(item => item.cardNo === cardNo)
-    console.log(useCard)
-    this.setData({
-      useCard: useCard,
-      'payInfo.cardNo': useCard.cardNo
-    })
+    if (cardNo === null) {
+      this.setData({
+        useCard: {},
+        'payInfo.cardNo': ''
+      })
+    } else {
+      let useCard = this.data.orderInfo.memberCardList.find(item => item.cardNo === cardNo)
+      console.log(useCard)
+      this.setData({
+        useCard: useCard,
+        'payInfo.cardNo': useCard.cardNo
+      })
+    }
     this.computedMoney()
   },
 
