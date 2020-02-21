@@ -478,10 +478,10 @@ export default {
           this.tableData = res.content.list
           this.tableData.map((item, index) => {
             if (item.type === 1) {
-              item.type = '全部商品'
+              item.type = this.$t('pledge.allGoods')
             }
             if (item.type === 2) {
-              item.type = '部分商品'
+              item.type = this.$t('pledge.someGoods')
             }
           })
           console.log('state:', Boolean(res.content.state))
@@ -586,10 +586,10 @@ export default {
       this.goodsInfo = row.goodsIds
       this.busClass = row.goodsBrandIds
       this.platClass = row.sortIds
-      if (row.type === '全部商品') {
+      if (row.type === this.$t('pledge.allGoods')) {
         this.form.type = 1
       }
-      if (row.type === '部分商品') {
+      if (row.type === this.$t('pledge.someGoods')) {
         this.form.type = 2
       }
       this.id = row.id
@@ -626,7 +626,6 @@ export default {
     imgDialogSelectedCallback (src) {
       console.log('path:', src.imgPath)
       console.log('url:', src.imgUrl)
-      console.log('前缀:', `${this.$imageHost}`)
       this.form.icon = src.imgPath
       this.srcList.src = src.imgUrl
       console.log('icon:', this.form.icon)
@@ -646,7 +645,7 @@ export default {
       background-color: #f2f2f2;
       height: 120px;
       padding: 10px;
-      font-family: "微软雅黑";
+      /*font-family: "微软雅黑";*/
       font-size: 14px;
       display: flex;
       justify-content: space-between;
