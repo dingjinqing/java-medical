@@ -742,7 +742,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //活动免运费
         activityFreeDelivery(vo, param.getIsFreeShippingAct());
-        //折扣金额
+        //折扣商品金额
         BigDecimal tolalDiscountAfterPrice = BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(memberDiscount, BigDecimalUtil.Operator.subtrac),
@@ -812,6 +812,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setIsCardPay(tradeCfg.getCardFirst());
         vo.setIsScorePay(tradeCfg.getScoreFirst());
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
+        vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
 
