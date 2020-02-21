@@ -642,14 +642,22 @@ export default {
       return { flag, isMpinintegration }
     },
     // 处理保存数据
-    handleToSaveModulesData (data, pageSetData) {
+    handleToSaveModulesData (data, pageSetData, lastIdx) {
       console.log(data, pageSetData)
+      let idx = lastIdx + 1
       let obj = {}
       data.forEach(item => {
-        obj[`c_${item.cur_idx}`] = item
+        if (!item.cur_idx) {
+          obj[`c_${idx}`] = item
+          item.cur_idx = idx
+          idx = idx + 1
+        } else {
+          obj[`c_${item.cur_idx}`] = item
+        }
       })
-      console.log(obj)
+      console.log(idx)
       pageSetData['cat_id'] = Number(pageSetData['cat_id'])
+      pageSetData.last_cur_idx = idx
       obj['page_cfg'] = pageSetData
       return obj
     },
