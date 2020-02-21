@@ -363,14 +363,27 @@ public class UserSummaryTaskService extends ShopBaseService {
     }
 
     /**
-     * Generate order user num int.下单人数(生成订单就算)
+     * Generate order user num int.下单用户数(生成订单就算)
      *
      * @param startTime the start time
      * @param endTime   the end time
      * @return the int
      */
     public int generateOrderUserNum(Timestamp startTime, Timestamp endTime) {
-        return db().select(DSL.countDistinct(ORDER_I.USER_ID)).from(ORDER_I).where(orderTimeCon(startTime, endTime)).fetchOneInto(Integer.class);
+        return db().select(DSL.countDistinct(ORDER_I.USER_ID)).from(ORDER_I).where(orderTimeCon(startTime, endTime))
+            .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+    }
+
+    /**
+     * Generate order user num int.下单人数(生成订单就算)
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the int
+     */
+    public int generatePeopleUserNum(Timestamp startTime, Timestamp endTime) {
+        return db().select(DSL.count(ORDER_I.USER_ID)).from(ORDER_I).where(orderTimeCon(startTime, endTime))
+            .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 
     /**
