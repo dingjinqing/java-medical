@@ -71,6 +71,10 @@
 }
 .order_mark {
   width: auto;
+  border: 1rpx solid;
+  font-size: 26rpx;
+  padding: 0 6rpx;
+  margin-right: 12rpx;
 }
 .order_sn {
   flex: 1;
@@ -152,6 +156,7 @@
 }
 .partial_delivery_top {
   flex: 1;
+  display: flex;
 }
 .partial_delivery_bottom {
   width: auto;
