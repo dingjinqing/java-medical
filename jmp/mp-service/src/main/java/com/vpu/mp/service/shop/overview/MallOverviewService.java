@@ -106,6 +106,7 @@ public class MallOverviewService extends ShopBaseService {
         // 0当天数据实时统计返回
         if (screeningTime == 0) {
             Condition orderInfoTime = ORDER_INFO.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+            Condition virtualTime = VIRTUAL_ORDER.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
             Condition userLoginRecordTime = UserLoginRecord.USER_LOGIN_RECORD.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
             Condition payOrderCon = ORDER_INFO.ORDER_STATUS.ge((byte) 3);
 
@@ -117,7 +118,7 @@ public class MallOverviewService extends ShopBaseService {
             // 总支付金额（商品订单(MONEY_PAID+USE_ACCOUNT+MEMBER_CARD_BALANCE)+会员卡订单）
             BigDecimal virtual = db().select(sum(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE)))
                 .from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_STATUS.eq(BYTE_ONE))
-                .and(orderInfoTime)
+                .and(virtualTime)
                 .fetchOptionalInto(BigDecimal.class).orElse(BIGDECIMAL_ZERO);
             BigDecimal goodsPaid = db().select(sum(ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT).add(ORDER_INFO.MEMBER_CARD_BALANCE)))
                 .from(ORDER_INFO).where(orderInfoTime.and(payOrderCon))
