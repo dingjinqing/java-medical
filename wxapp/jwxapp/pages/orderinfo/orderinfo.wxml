@@ -182,7 +182,7 @@
     <view class="order_info">
       <text class="title">{{i18n.$t(localePack,"pages.order.orderDetail")}}</text>
       <view class="order_item" selectable>
-        <text class="activity_icon" wx:if="{{orderInfo.activityName}}">{{orderInfo.activityName}}</text>
+        <text class="activity_icon" style="border-color:{{comColor}};color:{{comColor}};" wx:if="{{orderInfo.activityName}}">{{orderInfo.activityName}}</text>
         <text>{{i18n.$t(localePack,"pages.order.orderSn")}}：{{orderInfo.orderSn}}</text>
       </view>
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
