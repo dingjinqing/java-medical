@@ -2317,7 +2317,11 @@ public class MemberCardService extends ShopBaseService {
 		List<CodeReceiveVo> list = cardDao.getBatchGroupList(batchId);
 		int successNum = 0;
 		int failNum = 0;
+		boolean flag=false;
 		for (CodeReceiveVo vo : list) {
+			if(StringUtil.isEmpty(vo.getCode())) {
+				flag=true;
+			}
 			String errorMsg = vo.getErrorMsg();
 			if (StringUtils.isEmpty(errorMsg)) {
 				successNum++;
@@ -2325,7 +2329,7 @@ public class MemberCardService extends ShopBaseService {
 				failNum++;
 			}
 		}
-		return new BatchGroupVo(batchId, successNum, failNum,into.getName(),into.getCreateTime());
+		return new BatchGroupVo(batchId, successNum, failNum,into.getName(),into.getCreateTime(),flag);
 	}
 	
 	
