@@ -29,7 +29,7 @@ export const en = {
   renew: 'Want to renew',
   upgrade: 'Version upgrade',
   shareShop: 'Sharing',
-  shareDefault: 'Failed to get QR code',
+  shareDefault: 'Please authorize the applet',
   shareTitle: 'Scan, Share with friends~',
   shareDownload: 'Download QR code',
   copy: 'Copy',

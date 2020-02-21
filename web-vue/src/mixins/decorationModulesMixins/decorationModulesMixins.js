@@ -409,13 +409,13 @@ export default {
         case 28: // 地图模块
           obj = {
             'module_name': 'm_map',
-            'province': '北京市',
-            'province_code': '110000',
-            'city': '北京市',
-            'city_code': '110100',
-            'area': '东城区',
-            'area_code': '110101',
-            'address': '东直门',
+            'province': '',
+            'province_code': '',
+            'city': '',
+            'city_code': '',
+            'area': '',
+            'area_code': '',
+            'address': '',
             'map_show': 1,
             'latitude': '39.92855',
             'longitude': '116.41637'
