@@ -1164,7 +1164,7 @@ export default {
       console.log(saveMosulesData)
       console.log(this.pageSetData, this.cur_idx)
       this.pageSetData.last_cur_idx = this.cur_idx
-      let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
+      let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData, this.cur_idx)
       console.log(data)
       console.log(saveMosulesData, this.modulesData, this.pageSetData, data)
       console.log(localStorage.getItem('V-ShopId'))
