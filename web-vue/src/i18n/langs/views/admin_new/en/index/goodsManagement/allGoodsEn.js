@@ -79,5 +79,21 @@ export const en = {
     sourceName: 'goods source',
     typeName: 'activity type',
     shopPrice: 'price'
+  },
+  bottomOptions: {
+    allCheck: 'All election',
+    lowerShelf: 'Lower shelf',
+    delete: 'delete',
+    batchSetup: 'Batch setup',
+    batchExportOptions: [{
+      value: '0',
+      label: 'Batch export'
+    }, {
+      value: '1',
+      label: 'Batch export filtered items'
+    }, {
+      value: '2',
+      label: 'Batch export check results'
+    }]
   }
 }

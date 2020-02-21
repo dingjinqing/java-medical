@@ -91,5 +91,21 @@ export const cn = {
     typeName: '活动类型',
     lowShopPrice: '商品价格下限',
     highShopPrice: '商品价格上限'
+  },
+  bottomOptions: {
+    allCheck: '全选',
+    lowerShelf: '下架',
+    delete: '删除',
+    batchSetup: '批量设置',
+    batchExportOptions: [{
+      value: '0',
+      label: '批量导出'
+    }, {
+      value: '1',
+      label: '批量导出筛选的件商品'
+    }, {
+      value: '2',
+      label: '批量导出勾选结果'
+    }]
   }
 }
