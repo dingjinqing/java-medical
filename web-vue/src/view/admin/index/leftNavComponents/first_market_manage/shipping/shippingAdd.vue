@@ -384,6 +384,8 @@ export default {
             item.areaCode = item.area
             item.areaCode = item.areaCode.split(',')
             item.areaCode = item.areaCode.map(Number)
+
+            console.log(this.locationList)
             item.areaCode.forEach((val, key) => {
               this.locationList.forEach(ele => {
                 // 省
@@ -395,6 +397,15 @@ export default {
                     ele.areaCity.forEach(ele2 => {
                       if (ele2.cityId === val) {
                         item.areaList.push(ele2.cityName)
+                      } else {
+                        // 区
+                        if (ele2.areaDistrict) {
+                          ele2.areaDistrict.forEach(ele3 => {
+                            if (ele3.districtId === val) {
+                              item.areaList.push(ele3.districtName)
+                            }
+                          })
+                        }
                       }
                     })
                   }
