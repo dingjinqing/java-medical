@@ -261,6 +261,17 @@ var order = {
       }
     }
     return "待发货";
+  },
+  getOrderTypeIconName(orderItem){
+    if(orderItem.orderType.includes('1')){
+      return '拼团'
+    } else if(orderItem.orderType.includes('3')){
+      return '砍价'
+    } else if(orderItem.orderType.includes('5')){
+      return '秒杀'
+    } else {
+      return null
+    }
   }
 };
 
