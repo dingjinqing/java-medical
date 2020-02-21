@@ -18,7 +18,9 @@ global.wxPage({
       sortIds: [],
       brandIds: [],
       activityTypes: [],
-      labelIds: []
+      labelIds: [],
+      pageFrom:null,
+      goodsIds:[]
     }
   },
 
