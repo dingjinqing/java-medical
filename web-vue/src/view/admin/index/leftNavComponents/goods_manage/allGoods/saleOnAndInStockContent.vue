@@ -733,7 +733,7 @@ export default {
         this.pageParams.totalRows = page.totalRows
         this.pageParams.currentPage = page.currentPage
         this.pageParams.pageRows = page.pageRows
-        this.batchExportOptions[1].label = `批量导出筛选的${page.totalRows}件商品`
+        this.batchExportOptions_[1].label = `批量导出筛选的${page.totalRows}件商品`
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
           item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
