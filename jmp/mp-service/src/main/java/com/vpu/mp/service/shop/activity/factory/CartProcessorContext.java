@@ -31,6 +31,8 @@ public class CartProcessorContext {
     private PreSaleProcessor preSale;
     @Autowired
     private ReducePriceProcessor reducePrice;
+    @Autowired
+    private FullReductionProcessor fullReduction;
 
 
     /**
@@ -45,7 +47,13 @@ public class CartProcessorContext {
         executeStrategy(preSale,cartBo);
         //限时降价
         executeStrategy(reducePrice,cartBo);
+        //满折满减
+        executeStrategy(fullReduction,cartBo);
+        //加价购
+
+        //会员专享
         executeStrategy(exclusive,cartBo);
+        //首单特惠
         executeStrategy(firstSpecial,cartBo);
         executeStrategy(gradeCard,cartBo);
         //活动冲突处理
