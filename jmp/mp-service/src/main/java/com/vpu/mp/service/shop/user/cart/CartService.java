@@ -106,6 +106,7 @@ public class CartService extends ShopBaseService {
         //购物车业务数据
         WxAppCartBo cartBo = WxAppCartBo.builder()
                 .userId(userId).date(DateUtil.getLocalDateTime())
+                .activityId(activityId).activityType(activityType)
                 .productIdList(productIdList).goodsIdList(goodsIdList)
                 .cartGoodsList(appCartGoods).invalidCartList(new ArrayList<>()).build();
         if (0 == appCartGoods.size()) {

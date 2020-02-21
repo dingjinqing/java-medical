@@ -286,6 +286,7 @@ public class LotteryRecordService extends ShopBaseService {
                 joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
                 joinValid.setGoodsImage(goodsView.getGoodsImg());
                 joinValid.setGoodsId(goodsView.getGoodsId());
+                joinValid.setProductId(lotteryPrizeRecord.getPrdId());
                 break;
             case LOTTERY_TYPE_CUSTOM:
                 logger().info("自定义");
