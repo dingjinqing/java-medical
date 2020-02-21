@@ -181,6 +181,7 @@ public class FreeShippingGoodsService extends ShopBaseService {
         //查询条件拼接
         Condition condition = goodsMpService.handleSearchCondition(goodsSearchParam);
         List<Integer> goodsIds = goodsMpService.getGoodsIdsByCondition(condition);
-        return  cartService.getCartList(userId, goodsIds);
+        //return  cartService.getCartList(userId, goodsIds);
+        return  cartService.getCartList(userId);
     }
 }
