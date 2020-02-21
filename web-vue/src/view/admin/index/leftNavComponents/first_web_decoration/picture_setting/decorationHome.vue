@@ -429,9 +429,9 @@ export default {
           this.handleToTurnModulesName(arr)
         }
       })
-    } else if (Number(this.$route.query.pageParams.pageId) !== -1) {
+    } else if (Number(this.$route.query.pageParams) !== -1) {
       console.log(this.$route.query.pageParams)
-      let { pageId } = this.$route.query.pageParams
+      let pageId = this.$route.query.pageParams
       getHandleTemplatesData(pageId).then(res => {
         console.log(res)
         if (res.error === 0) {
