@@ -11,6 +11,9 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -47,7 +50,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class FullReductionProcessor implements Processor,ActivityGoodsListProcessor, CreateOrderProcessor,GoodsDetailProcessor {
+public class FullReductionProcessor implements Processor,ActivityGoodsListProcessor, CreateOrderProcessor,GoodsDetailProcessor,ActivityCartListStrategy  {
 
     @Autowired
     FullReductionProcessorDao fullReductionProcessorDao;
@@ -221,4 +224,25 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
     }
 
     /**订单处理end**/
+
+    //*******************购物车--满折满减
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        //可用的会员
+        List<ValidUserCardBean> validCardList = userCard.userCardDao.getValidCardList(cartBo.getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, UserCardDaoService.CARD_ONLINE);
+        List<Integer> cardIds = validCardList.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
+        //获取商品可用的活动
+        for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
+            List<CartActivityInfo> cartActivityInfoList = fullReductionProcessorDao.getGoodsFullReductionActivityList(goods.getGoodsId(),
+                    goods.getGoodsRecord().getCatId(),
+                    goods.getGoodsRecord().getBrandId(),
+                    goods.getGoodsRecord().getSortId(),
+                    cardIds,
+                    cartBo.getDate());
+            if (cartActivityInfoList!=null&&cartActivityInfoList.size()>0){
+                goods.getCartActivityInfos().addAll(cartActivityInfoList);
+            }
+        }
+    }
+
 }

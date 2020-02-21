@@ -38,7 +38,7 @@
           <view class="order_item">
             <view class="order_sn_status {{item.partShipFlag === 1 ? 'partial_delivery' : ''}}">
               <view class="partial_delivery_top">
-                <view class="order_mark"></view>
+                <view class="order_mark" wx:if="{{item.iconName}}" style="border-color:{{comColor}};color:{{comColor}};">{{item.iconName}}</view>
                 <view class="order_sn">
                   {{i18n.$t(localePack,"pages.order.orderSn")}}：
                   <text selectable>{{item.orderSn}}</text>

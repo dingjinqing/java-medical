@@ -267,7 +267,7 @@
             size="small"
           >
             <el-option
-              v-for="item in batchExportOptions"
+              v-for="item in batchExportOptions_"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -455,20 +455,15 @@ export default {
       allChecked: false, // 全选checkbox flag
       isDataCheckChange: false, // 是否是因为当前页数据改变而影响的allChecked
       batchExportVal: '0',
-      batchExportOptions: [{
-        value: '0',
-        label: '批量导出'
-      }, {
-        value: '1',
-        label: '批量导出筛选的件商品'
-      }, {
-        value: '2',
-        label: '批量导出勾选结果'
-      }],
       bottomDialogVisible: false, // 底部点击弹窗flag
       isBottomClickIndex: 0, // 底部按钮点击flag
       nowCheckAll: [], // 当前选中的总数
       batchSetupVisible: false // 批量设置弹窗flag
+    }
+  },
+  computed: {
+    batchExportOptions_ () {
+      return this.$t('allGoods.bottomOptions.batchExportOptions')
     }
   },
   watch: {
@@ -738,7 +733,7 @@ export default {
         this.pageParams.totalRows = page.totalRows
         this.pageParams.currentPage = page.currentPage
         this.pageParams.pageRows = page.pageRows
-        this.batchExportOptions[1].label = `批量导出筛选的${page.totalRows}件商品`
+        this.batchExportOptions_[1].label = `批量导出筛选的${page.totalRows}件商品`
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
           item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]

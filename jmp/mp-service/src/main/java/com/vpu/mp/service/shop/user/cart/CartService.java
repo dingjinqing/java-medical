@@ -66,7 +66,7 @@ public class CartService extends ShopBaseService {
      * @return 购物车列表
      */
     public WxAppCartBo getCartList(Integer userId) {
-        return getCartList(userId,null);
+        return getCartList(userId,null,null,null);
     }
 
     /**
@@ -75,7 +75,7 @@ public class CartService extends ShopBaseService {
      * @param goodsIds goodsId 活动商品
      * @return null
      */
-    public WxAppCartBo getCartList(Integer userId, List<Integer> goodsIds){
+    public WxAppCartBo getCartList(Integer userId, List<Integer> goodsIds,Integer activityType,Integer activityId){
         List<Integer> productIdList ;
         List<Integer> goodsIdList;
         // 查询购物车记录
@@ -106,6 +106,7 @@ public class CartService extends ShopBaseService {
         //购物车业务数据
         WxAppCartBo cartBo = WxAppCartBo.builder()
                 .userId(userId).date(DateUtil.getLocalDateTime())
+                .activityId(activityId).activityType(activityType)
                 .productIdList(productIdList).goodsIdList(goodsIdList)
                 .cartGoodsList(appCartGoods).invalidCartList(new ArrayList<>()).build();
         if (0 == appCartGoods.size()) {

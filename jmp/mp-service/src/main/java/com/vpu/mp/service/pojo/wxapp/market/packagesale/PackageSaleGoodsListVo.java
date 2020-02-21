@@ -18,6 +18,15 @@ public class PackageSaleGoodsListVo {
     private Byte state;
 
     /**
+     * 所有分组需要选择商品件数总和
+     */
+    private Integer totalGoodsNumber;
+    /**
+     * 用户当前已选择商品件数总和
+     */
+    private Integer totalSelectNumber;
+
+    /**
      * 当前分组下可选的商品列表
      */
     private PageResult<Goods> goods;
@@ -39,15 +48,6 @@ public class PackageSaleGoodsListVo {
         private Integer goodsId;
         private String goodsName;
         /**
-         * 在售状态1在售,0下架
-         */
-        private Byte isOnSale;
-        /**
-         * 商品库存，该字段是通过商品规格计算而来
-         */
-        private Integer goodsNumber;
-
-        /**
          * 商品主图
          */
         private String goodsImg;
@@ -66,16 +66,6 @@ public class PackageSaleGoodsListVo {
         private Byte isCardExclusive;
         private Integer sortId;
         private Integer catId;
-
-
-        //活动数据
-        /**
-         * 取价结果类型，0商品原价，1等级会员价，2限时降价，3首单特惠价
-         */
-        private Byte goodsPriceAction;
-        private BigDecimal goodsPrice;
-
-        private BigDecimal maxPrice;
     }
 
     @Setter
@@ -95,15 +85,16 @@ public class PackageSaleGoodsListVo {
         private Byte packageType;
 
         /**
-         * 满件数折扣类型
+         * 满件数折扣类型的折扣率
          */
-        private Integer discountTotalGoodsNumber;
         private BigDecimal discountTotalRatio;
 
         /**
-         * 几件一口价类型
+         * 几件一口价类型的一口价金额
          */
         private BigDecimal totalMoney;
+
+        /** 所有组的总和件数要求 */
         private Integer totalGoodsNumber;
 
     }

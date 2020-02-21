@@ -60,6 +60,7 @@ global.wxPage({
             carStatus: "审核中"
           })
         } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
+
           that.setData({
             carStatus: "审核失败"
           })
@@ -142,7 +143,7 @@ global.wxPage({
         cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
-        cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
+        cardInfo.storeList = cardInfo.storeList 
         if (cardInfo.activation) {
           card_activation = card_info.activation;
         }

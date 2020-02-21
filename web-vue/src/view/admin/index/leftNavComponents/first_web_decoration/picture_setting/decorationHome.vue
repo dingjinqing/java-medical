@@ -429,9 +429,9 @@ export default {
           this.handleToTurnModulesName(arr)
         }
       })
-    } else if (Number(this.$route.query.pageParams.pageId) !== -1) {
+    } else if (Number(this.$route.query.pageParams) !== -1) {
       console.log(this.$route.query.pageParams)
-      let { pageId } = this.$route.query.pageParams
+      let pageId = this.$route.query.pageParams
       getHandleTemplatesData(pageId).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -556,9 +556,6 @@ export default {
         case 'm_hot_area':
           moduleNameId = 15
           break
-        case 'm_shop':
-          moduleNameId = 27
-          break
         case 'm_text_image':
           moduleNameId = 16
           break
@@ -588,6 +585,12 @@ export default {
           break
         case 'm_service':
           moduleNameId = 25
+          break
+        case 'm_shop':
+          moduleNameId = 27
+          break
+        case 'm_map':
+          moduleNameId = 28
       }
       return moduleNameId
     },

@@ -417,6 +417,11 @@ public class LotteryService extends ShopBaseService {
             lotteryTimeInfo.setUsedScoreTime(usedScoreTime);
             lotteryTimeInfo.setScore(lottery.getScorePerChance());
         }
+        //滚动记录
+        LotteryListUserParam param =new LotteryListUserParam();
+        param.setLotteryId(lotteryId);
+        PageResult<LotteryRecordPageListVo> lotteryRecordPageListVoPageResult = lotteryRecordService.lotteryListByParam(param);
+        lotteryTimeInfo.setLotteryRecord(lotteryRecordPageListVoPageResult);
         return lotteryTimeInfo;
     }
 
@@ -435,7 +440,7 @@ public class LotteryService extends ShopBaseService {
      * @return
      */
     public PageResult<LotteryRecordPageListVo> lotteryListByUser(LotteryListUserParam param) {
-      return  lotteryRecordService.lotteryListByUser(param);
+      return  lotteryRecordService.lotteryListByParam(param);
     }
 
 }

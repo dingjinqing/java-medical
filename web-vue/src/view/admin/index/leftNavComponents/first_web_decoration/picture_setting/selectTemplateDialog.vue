@@ -205,11 +205,13 @@ export default {
     // 跳转到装修主页
     handleToDecPage (item) {
       console.log(item)
+
       this.$router.push({
         path: '/admin/home/main/decorationHome',
         query: {
-          pageParams: item,
+          pageParams: item.pageId,
           pageId: -1
+
         }
       })
     }

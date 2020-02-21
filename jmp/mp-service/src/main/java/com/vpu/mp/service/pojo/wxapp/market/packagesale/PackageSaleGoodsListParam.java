@@ -4,6 +4,9 @@ import com.vpu.mp.service.foundation.util.Page;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 /**
  * @author: 王兵兵
  * @create: 2020-02-20 10:12
@@ -16,8 +19,15 @@ public class PackageSaleGoodsListParam {
     private Integer groupId;
 
     private String search;
-    private String sortName;
-    private String sortOrder;
+
+    /**排序方式，1销量，2价格 */
+    @Max(2)
+    @Min(1)
+    private Byte sortName;
+    /**排序方式，1desc，2asc */
+    @Max(2)
+    @Min(1)
+    private Byte sortOrder;
 
     /**
      * 	分页信息

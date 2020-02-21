@@ -25,7 +25,7 @@ export const cn = {
   renew: '我要续费',
   upgrade: '版本升级',
   shareShop: '分享店铺',
-  shareDefault: '获取二维码失败',
+  shareDefault: '请授权小程序',
   shareTitle: '扫一扫，分享给好友吧~',
   shareDownload: '下载二维码',
   copy: '复制',
