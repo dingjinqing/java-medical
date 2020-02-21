@@ -94,6 +94,11 @@ export const en = {
     }, {
       value: '2',
       label: 'Batch export check results'
-    }]
+    }],
+    batchFiltered: 'Batch export filtered',
+    commodity: 'commodity',
+    downloadCode: 'Download QR code',
+    selectpProduct: 'Please select a product',
+    noItemSelected: 'No item selected'
   }
 }

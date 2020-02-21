@@ -106,6 +106,38 @@ export const cn = {
     }, {
       value: '2',
       label: '批量导出勾选结果'
-    }]
+    }],
+    batchFiltered: '批量导出筛选的',
+    commodity: '件商品',
+    downloadCode: '下载二维码',
+    selectpProduct: '请选择商品',
+    noItemSelected: '未选择任何商品'
+  },
+  batchDialog: {
+    dialogTitle: '商品管理/出售中/批量设置',
+    isCheck: '已选',
+    rightTitleTip: '最多可批量设置20件商品',
+    goodsPriceTips1: '批量设置',
+    goodsPriceTips2: '折扣',
+    goodsPriceTips3: '涨/降价',
+    goodsPriceTips4: '改价金额',
+    goodsPriceTips5: '填写"负值"即降价',
+    commoditySpecification: '商品规格',
+    originalPrice: '原价',
+    discount: '折扣',
+    fracture: '折',
+    element: '元',
+    freightTemplate: '运费模板',
+    refresh: '刷新',
+    newTemplate: '新建模板',
+    templateManagement: '模板管理',
+    unifiedFreight: '店铺统一运费：0元',
+    distributableArea: '除可配送区域外，不可配送',
+    regionsOfTheCountry: '全国其他区域运费',
+    inPiece: '件内',
+    perIncrease: '元，每增加',
+    partsPlus: '件，加',
+    viewDetails: '查看详情',
+    specify: '指定可配送区域运费'
   }
 }

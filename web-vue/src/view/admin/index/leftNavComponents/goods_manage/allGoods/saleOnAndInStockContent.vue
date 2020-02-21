@@ -243,25 +243,25 @@
       </el-table>
       <div class="allGoodsFooter">
         <div class="allGoodsFooterLeft">
-          <el-checkbox v-model="allChecked">全选</el-checkbox>
+          <el-checkbox v-model="allChecked">{{$t('allGoods.bottomOptions.allCheck')}}</el-checkbox>
           <el-button
             type="primary"
             plain
             size="small"
             @click="handleToClickBottomBtn(0)"
-          >下架</el-button>
+          >{{$t('allGoods.bottomOptions.lowerShelf')}}</el-button>
           <el-button
             type="primary"
             plain
             size="small"
             @click="handleToClickBottomBtn(1)"
-          >删除</el-button>
+          >{{$t('allGoods.bottomOptions.delete')}}</el-button>
           <el-button
             type="primary"
             plain
             size="small"
             @click="handleToClickBottomBtn(2)"
-          >批量设置</el-button>
+          >{{$t('allGoods.bottomOptions.batchSetup')}}</el-button>
           <el-select
             v-model="batchExportVal"
             size="small"
@@ -301,7 +301,7 @@
             :href="qrCodeData.imgFullUrl"
             download=""
             class="downLoadQrImg"
-          >下载二维码</a>
+          >{{$t('allGoods.bottomOptions.downloadCode')}}</a>
           <div style="text-align: left;padding: 5px 5px 5px 50px;">
             <el-input
               ref="qrCodePageUrlInput"
@@ -509,7 +509,7 @@ export default {
         let flag = this.handleToJudgeIsChecked()
         if (!flag) {
           this.$message.error({
-            message: '请选择商品',
+            message: this.$t('allGoods.bottomOptions.selectpProduct'),
             showClose: true
           })
           return
@@ -517,6 +517,9 @@ export default {
         this.bottomDialogVisible = true
         this.isBottomClickIndex = 3 // 当前选中的批量导出勾选结果
       }
+    },
+    lang () {
+      this.paginationFetchGoodsData()
     }
   },
   methods: {
@@ -731,9 +734,10 @@ export default {
         let { content: { page, dataList } } = res
 
         this.pageParams.totalRows = page.totalRows
+        console.log(this.pageParams.totalRows)
         this.pageParams.currentPage = page.currentPage
         this.pageParams.pageRows = page.pageRows
-        this.batchExportOptions_[1].label = `批量导出筛选的${page.totalRows}件商品`
+        this.batchExportOptions_[1].label = this.$t('allGoods.bottomOptions.batchFiltered') + page.totalRows + this.$t('allGoods.bottomOptions.commodity')
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
           item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
@@ -780,7 +784,7 @@ export default {
       let flag = this.handleToJudgeIsChecked()
       if (!flag) {
         this.$message.error({
-          message: '未选择任何商品',
+          message: this.$t('allGoods.batchExportOptions.noItemSelected'),
           showClose: true
         })
         return
