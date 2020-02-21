@@ -155,7 +155,7 @@ public class CardUtil {
 	 */
 	public static Byte getUseStoreType(Byte storeUseSwitch,String storeList) {
 		Byte useStoreType = null;
-		if(canUseInStore(storeUseSwitch)) {
+		if(CardConstant.AVAILABLE_IN_STORE.equals(storeUseSwitch)) {
 			List<Integer> ids = parseStoreList(storeList);
 			if(ids.size()>0 && !CardConstant.MCARD_STP_ALL.equals(ids.get(0))) {
 				// 在部分门店使用
