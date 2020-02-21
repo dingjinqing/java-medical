@@ -66,7 +66,8 @@ export default {
     return {
       dialogVisible: false,
       tableData: [],
-      otherData: ''
+      otherData: '',
+      isPwd: false
     }
   },
   watch: {
@@ -95,6 +96,7 @@ export default {
           this.tableData = []
           this.tableData.push(res.content)
           this.otherData = res.content
+          this.isPwd = res.content.isPwd
         }
       }).catch((err, data) => {
         console.error('err:', err)
@@ -105,7 +107,7 @@ export default {
     },
     downloadSuccess (data) {
       let param = {
-        'isPwd': false,
+        'isPwd': this.isPwd,
         'batchId': data
       }
       getSuccessExcel(param).then(res => {
@@ -120,7 +122,7 @@ export default {
     },
     downloadFail (data) {
       let param = {
-        'isPwd': false,
+        'isPwd': this.isPwd,
         'batchId': data
       }
       getFailExcel(param).then(res => {

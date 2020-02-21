@@ -428,12 +428,11 @@ export default {
           if (this.action === null) {
             console.log(this.action)
             console.log('提交失败1')
-            this.$message.warning('提交失败1')
+            this.$message.warning('请选择相应功能')
             return false
           }
         } else {
           console.log('提交失败2')
-          this.$message.warning('提交失败2')
           return false
         }
       })
@@ -495,6 +494,10 @@ export default {
       this.$set(this.ruleForm, 'file', file[0])
     },
     uploadFile () {
+      if (!this.ruleForm.filename) {
+        this.$message.warning(this.$t('memberIntroductionDialog.psFile'))
+        return false
+      }
       console.log('this.batchIdStr1:' + this.batchIdStr.batchIdStr1)
       console.log('this.batchIdStr2:' + this.batchIdStr.batchIdStr2)
       let formdata = new FormData()

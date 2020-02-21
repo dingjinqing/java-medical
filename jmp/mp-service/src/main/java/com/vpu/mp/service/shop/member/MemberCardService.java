@@ -2275,7 +2275,7 @@ public class MemberCardService extends ShopBaseService {
 		List<String> list2 = new ArrayList<String>();
 		List<String> list3 = new ArrayList<String>();
 		for (CardNoPwdExcelVo cardNoExcelVo : list) {
-			list2.add(cardNoExcelVo.getCodeNo());
+			list2.add(cardNoExcelVo.getCardNo());
 			list3.add(cardNoExcelVo.getCardPwd());
 		}
 //		boolean isRepeat = list2.size() != new HashSet<String>(list2).size();
@@ -2482,7 +2482,7 @@ public class MemberCardService extends ShopBaseService {
 		List<CardNoPwdExcelVo> list = new ArrayList<CardNoPwdExcelVo>();
 		for (int i = 11; i < 21; i++) {
 			CardNoPwdExcelVo vo = new CardNoPwdExcelVo();
-			vo.setCodeNo("C1111" + i);
+			vo.setCardNo("C1111" + i);
 			vo.setCardPwd("123456");
 			list.add(vo);
 		}
