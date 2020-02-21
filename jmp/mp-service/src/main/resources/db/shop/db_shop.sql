@@ -1103,24 +1103,6 @@ CREATE TABLE `b2c_gift` (
   KEY `level` (`level`)
 )COMMENT='赠品活动';
 
-
-CREATE TABLE `b2c_sort` (
-  `sort_id` int(11) NOT NULL,
-  `sort_name` varchar(90)  NOT NULL DEFAULT '',
-  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '分类父节点，0表示一级',
-  `level` smallint(5) NOT NULL DEFAULT '0',
-  `has_child` tinyint(1) NOT NULL DEFAULT '0',
-  `sort_img` varchar(191)  NOT NULL DEFAULT '' COMMENT '一级分类是头图 其他为分类图标',
-  `img_link` varchar(191)  NOT NULL DEFAULT '' COMMENT '图标或者头图链接',
-  `first` smallint(2) NOT NULL DEFAULT '0' COMMENT '优先级',
-  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0普通商家分类 1推荐分类',
-  `sort_desc` varchar(191)  NOT NULL DEFAULT '',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
-  PRIMARY KEY (`sort_id`),
-  KEY `parent_id` (`parent_id`)
-)COMMENT='店铺自定义分类';
-
 CREATE TABLE `b2c_gift_product` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gift_id` int(11) NOT NULL COMMENT '赠品活动id',
