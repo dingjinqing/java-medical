@@ -260,7 +260,7 @@ public class PreSaleProcessorDao extends PreSaleService {
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NUMBER_LIMIT);
             }
         }
-        if (activityInfo.getGoodsId().equals(param.getGoodsIds().get(0))) {
+        if (!activityInfo.getGoodsId().equals(param.getGoodsIds().get(0))) {
             //预售商品只支持一个商品,所以get(0)
             log.error("该商品不支持预售");
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_SUPORT_PRESALE);
