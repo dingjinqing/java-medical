@@ -114,14 +114,16 @@ public class QrCodeService extends ShopBaseService {
 
         //获取小程序分享码
         Integer shopId = getShopId();
-        log.info("获取二维码，shopId:" + shopId);
+
+        log.info("获取二维码，shopId:"+shopId);
+
         MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
-        if (mp == null) {
-            log.info("店铺还没有授权小程序，shopId:" + shopId);
-            return null;
+        if(mp==null) {
+        	log.info("店铺还没有授权小程序，shopId:"+shopId);
+        	return null;
         }
         String appId =  mp.getAppId();
-        log.info("获取二维码，appId:" + appId);
+        log.info("获取二维码，appId:"+appId);
 
         //二维码图片大小
         int qrcodWidth = 430;
