@@ -218,6 +218,7 @@
 <script>
 import VTree from '@/components/admin/v-tree'
 import VPagination from '@/components/admin/pagination/pagination'
+import {shopInfoRequest} from '@/api/admin/survey.js'
 import {
   getVideoCategoryTreeRequest,
   addVideoCategoryRequest,
@@ -226,7 +227,8 @@ import {
   batchDeleteVideoRequest,
   getVideoListRequest,
   batchMoveVideoRequest,
-  uploadVideoRequest
+  uploadVideoRequest,
+  getUsedVideoSpace
 } from '@/api/admin/videoSpace.js'
 export default {
   components: { VTree, VPagination },
@@ -251,15 +253,20 @@ export default {
       allChecked: false,
       showBatchMoveDialog: false,
       hasVideoData: true,
-      version: '--', // 版本
-      leftSpace: '--' // 剩余空间
+      shopType: null,
+      version: null, // 版本
+      leftSpace: 0, // 剩余空间
+      experienceVersionSpace: 100,
+      basicVersionSpace: 0,
+      advanceVersionSpace: 2048,
+      flagShipVersionSpace: 10240
     }
   },
   mounted () {
     this.langDefault()
     this.sortOptions = this.$t('videoSpace.options')
     this.requestTreeNodes()
-    this.requestVersionInfo()
+    this.requestVersionAndSpaceInfo()
   },
   watch: {
     lang (newData) {
@@ -267,8 +274,44 @@ export default {
     }
   },
   methods: {
-    requestVersionInfo () {
-      // todo: request version and leftSpace
+    /* 获取店铺版本号和用户空间 */
+    requestVersionAndSpaceInfo () {
+      shopInfoRequest().then(res => {
+        this.shopType = res.content.shopType
+        switch (this.shopType) {
+          case 'v1':
+            this.version = this.$t('overview.experienceVersion')
+            break
+          case 'v2':
+            this.version = this.$t('overview.basicEdition')
+            break
+          case 'v3':
+            this.version = this.$t('overview.advancedVersion')
+            break
+          case 'v4':
+            this.version = this.$t('overview.Ultimate')
+            break
+        }
+      }).then(() => {
+        getUsedVideoSpace().then(res => {
+          let maxSpace = 0
+          switch (this.shopType) {
+            case 'v1':
+              maxSpace = this.experienceVersionSpace
+              break
+            case 'v2':
+              maxSpace = this.basicVersionSpace
+              break
+            case 'v3':
+              maxSpace = this.advanceVersionSpace
+              break
+            case 'v4':
+              maxSpace = this.flagShipVersionSpace
+              break
+          }
+          this.leftSpace = maxSpace - res.content
+        })
+      })
     },
     requestTreeNodes: function () {
       let _this = this
@@ -300,7 +343,6 @@ export default {
         _this.requestTreeNodes()
       })
     },
-
     nodeRemove (object) {
       console.log('nodeRemove', object)
       let data = {
@@ -312,6 +354,8 @@ export default {
       let _this = this
       deleteVideoCategoryRequest(data).then(function (res) {
         _this.requestTreeNodes()
+      }).then(() => {
+        _this.requestVersionAndSpaceInfo()
       })
     },
 
@@ -392,6 +436,8 @@ export default {
         if (res.error === 0) {
           _this.searchVideos()
         }
+      }).then(() => {
+        _this.requestVersionAndSpaceInfo()
       })
     },
     // 视频上传前的钩子
@@ -451,6 +497,8 @@ export default {
             _this.searchVideos()
           }
         })
+      }).then(() => {
+        _this.requestVersionAndSpaceInfo()
       }).catch(() => {})
     },
     // 遮罩层删除点击
