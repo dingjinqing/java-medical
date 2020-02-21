@@ -141,7 +141,7 @@ public class ShopOverviewService extends MainBaseService {
             // 当前绑定解绑状态
             .bindInfo(getbindUnBindStatusUseByOver(user, bindAppId))
             // 分享二维码信息
-            .shareQrCodeVo(share(QrCodeTypeEnum.PAGE_BOTTOM, ""))
+            .shareQrCodeVo(share(QrCodeTypeEnum.PAGE_BOTTOM, "0"))
             .build();
     }
 
@@ -174,7 +174,7 @@ public class ShopOverviewService extends MainBaseService {
     }
 
     /**
-     * Share store service share qr code vo.通用分享方法
+     * Share store service share qr code vo.商城概览分享方法
      *
      * @param qrCodeTypeEnum the qr code type enum
      * @param pathParam      the path param
@@ -184,7 +184,7 @@ public class ShopOverviewService extends MainBaseService {
         String imageUrl = qrCodeService.getMpQrCode(qrCodeTypeEnum, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(qrCodeTypeEnum.getPathUrl(null));
         return vo;
     }
 
