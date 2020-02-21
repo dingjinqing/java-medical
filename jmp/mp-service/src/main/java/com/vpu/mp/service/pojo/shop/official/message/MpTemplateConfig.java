@@ -87,14 +87,14 @@ public enum MpTemplateConfig {
         "{{first.DATA}}订单编号：{{keyword1.DATA}}退款时间：{{keyword2.DATA}}退款金额：{{keyword3.DATA}}失败原因：{{keyword4.DATA}}{{remark.DATA}}"
     ),
     ORDER_WXPAY_SUCCESS (
-        "",
-        "",
-        ""
+        "OPENTM416836000",
+        "订单支付成功提醒",
+        "{{first.DATA}}订单编号：{{keyword1.DATA}}商品名称：{{keyword2.DATA}}订单总价：{{keyword3.DATA}}订单状态：{{keyword4.DATA}}下单时间：{{keyword5.DATA}}{{remark.DATA}}"
     ),
     ORDER_NOPAY_NOTIFY (
-        "",
-        "",
-        ""
+        "OPENTM401717201",
+        "待支付订单提醒",
+        "{{first.DATA}}商品详情：{{keyword1.DATA}} 待付金额：{{keyword2.DATA}} 交易单号：{{keyword3.DATA}} 交易时间：{{keyword4.DATA}}交易有效期：{{keyword5.DATA}}{{remark.DATA}}"
     ),
     ORDER_SELFPICKUP_SUCCESS (
         "OPENTM412465579",

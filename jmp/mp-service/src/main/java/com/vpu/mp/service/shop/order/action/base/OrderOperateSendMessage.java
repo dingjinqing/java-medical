@@ -14,19 +14,25 @@ import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.config.message.MessageConfigService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +52,11 @@ public class OrderOperateSendMessage extends ShopBaseService {
     @Autowired
     private MessageConfigService messageConfig;
 
+    @Autowired
+    private OrderInfoService orderInfo;
+
+    @Autowired
+    private PreSaleProcessorDao preSaleProcessorDao;
     /**
      * 发货模板消息
      * @param order
@@ -141,7 +152,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
     }
 
     /**
-     * TODO 订单支付成功模板消息
+     * 订单微信支付成功后状态未待发货时模板消息
      * @param order
      */
     public void send(OrderInfoRecord order, Result<OrderGoodsRecord> goods) {
@@ -151,7 +162,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         //公众号数据
         String[][] mpData = null;
         if(isSendMp(MessageTemplateConfigConstant.ORDER_SUCCESS_PAY)) {
-            mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, {  }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+            mpData = new String[][] {{"恭喜您！购买的商品已支付成功，请留意物流信息哦！么么哒！~~"}, {order.getOrderSn()}, {getGoodsName(goods)}, {orderInfo.getOrderFinalAmount(order.into(OrderListInfoVo.class), true).toString()}, {"已支付"}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getCreateTime())}, {"欢迎您的到来！"}};
         }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_WXPAY_SUCCESS).data(mpData).build())
@@ -164,15 +175,26 @@ public class OrderOperateSendMessage extends ShopBaseService {
     }
 
     /**
-     * TODO 订单未支付提醒模板消息
+     * 订单未支付（包含预售）提醒模板消息
      * @param order
      */
     public void send(OrderInfoRecord order) {
         logger().info("订单未支付提醒模板消息start");
         //公众号数据
         String[][] mpData = null;
+        BigDecimal money;
+        Timestamp expireTime;
         if(isSendMp(MessageTemplateConfigConstant.ORDER_NO_PAY)) {
-            mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, {  }, { order.getShippingNo() }, {StringUtils.EMPTY}};
+            //普通订单、预售订单支付定金
+            if(order.getOrderPayWay() == OrderConstant.PAY_WAY_DEPOSIT && order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
+                money = order.getBkOrderMoney();
+                PreSaleVo detail = preSaleProcessorDao.getDetail(order.getActivityId());
+                expireTime = detail.getEndTime();
+            }else {
+                money = order.getMoneyPaid();
+                expireTime = order.getExpireTime();
+            }
+            mpData = new String[][] { { "您提交了订单，等待支付中" }, {getGoodsName(orderGoods.getByOrderId(order.getOrderId()))}, {money.toString()}, {order.getOrderSn()}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getCreateTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, expireTime)}, {"请及时支付订单，逾期失效"}};
         }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_NOPAY_NOTIFY).data(mpData).build())
