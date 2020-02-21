@@ -6,7 +6,7 @@
             <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index">
               <!-- 满折满减 -->
               <!-- wx:if="{{item.activityType == 21}}" -->
-              <view class='act_info clearfix' bindtap='to_fullpage' data-item="{{ item }}" data-ids='{{item1.identity_id}}'>
+              <view class='act_info clearfix' bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-ids='{{item1.identity_id}}'>
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
                   <view class='act_content' style='width:350rpx;'>每满100.00元减5.00元</view>

@@ -1,38 +1,46 @@
 <!--pages/fullprice/fullprice.wxml-->
 <include src="../common/header.wxml" />
 <view class='main-container' style='padding-bottom:{{isIpx ? "60rpx;":""}}'>
+  <!-- 搜索 -->
   <view class='search_input'>
     <icon type="search" class="search-img" size="13"></icon>
     <input type="text" placeholder="请输入搜索关键字" bindblur='searchGoods' />
   </view>
+  <!-- 列表 -->
   <view class='main_goods_content' style='padding-bottom:{{is_load == 1?"0":"100rpx"}}'>
     <view class='pro_tips' wx:if='{{full_info.is_show_reduce_doc == 1}}' style='padding-bottom:0'>
       限时降价：购买超出限购数量以结算价为准
     </view>
     <view class='pro_tips'>
       <view class='full_member_icon' wx:if='{{full_info.is_exclusive == 1 && full_info.is_can_buy == 0}}'>会员</view>
-      {{full_info.rule_str}}
+      <!-- {{full_info.rule_str}} -->
+      <view wx:for="{{full_info.condition}}">
+        <view wx:if="{{full_info.type == 1}}">以下商品：每满{{item.fullMoney}}元减{{item.reduceMoney}}元</view>
+        <view wx:if="{{full_info.type == 2}}">以下商品：满{{item.fullMoney}}元减{{item.reduceMoney}}元</view>
+        <view wx:if="{{full_info.type == 3}}">以下商品：满{{item.fullMoney}}元打{{item.discount}}折</view>
+        <view wx:if="{{full_info.type == 4}}">以下商品：仅第{{item.amount}}件打{{item.discount}}折</view>
+      </view>
     </view>
     <view class='goods_content'>
-      <view class='each_goods clearfix' wx:for='{{full_goods_info}}' wx:if='{{full_goods_info.length>0 && item.is_card_exclusive == 0}}' wx:key='key'>
-        <view class='goods_lefts' bindtap='to_items' data-goods_id="{{item.goods_id}}">
-          <image src='{{item.goods_img}}'></image>
-          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
-          <view class='reduce_price' wx:if="{{item.goods_price_action == 2}}" style='background:{{linColor}};color:#fff;font-size:20rpx;'>限时降价，立即查看</view>
-          <view class='reduce_price' wx:if="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff;font-size:20rpx;'>新人专享,首单特惠</view>
+      <view class='each_goods clearfix' wx:for='{{full_goods_info}}' wx:if='{{full_goods_info.length>0 && item.isCardExclusive == 0}}' wx:key='key'>
+        <view class='goods_lefts' bindtap='to_items' data-goods_id="{{item.goodsId}}">
+          <image src='{{item.goodsImg}}'></image>
+          <image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
+          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 2}}" style='background:{{linColor}};color:#fff;font-size:20rpx;'>限时降价，立即查看</view>
+          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 3}}" style='background:{{linColor}};color:#fff;font-size:20rpx;'>新人专享,首单特惠</view>
         </view>
         <view class='goods_right'>
-          <view class='goods_name' bindtap='to_items' data-goods_id="{{item.goods_id}}">{{item.goods_name}}</view>
-          <view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limit_amount > 0}}'>限购1件</view>
+          <view class='goods_name' bindtap='to_items' data-goods_id="{{item.goodsId}}">{{item.goodsName}}</view>
+          <!-- <view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limitAmount > 0}}'>限购1件</view> -->
           <view class='price_info clearfix'>
             <view class='jiaqian'>
-              <view class='member_icon' wx:if='{{item.goods_price_action == 1}}'>会员专享</view>
+              <view class='member_icon' wx:if='{{item.goodsPriceAction == 1}}'>会员专享</view>
               <view class='sale_price' style='color:{{comColor}}'>￥
-                <text>{{item.goods_price}}</text>
+                <text>{{item.goodsPrice}}</text>
               </view>
-              <view class='original_price' wx:if='{{item.market_price!=null}}'>￥{{item.market_price}}</view>
+              <view class='original_price' wx:if='{{item.marketPrice!=null}}'>￥{{item.marketPrice}}</view>
             </view>
-            <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goods_id}}' data-indexs='{{index}}'>
+            <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goodsId}}' data-indexs='{{index}}'>
               <text class='iconfont iconjiarugouwuche' style='color:{{comColor}};font-size:60rpx;'></text>
             </view>
           </view>
