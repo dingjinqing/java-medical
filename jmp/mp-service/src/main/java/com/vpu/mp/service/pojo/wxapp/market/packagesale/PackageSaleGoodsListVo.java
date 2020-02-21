@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class PackageSaleGoodsListVo {
-    /** 状态，0正常可用，1活动不存在，2活动未开始，3活动已过期 ，4活动设置了专属会员卡可参与，但该会员没有对应的卡，  */
+    /** 状态，0正常可用，1活动不存在，2活动未开始，3活动已过期   */
     private Byte state;
 
     /**
@@ -41,6 +41,11 @@ public class PackageSaleGoodsListVo {
      */
     private Title title;
 
+    /**
+     * 总金额合优惠金额
+     */
+    private TotalMoney totalMoney;
+
     @Setter
     @Getter
     public static class Goods{
@@ -66,6 +71,9 @@ public class PackageSaleGoodsListVo {
         private Byte isCardExclusive;
         private Integer sortId;
         private Integer catId;
+
+        //用户已选择的该商品的数量
+        private Integer chooseNumber;
     }
 
     @Setter
@@ -96,6 +104,18 @@ public class PackageSaleGoodsListVo {
 
         /** 所有组的总和件数要求 */
         private Integer totalGoodsNumber;
+    }
 
+    @Setter
+    @Getter
+    public static class TotalMoney{
+        /**
+         * 用户当前已选择商品金额总和（已根据活动规则折扣）
+         */
+        private BigDecimal totalSelectMoney;
+        /**
+         * 用户当前已选择商品金额根据活动规则优惠的金额
+         */
+        private BigDecimal discountMoney;
     }
 }
