@@ -473,8 +473,16 @@ public class CardDaoService extends ShopBaseService {
 		Integer batchId = param.getBatchId();
 		Integer groupId = param.getGroupId();
 		String regex = "^[\\w\\d]*$";
-		Integer[] batchIds = param.getBatchIdStr();
-		logger().info("batchIds:"+batchIds);
+		Integer[] batchIdStr = param.getBatchIdStr();
+//		String batchIdStr = param.getBatchIdStr();
+		Integer[] batchIds=new Integer[] {};
+//		if(StringUtils.isNotEmpty(batchIdStr)) {
+//			String[] split = batchIdStr.split(",");
+//			for (int i = 0; i < split.length; i++) {
+//				batchIds[i]=Integer.parseInt(split[i]);
+//			}
+//		}
+		logger().info("batchIds:"+batchIdStr[batchIdStr.length-1]);
 		for (String code : codeList) {
 			String msg=null;
 			if(StringUtils.isEmpty(code)) {
@@ -485,8 +493,8 @@ public class CardDaoService extends ShopBaseService {
 				}if(code.length()>15) {
 					msg=CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code=code.substring(0,15);
-				}else if(batchIds!=null&&batchIds.length>0) {
-					if(getReceiveCode(code, batchIds)) {
+				}else if(batchIdStr!=null&&batchIdStr.length>0) {
+					if(getReceiveCode(code, batchIdStr)) {
 						msg=CardNoImportTemplate.CARDNO_EXIST.getCode();
 					}
 				}
@@ -696,7 +704,7 @@ public class CardDaoService extends ShopBaseService {
 		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE)
 				.where(CARD_RECEIVE_CODE.CODE.eq(code)
 						.and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds)
-								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull().and(CARD_RECEIVE_CODE.STATUS.eq((byte) 1)))))
+								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())))
 				.fetch();
 		if (fetch != null && fetch.isNotEmpty()) {
 			return true;
