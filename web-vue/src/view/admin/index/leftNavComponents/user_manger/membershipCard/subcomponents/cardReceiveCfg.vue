@@ -199,18 +199,24 @@
     </el-form>
     <!--领取码弹窗-->
     <ReceivingCodeDialog
-      :dialogVisible.sync="receiveCodeDialogVisible"
+      :dialogVisible="receiveCodeDialogVisible"
       :batchName="currentBatchName"
       :batchId="currentBatchId"
       :receiveAction="currentReceiveAction"
+      :batchIdStr="batchIdStr"
       @generateReceiveCodeId="dealWithReceiveCodeId"
+    />
+    <receivingCodeRecording
+      :turnUp="turnUp"
+      :batchId="currentBatchId"
     />
   </div>
 </template>
 <script>
 export default {
   components: {
-    ReceivingCodeDialog: () => import('../receivingCodeDialog')
+    ReceivingCodeDialog: () => import('../receivingCodeDialog'),
+    receivingCodeRecording: () => import('../receivingCodeRecording')
   },
   props: {
     val: {
@@ -362,6 +368,7 @@ export default {
     }
     return {
       receiveCodeDialogVisible: false,
+      turnUp: false,
       codeReceiveAction: 1,
       pwdReceiveAction: 2,
       currentIndex: 0,
@@ -372,6 +379,10 @@ export default {
       payScoreError: false,
       payMoneyError: false,
       receiveCodeError: false,
+      batchIdStr: {
+        batchIdStr1: [],
+        batchIdStr2: []
+      },
       rules: {
         payScore: [
           { validator: validatePayScore, trigger: 'blur' }
@@ -425,6 +436,11 @@ export default {
           break
         case 2:
           this.deletePwdBatchItem(index)
+          break
+        case 3:
+          // 生成/导入记录
+          this.showDetail(index)
+          break
       }
     },
     // 添加密码批次
@@ -450,8 +466,7 @@ export default {
         this.$message.warning('请填写批次名称')
         return
       }
-      console.log(this.receiveCodeDialogVisible)
-      this.receiveCodeDialogVisible = true
+      this.receiveCodeDialogVisible = !this.receiveCodeDialogVisible
       this.currentBatchName = this.ruleForm.codeAddDivArrBottom[index].pwdName
       console.log(this.ruleForm.codeAddDivArrBottom)
       this.currentBatchId = this.ruleForm.codeAddDivArrBottom[index].pwdId
@@ -474,6 +489,10 @@ export default {
           // 删除批次
           this.deleteBatchItem(index)
           break
+        case 3:
+          // 生成/导入记录
+          this.showDetail(index)
+          break
       }
     },
 
@@ -482,8 +501,7 @@ export default {
         this.$message.warning('请填写批次名称')
         return
       }
-      console.log(this.receiveCodeDialogVisible)
-      this.receiveCodeDialogVisible = true
+      this.receiveCodeDialogVisible = !this.receiveCodeDialogVisible
       this.currentBatchName = this.ruleForm.codeAddDivArr[index].batchName
       this.currentBatchId = this.ruleForm.codeAddDivArr[index].batchId
       this.currentReceiveAction = this.codeReceiveAction
@@ -511,15 +529,34 @@ export default {
       console.log(id)
       if (this.currentReceiveAction === this.pwdReceiveAction) {
         // 卡号+密码
-        console.log(this.ruleForm.codeAddDivArrBottom)
+        this.batchIdStr.batchIdStr2.push(id)
+        console.log('this.batchIdStr.batchIdStr2:' + this.batchIdStr.batchIdStr2)
         this.ruleForm.codeAddDivArrBottom[this.currentIndex].pwdId = id
         this.ruleForm.codeAddDivArrBottom[this.currentIndex].disabled = true
         this.receiveCodeError = false
-        console.log(this.ruleForm.codeAddDivArrBottom)
       } else if (this.currentReceiveAction === this.codeReceiveAction) {
+        this.batchIdStr.batchIdStr1.push(id)
+        console.log('this.batchIdStr.batchIdStr1:' + this.batchIdStr.batchIdStr2)
         this.ruleForm.codeAddDivArr[this.currentIndex].batchId = id
         this.ruleForm.codeAddDivArr[this.currentIndex].disabled = true
         this.receiveCodeError = false
+      }
+      this.showDetail(this.currentIndex)
+    },
+    showDetail (index) {
+      console.log('index:' + index)
+      let currentBatchId = null
+      if (this.currentReceiveAction === this.pwdReceiveAction) {
+        currentBatchId = this.ruleForm.codeAddDivArrBottom[this.currentIndex].pwdId
+      } if (this.currentReceiveAction === this.codeReceiveAction) {
+        currentBatchId = this.ruleForm.codeAddDivArr[index].batchId
+      }
+      if (currentBatchId !== null) {
+        this.currentBatchId = currentBatchId
+        this.turnUp = !this.turnUp
+        console.log('currentBatchId:' + this.currentBatchId)
+      } else {
+        this.$message.warning('暂无记录')
       }
     }
   }
