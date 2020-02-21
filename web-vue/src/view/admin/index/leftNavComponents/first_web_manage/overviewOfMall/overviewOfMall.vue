@@ -342,12 +342,73 @@
                     class="task_list_item"
                     v-if="storeList.dataShop.wxPayConfigInfo === 2"
                   >
-                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <!-- <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip1') }}</span>
                     <a
                       href="/admin/home/main/base_manger/-1"
                       target="_blank"
-                    >{{ $t('overview.storeGo') }}</a>
+                    >{{ $t('overview.storeGo') }}</a> -->
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet1') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet2') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet3') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet4') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet5') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.dataShop.wxPayConfigInfo === 1"
+                  >
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet4') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet5') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
                   </div>
                   <div
                     class="task_list_item"
@@ -389,7 +450,7 @@
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
                     <a
-                      href="/admin/home/main/base_manger/-1"
+                      :href="'/admin/home/main/base_manger/' + this.storeList.dataShop.shopRecommendLink"
                       target="_blank"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
@@ -511,13 +572,10 @@
                       target="_blank"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
-                  <div v-if="storeList.dataMarket.member !== null">
+                  <div v-if="storeList.dataMarket.member && storeList.dataMarket.member.card_num !== 0">
                     <div class="task_list_item">
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span
-                        class="task_list_desc"
-                        v-if="storeList.dataMarket.member.card_num !== 0"
-                      >{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
+                      <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
                       <a
                         :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
                         target="_blank"
@@ -552,12 +610,73 @@
                     class="task_list_item"
                     v-if="storeList.dataShop.wxPayConfigInfo === 2"
                   >
-                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <!-- <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip1') }}</span>
                     <a
                       href="/admin/home/main/base_manger/-1"
                       target="_blank"
-                    >{{ $t('overview.storeGo') }}</a>
+                    >{{ $t('overview.storeGo') }}</a> -->
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet1') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet2') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet3') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet4') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet5') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.dataShop.wxPayConfigInfo === 1"
+                  >
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet4') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
+                    <div>
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ $t('overview.unShopTipSet5') }}</span>
+                      <a
+                        href="/admin/home/main/base_manger/-1"
+                        target="_blank"
+                      >{{ $t('overview.storeGo') }}</a>
+                    </div>
                   </div>
                   <div
                     class="task_list_item"
@@ -599,7 +718,7 @@
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
                     <a
-                      href="/admin/home/main/base_manger/-1"
+                      :href="'/admin/home/main/base_manger/' + this.storeList.dataShop.shopRecommendLink"
                       target="_blank"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
@@ -751,13 +870,10 @@
                       target="_blank"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
-                  <div v-if="storeList.dataMarket.member !== null">
+                  <div v-if="storeList.dataMarket.member  && storeList.dataMarket.member.card_num !== 0">
                     <div class="task_list_item">
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span
-                        class="task_list_desc"
-                        v-if="storeList.dataMarket.member.card_num !== 0"
-                      >{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
+                      <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip2') }}</span>
                       <a
                         :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
                         target="_blank"
@@ -1019,7 +1135,7 @@
 // 引入组件
 import VCharts from 'v-charts'
 import bindAccount from './overviewBindAccount.vue'
-import { getAllOverview, shopShareRequest, toDoItemRequest, dataRequest, shopInfoRequest, getAllStore } from '@/api/admin/survey.js'
+import { getAllOverview, toDoItemRequest, dataRequest, shopAssistantRequest, noticeListRequest, shopShareRequest, shopInfoRequest, getAllStore } from '@/api/admin/survey.js'
 export default {
   components: {
     VCharts,
@@ -1082,13 +1198,14 @@ export default {
     }
   },
   created () {
-    // 初始化数据
-    this.getAllOverview()
-    this.getShopShare()
-    this.getShopInfo()
-
-    // 获取服务门店
-    this.getAllStore()
+    // this.getAllOverview() // 数据总接口
+    this.getTodoDate() // 获取代办事项
+    this.getShowData() // 获取数据展示
+    this.getShopData() // 获取店铺助手
+    this.getNoticeList() // 获取公告信息
+    this.getShopShare() // 店铺分享
+    this.getShopInfo() // 店铺信息
+    this.getAllStore() // 获取服务门店
   },
   mounted () {
     this.langDefault()
@@ -1103,10 +1220,14 @@ export default {
       this.functionList = this.$t('overview.functionList')
       this.storeTabs = this.$t('overview.storeTabs')
       this.serveList = this.$t('overview.serveList')
-      this.getAllOverview()
-      this.getShopShare()
-      this.getShopInfo()
-      this.getAllStore()
+      // this.getAllOverview() // 数据总接口
+      this.getTodoDate() // 获取代办事项
+      this.getShowData() // 获取数据展示
+      this.getShopData() // 获取店铺助手
+      this.getNoticeList() // 获取公告信息
+      this.getShopShare() // 店铺分享
+      this.getShopInfo() // 店铺信息
+      this.getAllStore() // 获取服务门店
     }
   },
   methods: {
@@ -1137,45 +1258,45 @@ export default {
       getAllOverview(obj).then((res) => {
         if (res.error === 0) {
           // 代办
-          let data = res.content.toDoItemVo
-          for (var i = 0; i < this.checkList.length; i++) {
-            if (this.checkList[i].label === '待发货订单' || this.checkList[i].label === 'To be shipped') {
-              this.checkList[i].num = data.toBeDelivered
-            } else if (this.checkList[i].label === '待处理退款退货' || this.checkList[i].label === 'Pending disposal') {
-              this.checkList[i].num = data.refunds
-            } else if (this.checkList[i].label === '已售罄商品' || this.checkList[i].label === 'Sold out') {
-              this.checkList[i].num = data.soldOutGoods
-            } else if (this.checkList[i].label === '商品评价待审核' || this.checkList[i].label === 'To be audited') {
-              this.checkList[i].num = data.productEvaluationPr
-            } else if (this.checkList[i].label === '待提货订单' || this.checkList[i].label === 'Waiting for delivery') {
-              this.checkList[i].num = data.pendingOrder
-            } else if (this.checkList[i].label === '分销员待审核' || this.checkList[i].label === 'Reviewed by distributor') {
-              this.checkList[i].num = data.distributorPr
-            } else if (this.checkList[i].label === '会员卡激活待审核' || this.checkList[i].label === 'Membership activation') {
-              this.checkList[i].num = data.membershipCardPr
-            } else if (this.checkList[i].label === '分销提现待审核' || this.checkList[i].label === 'Cash withdrawal') {
-              this.checkList[i].num = data.distributionWithdrawalPr
-            } else if (this.checkList[i].label === '服务评价待审核' || this.checkList[i].label === 'Service evaluation') {
-              this.checkList[i].num = data.serviceEvaluationPr
-            }
-            this.checkList[i].isCheck = false
-            for (var j = 0; j < this.checkData.length; j++) {
-              if (this.checkList[i].label === this.checkData[j]) {
-                this.checkList[i].isCheck = true
-              }
-            }
-          }
+          // let data = res.content.toDoItemVo
+          // for (var i = 0; i < this.checkList.length; i++) {
+          //   if (this.checkList[i].label === '待发货订单' || this.checkList[i].label === 'To be shipped') {
+          //     this.checkList[i].num = data.toBeDelivered
+          //   } else if (this.checkList[i].label === '待处理退款退货' || this.checkList[i].label === 'Pending disposal') {
+          //     this.checkList[i].num = data.refunds
+          //   } else if (this.checkList[i].label === '已售罄商品' || this.checkList[i].label === 'Sold out') {
+          //     this.checkList[i].num = data.soldOutGoods
+          //   } else if (this.checkList[i].label === '商品评价待审核' || this.checkList[i].label === 'To be audited') {
+          //     this.checkList[i].num = data.productEvaluationPr
+          //   } else if (this.checkList[i].label === '待提货订单' || this.checkList[i].label === 'Waiting for delivery') {
+          //     this.checkList[i].num = data.pendingOrder
+          //   } else if (this.checkList[i].label === '分销员待审核' || this.checkList[i].label === 'Reviewed by distributor') {
+          //     this.checkList[i].num = data.distributorPr
+          //   } else if (this.checkList[i].label === '会员卡激活待审核' || this.checkList[i].label === 'Membership activation') {
+          //     this.checkList[i].num = data.membershipCardPr
+          //   } else if (this.checkList[i].label === '分销提现待审核' || this.checkList[i].label === 'Cash withdrawal') {
+          //     this.checkList[i].num = data.distributionWithdrawalPr
+          //   } else if (this.checkList[i].label === '服务评价待审核' || this.checkList[i].label === 'Service evaluation') {
+          //     this.checkList[i].num = data.serviceEvaluationPr
+          //   }
+          //   this.checkList[i].isCheck = false
+          //   for (var j = 0; j < this.checkData.length; j++) {
+          //     if (this.checkList[i].label === this.checkData[j]) {
+          //       this.checkList[i].isCheck = true
+          //     }
+          //   }
+          // }
           // 数据
-          this.dataList = res.content.dataDemonstrationVo
+          // this.dataList = res.content.dataDemonstrationVo
           // 店铺
-          this.storeList = res.content.shopAssistantVo
+          // this.storeList = res.content.shopAssistantVo
           // 公告
-          this.noticeList = res.content.announcementVoList
-          if (this.storeList.totalNum === 0) {
-            this.percentage = 100
-          } else {
-            this.percentage = 45
-          }
+          // this.noticeList = res.content.announcementVoList
+          // if (this.storeList.totalNum === 0) {
+          //   this.percentage = 100
+          // } else {
+          //   this.percentage = 45
+          // }
         }
       })
     },
@@ -1334,6 +1455,43 @@ export default {
     dateChangeHandler (value) {
       this.screeningTime = value
       this.getShowData()
+    },
+
+    // 获取店铺助手
+    getShopData () {
+      let obj = {
+        isAuthOk: 1,
+        storeSizeNum: 5,
+        commentOver: 3,
+        deliverOver: 3,
+        refundOver: 3,
+        applyOver: 3,
+        examineOver: 2,
+        couponSizeNum: 10
+      }
+      console.log(obj)
+      shopAssistantRequest(obj).then(res => {
+        if (res.error === 0) {
+          this.storeList = res.content
+          if (this.storeList.totalNum === 0) {
+            this.percentage = 100
+          } else {
+            this.percentage = 45
+          }
+        }
+      })
+    },
+
+    // 获取公告列表
+    getNoticeList () {
+      noticeListRequest({
+        currentPage: 1,
+        pageRows: 6
+      }).then(res => {
+        if (res.error === 0) {
+          this.noticeList = res.content.dataList
+        }
+      })
     },
 
     // 公告详情
