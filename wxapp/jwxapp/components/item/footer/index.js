@@ -82,6 +82,36 @@ let actType = {
       }
     }
   },
+  10:{
+    footerButtonName:{
+      left:{name:'单独购买',event:'checkBuy'},
+      right:{name:'支付定金',event:'checkPreSale'}
+    },
+    dialogButtonName:{
+      left:{
+        left:{
+          name:'加入购物车',
+          event:'addCart'
+        },
+        right:{
+          name:'立即购买',
+          event:'toCheckOut'
+        }
+      },
+      right:{
+        right:{
+          name:'支付定金',
+          event:'actCheckOut'
+        }
+      },
+      default:{
+        right:{
+          name:'支付定金',
+          event:'actCheckOut'
+        }
+      }
+    }
+  },
   default:{
     footerButtonName:{
       left:{
@@ -133,6 +163,7 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(newVal) {
+          console.log(newVal)
           this.initFooter()
       }
     },
@@ -213,6 +244,10 @@ global.wxComponent({
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
+    checkPreSale(){
+      if(this.checkPosition('right')) return
+      this.actCheckOut()
+    },
     goBargain(){
       util.api('/api/wxapp/bargain/apply',res=>{
         if (res.error == 0) {
@@ -244,7 +279,7 @@ global.wxComponent({
     getButtonData(){
       let buttonData = {}
       if(this.data.position === 'footer'){
-        buttonData['buttonInfo'] = this.data.activity && [1,3,5].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['footerButtonName'] : actType['default']['footerButtonName']
+        buttonData['buttonInfo'] = this.data.activity && [1,3,5,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['footerButtonName'] : actType['default']['footerButtonName']
         if(this.data.activity && this.data.activity.activityType === 1){
           buttonData['buttonInfo']['left'].top = `${this.data.isDefaultPrd ? `￥${this.data.products[0].prdRealPrice}` : this.getProducesMinPrice()}`
           buttonData['buttonInfo']['right'].name = buttonData['buttonInfo']['right'][`name-${this.data.activity.isGrouperCheap}`]
@@ -254,11 +289,20 @@ global.wxComponent({
           buttonData['buttonInfo']['left'].top = `${this.data.isDefaultPrd ? `￥${this.data.products[0].prdRealPrice}` : this.getProducesMinPrice()}`
           buttonData['buttonInfo']['right'].top = `￥${this.data.activity.bargainPrice}`
         }
+        if(this.data.activity && this.data.activity.activityType === 10){
+            buttonData['buttonInfo']['right'].right = `￥${this.data.productInfo.actProduct.depositPrice}`
+          if(!this.data.activity.originalBuy){
+            delete buttonData['buttonInfo']['left']
+          }
+        }
       } else if (this.data.position === 'spec'){
-        let position = this.data.activity && [1,3,5].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['dialogButtonName'] : actType['default']['dialogButtonName']
+        let position = this.data.activity && [1,3,5,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['dialogButtonName'] : actType['default']['dialogButtonName']
         buttonData['buttonInfo'] = this.data.triggerButton ? position[this.data.triggerButton] : position['default']
         if(this.data.activity && this.data.activity.activityType === 3 && this.data.triggerButton === 'right'){
           buttonData['buttonInfo']['right'].left = `￥${this.data.activity.bargainPrice}`
+        }
+        if(this.data.activity && this.data.activity.activityType === 10 && this.data.triggerButton === 'right'){
+          buttonData['buttonInfo']['right'].right = `￥${this.data.productInfo.actProduct.depositPrice}`
         }
       }
       buttonData.activityType = this.data.activity ? this.data.activity.activityType : null
@@ -336,7 +380,6 @@ global.wxComponent({
     },
     checkDealtAct(buttonData){
       let {dealtAct,triggerButton} = this.data
-      console.log(dealtAct)
       let {buttonInfo} = buttonData
       if(this.data.position === 'footer'){
         if(buttonData.activityType && buttonData.activityType === 1){
@@ -377,6 +420,8 @@ global.wxComponent({
           } else {
             buttonInfo['right']['canBuy'] = true
           }
+        } else if (buttonData.activityType && buttonData.activityType === 10) {
+          buttonInfo['right']['canBuy'] = true
         } else {
           buttonInfo['left']['canBuy'] = true
           buttonInfo['right']['canBuy'] = true
@@ -422,6 +467,8 @@ global.wxComponent({
               buttonInfo['right']['canBuy'] = true
             }
           }
+        } else if (buttonData.activityType && buttonData.activityType === 10) {
+          buttonInfo['right']['canBuy'] = true
         } else {
           if(triggerButton === 'right'){
             buttonInfo['right']['canBuy'] = true

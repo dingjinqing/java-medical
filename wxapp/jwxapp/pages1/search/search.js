@@ -117,7 +117,6 @@ global.wxPage({
           } catch (error) {
             target['data'][item] = options[item]
           }
-
         }
       })
       this.setData({
