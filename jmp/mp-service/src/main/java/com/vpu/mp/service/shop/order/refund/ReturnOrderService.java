@@ -127,10 +127,10 @@ public class ReturnOrderService extends ShopBaseService{
 			select.where(TABLE.RETURN_TYPE.in(param.getReturnType()));
 		}
 		if (param.getReturnStart() != null) {
-			select.where(TABLE.APPLY_TIME.ge(param.getReturnStart()));
+			select.where(TABLE.APPLY_TIME.isNotNull().and(TABLE.APPLY_TIME.ge(param.getReturnStart()))).or(TABLE.APPLY_TIME.isNull().and(TABLE.SHIPPING_OR_REFUND_TIME.ge(param.getReturnStart())));
 		}
 		if (param.getReturnEnd() != null) {
-			select.where(TABLE.APPLY_TIME.le(param.getReturnEnd()));
+            select.where(TABLE.APPLY_TIME.isNotNull().and(TABLE.APPLY_TIME.le(param.getReturnStart()))).or(TABLE.APPLY_TIME.isNull().and(TABLE.SHIPPING_OR_REFUND_TIME.le(param.getReturnStart())));
 		}
 		return select;
 	}
