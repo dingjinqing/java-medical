@@ -236,10 +236,12 @@ global.wxPage({
 
   // 跳转满折满减商品
   to_fullpage: function (e) {
-    console.log(e.currentTarget.dataset.item)
+    var activity_id = e.currentTarget.dataset.activity_id;
     util.navigateTo({
-      url: '/pages/fullprice/fullprice',
+      // url: '/pages/fullprice/fullprice',
+      url: '/pages/fullprice/fullprice?strategyId=' + activity_id,
     })
+    
     // var iden_id = e.currentTarget.dataset.ids;
     // var store_id = this.data.options.store_id ? this.data.options.store_id : 0;
     // util.navigateTo({
