@@ -142,6 +142,8 @@ public class OrderBeforeVo {
     private Byte isBalancePay;
     /**默认支付配置->积分*/
     private Byte isScorePay;
+    /**订单商品折后总金额*/
+    private BigDecimal tolalDiscountAfterPrice;
     /**
      * 默认配送方式 0 ，1 ，2
      * @return
