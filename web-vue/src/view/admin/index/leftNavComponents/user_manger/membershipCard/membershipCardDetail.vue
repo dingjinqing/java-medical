@@ -2044,7 +2044,7 @@ export default {
             this.$message.error('请填写批次名称')
             break
           }
-          this.receiveCodeDialogVisible = true
+          this.receiveCodeDialogVisible = !this.receiveCodeDialogVisible
           this.receiveCodeTmpIndex = indexH
           this.currentBatchName = this.codeAddDivArr[indexH].batchName
           this.currentBatchId = this.codeAddDivArr[indexH].batchId

@@ -212,3 +212,13 @@ page {
   display: flex;
   align-items: center;
 }
+.lo-words {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+.lo-words text {
+  color: #ffe61e;
+}

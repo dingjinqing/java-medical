@@ -7,32 +7,41 @@
         ref="ruleForm"
         label-width="100px"
       >
-      <el-dialog
-        title="领取码"
-        :visible.sync="dialogVisible"
-        width="30%"
-        v-if="receiveAction===1"
-      >
-        <div class="top">
-          <el-radio
-            v-model="action"
-            label="1"
-          >自动生成领取码</el-radio>
-          <span style="margin-left: 20px;">将随机生成xxx个唯一领取码，领取码由数字+字母组成</span>
-        </div>
-        <div v-if="action === '1'" style="margin-left: -100px;">
-           <el-form-item class="contentList" prop="codePrefix">
-          <div class="contentList">
-            <span style="color:#333">领取码前缀:</span>
-            <el-input
-              size="small"
-              v-model="ruleForm.codePrefix"
-              maxlength="4"
-            ></el-input>
-            <span>0-4个数字或字母</span>
+        <el-dialog
+          title="领取码"
+          :visible.sync="dialogVisible2"
+          width="30%"
+          v-if="receiveAction===1"
+        >
+          <div class="top">
+            <el-radio
+              v-model="action"
+              label="1"
+            >自动生成领取码</el-radio>
+            <span style="margin-left: 20px;">将随机生成xxx个唯一领取码，领取码由数字+字母组成</span>
           </div>
-           </el-form-item>
-            <el-form-item class="contentList" prop="codeSize">
+          <div
+            v-if="action === '1'"
+            style="margin-left: -100px;"
+          >
+            <el-form-item
+              class="contentList"
+              prop="codePrefix"
+            >
+              <div class="contentList">
+                <span style="color:#333">领取码前缀:</span>
+                <el-input
+                  size="small"
+                  v-model="ruleForm.codePrefix"
+                  maxlength="4"
+                ></el-input>
+                <span>0-4个数字或字母</span>
+              </div>
+            </el-form-item>
+            <el-form-item
+              class="contentList"
+              prop="codeSize"
+            >
               <div class="contentList">
                 <span style="color:#333">领取码位数:</span>
                 <el-input
@@ -42,186 +51,216 @@
                 <span>领取码组成未知数，限制6-12位</span>
               </div>
             </el-form-item>
-           <el-form-item class="contentList" prop="number">
-            <div
+            <el-form-item
               class="contentList"
-              style="margin-left:15px"
+              prop="number"
             >
-              <span style="color:#333">领取数量:</span>
-              <el-input
-                size="small"
-                v-model="ruleForm.number"
-              ></el-input>
+              <div
+                class="contentList"
+                style="margin-left:15px"
+              >
+                <span style="color:#333">领取数量:</span>
+                <el-input
+                  size="small"
+                  v-model="ruleForm.number"
+                ></el-input>
+              </div>
+            </el-form-item>
+          </div>
+          <div class="top footer">
+            <el-radio
+              v-model="action"
+              label="2"
+            >导入领取码</el-radio>
+            <span>需导入已有领取码</span>
+          </div>
+          <div
+            class="bottomHidden"
+            v-if="action === '2'"
+          >
+            <div>
+              <span>第一步:</span>
+              <span><a @click="getTemplate">下载导入模板</a></span>
             </div>
-           </el-form-item>
-        </div>
-        <div class="top footer">
-          <el-radio
-            v-model="action"
-            label="2"
-          >导入领取码</el-radio>
-          <span>需导入已有领取码</span>
-        </div>
-        <div
-          class="bottomHidden"
-          v-if="action === '2'"
-        >
-          <div>
-            <span>第一步:</span>
-            <span><a href="http://mpdev.weipubao.cn/doc/会员卡领取码模板.xls">下载导入模板</a></span>
-          </div>
-          <div>
-            <span>第二步:</span>
-            <span>导入领取码</span>
-          </div>
-          <div class="handleToUpload">
-            <span>上传文件：</span>
-            <div class="pathClass">
-              {{fileName}}
+            <div>
+              <span>第二步:</span>
+              <span>导入领取码</span>
             </div>
-            <el-upload
-              class="upload-demo"
-              action=""
-              :limit="1"
-              :before-upload="beforeUpload"
-              :show-file-list='false'
-            >
-              <el-button
-                size="small"
-                type="primary"
-              >点击上传</el-button>
-
-            </el-upload>
-          </div>
-
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="$emit('update:dialogVisible', false)">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="handleSure"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
-
-      <!-- 卡号+密码 -->
-      <el-dialog
-        title="卡号+密码"
-        :visible.sync="dialogVisible"
-        width="30%"
-        v-if="receiveAction===2"
-      >
-
-        <div class="top">
-          <el-radio
-            v-model="action"
-            label="1"
-          >自动生成卡号+密码</el-radio>
-          <span style="margin-left: 20px;"> 将随机生成xxx组不重复卡号+密码，均由数字+字母组成</span>
-        </div>
-        <div v-if="action === '1'" style="margin-left: -100px;">
-          <el-form-item class="contentList">
-            <span style="color:#333">卡号前缀:</span>
+            <div class="handleToUpload">
+              <span>上传文件：</span>
             <el-input
+              v-model="ruleForm.filename"
               size="small"
-              v-model="ruleForm.codePrefix"
-              maxlength="4"
+              style="width:170px;"
+              readonly
             ></el-input>
-              <span>0-4个数字或字母</span>
-          </el-form-item>
-          <el-form-item class="contentList" prop="codeSize">
-            <div class="contentList">
-              <span style="color:#333">卡号位数:</span>
-              <el-input
-                size="small"
-                v-model="ruleForm.codeSize"
-              ></el-input>
-              <span>卡号组成位数，限制6-12位</span>
-            </div>
-          </el-form-item>
-          <el-form-item class="contentList" prop="cardPwdSize">
-            <div class="contentList">
-              <span style="color:#333">密码位数:</span>
-              <el-input
-                size="small"
-                v-model="ruleForm.cardPwdSize"
-              ></el-input>
-              <span>密码组成位数</span>
-            </div>
-          </el-form-item>
-          <el-form-item class="contentList" prop="number">
-            <div
-              class="contentList"
-            >
-              <span style="color:#333">领取数量:</span>
-              <el-input
-                size="small"
-                v-model="ruleForm.number"
-              ></el-input>
-            </div>
-          </el-form-item>
-        </div>
-        <div class="top footer">
-          <el-radio
-            v-model="action"
-            label="2"
-          >导入卡号+密码</el-radio>
-          <span>需导入已有卡号+密码</span>
-        </div>
-        <div
-          class="bottomHidden"
-          v-if="action === '2'"
-        >
-          <div>
-            <span>第一步:</span>
-            <span><a href="http://mpdev.weipubao.cn/doc/会员卡号+密码模板.xls">下载导入模板</a></span>
-          </div>
-          <div>
-            <span>第二步:</span>
-            <span>导入卡号+密码</span>
-          </div>
-          <div class="handleToUpload">
-            <span>上传文件：</span>
-            <div class="pathClass">
-              {{fileName}}
-            </div>
             <el-upload
-              class="upload-demo"
+              ref="importUpload"
               action=""
-              :limit="1"
-              :before-upload="beforeUpload"
-              :show-file-list='false'
+              class="mi-upload"
+              accept=".xls,.xlsx"
+              :on-change="uploadChangeHandle"
+              :before-upload="beforeUploadHandle"
+              :auto-upload="false"
+              :show-file-list="false"
+              :limit="2"
+              :file-list="fileList"
+              :on-exceed="exceedHandle"
             >
               <el-button
+                slot="trigger"
                 size="small"
-                type="primary"
-              >点击上传</el-button>
-
+              >{{$t('memberIntroductionDialog.browse')}}...</el-button>
             </el-upload>
-          </div>
+            </div>
 
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
+          </div>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="$emit('update:dialogVisible', false)">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="handleSure"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
+
+        <!-- 卡号+密码 -->
+        <el-dialog
+          title="卡号+密码"
+          :visible.sync="dialogVisible2"
+          width="30%"
+          v-if="receiveAction===2"
         >
-          <el-button @click="cancelDialog">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="handleSure"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
+
+          <div class="top">
+            <el-radio
+              v-model="action"
+              label="1"
+            >自动生成卡号+密码</el-radio>
+            <span style="margin-left: 20px;"> 将随机生成xxx组不重复卡号+密码，均由数字+字母组成</span>
+          </div>
+          <div
+            v-if="action === '1'"
+            style="margin-left: -100px;"
+          >
+            <el-form-item class="contentList">
+              <span style="color:#333">卡号前缀:</span>
+              <el-input
+                size="small"
+                v-model="ruleForm.codePrefix"
+                maxlength="4"
+              ></el-input>
+              <span>0-4个数字或字母</span>
+            </el-form-item>
+            <el-form-item
+              class="contentList"
+              prop="codeSize"
+            >
+              <div class="contentList">
+                <span style="color:#333">卡号位数:</span>
+                <el-input
+                  size="small"
+                  v-model="ruleForm.codeSize"
+                ></el-input>
+                <span>卡号组成位数，限制6-12位</span>
+              </div>
+            </el-form-item>
+            <el-form-item
+              class="contentList"
+              prop="cardPwdSize"
+            >
+              <div class="contentList">
+                <span style="color:#333">密码位数:</span>
+                <el-input
+                  size="small"
+                  v-model="ruleForm.cardPwdSize"
+                ></el-input>
+                <span>密码组成位数</span>
+              </div>
+            </el-form-item>
+            <el-form-item
+              class="contentList"
+              prop="number"
+            >
+              <div class="contentList">
+                <span style="color:#333">领取数量:</span>
+                <el-input
+                  size="small"
+                  v-model="ruleForm.number"
+                ></el-input>
+              </div>
+            </el-form-item>
+          </div>
+          <div class="top footer">
+            <el-radio
+              v-model="action"
+              label="2"
+            >导入卡号+密码</el-radio>
+            <span>需导入已有卡号+密码</span>
+          </div>
+          <div
+            class="bottomHidden"
+            v-if="action === '2'"
+          >
+            <div>
+              <span>第一步:</span>
+              <span><a @click="getPwdTemplate">下载导入模板</a></span>
+            </div>
+            <div>
+              <span>第二步:</span>
+              <span>导入卡号+密码</span>
+            </div>
+            <div class="handleToUpload">
+              <span>上传文件：</span>
+            <el-input
+              v-model="ruleForm.filename"
+              size="small"
+              style="width:170px;"
+              readonly
+            ></el-input>
+            <el-upload
+              ref="importUpload"
+              action=""
+              class="mi-upload"
+              accept=".xls,.xlsx"
+              :on-change="uploadChangeHandle"
+              :before-upload="beforeUploadHandle"
+              :auto-upload="false"
+              :show-file-list="false"
+              :limit="2"
+              :file-list="fileList"
+              :on-exceed="exceedHandle"
+            >
+              <el-button
+                slot="trigger"
+                size="small"
+              >{{$t('memberIntroductionDialog.browse')}}...</el-button>
+            </el-upload>
+            </div>
+
+          </div>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="cancelDialog">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="handleSure"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
       </el-form>
     </div>
 
   </div>
 </template>
 <script>
-import { createReceiveBatchRequest, getReceiveBatchRequest } from '@/api/admin/memberManage/memberCard.js'
+import {createReceiveBatchRequest, getReceiveBatchRequest, getExportExcel, importInsertExcel, getPwdExportExcel} from '@/api/admin/memberManage/memberCard.js'
+import { download } from '@/util/excelUtil.js'
 export default {
   props: {
     dialogVisible: {
@@ -239,6 +278,8 @@ export default {
     receiveAction: {
       type: Number,
       default: () => 1
+    },
+    batchIdStr: {
     }
   },
   data () {
@@ -281,6 +322,7 @@ export default {
     }
 
     return {
+      dialogVisible2: false,
       action: '1',
       fileList: [],
       fileName: '',
@@ -308,6 +350,7 @@ export default {
   },
   watch: {
     dialogVisible (data) {
+      this.dialogVisible2 = true
       this.clearData()
       console.log(data)
       console.log(this.batchName)
@@ -322,6 +365,7 @@ export default {
   mounted () {
     // 初始化数据
     this.defalutData()
+    this.langDefault()
   },
   methods: {
     cancelDialog () {
@@ -339,6 +383,7 @@ export default {
       this.ruleForm.codeSize = ''
       this.ruleForm.number = ''
       this.ruleForm.cardPwdSize = ''
+      this.ruleForm.filename = null
     },
     getBatch (id) {
       getReceiveBatchRequest(id).then(res => {
@@ -373,9 +418,23 @@ export default {
             number: this.ruleForm.number
           }
           console.log(data)
-          this.generateReceiveBatch(data)
+          if (this.action === '1') {
+            this.generateReceiveBatch(data)
+          }
+          if (this.action === '2') {
+            console.log('上传文件')
+            this.uploadFile()
+          }
+          if (this.action === null) {
+            console.log(this.action)
+            console.log('提交失败1')
+            this.$message.warning('提交失败1')
+            return false
+          }
         } else {
-          this.$message.warning('提交失败')
+          console.log('提交失败2')
+          this.$message.warning('提交失败2')
+          return false
         }
       })
     },
@@ -387,8 +446,81 @@ export default {
         } else {
           this.$emit('generateReceiveCodeId', null)
         }
-        this.$emit('update:dialogVisible', false)
+        this.dialogVisible2 = false
         this.clearData()
+      })
+    },
+    getTemplate () {
+      getExportExcel().then(res => {
+        this.loading = false
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch((err, data) => {
+        console.error('err:', err)
+        this.loading = false
+      })
+    },
+    getPwdTemplate () {
+      getPwdExportExcel().then(res => {
+        this.loading = false
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch((err, data) => {
+        console.error('err:', err)
+        this.loading = false
+      })
+    },
+    uploadChangeHandle (file, fileList) {
+      this.fileList = [fileList[fileList.length - 1]]
+      this.$set(this.ruleForm, 'filename', file.name)
+      this.$set(this.ruleForm, 'file', file.raw)
+    },
+    beforeUploadHandle (file) {
+      let isXls = /\.(xls|xlsx|csv)$/.test(file.name)
+      if (!isXls) {
+        this.$message.warning('上传文件只支持xls、xlsx格式！')
+        this.fileList = []
+        this.$set(this.ruleForm, 'filename', '')
+        this.$set(this.ruleForm, 'file', '')
+        return false
+      }
+      return true
+    },
+    exceedHandle (file, fileList) {
+      this.$refs.importUpload.clearFiles()
+      this.fileList = [file[0]]
+      this.$set(this.ruleForm, 'filename', file[0].name)
+      this.$set(this.ruleForm, 'file', file[0])
+    },
+    uploadFile () {
+      console.log('this.batchIdStr1:' + this.batchIdStr.batchIdStr1)
+      console.log('this.batchIdStr2:' + this.batchIdStr.batchIdStr2)
+      let formdata = new FormData()
+      formdata.append('batchName', this.batchName)
+      formdata.append('receiveAction', this.receiveAction)
+      formdata.append('action', this.action)
+      formdata.append('file', this.ruleForm.file)
+      if (this.receiveAction === 1) {
+        formdata.append('batchIdStr', this.batchIdStr.batchIdStr1)
+      }
+      if (this.receiveAction === 2) {
+        formdata.append('batchIdStr', this.batchIdStr.batchIdStr2)
+      }
+      importInsertExcel(formdata).then(res => {
+        if (res.error === 0) {
+          this.$message.success('上传成功')
+          this.$emit('generateReceiveCodeId', res.content)
+          this.fileList = []
+          this.dialogVisible2 = false
+        } else {
+          this.$message.error(res.message)
+          this.$emit('generateReceiveCodeId', null)
+        }
+        this.fileList = []
+      }).catch(err => {
+        throw err
       })
     }
 
@@ -412,8 +544,8 @@ export default {
     }
   }
   /deep/ .el-form-item {
-      margin-bottom: 0px;
-    }
+    margin-bottom: 0px;
+  }
 
   .contentList {
     margin-top: 10px;
