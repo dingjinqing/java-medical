@@ -237,7 +237,7 @@ public class PreSaleProcessorDao extends PreSaleService {
             log.error("活动停用");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_DISABLE);
         }
-        if (param.getDate().before(activityInfo.getStartTime())) {
+        if (param.getDate().before(activityInfo.getPreStartTime())) {
             log.error("活动未开始");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NO_START);
         }
