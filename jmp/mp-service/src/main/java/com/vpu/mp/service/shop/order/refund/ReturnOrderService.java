@@ -127,24 +127,10 @@ public class ReturnOrderService extends ShopBaseService{
 			select.where(TABLE.RETURN_TYPE.in(param.getReturnType()));
 		}
 		if (param.getReturnStart() != null) {
-			select.where(TABLE.APPLY_TIME.isNotNull().and(TABLE.APPLY_TIME.ge(param.getReturnStart()))).or(TABLE.APPLY_TIME.isNull().and(TABLE.SHIPPING_OR_REFUND_TIME.ge(param.getReturnStart())));
+			select.where(TABLE.CREATE_TIME.ge(param.getReturnStart()));
 		}
 		if (param.getReturnEnd() != null) {
-            select.where(TABLE.APPLY_TIME.isNotNull().and(TABLE.APPLY_TIME.le(param.getReturnStart()))).or(TABLE.APPLY_TIME.isNull().and(TABLE.SHIPPING_OR_REFUND_TIME.le(param.getReturnStart())));
-		}
-		if (param.getStateCollection() != null) {
-            switch (param.getStateCollection()) {
-                case OrderConstant.STATE_COLLECTION_1:
-                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDITING).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
-                    break;
-                case OrderConstant.STATE_COLLECTION_2:
-                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDIT_PASS));
-                    break;
-                case OrderConstant.STATE_COLLECTION_3:
-                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH)).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_REFUSE)).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_CLOSE)));
-                    break;
-                default:
-            }
+            select.where(TABLE.CREATE_TIME.le(param.getReturnEnd()));
         }
 		return select;
 	}
