@@ -636,6 +636,16 @@ export default {
               })
               flag = false
             }
+            break
+          case 'm_rich_text':
+            if (item.rich_text === '') {
+              this.$message.error({
+                message: '请添加富文本内容',
+                showClose: true
+              })
+              flag = false
+            }
+            break
         }
       })
       console.log(flag)
