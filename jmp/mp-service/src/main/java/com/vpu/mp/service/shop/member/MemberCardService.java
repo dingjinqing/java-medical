@@ -2238,6 +2238,7 @@ public class MemberCardService extends ShopBaseService {
 		param2.setAction((byte)2);
 		param2.setNumber(newNumber);
 		param2.setBatchName(param.getBatchName());
+		param2.setBatchIdStr(param.getBatchIdStr());
 		Integer batchId = cardDao.createCardBatch(param2);
 		if(batchId==0) {
 			logger().info("生成batchId错误");
@@ -2262,7 +2263,6 @@ public class MemberCardService extends ShopBaseService {
 	 * @return
 	 */
 	public CardInsertVo importCardPwd(List<CardNoPwdExcelVo> list,CardBatchParam param) {
-		CardInsertVo vo=null;
 		int newNumber = list.size();
 		if (newNumber > 10000) {
 			// return 单个批次不能超过10000';
