@@ -137,7 +137,10 @@ public class StatisticalTableInsert extends ShopBaseService {
         record.setRegUserData(userSummary.getUserNum(start, end));
         record.setUpgradeUserData(userSummary.upgradeUserSum(start, end));
         record.setChargeUserData(userSummary.chargeUserSum(start, end));
+        // 付款用户数（distinct(userId)）
         record.setOrderUserData(goodsStatistic.totalCustomerTranNum(start, end).size());
+        // 付款人数
+        record.setPayPeopleNum(goodsStatistic.totalPeopleTranNum(start, end));
         record.setNewOrderUserData(goodsStatistic.newCustomerTranNum(start, end));
         record.setOldOrderUserData(goodsStatistic.oldCustomerTranNum(start, end));
         record.setTotalPaidMoney(goodsStatistic.orderUserMoney(start, end));
@@ -149,7 +152,10 @@ public class StatisticalTableInsert extends ShopBaseService {
         record.setPayOrderNum(userSummary.orderNum(start, end));
         record.setLoginPv(userSummary.getPv(start, end));
         record.setOrderNum(userSummary.generateOrderNum(start, end));
+        // 下单用户数（distinct(userId)）
         record.setOrderUserNum(userSummary.generateOrderUserNum(start, end));
+        // 下单人数
+        record.setOrderUserNum(userSummary.generatePeopleUserNum(start, end));
         return record;
     }
 
