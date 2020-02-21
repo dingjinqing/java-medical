@@ -48,7 +48,11 @@ public class PackSaleParam {
 	@Setter
     @Getter
 	public static class GoodsGroup{
-		
+        /**
+         * 取值1或2或3
+         */
+		private Byte groupId;
+
 		/** 商品组1名称 */
 		@NotBlank
 		private String groupName;
