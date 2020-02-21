@@ -7,10 +7,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.video.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Part;
 import javax.validation.Valid;
@@ -49,6 +46,15 @@ public class AdminVideoController extends AdminBaseController {
     } else {
       return result != null ? result : fail(JsonResultCode.CODE_VIDEO_UPLOAD_FAILED);
     }
+  }
+
+    /**
+     *获取当前用户视频空间已使用的大小
+     *@return 已使用量M单位
+     */
+  @GetMapping(value = "/admin/video/space/info")
+  public JsonResult getVideoUsedSpace(){
+        return success(shop().video.getVideoUsedSpace());
   }
 
   /**
