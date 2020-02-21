@@ -115,6 +115,8 @@ public class UserCardParam {
 			setCash(intCashValue());
 		}
 	}
+	
+	// 是否可以在门店使用
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	public boolean isStoreAvailable() {
 		return !StringUtils.isBlank(storeList) && AVAILABLE_IN_STORE.equals(storeUseSwitch);

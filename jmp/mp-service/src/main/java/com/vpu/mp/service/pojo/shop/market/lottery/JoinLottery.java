@@ -65,6 +65,10 @@ public class JoinLottery {
      */
     private Integer prizeId;
     /**
+     * 商品id
+     */
+    private Integer goodsId;
+    /**
      * 商品图片
      */
     private String goodsImage;

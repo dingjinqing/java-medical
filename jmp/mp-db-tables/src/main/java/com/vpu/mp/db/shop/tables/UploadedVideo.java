@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UploadedVideo extends TableImpl<UploadedVideoRecord> {
 
-    private static final long serialVersionUID = 1191535841;
+    private static final long serialVersionUID = -1859576316;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_uploaded_video</code>
@@ -65,102 +65,107 @@ public class UploadedVideo extends TableImpl<UploadedVideoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_type</code>.
      */
-    public final TableField<UploadedVideoRecord, String> VIDEO_TYPE = createField("video_type", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedVideoRecord, String> VIDEO_TYPE = createField("video_type", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_size</code>.
      */
-    public final TableField<UploadedVideoRecord, Integer> VIDEO_SIZE = createField("video_size", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UploadedVideoRecord, Integer> VIDEO_SIZE = createField("video_size", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_name</code>. 视频名称，用于前端显示
      */
-    public final TableField<UploadedVideoRecord, String> VIDEO_NAME = createField("video_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "视频名称，用于前端显示");
+    public final TableField<UploadedVideoRecord, String> VIDEO_NAME = createField("video_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "视频名称，用于前端显示");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_orig_fname</code>.
      */
-    public final TableField<UploadedVideoRecord, String> VIDEO_ORIG_FNAME = createField("video_orig_fname", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedVideoRecord, String> VIDEO_ORIG_FNAME = createField("video_orig_fname", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_path</code>.
      */
-    public final TableField<UploadedVideoRecord, String> VIDEO_PATH = createField("video_path", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedVideoRecord, String> VIDEO_PATH = createField("video_path", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_snap_path</code>. 视频截图
      */
-    public final TableField<UploadedVideoRecord, String> VIDEO_SNAP_PATH = createField("video_snap_path", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "视频截图");
+    public final TableField<UploadedVideoRecord, String> VIDEO_SNAP_PATH = createField("video_snap_path", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "视频截图");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_url</code>.
      */
-    public final TableField<UploadedVideoRecord, String> VIDEO_URL = createField("video_url", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedVideoRecord, String> VIDEO_URL = createField("video_url", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_cat_id</code>. 视频分类
      */
-    public final TableField<UploadedVideoRecord, Integer> VIDEO_CAT_ID = createField("video_cat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "视频分类");
+    public final TableField<UploadedVideoRecord, Integer> VIDEO_CAT_ID = createField("video_cat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "视频分类");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_width</code>.
      */
-    public final TableField<UploadedVideoRecord, Integer> VIDEO_WIDTH = createField("video_width", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UploadedVideoRecord, Integer> VIDEO_WIDTH = createField("video_width", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_height</code>.
      */
-    public final TableField<UploadedVideoRecord, Integer> VIDEO_HEIGHT = createField("video_height", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UploadedVideoRecord, Integer> VIDEO_HEIGHT = createField("video_height", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_meta</code>. 视频信息,json
      */
-    public final TableField<UploadedVideoRecord, String> VIDEO_META = createField("video_meta", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "视频信息,json");
+    public final TableField<UploadedVideoRecord, String> VIDEO_META = createField("video_meta", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "视频信息,json");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.is_refer</code>. 是否引用
      */
-    public final TableField<UploadedVideoRecord, Byte> IS_REFER = createField("is_refer", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否引用");
+    public final TableField<UploadedVideoRecord, Byte> IS_REFER = createField("is_refer", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否引用");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.shop_id</code>. 店铺id
      */
-    public final TableField<UploadedVideoRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
+    public final TableField<UploadedVideoRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.del_flag</code>.
      */
-    public final TableField<UploadedVideoRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_uploaded_video.create_time</code>.
-     */
-    public final TableField<UploadedVideoRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_uploaded_video.update_time</code>. 最后修改时间
-     */
-    public final TableField<UploadedVideoRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<UploadedVideoRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.video_duration</code>. 视频时长
      */
-    public final TableField<UploadedVideoRecord, Integer> VIDEO_DURATION = createField("video_duration", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "视频时长");
+    public final TableField<UploadedVideoRecord, Integer> VIDEO_DURATION = createField("video_duration", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "视频时长");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.user_id</code>. 用户ID
      */
-    public final TableField<UploadedVideoRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户ID");
+    public final TableField<UploadedVideoRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户ID");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.del_time</code>. 删除时间
      */
-    public final TableField<UploadedVideoRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+    public final TableField<UploadedVideoRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_uploaded_video.upyun_del</code>. 又拍云是否删除
      */
-    public final TableField<UploadedVideoRecord, Byte> UPYUN_DEL = createField("upyun_del", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "又拍云是否删除");
+    public final TableField<UploadedVideoRecord, Byte> UPYUN_DEL = createField("upyun_del", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "又拍云是否删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_uploaded_video.create_time</code>.
+     */
+    public final TableField<UploadedVideoRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_uploaded_video.update_time</code>. 最后修改时间
+     */
+    public final TableField<UploadedVideoRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_uploaded_video.duration</code>. 视频时长
+     */
+    public final TableField<UploadedVideoRecord, Integer> DURATION = createField("duration", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "视频时长");
 
     /**
      * Create a <code>mini_shop_471752.b2c_uploaded_video</code> table reference
