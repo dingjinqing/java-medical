@@ -440,7 +440,37 @@ public class CardDaoService extends ShopBaseService {
 
 		return r != null;
 	}
+	
+	/**
+	 * 限制的batchId里code是否存在，是返回true，否返回false
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public boolean isExistCodeInBatch(String code,Integer[] batchIds) {
+		if(batchIds!=null&&batchIds.length>0) {
+			CardReceiveCodeRecord r = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.CODE.eq(code))
+					.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO)).and(CARD_RECEIVE_CODE.ERROR_MSG.isNull().and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds))).fetchAny();
+			return r != null;			
+		}
+		return false;
 
+	}
+	/**
+	 * 限制的batchId里code是否存在，是返回true，否返回false
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public boolean isExistCardNoInBatch(String code,Integer[] batchIds) {
+		if(batchIds!=null&&batchIds.length>0) {
+			CardReceiveCodeRecord r = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.CARD_NO.eq(code))
+					.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO)).and(CARD_RECEIVE_CODE.ERROR_MSG.isNull().and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds))).fetchAny();
+			return r != null;			
+		}
+		return false;
+
+	}
 	/**
 	 * 将领取批次的生成码存入数据库
 	 * 
@@ -565,7 +595,7 @@ public class CardDaoService extends ShopBaseService {
 					msg = CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code = code.substring(0, 15);
 				} else if (batchIdStr != null && batchIdStr.length > 0) {
-					if (getReceiveCode(code, batchIdStr)) {
+					if (getReceiveCardNo(code, batchIdStr)) {
 						msg = CardNoImportTemplate.CARDNO_EXIST.getCode();
 					}
 				}
@@ -702,6 +732,24 @@ public class CardDaoService extends ShopBaseService {
 	public boolean getReceiveCode(String code, Integer[] batchIds) {
 		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE)
 				.where(CARD_RECEIVE_CODE.CODE.eq(code)
+						.and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds)
+								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())))
+				.fetch();
+		if (fetch != null && fetch.isNotEmpty()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * code是否已经被定义，重复的返回true
+	 * @param code
+	 * @param batchIds
+	 * @return
+	 */
+	public boolean getReceiveCardNo(String code, Integer[] batchIds) {
+		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE)
+				.where(CARD_RECEIVE_CODE.CARD_NO.eq(code)
 						.and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds)
 								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())))
 				.fetch();

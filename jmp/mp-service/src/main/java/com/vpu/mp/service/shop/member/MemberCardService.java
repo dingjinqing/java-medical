@@ -1863,7 +1863,7 @@ public class MemberCardService extends ShopBaseService {
 		for (int i = 0; i < number; i++) {
 			while (true) {
 				String code = generateRandomStr(param.getCodePrefix(), param.getCodeSize());
-				if (!codeList.contains(code) && !cardDao.isExistCode(code)) {
+				if (!codeList.contains(code) && !cardDao.isExistCodeInBatch(code,param.getBatchIdStr())) {
 					codeList.add(code);
 					break;
 				}
@@ -1905,7 +1905,7 @@ public class MemberCardService extends ShopBaseService {
 		for (int i = 0; i < number; i++) {
 			while (true) {
 				String cardNo = generateRandomStr(param.getCodePrefix(), param.getCodeSize());
-				if (!cardNoList.contains(cardNo) && !cardDao.isExistCardNo(cardNo)) {
+				if (!cardNoList.contains(cardNo) && !cardDao.isExistCardNoInBatch(cardNo,param.getBatchIdStr())) {
 					cardNoList.add(cardNo);
 					break;
 				}
