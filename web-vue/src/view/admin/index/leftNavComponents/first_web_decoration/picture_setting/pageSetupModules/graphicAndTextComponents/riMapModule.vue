@@ -54,6 +54,8 @@
 <!-- 腾讯地图 -->
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
+import chinaData from '@/assets/china-data'
+import { deepCloneObj } from '@/util/deepCloneObj'
 import vcolorpicker from 'vcolorpicker'
 import Vue from 'vue'
 Vue.use(vcolorpicker)
@@ -92,6 +94,7 @@ export default {
         'search_sort': '0', // 商家分类是否显示
         'sort_bg_color': '#666666' // 图标颜色
       },
+      areaDataList: [],
       areaObj: {
         provinceCode: '',
         cityCode: '',
@@ -134,6 +137,9 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.areaDataList = deepCloneObj(chinaData)
+  },
   methods: {
     // 省市区
     handleAreaData (val) {
@@ -141,6 +147,23 @@ export default {
       this.data.province_code = val.province
       this.data.city_code = val.city
       this.data.area_code = val.district
+
+      this.areaDataList.forEach(item => {
+        if (val.province === item.provinceId) {
+          this.data.province = item.provinceName
+          item.areaCity.forEach(item2 => {
+            if (val.city === item2.cityId) {
+              this.data.city = item2.cityName
+              item2.areaDistrict.forEach(item3 => {
+                if (val.district === item3.districtId) {
+                  this.data.area = item3.districtName
+                }
+              })
+            }
+          })
+        }
+      })
+
     },
     // 加载地图
     initMap (latitude, longitude) {
