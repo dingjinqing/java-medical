@@ -474,15 +474,7 @@ public class CardDaoService extends ShopBaseService {
 		Integer groupId = param.getGroupId();
 		String regex = "^[\\w\\d]*$";
 		Integer[] batchIdStr = param.getBatchIdStr();
-//		String batchIdStr = param.getBatchIdStr();
-		Integer[] batchIds=new Integer[] {};
-//		if(StringUtils.isNotEmpty(batchIdStr)) {
-//			String[] split = batchIdStr.split(",");
-//			for (int i = 0; i < split.length; i++) {
-//				batchIds[i]=Integer.parseInt(split[i]);
-//			}
-//		}
-		logger().info("batchIds:"+batchIdStr[batchIdStr.length-1]);
+		logger().info("batchIds:"+batchIdStr);
 		for (String code : codeList) {
 			String msg=null;
 			if(StringUtils.isEmpty(code)) {
@@ -550,13 +542,15 @@ public class CardDaoService extends ShopBaseService {
 	public int insertIntoCardReceiveCodeByCheck(CardBatchParam param, List<String> cardNoList, List<String> pwdList) {
 		InsertValuesStep5<CardReceiveCodeRecord, Integer, Integer, String, String, String> insert = db()
 				.insertInto(CARD_RECEIVE_CODE).columns(CARD_RECEIVE_CODE.BATCH_ID, CARD_RECEIVE_CODE.GROUP_ID,
-						CARD_RECEIVE_CODE.CARD_NO, CARD_RECEIVE_CODE.CARD_PWD,CARD_RECEIVE_CODE.ERROR_MSG);
+						CARD_RECEIVE_CODE.CARD_NO, CARD_RECEIVE_CODE.CARD_PWD, CARD_RECEIVE_CODE.ERROR_MSG);
 		Integer batchId = param.getBatchId();
 		Integer groupId = param.getGroupId();
 		int size = cardNoList.size();
 		int size2 = pwdList.size();
 		int length = size > size2 ? size : size2;
 		String regex = "^[\\w\\d]*$";
+		Integer[] batchIdStr = param.getBatchIdStr();
+		logger().info("batchIds:" + batchIdStr);
 		for (int i = 0; i < length; i++) {
 			String msg = null;
 			String code = cardNoList.get(i);
@@ -566,9 +560,14 @@ public class CardDaoService extends ShopBaseService {
 			} else {
 				if (!code.matches(regex)) {
 					msg = CardNoImportTemplate.CARDNO_ERROR.getCode();
-				} else if (code.length() > 15) {
+				}
+				if (code.length() > 15) {
 					msg = CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code = code.substring(0, 15);
+				} else if (batchIdStr != null && batchIdStr.length > 0) {
+					if (getReceiveCode(code, batchIdStr)) {
+						msg = CardNoImportTemplate.CARDNO_EXIST.getCode();
+					}
 				}
 			}
 			if (StringUtils.isEmpty(pwd)) {
@@ -581,7 +580,7 @@ public class CardDaoService extends ShopBaseService {
 					pwd = code.substring(0, 20);
 				}
 			}
-			insert.values(batchId, groupId, code, pwd,msg);
+			insert.values(batchId, groupId, code, pwd, msg);
 		}
 		int res = insert.execute();
 		logger().info("成功执行" + res + "条");

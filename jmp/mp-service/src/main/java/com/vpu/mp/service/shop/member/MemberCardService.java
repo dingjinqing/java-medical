@@ -2263,7 +2263,6 @@ public class MemberCardService extends ShopBaseService {
 	 * @return
 	 */
 	public CardInsertVo importCardPwd(List<CardNoPwdExcelVo> list,CardBatchParam param) {
-		CardInsertVo vo=null;
 		int newNumber = list.size();
 		if (newNumber > 10000) {
 			// return 单个批次不能超过10000';
