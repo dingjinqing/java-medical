@@ -32,7 +32,6 @@ import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
-import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
@@ -168,6 +167,11 @@ public class ShopOfficialAccount extends MainBaseService {
     public Result<MpOfficialAccountRecord> getOfficialAccountBySysId(Integer sysId, Byte isAuthOk) {
         return db().selectFrom(MP_OFFICIAL_ACCOUNT)
             .where(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId)).and(MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq(isAuthOk)).fetch();
+    }
+
+    public int isOfficialAccountBySysId(Integer sysId, Byte isAuthOk) {
+        return db().fetchCount(MP_OFFICIAL_ACCOUNT, MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId)
+            .and(MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq(isAuthOk)));
     }
 
 	public List<MpOfficeAccountVo> findSamePrincipalMiniAndMP(Result<MpOfficialAccountRecord> oaRecords,

@@ -1800,7 +1800,7 @@ public class GoodsService extends ShopBaseService {
      * @param num the num
      * @return the integer
      */
-    public Integer smallCommodityInventory(Integer num) {
+    public int smallCommodityInventory(Integer num) {
         return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_NUMBER.lessThan(num)));
     }
 
