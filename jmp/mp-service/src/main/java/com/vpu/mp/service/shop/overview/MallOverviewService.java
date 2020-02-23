@@ -18,6 +18,7 @@ import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
@@ -40,8 +41,9 @@ import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.DEFAULT_SCALE;
-import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
+import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 import static org.jooq.impl.DSL.*;
 
@@ -209,7 +211,7 @@ public class MallOverviewService extends ShopBaseService {
             .dataGoods(goodsNav(param))
             .dataOrder(orderNav(param))
             .dataMarket(marketNav(param))
-            .build().ruleHandler();
+            .build();
     }
 
     /**
@@ -217,15 +219,25 @@ public class MallOverviewService extends ShopBaseService {
      */
     private AssiDataShop shopNav() {
         WxShoppingListConfig shoppingListConfig = shoppingListConfigService.getShoppingListConfig();
-        return new AssiDataShop.Builder()
+        Map<String, String> comm = new HashMap<String, String>(INTEGER_ONE) {{
+            put("ShoppingRecommend", shoppingListConfig.getWxShoppingRecommend());
+        }};
+        return AssiDataShop.builder()
             //  店铺首页 0：已完成店铺首页装修，否未装修店铺首页
-            .setHomePageConf(shopPageConfig())
-            //  好物圈 0: 已开启好物圈，否未开启
-            .setShopRecommendConf(Byte.valueOf(shoppingListConfig.getEnabeldWxShoppingList()))
-            .setShopRecommendLink(shoppingListConfig.getWxShoppingRecommend())
+            .homePageConf(Metadata.builder().type(BYTE_ONE).value(shopPageConfig()).build())
+            //  好物圈 0: 未开启 "1"开启
+            .shopRecommendConf(Metadata.builder()
+                .type(BYTE_ONE)
+                .value(Integer.valueOf(shoppingListConfig.getEnabeldWxShoppingList()))
+                .content(comm).build())
             //  客服 0: 已开启客服，否未开启
-            .setCustomServiceConf(shopCommonConfigService.getCustomService() + shopCommonConfigService.getReturnService() > 0 ? BYTE_ZERO : BYTE_ONE)
+            .customServiceConf(Metadata.builder().type(BYTE_ONE).value(isOpenCommon()).build())
             .build().ruleHandler();
+    }
+
+    // 是否开启客服
+    private int isOpenCommon() {
+        return shopCommonConfigService.getCustomService() + shopCommonConfigService.getReturnService() > 0 ? BYTE_ZERO : BYTE_ONE;
     }
 
     /**
@@ -234,45 +246,73 @@ public class MallOverviewService extends ShopBaseService {
     private AssiDataGoods goodsNav(ShopAssistantParam param) {
         return AssiDataGoods.builder()
             // 运费模板设置
-            .shipTemplateConf(db().fetchCount(DELIVER_FEE_TEMPLATE) > 0 ? BYTE_ZERO : BYTE_ONE)
+            .shipTemplateConf(Metadata.builder()
+                .type(BYTE_ONE)
+                .value(db().fetchCount(DELIVER_FEE_TEMPLATE)).build())
             // 商品添加
-            .goodsConf(db().fetchCount(Goods.GOODS, Goods.GOODS.DEL_FLAG.eq(BYTE_ZERO)) > 0 ? BYTE_ZERO : BYTE_ONE)
+            .goodsConf(Metadata.builder()
+                .type(BYTE_ONE)
+                .value(db().fetchCount(Goods.GOODS, Goods.GOODS.DEL_FLAG.eq(BYTE_ZERO))).build())
             // 商品库存偏小
-            .goodsStoreConf(goodsService.smallCommodityInventory(param.getStoreSizeNum()))
+            .goodsStoreConf(Metadata.builder()
+                .value(goodsService.smallCommodityInventory(param.getStoreSizeNum())).build())
             //  滞销商品
-            .goodsUnsalableConf(goodsService.unsalableGoods())
+            .goodsUnsalableConf(Metadata.builder().value(goodsService.unsalableGoods()).build())
             //  商品评价审核逾期
-            .goodsComment(goodsCommentService.reviewOverdue(param.getCommentOver()))
+            .goodsComment(Metadata.builder().value(goodsCommentService.reviewOverdue(param.getCommentOver())).build())
             //  推荐商品
-            .goodsRecommend(db().fetchCount(RECOMMEND_GOODS, RECOMMEND_GOODS.DEL_FLAG.eq(BYTE_ZERO)))
+            .goodsRecommend(Metadata.builder()
+                .type(BYTE_THREE)
+                .value(db().fetchCount(RECOMMEND_GOODS, RECOMMEND_GOODS.DEL_FLAG.eq(BYTE_ZERO))).build())
             // 商家分类
-            .shopSort(db().fetchCount(SORT))
-            .build().ruleHandler();
+            .shopSort(Metadata.builder()
+                .type(BYTE_THREE)
+                .value(db().fetchCount(SORT)).build())
+            .build().ruleHandler().setType();
     }
 
     /**
-     * 订单相关统计信息
+     * 订单相关统计信息（未完成状态为提醒，已完成状态为任务）
      */
     private AssiDataOrder orderNav(ShopAssistantParam param) {
         return AssiDataOrder.builder()
             //  发货逾期
-            .deliver(orderInfo.overdueDelivery(param.getDeliverOver()))
+            .deliver(Metadata.builder()
+                .value(orderInfo.overdueDelivery(param.getDeliverOver())).build())
             //  退款申请逾期
-            .refund(returnOrderService.refundOverdue(param.getRefundOver()))
-            .build().ruleHandler();
+            .refund(Metadata.builder()
+                .value(returnOrderService.refundOverdue(param.getRefundOver())).build())
+            // 提醒发货
+            .remind(Metadata.builder()
+                .value(orderInfo.remindOverdueOrder()).build())
+            .build().ruleHandler().setType();
     }
 
     /**
      * 营销相关统计信息
      */
     private AssiDataMarket marketNav(ShopAssistantParam param) {
+        Map<String, String> memberContent = buildMemberVo(param.getExamineOver());
+        int memberValue;
+        if (MapUtils.isEmpty(memberContent)) {
+            memberValue = INTEGER_ZERO;
+        } else {
+            memberValue = cardVerifyService.getUndealUserNum(Integer.valueOf(memberContent.get("card_id")));
+        }
+        Map<Integer, String> coupon = couponService.getSmallInventoryCoupon(param.getCouponSizeNum());
         return AssiDataMarket.builder()
             //  分销审核超时
-            .examine(distributorCheckService.distributionReviewTimeout(param.getApplyOver()))
+            .examine(Metadata.builder()
+                .type(BYTE_TWO)
+                .value(distributorCheckService.distributionReviewTimeout(param.getApplyOver())).build())
             // 会员卡激活审核超时
-            .member(buildMemberVo(param.getExamineOver()))
+            .member(Metadata.builder()
+                .type(BYTE_TWO)
+                .value(memberValue).content(memberContent).build())
             //  优惠券库存不足
-            .voucher(couponService.getSmallInventoryCoupon(param.getCouponSizeNum()))
+            .voucher(Metadata.builder()
+                .type(BYTE_TWO)
+                .value(coupon.size()).content(coupon).build())
             .build().ruleHandler();
     }
 
@@ -280,16 +320,15 @@ public class MallOverviewService extends ShopBaseService {
         CardExamineRecord cardExamineRecord = cardVerifyService.getLastRecordCanNull(new ActiveAuditParam() {{
             setExamineOver(Timestamp.valueOf(LocalDateTime.now().minusDays(examineOver)));
         }});
-        if (Objects.isNull(cardExamineRecord)) {
-            return new HashMap<String, String>(3) {{
-                put("card_num", STRING_ZERO);
-            }};
+
+        if (Objects.isNull(cardExamineRecord) || cardExamineRecord.size() == 0) {
+            return null;
         }
         Integer cardId = cardExamineRecord.getCardId();
         return new HashMap<String, String>(3) {{
             put("card_id", String.valueOf(cardId));
             put("card_name", cardDaoService.getCardById(cardId).getCardName());
-            put("card_num", cardVerifyService.getUndealUserNum(cardId).toString());
+//            put("card_num", cardVerifyService.getUndealUserNum(cardId).toString());
         }};
     }
 

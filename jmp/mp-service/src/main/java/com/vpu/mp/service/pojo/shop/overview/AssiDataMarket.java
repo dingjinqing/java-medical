@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * author liufei
@@ -17,26 +17,30 @@ import java.util.Map;
 @AllArgsConstructor
 public class AssiDataMarket implements PendingRule<AssiDataMarket> {
     /** 分销审核超时 0: 分销员审核进度良好 否有examine个分销员申请超过3天未处理 */
-    public int examine;
+    public Metadata examine;
     /**
      * 会员卡激活审核，主要取决于card_num的数量
      * K---card_id：card_num非0时表示待处理申请的会员卡id
      * K---card_name：card_num非0时表示待处理申请的会员卡名称
      * K---card_num：为0表示会员卡激活审核进度良好，否表示card_name类会员卡有card_num个会员卡激活申请超过2天未处理
      */
-    public Map<String,String> member;
+    public Metadata member;
     /**
      * 优惠券库存偏小
      * K---id:优惠券id
      * V---actName:优惠券名称
      */
-    public Map<Integer,String> voucher;
+    public Metadata voucher;
 
     @Override
     public AssiDataMarket ruleHandler() {
-        handler1(examine);
-        handler4(voucher.keySet());
-        handler5(member);
+        handler1(examine, member, voucher);
         return this;
+    }
+
+    @Override
+    public int getUnFinished() {
+        return unFinished(examine, member) +
+            (Objects.isNull(voucher.getContent()) ? 0 : voucher.getContent().size());
     }
 }

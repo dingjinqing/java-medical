@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ShopAssistantVo implements PendingRule<ShopAssistantVo> {
     private AssiDataShop dataShop;
+    private AssiWxDataShop wxDataShop;
     private AssiDataGoods dataGoods;
     private AssiDataOrder dataOrder;
     private AssiDataMarket dataMarket;
@@ -23,8 +24,17 @@ public class ShopAssistantVo implements PendingRule<ShopAssistantVo> {
 
     @Override
     public ShopAssistantVo ruleHandler() {
-        this.totalNum = getTotalPending();
-        resetPending();
+        int temp = dataShop.getUnFinished() +
+            wxDataShop.getUnFinished() +
+            dataGoods.getUnFinished() +
+            dataOrder.getUnFinished() +
+            dataMarket.getUnFinished();
+        setTotalNum(temp);
         return this;
+    }
+
+    @Override
+    public int getUnFinished() {
+        return 0;
     }
 }
