@@ -1,7 +1,7 @@
 <template>
   <div class="batchSetup">
     <el-dialog
-      title="商品管理/出售中/批量设置"
+      :title="$t('allGoods.batchDialog.dialogTitle')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       width="53%"
@@ -10,7 +10,7 @@
       <div class="batchSetupMain">
         <ul class="left">
           <li
-            v-for="(item,index) in liData"
+            v-for="(item,index) in $t('allGoods.batchDialog.liData')"
             :key="index"
             @click="handleClickLeftLi(index)"
           >
@@ -19,7 +19,7 @@
         </ul>
         <div class="right">
           <div class="br_title">
-            已选：{{checkGoodsData.length}}件商品<i>最多可批量设置20件商品</i>
+            {{$t('allGoods.batchDialog.isCheck')}}：{{checkGoodsData.length}}{{$t('allGoods.bottomOptions.commodity')}}<i>{{$t('allGoods.batchDialog.rightTitleTip')}}</i>
           </div>
           <!--右侧动态内容-->
           <div class="dynamic">
@@ -28,7 +28,7 @@
               v-if="nowIndex===0"
               class="price"
             >
-              <div class="title">批量设置：<i>折扣</i><i>涨/降价</i><i>改价金额</i><span>填写"负值"即降价</span></div>
+              <div class="title">{{$t('allGoods.batchDialog.goodsPriceTips1')}}：<i>{{$t('allGoods.batchDialog.goodsPriceTips2')}}</i><i>{{$t('allGoods.batchDialog.goodsPriceTips3')}}</i><i>{{$t('allGoods.batchDialog.goodsPriceTips4')}}</i><span>{{$t('allGoods.batchDialog.goodsPriceTips5')}}</span></div>
               <div class="bottom">
                 <el-table
                   class="version-manage-table"
@@ -39,7 +39,7 @@
                 >
                   <el-table-column
                     prop="goodsName"
-                    label="商品规格"
+                    :label="$t('allGoods.batchDialog.commoditySpecification')"
                     align="center"
                     width="160"
                   >
@@ -60,13 +60,13 @@
                   </el-table-column>
                   <el-table-column
                     prop="shopPrice"
-                    label="原价"
+                    :label="$t('allGoods.batchDialog.originalPrice')"
                     align="center"
                   >
 
                   </el-table-column>
                   <el-table-column
-                    label="折扣"
+                    :label="$t('allGoods.batchDialog.discount')"
                     align="center"
                     prop="discountInputVal"
                   >
@@ -78,14 +78,14 @@
                             size="small"
                             @blur="handleToBlur(scope,0)"
                             onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
-                          ></el-input>&nbsp;&nbsp;折
+                          ></el-input>&nbsp;&nbsp;{{$t('allGoods.batchDialog.fracture')}}
                         </div>
                       </div>
                     </template>
                   </el-table-column>
                   <el-table-column
                     prop="goodsName"
-                    label="涨/降价"
+                    :label="$t('allGoods.batchDialog.goodsPriceTips3')"
                     align="center"
                   >
                     <template slot-scope="scope">
@@ -96,14 +96,14 @@
                             size="small"
                             @blur="handleToBlur(scope,1)"
                             onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
-                          ></el-input>&nbsp;&nbsp;元
+                          ></el-input>&nbsp;&nbsp;{{$t('allGoods.batchDialog.element')}}
                         </div>
                       </div>
                     </template>
                   </el-table-column>
                   <el-table-column
                     prop="goodsName"
-                    label="改价金额"
+                    :label="$t('allGoods.batchDialog.goodsPriceTips4')"
                     align="center"
                   >
                     <template slot-scope="scope">
@@ -114,7 +114,7 @@
                             v-model="scope.row.priceRevisionVal"
                             size="small"
                             onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
-                          ></el-input>&nbsp;&nbsp;元
+                          ></el-input>&nbsp;&nbsp;]{{$t('allGoods.batchDialog.element')}}
                         </div>
                       </div>
                     </template>
@@ -142,7 +142,7 @@
               class="template"
             >
               <div class="title">
-                <div class="name">运费模板：</div>
+                <div class="name">{{$t('allGoods.batchDialog.freightTemplate')}}：</div>
                 <el-select
                   v-model="templateValue"
                   size="small"
@@ -157,13 +157,13 @@
                   </el-option>
                 </el-select>
                 <div class="rightOptions">
-                  <span @click="handleToClickTemplate(0)">刷新</span>|<span
+                  <span @click="handleToClickTemplate(0)">{{$t('allGoods.batchDialog.refresh')}}</span>|<span
                     @click="handleToClickTemplate(1)"
                     style="width:80px"
-                  >新建模板</span>|<span
+                  >{{$t('allGoods.batchDialog.newTemplate')}}</span>|<span
                     @click="handleToClickTemplate(2)"
                     style="width:80px"
-                  >模板管理</span>
+                  >{{$t('allGoods.batchDialog.templateManagement')}}</span>
                 </div>
               </div>
               <!--选中运费模板后显示模块-->
@@ -173,17 +173,17 @@
               >
                 <div class="content">
                   <div class="top">
-                    <span>{{templateValue===0?'店铺统一运费：0元':templateShowContentData&&templateShowContentData.limitParam.limit_deliver_area===1?'除可配送区域外，不可配送':`全国其他区域运费：${templateShowContentData.limitParam.first_num} 件内${templateShowContentData.limitParam.first_fee}元，每增加${templateShowContentData.limitParam.continue_num}件，加${templateShowContentData.limitParam.continue_fee}元`}}</span>
+                    <span>{{templateValue===0?$t('allGoods.batchDialog.unifiedFreight'):templateShowContentData&&templateShowContentData.limitParam.limit_deliver_area===1?$t('allGoods.batchDialog.distributableArea'):`${$t('allGoods.batchDialog.regionsOfTheCountry')}：${templateShowContentData.limitParam.first_num} ${$t('allGoods.batchDialog.inPiece')}${templateShowContentData.limitParam.first_fee}${$t('allGoods.batchDialog.perIncrease')}${templateShowContentData.limitParam.continue_num}件，加${templateShowContentData.limitParam.continue_fee}${$t('allGoods.batchDialog.element')}`}}</span>
                     <span
                       @click="handelToTurnTemDetail(templateShowContentData)"
                       class="toDetail"
-                    >查看详情</span>
+                    >{{$t('allGoods.batchDialog.viewDetails')}}</span>
                   </div>
                   <div
                     class="bottomContent"
                     v-if="templateValue!==0&&templateShowContentData.areaParam.length"
                   >
-                    <div class="title">指定可配送区域运费:</div>
+                    <div class="title">{{$t('allGoods.batchDialog.specify')}}:</div>
                     <div
                       v-for="(itemP,indexP) in templateShowContentData.areaParam"
                       :key="indexP"
@@ -191,7 +191,7 @@
                       <div class="hiddencontent"><i
                           v-for="(item,index) in itemP.area_text"
                           :key="index"
-                        >{{item}}</i>:{{itemP.first_num}}件内{{itemP.first_fee}}元，每增加{{itemP.continue_num}}件，加{{itemP.continue_fee}}元</div>
+                        >{{item}}</i>:{{itemP.first_num}}{{$t('allGoods.batchDialog.inPiece')}}{{itemP.first_fee}}{{$t('allGoods.batchDialog.perIncrease')}}{{itemP.continue_num}}{{$t('allGoods.batchDialog.partsPlus')}}{{itemP.continue_fee}}{{$t('allGoods.batchDialog.element')}}</div>
                     </div>
 
                   </div>
@@ -199,7 +199,7 @@
                     class="bottomContent"
                     v-if="templateValue!==0&&templateShowContentData.has_fee_0_condition===1&&templateShowContentData.feeConditionParam.length"
                   >
-                    <div class="title">指定条件包邮可配送区域运费:</div>
+                    <div class="title">{{$t('allGoods.batchDialog.freightDelivery')}}</div>
                     <div
                       v-for="(itemP,indexP) in templateShowContentData.feeConditionParam"
                       :key="indexP"
@@ -207,7 +207,7 @@
                       <div class="hiddencontent"><i
                           v-for="(item,index) in itemP.area_text"
                           :key="index"
-                        >{{item}}</i>:{{itemP.fee_0_condition===1?`满${itemP.fee_0_con1_num}件包邮`:itemP.fee_0_condition===2?`满${itemP.fee_0_con2_num}元包邮`:`满${itemP.fee_0_con3_num}件，${itemP.fee_0_con3_fee}元包邮`}}</div>
+                        >{{item}}</i>:{{itemP.fee_0_condition===1?`${$t('allGoods.batchDialog.full')}${itemP.fee_0_con1_num}${$t('allGoods.batchDialog.packageMail')}`:itemP.fee_0_condition===2?`${$t('allGoods.batchDialog.full')}${itemP.fee_0_con2_num}${$t('allGoods.batchDialog.yuanBaoPost')}`:`${$t('allGoods.batchDialog.full')}${itemP.fee_0_con3_num}${$t('allGoods.batchDialog.piece')}，${itemP.fee_0_con3_fee}${$t('allGoods.batchDialog.yuanBaoPost')}`}}</div>
                     </div>
                   </div>
                 </div>
@@ -220,25 +220,25 @@
               class="limitNum"
             >
               <div class="content">
-                <span>最小限购数量：</span>
+                <span>{{$t('allGoods.batchDialog.minimumLimit')}}</span>
                 <el-input
                   v-model="MinPurchaseInputVal"
                   size="small"
                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
                 ></el-input>
-                <i>0或不填表示不限制购买数量</i>
+                <i>{{$t('allGoods.batchDialog.purchaseQuantity')}}</i>
               </div>
               <div
                 class="content"
                 style="margin-top:10px"
               >
-                <span>最大限购数量：</span>
+                <span>{{$t('allGoods.batchDialog.maximum')}}</span>
                 <el-input
                   v-model="MaxPurchaseInputVal"
                   size="small"
                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
                 ></el-input>
-                <i>0或不填表示不限制购买数量</i>
+                <i>{{$t('allGoods.batchDialog.purchaseQuantity')}}</i>
               </div>
             </div>
             <!--上架时间-->
@@ -247,34 +247,34 @@
               class="onSaleTime"
             >
               <div class="onSaleTimeLeft">
-                上下架：
+                {{$t('allGoods.batchDialog.lowerFrames')}}
               </div>
               <div class="onSaleTimeRight">
                 <el-radio
                   v-model="onSaleRadio"
                   label="1"
-                >不修改</el-radio>
+                >{{$t('allGoods.batchDialog.noModification')}}</el-radio>
                 <el-radio
                   v-model="onSaleRadio"
                   label="2"
-                >立即上架售卖</el-radio>
+                >{{$t('allGoods.batchDialog.marketImmediately')}}</el-radio>
                 <div class="custom">
                   <el-radio
                     v-model="onSaleRadio"
                     label="3"
-                  >自定义上架售卖</el-radio>
+                  >{{$t('allGoods.batchDialog.customListing')}}</el-radio>
                   <div class="tips">
                     <el-date-picker
                       size="small"
                       v-model="customTime"
                       type="datetime"
-                      placeholder="选择日期时间"
+                      :placeholder="$t('allGoods.batchDialog.selectDateTime')"
                       default-time="12:00:00"
                       format="yyyy-MM-dd HH:mm:ss"
                       value-format="yyyy-MM-dd HH:mm:ss"
                     >
                     </el-date-picker>
-                    <span style="margin-left:10px">选择上架售卖时间</span>
+                    <span style="margin-left:10px">{{$t('allGoods.batchDialog.timeOfListing')}}</span>
                   </div>
 
                 </div>
@@ -282,7 +282,7 @@
                 <el-radio
                   v-model="onSaleRadio"
                   label="4"
-                >暂不售卖，放入仓库</el-radio>
+                >{{$t('allGoods.batchDialog.putIntoWarehouse')}}</el-radio>
               </div>
             </div>
             <!--商品详情-->
@@ -294,39 +294,39 @@
                 class="temPosition"
                 v-if="nowIndex===5"
               >
-                <span>模板位置：</span>
+                <span>{{$t('allGoods.batchDialog.templateLocation')}}</span>
                 <el-radio
                   v-model="goodsRadio"
                   label="1"
-                >不修改</el-radio>
+                >{{$t('allGoods.batchDialog.noModification')}}</el-radio>
                 <el-radio
                   v-model="goodsRadio"
                   label="2"
-                >自定义内容在上</el-radio>
+                >{{$t('allGoods.batchDialog.customContentOn')}}</el-radio>
                 <el-radio
                   v-model="goodsRadio"
                   label="3"
-                >商品详情在上</el-radio>
+                >{{$t('allGoods.batchDialog.detailsArOn')}}</el-radio>
               </div>
               <div class="customContent">
                 <div class="customTitle">
-                  {{nowIndex===5?'自定义内容：':'商品品牌：'}}
+                  {{nowIndex===5?$t('allGoods.batchDialog.customContent'):$t('allGoods.batchDialog.brand')}}
                 </div>
                 <div class="customMiddle">
-                  <div style="color:#999">设置商品详情页显示的自定义内容</div>
+                  <div style="color:#999">{{$t('allGoods.batchDialog.brandTips')}}</div>
                   <div class="customFooter">
                     <el-button
                       size="small"
                       @click="handleToClickCustom(0)"
-                    >{{nowIndex===5?'选择模板':'选择品牌'}}</el-button>
+                    >{{nowIndex===5?$t('allGoods.batchDialog.selectTemplate'):$t('allGoods.batchDialog.chooseBrand')}}</el-button>
                     <div class="rightContent">
-                      <span @click="handleToClickCustom(1)">刷新</span>|<span
+                      <span @click="handleToClickCustom(1)">{{$t('allGoods.batchDialog.refresh')}}</span>|<span
                         @click="handleToClickCustom(2)"
                         style="width:80px"
-                      >{{nowIndex===5?'添加模板':'新建品牌'}}</span>|<span
+                      >{{nowIndex===5?$t('allGoods.batchDialog.addTemplate'):$t('allGoods.batchDialog.newBrand')}}</span>|<span
                         @click="handleToClickCustom(3)"
                         style="width:80px"
-                      >{{nowIndex===5?'管理模板':'管理品牌'}}</span>
+                      >{{nowIndex===5?$t('allGoods.batchDialog.managementTemplate'):$t('allGoods.batchDialog.managementBrand')}}</span>
                     </div>
                   </div>
                 </div>
@@ -336,22 +336,22 @@
             <div v-if="(nowIndex===5&&isShowCommonTableFive) || (nowIndex===7&&isShowCommonTableSeven)">
               <div class="tatle">
                 <div class="tableLeft">
-                  <span>{{nowIndex===5?'页面名称':'品牌名称'}}</span>
+                  <span>{{nowIndex===5?$t('allGoods.batchDialog.pageName'):$t('allGoods.batchDialog.brandName')}}</span>
                   <el-input
                     v-if="nowIndex===5"
                     size="small"
                     v-model="tableInput[0]"
-                    :placeholder="'请输入页面名称'"
+                    :placeholder="$t('allGoods.batchDialog.enterPageName')"
                   ></el-input>
                   <el-input
                     v-if="nowIndex===7"
                     size="small"
                     v-model="tableInput[1]"
-                    :placeholder="'请输入品牌名称'"
+                    :placeholder="$t('allGoods.batchDialog.enterBrandName')"
                   ></el-input>
                 </div>
                 <div class="tableRight">
-                  <span>{{nowIndex===5?'页面分类':'品牌分类'}}</span>
+                  <span>{{nowIndex===5?$t('allGoods.batchDialog.pageClassification'):$t('allGoods.batchDialog.brandClassification')}}</span>
                   <el-select
                     size="small"
                     v-if="nowIndex===5"
@@ -382,7 +382,7 @@
                     size="small"
                     type="primary"
                     @click="handleToClickSearch()"
-                  >搜索</el-button>
+                  >{{$t('allGoods.batchDialog.search')}}</el-button>
                 </div>
               </div>
               <!--表格-->
@@ -401,23 +401,23 @@
                 >
                   <el-table-column
                     prop="pageName"
-                    label="页面名称"
+                    :label="$t('allGoods.batchDialog.pageName')"
                     align="center"
                   >
                   </el-table-column>
                   <el-table-column
                     prop="createTime"
-                    label="创建时间"
+                    :label="$t('allGoods.batchDialog.creationTime')"
                     align="center"
                   >
                   </el-table-column>
                   <el-table-column
                     prop="pageType"
-                    label="是否首页"
+                    :label="$t('allGoods.batchDialog.homePage')"
                     align="center"
                   >
                     <template slot-scope="scope">
-                      {{scope.row.pageType===1?'是':'否'}}
+                      {{scope.row.pageType===1?$t('allGoods.batchDialog.yes'):$t('allGoods.batchDialog.no')}}
                     </template>
                   </el-table-column>
                 </el-table>
@@ -448,19 +448,19 @@
                 >
                   <el-table-column
                     prop="brandName"
-                    label="品牌名称"
+                    :label="$t('allGoods.batchDialog.brandName')"
                     align="center"
                   >
                   </el-table-column>
                   <el-table-column
                     prop="classifyName"
-                    label="品牌分类"
+                    :label="$t('allGoods.batchDialog.brandClassification')"
                     align="center"
                   >
                   </el-table-column>
                   <el-table-column
                     prop="createTime"
-                    label="创建时间"
+                    :label="$t('allGoods.batchDialog.creationTime')"
                     align="center"
                   >
                   </el-table-column>
@@ -489,7 +489,7 @@
                     class="customFooter"
                     style="margin-top:0"
                   >
-                    <div class="label">商品标签：</div>
+                    <div class="label">{{$t('allGoods.batchDialog.goodsLabel')}}</div>
                     <el-select
                       v-model="labelValue"
                       size="small"
@@ -507,13 +507,13 @@
                       class="rightContent"
                       style="width:auto"
                     >
-                      <span @click="handleToClickCustom(1)">刷新</span>|<span
+                      <span @click="handleToClickCustom(1)">{{$t('allGoods.batchDialog.refresh')}}</span>|<span
                         @click="handleToClickCustom(2)"
                         style="padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
-                      >新建商品标签</span>|<span
+                      >{{$t('allGoods.batchDialog.newProductLabel')}}</span>|<span
                         @click="handleToClickCustom(3)"
                         style="padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
-                      >管理商品标签</span>
+                      >{{$t('allGoods.batchDialog.manageProductLabels')}}</span>
                     </div>
                   </div>
                 </div>
@@ -524,7 +524,7 @@
                 v-if="labelValueCheckArr.length"
               >
                 <div class="labelLeft">
-                  已选：
+                  {{$t('allGoods.batchDialog.selected')}}
                 </div>
                 <div class="labelRight">
                   <div
@@ -546,16 +546,16 @@
               class="membershipExclusive"
             >
               <div class="membershipTop">
-                <div style="margin-bottom:20px">会员专享商品：</div>
+                <div style="margin-bottom:20px">{{$t('allGoods.batchDialog.memberExclusive')}}</div>
                 <div>
                   <el-radio
                     v-model="membershipTopRadio"
                     label="1"
-                  >将已选商品设置为会员专享商品</el-radio>
+                  >{{$t('allGoods.batchDialog.memberExclusiveTips')}}</el-radio>
                   <el-radio
                     v-model="membershipTopRadio"
                     label="2"
-                  >将已选会员专享商品设置为普通商品</el-radio>
+                  >{{$t('allGoods.batchDialog.memberExclusiveTipsBottom')}}</el-radio>
                 </div>
               </div>
               <div
@@ -563,8 +563,8 @@
                 v-if="membershipTopRadio==='1'"
               >
                 <div class="membershipTitle">
-                  <span>设置会员卡(非必选)</span>
-                  <i>用户持有指定会员卡才可以购买已选商品</i>
+                  <span>{{$t('allGoods.batchDialog.membershipCard')}}</span>
+                  <i>{{$t('allGoods.batchDialog.membershipCardTips')}}</i>
                 </div>
                 <div class="membershipMiddle">
                   <el-select
@@ -587,23 +587,23 @@
                     <span
                       @click="handleToClickCustom(1)"
                       style="padding:0 10px;cursor:pointer"
-                    >刷新</span>|<span
+                    >{{$t('allGoods.batchDialog.refresh')}}</span>|<span
                       @click="handleToClickCustom(2)"
                       style="cursor:pointer;padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
-                    >新建会员卡</span>|<span
+                    >{{$t('allGoods.batchDialog.newMembershipCard')}}</span>|<span
                       @click="handleToClickCustom(3)"
                       style="cursor:pointer;padding:0 10px;white-space:nowrap;display: inline-block;width:auto"
-                    >管理会员卡</span>
+                    >{{$t('allGoods.batchDialog.manageMembership')}}</span>
                   </div>
                 </div>
-                <div style="color:#999">注：设置会员卡只增加可购买已选商品的会员卡数量，不会修改商品已设置的会员卡。</div>
+                <div style="color:#999">{{$t('allGoods.batchDialog.manageMembershipTip')}}</div>
                 <!--选中会员卡后显示模块-->
                 <div
                   class="showLabelContent"
                   v-if="membershipValueCheckArr.length"
                 >
                   <div class="labelLeft">
-                    已选：
+                    {{$t('allGoods.batchDialog.selected')}}
                   </div>
                   <div class="labelRight">
                     <div
@@ -626,11 +626,11 @@
               class="placeOfDelivery"
             >
               <div class="placeOfDeliveryContent">
-                <div class="name">发货地：</div>
+                <div class="name">{{$t('allGoods.batchDialog.placeOfShipment')}}</div>
                 <el-input
                   v-model="placeOfDeliveryInput"
                   :maxlength="15"
-                  placeholder="最多设置15字"
+                  :placeholder="$t('allGoods.batchDialog.upWords')"
                   size="small"
                 ></el-input>
               </div>
@@ -642,14 +642,14 @@
       <!--编辑离开提示弹窗-->
       <el-dialog
         width="30%"
-        title="提醒"
+        :title="$t('allGoods.batchDialog.remind')"
         :visible.sync="innerVisible"
         append-to-body
       >
-        <span style="width:100%;text-align:center;display: block">确定要退出编辑吗？</span>
+        <span style="width:100%;text-align:center;display: block">{{$t('allGoods.batchDialog.exitEditing')}}</span>
         <div slot="footer">
-          <el-button @click="innerVisible = false">取 消</el-button>
-          <el-button @click="handleToCloseInnerDialog()">确定</el-button>
+          <el-button @click="innerVisible = false">{{$t('allGoods.batchDialog.cancel')}}</el-button>
+          <el-button @click="handleToCloseInnerDialog()">{{$t('allGoods.batchDialog.sure')}}</el-button>
         </div>
       </el-dialog>
       <span
@@ -659,7 +659,7 @@
         <el-button
           type="primary"
           @click="handleToSave()"
-        >保存</el-button>
+        >{{$t('allGoods.batchDialog.save')}}</el-button>
       </span>
     </el-dialog>
   </div>
