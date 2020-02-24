@@ -155,8 +155,14 @@ global.wxPage({
 
   },
 
+  // 节流输入支付金额
+  throttleInputMoney: function (e) {
+    util.debouce(this.inputMoney, 500)(e)
+  },
+
   // 输入要支付的金额
   inputMoney: function (e) {
+    console.log('input...')
     let money = e.detail.value;
     if (money) {
       //限制只能输入一个点

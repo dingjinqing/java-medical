@@ -7,7 +7,7 @@
       <view class="header">
         <view>
           <text>{{i18n.$t(localePack,"pages.store.totalSpending")}}</text>
-          <input type="digit" bindchange="inputMoney" placeholder="{{i18n.$t(localePack,'pages.store.askingTheMerchant')}}" placeholder-style="#ccc" />
+          <input type="digit" bindinput="throttleInputMoney" placeholder="{{i18n.$t(localePack,'pages.store.askingTheMerchant')}}" placeholder-style="#ccc" />
         </view>
       </view>
       <view class="pay">
