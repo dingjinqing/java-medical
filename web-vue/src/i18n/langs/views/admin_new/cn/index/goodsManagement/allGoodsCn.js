@@ -196,6 +196,13 @@ export const cn = {
     cancel: '取 消',
     sure: '确定',
     save: '保存',
-    liData: ['商品价格', '商家分类', '运费模板', '限购数量', '上架时间', '商品详情', '商品标签', '商品品牌', '会员专属', '发货地']
+    liData: ['商品价格', '商家分类', '运费模板', '限购数量', '上架时间', '商品详情', '商品标签', '商品品牌', '会员专属', '发货地'],
+    pleaseSelectCard: '请选择会员卡',
+    selectProductLabel: '请选择商品标签',
+    selectClassification: '请选择分类',
+    pleaseChoose: '请选择',
+    defaultTemplate: '店铺默认运费模板',
+    saveSuccessfully: '保存成功',
+    saveFailed: '保存失败'
   }
 }

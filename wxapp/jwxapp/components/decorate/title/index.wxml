@@ -16,9 +16,9 @@
     <view class="new-titles" style="text-align:{{m.pos}};">
       <view class='head-title'>{{m.title}}</view>
       <view class='new_content'  wx:if='{{m.title_date|| m.title_author != "" || m.link_title != "" }}'>
-        <text class='time'>{{m.title_date}}</text>
-        <text class='author'>{{m.title_author}}</text>
-        <text class='link_t'>{{m.link_title}}</text>
+        <text class='time'>{{m.title_date?m.title_date:''}}</text>
+        <text class='author'>{{m.title_author?m.title_author:''}}</text>
+        <text class='link_t'>{{m.link_title?m.link_title:''}}</text>
       </view>
     </view>
   </view>

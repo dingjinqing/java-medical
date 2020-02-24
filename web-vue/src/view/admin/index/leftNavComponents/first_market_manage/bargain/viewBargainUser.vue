@@ -86,28 +86,26 @@
           style="font-size: 20px;"
           center
         >
-          <!-- <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div> -->
-          <!-- <div class="tips-content2">筛选条件：无</div> -->
+          <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div>
           <div>筛选条件：</div>
           <div
-            v-for="(item, key, index) in param"
-            :key="index"
+            v-if="Object.keys(paramString).length!=0"
+            style="margin-top: 10px;"
           >
-            <div v-if="ok(key,item)">
-              <div v-if="key === 'orderStatus'">
-                {{$t('orderSearch.'+key)}}:
-                <span
-                  v-for="status in item"
-                  :key="status"
-                >
-                  {{orderStatusMap.get(status)}}
-                </span>
+            <div
+              v-for="(item,key,index) in paramString"
+              :key="index"
+            >
+              <div v-if="ok(key,item)">
+                <div>{{$t('allGoods.allGoodsHeaderInputLabel.'+key)}}:{{item}}</div>
               </div>
-              <div
-                v-else
-                style="margin-top: 10px;"
-              >{{$t('orderSearch.'+key)}}:{{item}}</div>
             </div>
+          </div>
+          <div
+            v-else
+            style="margin-top: 10px;"
+          >
+            {{$t('allGoods.allGoodsData.no')}}
           </div>
 
           <span
@@ -248,7 +246,9 @@ export default {
 
       // 导出数据接口参数
       dialogVisible: false,
-      param: Object
+      totalRows: 0,
+      param: Object,
+      paramString: Object
     }
   },
   methods: {
@@ -267,6 +267,13 @@ export default {
           this.handleData(originalData)
           this.pageParams = res.content.page
           this.loading = false
+          this.totalRows = res.content.page.totalRows
+        }
+      })
+
+      Object.keys(this.paramString).forEach((item, index) => {
+        if (!this.paramString[item]) {
+          delete this.paramString[item]
         }
       })
     },
@@ -304,18 +311,20 @@ export default {
     },
     handelConfirm () {
       console.log(this.tableData, 'get tableData')
-      exportBargainUserData({
-        // 'bargainId': this.actId,
-        // 'status': this.tableData.status[1],
-        // 'username': this.tableData.username[1]
-      }).then(res => {
-        if (res.error === 0) {
-          console.log(res, 'excle-res')
-          let fileName = localStorage.getItem('V-content-disposition')
-          fileName = fileName.split(';')[1].split('=')[1]
-          download(res, decodeURIComponent(fileName))
-        }
-      }).catch(err => console.log(err))
+      let obj = {
+        bargainId: this.actId,
+        startTime: this.createDate[0],
+        endTime: this.createDate[1]
+      }
+      console.log(obj, 'objParams')
+      exportBargainUserData(Object.assign(this.requestParams, obj)).then(res => {
+        console.log(res, 'getting')
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '砍价订单导出.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch((err, data) => {
+        console.log(err)
+      })
     }
   },
   watch: {
