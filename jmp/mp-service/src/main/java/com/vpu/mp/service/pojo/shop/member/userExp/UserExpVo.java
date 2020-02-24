@@ -4,16 +4,19 @@ import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 /**
  * 
  * @author 黄壮壮
  * 	会员导出参数选择
  */
+@Data
 public class UserExpVo {
 	/**
-	 * 	用户id
+	 * 	用户id,必须导出的数据
 	 */
-	@JsonProperty(value="user_id",index=0)
+	@JsonProperty(value="user_id",index=0,required=true)
 	private Integer userId;
 	
 	/**
