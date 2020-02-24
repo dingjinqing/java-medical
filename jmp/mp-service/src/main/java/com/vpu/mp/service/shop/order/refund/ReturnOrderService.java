@@ -19,7 +19,12 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
@@ -132,6 +137,9 @@ public class ReturnOrderService extends ShopBaseService{
 		}
 		if (param.getReturnEnd() != null) {
             select.where(TABLE.CREATE_TIME.le(param.getReturnEnd()));
+        }
+        if (param.getRetIds() != null && param.getRetIds().length != 0) {
+            select.where(TABLE.RET_ID.in(param.getRetIds()));
         }
 		return select;
 	}
