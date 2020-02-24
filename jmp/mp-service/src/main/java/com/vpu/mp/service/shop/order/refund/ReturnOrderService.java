@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -490,6 +491,18 @@ public class ReturnOrderService extends ShopBaseService{
     public Integer refundOverdue(Integer nDays) {
         return db().fetchCount(TABLE, TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
             .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
+
+    /**
+     * Refund overdue integer.退款申请逾期订单id列表
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> refundOverdueSet(Integer nDays) {
+        Condition condition = TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+        return db().select(TABLE.RET_ID).from(TABLE).where(condition).fetchSet(TABLE.RET_ID);
     }
 
     /**

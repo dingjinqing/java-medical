@@ -1351,6 +1351,18 @@ public class OrderInfoService extends ShopBaseService {
     }
 
     /**
+     * Overdue delivery integer.发货逾期订单id集合
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> overdueDeliverySet(Integer nDays) {
+        Condition condition = TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+        return db().select(TABLE.ORDER_ID).from(TABLE).where(condition).fetchSet(TABLE.ORDER_ID);
+    }
+
+    /**
      * Remind overdue order int.提醒发货订单数
      *
      * @return the int
@@ -1358,6 +1370,16 @@ public class OrderInfoService extends ShopBaseService {
     public int remindOverdueOrder() {
         Condition condition = TABLE.ORDER_STATUS.eq(BYTE_THREE).and(TABLE.ORDER_REMIND.greaterThan(BYTE_ZERO));
         return db().fetchCount(TABLE, condition);
+    }
+
+    /**
+     * Remind overdue order int.提醒发货订单id列表
+     *
+     * @return the int
+     */
+    public Set<Integer> remindOverdueOrderSet() {
+        Condition condition = TABLE.ORDER_STATUS.eq(BYTE_THREE).and(TABLE.ORDER_REMIND.greaterThan(BYTE_ZERO));
+        return db().select(TABLE.ORDER_ID).from(TABLE).where(condition).fetchSet(TABLE.ORDER_ID);
     }
 
     /**
