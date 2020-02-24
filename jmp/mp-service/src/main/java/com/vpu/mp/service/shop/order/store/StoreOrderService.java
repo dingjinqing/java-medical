@@ -277,8 +277,8 @@ public class StoreOrderService extends ShopBaseService {
                 }
                 log.debug("会员卡折扣金额:{}", cardDisAmount);
                 moneyPaid = moneyPaid.subtract(cardDisAmount).setScale(2, RoundingMode.UP);
-                payAmount = moneyPaid;
             }
+            payAmount = moneyPaid;
             // 会员卡余额抵扣金额
             if (BigDecimalUtil.greaterThanZero(cardAmount)) {
                 if (cardAmount.compareTo(money) > 0) {
@@ -301,6 +301,8 @@ public class StoreOrderService extends ShopBaseService {
                 log.debug("会员卡余额抵扣金额:{}", cardAmount);
                 moneyPaid = moneyPaid.subtract(cardAmount).setScale(2, RoundingMode.UP);
             }
+        } else {
+            payAmount = moneyPaid;
         }
         // 余额抵扣金额
         if (BigDecimalUtil.greaterThanZero(balanceAmount)) {
