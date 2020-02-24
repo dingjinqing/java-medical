@@ -758,22 +758,25 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             tolalDiscountAfterPrice = BigDecimal.ZERO;
         }
         //TODO 同城配送运费
+        //商品+运费
+        BigDecimal goodsPricsAndShipping = BigDecimalUtil.add(tolalDiscountAfterPrice, vo.getShippingFee());
+        //当前微信支付金额
+        BigDecimal currentMoneyPaid = goodsPricsAndShipping;
+        //预售处理
+        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PreSaleService.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
+            vo.setOrderPayWay(OrderConstant.PAY_WAY_DEPOSIT);
+            if(BigDecimalUtil.compareTo(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()) > 0) {
+                vo.setBkOrderMoney(BigDecimalUtil.subtrac(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()));
+                currentMoneyPaid = orderPreSale.getTotalPreSaleMoney();
+            }
+        }
         //支付金额
         BigDecimal moneyPaid = BigDecimalUtil.addOrSubtrac(
-            BigDecimalUtil.BigDecimalPlus.create(tolalDiscountAfterPrice, BigDecimalUtil.Operator.add),
-            BigDecimalUtil.BigDecimalPlus.create(vo.getShippingFee(), BigDecimalUtil.Operator.subtrac),
+            BigDecimalUtil.BigDecimalPlus.create(currentMoneyPaid, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(scoreDiscount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(useAccount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(cardBalance, null)
         );
-        //预售处理
-        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PreSaleService.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
-            vo.setOrderPayWay(OrderConstant.PAY_WAY_DEPOSIT);
-            if(BigDecimalUtil.compareTo(moneyPaid, orderPreSale.getTotalPreSaleMoney()) > 0) {
-                vo.setBkOrderMoney(BigDecimalUtil.subtrac(moneyPaid, orderPreSale.getTotalPreSaleMoney()));
-                moneyPaid = orderPreSale.getTotalPreSaleMoney();
-            }
-        }
         //支付金额(使用大额优惠券，支付金额不为负的，等于运费金额)
         if(BigDecimalUtil.compareTo(moneyPaid, BigDecimal.ZERO) < 0){
             moneyPaid = BigDecimal.ZERO;

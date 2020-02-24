@@ -771,12 +771,14 @@ public class OrderInfoService extends ShopBaseService {
         beforeVo.intoRecord(order);
         //orderBo赋值
         orderBo.intoRecord(order);
-        //订单付款方式，0全款 1定金 2好友代付(此处只是设置默认值，后续可能修改)
-        order.setOrderPayWay(OrderConstant.PAY_WAY_FULL);
         //订单类型
         order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
         //补款状态
-        order.setBkOrderPaid(beforeVo.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0 ? OrderConstant.BK_PAY_NO : (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ? OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
+        order.setBkOrderPaid(
+            beforeVo.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0 ?
+                OrderConstant.BK_PAY_NO :
+                (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ?
+                    OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
         //TODO 代付人数
         order.setInsteadPayNum((short)0);
         //TODO 推广信息
