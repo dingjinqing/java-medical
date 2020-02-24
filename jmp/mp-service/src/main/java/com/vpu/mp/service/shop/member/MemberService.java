@@ -141,6 +141,8 @@ public class MemberService extends ShopBaseService {
 	public UserCardDaoService userCardDao;
 	@Autowired
 	public UserImportService userImportService;
+	@Autowired
+	public UserExportService userExpSvc;
 	/**
 	 * 导出会员
 	 */
