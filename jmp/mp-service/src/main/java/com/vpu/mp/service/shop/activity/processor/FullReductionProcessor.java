@@ -108,6 +108,7 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
             BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
             BaseConstant.ACTIVITY_TYPE_SEC_KILL,
             BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE,
+            BaseConstant.ACTIVITY_TYPE_PRE_SALE,
             BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER,
             BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
             BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER
