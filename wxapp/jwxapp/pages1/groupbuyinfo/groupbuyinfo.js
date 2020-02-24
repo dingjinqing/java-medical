@@ -38,7 +38,6 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    console.log(options.invite_id)
     let that = this
     let groupId = options.group_id
     let pinGroupId = options.pin_group_id
@@ -52,7 +51,7 @@ global.wxPage({
 
     that.getGroupBuyInfo()
 
-    that.getShareImg()
+    
   },
 
   getGroupBuyInfo () {
@@ -61,6 +60,7 @@ global.wxPage({
     util.api('/api/wxapp/groupbuy/info', function (res) {
       if (res.error === 0) {
         let groupbuyInfo = Object.assign({}, res.content);
+        let goodsInfo = groupbuyInfo.goodsInfo
 
         // 显示缺少的人数
         if (groupbuyInfo.userInfoList.length > 5) {
@@ -84,12 +84,27 @@ global.wxPage({
         groupbuyInfo.groupBuyDefineInfo.defaultPrd = defaultPrd
         // 规格选择组件需要的数据
         let productsInfo = {
+          goodsId: goodsInfo.goodsId,
           defaultPrd: defaultPrd, // 是否不是多规格,默认只有一个规格
-          goodsImgs: [imageUrl + groupbuyInfo.goodsInfo.goodsImg],
-          goodsName: groupbuyInfo.goodsInfo.goodsName,
+          goodsNumber: goodsInfo.goodsNumber,
+          goodsImgs: [imageUrl + goodsInfo.goodsImg],
+          goodsName: goodsInfo.goodsName,
           limitBuyNum: groupbuyInfo.groupBuyDefineInfo.limitBuyNum, // 最少购买
           limitMaxNum: groupbuyInfo.groupBuyDefineInfo.limitMaxNum, // 最多购买
-          products: groupbuyInfo.prdSpecsList
+          products: groupbuyInfo.prdSpecsList,
+          activity: {
+            activityId: that.data.groupId,
+            activityType: groupbuyInfo.groupBuyDefineInfo.activityType,
+            actState: 0,
+            isGrouperCheap: 0,// 是否团长特惠 0 否 1 是
+            limitBuyNum: groupbuyInfo.groupBuyDefineInfo.limitBuyNum, // 最少购买
+            limitMaxNum: groupbuyInfo.groupBuyDefineInfo.limitMaxNum, // 最多购买
+            limitAmount: 3, // 成团人数
+            groupBuySuccessCount: '', // 已成团数量
+            freeShip: 0, // 活动运费方式
+            groupBuyListMpVos: groupbuyInfo.userInfoList,
+            groupBuyPrdMpVos: groupbuyInfo.prdSpecsList// 拼团规格信息
+          }
         }
         that.data.specInfo.goodsNum = productsInfo.limitBuyNum
 
@@ -99,6 +114,7 @@ global.wxPage({
           productsInfo: productsInfo,
           specInfo: that.data.specInfo
         })
+        that.getShareImg()
       } else {
         util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.hasExpired'), function () {
           util.reLaunch({
@@ -129,13 +145,18 @@ global.wxPage({
 
   getShareImg () {
     let that = this
-    util.api('/api/wxapp/groupbuy/share/image', function (res) {
+    util.api('/api/wxapp/groupbuy/share/info', function (res) {
       if (res.error === 0) {
         that.setData({
           shareImg: String(res.content)
         })
       }
-    }, { groupId: that.data.groupId })
+    }, {
+      ativityId: that.data.groupbuyInfo.groupBuyDefineInfo.id,
+      realPrice: that.data.groupbuyInfo.goodsInfo.minGroupBuyPrice,
+      linePrice: that.data.groupbuyInfo.goodsInfo.shopPrice,
+      targetId: that.data.groupbuyInfo.goodsInfo.goodsId
+    })
   },
 
   // 倒计时
@@ -318,7 +339,7 @@ global.wxPage({
     wx.showLoading({
       title: that.$t('page1.fight.generating')
     })
-    util.api('/api/wxapp/groupbuy/share/image', function (res) {
+    util.api('/api/wxapp/groupbuy/pictorial/info', function (res) {
       if (res.error === 0 && res.content != '') {
         that.setData({
           posterImg: String(res.content),
@@ -328,7 +349,13 @@ global.wxPage({
         util.toast_fail(that.$t('page1.fight.failedToGetPoster'))
       }
       wx.hideLoading();
-    }, { groupId: that.data.groupId })
+    },  {
+      pageType: 2,
+      ativityId: that.data.groupbuyInfo.groupBuyDefineInfo.id,
+      realPrice: that.data.groupbuyInfo.goodsInfo.minGroupBuyPrice,
+      linePrice: that.data.groupbuyInfo.goodsInfo.shopPrice,
+      targetId: that.data.groupbuyInfo.goodsInfo.goodsId
+    })
   },
 
   // 拼团规则
