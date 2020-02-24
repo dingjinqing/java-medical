@@ -250,7 +250,7 @@ public class ShopOverviewService extends MainBaseService {
         dataShop.setOfficialAccountConf(Metadata.builder()
             .type(BYTE_ONE)
             .value(shopOfficialAccount.isOfficialAccountBySysId(sysId, BYTE_ONE)).build());
-
+        dataShop.ruleHandler();
         return dataShop;
     }
 
