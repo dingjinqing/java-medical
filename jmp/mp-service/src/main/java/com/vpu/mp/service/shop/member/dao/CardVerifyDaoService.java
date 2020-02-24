@@ -1,10 +1,5 @@
 package com.vpu.mp.service.shop.member.dao;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -12,15 +7,19 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.*;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VDF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VSTAT_CHECKING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VSTAT_PASS;
-
-import java.util.List;
 /**
 * @author 黄壮壮
 * @Date: 2019年10月30日
@@ -70,7 +69,9 @@ public class CardVerifyDaoService extends ShopBaseService {
 		}
 		
 		// 订单id
-		if(isNotNull(param.getId())) {
+		if(isNotNull(param.getIds())) {
+			select.where(CARD_EXAMINE.ID.in(param.getIds()));
+		}else if (isNotNull(param.getId())){
 			select.where(CARD_EXAMINE.ID.eq(param.getId()));
 		}
 			
@@ -124,6 +125,11 @@ public class CardVerifyDaoService extends ShopBaseService {
 	public Integer countUndealUser(Integer cardId) {
 		return db().fetchCount(CARD_EXAMINE, CARD_EXAMINE.CARD_ID.eq(cardId).and(CARD_EXAMINE.STATUS.eq(VSTAT_CHECKING)));
 	}
+
+    public Set<Integer> countUndealUserSet(Integer cardId) {
+        Condition condition = CARD_EXAMINE.CARD_ID.eq(cardId).and(CARD_EXAMINE.STATUS.eq(VSTAT_CHECKING));
+        return db().select(CARD_EXAMINE.ID).from(CARD_EXAMINE).where(condition).fetchSet(CARD_EXAMINE.ID);
+    }
 
 
 	public List<CardExamineRecord> selectUndealVerifyRecord(Integer cardId) {

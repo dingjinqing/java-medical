@@ -50,6 +50,9 @@ export default {
       }
     }
   },
+  mounted () {
+    this.langDefault()
+  },
   watch: {
     'ruleForm': {
       handler (newName, oldName) {

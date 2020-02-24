@@ -130,6 +130,9 @@ export default {
   created () {
     this.noneBlockVipArr = this.$t('memberCard.noneBlockVipArr')
   },
+  mounted () {
+    this.langDefault()
+  },
   data () {
     return {
       currentClassType: null, // 针对商家和平台分类

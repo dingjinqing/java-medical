@@ -345,7 +345,17 @@ global.wxComponent({
       this.triggerEvent('close')
     },
     actCheckOut(){
-      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]), activityType: this.data.activity ? this.data.activity.activityType : null, activityId: this.data.activity ? this.data.activity.activityId : null })}`, "navigateTo")
+      let params = {
+        goodsList: JSON.stringify([this.data.productInfo]), 
+        activityType: this.data.activity ? this.data.activity.activityType : null, 
+        activityId: this.data.activity ? this.data.activity.activityId : null
+      }
+      if(this.data.activity && this.data.activity.activityType === 10){
+        params.preSaleInfo = {...this.data.activity,preSalePrdInfo:this.data.productInfo.actProduct}
+        delete params.preSaleInfo.preSalePrdMpVos
+        params.preSaleInfo = JSON.stringify(params.preSaleInfo)
+      }
+      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
       this.triggerEvent('close')
     },
     //整合参数

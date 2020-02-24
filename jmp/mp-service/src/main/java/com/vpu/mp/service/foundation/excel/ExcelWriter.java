@@ -7,6 +7,8 @@ import com.vpu.mp.service.foundation.excel.bean.ExcelSheetBean;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
+import com.vpu.mp.service.foundation.excel.util.IDymicColNameI18n;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -19,11 +21,16 @@ import java.util.*;
  * @author 李晓冰
  * @date 2019年07月19日
  */
+/**
+ * @author Q10Viking
+ *
+ */
 @Slf4j
 public class ExcelWriter extends AbstractExcelDisposer {
     private Workbook workbook;
     private String sheetName;
-
+    private IDymicColNameI18n colI18n;
+    
     public ExcelWriter(Workbook workbook, String sheetName) {
         this(AbstractExcelDisposer.DEFAULT_LANGUAGE, workbook, sheetName);
     }
@@ -166,6 +173,8 @@ public class ExcelWriter extends AbstractExcelDisposer {
         return returnMap;
     }
 
+   
+    
     public <T> void writeModelListWithDynamicColumn(List<T> dataArray, Class<T> clazz) {
         if (dataArray.size() == 0) {
             // 如果传入的是空数据，则按照无动态列进行处理
@@ -203,6 +212,11 @@ public class ExcelWriter extends AbstractExcelDisposer {
 
         writeDataIntoSheet(sheetBean,sheet,dataArray,dynamicField);
     }
+    
+    
+    
+    
+    
 
     /**
      * 将数据写入到excel中
@@ -419,4 +433,16 @@ public class ExcelWriter extends AbstractExcelDisposer {
         RegionUtil.setBorderRight(border, region, sheet);    //右边框
         RegionUtil.setBorderTop(border, region, sheet);      //上边框
     }
+
+    /**
+     * 设置动态列的国际化
+     * @param colI18n
+     */
+	public void setColI18n(IDymicColNameI18n colI18n) {
+		this.colI18n = colI18n;
+	}
+    
+   
+    
+    
 }

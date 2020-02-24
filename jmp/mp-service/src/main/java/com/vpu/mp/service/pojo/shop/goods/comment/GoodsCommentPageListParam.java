@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.goods.comment;
 import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 
+import java.util.List;
+
 
 /**
  * 映射分页查询条件实体类
@@ -33,7 +35,7 @@ public class GoodsCommentPageListParam {
     private Byte flag = FLAG_DEFAULT_VALUE;
     private Byte commstar = COMMSTAR_DEFAULT_VALUE;
     private Integer awardActivityId;
-
+    private List<Integer> commentGoodsId;
     /**
      * 	分页信息
      */

@@ -184,6 +184,13 @@ export const en = {
     cancel: 'Cancellation',
     sure: 'Determine',
     save: 'Preservation',
-    liData: ['commodity price', 'Merchant classification', 'Freight template', 'Restriction quantity', 'Shelf time', 'Commodity details', 'Commodity label', 'Commodity brand', 'Exclusive membership', 'Place of delivery']
+    liData: ['commodity price', 'Merchant classification', 'Freight template', 'Restriction quantity', 'Shelf time', 'Commodity details', 'Commodity label', 'Commodity brand', 'Exclusive membership', 'Place of delivery'],
+    pleaseSelectCard: 'Please select a membership card',
+    selectProductLabel: 'Please select product label',
+    selectClassification: 'Please select a classification',
+    pleaseChoose: 'Please choose',
+    defaultTemplate: 'Store default freight template',
+    saveSuccessfully: 'Save successfully',
+    saveFailed: 'Save failed'
   }
 }

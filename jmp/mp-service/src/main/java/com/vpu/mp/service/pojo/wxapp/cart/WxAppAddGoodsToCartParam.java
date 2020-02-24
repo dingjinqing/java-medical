@@ -19,6 +19,14 @@ public class WxAppAddGoodsToCartParam {
     private  Integer goodsNumber;
     @NotNull
     private Integer prdId;
+    /**
+     * 活动类型
+     */
+    private Byte activityType;
+    /**
+     * 活动id
+     */
+    private Integer activityId;
 
 
 }

@@ -200,4 +200,13 @@ public class AdminMemberController extends AdminBaseController{
 		return success(allUserCardDetail);
 	}
 	
+	/**
+	 * 	获取用户导出配置信息
+	 */
+	@PostMapping("/export/cfg")
+	public JsonResult getUserExportCfg() {
+		logger().info("获取用户导出配置信息");
+		return success(shop().member.userExpSvc.getExportCfg());
+	}
+	
 }

@@ -114,7 +114,7 @@
                             v-model="scope.row.priceRevisionVal"
                             size="small"
                             onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
-                          ></el-input>&nbsp;&nbsp;]{{$t('allGoods.batchDialog.element')}}
+                          ></el-input>&nbsp;&nbsp;{{$t('allGoods.batchDialog.element')}}
                         </div>
                       </div>
                     </template>
@@ -809,7 +809,7 @@ export default {
         if (res.error === 0) {
           let obj = {
             id: null,
-            cardName: '请选择会员卡'
+            cardName: this.$t('allGoods.batchDialog.pleaseSelectCard')
           }
           res.content.unshift(obj)
           this.membershipOptions = res.content
@@ -823,7 +823,7 @@ export default {
         if (res.error === 0) {
           let obj = {
             id: null,
-            name: '请选择商品标签'
+            name: this.$t('allGoods.batchDialog.selectProductLabel')
           }
           res.content.goodsLabels.unshift(obj)
           this.labelOptions = res.content.goodsLabels
@@ -857,7 +857,7 @@ export default {
         if (res.error === 0) {
           let obj = {
             id: null,
-            name: '请选择分类'
+            name: this.$t('allGoods.batchDialog.selectClassification')
           }
           res.content.unshift(obj)
           this.commonTableOptionsFive = res.content
@@ -871,7 +871,7 @@ export default {
         if (res.error === 0) {
           let obj = {
             classifyId: null,
-            classifyName: '请选择'
+            classifyName: this.$t('allGoods.batchDialog.pleaseChoose')
           }
           res.content.unshift(obj)
           this.commonTableOptionsSeven = res.content
@@ -885,11 +885,11 @@ export default {
         if (res.error === 0) {
           let obj = {
             deliverTemplateId: null,
-            templateName: '不修改'
+            templateName: this.$t('allGoods.batchDialog.noModification')
           }
           let defaultTem = {
             deliverTemplateId: 0,
-            templateName: '店铺默认运费模板'
+            templateName: this.$t('allGoods.batchDialog.defaultTemplate')
           }
           res.content.unshift(obj, defaultTem)
           this.templateOptions = res.content
@@ -1086,12 +1086,12 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.$message.success({
-            message: '保存成功',
+            message: this.$t('allGoods.batchDialog.saveSuccessfully'),
             showClose: true
           })
         } else {
           this.$message.error({
-            message: '保存失败',
+            message: this.$t('allGoods.batchDialog.saveFailed'),
             showClose: true
           })
         }
@@ -1244,16 +1244,20 @@ export default {
     // 运费模板下拉框值变化查询详细模板信息
     handleToQueryTemOption (val) {
       console.log(val)
-      getDeliverTemplateApi({ deliverTemplateId: val }).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          this.turnType = res.content.flag
-          let obj = {}
-          obj = res.content.content
-          this.templateShowContentData = obj
-          console.log(this.templateShowContentData)
-        }
-      })
+      if (val === 0) {
+        this.templateShowContentData = { a: 1 }
+      } else {
+        getDeliverTemplateApi({ deliverTemplateId: val }).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.turnType = res.content.flag
+            let obj = {}
+            obj = res.content.content
+            this.templateShowContentData = obj
+            console.log(this.templateShowContentData)
+          }
+        })
+      }
     },
     // 跳转模板详情页
     handelToTurnTemDetail (to) {

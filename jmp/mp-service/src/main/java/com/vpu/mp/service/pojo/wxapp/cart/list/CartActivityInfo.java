@@ -55,6 +55,11 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
     private FullReduction fullReduction;
 
     /**
+     * 加价购规则
+     */
+    private List<PurchasePriceRule> purchasePriceRule;
+
+    /**
      * 满折满减活动
      */
     @Setter
@@ -84,5 +89,16 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
         private BigDecimal reduceMoney;
         /**折扣，活动中指定使用满件数策略时使用*/
         private BigDecimal discount;
+    }
+
+    /**
+     * 加价购
+     */
+    @Data
+    public static class PurchasePriceRule{
+        /**满金额数*/
+        private BigDecimal fullPrice;
+        /**加价金额数*/
+        private BigDecimal purchasePrice;
     }
 }

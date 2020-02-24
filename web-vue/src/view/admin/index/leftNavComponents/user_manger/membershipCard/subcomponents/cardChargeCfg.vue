@@ -228,6 +228,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       if (this.ruleForm.powerCard) {
         this.$refs.ruleForm.validate((valid) => {

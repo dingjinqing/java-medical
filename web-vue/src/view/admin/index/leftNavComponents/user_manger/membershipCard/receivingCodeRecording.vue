@@ -1,13 +1,13 @@
 <template>
   <div class="addBrandDialog" v-if="dialogVisible">
     <el-dialog
-  title="导入记录"
+  :title="$t('memberCard.title')"
     :visible.sync="dialogVisible"
         center
   width="30%">
   <div>
-  <span>批次：{{this.otherData.batchName}}</span>
-  <span style="float: right;">合计：{{this.otherData.successNum}}/10000</span>
+  <span>{{$t('memberCard.batchId')}}：{{this.otherData.batchName}}</span>
+  <span style="float: right;">{{$t('memberCard.total')}}：{{this.otherData.successNum}}/10000</span>
   </div>
   <div style="margin-top: 20px">
   <el-table
@@ -16,17 +16,17 @@
       style="width: 100%">
       <el-table-column
         prop="num"
-        label="序号"
+        :label="$t('memberCard.num')"
         width="70">
       </el-table-column>
       <el-table-column
         prop="createTime"
-        label="操作时间"
+         :label="$t('memberCard.createTime')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="successNum"
-        label="成功数量">
+        :label="$t('memberCard.successNum')">
          <template slot-scope="scope">
            {{scope.row.successNum}}
            <el-button @click="downloadSuccess(scope.row.batchId)" type="text"  icon="el-icon-download"></el-button>
@@ -34,7 +34,7 @@
       </el-table-column>
       <el-table-column
         prop="failNum"
-        label="失败数量">
+        :label="$t('memberCard.failNum')">
          <template slot-scope="scope">
            {{scope.row.failNum}}
            <el-button @click="downloadFail(scope.row.batchId)" type="text"  icon="el-icon-download" style="color: red;"></el-button>
@@ -43,7 +43,7 @@
     </el-table>
   </div>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="dialogVisible = false" size="mini">确 定</el-button>
+      <el-button type="primary" @click="dialogVisible = false" size="mini">{{$t('memberCard.sure')}}</el-button>
     </span>
   </el-dialog>
   </div>
