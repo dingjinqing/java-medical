@@ -167,6 +167,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       console.log(typeof this.ruleForm.count)
       // 使用时间检测

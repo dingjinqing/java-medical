@@ -250,5 +250,8 @@ export const cn = {
   gradeCondition: '升级条件: ',
   normalCard: '普通会员卡',
   limitCard: '限次会员卡',
-  gradeCard: '等级会员卡'
+  gradeCard: '等级会员卡',
+  defineGoodsDis: '指定商品折扣',
+  allGoodsDis: '全部商品折扣'
+
 }

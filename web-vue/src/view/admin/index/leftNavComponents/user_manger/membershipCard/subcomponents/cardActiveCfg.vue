@@ -103,6 +103,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       if (this.ruleForm.activation === '1') {
         if (this.ruleForm.activationCfgBox.length > 0) {

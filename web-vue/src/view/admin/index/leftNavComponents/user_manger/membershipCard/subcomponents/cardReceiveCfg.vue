@@ -254,6 +254,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       let flag = false
       if (this.ruleForm.cardType === 1) {
