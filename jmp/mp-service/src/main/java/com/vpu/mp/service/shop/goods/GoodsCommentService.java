@@ -158,6 +158,10 @@ public class GoodsCommentService extends ShopBaseService {
     if (!GoodsCommentPageListParam.FLAG_DEFAULT_VALUE.equals(param.getFlag())) {
         select.and(COMMENT_GOODS.FLAG.eq(param.getFlag()));
     }
+    //店铺助手查出商品评价审核逾期的评价id列表
+      if(param.getCommentGoodsId()!=null&&!param.getCommentGoodsId().isEmpty()){
+          select.and(COMMENT_GOODS.ID.in(param.getCommentGoodsId()));
+      }
   }
 
     /**
