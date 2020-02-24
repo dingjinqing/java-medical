@@ -139,7 +139,7 @@ public class ChooseLinkService extends ShopBaseService {
 				 .from(LOTTERY)
 				.where(LOTTERY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.and(LOTTERY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.and(LOTTERY.STATUS.eq((byte) 0))
+				.and(LOTTERY.STATUS.eq((byte) 1))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
