@@ -195,6 +195,7 @@ public class MpDecorationService extends ShopBaseService {
         String pageContent;
         if (pageId == null || pageId == 0) {
             if(StringUtil.isNotEmpty(param.getScene())){
+                logger().info("scene 值:" + param.getScene());
                 //scene的格式为page_id=1
                 String[] sceneParam = param.getScene().split("=",2);
                 pageId =  Integer.valueOf(sceneParam[1]);
