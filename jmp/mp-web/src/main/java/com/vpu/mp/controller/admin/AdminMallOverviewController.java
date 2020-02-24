@@ -129,7 +129,8 @@ public class AdminMallOverviewController extends AdminBaseController {
         ShopAssistantVo vo = shop().mallOverview.shopAssistant(param);
         Integer shopId = shop().mallOverview.getShopId();
         Integer sysId = shop().mallOverview.getSysId();
-        saas.overviewService.shopAssistant(param, vo, shopId, sysId);
+        vo.setWxDataShop(saas.overviewService.shopAssistant(shopId, sysId));
+        vo.ruleHandler();
         return vo;
     }
 
