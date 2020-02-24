@@ -144,7 +144,8 @@ export default {
       tabData: [],
       tabOneData: [],
       tabTwoData: [],
-      tabThreeData: []
+      tabThreeData: [],
+      ids: null
     }
   },
   watch: {
@@ -158,6 +159,7 @@ export default {
   },
   created () {
     this.cardId = this.$route.query.cardId
+    this.ids = this.$route.query.ids
     // 初始化数据
     this.defaultData()
   },
@@ -176,7 +178,8 @@ export default {
         'realName': this.userNameInput,
         'mobile': this.phoneNumInput,
         'firstTime': this.dataValue ? this.dataValue[0] : null,
-        'secondTime': this.dataValue ? this.dataValue[1] : null
+        'secondTime': this.dataValue ? this.dataValue[1] : null,
+        'ids': this.ids
       }
 
       getActivateAuditListRequest(obj).then(res => {

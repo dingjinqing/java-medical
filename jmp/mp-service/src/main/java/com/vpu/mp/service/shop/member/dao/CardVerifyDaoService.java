@@ -70,7 +70,9 @@ public class CardVerifyDaoService extends ShopBaseService {
 		}
 		
 		// 订单id
-		if(isNotNull(param.getId())) {
+		if(isNotNull(param.getIds())) {
+			select.where(CARD_EXAMINE.ID.in(param.getIds()));
+		}else if (isNotNull(param.getId())){
 			select.where(CARD_EXAMINE.ID.eq(param.getId()));
 		}
 			
