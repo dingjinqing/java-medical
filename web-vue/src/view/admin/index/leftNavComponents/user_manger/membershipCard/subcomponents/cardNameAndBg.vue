@@ -132,6 +132,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       this.$refs.ruleForm.validate((valid) => {
         console.log(valid)
