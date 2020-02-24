@@ -12,6 +12,34 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/firstMarketManage'
       )
   },
+  // 表单统计home页
+  {
+    path: '/admin/home/main/formStatisticsHome',
+    name: 'formStatistical',
+    meta: {
+      crumbTitle: 'router.formStatistical',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/formStatisticsHome'
+      )
+  },
+  // 表单装修主页
+  {
+    path: '/admin/home/main/formDecorationHome',
+    name: 'formDecorationHome',
+    meta: {
+      crumbTitle: 'router.formDecorationHome',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/formDecoration/formDecorationHome'
+      )
+  },
   // 分享有礼活动
   {
     path: '/admin/home/main/sharePoliteList',
