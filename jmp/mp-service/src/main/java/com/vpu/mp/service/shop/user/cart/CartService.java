@@ -228,7 +228,7 @@ public class CartService extends ShopBaseService {
      * @param goodsNumber
      * @return
      */
-    public Integer addSpecProduct(Integer userId, Integer prdId, Integer goodsNumber) {
+    public Integer addSpecProduct(Integer userId, Integer prdId, Integer goodsNumber,Integer activityId,Byte activityType) {
         CartRecord cartRecord = db().selectFrom(CART).where(CART.USER_ID.eq(userId).and(CART.PRODUCT_ID.eq(prdId))).fetchOne();
         if (cartRecord == null) {
             Record goodsProduct = goodsService.getGoodsByProductId(prdId);
@@ -245,6 +245,8 @@ public class CartService extends ShopBaseService {
             cartRecord.setGoodsPrice(productRecord.getPrdPrice());
             cartRecord.setOriginalPrice(productRecord.getPrdPrice());
             cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
+            cartRecord.setExtendId(activityId);
+            cartRecord.setType(activityType);
             cartRecord.insert();
         } else {
             cartRecord.setCartNumber((short) (goodsNumber + cartRecord.getCartNumber()));
@@ -371,6 +373,21 @@ public class CartService extends ShopBaseService {
         return db().update(CART).set(CART.IS_CHECKED, isChecked)
                 .where(CART.USER_ID.eq(userId))
                 .and(CART.CART_ID.in(carIds)).execute();
+    }
+
+    /**
+     * 修改
+     * @param userId 用户id
+     * @param cartId 购物车id
+     * @param activityTye 类型
+     * @param activityId 活动id
+     * @return
+     */
+    public int switchActivityGoods(Integer userId, List<Integer> cartId, Integer activityId, Byte activityTye){
+        return  db().update(CART)
+                .set(CART.EXTEND_ID,activityId).set(CART.TYPE,activityTye)
+                .where(CART.CART_ID.in(cartId)).execute();
+
     }
 
     /**
