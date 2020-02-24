@@ -1264,6 +1264,9 @@ export default {
             this.previewCodeImg = res.content
             this.previewVisible = true
           } else {
+            if (res.content) {
+              this.page_id = res.content
+            }
             this.$message.success({
               message: '保存成功',
               showClose: true,
