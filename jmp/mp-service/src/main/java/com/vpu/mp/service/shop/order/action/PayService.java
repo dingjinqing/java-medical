@@ -177,7 +177,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         if (order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
             //定金订单支付尾款
             Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
-            if (timeInterval.value1().getTime() < currenTmilliseconds) {
+            if (timeInterval.value1().getTime() > currenTmilliseconds) {
                 return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START, null);
             }
             if (currenTmilliseconds > timeInterval.value2().getTime()) {

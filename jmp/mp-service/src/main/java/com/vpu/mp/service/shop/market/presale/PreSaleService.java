@@ -566,7 +566,7 @@ public class PreSaleService extends ShopBaseService {
      * @return Record2<START_TIME, END_TIME>
      */
     public Record2<Timestamp, Timestamp> getTimeInterval(Integer id) {
-    	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).fetchOne();
+    	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchOne();
     }
 
     /**
