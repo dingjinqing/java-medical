@@ -42,6 +42,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -195,12 +197,22 @@ public class MpDecorationService extends ShopBaseService {
         String pageContent;
         if (pageId == null || pageId == 0) {
             if(StringUtil.isNotEmpty(param.getScene())){
-                //scene的格式为page_id=1
-                String[] sceneParam = param.getScene().split("=",2);
-                pageId =  Integer.valueOf(sceneParam[1]);
-                record = getPageById(pageId);
-                //页面预览
-                pageContent = record.getPageContent();
+                //scene的格式为page_id=1,url编码
+                String scene = null;
+                try {
+                    scene = URLDecoder.decode(param.getScene(),"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    logger().error("URLDecoder.decode error",e);
+                }
+                if(StringUtil.isNotEmpty(scene)){
+                    String[] sceneParam = scene.split("=",2);
+                    pageId =  Integer.valueOf(sceneParam[1]);
+                    record = getPageById(pageId);
+                    //页面预览
+                    pageContent = record.getPageContent();
+                }else {
+                    return null;
+                }
             }else{
                 //首页
                 record = this.getIndex();
