@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.user.cart;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -75,11 +76,18 @@ public class CartService extends ShopBaseService {
      * @param goodsIds goodsId 活动商品
      * @return null
      */
-    public WxAppCartBo getCartList(Integer userId, List<Integer> goodsIds,Integer activityType,Integer activityId){
+    public WxAppCartBo getCartList(Integer userId, List<Integer> goodsIds,Byte activityType,Integer activityId){
         List<Integer> productIdList ;
         List<Integer> goodsIdList;
         // 查询购物车记录
         Result<CartRecord> cartRecords = getCartRecordsByUserId(userId);
+        if (activityType!=null&&activityId!=null){
+            if (BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION.equals(activityType)){
+                cartRecords = getCartRecords(userId,activityId, (byte) 1);
+            }else if (BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(activityType)){
+                cartRecords = getCartRecords(userId,activityId, (byte) 2);
+            }
+        }
         List<WxAppCartGoods> appCartGoods = cartRecords.into(WxAppCartGoods.class);
         //商品
         goodsIdList =cartRecords.getValues(CART.GOODS_ID).stream().distinct().collect(Collectors.toList());
@@ -138,6 +146,18 @@ public class CartService extends ShopBaseService {
      */
     private Result<CartRecord> getCartRecordsByUserId(Integer userId) {
         return db().selectFrom(CART).where(CART.USER_ID.eq(userId)).orderBy(CART.CART_ID.desc()).fetch();
+    }
+    /**
+     * 获取购物车记录
+     * @param userId
+     * @return
+     */
+    private Result<CartRecord> getCartRecords(Integer userId,Integer activityId,Byte type) {
+        return db().selectFrom(CART)
+                .where(CART.USER_ID.eq(userId))
+                .and(CART.TYPE.eq(type))
+                .and(CART.EXTEND_ID.eq(activityId))
+                .orderBy(CART.CART_ID.desc()).fetch();
     }
 
 
