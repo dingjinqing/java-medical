@@ -6,17 +6,29 @@ import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListParam;
+import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListVo;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -29,6 +41,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
 import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
@@ -52,6 +65,10 @@ public class IncreasePurchaseService extends ShopBaseService {
 
     @Autowired
     public QrCodeService qrCodeService;
+    @Autowired
+    private GoodsCardCoupleService goodsCardCoupleService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 
     /**
      * 分页查询加价购活动信息
@@ -494,4 +511,95 @@ public class IncreasePurchaseService extends ShopBaseService {
         }
         throw new NullPointerException("Activity Not Exist !");
     }
+
+    /**
+     * 小程序端活动页数据
+     * @param param
+     * @param userId
+     * @return
+     */
+    public PurchaseGoodsListVo getWxAppGoodsList(PurchaseGoodsListParam param, Integer userId){
+        PurchaseGoodsListVo vo = new PurchaseGoodsListVo();
+        PurchasePriceDefineRecord purchasePriceDefineRecord = db().selectFrom(ppd).where(ppd.ID.eq(param.getPurchasePriceId())).fetchAny();
+        if(purchasePriceDefineRecord == null || purchasePriceDefineRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+            vo.setState((byte)1);
+            return vo;
+        }else if(purchasePriceDefineRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+            vo.setState((byte)2);
+            return vo;
+        }else if(purchasePriceDefineRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+            vo.setState((byte)3);
+            return vo;
+        }
+        vo.setState((byte)0);
+
+        //过滤掉用户不能买的专属商品
+        List<Integer> inGoodsIds = Util.splitValueToList(purchasePriceDefineRecord.getGoodsId());
+        List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
+        inGoodsIds = Util.diffList(inGoodsIds,userExclusiveGoodsIds);
+
+        //商品列表
+        PageResult<PurchaseGoodsListVo.Goods> goodsPageResult = getGoods(inGoodsIds,param.getSearch(),param.getCurrentPage(),param.getPageRows());
+        goodsPageResult.getDataList().forEach(goods->{
+            GoodsPriceBo goodsPriceBo = saas.getShopApp(getShopId()).reducePrice.parseGoodsPrice(goods.getGoodsId(),userId);
+            goods.setGoodsPriceAction(goodsPriceBo.getGoodsPriceAction());
+            goods.setGoodsPrice(goodsPriceBo.getGoodsPrice());
+            goods.setMaxPrice(goodsPriceBo.getMaxPrice());
+            goods.setMarketPrice(goodsPriceBo.getMaxPrice());
+            goods.setLimitAmount(goodsPriceBo.getLimitAmount());
+        });
+        vo.setGoods(goodsPageResult);
+
+        //换购规则
+        List<PurchasePriceRuleRecord> ruleRecords = getRules(param.getPurchasePriceId());
+        List<PurchaseGoodsListVo.Rule> rules = new ArrayList<>();
+        ruleRecords.forEach(r->{
+            PurchaseGoodsListVo.Rule rule = new PurchaseGoodsListVo.Rule();
+            rule.setFullPrice(r.getFullPrice());
+            rule.setPurchasePrice(r.getPurchasePrice());
+            rules.add(rule);
+        });
+        vo.setRules(rules);
+
+        //TODO vo.setMainPrice();
+        //TODO vo.setChangeDoc();
+
+
+        return vo;
+    }
+
+    /**
+     * 查出goods列表
+     * @param inGoodsIds
+     * @param search
+     * @param currentPage
+     * @param pageRows
+     * @return
+     */
+    private PageResult<PurchaseGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,String search,Integer currentPage,Integer pageRows){
+        Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
+        select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
+            select.where(GOODS.GOODS_NUMBER.gt(0));
+        }
+        if(StringUtil.isNotEmpty(search)){
+            select.where(GOODS.GOODS_NAME.contains(search));
+        }
+        if(CollectionUtils.isNotEmpty(inGoodsIds)){
+            select.where(GOODS.GOODS_ID.in(inGoodsIds));
+        }
+        return getPageResult(select,currentPage,pageRows,PurchaseGoodsListVo.Goods.class);
+    }
+
+    /**
+     * 根据活动ID取换购规则
+     * @param purchasePriceId
+     * @return
+     */
+    private List<PurchasePriceRuleRecord> getRules(int purchasePriceId){
+        return db().selectFrom(ppr).where(ppr.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId)).fetch();
+    }
+
 }

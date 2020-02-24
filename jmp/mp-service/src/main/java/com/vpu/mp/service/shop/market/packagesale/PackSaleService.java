@@ -366,6 +366,12 @@ public class PackSaleService extends ShopBaseService {
         return res;
     }
 
+    /**
+     * 小程序端活动页数据
+     * @param param
+     * @param userId
+     * @return
+     */
 	public PackageSaleGoodsListVo getWxAppGoodsList(PackageSaleGoodsListParam param,Integer userId){
         PackageSaleGoodsListVo vo = new PackageSaleGoodsListVo();
         PackageSaleRecord packageSaleRecord = db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(param.getPackageId())).fetchAny();
