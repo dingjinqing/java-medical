@@ -65,6 +65,9 @@ module.exports = {
   paymentFailed: "支付失败",
   noPayment: "商家已禁止使用门店买单功能",
   hasDeleteStore: "该门店已删除",
+  integralRange: '可用积分范围',
+  belowLimit: '低于积分使用下限，不可使用积分支付',
+  exceedLimit: '超过积分使用上限，不可使用积分支付',
 
   // 门店买单详情
   paymentCompleted: "支付完成",
