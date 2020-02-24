@@ -43,6 +43,9 @@ export default {
       }
     }
   },
+  mounted () {
+    this.langDefault()
+  },
   watch: {
     'data.flag': {
       handler (newName, oldName) {
