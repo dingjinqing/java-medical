@@ -12,13 +12,15 @@
           <div class="rightContent">
             <div class="areaContent">
               <areaLinkage
-                @areaData="handleAreaData()"
+                :areaCode="areaObj"
+                @areaData="handleAreaData"
                 style="width: 100%;"
               />
             </div>
             <div class="position">
               <el-input
                 v-model="data.address"
+                size="small"
                 style="width: 200px;"
               ></el-input>
               <el-button
@@ -29,7 +31,7 @@
             </div>
             <div
               class="mapContent"
-              id="riMapContainer"
+              ref="riMapContainer"
             >
 
             </div>
@@ -52,12 +54,15 @@
 <!-- 腾讯地图 -->
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
+import chinaData from '@/assets/china-data'
+import { deepCloneObj } from '@/util/deepCloneObj'
 import vcolorpicker from 'vcolorpicker'
 import Vue from 'vue'
-import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue' // 省市区下拉框
 Vue.use(vcolorpicker)
 export default {
-  components: { areaLinkage },
+  components: {
+    areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue'), // 省市区下拉框
+  },
   props: {
     modulesData: Object, // 模块公共
     sortIndex: Number // 模块公共
@@ -89,6 +94,12 @@ export default {
         'search_sort': '0', // 商家分类是否显示
         'sort_bg_color': '#666666' // 图标颜色
       },
+      areaDataList: [],
+      areaObj: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
+      },
       defaultColorBorder: '#eee',
       defaultColorBorderBg: '#fff',
       defaultColorBorderIcon: '#666666',
@@ -103,6 +114,13 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         this.data = this.modulesData
+
+        // 省市区数据回显
+        this.areaObj.provinceCode = this.data.province_code
+        this.areaObj.cityCode = this.data.city_code
+        this.areaObj.districtCode = this.data.area_code
+        console.log(this.areaObj)
+
         // 初始化地图
         this.$nextTick(() => {
           this.initMap(this.data.latitude, this.data.longitude)
@@ -119,18 +137,38 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.areaDataList = deepCloneObj(chinaData)
+  },
   methods: {
     // 省市区
-    handleAreaData (data) {
-      console.log(data)
-      // this.data.province_code = data.province
-      // this.data.city_code = data.city
-      // this.data.area_code = data.district
+    handleAreaData (val) {
+      console.log(val)
+      this.data.province_code = val.province
+      this.data.city_code = val.city
+      this.data.area_code = val.district
+
+      this.areaDataList.forEach(item => {
+        if (val.province === item.provinceId) {
+          this.data.province = item.provinceName
+          item.areaCity.forEach(item2 => {
+            if (val.city === item2.cityId) {
+              this.data.city = item2.cityName
+              item2.areaDistrict.forEach(item3 => {
+                if (val.district === item3.districtId) {
+                  this.data.area = item3.districtName
+                }
+              })
+            }
+          })
+        }
+      })
+
     },
     // 加载地图
     initMap (latitude, longitude) {
       // 定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
-      this.map = new qq.maps.Map(document.getElementById('riMapContainer'), {
+      this.map = new qq.maps.Map(this.$refs.riMapContainer, {
         center: new qq.maps.LatLng(latitude, longitude), // 地图的中心地理坐标。
         zoom: 13 // 缩放等级
       })
@@ -143,8 +181,29 @@ export default {
             map: that.map,
             position: result.detail.location
           })
+          that.$set(that.data, 'latitude', result.detail.location.lat)
+          that.$set(that.data, 'longitude', result.detail.location.lng)
         }
       })
+      qq.maps.event.addListener(this.map, 'click', function (e) {
+        if (that.marker) {
+          that.marker.setMap(null)
+        }
+        that.marker = new qq.maps.Marker({
+          position: e.latLng,
+          map: that.map
+        })
+      })
+      if (latitude && longitude) {
+        that.map.panTo(new qq.maps.LatLng(latitude, longitude))
+        if (that.marker) {
+          that.marker.setMap(null)
+        }
+        that.marker = new qq.maps.Marker({
+          position: new qq.maps.LatLng(latitude, longitude),
+          map: that.map
+        })
+      }
     },
 
     // 点击查询地址

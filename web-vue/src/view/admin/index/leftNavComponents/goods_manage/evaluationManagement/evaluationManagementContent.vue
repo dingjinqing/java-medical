@@ -80,6 +80,12 @@ export default {
   mounted () {
     // 初始化国际语言
     this.langDefault()
+
+    var url = location.search
+    if (url.indexOf('?') !== -1) {
+      var str = url.substr(1)
+      this.activeName = str.split('=')[1]
+    }
   },
   methods: {
     // tap切换

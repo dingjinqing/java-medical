@@ -38,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -414,8 +413,10 @@ public class StoreWxService extends ShopBaseService {
         payOrderVo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         // 获取有效用户会员卡列表
         List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
-            .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
-            }, false)).contains(storeId))
+            // 首先支持门店使用
+            .stream().filter(e -> BYTE_ONE.equals(e.getStoreUseSwitch()))
+            // 其次是否包含指定门店
+            .filter((c) -> isStoreAvalid(c.getStoreList(), storeId))
             .collect(toList());
         log.debug("有效用户会员卡列表:{}", cardList);
         payOrderVo.setMemberCardList(cardList);
@@ -432,6 +433,19 @@ public class StoreWxService extends ShopBaseService {
         payOrderVo.setScoreDiscountRatio(baseScoreCfgService.getScoreDiscountRatio());
         payOrderVo.setScorePayNum(baseScoreCfgService.getScorePayNum());
         return payOrderVo;
+    }
+
+    private boolean isStoreAvalid(String s, Integer storeId) {
+        List<Integer> list = Util.json2Object(s, new TypeReference<List<Integer>>() {
+        }, false);
+        if (CollectionUtils.isEmpty(list)) {
+            return false;
+        }
+        if (list.size() == 1 && list.get(INTEGER_ZERO).equals(INTEGER_ZERO)) {
+            // 说明为全部门店
+            return true;
+        }
+        return list.contains(storeId);
     }
 
     /**

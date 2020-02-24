@@ -1,7 +1,4 @@
 /* components/popup/lottery-no-award-dialog/index.wxss */
-.lottery-award-page {
-
-}
 .l-a-cover {
   position: fixed;
   top: 0;
@@ -30,6 +27,13 @@
   height: 288rpx;
   top: -244rpx;
   left: -34rpx;
+}
+.l-a-top-back {
+  width: 100%;
+  position: absolute;
+  top: -20rpx;
+  left: 0;
+  z-index: -1;
 }
 .l-a-top-img {
   width: 100%;

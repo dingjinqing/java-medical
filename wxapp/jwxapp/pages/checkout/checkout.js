@@ -488,20 +488,22 @@ global.wxPage({
   // 获取必填项
   getMust(params){
     let must = {}
-    if(this.data.orderInfo.must.consigneeCid){
-      must.consigneeCid = this.data.must.consigneeCid
-    }
-    if(this.data.orderInfo.must.consigneeRealName){
-      must.consigneeRealName = this.data.must.consigneeRealName
-    }
-    if(this.data.orderInfo.must.orderCid){
-      must.orderCid = this.data.must.orderCid
-    }
-    if(this.data.orderInfo.must.orderRealName){
-      must.orderRealName = this.data.must.orderRealName
-    }
-    if(this.data.orderInfo.must.custom){
-      must.custom = this.data.must.custom
+    if(this.data.orderInfo.must.isShow){
+      if(this.data.orderInfo.must.consigneeCid){
+        must.consigneeCid = this.data.must.consigneeCid
+      }
+      if(this.data.orderInfo.must.consigneeRealName){
+        must.consigneeRealName = this.data.must.consigneeRealName
+      }
+      if(this.data.orderInfo.must.orderCid){
+        must.orderCid = this.data.must.orderCid
+      }
+      if(this.data.orderInfo.must.orderRealName){
+        must.orderRealName = this.data.must.orderRealName
+      }
+      if(this.data.orderInfo.must.custom){
+        must.custom = this.data.must.custom
+      }
     }
     if(Object.keys(must).length > 0){
       params.must = must
@@ -588,7 +590,8 @@ global.wxPage({
       activityType,
       activityId,
       recordId: this.data.params.recordId,
-      groupId: this.data.params.groupId
+      groupId: this.data.params.groupId,
+      isCart:this.data.params.isCart
     }
     this.getMust(params)
     util.api(

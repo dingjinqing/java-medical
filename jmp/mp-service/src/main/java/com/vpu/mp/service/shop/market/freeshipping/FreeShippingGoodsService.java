@@ -2,11 +2,14 @@ package com.vpu.mp.service.shop.market.freeshipping;
 
 import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
 import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingConstant;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleInfoVo;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -34,6 +37,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SE
  */
 @Service
 public class FreeShippingGoodsService extends ShopBaseService {
+    private static final String MESSAGE = "messages";
 
     @Autowired
     private FreeShippingRuleService freeShipRuleService;
@@ -50,7 +54,7 @@ public class FreeShippingGoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    public FreeShipGoodsSearchVo freeShipGoodsList(FreeShippingGoodsListParam param){
+    public FreeShipGoodsSearchVo freeShipGoodsList(FreeShippingGoodsListParam param,String lang){
         /*
          * 活动查询
          */
@@ -60,8 +64,10 @@ public class FreeShippingGoodsService extends ShopBaseService {
             return null;
         }
         //包邮规则
-        Result<FreeShippingRuleRecord> freeShippingRule = freeShipRuleService.getRuleListByFreeShippingId(freeShip.getId());
-
+        Result<FreeShippingRuleRecord> freeShippingRules = freeShipRuleService.getFreeShippingRule(freeShip.getId());
+        FreeShippingRuleRecord freeShippingRule = freeShipRuleService.getRuleByRuleId(param.getRuleId());
+        //包邮规则信息化
+        FreeShippingRuleInfoVo ruleInfoVo = ruleToTextInfo(freeShip, freeShippingRule,lang);
         //查询参数
         GoodsSearchParam goodsSearchParam = handleSearchParam(param, freeShip);
         //查询商品
@@ -75,12 +81,57 @@ public class FreeShippingGoodsService extends ShopBaseService {
         showCart.setShowCart((byte) 1);
         FreeShipGoodsSearchVo vo =new FreeShipGoodsSearchVo();
         FreeShippingVo freeShippingVo = freeShip.into(FreeShippingVo.class);
-        freeShippingVo.setRuleList(freeShippingRule.into(FreeShippingRuleVo.class));
+        freeShippingVo.setRuleList(freeShippingRules.into(FreeShippingRuleVo.class));
         vo.setDelMarket(delMarket);
         vo.setShowCart(showCart);
         vo.setPageResult(goodsListNormal);
         vo.setFreeShipping(freeShippingVo);
+        vo.setFreeShippingRule(ruleInfoVo);
         return vo;
+    }
+
+    /**
+     * 包邮规则信息化
+     * @param freeShip
+     * @param freeShipRule
+     * @return
+     */
+    private FreeShippingRuleInfoVo ruleToTextInfo(FreeShippingRecord freeShip, FreeShippingRuleRecord freeShipRule,String lang) {
+        FreeShippingRuleInfoVo ruleInfoVo = new FreeShippingRuleInfoVo();
+        //活动名称
+        ruleInfoVo.setActivityName(freeShip.getName());
+        //活动时间 0:固定日期 1：永久有效
+        if (FreeShippingConstant.FREE_SHIPPING_EXPIRE_FIXED.equals(freeShip.getExpireType())){
+            ruleInfoVo.setExpire(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_FIXED, MESSAGE,
+                    new Object[]{freeShip.getStartTime().toString(),freeShip.getEndTime().toString()}));
+        }else {
+            ruleInfoVo.setExpire(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_NEVER, MESSAGE));
+        }
+        //活动商品 条件 1全部 0部分
+        if (FreeShippingConstant.FREE_SHIPPING_GOODS_ALL.equals(freeShip.getType())){
+            ruleInfoVo.setGoodsAreaInfo(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_ALL, MESSAGE));
+        }else {
+            ruleInfoVo.setGoodsAreaInfo(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_PART, MESSAGE));
+        }
+        //包邮规则 包邮条件 0满金额 1满件数
+        if (freeShipRule.getConType().equals(FreeShippingConstant.FREE_SHIPPING_CONDITION_ACCOUNT.intValue())){
+            ruleInfoVo.setRuleCondition(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT, MESSAGE,
+                    new Object[]{freeShipRule.getMoney().toString()}));
+        }else if (freeShipRule.getConType().equals(FreeShippingConstant.FREE_SHIPPING_CONDITION_NUM.intValue())){
+            ruleInfoVo.setRuleCondition(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_NUM, MESSAGE,
+                    new Object[]{freeShipRule.getNum().toString()}));
+        }else {
+            ruleInfoVo.setRuleCondition(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT_OR_NUM, MESSAGE
+            ,new Object[]{freeShipRule.getMoney().toString(),freeShipRule.getNum().toString()}));
+        }
+        //包邮区域
+        List<Integer> regionIds = Util.splitValueToList(freeShipRule.getArea());
+        List<String> regionNames = saas.region.getCityDistrictProvinceName(regionIds);
+        ruleInfoVo.setAreaText(regionNames);
+        //ruleText
+        String ruleText =Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_RULE_TEXT, MESSAGE)+ruleInfoVo.getGoodsAreaInfo()+ruleInfoVo.getRuleCondition();
+        ruleInfoVo.setRuleText(ruleText);
+        return ruleInfoVo;
     }
 
     private GoodsSearchParam handleSearchParam(FreeShippingGoodsListParam param, FreeShippingRecord freeShip) {

@@ -38,7 +38,7 @@
           <view class="order_item">
             <view class="order_sn_status {{item.partShipFlag === 1 ? 'partial_delivery' : ''}}">
               <view class="partial_delivery_top">
-                <view class="order_mark"></view>
+                <view class="order_mark" wx:if="{{item.iconName}}" style="border-color:{{comColor}};color:{{comColor}};">{{item.iconName}}</view>
                 <view class="order_sn">
                   {{i18n.$t(localePack,"pages.order.orderSn")}}：
                   <text selectable>{{item.orderSn}}</text>
@@ -57,7 +57,7 @@
             <view wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="recId" class="goods_item">
               <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
               <view class="goods_info">
-                <view class="goods_name">{{goodsItem.goodsName}}</view>
+                <view class="goods_name"><text class="goods-tag" wx:if="{{goodsItem.isGift}}" style="color:{{comColor}};border-color:{{comColor}}">赠品</text>{{goodsItem.goodsName}}</view>
                 <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
                 <view class="goods_price_num">
                   <view class="goods_price" style="color:{{comColor}}">

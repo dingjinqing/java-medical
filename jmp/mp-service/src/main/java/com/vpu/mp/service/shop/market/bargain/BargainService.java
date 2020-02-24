@@ -184,9 +184,16 @@ public class BargainService extends ShopBaseService  {
 	public void updateBargain(BargainUpdateParam param) {
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
-		if(param.getShareConfig() != null) {
-			record.setShareConfig(Util.toJson(param.getShareConfig()));
-		}
+        if(param.getShareConfig() != null) {
+            if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                try {
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            record.setShareConfig(Util.toJson(param.getShareConfig()));
+        }
 		db().executeUpdate(record);
 		//刷新goodsType
 		saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();

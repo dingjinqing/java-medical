@@ -53,6 +53,8 @@ view,text,input{
   top: 6rpx;
 }
 .coupon{
+  min-width: 60rpx;
+  height: 100%;
   padding-right: 28rpx;
   background-size: 15rpx 25rpx;
 }

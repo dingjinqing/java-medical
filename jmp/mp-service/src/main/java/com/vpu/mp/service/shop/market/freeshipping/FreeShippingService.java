@@ -186,13 +186,12 @@ public class FreeShippingService extends ShopBaseService {
         SelectConditionStep<Record> select = db()
                 .select(FREE_SHIPPING.asterisk())
                 .from(FREE_SHIPPING)
-                .leftJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
                 .where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOption(select, param);
         select.orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.ID.desc());
         PageResult<FreeShippingVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), FreeShippingVo.class);
         result.getDataList().forEach(freeShipping -> {
-            List<FreeShippingRuleVo> ruleVoList = ruleService.getRuleListByFreeShippingId(freeShipping.getId()).into(FreeShippingRuleVo.class);
+            List<FreeShippingRuleVo> ruleVoList = ruleService.getFreeShippingRule(freeShipping.getId()).into(FreeShippingRuleVo.class);
             freeShipping.setRuleList(ruleVoList);
             Byte actStatus = Util.getActStatus(freeShipping.getStatus(), freeShipping.getStartTime(), freeShipping.getEndTime(), freeShipping.getExpireType());
             freeShipping.setCurrentStatus(actStatus);
@@ -320,7 +319,7 @@ public class FreeShippingService extends ShopBaseService {
                 .orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.CREATE_TIME.desc())
                 .fetchInto(FreeShippingVo.class);
         freeShippingVos.forEach(freeShipping -> {
-            List<FreeShippingRuleVo> ruleVoList = ruleService.getRuleListByFreeShippingId(freeShipping.getId()).into(FreeShippingRuleVo.class);
+            List<FreeShippingRuleVo> ruleVoList = ruleService.getFreeShippingRule(freeShipping.getId()).into(FreeShippingRuleVo.class);
             freeShipping.setRuleList(ruleVoList);
             Byte actStatus = Util.getActStatus(freeShipping.getStatus(), freeShipping.getStartTime(), freeShipping.getEndTime(), freeShipping.getExpireType());
             freeShipping.setCurrentStatus(actStatus);

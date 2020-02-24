@@ -22,28 +22,22 @@
       <view class="lottery-broadcast">
         <image class="lottery-broadcast-img" src="{{broadcastIcon}}" mode="widthFix"></image>
         <swiper class="lottery-broadcast-swiper" autoplay="true" circular="false" vertical="true" interval="1500">
-          <block wx:for="{{lotteryInfo.resentRecord}}" wx:key="index"></block>
-          <swiper-item>
-            <view class="lo-words clearfix">
-              {{item.username}}获得
-              <text wx:if='{{item.lotteryGrade == 1}}'>{{lotteryInfo.first_award.iconText}}</text>
-                <text wx:if='{{item.lotteryGrade == 2}}'>{{lotteryInfo.second_award.iconText}}</text>
-                <text wx:if='{{item.lotteryGrade == 3}}'>{{lotteryInfo.third_award.iconText}}</text>
-                <text wx:if='{{item.lotteryGrade == 4}}'>{{lotteryInfo.fourth_award.iconText}}</text>
-                <text wx:if='{{item.lottery_type != 4}}'>{{item.lottery_award}}</text>
-                <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lotteryGrade == 1}}'>{{lotteryInfo.goodsName[1]}}</text>
-                <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lotteryGrade == 2}}'>{{lotteryInfo.goodsName[2]}}</text>
-                <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lotteryGrade == 3}}'>{{lotteryInfo.goodsName[3]}}</text>
-                <text class='gift_names' wx:if='{{item.lottery_type == 4&&item.lotteryGrade == 4}}'>{{lotteryInfo.goodsName[4]}}</text>
-            </view>
-          </swiper-item>
+          <block wx:if="{{userInfo && userInfo.lotteryRecord}}" wx:for="{{userInfo.lotteryRecord.dataList}}" wx:key="index">
+            <swiper-item>
+              <view class="lo-words clearfix">
+                {{item.username}}获得
+                <text>{{item.lotteryPrize.iconImgs}}</text>
+                <text class='gift_names'>{{item.lotteryAward}}</text>
+              </view>
+            </swiper-item>
+          </block>
         </swiper>
       </view>
     </view>
     <view class="lottery-opera">
-      <button class="lottery-btn" wx:if="{{btnstatus === 1}}" bindtap="drawNow">立即抽奖</button>
-      <button class="lottery-btn" wx:elif="{{btnstatus === 2}}" open-type="share">去分享</button>
-      <button class="lottery-btn" wx:elif="{{btnstatus === 3}}" bindtap="drawNow">消耗{{userInfo.score}}积分抽奖</button>
+      <button class="lottery-btn" wx:if="{{btnstatus === 1}}" bindtap="drawNow" disabled="{{!!hasClick}}">立即抽奖</button>
+      <button class="lottery-btn" wx:elif="{{btnstatus === 2}}" open-type="share" disabled="{{!!hasClick}}">去分享</button>
+      <button class="lottery-btn" wx:elif="{{btnstatus === 3}}" bindtap="drawNow" disabled="{{!!hasClick}}">消耗{{userInfo.score}}积分抽奖</button>
       <button class="lottery-btn" wx:else bindtap="noDraw">抽奖次数用光啦</button>
     </view>
     <view class="lottery-intro">
@@ -75,7 +69,7 @@
   </view>
 </view>
 <!-- 中奖弹窗 -->
-<v-lottery-award-dialog show="{{awardDialogVisible}}" prizeInfo="{{prizeInfo}}" bind:close="dialogClose"/>
+<v-lottery-award-dialog show="{{awardDialogVisible}}" prizeInfo="{{prizeInfo}}" btnstatus="{{btnstatus}}" score="{{userInfo.score}}" lotteryId="{{lotteryId}}" bind:close="dialogClose" bind:back_tap="dialogClose"/>
 <!-- 未中奖弹窗 -->
-<v-lottery-no-award-dialog show="{{noAwardDialogVisible}}" bind:drawagain="drawAgain"/>
+<v-lottery-no-award-dialog show="{{noAwardDialogVisible}}" bind:close="dialogClose" bind:back_tap="dialogClose" bind:drawagain="drawAgain"/>
 <!-- <include src="/pages/common/footer.wxml"/> -->

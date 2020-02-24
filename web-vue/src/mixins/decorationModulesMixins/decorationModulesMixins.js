@@ -1,3 +1,4 @@
+import vm from '../../main.js'
 export default {
   methods: {
     // 页面装修模块数据填充处理
@@ -400,7 +401,7 @@ export default {
             'shop_name': localStorage.getItem('V-shopName'),
             'shop_notice': '',
             'shop_bg_path': localStorage.getItem('V-shopAvatar'),
-            'bg_url': 'image/admin/shop_beautify/beau1.png',
+            'bg_url': vm.$imageHost + '/image/admin/shop_beautify/beau1.png',
             'bg_fullUrl': '',
             'ok_ajax': 1
           }
@@ -408,13 +409,13 @@ export default {
         case 28: // 地图模块
           obj = {
             'module_name': 'm_map',
-            'province': '北京市',
-            'province_code': '110000',
-            'city': '北京市',
-            'city_code': '110100',
-            'area': '东城区',
-            'area_code': '110101',
-            'address': '东直门',
+            'province': '',
+            'province_code': '',
+            'city': '',
+            'city_code': '',
+            'area': '',
+            'area_code': '',
+            'address': '',
             'map_show': 1,
             'latitude': '39.92855',
             'longitude': '116.41637'
@@ -626,20 +627,47 @@ export default {
               })
               flag = false
             }
+            break
+          case 'm_title':
+            if (!item.title) {
+              this.$message.error({
+                message: '请添加标题',
+                showClose: true
+              })
+              flag = false
+            }
+            break
+          case 'm_rich_text':
+            if (item.rich_text === '') {
+              this.$message.error({
+                message: '请添加富文本内容',
+                showClose: true
+              })
+              flag = false
+            }
+            break
         }
       })
       console.log(flag)
       return { flag, isMpinintegration }
     },
     // 处理保存数据
-    handleToSaveModulesData (data, pageSetData) {
+    handleToSaveModulesData (data, pageSetData, lastIdx) {
       console.log(data, pageSetData)
+      let idx = lastIdx + 1
       let obj = {}
       data.forEach(item => {
-        obj[`c_${item.cur_idx}`] = item
+        if (!item.cur_idx) {
+          obj[`c_${idx}`] = item
+          item.cur_idx = idx
+          idx = idx + 1
+        } else {
+          obj[`c_${item.cur_idx}`] = item
+        }
       })
-      console.log(obj)
+      console.log(idx)
       pageSetData['cat_id'] = Number(pageSetData['cat_id'])
+      pageSetData.last_cur_idx = idx
       obj['page_cfg'] = pageSetData
       return obj
     },

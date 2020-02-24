@@ -26,7 +26,7 @@ export const cn = {
   ],
   // 视频空间数据
   upload: {
-    currentVersionTip: '当前版本为{version}，剩余{leftSpace}内存空间',
+    currentVersionTip: '当前版本为{version}，剩余{leftSpace}M内存空间',
     currentVersionTipMore: '体验版100M内存空间，基础版500M内存空间，高级版2048M内存空间，旗舰版10240M内存空间',
     uploadRule: '上传视频仅支持MP4格式，为保障正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。由用户上传的视频，存储时效为7天，过期自动删除，如有需要请尽快保存',
     knownMore: '了解更多',

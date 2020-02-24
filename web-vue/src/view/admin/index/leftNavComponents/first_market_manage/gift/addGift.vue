@@ -425,7 +425,8 @@
       <choosingGoods
         :tuneUpChooseGoods="tuneUpChooseGoods"
         :loadProduct="true"
-        :chooseGoodsBack="specsIds"
+        :checkedNumMax=20
+        :chooseGoodsBack="this.specsIds"
         @resultGoodsIds="getSpecsIds"
         @resultGoodsDatas="getSpecsData"
       />
@@ -442,8 +443,8 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
 // import { format, range } from '@/util/date'
 // import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
-
+import { addGift, getGiftDetail, updateGift, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
+import { getUsableMemberCardList } from '@/api/admin/memberManage/memberCard'
 export default {
   components: {
     wrapper,
@@ -452,11 +453,11 @@ export default {
   },
   data () {
     var validatelevel = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (!value) {
         callback(new Error('请填写活动优先级'))
       } else if (!re.test(value)) {
-        callback(new Error('请填写0或者正整数'))
+        callback(new Error('请填写正整数'))
       } else {
         callback()
       }
@@ -659,7 +660,7 @@ export default {
       }
     })
     // 获取会员卡数据
-    getMemberCardList().then((res) => {
+    getUsableMemberCardList().then((res) => {
       if (res.error === 0) {
         this.cardList = res.content
       }
@@ -887,14 +888,15 @@ export default {
 
     // 选择规格弹窗回调显示
     getSpecsIds (ids) {
+      console.log('getSpecsIds', ids)
       this.specsIds = ids
     },
 
     // 规格弹窗数据
     getSpecsData (data) {
+      console.log('getSpecsData', data)
       // this.specsData = data
       this.tableData = data
-      console.log(data)
     },
 
     // 规格表格删除

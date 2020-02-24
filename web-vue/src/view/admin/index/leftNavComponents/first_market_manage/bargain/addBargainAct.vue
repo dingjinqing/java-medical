@@ -178,8 +178,10 @@
                       :max="scope.row.shopPrice"
                     >
                     </el-input-number>
-                    <span>({{$t('addBargainAct.default0')}})</span>
-                    <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
+                    <div style="margin-top:5px;">
+                      <span>({{$t('addBargainAct.default0')}})</span>
+                      <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
+                    </div>
                     <!-- <div style="margin: 4px 6px">({{$t('addBargainAct.default0')}})
                       <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
                     </div> -->
@@ -702,20 +704,26 @@ export default {
     },
     updateSubmit () {
       // 更新活动
-      this.param.id = this.actId
-      this.param.shareConfig = this.shareConfig
-      this.param.startTime = this.param.effectiveDate[0]
-      this.param.endTime = this.param.effectiveDate[1]
-      this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
-      this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
-      updateBargain(this.param).then((res) => {
-        if (res.error === 0) {
-          this.$message.success(this.$t('marketCommon.successfulOperation'))
-          this.$router.push({
-            name: 'bargain'
-          })
-        } else {
-          this.$message.error(this.$t('marketCommon.failureOperation'))
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.param.id = this.actId
+          this.param.shareConfig = this.shareConfig
+          this.param.startTime = this.param.effectiveDate[0]
+          this.param.endTime = this.param.effectiveDate[1]
+          this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
+          this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
+          if (this.validParam()) {
+            updateBargain(this.param).then((res) => {
+              if (res.error === 0) {
+                this.$message.success(this.$t('marketCommon.successfulOperation'))
+                this.$router.push({
+                  name: 'bargain'
+                })
+              } else {
+                this.$message.error(this.$t('marketCommon.failureOperation'))
+              }
+            })
+          }
         }
       })
     },

@@ -86,10 +86,8 @@
             </div>
           </div>
         </el-form-item>
-        <el-form-item
-          :label="$t('shipping.ruleText') + '：'"
-          prop="ruleList"
-        >
+        <el-form-item :label="$t('shipping.ruleText') + '：'">
+          <!-- prop="ruleList" -->
           <div
             class="fullRule"
             v-for="(item, index) in form.ruleList"
@@ -147,9 +145,9 @@
               <el-form-item
                 :label="$t('shipping.shippingArea') + '：'"
                 style="margin: 20px 0;"
-                :prop="`ruleList[${index}].areaList`"
+                :prop="`ruleList[${index}].area`"
                 :rules="[
-                    { required: true, validator: (rule, value, callback)=>{validateArea(rule, value, callback, item.areaList)}, trigger: ['blur', 'change'] },
+                    { required: true, validator: (rule, value, callback)=>{validateArea(rule, value, callback, item.area)}, trigger: ['blur', 'change'] },
                   ]"
               >
                 <el-button
@@ -157,13 +155,11 @@
                   type="primary"
                   @click="areaHandler(index)"
                 >{{ $t('shipping.areaTip') }}</el-button>
-                <div>
-                  <span
-                    v-for="(val, key) in item.areaList"
-                    :key="key"
-                    style="margin-right: 20px;"
-                  >{{ val }}</span>
-                </div>
+                <el-input
+                  v-model="item.area"
+                  style="display: none;"
+                ></el-input>
+                <div>{{ item.areaList }}</div>
               </el-form-item>
             </div>
           </div>
@@ -251,13 +247,13 @@ export default {
         callback()
       }
     }
-    var validateRule = (rule, value, callback) => {
-      if (value.length === 0) {
-        callback(new Error('请添加包邮规则'))
-      } else {
-        callback()
-      }
-    }
+    // var validateRule = (rule, value, callback) => {
+    //   if (value.length === 0) {
+    //     callback(new Error('请添加包邮规则'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       // 表单
       form: {
@@ -266,7 +262,7 @@ export default {
         validity: '', // 有效期
         startTime: '',
         endTime: '',
-        level: 0, // 优先级
+        level: 1, // 优先级
         type: 1, // 添加商品类型
         recommendGoodsId: '',
         recommendCatId: '',
@@ -275,7 +271,8 @@ export default {
           conType: 0,
           money: 0,
           num: 0,
-          area: ''
+          area: '',
+          areaList: ''
         }]
       },
       // 校验表单
@@ -283,8 +280,8 @@ export default {
         name: { required: true, message: '请填写活动名称', trigger: 'blur' },
         expireType: { required: true, validator: validateExpireType, trigger: ['blur', 'change'] },
         level: { validator: validateLevel, trigger: 'blur' },
-        type: { required: true, validator: validateType, trigger: 'change' },
-        ruleList: { required: true, validator: validateRule, trigger: ['blur', 'change'] }
+        type: { required: true, validator: validateType, trigger: 'change' }
+        // ruleList: { required: true, validator: validateRule, trigger: ['blur', 'change'] }
       },
       storeArr: [], // 添加商品数据
 
@@ -380,20 +377,46 @@ export default {
           this.form.ruleList = data.ruleList
 
           // 包邮区域数据回显
-          this.form.ruleList.forEach((item, index) => {
+          data.ruleList.forEach((item, index) => {
             item.areaList = []
-            item.area = item.area.split(',')
-            item.area.forEach((val, key) => {
-              val = Number(val)
-              this.locationList.forEach((ele, num) => {
+            // item.area = item.area.split(',')
+            // item.area = item.area.map(Number)
+            item.areaCode = item.area
+            item.areaCode = item.areaCode.split(',')
+            item.areaCode = item.areaCode.map(Number)
+
+            console.log(this.locationList)
+            item.areaCode.forEach((val, key) => {
+              this.locationList.forEach(ele => {
+                // 省
                 if (ele.provinceId === val) {
                   item.areaList.push(ele.provinceName)
+                } else {
+                  // 市
+                  if (ele.areaCity) {
+                    ele.areaCity.forEach(ele2 => {
+                      if (ele2.cityId === val) {
+                        item.areaList.push(ele2.cityName)
+                      } else {
+                        // 区
+                        if (ele2.areaDistrict) {
+                          ele2.areaDistrict.forEach(ele3 => {
+                            if (ele3.districtId === val) {
+                              item.areaList.push(ele3.districtName)
+                            }
+                          })
+                        }
+                      }
+                    })
+                  }
                 }
               })
             })
+            item.areaList = item.areaList.join(',')
 
             // 弹框数据回显
-            this.updateData(item.area)
+            this.updateData(item.areaCode)
+            // this.updateData(item.area)
             this.areaData.push({
               checkListT: this.checkListT,
               innerObjJ: this.innerObjJ
@@ -482,8 +505,12 @@ export default {
         })
     },
 
-    // 保存秒杀活动
+    // 保存活动
     saveClickHandler () {
+      if (this.form.ruleList.length === 0) {
+        this.$message.warning('请添加包邮规则')
+        return false
+      }
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.form.expireType === 0 && this.form.validity) {
@@ -608,14 +635,14 @@ export default {
       // this.$message.success('添加区域成功!')
       this.form.ruleList.forEach((item, index) => {
         if (index === this.areaIndex) {
-          this.form.ruleList[index].area = value.idList
-          this.form.ruleList[index].areaList = value.areaList
+          item.area = value.idList.join(',')
+          item.areaList = value.areaList.join(',')
         }
       })
       this.areaData.forEach((item, index) => {
         if (index === this.areaIndex) {
-          this.areaData[index].checkListT = value.checkList
-          this.areaData[index].innerObjJ = value.innerObj
+          item.checkListT = value.checkList
+          item.innerObjJ = value.innerObj
 
           this.checkListT.push(...value.checkList)
           this.innerObjJ = value.innerObj

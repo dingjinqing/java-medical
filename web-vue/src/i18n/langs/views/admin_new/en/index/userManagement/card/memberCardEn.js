@@ -218,5 +218,7 @@ export const en = {
   gradeCondition: 'Condition: ',
   normalCard: 'NormalCard',
   limitCard: 'LimitCard',
-  gradeCard: 'GradeCard'
+  gradeCard: 'GradeCard',
+  defineGoodsDis: 'Part Discount',
+  allGoodsDis: 'All Discount'
 }

@@ -147,6 +147,15 @@ export default {
   },
   methods: {
     initDataList () {
+      if (this.requestParams.createTimeStart) {
+        let end = this.requestParams.createTimeStart.split(' ', 1)
+        let endTime = end[0] + ' 23:59:59'
+        this.requestParams.createTimeEnd = endTime
+      } else {
+        this.requestParams.createTimeEnd = ''
+      }
+      // console.log(this.requestParams, 'get data')
+
       this.loading = true
       this.requestParams.activityId = this.actId
       this.requestParams.currentPage = this.pageParams.currentPage

@@ -207,6 +207,7 @@ export default {
     this.noneBlockDiscArr = this.$t('memberCard.noneBlockDiscArr')
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       this.$refs.ruleForm.validate((valid) => {
         console.log(valid)

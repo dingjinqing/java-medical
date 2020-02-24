@@ -18,6 +18,7 @@ import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
@@ -25,22 +26,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.DeliverFeeTemplate.DELIVER_FEE_TEMPLATE;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.RecommendGoods.RECOMMEND_GOODS;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
-import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.DEFAULT_SCALE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
+import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
+import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
+import static org.jooq.impl.DSL.*;
 
 /**
  * author liufei
@@ -81,8 +86,8 @@ public class MallOverviewService extends ShopBaseService {
     public CardDaoService cardDaoService;
 
     public static final List<Byte> RECENT_DATE = new ArrayList<Byte>() {{
+        add(Byte.valueOf("0"));
         add(Byte.valueOf("1"));
-        add(Byte.valueOf("2"));
         add(Byte.valueOf("7"));
         add(Byte.valueOf("30"));
         add(Byte.valueOf("90"));
@@ -94,29 +99,43 @@ public class MallOverviewService extends ShopBaseService {
     public DataDemonstrationVo dataDemonstration(DataDemonstrationParam param){
         byte screenTime = param.getScreeningTime();
         if (!RECENT_DATE.contains(screenTime)) {
-            screenTime = 1;
+            screenTime = 0;
         }
         return getDataDemonstration(screenTime);
     }
     private DataDemonstrationVo getDataDemonstration(byte screeningTime){
         DataDemonstrationVo vo = new DataDemonstrationVo();
-        // 当天数据实时统计返回
+        // 0当天数据实时统计返回
         if (screeningTime == 0) {
-            Condition orderInfoTime = OrderInfo.ORDER_INFO.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+            Condition orderInfoTime = ORDER_INFO.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+            Condition virtualTime = VIRTUAL_ORDER.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
             Condition userLoginRecordTime = UserLoginRecord.USER_LOGIN_RECORD.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
-            Condition payOrderCon = OrderInfo.ORDER_INFO.ORDER_STATUS.ge((byte) 3);
+            Condition payOrderCon = ORDER_INFO.ORDER_STATUS.ge((byte) 3);
 
             vo.setUserVisitNum(db().fetchCount(UserLoginRecord.USER_LOGIN_RECORD, userLoginRecordTime));
-            vo.setPaidOrderNum(db().fetchCount(OrderInfo.ORDER_INFO, orderInfoTime.and(payOrderCon)));
-            vo.setOrderUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
-                .from(OrderInfo.ORDER_INFO).where(orderInfoTime).fetchOneInto(Integer.class));
-            vo.setOrderNum(db().fetchCount(OrderInfo.ORDER_INFO, orderInfoTime));
-            vo.setTotalPaidSum(db().select(sum(OrderInfo.ORDER_INFO.MONEY_PAID))
-                .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
-                .fetchOneInto(Integer.class));
-            vo.setPaidUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
-                .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
-                .fetchOneInto(Integer.class));
+            vo.setPaidOrderNum(db().fetchCount(ORDER_INFO, orderInfoTime.and(payOrderCon)));
+            vo.setOrderUserNum(db().select(countDistinct(ORDER_INFO.USER_ID))
+                .from(ORDER_INFO).where(orderInfoTime).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO));
+            vo.setOrderNum(db().fetchCount(ORDER_INFO, orderInfoTime));
+            // 总支付金额（商品订单(MONEY_PAID+USE_ACCOUNT+MEMBER_CARD_BALANCE)+会员卡订单）
+            BigDecimal virtual = db().select(sum(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE)))
+                .from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_STATUS.eq(BYTE_ONE))
+                .and(virtualTime)
+                .fetchOptionalInto(BigDecimal.class).orElse(BIGDECIMAL_ZERO);
+            BigDecimal goodsPaid = db().select(sum(ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT).add(ORDER_INFO.MEMBER_CARD_BALANCE)))
+                .from(ORDER_INFO).where(orderInfoTime.and(payOrderCon))
+                .fetchOptionalInto(BigDecimal.class).orElse(BigDecimal.ZERO);
+
+            vo.setTotalPaidSum(virtual.add(goodsPaid).setScale(2, RoundingMode.HALF_UP));
+
+            vo.setPaidUserNum(db().select(countDistinct(ORDER_INFO.USER_ID))
+                .from(ORDER_INFO).where(orderInfoTime.and(payOrderCon))
+                .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO));
+            vo.setOrderPeopleNum(db().select(count(ORDER_INFO.USER_ID))
+                .from(ORDER_INFO).where(orderInfoTime).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO));
+            vo.setPayPeopleNum(db().select(count(ORDER_INFO.USER_ID))
+                .from(ORDER_INFO).where(orderInfoTime.and(payOrderCon))
+                .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO));
         } else {
             // 历史数据从统计表中获取返回
             vo = db().select(USER_SUMMARY_TREND.LOGIN_DATA.as("userVisitNum")
@@ -125,16 +144,28 @@ public class MallOverviewService extends ShopBaseService {
                 , USER_SUMMARY_TREND.PAY_ORDER_NUM.as("paidOrderNum")
                 , USER_SUMMARY_TREND.TOTAL_PAID_MONEY.as("totalPaidSum")
                 , USER_SUMMARY_TREND.ORDER_USER_DATA.as("paidUserNum")
+                , USER_SUMMARY_TREND.ORDER_PEOPLE_NUM.as("orderPeopleNum")
+                , USER_SUMMARY_TREND.PAY_PEOPLE_NUM.as("payPeopleNum")
             ).from(USER_SUMMARY_TREND).where(USER_SUMMARY_TREND.REF_DATE.eq(java.sql.Date.valueOf(LocalDate.now())))
                 .and(USER_SUMMARY_TREND.TYPE.eq(screeningTime)).fetchOptionalInto(DataDemonstrationVo.class).orElse(vo);
         }
-        BigDecimal orderNum = BigDecimalUtil.valueOf(vo.getOrderNum());
+        BigDecimal orderUserNum = BigDecimalUtil.valueOf(vo.getOrderUserNum());
         BigDecimal userVisitNum = BigDecimalUtil.valueOf(vo.getUserVisitNum());
-        BigDecimal paidNum = BigDecimalUtil.valueOf(vo.getPaidOrderNum());
-        vo.setUv2order(divideWithOutCheck(orderNum, userVisitNum));
-        vo.setUv2paid(divideWithOutCheck(paidNum, userVisitNum));
-        vo.setOrder2paid(divideWithOutCheck(paidNum, orderNum));
+        BigDecimal paidUserNum = BigDecimalUtil.valueOf(vo.getPaidUserNum());
+        vo.setUv2order(specialDivide(orderUserNum, userVisitNum));
+        vo.setUv2paid(specialDivide(paidUserNum, userVisitNum));
+        vo.setOrder2paid(specialDivide(paidUserNum, orderUserNum));
         return vo;
+    }
+
+    private BigDecimal specialDivide(BigDecimal left, BigDecimal right) {
+        if (left == null || left.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        if (right == null || right.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        return left.divide(right, 6, RoundingMode.HALF_UP).multiply(HUNDRED).setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     /**
@@ -143,12 +174,12 @@ public class MallOverviewService extends ShopBaseService {
      */
     public ToDoItemVo toDoItem(){
         ToDoItemVo toDoItemVo = new ToDoItemVo();
-        Condition orderStatus = OrderInfo.ORDER_INFO.ORDER_STATUS.eq((byte)3);
-        Condition deliverType0 = OrderInfo.ORDER_INFO.DELIVER_TYPE.eq((byte)0);
-        Condition deliverType1 = OrderInfo.ORDER_INFO.DELIVER_TYPE.eq((byte)1);
+        Condition orderStatus = ORDER_INFO.ORDER_STATUS.eq((byte) 3);
+        Condition deliverType0 = ORDER_INFO.DELIVER_TYPE.eq((byte) 0);
+        Condition deliverType1 = ORDER_INFO.DELIVER_TYPE.eq((byte) 1);
         Condition refundStatus = ReturnOrder.RETURN_ORDER.REFUND_STATUS.in((byte)1,(byte)4);
-        toDoItemVo.setPendingOrder(db().fetchCount(OrderInfo.ORDER_INFO,orderStatus.and(deliverType1)));
-        toDoItemVo.setToBeDelivered(db().fetchCount(OrderInfo.ORDER_INFO,orderStatus.and(deliverType0)));
+        toDoItemVo.setPendingOrder(db().fetchCount(ORDER_INFO, orderStatus.and(deliverType1)));
+        toDoItemVo.setToBeDelivered(db().fetchCount(ORDER_INFO, orderStatus.and(deliverType0)));
         toDoItemVo.setRefunds(db().fetchCount(ReturnOrder.RETURN_ORDER,refundStatus));
         GoodsSpecProduct gsp = GoodsSpecProduct.GOODS_SPEC_PRODUCT.as("gsp");
         Goods g = Goods.GOODS.as("g");
@@ -180,7 +211,7 @@ public class MallOverviewService extends ShopBaseService {
             .dataGoods(goodsNav(param))
             .dataOrder(orderNav(param))
             .dataMarket(marketNav(param))
-            .build().ruleHandler();
+            .build();
     }
 
     /**
@@ -188,62 +219,106 @@ public class MallOverviewService extends ShopBaseService {
      */
     private AssiDataShop shopNav() {
         WxShoppingListConfig shoppingListConfig = shoppingListConfigService.getShoppingListConfig();
-        return new AssiDataShop.Builder()
+        Map<String, String> comm = new HashMap<String, String>(INTEGER_ONE) {{
+            put("ShoppingRecommend", shoppingListConfig.getWxShoppingRecommend());
+        }};
+        return AssiDataShop.builder()
             //  店铺首页 0：已完成店铺首页装修，否未装修店铺首页
-            .setHomePageConf(shopPageConfig())
-            //  好物圈 0: 已开启好物圈，否未开启
-            .setShopRecommendConf(Byte.valueOf(shoppingListConfig.getEnabeldWxShoppingList()))
-            .setShopRecommendLink(shoppingListConfig.getWxShoppingRecommend())
+            .homePageConf(Metadata.builder().type(BYTE_ONE).value(shopPageConfig()).build())
+            //  好物圈 0: 未开启 "1"开启
+            .shopRecommendConf(Metadata.builder()
+                .type(BYTE_ONE)
+                .value(Integer.valueOf(shoppingListConfig.getEnabeldWxShoppingList()))
+                .content(comm).build())
             //  客服 0: 已开启客服，否未开启
-            .setCustomServiceConf(shopCommonConfigService.getCustomService() + shopCommonConfigService.getReturnService() > 0 ? BYTE_ZERO : BYTE_ONE)
+            .customServiceConf(Metadata.builder().type(BYTE_ONE).value(isOpenCommon()).build())
             .build().ruleHandler();
+    }
+
+    // 是否开启客服
+    private int isOpenCommon() {
+        return shopCommonConfigService.getCustomService() + shopCommonConfigService.getReturnService() > 0 ? BYTE_ZERO : BYTE_ONE;
     }
 
     /**
      * 商品相关统计信息
      */
     private AssiDataGoods goodsNav(ShopAssistantParam param) {
+        Set<Integer> smallCommdityGoods = goodsService.smallCommodityInventorySet(param.getStoreSizeNum());
+        Set<Integer> unsoldGoods = goodsService.unsalableGoodsSet();
+        Set<Integer> reviewGoods = goodsCommentService.reviewOverdueSet(param.getCommentOver());
         return AssiDataGoods.builder()
             // 运费模板设置
-            .shipTemplateConf(db().fetchCount(DELIVER_FEE_TEMPLATE) > 0 ? BYTE_ZERO : BYTE_ONE)
+            .shipTemplateConf(Metadata.builder()
+                .type(BYTE_ONE)
+                .value(db().fetchCount(DELIVER_FEE_TEMPLATE)).build())
             // 商品添加
-            .goodsConf(db().fetchCount(Goods.GOODS, Goods.GOODS.DEL_FLAG.eq(BYTE_ZERO)) > 0 ? BYTE_ZERO : BYTE_ONE)
+            .goodsConf(Metadata.builder()
+                .type(BYTE_ONE)
+                .value(db().fetchCount(Goods.GOODS, Goods.GOODS.DEL_FLAG.eq(BYTE_ZERO))).build())
             // 商品库存偏小
-            .goodsStoreConf(goodsService.smallCommodityInventory(param.getStoreSizeNum()))
+            .goodsStoreConf(Metadata.builder()
+                .value(smallCommdityGoods.size())
+                .list(smallCommdityGoods).build())
             //  滞销商品
-            .goodsUnsalableConf(goodsService.unsalableGoods())
+            .goodsUnsalableConf(Metadata.builder().value(unsoldGoods.size()).list(unsoldGoods).build())
             //  商品评价审核逾期
-            .goodsComment(goodsCommentService.reviewOverdue(param.getCommentOver()))
+            .goodsComment(Metadata.builder().value(reviewGoods.size()).list(reviewGoods).build())
             //  推荐商品
-            .goodsRecommend(db().fetchCount(RECOMMEND_GOODS))
+            .goodsRecommend(Metadata.builder()
+                .type(BYTE_THREE)
+                .value(db().fetchCount(RECOMMEND_GOODS, RECOMMEND_GOODS.DEL_FLAG.eq(BYTE_ZERO))).build())
             // 商家分类
-            .shopSort(db().fetchCount(SORT))
-            .build().ruleHandler();
+            .shopSort(Metadata.builder()
+                .type(BYTE_THREE)
+                .value(db().fetchCount(SORT)).build())
+            .build().ruleHandler().setType();
     }
 
     /**
-     * 订单相关统计信息
+     * 订单相关统计信息（未完成状态为提醒，已完成状态为任务）
      */
     private AssiDataOrder orderNav(ShopAssistantParam param) {
+        Set<Integer> overdue = orderInfo.overdueDeliverySet(param.getDeliverOver());
+        Set<Integer> refund = returnOrderService.refundOverdueSet(param.getRefundOver());
+        Set<Integer> remind = orderInfo.remindOverdueOrderSet();
         return AssiDataOrder.builder()
             //  发货逾期
-            .deliver(orderInfo.overdueDelivery(param.getDeliverOver()))
+            .deliver(Metadata.builder().value(overdue.size()).list(overdue).build())
             //  退款申请逾期
-            .refund(returnOrderService.refundOverdue(param.getRefundOver()))
-            .build().ruleHandler();
+            .refund(Metadata.builder().value(refund.size()).list(refund).build())
+            // 提醒发货
+            .remind(Metadata.builder().value(remind.size()).list(remind).build())
+            .build().ruleHandler().setType();
     }
 
     /**
      * 营销相关统计信息
      */
     private AssiDataMarket marketNav(ShopAssistantParam param) {
+        Map<String, String> memberContent = buildMemberVo(param.getExamineOver());
+        Set<Integer> memberValue;
+        if (MapUtils.isEmpty(memberContent)) {
+            memberValue = new HashSet<>();
+        } else {
+            memberValue = cardVerifyService.getUndealUserNumSet(Integer.valueOf(memberContent.get("card_id")));
+        }
+        Map<Integer, String> coupon = couponService.getSmallInventoryCoupon(param.getCouponSizeNum());
+
+        Set<Integer> distributor = distributorCheckService.distributionReviewTimeoutSet(param.getApplyOver());
         return AssiDataMarket.builder()
             //  分销审核超时
-            .examine(distributorCheckService.distributionReviewTimeout(param.getApplyOver()))
+            .examine(Metadata.builder()
+                .type(BYTE_TWO)
+                .value(distributor.size()).list(distributor).build())
             // 会员卡激活审核超时
-            .member(buildMemberVo(param.getExamineOver()))
+            .member(Metadata.builder()
+                .type(BYTE_TWO)
+                .value(memberValue.size()).list(memberValue).content(memberContent).build())
             //  优惠券库存不足
-            .voucher(couponService.getSmallInventoryCoupon(param.getCouponSizeNum()))
+            .voucher(Metadata.builder()
+                .type(BYTE_TWO)
+                .value(coupon.size()).content(coupon).build())
             .build().ruleHandler();
     }
 
@@ -251,16 +326,15 @@ public class MallOverviewService extends ShopBaseService {
         CardExamineRecord cardExamineRecord = cardVerifyService.getLastRecordCanNull(new ActiveAuditParam() {{
             setExamineOver(Timestamp.valueOf(LocalDateTime.now().minusDays(examineOver)));
         }});
-        if (Objects.isNull(cardExamineRecord)) {
-            return new HashMap<String, String>(3) {{
-                put("card_num", STRING_ZERO);
-            }};
+
+        if (Objects.isNull(cardExamineRecord) || cardExamineRecord.size() == 0) {
+            return null;
         }
         Integer cardId = cardExamineRecord.getCardId();
         return new HashMap<String, String>(3) {{
             put("card_id", String.valueOf(cardId));
             put("card_name", cardDaoService.getCardById(cardId).getCardName());
-            put("card_num", cardVerifyService.getUndealUserNum(cardId).toString());
+//            put("card_num", cardVerifyService.getUndealUserNum(cardId).toString());
         }};
     }
 

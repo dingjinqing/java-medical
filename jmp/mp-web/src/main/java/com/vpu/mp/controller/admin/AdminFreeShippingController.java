@@ -54,7 +54,7 @@ public class AdminFreeShippingController extends AdminBaseController {
             return fail();
         }
         FreeShippingRecord freeShipping = shop().freeShipping.getFreeShippingById(param.getId());
-        Result<FreeShippingRuleRecord> freeShippingRule = shop().freeShipping.ruleService.getRuleListByFreeShippingId(param.getId());
+        Result<FreeShippingRuleRecord> freeShippingRule = shop().freeShipping.ruleService.getFreeShippingRule(param.getId());
         FreeShippingVo freeShippingVo = freeShipping.into(FreeShippingVo.class);
         freeShippingVo.setRuleList(freeShippingRule.into(FreeShippingRuleVo.class));
         return success(freeShippingVo);

@@ -512,9 +512,6 @@ export default {
         case 'm_hot_area':
           moduleNameId = 15
           break
-        case 'm_shop':
-          moduleNameId = 27
-          break
         case 'm_text_image':
           moduleNameId = 16
           break
@@ -544,6 +541,12 @@ export default {
           break
         case 'm_service':
           moduleNameId = 25
+          break
+        case 'm_shop':
+          moduleNameId = 27
+          break
+        case 'm_map':
+          moduleNameId = 28
       }
       return moduleNameId
     },
@@ -1161,7 +1164,7 @@ export default {
       console.log(saveMosulesData)
       console.log(this.pageSetData, this.cur_idx)
       this.pageSetData.last_cur_idx = this.cur_idx
-      let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
+      let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData, this.cur_idx)
       console.log(data)
       console.log(saveMosulesData, this.modulesData, this.pageSetData, data)
       console.log(localStorage.getItem('V-ShopId'))
@@ -1217,6 +1220,9 @@ export default {
             this.previewCodeImg = res.content
             this.previewVisible = true
           } else {
+            if (res.content) {
+              this.page_id = res.content
+            }
             this.$message.success({
               message: '保存成功',
               showClose: true,

@@ -159,7 +159,7 @@
               >
                 <i
                   @click="enableBargain(scope.row.id)"
-                  class="el-icon-check"
+                  class="el-icon-circle-check"
                 ></i>
               </el-tooltip>
               <el-tooltip

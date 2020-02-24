@@ -6,12 +6,13 @@
       @change="changeHandle"
       style="width:170px;"
       size="small"
+      :disabled="disabled"
     >
       <el-option
         v-for="(item,index) in selects"
         :key="index"
         :label="item.name"
-        :value="item.id"
+        :value="item.lotteryName"
       ></el-option>
     </el-select>
     <el-button
@@ -35,7 +36,8 @@
 import { selectPayRewardApi } from '@/api/admin/marketManage/openScreen.js'
 export default {
   props: {
-    value: [Number, String]
+    value: [Number, String],
+    disabled: Boolean
   },
   model: {
     prop: 'value',
@@ -65,6 +67,7 @@ export default {
         if (res.error === 0) {
           console.log(res)
           this.selects = res.content.dataList
+          console.log(this.selects)
         }
       })
     },

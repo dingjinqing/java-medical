@@ -294,6 +294,7 @@ public class MemberDaoService extends ShopBaseService {
 					.leftJoin(USER).on(USER_CARD.USER_ID.eq(USER.USER_ID))
 					.where(DSL.noCondition())
 					.and(buildOptionsForUserCard(param))
+					.orderBy(USER_CARD.CREATE_TIME.desc())
 					.fetch();
 	}
 	

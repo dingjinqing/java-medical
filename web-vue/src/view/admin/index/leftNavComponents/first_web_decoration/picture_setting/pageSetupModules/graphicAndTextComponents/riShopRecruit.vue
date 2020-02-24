@@ -51,7 +51,7 @@
               >
               <img
                 v-if="data.bg_url !== ''"
-                :src="imageHost + data.bg_url"
+                :src="data.bg_url"
                 alt=""
                 style="width: 200px; height: 100px;"
               >
@@ -126,22 +126,22 @@ export default {
       moduleSaveData: {
         is_preview: '0' //  预览原图radio
       },
-      value: 'image/admin/shop_beautify/beau1.png',
+      value: this.$imageHost + '/image/admin/shop_beautify/beau1.png',
       options: [{
         label: '背景图1',
-        value: 'image/admin/shop_beautify/beau1.png'
+        value: this.$imageHost + '/image/admin/shop_beautify/beau1.png'
       }, {
         label: '背景图2',
-        value: 'image/admin/shop_beautify/beau2.png'
+        value: this.$imageHost + '/image/admin/shop_beautify/beau2.png'
       }, {
         label: '背景图3',
-        value: 'image/admin/shop_beautify/beau3.png'
+        value: this.$imageHost + '/image/admin/shop_beautify/beau3.png'
       }, {
         label: '背景图4',
-        value: 'image/admin/shop_beautify/beau4.png'
+        value: this.$imageHost + '/image/admin/shop_beautify/beau4.png'
       }, {
         label: '背景图5',
-        value: 'image/admin/shop_beautify/beau5.png'
+        value: this.$imageHost + '/image/admin/shop_beautify/beau5.png'
       }],
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
@@ -170,17 +170,17 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         this.data = this.modulesData
-        var url = this.data.shop_bg_path
-        if (url !== null || url !== '') {
-          var str = url.split('http://')
-          var index = str[1].indexOf('/') + 1
-          this.data.shop_bg_path = str[1].substring(index)
-        }
+        // var url = this.data.shop_bg_path
+        // if (url !== null || url !== '') {
+        //   var str = url.split('http://')
+        //   var index = str[1].indexOf('/') + 1
+        //   this.data.shop_bg_path = str[1].substring(index)
+        // }
       },
       immediate: true
     },
     // 监听数据变换
-    modulesData: { // 模块公共
+    data: { // 模块公共
       handler (newData) {
         console.log(newData)
         this.$emit('handleToBackData', newData)
@@ -196,7 +196,7 @@ export default {
     // 添加图片弹窗选中图片数据回传
     handleSelectImg (imgData) {
       console.log(imgData)
-      this.data.bg_url = imgData.imgPath
+      this.data.bg_url = imgData.imgUrl
     },
     // 背景切换
     selectChange (value) {

@@ -190,24 +190,26 @@ public class SecKillProcessorDao extends ShopBaseService {
      */
     public void processSeckillStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         for(OrderGoodsBo goods : param.getBos()){
-            int seckillStock = db().select(SEC_KILL_DEFINE.STOCK).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).fetchSingle().into(Integer.class);
-            if(seckillStock - goods.getGoodsNumber() < 0){
-                //秒杀库存不足
-                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+            if(goods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
+                int seckillStock = db().select(SEC_KILL_DEFINE.STOCK).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).fetchSingle().into(Integer.class);
+                if (seckillStock - goods.getGoodsNumber() < 0) {
+                    //秒杀库存不足
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+                }
+
+                int seckillPrdStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).fetchSingle().into(Integer.class);
+                if (seckillPrdStock - goods.getGoodsNumber() < 0) {
+                    //秒杀规格库存不足
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+                }
+
+                //修改库存
+                db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK, seckillStock - goods.getGoodsNumber()).set(SEC_KILL_DEFINE.SALE_NUM, SEC_KILL_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
+                db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK, seckillPrdStock - goods.getGoodsNumber()).set(SEC_KILL_PRODUCT_DEFINE.SALE_NUM, SEC_KILL_PRODUCT_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
+
+                //秒杀记录
+                seckillService.seckillList.addSecRecord(order, param.getGoods().get(0).getGoodsId());
             }
-
-            int seckillPrdStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).fetchSingle().into(Integer.class);
-            if(seckillPrdStock - goods.getGoodsNumber() < 0){
-                //秒杀规格库存不足
-                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
-            }
-
-            //修改库存
-            db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,seckillStock - goods.getGoodsNumber()).set(SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
-            db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,seckillPrdStock - goods.getGoodsNumber()).set(SEC_KILL_PRODUCT_DEFINE.SALE_NUM,SEC_KILL_PRODUCT_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
-
-            //秒杀记录
-            seckillService.seckillList.addSecRecord(order,param.getGoods().get(0).getGoodsId());
         }
 
     }

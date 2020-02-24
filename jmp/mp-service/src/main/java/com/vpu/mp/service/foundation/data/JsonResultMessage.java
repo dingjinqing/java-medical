@@ -295,7 +295,19 @@ public class JsonResultMessage {
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_SCORE = "pay.award.activity.message.amount.score";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_CUSTOM = "pay.award.activity.message.amount.custom";
 
-    /**
+	/**
+	 * 营销--满包邮
+	 */
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_FIXED = "free.shipping.activity.message.expire.fixed";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_NEVER = "free.shipping.activity.message.expire.never";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_ALL = "free.shipping.activity.message.goods.all";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_PART = "free.shipping.activity.message.goods.part";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT = "free.shipping.activity.message.condition.account";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_NUM = "free.shipping.activity.message.condition.num";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT_OR_NUM = "free.shipping.activity.message.condition.account.or.num";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_RULE_TEXT = "free.shipping.activity.message.ruleText";
+
+	/**
      * 文章_分类
      */
     public static final String ARTICLE_CATEGORY_IS_EXIST = "api.code.article_category_is_exist";
@@ -375,8 +387,10 @@ public class JsonResultMessage {
     public static final String CODE_DATA_ALREADY_EXIST = "data.already.exist";
     public static final String CODE_ORDER_AMOUNT_NOT_EQUALS_SERVICE_SUBSIST = "code.order.amount.not.equals.service.subsist";
     public static final String CODE_WX_LOGISTICS_API_CALL_FAILED = "wx.logistics.api.call.failed";
+    public static final String CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG = "wx.store.pay.lower.score.down.config";
+    public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
 
-	/**
+    /**
 	 * 门店技师管理
 	 */
 	public static final String STORE_STORE_ID_NULL = "store.store.id.null";

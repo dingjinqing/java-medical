@@ -1369,7 +1369,10 @@ public class UserCardService extends ShopBaseService {
 			}
 			if(!CardUtil.isGradeCard(uCard.getCardType()) && !StringUtil.isBlank(uCard.getStoreList()) && CardUtil.canUseInStore(uCard.getStoreUseSwitch())) {
 				logger().info("获取门店信息");
+				Byte useStoreType = CardUtil.getUseStoreType(uCard.getStoreUseSwitch(), uCard.getStoreList());
+				uCard.setStoreUseSwitch(useStoreType);
 				List<Integer> storeIdList = CardUtil.parseStoreList(uCard.getStoreList());
+				uCard.setStoreIdList(storeIdList);
 				List<StoreBasicVo> storeList = storeService.getStoreListByStoreIds(storeIdList);
 				uCard.setStoreInfoList(storeList);
 			}

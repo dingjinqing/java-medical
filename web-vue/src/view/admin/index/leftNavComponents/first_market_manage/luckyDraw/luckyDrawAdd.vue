@@ -687,10 +687,10 @@ export default {
         noAwardIcon: this.$t('luckyDraw.thanksParticipation'),
         noAwardImage: '/image/admin/icon_lottery/thank.png',
         prizeList: [
-          { iconImgs: this.$t('luckyDraw.firstPrize'), lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png', lotteryType: 1 },
-          { iconImgs: this.$t('luckyDraw.secondPrize'), lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png', lotteryType: 1 },
-          { iconImgs: this.$t('luckyDraw.thirdPrize'), lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png', lotteryType: 1 },
-          { iconImgs: this.$t('luckyDraw.fourthPrize'), lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png', lotteryType: 1 }
+          { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.firstPrize'), lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png', lotteryType: 1 },
+          { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.secondPrize'), lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png', lotteryType: 1 },
+          { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.thirdPrize'), lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png', lotteryType: 1 },
+          { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.fourthPrize'), lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png', lotteryType: 1 }
         ]
       },
       times: 1,

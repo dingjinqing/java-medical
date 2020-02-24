@@ -277,8 +277,8 @@ public class StoreOrderService extends ShopBaseService {
                 }
                 log.debug("会员卡折扣金额:{}", cardDisAmount);
                 moneyPaid = moneyPaid.subtract(cardDisAmount).setScale(2, RoundingMode.UP);
-                payAmount = moneyPaid;
             }
+            payAmount = moneyPaid;
             // 会员卡余额抵扣金额
             if (BigDecimalUtil.greaterThanZero(cardAmount)) {
                 if (cardAmount.compareTo(money) > 0) {
@@ -301,12 +301,14 @@ public class StoreOrderService extends ShopBaseService {
                 log.debug("会员卡余额抵扣金额:{}", cardAmount);
                 moneyPaid = moneyPaid.subtract(cardAmount).setScale(2, RoundingMode.UP);
             }
+        } else {
+            payAmount = moneyPaid;
         }
         // 余额抵扣金额
         if (BigDecimalUtil.greaterThanZero(balanceAmount)) {
             if (!tradeService.paymentIsEnabled(PAY_CODE_BALANCE_PAY)) {
                 log.error("未开启余额支付");
-                throw new BusinessException(JsonResultCode.CODE_FAIL);
+                throw new BusinessException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_ACCOUNT);
             }
             if (balanceAmount.compareTo(userInfo.getAccount()) > 0) {
                 // 余额不足，无法下单
@@ -332,18 +334,18 @@ public class StoreOrderService extends ShopBaseService {
         if (BigDecimalUtil.greaterThanZero(scoreAmount)) {
             if (!tradeService.paymentIsEnabled(PAY_CODE_SCORE_PAY)) {
                 log.error("未开启积分支付");
-                throw new BusinessException(JsonResultCode.CODE_FAIL);
+                throw new BusinessException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
             }
             // 积分使用上下限限制
             int scoreValue = scoreAmount.multiply(HUNDRED).intValue();
             if (scoreValue < baseScoreCfgService.getScorePayNum()) {
                 log.debug("低于积分使用下限配置，不可使用积分支付");
-                throw new BusinessException(JsonResultCode.CODE_FAIL);
+                throw new BusinessException(JsonResultCode.CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG);
             }
             BigDecimal ratio = BigDecimal.valueOf(baseScoreCfgService.getScoreDiscountRatio()).divide(HUNDRED);
             if (scoreAmount.compareTo(payAmount.multiply(ratio)) > INTEGER_ZERO) {
                 log.debug("超过积分使用上限配置，不可使用积分支付");
-                throw new BusinessException(JsonResultCode.CODE_FAIL);
+                throw new BusinessException(JsonResultCode.CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG);
             }
             if (scoreValue > userInfo.getScore()) {
                 // 积分不足，无法下单

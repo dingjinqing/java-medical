@@ -81,7 +81,8 @@
         "lottery/lottery",
         "lotteryrule/lotteryrule",
         "pinlotterylist/pinlotterylist",
-        "pinlotteryinfo/pinlotteryinfo"
+        "pinlotteryinfo/pinlotteryinfo",
+        "fullshiprule/fullshiprule"
       ]
     }
   ],

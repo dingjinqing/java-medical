@@ -340,6 +340,21 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                        moduleCard.setBgImg(imageUrl(moduleCard.getBgImg()));
                    }
                     return moduleCard;
+                case ModuleConstant.M_SHOP:
+                    ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+                    if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
+                        moduleShop.setShopBgPath(imageUrl(moduleShop.getShopBgPath()));
+                    }
+                    if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
+                        moduleShop.setBgUrl(imageUrl(moduleShop.getBgUrl()));
+                    }
+                    return moduleShop;
+                case ModuleConstant.M_GROUP_DRAW:
+                    ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+                    if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
+                        moduleGroupDraw.setModuleImg(imageUrl(moduleGroupDraw.getModuleImg()));
+                    }
+                    return moduleGroupDraw;
 
 
                     /**
@@ -477,13 +492,13 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      * @param page
      * @return
      */
-    public boolean storePage(PageStoreParam page){
+    public int storePage(PageStoreParam page){
         try {
             //处理PageContent里的json数据，校验格式
             page.setPageContent(processPageContentBeforeSave(page.getPageContent()));
         }catch (IOException e){
             logger().error("装修页面保存格式错误：", e);
-            return false;
+            return 0;
         }
 
         //记录页面变化
@@ -512,14 +527,14 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         //入库
         if(page.getPageId() != null && page.getPageId() > 0){
             record.setPageId(page.getPageId());
-            return record.update() > 0;
+            return record.update();
         }else {
             if(record.insert() > 0){
                 page.setPageId(record.getPageId());
-                return true;
+                return record.getPageId();
             }
         }
-        return false;
+        return 0;
     }
 
     /**
@@ -528,7 +543,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      * @return
      */
     public String getPreviewCode(PageStoreParam param){
-        if(this.storePage(param)){
+        if(this.storePage(param) > 0){
             String pathParam="page_id="+param.getPageId();
             String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
             return imageUrl;
@@ -632,6 +647,12 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                         moduleCard.setBgImg(new URL(moduleCard.getBgImg()).getPath());
                     }
                     return moduleCard;
+                case ModuleConstant.M_GROUP_DRAW:
+                    ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+                    if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
+                        moduleGroupDraw.setModuleImg(new URL(moduleGroupDraw.getModuleImg()).getPath());
+                    }
+                    return moduleGroupDraw;
 
                 //TODO 其他保存前需要处理的模块
                 default:

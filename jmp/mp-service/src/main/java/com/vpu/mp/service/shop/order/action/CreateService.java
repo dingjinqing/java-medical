@@ -550,7 +550,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
         //TODO 送赠品(处理门店)
-        giftProcessor.getGifts(param.getWxUserInfo().getUserId(), vo.getOrderGoods(), vo.getOrderType());
+        getGifts(vo, param.getStoreId(), param.getWxUserInfo().getUserId(), vo.getOrderType());
     }
 
     /**
@@ -731,7 +731,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //计算运费
         if(vo.getAddress() != null){
-            //没有可用地址的用户
+            //有可用地址的用户
             vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId()));
             //判断是否可以发货
             vo.setCanShipping(isShipping(bos));
@@ -742,7 +742,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //活动免运费
         activityFreeDelivery(vo, param.getIsFreeShippingAct());
-        //折扣金额
+        //折扣商品金额
         BigDecimal tolalDiscountAfterPrice = BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(memberDiscount, BigDecimalUtil.Operator.subtrac),
@@ -812,6 +812,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setIsCardPay(tradeCfg.getCardFirst());
         vo.setIsScorePay(tradeCfg.getScoreFirst());
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
+        vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
 
@@ -968,7 +969,27 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             coupon.use(beforeVo.getDefaultCoupon().getId(), order.getOrderSn());
         }
         //TODO 送赠品(处理门店)
-        giftProcessor.getGifts(order.getUserId(), beforeVo.getOrderGoods(), orderBo.getOrderType());
+        getGifts(beforeVo, order.getStoreId(), order.getUserId(), orderBo.getOrderType());
+    }
+
+    private void getGifts(OrderBeforeVo beforeVo, Integer storeId, Integer userId, List<Byte> orderType) {
+        giftProcessor.getGifts(userId, beforeVo.getOrderGoods(), orderType);
+        //赠品
+        List<OrderGoodsBo> gifts = beforeVo.getOrderGoods().stream().filter(x -> x.getIsGift() != null && x.getIsGift() == YES).collect(Collectors.toList());
+        if(CollectionUtils.isNotEmpty((gifts))) {
+            return;
+        }
+        //赠品可配送处理
+        if(beforeVo.getAddress() != null){
+            //有可用地址的用户
+            calculate.calculateShippingFee(beforeVo.getAddress().getDistrictCode(), gifts, storeId);
+            //判断是否可以发货
+            beforeVo.setCanShipping(isShipping(gifts));
+        }else{
+            beforeVo.setShippingFee(BigDecimal.ZERO);
+            //判断是否可以发货
+            beforeVo.setCanShipping(NO);
+        }
     }
 
     /**

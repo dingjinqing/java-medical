@@ -158,6 +158,10 @@ public class GoodsCommentService extends ShopBaseService {
     if (!GoodsCommentPageListParam.FLAG_DEFAULT_VALUE.equals(param.getFlag())) {
         select.and(COMMENT_GOODS.FLAG.eq(param.getFlag()));
     }
+    //店铺助手查出商品评价审核逾期的评价id列表
+      if(param.getCommentGoodsId()!=null&&!param.getCommentGoodsId().isEmpty()){
+          select.and(COMMENT_GOODS.ID.in(param.getCommentGoodsId()));
+      }
   }
 
     /**
@@ -896,5 +900,18 @@ public class GoodsCommentService extends ShopBaseService {
         return db().fetchCount(CommentGoods.COMMENT_GOODS, CommentGoods.COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO)
             .and(CommentGoods.COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
             .and(CommentGoods.COMMENT_GOODS.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
+
+    /**
+     * Review overdue integer.商品评价审核逾期id列表
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> reviewOverdueSet(Integer nDays) {
+        Condition condition = COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO)
+            .and(COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
+            .and(COMMENT_GOODS.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+        return db().select(COMMENT_GOODS.ID).from(COMMENT_GOODS).where(condition).fetchSet(COMMENT_GOODS.ID);
     }
 }

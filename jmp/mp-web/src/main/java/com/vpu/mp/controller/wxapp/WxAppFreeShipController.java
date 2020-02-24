@@ -29,7 +29,7 @@ public class WxAppFreeShipController extends WxAppBaseController{
     public JsonResult getFreeShippingGoods(@RequestBody @Valid FreeShippingGoodsListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        return success(shop().freeShipping.freeShipGoods.freeShipGoodsList(param));
+        return success(shop().freeShipping.freeShipGoods.freeShipGoodsList(param,getLang()));
     }
 
     /**

@@ -12,7 +12,8 @@ var base = {
       this.setData({
         show: false
       });
-      this.$emit("close");
+      // this.$emit("close");
+      this.triggerEvent("close")
     },
     bindNullClick(e) { },
     bindBackTap(e) {
