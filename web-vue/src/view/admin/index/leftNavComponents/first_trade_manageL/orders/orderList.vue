@@ -541,7 +541,10 @@
                         >{{$t('order.applyRetrunView')}}</el-button>
                       </template>
                       <template v-else>
-                        <el-button  @click="goReturnView(orderItem.orderSn)" type="text">{{$t('order.retrunView')}}</el-button>
+                        <el-button
+                          @click="goReturnView(orderItem.orderSn)"
+                          type="text"
+                        >{{$t('order.retrunView')}}</el-button>
                       </template>
                     </template>
                     <template v-if="orderItem.canClose == true">
@@ -872,7 +875,7 @@ export default {
     this.searchParams.userName = userName || null
     console.log(userId)
     console.log('mounted-----------------------')
-    this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : null
+    this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
     // 初始化数据
     this.langDefault()
     this.initDataList()

@@ -18,6 +18,7 @@
           v-show="data.map_show === 1"
           class="mapContent"
           id="mapContainer"
+          ref="mapContainer"
         >
 
         </div>
@@ -59,6 +60,8 @@
     </div>
   </div>
 </template>
+<!-- 腾讯地图 -->
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
 export default {
   props: {
@@ -118,6 +121,11 @@ export default {
           this.data = newData
         }
         console.log(newData)
+
+        this.$nextTick(() => {
+          // 初始化地图
+          this.initMap(this.data.latitude, this.data.longitude)
+        })
       },
       immediate: true,
       deep: true
@@ -128,18 +136,13 @@ export default {
     this.langDefault() // 模块公共
     // 初始化数据
     this.defaultData() // 模块公共
-    // 初始化地图
-    this.initMap()
   },
   methods: {
     // 加载地图
-    initMap () {
+    initMap (latitude, longitude) {
       // 定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
-      // eslint-disable-next-line no-undef
-      this.map = new qq.maps.Map(document.getElementById('mapContainer'), {
-        // eslint-disable-next-line no-undef
-        center: new qq.maps.LatLng(this.data.latitude, this.data.longitude), // 地图的中心地理坐标。
-        // center: new qq.maps.LatLng(39.916527, 116.397128), // 地图的中心地理坐标。
+      this.map = new qq.maps.Map(this.$refs.mapContainer, {
+        center: new qq.maps.LatLng(latitude, longitude), // 地图的中心地理坐标。
         zoom: 13, // 地图的中心地理坐标。
         disableDefaultUI: true // 禁止所有控件
       })

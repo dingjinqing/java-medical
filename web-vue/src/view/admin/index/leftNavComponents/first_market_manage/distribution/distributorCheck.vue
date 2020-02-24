@@ -379,6 +379,8 @@ export default {
     this.initDataList()
     this.getDistributionGroup()
     this.province = deepCloneObj(chinaData)
+
+    console.log(this.$route.params.distributor)
   },
   methods: {
     initDataList () {

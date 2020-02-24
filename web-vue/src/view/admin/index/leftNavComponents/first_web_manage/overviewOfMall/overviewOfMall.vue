@@ -476,11 +476,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsStoreConf.value }} {{ $t('overview.unStoreTip3') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/goodsManage/goodsForSale"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('goodsForSale', storeList.dataGoods.goodsStoreConf.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -488,11 +487,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf.value }} {{ $t('overview.unStoreTip4') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/goodsManage/goodsForSale"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('goodsForSale', storeList.dataGoods.goodsUnsalableConf.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -500,11 +498,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsComment.value }} {{ $t('overview.unStoreTip5') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/goodsManage/evaluationManagement?activeName=second"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('comment', storeList.dataGoods.goodsComment.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -535,11 +532,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.deliver.value }} {{ $t('overview.unOrderTip1') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/orders/waiting?orderStatus=3"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_wait', storeList.dataOrder.deliver.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -547,11 +543,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/orders/refund/list"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_return', storeList.dataOrder.refund.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -559,11 +554,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.remind.value }} {{ $t('overview.unOrderTip3') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/orders/refund/list"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_return', storeList.dataOrder.remind.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <!-- 营销 -->
                   <div
@@ -572,18 +566,17 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataMarket.examine.value }} {{ $t('overview.unMarketTip1') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/distribution"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript:void(0);"
+                      @click="clickJumpHandler('distribution_check', storeList.dataMarket.examine.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
                     v-if="storeList.dataMarket.member.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
+                    <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.value }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
                     <a
                       :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
                       target="_blank"
@@ -766,11 +759,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsStoreConf.value }} {{ $t('overview.unStoreTip3') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/goodsManage/goodsForSale"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('goodsForSale', storeList.dataGoods.goodsStoreConf.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -778,11 +770,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf.value }} {{ $t('overview.unStoreTip4') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/goodsManage/goodsForSale"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('goodsForSale', storeList.dataGoods.goodsUnsalableConf.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -790,11 +781,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataGoods.goodsComment.value }} {{ $t('overview.unStoreTip5') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/goodsManage/evaluationManagement?activeName=second"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('comment', storeList.dataGoods.goodsComment.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -834,11 +824,11 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.deliver.value }} {{ $t('overview.unOrderTip1') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/orders/waiting?orderStatus=3"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_wait', storeList.dataOrder.deliver.list)"
+                    >{{ $t('overview.storeGo') }}</a>
+
                   </div>
                   <div
                     class="task_list_item"
@@ -846,11 +836,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/orders/refund/list"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_return', storeList.dataOrder.refund.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
@@ -858,11 +847,10 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataOrder.remind.value }} {{ $t('overview.unOrderTip3') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/orders/refund/list"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_return', storeList.dataOrder.remind.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                 </div>
               </div>
@@ -880,18 +868,17 @@
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataMarket.examine.value }} {{ $t('overview.unMarketTip1') }}</span>
-                    <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-                    <!-- <a
-                      href="/admin/home/main/distribution"
-                      target="_blank"
-                    >{{ $t('overview.storeGo') }}</a> -->
+                    <a
+                      href="javascript:void(0);"
+                      @click="clickJumpHandler('distribution_check', storeList.dataMarket.examine.list)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
                     v-if="storeList.dataMarket.member.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
+                    <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.value }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
                     <a
                       :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.content.card_id"
                       target="_blank"
@@ -1442,10 +1429,10 @@ export default {
     sureStoreReviewe () {
       this.storeDialog = false
       this.$router.push({
-        path: '/admin/home/main/store/storemanage/comment',
-        query: {
-          id: this.storeValue,
-          name: 'second'
+        name: 'comment',
+        params: {
+          ids: this.storeValue,
+          activeName: 'second'
         }
       })
       this.storeValue = ''
@@ -1600,6 +1587,25 @@ export default {
           }
         }
       }, 300)
+    },
+
+    // 店铺助手跳转
+    clickJumpHandler (name, params) {
+      var obj = {
+        ids: params
+      }
+      // 商品评价
+      if (name === 'comment') {
+        obj.activeName = 'second'
+      }
+      // 订单发货
+      if (name === 'order_wait') {
+        obj.orderStatus = 3
+      }
+      this.$router.push({
+        name: name,
+        params: obj
+      })
     }
 
   },
