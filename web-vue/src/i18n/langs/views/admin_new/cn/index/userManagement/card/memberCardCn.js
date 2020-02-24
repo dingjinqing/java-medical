@@ -290,5 +290,8 @@ export const cn = {
   num: '序号',
   createTime: '操作时间',
   successNum: '成功数量',
-  failNum: '失败数量'
+  failNum: '失败数量',
+  defineGoodsDis: '指定商品折扣',
+  allGoodsDis: '全部商品折扣'
+
 }

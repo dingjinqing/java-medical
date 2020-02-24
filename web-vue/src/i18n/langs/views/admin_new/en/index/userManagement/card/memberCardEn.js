@@ -252,5 +252,7 @@ export const en = {
   num: 'Serial Number',
   createTime: 'Operation time',
   successNum: 'Number of successes',
-  failNum: 'Number of failures'
+  failNum: 'Number of failures',
+  defineGoodsDis: 'Part Discount',
+  allGoodsDis: 'All Discount'
 }
