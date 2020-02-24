@@ -1265,6 +1265,36 @@ export default {
         return
       }
       console.log(mTextImageNum)
+      // 公众号数量限制
+      let officialAccountsNum = 0
+      saveMosulesData.forEach((item, index) => {
+        if (item.module_name === 'm_official_accounts') {
+          officialAccountsNum++
+        }
+      })
+      console.log(officialAccountsNum)
+      if (officialAccountsNum > 1) {
+        this.$message.error({
+          message: '引导公众号模块只能有一个',
+          showClose: true
+        })
+        return
+      }
+      // 富文本模块数量限制
+      let richNum = 0
+      saveMosulesData.forEach((item, index) => {
+        if (item.module_name === 'm_rich_text') {
+          richNum++
+        }
+      })
+      if (richNum > 30) {
+        this.$message.error({
+          message: '富文本模块最多上传30个',
+          showClose: true
+        })
+        return
+      }
+
       if (flag === 0) {
         console.log(this.modulesData)
         this.saveTwoDialogVisible = true
