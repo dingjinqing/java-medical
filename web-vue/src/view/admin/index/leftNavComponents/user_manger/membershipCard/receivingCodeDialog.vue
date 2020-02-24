@@ -8,7 +8,7 @@
         label-width="100px"
       >
         <el-dialog
-          title="领取码"
+          :title="$t('memberCard.generateCode')"
           :visible.sync="dialogVisible2"
           width="30%"
           v-if="receiveAction===1"
@@ -17,8 +17,8 @@
             <el-radio
               v-model="action"
               label="1"
-            >自动生成领取码</el-radio>
-            <span style="margin-left: 20px;">将随机生成xxx个唯一领取码，领取码由数字+字母组成</span>
+            >{{$t('memberCard.autoGenerateCode')}}</el-radio>
+            <span style="margin-left: 20px;">{{$t('memberCard.autoGenerateMsg')}}</span>
           </div>
           <div
             v-if="action === '1'"
@@ -29,13 +29,13 @@
               prop="codePrefix"
             >
               <div class="contentList">
-                <span style="color:#333">领取码前缀:</span>
+                <span style="color:#333">{{$t('memberCard.codePre')}}:</span>
                 <el-input
                   size="small"
                   v-model="ruleForm.codePrefix"
                   maxlength="4"
                 ></el-input>
-                <span>0-4个数字或字母</span>
+                <span>{{$t('memberCard.codeLimitMsg')}}</span>
               </div>
             </el-form-item>
             <el-form-item
@@ -43,12 +43,12 @@
               prop="codeSize"
             >
               <div class="contentList">
-                <span style="color:#333">领取码位数:</span>
+                <span style="color:#333">{{$t('memberCard.codeLimit')}}:</span>
                 <el-input
                   size="small"
                   v-model="ruleForm.codeSize"
                 ></el-input>
-                <span>领取码组成未知数，限制6-12位</span>
+                <span>{{$t('memberCard.codeNoKnowLimit')}}</span>
               </div>
             </el-form-item>
             <el-form-item
@@ -59,7 +59,7 @@
                 class="contentList"
                 style="margin-left:15px"
               >
-                <span style="color:#333">领取数量:</span>
+                <span style="color:#333">{{$t('memberCard.codeNum')}}:</span>
                 <el-input
                   size="small"
                   v-model="ruleForm.number"
@@ -71,23 +71,23 @@
             <el-radio
               v-model="action"
               label="2"
-            >导入领取码</el-radio>
-            <span>需导入已有领取码</span>
+            >{{$t('memberCard.importPickCode')}}</el-radio>
+            <span>{{$t('memberCard.needImportCode')}}</span>
           </div>
           <div
             class="bottomHidden"
             v-if="action === '2'"
           >
             <div>
-              <span>第一步:</span>
-              <span><a @click="getTemplate">下载导入模板</a></span>
+              <span>{{$t('memberCard.first')}}:</span>
+              <span><a @click="getTemplate">{{$t('memberCard.downLoadTemp')}}</a></span>
             </div>
             <div>
-              <span>第二步:</span>
-              <span>导入领取码</span>
+              <span>{{$t('memberCard.second')}}:</span>
+              <span>{{$t('memberCard.importPickCode')}}</span>
             </div>
             <div class="handleToUpload">
-              <span>上传文件：</span>
+              <span>{{$t('memberCard.uploadFiles')}}</span>
             <el-input
               v-model="ruleForm.filename"
               size="small"
@@ -119,17 +119,17 @@
             slot="footer"
             class="dialog-footer"
           >
-            <el-button @click="$emit('update:dialogVisible', false)">取 消</el-button>
+            <el-button @click="$emit('update:dialogVisible', false)">{{$t('memberCard.cancel')}}</el-button>
             <el-button
               type="primary"
               @click="handleSure"
-            >确 定</el-button>
+            >{{$t('memberCard.sure')}}</el-button>
           </span>
         </el-dialog>
 
         <!-- 卡号+密码 -->
         <el-dialog
-          title="卡号+密码"
+          :title="$t('memberCard.cardNumPwd')"
           :visible.sync="dialogVisible2"
           width="30%"
           v-if="receiveAction===2"
@@ -139,33 +139,33 @@
             <el-radio
               v-model="action"
               label="1"
-            >自动生成卡号+密码</el-radio>
-            <span style="margin-left: 20px;"> 将随机生成xxx组不重复卡号+密码，均由数字+字母组成</span>
+            >{{$t('memberCard.autoCardNumPwd')}}</el-radio>
+            <span style="margin-left: 20px;"> {{$t('memberCard.autoCardNumPwdMsg')}}</span>
           </div>
           <div
             v-if="action === '1'"
             style="margin-left: -100px;"
           >
             <el-form-item class="contentList">
-              <span style="color:#333">卡号前缀:</span>
+              <span style="color:#333">{{$t('memberCard.cardPrd')}}:</span>
               <el-input
                 size="small"
                 v-model="ruleForm.codePrefix"
                 maxlength="4"
               ></el-input>
-              <span>0-4个数字或字母</span>
+              <span>{{$t('memberCard.cardPrdMsg')}}</span>
             </el-form-item>
             <el-form-item
               class="contentList"
               prop="codeSize"
             >
               <div class="contentList">
-                <span style="color:#333">卡号位数:</span>
+                <span style="color:#333">{{$t('memberCard.cardNoLimit')}}:</span>
                 <el-input
                   size="small"
                   v-model="ruleForm.codeSize"
                 ></el-input>
-                <span>卡号组成位数，限制6-12位</span>
+                <span>{{$t('memberCard.cardNoLimitMsg')}}</span>
               </div>
             </el-form-item>
             <el-form-item
@@ -173,12 +173,12 @@
               prop="cardPwdSize"
             >
               <div class="contentList">
-                <span style="color:#333">密码位数:</span>
+                <span style="color:#333">{{$t('memberCard.pwdNoLimit')}}:</span>
                 <el-input
                   size="small"
                   v-model="ruleForm.cardPwdSize"
                 ></el-input>
-                <span>密码组成位数</span>
+                <span>{{$t('memberCard.pwdNoSum')}}</span>
               </div>
             </el-form-item>
             <el-form-item
@@ -186,7 +186,7 @@
               prop="number"
             >
               <div class="contentList">
-                <span style="color:#333">领取数量:</span>
+                <span style="color:#333">{{$t('memberCard.receiveAmount')}}:</span>
                 <el-input
                   size="small"
                   v-model="ruleForm.number"
@@ -198,23 +198,23 @@
             <el-radio
               v-model="action"
               label="2"
-            >导入卡号+密码</el-radio>
-            <span>需导入已有卡号+密码</span>
+            >{{$t('memberCard.importCodeNoPwd')}}</el-radio>
+            <span>{{$t('memberCard.needImportCodeNoPwd')}}</span>
           </div>
           <div
             class="bottomHidden"
             v-if="action === '2'"
           >
             <div>
-              <span>第一步:</span>
-              <span><a @click="getPwdTemplate">下载导入模板</a></span>
+              <span>{{$t('memberCard.first')}}:</span>
+              <span><a @click="getPwdTemplate">{{$t('memberCard.downLoadTemp')}}</a></span>
             </div>
             <div>
-              <span>第二步:</span>
-              <span>导入卡号+密码</span>
+              <span>{{$t('memberCard.second')}}:</span>
+              <span>{{$t('memberCard.importCodeNoPwd')}}</span>
             </div>
             <div class="handleToUpload">
-              <span>上传文件：</span>
+              <span>{{$t('memberCard.uploadFiles')}}</span>
             <el-input
               v-model="ruleForm.filename"
               size="small"
@@ -246,11 +246,11 @@
             slot="footer"
             class="dialog-footer"
           >
-            <el-button @click="cancelDialog">取 消</el-button>
+            <el-button @click="cancelDialog">{{$t('memberCard.cancel')}}</el-button>
             <el-button
               type="primary"
               @click="handleSure"
-            >确 定</el-button>
+            >{{$t('memberCard.sure')}}</el-button>
           </span>
         </el-dialog>
       </el-form>
@@ -288,7 +288,7 @@ export default {
         if (value > 5 && value < 13) {
           callback()
         } else {
-          callback(new Error('请入正确的位数'))
+          callback(new Error(this.$t('memberCard.errorMsg1')))
         }
       } else {
         callback()
@@ -301,9 +301,9 @@ export default {
           if (Number(value) > 0) {
             callback()
           } else if (value === null || value === undefined) {
-            callback(new Error('请入正确的位数'))
+            callback(new Error(this.$t('memberCard.errorMsg1')))
           } else {
-            callback(new Error('请入正确的位数'))
+            callback(new Error(this.$t('memberCard.errorMsg1')))
           }
         }
       }
@@ -314,7 +314,7 @@ export default {
         if (Number(value) > 0) {
           callback()
         } else {
-          callback(new Error('请输入领取数量'))
+          callback(new Error(this.$t('memberCard.errorMsg2')))
         }
       } else {
         callback()
@@ -428,7 +428,7 @@ export default {
           if (this.action === null) {
             console.log(this.action)
             console.log('提交失败1')
-            this.$message.warning('请选择相应功能')
+            this.$message.warning(this.$t('memberCard.errorMsg3'))
             return false
           }
         } else {
@@ -479,7 +479,7 @@ export default {
     beforeUploadHandle (file) {
       let isXls = /\.(xls|xlsx|csv)$/.test(file.name)
       if (!isXls) {
-        this.$message.warning('上传文件只支持xls、xlsx格式！')
+        this.$message.warning(this.$t('memberCard.errorMsg4'))
         this.fileList = []
         this.$set(this.ruleForm, 'filename', '')
         this.$set(this.ruleForm, 'file', '')
@@ -513,7 +513,7 @@ export default {
       }
       importInsertExcel(formdata).then(res => {
         if (res.error === 0) {
-          this.$message.success('上传成功')
+          this.$message.success(this.$t('memberCard.errorMsg5'))
           this.$emit('generateReceiveCodeId', res.content)
           this.fileList = []
           this.dialogVisible2 = false
