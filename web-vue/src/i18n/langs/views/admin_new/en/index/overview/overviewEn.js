@@ -230,7 +230,7 @@ export const en = {
   storeCourse: 'View tutorial',
   storeIntroduction: 'Function introduction',
   storeTask: 'Task',
-  storeConfig: 'WeChat configuration',
+  storeConfig: 'Shop must',
   storeRecommend: 'Recommend',
   // 待完成
   unShopTip1: 'Suggestions on improving weChat configuration',
@@ -246,7 +246,7 @@ export const en = {
   unShopTip6: 'Suggest opening customer service',
   unStoreTip1: 'Freight template not set',
   unStoreTip2: 'No item added',
-  unStoreTip3: 'Low inventory',
+  unStoreTip3: 'Merchandise inventory less than 5',
   unStoreTip4: 'Unsalable goods',
   unStoreTip5: 'Product evaluation has not been reviewed for more than 3 days',
   unStoreTip6: 'Recommendation not configured',
@@ -254,10 +254,12 @@ export const en = {
   unOrderTip1: 'Order is not delivered for more than 3 days',
   unOrderTip2:
     'Order refund application has not been processed for more than 3 days',
+  unOrderTip3:
+    'Order delivery reminder application has not been processed for more than 3 days',
   unMarketTip1:
     'Distributor application has not been processed for more than 3 days',
   unMarketTip2:
-    'Membership card activation application has not been processed for more than 2 days',
+    'Activation request has not been processed for more than 2 days',
   unMarketTip3: 'Coupon',
   unMarketTip4: 'Soon to be completed',
   unMarketTip5: 'cards have',
@@ -294,8 +296,9 @@ export const en = {
   enStoreTip5: 'Good progress of commodity evaluation and audit',
   enStoreTip6: 'Recommended products configured',
   enStoreTip7: 'Merchant classification configured',
-  enOrderTip1: 'Good order delivery progress',
+  enOrderTip1: 'Good progress in handling overdue orders',
   enOrderTip2: 'Refund processing progress is good',
+  enOrderTip3: 'Order reminder shipment processing progress is good',
   enMarketTip1:
     'Distributor application has not been processed for more than 3 days',
   enMarketTip2: 'Membership card activation audit progress is good',

@@ -137,6 +137,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.initGradeOptions()
     this.$on('checkRule', () => {
       if (this.ruleForm.gradeValue) {
