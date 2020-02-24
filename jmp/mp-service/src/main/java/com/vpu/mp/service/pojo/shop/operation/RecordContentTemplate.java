@@ -36,8 +36,9 @@ public enum   RecordContentTemplate {
 
 
     /** 营销-秒杀 */
-    MARKET_SECKILL_ADD(5001,RecordContentMessage.MARKET_SECKILL_ADD);
-
+    MARKET_SECKILL_ADD(5001,RecordContentMessage.MARKET_SECKILL_ADD),
+    /** 营销-瓜分积分 */
+    DIVIDE_INTEGRATION_ADD(5002,RecordContentMessage.DIVIDE_INTEGRATION_ADD);
     /**
      * 得到返回码
 	 */

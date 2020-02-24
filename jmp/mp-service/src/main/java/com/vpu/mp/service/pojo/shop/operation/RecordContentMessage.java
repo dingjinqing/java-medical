@@ -53,6 +53,8 @@ public class RecordContentMessage {
      */
     /** 秒杀活动添加 */
     public static final String MARKET_SECKILL_ADD = "market.seckill.add";
+    /** 瓜分积分活动添加 */
+	public static final String DIVIDE_INTEGRATION_ADD = "divide.integration.add";
 
 
 }

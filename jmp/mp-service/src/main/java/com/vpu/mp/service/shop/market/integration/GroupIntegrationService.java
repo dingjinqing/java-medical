@@ -8,15 +8,11 @@ import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
-import com.vpu.mp.service.pojo.shop.market.integration.*;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -25,11 +21,24 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationListRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
+import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 
 import lombok.Data;
 
@@ -42,8 +51,12 @@ import lombok.Data;
 @Service
 public class GroupIntegrationService extends ShopBaseService {
 	
-	@Autowired public GroupIntegrationListService groupIntegrationList;
-    @Autowired public QrCodeService qrCode;
+	@Autowired
+	public GroupIntegrationListService groupIntegrationList;
+	@Autowired
+	public QrCodeService qrCode;
+	@Autowired
+	private RecordAdminActionService recordService;
 
     /**是否开团24小时自动开奖*/
     public static final Byte IS_DAY_DIVIDE_Y = 1;
@@ -123,29 +136,22 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public int insertDefine(GroupIntegrationDefineParam param) {
+	public boolean insertDefine(GroupIntegrationDefineParam param) {
 		Double paramNum = calculateParamNum(param.getInteGroup(),param.getLimitAmount());
-		
-		GroupIntegrationDefineRecord record = new GroupIntegrationDefineRecord();
-		record.setId(param.getId());
-		record.setShopId(getShopId());
-		record.setName(param.getName());
-		record.setInteTotal(param.getInteTotal());
-		record.setInteGroup(param.getInteGroup());
-		record.setLimitAmount(param.getLimitAmount());
-		record.setJoinLimit(param.getJoinLimit());
-		record.setDivideType(param.getDivideType());
-		record.setStartTime(param.getStartTime());
-		record.setEndTime(param.getEndTime());
+		GroupIntegrationDefineRecord record = db().newRecord(GROUP_INTEGRATION_DEFINE,param);
 		record.setStatus(GroupIntegrationDefineEnums.Status.NORMAL.value());
 		record.setDelFlag(DelFlag.NORMAL_VALUE);
 		record.setInteRemain(param.getInteTotal());
-		record.setIsDayDivide(param.getIsDayDivide());
 		record.setIsContinue(GroupIntegrationDefineEnums.IsContinue.TRUE.value());
 		record.setParamN(paramNum);
-		record.setAdvertise(param.getAdvertise());
-		db().executeInsert(record);
-		return 0;
+		int executeInsert = db().executeInsert(record);
+		if(executeInsert>0) {
+			logger().info("【组队瓜分积分】 添加活动"+param.getName()+" 创建成功");
+			recordService.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.DIVIDE_INTEGRATION_ADD.code }), new String[] {param.getName()});
+			return true;
+		}
+		logger().info("【组队瓜分积分】 添加活动"+param.getName()+" 创建失败");
+		return false;
 		
 	}
 	/**

@@ -22,8 +22,8 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessPa
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo;
 
 /**
- * @author huangronggang
- * @date 2019年8月5日
+ * @author huangronggang  zhaojianqiang
+ * @date 2019年8月5日  2020年2月24日
  */
 @RestController
 @RequestMapping("/api/admin/market/integration")
@@ -52,8 +52,11 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@PostMapping("/add")
 	public JsonResult insert(@RequestBody @Valid GroupIntegrationDefineParam param) {
-		shop().groupIntegration.insertDefine(param);
-		return success();
+		boolean insertDefine = shop().groupIntegration.insertDefine(param);
+		if(insertDefine) {
+			return success();			
+		}
+		return fail();
 	}
 	/**
 	 * 查指定ID的瓜分积分活动
