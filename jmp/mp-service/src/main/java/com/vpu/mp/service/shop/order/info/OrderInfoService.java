@@ -283,6 +283,9 @@ public class OrderInfoService extends ShopBaseService {
 				break;
 			}
 		}
+        if (param.getOrderIds() != null && param.getOrderIds().length != 0) {
+            select.where(ORDER_INFO.ORDER_ID.in(param.getOrderIds()));
+        }
 		// 构造营销活动查询条件
 		activeBuildOptions(select, param);
 		return select;
