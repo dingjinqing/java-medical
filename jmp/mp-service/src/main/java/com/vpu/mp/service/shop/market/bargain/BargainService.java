@@ -357,7 +357,7 @@ public class BargainService extends ShopBaseService  {
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.BARGAIN_ITEM.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
         return vo;
     }
 
