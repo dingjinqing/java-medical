@@ -59,7 +59,7 @@ global.wxPage({
    */
   onLoad: function(options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId } = options
+    let { goodsList, activityType, activityId, recordId, preSaleInfo=null } = options
     JSON.parse(goodsList).forEach(item => {
       let {
         goodsId,
@@ -70,12 +70,16 @@ global.wxPage({
       } = item
       goods.push({ goodsId, goodsPrice, goodsNumber, productId, isCart })
     })
+    if(preSaleInfo){
+      preSaleInfo = JSON.parse(preSaleInfo)
+    }
     this.setData({
       'params.goods': goods,
       'params.isCart': goods[0].isCart, //购物车来源|商品详情
       'params.activityType': activityType,
       'params.activityId': activityId,
-      'params.recordId': recordId
+      'params.recordId': recordId,
+      preSaleInfo
     })
     if (options.groupid) {
       this.setData({
@@ -652,6 +656,11 @@ global.wxPage({
       if (index !== 0) UrlStr += `&`
       return (UrlStr += `${item}=${obj[item]}`)
     }, '?')
+  },
+  viewPreSaleRule(){
+    this.setData({
+      preSaleRuleShow:true
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
