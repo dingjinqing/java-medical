@@ -441,7 +441,10 @@ export const en = {
   full_cut: ['Marketing management', 'Full Discount Full Cut'],
   // 营销管理 添加满折满减活动
   fullCutActivity: ['Marketing management', 'Add Full Discount Full Cut Activity'],
-
+  // 营销管理 表单统计 formStatistical
+  formStatistical: ['Marketing management', 'Form statistics'],
+  // 营销管理 表单装修主页
+  formDecorationHome: ['Marketing management', 'Form statistics', 'Form decoration'],
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],
   // 订单管理 查看详情

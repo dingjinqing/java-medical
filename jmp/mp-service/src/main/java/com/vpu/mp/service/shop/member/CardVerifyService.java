@@ -167,6 +167,13 @@ public class CardVerifyService extends ShopBaseService {
 	}
 
     /**
+     * 获取未处理的激活审核订单集合
+     */
+    public Set<Integer> getUndealUserNumSet(Integer cardId) {
+        return verifyDao.countUndealUserSet(cardId);
+    }
+
+    /**
 	 * 根据卡号，获取当前卡的审核状态
 	 * @param cardNo 卡号
 	 */
