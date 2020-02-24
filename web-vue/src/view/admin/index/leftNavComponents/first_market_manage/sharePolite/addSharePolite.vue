@@ -302,13 +302,15 @@
                         style="width: 140px;"
                         v-model="item.coupon_name"
                         :disabled="true"
+                        class="coupon-name"
                       ></el-input>
-                      <span style="color:#999">{{$t('adSharePolite.couponStock')}}</span>
+                      <span style="color:#606266">{{$t('adSharePolite.couponStock')}}</span>
                       <el-input
                         size="small"
                         style="width:80px"
                         v-model.number="item.couponStock"
                         :disabled="true"
+                        class="coupon-name"
                       ></el-input>
                       {{$t('adSharePolite.number')}}
                     </el-col>
@@ -1063,5 +1065,8 @@ export default {
   color: #fff;
   margin: auto;
   cursor: pointer;
+}
+.coupon-name >>> .el-input__inner {
+  color: #606266 !important;
 }
 </style>
