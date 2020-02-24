@@ -149,12 +149,12 @@ public class MallOverviewService extends ShopBaseService {
             ).from(USER_SUMMARY_TREND).where(USER_SUMMARY_TREND.REF_DATE.eq(java.sql.Date.valueOf(LocalDate.now())))
                 .and(USER_SUMMARY_TREND.TYPE.eq(screeningTime)).fetchOptionalInto(DataDemonstrationVo.class).orElse(vo);
         }
-        BigDecimal orderPeopleNum = BigDecimalUtil.valueOf(vo.getOrderPeopleNum());
+        BigDecimal orderUserNum = BigDecimalUtil.valueOf(vo.getOrderUserNum());
         BigDecimal userVisitNum = BigDecimalUtil.valueOf(vo.getUserVisitNum());
-        BigDecimal paidPeopleNum = BigDecimalUtil.valueOf(vo.getPayPeopleNum());
-        vo.setUv2order(specialDivide(orderPeopleNum, userVisitNum));
-        vo.setUv2paid(specialDivide(paidPeopleNum, userVisitNum));
-        vo.setOrder2paid(specialDivide(paidPeopleNum, orderPeopleNum));
+        BigDecimal paidUserNum = BigDecimalUtil.valueOf(vo.getPaidUserNum());
+        vo.setUv2order(specialDivide(orderUserNum, userVisitNum));
+        vo.setUv2paid(specialDivide(paidUserNum, userVisitNum));
+        vo.setOrder2paid(specialDivide(paidUserNum, orderUserNum));
         return vo;
     }
 
