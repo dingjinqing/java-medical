@@ -101,13 +101,14 @@ public class LotteryRecordService extends ShopBaseService {
      * @return
      */
     public PageResult<LotteryRecordPageListVo> lotteryListByUser(LotteryListUserParam param) {
-        SelectSeekStep1<Record, Timestamp> records = db()
+        SelectConditionStep<Record> records = db()
                 .select(LOTTERY_RECORD.asterisk(), USER.USERNAME, USER.MOBILE)
                 .from(LOTTERY_RECORD).innerJoin(USER).on(USER.USER_ID.eq(LOTTERY_RECORD.USER_ID))
-                .where(LOTTERY_RECORD.USER_ID.eq(param.getUserId()))
-                .and(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()))
-                .orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
-
+                .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
+        if (param.getUserId()!=null){
+            records.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
+        }
+        records.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
         PageResult<LotteryRecordPageListVo> pageResult = getPageResult(records, param, LotteryRecordPageListVo.class);
         pageResult.getDataList().forEach(item -> {
             if (!Strings.isEmpty(item.getAwardInfo())){
