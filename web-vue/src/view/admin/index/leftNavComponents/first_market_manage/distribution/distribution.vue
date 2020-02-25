@@ -104,16 +104,13 @@ export default {
     }
   },
   mounted () {
-<<<<<<< HEAD
     this.$http.$on('toChangeActiveName', (flag) => {
       if (flag) {
         this.activeName = 'first'
       }
     })
 
-=======
     // 店铺助手跳转本页面
->>>>>>> a434fc7e8... 店铺助手跳转入参修改
     console.log(this.$route.params)
     if (this.$route.params.flag === 1) {
       if (this.$route.params.distributorName) {
