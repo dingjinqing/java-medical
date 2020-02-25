@@ -60,7 +60,7 @@
           :label="$t('distribution.distributorAudit')"
           name="ninth"
         >
-          <distributorCheck />
+          <distributorCheck :ids="ids" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.advertisement')"
@@ -100,7 +100,7 @@ export default {
   data () {
     return {
       activeName: 'first',
-      inviteCode: false
+      ids: null // 分销员审核ids
     }
   },
   mounted () {
@@ -109,6 +109,14 @@ export default {
         this.activeName = 'first'
       }
     })
+
+    console.log(this.$route.params)
+    if (this.$route.params.distributorName) {
+      this.activeName = this.$route.params.distributorName
+    }
+    if (this.$route.params.ids) {
+      this.ids = this.$route.params.ids
+    }
   },
   methods: {
     handleClick (tab) {

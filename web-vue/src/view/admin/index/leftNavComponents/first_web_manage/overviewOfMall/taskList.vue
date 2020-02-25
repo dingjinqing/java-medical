@@ -551,7 +551,7 @@
               <span class=" task_list_desc">{{ storeList.dataMarket.examine.value }} {{ $t('overview.unMarketTip1') }}</span>
               <a
                 href="javascript:void(0);"
-                @click="clickJumpHandler('distribution_check', storeList.dataMarket.examine.list)"
+                @click="clickJumpHandler('distribution_info', storeList.dataMarket.examine.list)"
               >{{ $t('overview.storeGo') }}</a>
             </div>
             <div
@@ -1239,6 +1239,10 @@ export default {
       // 订单发货
       if (name === 'order_wait') {
         obj.orderStatus = 3
+      }
+      // 分销员审核
+      if (name === 'distribution_info') {
+        obj.distributorName = 'ninth'
       }
       this.$router.push({
         name: name,
