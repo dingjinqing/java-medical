@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author liufei
@@ -29,8 +28,4 @@ public class Metadata {
      * 任务详细内容
      */
     Map<?, ?> content;
-    /**
-     * id集合
-     */
-    Set<Integer> list;
 }
