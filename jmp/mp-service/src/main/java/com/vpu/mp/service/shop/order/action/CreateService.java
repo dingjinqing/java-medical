@@ -1087,7 +1087,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public List<Integer> fullPackage(UserAddressVo address, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice, Timestamp date){
         List<FreeShippingVo> validFreeList = freeShippingService.getValidFreeList(date);
-        if (validFreeList.size()>0){
+        if (validFreeList.size()==0){
             return new ArrayList<>();
         }
         List<Integer> goodsIds = bos.stream().map(OrderGoodsBo::getGoodsId).distinct().collect(Collectors.toList());

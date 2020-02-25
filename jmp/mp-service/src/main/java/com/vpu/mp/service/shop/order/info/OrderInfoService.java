@@ -471,6 +471,11 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public BigDecimal getOrderFinalAmount(OrderListInfoVo order, boolean isIncludeShipingFee) {
+		if(order.getBkOrderMoney()==null){
+			return order.getMoneyPaid().add(order.getScoreDiscount())
+					.add(order.getMemberCardBalance()).add(order.getUseAccount())
+					.subtract(isIncludeShipingFee?BigDecimal.ZERO:order.getShippingFee());
+		}
 		return order.getBkOrderMoney().add(order.getMoneyPaid()).add(order.getScoreDiscount())
 				.add(order.getMemberCardBalance()).add(order.getUseAccount())
 				// TODO 少这个字段
