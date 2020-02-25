@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.*;
@@ -23,8 +24,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 好友助力
@@ -450,4 +450,31 @@ public class FriendPromoteService extends ShopBaseService {
 		}
 		return vo;
 	}
+
+    /**
+     * 小程序-好友助力
+     */
+    public void promoteInfo(){
+
+    }
+
+    /**
+     * 得到指定actCode活动的奖励
+     * @param actCode 唯一活动码
+     * @return 活动奖励(jsonObject)
+     */
+    public FpRewardContent getInfo(String actCode){
+        if (actCode!=null&&!actCode.isEmpty()){
+            FriendPromoteActivityRecord record = db().select().from(FRIEND_PROMOTE_ACTIVITY)
+                .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
+                .fetchOne().into(FriendPromoteActivityRecord.class);
+            return Util.json2Object(record.getRewardContent(),FpRewardContent.class,false);
+        }
+        else {
+            return null;
+        }
+    }
+    public void getPromoteInfo(){
+
+    }
 }
