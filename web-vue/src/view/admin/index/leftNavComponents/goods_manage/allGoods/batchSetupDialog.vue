@@ -733,6 +733,7 @@ export default {
       },
       tableClassifyClickRow: null, // 模板表格选中
       tableBrandClickRow: null // 商品品牌表格选中值
+
     }
   },
   watch: {

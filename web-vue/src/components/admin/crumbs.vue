@@ -193,7 +193,13 @@ export default {
           this.$router.push({
             name: this.$route.meta.category
           })
+        } else if (this.$route.name === 'formDecorationHome') {
+          console.log(this.$route)
+          this.$router.push({
+            name: 'formStatistical'
+          })
         } else {
+          console.log(this.$route)
           this.$router.push({
             name: this.$route.meta.meta
           })
