@@ -216,6 +216,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       this.$refs.ruleFormScore.validate((valid) => {
         if (!valid) {

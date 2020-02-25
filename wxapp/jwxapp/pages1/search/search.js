@@ -18,7 +18,9 @@ global.wxPage({
       sortIds: [],
       brandIds: [],
       activityTypes: [],
-      labelIds: []
+      labelIds: [],
+      pageFrom:null,
+      goodsIds:[]
     }
   },
 
@@ -115,7 +117,6 @@ global.wxPage({
           } catch (error) {
             target['data'][item] = options[item]
           }
-
         }
       })
       this.setData({

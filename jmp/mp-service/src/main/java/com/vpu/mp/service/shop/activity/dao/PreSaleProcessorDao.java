@@ -237,7 +237,7 @@ public class PreSaleProcessorDao extends PreSaleService {
             log.error("活动停用");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_DISABLE);
         }
-        if (param.getDate().before(activityInfo.getStartTime())) {
+        if (param.getDate().before(activityInfo.getPreStartTime())) {
             log.error("活动未开始");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NO_START);
         }
@@ -260,7 +260,7 @@ public class PreSaleProcessorDao extends PreSaleService {
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NUMBER_LIMIT);
             }
         }
-        if (activityInfo.getGoodsId().equals(param.getGoodsIds().get(0))) {
+        if (!activityInfo.getGoodsId().equals(param.getGoodsIds().get(0))) {
             //预售商品只支持一个商品,所以get(0)
             log.error("该商品不支持预售");
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_SUPORT_PRESALE);

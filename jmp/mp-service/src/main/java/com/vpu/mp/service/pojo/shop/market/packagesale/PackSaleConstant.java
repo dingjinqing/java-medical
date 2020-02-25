@@ -5,6 +5,9 @@ package com.vpu.mp.service.pojo.shop.market.packagesale;
  * @date 2019年8月12日
  */
 public class PackSaleConstant {
+
+    public static final Byte PACKAGE_TYPE_MONEY=0;
+    public static final Byte PACKAGE_TYPE_DISCOUNT=1;
 	
 	public static final String ID_DELIMITER =",";
 	/** 活动状态 */

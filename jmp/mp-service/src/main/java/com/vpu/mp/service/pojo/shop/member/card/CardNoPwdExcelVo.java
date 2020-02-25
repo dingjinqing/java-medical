@@ -17,7 +17,7 @@ public class CardNoPwdExcelVo {
 	/** 卡号 */
 	@ExcelColumn(columnIndex = 0, columnName = "cardReceive.import.codeNo")
 	@ExcelColumnNotNull
-	private String codeNo;
+	private String cardNo;
 	
 	
 	/** 密码 */

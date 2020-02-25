@@ -227,6 +227,10 @@ export default {
       updateBasicInfoApi(params).then(res => {
         if (res.error === 0) {
           that.$message.success(that.$t('storeBasicInformation.updated'))
+
+          // 存储店铺logo和名称
+          localStorage.setItem('V-shopAvatar', this.$imageHost + '/' + params.shopAvatar)
+          localStorage.setItem('V-shopName', params.shopName)
         }
       })
     }

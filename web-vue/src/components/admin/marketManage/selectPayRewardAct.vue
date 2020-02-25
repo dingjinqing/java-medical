@@ -12,7 +12,7 @@
         v-for="(item,index) in selects"
         :key="index"
         :label="item.name"
-        :value="item.id"
+        :value="item.lotteryName"
       ></el-option>
     </el-select>
     <el-button
@@ -67,6 +67,7 @@ export default {
         if (res.error === 0) {
           console.log(res)
           this.selects = res.content.dataList
+          console.log(this.selects)
         }
       })
     },

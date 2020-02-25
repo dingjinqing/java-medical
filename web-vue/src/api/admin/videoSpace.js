@@ -66,9 +66,12 @@ export function batchMoveVideoRequest (riid) {
 // 上传视频接口
 export function uploadVideoRequest (riid) {
   localStorage.setItem('contentType', 'application/x-www-form-urlencoded;charset=UTF-8')
+}
+
+// 查询视频空间已使用量
+export function getUsedVideoSpace () {
   return service({
-    url: '/api/admin/video/upload/one',
-    method: 'post',
-    data: riid
+    url: '/api/admin/video/space/info',
+    method: 'get'
   })
 }

@@ -142,6 +142,8 @@ public class OrderBeforeVo {
     private Byte isBalancePay;
     /**默认支付配置->积分*/
     private Byte isScorePay;
+    /**订单商品折后总金额*/
+    private BigDecimal tolalDiscountAfterPrice;
     /**
      * 默认配送方式 0 ，1 ，2
      * @return
@@ -170,6 +172,8 @@ public class OrderBeforeVo {
         orderRecord.setMemberCardBalance(getMemberCardDiscount());
         orderRecord.setPackageDiscount(getPackageDiscount());
         orderRecord.setPreSaleDiscount(getPreSaleDiscount());
+        //订单付款方式，0全款 1定金 2好友代付(此处只是设置默认值，后续可能修改)
+        orderRecord.setOrderPayWay(getOrderPayWay() == null ? OrderConstant.PAY_WAY_FULL : getOrderPayWay());
         if(getBkOrderMoney() != null){
             orderRecord.setBkOrderMoney(getBkOrderMoney());
         }

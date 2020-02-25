@@ -291,7 +291,7 @@ public class MrkingStrategyService extends ShopBaseService {
         SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-        if(soldOutGoods != NumberUtils.BYTE_ONE){
+        if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
             select.where(GOODS.GOODS_NUMBER.gt(0));
         }
         if(StringUtil.isNotEmpty(search)){

@@ -1,32 +1,5 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.poifs.filesystem.FileMagic;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
@@ -46,7 +19,6 @@ import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.IdentityUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -55,8 +27,8 @@ import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
+import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
@@ -87,6 +59,32 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.user.user.UserService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.poifs.filesystem.FileMagic;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
+
+import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 
 /**
  * 会员导入
@@ -879,8 +877,8 @@ public class UserImportService extends ShopBaseService {
 			logger().info("邀请人手机号处理");
 			UserRecord inviteUser = userService.getUserByMobile(inviteUserMobile);
 			DistributionParam cfg = configService.distributionCfg.getDistributionCfg();
-			if (cfg != null && inviteUser != null && userId != inviteUser.getUserId()
-					&& cfg.getStatus().equals(BYTE_ONE) && inviteUser.getInviteId() != userId) {
+			if (cfg != null && inviteUser != null && !userId.equals(inviteUser.getUserId())
+					&& cfg.getStatus().equals(BYTE_ONE) && !inviteUser.getInviteId().equals(userId)) {
 				logger().info("处理邀请人");
 				userRecord.setInviteId(inviteUser.getUserId());
 				userRecord.setInviteTime(DateUtil.getLocalTimeDate());

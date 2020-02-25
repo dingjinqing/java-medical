@@ -42,7 +42,13 @@ global.wxComponent({
   methods: {
     goToOrder () {
       let info = this.data.lotteryInfo
-      let goodsList = []
+      let goodsList = [{
+        goodsId: info.goodsId,
+        prdRealPrice: 0,
+        goodsNum: 1,
+        prdId: info.productId,
+        isCart: 0
+      }]
       util.navigateTo({
         url: "/pages/checkout/checkout?activityType=24&activityId=" + Number(info.prizeId) + "&goodsList=" + JSON.stringify(goodsList)
       })

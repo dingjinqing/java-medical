@@ -348,12 +348,16 @@ public class BargainService extends ShopBaseService  {
      */
     public ShareQrCodeVo getMpQrCode(Integer id) {
 
-        String pathParam="paramId="+id;
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.BARGAIN_ITEM, pathParam);
+        //String pathParam="paramId="+id;
+        //String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.BARGAIN_ITEM, pathParam);
+
+        int goodsId = db().select(BARGAIN.GOODS_ID).from(BARGAIN).where(BARGAIN.ID.eq(id)).fetchAny().into(Integer.class);
+        String pathParam=String.format("gid=%d&aid=%d&atp=%d", goodsId, id, BaseConstant.ACTIVITY_TYPE_BARGAIN);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.BARGAIN_ITEM.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
         return vo;
     }
 

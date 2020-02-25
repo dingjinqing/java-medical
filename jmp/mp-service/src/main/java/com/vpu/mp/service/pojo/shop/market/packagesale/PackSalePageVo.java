@@ -67,7 +67,7 @@ public class PackSalePageVo {
 	 * @return
 	 */
 	public Byte activityStatus() {
-		if(BaseConstant.ACTIVITY_STATUS_NORMAL == this.getStatus()) {
+		if(BaseConstant.ACTIVITY_STATUS_NORMAL.equals(this.getStatus())) {
 			Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
 			if(currentTime.before(this.getStartTime())){
 				return ActivityStatus.UNSTARTED;

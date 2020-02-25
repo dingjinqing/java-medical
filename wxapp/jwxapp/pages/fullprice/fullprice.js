@@ -75,7 +75,7 @@ global.wxPage({
     strategy_id = options.identity_id;
     store_id = options.store_id;
     searchText = "";
-    // full_request(that);
+    full_request(that);
   },
   // 去购物车
   go_to_cart: function () {
@@ -178,7 +178,7 @@ global.wxPage({
         action: "strategy"
       })
   },
-  // 已选商品列表
+  // 查看已选商品列表
   showCheck: function (e) {
     var that = this;
     var form_id = e.detail.formId;
@@ -186,30 +186,30 @@ global.wxPage({
     that.setData({
       checkMode: false
     });
-    util.api('/api/wxapp/fullprice/checkedlist', function (res) {
-      if (res.error == 0) {
-        full_change_info = res.content;
-        can_del = 0;
-        that.data.can_del = 0;
-        full_change_info.count = 0;
-        for (var i = 0; i < full_change_info.list.length; i++) {
-          full_change_info.list[i].is_zuida = 0;
-          if (full_change_info.list[i].goods_number == 1) {
-            full_change_info.list[i].is_zuixiao = 1;
-          } else {
-            full_change_info.list[i].is_zuixiao = 0;
-          }
-          full_change_info.count += full_change_info.list[i].goods_number;
-        }
-        that.setData({
-          full_change_info: full_change_info,
-          can_del: can_del,
-        })
-      } else {
-        util.showModal("提示", res.message);
-        return false;
-      }
-    }, { strategy_id: strategy_id, store_id: store_id, form_id: form_id, open_id: open_id });
+    // util.api('/api/wxapp/fullprice/checkedlist', function (res) {
+    //   if (res.error == 0) {
+    //     full_change_info = res.content;
+    //     can_del = 0;
+    //     that.data.can_del = 0;
+    //     full_change_info.count = 0;
+    //     for (var i = 0; i < full_change_info.list.length; i++) {
+    //       full_change_info.list[i].is_zuida = 0;
+    //       if (full_change_info.list[i].goods_number == 1) {
+    //         full_change_info.list[i].is_zuixiao = 1;
+    //       } else {
+    //         full_change_info.list[i].is_zuixiao = 0;
+    //       }
+    //       full_change_info.count += full_change_info.list[i].goods_number;
+    //     }
+    //     that.setData({
+    //       full_change_info: full_change_info,
+    //       can_del: can_del,
+    //     })
+    //   } else {
+    //     util.showModal("提示", res.message);
+    //     return false;
+    //   }
+    // }, { strategy_id: strategy_id, store_id: store_id, form_id: form_id, open_id: open_id });
   },
   closeCheck: function () {
     var that = this;
@@ -477,10 +477,11 @@ global.wxPage({
       checkMode: true
     })
   },
+  // 跳转商品详情
   to_items: function (e) {
     var goods_id = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: '/pages/item/item?goods_id=' + goods_id,
+      url: '/pages/item/item?gid=' + goods_id,
     })
   },
 
@@ -533,33 +534,50 @@ global.wxPage({
   },
 })
 function full_request(that) {
-  // util.api('/api/wxapp/fullprice/goodslist', function (res) {
-  //   if (res.error == 0) {
-  //     full_info = res.content;
-  //     that.data.last_page = full_info.goods.last_page;
-  //     var full_goods_info = [];
-  //     var full_goods_r = [];
-  //     full_goods_r = full_info.goods.data;
-  //     al_goods_prices = full_info.main_price;
-  //     all_goods_doc = full_info.change_doc;
-  //     if (full_goods_r.length > 0) {
-  //       full_goods_info = full_goods_r;
+  util.api('/api/wxapp/fullprice/goodslist', function (res) {
+    if (res.error == 0) {
+      full_info = res.content;
+      that.data.last_page = full_info.goods.page.lastPage;
+      var full_goods_info = [];
+      var full_goods_r = [];
+      full_goods_r = full_info.goods.dataList;
+      // al_goods_prices = full_info.fullPriceDoc; // 金额
+      // 金额提示
+      if (full_info.fullPriceDoc) {
+        // all_goods_doc = full_info.change_doc;
+        if (full_info.fullPriceDoc.docType == 0) {
+          all_goods_doc = '快选择商品参加满折满减活动吧, 购物车里没有商品!'
+        } else if (full_info.fullPriceDoc.docType == 1) {
+          all_goods_doc = '下单立减' + full_info.fullPriceDoc.reduceMoney + '元'
+        } else if (full_info.fullPriceDoc.docType == 2) {
+          all_goods_doc = '再选' + full_info.fullPriceDoc.diffPrice + '元，即可减' + full_info.fullPriceDoc.reduceMoney + '元'
+        } else if (full_info.fullPriceDoc.docType == 3) {
+          all_goods_doc = '再选' + full_info.fullPriceDoc.diffPrice + '元，即可打' + full_info.fullPriceDoc.discount + '折'
+        } else if (full_info.fullPriceDoc.docType == 4) {
+          all_goods_doc = '再选' + full_info.fullPriceDoc.diffNumber + '件，即可减' + full_info.fullPriceDoc.reduceMoney + '元'
+        } else if (full_info.fullPriceDoc.docType == 5) {
+          all_goods_doc = '再选' + full_info.fullPriceDoc.diffNumber + '件，即可打' + full_info.fullPriceDoc.discount + '折'
+        }
+      }
 
-  //       that.setData({
-  //         full_goods_info: full_goods_info,
-  //         full_info: full_info,
-  //         al_goods_prices: al_goods_prices,
-  //         all_goods_doc: all_goods_doc
-  //       })
+      if (full_goods_r.length > 0) {
+        full_goods_info = full_goods_r;
 
-  //     }
-  //   } else {
-  //     util.showModal("提示", res.message, function () {
-  //       wx.navigateBack({
+        that.setData({
+          full_goods_info: full_goods_info,
+          full_info: full_info,
+          // al_goods_prices: al_goods_prices, // 金额
+          all_goods_doc: all_goods_doc // 金额提示
+        })
 
-  //       })
-  //     });
-  //     return false;
-  //   }
-  // }, { strategy_id: strategy_id, page: that.data.page, search: searchText, store_id: store_id, page_rows: 10 });
+      }
+    } else {
+      util.showModal("提示", res.message, function () {
+        wx.navigateBack({
+
+        })
+      });
+      return false;
+    }
+  }, { strategyId: 36, currentPage: that.data.page, search: searchText, pageRows: 10 });
 }

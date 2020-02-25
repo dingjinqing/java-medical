@@ -440,7 +440,37 @@ public class CardDaoService extends ShopBaseService {
 
 		return r != null;
 	}
+	
+	/**
+	 * 限制的batchId里code是否存在，是返回true，否返回false
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public boolean isExistCodeInBatch(String code,Integer[] batchIds) {
+		if(batchIds!=null&&batchIds.length>0) {
+			CardReceiveCodeRecord r = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.CODE.eq(code))
+					.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO)).and(CARD_RECEIVE_CODE.ERROR_MSG.isNull().and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds))).fetchAny();
+			return r != null;			
+		}
+		return false;
 
+	}
+	/**
+	 * 限制的batchId里code是否存在，是返回true，否返回false
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public boolean isExistCardNoInBatch(String code,Integer[] batchIds) {
+		if(batchIds!=null&&batchIds.length>0) {
+			CardReceiveCodeRecord r = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.CARD_NO.eq(code))
+					.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO)).and(CARD_RECEIVE_CODE.ERROR_MSG.isNull().and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds))).fetchAny();
+			return r != null;			
+		}
+		return false;
+
+	}
 	/**
 	 * 将领取批次的生成码存入数据库
 	 * 
@@ -473,6 +503,8 @@ public class CardDaoService extends ShopBaseService {
 		Integer batchId = param.getBatchId();
 		Integer groupId = param.getGroupId();
 		String regex = "^[\\w\\d]*$";
+		Integer[] batchIdStr = param.getBatchIdStr();
+		logger().info("batchIds:"+batchIdStr);
 		for (String code : codeList) {
 			String msg=null;
 			if(StringUtils.isEmpty(code)) {
@@ -480,9 +512,13 @@ public class CardDaoService extends ShopBaseService {
 			}else {
 				if(!code.matches(regex)) {
 					msg=CardNoImportTemplate.CARDNO_ERROR.getCode();
-				}else if(code.length()>15) {
+				}if(code.length()>15) {
 					msg=CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code=code.substring(0,15);
+				}else if(batchIdStr!=null&&batchIdStr.length>0) {
+					if(getReceiveCode(code, batchIdStr)) {
+						msg=CardNoImportTemplate.CARDNO_EXIST.getCode();
+					}
 				}
 			}
 			logger().info("导入batchId："+batchId+" groupId："+groupId+" code："+code+" msg："+msg);
@@ -536,13 +572,15 @@ public class CardDaoService extends ShopBaseService {
 	public int insertIntoCardReceiveCodeByCheck(CardBatchParam param, List<String> cardNoList, List<String> pwdList) {
 		InsertValuesStep5<CardReceiveCodeRecord, Integer, Integer, String, String, String> insert = db()
 				.insertInto(CARD_RECEIVE_CODE).columns(CARD_RECEIVE_CODE.BATCH_ID, CARD_RECEIVE_CODE.GROUP_ID,
-						CARD_RECEIVE_CODE.CARD_NO, CARD_RECEIVE_CODE.CARD_PWD,CARD_RECEIVE_CODE.ERROR_MSG);
+						CARD_RECEIVE_CODE.CARD_NO, CARD_RECEIVE_CODE.CARD_PWD, CARD_RECEIVE_CODE.ERROR_MSG);
 		Integer batchId = param.getBatchId();
 		Integer groupId = param.getGroupId();
 		int size = cardNoList.size();
 		int size2 = pwdList.size();
 		int length = size > size2 ? size : size2;
 		String regex = "^[\\w\\d]*$";
+		Integer[] batchIdStr = param.getBatchIdStr();
+		logger().info("batchIds:" + batchIdStr);
 		for (int i = 0; i < length; i++) {
 			String msg = null;
 			String code = cardNoList.get(i);
@@ -552,9 +590,14 @@ public class CardDaoService extends ShopBaseService {
 			} else {
 				if (!code.matches(regex)) {
 					msg = CardNoImportTemplate.CARDNO_ERROR.getCode();
-				} else if (code.length() > 15) {
+				}
+				if (code.length() > 15) {
 					msg = CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code = code.substring(0, 15);
+				} else if (batchIdStr != null && batchIdStr.length > 0) {
+					if (getReceiveCardNo(code, batchIdStr)) {
+						msg = CardNoImportTemplate.CARDNO_EXIST.getCode();
+					}
 				}
 			}
 			if (StringUtils.isEmpty(pwd)) {
@@ -567,7 +610,7 @@ public class CardDaoService extends ShopBaseService {
 					pwd = code.substring(0, 20);
 				}
 			}
-			insert.values(batchId, groupId, code, pwd,msg);
+			insert.values(batchId, groupId, code, pwd, msg);
 		}
 		int res = insert.execute();
 		logger().info("成功执行" + res + "条");
@@ -678,5 +721,41 @@ public class CardDaoService extends ShopBaseService {
 	
 	public CardBatchRecord  getBatch(Integer batchId) {
 		return db().selectFrom(CARD_BATCH).where(CARD_BATCH.ID.eq(batchId)).fetchAny();
+	}
+
+	/**
+	 * code是否已经被定义，重复的返回true
+	 * @param code
+	 * @param batchIds
+	 * @return
+	 */
+	public boolean getReceiveCode(String code, Integer[] batchIds) {
+		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE)
+				.where(CARD_RECEIVE_CODE.CODE.eq(code)
+						.and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds)
+								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())))
+				.fetch();
+		if (fetch != null && fetch.isNotEmpty()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * code是否已经被定义，重复的返回true
+	 * @param code
+	 * @param batchIds
+	 * @return
+	 */
+	public boolean getReceiveCardNo(String code, Integer[] batchIds) {
+		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE)
+				.where(CARD_RECEIVE_CODE.CARD_NO.eq(code)
+						.and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds)
+								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())))
+				.fetch();
+		if (fetch != null && fetch.isNotEmpty()) {
+			return true;
+		}
+		return false;
 	}
 }

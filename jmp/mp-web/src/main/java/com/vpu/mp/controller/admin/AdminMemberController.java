@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,7 @@ import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
 /**
  * 会员管理
  * @author 黄壮壮
@@ -92,6 +94,17 @@ public class AdminMemberController extends AdminBaseController{
 		response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 		workBook.write(response.getOutputStream());
 	}
+	
+	/**
+	 * 	用户列表导出新接口
+	 */
+	@PostMapping("/list/export/new")
+	public void exportUserNew(@RequestBody MemberPageListParam param) {
+		
+	}
+	
+	
+	
 	
 	
 	
@@ -198,6 +211,15 @@ public class AdminMemberController extends AdminBaseController{
 		logger().info("正在获取会员领取会员卡明细");
 		List<UserCardDetailVo> allUserCardDetail = shop().member.getAllUserCardDetail(param);
 		return success(allUserCardDetail);
+	}
+	
+	/**
+	 * 	获取用户导出配置信息
+	 */
+	@PostMapping("/export/cfg")
+	public JsonResult getUserExportCfg() {
+		logger().info("获取用户导出配置信息");
+		return success(shop().member.userExpSvc.getExportCfg());
 	}
 	
 }

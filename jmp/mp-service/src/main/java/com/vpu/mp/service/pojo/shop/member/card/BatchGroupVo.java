@@ -20,4 +20,6 @@ public class BatchGroupVo {
 	private Integer failNum;
 	private String batchName;
 	private Timestamp createTime;
+	/** 是否是带密码的 */
+	private Boolean isPwd;
 }

@@ -2,10 +2,13 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FullReductionPromotion;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -46,4 +49,56 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     private BigDecimal secKillPrice;
 
+    /**
+     * 满折满减活动
+     */
+    private FullReduction fullReduction;
+
+    /**
+     * 加价购规则
+     */
+    private List<PurchasePriceRule> purchasePriceRule;
+
+    /**
+     * 满折满减活动
+     */
+    @Setter
+    @Getter
+    public static  class FullReduction{
+        /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
+        private Byte FullReductiontype;
+        /**是否会员专享*/
+        private Boolean isExclusive;
+
+        private List<FullReductionRule> rules;
+
+    }
+
+    /**
+     * 满折满减活动规则，
+     * 通过判断fullMoney 是否为0来判断是满金额减还是满件数减
+     */
+    @Data
+    public static class FullReductionRule{
+        /**满多少金额，活动中指定使用满金额策略时使用*/
+        private BigDecimal fullMoney;
+        /**满几件或第几件（第X件打折），活动中指定使用满件数策略时使用*/
+        private Integer amount;
+
+        /**减多少钱，活动中指定使用满金额策略时使用*/
+        private BigDecimal reduceMoney;
+        /**折扣，活动中指定使用满件数策略时使用*/
+        private BigDecimal discount;
+    }
+
+    /**
+     * 加价购
+     */
+    @Data
+    public static class PurchasePriceRule{
+        /**满金额数*/
+        private BigDecimal fullPrice;
+        /**加价金额数*/
+        private BigDecimal purchasePrice;
+    }
 }

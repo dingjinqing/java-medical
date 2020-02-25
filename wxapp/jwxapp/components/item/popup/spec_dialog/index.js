@@ -54,63 +54,49 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(val) {
-        if (val.defaultPrd === true) {
-          // 活动规格限制
-          let actLimit = {}
-          if (val.activity) {
-            actLimit.activityType = val.activity.activityType
-            if (val.activity.limitMaxNum) {
-              actLimit.limitMaxNum = val.activity.limitMaxNum
+        console.log(val)
+        let productsInfo = this.data.productsInfo
+          if(productsInfo.defaultPrd === true){
+            let {limitBuyNum,limitMaxNum,activity} = productsInfo
+            this.setData({
+              checkedProduct: val.products[0]
+            })
+            if(activity && [1,5,10].includes(activity.activityType)){
+              val.products[0].prdNumber = activity[actPrdType[activity.activityType]['prdListName']][0].stock
+              if(activity.activityType === 1){
+                console.log(1)
+                limitBuyNum = activity.limitBuyNum
+                limitMaxNum = activity.limitMaxNum
+              }
+              if([5,10].includes(activity.activityType)){
+                limitMaxNum = activity.limitAmount
+              }
+            } else if (activity && activity.activityType === 3) {
+              val.products[0].prdNumber = activity.stock
             }
-            if (actPrdType[val.activity.activityType]['prdListName']) {
-              actLimit.prdNumber =
-                val.activity[actPrdType[val.activity.activityType]['prdListName']][0].stock
+            if(activity && [6,18,22].includes(activity.activityType) && activity.isLimit){
+              limitMaxNum = activity.limitAmount
             }
-            if (val.activity.limitBuyNum) {
-              actLimit.limitBuyNum = val.activity.limitBuyNum
-            }
+            this.triggerEvent('productData', {
+              goodsId: val.goodsId,
+              ...val.products[0],
+              limitBuyNum,
+              limitMaxNum
+            })
+          } else {
+            this.spec = this.data.productsInfo.products
+            this.defaultSelectSpec()
+            this.render()
           }
-          this.setData({
-            checkedProduct: val.products[0]
-          })
-          this.triggerEvent('productData', {
-            goodsId: val.goodsId,
-            ...val.products[0],
-            limitBuyNum: val.limitBuyNum,
-            limitMaxNum: val.limitMaxNum,
-            ...actLimit
-          })
-        } else {
-          if (val.activity) {
-            if (actPrdType[val.activity.activityType].multiSkuAct) {
-              let activityPrds = val.activity[
-                actPrdType[val.activity.activityType]['prdListName']
-              ].map(
-                ({
-                  productId: prdId,
-                  stock: prdNumber,
-                  [actPrdType[val.activity.activityType].prdRealPrice]: prdRealPrice,
-                  [actPrdType[val.activity.activityType].prdLinePrice]: prdLinePrice,
-                  isGradePrice = null
-                }) => {
-                  return { prdId, prdNumber, prdRealPrice, prdLinePrice, isGradePrice }
-                }
-              )
-              this.setData({
-                activityPrds
-              })
-            }
-          }
-          console.log(this.data.activityPrds)
-          this.spec = val.products
-          this.defaultSelectSpec()
-          this.render()
-        }
+        // }
       }
     },
     triggerButton: {
       type: String,
-      value: ''
+      value: '',
+      observer(val){
+        this.render()
+      }
     }
   },
   /**
@@ -176,9 +162,9 @@ global.wxComponent({
       this.skuList = {}
       for (let n = 0; n < this.spec.length; n++) {
         this.skuList[this.spec[n]['prdDesc']] = this.spec[n]
+        if(this.data.productsInfo.activity && actPrdType[this.data.productsInfo.activity.activityType]['prdListName'])
+        this.skuList[this.spec[n]['prdDesc']].actProduct = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']].find(item=>{return item.productId === this.spec[n].prdId})
       }
-      console.log(this.data.activityPrds)
-      console.log(this.skuList)
       this.specList = {}
       Object.keys(this.skuList)
         .map(item => item.split(';'))
@@ -230,33 +216,36 @@ global.wxComponent({
       if (this.select_prd) this.getPrdInfo()
     },
     getPrdInfo() {
-      let select_prd = this.select_prd
-      let { limitBuyNum, limitMaxNum } = this.data.productsInfo
-      let actLimit = {}
-      // if(this.data.productsInfo.activity){
-      //   actLimit.activityType = this.data.productsInfo.activity.activityType
-      //   if(this.data.productsInfo.activity.limitBuyNum){
-      //     actLimit.limitMaxNum = this.data.productsInfo.activity.limitMaxNum
-      //   }
-      //   if(this.data.activityPrds){
-      //     actLimit.prdNumber = this.data.activityPrds.find(item=>item.prdId === select_prd.prdId).prdNumber
-      //   }
-      //   if(this.data.productsInfo.activity.limitBuyNum){
-      //     actLimit.limitBuyNum = this.data.productsInfo.activity.limitBuyNum
-      //   }
-      // }
+      let select_prd = JSON.parse(JSON.stringify(this.select_prd))
+      let { limitBuyNum, limitMaxNum,activity} = this.data.productsInfo
+      if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType !== 3){
+        select_prd.prdRealPrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdRealPrice']]
+        select_prd.prdLinePrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdLinePrice']]
+        if(activity.activityType === 1){
+          limitBuyNum = activity.limitBuyNum
+          limitMaxNum = activity.limitMaxNum
+        }
+        if([5,10].includes(activity.activityType) || ([6,18,22].includes(activity.activityType) && activity.isLimit)){
+          limitMaxNum = activity.limitAmount
+        }
+      } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 3){
+        select_prd.prdRealPrice = activity.bargainPrice
+      }
+      if(activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(activity.activityType)){
+        select_prd.prdNumber = select_prd['actProduct']['stock']
+      } else if (activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && activity.activityType === 3){
+        select_prd.prdNumber = activity.stock
+      } else {
+        select_prd.prdNumber = select_prd['prdNumber']
+      }
       this.setData({
         checkedProduct: select_prd
       })
-      if(this.data.productsInfo.activity){
-        actLimit = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']].find(item => {return item.productId === select_prd.prdId})
-      }
       this.triggerEvent('productData', {
         goodsId: this.data.productsInfo.goodsId,
         ...select_prd,
         limitBuyNum,
-        limitMaxNum,
-        ...actLimit
+        limitMaxNum
       })
     },
     check(specName, valName) {
@@ -277,8 +266,8 @@ global.wxComponent({
       }
     },
     isGary(addSpec) {
+      let min = this.getGoodsLimitMin()
       var specs = Object.assign({}, this.select_specs, addSpec)
-      console.log(specs)
       var prd_list = this.skuList
       for (var prd_specs in prd_list) {
         var prd_specs_arr = prd_specs.split(';')
@@ -290,111 +279,26 @@ global.wxComponent({
           }
         }
         if (found) {
-          var stock = prd_list[prd_specs]['prdNumber']
+          var stock = null
+          if(this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(this.data.productsInfo.activity.activityType)){
+            stock = prd_list[prd_specs]['actProduct']['stock']
+          } else if (this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && this.data.productsInfo.activity.activityType === 3){
+            stock = this.data.productsInfo.activity.stock
+          } else {
+            stock = prd_list[prd_specs]['prdNumber']
+          }
           console.log(stock)
-          if (stock > 0) return false
+          if (stock > min) return false
         }
       }
       return true
     },
-    // // 格式化规格信息
-    // formatSpec() {
-    //   this.getCanCheckSpec()
-    //   this.setData({
-    //     specList: this.specList
-    //   });
-    //   // this.getCheckedProduct(specList);
-    // },
-    // getDefaultChecked(){
-    //   this.getCanCheckSpec()
-    //   for (var prd_specs in this.skuList) {
-    //     if (this.skuList[prd_specs]['prdNumber'] > 0) {
-    //       return prd_specs;
-    //     }
-    //   }
-    //   return false
-    // },
-    // getCanCheckSpec(){
-    //   this.initSpec()
-    //   for (var specName in this.specList) {
-    //     var vals = this.specList[specName];
-    //     for (var valName in vals) {
-    //       var spec = {};
-    //       spec[specName] = valName;
-    //       vals[valName].gary = this.gary(spec)
-    //     }
-    //   }
-    // },
-    // defaultSelectSpec(){
-    //   let specs =  this.getDefaultChecked()
-    //   console.log(specs)
-    // },
-    // getSelectPrd(){
-
-    // },
-    // gary(){
-    //   console.log(spec)
-    // },
-    // initSpec(){
-
-    // },
-    // 切换规格按钮
-    // tapSpec(e) {
-    //   let d = this.eventData(e)
-    //   let pastIndex = this.data.specList[d.key].findIndex(item => item.isChecked === true)
-    //   this.setData({
-    //     [`specList.${d.key}[${pastIndex !== -1 ? pastIndex : 0}].isChecked`]: false,
-    //     [`specList.${d.key}[${d.index}].isChecked`]: true
-    //   })
-    //   this.getCheckedProduct(this.data.specList)
-    // },
-    // // 获取选中组合后规格信息
-    // getCheckedProduct(specList) {
-    //   let str = ''
-    //   for (let i in specList) {
-    //     str += `;${i}:${specList[i].filter(item => item.isChecked)[0].specName}`
-    //   }
-    //   str = str.substring(1)
-    //   let productTarget = this.data.productsInfo.products.filter(item => item.prdDesc === str)[0]
-    //   // if(this.data.productsInfo.activity && !actPrdType[this.data.productsInfo.activity.activityType].multiSkuAct){
-    //   //   productTarget.prdLinePrice = productTarget.prdRealPrice
-    //   //   productTarget.prdRealPrice = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType].prdRealPrice]
-    //   // }
-    //   this.setData({
-    //     checkedProduct: productTarget
-    //   })
-    //   let { limitBuyNum, limitMaxNum } = this.data.productsInfo
-    //   let actLimit = {}
-    //   // 活动规格的限购数量
-    //   if (this.data.productsInfo.activity) {
-    //     actLimit.activityType = this.data.productsInfo.activity.activityType
-    //     if (this.data.productsInfo.activity.limitBuyNum) {
-    //       actLimit.limitMaxNum = this.data.productsInfo.activity.limitMaxNum
-    //     }
-    //     if (this.data.activityPrds) {
-    //       actLimit.prdNumber = this.data.activityPrds.find(
-    //         item => item.prdId === productTarget.prdId
-    //       ).prdNumber
-    //     }
-    //     if (this.data.productsInfo.activity.limitBuyNum) {
-    //       actLimit.limitBuyNum = this.data.productsInfo.activity.limitBuyNum
-    //     }
-    //   }
-    //   console.log({
-    //     goodsId: this.data.productsInfo.goodsId,
-    //     ...productTarget,
-    //     limitBuyNum,
-    //     limitMaxNum,
-    //     ...actLimit
-    //   })
-    //   this.triggerEvent('productData', {
-    //     goodsId: this.data.productsInfo.goodsId,
-    //     ...productTarget,
-    //     limitBuyNum,
-    //     limitMaxNum,
-    //     ...actLimit
-    //   })
-    // },
+    getGoodsLimitMin(){
+      if((!this.data.triggerButton||this.data.triggerButton === 'right') && this.data.productsInfo.activity && this.data.productsInfo.activity.activityType === 1){
+        return this.data.productsInfo.activity.limitBuyNum
+      }
+      return (this.data.productsInfo.limitBuyNum && this.data.productsInfo.limitBuyNum > 0) ? this.data.productsInfo.limitBuyNum : 1;
+    },
     bindClose() {
       this.triggerEvent('close')
     }

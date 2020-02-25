@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FullReductionPromotion;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;
@@ -281,5 +282,69 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             }
         }
         return BigDecimal.ZERO;
+    }
+
+    /**
+     * 获取商品的满折满减活动--购物车
+     *
+     * @param goodsId 商品id
+     * @param catId 平台分类ID
+     * @param brandId 品牌ID
+     * @param sortId  商家分类ID
+     * @param date 限制时间
+     */
+    public List<CartActivityInfo> getGoodsFullReductionActivityList(Integer goodsId, Integer catId, Integer brandId, Integer sortId,List<Integer> cardIds, Timestamp date) {
+        Condition condition = MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(MRKING_STRATEGY.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(MRKING_STRATEGY.START_TIME.le(date)).and(MRKING_STRATEGY.END_TIME.ge(date));
+
+        Condition idCondition = MRKING_STRATEGY.ACT_TYPE.eq((byte) 0).or(DslPlus.findInSet(goodsId, MRKING_STRATEGY.RECOMMEND_GOODS_ID)
+                .or(DslPlus.findInSet(catId, MRKING_STRATEGY.RECOMMEND_CAT_ID)).or(DslPlus.findInSet(brandId, MRKING_STRATEGY.RECOMMEND_BRAND_ID))
+                .or(DslPlus.findInSet(sortId, MRKING_STRATEGY.RECOMMEND_SORT_ID)));
+        logger().debug("小程序-商品详情-获取满折满减促销");
+        Map<Integer, List<Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal>>> fullReductionMap =
+                db().select(MRKING_STRATEGY.ID, MRKING_STRATEGY.CARD_ID, MRKING_STRATEGY.TYPE,
+                        MRKING_STRATEGY_CONDITION.FULL_MONEY, MRKING_STRATEGY_CONDITION.REDUCE_MONEY,
+                        MRKING_STRATEGY_CONDITION.AMOUNT, MRKING_STRATEGY_CONDITION.DISCOUNT)
+                        .from(MRKING_STRATEGY)
+                        .innerJoin(MRKING_STRATEGY_CONDITION).on(MRKING_STRATEGY.ID.eq(MRKING_STRATEGY_CONDITION.STRATEGY_ID))
+                        .where(condition.and(idCondition))
+                        .orderBy(MRKING_STRATEGY.STRATEGY_PRIORITY.desc(), MRKING_STRATEGY.START_TIME.desc())
+                        .stream().collect(Collectors.groupingBy(x -> x.get(MRKING_STRATEGY.ID)));
+
+        List<CartActivityInfo> cartActivityInfos =new ArrayList<>(fullReductionMap.keySet().size());
+        AA:
+        for (Map.Entry<Integer, List<Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal>>> entry : fullReductionMap.entrySet()) {
+            Integer key = entry.getKey();
+            List<Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal>> values = entry.getValue();
+
+            CartActivityInfo activityInfo = new CartActivityInfo();
+            CartActivityInfo.FullReduction fullReduction =new CartActivityInfo.FullReduction();
+
+            activityInfo.setActivityId(key);
+            activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION);
+            activityInfo.setFullReduction(fullReduction);
+
+            Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal> record = values.get(0);
+            fullReduction.setFullReductiontype(record.get(MRKING_STRATEGY.TYPE));
+            //会员专享
+            if (StringUtils.isNotBlank(record.get(MRKING_STRATEGY.CARD_ID))) {
+                for (Integer id : cardIds) {
+                    if (record.get(MRKING_STRATEGY.CARD_ID).indexOf(id)==-1) {
+                        break AA;
+                    }
+                }
+            }
+            fullReduction.setRules(new ArrayList<>(values.size()));
+            for (Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal> value : values) {
+                CartActivityInfo.FullReductionRule rule = new CartActivityInfo.FullReductionRule();
+                rule.setAmount(value.get(MRKING_STRATEGY_CONDITION.AMOUNT));
+                rule.setDiscount(value.get(MRKING_STRATEGY_CONDITION.DISCOUNT));
+                rule.setFullMoney(value.get(MRKING_STRATEGY_CONDITION.FULL_MONEY));
+                rule.setReduceMoney(value.get(MRKING_STRATEGY_CONDITION.REDUCE_MONEY));
+                fullReduction.getRules().add(rule);
+            }
+            cartActivityInfos.add(activityInfo);
+        }
+        return cartActivityInfos;
     }
 }

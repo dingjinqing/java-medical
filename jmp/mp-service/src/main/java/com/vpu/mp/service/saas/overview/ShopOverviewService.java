@@ -17,7 +17,6 @@ import com.vpu.mp.service.saas.shop.ShopChildAccountService;
 import com.vpu.mp.service.saas.shop.ShopOfficialAccount;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -28,17 +27,14 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.vpu.mp.db.main.tables.Article.ARTICLE;
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopVersion.SHOP_VERSION;
 import static com.vpu.mp.db.main.tables.UserLoginRecord.USER_LOGIN_RECORD;
-import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * author liufei
@@ -141,7 +137,7 @@ public class ShopOverviewService extends MainBaseService {
             // 当前绑定解绑状态
             .bindInfo(getbindUnBindStatusUseByOver(user, bindAppId))
             // 分享二维码信息
-            .shareQrCodeVo(share(QrCodeTypeEnum.PAGE_BOTTOM, ""))
+            .shareQrCodeVo(share(QrCodeTypeEnum.PAGE_BOTTOM, "0"))
             .build();
     }
 
@@ -174,7 +170,7 @@ public class ShopOverviewService extends MainBaseService {
     }
 
     /**
-     * Share store service share qr code vo.通用分享方法
+     * Share store service share qr code vo.商城概览分享方法
      *
      * @param qrCodeTypeEnum the qr code type enum
      * @param pathParam      the path param
@@ -184,7 +180,7 @@ public class ShopOverviewService extends MainBaseService {
         String imageUrl = qrCodeService.getMpQrCode(qrCodeTypeEnum, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(qrCodeTypeEnum.getPathUrl(null));
         return vo;
     }
 
@@ -209,51 +205,53 @@ public class ShopOverviewService extends MainBaseService {
 
     /**
      * 店铺助手
-     * @param param
-     * @param vo
      */
-    public void shopAssistant(ShopAssistantParam param, ShopAssistantVo vo, Integer shopId, Integer sysId) {
-        shopNav(param, vo, shopId, sysId);
+    public AssiWxDataShop shopAssistant(Integer shopId, Integer sysId) {
+        return shopNav(shopId, sysId);
     }
 
-    private ShopAssistantVo shopNav(ShopAssistantParam param, ShopAssistantVo vo, Integer shopId, Integer sysId) {
-        AssiDataShop dataShop = Objects.nonNull(vo.getDataShop()) ? vo.getDataShop() : new AssiDataShop();
+    private AssiWxDataShop shopNav(Integer shopId, Integer sysId) {
+        AssiWxDataShop dataShop = new AssiWxDataShop();
         // 微信配置（授权和支付）
         MpAuthShopRecord authShopRecord = mpAuthShopService.getAuthShopByShopId(shopId);
-        /* 微信配置（授权和支付）,决定了五个完成项
-        2表示：未注册小程序，未配置小程序客服，未授权小程序，未开通微信支付，未配置微信支付
-        1表示：已注册小程序，已配置小程序客服，已授权小程序，未开通微信支付，未配置微信支付
-        0表示：已注册小程序，已配置小程序客服，已授权小程序，已开通微信支付，已配置微信支付
-        */
+        Metadata finished = Metadata.builder().value(INTEGER_ZERO).type(BYTE_ZERO).status(BYTE_ONE).build();
+        Metadata unFinished = Metadata.builder().value(INTEGER_ONE).type(BYTE_ZERO).status(BYTE_ZERO).build();
+        Metadata finished1 = Metadata.builder().value(INTEGER_ZERO).type(BYTE_ONE).status(BYTE_ONE).build();
+        Metadata unFinished1 = Metadata.builder().value(INTEGER_ONE).type(BYTE_ONE).status(BYTE_ZERO).build();
         if (authShopRecord != null) {
+            dataShop.setRegisterApplet(finished);
+            dataShop.setAuthApplet(finished1);
+            dataShop.setAppletService(finished);
             boolean condi1 = StringUtils.isNotBlank(authShopRecord.getPayCertContent());
             boolean condi2 = StringUtils.isNotBlank(authShopRecord.getPayKey());
             boolean condi3 = StringUtils.isNotBlank(authShopRecord.getPayKeyContent());
             boolean condi4 = StringUtils.isNotBlank(authShopRecord.getPayMchId());
 
             if(condi1 && condi2 && condi3 && condi4){
-                dataShop.setWxPayConfigInfo(BYTE_ZERO);
+                dataShop.setWxPayment(finished);
+                dataShop.setConfigWxPayment(finished);
             } else {
-                dataShop.setWxPayConfigInfo(BYTE_ONE);
+                dataShop.setWxPayment(unFinished);
+                dataShop.setConfigWxPayment(unFinished);
             }
         } else {
-            dataShop.setWxPayConfigInfo(BYTE_TWO);
+            dataShop.setRegisterApplet(unFinished);
+            dataShop.setAuthApplet(unFinished1);
+            dataShop.setAppletService(unFinished);
+            dataShop.setWxPayment(unFinished);
+            dataShop.setConfigWxPayment(unFinished);
         }
-        // 子账号设置 0：已完成子账号设置，否未完成
-        if (CollectionUtils.isNotEmpty(childAccountService.getInfoBySysId(sysId))) {
-            dataShop.setChildAccountConf(BYTE_ZERO);
-        } else {
-            dataShop.setChildAccountConf(BYTE_ONE);
-        }
-        // 公众号  0：已授权公众号，否未授权公众号
-        if (CollectionUtils.isNotEmpty(shopOfficialAccount.getOfficialAccountBySysId(sysId, BYTE_ONE))) {
-            dataShop.setOfficialAccountConf(BYTE_ZERO);
-        } else {
-            dataShop.setOfficialAccountConf(BYTE_ONE);
-        }
-        vo.setDataShop(dataShop);
-        log.debug("主库的统计数据整完了");
-        return vo;
+        // 子账号设置 非0：已完成子账号设置，0：未完成
+        dataShop.setChildAccountConf(Metadata.builder()
+            .type(BYTE_ONE)
+            .value(childAccountService.getInfoBySysId(sysId).size()).build());
+
+        // 公众号  非0：已授权公众号，0：未授权公众号
+        dataShop.setOfficialAccountConf(Metadata.builder()
+            .type(BYTE_ONE)
+            .value(shopOfficialAccount.isOfficialAccountBySysId(sysId, BYTE_ONE)).build());
+        dataShop.ruleHandler();
+        return dataShop;
     }
 
     /**

@@ -67,6 +67,7 @@ global.wxComponent({
       let sortIds = []
       let brandIds = []
       let labelIds = []
+      let goodsIds = []
       m.sort_group_arr.forEach((item, index) => {
         if (item.sort_id !== null) {
           switch (item.sort_type) {
@@ -82,9 +83,14 @@ global.wxComponent({
           }
           sortIds.push(item.sort_id)
         }
+        if (item.is_all == 2) {
+          if (item.group_goods_id != '') {
+            goodsIds.push(Number(item.group_goods_id))
+          }
+        }
       })
       if (d.click == 1) {
-        util.jumpLink('/pages1/search/search?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds));
+        util.jumpLink('/pages1/search/search?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds) + '&pageFrom=' + 1 + '&goodsIds=' + JSON.stringify(goodsIds));
       } else {
         m.group_nav_index = d.index;
         m.page_num = 1;

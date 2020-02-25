@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.market.packagesale.*;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
@@ -17,12 +18,18 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import jodd.util.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Record;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +37,10 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
 import static com.vpu.mp.db.shop.tables.User.USER;
@@ -49,6 +58,7 @@ public class PackSaleService extends ShopBaseService {
 	@Autowired public GoodsService goodsService;
 	@Autowired public OrderReadService orderReadService;
     @Autowired public PackageGoodsCartService packageGoodsCartService;
+    @Autowired private ShopCommonConfigService shopCommonConfigService;
 	
 	/**
 	 * 分页查询一口价活动列表
@@ -325,6 +335,7 @@ public class PackSaleService extends ShopBaseService {
 	private List<PackSaleParam.GoodsGroup> getPackageGroups(PackageSaleRecord packageSaleRecord){
 	    List<PackSaleParam.GoodsGroup> res = new ArrayList<>();
         PackSaleParam.GoodsGroup g1 = new PackSaleParam.GoodsGroup();
+        g1.setGroupId((byte)1);
         g1.setGroupName(packageSaleRecord.getGroupName_1());
         g1.setGoodsNumber(packageSaleRecord.getGoodsNumber_1());
         g1.setGoodsIdList(Util.splitValueToList(packageSaleRecord.getGoodsIds_1()));
@@ -334,6 +345,7 @@ public class PackSaleService extends ShopBaseService {
 
         if(packageSaleRecord.getGoodsGroup_2() == Status.NORMAL){
             PackSaleParam.GoodsGroup g2 = new PackSaleParam.GoodsGroup();
+            g2.setGroupId((byte)2);
             g2.setGroupName(packageSaleRecord.getGroupName_2());
             g2.setGoodsNumber(packageSaleRecord.getGoodsNumber_2());
             g2.setGoodsIdList(Util.splitValueToList(packageSaleRecord.getGoodsIds_2()));
@@ -343,6 +355,7 @@ public class PackSaleService extends ShopBaseService {
 
         if(packageSaleRecord.getGoodsGroup_3() == Status.NORMAL){
             PackSaleParam.GoodsGroup g3 = new PackSaleParam.GoodsGroup();
+            g3.setGroupId((byte)3);
             g3.setGroupName(packageSaleRecord.getGroupName_3());
             g3.setGoodsNumber(packageSaleRecord.getGoodsNumber_3());
             g3.setGoodsIdList(Util.splitValueToList(packageSaleRecord.getGoodsIds_3()));
@@ -353,6 +366,12 @@ public class PackSaleService extends ShopBaseService {
         return res;
     }
 
+    /**
+     * 小程序端活动页数据
+     * @param param
+     * @param userId
+     * @return
+     */
 	public PackageSaleGoodsListVo getWxAppGoodsList(PackageSaleGoodsListParam param,Integer userId){
         PackageSaleGoodsListVo vo = new PackageSaleGoodsListVo();
         PackageSaleRecord packageSaleRecord = db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(param.getPackageId())).fetchAny();
@@ -366,11 +385,104 @@ public class PackSaleService extends ShopBaseService {
             vo.setState((byte)3);
             return vo;
         }
+        vo.setState((byte)0);
 
+        //填充tabList
         List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
-        int totalGoodsNumber = groups.stream().mapToInt(PackSaleParam.GoodsGroup::getGoodsNumber).sum();
+        List<PackageSaleGoodsListVo.GoodsGroup> tabList = new ArrayList<>();
+        groups.forEach(g->{
+            PackageSaleGoodsListVo.GoodsGroup tab = new PackageSaleGoodsListVo.GoodsGroup();
+            tab.setSelectNumber(packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),g.getGroupId()));
+            tab.setGroupName(g.getGroupName());
+            tab.setGoodsNumber(g.getGoodsNumber());
+            tabList.add(tab);
+        });
+        vo.setTabList(tabList);
+        int allNumber = groups.stream().mapToInt(PackSaleParam.GoodsGroup::getGoodsNumber).sum();
+        vo.setTotalGoodsNumber(allNumber);
+        vo.setTotalSelectNumber(tabList.stream().mapToInt(PackageSaleGoodsListVo.GoodsGroup::getSelectNumber).sum());
 
-	    return null;
+        //填充title
+        PackageSaleGoodsListVo.Title title = new PackageSaleGoodsListVo.Title();
+        title.setPackageType(packageSaleRecord.getPackageType());
+        title.setTotalGoodsNumber(vo.getTotalGoodsNumber());
+        title.setDiscountTotalRatio(packageSaleRecord.getTotalRatio());
+        title.setTotalMoney(packageSaleRecord.getTotalMoney());
+        vo.setTitle(title);
+
+        //填充goods
+        PageResult<PackageSaleGoodsListVo.Goods> goods = getGoods(getPackageSaleGroupGoodsIds(groups.get(param.getGroupId() - 1)),param.getSortName(),param.getSortOrder(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
+        goods.getDataList().forEach(g->{
+            g.setChooseNumber(packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),param.getGroupId(),g.getGoodsId()));
+        });
+        vo.setGoods(goods);
+
+        vo.setTotalMoney(packageGoodsCartService.getUserPackageMoney(userId,packageSaleRecord,allNumber));
+
+	    return vo;
+    }
+
+    /**
+     * 查出goods列表
+     * @param inGoodsIds
+     * @param search
+     * @param currentPage
+     * @param pageRows
+     * @return
+     */
+    private PageResult<PackageSaleGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,Byte sortName,Byte sortOrder,String search,Integer currentPage,Integer pageRows){
+        Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
+        select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
+            select.where(GOODS.GOODS_NUMBER.gt(0));
+        }
+        if(StringUtil.isNotEmpty(search)){
+            select.where(GOODS.GOODS_NAME.contains(search));
+        }
+        if(CollectionUtils.isNotEmpty(inGoodsIds)){
+            select.where(GOODS.GOODS_ID.in(inGoodsIds));
+        }
+        if(sortName != null && sortName > 0){
+            if(sortOrder != null && sortOrder > 0){
+                if(sortName == (byte)1 && sortOrder == 1){
+                    select.orderBy(GOODS.GOODS_SALE_NUM.desc());
+                }else if(sortName == (byte)1 && sortOrder == 2) {
+                    select.orderBy(GOODS.GOODS_SALE_NUM.asc());
+                }else if(sortName == (byte)2 && sortOrder == 1) {
+                    select.orderBy(GOODS.SHOP_PRICE.desc());
+                }else if(sortName == (byte)2 && sortOrder == 2) {
+                    select.orderBy(GOODS.SHOP_PRICE.asc());
+                }
+            }else {
+                if(sortName == (byte)1){
+                    select.orderBy(GOODS.GOODS_SALE_NUM.desc());
+                }else if(sortName == (byte)2) {
+                    select.orderBy(GOODS.SHOP_PRICE.desc());
+                }
+            }
+        }
+        return getPageResult(select,currentPage,pageRows,PackageSaleGoodsListVo.Goods.class);
+    }
+
+    /**
+     * 一口价活动的一个分组包含的所有商品ID
+     * @param group
+     * @return
+     */
+    private List<Integer> getPackageSaleGroupGoodsIds(PackSaleParam.GoodsGroup group){
+        List<Integer> res = new ArrayList<>();
+
+        if(CollectionUtils.isNotEmpty(group.getGoodsIdList())){
+            res.removeAll(group.getGoodsIdList());
+            res.addAll(group.getGoodsIdList());
+        }
+        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(group.getCatIdList(),group.getSortIdList(), Collections.emptyList());
+        res.removeAll(goodsIds);
+        res.addAll(goodsIds);
+
+        return res;
     }
 }
 

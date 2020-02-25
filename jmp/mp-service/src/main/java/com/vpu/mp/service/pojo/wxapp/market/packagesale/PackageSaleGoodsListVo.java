@@ -14,8 +14,17 @@ import java.util.List;
 @Getter
 @Setter
 public class PackageSaleGoodsListVo {
-    /** 状态，0正常可用，1活动不存在，2活动未开始，3活动已过期 ，4活动设置了专属会员卡可参与，但该会员没有对应的卡，  */
+    /** 状态，0正常可用，1活动不存在，2活动未开始，3活动已过期   */
     private Byte state;
+
+    /**
+     * 所有分组需要选择商品件数总和
+     */
+    private Integer totalGoodsNumber;
+    /**
+     * 用户当前已选择商品件数总和
+     */
+    private Integer totalSelectNumber;
 
     /**
      * 当前分组下可选的商品列表
@@ -32,21 +41,17 @@ public class PackageSaleGoodsListVo {
      */
     private Title title;
 
+    /**
+     * 总金额合优惠金额
+     */
+    private TotalMoney totalMoney;
+
     @Setter
     @Getter
     public static class Goods{
         //商品原数据
         private Integer goodsId;
         private String goodsName;
-        /**
-         * 在售状态1在售,0下架
-         */
-        private Byte isOnSale;
-        /**
-         * 商品库存，该字段是通过商品规格计算而来
-         */
-        private Integer goodsNumber;
-
         /**
          * 商品主图
          */
@@ -67,15 +72,8 @@ public class PackageSaleGoodsListVo {
         private Integer sortId;
         private Integer catId;
 
-
-        //活动数据
-        /**
-         * 取价结果类型，0商品原价，1等级会员价，2限时降价，3首单特惠价
-         */
-        private Byte goodsPriceAction;
-        private BigDecimal goodsPrice;
-
-        private BigDecimal maxPrice;
+        //用户已选择的该商品的数量
+        private Integer chooseNumber;
     }
 
     @Setter
@@ -95,16 +93,29 @@ public class PackageSaleGoodsListVo {
         private Byte packageType;
 
         /**
-         * 满件数折扣类型
+         * 满件数折扣类型的折扣率
          */
-        private Integer discountTotalGoodsNumber;
         private BigDecimal discountTotalRatio;
 
         /**
-         * 几件一口价类型
+         * 几件一口价类型的一口价金额
          */
         private BigDecimal totalMoney;
-        private Integer totalGoodsNumber;
 
+        /** 所有组的总和件数要求 */
+        private Integer totalGoodsNumber;
+    }
+
+    @Setter
+    @Getter
+    public static class TotalMoney{
+        /**
+         * 用户当前已选择商品金额总和（已根据活动规则折扣）
+         */
+        private BigDecimal totalSelectMoney;
+        /**
+         * 用户当前已选择商品金额根据活动规则优惠的金额
+         */
+        private BigDecimal discountMoney;
     }
 }

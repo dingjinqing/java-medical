@@ -27,7 +27,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrendRecord> {
 
-    private static final long serialVersionUID = -539002710;
+    private static final long serialVersionUID = 1072978232;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_summary_trend.id</code>.
@@ -58,14 +58,14 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.type</code>. 1,7,30
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.type</code>. 1，7，30
      */
     public void setType(Byte value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.type</code>. 1,7,30
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.type</code>. 1，7，30
      */
     public Byte getType() {
         return (Byte) get(2);
@@ -170,14 +170,14 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.order_user_data</code>. 成交客户数
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.order_user_data</code>. 成交客户数（付款用户数:distinct(userId)）
      */
     public void setOrderUserData(Integer value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.order_user_data</code>. 成交客户数
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.order_user_data</code>. 成交客户数（付款用户数:distinct(userId)）
      */
     public Integer getOrderUserData() {
         return (Integer) get(10);
@@ -240,14 +240,14 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交新老客户支付金额
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交老客户支付金额
      */
     public void setOldPaidMoney(BigDecimal value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交新老客户支付金额
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交老客户支付金额
      */
     public BigDecimal getOldPaidMoney() {
         return (BigDecimal) get(15);
@@ -296,87 +296,101 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.add_time</code>. 统计时间
+     */
+    public void setAddTime(Timestamp value) {
+        set(19, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.add_time</code>. 统计时间
+     */
+    public Timestamp getAddTime() {
+        return (Timestamp) get(19);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_user_summary_trend.pay_order_num</code>. 成交订单数
      */
     public void setPayOrderNum(Integer value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_user_summary_trend.pay_order_num</code>. 成交订单数
      */
     public Integer getPayOrderNum() {
-        return (Integer) get(19);
+        return (Integer) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_summary_trend.login_pv</code>. 登录pv
      */
     public void setLoginPv(Integer value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_user_summary_trend.login_pv</code>. 登录pv
      */
     public Integer getLoginPv() {
-        return (Integer) get(20);
+        return (Integer) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_summary_trend.order_num</code>. 下单笔数
      */
     public void setOrderNum(Integer value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_user_summary_trend.order_num</code>. 下单笔数
      */
     public Integer getOrderNum() {
-        return (Integer) get(21);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.order_user_num</code>. 下单人数(生成订单就算)
-     */
-    public void setOrderUserNum(Integer value) {
-        set(22, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.order_user_num</code>. 下单人数(生成订单就算)
-     */
-    public Integer getOrderUserNum() {
         return (Integer) get(22);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.create_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.order_user_num</code>. 下单用户数(distinct(userId)生成订单就算)
      */
-    public void setCreateTime(Timestamp value) {
+    public void setOrderUserNum(Integer value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.create_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.order_user_num</code>. 下单用户数(distinct(userId)生成订单就算)
      */
-    public Timestamp getCreateTime() {
-        return (Timestamp) get(23);
+    public Integer getOrderUserNum() {
+        return (Integer) get(23);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.update_time</code>. 最后修改时间
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.pay_people_num</code>. 付款人数
      */
-    public void setUpdateTime(Timestamp value) {
+    public void setPayPeopleNum(Integer value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.update_time</code>. 最后修改时间
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.pay_people_num</code>. 付款人数
      */
-    public Timestamp getUpdateTime() {
-        return (Timestamp) get(24);
+    public Integer getPayPeopleNum() {
+        return (Integer) get(24);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.order_people_num</code>. 下单人数
+     */
+    public void setOrderPeopleNum(Integer value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.order_people_num</code>. 下单人数
+     */
+    public Integer getOrderPeopleNum() {
+        return (Integer) get(25);
     }
 
     // -------------------------------------------------------------------------
@@ -405,7 +419,7 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     /**
      * Create a detached, initialised UserSummaryTrendRecord
      */
-    public UserSummaryTrendRecord(Integer id, Date refDate, Byte type, Integer loginData, Integer userData, Integer couponData, Integer cartData, Integer regUserData, Integer upgradeUserData, Integer chargeUserData, Integer orderUserData, Integer newOrderUserData, Integer oldOrderUserData, BigDecimal totalPaidMoney, BigDecimal newPaidMoney, BigDecimal oldPaidMoney, Integer payGoodsNumber, Integer newPayGoodsNumber, Integer oldPayGoodsNumber, Integer payOrderNum, Integer loginPv, Integer orderNum, Integer orderUserNum, Timestamp createTime, Timestamp updateTime) {
+    public UserSummaryTrendRecord(Integer id, Date refDate, Byte type, Integer loginData, Integer userData, Integer couponData, Integer cartData, Integer regUserData, Integer upgradeUserData, Integer chargeUserData, Integer orderUserData, Integer newOrderUserData, Integer oldOrderUserData, BigDecimal totalPaidMoney, BigDecimal newPaidMoney, BigDecimal oldPaidMoney, Integer payGoodsNumber, Integer newPayGoodsNumber, Integer oldPayGoodsNumber, Timestamp addTime, Integer payOrderNum, Integer loginPv, Integer orderNum, Integer orderUserNum, Integer payPeopleNum, Integer orderPeopleNum) {
         super(UserSummaryTrend.USER_SUMMARY_TREND);
 
         set(0, id);
@@ -427,11 +441,12 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
         set(16, payGoodsNumber);
         set(17, newPayGoodsNumber);
         set(18, oldPayGoodsNumber);
-        set(19, payOrderNum);
-        set(20, loginPv);
-        set(21, orderNum);
-        set(22, orderUserNum);
-        set(23, createTime);
-        set(24, updateTime);
+        set(19, addTime);
+        set(20, payOrderNum);
+        set(21, loginPv);
+        set(22, orderNum);
+        set(23, orderUserNum);
+        set(24, payPeopleNum);
+        set(25, orderPeopleNum);
     }
 }

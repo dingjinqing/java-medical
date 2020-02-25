@@ -244,6 +244,10 @@ global.wxPage({
                 reduceActBarPrice: this.getActBarPrice(products, activity, 'prdRealPrice')
               })
             }
+            // 定金膨胀价格
+            if(res.content.activity && res.content.activity.activityType === 10){
+              this.getPreSaleDiscount(res.content.activity.preSalePrdMpVos)
+            }
             this.getPromotions(res.content)
             resolve(res.content)
           }
@@ -281,14 +285,13 @@ global.wxPage({
   },
   // 获取规格信息
   getProduct({
-    detail: { prdNumber, limitBuyNum = null, limitMaxNum = null, activityType = null }
+    detail: { prdNumber, limitBuyNum = null, limitMaxNum = null}
   }) {
     this.setData({
       limitInfo: {
         prdNumber,
         limitBuyNum,
-        limitMaxNum,
-        activityType
+        limitMaxNum
       }
     })
   },
@@ -697,21 +700,13 @@ global.wxPage({
           actState === 4 ? actBaseInfo[activity.activityType]['actStatus'][actState] : '活动未开始'
         }`
       }
-    } else if (
-      activity &&
-      [1, 3, 5].includes(activity.activityType) &&
-      [1, 2, 3, 4, 5, 6].includes(activity.actState)
+    } else if (activity && [1, 3, 5, 10].includes(activity.activityType) && [1, 2, 3, 4, 5, 6].includes(activity.actState)
     ) {
       dealtAct = {
         error: 1,
         errorMessage: `${actBaseInfo[activity.activityType]['actName']}${
           actBaseInfo[activity.activityType]['actStatus'][activity.actState]
         }`
-      }
-    }
-    if (productInfo.stock === 0) {
-      dealtAct = {
-        error: 2
       }
     }
     this.setData({
@@ -721,13 +716,26 @@ global.wxPage({
   getPreSaleAct(){
     let preActBarStr = ''
     if(this.data.specParams.activity.preSaleType !== 1){
-      preActBarStr = `付定金立减:￥${this.data.productInfo.discountPrice - this.data.productInfo.depositPrice}`
+      preActBarStr = `付定金立减:￥${this.data.productInfo.actProduct.discountPrice - this.data.productInfo.actProduct.depositPrice}`
     } else {
-      preActBarStr = `定金:￥${this.data.productInfo.depositPrice}`
+      preActBarStr = `定金:￥${this.data.productInfo.actProduct.depositPrice}`
     }
     this.setData({
       'actBarInfo.preSaleActInfo':preActBarStr
     })
+  },
+  getPreSaleDiscount(prdList){
+    if(this.defaultPrd){
+      this.setData({
+        PreSaleDiscountPrice : prdList[0].discountPrice
+      })
+    } else {
+      let priceArr = prdList.map(item=>{return item.discountPrice});
+      let minPrice = this.getMin(priceArr),maxPrice = this.getMax(priceArr)
+      this.setData({
+        PreSaleDiscountPrice : minPrice === maxPrice ? minPrice : `${minPrice}~${maxPrice}`
+      })
+    }
   },
   goPledge() {
     util.jumpLink(

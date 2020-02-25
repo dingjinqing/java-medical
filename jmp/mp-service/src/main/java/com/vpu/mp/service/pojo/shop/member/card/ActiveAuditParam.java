@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import lombok.Data;
 
@@ -15,6 +16,8 @@ public class ActiveAuditParam {
 	public Integer pageRows;
 	/** -当前页 */
 	public Integer currentPage;
+	// ids
+	public List<Integer> ids;
 	// 订单id
 	public Integer id;
 	// 会员卡号

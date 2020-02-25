@@ -429,9 +429,9 @@ export default {
           this.handleToTurnModulesName(arr)
         }
       })
-    } else if (Number(this.$route.query.pageParams.pageId) !== -1) {
+    } else if (Number(this.$route.query.pageParams) !== -1) {
       console.log(this.$route.query.pageParams)
-      let { pageId } = this.$route.query.pageParams
+      let pageId = this.$route.query.pageParams
       getHandleTemplatesData(pageId).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -556,9 +556,6 @@ export default {
         case 'm_hot_area':
           moduleNameId = 15
           break
-        case 'm_shop':
-          moduleNameId = 27
-          break
         case 'm_text_image':
           moduleNameId = 16
           break
@@ -588,6 +585,12 @@ export default {
           break
         case 'm_service':
           moduleNameId = 25
+          break
+        case 'm_shop':
+          moduleNameId = 27
+          break
+        case 'm_map':
+          moduleNameId = 28
       }
       return moduleNameId
     },
@@ -1205,7 +1208,7 @@ export default {
       console.log(saveMosulesData)
       console.log(this.pageSetData, this.cur_idx)
       this.pageSetData.last_cur_idx = this.cur_idx
-      let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
+      let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData, this.cur_idx)
       console.log(data)
       console.log(saveMosulesData, this.modulesData, this.pageSetData, data)
       console.log(localStorage.getItem('V-ShopId'))
@@ -1261,6 +1264,9 @@ export default {
             this.previewCodeImg = res.content
             this.previewVisible = true
           } else {
+            if (res.content) {
+              this.page_id = res.content
+            }
             this.$message.success({
               message: '保存成功',
               showClose: true,
@@ -1303,6 +1309,36 @@ export default {
         return
       }
       console.log(mTextImageNum)
+      // 公众号数量限制
+      let officialAccountsNum = 0
+      saveMosulesData.forEach((item, index) => {
+        if (item.module_name === 'm_official_accounts') {
+          officialAccountsNum++
+        }
+      })
+      console.log(officialAccountsNum)
+      if (officialAccountsNum > 1) {
+        this.$message.error({
+          message: '引导公众号模块只能有一个',
+          showClose: true
+        })
+        return
+      }
+      // 富文本模块数量限制
+      let richNum = 0
+      saveMosulesData.forEach((item, index) => {
+        if (item.module_name === 'm_rich_text') {
+          richNum++
+        }
+      })
+      if (richNum > 30) {
+        this.$message.error({
+          message: '富文本模块最多上传30个',
+          showClose: true
+        })
+        return
+      }
+
       if (flag === 0) {
         console.log(this.modulesData)
         this.saveTwoDialogVisible = true

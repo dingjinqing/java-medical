@@ -102,18 +102,26 @@ export default {
     // 编辑数据回显
     areaCode: {
       handler (val) {
-        this.values.province = Number(val.provinceCode)
-        this.choseProvince(this.values.province)
-        this.$nextTick(() => {
-          this.values.city = Number(val.cityCode)
-          this.choseCity(this.values.city)
+        this.province = deepCloneObj(chinaData)
+        if (val.provinceCode) {
+          this.values.province = Number(val.provinceCode)
+          this.choseProvince(this.values.province)
           this.$nextTick(() => {
-            this.values.district = Number(val.districtCode)
-            this.choseDistrict(this.values.district)
+            if (val.cityCode) {
+              this.values.city = Number(val.cityCode)
+              this.choseCity(this.values.city)
+              this.$nextTick(() => {
+                if (val.districtCode) {
+                  this.values.district = Number(val.districtCode)
+                  this.choseDistrict(this.values.district)
+                }
+              })
+            }
           })
-        })
+        }
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   mounted () {

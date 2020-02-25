@@ -35,7 +35,6 @@ import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -100,11 +99,13 @@ public class LotteryRecordService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<LotteryRecordPageListVo> lotteryListByUser(LotteryListUserParam param) {
-        SelectSeekStep1<LotteryRecordRecord, Timestamp> selectConditionStep = db().selectFrom(LOTTERY_RECORD)
-                .where(LOTTERY_RECORD.USER_ID.eq(param.getUserId()))
-                .and(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()))
-                .orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
+    public PageResult<LotteryRecordPageListVo> lotteryListByParam(LotteryListUserParam param) {
+        SelectConditionStep<LotteryRecordRecord> selectConditionStep = db().selectFrom(LOTTERY_RECORD)
+                .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
+        if (param.getUserId()!=null){
+            selectConditionStep.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
+        }
+        selectConditionStep.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
         PageResult<LotteryRecordPageListVo> pageResult = getPageResult(selectConditionStep, param, LotteryRecordPageListVo.class);
         pageResult.getDataList().forEach(item -> {
             if (!Strings.isEmpty(item.getAwardInfo())){
@@ -284,6 +285,8 @@ public class LotteryRecordService extends ShopBaseService {
                 joinValid.setPrizeId(prizeRecordRecord.getId());
                 joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
                 joinValid.setGoodsImage(goodsView.getGoodsImg());
+                joinValid.setGoodsId(goodsView.getGoodsId());
+                joinValid.setProductId(lotteryPrizeRecord.getPrdId());
                 break;
             case LOTTERY_TYPE_CUSTOM:
                 logger().info("自定义");

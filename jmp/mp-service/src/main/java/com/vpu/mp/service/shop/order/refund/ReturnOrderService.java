@@ -19,7 +19,12 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
@@ -30,6 +35,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -127,24 +133,13 @@ public class ReturnOrderService extends ShopBaseService{
 			select.where(TABLE.RETURN_TYPE.in(param.getReturnType()));
 		}
 		if (param.getReturnStart() != null) {
-			select.where(TABLE.APPLY_TIME.ge(param.getReturnStart()));
+			select.where(TABLE.CREATE_TIME.ge(param.getReturnStart()));
 		}
 		if (param.getReturnEnd() != null) {
-			select.where(TABLE.APPLY_TIME.le(param.getReturnEnd()));
-		}
-		if (param.getStateCollection() != null) {
-            switch (param.getStateCollection()) {
-                case OrderConstant.STATE_COLLECTION_1:
-                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDITING).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
-                    break;
-                case OrderConstant.STATE_COLLECTION_2:
-                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDIT_PASS));
-                    break;
-                case OrderConstant.STATE_COLLECTION_3:
-                    select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH)).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_REFUSE)).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_CLOSE)));
-                    break;
-                default:
-            }
+            select.where(TABLE.CREATE_TIME.le(param.getReturnEnd()));
+        }
+        if (param.getRetIds() != null && param.getRetIds().length != 0) {
+            select.where(TABLE.RET_ID.in(param.getRetIds()));
         }
 		return select;
 	}
@@ -504,6 +499,18 @@ public class ReturnOrderService extends ShopBaseService{
     public Integer refundOverdue(Integer nDays) {
         return db().fetchCount(TABLE, TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
             .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
+
+    /**
+     * Refund overdue integer.退款申请逾期订单id列表
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> refundOverdueSet(Integer nDays) {
+        Condition condition = TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+        return db().select(TABLE.RET_ID).from(TABLE).where(condition).fetchSet(TABLE.RET_ID);
     }
 
     /**

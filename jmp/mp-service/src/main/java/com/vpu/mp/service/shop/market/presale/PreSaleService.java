@@ -469,7 +469,7 @@ public class PreSaleService extends ShopBaseService {
                 TABLE.PRE_END_TIME, TABLE.START_TIME, TABLE.END_TIME, TABLE.PRESALE_NAME, TABLE.BUY_NUMBER,
                 TABLE.BUY_TYPE, TABLE.DELIVER_DAYS, TABLE.DELIVER_TIME, TABLE.DELIVER_TYPE, TABLE.GOODS_ID,
                 TABLE.DISCOUNT_TYPE, TABLE.PRE_PAY_STEP, TABLE.PRESALE_TYPE, TABLE.RETURN_TYPE, TABLE.SHARE_CONFIG,
-                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, GOODS.GOODS_NAME)
+                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, TABLE.DEL_FLAG, GOODS.GOODS_NAME)
                 .select(TABLE.PRE_START_TIME_2.as("preStartTime2"))
                 .select(TABLE.PRE_END_TIME_2.as("preEndTime2"))
                 .from(TABLE)
@@ -566,7 +566,7 @@ public class PreSaleService extends ShopBaseService {
      * @return Record2<START_TIME, END_TIME>
      */
     public Record2<Timestamp, Timestamp> getTimeInterval(Integer id) {
-    	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).fetchOne();
+    	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchOne();
     }
 
     /**
