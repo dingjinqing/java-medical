@@ -30,6 +30,11 @@ public class MrkingStrategyGoodsListVo {
      */
     private FullPriceDoc fullPriceDoc;
 
+    /**
+     * 当前已选商品总价
+     */
+    private BigDecimal totalPrice;
+
     @Setter
     @Getter
     public static class Goods{
