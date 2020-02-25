@@ -267,7 +267,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
                     marketProcessorFactory.processOrderEffective(param,order);
                     logger().info("加锁{}",order.getOrderSn());
-                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
+                    atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
                     logger().info("更新成功{}",order.getOrderSn());
                     //营销活动支付回调
                 }

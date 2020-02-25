@@ -490,4 +490,13 @@ public class OrderConstant {
      * 交易售后配置
      */
 
+    /**
+     * 店铺助手查询订单列表操作
+     */
+    /**发货逾期*/
+    public static final Byte SHOP_HELPER_OVERDUE_DELIVERY = 0;
+    /**提醒发货*/
+    public static final Byte SHOP_HELPER_REMIND_DELIVERY = 1;
+    /**退款申请逾期*/
+    public static final Byte SHOP_HELPER_OVERDUE_RETURN_APPLY = 2;
 }

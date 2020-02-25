@@ -1,8 +1,10 @@
 package com.vpu.mp.service.shop.order.atomic;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
@@ -16,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.BatchUpdateGoodsNumAndSaleNumFor
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,6 +44,11 @@ public class AtomicOperation extends ShopBaseService {
     private GoodsSpecProductService goodsSpecProduct;
 
     /**
+     * 该活动库存通过其他方式更新
+     */
+    private List<Byte> filterAct = Lists.newArrayList(BaseConstant.ACTIVITY_TYPE_BARGAIN, BaseConstant.ACTIVITY_TYPE_GROUP_DRAW);
+
+    /**
      * 普通商品库存更新
      * @param order 订单
      * @param goodsBo 商品
@@ -49,10 +57,8 @@ public class AtomicOperation extends ShopBaseService {
      */
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
     public void updateStockAndSalesByLock(OrderInfoRecord order, @RedisLockKeys List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
-        updateStockandSales(order, goodsBo, limit);
+        updateStockandSalesByActFilter(order, goodsBo, limit);
     }
-
-
 
     @AddRedisLocks(redisLock = @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK))
     public void addLock(@RedisLockKeys List<OrderGoodsBo> goodsBo){
@@ -64,13 +70,26 @@ public class AtomicOperation extends ShopBaseService {
         log.info("atomicOperation releaseLocks end");
     }
 
+    /**
+     * 普通商品库存更新（过滤某些活动）
+     * @param order
+     * @param goodsBo
+     * @param limit
+     * @throws MpException
+     */
+    public void updateStockandSalesByActFilter(OrderInfoRecord order, List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
+        Byte[] types = OrderInfoService.orderTypeToByte(order.getGoodsType());
+        //过滤砍价、普通抽奖
+        for (Byte type : types) {
+            if(filterAct.contains(type)) {
+                return;
+            }
+        }
+        updateStockandSales(order, goodsBo, limit);
+    }
+
     public void updateStockandSales(OrderInfoRecord order, List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新start,订单号{},商品{}", order.getOrderId(), goodsBo);
-        if(Boolean.FALSE) {
-            //todo 营销
-        }else {
-
-        }
         //TODO 第三方对接erp
         List<Integer> goodsIds = goodsBo.stream().map(OrderGoodsBo::getGoodsId).distinct().collect(Collectors.toList());
         List<Integer> proIds = goodsBo.stream().map(OrderGoodsBo::getProductId).collect(Collectors.toList());

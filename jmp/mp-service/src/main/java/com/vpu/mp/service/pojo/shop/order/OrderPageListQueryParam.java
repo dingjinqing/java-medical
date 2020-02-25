@@ -79,4 +79,8 @@ public class OrderPageListQueryParam {
 	public Integer activityId;
 	/**用户id*/
 	public Integer userId;
+	/**店铺助手查询动作*/
+	private Byte shopHelperAction;
+	/**店铺助手操作天数，默认3*/
+	private Integer shopHelperActionDays = 3;
 }
