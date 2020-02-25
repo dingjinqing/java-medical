@@ -141,6 +141,10 @@ public class ReturnOrderService extends ShopBaseService{
         if (param.getRetIds() != null && param.getRetIds().length != 0) {
             select.where(TABLE.RET_ID.in(param.getRetIds()));
         }
+        if(OrderConstant.SHOP_HELPER_OVERDUE_RETURN_APPLY.equals(param.getShopHelperAction())) {
+            select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
+                .and(TABLE.CREATE_TIME.add(param.getShopHelperActionDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+        }
 		return select;
 	}
 
