@@ -48,8 +48,8 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         if( null != param.getMaxPrice() ){
             propertyList.add(new FieldProperty(EsSearchName.SHOW_PRICE,param.getMaxPrice(),Operator.LTE));
         }
-        if( null != param.getSortId() ){
-            propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getSortId()));
+        if( !CollectionUtils.isEmpty(param.getSortIds()) ){
+            propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getSortIds()));
         }
         if( !CollectionUtils.isEmpty(param.getBrandIds()) ){
             propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getBrandIds()));
