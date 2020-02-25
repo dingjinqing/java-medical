@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
@@ -209,6 +210,13 @@ public class BargainProcessorDao extends ShopBaseService {
 
         //绑定新订单
         db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.IS_ORDERED,BargainRecordService.IS_ORDERED_Y).set(BARGAIN_RECORD.ORDER_SN,newOrder.getOrderSn()).where(BARGAIN_RECORD.ID.eq(orderParam.getBargainRecordInfo().getId())).execute();
+
+        //砍价库存更新
+        for(OrderGoodsBo goods : orderParam.getBos()){
+            if(goods.getIsGift().equals(OrderConstant.IS_GIFT_N) && orderParam.getBargainRecordInfo().getGoodsId().equals(goods.getGoodsId())) {
+                bargainService.updateBargainStock(orderParam.getActivityId(),goods.getGoodsNumber());
+            }
+        }
     }
 
     public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods){
