@@ -207,6 +207,10 @@ public final  class  BaseConstant {
      * 已停用
      */
     public final static byte NAVBAR_TYPE_DISABLED= 4;
+    /**
+     * 进行中,未开始
+     */
+    public final static byte NAVBAR_TYPE_AVAILABLE= 5;
 
     //************************活动是否永久有效***************************************/
     /**
