@@ -1,0 +1,44 @@
+<include src="/pages/common/header.wxml" />
+<view class="main-container" style='background:url({{imageUrl}}/image/wxapp/cou_package_bg1.png) no-repeat;background-size:100%;height:calc(100vh - {{margin_top_nav + 8}}px)'>
+   <view class="package-title">生成订单</view>
+   <view class="coupon-package-content">
+    <view class="coupon-package-title">
+      <image src="{{imageUrl}}image/wxapp/cou_left_icon.png"></image>
+      <text>优惠券礼包</text>
+      <image src="{{imageUrl}}image/wxapp/cou_right_icon.png"></image>
+    </view>
+    <view class="coupon-list">
+      <view class="coupon-item">
+        <view class="item-left">
+          <view class="coupon-money">￥<text>200.00</text></view>
+          <view class="coupon-limit">
+            无门槛
+          </view>
+        </view>
+        <view class="item-middle">
+          <image src="{{imageUrl}}image/wxapp/cou_midd_icon.png"></image>
+        </view>
+        <view class="item-right">
+          <view class='coupon-name'>测试测试测试测试测试测试测试测试测试测试测试测试</view>
+          <view class='coupon-goods-limit'>
+            全部商品可用
+            <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
+          </view>
+          <view class="send-rule">领取后立即发放5张</view>
+          <view class="coupon-time">
+            2020-01-15 ~ 2020-01-24
+          </view>
+          <view class="coupon-num">5张</view>
+        </view>
+      </view>
+    </view>
+    <!-- <view class="btn-buy">立即领取</view> -->
+    <view class='btn-buy' bindtap='goCouponList'>立即查看</view>
+    <view class="buy_again">立即领取</view>
+   </view>
+   <view class="package-rule">
+    <view class="rule-title">活动规则</view>
+    <text class="rule-content">支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持支持</text>
+   </view>
+   <include src="/pages/common/footer.wxml" />
+</view>

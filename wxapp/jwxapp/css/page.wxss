@@ -80,7 +80,7 @@ view, text {
 
 .common-footer .footer-text {
   text-align: center;
-  background: #f5f5f5;
+  background: transparent;
   color: #ccc;
   padding: 20rpx;
   font-size: 24rpx;
