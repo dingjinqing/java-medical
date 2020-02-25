@@ -164,7 +164,7 @@
     <view class='share_bg' style='display:{{is_share == 1?"block":"none"}}'>
       <view class='zhezhao' catchtap='not_show_share'></view>
       <view class='share_content'>
-        <image wx:if="{{pictorial}}" src='{{pictorial}}'></image>
+        <image wx:if="{{shareImg}}" src='{{shareImg}}'></image>
         <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>
           {{i18n.$t(localePack,"page1.fight.savePicture")}}
         </view>
