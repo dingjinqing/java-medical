@@ -241,4 +241,5 @@
   </view>
   
 </view>
+<v-recommend id="recommend" pageName="bargainitem"/>
 <include src="../common/footer.wxml" />

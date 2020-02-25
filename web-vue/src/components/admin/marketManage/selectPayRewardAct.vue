@@ -11,8 +11,8 @@
       <el-option
         v-for="(item,index) in selects"
         :key="index"
-        :label="item.name"
-        :value="item.lotteryName"
+        :label="item.lotteryName"
+        :value="item.id"
       ></el-option>
     </el-select>
     <el-button
@@ -51,7 +51,11 @@ export default {
   computed: {
     selectValue: {
       get () {
-        return this.value
+        if (this.value) {
+          return Number(this.value)
+        } else {
+          return this.value
+        }
       },
       set (val) {
         this.$emit('change', val)
@@ -65,13 +69,12 @@ export default {
     initSelectData () {
       selectPayRewardApi().then(res => {
         if (res.error === 0) {
-          console.log(res)
           this.selects = res.content.dataList
-          console.log(this.selects)
         }
       })
     },
     changeHandle (val) {
+      console.log('change:', val)
       this.$emit('change', val)
     },
     toAdd () {
