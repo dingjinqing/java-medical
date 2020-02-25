@@ -673,7 +673,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.lottery_activity_detail',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'lottery_activity'
     },
     component: () =>
       import(
@@ -687,7 +687,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.lottery_activity_newUserList',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'lottery_activity'
     },
     component: () =>
       import(
