@@ -934,7 +934,9 @@ export default {
       this.searchType = 0
       let obj = {
         ...this.searchParams,
-        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : []
+        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
+        goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
+        paymentType: this.searchParams.paymentType !== null ? [this.searchParams.paymentType] : []
       }
       list(obj).then(res => {
         console.log(res)
