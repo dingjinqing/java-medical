@@ -125,7 +125,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages/pinlotterylist/pinlotterylist?group_draw_id='
+                this.path = 'pages1/promoteinfo/promoteinfo?actCode='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
