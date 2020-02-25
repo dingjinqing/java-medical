@@ -60,7 +60,7 @@
           :label="$t('distribution.distributorAudit')"
           name="ninth"
         >
-          <distributorCheck :ids="ids" />
+          <distributorCheck :params="paramsDays" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.advertisement')"
@@ -100,7 +100,7 @@ export default {
   data () {
     return {
       activeName: 'first',
-      ids: null // 分销员审核ids
+      paramsDays: null // 分销员审核参数
     }
   },
   mounted () {
@@ -112,12 +112,16 @@ export default {
 
     // 店铺助手跳转本页面
     console.log(this.$route.params)
-    if (this.$route.params.distributorName) {
-      this.activeName = this.$route.params.distributorName
+    if (this.$route.params.flag === 1) {
+      if (this.$route.params.distributorName) {
+        // tab重新赋值
+        this.activeName = this.$route.params.distributorName
+      }
+      if (this.$route.params.IntegerDays) {
+        this.paramsDays = this.$route.params.IntegerDays
+      }
     }
-    if (this.$route.params.ids) {
-      this.ids = this.$route.params.ids
-    }
+    console.log(this.paramsDays)
   },
   methods: {
     handleClick (tab) {

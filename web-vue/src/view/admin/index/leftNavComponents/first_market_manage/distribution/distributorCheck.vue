@@ -336,9 +336,9 @@ export default {
     Pagination: () => import('@/components/admin/pagination/pagination')
   },
   props: {
-    ids: {
-      type: Array,
-      default: () => []
+    params: {
+      type: Number,
+      default: 0
     }
   },
   data () {
@@ -375,6 +375,10 @@ export default {
     }
   },
   watch: {
+    params: function (newVal, oldVal) {
+      // 分销员入参
+      console.log(this.params)
+    },
     lang () {
 
     }
@@ -385,9 +389,6 @@ export default {
     this.initDataList()
     this.getDistributionGroup()
     this.province = deepCloneObj(chinaData)
-
-    // 分销员审核入参
-    console.log(this.ids)
   },
   methods: {
     initDataList () {
