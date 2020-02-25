@@ -337,7 +337,7 @@ public class FreeShippingService extends ShopBaseService {
     public boolean checkedFreeshipCondition(UserAddressVo address, BigDecimal[] tolalNumberAndPrice, List<FreeShippingRuleVo> ruleList) {
         for (FreeShippingRuleVo rule : ruleList) {
             List<Integer> districtCode = Util.stringToList(rule.getArea());
-            if (districtCode.contains(address.getDistrictCode())) {
+            if (address.getDistrictCode()!=null&&districtCode.contains(address.getDistrictCode())) {
                 if ((rule.getConType().equals(CONTYPE_NUM)||rule.getConType().equals(CONTYPE_NUM_MONEY)) && tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].intValue() >= rule.getNum()) {
                     return true;
                 }

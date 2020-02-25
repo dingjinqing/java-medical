@@ -46,7 +46,8 @@ public class AdminLotteryController extends AdminBaseController {
     @PostMapping("/usablelist")
     public JsonResult getLotteryUsableAllList(){
         LotteryPageListParam param = new LotteryPageListParam();
-        param.setState(BaseConstant.NAVBAR_TYPE_ONGOING);
+        //进行中,未开始
+        param.setState(BaseConstant.NAVBAR_TYPE_AVAILABLE);
         param.setPageRows(Integer.MAX_VALUE);
         PageResult<LotteryPageListVo> result = shop().lottery.getLotteryList(param);
         return success(result);

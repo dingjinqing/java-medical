@@ -252,6 +252,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 order.store();
+                order.refresh();
                 orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
@@ -1087,7 +1088,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public List<Integer> fullPackage(UserAddressVo address, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice, Timestamp date){
         List<FreeShippingVo> validFreeList = freeShippingService.getValidFreeList(date);
-        if (validFreeList.size()>0){
+        if (validFreeList.size()==0){
             return new ArrayList<>();
         }
         List<Integer> goodsIds = bos.stream().map(OrderGoodsBo::getGoodsId).distinct().collect(Collectors.toList());
