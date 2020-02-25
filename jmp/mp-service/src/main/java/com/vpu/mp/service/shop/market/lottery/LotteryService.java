@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.*;
 import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
@@ -19,9 +20,11 @@ import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListP
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryListUserParam;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryUserTimeInfo;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.AggregateFunction;
 import org.jooq.Record7;
@@ -62,6 +65,9 @@ public class LotteryService extends ShopBaseService {
     private MemberService memberService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private QrCodeService qrCode;
+
 
     /**
      * 添加幸运抽奖
@@ -447,4 +453,19 @@ public class LotteryService extends ShopBaseService {
       return  lotteryRecordService.lotteryListByParam(param);
     }
 
+    /**
+     * 分享
+     * @param param
+     * @retuen
+     * @return
+     */
+    public ShareQrCodeVo getMpQRCode(LotteryByIdParam param) {
+        Integer groupDrawId = param.getId();
+        String pathParam = "lotteryId=" + groupDrawId;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.LOTTERY, pathParam);
+        ShareQrCodeVo share =new ShareQrCodeVo();
+        share.setImageUrl(imageUrl);
+        share.setPagePath(QrCodeTypeEnum.LOTTERY.getPathUrl(pathParam));
+        return share;
+    }
 }

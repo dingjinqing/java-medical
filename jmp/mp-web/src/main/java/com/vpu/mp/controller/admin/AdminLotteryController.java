@@ -83,6 +83,16 @@ public class AdminLotteryController extends AdminBaseController {
     }
 
     /**
+     * 分享
+     * @param param
+     * @return
+     */
+    @PostMapping("/share")
+    public JsonResult share(@RequestBody @Valid LotteryByIdParam param){
+        return success(shop().lottery.getMpQRCode(param));
+    }
+
+    /**
      * 改变状态
      * @param param param
      * @return json
@@ -139,14 +149,4 @@ public class AdminLotteryController extends AdminBaseController {
         return success(shop().lottery.getLotteryUserList(param));
     }
 
-    /**
-     * 抽奖模拟
-     *
-     * @param param JoinLotteryParam
-     * @return json
-     */
-    @PostMapping("/join")
-    public JsonResult joinLottery(JoinLotteryParam param){
-        return success(shop().lottery.joinLottery(param));
-    }
 }
