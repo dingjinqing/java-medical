@@ -102,6 +102,7 @@
           <el-button
             type="primary"
             style="float:right;"
+            @click="jump2addPurchase"
           >
             {{$t('purchase.addactivity')}}
           </el-button>
@@ -325,6 +326,15 @@ export default {
         })
       }).catch(() => {
         this.$message.info('已取消修改！')
+      })
+    },
+    // 添加活动跳转
+    jump2addPurchase () {
+      this.$router.push({
+        name: 'add_increase_purchase',
+        params: {
+          flag: true
+        }
       })
     },
     // 换购订单跳转
