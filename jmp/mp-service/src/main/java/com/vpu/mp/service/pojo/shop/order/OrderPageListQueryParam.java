@@ -88,4 +88,8 @@ public class OrderPageListQueryParam {
 	public String shippingNo;
 	/**TODO 订单来源 : 0 自营订单; 1平台订单（欧派寺库）*/
 	public Byte orderSource;
+	/**店铺助手查询动作*/
+	private Byte shopHelperAction;
+	/**店铺助手操作天数，默认3*/
+	private Integer shopHelperActionDays = 3;
 }
