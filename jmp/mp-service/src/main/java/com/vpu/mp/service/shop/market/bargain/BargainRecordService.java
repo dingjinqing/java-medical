@@ -90,11 +90,11 @@ public class BargainRecordService extends ShopBaseService {
     /**
      *  已下单
      */
-    public static final byte IS_ORDERED_Y = 1;
+    public static final Byte IS_ORDERED_Y = 1;
     /**
      *  未下单
      */
-    public static final byte IS_ORDERED_N = 0;
+    public static final Byte IS_ORDERED_N = 0;
 	
 	private static final String LANGUAGE_TYPE_EXCEL= "excel";
 
