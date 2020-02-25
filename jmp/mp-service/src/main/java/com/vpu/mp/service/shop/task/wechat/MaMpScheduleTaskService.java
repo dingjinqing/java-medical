@@ -96,7 +96,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 
 	/**
 	 * 卡券到期提醒
-	 * @param shopId
+	 * @param
 	 * @return
 	 */
 	public String expiringCouponNotify() {
@@ -361,9 +361,9 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		FpRewardContent rewardContent = Util.parseJson(json, FpRewardContent.class);
 		String goodsName=null;
 		if(vo.getRewardType().equals(TWO)) {
-			String rewardIds = rewardContent.getRewardIds();
-			if(!StringUtils.isEmpty(rewardIds)) {
-				MrkingVoucherRecord coupon = couponGiveService.getInfoById(Integer.parseInt(rewardIds));
+			Integer rewardIds = rewardContent.getRewardIds();
+			if(rewardIds!=null) {
+				MrkingVoucherRecord coupon = couponGiveService.getInfoById(rewardIds);
 				//TODO sendPromoteDrawMessage
 				String value=coupon.getActCode().equals("voucher")?"元":"折";
 				goodsName=String.valueOf(coupon.getDenomination())+value+"优惠券";

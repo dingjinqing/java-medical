@@ -9,5 +9,12 @@ import lombok.Data;
  */
 @Data
 public class PromoteInfo {
+    /** 奖励内容 */
     private FpRewardContent rewardContent;
+    /** 助力次数 */
+    private Integer hasLaunchNum;
+    /** 活动库存 */
+    private Integer marketStore;
+    /** 商品详情 */
+    private GoodsInfo goodsInfo;
 }
