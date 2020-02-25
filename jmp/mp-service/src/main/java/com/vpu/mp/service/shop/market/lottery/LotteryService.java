@@ -175,6 +175,10 @@ public class LotteryService extends ShopBaseService {
             case BaseConstant.NAVBAR_TYPE_DISABLED:
                 select.and(LOTTERY.STATUS.eq(ACTIVITY_STATUS_DISABLE));
                 break;
+            case BaseConstant.NAVBAR_TYPE_AVAILABLE:
+                select.and(LOTTERY.STATUS.eq(ACTIVITY_STATUS_NORMAL))
+                        .and(LOTTERY.END_TIME.gt(nowTime));
+                break;
             default:
         }
         select.orderBy(LOTTERY.CREATE_TIME.desc());
