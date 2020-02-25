@@ -1080,7 +1080,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     /**
      * 活动满包邮商品
-     *  满包邮活动安装
+     *  满包邮活动
      * @param address
      * @param bos
      * @param tolalNumberAndPrice
