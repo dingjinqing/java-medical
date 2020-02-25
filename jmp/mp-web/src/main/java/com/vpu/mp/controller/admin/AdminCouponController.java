@@ -55,7 +55,7 @@ public class AdminCouponController extends AdminBaseController{
 	 */
 	@PostMapping("/admin/coupon/all")
 	public JsonResult getCouponAll (@RequestBody CouponAllParam param){
-		List<CouponAllVo> couponAll = shop().coupon.getCouponAll(param.getIsHasStock());
+		List<CouponAllVo> couponAll = shop().coupon.getCouponAll(param);
 		return this.success(couponAll);
 	}
 

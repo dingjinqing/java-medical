@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
@@ -15,7 +16,14 @@ import lombok.Setter;
 @Setter
 public class CouponAllParam {
 
-
+    /**
+     * 是否限制库存
+     */
     private Boolean isHasStock =true;
+
+    /**
+     * 默认进行中中,未开始
+     */
+    private byte  status = BaseConstant.NAVBAR_TYPE_AVAILABLE;
 
 }
