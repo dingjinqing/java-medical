@@ -555,19 +555,29 @@ public class CouponService extends ShopBaseService {
 
     /**
      * 获取所有可用给的优惠卷
-     * @param isHasStock 是否限制库存
+     * @param param 是否限制库存,启用时间
      * @return
      */
-    public List<CouponAllVo> getCouponAll(Boolean isHasStock) {
+    public List<CouponAllVo> getCouponAll(CouponAllParam param) {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
         SelectConditionStep<Record6<Integer, String, String, Byte, Integer, Byte>> couponAllVos = db()
                 .select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
                 .from(MRKING_VOUCHER)
-//                .(MRKING_VOUCHER.TYPE.eq(BaseConstant.COUPON_TYPE_NORMAL))
-                .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
-                .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0))));
-        if (isHasStock){
+                .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        switch (param.getStatus()){
+            case BaseConstant.NAVBAR_TYPE_AVAILABLE:
+                couponAllVos.and(MRKING_VOUCHER.END_TIME.gt(nowTime)
+                        .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0))));
+                break;
+            case  BaseConstant.NAVBAR_TYPE_ONGOING:
+                couponAllVos.and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
+                        .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0))));
+                break;
+            default:
+                couponAllVos.and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
+                        .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0))));
+        }
+        if (param.getIsHasStock()){
             couponAllVos.and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq(BaseConstant.COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED).or(MRKING_VOUCHER.SURPLUS.gt(0)));
         }
         return couponAllVos.fetchInto(CouponAllVo.class);
