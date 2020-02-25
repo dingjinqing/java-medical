@@ -344,7 +344,7 @@ global.wxPage({
     util.api('/api/wxapp/groupbuy/pictorial/info', function (res) {
       if (res.error === 0 && res.content != '') {
         that.setData({
-          posterImg: String(res.content),
+          posterImg: [String(res.content)],
           showPoster: true
         })
       } else {
