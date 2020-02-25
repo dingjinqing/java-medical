@@ -30,7 +30,8 @@ global.wxPage({
     }, // 规格组件需要数据
     islogin: false, // 是否已登录
     isBlock: 0, // 显示绑定手机号
-    shareImg: '' // 分享的图片
+    shareImg: '', // 分享的图片
+    shareInfo: {}, // 分享信息
   },
 
   /**
@@ -148,11 +149,12 @@ global.wxPage({
     util.api('/api/wxapp/groupbuy/share/info', function (res) {
       if (res.error === 0) {
         that.setData({
-          shareImg: String(res.content)
+          shareImg: String(res.content.imgUrl),
+          shareInfo: res.content
         })
       }
     }, {
-      ativityId: that.data.groupbuyInfo.groupBuyDefineInfo.id,
+      activityId: that.data.groupbuyInfo.groupBuyDefineInfo.id,
       realPrice: that.data.groupbuyInfo.goodsInfo.minGroupBuyPrice,
       linePrice: that.data.groupbuyInfo.goodsInfo.shopPrice,
       targetId: that.data.groupbuyInfo.goodsInfo.goodsId
@@ -351,7 +353,7 @@ global.wxPage({
       wx.hideLoading();
     },  {
       pageType: 2,
-      ativityId: that.data.groupbuyInfo.groupBuyDefineInfo.id,
+      activityId: that.data.groupbuyInfo.groupBuyDefineInfo.id,
       realPrice: that.data.groupbuyInfo.goodsInfo.minGroupBuyPrice,
       linePrice: that.data.groupbuyInfo.goodsInfo.shopPrice,
       targetId: that.data.groupbuyInfo.goodsInfo.goodsId
@@ -481,7 +483,7 @@ global.wxPage({
     let path = '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
     return {
       title: title,
-      imageUrl: imageUrl + shareImg,
+      imageUrl: shareImg,
       path: path
     }
   }
