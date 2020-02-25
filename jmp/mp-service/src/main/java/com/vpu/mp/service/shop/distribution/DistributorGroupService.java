@@ -5,13 +5,13 @@ import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.db.shop.tables.records.DistributorGroupRecord;
+import com.vpu.mp.service.pojo.shop.distribution.GroupCanSelectParam;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.DistributorGroupRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
@@ -179,6 +179,17 @@ public class DistributorGroupService extends ShopBaseService{
         }else{
             return null;
         }
+    }
+
+    /**
+     * 支持用户可选 1：支持 0：不支持
+     * @param param
+     * @return
+     */
+    public int userCanSelect(GroupCanSelectParam param){
+        int res = db().update(DISTRIBUTOR_GROUP).set(DISTRIBUTOR_GROUP.CAN_SELECT,param.getCanSelect()).where(DISTRIBUTOR_GROUP
+        .ID.eq(param.getGroupId())).execute();
+        return res;
     }
 
 }
