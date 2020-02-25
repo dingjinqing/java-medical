@@ -1799,16 +1799,7 @@ public class GoodsService extends ShopBaseService {
      * @return the integer
      */
     public Integer unsalableGoods() {
-        try {
-            return esUtilSearchService.getZhiXiaoGoodsNumbers();
-        } catch (Exception e) {
-            log.error("ES查询滞销商品数量失败, 原因如下: {}", e.getMessage());
-            Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
-            Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
-                .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
-                .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
-            return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime)));
-        }
+        return unsalableGoodsSet().size();
     }
 
     /**
@@ -1818,12 +1809,17 @@ public class GoodsService extends ShopBaseService {
      * @return the integer
      */
     public Set<Integer> unsalableGoodsSet() {
-        Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
-        Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
-            .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
-            .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
-        Condition condition = GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime));
-        return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchSet(GOODS.GOODS_ID);
+        try {
+            return esUtilSearchService.getZhiXiaoGoodsNumbers();
+        } catch (Exception e) {
+            log.error("ES查询滞销商品数量失败, 原因如下: {}", e.getMessage());
+            Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
+            Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
+                .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+                .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
+            Condition condition = GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime));
+            return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchSet(GOODS.GOODS_ID);
+        }
     }
 
     /**
