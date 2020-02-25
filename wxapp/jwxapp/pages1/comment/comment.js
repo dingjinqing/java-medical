@@ -395,7 +395,7 @@ global.wxPage({
         [1, ['pages1/integral/integral']], // 积分详情页
         [2, ['pages/coupon/coupon']], // 优惠券列表
         [3, ['pages/account/account']], // 余额详情页
-        [4, ['pages1/lottery/lottery?lottery_id=' + commentInfo.award]] // 幸运大抽奖 活动链接
+        [4, ['pages1/lottery/lottery?lotteryId=' + commentInfo.award]] // 幸运大抽奖 活动链接
       ])
       let action = url.get(commentInfo.awardType)
       util.jumpLink(action[0], 'navigateTo')
