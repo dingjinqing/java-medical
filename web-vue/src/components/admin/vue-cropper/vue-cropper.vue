@@ -535,7 +535,7 @@ export default {
       // console.log(this.img.replace('http:', ''))
       // this.img = this.img.replace('http:', '')
       let nowShowImg = this.img
-      // nowShowImg = nowShowImg.replace('http:', '')
+      nowShowImg = nowShowImg.replace('http:', '')
       if (this.isIE) {
         var xhr = new XMLHttpRequest()
         xhr.onload = function () {
