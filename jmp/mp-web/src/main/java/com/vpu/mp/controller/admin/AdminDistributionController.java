@@ -280,6 +280,17 @@ public class AdminDistributionController extends AdminBaseController{
 		boolean res = shop().distributorGroup.addDistributorGroup(param);
 		return this.success(res);
 	}
+
+    /**
+     * 分销分组是否支持用户可选 1；支持 0：不支持
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/distributor/group/select")
+	public JsonResult userCanSelect(@RequestBody GroupCanSelectParam param){
+        int res = shop().distributorGroup.userCanSelect(param);
+        return this.success(res);
+    }
 	
 	//分销员等级配置
 	/**
