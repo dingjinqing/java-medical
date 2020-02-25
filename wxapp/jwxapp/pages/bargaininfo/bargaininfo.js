@@ -266,7 +266,7 @@ global.wxPage({
   toOrder: function (e) {
     var order_sn = e.currentTarget.dataset.order_sn;
     util.navigateTo({
-      url: '/pages/orderinfo/orderinfo?order_sn=' + order_sn,
+      url: '/pages/orderinfo/orderinfo?orderSn=' + order_sn,
     })
   },
   /**
