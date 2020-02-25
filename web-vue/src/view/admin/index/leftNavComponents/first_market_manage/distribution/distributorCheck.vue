@@ -335,6 +335,12 @@ export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
   },
+  props: {
+    ids: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       // 搜索
@@ -380,7 +386,8 @@ export default {
     this.getDistributionGroup()
     this.province = deepCloneObj(chinaData)
 
-    console.log(this.$route.params.distributor)
+    // 分销员审核入参
+    console.log(this.ids)
   },
   methods: {
     initDataList () {
