@@ -290,6 +290,15 @@ public class OrderInfoService extends ShopBaseService {
         if (param.getOrderIds() != null && param.getOrderIds().length != 0) {
             select.where(ORDER_INFO.ORDER_ID.in(param.getOrderIds()));
         }
+        //店铺助手操作
+        if(param.getShopHelperAction() != null) {
+            if(param.getShopHelperAction().equals(SHOP_HELPER_OVERDUE_DELIVERY)) {
+                select.where(TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+                    .and(TABLE.CREATE_TIME.add(param.getShopHelperActionDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+            }else if(param.getShopHelperAction().equals(SHOP_HELPER_REMIND_DELIVERY)) {
+                select.where(TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY).and(TABLE.ORDER_REMIND.greaterThan(BYTE_ZERO)));
+            }
+        }
 		// 构造营销活动查询条件
 		activeBuildOptions(select, param);
 		return select;
