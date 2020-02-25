@@ -441,7 +441,7 @@
                         alt=""
                       >
                       <div class="right_info">
-                        <div class="goods_name"><span>{{goodsItem.goodsName}}</span></div>
+                        <div class="goods_name"><span><i class="goods-tag" v-if="goodsItem.isGift === 1">赠品</i>{{goodsItem.goodsName}}</span></div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -628,7 +628,7 @@
                           alt=""
                         >
                         <div class="right_info">
-                          <div class="goods_name"><span>{{childGoods.goodsName}}</span></div>
+                          <div class="goods_name"><span><i class="goods-tag" v-if="goodsItem.isGift === 1">赠品</i>{{childGoods.goodsName}}</span></div>
                           <div class="goods_spec">{{childGoods.goodsAttr}}</div>
                         </div>
                       </div>
@@ -1215,6 +1215,13 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
+                  .goods-tag{
+                    border: 1px solid;
+                    vertical-align: middle;
+                    margin-right: 5px;
+                    padding: 0 4px;
+                    color: red;
+                  }
                   > span {
                     text-overflow: ellipsis;
                     display: -webkit-box;
@@ -1222,7 +1229,7 @@ export default {
                     overflow: hidden;
                     -webkit-box-orient: vertical;
                     text-align: left;
-                    line-height: 1;
+                    line-height: 25px;
                   }
                 }
               }
