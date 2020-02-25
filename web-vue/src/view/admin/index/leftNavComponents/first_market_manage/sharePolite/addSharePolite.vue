@@ -211,11 +211,11 @@
                 <el-form-item
                   :label="$t('adSharePolite.reward')+'：'"
                   label-width="110px"
-                  prop="reward_type"
+                  :prop="`shareRules[${index}].reward_type`"
                   ref="reward_type"
                 >
                   <el-radio-group v-model="item.reward_type">
-                    <el-radio :label=1>{{$t('adSharePolite.socre')}}</el-radio>
+                    <el-radio :label="1">{{$t('adSharePolite.socre')}}</el-radio>
                     <el-radio
                       :label=2
                       style="margin: 0 20px"
@@ -343,7 +343,7 @@
                   label-width="110px"
                   style="padding:0 0 10px;"
                   :rules="[
-                    {required: true, validator:(rule, value, callback) =>{ validatelottery(rule, value, callback, item.lottery)}, trigger: 'blur'}
+                    {required: true, validator:(rule, value, callback) =>{ validatelottery(rule, value, callback, item.lottery)}, trigger: ['blur','change']}
                   ]"
                 >
                   <el-select
@@ -538,23 +538,6 @@ export default {
       value: '',
       // 已选择商品件数
       selectGoods: 0,
-      // 分享奖励规则数组，最多定义三个规则
-      // shareRules: [
-      //   {
-      //     invite_num: '', // 邀请数量
-      //     reward_type: 1, // 奖励类型
-      //     score: '', // 积分
-      //     coupon: '', // 优惠券
-      //     lottery: '', // 幸运大抽奖
-      //     score_num: '', // 积分数量
-      //     coupon_num: '', // 优惠券数量
-      //     lottery_num: '', // 幸运大抽奖数量
-      //     // 优惠券可用库存
-      //     couponStock: '',
-      //     // 优惠券名字
-      //     coupon_name: ''
-      //   }
-      // ],
       index: 0,
       param: {
         id: this.$route.params.id,
@@ -861,6 +844,7 @@ export default {
     },
     // 验证优惠券奖励份数
     validateCouponNumber (rule, value, callback, couponNum) {
+      console.log(value, 'coupon-value')
       console.log(couponNum, 'couponNum')
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (couponNum === '') {
@@ -886,6 +870,7 @@ export default {
     },
     // 验证幸运大抽奖
     validatelottery (rule, value, callback, lottery) {
+      console.log(value, 'get value--')
       if (!lottery || lottery === '') {
         callback(new Error('请选择幸运大抽奖活动'))
       } else {
@@ -894,6 +879,7 @@ export default {
     },
     // 验证积分
     validateIntegral (rule, value, callback, score) {
+      console.log(value, 'radio-value')
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (score === '') {
         callback(new Error('请输入积分'))
