@@ -28,6 +28,7 @@
             v-model="activity.advertise"
             size="small"
             class="inputWidth"
+            :disabled="edit"
           ></el-input>
           <el-popover
             placement="right-start"
@@ -61,6 +62,7 @@
                   size="small"
                   style="width: 160px;"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  :disabled="edit"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -78,6 +80,7 @@
                   placeholder="选择结束时间"
                   style="width: 160px;"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  :disabled="edit"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -93,6 +96,8 @@
             v-model="activity.inteTotal"
             size="small"
             class="inputWidth"
+            :disabled="edit"
+            type="number"
           ></el-input>
           <span>积分</span>
           <span class="uniteStyle">0表示不限制数量,修改总量时只能增加,不能减少,请谨慎设置</span>
@@ -110,6 +115,8 @@
                 v-model="activity.limitAmount"
                 size="small"
                 style="width: 90px"
+                :disabled="edit"
+                type="number"
               />
             </el-form-item>
             <span>&nbsp;人，瓜分&nbsp;</span>
@@ -121,6 +128,8 @@
                 v-model="activity.inteGroup"
                 size="small"
                 class="inputWidth"
+                :disabled="edit"
+                type="number"
               />
             </el-form-item>
             <span>&nbsp;积分</span>
@@ -141,6 +150,8 @@
                 v-model="activity.joinLimit"
                 size="small"
                 style="width:90px"
+                :disabled="edit"
+                type="number"
               />
             </el-form-item>
             <span>&nbsp;次新团</span>
@@ -195,6 +206,12 @@
 <script>
 import { createGroupIntegration, editGroupIntegration, selectGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
 export default {
+  props: {
+    isEditId: {
+      type: Number,
+      default: 0
+    }
+  },
   data () {
     return {
       edit: false,
@@ -249,10 +266,10 @@ export default {
       createGroupIntegration(this.activity).then((res) => {
         console.log(res)
         if (res.error === 0) {
-          this.$message({
-            message: '创建活动成功',
-            type: 'success'
-          })
+          this.$message.success('创建活动成功')
+          this.backHome()
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -260,23 +277,34 @@ export default {
       editGroupIntegration(this.activity).then((res) => {
         console.log(res)
         if (res.error === 0) {
-          this.$message({
-            message: '保存活动成功',
-            type: 'success'
-          })
+          if (res.error === 0) {
+            this.$message.success('修改活动成功')
+            this.backHome()
+          } else {
+            this.$message.error(res.message)
+          }
         }
       })
+    },
+    backHome () {
+      console.log('点了')
+      let params = {
+        'flag': 6
+      }
+      this.$emit('backHome', params)
     }
 
   },
   mounted () {
-    const id = this.$route.params.id
-    this.edit = !!id
-    if (!this.edit) {
+    // const id = this.$route.params.id
+    // this.edit = !!id
+    if (this.isEditId === 0) {
+      this.edit = false
       return
     }
-    this.paramId = id
-    this.loadInfo(id)
+    this.edit = true
+    this.paramId = this.isEditId
+    this.loadInfo(this.isEditId)
   }
 
 }

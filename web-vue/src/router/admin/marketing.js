@@ -352,7 +352,7 @@ const routes = [
   },
   // // 组团瓜分积分
   {
-    path: '/admin/home/main/divideIntegral',
+    path: '/admin/home/main/groupIntegration',
     name: 'pin_integration',
     meta: {
       crumbTitle: 'router.pin_integration',
@@ -360,7 +360,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/divideIntegral/divideIntegral'
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
       )
   },
   // 普通优惠券

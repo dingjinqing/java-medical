@@ -70,7 +70,7 @@ public class GroupIntegrationService extends ShopBaseService {
             .where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(GROUP_INTEGRATION_DEFINE.STATUS.eq(STATUS_NORMAL))
             .and(GROUP_INTEGRATION_DEFINE.START_TIME.lessThan(Util.currentTimeStamp())
-                .and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp())))
+                .and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp()))).orderBy(GROUP_INTEGRATION_DEFINE.ID.desc())
             .fetchInto(ActSelectList.class);
         return result;
     }
@@ -318,6 +318,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 */
 	private SelectConditionStep<?> buildOptions(SelectWhereStep<?> selectFrom, GroupIntegrationDefinePageParam pageParam) {
 		SelectConditionStep<?> step = selectFrom.where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+		step.orderBy(GROUP_INTEGRATION_DEFINE.ID.desc());
 		switch(pageParam.getType()) {
 			case GroupIntegrationDefineEnums.QueryType.UNSTARTED :
 				step.and(GROUP_INTEGRATION_DEFINE.START_TIME.gt(Timestamp.valueOf(LocalDateTime.now())));
