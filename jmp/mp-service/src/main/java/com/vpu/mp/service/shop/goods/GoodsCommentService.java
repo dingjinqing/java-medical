@@ -159,8 +159,9 @@ public class GoodsCommentService extends ShopBaseService {
         select.and(COMMENT_GOODS.FLAG.eq(param.getFlag()));
     }
     //店铺助手查出商品评价审核逾期的评价id列表
-      if(param.getCommentGoodsId()!=null&&!param.getCommentGoodsId().isEmpty()){
-          select.and(COMMENT_GOODS.ID.in(param.getCommentGoodsId()));
+      if(GoodsCommentPageListParam.FROM_SHOP_ASSISTANT.equals(param.getShopAssistantFlag())){
+          select.and(COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
+              .and(COMMENT_GOODS.CREATE_TIME.add(param.getNDays()).lessThan(Timestamp.valueOf(LocalDateTime.now())));
       }
   }
 
