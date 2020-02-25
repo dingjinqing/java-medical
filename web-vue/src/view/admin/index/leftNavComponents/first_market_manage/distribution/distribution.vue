@@ -110,6 +110,7 @@ export default {
       }
     })
 
+    // 店铺助手跳转本页面
     console.log(this.$route.params)
     if (this.$route.params.distributorName) {
       this.activeName = this.$route.params.distributorName
