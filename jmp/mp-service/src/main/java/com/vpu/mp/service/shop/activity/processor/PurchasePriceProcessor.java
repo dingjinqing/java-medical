@@ -68,12 +68,22 @@ public class PurchasePriceProcessor implements Processor,GoodsDetailProcessor,Ac
             if (purchaseRulesList != null &&purchaseRulesList.size() != 0) {
                 CartActivityInfo cartActivityInfo =new CartActivityInfo();
                 cartActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
+                cartActivityInfo.setPurchasePriceRule(new ArrayList<>());
                 purchaseRulesList.forEach(purchaseRules->{
                     cartActivityInfo.setActivityId(purchaseRules.get(PURCHASE_PRICE_DEFINE.ID));
                     CartActivityInfo.PurchasePriceRule cartPurchasePriceRule =new CartActivityInfo.PurchasePriceRule();
                     cartPurchasePriceRule.setFullPrice(purchaseRules.get(PURCHASE_PRICE_RULE.FULL_PRICE));
                     cartPurchasePriceRule.setPurchasePrice(purchaseRules.get(PURCHASE_PRICE_RULE.PURCHASE_PRICE));
+                    cartActivityInfo.getPurchasePriceRule().add(cartPurchasePriceRule);
                     });
+                goods.getCartActivityInfos().add(cartActivityInfo);
+                //当前商品活动
+                if (goods.getType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE)){
+                    if (goods.getExtendId().equals(cartActivityInfo.getActivityId())){
+                        goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
+                        goods.setActivityId(cartActivityInfo.getActivityId());
+                    }
+                }
             }
         });
     }
