@@ -648,6 +648,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY = "order.pay.way.no.support.instead.pay";
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_WAY = "order.pay.way.no.support.instead.pay.way";
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_MONEY_ZERO = "order.pay.way.no_support.instead.pay.money.zero";
+    public static final String MSG_ORDER_PAY_WAY_INSTEAD_PAY_FINISH = "order.pay.way.instead.pay.finish";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
