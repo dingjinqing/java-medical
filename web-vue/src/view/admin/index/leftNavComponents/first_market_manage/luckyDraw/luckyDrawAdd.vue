@@ -408,7 +408,7 @@
                           v-model="item.couponId"
                           size="small"
                           style="width: 120px"
-                          @change="couponChange"
+                          @change="couponChange(item)"
                         >
                           <el-option
                             v-for="itema in couponlist"
@@ -430,7 +430,7 @@
                         </span>
                         <!-- 优惠券可用库存 -->
                         <p style="color: #999;">
-                          {{$t('luckyDraw.couponsTips',[couponNumber])}}</p>
+                          {{$t('luckyDraw.couponsTips',[item.couponNumber])}}</p>
                       </el-form-item>
                       <el-form-item
                         v-if="item.lotteryType===4"
@@ -516,7 +516,7 @@
                           v-model="item.lotteryDetail"
                         ></el-input>
                       </el-form-item>
-                      <el-form-item>
+                      <el-form-item prop="prizeNumber">
                         <span>{{$t('luckyDraw.prizeNumber')}}：</span>
                         <el-input
                           size="small"
@@ -673,6 +673,20 @@ export default {
       }
       callback()
     }
+    // 优惠券限制数量时，校验奖品份数不能大于优惠券数量
+    function validPrizeNumber (rule, value, callback) {
+      for (let i = 0; i < that.requestParam.prizeList.length; i++) {
+        let item = that.requestParam.prizeList[i]
+        let couponNum = item.couponNumber
+        if (item.lotteryType === 3) {
+          if (couponNum !== '不限制' && Number(item.lotteryNumber) > Number(couponNum)) {
+            callback(new Error('奖品数量不能大于优惠券可用份数'))
+            break
+          }
+        }
+      }
+      callback()
+    }
     return {
       requestParam: {
         lotteryName: '',
@@ -708,7 +722,6 @@ export default {
       imageSize: [80, 80],
       // 优惠劵列表
       couponlist: [],
-      couponNumber: 0,
       tabSwitch: '1',
       imgHost: `${this.$imageHost}`,
       formRules: {
@@ -719,7 +732,8 @@ export default {
           { validator: validTime, trigger: 'blur' }
         ],
         lotteryExplain: [{ required: true, validator: validLotteryExplain, trigger: 'change' }],
-        prizeList: [{ validator: validChance, trigger: 'change' }]
+        prizeList: [{ validator: validChance, trigger: 'change' }],
+        prizeNumber: [{ validator: validPrizeNumber, trigger: 'blur' }]
       }
     }
   },
@@ -882,9 +896,9 @@ export default {
                     return citem.id === item.couponId
                   })
                   if (Number(coupon.limitSurplusFlag) === 1) {
-                    this.couponNumber = '不限制'
+                    item.couponNumber = '不限制'
                   } else {
-                    this.couponNumber = coupon.surplus
+                    item.couponNumber = coupon.surplus
                   }
                 })
               }
@@ -899,21 +913,23 @@ export default {
         })
       }
     },
-    couponChange (id) {
+    couponChange (item) {
+      console.log('arguments', arguments)
+      let id = item.couponId
       console.log('couponitem', id)
       if (!id) {
-        this.couponNumber = 0
+        item.couponNumber = 0
       } else {
         let coupon = this.couponlist.find(item => {
           return item.id === id
         })
         if (Number(coupon.limitSurplusFlag) === 1) {
-          this.couponNumber = '不限制'
+          item.couponNumber = '不限制'
         } else {
-          this.couponNumber = coupon.surplus
+          item.couponNumber = coupon.surplus
         }
       }
-      console.log('this.couponNumber', this.couponNumber)
+      console.log('this.couponNumber', item.couponNumber)
     }
   }
 }
