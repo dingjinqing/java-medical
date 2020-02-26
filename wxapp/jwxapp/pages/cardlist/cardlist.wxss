@@ -80,7 +80,7 @@
   font-size: 24rpx;
   text-align: center;
 }
-.card_item_containe {
+.card_item_container {
   transition: left 0.3s ease-in;
 }
 .no_card{

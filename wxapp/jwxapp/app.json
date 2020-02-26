@@ -87,7 +87,8 @@
         "pledgeannounce/pledgeannounce",
         "fullshiprule/fullshiprule",
         "couponpackage/couponpackage",
-        "promoteinfo/promoteinfo"
+        "promoteinfo/promoteinfo",
+        "virtualCheckout/virtualCheckout"
       ]
     }
   ],
