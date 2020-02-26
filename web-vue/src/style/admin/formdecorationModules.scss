@@ -1,0 +1,68 @@
+.membershipCard {
+    .showModule {
+      min-height: 10px;
+      background-color: #ffffff;
+      position: relative;
+      border: 2px dashed #fff;
+      .item_module_title {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        display: none;
+        z-index: 8;
+        width: 88px;
+        height: 30px;
+        background-color: #9ebbff;
+        color: #fff;
+        text-align: center;
+        line-height: 30px;
+        border-bottom-right-radius: 15px;
+        -webkit-border-bottom-right-radius: 15px;
+        -moz-border-bottom-right-radius: 15px;
+        border-top-right-radius: 15px;
+      }
+        border: 2px dashed #7987aa;
+        .item_module_title {
+          display: block;
+        }
+        .item_operation {
+          position: absolute;
+          right: 3px;
+          top: 2px;
+          display: block;
+          z-index: 1000;
+          img{
+            width: 25px;
+            height: 25px;;
+          }
+        }
+      
+    }
+    .setHere {
+      height: 30px;
+    }
+    .activeSetHere {
+      display: none;
+    }
+  }
+  .activeBorder {
+    border: 2px dashed #7987aa !important;
+  }
+  .noBoderColor{
+    border-color:#fff!important
+  }
+    
+  .placeholder {
+    .showModule {
+      border: 2px dashed #fff ;
+      border-bottom:2px solid blue!important
+    }
+    
+  }
+  .modules:hover .middleModulesActive {
+    display: block!important;
+  }
+  div {
+    cursor: Move;
+    user-select: none;
+  }
