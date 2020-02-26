@@ -36,6 +36,8 @@ public enum OrderServiceCode {
     //10:下单
     CREATE(CreateService.class),
 	//11:支付
-    PAY(PayService.class);
+    PAY(PayService.class),
+	//12:好友代付
+    INSTEAD_PAY(InsteadPayService.class);
 	OrderServiceCode(Class<? extends IorderOperate> clz){}
 }

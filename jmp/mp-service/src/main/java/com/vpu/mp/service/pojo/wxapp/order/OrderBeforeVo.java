@@ -2,7 +2,9 @@ package com.vpu.mp.service.pojo.wxapp.order;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -32,7 +34,7 @@ public class OrderBeforeVo {
     private List<OrderGoodsBo> orderGoods;
 
 
-    /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.foundation.data.BaseConstant} 下的ACTIVITY_TYPE**/
+    /** 指定本次结算所参加的唯一营销活动类型 {@link BaseConstant} 下的ACTIVITY_TYPE**/
     private Byte activityType;
     /** 指定本次结算所参加的唯一营销活动类型 ID */
     private Integer activityId;
@@ -121,10 +123,10 @@ public class OrderBeforeVo {
     /**???*/
     @Builder.Default
     private BigDecimal packageDiscount = BigDecimalUtil.BIGDECIMAL_ZERO;
-    /***/
+    /**团长优惠*/
     @Builder.Default
     private BigDecimal grouperCheapReduce = BigDecimalUtil.BIGDECIMAL_ZERO;
-    /**???*/
+    /**预售折扣*/
     @Builder.Default
     private BigDecimal preSaleDiscount = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**补款金额*/
@@ -133,7 +135,7 @@ public class OrderBeforeVo {
     private Timestamp bkShippingTime;
     /**补款是否自动退定金*/
     private Byte bkReturnType;
-    /*TODO 代付金额*/
+    /*代付金额*/
     @Builder.Default
     private BigDecimal insteadPayMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**默认支付配置->会员卡余额*/
@@ -144,6 +146,8 @@ public class OrderBeforeVo {
     private Byte isScorePay;
     /**订单商品折后总金额*/
     private BigDecimal tolalDiscountAfterPrice;
+    private InsteadPay insteadPayCfg;
+
     /**
      * 默认配送方式 0 ，1 ，2
      * @return

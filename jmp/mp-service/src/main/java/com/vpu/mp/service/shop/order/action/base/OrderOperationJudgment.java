@@ -187,11 +187,13 @@ public class OrderOperationJudgment {
 	/**
 	 * 订单是否可以关闭
 	 * @param order
-	 * @return
+	 * @param isMp
+     * @return
 	 */
-	public static boolean mpIsClose(OrderListInfoVo order) {
-		if(//待支付不存在补款或补款未支付
-            (order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAY_NO)
+	public static boolean mpIsClose(OrderListInfoVo order, Byte isMp) {
+		if(//待支付不存在补款或(自动任务补款未支付)
+            (order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY &&
+                (order.getBkOrderPaid() == OrderConstant.BK_PAY_NO || ( isMp.equals(OrderConstant.IS_MP_AUTO) && order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT)))
 			//待发货 且 货到付款 且 系统支付0
 			|| (order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0 && OrderConstant.PAY_CODE_COD.equals(order.getPayCode()))) {
 			return true;
@@ -264,7 +266,7 @@ public class OrderOperationJudgment {
 	 */
 	public static void operationSet(OrderListInfoVo order , Integer isReturnCount , List<OrderGoodsVo> canBeShippedList) {
 		//设置所有订单是否可以关闭
-		if(OrderOperationJudgment.mpIsClose(order)) {
+		if(OrderOperationJudgment.mpIsClose(order, OrderConstant.IS_MP_ADMIN)) {
 			order.setCanClose(Boolean.TRUE);
 		}
 		//设置所有订单是否可以完成

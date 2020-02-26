@@ -202,6 +202,63 @@ public class WxAppOrderController extends WxAppBaseController{
 	    return success(shop().express.getEnabledList());
     }
 
+    /**************好友代付start*******************/
+
+    /**
+     * 代付详情
+     */
+    @PostMapping("/pay/instead/detail")
+    public JsonResult insteadDetail(@RequestBody @Valid OrderGoodsHistoryListParam param){
+        return success();
+    }
+
+    /**
+     * 代付支付页
+     */
+    @PostMapping("/pay/instead")
+    public JsonResult insteadPay(@RequestBody @Valid OrderOperateQueryParam param){
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult == null || executeResult.isSuccess()) {
+            return success(executeResult == null ? null : executeResult.getResult());
+        }else {
+            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+        }
+    }
+
+    /**
+     * 代付支付
+     */
+    @PostMapping("/pay/instead/submit")
+    public JsonResult insteadPaySubmit(@RequestBody @Valid OrderOperateQueryParam param){
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult == null || executeResult.isSuccess()) {
+            return success(executeResult == null ? null : executeResult.getResult());
+        }else {
+            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+        }
+    }
+
+    /**
+     * 代付用户明细
+     */
+    @PostMapping("/pay/instead/userList")
+    public JsonResult insteadPayUserList() {
+        return success();
+    }
+
+    /**
+     * 好友代付分享图
+     */
+    @PostMapping("/pay/instead/share")
+    public JsonResult insteadShareImage(@RequestBody @Valid OrderGoodsHistoryListParam param){
+        return success();
+    }
+    /**************好友代付end*********************/
+
 	@PostMapping("/addtest")
 	public JsonResult test(){
 		List<String> list=new ArrayList<String>();
