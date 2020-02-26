@@ -855,7 +855,8 @@ export default {
       orderItemInfo: {},
       notesOrderSn: null,
       showExportColumnSelect: false,
-      showExportConfirm: false
+      showExportConfirm: false,
+      shopHelperParams: {}
     }
   },
   inject: ['adminReload'],
@@ -866,6 +867,8 @@ export default {
     console.log(userId)
     console.log('mounted-----------------------')
     this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
+    if (this.$route.params.flag) { this.$set(this.shopHelperParams, 'shopHelperAction', this.$route.params.flag) }
+    if (this.$route.params.IntegerDays) { this.$set(this.shopHelperParams, 'shopHelperActionDays', this.$route.params.IntegerDays) }
     // 初始化数据
     this.langDefault()
     this.initDataList()
@@ -926,7 +929,8 @@ export default {
         ...this.searchParams,
         orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
         goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
-        paymentType: this.searchParams.paymentType !== null ? [this.searchParams.paymentType] : []
+        paymentType: this.searchParams.paymentType !== null ? [this.searchParams.paymentType] : [],
+        ...this.shopHelperParams
       }
       list(obj).then(res => {
         console.log(res)
