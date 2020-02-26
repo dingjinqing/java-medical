@@ -267,6 +267,9 @@ global.wxPage({
     var activityId = e.currentTarget.dataset.activity_id; // 选择的活动id
     var activityType = e.currentTarget.dataset.activity_type; // 选择的活动类型
     // 不参与活动
+    if (activityId == null) {
+      activityId = 0
+    }
     if (activityType == null) {
       activityType = 0
     }
