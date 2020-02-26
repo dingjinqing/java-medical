@@ -271,6 +271,8 @@ export const cn = {
   increase_purchase: ['营销管理', '加价购'],
   // 营销管理 加价购 添加加价购活动
   add_increase_purchase: ['营销管理', '加价购', '添加加价购活动'],
+  // 营销管理 加价购 编辑加价购活动
+  edit_increase_purchase: ['营销管理', '加价购', '编辑加价购活动'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
   // 营销管理 加价购 换购明细

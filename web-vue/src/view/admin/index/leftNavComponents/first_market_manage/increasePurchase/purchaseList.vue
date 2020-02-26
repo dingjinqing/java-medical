@@ -187,7 +187,10 @@
                   placement="top"
                   v-if="scope.row.status === 0"
                 >
-                  <span class="el-icon-edit-outline iconSpn"></span>
+                  <span
+                    class="el-icon-edit-outline iconSpn"
+                    @click="jump2editPurchase(scope.row.id)"
+                  ></span>
                 </el-tooltip>
                 <el-tooltip
                   :content="$t('purchase.Disable')"
@@ -334,6 +337,16 @@ export default {
         name: 'add_increase_purchase',
         params: {
           flag: true
+        }
+      })
+    },
+    // 编辑活动页面跳转
+    jump2editPurchase (id) {
+      this.$router.push({
+        name: 'edit_increase_purchase',
+        params: {
+          flag: true,
+          id: id
         }
       })
     },
