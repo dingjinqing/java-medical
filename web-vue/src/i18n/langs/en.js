@@ -361,6 +361,10 @@ import {
 import {
   en as evaluationGiftAdd
 } from './views/admin_new/en/index/marketManagement/evaluationGift/evaluationGiftAddEn'
+// 表单装修主页
+import {
+  en as formDecorationHome
+} from './views/admin_new/en/index/marketManagement/formStatistics/formDecoration/formDecorationHomeEn'
 // 订单管理系列模块化
 import {
   en as order
@@ -1086,6 +1090,7 @@ const en = {
   divideScorePoints, // 瓜分积分
   pictureHotSpot, // 图片热区
   carouselPicture, // 轮播图模块
-  goodsStaticties // 商品统计
+  goodsStaticties, // 商品统计
+  formDecorationHome // 表单装修主页
 }
 export default en
