@@ -186,6 +186,22 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<DistributorGroupListVo> groupList = shop().distributorGroup.getDistributorGroupList(param);
 		return this.success(groupList);
 	}
+
+    /**
+     * 设置分销分组是否在小程序端展示
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/group/show")
+	public JsonResult showDistributionGroup(@RequestBody ShowDistributionGroupParam param){
+        int res = shop().distributorGroup.showDistributionGroup(param);
+        return this.success(res);
+    }
+    @PostMapping("/admin/distribution/group/get")
+    public JsonResult getGroupCfg(){
+        int groupCfg = shop().distributorGroup.getGroupCfg();
+        return this.success(groupCfg);
+    }
 	
 	/**
 	 * 添加分销员分组
