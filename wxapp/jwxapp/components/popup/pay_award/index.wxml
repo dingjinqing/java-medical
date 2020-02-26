@@ -19,7 +19,7 @@
         <image class="no-coupon-top-bg" src="{{imageUrl}}image/wxapp/is_award1.png"></image>
         <text class="no-coupon-title">恭 喜 您 !</text>
       </block>
-      <view class="act-title" wx:if="{{filter.includes([0,1],giftInfo.giftType) || !hasGift}}">支付有礼</view>
+      <view class="act-title" wx:if="{{filter.includes([0,1],giftInfo.giftType) || !hasGift}}">{{popupName || '支付有礼'}}</view>
       <view class="lottery_content" wx:if="{{giftInfo.giftType === 3}}"></view>
       <view class="coupon-content" wx:if="{{giftInfo.giftType === 1 && hasGift}}">
         <block wx:for="{{giftInfo.awardInfo.couponView}}" wx:key="*this">
@@ -47,7 +47,7 @@
       </view>
       <view class="coupon-tips" wx:if="{{giftInfo.giftType === 1 && hasGift}}">
         <text class="text">优惠券已放入个人中心</text>
-        <text class="text">去看看 ></text>
+        <text class="text" bindtap="goCouponList">去看看 ></text>
       </view>
       <view class="custom-item" wx:if="{{giftInfo.giftType === 7 && hasGift}}">
         <image class="image" bindtap="goCustomLink" src="{{imageUrl}}{{giftInfo.awardInfo.customImage}}" data-link="{{giftInfo.awardInfo.customLink}}" lazy-load="{{true}}"></image>
@@ -63,11 +63,11 @@
           <text class="no-gift-info" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">{{giftInfo.giftType === 4 ? giftInfo.awardInfo.account + '元': giftInfo.awardInfo.scoreNumber +'积分'}}</text>
           <view class="no-gift-tips" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">
             <text class="text">{{giftInfo.giftType === 4 ? '余额':'积分'}}</text>
-            <text class="text">去看看 ></text>
+            <text class="text" bindtap="{{giftInfo.giftType === 4 ? 'goBalanceInfo' : 'goScoreInfo'}}">去看看</text>
           </view>
-          <view class="gift-name" wx:if="{{giftInfo.giftType === 5}}">{{giftInfo.awardInfo.product.goodsName}}台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
+          <view class="gift-name" wx:if="{{giftInfo.giftType === 5}}">{{giftInfo.awardInfo.product.goodsName}}</view>
           <image class="gift-image" wx:if="{{giftInfo.giftType === 5}}" src="{{imageUrl}}{{giftInfo.awardInfo.product.goodsImg}}"></image>
-          <text class="gift-tips" wx:if="{{giftInfo.giftType === 5}}">已放入“我的奖品”快领取把</text>
+          <text class="gift-tips" wx:if="{{giftInfo.giftType === 5}}" bindtap="">已放入“我的奖品”快领取吧</text>
         </view>
       </block>
       <view class="step-content" wx:if="{{stepInfo}}">

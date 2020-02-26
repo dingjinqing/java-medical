@@ -11,7 +11,9 @@ global.wxPage({
     proMode: true,
     // 切换活动弹框要用到的数组
     activityType: null, // 正在参与的活动类型
-    proPurchaseInfo: []
+    proPurchaseInfo: [],
+    cartId: '', // 切换促销活动当前购物车id
+    isType: 0 // 判断当前参与活动类型
   },
 
   /**
@@ -32,6 +34,32 @@ global.wxPage({
           invalidGoodsList,
           isAllCheck,
           totalPrice
+        })
+
+        this.data.canBuyGoodsList.forEach((item, index) => {
+          item.isSales = 0
+          item.isMemPrice = 0
+          if (item.cartActivityInfos.length > 0) {
+            // 添加不参与活动
+            item.cartActivityInfos[item.cartActivityInfos.length] = {
+              activityType: null,
+              status: 1
+            }
+            item.cartActivityInfos.forEach((val, key) => {
+              // 判断是否参加活动
+              if ((val.activityType == 7 || val.activityType == 21) && item.activityType != 5) {
+                item.isSales = 1
+              }
+              // 判断是否存在会员价
+              if (val.activityType == 22) {
+                item.isMemPrice = 1
+              }
+            })
+          }
+          
+        })
+        this.setData({
+          canBuyGoodsList: this.data.canBuyGoodsList,
         })
       }
     })
@@ -183,7 +211,33 @@ global.wxPage({
     })
     that.data.canBuyGoodsList.forEach((item, index) => {
       if (item.cartId == cartId) {
+        // 判断参与活动
+        if (item.activityType == 7) {
+          // 加价购
+          that.setData({
+            isType: 1
+          })
+        } else if (item.activityType == 21) {
+          // 满折满减
+          that.setData({
+            isType: 2
+          })
+        } else {
+          // 不参与活动
+          that.setData({
+            isType: 0
+          })
+        }
+        item.cartActivityInfos.forEach((val, key) => {
+          // 判断当前选中活动
+          if (item.activityType == val.activityType) {
+            val.is_che = 1
+          } else {
+            val.is_che = 0
+          }
+        })
         that.setData({
+          cartId: cartId,
           proPurchaseInfo: item.cartActivityInfos
         })
       }
@@ -209,24 +263,34 @@ global.wxPage({
   // 切换促销活动
   choose_acts: function (e) {
     var that = this;
-    var activityType = e.currentTarget.dataset.activity_type;
-    for (var i in pro_purchase_info) {
-      pro_purchase_info[i].is_che = 0;
-      pro_purchase_info[i].rec_id = this_rec_id;
-    }
-    pro_purchase_info[this_indexs].is_che = 1;
-    that.setData({
-      pro_purchase_info: pro_purchase_info,
+    var activityId = e.currentTarget.dataset.activity_id; // 选择的活动id
+    var activityType = e.currentTarget.dataset.activity_type; // 选择的活动类型
+    that.data.proPurchaseInfo.forEach((item, index) => {
+      item.is_che = 0
+      if (item.activityType == activityType) {
+        item.is_che = 1
+      }
     })
-    // var cart_data = {};
-    // cart_data.action = this_actx;
-    // cart_data.identity_id = this_iden_id;
-    // cart_data.product_id = this_prd_id;
-    // cart_data.rec_id = this_rec_id;
-    // that.data.gd_actoins = this_actx;
-    // that.data.post_act = 'switch_goods_action';
-    // that.data.cart_datas = JSON.stringify(cart_data);
-    // cart_request(that);
+    that.setData({
+      proPurchaseInfo: that.data.proPurchaseInfo,
+    })
+    // 保存切换营销活动
+    var ids = []
+    ids.push(this.data.cartId)
+    util.api('/api/wxapp/cart/switch/activity', function (res) {
+      if (res.error == 0) {
+        // 隐藏弹窗
+        that.setData({
+          proMode: true
+        })
+        that.requestCartList()
+      }
+    }, {
+        recIds: ids,
+        activityId: activityId,
+        activityType: activityType,
+        isChecked: 1
+    })
   },
 
   // 跳转秒杀抢购

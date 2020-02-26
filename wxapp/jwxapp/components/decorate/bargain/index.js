@@ -86,7 +86,7 @@ global.wxComponent({
             }
           }, {
             bargainId: d.bargain_id,
-            prdId: d.is_prd
+            prdId: d.prd_id
           })
         }
       }

@@ -19,7 +19,8 @@ global.wxComponent({
           hasGift:this.hasGift(val.giftInfo),
         })
       }
-    }
+    },
+    popupName:String
   },
 
   /**
@@ -88,8 +89,17 @@ global.wxComponent({
         this.bindClose()
       }
     },
+    goCouponList(){
+      util.jumpLink('pages/coupon/coupon','navigateTo')
+    },
+    goBalanceInfo(){
+      util.jumpLink('pages1/balance/balance','navigateTo')
+    },
+    goScoreInfo(){
+      util.jumpLink('pages1/integral/integral?num=0','navigateTo')
+    },
     goLottery(){
-      util.jumpLink('TODO','navigateTo')
+      util.jumpLink(`pages1/lottery/lottery?lotteryId=${this.data.giftInfo.awardInfo.lotteryId}`,'navigateTo')
     },
     shareCoupon(){
       this.triggerEvent('TODO')

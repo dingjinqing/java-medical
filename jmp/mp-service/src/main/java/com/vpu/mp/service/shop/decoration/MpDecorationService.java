@@ -13,6 +13,7 @@ import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -359,6 +360,8 @@ public class MpDecorationService extends ShopBaseService {
                     return this.convertTitleForIndex(objectMapper, node, user);
                 case ModuleConstant.M_MAP:
                     return this.convertMapForIndex(objectMapper, node, user);
+                case ModuleConstant.M_SHOP:
+                    return this.convertShopBgForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -901,5 +904,23 @@ public class MpDecorationService extends ShopBaseService {
         // 转换实时信息
         return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
     }
-
+    
+    /**
+     * 店招模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleShop convertShopBgForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+        String shopBgPath = moduleShop.getShopBgPath();
+        if(StringUtils.isNotEmpty(shopBgPath)) {
+        	//shop_bg_path返回店铺设置中的地址
+        	ShopPojo shopInfo = saas.shop.getShopById(getShopId()).into(ShopPojo.class);
+        	moduleShop.setShopBgPath("/"+shopInfo.getShopAvatar());
+        }
+		return moduleShop;
+    }
 }

@@ -144,6 +144,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		record.setInteRemain(param.getInteTotal());
 		record.setIsContinue(GroupIntegrationDefineEnums.IsContinue.TRUE.value());
 		record.setParamN(paramNum);
+		record.setShopId(getShopId());
 		int executeInsert = db().executeInsert(record);
 		if(executeInsert>0) {
 			logger().info("【组队瓜分积分】 添加活动"+param.getName()+" 创建成功");

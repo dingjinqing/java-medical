@@ -64,7 +64,7 @@ public class BargainUserService extends ShopBaseService{
 
 	public PageResult<BargainUserListQueryVo> getPageList(BargainUserListQueryParam param){
 		SelectWhereStep<? extends Record> select = db().select(
-				BARGAIN_USER_LIST.ID,USER.USERNAME,USER.MOBILE,BARGAIN_USER_LIST.CREATE_TIME,BARGAIN_USER_LIST.BARGAIN_MONEY
+				BARGAIN_USER_LIST.ID,BARGAIN_USER_LIST.USER_ID,USER.USERNAME,USER.MOBILE,BARGAIN_USER_LIST.CREATE_TIME,BARGAIN_USER_LIST.BARGAIN_MONEY
 				).
 				from(BARGAIN_USER_LIST).
 				leftJoin(USER).on(BARGAIN_USER_LIST.USER_ID.eq(USER.USER_ID));

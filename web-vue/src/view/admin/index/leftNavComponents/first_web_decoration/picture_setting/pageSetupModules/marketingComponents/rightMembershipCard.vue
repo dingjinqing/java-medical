@@ -433,19 +433,20 @@ export default {
       immediate: true
     },
     radio (newData) {
+      this.handleToSearchCard()
       this.showCardList.forEach(item => {
         item.isChecked = false
       })
-      switch (newData) {
-        case '1':
-          this.showCardList = this.ordinaryCardData
-          break
-        case '2':
-          this.showCardList = this.limitCardData
-          break
-        case '3':
-          this.showCardList = this.gradeCardData
-      }
+      // switch (newData) {
+      //   case '1':
+      //     this.showCardList = this.ordinaryCardData
+      //     break
+      //   case '2':
+      //     this.showCardList = this.limitCardData
+      //     break
+      //   case '3':
+      //     this.showCardList = this.gradeCardData
+      // }
     },
     checked (newData) {
       // 如果已经有选中数据则直接改变数据里的isHidden项，若果没有则等待弹窗选中确认后，将是否隐藏卡片checked值赋予选中的数据中的isHidden.
@@ -500,6 +501,16 @@ export default {
       this.limitCardData = res.content.limitNumCard
       this.gradeCardData = res.content.rankCard
       this.showCardList = this.ordinaryCardData
+      switch (this.radio) {
+        case '1':
+          this.showCardList = this.ordinaryCardData
+          break
+        case '2':
+          this.showCardList = this.limitCardData
+          break
+        case '3':
+          this.showCardList = this.gradeCardData
+      }
     },
     // 处理每种卡的权益、过期类型
     handleToExptreType (item) {

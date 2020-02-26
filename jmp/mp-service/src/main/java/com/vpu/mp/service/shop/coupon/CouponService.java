@@ -559,23 +559,28 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public List<CouponAllVo> getCouponAll(CouponAllParam param) {
-        Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+        Timestamp nowDate = new Timestamp(System.currentTimeMillis());
         SelectConditionStep<Record6<Integer, String, String, Byte, Integer, Byte>> couponAllVos = db()
                 .select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
                 .from(MRKING_VOUCHER)
                 .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         switch (param.getStatus()){
             case BaseConstant.NAVBAR_TYPE_AVAILABLE:
-                couponAllVos.and(MRKING_VOUCHER.END_TIME.gt(nowTime)
-                        .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0))));
+                couponAllVos.and((MRKING_VOUCHER.END_TIME.ge(nowDate))
+                        .or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
+                        .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
                 break;
             case  BaseConstant.NAVBAR_TYPE_ONGOING:
-                couponAllVos.and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
-                        .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0))));
+                couponAllVos.and((MRKING_VOUCHER.START_TIME.le(nowDate))
+                        .and(MRKING_VOUCHER.END_TIME.ge(nowDate))
+                        .or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
+                        .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
                 break;
             default:
-                couponAllVos.and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
-                        .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0))));
+                couponAllVos.and((MRKING_VOUCHER.START_TIME.le(nowDate))
+                        .and(MRKING_VOUCHER.END_TIME.ge(nowDate))
+                        .or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
+                        .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
         }
         if (param.getIsHasStock()){
             couponAllVos.and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq(BaseConstant.COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED).or(MRKING_VOUCHER.SURPLUS.gt(0)));
