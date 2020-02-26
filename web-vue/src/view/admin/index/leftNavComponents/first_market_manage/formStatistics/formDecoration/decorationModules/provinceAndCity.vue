@@ -1,5 +1,8 @@
 <template>
-  <div class="membershipCard modules">
+  <div
+    class="membershipCard modules"
+    @mouseover="mouseOver"
+  >
     <!--列表模块-->
     <div
       class="showModule"
@@ -152,6 +155,10 @@ export default {
           break
       }
       this.$emit('handleToClickIcon', obj)
+    },
+    // 模块划过
+    mouseOver () { // 模块公共
+      this.$emit('middleDragData', this.flag)
     }
   }
 }

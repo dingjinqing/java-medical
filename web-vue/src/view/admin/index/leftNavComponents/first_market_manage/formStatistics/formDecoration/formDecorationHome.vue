@@ -44,6 +44,15 @@
         </div>
         <!--中间拖拽接收区域-->
         <div class="drag_area">
+          <!--顶部占位-->
+          <div
+            class="hereDaily"
+            :class="topAreaFlag?'setHere':''"
+            @mouseover="dragTopOver()"
+            @mouseout="dragTopOut()"
+            v-if="isDragging"
+          >
+          </div>
           <draggable
             class="list-group"
             :style="showModulesList.length?'padding-bottom:10px':'padding-bottom:127px'"
@@ -65,6 +74,7 @@
                   :middleHereFlag="middleHereFlag"
                   :nowRightShowIndex="nowRightShowIndex"
                   @handleToClickIcon="handleToClickIcon"
+                  @middleDragData='middleDragData'
                 ></components>
               </div>
 
@@ -142,7 +152,13 @@ export default {
         sort: false,
         preventOnFilter: false,
         fallbackTolerance: '1'
-      }
+      },
+      oldIndex: -1, // 中部拖动相关
+      newIndex: -1, // 中部拖动相关
+      oldElement: null, // 中部拖动相关
+      isDragging: false, // 中间模块拖至顶部相关
+      topAreaFlag: false // 中间模块拖至顶部相关
+
     }
   },
   watch: {
@@ -411,11 +427,13 @@ export default {
       let newArr = JSON.parse(JSON.stringify(this.showModulesList))
       console.log(this.oldIndex, this.newIndex, this.oldElement, newArr)
       let insertIndex = this.newIndex + 1
+      console.log(this.newIndex)
       if (this.topAreaFlag) {
         newArr.unshift(this.oldElement)
       } else {
         newArr.splice(insertIndex, 0, this.oldElement)
       }
+
       console.log(newArr)
       let newArrMiddle = JSON.parse(JSON.stringify(newArr))
       newArr.forEach((item, index) => {
@@ -425,7 +443,7 @@ export default {
       })
       this.showModulesList = newArrMiddle
       console.log(this.modulesData)
-      // this.isDragging = false
+      this.isDragging = false
       if (this.oldIndex < this.newIndex) {
         insertIndex--
       }
@@ -442,6 +460,20 @@ export default {
         this.nowRightShowIndex = insertIndex
         this.middleHereFlag = false
       })
+    },
+    // 中间区域拖拽插入数据记录
+    middleDragData (res) {
+      console.log(res)
+      this.newIndex = res
+    },
+    // 中间模块拖至顶部滑动
+    dragTopOver () {
+      console.log('滑过顶部')
+      this.topAreaFlag = true
+    },
+    // 中间模块顶部划出
+    dragTopOut () {
+      this.topAreaFlag = false
     }
   }
 }
@@ -509,6 +541,17 @@ export default {
       }
       .drag_area {
         height: 510px;
+        .hereDaily {
+          height: 5px;
+          z-index: 1000;
+          margin-top: -5px;
+          .setHereSpan {
+            display: block;
+          }
+        }
+        .setHere {
+          height: 30px;
+        }
       }
     }
     .decRight {
