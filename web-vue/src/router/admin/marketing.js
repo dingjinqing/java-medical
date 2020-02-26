@@ -1146,6 +1146,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/addPurchase'
       )
   },
+  // 编辑加价购活动
+  {
+    path: '/api/admin/market/addPriceBuy/add',
+    name: 'edit_increase_purchase',
+    meta: {
+      crumbTitle: 'router.edit_increase_purchase',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/editPurchase'
+      )
+  },
 
   // 加价购活动 换购订单
   {

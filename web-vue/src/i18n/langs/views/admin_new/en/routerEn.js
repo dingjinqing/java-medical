@@ -382,6 +382,8 @@ export const en = {
   increase_purchase: ['Marketing management', 'Increase Purchase'],
   // 营销管理 加价购 添加加价购活动
   add_increase_purchase: ['Marketing management', 'Increase Purchase', 'Add Increase Purchase'],
+  // 营销管理 加价购 编辑加价购活动
+  edit_increase_purchase: ['Marketing management', 'Increase Purchase', 'Edit Increase Purchase'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: [
     'Marketing management',
