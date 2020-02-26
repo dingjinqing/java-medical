@@ -794,7 +794,6 @@ export default {
     },
     // 清空中奖图标
     handleClear () {
-      console.log(1111)
       this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage = ''
     },
     handleTabClick (tab, event) {
