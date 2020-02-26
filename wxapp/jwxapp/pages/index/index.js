@@ -143,23 +143,23 @@ global.wxPage({
   getAwardInfo(awardInfo) {
     const needParams = {
       0: null,
-      1: ['couponView', 'bg_img', 'title'],
-      2: ['couponView', 'bg_img', 'title'],
+      1: ['couponView'],
+      2: ['couponView'],
       3: ['lotteryId'],
       4: ['account'],
       5: ['product'],
       6: ['scoreNumber'],
-      7: ['customImage', 'customImage'],
+      7: ['customImage', 'customLink'],
     }
     let formatObj = {
       1: (() => {
         return {
-          couponView: awardInfo.awardContent
+          couponView: awardInfo.extContent && JSON.parse(awardInfo.extContent.coupon_detail)
         }
       })(),
       2: (() => {
         return {
-          couponView: awardInfo.awardContent
+          couponView: awardInfo.extContent && JSON.parse(awardInfo.extContent.coupon_detail)
         }
       })(),
       3: (() => {
