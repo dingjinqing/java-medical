@@ -26,6 +26,7 @@ export const en = {
   price: 'price',
   orderStatus: 'order status',
   moneyPaid: 'payment amount',
+  userId: 'userId',
   username: 'username',
   usernamePlaceholder: 'Please enter a user nickname',
   mobile: 'mobile',

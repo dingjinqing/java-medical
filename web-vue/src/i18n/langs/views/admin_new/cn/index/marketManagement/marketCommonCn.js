@@ -25,6 +25,7 @@ export const cn = {
   price: '单价',
   orderStatus: '订单状态',
   moneyPaid: '支付金额',
+  userId: '用户ID',
   username: '用户昵称',
   usernamePlaceholder: '请输入用户昵称',
   mobile: '手机号',
