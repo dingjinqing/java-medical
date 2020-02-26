@@ -381,7 +381,7 @@ export default {
         this.tabSwitch = '1'
         this.tabInfo.pop()
       }
-      return true
+      this.initPageData()
     }
   }
 }
