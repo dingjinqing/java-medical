@@ -61,6 +61,11 @@ public class DistributorListParam {
      * 有真实姓名 0：无；1：有；
      */
 	private Byte haveRealName;
+
+    /**
+     * 当前操作分组ID
+     */
+	private Integer optGroupId;
 	
 	private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
 	private Integer pageRows = Page.DEFAULT_PAGE_ROWS;

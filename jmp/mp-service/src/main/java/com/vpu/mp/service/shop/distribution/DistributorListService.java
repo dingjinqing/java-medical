@@ -150,6 +150,9 @@ public class DistributorListService extends ShopBaseService{
         if(param.getHaveRealName() != null && param.getHaveRealName() == 1){
             sql = sql.and(USER_DETAIL.REAL_NAME.ne("null"));
         }
+        if(param.getOptGroupId() != null){
+            sql = sql.and(USER.INVITE_GROUP.ne(param.getOptGroupId()));
+        }
 		return sql;
 	}
 	
