@@ -54,9 +54,7 @@ public class GroupBuyProcessorDao extends GroupBuyService {
             .where(GROUP_BUY_DEFINE.START_TIME.lt(date)).and(GROUP_BUY_DEFINE.END_TIME.gt(date)).and(GROUP_BUY_DEFINE.STOCK.gt((short) 0))
             .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
             .orderBy(GROUP_BUY_DEFINE.LEVEL.desc(),GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE.asc())
-            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_DEFINE.GOODS_ID)));
-
-
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID)));
     }
 
     /**

@@ -153,7 +153,10 @@ public class GroupBuyTaskService  extends ShopBaseService {
      * @return
      */
     private List<Integer> getCurrentGroupBuyGoodsIdList(){
-        List<Integer> res =  db().selectDistinct(GROUP_BUY_DEFINE.GOODS_ID).from(GROUP_BUY_DEFINE).leftJoin(GOODS).on(GROUP_BUY_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
+        List<Integer> res =  db().selectDistinct(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID)
+                .from(GROUP_BUY_PRODUCT_DEFINE)
+                .leftJoin(GROUP_BUY_DEFINE).on(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(GROUP_BUY_DEFINE.ID))
+                .leftJoin(GOODS).on(GROUP_BUY_PRODUCT_DEFINE.ID.eq(GOODS.GOODS_ID))
             .where(
                 GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
                 .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))

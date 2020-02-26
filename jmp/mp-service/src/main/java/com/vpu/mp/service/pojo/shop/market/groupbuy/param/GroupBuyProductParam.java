@@ -30,6 +30,11 @@ public class GroupBuyProductParam extends BasePageParam{
     @NotNull
     @JsonProperty(value = "prdId")
     private Integer productId;
+    /**
+     * 商品id
+     */
+    @NotNull
+    private Integer goodsId;
 
     /**
      * 拼团价格

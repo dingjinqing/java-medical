@@ -63,12 +63,8 @@ public class AdminGroupBuyController extends AdminBaseController {
     @PostMapping("/admin/market/groupbuy/add")
     public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
         Timestamp date = DateUtil.getLocalDateTime();
-        //校验活动商品是否叠加 (并发不安全)
-        Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime(),date);
-        if (!flag){
-            return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
-        }
-        shop().groupBuy.addGroupBuy(param,flag);
+
+        shop().groupBuy.addGroupBuy(param);
 //        return success(Util.translateMessage(getLang(), JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS,I18N_RESOURCE));
         return success();
     }
@@ -151,13 +147,6 @@ public class AdminGroupBuyController extends AdminBaseController {
         Byte status = groupBuyRecord.getStatus();
         if (param.getStatus().equals(status)){
             return success();
-        }
-        if(param.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL)){
-            Timestamp date = DateUtil.getLocalDateTime();
-            Boolean flag = shop().groupBuy.validGroupGoods(groupBuyRecord.getId(),groupBuyRecord.getGoodsId(),groupBuyRecord.getStartTime(),groupBuyRecord.getEndTime(), date);
-            if (!flag){
-                return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
-            }
         }
         int resFlag = shop().groupBuy.changeStatusActivity(param.getId(),param.getStatus());
         if (resFlag>0){
