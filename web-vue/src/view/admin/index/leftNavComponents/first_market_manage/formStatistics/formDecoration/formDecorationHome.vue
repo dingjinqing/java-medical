@@ -9,7 +9,7 @@
           <div class="dragContainer">
             <div
               class="dragLi"
-              v-for="item in formElements"
+              v-for="item in $t('formDecorationHome.formElements')"
               :key="item.id"
               :dataId="item.id"
             >
@@ -25,7 +25,7 @@
           <div class="dragContainer">
             <div
               class="dragLi"
-              v-for="item in graphicCategory"
+              v-for="item in $t('formDecorationHome.graphicCategory')"
               :key="item.id"
               :dataId="item.id"
             >
@@ -48,9 +48,9 @@
         <el-button
           type="primary"
           size="small"
-        >{{$t('pageSetUp.saveAndPublish')}}</el-button>
-        <el-button size="small">{{$t('pageSetUp.saveAsDraft')}}</el-button>
-        <el-button size="small">{{$t('pageSetUp.previewEffect')}}</el-button>
+        >保存</el-button>
+        <el-button size="small">保存并发布</el-button>
+        <span>发布后不可更改</span>
       </div>
     </div>
   </div>
@@ -59,144 +59,12 @@
 export default {
   data () {
     return {
-      formElements: [
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_name.png',
-          text: '姓名',
-          id: 1,
-          flag: true,
-          name: 'm_input_name'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/drag_phone.png',
-          text: '手机号',
-          id: 1,
-          flag: true,
-          name: 'm_input_mobile'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '省市区',
-          id: 1,
-          flag: true,
-          name: 'm_address'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '邮箱',
-          id: 1,
-          flag: true,
-          name: 'm_input_email'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '性别',
-          id: 1,
-          flag: true,
-          name: 'm_sex'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '下拉',
-          id: 1,
-          flag: true,
-          name: 'm_slide'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '输入框',
-          id: 1,
-          flag: true,
-          name: 'm_input_text'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '选项',
-          id: 1,
-          flag: true,
-          name: 'm_choose'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '日期',
-          id: 1,
-          flag: true,
-          name: 'm_dates'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '图片上传',
-          id: 1,
-          flag: true,
-          name: 'm_imgs'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '视频上传',
-          id: 1,
-          flag: true,
-          name: 'm_upload_video'
-        }
-      ],
-      graphicCategory: [
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '轮播图',
-          id: 1,
-          flag: true,
-          name: 'm_scroll_image'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '富文本',
-          id: 1,
-          flag: true,
-          name: 'm_rich_text'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '图片广告',
-          id: 1,
-          flag: true,
-          name: 'm_image_small'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '文本模块',
-          id: 1,
-          flag: true,
-          name: 'm_text'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '辅助线',
-          id: 1,
-          flag: true,
-          name: 'm_dashed_line'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '辅助空白',
-          id: 1,
-          flag: true,
-          name: 'm_blank'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '电话模块',
-          id: 1,
-          flag: true,
-          name: 'm_phone'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_deco/icon_area.png',
-          text: '公众号',
-          id: 1,
-          flag: true,
-          name: 'm_official_accounts'
-        }
-      ]
+
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   }
 }
 </script>
@@ -273,6 +141,10 @@ export default {
     padding: 10px 0;
     left: 0;
     right: 0;
+    span {
+      color: #999;
+      font-size: 12px;
+    }
   }
 }
 </style>

@@ -17,6 +17,7 @@ public class DistributorGroupListVo {
 	private Integer delFlag;
 	private Integer distributorAmount;
 	private Timestamp createTime;
+	private Byte canSelect;
 	
 	 /**
      * 	分页信息

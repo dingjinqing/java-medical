@@ -46,13 +46,17 @@ public class GroupBuyProcessorDao extends GroupBuyService {
      * @author 李晓冰
      */
     public Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsGroupBuyListInfo(List<Integer> goodsIds, Timestamp date) {
-        // 获取有效拼团规格信息
-        return db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+
+        // 获取有效拼团规格信息,首先根据实际，活动状态进行过滤，然后根据活动level进行从大到小排序，在根据规格价格从小到大排序，
+        // 再根据商品id进行分组。（一个商品有多个拼团活动则取优先级最高的）
+        return db().select(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID,GROUP_BUY_PRODUCT_DEFINE.GOODS_ID,GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
             .from(GROUP_BUY_DEFINE).innerJoin(GROUP_BUY_PRODUCT_DEFINE).on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
             .where(GROUP_BUY_DEFINE.START_TIME.lt(date)).and(GROUP_BUY_DEFINE.END_TIME.gt(date)).and(GROUP_BUY_DEFINE.STOCK.gt((short) 0))
-            .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
-            .orderBy(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE.asc())
+            .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
+            .orderBy(GROUP_BUY_DEFINE.LEVEL.desc(),GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_DEFINE.GOODS_ID)));
+
+
     }
 
     /**
