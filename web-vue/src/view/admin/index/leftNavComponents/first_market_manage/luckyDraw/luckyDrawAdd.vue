@@ -395,6 +395,7 @@
                           v-model="item.integralScore"
                         ></el-input>
                       </el-form-item>
+                      <!-- 优惠券 -->
                       <el-form-item
                         v-if="item.lotteryType===3"
                         :prop="`prizeList[${index}].couponId`"
@@ -427,6 +428,7 @@
                           @click="createCouponList()"
                         >{{$t('luckyDraw.make')}}
                         </span>
+                        <!-- 优惠券可用库存 -->
                         <p style="color: #999;">
                           {{$t('luckyDraw.couponsTips',[couponNumber])}}</p>
                       </el-form-item>
@@ -706,7 +708,7 @@ export default {
       imageSize: [80, 80],
       // 优惠劵列表
       couponlist: [],
-      couponNumber: 5,
+      couponNumber: 0,
       tabSwitch: '1',
       imgHost: `${this.$imageHost}`,
       formRules: {
@@ -873,6 +875,19 @@ export default {
                 item.goodsNumber = item.product.prdNumber
                 item.goodsShow = true
               }
+              // 如果奖励是优惠券
+              if (item.lotteryType === 3) {
+                this.$nextTick(() => {
+                  let coupon = this.couponlist.find(citem => {
+                    return citem.id === item.couponId
+                  })
+                  if (Number(coupon.limitSurplusFlag) === 1) {
+                    this.couponNumber = '不限制'
+                  } else {
+                    this.couponNumber = coupon.surplus
+                  }
+                })
+              }
             })
             this.requestParam = res.content
             console.log('数据回显', res, this.requestParam)
@@ -889,9 +904,14 @@ export default {
       if (!id) {
         this.couponNumber = 0
       } else {
-        this.couponNumber = this.couponlist.filter(item => {
+        let coupon = this.couponlist.find(item => {
           return item.id === id
-        })[0].surplus
+        })
+        if (Number(coupon.limitSurplusFlag) === 1) {
+          this.couponNumber = '不限制'
+        } else {
+          this.couponNumber = coupon.surplus
+        }
       }
       console.log('this.couponNumber', this.couponNumber)
     }
