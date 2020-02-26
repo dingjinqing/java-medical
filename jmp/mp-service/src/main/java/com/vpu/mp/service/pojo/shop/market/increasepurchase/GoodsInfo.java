@@ -13,6 +13,10 @@ import java.math.BigDecimal;
 public class GoodsInfo {
     /** 商品名称 */
     private String goodsName;
+    /**
+     * 商品图片
+     */
+    private String goodsImg;
     /** 商品原价 */
     private BigDecimal shopPrice;
     /** 商品库存 */

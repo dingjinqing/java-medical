@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
@@ -145,7 +146,9 @@ public class IncreasePurchaseService extends ShopBaseService {
     }
 
     private List<String> getPurchaseDetailInfo(Integer purchasePriceId) {
-        List<String> list = db().select(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE)).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId)).orderBy(ppr.ID).fetch(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE));
+        List<String> list = db().select(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE))
+            .from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId))
+            .orderBy(ppr.ID).fetch(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE));
         log.debug("获取加价购活动详细规则 [{}]", list);
         return list;
     }
@@ -226,15 +229,17 @@ public class IncreasePurchaseService extends ShopBaseService {
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
-        Integer[] goodsIdArray = stringArray2Int(goodsId.split(","));
-        vo.setMainGoods(db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
+        List<Integer> goodsIdArray = Util.json2Object(goodsId, new TypeReference<List<Integer>>() {
+        }, false);
+        vo.setMainGoods(db().select(g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
         List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
         int integer = 0;
         for (String s : redemptionGoods) {
-            Integer[] array = stringArray2Int(s.split(","));
-            redemptionresult[integer++] = db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
+            List<Integer> array = Util.json2Object(s, new TypeReference<List<Integer>>() {
+            }, false);
+            redemptionresult[integer++] = db().select(g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
         }
         vo.setRedemptionGoods(redemptionresult);
         return vo;
