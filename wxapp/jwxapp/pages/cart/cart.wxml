@@ -5,8 +5,7 @@
         <view class="list_box" wx:if="{{canBuyGoodsList.length > 0}}">
             <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index">
               <!-- 满折满减 -->
-              <!-- wx:if="{{item.activityType == 21}}" -->
-              <view class='act_info clearfix' bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-ids='{{item1.identity_id}}'>
+              <view class='act_info clearfix' wx:if="{{item.activityType == 21}}" bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-ids='{{item1.identity_id}}'>
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
                   <view class='act_content' style='width:350rpx;'>每满100.00元减5.00元</view>
@@ -18,8 +17,7 @@
               </view>
             
               <!-- 加价购 -->
-              <!-- wx:if="{{item.activityType == 7}}" -->
-              <!-- <view class='act_info clearfix' bindtap='to_purchase' data-item="{{ item }}" data-ids='{{item3.identity_id}}'>
+              <view class='act_info clearfix' wx:if="{{item.activityType == 7}}" bindtap='to_purchase' data-item="{{ item }}" data-ids='{{item3.identity_id}}'>
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
                   <view class='act_content' style='width:350rpx;'>满1.00元另加1.00元即可换购商品</view>
@@ -28,7 +26,7 @@
                   <view style='color:{{comColor}}'>去换购</view>
                   <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
                 </view>
-              </view> -->
+              </view>
 
               <!-- 秒杀活动 -->
               <view class='sec_kill_area' wx:if="{{item.activityType == 5}}"  bindtap='to_seckill' data-link="pages/item/item?aid={{item.activityId}}&&atp=5&&gid={{item.goodsId}}" style='background:{{somColor}};'>
@@ -85,14 +83,10 @@
                                     <view style="display: flex;">
                                       <view class='reduce_icon' wx:if="{{item.activityType == 18}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
                                       <view class='reduce_icon' wx:if="{{item.activityType == 6}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
-                                      <view wx:if="{{ item.cartActivityInfos.length > 0 }}">
-                                        <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index" style="display: flex;">
-                                          <view class='reduce_icon' wx:if="{{ val.activityType == 22 }}" style='background:linear-gradient(to left,#e0c787,#d9ae69)'>会员价</view>
-                                          <view class="price" style="color:{{comColor}}" wx:if="{{ val.activityType == 22 }}">￥{{val.memberPriceType}}</view>
-                                          <view class="price" style="color:{{comColor}}" wx:if="{{ val.activityType != 22 }}">￥{{item.prdPrice}}</view>
-                                        </view>
-                                      </view>
-                                      <view class="price" style="color:{{comColor}}" wx:else>￥{{item.prdPrice}}</view>
+                                      <view class='reduce_icon' wx:if="{{item.isMemPrice == 1}}" style='background:linear-gradient(to left,#e0c787,#d9ae69)'>会员价</view>
+                                      <view class="price" wx:if="{{item.isMemPrice == 1}}" style="color:{{comColor}}" wx:if="{{ val.activityType == 22 }}">￥{{val.memberPriceType}}</view>
+                                      <view wx:if="{{item.isMemPrice == 0}}" class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
+                                      <!-- <view wx:if="{{ item.cartActivityInfos.length == 0 }}" class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view> -->
                                     </view>
                                     <view class="num_cfg">
                                       <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
@@ -111,11 +105,25 @@
               </view> 
 
               <!-- 促销活动 -->
-              <!-- wx:if="{{(item.activityType == 7 || item.activityType == 21) && item.cartActivityInfos.length > 0}}"  -->
-              <view class='change_fullact' bindtap='proClcik' data-cart_id="{{item.cartId}}" data-activity_type="{{item.activityType}}">
+              <view class='change_fullact' wx:if="{{item.isSales == 1}}" bindtap='proClcik' data-cart_id="{{item.cartId}}" data-activity_type="{{item.activityType}}">
                 <view class='cf_left'>
-                  <view>促销</view>
-                  <view wx:if="{{item.activityType == null}}">不参与促销活动</view>
+                  <view class="cf_left_title">促销</view>
+                  <view wx:if="{{item.activityType == null}}" class="cf_left_content">不参与促销活动</view>
+                  <view wx:if="{{item.activityType == 7}}" class="cf_left_content">
+                    <view wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
+                      <view wx:for="{{proItem.fullReduction.rules}}" wx:for-item="ritem" wx:key="index" class="cf_left_content_add">满100元另加10元即可换购商品</view>
+                    </view>
+                  </view>
+                  <view wx:if="{{item.activityType == 21}}" class="cf_left_content">
+                    <view wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
+                      <view wx:for="{{proItem.fullReduction.rules}}" wx:for-item="ritem" wx:key="index">
+                        <view wx:if="{{proItem.fullReduction.fullReductiontype == 1}}" class="cf_left_content_full">每满{{ritem.fullMoney}}元减{{ritem.reduceMoney}}元</view>
+                        <view wx:if="{{proItem.fullReduction.fullReductiontype == 2}}" class="cf_left_content_full">满{{ritem.fullMoney}}元减{{ritem.reduceMoney}}元</view>
+                        <view wx:if="{{proItem.fullReduction.fullReductiontype == 3}}" class="cf_left_content_full">满{{ritem.fullMoney}}元打{{ritem.discount}}折</view>
+                        <view wx:if="{{proItem.fullReduction.fullReductiontype == 4}}" class="cf_left_content_full">仅第{{ritem.amount}}件打{{ritem.discount}}折</view>
+                      </view>
+                    </view>
+                  </view>
                 </view>
                 <view class='cf_right'>
                   <view>修改</view>
@@ -234,22 +242,39 @@
             <view class='pro_content'>
               <view class='pro_tips'>
                  <image src='{{imageUrl}}/image/wxapp/main_goods_notice.png' mode='widthFix'></image>
-                 <view>参与满折满减活动，不与优惠券、会员卡折扣叠加使用</view>
+                 <view wx:if="{{isType == 0}}">参与满折满减、加价购活动，不与优惠券、会员卡折扣叠加使用</view>
+                 <view wx:if="{{isType == 1}}">参与加价购活动，不与优惠券、会员卡折扣叠加使用</view>
+                 <view wx:if="{{isType == 2}}">参与满折满减活动，不与优惠券、会员卡折扣叠加使用</view>
               </view>
-              <view class='pro_con_list clearfix' bindtap='choose_acts' wx:for='{{proPurchaseInfo}}' wx:key='key' data-activity_type="{{item.activityType}}">
-                <view class='btn_check'>
-                  <image wx:if="{{activityType != item.activityType}}" src='{{imageUrl}}/image/wxapp/icon_rectangle.png'></image>
-                  <text class='iconfont icondanxuan' wx:if="{{activityType == item.activityType}}" style='color:{{comColor}};font-size:40rpx'></text>
-                </view>
-                <view class='for_style' wx:if="{{item.status == 1}}">
-                  <!-- <view>不参与活动</view> -->
-                  <view class='pro_list_span jiajiagou_icon' wx:if="{{item.activityType == 7}}" style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
-                  <view class='pro_list_span jiajiagou_icon' wx:if="{{item.activityType == 21}}" style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
-                  <view wx:if="{{item.activityType == 7}}">满1.00元另加1.00元即可换购商品</view>
-                  <view wx:if="{{item.activityType == 21}}">每满100.00元减5.00元即可换购商品</view>
-                </view>
+              <view class='pro_con_list clearfix' bindtap='choose_acts' wx:for='{{proPurchaseInfo}}' wx:key='key' data-activity_id="{{item.activityId}}" data-activity_type="{{item.activityType}}" wx:if="{{item.activityType == 7 || item.activityType == 21 || item.activityType == null}}">
+                  <view class='btn_check'>
+                    <image  wx:if='{{item.is_che == 0}}' src='{{imageUrl}}/image/wxapp/icon_rectangle.png'></image>
+                    <text wx:if='{{item.is_che == 1}}' class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx'></text>
+                  </view>
+                  <view class='for_style' wx:if="{{item.status == 1}}">
+                    <view wx:if="{{item.activityType == null}}">不参与活动</view>
+                    <view wx:if="{{item.activityType == 7}}" style="display: flex;">
+                      <view class='pro_list_span jiajiagou_icon' style='color:{{comColor}};border-color:{{comColor}};flex: 0.2'>加价购</view>
+                        <view wx:for="{{item.fullReduction.rules}}" wx:for-item="ritem" wx:key="index" style="flex: 0.8;">
+                          <!-- 该活动规则是否为会员专享 -->
+                          <!-- wx:if="{{item.fullReduction.isExclusive == true}}" -->
+                            <view>满{{ritem.fullMoney}}元另加{{ritem.reduceMoney}}元即可换购商品</view>
+                        </view>
+                        <!-- <view>满1.00元另加1.00元即可换购商品</view> -->
+                    </view>
+                    <view wx:if="{{item.activityType == 21}}" style="display: flex;">
+                      <view class='pro_list_span jiajiagou_icon' style='color:{{comColor}};border-color:{{comColor}};flex: 0.2'>满折满减</view>
+                      <view wx:for="{{item.fullReduction.rules}}" wx:for-item="ritem" wx:key="index" style="flex: 0.8;">
+                      <!-- 该活动规则是否为会员专享 -->
+                      <!-- wx:if="{{item.fullReduction.isExclusive == true}}" -->
+                        <view wx:if="{{item.fullReduction.fullReductiontype == 1}}">每满{{ritem.fullMoney}}元减{{ritem.reduceMoney}}元</view>
+                        <view wx:if="{{item.fullReduction.fullReductiontype == 2}}">满{{ritem.fullMoney}}元减{{ritem.reduceMoney}}元</view>
+                        <view wx:if="{{item.fullReduction.fullReductiontype == 3}}">满{{ritem.fullMoney}}元打{{ritem.discount}}折</view>
+                        <view wx:if="{{item.fullReduction.fullReductiontype == 4}}">仅第{{ritem.amount}}件打{{ritem.discount}}折</view>
+                      </view>
+                    </view>
+                  </view>
               </view>
-              
             </view>
           </view>
         </action-sheet>
