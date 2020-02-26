@@ -1222,6 +1222,14 @@ public class UserCardService extends ShopBaseService {
 				userCard.setBgImg(imageUrl);
 			}
 		}
+		if(userCard.getActivationTime()!=null) {
+			logger().info("激活时间"+userCard.getActivationTime());
+			// 已激活
+			userCard.setActivation(NumberUtils.BYTE_ONE);
+		}else {
+			// 未激活
+			userCard.setActivation(NumberUtils.BYTE_ZERO);
+		}
 		return userCard;
 	}
 	
