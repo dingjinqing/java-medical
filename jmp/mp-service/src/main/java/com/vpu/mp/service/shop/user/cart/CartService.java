@@ -80,13 +80,17 @@ public class CartService extends ShopBaseService {
         List<Integer> productIdList ;
         List<Integer> goodsIdList;
         // 查询购物车记录
-        Result<CartRecord> cartRecords = getCartRecordsByUserId(userId);
+        Result<CartRecord> cartRecords = null;
         if (activityType!=null&&activityId!=null){
             if (BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION.equals(activityType)){
                 cartRecords = getCartRecords(userId,activityId, (byte) 1);
             }else if (BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(activityType)){
                 cartRecords = getCartRecords(userId,activityId, (byte) 2);
+            }else {
+                cartRecords = getCartRecordsByUserId(userId);
             }
+        }else {
+            cartRecords = getCartRecordsByUserId(userId);
         }
         List<WxAppCartGoods> appCartGoods = cartRecords.into(WxAppCartGoods.class);
         //商品
@@ -113,14 +117,14 @@ public class CartService extends ShopBaseService {
         });
         //购物车业务数据
         WxAppCartBo cartBo = WxAppCartBo.builder()
+                .totalPrice(BigDecimal.ZERO)
+                .totalGoodsNum(appCartGoods.size())
                 .userId(userId).date(DateUtil.getLocalDateTime())
                 .activityId(activityId).activityType(activityType)
                 .productIdList(productIdList).goodsIdList(goodsIdList)
                 .cartGoodsList(appCartGoods).invalidCartList(new ArrayList<>()).build();
-        if (0 == appCartGoods.size()) {
-            return null;
-        }
         cartProcessor.executeCart(cartBo);
+        //图片链接
         cartBo.getCartGoodsList().forEach(cartGoods->{
             cartGoods.setGoodsImg(getImgFullUrlUtil(cartGoods.getGoodsImg()));
         });
