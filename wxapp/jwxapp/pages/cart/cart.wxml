@@ -8,7 +8,14 @@
               <view class='act_info clearfix' wx:if="{{item.activityType == 21}}" bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-ids='{{item1.identity_id}}'>
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
-                  <view class='act_content' style='width:350rpx;'>每满100.00元减5.00元</view>
+                  <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
+                    <view wx:for="{{proItem.fullReduction.rules}}" wx:for-item="ritem" wx:key="index">
+                        <view wx:if="{{proItem.fullReduction.fullReductiontype == 1}}" class="act_content_full">每满{{ritem.fullMoney}}元减{{ritem.reduceMoney}}元</view>
+                        <view wx:if="{{proItem.fullReduction.fullReductiontype == 2}}" class="act_content_full">满{{ritem.fullMoney}}元减{{ritem.reduceMoney}}</view>
+                        <view wx:if="{{proItem.fullReduction.fullReductiontype == 3}}" class="act_content_full">满{{ritem.fullMoney}}元打{{ritem.discount}}折</view>
+                        <view wx:if="{{proItem.fullReduction.fullReductiontype == 4}}" class="act_content_full">仅第{{ritem.amount}}件打{{ritem.discount}}折</view>
+                      </view>
+                  </view>
                 </view>
                 <view class='go_full clearfix'>
                   <view style='color:{{comColor}}'>再逛逛</view>
@@ -140,40 +147,6 @@
             <text class="title_left">失效商品 <text class="invalid_num" style="color:{{comColor}}">{{invalidGoodsList.length}}</text> 件</text>
             <text class="title_right" style="color:{{comColor}}" bindtap="clearCart">清空</text>
           </view>
-
-          <!-- <view class="flex_goods">
-            <view class="checkbox_box">
-                <text class="iconfont {{item.isChecked === 0 ? 'icondanxuanbiankuang':'icondanxuan'}}" style="color:{{comColor}}" bindtap="checkedToggle" data-cart_id="{{item.cartId}}" data-is_checked="{{item.isChecked}}"></text>
-            </view>
-            <view class="goods_item">
-                <view class="goods_img">
-                    <image src="{{imageUrl}}{{item.goodsImg}}"/>
-                    <view class="invalid" wx:if="{{item.tip}}">
-                        {{item.tip}}
-                    </view>
-                </view>
-                <view class="goods_info">
-                    <view>
-                        <view class="goods_name">
-                            {{item.goodsName}}
-                        </view>
-                        <view class="goods_spec" wx:if="{{item.prdDesc}}">
-                            {{item.prdDesc}}
-                        </view>
-                    </view>
-                    <view class="ng_goods_jiang" wx:if="{{item.activityType == 4}}" style="color:{{comColor}}">比加入时降了9.00元</view>
-                    <view class="goods_price">
-                        <view class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
-                        <view class="num_cfg">
-                          <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
-                          <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-limit_min="{{item.limitBuyNum}}" data-limit_max="{{item.limitMaxNum}}"></input>
-                          <view class="num_plus {{item.cartNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.cartNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
-                        </view>
-                    </view>
-                </view>
-            </view>
-          </view> -->
-
           <view class="cart-goods_item" wx:for="{{invalidGoodsList}}" wx:key="index">
             <view class="goods_content">
               <view class="flex_goods">

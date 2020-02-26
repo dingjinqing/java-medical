@@ -42,6 +42,7 @@ global.wxPage({
           if (item.cartActivityInfos.length > 0) {
             // 添加不参与活动
             item.cartActivityInfos[item.cartActivityInfos.length] = {
+              activityId: null,
               activityType: null,
               status: 1
             }
@@ -265,6 +266,10 @@ global.wxPage({
     var that = this;
     var activityId = e.currentTarget.dataset.activity_id; // 选择的活动id
     var activityType = e.currentTarget.dataset.activity_type; // 选择的活动类型
+    // 不参与活动
+    if (activityType == null) {
+      activityType = 0
+    }
     that.data.proPurchaseInfo.forEach((item, index) => {
       item.is_che = 0
       if (item.activityType == activityType) {
