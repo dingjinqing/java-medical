@@ -85,7 +85,10 @@
         "pinlotterylist/pinlotterylist",
         "pinlotteryinfo/pinlotteryinfo",
         "pledgeannounce/pledgeannounce",
-        "fullshiprule/fullshiprule"
+        "fullshiprule/fullshiprule",
+        "couponpackage/couponpackage",
+        "promoteinfo/promoteinfo",
+        "virtualCheckout/virtualCheckout"
       ]
     }
   ],

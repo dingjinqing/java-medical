@@ -43,7 +43,7 @@ public class PurchaseShowVo {
     /**
      * 已换购数量
      */
-    private Short resaleQuantity;
+    private Integer resaleQuantity;
     /**
      * 状态
      */

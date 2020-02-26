@@ -50,9 +50,18 @@
             @click="addActivity"
           >添加瓜分积分活动</el-button>
         </el-tab-pane>
+        <el-tab-pane
+          :label="sixTitle"
+          name="sixth"
+          v-if="showSix"
+        >
+          <integrationAdd
+          :isEditId="isEditId"
+           @backHome="backHome"/>
+        </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="table_list">
+    <div class="table_list" v-if="!showSix">
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
@@ -213,10 +222,10 @@
 import { groupIntegrationList, changeGroupIntegrationStatus, delGroupIntegration, shareActivity } from '@/api/admin/marketManage/groupIntegrationList.js'
 import shareDialog from '@/components/admin/shareDialog'
 import pagination from '@/components/admin/pagination/pagination'
-
+import integrationAdd from './groupIntegrationInfo'
 export default {
   components: {
-    shareDialog, pagination
+    shareDialog, pagination, integrationAdd
   },
   data () {
     return {
@@ -227,7 +236,10 @@ export default {
       shareDialogShow: false,
       tableData: [],
       pageParams: {
-      }
+      },
+      showSix: false,
+      isEditId: 0,
+      sixTitle: '添加瓜分积分活动'
     }
   },
   mounted () {
@@ -239,6 +251,11 @@ export default {
     handleClick (e) {
       this.type = parseInt(e.index)
       this.pageParams.currentPage = 1
+      if (this.activeName === 'sixth') {
+        this.showSix = true
+      } else {
+        this.showSix = false
+      }
       this.seacherGroupIntegrationList()
     },
     seacherGroupIntegrationList () {
@@ -335,9 +352,12 @@ export default {
     },
     // 增加瓜分积分活动
     addActivity () {
-      this.$router.push({
-        name: 'group_integration_add'
-      })
+      // this.$router.push({
+      //   name: 'group_integration_add'
+      // })
+      this.isEditId = 0
+      this.showSix = true
+      this.activeName = 'sixth'
     },
     // 分享活动
     shareHandle (id) {
@@ -351,7 +371,11 @@ export default {
     },
     // 编辑活动
     gotoEdit (id) {
-      this.$router.push(`/admin/home/main/integration/edit/${id}`)
+      // this.$router.push(`/admin/home/main/integration/edit/${id}`)
+      this.sixTitle = '编辑瓜分积分活动'
+      this.showSix = true
+      this.isEditId = id
+      this.activeName = 'sixth'
     },
 
     // 前往参与瓜分积分活动的用户明细页面
@@ -361,6 +385,12 @@ export default {
     // 前往成团明细页面
     gotoSuccess (id) {
       this.$router.push(`/admin/home/main/integration/success/${id}`)
+    },
+    backHome (data) {
+      if (data.flag === 6) {
+        this.showSix = false
+        this.activeName = 'first'
+      }
     }
   }
 }

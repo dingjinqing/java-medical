@@ -96,7 +96,7 @@ public class OrderPayService extends ShopBaseService{
         }else if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay()) {
             //TODO好友代付
             return null;
-        }else {
+        }else if(BigDecimalUtil.compareTo(money, null) > 0) {
             //非系统金额支付
             try {
                 logger().info("微信预支付调用接口调用start");
@@ -114,6 +114,7 @@ public class OrderPayService extends ShopBaseService{
                 throw new MpException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
             }
         }
+        return null;
     }
 
     public String getGoodsNameForPay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo) {

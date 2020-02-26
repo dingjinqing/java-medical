@@ -57,7 +57,7 @@ global.wxComponent({
         this.navigateToItem(d.goods_id);
       } else {
         console.log('触发', d)
-        if (d.is_prd == 1) {
+        if (d.is_prd == 0) {
           console.log(d.link)
           util.jumpLink(d.link);
         } else {
@@ -86,7 +86,7 @@ global.wxComponent({
             }
           }, {
             bargainId: d.bargain_id,
-            prdId: d.is_prd
+            prdId: d.prd_id
           })
         }
       }

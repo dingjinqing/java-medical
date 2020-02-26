@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.*;
@@ -23,8 +24,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 好友助力
@@ -450,4 +450,93 @@ public class FriendPromoteService extends ShopBaseService {
 		}
 		return vo;
 	}
+
+    /**
+     * 小程序-好友助力
+     */
+    public void promoteInfo(){
+
+    }
+
+    /**
+     * 得到指定actCode活动的信息
+     * @param actCode 唯一活动码
+     * @return 活动详情
+     */
+    public FriendPromoteActivityRecord getInfo(String actCode){
+        if (actCode!=null&&!actCode.isEmpty()){
+            FriendPromoteActivityRecord record = db().select().from(FRIEND_PROMOTE_ACTIVITY)
+                .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
+                .fetchOne().into(FriendPromoteActivityRecord.class);
+            return record;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * 小程序-得到助力信息
+     * @param actCode
+     */
+    public void getPromoteInfo(String actCode){
+        //展示内容promoteInfo
+        PromoteInfo promoteInfo = new PromoteInfo();
+        //得到当前活动部分信息
+        FriendPromoteActivityRecord record = getInfo(actCode);
+        //设置奖励内容
+        FpRewardContent rewardContent = Util.json2Object(record.getRewardContent(),FpRewardContent.class,false);
+        promoteInfo.setRewardContent(rewardContent);
+        //设置助力次数
+        promoteInfo.setHasLaunchNum(launchTotalTimes(record.getId()));
+        //设置活动库存
+        promoteInfo.setMarketStore(rewardContent.getMarketStore());
+        //判断奖励类型-为赠送商品或商品折扣时
+        if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
+            GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getRewardIds());
+            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
+            //设置商品信息
+            promoteInfo.setGoodsInfo(goodsInfo);
+            //商品库存与活动库存比较 重新设置活动库存
+            promoteInfo.setMarketStore(goodsInfo.getGoodsStore()>rewardContent.getMarketStore()?rewardContent.getMarketStore():goodsInfo.getGoodsStore());
+        }
+        //判断奖励类型-为赠送优惠券时
+        else if (record.getRewardType()==TWO){
+
+        }
+    }
+
+    /**
+     * 得到当前活动助力次数
+     * @param id 当前助力活动id
+     * @return  活动助力次数
+     */
+    public Integer launchTotalTimes(Integer id){
+        List<Byte> promoteStatus = new ArrayList<>();
+        promoteStatus.add(ONE);
+        promoteStatus.add(TWO);
+        Integer hasLaunchNum = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID))
+            .from(FRIEND_PROMOTE_LAUNCH)
+            .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(id))
+            .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.in(promoteStatus))
+            .fetchOneInto(Integer.class);
+        return hasLaunchNum;
+    }
+
+    /**
+     * 根据规格id返回商品信息
+     * @param prdId 规格id
+     * @return 商品信息
+     */
+    public GoodsInfo getGoodsInfo(Integer prdId){
+        GoodsInfo goodsInfo = db().select(GOODS.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS.GOODS_NAME,
+            GOODS_SPEC_PRODUCT.PRD_IMG.as("goods_img"),GOODS_SPEC_PRODUCT.PRD_PRICE.as("goods_price"),
+            GOODS_SPEC_PRODUCT.PRD_NUMBER.as("goods_store"),GOODS.UPDATE_TIME)
+            .from(GOODS)
+            .leftJoin(GOODS_SPEC_PRODUCT)
+            .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
+            .fetchOneInto(GoodsInfo.class);
+        return goodsInfo;
+    }
 }

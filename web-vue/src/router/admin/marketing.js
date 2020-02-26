@@ -272,19 +272,6 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
       )
   },
-  // 分销 分销员审核
-  {
-    path: '/admin/home/main/distributorCheck',
-    name: 'distribution_check',
-    meta: {
-      crumbTitle: 'router.distribution_info',
-      meta: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distributorCheck'
-      )
-  },
   // 分销 返利提现审核
   {
     path: '/admin/home/main/withdrawDepositCheck',
@@ -352,7 +339,7 @@ const routes = [
   },
   // // 组团瓜分积分
   {
-    path: '/admin/home/main/divideIntegral',
+    path: '/admin/home/main/groupIntegration',
     name: 'pin_integration',
     meta: {
       crumbTitle: 'router.pin_integration',
@@ -360,7 +347,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/divideIntegral/divideIntegral'
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
       )
   },
   // 普通优惠券
@@ -820,20 +807,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
       )
   },
-  // 编辑瓜分积分活动
-  {
-    path: '/admin/home/main/integration/edit/:id',
-    name: 'group_integration_edit',
-    meta: {
-      crumbTitle: 'router.pin_integration_edit',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
-      )
-  },
+
   // 瓜分积分活动--参与用户明细
   {
     path: '/admin/home/main/integration/detail/:id',
@@ -1156,6 +1130,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/purchaseList'
+      )
+  },
+  // 添加加价购活动
+  {
+    path: '/api/admin/market/addPriceBuy/add',
+    name: 'add_increase_purchase',
+    meta: {
+      crumbTitle: 'router.add_increase_purchase',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/addPurchase'
       )
   },
 

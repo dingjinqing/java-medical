@@ -1,10 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.seckill;
 
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -20,11 +22,8 @@ public class SeckillVo {
     /** 活动名称*/
     private String name;
 
-    /** 商品ID*/
-    private Integer goodsId;
-
     /** 商品信息*/
-    private GoodsView goods;
+    private List<SeckillGoods> goods;
 
     /** 开始时间*/
     private Timestamp startTime;
@@ -41,9 +40,6 @@ public class SeckillVo {
     /** 规定的有效支付时间 单位：分钟*/
     private Short limitPaytime;
 
-    /** 秒杀商品规格价格设置实体*/
-    private List<SecKillProductVo> secKillProduct;
-
     /** 是否免运费： 1：免运费  0： 原先商品的运费*/
     private Byte freeFreight;
 
@@ -52,4 +48,22 @@ public class SeckillVo {
 
     /** 分享设置*/
     private ShopShareConfig shopShareConfig;
+
+    @Setter
+    @Getter
+    public static class SeckillGoods{
+        private Integer goodsId;
+        private String goodsName;
+        /** 商品主图 */
+        private String goodsImg;
+        /** 商品库存 */
+        private Integer goodsNumber;
+
+        /** 商品价格 */
+        private BigDecimal shopPrice;
+        /** 单位 */
+        private String unit;
+        /** 秒杀商品规格价格设置实体*/
+        private List<SecKillProductVo> secKillProduct;
+    }
 }

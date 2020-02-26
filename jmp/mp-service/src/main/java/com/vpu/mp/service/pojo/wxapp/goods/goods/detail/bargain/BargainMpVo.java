@@ -26,4 +26,9 @@ public class BargainMpVo extends GoodsActivityDetailMp {
 
     /** 砍价活动参与的人次 */
     private Integer bargainJoinNum;
+
+    /**
+     * 如果已经发起了砍价，发起的记录ID
+     */
+    private Integer recordId;
 }

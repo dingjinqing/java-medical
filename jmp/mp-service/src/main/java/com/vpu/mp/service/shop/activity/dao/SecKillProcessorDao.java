@@ -50,17 +50,17 @@ public class SecKillProcessorDao extends ShopBaseService {
      * 获取商品集合内的秒杀信息
      * @param goodsIds 商品id集合
      * @param date 日期
-     * @return key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> SEC_KILL_DEFINE.SK_ID, SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE
+     * @return key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> SEC_KILL_PRODUCT_DEFINE.SK_ID, SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE
      */
     public  Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsSecKillListInfo(List<Integer> goodsIds, Timestamp date){
-        return db().select(SEC_KILL_DEFINE.SK_ID, SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
+        return db().select(SEC_KILL_PRODUCT_DEFINE.SK_ID, SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
             .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
-            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
-            .orderBy(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
-            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(SEC_KILL_DEFINE.GOODS_ID)));
+            .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
+            .orderBy(SEC_KILL_DEFINE.FIRST.desc(),SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)));
     }
 
     /**

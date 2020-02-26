@@ -269,6 +269,8 @@ export const cn = {
   shipping: ['营销管理', '满包邮'],
   // 营销管理 加价购
   increase_purchase: ['营销管理', '加价购'],
+  // 营销管理 加价购 添加加价购活动
+  add_increase_purchase: ['营销管理', '加价购', '添加加价购活动'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
   // 营销管理 加价购 换购明细

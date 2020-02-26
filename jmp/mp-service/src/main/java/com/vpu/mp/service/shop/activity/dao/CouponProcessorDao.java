@@ -41,13 +41,13 @@ public class CouponProcessorDao extends ShopBaseService {
         Condition condition =buildCondition(goodsId,catId,sortId,date,false);
         List<Record5<Integer, String, BigDecimal, Byte, BigDecimal>> record5s = new ArrayList<>(db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.USE_CONSUME_RESTRICT, MRKING_VOUCHER.LEAST_CONSUME)
             .from(MRKING_VOUCHER).where(condition)
-            .orderBy(MRKING_VOUCHER.ACT_CODE.desc(), MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.CREATE_TIME.desc()).fetch());
+            .orderBy(MRKING_VOUCHER.ACT_CODE.asc(), MRKING_VOUCHER.DENOMINATION.asc(), MRKING_VOUCHER.CREATE_TIME.desc()).fetch());
         if (record5s.size() <= 0) {
             return null;
         }
 
-        // 减金额的desc是从大到小取第一条，而打折的需要取折扣最小者
-        if (record5s.get(0).get(MRKING_VOUCHER.ACT_CODE).equals(ACT_CODE_VOUCHER)) {
+        // 先打折，后金额，打折的取折扣最小的，金额的取金额最大的
+        if (record5s.get(0).get(MRKING_VOUCHER.ACT_CODE).equals(ACT_CODE_DISCOUNT)) {
             return record5s.get(0);
         } else {
             return record5s.get(record5s.size()-1);
@@ -66,19 +66,19 @@ public class CouponProcessorDao extends ShopBaseService {
         Condition condition =buildCondition(goodsId,catId,sortId,date,false);
         List<MrkingVoucherRecord> mrkingVoucherRecords = db().select()
             .from(MRKING_VOUCHER).where(condition)
-            .orderBy(MRKING_VOUCHER.ACT_CODE.desc(), MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.CREATE_TIME.desc())
+            .orderBy(MRKING_VOUCHER.ACT_CODE.asc(), MRKING_VOUCHER.DENOMINATION.asc(), MRKING_VOUCHER.CREATE_TIME.desc())
             .fetchInto(MrkingVoucherRecord.class);
         Map<String, List<MrkingVoucherRecord>> collects = mrkingVoucherRecords.stream().collect(Collectors.groupingBy(MrkingVoucherRecord::getActCode, Collectors.toList()));
-        List<MrkingVoucherRecord> vouchers = collects.get(ACT_CODE_VOUCHER);
         List<MrkingVoucherRecord> discounts = collects.get(ACT_CODE_DISCOUNT);
+        List<MrkingVoucherRecord> vouchers = collects.get(ACT_CODE_VOUCHER);
 
         List<MrkingVoucherRecord> datas = new ArrayList<>();
-        if (vouchers != null) {
-            datas.addAll(vouchers);
-        }
         if (discounts != null) {
-            Collections.reverse(discounts);
             datas.addAll(discounts);
+        }
+        if (vouchers != null) {
+            Collections.reverse(vouchers);
+            datas.addAll(vouchers);
         }
         return datas;
     }

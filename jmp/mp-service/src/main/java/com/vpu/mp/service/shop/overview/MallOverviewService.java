@@ -244,9 +244,6 @@ public class MallOverviewService extends ShopBaseService {
      * 商品相关统计信息
      */
     private AssiDataGoods goodsNav(ShopAssistantParam param) {
-        Set<Integer> smallCommdityGoods = goodsService.smallCommodityInventorySet(param.getStoreSizeNum());
-        Set<Integer> unsoldGoods = goodsService.unsalableGoodsSet();
-        Set<Integer> reviewGoods = goodsCommentService.reviewOverdueSet(param.getCommentOver());
         return AssiDataGoods.builder()
             // 运费模板设置
             .shipTemplateConf(Metadata.builder()
@@ -258,12 +255,11 @@ public class MallOverviewService extends ShopBaseService {
                 .value(db().fetchCount(Goods.GOODS, Goods.GOODS.DEL_FLAG.eq(BYTE_ZERO))).build())
             // 商品库存偏小
             .goodsStoreConf(Metadata.builder()
-                .value(smallCommdityGoods.size())
-                .list(smallCommdityGoods).build())
+                .value(goodsService.smallCommodityInventory(param.getStoreSizeNum())).build())
             //  滞销商品
-            .goodsUnsalableConf(Metadata.builder().value(unsoldGoods.size()).list(unsoldGoods).build())
+            .goodsUnsalableConf(Metadata.builder().value(goodsService.unsalableGoodsSet().size()).build())
             //  商品评价审核逾期
-            .goodsComment(Metadata.builder().value(reviewGoods.size()).list(reviewGoods).build())
+            .goodsComment(Metadata.builder().value(goodsCommentService.reviewOverdue(param.getCommentOver())).build())
             //  推荐商品
             .goodsRecommend(Metadata.builder()
                 .type(BYTE_THREE)
@@ -279,16 +275,13 @@ public class MallOverviewService extends ShopBaseService {
      * 订单相关统计信息（未完成状态为提醒，已完成状态为任务）
      */
     private AssiDataOrder orderNav(ShopAssistantParam param) {
-        Set<Integer> overdue = orderInfo.overdueDeliverySet(param.getDeliverOver());
-        Set<Integer> refund = returnOrderService.refundOverdueSet(param.getRefundOver());
-        Set<Integer> remind = orderInfo.remindOverdueOrderSet();
         return AssiDataOrder.builder()
             //  发货逾期
-            .deliver(Metadata.builder().value(overdue.size()).list(overdue).build())
+            .deliver(Metadata.builder().value(orderInfo.overdueDelivery(param.getDeliverOver())).build())
             //  退款申请逾期
-            .refund(Metadata.builder().value(refund.size()).list(refund).build())
+            .refund(Metadata.builder().value(returnOrderService.refundOverdue(param.getRefundOver())).build())
             // 提醒发货
-            .remind(Metadata.builder().value(remind.size()).list(remind).build())
+            .remind(Metadata.builder().value(orderInfo.remindOverdueOrder()).build())
             .build().ruleHandler().setType();
     }
 
@@ -297,24 +290,23 @@ public class MallOverviewService extends ShopBaseService {
      */
     private AssiDataMarket marketNav(ShopAssistantParam param) {
         Map<String, String> memberContent = buildMemberVo(param.getExamineOver());
-        Set<Integer> memberValue;
+        int memberValue;
         if (MapUtils.isEmpty(memberContent)) {
-            memberValue = new HashSet<>();
+            memberValue = INTEGER_ZERO;
         } else {
-            memberValue = cardVerifyService.getUndealUserNumSet(Integer.valueOf(memberContent.get("card_id")));
+            memberValue = cardVerifyService.getUndealUserNum(Integer.valueOf(memberContent.get("card_id")));
         }
         Map<Integer, String> coupon = couponService.getSmallInventoryCoupon(param.getCouponSizeNum());
 
-        Set<Integer> distributor = distributorCheckService.distributionReviewTimeoutSet(param.getApplyOver());
         return AssiDataMarket.builder()
             //  分销审核超时
             .examine(Metadata.builder()
                 .type(BYTE_TWO)
-                .value(distributor.size()).list(distributor).build())
+                .value(distributorCheckService.distributionReviewTimeout(param.getApplyOver())).build())
             // 会员卡激活审核超时
             .member(Metadata.builder()
                 .type(BYTE_TWO)
-                .value(memberValue.size()).list(memberValue).content(memberContent).build())
+                .value(memberValue).content(memberContent).build())
             //  优惠券库存不足
             .voucher(Metadata.builder()
                 .type(BYTE_TWO)

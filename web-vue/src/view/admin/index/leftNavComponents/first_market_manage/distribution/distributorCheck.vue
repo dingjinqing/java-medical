@@ -335,6 +335,12 @@ export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
   },
+  props: {
+    params: {
+      type: Number,
+      default: 0
+    }
+  },
   data () {
     return {
       // 搜索
@@ -369,6 +375,10 @@ export default {
     }
   },
   watch: {
+    params: function (newVal, oldVal) {
+      // 分销员入参
+      console.log(this.params)
+    },
     lang () {
 
     }

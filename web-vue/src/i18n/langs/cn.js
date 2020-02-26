@@ -369,6 +369,10 @@ import {
 import {
   cn as evaluationGiftAdd
 } from './views/admin_new/cn/index/marketManagement/evaluationGift/evaluationGiftAddCn'
+// 表单装修主页
+import {
+  cn as formDecorationHome
+} from './views/admin_new/cn/index/marketManagement/formStatistics/formDecoration/formDecorationHomeCn'
 // 订单管理系列模块化
 // 订单通用
 import {
@@ -1093,7 +1097,8 @@ const cn = {
   divideScorePoints, // 瓜分积分
   pictureHotSpot, //  图片热区
   carouselPicture, // 轮播图模块
-  goodsStaticties // 商品统计
+  goodsStaticties, // 商品统计
+  formDecorationHome //  表单装修主页
 }
 
 export default cn

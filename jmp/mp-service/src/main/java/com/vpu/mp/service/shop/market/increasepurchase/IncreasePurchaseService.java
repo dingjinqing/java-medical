@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
@@ -19,11 +20,13 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListParam;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,7 +42,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
@@ -47,6 +52,7 @@ import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
 import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.jooq.impl.DSL.*;
 
 /**
@@ -69,6 +75,8 @@ public class IncreasePurchaseService extends ShopBaseService {
     private GoodsCardCoupleService goodsCardCoupleService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private CartService cartService;
 
     /**
      * 分页查询加价购活动信息
@@ -138,7 +146,9 @@ public class IncreasePurchaseService extends ShopBaseService {
     }
 
     private List<String> getPurchaseDetailInfo(Integer purchasePriceId) {
-        List<String> list = db().select(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE)).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId)).orderBy(ppr.ID).fetch(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE));
+        List<String> list = db().select(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE))
+            .from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId))
+            .orderBy(ppr.ID).fetch(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE));
         log.debug("获取加价购活动详细规则 [{}]", list);
         return list;
     }
@@ -147,9 +157,16 @@ public class IncreasePurchaseService extends ShopBaseService {
     /**
      * 计算已换购数量
      */
-    private Short getResaleQuantity(Integer purchasePriceId) {
-        Short defaultValue = 0;
-        return db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE)).and(og.ACTIVITY_ID.eq(purchasePriceId)).and(og.ACTIVITY_RULE.greaterThan(0)).and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).and(oi.SHIPPING_TIME.isNotNull()).or(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED)).fetchOptionalInto(Short.class).orElse(defaultValue);
+    private int getResaleQuantity(Integer purchasePriceId) {
+        Condition condition = oi.SHIPPING_TIME.isNotNull().or(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED));
+        return db().select(sum(og.GOODS_NUMBER))
+            .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
+            .where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE))
+            .and(og.ACTIVITY_ID.eq(purchasePriceId))
+            .and(og.ACTIVITY_RULE.greaterThan(0))
+            .and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY))
+            .and(condition)
+            .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 
     /**
@@ -212,15 +229,17 @@ public class IncreasePurchaseService extends ShopBaseService {
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
-        Integer[] goodsIdArray = stringArray2Int(goodsId.split(","));
-        vo.setMainGoods(db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
+        List<Integer> goodsIdArray = Util.json2Object(goodsId, new TypeReference<List<Integer>>() {
+        }, false);
+        vo.setMainGoods(db().select(g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
         List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
         int integer = 0;
         for (String s : redemptionGoods) {
-            Integer[] array = stringArray2Int(s.split(","));
-            redemptionresult[integer++] = db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
+            List<Integer> array = Util.json2Object(s, new TypeReference<List<Integer>>() {
+            }, false);
+            redemptionresult[integer++] = db().select(g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
         }
         vo.setRedemptionGoods(redemptionresult);
         return vo;
@@ -561,9 +580,9 @@ public class IncreasePurchaseService extends ShopBaseService {
         });
         vo.setRules(rules);
 
-        //TODO vo.setMainPrice();
-        //TODO vo.setChangeDoc();
-
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+        vo.setMainPrice(cartBo.getTotalPrice());
+        vo.setChangeDoc(getChangeGoodsDoc(cartBo.getTotalPrice(),ruleRecords));
 
         return vo;
     }
@@ -600,6 +619,31 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     private List<PurchasePriceRuleRecord> getRules(int purchasePriceId){
         return db().selectFrom(ppr).where(ppr.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId)).fetch();
+    }
+
+    /**
+     *
+     * @param totalPrice
+     * @param ruleRecords
+     * @return
+     */
+    private PurchaseGoodsListVo.ChangeDoc getChangeGoodsDoc(BigDecimal totalPrice,List<PurchasePriceRuleRecord> ruleRecords){
+        PurchaseGoodsListVo.ChangeDoc doc = new PurchaseGoodsListVo.ChangeDoc();
+        if(totalPrice.compareTo(BigDecimal.ZERO) <= 0){
+            doc.setState((byte)0);
+            return doc;
+        }
+        ruleRecords = ruleRecords.stream().sorted(Comparator.comparing(PurchasePriceRuleRecord::getFullPrice)).collect(Collectors.toList());
+        for(PurchasePriceRuleRecord rule:ruleRecords){
+            if(totalPrice.compareTo(rule.getFullPrice()) >= 0){
+                doc.setState((byte)2);
+                return doc;
+            }
+        }
+        BigDecimal diffPrice = ruleRecords.get(0).getFullPrice().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
+        doc.setState((byte)1);
+        doc.setDiffPrice(diffPrice);
+        return doc;
     }
 
 }

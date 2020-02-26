@@ -19,10 +19,9 @@ public class SeckillAddParam {
     @NotNull
     private String name;
 
-    /** 商品id*/
+    /** 商品id，字符串，逗号分隔*/
     @NotNull
-    @Min(1)
-    private Integer goodsId;
+    private String goodsId;
 
     /** 开始时间*/
     @NotNull
@@ -62,6 +61,10 @@ public class SeckillAddParam {
 
     /** 专属会员卡，卡ID字符串，逗号分隔；为空时代表该活动所有人都可以参与*/
     private String cardId;
+
+    /**优先级*/
+    @NotNull
+    private Byte first;
 
     /** 分享设置*/
     private ShopShareConfig shareConfig;

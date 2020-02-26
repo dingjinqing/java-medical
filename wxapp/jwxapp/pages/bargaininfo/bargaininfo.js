@@ -50,6 +50,7 @@ global.wxPage({
     // record_id = options.record_id;
     record_id = Number(options.record_id);
     request_kanjia(that);
+    this.selectComponent('#recommend').requestData() //请求推荐商品
     var user_name = util.getCache('nickName');
     var user_avatar = util.getCache('avatarUrl');
     if (!user_name || user_name == '用户' + parseInt(util.getCache('user_id') + 10000)
@@ -65,6 +66,9 @@ global.wxPage({
     }
 
     console.log(that.data.getsq)
+  },
+  onReachBottom: function () {
+    this.selectComponent('#recommend').requestData()
   },
   countdown: function () {
     if (this.data.set_interval_id) clearInterval(this.data.set_interval_id);
@@ -266,7 +270,7 @@ global.wxPage({
   toOrder: function (e) {
     var order_sn = e.currentTarget.dataset.order_sn;
     util.navigateTo({
-      url: '/pages/orderinfo/orderinfo?order_sn=' + order_sn,
+      url: '/pages/orderinfo/orderinfo?orderSn=' + order_sn,
     })
   },
   /**
@@ -274,11 +278,11 @@ global.wxPage({
    */
   onShareAppMessage: function (options) {
     var that = this;
-    if (bargain_info.status == 8 || bargain_info.status == 11) {
+    if (bargain_info.state == 8 || bargain_info.state == 11) {
       clearTimeout(set_time_out);
       util.api("/api/wxapp/bargain/cut", function (res) {
 
-      }, { record_id: record_id });
+      }, { recordId: record_id });
       setTimeout(function () {
         clearTimeout(set_time_out);
         that.onPullDownRefresh();
@@ -412,7 +416,7 @@ function request_kanjia(that) {
       //     })
       //   })
       // }
-      if (bargain_info.status == 1 || bargain_info.status == 2) {
+      if (bargain_info.state == 1 || bargain_info.state == 2) {
         util.showModal('提示', '砍价失败', function () {
           wx.navigateBack()
         });

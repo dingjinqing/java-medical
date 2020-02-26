@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleSeckill;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
@@ -35,7 +36,6 @@ import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
 import org.jooq.Condition;
 import org.jooq.Record;
-import org.jooq.Record3;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -43,11 +43,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
@@ -79,11 +80,9 @@ public class SeckillService extends ShopBaseService{
      *
      */
     private PageResult<SeckillPageListQueryVo> getPageData(SeckillPageListQueryParam param) {
-        SelectWhereStep<? extends Record> select = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,
-            SEC_KILL_DEFINE.STATUS,SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.LIMIT_AMOUNT,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.BASE_SALE,
-            GOODS.GOODS_NAME,GOODS.GOODS_NUMBER,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.IS_ON_SALE).
-            from(SEC_KILL_DEFINE).
-            leftJoin(GOODS).on(SEC_KILL_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID));
+        SelectWhereStep<? extends Record> select = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,SEC_KILL_DEFINE.FIRST,SEC_KILL_DEFINE.GOODS_ID,
+            SEC_KILL_DEFINE.STATUS,SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.LIMIT_AMOUNT,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.BASE_SALE).
+            from(SEC_KILL_DEFINE);
         select = buildOptions(select,param);
         select.orderBy(SEC_KILL_DEFINE.CREATE_TIME.desc());
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),SeckillPageListQueryVo.class);
@@ -106,6 +105,7 @@ public class SeckillService extends ShopBaseService{
      *
      */
     public PageResult<SeckillPageListQueryVo> getPageListDialog(SeckillPageListQueryParam param) {
+        //TODO 重写
         PageResult<SeckillPageListQueryVo> res = getPageData(param);
         for(SeckillPageListQueryVo vo : res.dataList){
             vo.setSecPrice(getMinProductSecPrice(vo.getSkId()));
@@ -137,7 +137,7 @@ public class SeckillService extends ShopBaseService{
             select.where(stateCondition);
         }
         if(!StringUtils.isEmpty(param.getKeywords())){
-            select.where(SEC_KILL_DEFINE.NAME.contains(param.getKeywords()).or(GOODS.GOODS_NAME.contains(param.getKeywords())));
+            select.where(SEC_KILL_DEFINE.NAME.contains(param.getKeywords()));
         }
 
         return select;
@@ -160,6 +160,13 @@ public class SeckillService extends ShopBaseService{
             SecKillDefineRecord record = db().newRecord(SEC_KILL_DEFINE);
             assign(param,record);
             if(param.getShareConfig() != null) {
+                if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                    try {
+                        param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
             }
             record.insert();
@@ -189,6 +196,13 @@ public class SeckillService extends ShopBaseService{
         SecKillDefineRecord record = new SecKillDefineRecord();
         assign(param,record);
         if(param.getShareConfig() != null) {
+            if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                try {
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
         db().executeUpdate(record);
@@ -220,19 +234,32 @@ public class SeckillService extends ShopBaseService{
             from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOneInto(SecKillDefineRecord.class);
         SeckillVo res = record.into(SeckillVo.class);
 
-        GoodsView goods = saas().getShopApp(getShopId()).goods.getGoodsView(record.getGoodsId());
-        res.setGoods(goods);
-        res.setSecKillProduct(this.getSecKillProductVo(skId));
+        res.setGoods(this.getSecKillGoods(skId));
         res.setMemberCard(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIdsString(record.getCardId()));
         res.setShopShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
 
         return res;
     }
 
-    private List<SecKillProductVo> getSecKillProductVo(Integer skId){
-        return  db().select(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,SEC_KILL_PRODUCT_DEFINE.STOCK).
+    public List<SeckillVo.SeckillGoods> getSecKillGoods(Integer skId){
+        List<SecKillProductVo> prdList =  db().select(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID,SEC_KILL_PRODUCT_DEFINE.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,SEC_KILL_PRODUCT_DEFINE.STOCK).
             from(SEC_KILL_PRODUCT_DEFINE).innerJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).
             where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetch().into(SecKillProductVo.class);
+        Map<Integer,List<SecKillProductVo>> goodsMap = prdList.stream().collect(Collectors.groupingBy(SecKillProductVo::getGoodsId));
+        List<SeckillVo.SeckillGoods> res = new ArrayList<>();
+        goodsMap.forEach((k,v)->{
+            SeckillVo.SeckillGoods seckillGoods = new SeckillVo.SeckillGoods();
+            GoodsView goodsView = goodsService.getGoodsView(k);
+            seckillGoods.setGoodsId(k);
+            seckillGoods.setGoodsImg(domainConfig.imageUrl(goodsView.getGoodsImg()));
+            seckillGoods.setGoodsName(goodsView.getGoodsName());
+            seckillGoods.setGoodsNumber(goodsView.getGoodsNumber());
+            seckillGoods.setShopPrice(goodsView.getShopPrice());
+            seckillGoods.setUnit(goodsView.getUnit());
+            seckillGoods.setSecKillProduct(v);
+            res.add(seckillGoods);
+        });
+        return res;
     }
 
     /**
@@ -242,14 +269,14 @@ public class SeckillService extends ShopBaseService{
      * @return key:商品id，value:活动价格
      */
     public Map<Integer, BigDecimal> getSecKillProductVo(List<Integer> goodsIds, Timestamp date){
-        return db().select(SEC_KILL_DEFINE.GOODS_ID, DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE).as(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE))
-            .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
+        return db().select(SEC_KILL_PRODUCT_DEFINE.GOODS_ID, DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE).as(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE))
+            .from(SEC_KILL_PRODUCT_DEFINE).innerJoin(SEC_KILL_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
-            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
+            .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
             .groupBy(SEC_KILL_DEFINE.GOODS_ID)
-            .fetchMap(SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
+            .fetchMap(SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
     }
 
     /**
@@ -286,37 +313,6 @@ public class SeckillService extends ShopBaseService{
         vo.setImageUrl(imageUrl);
         vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
         return vo;
-    }
-
-    /**
-     * 根据商品id获取秒杀活动id
-     * @param goodsId 商品id
-     * @param date 当前时间
-     * @return 秒杀活动id
-     */
-    public Integer getSecKillIdByGoodsId(Integer goodsId,Timestamp date){
-        return db().select(SEC_KILL_DEFINE.SK_ID)
-            .from(SEC_KILL_DEFINE)
-            .where(SEC_KILL_DEFINE.START_TIME.lessThan(date))
-            .and(SEC_KILL_DEFINE.END_TIME.greaterThan(date))
-            .and(SEC_KILL_DEFINE.GOODS_ID.eq(goodsId))
-            .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .fetchOne(SEC_KILL_DEFINE.SK_ID);
-    }
-    /**
-     * 根据商品id获取秒杀活动id
-     * @param goodsIds 商品id
-     * @param date 当前时间
-     * @return 秒杀活动id
-     */
-    public Map<Integer,Integer> getSecKillIdByGoodsIds(List<Integer> goodsIds, Timestamp date){
-        return db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.GOODS_ID)
-            .from(SEC_KILL_DEFINE)
-            .where(SEC_KILL_DEFINE.START_TIME.lessThan(date))
-            .and(SEC_KILL_DEFINE.END_TIME.greaterThan(date))
-            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
-            .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .fetchMap(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID);
     }
 
     /**
@@ -406,45 +402,15 @@ public class SeckillService extends ShopBaseService{
     }
 
     /**
-     * 判断是否已经有有进行中的商品
-     * @param goodsId       商品ID
-     * @param startTime     起始时间
-     * @param endTime       终止时间
-     * @return bool
-     */
-    public boolean isOnGoingSecKill(int goodsId,Timestamp startTime,Timestamp endTime){
-        Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchAny();
-        return r != null;
-    }
-
-    /**
-     * 判断是否已经有有进行中的商品
-     * @param skId       秒杀活动ID
-     * @return bool
-     */
-    public boolean isOnGoingSecKill(int skId){
-        Record3<Integer, Timestamp, Timestamp> seckill = db().select(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne();
-
-        Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(seckill.value1())).and(isConflictingActTime(seckill.value2(),seckill.value3()))).fetchAny();
-        return r != null;
-    }
-
-    private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
-        return (SEC_KILL_DEFINE.START_TIME.ge(startTime).and(SEC_KILL_DEFINE.START_TIME.le(endTime))).or(SEC_KILL_DEFINE.END_TIME.ge(startTime).and(SEC_KILL_DEFINE.END_TIME.le(endTime))).or(SEC_KILL_DEFINE.START_TIME.le(startTime).and(SEC_KILL_DEFINE.END_TIME.ge(endTime)));
-    }
-
-    /**
      * 检查规格库存，更新秒杀规格库存以保证秒杀库存不大于规格库存
      * @param goodsIds
      */
     public void updateSeckillProcudtStock(List<Integer> goodsIds){
-        List<SeckillVo> activeSeckillList = getSecKillWithMonitor(goodsIds);
-        for(SeckillVo  seckill : activeSeckillList){
-            for(SecKillProductVo secKillProduct : seckill.getSecKillProduct()){
-                int prdNumber = goodsService.goodsSpecProductService.getPrdNumberByPrdId(secKillProduct.getProductId());
-                if(prdNumber < secKillProduct.getStock()){
-                    db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,prdNumber).set(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,secKillProduct.getTotalStock()-(secKillProduct.getStock()-prdNumber)).execute();
-                }
+        List<SecKillProductDefineRecord> activeSeckillList = getSecKillWithMonitor(goodsIds);
+        for(SecKillProductDefineRecord  seckillPrd : activeSeckillList){
+            int prdNumber = goodsService.goodsSpecProductService.getPrdNumberByPrdId(seckillPrd.getProductId());
+            if(prdNumber < seckillPrd.getStock()){
+                db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,prdNumber).set(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,seckillPrd.getTotalStock()-(seckillPrd.getStock()-prdNumber)).execute();
             }
         }
     }
@@ -453,13 +419,8 @@ public class SeckillService extends ShopBaseService{
      * 当前有效的进行中秒杀
      * @return
      */
-    private List<SeckillVo> getSecKillWithMonitor(List<Integer> goodsIds){
-        List<SeckillVo> res = db().select(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime())).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))).and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds)).fetchInto(SeckillVo.class);
-        for(SeckillVo seckill : res){
-            List<SecKillProductVo> seckillProduct = db().select(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(seckill.getSkId())).fetchInto(SecKillProductVo.class);
-            seckill.setSecKillProduct(seckillProduct);
-        }
-        return res;
+    private List<SecKillProductDefineRecord> getSecKillWithMonitor(List<Integer> goodsIds){
+        return db().select(SEC_KILL_PRODUCT_DEFINE.fields()).from(SEC_KILL_PRODUCT_DEFINE).leftJoin(SEC_KILL_DEFINE).on(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(SEC_KILL_DEFINE.SK_ID)).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime())).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))).and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds)).fetchInto(SecKillProductDefineRecord.class);
     }
 
     /**
@@ -483,8 +444,8 @@ public class SeckillService extends ShopBaseService{
      *          7该秒杀为会员专属，该用户没有对应会员卡；8该规格无库存；9有待支付的秒杀订单
      */
     public Byte canApplySecKill(Integer skId,Integer productId,Integer userId) {
-        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOneInto(SecKillDefineRecord.class);
-        int goodsNumber = saas.getShopApp(getShopId()).goods.getGoodsView(secKill.getGoodsId()).getGoodsNumber();
+        SecKillDefineRecord secKill = db().selectFrom(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchAny();
+        int goodsNumber = saas.getShopApp(getShopId()).goods.goodsSpecProductService.getPrdNumberByPrdId(productId);
         byte res = this.canApplySecKill(secKill,goodsNumber,userId);
         if(res == 0){
             if(!this.checkSeckillProductStock(skId,productId)){
@@ -580,10 +541,10 @@ public class SeckillService extends ShopBaseService{
     public ModuleSeckill getPageIndexSeckill(ModuleSeckill moduleSecKill){
         moduleSecKill.getSeckillGoods().forEach(seckillGoods->{
             SecKillDefineRecord seckill = getSeckillActById(seckillGoods.getActId());
-            GoodsRecord goodsInfo = saas.getShopApp(getShopId()).goods.getGoodsRecordById(seckill.getGoodsId());
+            GoodsRecord goodsInfo = saas.getShopApp(getShopId()).goods.getGoodsRecordById(seckillGoods.getGoodsId());
 
             //set goods info
-            seckillGoods.setGoodsId(seckill.getGoodsId());
+            seckillGoods.setGoodsId(seckillGoods.getGoodsId());
             seckillGoods.setGoodsName(goodsInfo.getGoodsName());
             seckillGoods.setGoodsImg(domainConfig.imageUrl(goodsInfo.getGoodsImg()));
             seckillGoods.setGoodsPrice(goodsInfo.getShopPrice());

@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
 
-    private static final long serialVersionUID = -1997236962;
+    private static final long serialVersionUID = 1127154371;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_define</code>
@@ -63,9 +52,9 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     public final TableField<SecKillDefineRecord, Integer> SK_ID = createField("sk_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "秒杀活动id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sec_kill_define.goods_id</code>. 商品id
+     * The column <code>mini_shop_471752.b2c_sec_kill_define.goods_id</code>. 商品ID
      */
-    public final TableField<SecKillDefineRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
+    public final TableField<SecKillDefineRecord, String> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.CLOB, this, "商品ID");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.name</code>. 活动名称
@@ -148,6 +137,11 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     public final TableField<SecKillDefineRecord, Integer> BASE_SALE = createField("base_sale", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "初始销量");
 
     /**
+     * The column <code>mini_shop_471752.b2c_sec_kill_define.first</code>. 优先级
+     */
+    public final TableField<SecKillDefineRecord, Byte> FIRST = createField("first", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优先级");
+
+    /**
      * Create a <code>mini_shop_471752.b2c_sec_kill_define</code> table reference
      */
     public SecKillDefine() {
@@ -193,7 +187,7 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SEC_KILL_DEFINE_GOODS_ID, Indexes.SEC_KILL_DEFINE_PRIMARY);
+        return Arrays.<Index>asList(Indexes.SEC_KILL_DEFINE_PRIMARY);
     }
 
     /**

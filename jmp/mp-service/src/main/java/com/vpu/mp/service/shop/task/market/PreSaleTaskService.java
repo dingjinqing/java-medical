@@ -127,7 +127,7 @@ public class PreSaleTaskService extends ShopBaseService {
             .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY))
             .and(ORDER_INFO.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT))
             .and(PRESALE.END_TIME.lt(DateUtil.getLocalDateTime()))
-            .and(ORDER_INFO.BK_ORDER_PAID.gt(OrderConstant.BK_PAY_NO))
+            .and(ORDER_INFO.BK_ORDER_PAID.gt(OrderConstant.BK_PAY_FRONT))
         ).fetchInto(OrderInfoRecord.class);
     }
 

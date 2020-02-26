@@ -248,7 +248,7 @@ export const cn = {
   unOrderTip2: '个订单退款申请超过3天未处理',
   unOrderTip3: '个订单发货提醒申请超过3天未处理',
   unMarketTip1: '个分销员申请超过3天未处理',
-  unMarketTip2: '激活申请超过2天未处理',
+  unMarketTip2: '会员卡激活申请超过2天未处理',
   unMarketTip3: '优惠券',
   unMarketTip4: '即将发完',
   unMarketTip5: '类会员卡有',

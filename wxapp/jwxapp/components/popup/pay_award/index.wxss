@@ -187,6 +187,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 20rpx;
+  text-align: center;
 }
 .gift-image{
   width: 172rpx;

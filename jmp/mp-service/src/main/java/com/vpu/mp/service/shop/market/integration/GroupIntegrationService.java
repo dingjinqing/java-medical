@@ -23,6 +23,7 @@ import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationListRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -70,7 +71,7 @@ public class GroupIntegrationService extends ShopBaseService {
             .where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(GROUP_INTEGRATION_DEFINE.STATUS.eq(STATUS_NORMAL))
             .and(GROUP_INTEGRATION_DEFINE.START_TIME.lessThan(Util.currentTimeStamp())
-                .and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp())))
+                .and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp()))).orderBy(GROUP_INTEGRATION_DEFINE.ID.desc())
             .fetchInto(ActSelectList.class);
         return result;
     }
@@ -136,22 +137,34 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public boolean insertDefine(GroupIntegrationDefineParam param) {
-		Double paramNum = calculateParamNum(param.getInteGroup(),param.getLimitAmount());
+	public JsonResultCode insertDefine(GroupIntegrationDefineParam param) {
+		Integer inteGroup = param.getInteGroup();
+		Short limitAmount = param.getLimitAmount();
+		Integer inteTotal = param.getInteTotal();
+		if(inteGroup<limitAmount) {
+			//瓜分积分数需要大于成团人数
+			return JsonResultCode.GROUP_INTEGRATION_INTE;
+		}
+		if(inteTotal>0&&inteGroup>inteTotal) {
+			//单团瓜分积分数不能大于总积分数
+			return JsonResultCode.GROUP_INTEGRATION_TOTAL;
+		}
+		Double paramNum = calculateParamNum(inteGroup,param.getLimitAmount());
 		GroupIntegrationDefineRecord record = db().newRecord(GROUP_INTEGRATION_DEFINE,param);
 		record.setStatus(GroupIntegrationDefineEnums.Status.NORMAL.value());
 		record.setDelFlag(DelFlag.NORMAL_VALUE);
 		record.setInteRemain(param.getInteTotal());
 		record.setIsContinue(GroupIntegrationDefineEnums.IsContinue.TRUE.value());
 		record.setParamN(paramNum);
+		record.setShopId(getShopId());
 		int executeInsert = db().executeInsert(record);
 		if(executeInsert>0) {
 			logger().info("【组队瓜分积分】 添加活动"+param.getName()+" 创建成功");
 			recordService.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.DIVIDE_INTEGRATION_ADD.code }), new String[] {param.getName()});
-			return true;
+			return JsonResultCode.CODE_SUCCESS;
 		}
 		logger().info("【组队瓜分积分】 添加活动"+param.getName()+" 创建失败");
-		return false;
+		return JsonResultCode.CODE_FAIL;
 		
 	}
 	/**
@@ -318,6 +331,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 */
 	private SelectConditionStep<?> buildOptions(SelectWhereStep<?> selectFrom, GroupIntegrationDefinePageParam pageParam) {
 		SelectConditionStep<?> step = selectFrom.where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+		step.orderBy(GROUP_INTEGRATION_DEFINE.ID.desc());
 		switch(pageParam.getType()) {
 			case GroupIntegrationDefineEnums.QueryType.UNSTARTED :
 				step.and(GROUP_INTEGRATION_DEFINE.START_TIME.gt(Timestamp.valueOf(LocalDateTime.now())));

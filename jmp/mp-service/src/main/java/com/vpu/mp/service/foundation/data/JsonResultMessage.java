@@ -277,7 +277,13 @@ public class JsonResultMessage {
 	public static final String LOTTERY_SCORE_LESS="lottery.score.less";
 	public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";
 	public static final String LOTTERY_TIME_USE_UP="lottery.time.use.up";
-
+	
+	
+	/**
+	 * 瓜分积分
+	 */
+	public static final String GROUP_INTEGRATION_INTE = "group.integration.inte";
+	public static final String GROUP_INTEGRATION_TOTAL = "group.integration.total";
 
 	/**
 	 * 营销- 支付有礼
@@ -639,6 +645,9 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_GOODS_LIMIT_MAX = "order.goods.limit.max";
     public static final String MSG_ORDER_GIFT_GOODS_ZERO = "order.gift.goods.zero";
     public static final String MSG_ORDER_MUST_NOT_NULL = "order.must.not.null";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY = "order.pay.way.no.support.instead.pay";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_WAY = "order.pay.way.no.support.instead.pay.way";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_MONEY_ZERO = "order.pay.way.no_support.instead.pay.money.zero";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
@@ -926,5 +935,6 @@ public class JsonResultMessage {
     public static final String GOODS_RANKING_SALES_TOP10 = "overview.commodity.rank.sales_top10";
     public static final String GOODS_RANKING_SALES_ORDER_TOP10 = "overview.commodity.rank.sales_order_top10";
     public static final String GOODS_RANKING_GOODS_NAME = "overview.commodity.rank.goods_name";
+
 
 }
