@@ -591,7 +591,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack="[requestParam.prizeList[tabSwitch-1].prdId]"
+        :chooseGoodsBack="chooseGoodsBackData"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"
@@ -677,13 +677,13 @@ export default {
         lotteryExplain: '',
         startTime: '',
         endTime: '',
-        freeChances: 0,
+        freeChances: '',
         canShare: 2,
         shareChances: 0,
         canUseScore: 2,
         scorePerChance: 0,
         scoreChances: 0,
-        noAwardScore: 0,
+        noAwardScore: '',
         noAwardIcon: this.$t('luckyDraw.thanksParticipation'),
         noAwardImage: '/image/admin/icon_lottery/thank.png',
         prizeList: [
@@ -727,6 +727,11 @@ export default {
     this.refreshCouponList()
     this.isEditeShowData()
   },
+  computed: {
+    chooseGoodsBackData () {
+      return [this.requestParam.prizeList[this.tabSwitch - 1].prdId]
+    }
+  },
   watch: {},
   methods: {
     lotteryTypeChange (val) {
@@ -744,6 +749,7 @@ export default {
               console.log('update', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
+                this.$parent.closeAddGroupTab()
               } else {
                 this.$message.warning(res.message)
               }
@@ -756,6 +762,7 @@ export default {
               console.log('addLottery', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
+                this.$parent.closeAddGroupTab()
               } else {
                 this.$message.warning(res.message)
               }
