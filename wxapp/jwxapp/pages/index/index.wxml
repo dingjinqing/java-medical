@@ -18,4 +18,4 @@
 </view>
 
 <!-- 开屏有礼弹窗 -->
-<v-pay-award show="{{openGiftDialog}}" award-info="{{awardInfo}}"/>
+<v-pay-award show="{{openGiftDialog}}" popup-name="开屏有礼" award-info="{{awardInfo}}"/>
