@@ -19,11 +19,13 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListParam;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,7 +41,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
@@ -69,6 +73,8 @@ public class IncreasePurchaseService extends ShopBaseService {
     private GoodsCardCoupleService goodsCardCoupleService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private CartService cartService;
 
     /**
      * 分页查询加价购活动信息
@@ -561,9 +567,9 @@ public class IncreasePurchaseService extends ShopBaseService {
         });
         vo.setRules(rules);
 
-        //TODO vo.setMainPrice();
-        //TODO vo.setChangeDoc();
-
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+        vo.setMainPrice(cartBo.getTotalPrice());
+        vo.setChangeDoc(getChangeGoodsDoc(cartBo.getTotalPrice(),ruleRecords));
 
         return vo;
     }
@@ -600,6 +606,31 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     private List<PurchasePriceRuleRecord> getRules(int purchasePriceId){
         return db().selectFrom(ppr).where(ppr.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId)).fetch();
+    }
+
+    /**
+     *
+     * @param totalPrice
+     * @param ruleRecords
+     * @return
+     */
+    private PurchaseGoodsListVo.ChangeDoc getChangeGoodsDoc(BigDecimal totalPrice,List<PurchasePriceRuleRecord> ruleRecords){
+        PurchaseGoodsListVo.ChangeDoc doc = new PurchaseGoodsListVo.ChangeDoc();
+        if(totalPrice.compareTo(BigDecimal.ZERO) <= 0){
+            doc.setState((byte)0);
+            return doc;
+        }
+        ruleRecords = ruleRecords.stream().sorted(Comparator.comparing(PurchasePriceRuleRecord::getFullPrice)).collect(Collectors.toList());
+        for(PurchasePriceRuleRecord rule:ruleRecords){
+            if(totalPrice.compareTo(rule.getFullPrice()) >= 0){
+                doc.setState((byte)2);
+                return doc;
+            }
+        }
+        BigDecimal diffPrice = ruleRecords.get(0).getFullPrice().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
+        doc.setState((byte)1);
+        doc.setDiffPrice(diffPrice);
+        return doc;
     }
 
 }
