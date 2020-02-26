@@ -6,7 +6,6 @@ package com.vpu.mp.db.shop.tables;
 
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
-
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 
@@ -43,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupBuyDefine extends TableImpl<GroupBuyDefineRecord> {
 
-    private static final long serialVersionUID = 1588726455;
+    private static final long serialVersionUID = 329987424;
 
     /**
      * The reference instance of <code>mini_shop_4748160.b2c_group_buy_define</code>
@@ -66,7 +65,7 @@ public class GroupBuyDefine extends TableImpl<GroupBuyDefineRecord> {
     /**
      * The column <code>mini_shop_4748160.b2c_group_buy_define.goods_id</code>. 商品id
      */
-    public final TableField<GroupBuyDefineRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
+    public final TableField<GroupBuyDefineRecord, String> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "商品id");
 
     /**
      * The column <code>mini_shop_4748160.b2c_group_buy_define.name</code>. 活动名称

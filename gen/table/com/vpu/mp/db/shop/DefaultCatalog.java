@@ -27,7 +27,7 @@ import org.jooq.impl.CatalogImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultCatalog extends CatalogImpl {
 
-    private static final long serialVersionUID = 1784926264;
+    private static final long serialVersionUID = 477582666;
 
     /**
      * The reference instance of <code></code>
@@ -35,9 +35,9 @@ public class DefaultCatalog extends CatalogImpl {
     public static final DefaultCatalog DEFAULT_CATALOG = new DefaultCatalog();
 
     /**
-     * The schema <code>mini_shop_471752</code>.
+     * The schema <code>mini_shop_4748160</code>.
      */
-    public final MiniShop_471752 MINI_SHOP_471752 = com.vpu.mp.db.shop.MiniShop_471752.MINI_SHOP_471752;
+    public final MiniShop_4748160 MINI_SHOP_4748160 = com.vpu.mp.db.shop.MiniShop_4748160.MINI_SHOP_4748160;
 
     /**
      * No further instances allowed
@@ -55,6 +55,6 @@ public class DefaultCatalog extends CatalogImpl {
 
     private final List<Schema> getSchemas0() {
         return Arrays.<Schema>asList(
-            MiniShop_471752.MINI_SHOP_471752);
+            MiniShop_4748160.MINI_SHOP_4748160);
     }
 }

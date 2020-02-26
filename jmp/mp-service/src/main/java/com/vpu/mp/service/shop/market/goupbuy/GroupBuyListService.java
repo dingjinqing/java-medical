@@ -36,11 +36,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.JOIN_LIMIT_N;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.OPEN_LIMIT_N;
@@ -86,7 +82,8 @@ public class GroupBuyListService extends ShopBaseService {
                 GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME, GROUP_BUY_DEFINE.STATUS, GROUP_BUY_DEFINE.LIMIT_AMOUNT,
                 DSL.ifnull(table.field(GROUP_ORDER_NUM), 0).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_DEFINE)
-                .leftJoin(GOODS).on(GROUP_BUY_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
+                .leftJoin(GROUP_BUY_PRODUCT_DEFINE).on(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(GROUP_BUY_DEFINE.ID))
+                .leftJoin(GOODS).on(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
                 .leftJoin(table).on(table.field(GROUP_BUY_LIST.ACTIVITY_ID).eq(GROUP_BUY_DEFINE.ID))
                 .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         records.orderBy(GROUP_BUY_DEFINE.LEVEL,GROUP_BUY_DEFINE.ID.desc());

@@ -118,9 +118,8 @@ public class GroupBuyService extends ShopBaseService {
      * 添加拼团活动
      *
      * @param groupBuy 拼团
-     * @param status   true 启用 false 禁用
      */
-    public void addGroupBuy(GroupBuyParam groupBuy, Boolean status) {
+    public void addGroupBuy(GroupBuyParam groupBuy) {
         transaction(() -> {
             //分享配置转json
             groupBuy.setShareConfig(Util.toJson(groupBuy.getShare()));
@@ -128,7 +127,7 @@ public class GroupBuyService extends ShopBaseService {
             Integer stock = groupBuy.getProduct().stream().mapToInt(GroupBuyProductParam::getStock).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, groupBuy);
-            groupBuyDefineRecord.setStatus(status ? ACTIVITY_STATUS_NORMAL : ACTIVITY_STATUS_DISABLE);
+            groupBuyDefineRecord.setStatus(ACTIVITY_STATUS_NORMAL);
             groupBuyDefineRecord.setStock(stock.shortValue());
             groupBuyDefineRecord.insert();
             //拼团商品规格价格信息
@@ -301,26 +300,6 @@ public class GroupBuyService extends ShopBaseService {
         return groupBuy;
     }
 
-    /**
-     * 校验商品是否有叠加
-     *
-     * @param
-     * @param date
-     * @return 0
-     */
-    public Boolean validGroupGoods(Integer id, Integer goodsId, Timestamp startTime, Timestamp endTime, Timestamp date) {
-        Condition where = GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId)
-                .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                .and(GROUP_BUY_DEFINE.START_TIME.le(endTime))
-                .and(GROUP_BUY_DEFINE.END_TIME.ge(startTime))
-                .and(GROUP_BUY_DEFINE.END_TIME.gt(date))
-                .and(GROUP_BUY_DEFINE.START_TIME.lt(date));
-        if (id != null) {
-            where.and(GROUP_BUY_DEFINE.ID.notEqual(id));
-        }
-        return db().fetchCount(GROUP_BUY_DEFINE, where) == 0;
-    }
 
     /**
      * 拼团订单列表
@@ -421,26 +400,6 @@ public class GroupBuyService extends ShopBaseService {
         return analysisVo;
     }
 
-    /**
-     * 根据goodsId获取拼团定义
-     *
-     * @param goodsId 商品id
-     * @param date    当前时间
-     * @return List<GroupBuyProductDefineRecord>
-     */
-    public List<Record2<Integer, BigDecimal>> getGroupBuyProductByGoodsId(Integer goodsId, Timestamp date) {
-        return db().select(GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
-                .from(GROUP_BUY_PRODUCT_DEFINE)
-                .leftJoin(GROUP_BUY_DEFINE)
-                .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
-                .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                .and(GROUP_BUY_DEFINE.STOCK.notEqual((short) 0))
-                .and(GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId))
-                .and(GROUP_BUY_DEFINE.START_TIME.lessThan(date))
-                .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
-                .fetch();
-    }
 
     /**
      * 根据goodsIds获取拼团定义
@@ -450,7 +409,7 @@ public class GroupBuyService extends ShopBaseService {
      * @return List<GroupBuyProductDefineRecord>
      */
     public Map<Integer, List<Record2<Integer, BigDecimal>>> getGroupBuyProductByGoodsIds(List<Integer> goodsIds, Timestamp date) {
-        return db().select(GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+        return db().select(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
                 .from(GROUP_BUY_PRODUCT_DEFINE)
                 .leftJoin(GROUP_BUY_DEFINE)
                 .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
@@ -462,7 +421,7 @@ public class GroupBuyService extends ShopBaseService {
                 .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
                 .fetch()
                 .stream()
-                .collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_DEFINE.GOODS_ID)));
+                .collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID)));
     }
 
     private void outPutLog(Integer goodsId) {
