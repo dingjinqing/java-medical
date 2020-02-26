@@ -63,7 +63,6 @@ public class DatasourceManager {
 		String key = dbConfig.getDatasourceKey();
 		if (!datasources.containsKey(key)) {
 			datasources.put(key,dataSource(getJdbcUrl(dbConfig.host, dbConfig.port, ""), dbConfig.username, dbConfig.password));
-            datasources.put(key,dataSource(getJdbcUrl("127.0.0.1",9910, ""), dbConfig.username, dbConfig.password));
 		}
 		return datasources.get(key);
 	}
