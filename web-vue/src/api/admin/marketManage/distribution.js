@@ -442,6 +442,15 @@ export function cancleDefaultGroup (data) {
   })
 }
 
+// 返利提现审核
+export function setCanSelect (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/group/select',
+    method: 'post',
+    data: data
+  })
+}
+
 // -------------分销员审核--------------------
 // 分销员审核列表
 export function getCheckList (data) {

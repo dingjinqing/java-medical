@@ -33,7 +33,7 @@
 }
 .goods_item > .goods_img > .invalid {
   position: absolute;
-  bottom: 0;
+  bottom: 7rpx;
   width: 100%;
   line-height: 40rpx;
   background-color:rgba(0,0,0,0.5);
@@ -213,13 +213,20 @@
   align-items: center;
   justify-content: flex-start
 }
-.cf_left view:last-of-type{
+.cf_left .cf_left_title {
+
+}
+.cf_left .cf_left_content {
   color: #666;
   margin-left: 10rpx;
   width: 370rpx;
+}
+.cf_left .cf_left_content .cf_left_content_add, 
+.cf_left .cf_left_content .cf_left_content_full {
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap
+  white-space: nowrap;
 }
 .cf_right{
   flex: 0.5;

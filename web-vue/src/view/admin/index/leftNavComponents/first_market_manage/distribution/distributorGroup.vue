@@ -100,7 +100,12 @@
           </template>
 
           <template slot-scope="scope">
-            <el-checkbox></el-checkbox>
+            <el-checkbox
+              v-model="scope.row.canSelect"
+              :true-label="1"
+              :false-label="0"
+              @change="setSelect(scope.row.id,scope.row.canSelect)"
+            ></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column
@@ -158,9 +163,9 @@
         </el-form-item>
         <el-form-item
           label="是否支持用户选择："
-          prop="groupRadio"
+          prop="canSelect"
         >
-          <el-radio-group v-model="param.groupRadio">
+          <el-radio-group v-model="param.canSelect">
             <el-radio :label="1">支持</el-radio>
             <el-radio :label="0">不支持</el-radio>
           </el-radio-group>
@@ -188,7 +193,8 @@
 <script>
 import {
   distributionGroup, distributionGroupDel, distributionGroupAdd,
-  distributionGroupEdit, distributionGroupSave, addDistributor, setDefaultGroup, cancleDefaultGroup
+  distributionGroupEdit, distributionGroupSave, addDistributor, setDefaultGroup, cancleDefaultGroup,
+  setCanSelect
 } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
@@ -204,14 +210,14 @@ export default {
       // 添加分组
       param: {
         groupName: '',
-        groupRadio: 1
+        canSelect: 1
       },
       // 表单校验
       paramRules: {
         groupName: [
           { required: true, message: '请填写分组名称', trigger: 'blur' }
         ],
-        groupRadio: [
+        canSelect: [
           { required: true, message: '请选择用户是否支持', trigger: 'change' }
         ]
       },
@@ -278,7 +284,7 @@ export default {
     addGroupHandler () {
       this.addGroupDialog = true
       this.param.groupName = ''
-      this.param.groupRadio = 1
+      this.param.canSelect = 1
     },
 
     // 编辑按钮
@@ -289,7 +295,7 @@ export default {
       distributionGroupEdit(id).then(res => {
         if (res.error === 0) {
           this.param.groupName = res.content.groupName
-          this.param.groupRadio = res.content.groupRadio
+          this.param.canSelect = res.content.canSelect
         }
       })
     },
@@ -427,7 +433,7 @@ export default {
           setDefaultGroup(id).then(res => {
             if (res.error === 0) {
               this.$message.success({
-                message: '设置成功!'
+                message: '设置默认分组成功!'
               })
               this.initGroupList()
             }
@@ -441,6 +447,21 @@ export default {
           })
         })
       }
+    },
+
+    // 设置是否支持
+    setSelect (id, value) {
+      setCanSelect({
+        groupId: id,
+        canSelect: value
+      }).then(res => {
+        if (res.error === 0) {
+          this.$message.success({
+            message: '设置选择成功!'
+          })
+          this.initGroupList()
+        }
+      })
     }
 
   }
