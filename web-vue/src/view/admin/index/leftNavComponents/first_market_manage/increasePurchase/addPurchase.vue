@@ -41,10 +41,10 @@
         </el-form-item>
         <el-form-item
           label="活动优先级"
-          prop="priority"
+          prop="level"
         >
           <el-input
-            v-model="form1.priority"
+            v-model.number="form1.level"
             class="input"
           ></el-input>
           <span class="span">用于区分不同加价购活动的优先级，请填写正整数，数值越大优先级越高</span>
@@ -56,6 +56,8 @@
           <el-date-picker
             v-model="form1.activityDate"
             type="datetimerange"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -64,7 +66,7 @@
         </el-form-item>
         <el-form-item label="每单最多换购件数">
           <el-input
-            v-model="form1.maxNum"
+            v-model.number="form1.maxChangePurchase"
             class="input"
           ></el-input>
           <span class="span">每单最多换购商品数，填写0表示不限制</span>
@@ -84,10 +86,10 @@
         <el-form-item label="换购规则1">
           主商品购满<el-input
             class="input1"
-            v-model="purcahse_rule1.full"
+            v-model.number="purcahse_rule1.fullPrice"
           ></el-input>元可加<el-input
             class="input1"
-            v-model="purcahse_rule1.purchase"
+            v-model.number="purcahse_rule1.purchasePrice"
           ></el-input>元换购
           <el-button
             type="primary"
@@ -103,10 +105,10 @@
         >
           主商品购满<el-input
             class="input1"
-            v-model="purcahse_rule2.full"
+            v-model.number="purcahse_rule2.fullPrice"
           ></el-input>元可加<el-input
             class="input1"
-            v-model="purcahse_rule2.purchase"
+            v-model.number="purcahse_rule2.purchasePrice"
           ></el-input>元换购
           <el-button
             type="primary"
@@ -127,10 +129,10 @@
         >
           主商品购满<el-input
             class="input1"
-            v-model="purcahse_rule3.full"
+            v-model.number="purcahse_rule3.fullPrice"
           ></el-input>元可加<el-input
             class="input1"
-            v-model="purcahse_rule3.purchase"
+            v-model.number="purcahse_rule3.purchasePrice"
           ></el-input>元换购
           <el-link
             type="primary"
@@ -160,7 +162,7 @@
         <ChoosingGoods
           :tuneUpChooseGoods="tuneUpChooseGoods"
           @resultGoodsDatas="choosingGoodsResult"
-          :chooseGoodsBack="goodsInfo"
+          :chooseGoodsBack="goodsId"
         />
       </div>
       <div class="table">
@@ -230,7 +232,7 @@
             <ChoosingGoods
               :tuneUpChooseGoods="tuneUpChooseGoods1"
               @resultGoodsDatas="choosingGoodsResult1"
-              :chooseGoodsBack="goodsInfo"
+              :chooseGoodsBack="purcahse_rule1.productId"
             />
           </div>
           <div class="table">
@@ -282,7 +284,7 @@
             <ChoosingGoods
               :tuneUpChooseGoods="tuneUpChooseGoods2"
               @resultGoodsDatas="choosingGoodsResult2"
-              :chooseGoodsBack="goodsInfo"
+              :chooseGoodsBack="purcahse_rule2.productId"
             />
           </div>
           <div class="table">
@@ -334,7 +336,7 @@
             <ChoosingGoods
               :tuneUpChooseGoods="tuneUpChooseGoods3"
               @resultGoodsDatas="choosingGoodsResult3"
-              :chooseGoodsBack="goodsInfo"
+              :chooseGoodsBack="purcahse_rule3.productId"
             />
           </div>
           <div class="table">
@@ -389,6 +391,7 @@
 <script>
 import { } from '@/api/admin/marketManage/sharePolite.js'
 import ChoosingGoods from '@/components/admin/choosingGoods'
+import { add } from '@/api/admin/marketManage/increasePurchase.js'
 export default {
   components: {
     ChoosingGoods
@@ -396,18 +399,18 @@ export default {
   data () {
     var validateRule = (rule, value, callback) => {
       if (this.rule_num === 1) {
-        if (this.purcahse_rule1.full === '' || this.purcahse_rule1.purcahse === '') {
+        if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '') {
           callback(new Error('请正确设置换购规则！'))
         } else { callback() }
       } else if (this.rule_num === 2) {
-        if (this.purcahse_rule1.full === '' || this.purcahse_rule1.purcahse === '' ||
-          this.purcahse_rule2.full === '' || this.purcahse_rule2.purcahse === '') {
+        if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '' ||
+          this.purcahse_rule2.fullPrice === '' || this.purcahse_rule2.purchasePrice === '') {
           callback(new Error('请正确设置换购规则！'))
         } else { callback() }
       } else if (this.rule_num === 3) {
-        if (this.purcahse_rule1.full === '' || this.purcahse_rule1.purcahse === '' ||
-          this.purcahse_rule2.full === '' || this.purcahse_rule2.purcahse === '' ||
-          this.purcahse_rule3.full === '' || this.purcahse_rule3.purcahse === '') {
+        if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '' ||
+          this.purcahse_rule2.fullPrice === '' || this.purcahse_rule2.purchasePrice === '' ||
+          this.purcahse_rule3.fullPrice === '' || this.purcahse_rule3.purchasePrice === '') {
           callback(new Error('请正确设置换购规则！'))
         } else { callback() }
       } else { callback() }
@@ -425,31 +428,37 @@ export default {
       // 换购规则页面参数
       form1: {
         name: '',
-        priority: '',
+        level: '',
         activityDate: [],
-        maxNum: 0,
+        startTime: '',
+        endTime: '',
+        maxChangePurchase: 0,
         strategy: 0,
         rule_setting: '非空'
       },
       // 换购规则
       purcahse_rule1: {
-        full: '',
-        purchase: ''
+        fullPrice: '',
+        purchasePrice: '',
+        // 换购商品id集合
+        productId: []
       },
       purcahse_rule2: {
-        full: '',
-        purchase: ''
+        fullPrice: '',
+        purchasePrice: '',
+        productId: []
       },
       purcahse_rule3: {
-        full: '',
-        purchase: ''
+        fullPrice: '',
+        purchasePrice: '',
+        productId: []
       },
       rules: {
         name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
-        priority: [
+        level: [
           { required: true, message: '请选择活动优先级', trigger: 'blur' }
         ],
         activityDate: [
@@ -462,8 +471,8 @@ export default {
       form_check: false,
       // 主商品页面参数
       main_table: [],
-      // 商品弹窗初始数据，编辑页面时用
-      goodsInfo: [],
+      // 商品弹窗初始数据，编辑页面时用(同时也是主商品id集合)
+      goodsId: [],
       tuneUpChooseGoods: false,
       // 换购商品页面参数
       purchase_table1: [],
@@ -498,6 +507,7 @@ export default {
       }
     },
     preStep () {
+      this.form_check = false
       if (this.step-- < 0) this.step = 0
     },
     // 设置换购规则
@@ -547,6 +557,13 @@ export default {
     choosingGoodsResult (row) {
       console.log('选择商品弹窗回调显示:', row)
       this.main_table = row
+      this.updateGoodsId(this.main_table)
+    },
+    updateGoodsId (data) {
+      this.goodsId = []
+      data.map((item, index) => {
+        this.goodsId.push(item.goodsId)
+      })
     },
     // 删除选中的主商品
     deleteGoods (goodsId) {
@@ -555,6 +572,7 @@ export default {
           this.main_table.splice(index, 1)
         }
       })
+      this.updateGoodsId(this.main_table)
     },
     // 设置换购商品
     // 换购规则tab切换
@@ -574,6 +592,10 @@ export default {
     // 选择换购商品弹窗回调显示
     choosingGoodsResult1 (row) {
       this.purchase_table1 = row
+      this.purcahse_rule1.productId = []
+      this.purchase_table1.map((item, index) => {
+        this.purcahse_rule1.productId.push(item.goodsId)
+      })
     },
     // 删除选中的换购商品-规则1
     deleteGoods1 (goodsId) {
@@ -582,9 +604,17 @@ export default {
           this.purchase_table1.splice(index, 1)
         }
       })
+      this.purcahse_rule1.productId = []
+      this.purchase_table1.map((item, index) => {
+        this.purcahse_rule1.productId.push(item.goodsId)
+      })
     },
     choosingGoodsResult2 (row) {
       this.purchase_table2 = row
+      this.purcahse_rule2.productId = []
+      this.purchase_table2.map((item, index) => {
+        this.purcahse_rule2.productId.push(item.goodsId)
+      })
     },
     // 删除选中的换购商品-规则2
     deleteGoods2 (goodsId) {
@@ -593,9 +623,17 @@ export default {
           this.purchase_table2.splice(index, 1)
         }
       })
+      this.purcahse_rule2.productId = []
+      this.purchase_table2.map((item, index) => {
+        this.purcahse_rule2.productId.push(item.goodsId)
+      })
     },
     choosingGoodsResult3 (row) {
       this.purchase_table3 = row
+      this.purcahse_rule3.productId = []
+      this.purchase_table3.map((item, index) => {
+        this.purcahse_rule3.productId.push(item.goodsId)
+      })
     },
     // 删除选中的换购商品-规则3
     deleteGoods3 (goodsId) {
@@ -603,6 +641,10 @@ export default {
         if (item.goodsId === goodsId) {
           this.purchase_table3.splice(index, 1)
         }
+      })
+      this.purcahse_rule3.productId = []
+      this.purchase_table3.map((item, index) => {
+        this.purcahse_rule3.productId.push(item.goodsId)
       })
     },
     purchaseCheck () {
@@ -643,8 +685,53 @@ export default {
     // 添加加价购
     addPurchase () {
       if (this.purchaseCheck()) {
-
+        this.form1.startTime = this.form1.activityDate[0]
+        this.form1.endTime = this.form1.activityDate[1]
+        this.goodsId = JSON.stringify(this.goodsId)
+        let param = Object.assign({}, this.form1)
+        param.goodsId = this.goodsId
+        param.rules = this.getPurchaseRules()
+        add(param).then(res => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: '添加成功！',
+              showClose: true
+            })
+            this.jump2ListPage()
+          } else {
+            this.$message.error({
+              message: '添加失败！',
+              showClose: true
+            })
+          }
+        })
       }
+    },
+    getPurchaseRules () {
+      let rules = []
+      if (this.rule_num === 1) {
+        rules.push(this.purcahse_rule1)
+      } else if (this.rule_num === 2) {
+        rules.push(this.purcahse_rule1)
+        rules.push(this.purcahse_rule2)
+      } else if (this.rule_num === 3) {
+        rules.push(this.purcahse_rule1)
+        rules.push(this.purcahse_rule2)
+        rules.push(this.purcahse_rule3)
+      }
+      rules.map((item, index) => {
+        item.productId = JSON.stringify(item.productId)
+      })
+      return rules
+    },
+    // 添加成功后跳转到列表页
+    jump2ListPage () {
+      this.$router.push({
+        name: 'increase_purchase',
+        params: {
+          flag: true
+        }
+      })
     }
   }
 }
