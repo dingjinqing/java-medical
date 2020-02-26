@@ -51,6 +51,7 @@ import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
 import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.jooq.impl.DSL.*;
 
 /**
@@ -153,9 +154,16 @@ public class IncreasePurchaseService extends ShopBaseService {
     /**
      * 计算已换购数量
      */
-    private Short getResaleQuantity(Integer purchasePriceId) {
-        Short defaultValue = 0;
-        return db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE)).and(og.ACTIVITY_ID.eq(purchasePriceId)).and(og.ACTIVITY_RULE.greaterThan(0)).and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).and(oi.SHIPPING_TIME.isNotNull()).or(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED)).fetchOptionalInto(Short.class).orElse(defaultValue);
+    private int getResaleQuantity(Integer purchasePriceId) {
+        Condition condition = oi.SHIPPING_TIME.isNotNull().or(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED));
+        return db().select(sum(og.GOODS_NUMBER))
+            .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
+            .where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE))
+            .and(og.ACTIVITY_ID.eq(purchasePriceId))
+            .and(og.ACTIVITY_RULE.greaterThan(0))
+            .and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY))
+            .and(condition)
+            .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
 
     /**
