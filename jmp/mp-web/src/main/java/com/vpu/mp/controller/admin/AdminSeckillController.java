@@ -113,7 +113,7 @@ public class AdminSeckillController extends AdminBaseController {
      * 取活动分享二维码
      */
     @GetMapping("/api/admin/market/seckill/share")
-    public JsonResult getSeckillShareCode(Integer skId) throws Exception {
+    public JsonResult getSeckillShareCode(Integer skId) {
         return success(shop().seckill.getMpQrCode(skId));
     }
 
