@@ -27,7 +27,7 @@ public class DistributorGroupService extends ShopBaseService{
 	 */
 	public PageResult<DistributorGroupListVo> getDistributorGroupList(DistributorGroupListParam param) {
 		SelectJoinStep<? extends Record> select = db()
-				.select(DISTRIBUTOR_GROUP.ID,DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_GROUP.IS_DEFAULT,DISTRIBUTOR_GROUP.DEL_FLAG,DISTRIBUTOR_GROUP.CREATE_TIME)
+				.select(DISTRIBUTOR_GROUP.ID,DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_GROUP.IS_DEFAULT,DISTRIBUTOR_GROUP.DEL_FLAG,DISTRIBUTOR_GROUP.CREATE_TIME,DISTRIBUTOR_GROUP.CAN_SELECT)
 				.from(DISTRIBUTOR_GROUP);
 		SelectConditionStep<? extends Record> sql = buildOptions(select,param);
 		PageResult<DistributorGroupListVo> groupList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorGroupListVo.class);

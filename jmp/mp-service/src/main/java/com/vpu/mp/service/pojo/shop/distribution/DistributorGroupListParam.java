@@ -10,7 +10,14 @@ import lombok.Data;
 @Data
 public class DistributorGroupListParam {
 	private Integer id;
+    /**
+     * 分组名称
+     */
 	private String groupName;
+    /**
+     * 是否支持用户选择 1：支持；0：不支持
+     */
+	private Byte canSelect;
 	private Integer currentPage ;
 	private Integer pageRows;
 }
