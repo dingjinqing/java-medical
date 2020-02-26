@@ -19,7 +19,6 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
-import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
  * 监控秒杀活动导致的goods表goodsType变化
@@ -42,13 +41,16 @@ public class SeckillTaskService  extends ShopBaseService {
         List<SeckillVo> onGoingSeckillList = getSecKillWithMonitor();
         for(SeckillVo seckill : onGoingSeckillList){
             int unpaidGoodsNum = 0;
-            for(SecKillProductVo secKillProduct : seckill.getSecKillProduct()){
-                unpaidGoodsNum += seckillService.seckillList.getUnpaidSeckillNumberByPrd(seckill.getSkId(),secKillProduct.getProductId());
-            }
-            int goodsNumber = goodsService.getGoodsView(seckill.getGoodsId()).getGoodsNumber();
-            if(seckill.getStock() + unpaidGoodsNum > 0 && goodsNumber + unpaidGoodsNum > 0){
-                //只有处于进行中的、当前还有库存的秒杀活动所锁定的goodsId
-                currentSeckillGoodsIdList.add(seckill.getGoodsId());
+            for(SeckillVo.SeckillGoods secKillGoods : seckill.getGoods()){
+                for (SecKillProductVo secKillProduct : secKillGoods.getSecKillProduct()){
+                    unpaidGoodsNum += seckillService.seckillList.getUnpaidSeckillNumberByPrd(seckill.getSkId(),secKillProduct.getProductId());
+                }
+
+                int goodsNumber = goodsService.getGoodsView(secKillGoods.getGoodsId()).getGoodsNumber();
+                if(seckill.getStock() + unpaidGoodsNum > 0 && goodsNumber + unpaidGoodsNum > 0){
+                    //只有处于进行中的、当前还有库存的秒杀活动所锁定的goodsId
+                    currentSeckillGoodsIdList.add(secKillGoods.getGoodsId());
+                }
             }
         }
         //求差集
@@ -87,8 +89,7 @@ public class SeckillTaskService  extends ShopBaseService {
             .and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))
         ).fetchInto(SeckillVo.class);
         for(SeckillVo seckill : res){
-            List<SecKillProductVo> seckillProduct = db().select(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(seckill.getSkId())).fetchInto(SecKillProductVo.class);
-            seckill.setSecKillProduct(seckillProduct);
+            seckill.setGoods(seckillService.getSecKillGoods(seckill.getSkId()));
         }
         return res;
     }

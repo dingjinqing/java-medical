@@ -18,8 +18,10 @@ public class SeckillPageListQueryVo {
     /** 活动名称 */
     private String name;
 
-    private Integer goodsId;
-    private String goodsName;
+    private String goodsId;
+    /** 商品种类数 */
+    private Integer goods;
+    private Byte first;
     /**
      * 商品库存
      */
