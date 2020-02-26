@@ -212,8 +212,13 @@ export default {
   watch: {
     lang () {
       this.tabInfo = this.$t('luckyDraw.tabInfo')
+    },
+    '$route.query': function (val) {
+      debugger
+      if (val === 0 || val === '0') {
+        this.tabSwitch = '0'
+      }
     }
-
   },
   created () {
 
@@ -324,7 +329,7 @@ export default {
     },
     deleteluckyDraw (id) {
       console.log('deleteluckyDraw', id)
-      this.$confirm(this.$t('luckyDraw.deleteluckyDrawComment'), {
+      this.$confirm(this.$t('luckyDraw.deleteLuckDrawComment'), {
         confirmButtonText: this.$t('luckyDraw.confirm'),
         cancelButtonText: this.$t('luckyDraw.cancel'),
         type: 'warning'
@@ -364,6 +369,16 @@ export default {
         this.currentComponent = luckyDrawAdd
 
         this.isShowAddFlag = false
+        this.tabInfo.pop()
+      }
+      return true
+    },
+    closeAddGroupTab () {
+      // 不是新增
+      for (; this.tabInfo.length > 5;) {
+        this.currentComponent = luckyDrawAdd
+        this.isShowAddFlag = false
+        this.tabSwitch = '1'
         this.tabInfo.pop()
       }
       return true
