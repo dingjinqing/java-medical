@@ -84,8 +84,7 @@ public class CardUserOpt extends CardOpt {
 		if(mCard==null) {
 			return false;
 		}
-		
-		
+			
 		MemberCardRecord uCard = uCardSvc.getUserGradeCard(userId);
 		if(uCard != null) {
 			// 要领取的等级卡只有大于用户目前的等级才能领取
@@ -95,8 +94,7 @@ public class CardUserOpt extends CardOpt {
 				return false;
 			}
 		}
-		
-		
+
 		// 积分或者余额是否满足升级条件
 		Integer userTotalScore = scoreSvc.getAccumulationScore(userId);
 		BigDecimal amount = uCardSvc.getUserTotalSpendAmount(userId);
@@ -109,8 +107,5 @@ public class CardUserOpt extends CardOpt {
 		
 	}
 	
-	
-	
 
-	
 }
