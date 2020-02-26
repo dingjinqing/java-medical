@@ -469,7 +469,7 @@ global.wxPage({
         });
         return false;
       }
-    }, { strategy_id: strategy_id, page: that.data.page, search: searchText, page_rows: 10 });
+    }, { strategyId: strategy_id, currentPage: that.data.page, search: searchText, pageRows: 10 });
   },
 
   proActionChange: function () {
@@ -540,13 +540,13 @@ function full_request(that) {
       that.data.last_page = full_info.goods.page.lastPage;
       var full_goods_info = [];
       var full_goods_r = [];
-      full_goods_r = full_info.goods.dataList;
+      full_goods_r = full_info.goods.dataList; // 商品列表
       // al_goods_prices = full_info.fullPriceDoc; // 金额
       // 金额提示
       if (full_info.fullPriceDoc) {
         // all_goods_doc = full_info.change_doc;
         if (full_info.fullPriceDoc.docType == 0) {
-          all_goods_doc = '快选择商品参加满折满减活动吧, 购物车里没有商品!'
+          all_goods_doc = '快选择商品参加满折满减活动吧'
         } else if (full_info.fullPriceDoc.docType == 1) {
           all_goods_doc = '下单立减' + full_info.fullPriceDoc.reduceMoney + '元'
         } else if (full_info.fullPriceDoc.docType == 2) {
@@ -564,8 +564,8 @@ function full_request(that) {
         full_goods_info = full_goods_r;
 
         that.setData({
-          full_goods_info: full_goods_info,
-          full_info: full_info,
+          full_info: full_info, // 全部信息
+          full_goods_info: full_goods_info, // 商品列表
           // al_goods_prices: al_goods_prices, // 金额
           all_goods_doc: all_goods_doc // 金额提示
         })
@@ -579,5 +579,5 @@ function full_request(that) {
       });
       return false;
     }
-  }, { strategyId: 36, currentPage: that.data.page, search: searchText, pageRows: 10 });
+  }, { strategyId: strategy_id, currentPage: that.data.page, search: searchText, pageRows: 10 });
 }

@@ -310,15 +310,8 @@ global.wxPage({
   to_fullpage: function (e) {
     var activity_id = e.currentTarget.dataset.activity_id;
     util.navigateTo({
-      // url: '/pages/fullprice/fullprice',
-      url: '/pages/fullprice/fullprice?strategyId=' + activity_id,
+      url: '/pages/fullprice/fullprice?identity_id=' + activity_id,
     })
-    
-    // var iden_id = e.currentTarget.dataset.ids;
-    // var store_id = this.data.options.store_id ? this.data.options.store_id : 0;
-    // util.navigateTo({
-    //   url: '/pages/fullprice/fullprice?identity_id=' + iden_id + '&store_id=' + store_id,
-    // })
   },
 
   // 跳转加价购商品列表
