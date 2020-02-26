@@ -91,4 +91,5 @@ ALTER TABLE `b2c_package_sale` ADD  COLUMN `total_ratio` decimal(4,2) DEFAULT '0
 /***********************2.10*********************BEGIN*/
 -- 2020年2月26日10:46:57  拼团活动商品信息记录表添加商品id字段
 ALTER TABLE `b2c_group_buy_product_define` ADD COLUMN `goods_id` int(8) NOT NULL DEFAULT 0 COMMENT '商品id';
+ALTER TABLE `b2c_sec_kill_product_define` ADD COLUMN `goods_id` int(8) NOT NULL DEFAULT 0 COMMENT '商品id';
 /***********************2.10*********************END*/
