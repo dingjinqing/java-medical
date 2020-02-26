@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.integration.ChangeStatusParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
@@ -52,11 +53,11 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@PostMapping("/add")
 	public JsonResult insert(@RequestBody @Valid GroupIntegrationDefineParam param) {
-		boolean insertDefine = shop().groupIntegration.insertDefine(param);
-		if(insertDefine) {
+		JsonResultCode insertDefine = shop().groupIntegration.insertDefine(param);
+		if(insertDefine==JsonResultCode.CODE_SUCCESS) {
 			return success();			
 		}
-		return fail();
+		return fail(insertDefine);
 	}
 	/**
 	 * 查指定ID的瓜分积分活动

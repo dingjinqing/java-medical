@@ -6,7 +6,7 @@
         :model="activity"
         :rules="fromRules"
         labelPosition="left"
-        label-width="120px"
+        label-width="130px"
         style="padding-left:50px;"
       >
         <el-form-item
@@ -213,13 +213,26 @@ export default {
     }
   },
   data () {
+    var checklimitAmount = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请填写瓜分人数'))
+      } else {
+        if (value < 2) {
+          callback(new Error('成团人数应大于等于2人'))
+        }
+        if (value > 20) {
+          callback(new Error('成团人数应小于等于20人'))
+        }
+        callback()
+      }
+    }
     return {
       edit: false,
       paramId: null,
       activity: {
         id: null,
         name: '',
-        advertise: '',
+        advertise: '积分购物可抵现金',
         startTime: '',
         endTime: '',
         inteTotal: '',
@@ -232,11 +245,11 @@ export default {
       fromRules: {
         name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
         advertise: [{ required: true, message: '请填写宣传语', trigger: 'blur' }],
-        startTime: [{ type: 'date', required: true, message: '请选开始时间', trigger: 'blur' }],
-        endTime: [{ type: 'date', required: true, message: '请选择结束时间', trigger: 'blur' }],
-        inteTotal: [{ required: true, message: '请填写瓜分积分数', trigger: 'blur' }],
-        limitAmount: [{ required: true, message: '请填写瓜分人数', trigger: 'blur' }],
-        inteGroup: [{ required: true, message: '请输入瓜分积分总数', trigger: 'blur' }],
+        startTime: [{ required: true, message: '请选开始时间', trigger: 'blur' }],
+        endTime: [{ required: true, message: '请选择结束时间', trigger: 'blur' }],
+        inteTotal: [{ required: true, message: '请填写瓜分积总数', trigger: 'blur' }],
+        limitAmount: [{ validator: checklimitAmount, trigger: 'blur' }],
+        inteGroup: [{ required: true, message: '请输入瓜分积分数', trigger: 'blur' }],
         joinLimit: [{ required: true, message: '请填写参团限制', trigger: 'blur' }],
         divideType: [{ required: true, trigger: 'blur' }],
         isDayDivide: [{ required: true, trigger: 'blur' }]
@@ -256,11 +269,21 @@ export default {
       })
     },
     saveActivity () {
-      if (!this.edit) {
-        this.addActivity()
-      } else {
-        this.editActivity()
-      }
+      this.$refs.activity.validate((valid) => {
+        if (valid) {
+          if (!this.checkInfo()) {
+            return false
+          }
+          if (!this.edit) {
+            this.addActivity()
+          } else {
+            this.editActivity()
+          }
+        } else {
+          this.$message.warning('请输入必输项')
+          return false
+        }
+      })
     },
     addActivity () {
       createGroupIntegration(this.activity).then((res) => {
@@ -292,8 +315,18 @@ export default {
         'flag': 6
       }
       this.$emit('backHome', params)
+    },
+    checkInfo () {
+      if (this.activity.inteGroup < this.activity.limitAmount) {
+        this.$message.warning(' 瓜分积分数需要大于成团人数')
+        return false
+      }
+      if (this.activity.inteTotal > 0 && this.activity.inteGroup > this.activity.inteTotal) {
+        this.$message.warning(' 单团瓜分积分数不能大于总积分数')
+        return false
+      }
+      return true
     }
-
   },
   mounted () {
     // const id = this.$route.params.id

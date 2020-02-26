@@ -277,7 +277,13 @@ public class JsonResultMessage {
 	public static final String LOTTERY_SCORE_LESS="lottery.score.less";
 	public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";
 	public static final String LOTTERY_TIME_USE_UP="lottery.time.use.up";
-
+	
+	
+	/**
+	 * 瓜分积分
+	 */
+	public static final String GROUP_INTEGRATION_INTE = "group.integration.inte";
+	public static final String GROUP_INTEGRATION_TOTAL = "group.integration.total";
 
 	/**
 	 * 营销- 支付有礼
@@ -929,5 +935,6 @@ public class JsonResultMessage {
     public static final String GOODS_RANKING_SALES_TOP10 = "overview.commodity.rank.sales_top10";
     public static final String GOODS_RANKING_SALES_ORDER_TOP10 = "overview.commodity.rank.sales_order_top10";
     public static final String GOODS_RANKING_GOODS_NAME = "overview.commodity.rank.goods_name";
+
 
 }
