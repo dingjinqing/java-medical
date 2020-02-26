@@ -29,25 +29,34 @@
         :model="form1"
         label-width="180px"
       >
-        <el-form-item label="活动名称">
+        <el-form-item
+          label="活动名称"
+          prop="name"
+        >
           <el-input
             v-model="form1.name"
             class="input"
           ></el-input>
           <span class="span">只作为商家记录使用，用户不会看到这个名称</span>
         </el-form-item>
-        <el-form-item label="活动优先级">
+        <el-form-item
+          label="活动优先级"
+          prop="priority"
+        >
           <el-input
             v-model="form1.priority"
             class="input"
           ></el-input>
           <span class="span">用于区分不同加价购活动的优先级，请填写正整数，数值越大优先级越高</span>
         </el-form-item>
-        <el-form-item label="活动时间">
+        <el-form-item
+          label="活动时间"
+          prop="activityDate"
+        >
           <el-date-picker
-            v-model="form1.time"
+            v-model="form1.activityDate"
             type="datetimerange"
-            range-separator="至"
+            range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           >
@@ -66,11 +75,20 @@
             <el-radio label="使用原商品运费模板"></el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="活动规则">
+        <el-form-item
+          label="活动规则"
+          prop="rule_setting"
+        >
           <span class="span">最多可设置3档换购规则，需满足金额依次递增</span>
         </el-form-item>
         <el-form-item label="换购规则1">
-          主商品购满<el-input class="input1"></el-input>元可加<el-input class="input1"></el-input>元换购
+          主商品购满<el-input
+            class="input1"
+            v-model="purcahse_rule1.full"
+          ></el-input>元可加<el-input
+            class="input1"
+            v-model="purcahse_rule1.purchase"
+          ></el-input>元换购
           <el-button
             type="primary"
             size="small"
@@ -83,7 +101,13 @@
           label="换购规则2"
           v-if="rule_line2"
         >
-          主商品购满<el-input class="input1"></el-input>元可加<el-input class="input1"></el-input>元换购
+          主商品购满<el-input
+            class="input1"
+            v-model="purcahse_rule2.full"
+          ></el-input>元可加<el-input
+            class="input1"
+            v-model="purcahse_rule2.purchase"
+          ></el-input>元换购
           <el-button
             type="primary"
             size="small"
@@ -101,7 +125,13 @@
           label="换购规则3"
           v-if="rule_line3"
         >
-          主商品购满<el-input class="input1"></el-input>元可加<el-input class="input1"></el-input>元换购
+          主商品购满<el-input
+            class="input1"
+            v-model="purcahse_rule3.full"
+          ></el-input>元可加<el-input
+            class="input1"
+            v-model="purcahse_rule3.purchase"
+          ></el-input>元换购
           <el-link
             type="primary"
             style="margin-left:5px"
@@ -364,6 +394,24 @@ export default {
     ChoosingGoods
   },
   data () {
+    var validateRule = (rule, value, callback) => {
+      if (this.rule_num === 1) {
+        if (this.purcahse_rule1.full === '' || this.purcahse_rule1.purcahse === '') {
+          callback(new Error('请正确设置换购规则！'))
+        } else { callback() }
+      } else if (this.rule_num === 2) {
+        if (this.purcahse_rule1.full === '' || this.purcahse_rule1.purcahse === '' ||
+          this.purcahse_rule2.full === '' || this.purcahse_rule2.purcahse === '') {
+          callback(new Error('请正确设置换购规则！'))
+        } else { callback() }
+      } else if (this.rule_num === 3) {
+        if (this.purcahse_rule1.full === '' || this.purcahse_rule1.purcahse === '' ||
+          this.purcahse_rule2.full === '' || this.purcahse_rule2.purcahse === '' ||
+          this.purcahse_rule3.full === '' || this.purcahse_rule3.purcahse === '') {
+          callback(new Error('请正确设置换购规则！'))
+        } else { callback() }
+      } else { callback() }
+    }
     return {
       step: 0,
       // 换购规则的2个按钮是否显示
@@ -377,10 +425,24 @@ export default {
       // 换购规则页面参数
       form1: {
         name: '',
-        priority: 0,
-        time: '',
+        priority: '',
+        activityDate: [],
         maxNum: 0,
-        strategy: 0
+        strategy: 0,
+        rule_setting: '非空'
+      },
+      // 换购规则
+      purcahse_rule1: {
+        full: '',
+        purchase: ''
+      },
+      purcahse_rule2: {
+        full: '',
+        purchase: ''
+      },
+      purcahse_rule3: {
+        full: '',
+        purchase: ''
       },
       rules: {
         name: [
@@ -390,10 +452,14 @@ export default {
         priority: [
           { required: true, message: '请选择活动优先级', trigger: 'blur' }
         ],
-        time: [
-          { type: 'date', required: true, message: '请选择活动时间', trigger: 'change' }
+        activityDate: [
+          { type: 'array', required: true, message: '请选择活动时间', trigger: 'change' }
+        ],
+        rule_setting: [
+          { required: true, validator: validateRule }
         ]
       },
+      form_check: false,
       // 主商品页面参数
       main_table: [],
       // 商品弹窗初始数据，编辑页面时用
@@ -414,7 +480,10 @@ export default {
   methods: {
     nextStep (value) {
       if (value === 1) {
-        if (this.step++ > 2) this.step = 0
+        this.formCheck()
+        if (this.form_check) {
+          if (this.step++ > 2) this.step = 0
+        }
       } else if (value === 2) {
         if (this.main_table.length === 0) {
           this.$message.info({
@@ -461,10 +530,11 @@ export default {
     // 设置活动规则表单验证
     formCheck () {
       this.$refs['form1'].validate((valid) => {
-        if (valid) {
-          return true
+        console.log('valid:' + valid)
+        if (valid === true) {
+          this.form_check = true
         } else {
-          return false
+          this.form_check = false
         }
       })
     },
