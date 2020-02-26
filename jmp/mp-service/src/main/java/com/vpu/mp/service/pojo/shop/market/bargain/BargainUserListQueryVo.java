@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * 帮砍价用户
@@ -15,6 +15,7 @@ import lombok.Data;
 public class BargainUserListQueryVo {
 
 	private Integer id;
+    private Integer userId;
 	private String username;
 	private String mobile;
 	private Timestamp createTime;
