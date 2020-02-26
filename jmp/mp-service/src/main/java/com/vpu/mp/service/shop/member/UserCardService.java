@@ -210,8 +210,7 @@ public class UserCardService extends ShopBaseService {
 	 * 	获取用户持有的等级卡
 	 */
 	public MemberCardRecord getUserGradeCard(Integer userId) {
-		MemberCardRecord card = userCardDao.getUserGradeCard(userId);
-		return card != null ? card : new MemberCardRecord();
+		return userCardDao.getUserGradeCard(userId);
 	}
 
 	/**
