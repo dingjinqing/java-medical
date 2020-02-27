@@ -231,7 +231,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         //主商品详情
         List<Integer> goodsIdArray = Util.json2Object(goodsId, new TypeReference<List<Integer>>() {
         }, false);
-        vo.setMainGoods(db().select(g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
+        vo.setMainGoods(db().select(g.GOODS_ID, g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
         List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
@@ -239,7 +239,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         for (String s : redemptionGoods) {
             List<Integer> array = Util.json2Object(s, new TypeReference<List<Integer>>() {
             }, false);
-            redemptionresult[integer++] = db().select(g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
+            redemptionresult[integer++] = db().select(g.GOODS_ID, g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
         }
         vo.setRedemptionGoods(redemptionresult);
         return vo;
