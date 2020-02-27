@@ -7,22 +7,24 @@
   <div>
     <wrapper>
       <section class="newuserDetailContent">
-        <div>
-          <span>{{$t('marketCommon.username')}}</span>
+        <div class="username">
+          <span>{{$t('marketCommon.username')+'：'}}</span>
           <el-input
             v-model="requestParams.username"
             class="inputWidth"
             size="small"
             :placeholder="$t('marketCommon.usernamePlaceholder')"
+            clearable
           ></el-input>
         </div>
         <div>
-          <span>{{$t('marketCommon.mobile')}}</span>
+          <span>{{$t('marketCommon.mobile')+'：'}}</span>
           <el-input
             v-model="requestParams.mobile"
             class="inputWidth"
             size="small"
             :placeholder="$t('marketCommon.mobilePlaceholder')"
+            clearable
           ></el-input>
         </div>
         <el-button
@@ -33,7 +35,7 @@
         >{{$t('marketCommon.filter')}}</el-button>
         <el-button
           @click="exportDataList"
-          class="btn"
+          class="btn button"
           type="primary"
           size="small"
         >{{$t('marketCommon.export')}}</el-button>
@@ -141,8 +143,8 @@ export default {
       this.requestParams.pageRows = this.pageParams.pageRows
       exportBargainUserList(this.requestParams).then((res) => {
         let fileName = localStorage.getItem('V-content-disposition')
-        fileName = fileName.split(';')[1].split('=')[1]
-        download(res, fileName)
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '帮忙砍价用户列表.xlsx'
+        download(res, decodeURIComponent(fileName))
       })
     },
     // 表格数据处理
@@ -160,16 +162,19 @@ export default {
 .newuserDetailContent {
   display: flex;
   div {
-    margin-right: 10px;
-    span {
-      margin-right: 10px;
-    }
+    margin-right: 20px;
     .inputWidth {
       width: 150px;
     }
   }
+  .username {
+    margin-left: 30px;
+  }
   .btn {
     margin-left: 5px;
+  }
+  .button {
+    margin-left: 20px;
   }
 }
 

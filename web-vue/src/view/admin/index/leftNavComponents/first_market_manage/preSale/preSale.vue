@@ -104,18 +104,20 @@
           prop=""
           label="定金支付时间"
           align="center"
+          width="160"
         >
           <template slot-scope="scope">
-            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            {{scope.row.preStartTime}}<br>至<br>{{scope.row.preEndTime}}
           </template>
         </el-table-column>
         <el-table-column
           prop=""
           label="尾款支付时间"
           align="center"
+          width="160"
         >
           <template slot-scope="scope">
-            {{scope.row.preStartTime}}<br>至<br>{{scope.row.preEndTime}}
+            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
           </template>
         </el-table-column>
         <el-table-column

@@ -51,7 +51,7 @@ public enum QrCodeTypeEnum {
     /*加价购主商品*/
     RAISE_PRICE_BUY_MAIN_GOODS((byte) 21, "pages/maingoodslist/maingoodslist"),
     /*瓜分积分活动*/
-    PARTATION_INTEGRAL((byte) 22, "pages/pinintegration/pinintegration"),
+    PARTATION_INTEGRAL((byte) 22, "pages1/pinintegration/pinintegration"),
     /*拼团抽奖详情*/
     GROUP_BOOKING_LOTTERY((byte) 23, "pages/pinlotteryitem/pinlotteryitem"),
     /*定金膨胀详情*/
