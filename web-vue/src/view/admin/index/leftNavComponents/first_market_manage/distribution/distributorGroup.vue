@@ -199,7 +199,7 @@ import {
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
-    DistributorDialog: () => import('@/components/admin/distributorDialog')
+    DistributorDialog: () => import('./distributorDialog')
   },
   data () {
     return {
