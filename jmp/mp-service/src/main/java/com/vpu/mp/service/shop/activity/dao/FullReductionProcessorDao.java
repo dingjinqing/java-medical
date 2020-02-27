@@ -328,6 +328,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             fullReduction.setFullReductiontype(record.get(MRKING_STRATEGY.TYPE));
             //会员专享
             if (StringUtils.isNotBlank(record.get(MRKING_STRATEGY.CARD_ID))) {
+                fullReduction.setIsExclusive(true);
                 for (Integer id : cardIds) {
                     if (record.get(MRKING_STRATEGY.CARD_ID).indexOf(id)==-1) {
                         break AA;
@@ -341,6 +342,13 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                 rule.setDiscount(value.get(MRKING_STRATEGY_CONDITION.DISCOUNT));
                 rule.setFullMoney(value.get(MRKING_STRATEGY_CONDITION.FULL_MONEY));
                 rule.setReduceMoney(value.get(MRKING_STRATEGY_CONDITION.REDUCE_MONEY));
+                if (fullReduction.getFullReductiontype()<4){
+                    if (rule.getAmount()>0){
+                        fullReduction.setRulesType((byte) 2);
+                    }else{
+                        fullReduction.setRulesType((byte) 1);
+                    }
+                }
                 fullReduction.getRules().add(rule);
             }
             cartActivityInfos.add(activityInfo);
