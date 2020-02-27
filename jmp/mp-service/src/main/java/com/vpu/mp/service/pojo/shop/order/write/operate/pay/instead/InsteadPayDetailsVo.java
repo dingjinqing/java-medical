@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead;
 
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,15 +7,21 @@ import lombok.ToString;
 import java.math.BigDecimal;
 
 /**
- * 代付订单支付
  * @author 王帅
+ * 代付明细
  */
 @Getter
 @Setter
 @ToString
-public class InsteadPayParam extends OrderOperateQueryParam {
-    private BigDecimal moneyPaid;
+public class InsteadPayDetailsVo {
+    private String subOrderSn;
+    private String mainOrderSn;
+    private Integer userId;
     private String username;
+    private Byte orderStatus;
+    private BigDecimal moneyPaid;
+    private BigDecimal refund_money;
     private String message;
-    private String clientIp;
+    private String userAvatar;
+
 }

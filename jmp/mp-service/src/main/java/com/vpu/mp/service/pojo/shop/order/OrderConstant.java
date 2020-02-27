@@ -32,6 +32,9 @@ public class OrderConstant {
     /**定金 sn 后缀*/
     public final static String BK_SN_SUFFIX = "_BK";
 
+    /**代付的支付订单 T 前缀*/
+    public final static String INSTEAD_PAY_SN_PREFIX = "T";
+
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
 	public final static byte ORDER_WAIT_PAY = 0;
@@ -381,7 +384,7 @@ public class OrderConstant {
 	public static final byte WAIT_DELIVERY = 2;
 	public static final byte SHIPPED = 3;
 	public static final byte FINISHED = 4;
-	public static final byte RETURNING = 5;
+	public static final byte REFUND = 5;
 
 	/**
 	 * 是否货到付款订单
@@ -508,4 +511,18 @@ public class OrderConstant {
     public static final Byte SHOP_HELPER_REMIND_DELIVERY = 1;
     /**退款申请逾期*/
     public static final Byte SHOP_HELPER_OVERDUE_RETURN_APPLY = 2;
+
+    /**
+     * 代付订单子单
+     */
+    public static class SubOrderConstant{
+        /** 待支付*/
+        public static final Byte SUB_ORDER_WAIT_PAY = 0;
+        /** 已支付*/
+        public static final Byte SUB_ORDER_PAY_OK = 1;
+        /** 已关闭*/
+        public static final Byte SUB_ORDER_CANCELLED = 2;
+        /** *已退款*/
+        public static final Byte SUB_ORDER_REFUND_SUCESS = 3;
+    }
 }

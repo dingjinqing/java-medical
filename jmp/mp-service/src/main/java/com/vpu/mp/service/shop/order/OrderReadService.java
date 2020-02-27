@@ -86,6 +86,7 @@ import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
+import com.vpu.mp.service.shop.order.sub.SubOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -183,6 +184,8 @@ public class OrderReadService extends ShopBaseService {
     private ExpressService expressService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    public SubOrderService subOrderService;
 	/**
 	 * 订单查询
 	 * @param param
