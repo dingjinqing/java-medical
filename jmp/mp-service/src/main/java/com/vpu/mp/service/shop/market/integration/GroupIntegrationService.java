@@ -243,12 +243,18 @@ public class GroupIntegrationService extends ShopBaseService {
 	 */
 	public int changDefineStatus(Integer id,Byte status) {
 		GroupIntegrationDefineRecord record = selectDefineById(id);
+		if(record==null) {
+			logger().info("瓜分积分活动id：{}，不存在",id);
+			return 0;
+		}
 		if(record.getStatus().equals(status)) {
+			logger().info("瓜分积分活动id：{}，状态{}相同",id,status);
 			return 0;
 		}
 		if(GroupIntegrationDefineEnums.Status.NORMAL.value().equals(status)) {
 			if(record.getEndTime().before(Timestamp.valueOf(LocalDateTime.now()))){
 //				这个活动已经过期了不能再启用了
+				logger().info("瓜分积分活动id：{}，这个活动已经过期",id);
 				return 0;
 			}
 		}
