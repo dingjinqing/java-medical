@@ -545,7 +545,7 @@
                     <span class="task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
                     <a
                       href="javascript: void(0);"
-                      @click="clickJumpHandler('order_wait', ShopData.refundOver, 1, 'refund')"
+                      @click="clickJumpHandler('order_wait', ShopData.refundOver, 2, 'refund')"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
@@ -838,7 +838,7 @@
                     <span class="task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
                     <a
                       href="javascript: void(0);"
-                      @click="clickJumpHandler('order_wait', ShopData.refundOver, 1, 'refund')"
+                      @click="clickJumpHandler('order_wait', ShopData.refundOver, 2, 'refund')"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
