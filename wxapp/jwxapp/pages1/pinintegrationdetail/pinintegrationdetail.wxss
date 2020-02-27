@@ -1,0 +1,244 @@
+/* pages1/pinintegrationdetail/pinintegrationdetail.wxss */
+/* @import "/pages/login/login.wxss"; */
+page{
+    background: linear-gradient(top,#f18a4f,#e84532);
+  background: -webkit-linear-gradient(top,#f18a4f,#e84532);
+  background: -moz-linear-gradient(top,#f18a4f,#e84532);
+}
+.main-container{
+  padding: 30rpx 30rpx;
+  background: linear-gradient(top,#f18a4f,#e84532);
+  background: -webkit-linear-gradient(top,#f18a4f,#e84532);
+  background: -moz-linear-gradient(top,#f18a4f,#e84532);
+}
+.go_activity{
+ margin-bottom: 50rpx;
+}
+
+.go_title{
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+.go_title text:nth-child(2){
+  padding-left: 10rpx;
+}
+
+.go_content{
+  width: 100%;
+  height: auto;
+  min-height: 100rpx;
+  border-radius: 20rpx;
+  background: #fff;
+  margin-top: 30rpx;
+}
+
+.go_content_title{
+  border-bottom:1rpx solid #eee;
+  margin-left:30rpx;
+  font-size:30rpx;
+  color:#333;
+  height:80rpx;
+  line-height:80rpx;
+}
+.go_content_title2{
+  font-size:30rpx;
+  color:#e84532;
+  height:80rpx;
+  line-height:80rpx;
+  background: #ffe15f;
+  padding-left: 30rpx;
+  overflow-y: hidden;
+}
+.go_content_title2 text:nth-child(1){
+  font-size: 30rpx;
+}
+.go_content_title2 text:nth-child(2){
+  display: inline-block;
+  margin-right: 30rpx;
+  font-size: 24rpx;
+  float: right;
+}
+
+.go_content_con{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.con_item{
+  width: 232rpx;
+  height: 150rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+.con_item1{
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 24rpx;
+  color: #666;
+  margin-left:30rpx;
+
+}
+.item{
+  width: 100%;
+  text-align: center;
+  border-right: 6rpx solid #eee;
+}
+.item view:nth-child(1){
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #f18a4f;
+}
+.item view:nth-child(2){
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 活动 */
+.go_content_con2 {
+  height: 80rpx;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 80rpx;
+  text-align: center;
+  overflow-y: hidden;
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1rpx solid #eee;
+}
+.go_content_con2 view:nth-child(1){
+  width: 320rpx;
+  display: inline-block;
+}
+.go_content_con2 view:nth-child(2){
+   width: 180rpx;
+   display: inline-block;
+}
+.go_content_con2 view:nth-child(3){
+  width: 180rpx;
+  display: inline-block;
+}
+.con_person{
+  height: auto;
+}
+.person_item{
+  width: 100%;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom:1rpx solid #eee;
+
+}
+.person_item>view{
+  display: inline-block;
+  height: 120rpx;
+  text-align: center;
+  line-height: 120rpx;
+}
+.name{
+  width: 320rpx;
+  position: relative;
+  overflow-y: hidden;
+}
+.name view{
+  display: inline-block;
+}
+.rank image{
+  width: 40rpx;
+  height: 48rpx;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.rank{
+  width: 50rpx;
+  float: left;
+  margin-left:32rpx;
+  margin-top:12rpx;
+
+}
+.circle{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius:40rpx;
+  border: 2rpx solid #fff251;
+  overflow-y: hidden;
+  float: left;
+  margin-left:26rpx;
+  margin-top:15rpx;
+}
+.tuan{
+  width:58rpx;
+  height:30rpx;
+  background:#fff251;
+  line-height:30rpx;
+  float:left;
+  position:absolute;
+  color:#e84532;
+  border-radius:2rpx;
+  bottom:13rpx;
+  left:120rpx;
+  text-align:center;
+  font-size:20rpx;
+}
+.person_name{
+float:left;
+width:100rpx ;
+height: 80rpx;
+text-overflow:ellipsis;
+overflow:hidden;
+white-space:nowrap;
+margin-left:18rpx;
+font-size: 24rpx;
+color: #333;
+display: inline-block;
+}
+.number{
+  width: 180rpx;
+  color: #333;
+  font-size: 30rpx;
+}
+.rank_number{
+  width:50rpx;
+height:50rpx;
+line-height:50rpx;
+top:35rpx;
+position:absolute;
+left:30rpx;
+font-style:italic;
+
+}
+.integral{
+  width: 180rpx;
+  font-size: 30rpx;
+  color: #f18a4f;
+}
+
+.zk_sq{
+  width: 100%;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 24rpx;
+}
+.zk_sq image{
+  width: 21rpx;
+  height: 10rpx;
+  padding-left: 10rpx;
+}
+
+.ac_footer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24rpx;
+  margin-top: 20rpx;
+  width: 100%;
+  height: 40rpx;
+}

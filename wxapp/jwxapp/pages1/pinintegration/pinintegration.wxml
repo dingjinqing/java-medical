@@ -1,0 +1,294 @@
+<!--pages1/pinintegration/pinintegration.wxml-->
+<include src="/pages/common/header.wxml" />
+
+<view class='main-container'>
+  <!-- 下载海报 -->
+  <block wx:if="{{show_poster.flag == 1}}">
+    <block wx:if="{{getsq == true || click_num == true}}">
+      <view class='share_img_btn' wx:if="{{is_share == 0 }}" bindtap='go_share'>
+        <view>{{show_poster.text_1}}</view>
+        <view>{{show_poster.text_2}}</view>
+      </view>
+    </block>
+    <block wx:else>
+      <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+        <view>{{show_poster.text_1}}</view>
+        <view>{{show_poster.text_2}}</view>
+      </button>
+    </block>
+  </block>
+
+  <!-- 积分头部 -->
+  <view class='pin_header'>
+    <view class="rule" bindtap='toRule'>活动规则</view>
+    <view class="activity" bindtap='toActivity'>我的活动</view>
+    <view class='top'>
+      <view class='pin_invite' style='background:url({{imageUrl}}image/wxapp/pin/pin_bk.png) no-repeat ; background-size:100%;'>
+        <view class='bk_title'>
+          <view>邀请好友一起<text>瓜分积分!</text>
+          </view>
+        </view>
+        <!-- 宣传语 -->
+        <view class='adver'>
+          <text>{{pin_info.advertise}}</text>
+        </view>
+        <!-- 消耗积分 -->
+        <view>
+          <view class='line'>
+            <image src='{{imageUrl}}image/wxapp/pin/pin_circle.png'></image>
+          </view>
+          <view class='pin_gold'>
+            <image src='{{imageUrl}}image/wxapp/pin/gold.png'></image>
+            <text>{{person[0].can_integration}}</text>
+          </view>
+          <view class='line'>
+            <image src='{{imageUrl}}image/wxapp/pin/pin_circle.png'></image>
+          </view>
+        </view>
+      </view>
+      <!-- 结束时间 -->
+      <view class='pin_time'>
+        <block wx:if="{{gd.pinInte_user.status == 0 && gd.pinInte_user}}">
+          <view class='end'>距结束:</view>
+          <view wx:if='{{clock.length == 4}}' class='daojishis'>
+            <text>{{clock[0]}}</text>天
+            <text>{{clock[1]}}</text>:
+            <text>{{clock[2]}}</text>:
+            <text>{{clock[3]}}</text>
+          </view>
+          <view wx:if='{{clock.length == 3}}' class='daojishis'>
+            <text>{{clock[0]}}</text>:
+            <text>{{clock[1]}}</text>:
+            <text>{{clock[2]}}</text>
+          </view>
+        </block>
+        <block wx:if="{{gd.pinInte_user.status > 0}}">
+          <view class='end'>已结束</view>
+        </block>
+      </view>
+      <!-- 成团数和瓜分数 -->
+      <view class='pin_rect' style='background:url({{imageUrl}}image/wxapp/pin/rectangle.png) no-repeat ; background-size:100%;'>
+        <text>{{pin_info.limit_amount}}人成团，即可瓜分{{pin_info.inte_group}}积分</text>
+      </view>
+    </view>
+    <!-- 组队队员 -->
+    <view class='person_content'>
+      <view class="person_top">
+        <view class='person'>
+          <view class='invite_circle' wx:if="{{person[0].invite_num != 0}}">邀请{{person[0].invite_num}}人</view>
+          <view class='person_circle'>
+            <image src='{{person[0].user_avatar}}' wx:if="{{person[0].user_avatar != '' && person[0].user_avatar != null }}"></image>
+            <image src="{{imageUrl}}image/wxapp/pin/no_people.png" wx:else></image>
+          </view>
+          <view class="person_text">
+            <text class='person_tuan'>团长</text>
+            <text class='person_name1' wx:if="{{person[0].username != ''  && person[0].username != null}}">{{person[0].username}}</text>
+            <text class='person_name1' wx:else>神秘的小伙伴</text>
+          </view>
+        </view>
+        <view class='person' wx:for="{{limit}}" wx:key='key' data-index='{{index}}'>
+          <block wx:if="{{person[index+1] == undefined}}">
+            <view class='person_circle'>
+              <image src='{{imageUrl}}image/wxapp/pin/question.png'></image>
+            </view>
+            <view class="person_text">
+              <text class='person_name2'>待邀请</text>
+            </view>
+          </block>
+          <block wx:else>
+            <view class='invite_circle' wx:if="{{person[index+1].invite_num != 0}}">邀请{{person[index+1].invite_num}}人</view>
+            <view class='person_circle'>
+              <image src='{{person[index+1].user_avatar}}' wx:if="{{person[index+1].user_avatar != '' && person[index+1].user_avatar != null}}"></image>
+              <image src="{{imageUrl}}image/wxapp/pin/no_people.png" wx:else></image>
+            </view>
+            <view class="person_text">
+              <text class='person_name2' wx:if="{{person[index+1].username != '' && person[index+1].username != null}}">{{person[index+1].username}}</text>
+              <text class='person_name2' wx:else>神秘的小伙伴</text>
+            </view>
+          </block>
+        </view>
+        <view class='share_content'>
+          <block wx:if="{{gd.pinInte_user.is_grouper == 1 && gd.pinInte_user.status == 0}}">
+            <button class='pin_share' open-type="share">
+              <text>分享邀好友</text>
+            </button>
+          </block>
+          <block wx:if="{{gd.pinInte_user.is_grouper != 1 && gd.pinInte_user.status ==0}}">
+            <button class='pin_share' open-type="share">
+              <text>帮TA邀好友</text>
+            </button>
+          </block>
+          <block wx:if="{{((gd.pinInte_user.status >0 && gd.pinInte_user.is_grouper == 1) || (gd.pinInte_user.is_grouper != 1)) && (gd.can_pin.status >4 || gd.can_pin.status==0)}}">
+          <form report-submit='true' bindsubmit='iwantgo'>
+            <button class='pin_share' formType='submit'>
+              <text>我要开团</text>
+            </button>
+          </form>
+          </block>
+
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 积分底部 -->
+  <view class='pin_footer'>
+    <view class='pin_bottom' style='background:url({{imageUrl}}image/wxapp/pin/wave.png) no-repeat ; background-size:100%;'>
+      <view class='my_style'>积分
+        <text>·</text>商品</view>
+      <view class='my_grade'>我的积分：{{gd.score}}</view>
+    </view>
+    <!-- 积分商品列表 -->
+    <view class='reco_info'>
+      <view class='loop_info clearfix'>
+        <view class='each_view' wx:for='{{inteGoods}}' wx:key='key' data-goods_id="{{item.goods_id}}" data-in_goods_id="{{item.id}}" bindtap='to_integral'>
+          <image src="{{item.goods_img}}"></image>
+          <view class='goods_infos'>
+            <view class='goods_names'>{{item.goods_name}}</view>
+            <view class='price_infos clearfix'>
+              <view class='sale_prices'>
+                <text>{{item.money != 0 ? '￥' + item.money + '+': ''}}{{item.score}}积分</text>
+              </view>
+              <!-- <view class="ori_prices">￥{{item.prd_price}}</view> -->
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 提示获得积分弹框 -->
+<view class='success' wx:if="{{group_gd.can_pin.status == 0 && group_gd.invite_name != undefined && share_group == true && gd.pinInte_user.status == 0}}">
+  <view class='zhezhao'>
+    <view class='success_content'>
+      <image src='{{imageUrl}}image/wxapp/pin/success.png' mode='widthFix' class='img1'></image>
+      <view class='text'>您被好友"
+        <text>{{group_gd.invite_name}}</text>"邀请</view>
+      <view class='text'>一起瓜分积分{{group_gd.inte_group}}积分</view>
+      <view class='jc'>奖池 +
+        <text>{{group_gd.add_inte}}</text>积分</view>
+      <button class='see' open-type='getUserInfo' bindgetuserinfo="onGotUserInfo" wx:if="{{group_gd.can_pin.is_new == 1}}">去看看</button>
+      <button class='see' bindtap="close" wx:if="{{group_gd.can_pin.is_new == 0}}">去看看</button>
+      <view class='double'>邀请用户可瓜分更多积分</view>
+    </view>
+  </view>
+</view>
+
+<!-- 活动上限弹框 -->
+<view class='success' wx:if="{{group_gd.can_pin.status == 7 && share_group == true }}">
+  <view class='zhezhao'>
+    <view class='success_content2'>
+      <image src='{{imageUrl}}image/wxapp/pin/lose.png' mode='widthFix' class='img1'></image>
+      <view class='text2'>您已经参与过{{pin_info.join_limit}}个活动</view>
+      <view class='text2'>达到上限了哦！</view> 
+      <view class='see' bindtap='iwantgo'>知道了</view>
+    </view>
+    <view class='x2' bindtap='close'>
+      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
+    </view>
+  </view>
+</view>
+
+<!-- 活动结束弹框 -->
+<view class='success' wx:if="{{(group_gd.can_pin.status == 2 || group_gd.can_pin.status == 4 || end == true) && share_group == true}}">
+  <view class='zhezhao'>
+    <view class='success_content3'>
+      <image src='{{imageUrl}}image/wxapp/pin/success.png' mode='widthFix' class='img1'></image>
+      <view class='text3'>活动结束</view>
+      <view class='text4'>感谢您的关注</view>
+      <view class='see' bindtap='returnIndex'>知道了</view>
+    </view>
+    <view class='x' bindtap='close'>
+      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
+    </view>
+  </view>
+</view>
+
+<!-- 分享成功弹框 -->
+<view class='success' wx:if="{{share == true}}">
+  <view class='zhezhao'>
+    <view class='success_content3'>
+      <image src='{{imageUrl}}image/wxapp/pin/success.png' mode='widthFix' class='img1'></image>
+      <view class='text5'>快去邀请更多好友</view>
+      <view class='text5'>一起瓜分{{pin_info.inte_group}}积分吧</view>
+      <button class='see' open-type="share">继续分享</button>
+      <view class='double'>邀请用户可瓜分更多积分</view>
+    </view>
+    <view class='x' bindtap='close'>
+      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
+    </view>
+  </view>
+</view>
+
+<!-- 开奖弹框 -->
+<view class='success' wx:if="{{gd.pinInte_user.status == 1 && gd.pinInte_user.is_look == 0  && share_group == true}}">
+  <view class='zhezhao'>
+    <view class='success_content4' style='background:url({{imageUrl}}image/wxapp/pin/good.png) no-repeat ; background-size:100%;'>
+      <view class='kaijiang'>
+        <view class='kjjg'>开奖结果</view>
+        <view class='contra'>恭喜您</view>
+        <view class='get'>获得
+          <text>{{gd.pinInte_user.integration}}</text>积分</view>
+        <view class='see2' bindtap='toActivity'>去看看</view>
+        <view class='double'>参与活动时间：{{gd.pinInte_user.start_time}}</view>
+      </view>
+    </view>
+    <view class='x4' bindtap='close'>
+      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
+    </view>
+  </view>
+</view>
+
+<!-- 活动失败 -->
+<view class='success' wx:if="{{gd.pinInte_user.status == 2 && gd.pinInte_user.is_look == 0  && share_group == true}}">
+  <view class='zhezhao'>
+    <view class='success_content5' style='background:url({{imageUrl}}image/wxapp/pin/bad.png) no-repeat ; background-size:100%;'>
+      <view class='kaijiang2'>
+        <view class='kjjg2'>活动失败</view>
+        <view class='contra2'>拼团不满{{pin_info.limit_amount}}人，无法瓜分积分</view>
+        <view class='see3' bindtap='iwantgo'>知道了</view>
+        <view class='double'>参与活动时间：2018-10-17</view>
+      </view>
+    </view>
+    <view class='x5' bindtap='close'>
+      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
+    </view>
+  </view>
+</view>
+
+<!-- 满员弹框 -->
+<view class='success' wx:if="{{group_gd.can_pin.status == 6}}">
+  <view class='zhezhao'>
+    <view class='success_content6'>
+      <image src='{{imageUrl}}image/wxapp/pin/lose.png' mode='widthFix' class='img1'></image>
+      <view class='text6'>团队已满员</view>
+      <view class='text2'>尝试开启一个新团</view>
+      <view class='text2'>和好友一起瓜分积分吧！</view>
+      <view class='see' bindtap='iwantgo'>知道了</view>
+    </view>
+  </view>
+</view>
+
+<!-- 团结束弹框 -->
+<view class='success' wx:if="{{group_gd.can_pin.status == 5}}">
+  <view class='zhezhao'>
+    <view class='success_content6'>
+      <image src='{{imageUrl}}image/wxapp/pin/lose.png' mode='widthFix' class='img1'></image>
+      <view class='text6'>团队已结束</view>
+      <view class='text2'>尝试开启一个新团</view>
+      <view class='text2'>和好友一起瓜分积分吧！</view>
+      <view class='see' bindtap='iwantgo'>知道了</view>
+    </view>
+  </view>
+</view>
+<!--fenxiang弹框  -->
+<view class='share_bg' style='display:{{is_share == 1?"block":"none"}}'>
+  <view class='zhezhao' catchtap='not_show_share'></view>
+  <view class='share_content_share'>
+    <image src='{{pictorial}}'></image>
+    <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>保存图片</view>
+    <view class='save_tips'>保存图片到本地相册</view>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />
