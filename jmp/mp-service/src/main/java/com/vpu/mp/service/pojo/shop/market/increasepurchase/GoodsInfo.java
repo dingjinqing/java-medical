@@ -11,6 +11,7 @@ import java.math.BigDecimal;
  */
 @Data
 public class GoodsInfo {
+    private Integer goodsId;
     /** 商品名称 */
     private String goodsName;
     /**
