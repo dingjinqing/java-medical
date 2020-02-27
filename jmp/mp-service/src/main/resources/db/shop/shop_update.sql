@@ -98,8 +98,8 @@ ALTER TABLE `b2c_sec_kill_product_define` ADD COLUMN `goods_id` int(8) NOT NULL 
 -- 2020年2月26日10:46:57  秒杀活动表添加优先级字段
 ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `first` tinyint(3) NOT NULL DEFAULT 0 COMMENT '优先级';
 -- 2020年2月26日10:46:57  秒杀活动表修改goods_id类型为字符串
--- ALTER TABLE `b2c_sec_kill_define` DROP INDEX `goods_id`;
--- ALTER TABLE `b2c_sec_kill_define` MODIFY COLUMN `goods_id` text  COMMENT '商品ID';
+ALTER TABLE `b2c_sec_kill_define` DROP INDEX `goods_id`;
+ALTER TABLE `b2c_sec_kill_define` MODIFY COLUMN `goods_id` text  COMMENT '商品ID';
 -- 2020年2月26日20:13:50 拼团活动表goods_id 字段有int转换为string
 ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMENT '商品id';
 /***********************2.10*********************END*/
