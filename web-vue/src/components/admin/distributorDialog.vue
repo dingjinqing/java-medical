@@ -189,6 +189,11 @@ export default {
       type: Boolean,
       default: () => false
     },
+    // 当前操作的分组id
+    optGroupId: {
+      type: Number,
+      default: () => null
+    },
     // 选中的数据id
     selectRowIds: {
       type: Array,
@@ -209,7 +214,11 @@ export default {
   data () {
     return {
       dialogTableVisible: false, // 分销员弹框
-      pageParams: {}, // 分页
+      // 分页
+      pageParams: {
+        currentPage: 1,
+        pageRows: 10
+      },
       valueLevel: '',
       valueGroup: '',
       groupLevelList: [], // 分销员等级
@@ -239,7 +248,13 @@ export default {
         }
       })
       // 分销员表格
-      distributorList(this.pageParams).then(res => {
+      var requestParams = {}
+      if (this.optGroupId) {
+        requestParams.optGroupId = this.optGroupId
+      }
+      requestParams.currentPage = this.pageParams.currentPage
+      requestParams.pageRows = this.pageParams.pageRows
+      distributorList(requestParams).then(res => {
         if (res.error === 0) {
           this.distributorList = res.content.dataList
           this.pageParams = res.content.page

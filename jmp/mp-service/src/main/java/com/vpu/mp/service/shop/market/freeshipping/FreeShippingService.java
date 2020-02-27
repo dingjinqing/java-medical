@@ -338,10 +338,13 @@ public class FreeShippingService extends ShopBaseService {
         for (FreeShippingRuleVo rule : ruleList) {
             List<Integer> districtCode = Util.stringToList(rule.getArea());
             if (matchDistrictCode(address.getDistrictCode(),districtCode)) {
+                logger().info("满包邮-在包邮地区");
                 if ((rule.getConType().equals(CONTYPE_NUM)||rule.getConType().equals(CONTYPE_NUM_MONEY)) && tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].intValue() >= rule.getNum()) {
+                    logger().info("满{}件包邮,商品数量{}",rule.getNum().toString(),tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].toString());
                     return true;
                 }
-                if ((rule.getConType().equals(CONTYPE_MONEY)||rule.getConType().equals(CONTYPE_NUM_MONEY))&&tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].intValue()>=rule.getMoney()){
+                if ((rule.getConType().equals(CONTYPE_MONEY)||rule.getConType().equals(CONTYPE_NUM_MONEY))&&tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].compareTo(rule.getMoney())>=0){
+                    logger().info("满{}元包邮,商品价格{}",rule.getMoney().toString(),tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].toString());
                     return true;
                 }
             }

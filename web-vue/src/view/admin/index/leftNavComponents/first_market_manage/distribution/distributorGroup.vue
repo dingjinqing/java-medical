@@ -17,13 +17,13 @@
       <span class="showCfg">分组是否展示在小程序端：</span>
       <el-radio
         class="radio"
-        v-model="showRadio"
-        label="1"
+        v-model="v"
+        :label="0"
       >展示</el-radio>
       <el-radio
         class="radio"
-        v-model="showRadio"
-        label="2"
+        v-model="v"
+        :label="1"
       >不展示</el-radio>
       <el-button
         size="small"
@@ -129,9 +129,9 @@
     />
 
     <!-- 添加分销员弹窗 -->
-    <!-- :selectRowIds="addData.userIds" -->
     <DistributorDialog
       :turnUp="turnUpDialog"
+      :optGroupId="distributorId"
       @handleSelect="handleSelectRow"
     />
 
@@ -194,17 +194,18 @@
 import {
   distributionGroup, distributionGroupDel, distributionGroupAdd,
   distributionGroupEdit, distributionGroupSave, addDistributor, setDefaultGroup, cancleDefaultGroup,
-  setCanSelect
+  setCanSelect, setGroupShow, getGroupShow
 } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
+    // DistributorDialog: () => import('./distributorDialog')
     DistributorDialog: () => import('@/components/admin/distributorDialog')
   },
   data () {
     return {
       groupName: '', // 搜索条件
-      showRadio: '1', // 保存配置
+      v: 1, // 保存配置
       tableData: [], // 表格数据
       pageParams: {}, // 分页
       // 添加分组
@@ -225,38 +226,16 @@ export default {
       editId: '', // 编辑id
       addGroupDialog: false, // 分组弹窗
       turnUpDialog: false, // 分销员弹窗
-      distributorId: '',
+      distributorId: null,
       selectRow: [], // 选中分销员id
 
       distributorList: []
-      // allChecked: false,
-      // allCheckFlag: false,
-      // hasCheck: '',
-      // addData: {
-      //   userIds: [],
-      //   groupId: ''
-      // }
     }
   },
-  // watch: {
-  //   allChecked (newData) {
-  //     console.log(newData)
-  //     if (newData) {
-  //       this.distributorList.map((item, index) => {
-  //         item.ischecked = true
-  //       })
-  //     } else {
-  //       if (this.allCheckFlag === false) {
-  //         this.distributorList.map((item, index) => {
-  //           item.ischecked = false
-  //         })
-  //       }
-  //     }
-  //   }
-  // },
   mounted () {
     // 初始化页面
     this.initGroupList()
+    this.getGroupShow()
   },
   methods: {
     // 获取列表数据
@@ -275,9 +254,22 @@ export default {
       })
     },
 
+    // 获取小程序展示配置
+    getGroupShow () {
+      getGroupShow().then(res => {
+        if (res.error === 0) {
+          this.v = res.content
+        }
+      })
+    },
+
     // 保存小程序展示配置
     saveShowHandler () {
-
+      setGroupShow({ v: this.v }).then(res => {
+        if (res.error === 0) {
+          this.$message.success('展示设置成功')
+        }
+      })
     },
 
     // 添加按钮
@@ -371,32 +363,6 @@ export default {
         }
       })
     },
-
-    // 表格对应行选中高亮
-    // handleClick () {
-    //   console.log(this.distributorList)
-    //   let noCheck = this.distributorList.filter((item, index) => {
-    //     return item.ischecked === false
-    //   })
-    //   let hasCheck = this.distributorList.filter((item, index) => {
-    //     return item.ischecked === true
-    //   })
-    //   this.hasCheck = hasCheck
-    //   if (!noCheck.length) {
-    //     this.allChecked = true
-    //   } else {
-    //     this.allCheckFlag = true
-    //     this.allChecked = false
-    //   }
-    //   this.$forceUpdate()
-    // },
-    // 全选本页 - 全部checkbox选中
-    // handleAllcheck () {
-    //   this.allCheckFlag = false
-    // },
-    // cancel () {
-    //   this.centerDialogVisible = false
-    // },
 
     // 设置默认分组
     setDefault (id, value) {

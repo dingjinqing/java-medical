@@ -33,7 +33,7 @@
               <text>{{item.storeName}}</text>
             </view>
             <view class="store_distance">
-              {{i18n.$t(localePack,"pages.store.fromYou")}}{{item.distance}} km
+              {{i18n.$t(localePack,"pages.store.fromYou")}}{{item.distance != null?item.distance:''}} km
             </view>
           </view>
           <!-- 同城配送（未开发） -->

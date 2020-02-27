@@ -113,8 +113,8 @@ global.wxPage({
           info.memberCardList.forEach(item => {
             // 有效期
             if (item.startDate === null || item.endDate === null) {
-              item.startDate = item.updateTime.split(' ')[0]
-              item.endDate = item.expireTime.split(' ')[0]
+              item.startDate = item.startTime.split(' ')[0]
+              item.endDate = item.endTime.split(' ')[0]
             }
             // 折扣
             if (item.discount == null) {
@@ -125,7 +125,7 @@ global.wxPage({
             item.src_no = src_no
             // 背景
             if (item.bgImg != '') {
-              item.bgImg = that.data.imageUrl+item.bgImg
+              item.bgImg = that.data.imageUrl + item.bgImg
             }
           })
           // 默认使用的会员卡
@@ -135,9 +135,9 @@ global.wxPage({
           }
         }
         // 积分使用
-        let scoreProportion = Number(info.scoreProportion)// 积分兑换比
+        let scoreProportion = info.scoreProportion ? Number(info.scoreProportion) : 100// 积分兑换比
         // 积分转换成scoreProportion的整数倍
-        info.score = Math.floor(info.score/scoreProportion)*scoreProportion
+        info.score = Math.floor(info.score / scoreProportion) * scoreProportion
         info.scorePayNum = Number(info.scorePayNum)
         // 最多使用积分
         that.setData({
@@ -226,9 +226,9 @@ global.wxPage({
     // 积分最多可使用多少
     let maxScore = 0
     if (orderInfo.scoreDiscountRatio > 0) {
-      maxScore = payInfo.discountedAmount*(Number(orderInfo.scoreDiscountRatio)/100)*scoreProportion
+      maxScore = payInfo.discountedAmount * (Number(orderInfo.scoreDiscountRatio) / 100) * scoreProportion
     } else {
-      maxScore = payInfo.discountedAmount*scoreProportion
+      maxScore = payInfo.discountedAmount * scoreProportion
     }
     if (maxScore > orderInfo.score) {
       maxScore = orderInfo.score
