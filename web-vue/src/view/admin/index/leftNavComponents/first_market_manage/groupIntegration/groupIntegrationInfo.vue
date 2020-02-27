@@ -97,10 +97,9 @@
             size="small"
             class="inputWidth"
             :disabled="edit"
-            type="number"
           ></el-input>
           <span>积分</span>
-          <span class="uniteStyle">0表示不限制数量,修改总量时只能增加,不能减少,请谨慎设置</span>
+          <span class="uniteStyle">0表示不限制数量<!--,修改总量时只能增加,不能减少,请谨慎设置--></span>
         </el-form-item>
         <el-form-item
           label="单团瓜分内容: "
@@ -116,7 +115,6 @@
                 size="small"
                 style="width: 90px"
                 :disabled="edit"
-                type="number"
               />
             </el-form-item>
             <span>&nbsp;人，瓜分&nbsp;</span>
@@ -129,7 +127,6 @@
                 size="small"
                 class="inputWidth"
                 :disabled="edit"
-                type="number"
               />
             </el-form-item>
             <span>&nbsp;积分</span>
@@ -151,7 +148,6 @@
                 size="small"
                 style="width:90px"
                 :disabled="edit"
-                type="number"
               />
             </el-form-item>
             <span>&nbsp;次新团</span>
@@ -165,6 +161,7 @@
           <el-radio-group
             v-model="activity.divideType"
             style="line-height:40px"
+            :disabled="edit"
           >
             <el-radio :label="0">按邀请好友数量瓜分
               <span style="color: #999">&nbsp;&nbsp;(邀请好友数量越多获得积分越多)</span>
@@ -185,7 +182,7 @@
         >
           <span>用户开团24小时后,拼团未满员是否可以瓜分积分</span>
           <br>
-          <el-radio-group v-model="activity.isDayDivide">
+          <el-radio-group v-model="activity.isDayDivide" :disabled="edit">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
@@ -214,7 +211,7 @@ export default {
   },
   data () {
     var checklimitAmount = (rule, value, callback) => {
-      if (!value) {
+      if (this.isEmpty(value)) {
         callback(new Error('请填写瓜分人数'))
       } else {
         if (value < 2) {
@@ -222,6 +219,53 @@ export default {
         }
         if (value > 20) {
           callback(new Error('成团人数应小于等于20人'))
+        }
+        let flag = new RegExp(this.rgexp).test(value)
+        if (!flag) {
+          callback(new Error('请输入正整数'))
+        }
+        callback()
+      }
+    }
+    var checkInteGroup = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入瓜分积分数'))
+      } else {
+        if (value < 0) {
+          callback(new Error('请输入瓜分积分数为大于0'))
+        }
+        let flag = new RegExp(this.rgexp).test(value)
+        if (!flag) {
+          callback(new Error('请输入正整数'))
+        }
+        callback()
+      }
+    }
+    var checkJoinLimit = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入参团限制'))
+      } else {
+        if (value < 0) {
+          callback(new Error('请输入参团限制为大于0'))
+        }
+        let flag = new RegExp('^[0-9]([0-9])*$').test(value)
+        if (!flag) {
+          callback(new Error('请输入正整数'))
+        }
+        callback()
+      }
+    }
+    var checkinteTotal = (rule, value, callback) => {
+      console.log('瓜分积分数' + value)
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入瓜分积总数'))
+      } else {
+        if (value < 0) {
+          callback(new Error('请输入瓜分积总数为大于0'))
+        }
+        let flag = new RegExp('^[0-9]([0-9])*$').test(value)
+        if (!flag) {
+          callback(new Error('请输入正整数'))
         }
         callback()
       }
@@ -235,10 +279,10 @@ export default {
         advertise: '积分购物可抵现金',
         startTime: '',
         endTime: '',
-        inteTotal: '',
-        inteGroup: '',
-        limitAmount: '',
-        joinLimit: '',
+        inteTotal: null,
+        inteGroup: null,
+        limitAmount: null,
+        joinLimit: 1,
         divideType: 0,
         isDayDivide: 0
       },
@@ -247,16 +291,17 @@ export default {
         advertise: [{ required: true, message: '请填写宣传语', trigger: 'blur' }],
         startTime: [{ required: true, message: '请选开始时间', trigger: 'blur' }],
         endTime: [{ required: true, message: '请选择结束时间', trigger: 'blur' }],
-        inteTotal: [{ required: true, message: '请填写瓜分积总数', trigger: 'blur' }],
-        limitAmount: [{ validator: checklimitAmount, trigger: 'blur' }],
-        inteGroup: [{ required: true, message: '请输入瓜分积分数', trigger: 'blur' }],
-        joinLimit: [{ required: true, message: '请填写参团限制', trigger: 'blur' }],
+        inteTotal: [{ required: true, validator: checkinteTotal, trigger: 'blur' }],
+        limitAmount: [{ required: true, validator: checklimitAmount, trigger: 'blur' }],
+        inteGroup: [{ required: true, validator: checkInteGroup, trigger: 'blur' }],
+        joinLimit: [{ required: true, validator: checkJoinLimit, trigger: 'blur' }],
         divideType: [{ required: true, trigger: 'blur' }],
         isDayDivide: [{ required: true, trigger: 'blur' }]
       },
       srcList: {
         src1: `${this.$imageHost}/image/admin/new_preview_image/pin_integration.jpg`
-      }
+      },
+      rgexp: '^[1-9]([0-9])*$'
     }
   },
   methods: {
@@ -265,6 +310,8 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.activity = res.content
+          console.log('编辑返回')
+          console.log(this.activity)
         }
       })
     },
@@ -317,15 +364,26 @@ export default {
       this.$emit('backHome', params)
     },
     checkInfo () {
-      if (this.activity.inteGroup < this.activity.limitAmount) {
-        this.$message.warning(' 瓜分积分数需要大于成团人数')
+      if (parseInt(this.activity.inteGroup) < parseInt(this.activity.limitAmount)) {
+        this.$message.warning('瓜分积分数需要大于成团人数')
         return false
       }
-      if (this.activity.inteTotal > 0 && this.activity.inteGroup > this.activity.inteTotal) {
-        this.$message.warning(' 单团瓜分积分数不能大于总积分数')
+      if (parseInt(this.activity.inteTotal) > 0 && parseInt(this.activity.inteGroup) > parseInt(this.activity.inteTotal)) {
+        this.$message.warning('单团瓜分积分数不能大于总积分数')
+        return false
+      }
+      if (parseInt(this.activity.startTime) > parseInt(this.activity.endTime)) {
+        this.$message.warning('开始时间应小于结束时间')
         return false
       }
       return true
+    },
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted () {

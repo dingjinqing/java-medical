@@ -208,11 +208,11 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param actId
 	 * @return
 	 */
-	public GroupIntegrationShareQrCodeVo getMaQrCode(Integer actId) {
+	public GroupIntegrationShareQrCodeVo getMaQrCode(Integer actId,Integer inviteUser,Integer groupId) {
 		GroupIntegrationDefineRecord record = selectDefineById(actId);
 		GroupIntegrationShareQrCodeVo qrCodeVo = null;
 		if(record != null) {
-			String pathParam="pinInte_id="+actId+"&invite_user=&group_id=";
+			String pathParam=String.format("pinInte_id=%d&invite_user=%d&group_id=%d", actId, inviteUser, groupId);
 			String imageUrl=qrCode.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,pathParam);
 
 			qrCodeVo = new GroupIntegrationShareQrCodeVo();
