@@ -796,8 +796,6 @@ public class OrderInfoService extends ShopBaseService {
                 OrderConstant.BK_PAY_NO :
                 (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ?
                     OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
-        //TODO 代付人数
-        order.setInsteadPayNum((short)0);
         //TODO 推广信息
         order.setIsPromote((byte)0);
         //主订单号

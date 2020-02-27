@@ -5,13 +5,17 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayVo;
 import com.vpu.mp.service.shop.config.InsteadPayConfig;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -25,13 +29,16 @@ import java.util.List;
  * 好友代付
  * @author 王帅
  */
-public class InsteadPayService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam,OrderOperateQueryParam> {
+public class InsteadPayService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, InsteadPayParam> {
 
     @Autowired
     private OrderInfoService orderInfo;
 
     @Autowired
     private InsteadPayConfig insteadPayConfig;
+
+    @Autowired
+    private OrderReadService orderReadService;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -44,10 +51,10 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         if(order == null) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
         }
-        if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY)) {
+        if(!order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY)) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF, null);
         }
-        if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)) {
+        if(order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_PAY_WAY_INSTEAD_PAY_FINISH, null);
         }
         //vo
@@ -55,13 +62,17 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         //获取已付金额
         BigDecimal amountPaid = orderInfo.getOrderFinalAmount(order.into(OrderListInfoVo.class), true);
         //待支付金额
-        BigDecimal waitPayMoney = BigDecimalUtil.subtrac(order.getInsteadPayMoney(), amountPaid);
+        BigDecimal waitPayMoney = BigDecimalUtil.subtrac(order.getInsteadPayMoney(), order.getMoneyPaid());
         //校验
         if(BigDecimalUtil.compareTo(waitPayMoney, null) < 1) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_PAY_WAY_INSTEAD_PAY_FINISH, null);
         }
         //代付配置
-        InsteadPay cfg = this.insteadPayConfig.getInsteadPayConfig();
+        InsteadPay cfg = Util.parseJson(order.getInsteadPay(), InsteadPay.class);
+        if(cfg == null) {
+            logger().error("代付订单支付页面代付配置为null");
+            return ExecuteResult.create(JsonResultCode.CODE_PARAM_ERROR, null);
+        }
         if(BigDecimalUtil.compareTo(waitPayMoney, new BigDecimal("0.01")) == 0) {
             //1分随便付
             vo.setIsShowEdit(OrderConstant.NO);
@@ -85,25 +96,39 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
             //代付金额三阶梯
             List<BigDecimal> threeStages = new ArrayList<>(3);
             //一阶段
-            threeStages.add(InsteadPay.NOT_SET, BigDecimalUtil.BIGDECIMAL_ZERO);
+            threeStages.add(0, BigDecimalUtil.BIGDECIMAL_ZERO);
             //二阶段
-            threeStages.add(InsteadPay.ONE_WAY, BigDecimalUtil.BIGDECIMAL_ZERO);
+            threeStages.add(1, BigDecimalUtil.BIGDECIMAL_ZERO);
             //三阶段
-            threeStages.add(InsteadPay.TWO_WAY, BigDecimalUtil.BIGDECIMAL_ZERO);
+            threeStages.add(2, BigDecimalUtil.BIGDECIMAL_ZERO);
 
             vo.setThreeStages(threeStages);
             vo.setIsShowEdit(OrderConstant.YES);
             vo.setMoneyPaid(BigDecimalUtil.BIGDECIMAL_ZERO);
         }
-        vo.setMessage("");
+        vo.setMessage(order.getUserId().equals(param.getWxUserInfo().getUserId()) ?
+            (order.getInsteadPayNum() == 0 ? cfg.getOrderUserMessageMultiple() : cfg.getOrderUserMessageSingle()) :
+            (order.getInsteadPayNum() == 0 ? cfg.getInsteadPayMessageMultiple() : cfg.getInsteadPayMessageSingle()));
         vo.setAmountPaid(amountPaid);
         vo.setWaitPayMoney(waitPayMoney);
-        //TODO
+        vo.setOrder(orderReadService.mpGet(new OrderParam(param.getOrderSn())));
         return vo;
     }
 
     @Override
-    public ExecuteResult execute(OrderOperateQueryParam obj) {
+    public ExecuteResult execute(InsteadPayParam param) {
+        OrderInfoRecord order = orderInfo.getOrderByOrderSn(param.getOrderSn());
+        if(order == null) {
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
+        }
+        if(!order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY)) {
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF, null);
+        }
+        if(order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY) {
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_PAY_WAY_INSTEAD_PAY_FINISH, null);
+        }
+        //待支付金额
+        BigDecimal waitPayMoney = BigDecimalUtil.subtrac(order.getInsteadPayMoney(), order.getMoneyPaid());
         return null;
     }
 

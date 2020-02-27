@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead;
 
+import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,4 +22,5 @@ public class InsteadPayVo {
     private String message;
     private BigDecimal amountPaid;
     private BigDecimal waitPayMoney;
+    private OrderInfoMpVo order;
 }
