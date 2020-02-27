@@ -33,13 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -242,6 +236,16 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
                     cartBo.getDate());
             if (cartActivityInfoList!=null&&cartActivityInfoList.size()>0){
                 goods.getCartActivityInfos().addAll(cartActivityInfoList);
+                //商品是否已经选择活动
+                if (goods.getType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)){
+                    Optional<CartActivityInfo> any = cartActivityInfoList.stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(goods.getExtendId())).findAny();
+                    if (any.isPresent()){
+                        goods.setActivityType(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION);
+                        goods.setActivityId(goods.getExtendId());
+                    }else {
+                        //活动实效 todo
+                    }
+                }
             }
         }
     }

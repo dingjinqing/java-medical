@@ -28,7 +28,7 @@
 				<view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>{{i18n.$t(localePack,'components.decorate.goodsDeleted')}}</view>
 				<view class='daojishi' wx:elif='{{item.goods_is_delete == 1 && item.is_on_sale == 0}}'>{{i18n.$t(localePack,'components.decorate.offShelf')}}</view>
 				<view class='daojishi' wx:elif='{{item.time_state == 2&&item.goods_is_delete==0&&item.act_del_flag == 0 || m.times_arr[item.act_id] == 0}}'>{{i18n.$t(localePack,'components.decorate.activityEnded')}}</view>
-				<view class='daojishi' wx:elif='{{item.act_status == 0 && item.act_del_flag == 1 }}'>{{i18n.$t(localePack,'components.decorate.activityDeactivated')}}</view>
+				<view class='daojishi' wx:elif='{{item.act_status == 0 || item.act_del_flag == 1 }}'>{{i18n.$t(localePack,'components.decorate.activityDeactivated')}}</view>
 				<view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>{{i18n.$t(localePack,'components.decorate.activityDeleted')}}</view>
 				<view class='daojishi' wx:elif='{{m.goods_count_down==true &&item.time_state == 0&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0}}'>{{item.format_begin_time}} {{i18n.$t(localePack,'components.decorate.start')}}</view>
 				<view class='daojishi' wx:elif='{{m.goods_count_down==true &&item.time_state == 1&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0&&item.act_status == 1&&item.is_on_sale == 1}}'>

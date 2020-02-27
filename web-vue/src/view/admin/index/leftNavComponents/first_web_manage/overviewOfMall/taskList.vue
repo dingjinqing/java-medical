@@ -341,7 +341,7 @@
               <span class=" task_list_desc">{{ storeList.dataGoods.goodsStoreConf.value }} {{ $t('overview.unStoreTip3') }}</span>
               <a
                 href="javascript: void(0);"
-                @click="clickJumpHandler('goodsForSale', storeList.dataGoods.goodsStoreConf.list)"
+                @click="clickJumpHandler('goodsForSale', ShopData.storeSizeNum, 1)"
               >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsUnsalableConf.status === 0">
@@ -362,10 +362,10 @@
                 v-if="storeList.dataGoods.goodsUnsalableConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf.value }} {{ $t('overview.unStoreTip4') }}</span>
-              <a
+              <!-- <a
                 href="javascript: void(0);"
-                @click="clickJumpHandler('goodsForSale', storeList.dataGoods.goodsUnsalableConf.list)"
-              >{{ $t('overview.storeGo') }}</a>
+                @click="clickJumpHandler('goodsForSale', 3, 1)"
+              >{{ $t('overview.storeGo') }}</a> -->
             </div>
             <div v-if="storeList.dataGoods.goodsComment.status === 0">
               <span
@@ -387,7 +387,7 @@
               <span class=" task_list_desc">{{ storeList.dataGoods.goodsComment.value }} {{ $t('overview.unStoreTip5') }}</span>
               <a
                 href="javascript: void(0);"
-                @click="clickJumpHandler('comment', storeList.dataGoods.goodsComment.list)"
+                @click="clickJumpHandler('comment', ShopData.commentOver, 1)"
               >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsRecommend.status === 0">
@@ -469,7 +469,7 @@
               <span class=" task_list_desc">{{ storeList.dataOrder.deliver.value }} {{ $t('overview.unOrderTip1') }}</span>
               <a
                 href="javascript: void(0);"
-                @click="clickJumpHandler('order_wait', storeList.dataOrder.deliver.list)"
+                @click="clickJumpHandler('order_wait', ShopData.deliverOver, 0, 'deliver')"
               >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataOrder.refund.status === 0">
@@ -492,7 +492,7 @@
               <span class=" task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
               <a
                 href="javascript: void(0);"
-                @click="clickJumpHandler('order_return', storeList.dataOrder.refund.list)"
+                @click="clickJumpHandler('order_wait', ShopData.refundOver, 2, 'refund')"
               >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataOrder.remind.status === 0">
@@ -515,7 +515,7 @@
               <span class=" task_list_desc">{{ storeList.dataOrder.remind.value }} {{ $t('overview.unOrderTip3') }}</span>
               <a
                 href="javascript: void(0);"
-                @click="clickJumpHandler('order_return', storeList.dataOrder.remind.list)"
+                @click="clickJumpHandler('order_wait', ShopData.remindOver, 1, 'deliver')"
               >{{ $t('overview.storeGo') }}</a>
             </div>
           </div>
@@ -551,7 +551,7 @@
               <span class=" task_list_desc">{{ storeList.dataMarket.examine.value }} {{ $t('overview.unMarketTip1') }}</span>
               <a
                 href="javascript:void(0);"
-                @click="clickJumpHandler('distribution_info', storeList.dataMarket.examine.list)"
+                @click="clickJumpHandler('distribution_info', ShopData.applyOver, 1)"
               >{{ $t('overview.storeGo') }}</a>
             </div>
             <div
@@ -1227,10 +1227,11 @@ export default {
       this.handleClick()
     },
 
-    // 店铺助手跳转
-    clickJumpHandler (name, params) {
+    // type用于区别订单的tab名
+    clickJumpHandler (name, IntegerDays, flag, type) {
       var obj = {
-        ids: params
+        IntegerDays: IntegerDays,
+        flag: flag
       }
       // 商品评价
       if (name === 'comment') {
@@ -1238,7 +1239,11 @@ export default {
       }
       // 订单发货
       if (name === 'order_wait') {
-        obj.orderStatus = 3
+        if (type === 'deliver') {
+          obj.orderStatus = 3
+        } else if (type === 'refund') {
+          obj.orderStatus = 7
+        }
       }
       // 分销员审核
       if (name === 'distribution_info') {

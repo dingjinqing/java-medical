@@ -1,22 +1,20 @@
 package com.vpu.mp.service.shop.distribution;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_GROUP;
-import static com.vpu.mp.db.shop.Tables.USER;
-
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.db.shop.tables.records.DistributorGroupRecord;
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.service.pojo.shop.distribution.*;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.DistributorGroupRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToGroupParam;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 @Service
 public class DistributorGroupService extends ShopBaseService{
@@ -27,7 +25,7 @@ public class DistributorGroupService extends ShopBaseService{
 	 */
 	public PageResult<DistributorGroupListVo> getDistributorGroupList(DistributorGroupListParam param) {
 		SelectJoinStep<? extends Record> select = db()
-				.select(DISTRIBUTOR_GROUP.ID,DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_GROUP.IS_DEFAULT,DISTRIBUTOR_GROUP.DEL_FLAG,DISTRIBUTOR_GROUP.CREATE_TIME)
+				.select(DISTRIBUTOR_GROUP.ID,DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_GROUP.IS_DEFAULT,DISTRIBUTOR_GROUP.DEL_FLAG,DISTRIBUTOR_GROUP.CREATE_TIME,DISTRIBUTOR_GROUP.CAN_SELECT)
 				.from(DISTRIBUTOR_GROUP);
 		SelectConditionStep<? extends Record> sql = buildOptions(select,param);
 		PageResult<DistributorGroupListVo> groupList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorGroupListVo.class);
@@ -181,4 +179,47 @@ public class DistributorGroupService extends ShopBaseService{
         }
     }
 
+    /**
+     * 支持用户可选 1：支持 0：不支持
+     * @param param
+     * @return
+     */
+    public int userCanSelect(GroupCanSelectParam param){
+        int res = db().update(DISTRIBUTOR_GROUP).set(DISTRIBUTOR_GROUP.CAN_SELECT,param.getCanSelect()).where(DISTRIBUTOR_GROUP
+        .ID.eq(param.getGroupId())).execute();
+        return res;
+    }
+
+    /**
+     * 设置分销分组是否在小程序端展示
+     * @param param
+     * @return
+     */
+    public int showDistributionGroup(ShowDistributionGroupParam param){
+        int res;
+        //判断是否已设置
+        int show_distributor_group = db().selectCount().from(SHOP_CFG).where(SHOP_CFG.K.eq("show_distributor_group")).fetchOne().into(Integer.class);
+        if(show_distributor_group == 1){
+            res = db().update(SHOP_CFG).set(SHOP_CFG.V, param.getV()).where(SHOP_CFG.K.eq("show_distributor_group")).execute();
+        }else{
+            ShopCfgRecord record = new ShopCfgRecord();
+            assign(param,record);
+            res = db().executeInsert(record);
+        }
+        return res;
+    }
+
+    /**
+     * 获取分组显示配置
+     * @return
+     */
+    public int getGroupCfg(){
+        Record1<String> record = db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq("show_distributor_group")).fetchOne();
+        if(record != null) {
+            return record.into(Integer.class);
+        }else{
+            return 0;
+        }
+
+    }
 }

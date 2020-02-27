@@ -337,7 +337,7 @@ public class FreeShippingService extends ShopBaseService {
     public boolean checkedFreeshipCondition(UserAddressVo address, BigDecimal[] tolalNumberAndPrice, List<FreeShippingRuleVo> ruleList) {
         for (FreeShippingRuleVo rule : ruleList) {
             List<Integer> districtCode = Util.stringToList(rule.getArea());
-            if (districtCode.contains(address.getDistrictCode())) {
+            if (matchDistrictCode(address.getDistrictCode(),districtCode)) {
                 if ((rule.getConType().equals(CONTYPE_NUM)||rule.getConType().equals(CONTYPE_NUM_MONEY)) && tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].intValue() >= rule.getNum()) {
                     return true;
                 }
@@ -347,5 +347,32 @@ public class FreeShippingService extends ShopBaseService {
             }
         }
         return false;
+    }
+
+    /**
+     *  判断是否匹配当前区县码
+     * @param districtCode  区县码
+     * @param areaList 地区列表
+     * @return true, false
+     */
+    public boolean matchDistrictCode(Integer districtCode,List<Integer> areaList ){
+         if (districtCode!=null){
+             Integer deliverCodeProvince = districtCode/1000*1000;
+             Integer deliverCodeCity = districtCode/100*100;
+             if (areaList.contains(districtCode)){
+                 return true;
+             }
+             if (areaList.contains(deliverCodeCity)){
+                 return true;
+             }
+             if (areaList.contains(deliverCodeProvince)){
+                 return true;
+             }
+             /**
+              * 全国
+              */
+             return areaList.contains(0);
+         }
+         return false;
     }
 }

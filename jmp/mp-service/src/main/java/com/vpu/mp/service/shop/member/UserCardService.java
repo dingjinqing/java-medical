@@ -211,8 +211,7 @@ public class UserCardService extends ShopBaseService {
 	 * 	获取用户持有的等级卡
 	 */
 	public MemberCardRecord getUserGradeCard(Integer userId) {
-		MemberCardRecord card = userCardDao.getUserGradeCard(userId);
-		return card != null ? card : new MemberCardRecord();
+		return userCardDao.getUserGradeCard(userId);
 	}
 
 	/**
@@ -1248,6 +1247,14 @@ public class UserCardService extends ShopBaseService {
 				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(userCard.getBgImg());
 				userCard.setBgImg(imageUrl);
 			}
+		}
+		if(userCard.getActivationTime()!=null) {
+			logger().info("激活时间"+userCard.getActivationTime());
+			// 已激活
+			userCard.setActivation(NumberUtils.BYTE_ONE);
+		}else {
+			// 未激活
+			userCard.setActivation(NumberUtils.BYTE_ZERO);
 		}
 		return userCard;
 	}

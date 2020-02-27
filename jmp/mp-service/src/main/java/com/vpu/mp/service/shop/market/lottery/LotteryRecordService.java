@@ -35,6 +35,7 @@ import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -100,14 +101,16 @@ public class LotteryRecordService extends ShopBaseService {
      * @return
      */
     public PageResult<LotteryRecordPageListVo> lotteryListByParam(LotteryListUserParam param) {
-        SelectConditionStep<LotteryRecordRecord> selectConditionStep = db().selectFrom(LOTTERY_RECORD)
+            SelectConditionStep<Record> records = db()
+                .select(LOTTERY_RECORD.asterisk(), USER.USERNAME, USER.MOBILE)
+                .from(LOTTERY_RECORD).innerJoin(USER).on(USER.USER_ID.eq(LOTTERY_RECORD.USER_ID))
                 .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
-        if (param.getUserId()!=null){
-            selectConditionStep.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
-        }
-        selectConditionStep.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
-        PageResult<LotteryRecordPageListVo> pageResult = getPageResult(selectConditionStep, param, LotteryRecordPageListVo.class);
-        pageResult.getDataList().forEach(item -> {
+            if (param.getUserId()!=null){
+                records.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
+            }
+            records.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
+            PageResult<LotteryRecordPageListVo> pageResult = getPageResult(records, param, LotteryRecordPageListVo.class);
+            pageResult.getDataList().forEach(item -> {
             if (!Strings.isEmpty(item.getAwardInfo())){
                 item.setLotteryPrize(Util.parseJson(item.getAwardInfo(), LotteryPrizeVo.class));
                 item.setAwardInfo(null);
@@ -276,6 +279,7 @@ public class LotteryRecordService extends ShopBaseService {
                 recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                 recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
                 recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
+                goodsService.getGoodsView(lotteryPrizeRecord.getPrdId());
                 Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
                 recordRecord.setLotteryExpiredTime(timeStampPlus);
                 recordRecord.insert();
@@ -284,14 +288,10 @@ public class LotteryRecordService extends ShopBaseService {
                         PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue());
                 joinValid.setPrizeId(prizeRecordRecord.getId());
                 joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                joinValid.setGoodsImage(goodsView.getGoodsImg());
-                joinValid.setGoodsId(goodsView.getGoodsId());
-                joinValid.setProductId(lotteryPrizeRecord.getPrdId());
                 break;
             case LOTTERY_TYPE_CUSTOM:
                 logger().info("自定义");
-                joinValid.setLotteryAward(lotteryPrizeRecord.getIconImgs());
-                recordRecord.setLotteryAward(lotteryPrizeRecord.getIconImgs());
+
                 break;
             default:
         }

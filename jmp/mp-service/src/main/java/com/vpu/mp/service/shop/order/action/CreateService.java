@@ -252,6 +252,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 order.store();
+                order.refresh();
                 orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
@@ -268,7 +269,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
                     marketProcessorFactory.processOrderEffective(param,order);
                     logger().info("加锁{}",order.getOrderSn());
-                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), true);
+                    atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
                     logger().info("更新成功{}",order.getOrderSn());
                     //营销活动支付回调
                 }
@@ -1079,7 +1080,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     /**
      * 活动满包邮商品
-     *  满包邮活动安装
+     *  满包邮活动
      * @param address
      * @param bos
      * @param tolalNumberAndPrice
@@ -1087,7 +1088,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public List<Integer> fullPackage(UserAddressVo address, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice, Timestamp date){
         List<FreeShippingVo> validFreeList = freeShippingService.getValidFreeList(date);
-        if (validFreeList.size()>0){
+        if (validFreeList.size()==0){
             return new ArrayList<>();
         }
         List<Integer> goodsIds = bos.stream().map(OrderGoodsBo::getGoodsId).distinct().collect(Collectors.toList());

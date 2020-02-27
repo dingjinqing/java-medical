@@ -115,6 +115,7 @@ export const cn = {
     name: '4'
   }],
   changeStatusComment: '此操作将启用该活动, 是否继续?',
+  stopStatusComment: '此操作将停用该活动，是否继续?',
   deleteLuckDrawComment: '此操作将删除该活动, 是否继续?',
   confirm: '确定',
   cancel: '取消',
