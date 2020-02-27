@@ -24,4 +24,7 @@ public class MrkingStrategyUpdateParam {
 
     /** 满折满减活动名称 */
     private String actName;
+
+    /**优先级 */
+    private Integer strategyPriority;
 }
