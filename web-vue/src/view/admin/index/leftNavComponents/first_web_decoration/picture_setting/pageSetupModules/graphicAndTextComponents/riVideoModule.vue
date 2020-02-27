@@ -133,8 +133,7 @@ export default {
     // 添加图片弹窗后选中图片后回传事件
     handleSelectImg (res) {
       console.log(res)
-      this.moduleSaveData.custom_path = res.imgPath
-      this.moduleSaveData.custom_url = res.imgUrl
+      this.moduleSaveData.img_url = res.imgUrl
     },
     // 调起添加视频弹窗
     handleToCallAddVideo () {
