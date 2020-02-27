@@ -212,9 +212,14 @@ public class GroupIntegrationService extends ShopBaseService {
 		GroupIntegrationDefineRecord record = selectDefineById(actId);
 		GroupIntegrationShareQrCodeVo qrCodeVo = null;
 		if(record != null) {
-			String pathParam=String.format("pinInte_id=%d&invite_user=%d&group_id=%d", actId, inviteUser, groupId);
+			String pathParam=null;
+			if(inviteUser!=null) {
+				pathParam=String.format("pid=%d&iuser=%d&gid=%d", actId, inviteUser, groupId);				
+			}else {
+				pathParam="pid="+actId+"&iuser=&gid=";
+			}
+			logger().info("pathParam："+pathParam);
 			String imageUrl=qrCode.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,pathParam);
-
 			qrCodeVo = new GroupIntegrationShareQrCodeVo();
 			qrCodeVo.setImgUrl(imageUrl);
 			qrCodeVo.setPageUrl(QrCodeTypeEnum.PARTATION_INTEGRAL.getPathUrl(pathParam));
