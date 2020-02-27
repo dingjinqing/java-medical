@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
+import com.vpu.mp.db.shop.tables.records.FriendPromoteTimesRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -521,7 +522,10 @@ public class FriendPromoteService extends ShopBaseService {
 
         //否则为助力界面
         else {
-
+            //是否可以继续助力
+            CanPromote canPromote = canPromote(promoteInfo,promoteInfo.getHasPromoteTimes(),param.getUserId(),param.getLaunchId());
+            promoteInfo.setCanPromote(canPromote);
+            //是否可以分享获取助力次数
         }
     }
 
@@ -893,6 +897,15 @@ public class FriendPromoteService extends ShopBaseService {
             .fetchOneInto(OrderInfoRecord.class);
         return orderInfo;
     }
+
+    /**
+     * 校验是否可助力
+     * @param promoteInfo 助力详情
+     * @param hasPromoteTimes 已经助力次数
+     * @param userId 用户id
+     * @param launchId 发起id
+     * @return 是否可助力信息
+     */
     public CanPromote canPromote(PromoteInfo promoteInfo,Integer hasPromoteTimes,Integer userId,Integer launchId){
         CanPromote canPromote = new CanPromote();
         //是否发起
@@ -909,14 +922,45 @@ public class FriendPromoteService extends ShopBaseService {
         }
         //判断当天助力次数限制
         if(promoteInfo.getPromoteTimesPerDay()>0){
-            Integer userPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
-            if (userPromoteTimesCurrentDay>=promoteInfo.getPromoteTimesPerDay()){
+            Integer usedPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
+            if (usedPromoteTimesCurrentDay>=promoteInfo.getPromoteTimesPerDay()){
                 canPromote.setCode((byte)0);
                 canPromote.setMsg("今天的助力次数已经用完了");
                 return canPromote;
             }
         }
+        //获取所有可助力的次数
+        Integer promoteTimesInfo = promoteTimesInfo(userId,launchId).getOwnPromoteTimes();
+        Integer ownPromoteTimes = promoteTimesInfo+1;
+        //判断所有的助力次数限制
+        Integer usedPromoteTimes = getHasPromoteTimes(launchId,null,userId,null);
+        if (usedPromoteTimes>ownPromoteTimes){
+            canPromote.setCode((byte)0);
+            canPromote.setMsg("助力次数已用完");
+            return canPromote;
+        }
+        //活动是否失效
+        if (promoteInfo.getPromoteTimes()==0&&promoteInfo.getActStatus()==2){
+            canPromote.setCode((byte)0);
+            canPromote.setMsg("助力次数已用完");
+            return canPromote;
+        }
+        canPromote.setCode((byte)1);
+        return canPromote;
+    }
 
-        return null;
+    /**
+     * 助力次数详情
+     * @param userId 用户id
+     * @param launchId 发起id
+     * @return 次数详情
+     */
+    public FriendPromoteTimesRecord promoteTimesInfo(Integer userId,Integer launchId){
+        FriendPromoteTimesRecord record = db().select()
+            .from(FRIEND_PROMOTE_TIMES)
+            .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(userId))
+            .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(launchId))
+            .fetchOneInto(FriendPromoteTimesRecord.class);
+        return record;
     }
 }

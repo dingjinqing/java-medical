@@ -53,4 +53,6 @@ public class PromoteInfo {
     private Byte orderFlag;
     /** 单个用户每天最多可帮忙助力次数 */
     private Integer promoteTimesPerDay;
+    /** 是否可以继续助力 */
+    private CanPromote canPromote;
 }
