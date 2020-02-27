@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.market.friendpromote;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 小程序-好友助力展示信息
  * @author liangchen
@@ -11,6 +13,8 @@ import lombok.Data;
 public class PromoteInfo {
     /** 活动id */
     private Integer id;
+    /** 奖励类型：0赠送商品，1折扣商品，2赠送优惠券 */
+    private Byte rewardType;
     /** 奖励内容 */
     private FpRewardContent rewardContent;
     /** 助力次数 */
@@ -25,8 +29,26 @@ public class PromoteInfo {
     private Byte actStatus;
     /** 助力进度 */
     private Byte promoteStatus;
+    /** 所需助力次数 */
+    private Integer promoteTimes;
     /** 已被助力次数总次数 */
     private Integer hasPromoteTimes;
     /** 是否可以再次助力 */
     private Byte canLaunch;
+    /** 活动状态：0未停用，1已停用 */
+    private Byte isBlock;
+    /** 是否删除 */
+    private Byte delFlag;
+    /** 发起限制次数，0不限制 */
+    private Byte launchLimitTimes;
+    /** 发起次数限制时长，0不限制 */
+    private Integer launchLimitDuration;
+    /** 发起次数限制时长单位：0天，1周，2月，3年 */
+    private Byte launchLimitUnit;
+    /** 好友助力明细列表 */
+    private List<PromoteDetail> promoteDetailList;
+    /** 订单 */
+    private String orderSn;
+    /** 助力完成订单操作标识：0不可下单，1立即下单，2查看订单详情 */
+    private Byte orderFlag;
 }
