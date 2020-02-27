@@ -338,7 +338,7 @@ public class LotteryService extends ShopBaseService {
         }
         //活动免费
         Integer freeTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId,LOTTERY_TIME_FREE);
-        if (lottery.getFreeChances() != null && lottery.getFreeChances() > freeTimes) {
+        if (lottery.getFreeChances() == null || lottery.getFreeChances() > freeTimes) {
             join.setChanceSource(LOTTERY_TIME_FREE);
             join.setFlag(true);
             if (lottery.getFreeChances() != null) {
