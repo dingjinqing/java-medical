@@ -40,6 +40,9 @@ public class MrkingStrategyVo {
     /** 活动状态：0停用，1启用 */
     private Byte status;
 
+    /**优先级 */
+    private Integer strategyPriority;
+
 
     /** 指定商品可用时，选择的商品信息。全部商品参与活动时为空 */
     private List<Integer> recommendGoodsIds;
