@@ -7,7 +7,9 @@ package com.vpu.mp.service.foundation.excel.util;
 public interface IDymicColNameI18n {
 	/**
 	 * 获取动态列的列名国际化
-	 * @param name
+	 * @param name 国际化的字段
+	 * @param language 语言类型
+	 * @return 
 	 */
-	public void i18nName(String name);
+	public String i18nName(String name,String language);
 }
