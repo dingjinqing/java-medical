@@ -47,6 +47,11 @@ const baseRoutes = [{
   path: '/wxapp/bargain/help', // 小程序内跳转砍价规则
   name: 'bargainRules',
   component: () => import('@/view/admin/layout/bargainRules')
+},
+{
+  path: '/wxapp/pinintegration/help', // 小程序内跳转瓜分积分规则
+  name: 'pinintegrationRules',
+  component: () => import('@/view/admin/layout/pinintegrationRules')
 }
 ]
 const routes = baseRoutes.concat(
