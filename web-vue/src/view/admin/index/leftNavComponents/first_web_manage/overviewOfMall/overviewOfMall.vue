@@ -578,7 +578,7 @@
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.value }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
                     <a
-                      :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
+                      :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.content.card_id"
                       target="_blank"
                     >{{ $t('overview.storeGo') }}</a>
                   </div>
