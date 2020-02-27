@@ -613,8 +613,8 @@ export default {
 
     // 删除包邮规则
     deleteRule (index) {
-      this.form.ruleList.splice(0, 1)
-      this.areaData.splice(0, 1)
+      this.form.ruleList.splice(index, 1)
+      this.areaData.splice(index, 1)
     },
 
     // 区域弹窗
