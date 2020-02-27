@@ -607,9 +607,9 @@ public class AdminDistributionController extends AdminBaseController{
                 list.getCheckField().setEducationName(education);
             }
             //性别
-            if(list.getCheckField().getSex().equalsIgnoreCase("f")){
+            if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("f")){
                 list.getCheckField().setSex("女");
-            }else if(list.getCheckField().getSex().equalsIgnoreCase("m")){
+            }else if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("m")){
                 list.getCheckField().setSex("男");
             }
             //婚姻状况
@@ -620,7 +620,13 @@ public class AdminDistributionController extends AdminBaseController{
             //分销分组名称
             if(list.getCheckField().getRebateGroup() != null){
                 DistributorGroupListVo oneInfo = shop().distributorGroup.getOneInfo(list.getCheckField().getRebateGroup());
-                list.getCheckField().setRebateGroupName(oneInfo.getGroupName());
+                String groupName;
+                if(oneInfo != null){
+                    groupName = oneInfo.getGroupName();
+                }else{
+                    groupName = null;
+                }
+                list.getCheckField().setRebateGroupName(groupName);
             }
 
         }

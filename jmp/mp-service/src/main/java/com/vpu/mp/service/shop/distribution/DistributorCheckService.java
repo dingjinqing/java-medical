@@ -69,8 +69,14 @@ public class DistributorCheckService extends ShopBaseService{
         if(param.getEndTime() != null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.ge(param.getEndTime()));
         }
+        //flag = 1是从店铺助手过来
+        if(param.getFlag() == 1){
+            select.and(DISTRIBUTOR_APPLY.STATUS.eq((byte)0).and(DISTRIBUTOR_APPLY.CREATE_TIME.add(param.getNumberDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+        }
         //状态 0：待审核；1：审核通过；2：未通过
-        select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
+        if(param.getNav() != null) {
+            select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
+        }
         //根据申请时间降序排序
         select.orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc());
     }
