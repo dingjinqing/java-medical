@@ -8,7 +8,10 @@
           <image mode="widthFix" class="shop_img" src="{{cardInfo.avatar}}"></image>
           <view class="card_name_box">
             <view class="card_name">{{cardInfo.cardName}} <text class="get_status">{{carStatus}}</text></view>
-            <view class="card_exp" wx:if="{{cardInfo.cardType !== 2}}">有效期：{{cardInfo.startTime}} 至 {{cardInfo.endTime}}</view>
+            <view class="card_exp" >
+            <text wx:if="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
+            <text wx:elif="{{cardInfo.expireType == 2}}">永久有效</text>
+            </view>
           </view>
         </view>
         <view class="card_surface_bottom" >
