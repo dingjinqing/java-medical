@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.store;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.ScriptAssert;
 
@@ -35,4 +36,17 @@ public class StoreInfoParam {
      * 客户端ip
      */
     private String clientIp;
+
+    /**
+     * 是否开启位置授权，0未开启，1开启（默认未开启）
+     */
+    @JsonProperty("location_auth")
+    @JsonAlias({"location_auth", "locationAuth"})
+    public byte locationAuth = 0;
+
+    /**
+     * The Location.用户位置信息json
+     * "{"latitude":39.95933,"longitude":116.29845,"speed":-1,"accuracy":65,"verticalAccuracy":65,"horizontalAccuracy":65,"errMsg":"getLocation:ok"}"
+     */
+    public Location location;
 }
