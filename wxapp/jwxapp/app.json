@@ -88,7 +88,9 @@
         "fullshiprule/fullshiprule",
         "couponpackage/couponpackage",
         "promoteinfo/promoteinfo",
-        "virtualCheckout/virtualCheckout"
+        "virtualCheckout/virtualCheckout",
+        "pinintegration/pinintegration",
+        "pinintegrationdetail/pinintegrationdetail"
       ]
     }
   ],

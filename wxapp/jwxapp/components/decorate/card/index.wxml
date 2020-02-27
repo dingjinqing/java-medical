@@ -1,5 +1,5 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
-<block wx:if="{{m.status==-1 || m.status==4 || m.status==5}}">
+<block wx:if="{{m.status==-1  || m.status==5}}">
   <view class='card' wx:if="{{m.card_id}}" style='margin-bottom:{{m.margin_bot}}rpx'>
     <view class="view" style="background:{{m.bg}} no-repeat;background-size:cover;">
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>
@@ -31,8 +31,8 @@
     </view>
   </view>
 </block>
-<block wx:elif="m.hidden_card==0">
-  <view class='card' wx:if="{{m.card_id}}" bindtap="{{m.status==1 ? 'viewCard' : ''}}"  data-card_id="{{m.card_id}}" style='margin-bottom:{{m.margin_bot}}rpx'>
+<block wx:elif="m.hidden_card==0 || m.status==4 ">
+  <view class='card' wx:if="{{m.card_id}}" bindtap="{{(m.status==1 || m.status==4) ? 'viewCard' : ''}}"  data-card_id="{{m.card_id}}" style='margin-bottom:{{m.margin_bot}}rpx'>
     <view class="view" style="background:{{m.bg}} no-repeat;background-size:cover;">
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>
       <view class="card_type" wx:if="{{m.card_type==1}}">{{i18n.$t(localePack,'components.decorate.limitCard')}}</view>
@@ -51,7 +51,7 @@
       <view class='card_out'>
         <image class="image" src="{{m.imageUrl}}image/wxapp/card_stop.png?v=1" mode='widthFix' wx:if="{{m.status==3}}" />
         <image class="image" src="{{m.imageUrl}}image/wxapp/card_out_time.png?v=1" mode='widthFix' wx:if="{{m.status==2}}" />
-        <image class="image" src="{{m.imageUrl}}image/wxapp/card_have.png?v=1" mode='widthFix' wx:if="{{m.status==1}}" />
+        <image class="image" src="{{m.imageUrl}}image/wxapp/card_have.png?v=1" mode='widthFix' wx:if="{{m.status==1 || m.status==4}}" />
       </view>
     </view>
   </view>
