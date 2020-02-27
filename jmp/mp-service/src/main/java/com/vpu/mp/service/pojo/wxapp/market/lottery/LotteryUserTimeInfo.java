@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.market.lottery;
 
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -52,4 +54,8 @@ public class LotteryUserTimeInfo {
      * 最大兑换次数
      */
     private Integer scoreMaximum=0;
+    /**
+     * 中奖纪录
+     */
+    private PageResult<LotteryRecordPageListVo> lotteryRecord;
 }

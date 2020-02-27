@@ -114,17 +114,17 @@ public class LotteryRecordService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<LotteryRecordPageListVo> lotteryListByUser(LotteryListUserParam param) {
-        SelectConditionStep<Record> records = db()
+    public PageResult<LotteryRecordPageListVo> lotteryListByParam(LotteryListUserParam param) {
+            SelectConditionStep<Record> records = db()
                 .select(LOTTERY_RECORD.asterisk(), USER.USERNAME, USER.MOBILE)
                 .from(LOTTERY_RECORD).innerJoin(USER).on(USER.USER_ID.eq(LOTTERY_RECORD.USER_ID))
                 .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
-        if (param.getUserId()!=null){
-            records.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
-        }
-        records.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
-        PageResult<LotteryRecordPageListVo> pageResult = getPageResult(records, param, LotteryRecordPageListVo.class);
-        pageResult.getDataList().forEach(item -> {
+            if (param.getUserId()!=null){
+                records.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
+            }
+            records.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
+            PageResult<LotteryRecordPageListVo> pageResult = getPageResult(records, param, LotteryRecordPageListVo.class);
+            pageResult.getDataList().forEach(item -> {
             if (!Strings.isEmpty(item.getAwardInfo())){
                 item.setLotteryPrize(Util.parseJson(item.getAwardInfo(), LotteryPrizeVo.class));
                 item.setAwardInfo(null);
@@ -190,9 +190,9 @@ public class LotteryRecordService extends ShopBaseService {
         recordRecord.setUserId(userId);
         recordRecord.setLotteryId(lotteryRecord.getId());
         recordRecord.setLotteryActId(lotteryRecord.getId());
-        recordRecord.setLotterySource(joinValid.getSource());
         recordRecord.setLotteryType(joinValid.getResultsType());
         recordRecord.setChanceSource(joinValid.getChanceSource());
+        recordRecord.setLotterySource(joinValid.getLotterySource());
         recordRecord.setPrdId(0);
         recordRecord.setLotteryGrade(lotteryPrizeRecord != null ? lotteryPrizeRecord.getLotteryGrade():0);
         if (lotteryPrizeRecord!=null){
@@ -235,6 +235,7 @@ public class LotteryRecordService extends ShopBaseService {
                 scoreParam.setScore(lotteryRecord.getNoAwardScore());
                 scoreParam.setUserId(userId);
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
                 scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_IN.val());
                 break;
             case LOTTERY_TYPE_SCORE:
@@ -247,6 +248,7 @@ public class LotteryRecordService extends ShopBaseService {
                 scoreParam.setScore(lotteryPrizeRecord != null ? lotteryPrizeRecord.getIntegralScore() : 0);
                 scoreParam.setUserId(userId);
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
                 scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_IN.val());
 
                 break;
@@ -293,7 +295,6 @@ public class LotteryRecordService extends ShopBaseService {
                 recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                 recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
                 recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                goodsService.getGoodsView(lotteryPrizeRecord.getPrdId());
                 Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
                 recordRecord.setLotteryExpiredTime(timeStampPlus);
                 recordRecord.insert();
@@ -302,10 +303,14 @@ public class LotteryRecordService extends ShopBaseService {
                         PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue());
                 joinValid.setPrizeId(prizeRecordRecord.getId());
                 joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
+                joinValid.setGoodsImage(goodsView.getGoodsImg());
+                joinValid.setGoodsId(goodsView.getGoodsId());
+                joinValid.setProductId(lotteryPrizeRecord.getPrdId());
                 break;
             case LOTTERY_TYPE_CUSTOM:
                 logger().info("自定义");
-
+                joinValid.setLotteryAward(lotteryPrizeRecord.getIconImgs());
+                recordRecord.setLotteryAward(lotteryPrizeRecord.getIconImgs());
                 break;
             default:
         }
