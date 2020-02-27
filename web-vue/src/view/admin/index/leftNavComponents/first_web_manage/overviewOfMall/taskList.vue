@@ -492,7 +492,7 @@
               <span class=" task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
               <a
                 href="javascript: void(0);"
-                @click="clickJumpHandler('order_wait', ShopData.refundOver, 1, 'refund')"
+                @click="clickJumpHandler('order_wait', ShopData.refundOver, 2, 'refund')"
               >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataOrder.remind.status === 0">
@@ -577,7 +577,7 @@
                 >{{ $t('overview.storeRecommend') }}</span>
                 <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.value }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
                 <a
-                  :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
+                  :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.content.card_id"
                   target="_blank"
                 >{{ $t('overview.storeGo') }}</a>
               </div>
@@ -1189,7 +1189,24 @@ export default {
       image: `${this.$imageHost}`,
       tabSwitch: '1',
       tabInfo: this.$t('overview.tabInfo'),
-      storeList: [] // 数据
+      storeList: [], // 数据
+
+      // 店铺助手默认值
+      ShopData: {
+        isAuthOk: 1,
+        storeSizeNum: 5, // 商品库存偏小参数
+        // unsalableNum: 3, // 商品滞销
+        commentOver: 3, // 商品评价审核逾期
+
+        deliverOver: 3, // 订单发货逾期参数
+        refundOver: 3, // 退款申请处理预期参数
+        remindOver: 3, // 提醒发货参数
+
+        applyOver: 3, // 分销员审核超时参数,
+        examineOver: 2, // 会员卡激活审核参数
+
+        couponSizeNum: 10 // 优惠券库存参数
+      }
     }
   },
   watch: {

@@ -52,32 +52,34 @@ ALTER TABLE `b2c_pictorial` ADD COLUMN `activity_id` int(10) DEFAULT NULL COMMEN
 ALTER TABLE `b2c_group_buy_define` ADD  COLUMN `level` int(11) NOT NULL DEFAULT 0 COMMENT '优先级' ;
 ALTER TABLE `b2c_group_buy_define` ADD COLUMN `begin_num` int(11) NOT NULL DEFAULT 0 COMMENT '初始成团数' ;
 -- 2020-02-11 新加服务承诺关联表和服务承诺表新加类型和优先级字段
--- CREATE TABLE `b2c_pledge_related` (
---   `id` int(9) NOT NULL AUTO_INCREMENT COMMENT 'ID',
---   `pledge_id` int(9) NOT NULL DEFAULT '0' COMMENT '承诺id',
---   `type` tinyint(1) DEFAULT NULL COMMENT '指定商品范围:1 商品id,2 商家分类id,3 商品品牌id',
---   `related_id` int(9) NOT NULL DEFAULT '0' COMMENT '相关的id',
---   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
---   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
---   PRIMARY KEY (`id`),
---   key `bpr_pledge_id`(`pledge_id`)
--- )COMMENT='服务承诺关联表';
+CREATE TABLE IF NOT EXISTS  `b2c_pledge_related` (
+  `id` int(9) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `pledge_id` int(9) NOT NULL DEFAULT '0' COMMENT '承诺id',
+  `type` tinyint(1) DEFAULT NULL COMMENT '指定商品范围:1 商品id,2 商家分类id,3 商品品牌id',
+  `related_id` int(9) NOT NULL DEFAULT '0' COMMENT '相关的id',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  key `bpr_pledge_id`(`pledge_id`)
+)COMMENT='服务承诺关联表';
 ALTER TABLE `b2c_pledge` ADD COLUMN `type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '商品范围:1全部商品,2指定商品' ;
 ALTER TABLE `b2c_pledge` ADD COLUMN `level` int(6) NOT NULL DEFAULT 0 COMMENT '商品优先级' ;
-
--- CREATE TABLE  `b2c_user_remark` (
---   `id`          mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
---   `user_id`     mediumint(8) unsigned NOT NULL DEFAULT '0',
---   `remark`      TEXT COMMENT '会员备注',
---   `add_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
---   `is_delete`   tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除',
---   PRIMARY KEY (`id`),
---   key `user_id` (`user_id`)
--- )COMMENT='会员备注';
+INSERT IGNORE INTO `b2c_message_template_config` (`id`, `open_ma`, `open_mp`) VALUES (2013, 1, 1);
+INSERT IGNORE INTO `b2c_message_template_config` (`id`, `open_ma`, `open_mp`) VALUES (2014, 1, 1);
+INSERT IGNORE INTO `b2c_message_template_config` (`id`, `open_ma`, `open_mp`) VALUES (2015, 1, 1);
+CREATE TABLE IF NOT EXISTS  `b2c_user_remark` (
+  `id`          mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id`     mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `remark`      TEXT COMMENT '会员备注',
+  `add_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_delete`   tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除',
+  PRIMARY KEY (`id`),
+  key `user_id` (`user_id`)
+)COMMENT='会员备注';
 --
--- ALTER TABLE `b2c_user_remark` MODIFY COLUMN `id` mediumint(10)  NOT NULL AUTO_INCREMENT;
--- ALTER TABLE `b2c_user_remark` MODIFY COLUMN `user_id` mediumint(8)  NOT NULL DEFAULT '0';
--- ALTER TABLE `b2c_user_remark` MODIFY COLUMN `is_delete` tinyint(1)  NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除';
+ALTER TABLE `b2c_user_remark` MODIFY COLUMN `id` mediumint(10)  NOT NULL AUTO_INCREMENT;
+ALTER TABLE `b2c_user_remark` MODIFY COLUMN `user_id` mediumint(8)  NOT NULL DEFAULT '0';
+ALTER TABLE `b2c_user_remark` MODIFY COLUMN `is_delete` tinyint(1)  NOT NULL DEFAULT '0' COMMENT'0:未删除；1删除';
 
 --2020-02-20 常乐 分销分组表添加 用户是否可选择
 ALTER TABLE `b2c_distributor_group` ADD  COLUMN `can_select` tinyint(1) DEFAULT 1 NULL   COMMENT '支持用户选择 1：支持；0：不支持';
@@ -99,5 +101,5 @@ ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `first` tinyint(3) NOT NULL DEFAULT
 -- ALTER TABLE `b2c_sec_kill_define` DROP INDEX `goods_id`;
 -- ALTER TABLE `b2c_sec_kill_define` MODIFY COLUMN `goods_id` text  COMMENT '商品ID';
 -- 2020年2月26日20:13:50 拼团活动表goods_id 字段有int转换为string
-ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMENT '商品id' AFTER `id`;
+ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMENT '商品id';
 /***********************2.10*********************END*/
