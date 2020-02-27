@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
+import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
@@ -13,6 +14,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import com.vpu.mp.service.shop.member.MemberService;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -454,8 +456,34 @@ public class FriendPromoteService extends ShopBaseService {
     /**
      * 小程序-好友助力
      */
-    public void promoteInfo(){
+    public void promoteInfo(PromoteParam param){
+        //助力活动展示信息
+        PromoteInfo promoteInfo = getPromoteInfo(param.getActCode());
+        //发起的好友助力
+        FriendPromoteLaunchRecord launchInfo;
+        if (param.getLaunchId()!=null&&param.getLaunchId()>0){
+            launchInfo = getLaunchInfo(param.getLaunchId(),null,null);
+        }
+        else{
+            launchInfo = getLaunchInfo(null,param.getUserId(),promoteInfo.getId());
+        }
+        //发起用户id
+        Integer launchUserId = launchInfo!=null?launchInfo.getUserId():0;
+        //发起or助力标识:1发起页面，2助力页面
+        Integer launchFlag = (!param.getUserId().equals(launchUserId) && launchUserId>0)?2:1;
+        //设置助力进度：-1未发起，0助力中，1助力完成待领取，2助力完成已领取，
+        // 3助力未领取失效，4助力未完成失败，5取消订单未领取
+        promoteInfo.setPromoteStatus(launchInfo!=null?launchInfo.getPromoteStatus():-1);
+        //设置已被助力总次数
+        promoteInfo.setHasPromoteTimes(0);
+        if (launchInfo!=null){
+            promoteInfo.setHasPromoteTimes(getHasPromoteTimes(launchInfo.getId()));
+        }
+        //如果是发启页面
+        if(launchFlag==1){
+            //是否可以再次发起好友助力
 
+        }
     }
 
     /**
@@ -477,9 +505,10 @@ public class FriendPromoteService extends ShopBaseService {
 
     /**
      * 小程序-得到助力信息
-     * @param actCode
+     * @param actCode 唯一活动码
+     * @return 助力信息
      */
-    public void getPromoteInfo(String actCode){
+    public PromoteInfo getPromoteInfo(String actCode){
         //展示内容promoteInfo
         PromoteInfo promoteInfo = new PromoteInfo();
         //得到当前活动部分信息
@@ -487,23 +516,36 @@ public class FriendPromoteService extends ShopBaseService {
         //设置奖励内容
         FpRewardContent rewardContent = Util.json2Object(record.getRewardContent(),FpRewardContent.class,false);
         promoteInfo.setRewardContent(rewardContent);
+        //设置活动id
+        promoteInfo.setId(record.getId());
         //设置助力次数
         promoteInfo.setHasLaunchNum(launchTotalTimes(record.getId()));
         //设置活动库存
         promoteInfo.setMarketStore(rewardContent.getMarketStore());
+        //设置活动状态
+        promoteInfo.setActStatus(getActStatus(actCode));
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getRewardIds());
             goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
+            //检查活动库存是否发完
+            promoteInfo.setMarketStore(promoteInfo.getMarketStore()>promoteInfo.getHasLaunchNum()?promoteInfo.getMarketStore()-promoteInfo.getHasLaunchNum():0);
             //商品库存与活动库存比较 重新设置活动库存
-            promoteInfo.setMarketStore(goodsInfo.getGoodsStore()>rewardContent.getMarketStore()?rewardContent.getMarketStore():goodsInfo.getGoodsStore());
+            promoteInfo.setMarketStore(goodsInfo.getGoodsStore()>promoteInfo.getMarketStore()?promoteInfo.getMarketStore():goodsInfo.getGoodsStore());
         }
         //判断奖励类型-为赠送优惠券时
         else if (record.getRewardType()==TWO){
-
+            CouponInfo couponInfo = getCouponById(rewardContent.getRewardIds());
+            //设置优惠券信息
+            promoteInfo.setCouponInfo(couponInfo);
+            //检查活动库存是否发完
+            promoteInfo.setMarketStore(promoteInfo.getMarketStore()>promoteInfo.getHasLaunchNum()?promoteInfo.getMarketStore()-promoteInfo.getHasLaunchNum():0);
         }
+        //销毁奖励内容
+        promoteInfo.setRewardContent(null);
+        return promoteInfo;
     }
 
     /**
@@ -538,5 +580,84 @@ public class FriendPromoteService extends ShopBaseService {
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchOneInto(GoodsInfo.class);
         return goodsInfo;
+    }
+
+    /**
+     * 根据id返回优惠券信息
+     * @param couponId 优惠券id
+     * @return 优惠券信息
+     */
+    public CouponInfo getCouponById(Integer couponId){
+        CouponInfo couponInfo = db().select(MRKING_VOUCHER.ID.as("coupon_id"),MRKING_VOUCHER.ACT_NAME,
+            MRKING_VOUCHER.ACT_CODE,MRKING_VOUCHER.ALIAS_CODE,MRKING_VOUCHER.DENOMINATION,
+            MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.LEAST_CONSUME)
+            .from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.ID.eq(couponId))
+            .fetchOneInto(CouponInfo.class);
+        return couponInfo;
+    }
+
+    /**
+     * 得到助力活动状态
+     * @param actCode 唯一活动码
+     * @return 活动状态：0未开始，1进行中，2已结束
+     */
+    public Byte getActStatus(String actCode){
+        Byte actStatus = 0;
+        Timestamp startTime = db().select(FRIEND_PROMOTE_ACTIVITY.START_TIME)
+            .from(FRIEND_PROMOTE_ACTIVITY)
+            .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
+            .fetchOneInto(Timestamp.class);
+        Timestamp endTime = db().select(FRIEND_PROMOTE_ACTIVITY.END_TIME)
+            .from(FRIEND_PROMOTE_ACTIVITY)
+            .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
+            .fetchOneInto(Timestamp.class);
+        Timestamp nowTime = Util.currentTimeStamp();
+        if (startTime.before(nowTime)&&endTime.after(nowTime)){
+            actStatus = 1;
+        }
+        else if (endTime.before(nowTime)){
+            actStatus = 2;
+        }
+        return actStatus;
+    }
+
+    /**
+     * 得到发起助力信息
+     * @param launchId 发起id
+     * @param userId 用户id
+     * @param promoteId 活动id
+     * @return 助力信息
+     */
+    public FriendPromoteLaunchRecord getLaunchInfo(Integer launchId,Integer userId,Integer promoteId){
+        FriendPromoteLaunchRecord record;
+        if (launchId!=null){
+            record = db().select()
+                .from(FRIEND_PROMOTE_LAUNCH)
+                .where(FRIEND_PROMOTE_LAUNCH.ID.eq(launchId))
+                .fetchOneInto(FriendPromoteLaunchRecord.class);
+        }
+        else {
+            record =db().select()
+                .from(FRIEND_PROMOTE_LAUNCH)
+                .where(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
+                .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
+                .fetchOneInto(FriendPromoteLaunchRecord.class);
+        }
+        return record;
+    }
+
+    /**
+     * 得到助力次数
+     * @param launchId 助力发起id
+     * @return 助力次数
+     */
+    public Integer getHasPromoteTimes(Integer launchId){
+        Integer hasPromoteTimes = db().select(DSL.count(FRIEND_PROMOTE_DETAIL.ID))
+            .from(FRIEND_PROMOTE_DETAIL)
+            .where(FRIEND_PROMOTE_DETAIL.LAUNCH_ID.eq(launchId))
+            .fetchOptionalInto(Integer.class)
+            .orElse(NumberUtils.INTEGER_ZERO);
+        return hasPromoteTimes;
     }
 }
