@@ -51,4 +51,6 @@ public class PromoteInfo {
     private String orderSn;
     /** 助力完成订单操作标识：0不可下单，1立即下单，2查看订单详情 */
     private Byte orderFlag;
+    /** 单个用户每天最多可帮忙助力次数 */
+    private Integer promoteTimesPerDay;
 }
