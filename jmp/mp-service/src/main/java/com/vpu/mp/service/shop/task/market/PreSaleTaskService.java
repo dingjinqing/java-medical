@@ -102,8 +102,7 @@ public class PreSaleTaskService extends ShopBaseService {
         return db().select(PRESALE.GOODS_ID).from(PRESALE).where(
             PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(PRESALE.START_TIME.lt(DateUtil.getLocalDateTime()))
-            .and(PRESALE.END_TIME.gt(DateUtil.getLocalDateTime()))
+            .and((PRESALE.PRE_START_TIME.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME.gt(DateUtil.getLocalDateTime()))).or(PRESALE.PRE_START_TIME_2.lt(DateUtil.getLocalDateTime()).and(PRESALE.PRE_END_TIME_2.gt(DateUtil.getLocalDateTime()))))
         ).fetchInto(Integer.class);
     }
 
