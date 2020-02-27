@@ -537,7 +537,9 @@
                 @click="chooseGoodsHandler"
                 v-if="!params.id"
               > + 选择商品</div>
-              <span @click="onlyChooseGoodsHandler" style="color: #e4393c"
+              <span
+                @click="onlyChooseGoodsHandler"
+                style="color: #e4393c"
               >{{$t('adSharePolite.alreadyChoose')}}{{this.selectedGoodsIdList.length}}{{$t('adSharePolite.goods')}}</span>
               <div
                 class="goods_area"
@@ -976,7 +978,7 @@ export default {
       }],
       // 选择商品
       tuneUpChooseGoodsDialog: false,
-      isOnlyShowChooseGoodsL: false,
+      isOnlyShowChooseGoods: false,
       selectedGoodsIdList: [],
       goodsList: [],
       // 选择商品品牌

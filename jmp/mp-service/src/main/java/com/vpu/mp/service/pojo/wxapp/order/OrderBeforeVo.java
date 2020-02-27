@@ -147,6 +147,7 @@ public class OrderBeforeVo {
     /**订单商品折后总金额*/
     private BigDecimal tolalDiscountAfterPrice;
     private InsteadPay insteadPayCfg;
+    private Byte insteadPayNum;
 
     /**
      * 默认配送方式 0 ，1 ，2

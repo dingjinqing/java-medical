@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -44,6 +45,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -156,6 +158,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     
     @Autowired
     private InsteadPayConfig insteadPayConfig;
+
+    @Autowired
+    private SeckillService seckillService;
 
     /**
      * 营销活动processorFactory
@@ -406,6 +411,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             if(BigDecimalUtil.compareTo(param.getOrderAmount(), null) <= 0) {
                 throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_MONEY_ZERO);
             }
+            param.setInsteadPayCfg(cfg);
         }
         logger().info("校验checkCreateOrderBo,end");
     }
@@ -812,9 +818,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             moneyPaid = BigDecimal.ZERO;
         }
         //好友代付
-        if(param.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+        if(param.getOrderPayWay() != null && param.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+            vo.setOrderPayWay(OrderConstant.PAY_WAY_FRIEND_PAYMENT);
             moneyPaid = BigDecimal.ZERO;
             vo.setInsteadPayMoney(moneyPaid);
+            vo.setInsteadPayNum(param.getInsteadPayNum());
         }
 
         //折后订单金额
@@ -854,6 +862,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setIsScorePay(tradeCfg.getScoreFirst());
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
+        vo.setInsteadPayCfg(param.getInsteadPayCfg());
         logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
 
@@ -976,10 +985,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         Integer cancelTime = tradeCfg.getCancelTime();
         cancelTime = cancelTime < 1 ? OrderConstant.DEFAULT_AUTO_CANCEL_TIME : cancelTime;
         if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_SEC_KILL)) {
-            //TODO 秒杀 activityid
+            SeckillVo seckillCfg = seckillService.getSeckillById(beforeVo.getActivityId());
+            order.setExpireTime(DateUtil.getTimeStampPlus(seckillCfg.getLimitPaytime(), ChronoUnit.MINUTES));
         }
         if(beforeVo.getOrderPayWay() != null && OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay()) {
             //代付
+            order.setExpireTime(DateUtil.getTimeStampPlus(1, ChronoUnit.DAYS));
+            order.setInsteadPay(Util.toJson(beforeVo.getInsteadPayCfg()));
+            order.setOrderUserMessage(beforeVo.getInsteadPayNum() == 0 ? beforeVo.getInsteadPayCfg().getOrderUserMessageMultiple() : beforeVo.getInsteadPayCfg().getOrderUserMessageSingle());
         }else {
             order.setExpireTime(DateUtil.getTimeStampPlus(cancelTime, ChronoUnit.MINUTES));
         }
