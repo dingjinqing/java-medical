@@ -5,7 +5,7 @@ module.exports = {
     "WAIT_PAY": "待付款",
     "WAIT_DELIVERY": "待发货",
     "SHIPPED": "待收货",
-    "RETURNING": "退款中",
+    "RETURNING": "售后中",
   },
   "orderSn": "订单编号",
   "deliveryType": "发货类型",
