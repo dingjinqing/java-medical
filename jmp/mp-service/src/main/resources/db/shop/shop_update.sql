@@ -99,5 +99,5 @@ ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `first` tinyint(3) NOT NULL DEFAULT
 -- ALTER TABLE `b2c_sec_kill_define` DROP INDEX `goods_id`;
 -- ALTER TABLE `b2c_sec_kill_define` MODIFY COLUMN `goods_id` text  COMMENT '商品ID';
 -- 2020年2月26日20:13:50 拼团活动表goods_id 字段有int转换为string
-ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMENT '商品id' AFTER `id`;
+ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMENT '商品id';
 /***********************2.10*********************END*/
