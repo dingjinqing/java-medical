@@ -209,4 +209,4 @@
   <include src="../common/footer.wxml" />
 </view>
 <!-- 分享|下载海报|多图弹窗 -->
-<v-share show="{{showShareDialog}}" share-data="{{shareData}}" shareMoments="onShareAppMessage" />
+<v-share show="{{showShareDialog}}" share-data="{{shareData}}"/>
