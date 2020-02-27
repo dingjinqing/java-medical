@@ -7,10 +7,15 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupdraw.GroupDrawMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawReturn;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.shop.activity.dao.GroupDrawProcessorDao;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -31,9 +36,11 @@ import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_G
  */
 @Service
 @Slf4j
-public class GroupDrawProcessor implements CreateOrderProcessor {
+public class GroupDrawProcessor implements CreateOrderProcessor,GoodsDetailProcessor{
 	@Autowired
 	private GroupDrawService groupDrawService;
+    @Autowired
+	private GroupDrawProcessorDao groupDrawProcessorDao;
 
 	@Override
 	public Byte getPriority() {
@@ -45,6 +52,28 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
 		return BaseConstant.ACTIVITY_TYPE_GROUP_DRAW;
 	}
 
+    /*****************商品详情处理*******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        if (!BaseConstant.ACTIVITY_TYPE_GROUP_DRAW.equals(param.getActivityType()) || param.getActivityId() == null) {
+            return;
+        }
+        log.debug("小程序-商品详情-拼团抽奖信息获取开始");
+        GroupDrawMpVo groupDrawMpVo = groupDrawProcessorDao.getGroupDrawInfoForDetail(param.getActivityId(), param.getUserId());
+        if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(groupDrawMpVo.getActState())) {
+            capsule.setActivity(groupDrawMpVo);
+            log.debug("小程序-商品详情-拼团抽奖信息获取失败-拼团抽奖活动不存在[{}]-详情处理退出", param.getActivityId());
+            return;
+        }
+        List<GoodsPrdMpVo> products = capsule.getProducts();
+        products.forEach(product->{
+            product.setPrdLinePrice(product.getPrdRealPrice());
+            product.setPrdRealPrice(groupDrawMpVo.getPayMoney());
+        });
+        capsule.setActivity(groupDrawMpVo);
+    }
+
+    /*********** 下单 *****************/
 	@Override
 	public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
 		log.info("拼团抽奖的判断processInitCheckedOrderCreate");
@@ -118,5 +147,4 @@ public class GroupDrawProcessor implements CreateOrderProcessor {
     public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
-
 }

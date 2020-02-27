@@ -498,20 +498,31 @@ global.wxPage({
   share() {
     let activityData = {}
     let {
-      goodsId,
+      goodsId:targetId,
       singleRealPrice: realPrice,
-      singleLinePrice: linePrice,
-      goodsImgs
+      singleLinePrice: linePrice
     } = this.data.goodsInfo
+    console.log(this.data.goodsInfo)
     if (this.data.goodsInfo.activity != null) {
       activityData.activityId = this.data.goodsInfo.activity.activityId
       activityData.activityType = this.data.goodsInfo.activity.activityType
+      switch (activityData.activityType) {
+        case 1:
+          activityData.pageType = 1
+          break;
+        case 3:
+          activityData.pageType = 1
+          activityData.realPrice = this.data.goodsInfo.activity.bargainPrice
+          break;
+        case 10:
+          activityData.depositPrice = this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice}))
+          break;
+      }
     }
     let shareData = {
-      goodsId,
+      targetId,
       realPrice,
       linePrice,
-      goodsImgs,
       ...activityData
     }
 
@@ -593,8 +604,8 @@ global.wxPage({
         : lineMinPrice === lineMaxPrice
         ? lineMinPrice
         : `${lineMinPrice}~${lineMaxPrice}`,
-      singleRealPrice: lineMinPrice,
-      singleLinePrice: lineMaxPrice
+      singleRealPrice: realMinPrice,
+      singleLinePrice: lineMinPrice
     }
   },
   // 获取促销信息

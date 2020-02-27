@@ -1,7 +1,10 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.CommentGoods;
+import com.vpu.mp.db.shop.tables.records.CommentGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -484,6 +487,7 @@ public class GoodsCommentService extends ShopBaseService {
                         .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(BYTE_ZERO)))
                 .where(ORDER_GOODS.ORDER_SN.eq(orderSnTemp))
 //                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
+                .and(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(ORDER_GOODS.COMMENT_FLAG.eq(param.getCommentFlag()))
                 .and(ORDER_GOODS.GOODS_NUMBER.greaterThan(ORDER_GOODS.RETURN_NUMBER))
                 .orderBy(COMMENT_GOODS.CREATE_TIME.desc())
@@ -708,6 +712,15 @@ public class GoodsCommentService extends ShopBaseService {
       flag = NumberUtils.BYTE_ONE;
     } else {
         flag = BYTE_ZERO;
+    }
+    //添加前查找是否有这样的记录
+      CommentGoodsRecord record = db().select()
+          .from(COMMENT_GOODS)
+          .where(COMMENT_GOODS.REC_ID.eq(param.getRecId()))
+          .and(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+          .fetchOneInto(CommentGoodsRecord.class);
+    if (record!=null){
+        throw new BusinessException(JsonResultCode.CODE_FAIL);
     }
     // 为指定商品添加评论
     db().insertInto(

@@ -7,12 +7,15 @@ import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
@@ -24,7 +27,9 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -477,11 +482,45 @@ public class FriendPromoteService extends ShopBaseService {
         //设置已被助力总次数
         promoteInfo.setHasPromoteTimes(0);
         if (launchInfo!=null){
-            promoteInfo.setHasPromoteTimes(getHasPromoteTimes(launchInfo.getId()));
+            promoteInfo.setHasPromoteTimes(getHasPromoteTimes(launchInfo.getId(),null,null,null));
         }
-        //如果是发启页面
+
+        //如果是发起页面
         if(launchFlag==1){
             //是否可以再次发起好友助力
+            CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
+            promoteInfo.setCanLaunch(canLaunch.getCode());
+            //助力完成或者失效装修页进入后
+            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
+                promoteInfo.setPromoteStatus((byte)-1);
+            }
+            //好友助力榜
+            if(launchInfo!=null&&promoteInfo.getPromoteStatus()>=0){
+                promoteInfo.setPromoteDetailList(friendPromoteDetail(launchInfo.getId()));
+            }
+            //设置订单
+            promoteInfo.setOrderSn(launchInfo.getOrderSn());
+            //助力完成订单操作标识：0不可下单，1立即下单，2查看订单详情
+            Byte orderFlag = 0;
+            //奖励类型不为优惠券
+            if (promoteInfo.getRewardType()!=2){
+                //助力进度为完成待领取
+                if (promoteInfo.getPromoteStatus()==1){
+                    OrderInfoRecord orderInfo = getOrder(launchInfo.getOrderSn());
+                    if (orderInfo==null||orderInfo.getOrderStatus()== OrderConstant.ORDER_CANCELLED||orderInfo.getOrderStatus()==OrderConstant.ORDER_CLOSED||DelFlag.DISABLE_VALUE.equals(orderInfo.getDelFlag())){
+                        orderFlag = 1;
+                    }else {
+                        orderFlag = 2;
+                    }
+                }else if (promoteInfo.getPromoteStatus()==2){
+                    orderFlag = 2;
+                }
+            }
+            promoteInfo.setOrderFlag(orderFlag);
+        }
+
+        //否则为助力界面
+        else {
 
         }
     }
@@ -524,6 +563,22 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setMarketStore(rewardContent.getMarketStore());
         //设置活动状态
         promoteInfo.setActStatus(getActStatus(actCode));
+        //设置是否停用
+        promoteInfo.setIsBlock(record.getIsBlock());
+        //设置是否删除
+        promoteInfo.setDelFlag(record.getDelFlag());
+        //设置奖励类型
+        promoteInfo.setRewardType(record.getRewardType());
+        //设置发起限制次数
+        promoteInfo.setLaunchLimitTimes(record.getLaunchLimitTimes());
+        //设置发起次数限制时长
+        promoteInfo.setLaunchLimitDuration(record.getLaunchLimitDuration());
+        //设置发起次数限制时长单位
+        promoteInfo.setLaunchLimitUnit(record.getLaunchLimitUnit());
+        //设置所需助力次数
+        promoteInfo.setPromoteTimes(record.getPromoteTimes());
+        //设置单个用户每天最多可帮忙助力次数
+        promoteInfo.setPromoteTimesPerDay(record.getPromoteTimesPerDay());
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getRewardIds());
@@ -652,12 +707,216 @@ public class FriendPromoteService extends ShopBaseService {
      * @param launchId 助力发起id
      * @return 助力次数
      */
-    public Integer getHasPromoteTimes(Integer launchId){
-        Integer hasPromoteTimes = db().select(DSL.count(FRIEND_PROMOTE_DETAIL.ID))
-            .from(FRIEND_PROMOTE_DETAIL)
-            .where(FRIEND_PROMOTE_DETAIL.LAUNCH_ID.eq(launchId))
-            .fetchOptionalInto(Integer.class)
-            .orElse(NumberUtils.INTEGER_ZERO);
+    public Integer getHasPromoteTimes(Integer launchId,Integer promoteId,Integer userId,Timestamp currentTime){
+        SelectJoinStep<Record1<Integer>> select = db().select(DSL.count(FRIEND_PROMOTE_DETAIL.ID))
+            .from(FRIEND_PROMOTE_DETAIL);
+        if (launchId!=null){
+            select.where(FRIEND_PROMOTE_DETAIL.LAUNCH_ID.eq(launchId));
+        }
+        if (promoteId!=null){
+            select.where(FRIEND_PROMOTE_DETAIL.PROMOTE_ID.eq(promoteId));
+        }
+        if (userId!=null){
+            select.where(FRIEND_PROMOTE_DETAIL.USER_ID.eq(userId));
+        }
+        if (currentTime!=null){
+            Calendar start = Calendar.getInstance();
+            start.set(Calendar.HOUR_OF_DAY, 0);
+            start.set(Calendar.MINUTE, 0);
+            start.set(Calendar.SECOND, 0);
+            start.set(Calendar.MILLISECOND, 0);
+            Timestamp startTime = new Timestamp(start.getTime().getTime());
+            Calendar end = Calendar.getInstance();
+            end.set(Calendar.HOUR_OF_DAY, 23);
+            end.set(Calendar.MINUTE, 59);
+            end.set(Calendar.SECOND, 59);
+            end.set(Calendar.MILLISECOND, 999);
+            Timestamp endTime = new Timestamp(end.getTime().getTime());
+            select.where(FRIEND_PROMOTE_DETAIL.CREATE_TIME.between(startTime,endTime));
+        }
+        Integer hasPromoteTimes = select.fetchOptionalInto(Integer.class)
+                .orElse(NumberUtils.INTEGER_ZERO);
         return hasPromoteTimes;
+    }
+
+    /**
+     * 是否可以发起好友助力活动
+     * @param promoteInfo 主力活动信息
+     * @param launchInfo 该活动的发起信息
+     * @param userId 当前用户id
+     * @return 是否可发起及文字提示
+     */
+    public CanLaunch canLaunch(PromoteInfo promoteInfo,FriendPromoteLaunchRecord launchInfo,Integer userId){
+        CanLaunch canLaunch = new CanLaunch();
+        canLaunch.setCode(NumberUtils.BYTE_ZERO);
+        //检查是否停用或者删除
+        if(promoteInfo.getIsBlock().equals(NumberUtils.BYTE_ONE)||promoteInfo.getDelFlag().equals(NumberUtils.BYTE_ONE)){
+            canLaunch.setMsg("活动已停用或删除");
+            return canLaunch;
+        }
+        //检查活动库存
+        if (promoteInfo.getMarketStore()<=0){
+            canLaunch.setMsg("活动库存不足了");
+            return canLaunch;
+        }
+        //检查商品库存
+        if (promoteInfo.getRewardType()!=2){
+            if (promoteInfo.getGoodsInfo().getGoodsStore()<=0){
+                canLaunch.setMsg("活动商品库存不足了");
+                return canLaunch;
+            }
+        }
+        //检查有效期
+        if (promoteInfo.getActStatus()==0){
+            canLaunch.setMsg("活动未开始");
+            return canLaunch;
+        }
+        if (promoteInfo.getActStatus()==2){
+            canLaunch.setMsg("活动已结束");
+            return canLaunch;
+        }
+        //检查当前发起状态
+        if(promoteInfo.getPromoteStatus()==0||promoteInfo.getPromoteStatus()==1){
+            canLaunch.setMsg("您已发起快邀请好友助力把");
+            return canLaunch;
+        }
+        //检查可发起次数
+        if(promoteInfo.getPromoteStatus()!=0&&promoteInfo.getPromoteStatus()!=1){
+            //从未发起
+            if (promoteInfo.getPromoteStatus()==-1){
+                canLaunch.setCode(NumberUtils.BYTE_ONE);
+            }else {
+                //发起次数不限
+                if (promoteInfo.getLaunchLimitTimes()==0){
+                    canLaunch.setCode(NumberUtils.BYTE_ONE);
+                }else {
+                    //已发起助力次数
+                    Integer launchTimes = promoteLaunchTimes(promoteInfo.getId(),userId,promoteInfo.getLaunchLimitDuration(),promoteInfo.getLaunchLimitUnit(),launchInfo.getLaunchTime());
+                    if (launchTimes<promoteInfo.getLaunchLimitTimes()){
+                        canLaunch.setCode(NumberUtils.BYTE_ONE);
+                    }
+                }
+            }
+        }
+        return canLaunch;
+    }
+
+    /**
+     * 某时间段内最多可发好友助力活动的次数
+     * @param promoteId 活动id
+     * @param userId 用户id
+     * @param duration 限制时间数
+     * @param unit 时间单位
+     * @param launchTime 发起时间
+     * @return 次数
+     */
+    public Integer promoteLaunchTimes(Integer promoteId,Integer userId,Integer duration,Byte unit,Timestamp launchTime){
+        Duration timeDuration;
+        switch (unit){
+            //天
+            case 0:
+                timeDuration = getDurationDay(launchTime,duration);
+                break;
+            //周
+            case 1:
+                timeDuration = getDurationDay(launchTime,duration*7);
+                break;
+            //月
+            case 2:
+                timeDuration = getDurationDay(launchTime,duration*30);
+                break;
+            //年
+            case 3:
+                timeDuration = getDurationDay(launchTime,duration*365);
+                break;
+            default:
+                return 0;
+        }
+        Integer launchTimes = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID))
+            .from(FRIEND_PROMOTE_LAUNCH)
+            .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
+            .and(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
+            .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.between(timeDuration.getStartTime(),timeDuration.getEndTime()))
+            .fetchOptionalInto(Integer.class)
+            .orElse(0);
+        return launchTimes;
+    }
+
+    /**
+     * 任意一天和从此时间开始起多少天后的开始和结束时间
+     * @param day 开始时间
+     * @param limitDuration 持续时长
+     * @return 起止时间
+     */
+    public Duration getDurationDay(Timestamp day,Integer limitDuration){
+        Duration duration = new Duration();
+        duration.setStartTime(day);
+        Calendar c = Calendar.getInstance();
+        c.setTime(day);
+        c.add(Calendar.DATE,limitDuration);
+        Timestamp endTime = new Timestamp(c.getTimeInMillis());
+        duration.setEndTime(endTime);
+        return duration;
+    }
+
+    /**
+     * 好友助力明细列表
+     * @param launchId 发起id
+     * @return 助力详情
+     */
+    public List<PromoteDetail> friendPromoteDetail(Integer launchId){
+        List<PromoteDetail> detailList = db().select(FRIEND_PROMOTE_DETAIL.PROMOTE_VALUE,
+            USER.USERNAME,USER.USER_ID,USER_DETAIL.USER_AVATAR)
+            .from(FRIEND_PROMOTE_DETAIL)
+            .leftJoin(USER).on(FRIEND_PROMOTE_DETAIL.USER_ID.eq(USER.USER_ID))
+            .leftJoin(USER_DETAIL).on(FRIEND_PROMOTE_DETAIL.USER_ID.eq(USER_DETAIL.USER_ID))
+            .where(FRIEND_PROMOTE_DETAIL.LAUNCH_ID.eq(launchId))
+            .orderBy(FRIEND_PROMOTE_DETAIL.ID.desc())
+            .limit(10)
+            .fetchInto(PromoteDetail.class);
+        for(PromoteDetail item:detailList){
+            item.setUsername((item.getUsername()!=null&&!item.getUsername().isEmpty())?item.getUsername():item.getUserId().toString());
+            item.setUserAvatar((item.getUserAvatar()!=null&&!item.getUserAvatar().isEmpty())?item.getUserAvatar():"/image/admin/head_icon.png");
+        }
+        return detailList;
+    }
+
+    /**
+     * 得到订单信息
+     * @param orderSn 订单编号
+     * @return 订单信息
+     */
+    public OrderInfoRecord getOrder(String orderSn){
+        OrderInfoRecord orderInfo = db().select()
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_SN.eq(orderSn))
+            .fetchOneInto(OrderInfoRecord.class);
+        return orderInfo;
+    }
+    public CanPromote canPromote(PromoteInfo promoteInfo,Integer hasPromoteTimes,Integer userId,Integer launchId){
+        CanPromote canPromote = new CanPromote();
+        //是否发起
+        if(promoteInfo.getPromoteStatus()==-1){
+            canPromote.setCode((byte)0);
+            canPromote.setMsg("该助力申请未发起");
+            return canPromote;
+        }
+        //是否已完成助力
+        if (hasPromoteTimes>=promoteInfo.getPromoteTimes()||promoteInfo.getPromoteStatus()==1||promoteInfo.getPromoteStatus()==2||promoteInfo.getPromoteStatus()==3){
+            canPromote.setCode((byte)0);
+            canPromote.setMsg("助力已完成");
+            return canPromote;
+        }
+        //判断当天助力次数限制
+        if(promoteInfo.getPromoteTimesPerDay()>0){
+            Integer userPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
+            if (userPromoteTimesCurrentDay>=promoteInfo.getPromoteTimesPerDay()){
+                canPromote.setCode((byte)0);
+                canPromote.setMsg("今天的助力次数已经用完了");
+                return canPromote;
+            }
+        }
+
+        return null;
     }
 }

@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.wxapp.store;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * The type Location.
  *
@@ -15,13 +13,11 @@ public class Location {
     /**
      * The Latitude.维度
      */
-    @NotNull
-    public Double latitude;
+    public double latitude;
     /**
      * The Longitude.经度
      */
-    @NotNull
-    public Double longitude;
+    public double longitude;
 
     // todo 预留字段,暂时未使用
     public String speed;

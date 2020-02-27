@@ -300,7 +300,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
                         moduleVideo.setVideoUrl(domainConfig.videoUrl(moduleVideo.getVideoUrl()));
                         moduleVideo.setVideoImg(domainConfig.videoUrl(moduleVideo.getVideoImg()));
-                    }else if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+                    }
+                    if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
                         moduleVideo.setImgUrl(imageUrl(moduleVideo.getImgUrl()));
                     }
                     return moduleVideo;
@@ -626,7 +627,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
                         moduleVideo.setVideoUrl(new URL(moduleVideo.getVideoUrl()).getPath());
                         moduleVideo.setVideoImg(new URL(moduleVideo.getVideoImg()).getPath());
-                    }else if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+                    }
+                    if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
                         moduleVideo.setImgUrl(new URL(moduleVideo.getImgUrl()).getPath());
                     }
                     return moduleVideo;
