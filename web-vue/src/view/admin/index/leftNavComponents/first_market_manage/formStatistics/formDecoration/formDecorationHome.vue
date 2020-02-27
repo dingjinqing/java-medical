@@ -42,48 +42,76 @@
           :style="`background: url(${$imageHost}/image/admin/shop_beautify/phone_tops.png) no-repeat;`"
         >
         </div>
-        <!--中间拖拽接收区域-->
-        <div class="drag_area">
-          <!--顶部占位-->
-          <div
-            class="hereDaily"
-            :class="topAreaFlag?'setHere':''"
-            @mouseover="dragTopOver()"
-            @mouseout="dragTopOut()"
-            v-if="isDragging"
-          >
-          </div>
-          <draggable
-            class="list-group"
-            :style="showModulesList.length?'padding-bottom:10px':'padding-bottom:127px'"
-            element="div"
-            v-model="showModulesList"
-            :options="dragOptions"
-            @start="handleToStart"
-            @end="handleToEnd"
-          >
+        <vue-scroll
+          :ops="ops"
+          style="height:510px"
+        >
+          <!--中间拖拽接收区域-->
+          <div class="drag_area">
+            <!--顶部占位-->
             <div
-              v-for="(item,index) in showModulesList"
-              :key='index'
+              class="hereDaily"
+              :class="topAreaFlag?'setHere':''"
+              @mouseover="dragTopOver()"
+              @mouseout="dragTopOut()"
+              v-if="isDragging"
             >
-              <!--模块-->
-              <div @click.prevent="handleToClickModule(index)">
-                <components
-                  :is='middleModulesList[item]'
-                  :flag="index"
-                  :middleHereFlag="middleHereFlag"
-                  :nowRightShowIndex="nowRightShowIndex"
-                  @handleToClickIcon="handleToClickIcon"
-                  @middleDragData='middleDragData'
-                ></components>
-              </div>
-
             </div>
-          </draggable>
-        </div>
+            <!--占位提示-->
+            <div
+              class="zbTips"
+              v-if="!showModulesList.length"
+              style='z-index:1000'
+            >
+              <div class="drag_notice">{{$t('decorationHome.seizeASeat')}}</div>
+            </div>
+            <draggable
+              class="list-group"
+              :style="showModulesList.length?'padding-bottom:10px':'padding-bottom:127px'"
+              element="div"
+              v-model="showModulesList"
+              :options="dragOptions"
+              @start="handleToStart"
+              @end="handleToEnd"
+            >
+              <div
+                v-for="(item,index) in showModulesList"
+                :key='index'
+              >
+                <!--模块-->
+                <div @click.prevent="handleToClickModule(index)">
+                  <components
+                    :is='middleModulesList[item]'
+                    :flag="index"
+                    :middleHereFlag="middleHereFlag"
+                    :nowRightShowIndex="nowRightShowIndex"
+                    @handleToClickIcon="handleToClickIcon"
+                    @middleDragData='middleDragData'
+                  ></components>
+                </div>
+
+              </div>
+            </draggable>
+            <!--底部提交显示-->
+            <div
+              class="btn_tijiao"
+              style="color: #ffffff;
+                                background-color: #ff6666"
+            >
+              提交</div>
+          </div>
+        </vue-scroll>
       </div>
       <div class="decRight">
-        decRight
+        <PageSetup
+          :nowRightShowMoudlesIndex='nowRightShowMoudlesIndex'
+          :nowRightModulesData="nowRightModulesData"
+          :nowRightShowIndex='nowRightShowIndex'
+          :pageSetData='pageSetData'
+          @handleToClearIndex='handleToClearIndex'
+          @handleToBackMiddleData='handleToBackMiddleData'
+          @hanelToPageSet='hanelToPageSet'
+        />
       </div>
     </div>
     <!--中间模块是否删除弹窗-->
@@ -123,13 +151,19 @@
   </div>
 </template>
 <script>
+import vuescroll from 'vuescroll'
+import 'vuescroll/dist/vuescroll.css'
+import Vue from 'vue'
 import draggable from 'vuedraggable'
 import $ from 'jquery'
+Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
 export default {
   components: {
     draggable,
+    // 右侧显示出口组件
+    PageSetup: () => import('./pageSetup'),
     // 表单元素模块池
     Name: () => import('./decorationModules/name'), // 姓名模块
     CellPhoneNumber: () => import('./decorationModules/cellPhoneNumber'), // 手机号模块
@@ -157,8 +191,22 @@ export default {
       newIndex: -1, // 中部拖动相关
       oldElement: null, // 中部拖动相关
       isDragging: false, // 中间模块拖至顶部相关
-      topAreaFlag: false // 中间模块拖至顶部相关
-
+      topAreaFlag: false, // 中间模块拖至顶部相关
+      ops: { // 中间部分滚动配置
+        vuescroll: {
+          mode: 'native'
+        },
+        scrollPanel: {},
+        rail: {
+          keepShow: true
+        },
+        bar: {
+          hoverStyle: true,
+          onlyShowBarOnScroll: false, // 是否只有滚动的时候才显示滚动条
+          background: '#c1c1c1'
+        }
+      },
+      pageSetData: {} // 初始向右侧传递的表单信息配置数据
     }
   },
   watch: {
@@ -481,6 +529,12 @@ export default {
 <style lang="scss" scoped>
 .formDecorationHome {
   padding: 10px;
+  /deep/ .__vuescroll {
+    background-color: #f5f5f5 !important;
+  }
+  /deep/ .__rail-is-vertical {
+    z-index: 1000 !important;
+  }
   .main {
     position: relative;
     background-color: #fff;
@@ -540,7 +594,8 @@ export default {
         height: 55px;
       }
       .drag_area {
-        height: 510px;
+        height: 100%;
+        position: relative;
         .hereDaily {
           height: 5px;
           z-index: 1000;
@@ -551,6 +606,32 @@ export default {
         }
         .setHere {
           height: 30px;
+        }
+        .zbTips {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          .drag_notice {
+            width: 90%;
+            margin: 10px auto 0;
+            border: 1px dashed #d0d0d0;
+            background: #fff;
+            padding: 50px 0;
+            text-align: center;
+            color: #9f9f9f;
+            font-size: 15px;
+          }
+        }
+        .btn_tijiao {
+          width: 90%;
+          margin: 10px auto 0;
+          background: #f66;
+          color: #fff;
+          font-size: 15px;
+          text-align: center;
+          padding: 10px 0;
+          border-radius: 5px;
         }
       }
     }
