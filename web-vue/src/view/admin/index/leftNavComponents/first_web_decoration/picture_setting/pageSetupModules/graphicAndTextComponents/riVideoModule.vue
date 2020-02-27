@@ -58,8 +58,8 @@
           <div class="imgDiv">
 
             <img
-              :style="moduleSaveData.custom_url?'width:100%;height:100%;':''"
-              :src="moduleSaveData.custom_url?moduleSaveData.custom_url:($imageHost+'/image/admin/shop_beautify/add_decorete.png')"
+              :style="moduleSaveData.img_url?'width:100%;height:100%;':''"
+              :src="moduleSaveData.img_url?moduleSaveData.img_url:($imageHost+'/image/admin/shop_beautify/add_decorete.png')"
               @click="handleToCallAddImg()"
             >
           </div>
