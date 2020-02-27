@@ -95,8 +95,7 @@
             <!--底部提交显示-->
             <div
               class="btn_tijiao"
-              style="color: #ffffff;
-                                background-color: #ff6666"
+              style="color: #ffffff;background-color: #ff6666"
             >
               提交</div>
           </div>
@@ -106,7 +105,6 @@
         <PageSetup
           :nowRightShowMoudlesIndex='nowRightShowMoudlesIndex'
           :nowRightModulesData="nowRightModulesData"
-          :nowRightShowIndex='nowRightShowIndex'
           :pageSetData='pageSetData'
           @handleToClearIndex='handleToClearIndex'
           @handleToBackMiddleData='handleToBackMiddleData'
@@ -156,10 +154,12 @@ import 'vuescroll/dist/vuescroll.css'
 import Vue from 'vue'
 import draggable from 'vuedraggable'
 import $ from 'jquery'
+import decMixins from '@/mixins/decorationModulesMixins/formdecorationModulesMixins' // 装修方法混入
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
 export default {
+  mixins: [decMixins],
   components: {
     draggable,
     // 右侧显示出口组件
@@ -172,7 +172,7 @@ export default {
   data () {
     return {
       middleHereFlag: false, // 中间拖动滑过模块出现的空白占位控制变量
-      nowRightShowIndex: null, // 现在右侧显示的模块的id
+      nowRightShowIndex: null, // 中间高亮模块索引
       middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity'], // 中间显示模块名称池
       showModulesList: [], // 中间显示模块id数组
       insertModulesId: -1, // 左侧模块将要插入位置
@@ -206,7 +206,12 @@ export default {
           background: '#c1c1c1'
         }
       },
-      pageSetData: {} // 初始向右侧传递的表单信息配置数据
+      pageSetData: {}, // 初始向右侧传递的表单信息配置数据
+      nowRightShowMoudlesIndex: null, // 当前右侧显示模块索引
+      nowRightModulesData: {}, // 当前右侧显示的中部高亮模块数据
+      isClickPageSetIcon: false, // 是否是右侧店家顶部icon引起的高亮模块索引变化
+      cur_idx: 100, // 初始模块保存编号
+      modulesData: [] // 当前所有模块保存数据
     }
   },
   watch: {
@@ -214,6 +219,13 @@ export default {
       console.log(this.nowRightShowIndex, newData)
       console.log(newData)
       this.$http.$emit('modulesClick', this.nowRightShowIndex)
+    },
+    nowRightShowIndex (newData) {
+      if (this.isClickPageSetIcon) { // 如果是点击的页面设置的内容则终止响应操作
+        this.isClickPageSetIcon = false
+        return
+      }
+      this.handleToModuleHight()
     }
   },
   updated () {
@@ -328,9 +340,10 @@ export default {
         console.log(this.showModulesList, this.nowRightShowIndex, insert, index)
         this.showModulesList.splice(insert, 0, index)
         this.$nextTick(() => {
-          // this.modulesData.splice(insert, 0, this.handleToAddModules(index))
+          this.modulesData.splice(insert, 0, this.handleToAddModules(index))
+          console.log(this.nowRightShowIndex, insert)
           if (this.nowRightShowIndex === insert) {
-            // this.handleToModuleHight()
+            this.handleToModuleHight()
           }
         })
       }
@@ -352,7 +365,7 @@ export default {
       console.log(index, this.modulesData)
       this.isClickModule = true
       this.$http.$emit('modulesClick', index)
-      // this.handleToModuleHight()
+      this.handleToModuleHight()
     },
     // 中部icon点击处理事件
     handleToClickIcon ({ direction, flag }) {
@@ -361,7 +374,7 @@ export default {
       switch (direction) {
         case 'up':
           let newArr1 = JSON.parse(JSON.stringify(this.showModulesList))
-          // let modulesData1 = JSON.parse(JSON.stringify(this.modulesData))
+          let modulesData1 = JSON.parse(JSON.stringify(this.modulesData))
           console.log(newArr1, '--', flag)
           this.oldIndex = flag
           // 顶部判断
@@ -375,14 +388,14 @@ export default {
           this.showModulesList = newArr1
           this.$nextTick(() => {
             // 保存数据顺序更改
-            // let tempModules = JSON.parse(JSON.stringify(modulesData1[(flag - 1)]))
-            // console.log(tempModules)
-            // modulesData1[(flag - 1)] = modulesData1[flag]
-            // modulesData1[flag] = tempModules
-            // console.log(modulesData1)
-            // this.modulesData = modulesData1
+            let tempModules = JSON.parse(JSON.stringify(modulesData1[(flag - 1)]))
+            console.log(tempModules)
+            modulesData1[(flag - 1)] = modulesData1[flag]
+            modulesData1[flag] = tempModules
+            console.log(modulesData1)
+            this.modulesData = modulesData1
             if (this.nowRightShowIndex === index) {
-              // this.handleToModuleHight()
+              this.handleToModuleHight()
             } else {
               this.nowRightShowIndex = index
             }
@@ -392,9 +405,7 @@ export default {
         case 'down':
           console.log(this.modulesData)
           let newArr2 = JSON.parse(JSON.stringify(this.showModulesList))
-          // let modulesData2 = JSON.parse(JSON.stringify(this.modulesData))
-          // console.log(modulesData2)
-          // console.log(newArr2, '--', modulesData2, '123123123')
+          let modulesData2 = JSON.parse(JSON.stringify(this.modulesData))
           this.oldIndex = flag
           let temp2 = newArr2[(flag + 1)]
           // 底部判断
@@ -405,16 +416,16 @@ export default {
           this.showModulesList = newArr2
           this.$nextTick(() => {
             // 保存数据顺序改变
-            // let tempModules2 = JSON.parse(JSON.stringify(modulesData2[(flag + 1)]))
-            // modulesData2[(flag + 1)] = modulesData2[flag]
-            // modulesData2[flag] = tempModules2
-            // console.log(modulesData2)
-            // let arrFliterModules2 = modulesData2.filter(item => {
-            //   return item
-            // })
-            // this.modulesData = arrFliterModules2
+            let tempModules2 = JSON.parse(JSON.stringify(modulesData2[(flag + 1)]))
+            modulesData2[(flag + 1)] = modulesData2[flag]
+            modulesData2[flag] = tempModules2
+            console.log(modulesData2)
+            let arrFliterModules2 = modulesData2.filter(item => {
+              return item
+            })
+            this.modulesData = arrFliterModules2
             if (this.nowRightShowIndex === indexD) {
-              // this.handleToModuleHight()
+              this.handleToModuleHight()
             } else {
               this.nowRightShowIndex = indexD
             }
@@ -522,6 +533,88 @@ export default {
     // 中间模块顶部划出
     dragTopOut () {
       this.topAreaFlag = false
+    },
+    // 右侧点击表单信息展开icon重置中部显示
+    handleToClearIndex (flag) {
+      this.isClickPageSetIcon = true
+      this.nowRightShowIndex = -1
+    },
+    // 右侧编辑回显数据
+    handleToBackMiddleData (data) {
+      this.modulesData[this.nowRightShowIndex] = data
+      this.$forceUpdate()
+    },
+    // 表单信息右侧编辑传回数据
+    hanelToPageSet (res) {
+      console.log(res)
+      this.pageSetData = res
+    },
+    // 当前高亮模块数据处理向右侧传递事件
+    handleToModuleHight () {
+      let flag = true
+      this.showModulesList.forEach(item => {
+        if (item === -1) {
+          flag = false
+        }
+      })
+      if (!flag) return
+      this.handleToSaveModules(this.showModulesList, this.modulesData)
+      this.nowRightShowMoudlesIndex = -1
+      console.log(this.showModulesList, this.nowRightShowIndex)
+      this.$nextTick(() => {
+        this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
+        this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
+      })
+    },
+    // 当中间模块数组showModulesList被插入新的数据时、保存数组处理函数
+    handleToSaveModules (showModulesList, modulesData) {
+      console.log(this.showModulesList, this.modulesData)
+      if (this.showModulesList.length > this.modulesData.length) {
+        console.log(this.showModulesList[this.nowRightShowIndex])
+        let obj = this.handleToAddModules(this.showModulesList[this.nowRightShowIndex])
+        console.log(this.cur_idx)
+        this.cur_idx = this.cur_idx + 1
+        console.log(this.cur_idx)
+        obj.cur_idx = this.cur_idx
+        this.modulesData.splice(this.nowRightShowIndex, 0, obj)
+        console.log(this.modulesData)
+      } else if (this.showModulesList.length === this.modulesData.length) {
+        console.log(this.isClickIcon, this.showModulesList, this.modulesData)
+        if (this.isClickIcon) { // 如果中部点击的是icon则终止
+          this.isClickIcon = false
+          return
+        }
+        console.log(this.isClickModule)
+        if (this.isClickModule) { // 如果是模块点击触发
+          this.isClickModule = false
+          return
+        }
+        console.log(this.oldIndex, this.newIndex, this.modulesData, this.topAreaFlag, this.nowRightShowIndex)
+        if (this.oldIndex === -1) {
+          console.log(this.modulesData, this.nowRightShowIndex, this.modulesData[this.nowRightShowIndex])
+          if (this.modulesData[this.nowRightShowIndex]) {
+            console.log(this.cur_idx)
+            this.modulesData[this.nowRightShowIndex].cur_idx = this.cur_idx + 1
+            let newArr = JSON.parse(JSON.stringify(this.modulesData))
+            this.modulesData = null
+            this.modulesData = newArr
+            this.cur_idx = this.cur_idx + 1
+            console.log(newArr)
+          }
+          return
+        }
+        let temp = this.modulesData[this.oldIndex]
+        console.log(temp, this.modulesData[this.nowRightShowIndex])
+        if (this.topAreaFlag) {
+          this.modulesData.splice(this.oldIndex, 1)
+          this.modulesData.unshift(temp)
+        } else {
+          this.modulesData.splice(this.oldIndex, 1)
+          console.log(this.modulesData)
+          this.modulesData.splice(this.nowRightShowIndex, 0, temp)
+        }
+        this.oldIndex = -1
+      }
     }
   }
 }
