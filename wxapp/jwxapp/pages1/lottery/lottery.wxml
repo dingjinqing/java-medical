@@ -43,7 +43,7 @@
     <view class="lottery-intro">
       <view class="lottery-opportunities" wx:if="{{btnstatus === 3}}">消耗{{userInfo.score}}积分可获得额外一次抽奖机会哦</view>
       <view class="lottery-opportunities" wx:if="{{btnstatus === 2}}">分享给好友可获得额外一次抽奖机会哦</view>
-      <view class="lottery-opportunities" wx:if="{{btnstatus === 1}}">您有10次抽奖机会</view>
+      <view class="lottery-opportunities" wx:if="{{btnstatus === 1 && canTime > 0}}">您有{{canTime}}次抽奖机会</view>
     </view>
     <view class="lottery-rules">
       <view class="l-r-head">
@@ -71,5 +71,5 @@
 <!-- 中奖弹窗 -->
 <v-lottery-award-dialog show="{{awardDialogVisible}}" prizeInfo="{{prizeInfo}}" btnstatus="{{btnstatus}}" score="{{userInfo.score}}" lotteryId="{{lotteryId}}" bind:close="dialogClose" bind:back_tap="dialogClose"/>
 <!-- 未中奖弹窗 -->
-<v-lottery-no-award-dialog show="{{noAwardDialogVisible}}" bind:close="dialogClose" bind:back_tap="dialogClose" bind:drawagain="drawAgain"/>
+<v-lottery-no-award-dialog show="{{noAwardDialogVisible}}" noAwardInfo="{{lotteryInfo}}" bind:close="dialogClose" bind:back_tap="dialogClose" bind:drawagain="drawAgain"/>
 <!-- <include src="/pages/common/footer.wxml"/> -->
