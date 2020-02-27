@@ -222,6 +222,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
 
 
             for (Map.Entry<String,DBOperator> sqlEntry: updateSql.getSqlOperatorMap().entrySet()){
+                String sql = sqlEntry.getKey();
                 /*如果不是在update.sql里创建的table，那么需要去根sql文件里获取创建table的sql并执行*/
                 if( !existTable && !sqlEntry.getValue().equals(DBOperator.CREATE) ){
                     /*校验updateSQL首先需要创建对应的table*/
@@ -236,9 +237,9 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
                 if( sqlEntry.getValue().equals(DBOperator.CREATE) ){
                     existTable = true;
                 }
-                log.debug("执行【{}】update的语句--->\n{}",sqlEntry.getValue().getOperator(),sqlEntry.getKey());
+                log.debug("执行【{}】update的语句--->\n{}",sqlEntry.getValue().getOperator(),sql);
                 try{
-                    DBUtil.executeSQL(con,sqlEntry.getKey());
+                    DBUtil.executeSQL(con,sql);
                 }catch (DuplicateColumnException e){
                     duplicateError.append(
                             MessageFormat.format(

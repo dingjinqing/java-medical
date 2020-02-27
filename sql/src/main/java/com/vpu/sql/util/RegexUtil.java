@@ -6,6 +6,7 @@ import com.vpu.sql.entity.SqlAttribute;
 import com.vpu.sql.entity.UpdateSql;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,8 +97,17 @@ public class RegexUtil {
         if(DBOperator.DROP.getOperator().equals(sqlArray[0]) ){
             throw new RuntimeException("update sql file can't execute drop table");
         }
-        sqlAttribute.setDbOperator(DBOperator.getDBOperator(sqlArray[0]));
-        sqlAttribute.setTableName(sqlArray[2]);
+        DBOperator dbOperator = DBOperator.getDBOperator(sqlArray[0]);
+        String tableName = "";
+        if(Objects.equals(dbOperator, DBOperator.CREATE)){
+            tableName = sqlArray[5];
+        }else if( Objects.equals(dbOperator,DBOperator.ALTER)  ){
+            tableName = sqlArray[2];
+        }else if( Objects.equals(dbOperator,DBOperator.INSERT) ){
+            tableName = sqlArray[3];
+        }
+        sqlAttribute.setDbOperator(dbOperator);
+        sqlAttribute.setTableName(tableName);
         return sqlAttribute;
     }
 
