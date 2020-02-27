@@ -1030,6 +1030,7 @@ CREATE TABLE `b2c_friend_promote_activity` (
   `use_score` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可使用积分抵扣部分金额：0不可抵扣，1可抵扣',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `promote_times_per_day` int(8) null default 0 comment '单个用户每天最多可帮忙助力次数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `act_code` (`act_code`),
   KEY `act_name` (`act_name`),
