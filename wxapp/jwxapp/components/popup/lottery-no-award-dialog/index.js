@@ -9,14 +9,14 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-
+    noAwardInfo: Object
   },
 
   /**
    * 组件的初始数据
    */
   data: {
-    
+
   },
 
   /**

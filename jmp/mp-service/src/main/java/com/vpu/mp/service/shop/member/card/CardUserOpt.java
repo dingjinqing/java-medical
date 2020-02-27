@@ -94,7 +94,6 @@ public class CardUserOpt extends CardOpt {
 				return false;
 			}
 		}
-
 		// 积分或者余额是否满足升级条件
 		Integer userTotalScore = scoreSvc.getAccumulationScore(userId);
 		BigDecimal amount = uCardSvc.getUserTotalSpendAmount(userId);

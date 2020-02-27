@@ -10,6 +10,7 @@
     </view>
     <view class="l-a-center">
       <view>抱歉啦，这次没有中奖</view>
+      <view wx:if="{{noAwardInfo.noAwardScore > 0}}" style="margin: 20rpx auto 0;">赠送您{{noAwardInfo.noAwardScore}}积分</view>
       <view style="margin:24rpx auto 20rpx;">再接再厉吧！</view>
       <view class="l-a-c-btns">
         <button class="l-a-c-btn" bindtap="drawAgain">再抽一次</button>

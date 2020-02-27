@@ -136,7 +136,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="lotteryPrize"
+          prop="lotteryAward"
           :label="$t('luckyDraw.lotteryPrize')"
           align="center"
         >

@@ -115,7 +115,7 @@
               >
                 <span
                   class="el-icon-circle-close"
-                  @click="changeStatus(scope.row.id)"
+                  @click="changeStatus(scope.row.id, 'stop')"
                   v-if="scope.row.status==1"
                 ></span>
               </el-tooltip>
@@ -127,7 +127,7 @@
               >
                 <span
                   class="el-icon-circle-check"
-                  @click="changeStatus(scope.row.id)"
+                  @click="changeStatus(scope.row.id, 'start')"
                   v-if="scope.row.status==0"
                 ></span>
               </el-tooltip>
@@ -212,8 +212,13 @@ export default {
   watch: {
     lang () {
       this.tabInfo = this.$t('luckyDraw.tabInfo')
+    },
+    '$route.query': function (val) {
+      debugger
+      if (val === 0 || val === '0') {
+        this.tabSwitch = '0'
+      }
     }
-
   },
   created () {
 
@@ -295,9 +300,16 @@ export default {
       // 跳转到路由添加抽奖界面
       this.currentComponent = luckyDrawAdd
     },
-    changeStatus (id) {
-      console.log('changeStatus', id)
-      this.$confirm(this.$t('luckyDraw.changeStatusComment'), {
+    changeStatus (id, operate) {
+      let that = this
+      console.log('changeStatus', id, operate)
+      let message = ''
+      if (operate === 'stop') {
+        message = this.$t('luckyDraw.stopStatusComment')
+      } else {
+        message = this.$t('luckyDraw.changeStatusComment')
+      }
+      this.$confirm(message, {
         confirmButtonText: this.$t('luckyDraw.confirm'),
         cancelButtonText: this.$t('luckyDraw.cancel'),
         type: 'warning'
@@ -312,15 +324,12 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: this.$t('luckyDraw.cancelMessage')
-        })
+        that.$message.warning(that.$t('luckyDraw.cancelMessage'))
       })
     },
     deleteluckyDraw (id) {
       console.log('deleteluckyDraw', id)
-      this.$confirm(this.$t('luckyDraw.deleteluckyDrawComment'), {
+      this.$confirm(this.$t('luckyDraw.deleteLuckDrawComment'), {
         confirmButtonText: this.$t('luckyDraw.confirm'),
         cancelButtonText: this.$t('luckyDraw.cancel'),
         type: 'warning'
@@ -363,6 +372,16 @@ export default {
         this.tabInfo.pop()
       }
       return true
+    },
+    closeAddGroupTab () {
+      // 不是新增
+      for (; this.tabInfo.length > 5;) {
+        this.currentComponent = luckyDrawAdd
+        this.isShowAddFlag = false
+        this.tabSwitch = '1'
+        this.tabInfo.pop()
+      }
+      this.initPageData()
     }
   }
 }
