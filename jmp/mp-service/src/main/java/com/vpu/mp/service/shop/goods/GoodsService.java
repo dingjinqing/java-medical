@@ -1800,7 +1800,7 @@ public class GoodsService extends ShopBaseService {
      */
     public Integer unsalableGoods() {
         try {
-            return esUtilSearchService.getZhiXiaoGoodsNumbers();
+            return esUtilSearchService.getZhiXiaoGoodsNumbers().size();
         } catch (Exception e) {
             log.error("ES查询滞销商品数量失败, 原因如下: {}", e.getMessage());
             Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));

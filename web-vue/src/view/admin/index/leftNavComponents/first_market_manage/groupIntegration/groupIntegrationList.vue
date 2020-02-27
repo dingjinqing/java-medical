@@ -305,10 +305,10 @@ export default {
         changeGroupIntegrationStatus(data).then(res => {
           console.log(res)
           if (res.error === 0) {
-            this.$message('停用成功')
+            this.$message.success('停用成功')
             this.seacherGroupIntegrationList()
           } else {
-            this.$message('停用失败')
+            this.$message.error('停用失败')
           }
         })
       })
@@ -326,10 +326,10 @@ export default {
         changeGroupIntegrationStatus(data).then(res => {
           console.log(res)
           if (res.error === 0) {
-            this.$message('启用成功')
+            this.$message.success('启用成功')
             this.seacherGroupIntegrationList()
           } else {
-            this.$message('启用失败')
+            this.$message.error('启用失败')
           }
         })
       })
@@ -342,10 +342,10 @@ export default {
         type: 'warning' }).then(() => {
         delGroupIntegration(id).then(res => {
           if (res.error === 0) {
-            this.$message('删除成功')
+            this.$message.success('删除成功')
             this.seacherGroupIntegrationList()
           } else {
-            this.$message('删除失败')
+            this.$message.error('删除失败')
           }
         })
       })
@@ -390,6 +390,8 @@ export default {
       if (data.flag === 6) {
         this.showSix = false
         this.activeName = 'first'
+        this.type = 0
+        this.seacherGroupIntegrationList()
       }
     }
   }

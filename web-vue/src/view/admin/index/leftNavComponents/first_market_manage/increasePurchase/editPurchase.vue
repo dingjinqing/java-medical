@@ -484,7 +484,8 @@ export default {
       tuneUpChooseGoods3: false,
       queryParam: {
         purchaseId: 0
-      }
+      },
+      imgHost: `${this.$imageHost}`
     }
   },
   mounted () {
@@ -496,7 +497,43 @@ export default {
       // getDetail, update
       getDetail(this.queryParam).then(res => {
         if (res.error === 0) {
+          this.form1 = res.content
+          this.form1.activityDate.push(this.form1.startTime)
+          this.form1.activityDate.push(this.form1.endTime)
+          this.main_table = res.content.mainGoods
+          this.setDomainImg(this.main_table)
+          this.setPurchaseRule(res.content.purchaseInfo, res.content.redemptionGoods)
         }
+      })
+    },
+    // 将查询规则转化为展示数据
+    setPurchaseRule (dataRule, dataGoods) {
+      if (dataRule.length === 1) {
+        var array = dataRule[0].split('---')
+        this.purcahse_rule1.fullPrice = array[0]
+        this.purcahse_rule1.purchasePrice = array[1]
+        this.purchase_table1 = dataGoods[0]
+        this.setDomainImg(this.purchase_table1)
+      }
+      if (dataRule.length === 2) {
+        var array1 = dataRule[1].split('---')
+        this.purcahse_rule2.fullPrice = array1[0]
+        this.purcahse_rule2.purchasePrice = array1[1]
+        this.purchase_table2 = dataGoods[1]
+        this.setDomainImg(this.purchase_table2)
+      }
+      if (dataRule.length === 3) {
+        var array2 = dataRule[2].split('---')
+        this.purcahse_rule3.fullPrice = array2[0]
+        this.purcahse_rule3.purchasePrice = array2[1]
+        this.purchase_table3 = dataGoods[2]
+        this.setDomainImg(this.purchase_table3)
+      }
+    },
+    // 图片加域名
+    setDomainImg (data) {
+      data.map((item, index) => {
+        item.goodsImg = this.imgHost + '/' + item.goodsImg
       })
     },
     nextStep (value) {
