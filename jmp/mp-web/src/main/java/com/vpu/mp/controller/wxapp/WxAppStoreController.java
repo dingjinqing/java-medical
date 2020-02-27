@@ -77,7 +77,7 @@ public class WxAppStoreController extends WxAppBaseController{
             result.setCityCode(saas.region.province.getCityPinYinByCode(result.getCityCode()));
             result.setDistrictCode(saas.region.province.getDistrictPinYinByCode(result.getDistrictCode()));
         } else {
-            result.setProvinceCode(saas.region.province.getProvinceName(result.getProvinceCode()).getName());
+            result.setProvinceCode(saas.region.province.getProvinceName(Integer.valueOf(result.getProvinceCode())).getName());
             result.setCityCode(saas.region.city.getCityName(Integer.valueOf(result.getCityCode())).getName());
             result.setDistrictCode(saas.region.district.getDistrictName(Integer.valueOf(result.getDistrictCode())).getName());
         }
