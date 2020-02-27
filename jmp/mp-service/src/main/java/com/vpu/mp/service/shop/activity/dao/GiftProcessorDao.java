@@ -285,13 +285,14 @@ public class GiftProcessorDao extends GiftService {
      * @param param k->giftId, v->(k->prdId, v->数量（>0下单，<0退款）)
      */
     public void updateStockAndSales(Map<Integer, Map<Integer, Integer>> param) throws MpException {
-        ListIterator<ProductVo> iterator = getGiftProduct(param.keySet().toArray(new Integer[0])).listIterator();
+        List<ProductVo> productVos = getGiftProduct(param.keySet().toArray(new Integer[0]));
         List<GiftProductRecord> result = Lists.newArrayList();
         for (Map.Entry<Integer, Map<Integer, Integer>> entry : param.entrySet()) {
             for (Map.Entry<Integer, Integer> entry1 : entry.getValue().entrySet()) {
                 GiftProductRecord giftProductRecord = db().newRecord(SUB_TABLE);
-                while (iterator.hasNext() || iterator.hasPrevious()){
-                    ProductVo crt = iterator.hasNext() ? iterator.next() : iterator.previous();
+                ListIterator<ProductVo> iterator = productVos.listIterator();
+                while (iterator.hasNext()){
+                    ProductVo crt = iterator.next();
                     if(crt.getGiftId().equals(entry.getKey()) && crt.getProductId().equals(entry1.getKey())){
                         if(entry1.getValue() > 0 && crt.getProductNumber() < entry1.getValue()){
                             logger().error("下单时赠品已经送完，请重新下单");
