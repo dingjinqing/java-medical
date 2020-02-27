@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
 import com.vpu.mp.service.foundation.excel.exception.NotExcelModelException;
+import com.vpu.mp.service.foundation.excel.util.IDymicColNameI18n;
 import com.vpu.mp.service.foundation.util.Util;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,9 +25,13 @@ public abstract class AbstractExcelDisposer {
     public static final String LANGUAGE_TYPE_EXCEL="excel";
 
     public static final String DEFAULT_LANGUAGE="zh_CN";
-
+    
     public String language;
-
+    /**
+     * 动态列国际化
+     */
+    protected IDymicColNameI18n colI18n;
+    
     public AbstractExcelDisposer() {
     }
 
@@ -130,7 +135,13 @@ public abstract class AbstractExcelDisposer {
         for (Map.Entry<String, Class> stringClassEntry : dynamicColumns.entrySet()) {
             ExcelColumnBean columnBean = new ExcelColumnBean();
             columnBean.columnIndex = maxColumnIndex++;
-            columnBean.columnName = stringClassEntry.getKey();
+            // 处理动态列的国际化
+            if(colI18n!=null) {
+            	columnBean.columnName = colI18n.i18nName(stringClassEntry.getKey(),language);
+            }else {
+            	columnBean.columnName = stringClassEntry.getKey();
+            }
+            
             columnBean.fieldClazz = stringClassEntry.getValue();
             columnBean.isDynamicColumn = true;
             sheetBean.columnMap.put(columnBean.columnName,columnBean);
@@ -143,5 +154,13 @@ public abstract class AbstractExcelDisposer {
     private void processMapClazzField(){
 
     }
+    
+    /**
+     * 设置动态列的国际化
+     * @param colI18n
+     */
+	public void setColI18n(IDymicColNameI18n colI18n) {
+		this.colI18n = colI18n;
+	}
 
 }
