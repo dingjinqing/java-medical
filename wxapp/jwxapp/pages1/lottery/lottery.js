@@ -66,9 +66,7 @@ global.wxPage({
   // 请求抽奖信息
   lotteryRequest() {
     let that = this
-    console.log('lotteryRequest')
     util.api('/api/wxapp/lottery/get', function (res) {
-      console.log(res)
       if (res.error === 0) {
         let content = res.content
         that.initRawards(content.lotteryInfo.prizeList)

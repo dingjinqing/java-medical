@@ -19,7 +19,7 @@
           <view class="cover" hidden="{{!(isCover && index != winIndex)}}"></view>
         </view>
       </view>
-      <view class="lottery-broadcast">
+      <view class="lottery-broadcast" wx:if="{{userInfo && userInfo.lotteryRecord && userInfo.lotteryRecord.dataList.length>0}}">
         <image class="lottery-broadcast-img" src="{{broadcastIcon}}" mode="widthFix"></image>
         <swiper class="lottery-broadcast-swiper" autoplay="true" circular="false" vertical="true" interval="1500">
           <block wx:if="{{userInfo && userInfo.lotteryRecord}}" wx:for="{{userInfo.lotteryRecord.dataList}}" wx:key="index">
@@ -59,7 +59,7 @@
       </view>
       <view class="l-r-content">
         <view>活动有效期：</view>
-        <view>2020-1-13 09:45:10 至 2020-1-30 23:59:59</view>
+        <view>{{lotteryInfo.startTime}} 至 {{lotteryInfo.endTime}}</view>
         <view>活动说明：</view>
         <view>
           <rich-text nodes="{{lotteryInfo.lotteryExplain}}"></rich-text>
