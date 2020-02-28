@@ -46,17 +46,27 @@ export function deleteLottery (data) {
     method: 'post',
     data: data
   })
-}// 查询抽奖活动的记录
+}
+// 查询抽奖活动的记录
 export function getLotteryRecordList (data) {
   return service({
     url: '/api/admin/market/lottery/record/list',
     method: 'post',
     data: data
   })
-}// 查询抽奖用户列表
+}
+// 查询抽奖用户列表
 export function getLotteryUserList (data) {
   return service({
     url: '/api/admin/market/lottery/user/list',
+    method: 'post',
+    data: data
+  })
+}
+// 分享幸运大抽奖
+export function shareLottery (data) {
+  return service({
+    url: '/api/admin/market/lottery/share',
     method: 'post',
     data: data
   })

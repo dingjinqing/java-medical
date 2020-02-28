@@ -904,7 +904,8 @@ export default {
       sizeTipsText: '', // 图片建议尺寸
       moduleSaveData: { // 模块保存数据
 
-      }
+      },
+      zcCumData: [] // 暂存自定义图片数据
 
     }
   },
@@ -935,6 +936,9 @@ export default {
     moduleSaveData: {
       handler (newData) {
         console.log(newData, '触发', this.nowTemplateClickIndex)
+        if (newData.table_type === 8) {
+          newData.data = this.zcCumData
+        }
         this.$emit('handleToBackData', newData)
       },
       deep: true
@@ -1121,7 +1125,9 @@ export default {
     // 获取自定义布局操作回传的数据
     handleToGetTabelData ({ obj, isAllCheckFull }) {
       console.log(obj, isAllCheckFull)
+      this.zcCumData = obj
       this.moduleSaveData.data = obj
+      console.log(this.moduleSaveData)
       this.moduleSaveData.isAllCheckFull = isAllCheckFull
       this.handleToSelectLastTemplate()
     },

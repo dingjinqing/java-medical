@@ -454,7 +454,12 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 
 	public int getNumHasSendUser(Integer userId, Integer cardId) {
-		return db().fetchCount(USER_CARD, USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId)).and(USER_CARD.FLAG.eq(DelFlag.NORMAL_VALUE)));
+		return db().fetchCount(USER_CARD, USER_CARD.USER_ID.eq(userId)
+				   .and(USER_CARD.CARD_ID.eq(cardId))
+				   .and(USER_CARD.FLAG.eq(DelFlag.NORMAL_VALUE))
+				   .and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())))
+				   );
+					
 	}
 
 	public List<UserCardGradePriceBo> getUserCartGradePrice(Integer userId, List<Integer> prdIdList) {

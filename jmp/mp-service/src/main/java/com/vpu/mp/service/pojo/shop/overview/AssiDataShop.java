@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * author liufei
  * date 2019/7/18
  */
+@Slf4j
 @Data
 @Builder
 @NoArgsConstructor
@@ -36,6 +38,8 @@ public class AssiDataShop implements PendingRule<AssiDataShop> {
 
     @Override
     public int getUnFinished() {
-        return unFinished(homePageConf, shopRecommendConf, customServiceConf);
+        int num = unFinished(homePageConf, shopRecommendConf, customServiceConf);
+        log.debug("Shop unFinished Num:{}", num);
+        return num;
     }
 }

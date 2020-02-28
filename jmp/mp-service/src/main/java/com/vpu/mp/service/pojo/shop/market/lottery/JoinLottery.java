@@ -3,9 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.lottery;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
-
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
-import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import lombok.Data;
 
 /**
@@ -25,6 +23,10 @@ public class JoinLottery {
      * 免费抽奖分享抽奖,积分抽奖
      */
     private Byte chanceSource;
+    /**
+     * 抽奖来源
+     */
+    private Byte lotterySource;
     /**
      * 中奖等级
      */
@@ -52,10 +54,6 @@ public class JoinLottery {
      */
     private String msg;
 
-    /**
-     * 来源,支付,登陆,扫码
-     */
-    private Byte source=0;
     /**
      * 抽奖信息
      */

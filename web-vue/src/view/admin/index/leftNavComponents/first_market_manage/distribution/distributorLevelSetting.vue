@@ -171,7 +171,7 @@
 </template>
 
 <script>
-import { getDistributionLevel, setDistributionLevel, startDistribution, stopDistribution } from '@/api/admin/marketManage/distribution.js'
+import { getDistributionLevel, setDistributionLevel, startDistribution, stopDistribution, manualAddDistributor } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
@@ -339,9 +339,13 @@ export default {
     // 弹窗回显数据
     handleSelectRow (row) {
       console.log(row)
-      this.tableData.map((item, index) => {
-        if ((item.levelId === this.levelId) && row) {
-          item.levelUserIds = row.toString()
+      manualAddDistributor({
+        level: this.levelId,
+        userIds: row
+      }).then(res => {
+        if (res.error === 0) {
+          this.$message.success({ message: '添加成功!' })
+          this.initDataList()
         }
       })
     },

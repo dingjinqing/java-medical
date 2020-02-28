@@ -17,7 +17,7 @@ import lombok.Data;
 @ExcelSheet
 public class UserExcelModel {
 	// TODO 国际化
-	@ExcelColumn(columnIndex=1,columnName="ID")
+	@ExcelColumn(columnIndex=0,columnName="ID")
 	private Integer userId;
 	
 	/**

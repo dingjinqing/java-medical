@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.CoopenActivityRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
@@ -114,6 +115,11 @@ public class CoopenService extends ShopBaseService {
         validateParam(param);
         validateTimeRange(param);
         CoopenActivityRecord coopenRecord =db().newRecord(TABLE,param);
+        if (param.getStartDate()==null){
+            Timestamp localDateTime = DateUtil.getLocalDateTime();
+            coopenRecord.setStartDate(localDateTime);
+            coopenRecord.setEndDate(localDateTime);
+        }
         coopenRecord.setId(null);
         coopenRecord.insert();
     }

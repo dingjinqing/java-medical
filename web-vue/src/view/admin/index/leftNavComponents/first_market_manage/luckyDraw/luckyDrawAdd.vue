@@ -382,7 +382,7 @@
                       </el-form-item>
                       <el-form-item
                         v-if="item.lotteryType===2"
-                        :prop="`prizeList[${index}].integralScore`"
+                        :prop="`prizeList[${index}].account`"
                         :rules="{ required: true, message: $t('luckyDraw.validBounsAmount'), trigger: 'blur' }"
                         :inline-message="true"
                         class="before-star"
@@ -392,7 +392,7 @@
                           size="small"
                           :placeholder="$t('luckyDraw.giveTheBalanceTips')"
                           style="width: 120px"
-                          v-model="item.integralScore"
+                          v-model="item.account"
                         ></el-input>
                       </el-form-item>
                       <!-- 优惠券 -->
@@ -659,7 +659,7 @@ export default {
       // 规则二：当填写了奖品后，没有填写中奖概率则报错
       for (let i = 0; i < prizeList.length; i++) {
         let prize = prizeList[i]
-        if ((prize.chanceNumerator === '' || prize.chanceNumerator === undefined) && (prize.integralScore || prize.couponId || prize.goodsName || prize.lotteryDetail)) {
+        if ((prize.chanceNumerator === '' || prize.chanceNumerator === undefined) && (prize.integralScore || prize.account || prize.couponId || prize.goodsName || prize.lotteryDetail)) {
           callback(new Error('请填写中奖概率!'))
           break
         }
@@ -794,7 +794,6 @@ export default {
     },
     // 清空中奖图标
     handleClear () {
-      console.log(1111)
       this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage = ''
     },
     handleTabClick (tab, event) {

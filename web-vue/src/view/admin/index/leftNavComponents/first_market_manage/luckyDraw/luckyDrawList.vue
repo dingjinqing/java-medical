@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content" v-loading="loading">
     <div class="main">
       <el-tabs
         v-model="tabSwitch"
@@ -105,7 +105,9 @@
                 :content="$t('luckyDraw.share')"
                 placement="top"
               >
-                <span class="el-icon-share"></span>
+                <span
+                  class="el-icon-share"
+                  @click="shareActivity(scope.row.id)"></span>
               </el-tooltip>
               <!-- 停用 -->
               <el-tooltip
@@ -175,6 +177,29 @@
         />
       </div>
     </div>
+    <!-- 分享活动弹窗 -->
+    <el-dialog
+      title="扫一扫，分享给好友吧~"
+      :visible.sync="shareDialogVisible"
+      width="320px"
+      custom-class="share-dialog"
+    >
+      <el-image
+        :src="shareInfo.imageUrl"
+        style="width:160px;height:160px;margin:0 auto;"
+        fit="fill"></el-image>
+      <a class="share-dialog-a" :href="shareInfo.iamgeUrl" download>下载二维码</a>
+      <div class="share-dialog-footer">
+        <el-input size="small" v-model="shareInfo.pagePath"></el-input>
+        <el-button
+          type="text"
+          style="margin-left:10px;"
+          v-clipboard:copy="shareInfo.pagePath"
+          v-clipboard:success="onCopySuccess"
+          v-clipboard:error="onCopyError"
+        >复制</el-button>
+      </div>
+    </el-dialog>
   </div>
 
 </template>
@@ -182,7 +207,8 @@
 import {
   getLotteryList,
   changeStatus,
-  deleteLottery
+  deleteLottery,
+  shareLottery
 } from '@/api/admin/marketManage/luckyDraw.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
 // 引入添加抽奖活动界面
@@ -206,7 +232,10 @@ export default {
       // 动态组件
       currentComponent: null,
       lotteryId: null,
-      isEdite: false
+      isEdite: false,
+      shareDialogVisible: false,
+      loading: false,
+      shareInfo: {}
     }
   },
   watch: {
@@ -300,9 +329,23 @@ export default {
       // 跳转到路由添加抽奖界面
       this.currentComponent = luckyDrawAdd
     },
+    shareActivity (id) {
+      console.log(id)
+      this.loading = true
+      shareLottery({
+        id: id
+      }).then(res => {
+        this.loading = false
+        if (res.error === 0) {
+          this.shareInfo = res.content
+          this.shareDialogVisible = true
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
     changeStatus (id, operate) {
       let that = this
-      console.log('changeStatus', id, operate)
       let message = ''
       if (operate === 'stop') {
         message = this.$t('luckyDraw.stopStatusComment')
@@ -382,6 +425,12 @@ export default {
         this.tabInfo.pop()
       }
       this.initPageData()
+    },
+    onCopySuccess () {
+      this.$message.success('已复制')
+    },
+    onCopyError () {
+      this.$message.error('复制失败')
     }
   }
 }
@@ -474,4 +523,31 @@ export default {
     line-height: 32px;
   }
 }
+.share-dialog {
+  .el-dialog__header {
+    background: #fff;
+  }
+  .el-dialog__body {
+    padding-top:10px;
+    padding-bottom: 10px;
+  }
+  .el-image {
+    display: block;
+    width: 100%;
+  }
+  .share-dialog-a {
+    display: inline-block;
+    width: 100%;
+    text-decoration: none;
+    margin: 10px auto;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .share-dialog-footer {
+    display: flex;
+  }
+}
+
 </style>

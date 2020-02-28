@@ -249,8 +249,10 @@ public class CartService extends ShopBaseService {
             cartRecord.setGoodsPrice(productRecord.getPrdPrice());
             cartRecord.setOriginalPrice(productRecord.getPrdPrice());
             cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
-            cartRecord.setExtendId(activityId);
-            cartRecord.setType(activityType);
+            if (activityType!=null){
+                cartRecord.setExtendId(activityId);
+                cartRecord.setType(activityType);
+            }
             cartRecord.insert();
         } else {
             cartRecord.setCartNumber((short) (goodsNumber + cartRecord.getCartNumber()));
