@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 public class MrkingStrategyGoodsListVo {
     /** 状态，0正常可用，1活动不存在，2活动未开始，3活动已过期 ，4活动设置了专属会员卡可参与，但该会员没有对应的卡，  */
-    private Byte state;
+    private Byte state = 0;
 
     private PageResult<Goods> goods;
 
