@@ -140,6 +140,9 @@
           :label="$t('luckyDraw.lotteryPrize')"
           align="center"
         >
+          <template scope="{row}">
+            <div>{{row.lotteryAward}}</div>
+          </template>
         </el-table-column>
       </el-table>
       <div class="footer">
