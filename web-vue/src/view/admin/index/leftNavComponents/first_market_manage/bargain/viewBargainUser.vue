@@ -33,8 +33,11 @@
             :placeholder="$t('marketCommon.selectPlaceholder')"
             size="small"
             class="inputWidth"
-            clearable
           >
+            <el-option
+              :value="-1"
+              label="全部"
+            ></el-option>
             <el-option
               :value="1"
               :label="$t('bargainList.bargainStatusSuccessful')"
@@ -89,25 +92,34 @@
           <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div>
           <div>筛选条件：</div>
           <div
-            v-if="Object.keys(paramString).length!=0"
-            style="margin-top: 10px;"
-          >
-            <div
-              v-for="(item,key,index) in paramString"
-              :key="index"
-            >
-              <div v-if="ok(key,item)">
-                <div>{{$t('allGoods.allGoodsHeaderInputLabel.'+key)}}:{{item}}</div>
-              </div>
-            </div>
-          </div>
+            v-if="requestParams.username"
+            style="margin-top:10px"
+          >用户昵称：{{requestParams.username}}</div>
           <div
-            v-else
-            style="margin-top: 10px;"
-          >
-            {{$t('allGoods.allGoodsData.no')}}
-          </div>
-
+            v-if="requestParams.mobile"
+            style="margin-top:10px"
+          >手机号：{{requestParams.mobile}}</div>
+          <div
+            v-if="requestParams.status === -1"
+            style="margin-top:10px"
+          >砍价状态：全部</div>
+          <div
+            v-if="requestParams.status === 1"
+            style="margin-top:10px"
+          >砍价状态：成功</div>
+          <div
+            v-if="requestParams.status === 2"
+            style="margin-top:10px"
+          >砍价状态：失败</div>
+          <div
+            v-if="requestParams.status === 0"
+            style="margin-top:10px"
+          >砍价状态：砍价中</div>
+          <div
+            v-if="createDate"
+            style="margin-top:10px"
+          >发起时间：{{requestParams.startTime}}-{{requestParams.endTime.split(' ')[0] + ' 23:59:59'}}</div>
+          <!-- <div v-else>无</div> -->
           <span
             slot="footer"
             class="dialog-footer"
@@ -235,7 +247,13 @@ export default {
   data () {
     return {
       loading: false,
-      requestParams: {},
+      requestParams: {
+        username: '',
+        mobile: '',
+        status: -1,
+        startTime: null,
+        endTime: null
+      },
       pageParams: {},
       tableData: [],
       createDate: '',
@@ -255,8 +273,13 @@ export default {
     initDataList () {
       this.loading = true
       this.requestParams.bargainId = this.actId
-      this.requestParams.startTime = this.createDate[0]
-      this.requestParams.endTime = this.createDate[1]
+      if (!this.createDate) {
+        this.requestParams.startTime = ''
+        this.requestParams.endTime = ''
+      } else {
+        this.requestParams.startTime = this.createDate[0]
+        this.requestParams.endTime = this.createDate[1]
+      }
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       getRecordPageList(this.requestParams).then((res) => {
@@ -281,6 +304,9 @@ export default {
     handleData (data) {
       data.map((item, index) => {
         switch (item.status) {
+          case -1:
+            item.status = '全部'
+            break
           case 0:
             item.status = this.$t('bargainList.bargainStatusProcessing')
             break
@@ -310,7 +336,7 @@ export default {
       this.dialogVisible = true
     },
     handelConfirm () {
-      console.log(this.tableData, 'get tableData')
+      console.log(this.tableData, 'get-tableData')
       let obj = {
         bargainId: this.actId,
         startTime: this.createDate[0],
@@ -318,7 +344,6 @@ export default {
       }
       console.log(obj, 'objParams')
       exportBargainUserData(Object.assign(this.requestParams, obj)).then(res => {
-        console.log(res, 'getting')
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '砍价订单导出.xlsx'
         download(res, decodeURIComponent(fileName))

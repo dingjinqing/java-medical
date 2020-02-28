@@ -151,3 +151,22 @@ export function exportBargainUserData (data) {
     responseType: 'blob'
   })
 }
+
+// 砍价订单列表导出条数
+export function getBargainExportTotalRows (data) {
+  return service({
+    url: '/api/admin/market/bargain/order/export/rows',
+    method: 'post',
+    data: data
+  })
+}
+
+// 砍价订单列表导出
+export function bargainOrderListExport (data) {
+  return service({
+    url: '/api/admin/market/bargain/order/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
