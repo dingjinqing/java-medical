@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.overview;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -51,8 +50,7 @@ public interface PendingRule<R> {
 
 
     default int unFinished(Metadata... metadata) {
-        return Arrays.stream(metadata).filter(Objects::nonNull)
-            .filter(e -> e.getStatus() == BYTE_ZERO)
-            .collect(Collectors.toSet()).size();
+        return (int) Arrays.stream(metadata)
+            .filter(e -> e.getStatus() == BYTE_ZERO).count();
     }
 }
