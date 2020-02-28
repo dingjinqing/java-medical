@@ -272,7 +272,10 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     @SuppressWarnings("unchecked")
     public PurchaseDetailVo getPurchaseDetail(PurchaseDetailParam param) {
-        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE,
+            ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID, ppd.REDEMPTION_FREIGHT).from(ppd)
+            .where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class)
+            .orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
