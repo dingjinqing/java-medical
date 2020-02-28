@@ -244,6 +244,7 @@ public class LotteryService extends ShopBaseService {
         LotteryVo lotteryVo =lottery.into(LotteryVo.class);
         List<LotteryPrizeVo>  lotteryPrizeVoList =lotteryPrizeList.into(LotteryPrizeVo.class);
         lotteryPrizeVoList.forEach( lotteryPrizeVo -> {
+            lotteryPrizeVo.setAccount(lotteryPrizeVo.getAwardAccount());
             if (lotteryPrizeVo.getLotteryType().equals(LotteryConstant.LOTTERY_TYPE_GOODS)){
                 ProductSmallInfoVo product =  goodsService.getProductVoInfoByProductId(lotteryPrizeVo.getPrdId());
                 lotteryPrizeVo.setProduct(product);
@@ -375,13 +376,16 @@ public class LotteryService extends ShopBaseService {
         if (lottery.getCanShare() != null && lottery.getCanShare().equals(YES)) {
             LotteryShareRecord shareRecord = lotteryShareService.getLotteryShareByUser(userId, lotteryId);
             //分享次数
+            Integer usedShareRecordTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SHARE);
             Integer shareTimes = shareRecord != null ? shareRecord.getShareTimes() : 0;
             Integer usedShareTimes= shareRecord != null ? shareRecord.getUseShareTimes() : 0;
-            if (shareTimes >usedShareTimes) {
+            if (shareTimes >usedShareRecordTimes) {
                 //分享抽奖
                 join.setChanceSource(LOTTERY_TIME_SHARE);
-                join.setCanUseTime(shareTimes - usedShareTimes);
+                join.setCanUseTime(shareTimes - usedShareRecordTimes);
                 join.setFlag(true);
+                shareRecord.setUseShareTimes(usedShareRecordTimes+1);
+                shareRecord.update();
                 return join;
             }
             // 去分享
