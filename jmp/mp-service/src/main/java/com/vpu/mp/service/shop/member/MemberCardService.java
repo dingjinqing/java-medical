@@ -1983,7 +1983,7 @@ public class MemberCardService extends ShopBaseService {
 
         //用户已经领取该卡的数量
         int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,cardId);
-        if(vo.getCardType().equals(MCARD_TP_LIMIT) && vo.getLimit() > 1){
+        if(vo.getCardType().equals(MCARD_TP_LIMIT)){
             //限次卡，还有库存 或 不限库存
         	int hasSend = userCardService.userCardDao.calcNumCardById(cardId);
         	boolean canSend = vo.getStock() > 0 && hasSend < vo.getStock();

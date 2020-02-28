@@ -1322,8 +1322,11 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(userCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			// 有效时间
+			setEffectTimeForJudgeCard(userCard);
 			userCard.setUserId(param.getUserId());
 			userCard.setCardId(param.getCardId());
+			userCard.setStoreUseSwitch(CardUtil.getUseStoreType(userCard.getStoreUseSwitch(),userCard.getStoreList()));
 			userCardJudgeVo.setCardInfo(userCard);
 			return userCardJudgeVo;
 		}else{
@@ -1415,11 +1418,33 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(uCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			setEffectTimeForJudgeCard(uCard);
 			uCard.setUserId(param.getUserId());
 			uCard.setCardId(param.getCardId());
+			uCard.setStoreUseSwitch(CardUtil.getUseStoreType(uCard.getStoreUseSwitch(),uCard.getStoreList()));
 			userCardJudgeVo.setCardInfo(uCard);
+			
 			return userCardJudgeVo;
 		}
+	}
+
+	/**
+	 * 	设置有效时间
+	 * @param userCard
+	 */
+	private void setEffectTimeForJudgeCard(UserCardVo userCard) {
+		EffectTimeParam etParam = new EffectTimeParam();
+		etParam.setStartTime(userCard.getStartTime());
+		etParam.setEndTime(userCard.getEndTime());
+		etParam.setCreateTime(userCard.getUCreateTime());
+		etParam.setExpireTime(userCard.getExpireTime());
+		etParam.setExpireType(userCard.getExpireType());
+		EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+		userCard.setStartDate(etBean.getStartDate());
+		userCard.setStartTime(etBean.getStartTime());
+		userCard.setEndDate(etBean.getEndDate());
+		userCard.setEndTime(etBean.getEndTime());
+		userCard.setExpireType(etBean.getExpireType());
 	}
 
 	private void dealSendCouponInfo(UserCardVo userCard, String lang) {
