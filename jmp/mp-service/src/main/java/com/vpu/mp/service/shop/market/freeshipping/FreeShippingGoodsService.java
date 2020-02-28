@@ -174,13 +174,16 @@ public class FreeShippingGoodsService extends ShopBaseService {
      */
     public WxAppCartBo getCartGoodsList(Integer userId, Integer ruleId) {
         FreeShippingRecord freeShip = freeShipService.getFreeShippingByRuleId(ruleId);
-        //活动商品范围
-        FreeShippingGoodsListParam param =new FreeShippingGoodsListParam();
-        //查询参数
-        GoodsSearchParam goodsSearchParam = handleSearchParam(param, freeShip);
-        //查询条件拼接
-        Condition condition = goodsMpService.handleSearchCondition(goodsSearchParam);
-        List<Integer> goodsIds = goodsMpService.getGoodsIdsByCondition(condition);
-        return  cartService.getCartList(userId, goodsIds);
+        if (freeShip!=null){
+            //活动商品范围
+            FreeShippingGoodsListParam param =new FreeShippingGoodsListParam();
+            //查询参数
+            GoodsSearchParam goodsSearchParam = handleSearchParam(param, freeShip);
+            //查询条件拼接
+            Condition condition = goodsMpService.handleSearchCondition(goodsSearchParam);
+            List<Integer> goodsIds = goodsMpService.getGoodsIdsByCondition(condition);
+            return  cartService.getCartList(userId, goodsIds);
+        }
+        return cartService.getCartList(userId, new ArrayList<>());
     }
 }
