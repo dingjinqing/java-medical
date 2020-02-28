@@ -5,7 +5,7 @@ global.wxComponent({
   methods: {
     onPropChange (newVal, oldVal, changedPath) {
       console.log(newVal, 'video++++++++++++++++++++++')
-      newVal.video_img = newVal.video_img.substr(1)
+      // newVal.video_img = newVal.video_img.substr(1)
       newVal.is_play = 0;
     },
     bindPlayVideo (e) {

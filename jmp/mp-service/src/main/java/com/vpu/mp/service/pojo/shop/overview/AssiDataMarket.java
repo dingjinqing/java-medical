@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
  * author liufei
  * date 2019/7/18
  */
+@Slf4j
 @Data
 @Builder
 @NoArgsConstructor
@@ -40,7 +42,9 @@ public class AssiDataMarket implements PendingRule<AssiDataMarket> {
 
     @Override
     public int getUnFinished() {
-        return unFinished(examine, member) +
+        int num = unFinished(examine, member) +
             (Objects.isNull(voucher.getContent()) ? 0 : voucher.getContent().size());
+        log.debug("Market unFinished Num:{}", num);
+        return num;
     }
 }

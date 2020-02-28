@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author liufei
  * @date 2/21/2020
  */
+@Slf4j
 @Data
 @Builder
 @NoArgsConstructor
@@ -42,6 +44,8 @@ public class AssiWxDataShop implements PendingRule<AssiWxDataShop> {
 
     @Override
     public int getUnFinished() {
-        return unFinished(registerApplet, authApplet, appletService, wxPayment, configWxPayment, childAccountConf, officialAccountConf);
+        int num = unFinished(registerApplet, authApplet, appletService, wxPayment, configWxPayment, childAccountConf, officialAccountConf);
+        log.debug("WxShop unFinished Num:{}", num);
+        return num;
     }
 }

@@ -136,10 +136,13 @@
         >
         </el-table-column>
         <el-table-column
-          prop="lotteryPrize"
+          prop="lotteryAward"
           :label="$t('luckyDraw.lotteryPrize')"
           align="center"
         >
+          <template slot-scope="{row}">
+            <div>{{row.lotteryAward}}</div>
+          </template>
         </el-table-column>
       </el-table>
       <div class="footer">

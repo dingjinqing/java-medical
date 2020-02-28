@@ -420,11 +420,11 @@ export default {
 .right_box {
   flex: 1;
   width: 100%;
-  height: 657px;
+  height: 550px;
   overflow-y: auto;
   padding: 8px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 80px;
+  /* border-bottom: 1px solid #eee; */
+  /* padding-bottom: 80px; */
 }
 </style>
 <style>

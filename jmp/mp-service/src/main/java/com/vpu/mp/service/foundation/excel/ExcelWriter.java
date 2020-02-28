@@ -1,5 +1,25 @@
 package com.vpu.mp.service.foundation.excel;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
+
 import com.vpu.mp.service.foundation.excel.annotation.ExcelDynamicColumn;
 import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.excel.bean.ExcelColumnBean;
@@ -10,12 +30,6 @@ import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionExcepti
 import com.vpu.mp.service.foundation.excel.util.IDymicColNameI18n;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.RegionUtil;
-
-import java.lang.reflect.Field;
-import java.util.*;
 
 /**
  * @author 李晓冰
@@ -29,7 +43,7 @@ import java.util.*;
 public class ExcelWriter extends AbstractExcelDisposer {
     private Workbook workbook;
     private String sheetName;
-    private IDymicColNameI18n colI18n;
+    
     
     public ExcelWriter(Workbook workbook, String sheetName) {
         this(AbstractExcelDisposer.DEFAULT_LANGUAGE, workbook, sheetName);
@@ -434,15 +448,5 @@ public class ExcelWriter extends AbstractExcelDisposer {
         RegionUtil.setBorderTop(border, region, sheet);      //上边框
     }
 
-    /**
-     * 设置动态列的国际化
-     * @param colI18n
-     */
-	public void setColI18n(IDymicColNameI18n colI18n) {
-		this.colI18n = colI18n;
-	}
-    
-   
-    
     
 }

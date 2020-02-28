@@ -45,10 +45,7 @@
                 v-if="storeList.wxDataShop.registerApplet.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet1') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.appletService.status === 0">
               <span
@@ -68,10 +65,7 @@
                 v-if="storeList.wxDataShop.appletService.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet2') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
 
             </div>
             <div v-if="storeList.wxDataShop.authApplet.status === 0">
@@ -92,10 +86,7 @@
                 v-if="storeList.wxDataShop.authApplet.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet3') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.wxPayment.status === 0">
               <span
@@ -115,10 +106,7 @@
                 v-if="storeList.wxDataShop.wxPayment.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet4') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.configWxPayment.status === 0">
               <span
@@ -138,10 +126,7 @@
                 v-if="storeList.wxDataShop.configWxPayment.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet5') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.childAccountConf.status === 0">
               <span
@@ -161,10 +146,7 @@
                 v-if="storeList.wxDataShop.childAccountConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
-              <a
-                href="/admin/home/main/shopAuthority"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/shopAuthority">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.officialAccountConf.status === 0">
               <span
@@ -184,10 +166,7 @@
                 v-if="storeList.wxDataShop.officialAccountConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
-              <a
-                href="/admin/home/shopMain?change_components=3"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/shopMain?change_components=3">{{ $t('overview.storeGo') }}</a>
             </div>
 
           </div>
@@ -213,10 +192,7 @@
                 v-if="storeList.dataShop.homePageConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip4') }}</span>
-              <a
-                href="/admin/home/main/pictureSetting"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/pictureSetting">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.shopRecommendConf.status === 0">
               <span
@@ -236,10 +212,7 @@
                 v-if="storeList.wxDataShop.shopRecommendConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
-              <a
-                :href="'/admin/home/main/base_manger/' + this.storeList.dataShop.shopRecommendLink"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a :href="'/admin/home/main/base_manger/' + this.storeList.dataShop.shopRecommendLink">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.customServiceConf.status === 0">
               <span
@@ -293,10 +266,7 @@
                 v-if="storeList.dataGoods.shipTemplateConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.unStoreTip1') }}</span>
-              <a
-                href="/admin/home/main/goodsManage/deliverTemplate/list"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/goodsManage/deliverTemplate/list">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsConf.status === 0">
               <span
@@ -316,10 +286,7 @@
                 v-if="storeList.dataGoods.goodsConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.unStoreTip2') }}</span>
-              <a
-                href="/admin/home/main/goodsManage/goodsForSale"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/goodsManage/goodsForSale">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsStoreConf.status === 0">
               <span
@@ -362,10 +329,10 @@
                 v-if="storeList.dataGoods.goodsUnsalableConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf.value }} {{ $t('overview.unStoreTip4') }}</span>
-              <!-- <a
+              <a
                 href="javascript: void(0);"
                 @click="clickJumpHandler('goodsForSale', 3, 1)"
-              >{{ $t('overview.storeGo') }}</a> -->
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsComment.status === 0">
               <span
@@ -408,10 +375,7 @@
                 v-if="storeList.dataGoods.goodsRecommend.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.unStoreTip6') }}</span>
-              <a
-                href="/admin/home/main/goodsManage/goodsRecommend"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/goodsManage/goodsRecommend">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.shopSort.status === 0">
               <span
@@ -431,10 +395,7 @@
                 v-if="storeList.dataGoods.shopSort.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.unStoreTip7') }}</span>
-              <a
-                href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort">{{ $t('overview.storeGo') }}</a>
             </div>
           </div>
         </div>
@@ -576,10 +537,7 @@
                   v-if="storeList.dataMarket.member.type === 3"
                 >{{ $t('overview.storeRecommend') }}</span>
                 <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.value }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
-                <a
-                  :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
-                  target="_blank"
-                >{{ $t('overview.storeGo') }}</a>
+                <a :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.content.card_id">{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
             <div
@@ -607,10 +565,7 @@
                   v-if="storeList.dataMarket.voucher.type === 3"
                 >{{ $t('overview.storeRecommend') }}</span>
                 <span class=" task_list_desc">{{ $t('overview.unMarketTip3') }} "{{ val }}" {{ $t('overview.unMarketTip4') }}</span>
-                <a
-                  href="/admin/home/main/ordinaryCoupon"
-                  target="_blank"
-                >{{ $t('overview.storeGo') }}</a>
+                <a href="/admin/home/main/ordinaryCoupon">{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
           </div>
@@ -1189,7 +1144,24 @@ export default {
       image: `${this.$imageHost}`,
       tabSwitch: '1',
       tabInfo: this.$t('overview.tabInfo'),
-      storeList: [] // 数据
+      storeList: [], // 数据
+
+      // 店铺助手默认值
+      ShopData: {
+        isAuthOk: 1,
+        storeSizeNum: 5, // 商品库存偏小参数
+        // unsalableNum: 3, // 商品滞销
+        commentOver: 3, // 商品评价审核逾期
+
+        deliverOver: 3, // 订单发货逾期参数
+        refundOver: 3, // 退款申请处理预期参数
+        remindOver: 3, // 提醒发货参数
+
+        applyOver: 3, // 分销员审核超时参数,
+        examineOver: 2, // 会员卡激活审核参数
+
+        couponSizeNum: 10 // 优惠券库存参数
+      }
     }
   },
   watch: {

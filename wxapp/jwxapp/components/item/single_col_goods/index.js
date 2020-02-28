@@ -120,6 +120,24 @@ global.wxComponent({
         }
       )
     },
+    changeCartInput(e){
+      let cartNumber = parseInt(e.detail.value)
+      let { productId } = this.data.goodsData
+      if(!isNaN(cartNumber)){
+        util.api(
+          '/api/wxapp/cart/change',
+          res => {
+            if (res.error == 0) {
+              this.triggerEvent('cartChange') //购物车改变触发
+            }
+          },
+          {
+            productId,
+            cartNumber
+          }
+        )
+      }
+    },
     // 打开规格弹窗
     showSpecDialog() {
       this.triggerEvent('showSpecDialog', this.data.goodsData)

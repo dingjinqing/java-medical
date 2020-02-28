@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FullReductionPromotion;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,7 +68,21 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
         private Byte FullReductiontype;
         /**是否会员专享*/
         private Boolean isExclusive;
-
+        /**
+         * 当前活动信息
+         */
+        private String condition;
+        /**
+         *  1满金额 2满件数
+         */
+        private Byte rulesType;
+        /**
+         * 当前规则
+         */
+        private FullReductionRule rule;
+        /**
+         * 规则
+         */
         private List<FullReductionRule> rules;
 
     }
@@ -80,6 +93,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     @Data
     public static class FullReductionRule{
+        /**
+         * 活动名称
+         */
+        private String name;
         /**满多少金额，活动中指定使用满金额策略时使用*/
         private BigDecimal fullMoney;
         /**满几件或第几件（第X件打折），活动中指定使用满件数策略时使用*/
