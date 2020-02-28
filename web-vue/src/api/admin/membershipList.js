@@ -120,3 +120,11 @@ export function getAllIndustryRequest () {
     data: null
   })
 }
+
+// 获取会员导出信息
+export function getExportCfg () {
+  return service({
+    url: '/api/admin/member/export/cfg',
+    method: 'post'
+  })
+}
