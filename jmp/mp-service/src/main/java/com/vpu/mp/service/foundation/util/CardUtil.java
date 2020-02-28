@@ -325,12 +325,14 @@ public class CardUtil {
 			}
 		}
 		
-		if(isCardTimeForever(card.getExpireType()) &&
-					card.getExpireTime() != null) {
-			// 取快照
-			card.setExpireType(CardConstant.MCARD_ET_FIX);
+		if(card.getExpireTime() != null) {
+			// 取快照 有效期
+			bean.setExpireType(NumberUtils.BYTE_ONE);
+		}else {
+			// 永久有效
+			bean.setExpireType((byte)2);
 		}
-		bean.setExpireType(card.getExpireType());
+		
 		return bean;
 	}
 
