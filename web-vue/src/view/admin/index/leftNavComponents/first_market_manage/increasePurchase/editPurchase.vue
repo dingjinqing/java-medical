@@ -520,8 +520,9 @@ export default {
     setPurchaseRule (dataRule, dataGoods) {
       if (dataRule.length >= 1) {
         var array = dataRule[0].split(' --- ')
-        this.purcahse_rule1.fullPrice = parseFloat(array[0])
-        this.purcahse_rule1.purchasePrice = parseFloat(array[1])
+        this.purcahse_rule1.id = parseFloat(array[0])
+        this.purcahse_rule1.fullPrice = parseFloat(array[1])
+        this.purcahse_rule1.purchasePrice = parseFloat(array[2])
         this.purchase_table1 = dataGoods[0]
         this.setDomainImg(this.purchase_table1)
         this.purchase_table1.map((item, index) => {
@@ -530,25 +531,29 @@ export default {
       }
       if (dataRule.length >= 2) {
         var array1 = dataRule[1].split(' --- ')
-        this.purcahse_rule2.fullPrice = parseFloat(array1[0])
-        this.purcahse_rule2.purchasePrice = parseFloat(array1[1])
+        this.purcahse_rule2.id = parseFloat(array1[0])
+        this.purcahse_rule2.fullPrice = parseFloat(array1[1])
+        this.purcahse_rule2.purchasePrice = parseFloat(array1[2])
         this.purchase_table2 = dataGoods[1]
         this.setDomainImg(this.purchase_table2)
         this.purchase_table2.map((item, index) => {
           this.purcahse_rule2.productId.push(item.goodsId)
         })
         this.rule_line2 = true
+        this.rule_button1 = false
       }
       if (dataRule.length >= 3) {
         var array2 = dataRule[2].split(' --- ')
-        this.purcahse_rule3.fullPrice = parseFloat(array2[0])
-        this.purcahse_rule3.purchasePrice = parseFloat(array2[1])
+        this.purcahse_rule3.id = parseFloat(array2[0])
+        this.purcahse_rule3.fullPrice = parseFloat(array2[1])
+        this.purcahse_rule3.purchasePrice = parseFloat(array2[2])
         this.purchase_table3 = dataGoods[2]
         this.setDomainImg(this.purchase_table3)
         this.purchase_table3.map((item, index) => {
           this.purcahse_rule3.productId.push(item.goodsId)
         })
         this.rule_line3 = true
+        this.rule_button2 = false
       }
       this.rule_num = dataRule.length
     },
@@ -780,14 +785,13 @@ export default {
     },
     getPurchaseRules () {
       let rules = []
-      if (this.rule_num === 1) {
+      if (this.rule_num >= 1) {
         rules.push(this.purcahse_rule1)
-      } else if (this.rule_num === 2) {
-        rules.push(this.purcahse_rule1)
+      }
+      if (this.rule_num >= 2) {
         rules.push(this.purcahse_rule2)
-      } else if (this.rule_num === 3) {
-        rules.push(this.purcahse_rule1)
-        rules.push(this.purcahse_rule2)
+      }
+      if (this.rule_num >= 3) {
         rules.push(this.purcahse_rule3)
       }
       rules.map((item, index) => {
