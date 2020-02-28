@@ -565,7 +565,8 @@ export default {
             break
           case 'm_magic_cube':
             if (item.table_type === 8) {
-              if (!item.isAllCheckFull) {
+              console.log(item.isAllCheckFull)
+              if (item.isAllCheckFull === false) {
                 this.$message.error({
                   message: '请选择上传图片',
                   showClose: true
