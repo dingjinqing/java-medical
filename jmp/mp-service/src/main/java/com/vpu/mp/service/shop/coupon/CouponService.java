@@ -918,4 +918,21 @@ public class CouponService extends ShopBaseService {
 		into.setCouponRule(couponRule);
 		return into;
 	}
+
+    /**
+     * 获得用户发放的礼包某种优惠券数量
+     * @param packId
+     * @param userId
+     * @param voucherId
+     * @return
+     */
+	public int getUserCouponCountByPackId(int packId,int userId,int voucherId){
+	    return db().selectCount().from(CUSTOMER_AVAIL_COUPONS).
+            where(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(CouponConstant.ACCESS_MODE_COUPON_PACK)).
+            and(CUSTOMER_AVAIL_COUPONS.ACCESS_ID.eq(packId)).
+            and(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId)).
+            and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+            and(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(voucherId)).
+            fetchOptionalInto(Integer.class).orElse(0);
+    }
 }

@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.couponpack;
 
 import com.vpu.mp.db.shop.tables.records.CouponPackRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackVoucherRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
@@ -14,9 +15,12 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.coupon.CouponPackActInfoVo;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
+import jodd.util.StringUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -28,8 +32,8 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
 import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
-import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
@@ -45,15 +49,8 @@ public class CouponPackService extends ShopBaseService {
     private CouponPackOrderService couponPackOrderService;
     @Autowired
     private QrCodeService qrCode;
-
-    /**
-     * 启用状态
-     */
-    public static final byte STATUS_NORMAL = 1;
-    /**
-     * 停用状态
-     */
-    public static final byte STATUS_DISABLED = 0;
+    @Autowired
+    private CouponService couponService;
 
     /**
      * 获取方式，0：现金购买
@@ -120,16 +117,16 @@ public class CouponPackService extends ShopBaseService {
             Timestamp now = DateUtil.getLocalDateTime();
             switch(param.getState()) {
                 case (byte)1:
-                    select.where(COUPON_PACK.STATUS.eq(STATUS_NORMAL)).and(COUPON_PACK.START_TIME.lt(now)).and(COUPON_PACK.END_TIME.gt(now));
+                    select.where(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(COUPON_PACK.START_TIME.lt(now)).and(COUPON_PACK.END_TIME.gt(now));
                     break;
                 case (byte)2:
-                    select.where(COUPON_PACK.STATUS.eq(STATUS_NORMAL)).and(COUPON_PACK.START_TIME.gt(now));
+                    select.where(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(COUPON_PACK.START_TIME.gt(now));
                     break;
                 case (byte)3:
-                    select.where(COUPON_PACK.STATUS.eq(STATUS_NORMAL)).and(COUPON_PACK.END_TIME.lt(now));
+                    select.where(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(COUPON_PACK.END_TIME.lt(now));
                     break;
                 case (byte)4:
-                    select.where(COUPON_PACK.STATUS.eq(STATUS_DISABLED));
+                    select.where(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                     break;
                 default:
             }
@@ -316,4 +313,30 @@ public class CouponPackService extends ShopBaseService {
         vo.setPagePath(QrCodeTypeEnum.DISCOUNT_COUPON_PAGCKAGE.getPathUrl(pathParam));
         return vo;
     }
+
+    public CouponPackActInfoVo getCouponPackActInfo(Integer packId,Integer userId){
+        CouponPackActInfoVo vo = new CouponPackActInfoVo();
+
+        CouponPackActInfoVo.PackInfo packInfo = db().selectFrom(COUPON_PACK).where(COUPON_PACK.ID.eq(packId)).fetchOptionalInto(CouponPackActInfoVo.PackInfo.class).orElse(null);
+        if(packInfo == null){
+            return null;
+        }
+        vo.setPackInfo(packInfo);
+
+        List<CouponPackActInfoVo.CouponPackVoucher> packList = couponPackVoucherService.getCouponPackVoucherList(packId);
+        packList.forEach(p->{
+            p.setGrantCount(couponService.getUserCouponCountByPackId(packId,userId,p.getVoucherId()));
+            if(StringUtil.isNotEmpty(p.getRecommendCatId()) || StringUtil.isNotEmpty(p.getRecommendGoodsId()) || StringUtil.isNotEmpty(p.getRecommendProductId()) || StringUtil.isNotEmpty(p.getRecommendSortId())){
+                p.setIsAllGoodsUse(false);
+            }else{
+                p.setIsAllGoodsUse(true);
+            }
+        });
+        vo.setPackList(packList);
+        vo.setBuyCount(couponPackOrderService.getUserCouponPackBuyCount(packId,userId));
+
+        return vo;
+    }
+
+
 }

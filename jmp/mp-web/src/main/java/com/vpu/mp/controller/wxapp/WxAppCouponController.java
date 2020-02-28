@@ -81,4 +81,14 @@ public class WxAppCouponController extends WxAppBaseController {
 	    Integer res = shop().mpCoupon.delCoupon(param);
 	    return this.success(res);
     }
+
+    /**
+     * 优惠券礼包活动落地页
+     * @param param
+     * @return
+     */
+    @PostMapping("/pack")
+    public JsonResult couponPack(@RequestBody CouponPackIdParam param){
+        return this.success(shop().couponPack.getCouponPackActInfo(param.getPackId(),wxAppAuth.user().getUserId()));
+    }
 }
