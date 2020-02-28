@@ -28,14 +28,13 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
 * @author 黄壮壮
@@ -164,13 +163,28 @@ public class UserCardDaoService extends ShopBaseService{
      */
     public List<ValidUserCardBean> getStoreValidCardList(Integer userId, Integer storeId) {
         List<ValidUserCardBean> result = getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
-            .stream().filter((c) -> org.jooq.tools.StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
-            }, false)).contains(storeId))
-            // 该方法目前只有门店使用，门店只支持普通会员卡
-            .filter((e) -> BYTE_ZERO.equals(e.getCardType()))
-            .collect(Collectors.toList());
+            // 门店只支持普通会员卡,type=0
+            .stream().filter((e) -> BYTE_ZERO.equals(e.getCardType()))
+            // 首先支持门店使用
+            .filter(e -> BYTE_ONE.equals(e.getStoreUseSwitch()))
+            // 其次是否包含指定门店
+            .filter((c) -> isStoreAvalid(c.getStoreList(), storeId))
+            .collect(toList());
         log.debug("用户【{}】在门店【{}】的有效会员卡列表：{}", userId, storeId, result);
         return result;
+    }
+
+    private boolean isStoreAvalid(String s, Integer storeId) {
+        List<Integer> list = Util.json2Object(s, new TypeReference<List<Integer>>() {
+        }, false);
+        if (CollectionUtils.isEmpty(list)) {
+            return false;
+        }
+        if (list.size() == 1 && list.get(INTEGER_ZERO).equals(INTEGER_ZERO)) {
+            // 说明为全部门店
+            return true;
+        }
+        return list.contains(storeId);
     }
 
     /**

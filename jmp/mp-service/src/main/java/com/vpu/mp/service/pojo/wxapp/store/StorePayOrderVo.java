@@ -61,11 +61,15 @@ public class StorePayOrderVo {
      */
     private Map<String, Byte> defaultPayConf;
     /**
-     * 积分支付限制
+     * 积分抵扣比例(积分使用上限)
      */
     private Integer scoreDiscountRatio;
     /**
-     * 积分抵扣比例
+     * 积分支付下限
      */
     private Integer scorePayNum;
+    /**
+     * 积分支付下限开关(0不限制，1限制)
+     */
+    private Byte scorePayLimit;
 }
