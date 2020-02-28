@@ -332,7 +332,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.RAISE_PRICE_BUY_MAIN_GOODS, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.RAISE_PRICE_BUY_MAIN_GOODS.getPathUrl(pathParam));
         return vo;
 
     }
