@@ -118,7 +118,8 @@ public class LotteryRecordService extends ShopBaseService {
             SelectConditionStep<Record> records = db()
                 .select(LOTTERY_RECORD.asterisk(), USER.USERNAME, USER.MOBILE)
                 .from(LOTTERY_RECORD).innerJoin(USER).on(USER.USER_ID.eq(LOTTERY_RECORD.USER_ID))
-                .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
+                .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()))
+                    .and(LOTTERY_RECORD.LOTTERY_GRADE.notEqual((byte) 0));
             if (param.getUserId()!=null){
                 records.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
             }
