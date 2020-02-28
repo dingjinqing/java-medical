@@ -101,7 +101,7 @@
   color: #fff;
   line-height: 70rpx;
   border-radius: 35rpx;
-  border: 1rpx solid #fff;
+  border: 2rpx solid #fff;
   text-align: center;
   margin: 20rpx 0 30rpx 0;
 }

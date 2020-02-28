@@ -105,3 +105,5 @@ ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMEN
 -- 2020年2月27日16:35:50 好友助力新增单天助力限制字段
 ALTER TABLE `b2c_friend_promote_activity` ADD COLUMN `promote_times_per_day` int(8) null default 0 comment '单个用户每天最多可帮忙助力次数';
 /***********************2.10*********************END*/
+-- 瓜分积分 添加活动规则说明
+ALTER TABLE `b2c_group_integration_define` ADD COLUMN `activity_copywriting` TEXT COMMENT '活动规则说明';

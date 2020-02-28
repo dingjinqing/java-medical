@@ -122,6 +122,45 @@
         placeholder="请输入提交按钮文字"
       ></el-input>
     </div>
+    <div class="listContainer">
+      <span>提交按钮文字颜色：</span>
+      <el-color-picker
+        v-model="ruleForm.font_color"
+        show-alpha
+        :predefine="predefineColors"
+      >
+      </el-color-picker>
+    </div>
+    <div class="listContainer">
+      <span>提交按钮背景颜色：</span>
+      <el-color-picker
+        v-model="ruleForm.bg_color"
+        show-alpha
+        :predefine="predefineColors"
+      >
+      </el-color-picker>
+    </div>
+    <div class="listContainer">
+      <span>表单海报背景图：</span>
+      <div class="bottomDiv">
+        <div class="bgBottom">
+
+          <img
+            v-if="!ruleForm.bg_img"
+            :src="$imageHost+'/image/admin/add_img_bg.png'"
+            class="bgImgDiv"
+            @click="handleToAddImg(true)"
+          />
+          <img
+            v-else
+            style="width:100%;height:40px"
+            :src="ruleForm.bg_img"
+            @click="handleToAddImg(true)"
+          >
+        </div>
+        <span class="sharePic">{{$t('pageSetUp.recommendedDimensions')}}:800*800像素</span>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -131,6 +170,22 @@ export default {
   },
   data () {
     return {
+      predefineColors: [ // 颜色选择器预定义颜色池
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585',
+        'rgba(255, 69, 0, 0.68)',
+        'rgb(255, 120, 0)',
+        'hsv(51, 100, 98)',
+        'hsva(120, 40, 94, 0.5)',
+        'hsl(181, 100%, 37%)',
+        'hsla(209, 100%, 56%, 0.73)',
+        '#FF0000'
+      ],
       ruleForm: {
         'page_name': '', // 标题input值
         'is_forever_valid': '1', // 有效期radio
@@ -141,10 +196,10 @@ export default {
         'day_times': '1', // 每天input值
         'total_times': '1', // 累计input值
         'get_times': '0', // 总反馈数量限制input值
-        'notice_name': '',
-        'font_color': '#ffffff',
-        'bg_color': '#ff6666',
-        'bg_img': '',
+        'notice_name': '', // 提交按钮文字
+        'font_color': '#ffffff', // 提交按钮文字颜色
+        'bg_color': '#ff6666', // 提交按钮背景颜色
+        'bg_img': '', // 表单海报背景图片
         'set_own_link': 0,
         'custom_btn_name': '',
         'custom_link_path': '',
@@ -180,7 +235,10 @@ export default {
     this.langDefault()
   },
   methods: {
+    // 表单海报背景图点击添加图片
+    handleToAddImg () {
 
+    }
   }
 }
 </script>
@@ -234,6 +292,29 @@ export default {
       /deep/ .el-input {
         width: 80px;
         margin: 0 5px;
+      }
+    }
+    .bottomDiv {
+      display: flex;
+      .bgBottom {
+        width: 70px;
+        height: 70px;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ccc;
+        .bgImgDiv {
+          width: 47px;
+          height: 44px;
+
+          cursor: pointer;
+        }
+      }
+      .sharePic {
+        color: #999;
+      }
+      /deep/ .el-button {
+        margin-top: 10px;
       }
     }
   }

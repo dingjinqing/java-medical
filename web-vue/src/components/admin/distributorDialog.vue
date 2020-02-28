@@ -178,7 +178,7 @@
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList, manualAddDistributor } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
@@ -286,16 +286,9 @@ export default {
       this.multipleData.filter((item, index) => {
         userIds.push(item.userId)
       })
-      manualAddDistributor({
-        level: this.level,
-        userIds: userIds
-      }).then(res => {
-        if (res.error === 0) {
-          this.$emit('handleSelect', userIds)
-          this.dialogTableVisible = false
-          this.$message.success({ message: '添加成功!' })
-        }
-      })
+
+      this.$emit('handleSelect', userIds)
+      this.dialogTableVisible = false
     },
 
     // 取消添加

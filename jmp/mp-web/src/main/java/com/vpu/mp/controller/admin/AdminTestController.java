@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.websocket.server.PathParam;
 
+import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,9 @@ public class AdminTestController extends AdminBaseController {
 	protected OpenPlatform open;
 	@Autowired
 	private SubscribeMessageService subservice;
+
+	@Autowired
+    private WechatTaskService wechatTaskService;
 
 	@RequestMapping(value = "/api/admin/test/addtemplate")
 	public JsonResult addtemplate() throws Exception {
@@ -196,6 +200,12 @@ public class AdminTestController extends AdminBaseController {
 	public JsonResult testDrew() {
 		saas.getShopApp(8984736).groupDraw.groupDrawUser.dealOpenGroupDraw();
 		return null;
-		
+
 	}
+    @RequestMapping(value = "/api/admin/test/testWxData")
+    public JsonResult testWxData() {
+        saas.getShopApp(245547).shopTaskService.wechatTaskService.test();
+        return null;
+
+    }
 }
