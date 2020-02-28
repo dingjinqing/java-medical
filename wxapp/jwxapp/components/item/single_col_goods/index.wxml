@@ -1,4 +1,4 @@
-<view class="goods-item" bindtap="goItem">
+<view class="goods-item" bindtap="{{!enableNumEdit && 'goItem'}}">
   <view class="edit" wx:if="{{isEdit}}">
     <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" catchtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
   </view>
@@ -16,7 +16,7 @@
         </block>
         <block wx:else>
           <text class="realPrice" style="color:{{main_setting.comColor}}">￥<text style="font-size:36rpx;font-weight:600;">{{goodsData.prdPrice}}</text></text>
-          <text class="gray-text line-through">{{goodsData.originalPrice}}</text>
+          <text class="gray-text line-through" wx:if="{{goodsData.prdPrice < goodsData.goodsPrice}}">{{goodsData.goodsPrice}}</text>
         </block>
       </view>
       <block wx:if="{{!enableNumEdit}}">

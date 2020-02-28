@@ -99,7 +99,7 @@ global.wxComponent({
       util.jumpLink('pages1/integral/integral?num=0','navigateTo')
     },
     goLottery(){
-      util.jumpLink(`pages1/lottery/lottery?lotteryId=${this.data.giftInfo.awardInfo.lotteryId}`,'navigateTo')
+      util.jumpLink(`pages1/lottery/lottery?lotteryId=${this.data.giftInfo.awardInfo.lotteryId}&lotterySource=${this.data.popupName === '开屏有礼' ? 1 : 2}`,'navigateTo')
     },
     shareCoupon(){
       this.triggerEvent('TODO')
