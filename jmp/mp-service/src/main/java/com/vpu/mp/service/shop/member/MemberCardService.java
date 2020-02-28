@@ -1100,11 +1100,9 @@ public class MemberCardService extends ShopBaseService {
 			cardVo.setLegal(legal);
 			cardVo.setExchangCountLegal(exchangCountLegal);
 			cardVo.setLegalFlag(legalFlag);
-			if(CardUtil.isBgImgType(cardVo.getBgType())) {
-				if(!StringUtils.isBlank(cardVo.getBgImg())) {
-					String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(cardVo.getBgImg());
-					cardVo.setBgImg(imageUrl);
-				}
+			if(!StringUtils.isBlank(cardVo.getBgImg())) {
+				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(cardVo.getBgImg());
+				cardVo.setBgImg(imageUrl);
 			}
 			if (MCARD_TP_NORMAL.equals(cardType)) {
 				vo.getNormalCard().add(cardVo);
