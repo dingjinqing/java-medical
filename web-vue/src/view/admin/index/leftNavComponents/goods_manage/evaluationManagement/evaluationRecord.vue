@@ -457,7 +457,7 @@ export default {
           this.loading = false
         }
       })
-      getEvaluationGiftList({navType: 1, pageRows: 100}).then(res => {
+      getEvaluationGiftList({navType: 0, pageRows: 300}).then(res => {
         if (res.error === 0) {
           let dataList = res.content.dataList.map(item => {
             return {id: item.id, name: item.name}
