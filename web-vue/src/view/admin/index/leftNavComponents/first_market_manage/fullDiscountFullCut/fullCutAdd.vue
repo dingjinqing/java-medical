@@ -55,16 +55,17 @@
 
           <!-- 活动优先级 -->
           <el-form-item
-            v-show="!params.id"
             label="活动优先级："
             prop="strategyPriority"
           >
-            <el-input
+            <el-input-number
               v-model="params.strategyPriority"
               placeholder="请输入活动优先级"
               class="form_input"
               size="small"
-            ></el-input>
+              :min="1"
+              :precision="0"
+            ></el-input-number>
             <p class="form_tip">用于区分不同满折满减活动的优先级，请填写正整数，数值越大优先级越高</p>
           </el-form-item>
 
@@ -1076,7 +1077,8 @@ export default {
         // 更新满折满减活动
         let obj = {
           id: that.params.id,
-          actName: that.params.actName
+          actName: that.params.actName,
+          strategyPriority: that.params.strategyPriority
         }
         updateFullCut(obj).then(res => {
           console.log(res)

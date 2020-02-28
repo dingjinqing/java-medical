@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content" v-loading="loading">
     <div class="main">
       <el-tabs
         v-model="tabSwitch"
@@ -105,7 +105,9 @@
                 :content="$t('luckyDraw.share')"
                 placement="top"
               >
-                <span class="el-icon-share"></span>
+                <span
+                  class="el-icon-share"
+                  @click="shareActivity(scope.row.id)"></span>
               </el-tooltip>
               <!-- 停用 -->
               <el-tooltip
@@ -115,7 +117,7 @@
               >
                 <span
                   class="el-icon-circle-close"
-                  @click="changeStatus(scope.row.id)"
+                  @click="changeStatus(scope.row.id, 'stop')"
                   v-if="scope.row.status==1"
                 ></span>
               </el-tooltip>
@@ -127,7 +129,7 @@
               >
                 <span
                   class="el-icon-circle-check"
-                  @click="changeStatus(scope.row.id)"
+                  @click="changeStatus(scope.row.id, 'start')"
                   v-if="scope.row.status==0"
                 ></span>
               </el-tooltip>
@@ -175,6 +177,29 @@
         />
       </div>
     </div>
+    <!-- 分享活动弹窗 -->
+    <el-dialog
+      title="扫一扫，分享给好友吧~"
+      :visible.sync="shareDialogVisible"
+      width="320px"
+      custom-class="share-dialog"
+    >
+      <el-image
+        :src="shareInfo.imageUrl"
+        style="width:160px;height:160px;margin:0 auto;"
+        fit="fill"></el-image>
+      <a class="share-dialog-a" :href="shareInfo.iamgeUrl" download>下载二维码</a>
+      <div class="share-dialog-footer">
+        <el-input size="small" v-model="shareInfo.pagePath"></el-input>
+        <el-button
+          type="text"
+          style="margin-left:10px;"
+          v-clipboard:copy="shareInfo.pagePath"
+          v-clipboard:success="onCopySuccess"
+          v-clipboard:error="onCopyError"
+        >复制</el-button>
+      </div>
+    </el-dialog>
   </div>
 
 </template>
@@ -182,7 +207,8 @@
 import {
   getLotteryList,
   changeStatus,
-  deleteLottery
+  deleteLottery,
+  shareLottery
 } from '@/api/admin/marketManage/luckyDraw.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
 // 引入添加抽奖活动界面
@@ -206,14 +232,22 @@ export default {
       // 动态组件
       currentComponent: null,
       lotteryId: null,
-      isEdite: false
+      isEdite: false,
+      shareDialogVisible: false,
+      loading: false,
+      shareInfo: {}
     }
   },
   watch: {
     lang () {
       this.tabInfo = this.$t('luckyDraw.tabInfo')
+    },
+    '$route.query': function (val) {
+      debugger
+      if (val === 0 || val === '0') {
+        this.tabSwitch = '0'
+      }
     }
-
   },
   created () {
 
@@ -295,9 +329,30 @@ export default {
       // 跳转到路由添加抽奖界面
       this.currentComponent = luckyDrawAdd
     },
-    changeStatus (id) {
-      console.log('changeStatus', id)
-      this.$confirm(this.$t('luckyDraw.changeStatusComment'), {
+    shareActivity (id) {
+      console.log(id)
+      this.loading = true
+      shareLottery({
+        id: id
+      }).then(res => {
+        this.loading = false
+        if (res.error === 0) {
+          this.shareInfo = res.content
+          this.shareDialogVisible = true
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    changeStatus (id, operate) {
+      let that = this
+      let message = ''
+      if (operate === 'stop') {
+        message = this.$t('luckyDraw.stopStatusComment')
+      } else {
+        message = this.$t('luckyDraw.changeStatusComment')
+      }
+      this.$confirm(message, {
         confirmButtonText: this.$t('luckyDraw.confirm'),
         cancelButtonText: this.$t('luckyDraw.cancel'),
         type: 'warning'
@@ -312,15 +367,12 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: this.$t('luckyDraw.cancelMessage')
-        })
+        that.$message.warning(that.$t('luckyDraw.cancelMessage'))
       })
     },
     deleteluckyDraw (id) {
       console.log('deleteluckyDraw', id)
-      this.$confirm(this.$t('luckyDraw.deleteluckyDrawComment'), {
+      this.$confirm(this.$t('luckyDraw.deleteLuckDrawComment'), {
         confirmButtonText: this.$t('luckyDraw.confirm'),
         cancelButtonText: this.$t('luckyDraw.cancel'),
         type: 'warning'
@@ -363,6 +415,22 @@ export default {
         this.tabInfo.pop()
       }
       return true
+    },
+    closeAddGroupTab () {
+      // 不是新增
+      for (; this.tabInfo.length > 5;) {
+        this.currentComponent = luckyDrawAdd
+        this.isShowAddFlag = false
+        this.tabSwitch = '1'
+        this.tabInfo.pop()
+      }
+      this.initPageData()
+    },
+    onCopySuccess () {
+      this.$message.success('已复制')
+    },
+    onCopyError () {
+      this.$message.error('复制失败')
     }
   }
 }
@@ -455,4 +523,31 @@ export default {
     line-height: 32px;
   }
 }
+.share-dialog {
+  .el-dialog__header {
+    background: #fff;
+  }
+  .el-dialog__body {
+    padding-top:10px;
+    padding-bottom: 10px;
+  }
+  .el-image {
+    display: block;
+    width: 100%;
+  }
+  .share-dialog-a {
+    display: inline-block;
+    width: 100%;
+    text-decoration: none;
+    margin: 10px auto;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .share-dialog-footer {
+    display: flex;
+  }
+}
+
 </style>

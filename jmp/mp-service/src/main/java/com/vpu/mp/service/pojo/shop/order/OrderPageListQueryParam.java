@@ -52,6 +52,8 @@ public class OrderPageListQueryParam {
 	public String productSn;
 	/**标星订单*/
 	public Byte isStar;
+	/**订单id*/
+	public Integer[] orderIds;
 	/**
 	 * 拼团退款失败单
 	 */
@@ -61,6 +63,8 @@ public class OrderPageListQueryParam {
 	/**
 	 * 退货退款订单特色参数
 	 */
+    /**退款订单id*/
+    public Integer[] retIds;
 	/** 退-退款编号 */
 	public String returnOrderSn;
 	/** 退-退款类型:0仅退款 1:退货退款 2:仅退运费 3:手动退款 */
@@ -75,4 +79,8 @@ public class OrderPageListQueryParam {
 	public Integer activityId;
 	/**用户id*/
 	public Integer userId;
+	/**店铺助手查询动作*/
+	private Byte shopHelperAction;
+	/**店铺助手操作天数，默认3*/
+	private Integer shopHelperActionDays = 3;
 }

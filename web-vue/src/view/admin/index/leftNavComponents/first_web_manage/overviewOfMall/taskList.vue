@@ -45,10 +45,7 @@
                 v-if="storeList.wxDataShop.registerApplet.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet1') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.appletService.status === 0">
               <span
@@ -68,10 +65,7 @@
                 v-if="storeList.wxDataShop.appletService.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet2') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
 
             </div>
             <div v-if="storeList.wxDataShop.authApplet.status === 0">
@@ -92,10 +86,7 @@
                 v-if="storeList.wxDataShop.authApplet.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet3') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.wxPayment.status === 0">
               <span
@@ -115,10 +106,7 @@
                 v-if="storeList.wxDataShop.wxPayment.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet4') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.configWxPayment.status === 0">
               <span
@@ -138,10 +126,7 @@
                 v-if="storeList.wxDataShop.configWxPayment.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTipSet5') }}</span>
-              <a
-                href="/admin/home/main/base_manger/-1"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.childAccountConf.status === 0">
               <span
@@ -161,10 +146,7 @@
                 v-if="storeList.wxDataShop.childAccountConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
-              <a
-                href="/admin/home/main/shopAuthority"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/shopAuthority">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.wxDataShop.officialAccountConf.status === 0">
               <span
@@ -184,10 +166,7 @@
                 v-if="storeList.wxDataShop.officialAccountConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
-              <a
-                href="/admin/home/shopMain?change_components=3"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/shopMain?change_components=3">{{ $t('overview.storeGo') }}</a>
             </div>
 
           </div>
@@ -213,10 +192,7 @@
                 v-if="storeList.dataShop.homePageConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip4') }}</span>
-              <a
-                href="/admin/home/main/pictureSetting"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/pictureSetting">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.shopRecommendConf.status === 0">
               <span
@@ -236,10 +212,7 @@
                 v-if="storeList.wxDataShop.shopRecommendConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
-              <a
-                :href="'/admin/home/main/base_manger/' + this.storeList.dataShop.shopRecommendLink"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a :href="'/admin/home/main/base_manger/' + this.storeList.dataShop.shopRecommendLink">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataShop.customServiceConf.status === 0">
               <span
@@ -293,10 +266,7 @@
                 v-if="storeList.dataGoods.shipTemplateConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.unStoreTip1') }}</span>
-              <a
-                href="/admin/home/main/goodsManage/deliverTemplate/list"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/goodsManage/deliverTemplate/list">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsConf.status === 0">
               <span
@@ -316,10 +286,7 @@
                 v-if="storeList.dataGoods.goodsConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.unStoreTip2') }}</span>
-              <a
-                href="/admin/home/main/goodsManage/goodsForSale"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/goodsManage/goodsForSale">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsStoreConf.status === 0">
               <span
@@ -339,11 +306,10 @@
                 v-if="storeList.dataGoods.goodsStoreConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataGoods.goodsStoreConf.value }} {{ $t('overview.unStoreTip3') }}</span>
-              <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-              <!-- <a
-                href="/admin/home/main/goodsManage/goodsForSale"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a> -->
+              <a
+                href="javascript: void(0);"
+                @click="clickJumpHandler('goodsForSale', ShopData.storeSizeNum, 1)"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsUnsalableConf.status === 0">
               <span
@@ -363,11 +329,10 @@
                 v-if="storeList.dataGoods.goodsUnsalableConf.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf.value }} {{ $t('overview.unStoreTip4') }}</span>
-              <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-              <!-- <a
-                href="/admin/home/main/goodsManage/goodsForSale"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a> -->
+              <a
+                href="javascript: void(0);"
+                @click="clickJumpHandler('goodsForSale', 3, 1)"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsComment.status === 0">
               <span
@@ -387,11 +352,10 @@
                 v-if="storeList.dataGoods.goodsComment.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataGoods.goodsComment.value }} {{ $t('overview.unStoreTip5') }}</span>
-              <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-              <!-- <a
-                href="/admin/home/main/goodsManage/evaluationManagement?activeName=second"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a> -->
+              <a
+                href="javascript: void(0);"
+                @click="clickJumpHandler('comment', ShopData.commentOver, 1)"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.goodsRecommend.status === 0">
               <span
@@ -411,10 +375,7 @@
                 v-if="storeList.dataGoods.goodsRecommend.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.unStoreTip6') }}</span>
-              <a
-                href="/admin/home/main/goodsManage/goodsRecommend"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/goodsManage/goodsRecommend">{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataGoods.shopSort.status === 0">
               <span
@@ -434,10 +395,7 @@
                 v-if="storeList.dataGoods.shopSort.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ $t('overview.unStoreTip7') }}</span>
-              <a
-                href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a>
+              <a href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort">{{ $t('overview.storeGo') }}</a>
             </div>
           </div>
         </div>
@@ -470,11 +428,10 @@
                 v-if="storeList.dataOrder.deliver.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataOrder.deliver.value }} {{ $t('overview.unOrderTip1') }}</span>
-              <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-              <!-- <a
-                href="/admin/home/main/orders/waiting?orderStatus=3"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a> -->
+              <a
+                href="javascript: void(0);"
+                @click="clickJumpHandler('order_wait', ShopData.deliverOver, 0, 'deliver')"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataOrder.refund.status === 0">
               <span
@@ -494,11 +451,10 @@
                 v-if="storeList.dataOrder.refund.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
-              <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-              <!-- <a
-                href="/admin/home/main/orders/refund/list"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a> -->
+              <a
+                href="javascript: void(0);"
+                @click="clickJumpHandler('order_wait', ShopData.refundOver, 2, 'refund')"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div v-if="storeList.dataOrder.remind.status === 0">
               <span
@@ -518,11 +474,10 @@
                 v-if="storeList.dataOrder.remind.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataOrder.remind.value }} {{ $t('overview.unOrderTip3') }}</span>
-              <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-              <!-- <a
-                href="/admin/home/main/orders/refund/list"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a> -->
+              <a
+                href="javascript: void(0);"
+                @click="clickJumpHandler('order_wait', ShopData.remindOver, 1, 'deliver')"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
           </div>
         </div>
@@ -555,11 +510,10 @@
                 v-if="storeList.dataMarket.examine.type === 3"
               >{{ $t('overview.storeRecommend') }}</span>
               <span class=" task_list_desc">{{ storeList.dataMarket.examine.value }} {{ $t('overview.unMarketTip1') }}</span>
-              <a href="javascript: void(0);">{{ $t('overview.storeGo') }}</a>
-              <!-- <a
-                href="/admin/home/main/distribution"
-                target="_blank"
-              >{{ $t('overview.storeGo') }}</a> -->
+              <a
+                href="javascript:void(0);"
+                @click="clickJumpHandler('distribution_info', ShopData.applyOver, 1)"
+              >{{ $t('overview.storeGo') }}</a>
             </div>
             <div
               v-if="storeList.dataMarket.member.status === 0"
@@ -582,11 +536,8 @@
                   class="tips fdb64a"
                   v-if="storeList.dataMarket.member.type === 3"
                 >{{ $t('overview.storeRecommend') }}</span>
-                <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
-                <a
-                  :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.card_id"
-                  target="_blank"
-                >{{ $t('overview.storeGo') }}</a>
+                <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.value }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
+                <a :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.content.card_id">{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
             <div
@@ -614,10 +565,7 @@
                   v-if="storeList.dataMarket.voucher.type === 3"
                 >{{ $t('overview.storeRecommend') }}</span>
                 <span class=" task_list_desc">{{ $t('overview.unMarketTip3') }} "{{ val }}" {{ $t('overview.unMarketTip4') }}</span>
-                <a
-                  href="/admin/home/main/ordinaryCoupon"
-                  target="_blank"
-                >{{ $t('overview.storeGo') }}</a>
+                <a href="/admin/home/main/ordinaryCoupon">{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
           </div>
@@ -1196,7 +1144,24 @@ export default {
       image: `${this.$imageHost}`,
       tabSwitch: '1',
       tabInfo: this.$t('overview.tabInfo'),
-      storeList: [] // 数据
+      storeList: [], // 数据
+
+      // 店铺助手默认值
+      ShopData: {
+        isAuthOk: 1,
+        storeSizeNum: 5, // 商品库存偏小参数
+        // unsalableNum: 3, // 商品滞销
+        commentOver: 3, // 商品评价审核逾期
+
+        deliverOver: 3, // 订单发货逾期参数
+        refundOver: 3, // 退款申请处理预期参数
+        remindOver: 3, // 提醒发货参数
+
+        applyOver: 3, // 分销员审核超时参数,
+        examineOver: 2, // 会员卡激活审核参数
+
+        couponSizeNum: 10 // 优惠券库存参数
+      }
     }
   },
   watch: {
@@ -1232,6 +1197,34 @@ export default {
     // tab栏切换
     tabClickHandler () {
       this.handleClick()
+    },
+
+    // type用于区别订单的tab名
+    clickJumpHandler (name, IntegerDays, flag, type) {
+      var obj = {
+        IntegerDays: IntegerDays,
+        flag: flag
+      }
+      // 商品评价
+      if (name === 'comment') {
+        obj.activeName = 'second'
+      }
+      // 订单发货
+      if (name === 'order_wait') {
+        if (type === 'deliver') {
+          obj.orderStatus = 3
+        } else if (type === 'refund') {
+          obj.orderStatus = 7
+        }
+      }
+      // 分销员审核
+      if (name === 'distribution_info') {
+        obj.distributorName = 'ninth'
+      }
+      this.$router.push({
+        name: name,
+        params: obj
+      })
     }
   }
 }

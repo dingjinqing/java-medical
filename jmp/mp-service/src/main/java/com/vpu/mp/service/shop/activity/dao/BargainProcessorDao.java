@@ -77,6 +77,11 @@ public class BargainProcessorDao extends ShopBaseService {
             .fetchAny();
 
         Byte aByte = canApplyBargain(userId, now, bargainRecord);
+        if(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT.equals(aByte)){
+            //该用户已经发起过对这个活动的砍价
+            int recordId = db().select(BARGAIN_RECORD.ID).from(BARGAIN_RECORD).where(BARGAIN_RECORD.BARGAIN_ID.eq(activityId)).and(BARGAIN_RECORD.USER_ID.eq(userId).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchOptionalInto(Integer.class).orElse(0);
+            vo.setRecordId(recordId);
+        }
         vo.setActState(aByte);
 
         // 活动不存在
@@ -143,7 +148,7 @@ public class BargainProcessorDao extends ShopBaseService {
         }
 
         int bargainCount = db().fetchCount(BARGAIN_RECORD,BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainRecord.getId()))
-            .and(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.STATUS.eq((byte) 0)));
+            .and(BARGAIN_RECORD.USER_ID.eq(userId)));
         if (bargainCount > 0) {
             logger().debug("用户存在正在砍价[activityId:{}]", bargainRecord.getId());
             return BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT;

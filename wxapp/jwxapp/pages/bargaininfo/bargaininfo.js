@@ -50,6 +50,7 @@ global.wxPage({
     // record_id = options.record_id;
     record_id = Number(options.record_id);
     request_kanjia(that);
+    this.selectComponent('#recommend').requestData() //请求推荐商品
     var user_name = util.getCache('nickName');
     var user_avatar = util.getCache('avatarUrl');
     if (!user_name || user_name == '用户' + parseInt(util.getCache('user_id') + 10000)
@@ -65,6 +66,9 @@ global.wxPage({
     }
 
     console.log(that.data.getsq)
+  },
+  onReachBottom: function () {
+    this.selectComponent('#recommend').requestData()
   },
   countdown: function () {
     if (this.data.set_interval_id) clearInterval(this.data.set_interval_id);

@@ -31,11 +31,13 @@ import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import org.elasticsearch.common.Strings;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectOnConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -43,9 +45,21 @@ import java.util.Collections;
 import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_LOTTERY_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_PRIZE_STATUS_RECEIVED;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_PRIZE_STATUS_UNCLAIMED;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_BALANCE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_COUPON;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_CUSTOM;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_GOODS;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_HEARTEN;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_NULL;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_SCORE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_SEND_OUT;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_CRASH_LOTTERY;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_LOTTERY;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RECHARGE;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_LOTTERY;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
@@ -100,13 +114,17 @@ public class LotteryRecordService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<LotteryRecordPageListVo> lotteryListByUser(LotteryListUserParam param) {
-        SelectSeekStep1<LotteryRecordRecord, Timestamp> selectConditionStep = db().selectFrom(LOTTERY_RECORD)
-                .where(LOTTERY_RECORD.USER_ID.eq(param.getUserId()))
-                .and(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()))
-                .orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
-        PageResult<LotteryRecordPageListVo> pageResult = getPageResult(selectConditionStep, param, LotteryRecordPageListVo.class);
-        pageResult.getDataList().forEach(item -> {
+    public PageResult<LotteryRecordPageListVo> lotteryListByParam(LotteryListUserParam param) {
+            SelectConditionStep<Record> records = db()
+                .select(LOTTERY_RECORD.asterisk(), USER.USERNAME, USER.MOBILE)
+                .from(LOTTERY_RECORD).innerJoin(USER).on(USER.USER_ID.eq(LOTTERY_RECORD.USER_ID))
+                .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
+            if (param.getUserId()!=null){
+                records.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
+            }
+            records.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
+            PageResult<LotteryRecordPageListVo> pageResult = getPageResult(records, param, LotteryRecordPageListVo.class);
+            pageResult.getDataList().forEach(item -> {
             if (!Strings.isEmpty(item.getAwardInfo())){
                 item.setLotteryPrize(Util.parseJson(item.getAwardInfo(), LotteryPrizeVo.class));
                 item.setAwardInfo(null);
@@ -152,8 +170,8 @@ public class LotteryRecordService extends ShopBaseService {
     public Integer getJoinLotteryNumber(Integer userId, Integer lotteryId, Byte chanceSource) {
         Condition condition = LOTTERY_RECORD.USER_ID.eq(userId)
                 .and(LOTTERY_RECORD.LOTTERY_ID.eq(lotteryId));
-        if (chanceSource > -1) {
-            condition.and(LOTTERY_RECORD.CHANCE_SOURCE.eq(chanceSource));
+        if (chanceSource.intValue() > 0) {
+            condition = condition.and(LOTTERY_RECORD.CHANCE_SOURCE.eq(chanceSource));
         }
         return db().fetchCount(LOTTERY_RECORD, condition);
     }
@@ -172,9 +190,9 @@ public class LotteryRecordService extends ShopBaseService {
         recordRecord.setUserId(userId);
         recordRecord.setLotteryId(lotteryRecord.getId());
         recordRecord.setLotteryActId(lotteryRecord.getId());
-        recordRecord.setLotterySource(joinValid.getSource());
         recordRecord.setLotteryType(joinValid.getResultsType());
         recordRecord.setChanceSource(joinValid.getChanceSource());
+        recordRecord.setLotterySource(joinValid.getLotterySource());
         recordRecord.setPrdId(0);
         recordRecord.setLotteryGrade(lotteryPrizeRecord != null ? lotteryPrizeRecord.getLotteryGrade():0);
         if (lotteryPrizeRecord!=null){
@@ -217,6 +235,7 @@ public class LotteryRecordService extends ShopBaseService {
                 scoreParam.setScore(lotteryRecord.getNoAwardScore());
                 scoreParam.setUserId(userId);
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
                 scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_IN.val());
                 break;
             case LOTTERY_TYPE_SCORE:
@@ -229,6 +248,7 @@ public class LotteryRecordService extends ShopBaseService {
                 scoreParam.setScore(lotteryPrizeRecord != null ? lotteryPrizeRecord.getIntegralScore() : 0);
                 scoreParam.setUserId(userId);
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
                 scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_IN.val());
 
                 break;
@@ -275,7 +295,6 @@ public class LotteryRecordService extends ShopBaseService {
                 recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                 recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
                 recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                goodsService.getGoodsView(lotteryPrizeRecord.getPrdId());
                 Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
                 recordRecord.setLotteryExpiredTime(timeStampPlus);
                 recordRecord.insert();
@@ -284,10 +303,14 @@ public class LotteryRecordService extends ShopBaseService {
                         PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue());
                 joinValid.setPrizeId(prizeRecordRecord.getId());
                 joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
+                joinValid.setGoodsImage(goodsView.getGoodsImg());
+                joinValid.setGoodsId(goodsView.getGoodsId());
+                joinValid.setProductId(lotteryPrizeRecord.getPrdId());
                 break;
             case LOTTERY_TYPE_CUSTOM:
                 logger().info("自定义");
-
+                joinValid.setLotteryAward(lotteryPrizeRecord.getIconImgs());
+                recordRecord.setLotteryAward(lotteryPrizeRecord.getIconImgs());
                 break;
             default:
         }

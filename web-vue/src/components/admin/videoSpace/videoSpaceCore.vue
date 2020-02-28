@@ -38,7 +38,7 @@
             class="tips imageDalogTip_lineHeight"
           >
             <img :src="$imageHost + '/image/admin/notice_img.png'">
-              {{$t('videoSpace.upload.uploadRule')}}
+            {{$t('videoSpace.upload.uploadRule')}}
           </div>
         </el-upload>
       </div>
@@ -46,7 +46,7 @@
       <div class="dialog_middle">
         <div class="dialog_middle_top">
           <VTree
-                  ref="categoryTree"
+            ref="categoryTree"
             @node-click="nodeClick"
             @node-append="nodeAppend"
             @node-remove="nodeRemove"
@@ -94,11 +94,14 @@
                   v-for="(item,index) in videoList"
                   :key="index"
                 >
-                    <div
-                            v-show="item.checked"
-                            class="img_sel"
-                    ></div>
-                  <div class="img-container" style="position:relative">
+                  <div
+                    v-show="item.checked"
+                    class="img_sel"
+                  ></div>
+                  <div
+                    class="img-container"
+                    style="position:relative"
+                  >
                     <a :title="item.videoName">
                       <img
                         :src="item.snapshotUrl"
@@ -133,13 +136,19 @@
                     <p style="text-align:center">{{item.videoWidth}}x{{item.videoHeight}}</p>
                     <p style="text-align:center">{{item.formatDuration}}</p>
                   </div>
-                    <div class="video-name" :title="item.videoName">
-                        {{item.videoName}}
-                    </div>
+                  <div
+                    class="video-name"
+                    :title="item.videoName"
+                  >
+                    {{item.videoName}}
+                  </div>
                 </li>
               </ul>
               <div class="bottom">
-                <div class="bottom_radio" v-show="!dialogMode">
+                <div
+                  class="bottom_radio"
+                  v-show="!dialogMode"
+                >
                   <el-checkbox
                     v-model="allChecked"
                     true-label="1"
@@ -218,7 +227,7 @@
 <script>
 import VTree from '@/components/admin/v-tree'
 import VPagination from '@/components/admin/pagination/pagination'
-import {shopInfoRequest} from '@/api/admin/survey.js'
+import { shopInfoRequest } from '@/api/admin/survey.js'
 import {
   getVideoCategoryTreeRequest,
   addVideoCategoryRequest,
@@ -424,7 +433,7 @@ export default {
 
     upLoadVideo ({ file, maxVideoSize }) {
       if (file.size > maxVideoSize) {
-        let msg = this.$t('videoSpace.upload.uploadFitVideo', {maxVideoSize: maxVideoSize})
+        let msg = this.$t('videoSpace.upload.uploadFitVideo', { maxVideoSize: maxVideoSize })
         this.$message.error(msg)
         return
       }
@@ -499,7 +508,7 @@ export default {
         })
       }).then(() => {
         _this.requestVersionAndSpaceInfo()
-      }).catch(() => {})
+      }).catch(() => { })
     },
     // 遮罩层删除点击
     delMaskVideo (data) {
@@ -744,22 +753,22 @@ ul {
   font-size: 12px;
   display: block;
 }
-.img-container{
-    max-width: 140px;
-    max-height: 80px;
-    overflow: hidden;
+.img-container {
+  max-width: 140px;
+  max-height: 80px;
+  overflow: hidden;
 }
 
 .video-name {
-    position: absolute;
-    bottom: 0;
-    height: 20px;
-    line-height: 20px;
-    width: 140px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  height: 20px;
+  line-height: 20px;
+  width: 140px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 14px;
 }
 .img_mask {
   background: rgba(0, 0, 0, 0.3) !important;
@@ -829,5 +838,4 @@ ul {
   font-size: 12px !important;
   border-radius: 3px !important;
 }
-
 </style>

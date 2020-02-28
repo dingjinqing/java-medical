@@ -259,7 +259,7 @@ export const en = {
   unMarketTip1:
     'Distributor application has not been processed for more than 3 days',
   unMarketTip2:
-    'Activation request has not been processed for more than 2 days',
+    'Membership card activation application has not been processed for more than 2 days',
   unMarketTip3: 'Coupon',
   unMarketTip4: 'Soon to be completed',
   unMarketTip5: 'cards have',

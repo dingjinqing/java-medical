@@ -370,8 +370,7 @@ export default {
             'video_poster': 1, //   1 为使用原视频封面    2 为使用自定义封面
             'video_showurl': '', // 当前显示的视频完整路径
             'video_showpath': '', // 当前显示的封面完整路径
-            'custom_url': '', // 自定义封面保存路径
-            'custom_path': '' // 自定义封面显示完整路径
+            'img_url': ''// 自定义封面保存路径
           }
           break
         case 23: // 店铺公告
@@ -566,7 +565,8 @@ export default {
             break
           case 'm_magic_cube':
             if (item.table_type === 8) {
-              if (!item.isAllCheckFull) {
+              console.log(item.isAllCheckFull)
+              if (item.isAllCheckFull === false) {
                 this.$message.error({
                   message: '请选择上传图片',
                   showClose: true

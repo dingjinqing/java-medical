@@ -19,9 +19,13 @@
         <div class="shop_name">{{ data.shop_name }}</div>
         <div class="shop_desc">{{ data.shop_notice?data.shop_notice:'为您的店铺发些公告吧~' }}</div>
         <div class="shop_logo">
-          <img
+          <!-- <img
             v-if="data.shop_bg_path"
             :src="data.shop_bg_path"
+            alt=""
+          > -->
+          <img
+            :src="shopAvatar"
             alt=""
           >
         </div>
@@ -79,6 +83,7 @@ export default {
       hoverTips: 'hoverTips', // 英文适配  模块公共
       // imageHost: this.$imageHost,
       imageHost: 'http://jmpdevimg.weipubao.cn/',
+      shopAvatar: '', // 头像
       // 模块私有
       data: {
 
@@ -119,6 +124,7 @@ export default {
           this.data = newData
         }
         console.log(newData)
+        this.shopAvatar = localStorage.getItem('V-shopAvatar')
       },
       immediate: true,
       deep: true

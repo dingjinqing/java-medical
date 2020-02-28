@@ -140,8 +140,14 @@ global.wxPage({
         '/api/wxapp/goods/detail',
         res => {
           if (res.error === 0) {
-            if (res.content.activity && [1, 3, 5].includes(res.content.activity.activityType))
+            if (res.content.activity && [1, 3, 5].includes(res.content.activity.activityType)){
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
+            }
+            if (res.content.activity && [1,3,5,10].includes(res.content.activity.activityType)){
+              this.setData({
+                page_name:actBaseInfo[res.content.activity.activityType]['actName'] + this.$t("components.navigation.title.item")
+              })
+            }
             let {
               comment,
               goodsImgs,

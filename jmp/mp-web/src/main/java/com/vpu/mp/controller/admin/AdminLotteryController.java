@@ -46,7 +46,8 @@ public class AdminLotteryController extends AdminBaseController {
     @PostMapping("/usablelist")
     public JsonResult getLotteryUsableAllList(){
         LotteryPageListParam param = new LotteryPageListParam();
-        param.setState(BaseConstant.NAVBAR_TYPE_ONGOING);
+        //进行中,未开始
+        param.setState(BaseConstant.NAVBAR_TYPE_AVAILABLE);
         param.setPageRows(Integer.MAX_VALUE);
         PageResult<LotteryPageListVo> result = shop().lottery.getLotteryList(param);
         return success(result);
@@ -79,6 +80,16 @@ public class AdminLotteryController extends AdminBaseController {
             return fail();
         }
         return success();
+    }
+
+    /**
+     * 分享
+     * @param param
+     * @return
+     */
+    @PostMapping("/share")
+    public JsonResult share(@RequestBody @Valid LotteryByIdParam param){
+        return success(shop().lottery.getMpQRCode(param));
     }
 
     /**
@@ -138,14 +149,4 @@ public class AdminLotteryController extends AdminBaseController {
         return success(shop().lottery.getLotteryUserList(param));
     }
 
-    /**
-     * 抽奖模拟
-     *
-     * @param param JoinLotteryParam
-     * @return json
-     */
-    @PostMapping("/join")
-    public JsonResult joinLottery(JoinLotteryParam param){
-        return success(shop().lottery.joinLottery(param));
-    }
 }

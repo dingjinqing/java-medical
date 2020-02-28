@@ -432,7 +432,7 @@
                         alt=""
                       >
                       <div class="right_info">
-                        <div class="goods_name"><span>{{goodsItem.goodsName}}</span></div>
+                        <div class="goods_name"><span><i class="goods-tag" v-if="goodsItem.isGift === 1">赠品</i>{{goodsItem.goodsName}}</span></div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -532,7 +532,10 @@
                         >{{$t('order.applyRetrunView')}}</el-button>
                       </template>
                       <template v-else>
-                        <el-button  @click="goReturnView(orderItem.orderSn)" type="text">{{$t('order.retrunView')}}</el-button>
+                        <el-button
+                          @click="goReturnView(orderItem.orderSn)"
+                          type="text"
+                        >{{$t('order.retrunView')}}</el-button>
                       </template>
                     </template>
                     <template v-if="orderItem.canClose == true">
@@ -616,7 +619,7 @@
                           alt=""
                         >
                         <div class="right_info">
-                          <div class="goods_name"><span>{{childGoods.goodsName}}</span></div>
+                          <div class="goods_name"><span><i class="goods-tag" v-if="goodsItem.isGift === 1">赠品</i>{{childGoods.goodsName}}</span></div>
                           <div class="goods_spec">{{childGoods.goodsAttr}}</div>
                         </div>
                       </div>
@@ -852,7 +855,8 @@ export default {
       orderItemInfo: {},
       notesOrderSn: null,
       showExportColumnSelect: false,
-      showExportConfirm: false
+      showExportConfirm: false,
+      shopHelperParams: {}
     }
   },
   inject: ['adminReload'],
@@ -862,7 +866,9 @@ export default {
     this.searchParams.userName = userName || null
     console.log(userId)
     console.log('mounted-----------------------')
-    this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : null
+    this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
+    if (this.$route.params.flag === 0 || this.$route.params.flag) { this.$set(this.shopHelperParams, 'shopHelperAction', this.$route.params.flag) }
+    if (this.$route.params.IntegerDays) { this.$set(this.shopHelperParams, 'shopHelperActionDays', this.$route.params.IntegerDays) }
     // 初始化数据
     this.langDefault()
     this.initDataList()
@@ -921,7 +927,10 @@ export default {
       this.searchType = 0
       let obj = {
         ...this.searchParams,
-        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : []
+        orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
+        goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
+        paymentType: this.searchParams.paymentType !== null ? [this.searchParams.paymentType] : [],
+        ...this.shopHelperParams
       }
       list(obj).then(res => {
         console.log(res)
@@ -1202,6 +1211,13 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
+                  .goods-tag{
+                    border: 1px solid;
+                    vertical-align: middle;
+                    margin-right: 5px;
+                    padding: 0 4px;
+                    color: red;
+                  }
                   > span {
                     text-overflow: ellipsis;
                     display: -webkit-box;
@@ -1209,7 +1225,7 @@ export default {
                     overflow: hidden;
                     -webkit-box-orient: vertical;
                     text-align: left;
-                    line-height: 1;
+                    line-height: 25px;
                   }
                 }
               }

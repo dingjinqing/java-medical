@@ -39,6 +39,7 @@
               style="width: 170px;"
               v-model="queryParams.mobile"
               :placeholder="$t('openScreenDetail.piPhone')"
+              clearable
             ></el-input>
           </li>
           <li>
@@ -48,6 +49,7 @@
               style="width: 170px;"
               v-model="queryParams.username"
               :placeholder="$t('openScreenDetail.piNickname')"
+              clearable
             ></el-input>
           </li>
           <li>
@@ -71,22 +73,27 @@
           <el-table-column
             label="用户ID"
             prop="userId"
+            align="center"
           ></el-table-column>
           <el-table-column
             :label="$t('openScreenDetail.nickname')"
             prop="username"
+            align="center"
           ></el-table-column>
           <el-table-column
             :label="$t('openScreenDetail.phoneNum')"
             prop="mobile"
+            align="center"
           ></el-table-column>
           <el-table-column
-            :label="$t('openScreenDetail.phoneNum')"
+            :label="$t('openScreenDetail.award')"
             prop="comment"
+            align="center"
           ></el-table-column>
           <el-table-column
             :label="$t('openScreenDetail.receiveTime')"
             prop="receiveTime"
+            align="center"
           ></el-table-column>
         </el-table>
         <pagination

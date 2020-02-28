@@ -103,7 +103,7 @@ public class FreeShippingGoodsService extends ShopBaseService {
         //活动时间 0:固定日期 1：永久有效
         if (FreeShippingConstant.FREE_SHIPPING_EXPIRE_FIXED.equals(freeShip.getExpireType())){
             ruleInfoVo.setExpire(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_FIXED, MESSAGE,
-                    new Object[]{freeShip.getStartTime().toString(),freeShip.getEndTime().toString()}));
+                    new Object[]{freeShip.getStartTime().toString().substring(0,10),freeShip.getEndTime().toString().substring(0,10)}));
         }else {
             ruleInfoVo.setExpire(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_NEVER, MESSAGE));
         }
@@ -174,13 +174,16 @@ public class FreeShippingGoodsService extends ShopBaseService {
      */
     public WxAppCartBo getCartGoodsList(Integer userId, Integer ruleId) {
         FreeShippingRecord freeShip = freeShipService.getFreeShippingByRuleId(ruleId);
-        //活动商品范围
-        FreeShippingGoodsListParam param =new FreeShippingGoodsListParam();
-        //查询参数
-        GoodsSearchParam goodsSearchParam = handleSearchParam(param, freeShip);
-        //查询条件拼接
-        Condition condition = goodsMpService.handleSearchCondition(goodsSearchParam);
-        List<Integer> goodsIds = goodsMpService.getGoodsIdsByCondition(condition);
-        return  cartService.getCartList(userId, goodsIds);
+        if (freeShip!=null){
+            //活动商品范围
+            FreeShippingGoodsListParam param =new FreeShippingGoodsListParam();
+            //查询参数
+            GoodsSearchParam goodsSearchParam = handleSearchParam(param, freeShip);
+            //查询条件拼接
+            Condition condition = goodsMpService.handleSearchCondition(goodsSearchParam);
+            List<Integer> goodsIds = goodsMpService.getGoodsIdsByCondition(condition);
+            return  cartService.getCartList(userId, goodsIds);
+        }
+        return cartService.getCartList(userId, new ArrayList<>());
     }
 }

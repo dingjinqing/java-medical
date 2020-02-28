@@ -122,12 +122,15 @@ public class DistributorGroupService extends ShopBaseService{
 	 * @return
 	 */
 	public DistributorGroupListVo getOneInfo(Integer id) {
-		DistributorGroupListVo result = db().select().from(DISTRIBUTOR_GROUP)
-				.where(DISTRIBUTOR_GROUP.ID.eq(id))
-				.fetchOneInto(DistributorGroupListVo.class);
-		return result;	
+        Record record = db().select().from(DISTRIBUTOR_GROUP)
+            .where(DISTRIBUTOR_GROUP.ID.eq(id)).fetchOne();
+        if(record != null){
+             return record.into(DistributorGroupListVo.class);
+        }else{
+            return null;
+        }
 	}
-	
+
 	/**
 	 * 编辑保存分销分组
 	 * @param param

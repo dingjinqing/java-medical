@@ -57,7 +57,7 @@ public class CardUpgradeRecordBuilder {
 	}
 
 	public CardUpgradeRecordBuilder newCardName(String newCardName) {
-		record.setOldCardName(newCardName);
+		record.setNewCardName(newCardName);
 		return this;
 	}
 

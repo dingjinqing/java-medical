@@ -220,5 +220,16 @@ export const en = {
   limitCard: 'LimitCard',
   gradeCard: 'GradeCard',
   defineGoodsDis: 'Part Discount',
-  allGoodsDis: 'All Discount'
+  allGoodsDis: 'All Discount',
+  limitCardSendCardTip: '0 Unlimit',
+  currentReceive: 'Current:',
+  sendCardTotal: 'Total:',
+  personReceive: 'Person Limit',
+  storeUseTimes: 'Allow use time',
+  times: 'times',
+  allowUse: 'Allow',
+  allowUseTime: 'Allow Time',
+  timeTip: 'Must one',
+  workDay: 'workDay',
+  breakDay: 'breakDay'
 }

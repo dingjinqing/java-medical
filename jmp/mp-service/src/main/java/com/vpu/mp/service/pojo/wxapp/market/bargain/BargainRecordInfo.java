@@ -22,7 +22,7 @@ public class BargainRecordInfo {
     private BigDecimal bargainMoney;
     private Integer    userNumber;
     private Byte       status;
-    private Integer    isOrdered;
+    private Byte    isOrdered;
     private String     orderSn;
     private Timestamp createTime;
 

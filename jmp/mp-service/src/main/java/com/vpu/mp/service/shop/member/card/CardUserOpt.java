@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.member.card;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,15 +77,33 @@ public class CardUserOpt extends CardOpt {
 	 */
 	private boolean canSendGradeCard(Integer userId, Integer cardId) {
 		//	用户领取等级卡需要满足一定的条件
+		MemberCardRecord mCard = mCardSvc.getCardById(cardId);
+		if(mCard==null) {
+			return false;
+		}
 		
+		
+		MemberCardRecord uCard = uCardSvc.getUserGradeCard(userId);
+		if(uCard != null) {
+			// 要领取的等级卡只有大于用户目前的等级才能领取
+			String oldGrade = uCard.getGrade();
+			String newGrade = mCard.getGrade();
+			if(newGrade.compareToIgnoreCase(oldGrade)<1) {
+				return false;
+			}
+		}
+		
+		
+		// 积分或者余额是否满足升级条件
 		Integer userTotalScore = scoreSvc.getAccumulationScore(userId);
 		BigDecimal amount = uCardSvc.getUserTotalSpendAmount(userId);
-		MemberCardRecord mCard = mCardSvc.getCardById(cardId);
+		
 		GradeConditionJson gradeCondition = uCardSvc.getGradeCondition(userTotalScore, amount, mCard);
 		boolean result =  gradeCondition.getGradeScore().intValue() <= userTotalScore
 				|| BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(), amount) <= 0;
 		logger().info("判断是否可以领取等级会员卡"+result);
 		return result;
+		
 	}
 	
 	

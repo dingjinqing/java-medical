@@ -243,19 +243,6 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
       )
   },
-  // 分销 分销员审核
-  {
-    path: '/admin/home/main/distributorCheck',
-    name: 'distribution_check',
-    meta: {
-      crumbTitle: 'router.distribution_info',
-      meta: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distributorCheck'
-      )
-  },
   // 分销 返利提现审核
   {
     path: '/admin/home/main/withdrawDepositCheck',
@@ -673,7 +660,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.lottery_activity_detail',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'lottery_activity'
     },
     component: () =>
       import(
@@ -687,7 +674,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.lottery_activity_newUserList',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'lottery_activity'
     },
     component: () =>
       import(
