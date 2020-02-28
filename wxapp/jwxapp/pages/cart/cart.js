@@ -316,15 +316,10 @@ global.wxPage({
 
   // 跳转加价购商品列表
   to_purchase: function (e) {
-    console.log(e.currentTarget.dataset.item)
+    var activity_id = e.currentTarget.dataset.activity_id;
     util.navigateTo({
-      url: '/pages/maingoodslist/maingoodslist',
+      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activity_id,
     })
-    // var iden_id = e.currentTarget.dataset.ids;
-    // var store_id = this.data.options.store_id ? this.data.options.store_id : 0;
-    // util.navigateTo({
-    //   url: '/pages/maingoodslist/maingoodslist?identity_id=' + iden_id + '&store_id=' + store_id,
-    // })
   },
 
 })
