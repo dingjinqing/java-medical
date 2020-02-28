@@ -352,7 +352,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     public PageResult<RedemptionOrderVo> getRedemptionOrderList(MarketOrderListParam param) {
         //默认排序方式---下单时间
-        PageResult<RedemptionOrderVo> vo = this.getPageResult(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionOrderVo.class);
+        PageResult<RedemptionOrderVo> vo = this.getPageResult(buildRedemptionListOption(param)
+            .groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionOrderVo.class);
 
         log.debug("进行商品展示信息的组合");
         preExportList(vo.getDataList());
@@ -368,7 +369,22 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return the select condition step
      */
     private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(MarketOrderListParam param) {
-        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(min(oi.ORDER_SN).as("orderSn"), groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), min(oi.CREATE_TIME).as("createTime"), min(oi.CONSIGNEE).as("consignee"), min(oi.MOBILE).as("mobile"), min(oi.ORDER_STATUS_NAME).as("orderStatusName")).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte) 7));
+        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db()
+            .select(min(oi.ORDER_SN).as("orderSn")
+                , groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId")
+                , groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName")
+                , groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber")
+                , groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds")
+                , groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules")
+                , groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg")
+                , min(oi.CREATE_TIME).as("createTime")
+                , min(oi.CONSIGNEE).as("consignee")
+                , min(oi.MOBILE).as("mobile")
+                , min(oi.ORDER_STATUS_NAME).as("orderStatusName"))
+            .from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID))
+            .leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
+            .where(og.ACTIVITY_ID.eq(param.getActivityId()))
+            .and(og.ACTIVITY_TYPE.eq((byte) 7));
 
         if (StringUtils.isNotBlank(param.getGoodsName())) {
             conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
@@ -404,7 +420,10 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return Workbook
      */
     public Workbook exportOrderList(MarketOrderListParam param) {
-        List<RedemptionOrderVo> list = buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME).fetchInto(RedemptionOrderVo.class);
+        List<RedemptionOrderVo> list = buildRedemptionListOption(param)
+            .groupBy(og.ORDER_SN)
+            .orderBy(oi.CREATE_TIME)
+            .fetchInto(RedemptionOrderVo.class);
         preExportList(list);
         return this.export(list, RedemptionOrderVo.class);
     }
