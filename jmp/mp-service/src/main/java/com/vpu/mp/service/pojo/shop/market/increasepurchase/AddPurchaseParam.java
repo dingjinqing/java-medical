@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.market.increasepurchase;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.List;
@@ -53,7 +52,7 @@ public class AddPurchaseParam {
     /**
      * 换购商品运费策略，0免运费，1使用原商品运费模板
      */
-    @NotEmpty
+    @NotNull
     private Byte redemptionFreight;
 
 }
