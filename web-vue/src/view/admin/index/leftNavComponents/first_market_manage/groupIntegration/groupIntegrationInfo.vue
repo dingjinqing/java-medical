@@ -1,6 +1,6 @@
 <template>
   <div class="groupwrapper">
-    <div class="integralAct">
+    <div class="integralAct" v-show="isMain">
       <el-form
         ref="activity"
         :model="activity"
@@ -187,27 +187,36 @@
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item
+          label="活动规则说明："
+        >
+        <el-button type="primary" @click="showAct">设置规则说明</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
-    <div class="btn">
+    <div class="btn" v-show="isMain">
       <el-button
         type="primary"
         size="small"
         @click="saveActivity()"
       >保存</el-button>
     </div>
+    <groupIntegrationActivityWrtie v-show="!isMain" @ActivityMsg="activityMsg" :sendMsg="sendMsg"/>
   </div>
-
 </template>
 <script>
 import { createGroupIntegration, editGroupIntegration, selectGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
+import groupIntegrationActivityWrtie from './groupIntegrationActivityWrtie'
 export default {
   props: {
     isEditId: {
       type: Number,
       default: 0
     }
+  },
+  components: {
+    groupIntegrationActivityWrtie
   },
   data () {
     var checklimitAmount = (rule, value, callback) => {
@@ -271,8 +280,10 @@ export default {
       }
     }
     return {
+      isMain: true,
       edit: false,
       paramId: null,
+      sendMsg: null,
       activity: {
         id: null,
         name: '',
@@ -284,7 +295,11 @@ export default {
         limitAmount: null,
         joinLimit: 1,
         divideType: 0,
-        isDayDivide: 0
+        isDayDivide: 0,
+        activityCopywriting: {
+          document: null,
+          is_use_default: null
+        }
       },
       fromRules: {
         name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
@@ -384,11 +399,23 @@ export default {
       } else {
         return false
       }
+    },
+    // 显示活动规则说明
+    showAct () {
+      this.isMain = false
+      this.sendMsg = this.activity.activityCopywriting
+    },
+    activityMsg (data) {
+      console.log('回来的值')
+      console.log(data)
+      this.activity.activityCopywriting = data
+      this.isMain = true
     }
   },
   mounted () {
     // const id = this.$route.params.id
     // this.edit = !!id
+    this.langDefault()
     if (this.isEditId === 0) {
       this.edit = false
       return

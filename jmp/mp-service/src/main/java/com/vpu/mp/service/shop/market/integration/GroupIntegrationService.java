@@ -13,9 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePag
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -101,7 +104,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param id
 	 * @return
 	 */
-	public GroupIntegrationDefineEditVo selectGroupIntegrationDefineById(Integer id) {
+	public GroupIntegrationVo selectGroupIntegrationDefineById(Integer id) {
 		if(id == null) {
 			return null;
 		}
@@ -113,7 +116,14 @@ public class GroupIntegrationService extends ShopBaseService {
 			return null;
 		}
 		String activityCopywriting = fetchOneInto.getActivityCopywriting();
-		return fetchOneInto;
+		ActivityCopywriting parseJson=null;
+		if(StringUtils.isNotEmpty(activityCopywriting)) {
+			parseJson = Util.parseJson(activityCopywriting, ActivityCopywriting.class);
+		}
+		GroupIntegrationVo vo=new GroupIntegrationVo();
+		BeanUtils.copyProperties(fetchOneInto, vo);
+		vo.setActivityCopywriting(parseJson);
+		return vo;
 		
 	}
 	/**
