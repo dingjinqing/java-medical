@@ -163,6 +163,14 @@ global.wxPage({
         '/api/wxapp/goods/detail',
         res => {
           if (res.error === 0) {
+            if(res.content.delFlag === 1 || res.content.isOnSale === 0){
+              let tips = res.content.delFlag === 1 ? '抱歉，该商品已删除':'抱歉，该商品已下架';
+              let pageFlag = getCurrentPages().length > 1
+              util.showModal('提示',tips,()=>{
+               if(pageFlag) {wx.navigateBack();return}
+               util.jumpLink(`pages/index/index`,'redirectTo')
+              },false,'',pageFlag ? '返回上一页':'回到首页')
+            }
             if (res.content.activity && [1, 3, 5, 10].includes(res.content.activity.activityType)){
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             }
