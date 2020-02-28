@@ -38,7 +38,7 @@
                 </el-form-item>
               </el-form>
               <div class="innerRight">
-                <TinymceEditor
+                <editor
                   v-model="editMsg"
                   :disabled="disabled"
                   ref="editor"
@@ -63,9 +63,10 @@
   </div>
 </template>
 <script>
+import editor from '@/components/admin/tinymceEditor/tinymceEditor'
 export default {
   components: {
-    TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
+    editor
   },
   props: ['sendMsg'],
   mounted () {
@@ -85,8 +86,7 @@ export default {
   methods: {
     setValue () {
       if (!this.isEmpty(this.sendMsg)) {
-        console.log('收到的值' + this.sendMsg)
-        this.isUseDefault = this.sendMsg.is_use_default
+        this.isUseDefault = Number(this.sendMsg.is_use_default)
         this.editMsg = this.sendMsg.document
       }
     },
@@ -94,13 +94,14 @@ export default {
       let value = this.isUseDefault
       if (value === 1) {
         this.editMsg = this.msg
+        this.disabled = true
       }
       if (value === 0) {
-        this.editMsg = null
+        this.$refs.editor.clear()
+        this.disabled = false
       }
     },
     changeRadio () {
-      console.log(this.isUseDefault)
       this.defalutValue()
     },
     isEmpty (obj) {
@@ -113,12 +114,18 @@ export default {
     checkInfo () {
       if (this.isEmpty(this.isUseDefault)) {
         this.$message.warning('请选择页面内容')
+        return false
       }
       if (this.isEmpty(this.editMsg)) {
         this.$message.warning('请填写页面内容')
+        return false
       }
+      return true
     },
     saveMsg () {
+      if (!this.checkInfo()) {
+        return
+      }
       let msg = {
         'document': this.editMsg,
         'is_use_default': String(this.isUseDefault)

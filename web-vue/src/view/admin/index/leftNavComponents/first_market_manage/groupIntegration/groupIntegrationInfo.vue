@@ -189,8 +189,9 @@
         </el-form-item>
         <el-form-item
           label="活动规则说明："
+           prop="activityInfo"
         >
-        <el-button type="primary" @click="showAct">设置规则说明</el-button>
+        <el-button type="primary" @click="showAct" size="small">设置规则说明</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -202,7 +203,7 @@
         @click="saveActivity()"
       >保存</el-button>
     </div>
-    <groupIntegrationActivityWrtie v-show="!isMain" @ActivityMsg="activityMsg" :sendMsg="sendMsg"/>
+    <groupIntegrationActivityWrtie v-if="!isMain" @ActivityMsg="activityMsg" :sendMsg="sendMsg"/>
   </div>
 </template>
 <script>
@@ -279,11 +280,15 @@ export default {
         callback()
       }
     }
+    var checkActivityInfo = (rule, value, callback) => {
+      callback()
+    }
     return {
       isMain: true,
       edit: false,
       paramId: null,
       sendMsg: null,
+      canSave: false,
       activity: {
         id: null,
         name: '',
@@ -311,7 +316,8 @@ export default {
         inteGroup: [{ required: true, validator: checkInteGroup, trigger: 'blur' }],
         joinLimit: [{ required: true, validator: checkJoinLimit, trigger: 'blur' }],
         divideType: [{ required: true, trigger: 'blur' }],
-        isDayDivide: [{ required: true, trigger: 'blur' }]
+        isDayDivide: [{ required: true, trigger: 'blur' }],
+        activityInfo: [{ required: true, validator: checkActivityInfo }]
       },
       srcList: {
         src1: `${this.$imageHost}/image/admin/new_preview_image/pin_integration.jpg`
@@ -325,6 +331,9 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.activity = res.content
+          if (!this.isEmpty(res.content.activityCopywriting.document)) {
+            this.canSave = true
+          }
           console.log('编辑返回')
           console.log(this.activity)
         }
@@ -391,6 +400,10 @@ export default {
         this.$message.warning('开始时间应小于结束时间')
         return false
       }
+      if (!this.canSave) {
+        this.$message.warning('请填写活动规则说明')
+        return false
+      }
       return true
     },
     isEmpty (obj) {
@@ -403,11 +416,13 @@ export default {
     // 显示活动规则说明
     showAct () {
       this.isMain = false
+      console.log(this.activity.activityCopywriting)
       this.sendMsg = this.activity.activityCopywriting
     },
     activityMsg (data) {
       console.log('回来的值')
       console.log(data)
+      this.canSave = true
       this.activity.activityCopywriting = data
       this.isMain = true
     }
