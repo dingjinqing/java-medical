@@ -61,7 +61,7 @@ public class ReducePricePictorialService extends ShopBaseService {
         // 活动信息不可用
         if (reducePriceRecord == null) {
             pictorialLog("分享", "限时降价活动信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
             return shareInfoVo;
         }
 
@@ -69,12 +69,11 @@ public class ReducePricePictorialService extends ShopBaseService {
         // 商品信息不可用
         if (goodsRecord == null) {
             pictorialLog("分享", "限时降价商品信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
             return shareInfoVo;
         }
 
         PictorialShareConfig shareConfig = Util.parseJson(reducePriceRecord.getShareConfig(), PictorialShareConfig.class);
-        shareInfoVo.setShareAction(shareConfig.getShareAction());
         // 用户自定义分享样式
         if (PictorialShareConfig.CUSTOMER_STYLE.equals(shareConfig.getShareAction())) {
             if (PictorialShareConfig.DEFAULT_IMG.equals(shareConfig.getShareImgAction())) {
@@ -85,11 +84,15 @@ public class ReducePricePictorialService extends ShopBaseService {
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
         } else {
             // 使用默认分享图片样式
+            String imgPath = createReducePriceShareImg(reducePriceRecord, goodsRecord, param);
+            if (imgPath == null) {
+                shareInfoVo.setShareCode(PictorialConstant.GOODS_PIC_ERROR);
+                return shareInfoVo;
+            }
+            shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
             String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, null, "messages", param.getUserName(), goodsRecord.getGoodsName());
             shareInfoVo.setShareDoc(doc);
-            String imgPath = createReducePriceShareImg(reducePriceRecord, goodsRecord, param);
-            shareInfoVo.setImgUrl(imgPath);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 

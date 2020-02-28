@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.share;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -9,14 +10,11 @@ import lombok.Data;
  */
 @Data
 public class GoodsShareInfo {
-    public static final Byte ACTIVITY_DELETED = 1;
-    public static final Byte GOODS_DELETED = 2;
-    /** 分享操作返回码：0正常，1活动已删除无法使用,2活动商品已删除*/
+    /** 分享操作返回码：0正常，1活动已删除无,2活动商品已删除,3指定的宣传图片读取异常，4二维码读取异常*/
+    @JsonIgnore
     private Byte shareCode = 0;
-    /** 活动分享展示方式 1默认样式 2自定义样式和文案 */
-    private Byte shareAction;
-    /** 自定义文案内容 shareAction=2的时候起效果 */
+    /**文案内容*/
     private String shareDoc;
-    /** 分享显示的图片相对地址 */
+    /** 分享显示的图片绝对地址 */
     private String imgUrl;
 }

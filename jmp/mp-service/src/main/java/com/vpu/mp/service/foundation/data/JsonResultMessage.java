@@ -898,8 +898,6 @@ public class JsonResultMessage {
     public static final String WX_MA_PICTORIAL_MONEY_FLAG = "wx.ma.pictorial.money.flag";
     /** 神秘人 */
     public static final String WX_MA_DEFAULT_USER_NAME = "wx.ma.default.user.name";
-    /** 逗号分隔符 */
-    public static final String WX_MA_DOT = "wx.ma.dot";
     /** 元 */
     public static final String WX_MA_PICTORIAL_MONEY = "wx.ma.pictorial.money";
     /**普通商品分享时默认海报分享语*/
@@ -917,10 +915,8 @@ public class JsonResultMessage {
     /** 拼团相关 */
     /** 开团省 */
     public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
-    /** 2人品仅需*/
-    public static final String WX_MA_GROUP_BUY_DOC_PERSON_NUM = "wx.ma.group.buy.doc.person.num";
-    /** 推荐给你 */
-    public static final String WX_MA_GROUP_BUY_DOC_RECOMMEND_TO_YOU="wx.ma.group.buy.doc.recommend.to.you";
+    /** 2人品仅需5元推荐给你*/
+    public static final String WX_MA_GROUP_BUY_DOC = "wx.ma.group.buy.doc";
     /** 砍价 */
     public static final String  WX_MA_BARGAIN_DOC="wx.ma.bargain.doc";
     /** 砍走*/
@@ -969,4 +965,9 @@ public class JsonResultMessage {
     public static final String GOODS_RANKING_SALES_ORDER_TOP10 = "overview.commodity.rank.sales_order_top10";
     public static final String GOODS_RANKING_GOODS_NAME = "overview.commodity.rank.goods_name";
 
+    // 小程序-分享图片-下载海报错误信息
+    public static final String WX_SHARE_ACTIVITY_DELETED = "wx.share.activity.deleted";
+    public static final String WX_SHARE_GOODS_DELETED = "wx.share.goods.deleted";
+    public static final String WX_SHARE_PIC_ERROR = "wx.share.pic.error";
+    public static final String WX_SHARE_QRCDOE_ERROR = "wx.share.qrcode.error";
 }
