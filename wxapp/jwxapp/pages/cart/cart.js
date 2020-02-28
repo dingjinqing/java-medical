@@ -231,7 +231,7 @@ global.wxPage({
         }
         item.cartActivityInfos.forEach((val, key) => {
           // 判断当前选中活动
-          if (item.activityType == val.activityType) {
+          if (item.activityType == val.activityType && item.activityId == val.activityId) {
             val.is_che = 1
           } else {
             val.is_che = 0

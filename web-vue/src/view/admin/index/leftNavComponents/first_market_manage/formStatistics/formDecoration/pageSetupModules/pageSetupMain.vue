@@ -149,17 +149,90 @@
             v-if="!ruleForm.bg_img"
             :src="$imageHost+'/image/admin/add_img_bg.png'"
             class="bgImgDiv"
-            @click="handleToAddImg(true)"
+            @click="handleToAddImg()"
           />
           <img
             v-else
             style="width:100%;height:40px"
             :src="ruleForm.bg_img"
-            @click="handleToAddImg(true)"
+            @click="handleToAddImg()"
           >
         </div>
         <span class="sharePic">{{$t('pageSetUp.recommendedDimensions')}}:800*800像素</span>
       </div>
+    </div>
+    <div class="listContainer">
+      <span>提交自定义跳转：</span>
+      <span style="color:#999;width:210px">提交成功可引导用户浏览其他内容</span>
+    </div>
+    <div class="listContainer">
+      <span></span>
+      <el-checkbox v-model="ruleForm.set_own_link">自定义跳转</el-checkbox>
+      <div class="toCheck">查看示例
+        <div class="examHidden">
+          <img :src="$imageHost+'/image/admin/share/form_success_exapmle.jpg'">
+        </div>
+      </div>
+    </div>
+    <div class="listContainer">
+      <span></span>
+      <div class="customLinks">
+        <div class="customLinksList">
+          <div>按钮名称：</div>
+          <el-input
+            size="small"
+            v-model="ruleForm.custom_btn_name"
+          ></el-input>
+        </div>
+        <div class="customLinksList">
+          <div>跳转链接：</div>
+          <div class="toChoiseLink">选择跳转链接</div>
+        </div>
+      </div>
+    </div>
+    <div class="listContainer">
+      <span>用户授权：</span>
+      <el-checkbox v-model="ruleForm.authorized_name">授权手机号</el-checkbox>
+      <el-checkbox v-model="ruleForm.authorized_mobile">授权用户信息</el-checkbox>
+    </div>
+    <div class="listContainer">
+      <span></span>
+      <div style="color:#999;width:275px">勾选后好友需要先完成授权才能够提交表单</div>
+    </div>
+    <div class="listContainer linContainer">
+      <div class="line"></div>
+      <div class="content">参与奖励</div>
+      <div class="line"></div>
+    </div>
+    <div class="listContainer">
+      <el-checkbox v-model="ruleForm.send_coupon">参与送优惠卷</el-checkbox>
+    </div>
+    <!--选中参与优惠卷显示的隐藏模块-->
+    <div
+      class="listContainer"
+      v-if="ruleForm.send_coupon"
+    >
+      <div class="sendCouponHidden">
+        <div class="bgCoupon">
+          <img
+            :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'"
+            class="bgImgDiv"
+            @click="handleToAddImg()"
+          />
+          <p>添加优惠卷</p>
+        </div>
+      </div>
+    </div>
+    <div class="listContainer">
+      <div style="color:#999;width:400px;font-size:12px;padding-left:25px">最多可以添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+    </div>
+    <div class="listContainer sendScore">
+      <el-checkbox v-model="ruleForm.send_score">参与送积分</el-checkbox>
+      &nbsp;&nbsp;
+      <el-input
+        size="small"
+        v-model="ruleForm.send_score_number"
+      ></el-input>&nbsp;&nbsp;分
     </div>
   </div>
 </template>
@@ -200,14 +273,29 @@ export default {
         'font_color': '#ffffff', // 提交按钮文字颜色
         'bg_color': '#ff6666', // 提交按钮背景颜色
         'bg_img': '', // 表单海报背景图片
-        'set_own_link': 0,
-        'custom_btn_name': '',
-        'custom_link_path': '',
-        'custom_link_name': '',
-        'send_coupon': 0,
-        'send_score': 0,
-        'authorized_name': 0,
-        'authorized_mobile': 0
+        'set_own_link': 0, // 自定义跳转checked
+        'custom_btn_name': '', // 自定义按钮名称
+        'custom_link_path': '', // 跳转链接
+        'custom_link_name': '', // 跳转链接名称
+        'send_coupon': 0, // 参与送优惠卷checkbox
+        'send_coupon_list': [
+          // {
+          //   "act_code":"voucher",
+          //   "coupon_id":"517",
+          //   "use_score":"0",
+          //   "score_number":"",
+          //   "denomination":"10",
+          //   "random_min":"0",
+          //   "random_max":"0",
+          //   "consume_text":"无门槛",
+          //   "receive_text":"库存不限制",
+          //   "coupon_name":"测试标签"
+          // }
+        ], // 选择的优惠卷数据列表
+        'send_score': 0, // 参与送积分选中checkbox
+        'send_score_number': null, // 输入的送积分input值
+        'authorized_name': 0, // 授权手机号
+        'authorized_mobile': 0 // 授权用户信息
       }
     }
   },
@@ -312,11 +400,100 @@ export default {
       }
       .sharePic {
         color: #999;
+        width: 155px;
       }
       /deep/ .el-button {
         margin-top: 10px;
       }
     }
+    .bgCoupon {
+      background: #fff;
+      border: 1px solid #e4e4e4;
+      text-align: center;
+      width: 100px;
+      border-radius: 3px;
+      padding: 13px 0;
+      cursor: pointer;
+      p {
+        color: #999;
+        font-size: 12px;
+        margin: 8px 0 0 0;
+      }
+    }
+    .toCheck {
+      color: #5a8bff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin-left: 5px;
+      position: relative;
+      .examHidden {
+        display: none;
+        position: absolute;
+        left: -254px;
+        top: -50px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        z-index: 100;
+        img {
+          width: 200px;
+          height: 355.74px;
+          border: 1px solid #eee;
+        }
+        &::before {
+          content: " ";
+          position: absolute;
+          top: 48px;
+          right: -8px;
+          width: 14px;
+          height: 14px;
+          background-color: #fff;
+          transform: rotate(-45deg);
+          z-index: 4;
+          box-shadow: 3px 3px 4px #e5e5e5;
+        }
+      }
+      &:hover {
+        .examHidden {
+          display: block !important;
+        }
+      }
+    }
+    .customLinks {
+      .customLinksList {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        .toChoiseLink {
+          cursor: pointer;
+          color: #5a8bff;
+        }
+      }
+    }
+    .line {
+      width: 35%;
+      height: 1px;
+      background: #eee;
+    }
+    .content {
+      width: 20%;
+      text-align: center;
+    }
+    .sendCouponHidden {
+      border: 1px solid #eee;
+      background: #fff;
+      width: 360px;
+      padding: 10px;
+      margin-left: 15px;
+    }
+  }
+  .sendScore {
+    align-items: center;
+  }
+  .linContainer {
+    display: flex;
+    align-items: center;
   }
 }
 </style>

@@ -60,7 +60,7 @@ public class PreSalePictorialService extends ShopBaseService {
         // 预售活动信息不可用
         if (presaleRecord == null) {
             preSaleLog("分享", "定金膨胀活动信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
             return shareInfoVo;
         }
 
@@ -68,12 +68,11 @@ public class PreSalePictorialService extends ShopBaseService {
         // 商品信息不可用
         if (goodsRecord == null) {
             preSaleLog("分享", "定金膨胀商品信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
             return shareInfoVo;
         }
 
         PictorialShareConfig shareConfig = Util.parseJson(presaleRecord.getShareConfig(), PictorialShareConfig.class);
-        shareInfoVo.setShareAction(shareConfig.getShareAction());
 
         // 用户自定义分享样式
         if (PictorialShareConfig.CUSTOMER_STYLE.equals(shareConfig.getShareAction())) {
@@ -85,11 +84,15 @@ public class PreSalePictorialService extends ShopBaseService {
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
         } else{
             // 使用默认分享图片样式
+            String imgPath = createPreSaleShareImg(presaleRecord, goodsRecord, param);
+            if (imgPath == null) {
+                shareInfoVo.setShareCode(PictorialConstant.GOODS_PIC_ERROR);
+                return shareInfoVo;
+            }
+            shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
             String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_SHARE_DOC, null,"messages",param.getDepositPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
             shareInfoVo.setShareDoc(doc);
-            String imgPath = createPreSaleShareImg(presaleRecord, goodsRecord, param);
-            shareInfoVo.setImgUrl(imgPath);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 

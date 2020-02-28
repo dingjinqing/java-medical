@@ -96,15 +96,19 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
             // 未开始2
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
             // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
         }
         Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
@@ -268,7 +272,10 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     @SuppressWarnings("unchecked")
     public PurchaseDetailVo getPurchaseDetail(PurchaseDetailParam param) {
-        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE,
+            ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID, ppd.REDEMPTION_FREIGHT).from(ppd)
+            .where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class)
+            .orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
@@ -332,7 +339,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.RAISE_PRICE_BUY_MAIN_GOODS, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.RAISE_PRICE_BUY_MAIN_GOODS.getPathUrl(pathParam));
         return vo;
 
     }

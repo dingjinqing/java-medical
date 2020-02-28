@@ -4,6 +4,8 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
+import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
+import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
@@ -41,11 +43,85 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/goods/share/info")
     public JsonResult getGoodsShareImage(@RequestBody GoodsShareBaseParam param) {
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserName(user.getUsername());
-        param.setUserId(user.getUserId());
-        return success(shop().pictorialIntegrationService.getNormalGoodsShareInfo(param));
+        return getActivityShareInfo(param);
     }
+
+    /**
+     * 获取拼团分享图片信息
+     * @param param 分享参数
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/groupbuy/share/info")
+    public JsonResult getGroupBuyShareImage(@RequestBody GroupBuyShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
+    /**
+     * 获取砍价分享图片信息
+     * @param param 分享参数
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/bargain/share/info")
+    public JsonResult getBargainShareImage(@RequestBody BargainShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
+    /**
+     * 获取拼团抽奖分享图片信息
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/groupdraw/share/info")
+    public JsonResult getGroupDrawShareInfo(@RequestBody GroupDrawShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
+    /**
+     * 获取预售活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/presale/share/info")
+    public JsonResult getPreSaleShareInfo(@RequestBody PreSaleShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
+    /**
+     * 获取限时降价活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/reduceprice/share/info")
+    public JsonResult getReducePriceShareInfo(@RequestBody ReducePriceShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
+    /**
+     * 获取首单特惠活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/firstspecial/share/info")
+    public JsonResult getFirstSpecialShareInfo(@RequestBody FirstSpecialShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
+    private JsonResult getActivityShareInfo(GoodsShareBaseParam param) {
+        GoodsShareInfo activityShareInfo = shop().pictorialIntegrationService.getActivityShareInfo(param);
+        Byte shareCode = activityShareInfo.getShareCode();
+        if (PictorialConstant.ACTIVITY_DELETED.equals(shareCode)) {
+            return fail(JsonResultCode.WX_SHARE_ACTIVITY_DELETED);
+        } else if (PictorialConstant.GOODS_DELETED.equals(shareCode)) {
+            return fail(JsonResultCode.WX_SHARE_GOODS_DELETED);
+        } else if (PictorialConstant.GOODS_PIC_ERROR.equals(shareCode)) {
+            return fail(JsonResultCode.WX_SHARE_PIC_ERROR);
+        } else if (PictorialConstant.QRCODE_ERROR.equals(shareCode)) {
+            return fail(JsonResultCode.WX_SHARE_QRCDOE_ERROR);
+        } else {
+            return success(activityShareInfo);
+        }
+    }
+
 
     /**
      * 获取普通商品下载海报信息
@@ -57,18 +133,6 @@ public class WxAppPictorialController extends WxAppBaseController  {
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
         return success(shop().pictorialIntegrationService.getNormalPictorialInfo(param));
-    }
-
-    /**
-     * 获取拼团分享图片信息
-     * @param param 分享参数
-     * @return JsonResult
-     */
-    @PostMapping("/api/wxapp/groupbuy/share/info")
-    public JsonResult getGroupBuyShareImage(@RequestBody GroupBuyShareInfoParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        return success(shop().pictorialIntegrationService.getGroupBuyShareInfo(param));
     }
 
     /**
@@ -84,18 +148,6 @@ public class WxAppPictorialController extends WxAppBaseController  {
     }
 
     /**
-     * 获取砍价分享图片信息
-     * @param param 分享参数
-     * @return JsonResult
-     */
-    @PostMapping("/api/wxapp/bargain/share/info")
-    public JsonResult getBargainShareImage(@RequestBody BargainShareInfoParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        return success(shop().pictorialIntegrationService.getBargainShareInfo(param));
-    }
-
-    /**
      * 获取砍价活动下载海报信息
      * @param param 分享参数
      * @return JsonResult
@@ -105,18 +157,6 @@ public class WxAppPictorialController extends WxAppBaseController  {
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
         return success(shop().pictorialIntegrationService.getBargainPictorialInfo(param));
-    }
-
-
-    /**
-     * 获取拼团抽奖分享图片信息
-     * @param param 参数信息
-     * @return  JsonResult
-     */
-    @PostMapping("/api/wxapp/groupdraw/share/info")
-    public JsonResult getGroupDrawShareInfo(@RequestBody GroupDrawShareInfoParam param){
-        param.setUserId(wxAppAuth.user().getUserId());
-        return success(shop().pictorialIntegrationService.getGroupDrawShareInfo(param));
     }
 
     /**
@@ -131,18 +171,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
     }
 
     /**
-     * 获取预售活动分享图片
-     * @param param 参数信息
-     * @return  JsonResult
-     */
-    @PostMapping("/api/wxapp/presale/share/info")
-    public JsonResult getPreSaleShareInfo(@RequestBody PreSaleShareInfoParam param){
-        param.setUserId(wxAppAuth.user().getUserId());
-        return success(shop().pictorialIntegrationService.getPreSaleShareInfo(param));
-    }
-
-    /**
-     * 获取拼团抽奖海报信息
+     * 获取预售海报信息
      * @param param 海报参数信息
      * @return JsonResult
      */
@@ -150,19 +179,6 @@ public class WxAppPictorialController extends WxAppBaseController  {
     public JsonResult getPreSalePictorial(@RequestBody PreSaleShareInfoParam param) {
         param.setUserId(wxAppAuth.user().getUserId());
         return success(shop().pictorialIntegrationService.getPreSalePictorialInfo(param));
-    }
-
-    /**
-     * 获取限时降价活动分享图片
-     * @param param 参数信息
-     * @return  JsonResult
-     */
-    @PostMapping("/api/wxapp/reduceprice/share/info")
-    public JsonResult getReducePriceShareInfo(@RequestBody ReducePriceShareInfoParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        param.setUserName(user.getUsername());
-        return success(shop().pictorialIntegrationService.getReducePriceShareInfo(param));
     }
 
     /**
@@ -177,20 +193,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
     }
 
     /**
-     * 获取首单特惠活动分享图片
-     * @param param 参数信息
-     * @return  JsonResult
-     */
-    @PostMapping("/api/wxapp/firstspecial/share/info")
-    public JsonResult getFirstSpecialShareInfo(@RequestBody FirstSpecialShareInfoParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        param.setUserName(user.getUsername());
-        return success(shop().pictorialIntegrationService.getFirstSpecialShareInfo(param));
-    }
-
-    /**
-     * 获取限时降价海报信息
+     * 获取首单特惠海报信息
      * @param param 海报参数信息
      * @return JsonResult
      */

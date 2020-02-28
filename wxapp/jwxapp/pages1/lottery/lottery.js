@@ -372,7 +372,7 @@ global.wxPage({
       }
     }, { lotteryId: that.data.lotteryId })
     return {
-      path: '/pages1/lottery/lottery?lotteryId=' + that.data.lotteryId,
+      path: '/pages1/lottery/lottery?lotteryId=' + that.data.lotteryId +'&lotterySource=3',
       title: username + '邀你免费拿大奖，限时免费立即参加吧！！！',
       imageUrl: imageUrl + '/image/wxapp/share_lott1.jpg'
     }

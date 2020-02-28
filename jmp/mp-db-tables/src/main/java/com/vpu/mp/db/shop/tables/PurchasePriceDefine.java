@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PurchasePriceDefine extends TableImpl<PurchasePriceDefineRecord> {
 
-    private static final long serialVersionUID = 695150695;
+    private static final long serialVersionUID = 836138994;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_purchase_price_define</code>
@@ -85,17 +74,17 @@ public class PurchasePriceDefine extends TableImpl<PurchasePriceDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_purchase_price_define.start_time</code>. 开始时间
      */
-    public final TableField<PurchasePriceDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
+    public final TableField<PurchasePriceDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_purchase_price_define.end_time</code>. 结束时间
      */
-    public final TableField<PurchasePriceDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
+    public final TableField<PurchasePriceDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "结束时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_purchase_price_define.status</code>. 状态 1: 启用 0:禁用
+     * The column <code>mini_shop_471752.b2c_purchase_price_define.status</code>. 状态 0: 启用 1:禁用
      */
-    public final TableField<PurchasePriceDefineRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态 1: 启用 0:禁用");
+    public final TableField<PurchasePriceDefineRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态 0: 启用 1:禁用");
 
     /**
      * The column <code>mini_shop_471752.b2c_purchase_price_define.del_flag</code>.
@@ -105,7 +94,7 @@ public class PurchasePriceDefine extends TableImpl<PurchasePriceDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_purchase_price_define.del_time</code>. 删除时间
      */
-    public final TableField<PurchasePriceDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+    public final TableField<PurchasePriceDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_purchase_price_define.create_time</code>.
@@ -116,6 +105,11 @@ public class PurchasePriceDefine extends TableImpl<PurchasePriceDefineRecord> {
      * The column <code>mini_shop_471752.b2c_purchase_price_define.update_time</code>. 最后修改时间
      */
     public final TableField<PurchasePriceDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_purchase_price_define.redemption_freight</code>. 换购商品运费策略，0免运费，1使用原商品运费模板
+     */
+    public final TableField<PurchasePriceDefineRecord, Byte> REDEMPTION_FREIGHT = createField("redemption_freight", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "换购商品运费策略，0免运费，1使用原商品运费模板");
 
     /**
      * Create a <code>mini_shop_471752.b2c_purchase_price_define</code> table reference
