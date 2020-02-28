@@ -138,8 +138,9 @@ export default {
     // 右侧模块点击传回中间当前高亮模块的数据
     backData: { // 模块公共
       handler (newData) {
+        console.log(newData)
         if (newData) {
-          if (newData.act_id !== -1) {
+          if (newData.act_id !== -1 && newData.act_id) {
             selectGroupIntegration(newData.act_id).then(res => {
               console.log(res)
               if (res.error === 0) {
