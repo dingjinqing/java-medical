@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.lottery.prize;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import lombok.Data;
 
@@ -42,6 +43,11 @@ public class LotteryPrizeVo {
      * 账户
      */
     private Integer account;
+    /**
+     * 账户
+     */
+    @JsonIgnore
+    private Integer awardAccount;
     /**
      * 优惠券id
      */
