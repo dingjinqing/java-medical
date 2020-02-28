@@ -20,8 +20,15 @@ import com.vpu.mp.service.shop.config.BaseShopConfigService;
 public class UserExpCfgService extends BaseShopConfigService {
 	@Autowired
 	private UserExportService uExpSvc;
+	/**
+	 * 	导出会员配置key
+	 */
 	private static final String KEY = "userExport_list";
 	
+	/**
+	 * 	将会员配置信息以List Json形式存储
+	 * @param value
+	 */
 	public void setUserExpCfg(List<String> value) {
 		String strValue = Util.toJson(value);
 		if(strValue==null) {

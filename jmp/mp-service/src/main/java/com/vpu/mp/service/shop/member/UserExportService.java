@@ -28,6 +28,11 @@ import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.excel.UserExpColNameI18n;
 
+/**
+ * 	会员导出
+ * @author 黄壮壮
+ *
+ */
 @Service
 public class UserExportService extends ShopBaseService{
 	@Autowired
@@ -46,8 +51,12 @@ public class UserExportService extends ShopBaseService{
 	 * 	默认最多导出数据5000条
 	 */
 	private static final String MAX__KEY = "max_num";
-	private static final String AVAIL_KEY="avail_num";
 	private static final Integer MAX_VALUE = 5000;
+	/**
+	 * 	系统中可导出的数据量
+	 */
+	private static final String AVAIL_KEY="avail_num";
+
 	/**
 	 * 	第一行固定的值
 	 */
