@@ -217,13 +217,16 @@
   color: #666;
   margin-left: 10rpx;
   width: 370rpx;
-}
-.cf_left .cf_left_content .cf_left_content_add, 
-.cf_left .cf_left_content .cf_left_content_full {
-  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.cf_left .cf_left_content .cf_left_content_rule {
+  /* width: 100%; */
+  display: flex;
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+  /* white-space: nowrap; */
 }
 .cf_right{
   flex: 0.5;
