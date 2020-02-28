@@ -170,8 +170,8 @@ public class LotteryRecordService extends ShopBaseService {
     public Integer getJoinLotteryNumber(Integer userId, Integer lotteryId, Byte chanceSource) {
         Condition condition = LOTTERY_RECORD.USER_ID.eq(userId)
                 .and(LOTTERY_RECORD.LOTTERY_ID.eq(lotteryId));
-        if (chanceSource > -1) {
-            condition.and(LOTTERY_RECORD.CHANCE_SOURCE.eq(chanceSource));
+        if (chanceSource.intValue() > 0) {
+            condition = condition.and(LOTTERY_RECORD.CHANCE_SOURCE.eq(chanceSource));
         }
         return db().fetchCount(LOTTERY_RECORD, condition);
     }
