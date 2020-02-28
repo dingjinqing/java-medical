@@ -72,7 +72,7 @@
           <span class="span">每单最多换购商品数，填写0表示不限制</span>
         </el-form-item>
         <el-form-item label="换购商品运费计算策略">
-          <el-radio-group v-model="form1.strategy">
+          <el-radio-group v-model="form1.redemptionFreight">
             <el-radio label="免运费"></el-radio>
             <el-radio label="使用原商品运费模板"></el-radio>
           </el-radio-group>
@@ -433,7 +433,7 @@ export default {
         startTime: '',
         endTime: '',
         maxChangePurchase: 0,
-        strategy: 0,
+        redemptionFreight: 0,
         rule_setting: '非空'
       },
       // 换购规则
