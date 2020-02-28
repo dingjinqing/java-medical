@@ -114,6 +114,7 @@ export const en = {
     name: '4'
   }],
   changeStatusComment: 'This operation will enable the activity, do you want to continue?',
+  stopStatusComment: 'This action will deactivate the event. Do you want to continue?',
   DeleteLuckDrawComment: 'This operation will delete the activity, will it continue?',
   confirm: 'OK',
   cancel: 'Cancel',

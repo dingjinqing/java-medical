@@ -40,7 +40,6 @@ export default {
   props: {
     nowRightShowMoudlesIndex: Number,
     nowRightModulesData: Object,
-    nowRightShowIndex: Number,
     pageSetData: Object
   },
   data () {
@@ -53,7 +52,7 @@ export default {
 
       ],
       showModule: null,
-      modulesData: {},
+      modulesData: {}, //  当前右侧模块显示数据
       sortIndex: -1,
       pageSet: {},
       retract: '收起', // 收起文本
@@ -78,7 +77,8 @@ export default {
         this.insertFlga = false
         this.$nextTick(() => {
           this.insertFlga = true
-          this.modulesData = this.nowRightModulesData
+          console.log(this.nowRightModulesData)
+          this.modulesData = this.nowRightModulesData // 初始回显模块数据
           this.sortIndex = newData
         })
         console.log(newData)
@@ -107,7 +107,7 @@ export default {
   methods: {
     // 点击顶部icon
     handleToChangeIcon () {
-      this.$emit('handleToClearIndex', this.topIconFlag)
+      this.$emit('handleToClearIndex', true)
       this.topIconFlag = !this.topIconFlag
       this.showModule = ''
     },
@@ -116,7 +116,7 @@ export default {
       console.log(data)
       this.$emit('handleToBackMiddleData', data)
     },
-    // 页面设置回显
+    // 页面设置回显上层
     hanelToPageSet (res) {
       console.log(res)
       this.$emit('hanelToPageSet', res)
@@ -126,6 +126,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .decRightContainer {
+  font-size: 14px;
   .decRightTop {
     background-color: #f8f8f8;
     border: 1px solid #e5e5e5;

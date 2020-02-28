@@ -21,7 +21,7 @@ module.exports = {
   waitDeliver: "待发货",
   waitReceive: "待收货",
   waitComment: "评价",
-  refund: "退款中",
+  refund: "售后中",
   allOrders: "全部订单",
   viewAllAppointments: "查看全部预约",
   appointmentTime: "预约到店时间",

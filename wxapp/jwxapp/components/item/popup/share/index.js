@@ -21,45 +21,36 @@ global.wxComponent({
    */
   methods: {
     share(){
-      this.triggerEvent('shareMoments')
+      // this.triggerEvent('shareMoments')
       this.bindClose()
     },
-    downloadPoster(e){
-      let goodsImage = []
-      if(e.currentTarget.dataset.isMultiple){
-        goodsImage = this.data.shareData.goodsImgs
-      }
+    async downloadPoster(e){
       const apiInfo = {
         1:{ //拼团
           api:'/api/wxapp/groupbuy/pictorial/info',
-          params:['realPrice','linePrice','activityId']
+          params:['realPrice','linePrice','activityId','targetId','pageType']
         }, 
         3:{ //砍价
           api:'/api/wxapp/bargain/pictorial/info',
-          params:['realPrice','linePrice','activityId']
+          params:['realPrice','linePrice','activityId','pageType']
         },
-        5:{ //秒杀
-
+        10:{ //定金膨胀
+          api:'/api/wxapp/presale/pictorial/info',
+          params:['realPrice','linePrice','activityId','targetId','depositPrice']
         },
-        default:{} //普通商品
+        'default':{ //普通商品
+          api:'/api/wxapp/goods/pictorial/info',
+          params:['realPrice','linePrice','activityId','targetId']
+        } 
       }
-      let target = this.data.shareData.activityType ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
+      let target = [1,3,5,10].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
       let params = this.filterObj(this.data.shareData,target.params)
       wx.showLoading({
         title: '生成中',
       })
-      util.api(target.api,res=>{
-        if(res.error === 0 && res.content !== null){
-          this.setData({
-            showPoster:true,
-            posterImage: [res.content,...goodsImage]
-          })
-          wx.hideLoading()
-          this.bindClose()
-        }
-      },{
-        ...params
-      })
+      let goodsImage = e.currentTarget.dataset.isMultiple ? await this.requestGoodsImage(this.data.shareData.targetId) : []
+      console.log(goodsImage)
+      this.requestPictorial(target,params,goodsImage)
     },
     // 过滤需要的参数
     filterObj(obj, arr) {
@@ -74,6 +65,30 @@ global.wxComponent({
         });
       return result;
     },
-
+    requestGoodsImage(targetId){
+      return new Promise(resolve=>{
+        util.api('/api/wxapp/goods/download/images',res=>{
+          if(res.error === 0){
+            resolve(res.content)
+          }
+        },{
+          targetId
+        })
+      })
+    },
+    requestPictorial(target,params,goodsImage){ 
+      util.api(target.api,res=>{
+        if(res.error === 0 && res.content !== null){
+          this.setData({
+            showPoster:true,
+            posterImage: [res.content,...goodsImage]
+          })
+          wx.hideLoading()
+          this.bindClose()
+        }
+      },{
+        ...params
+      })
+    }
   }
 })

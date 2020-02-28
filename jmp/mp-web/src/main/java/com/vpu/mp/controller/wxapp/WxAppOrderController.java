@@ -4,11 +4,13 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RequestUtil;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
@@ -231,9 +233,10 @@ public class WxAppOrderController extends WxAppBaseController{
      * 代付支付
      */
     @PostMapping("/pay/instead/submit")
-    public JsonResult insteadPaySubmit(@RequestBody @Valid OrderOperateQueryParam param){
+    public JsonResult insteadPaySubmit(@RequestBody @Valid InsteadPayParam param){
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
+        param.setClientIp(RequestUtil.getIp(request));
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
@@ -246,8 +249,8 @@ public class WxAppOrderController extends WxAppBaseController{
      * 代付用户明细
      */
     @PostMapping("/pay/instead/userList")
-    public JsonResult insteadPayUserList() {
-        return success();
+    public JsonResult insteadPayUserList(@RequestBody @Valid InsteadPayDetailsParam param) {
+        return success(shop().readOrder.subOrderService.paymentDetails(param.getOrderSn(), param.getCurrentPage(), param.getPageRows()));
     }
 
     /**

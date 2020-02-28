@@ -20,7 +20,7 @@ export function add (data) {
 export function update (data) {
   return service({
     url: '/api/admin/market/increasepurchase/updateincreasepurchase',
-    method: 'get',
+    method: 'post',
     data: data
   })
 }

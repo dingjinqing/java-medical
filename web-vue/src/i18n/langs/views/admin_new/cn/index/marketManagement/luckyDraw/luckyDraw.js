@@ -115,6 +115,7 @@ export const cn = {
     name: '4'
   }],
   changeStatusComment: '此操作将启用该活动, 是否继续?',
+  stopStatusComment: '此操作将停用该活动，是否继续?',
   deleteLuckDrawComment: '此操作将删除该活动, 是否继续?',
   confirm: '确定',
   cancel: '取消',
@@ -129,15 +130,17 @@ export const cn = {
   lotteryPrize: '奖品',
   luckSourceList: [
     [null, '全部'],
-    [0, '分享'],
     [1, '开屏有礼'],
-    [2, '支付有礼']
+    [2, '支付有礼'],
+    [3, '分享'],
+    [4, '评价有礼'],
+    [5, '分享有礼']
   ],
   chanceSourceList: [
     [null, '全部'],
-    [0, '免费'],
-    [1, '分享'],
-    [2, '积分']
+    [1, '免费'],
+    [2, '分享'],
+    [3, '积分']
   ],
   lotteryGradeList: [
     [null, '全部'],

@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
@@ -37,4 +39,12 @@ public class DistributorCheckListParam {
      * tab状态 0：待审核；1：审核通过；2：未通过
      */
     private Byte nav;
+    /**
+     * 是否从店铺助手过来
+     */
+    private Integer flag = 0;
+    /**
+     * 超过几天未审核
+     */
+    private Integer numberDays = 3;
 }

@@ -87,4 +87,8 @@ public class MemberPageListParam extends BaseMemberPojo {
 	 *	 会员导出参数
 	 */
 	private UserExpParam userExpParam;
+	
+	public MemberPageListParam() {
+		this.userExpParam = new UserExpParam();
+	}
 }

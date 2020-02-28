@@ -143,6 +143,9 @@ public class GoodsConstant {
     public static final Byte IS_DEFAULT_PRODUCT_Y = 1;
     public static final Byte IS_DEFAULT_PRODUCT_N = 0;
 
+    /**团长*/
+    public static final Byte GROUP_CAPTAIN = 1;
+
     /**
      * 小程序-商品分类页面-目录项类型码
      * 1全部品牌，2推荐品牌，3推荐品牌列表展示，4推荐品牌按分类展示，

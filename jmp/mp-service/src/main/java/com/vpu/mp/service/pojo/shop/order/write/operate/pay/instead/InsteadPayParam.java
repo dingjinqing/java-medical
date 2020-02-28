@@ -18,4 +18,5 @@ public class InsteadPayParam extends OrderOperateQueryParam {
     private BigDecimal moneyPaid;
     private String username;
     private String message;
+    private String clientIp;
 }

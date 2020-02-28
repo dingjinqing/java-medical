@@ -495,29 +495,50 @@ global.wxPage({
     )
   },
   // 分享弹窗
-  share() {
+  async share() {
     let activityData = {}
     let {
-      goodsId,
+      goodsId:targetId,
       singleRealPrice: realPrice,
-      singleLinePrice: linePrice,
-      goodsImgs
+      singleLinePrice: linePrice
     } = this.data.goodsInfo
+    console.log(this.data.goodsInfo)
     if (this.data.goodsInfo.activity != null) {
       activityData.activityId = this.data.goodsInfo.activity.activityId
       activityData.activityType = this.data.goodsInfo.activity.activityType
+      switch (activityData.activityType) {
+        case 1:
+          activityData.pageType = 1
+          break;
+        case 3:
+          activityData.pageType = 1
+          activityData.realPrice = this.data.goodsInfo.activity.bargainPrice
+          break;
+        case 10:
+          activityData.depositPrice = this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice}))
+          break;
+      }
     }
     let shareData = {
-      goodsId,
+      targetId,
       realPrice,
       linePrice,
-      goodsImgs,
       ...activityData
     }
-
+    // 提前请求分享内容
+    const apiInfo = {
+      1:'/api/wxapp/groupbuy/share/info',//拼团 
+      3:'/api/wxapp/bargain/share/info', //砍价
+      10:'/api/wxapp/presale/share/info', //定金膨胀
+      default:'/api/wxapp/goods/share/info'//普通商品
+    }
+    let target = [1,3,5,10].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
+    let buttonShareData = await this.requestShareData(target,shareData)
+    console.log(buttonShareData)
     this.setData({
       shareData,
-      showShareDialog: true
+      showShareDialog: true,
+      buttonShareData
     })
   },
   // 切换收藏
@@ -593,8 +614,8 @@ global.wxPage({
         : lineMinPrice === lineMaxPrice
         ? lineMinPrice
         : `${lineMinPrice}~${lineMaxPrice}`,
-      singleRealPrice: lineMinPrice,
-      singleLinePrice: lineMaxPrice
+      singleRealPrice: realMinPrice,
+      singleLinePrice: lineMinPrice
     }
   },
   // 获取促销信息
@@ -796,16 +817,30 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function() {
-    util.api(
-      '/api/wxapp/groupbuy/share/info',
-      res => {
-        console.log(res)
-      },
-      {
-        activityId: 38,
-        realPrice: 12,
-        linePrice: 30
-      }
-    )
+    console.log(this.data.buttonShareData)
+    return {
+      ...this.data.buttonShareData
+    }
+  },
+  requestShareData(target,shareData){
+    return new Promise(resolve=>{
+      util.api(target,res=>{
+        if(res.error === 0){
+          let path = `/pages/item/item?gid=${this.data.goodsId}`
+          if(this.data.goodsInfo.activity){
+            path +=`&atp=${this.data.goodsInfo.activity.activityType}&aid=${this.data.goodsInfo.activity.activityId}`
+          }
+          console.log(res)
+          resolve({
+            title:res.content.shareDoc,
+            path:path,
+            imageUrl:res.content.imgUrl,
+          })
+        }
+      },{
+        ...shareData,
+        userName:util.getCache('nickName')
+      })
+    })
   }
 })

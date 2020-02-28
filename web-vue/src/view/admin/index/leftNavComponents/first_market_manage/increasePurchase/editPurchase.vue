@@ -382,7 +382,7 @@
         >上一步</el-button>
         <el-button
           type="primary"
-          @click="addPurchase"
+          @click="updatePurchase"
         >保存</el-button>
       </div>
     </div>
@@ -391,7 +391,7 @@
 <script>
 import { } from '@/api/admin/marketManage/sharePolite.js'
 import ChoosingGoods from '@/components/admin/choosingGoods'
-import { getDetail } from '@/api/admin/marketManage/increasePurchase.js'
+import { getDetail, update } from '@/api/admin/marketManage/increasePurchase.js'
 export default {
   components: {
     ChoosingGoods
@@ -427,6 +427,7 @@ export default {
       rule_num: 1,
       // 换购规则页面参数
       form1: {
+        id: 0,
         name: '',
         level: '',
         activityDate: [],
@@ -438,17 +439,20 @@ export default {
       },
       // 换购规则
       purcahse_rule1: {
+        id: 0,
         fullPrice: '',
         purchasePrice: '',
         // 换购商品id集合
         productId: []
       },
       purcahse_rule2: {
+        id: 0,
         fullPrice: '',
         purchasePrice: '',
         productId: []
       },
       purcahse_rule3: {
+        id: 0,
         fullPrice: '',
         purchasePrice: '',
         productId: []
@@ -490,6 +494,7 @@ export default {
   },
   mounted () {
     this.queryParam.purchaseId = this.$route.params.id
+    this.form1.id = this.$route.params.id
     this.initData()
   },
   methods: {
@@ -498,37 +503,59 @@ export default {
       getDetail(this.queryParam).then(res => {
         if (res.error === 0) {
           this.form1 = res.content
+          this.form1.activityDate = []
           this.form1.activityDate.push(this.form1.startTime)
           this.form1.activityDate.push(this.form1.endTime)
           this.main_table = res.content.mainGoods
           this.setDomainImg(this.main_table)
+          this.main_table.map((item, index) => {
+            this.goodsId.push(item.goodsId)
+          })
+          console.log('goodsId' + this.goodsId)
           this.setPurchaseRule(res.content.purchaseInfo, res.content.redemptionGoods)
         }
       })
     },
     // 将查询规则转化为展示数据
     setPurchaseRule (dataRule, dataGoods) {
-      if (dataRule.length === 1) {
-        var array = dataRule[0].split('---')
-        this.purcahse_rule1.fullPrice = array[0]
-        this.purcahse_rule1.purchasePrice = array[1]
+      if (dataRule.length >= 1) {
+        var array = dataRule[0].split(' --- ')
+        this.purcahse_rule1.id = parseFloat(array[0])
+        this.purcahse_rule1.fullPrice = parseFloat(array[1])
+        this.purcahse_rule1.purchasePrice = parseFloat(array[2])
         this.purchase_table1 = dataGoods[0]
         this.setDomainImg(this.purchase_table1)
+        this.purchase_table1.map((item, index) => {
+          this.purcahse_rule1.productId.push(item.goodsId)
+        })
       }
-      if (dataRule.length === 2) {
-        var array1 = dataRule[1].split('---')
-        this.purcahse_rule2.fullPrice = array1[0]
-        this.purcahse_rule2.purchasePrice = array1[1]
+      if (dataRule.length >= 2) {
+        var array1 = dataRule[1].split(' --- ')
+        this.purcahse_rule2.id = parseFloat(array1[0])
+        this.purcahse_rule2.fullPrice = parseFloat(array1[1])
+        this.purcahse_rule2.purchasePrice = parseFloat(array1[2])
         this.purchase_table2 = dataGoods[1]
         this.setDomainImg(this.purchase_table2)
+        this.purchase_table2.map((item, index) => {
+          this.purcahse_rule2.productId.push(item.goodsId)
+        })
+        this.rule_line2 = true
+        this.rule_button1 = false
       }
-      if (dataRule.length === 3) {
-        var array2 = dataRule[2].split('---')
-        this.purcahse_rule3.fullPrice = array2[0]
-        this.purcahse_rule3.purchasePrice = array2[1]
+      if (dataRule.length >= 3) {
+        var array2 = dataRule[2].split(' --- ')
+        this.purcahse_rule3.id = parseFloat(array2[0])
+        this.purcahse_rule3.fullPrice = parseFloat(array2[1])
+        this.purcahse_rule3.purchasePrice = parseFloat(array2[2])
         this.purchase_table3 = dataGoods[2]
         this.setDomainImg(this.purchase_table3)
+        this.purchase_table3.map((item, index) => {
+          this.purcahse_rule3.productId.push(item.goodsId)
+        })
+        this.rule_line3 = true
+        this.rule_button2 = false
       }
+      this.rule_num = dataRule.length
     },
     // 图片加域名
     setDomainImg (data) {
@@ -732,40 +759,39 @@ export default {
       })
     },
     // 添加加价购
-    addPurchase () {
-      // if (this.purchaseCheck()) {
-      //   this.form1.startTime = this.form1.activityDate[0]
-      //   this.form1.endTime = this.form1.activityDate[1]
-      //   this.goodsId = JSON.stringify(this.goodsId)
-      //   let param = Object.assign({}, this.form1)
-      //   param.goodsId = this.goodsId
-      //   param.rules = this.getPurchaseRules()
-      //   add(param).then(res => {
-      //     if (res.error === 0) {
-      //       this.$message.success({
-      //         message: '添加成功！',
-      //         showClose: true
-      //       })
-      //       this.jump2ListPage()
-      //     } else {
-      //       this.$message.error({
-      //         message: '添加失败！',
-      //         showClose: true
-      //       })
-      //     }
-      //   })
-      // }
+    updatePurchase () {
+      if (this.purchaseCheck()) {
+        this.form1.startTime = this.form1.activityDate[0]
+        this.form1.endTime = this.form1.activityDate[1]
+        this.goodsId = JSON.stringify(this.goodsId)
+        let param = Object.assign({}, this.form1)
+        param.goodsId = this.goodsId
+        param.rules = this.getPurchaseRules()
+        update(param).then(res => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: '更新成功！',
+              showClose: true
+            })
+            this.jump2ListPage()
+          } else {
+            this.$message.error({
+              message: '更新失败！',
+              showClose: true
+            })
+          }
+        })
+      }
     },
     getPurchaseRules () {
       let rules = []
-      if (this.rule_num === 1) {
+      if (this.rule_num >= 1) {
         rules.push(this.purcahse_rule1)
-      } else if (this.rule_num === 2) {
-        rules.push(this.purcahse_rule1)
+      }
+      if (this.rule_num >= 2) {
         rules.push(this.purcahse_rule2)
-      } else if (this.rule_num === 3) {
-        rules.push(this.purcahse_rule1)
-        rules.push(this.purcahse_rule2)
+      }
+      if (this.rule_num >= 3) {
         rules.push(this.purcahse_rule3)
       }
       rules.map((item, index) => {
@@ -773,7 +799,7 @@ export default {
       })
       return rules
     },
-    // 添加成功后跳转到列表页
+    // 编辑成功后跳转到列表页
     jump2ListPage () {
       this.$router.push({
         name: 'increase_purchase',

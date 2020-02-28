@@ -102,4 +102,8 @@ ALTER TABLE `b2c_sec_kill_define` DROP  INDEX IF exists `goods_id`;
 ALTER TABLE `b2c_sec_kill_define` MODIFY COLUMN `goods_id` text  COMMENT '商品ID';
 -- 2020年2月26日20:13:50 拼团活动表goods_id 字段有int转换为string
 ALTER TABLE `b2c_group_buy_define` MODIFY COLUMN `goods_id` text NOT NULL COMMENT '商品id';
+-- 2020年2月27日16:35:50 好友助力新增单天助力限制字段
+ALTER TABLE `b2c_friend_promote_activity` ADD COLUMN `promote_times_per_day` int(8) null default 0 comment '单个用户每天最多可帮忙助力次数';
 /***********************2.10*********************END*/
+-- 瓜分积分 添加活动规则说明
+ALTER TABLE `b2c_group_integration_define` ADD COLUMN `activity_copywriting` TEXT COMMENT '活动规则说明';

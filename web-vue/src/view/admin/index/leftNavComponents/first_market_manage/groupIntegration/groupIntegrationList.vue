@@ -108,6 +108,7 @@
           label="活动状态"
           align="center"
           width="80"
+          :formatter="formatter"
         >
 
         </el-table-column>
@@ -141,9 +142,10 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
+                v-if="scope.row.expire===1||scope.row.expire===2"
               >
                 <span
-                  class="el-icon-edit-outline"
+                  class="el-icon-edit-outline iconSpan"
                   @click="gotoEdit(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -152,26 +154,28 @@
                 placement="top"
               >
                 <span
-                  class="el-icon-share"
+                  class="el-icon-share iconSpan"
                   @click="shareHandle(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="停用"
                 placement="top"
+                 v-if="scope.row.expire===1||scope.row.expire===2"
               >
                 <span
                   @click="puaseGroupIntegration(scope.row.id)"
-                  class="el-icon-circle-close"
+                  class="el-icon-circle-close iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="启用"
                 placement="top"
+                 v-if="scope.row.expire===4"
               >
                 <span
                   @click="upGroupIntegration(scope.row.id)"
-                  class="el-icon-circle-check"
+                  class="el-icon-circle-check iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -180,7 +184,7 @@
               >
                 <span
                   @click="gotoDetail(scope.row.id)"
-                  class="el-icon-present"
+                  class="el-icon-present iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -189,16 +193,26 @@
               >
                 <span
                   @click="gotoSuccess(scope.row.id)"
-                  class="el-icon-user-solid"
+                  class="el-icon-user iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="删除"
                 placement="top"
+                v-if="scope.row.expire===4||scope.row.expire===3"
               >
                 <span
                   @click="delGroupIntegration(scope.row.id)"
-                  class="el-icon-delete iconSpn"
+                  class="el-icon-delete iconSpan"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="活动效果数据"
+                placement="top"
+              >
+                <span
+                  @click="gotoAnalysis(scope.row.id)"
+                  class="el-icon-data-line iconSpan"
                 ></span>
               </el-tooltip>
             </div>
@@ -269,7 +283,8 @@ export default {
       })
     },
     // 对过期状态值设置对应显示
-    getExpireString (expire) {
+    formatter (row, column) {
+      let expire = row.expire
       if (expire === 1) {
         return '进行中'
       } else if (expire === 2) {
@@ -287,7 +302,7 @@ export default {
         item.totalIntegration = `${item.inteTotal}积分`
         item.leftIntegration = `剩余：${item.inteRemain}积分`
         // item.actDate = `${item.startTime}至${item.endTime}`
-        item.expire = this.getExpireString(item.expire)
+        // item.expire = this.getExpireString(item.expire)
       })
       this.tableData = data
     },
@@ -305,10 +320,10 @@ export default {
         changeGroupIntegrationStatus(data).then(res => {
           console.log(res)
           if (res.error === 0) {
-            this.$message('停用成功')
+            this.$message.success('停用成功')
             this.seacherGroupIntegrationList()
           } else {
-            this.$message('停用失败')
+            this.$message.error('停用失败')
           }
         })
       })
@@ -326,10 +341,10 @@ export default {
         changeGroupIntegrationStatus(data).then(res => {
           console.log(res)
           if (res.error === 0) {
-            this.$message('启用成功')
+            this.$message.success('启用成功')
             this.seacherGroupIntegrationList()
           } else {
-            this.$message('启用失败')
+            this.$message.error('启用失败')
           }
         })
       })
@@ -342,13 +357,16 @@ export default {
         type: 'warning' }).then(() => {
         delGroupIntegration(id).then(res => {
           if (res.error === 0) {
-            this.$message('删除成功')
+            this.$message.success('删除成功')
             this.seacherGroupIntegrationList()
           } else {
-            this.$message('删除失败')
+            this.$message.error('删除失败')
           }
         })
       })
+    },
+    gotoAnalysis (id) {
+      console.log('活动效果数据' + id)
     },
     // 增加瓜分积分活动
     addActivity () {
@@ -390,6 +408,8 @@ export default {
       if (data.flag === 6) {
         this.showSix = false
         this.activeName = 'first'
+        this.type = 0
+        this.seacherGroupIntegrationList()
       }
     }
   }
@@ -473,5 +493,11 @@ export default {
 .add_coupon {
   float: left;
   margin-left: 65%;
+}
+.iconSpan {
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer !important;
+  margin-top: 5px;
 }
 </style>

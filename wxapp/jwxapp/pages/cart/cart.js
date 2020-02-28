@@ -6,8 +6,8 @@ global.wxPage({
    */
   data: {
     canBuyGoodsList: null,
-    invalidGoodsList:null,
-    totalPrice:0,
+    invalidGoodsList: null,
+    totalPrice: 0,
     proMode: true,
     // 切换活动弹框要用到的数组
     activityType: null, // 正在参与的活动类型
@@ -24,7 +24,7 @@ global.wxPage({
   },
 
   // 请求购物车列表
-  requestCartList() {
+  requestCartList () {
     util.api('/api/wxapp/cart/list', (res) => {
       if (res.error === 0) {
         let { cartGoodsList: canBuyGoodsList = [], invalidCartList: invalidGoodsList = [], isAllCheck = null, totalPrice = null } = res.content || []
@@ -57,7 +57,7 @@ global.wxPage({
               }
             })
           }
-          
+
         })
         this.setData({
           canBuyGoodsList: this.data.canBuyGoodsList,
@@ -67,7 +67,7 @@ global.wxPage({
   },
 
   // 更改选中状态
-  checkedToggle(e) {
+  checkedToggle (e) {
     let cartId = e.currentTarget.dataset.cart_id
     let isChecked = e.currentTarget.dataset.is_checked
     util.api('/api/wxapp/cart/switch', res => {
@@ -78,7 +78,7 @@ global.wxPage({
   },
 
   // 更改全选状态
-  changeAllChecked() {
+  changeAllChecked () {
     let cartIds = this.data.canBuyGoodsList.map(item => { return item.cartId })
     let isAllCheck = this.data.isAllCheck ? 0 : 1
     util.api('/api/wxapp/cart/switch', res => {
@@ -89,7 +89,7 @@ global.wxPage({
   },
 
   // 更改商品数量
-  goodsNumChange(e) {
+  goodsNumChange (e) {
     let type = e.currentTarget.dataset.type;
     let prdId = e.currentTarget.dataset.prd_id;
     let cartNumber = e.currentTarget.dataset.cart_number;
@@ -98,13 +98,13 @@ global.wxPage({
         this.requestCartList()
       }
     }, {
-        productId: prdId,
-        cartNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1
-      })
+      productId: prdId,
+      cartNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1
+    })
   },
 
   // 校验商品数量
-  checkNumber(e) {
+  checkNumber (e) {
     var that = this;
     var value = Number(e.detail.value)
     var cartId = e.target.dataset.cart_id
@@ -125,15 +125,15 @@ global.wxPage({
             this.requestCartList()
           }
         }, {
-            productId: item.productId,
-            cartNumber: item.cartNumber
-          })
+          productId: item.productId,
+          cartNumber: item.cartNumber
+        })
       }
     })
   },
 
   // 删除购物车商品
-  delCartGoods(e) {
+  delCartGoods (e) {
     const cartId = e.currentTarget.dataset.cart_id
     util.api('/api/wxapp/cart/remove', (res) => {
       console.log(res)
@@ -142,26 +142,26 @@ global.wxPage({
       }
     }, { recId: cartId })
   },
-  
+
   // 清除无效购物车列表
-  clearCart(){
+  clearCart () {
     let cartIds = this.data.invalidGoodsList.map(item => { return item.cartId })
-    util.api('/api/wxapp/cart/removes',res=>{
-      if(res.error === 0){
+    util.api('/api/wxapp/cart/removes', res => {
+      if (res.error === 0) {
         this.requestCartList()
       }
-    },{ recIds: cartIds })
+    }, { recIds: cartIds })
   },
-  
+
   //触摸改变
-  handleTouchChange(e){
+  handleTouchChange (e) {
     this.moveX = e.detail.x
   },
 
   //触摸结束
-  handleTouchEnd(e){
+  handleTouchEnd (e) {
     let idx = e.currentTarget.dataset.index
-    let target = 'canBuyGoodsList['+idx+'].x'
+    let target = 'canBuyGoodsList[' + idx + '].x'
     if (this.moveX <= -20) {
       this.setData({
         [target]: -100
@@ -186,17 +186,17 @@ global.wxPage({
   // },
 
   //  去结算
-  toCheckOut(){
-    let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item=>{
+  toCheckOut () {
+    let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item => {
       let { goodsId, prdPrice: prdRealPrice, cartNumber: goodsNum, productId: prdId } = item
-      return { goodsId, prdRealPrice, goodsNum, prdId, isCart:1 }
+      return { goodsId, prdRealPrice, goodsNum, prdId, isCart: 1 }
     })
     util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify(goodsList)}`, "navigateTo")
   },
-  
+
   // 列表无数据跳转
-  toIndex(){
-    util.jumpLink('pages/index/index','navigateTo')
+  toIndex () {
+    util.jumpLink('pages/index/index', 'navigateTo')
   },
   onReachBottom: function () {
     this.selectComponent('#recommend').requestData()
@@ -294,10 +294,10 @@ global.wxPage({
         that.requestCartList()
       }
     }, {
-        recIds: ids,
-        activityId: activityId,
-        activityType: activityType,
-        isChecked: 1
+      recIds: ids,
+      activityId: activityId,
+      activityType: activityType,
+      isChecked: 1
     })
   },
 

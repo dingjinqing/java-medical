@@ -568,7 +568,7 @@ public class UserService extends ShopBaseService {
 				iconItem.put("num", orderStatusNum.get(OrderConstant.FINISHED));
 			}
 			if (iconItem.get("icon_name").equals("refund")) {
-				iconItem.put("num", orderStatusNum.get(OrderConstant.RETURNING));
+				iconItem.put("num", orderStatusNum.get(OrderConstant.REFUND));
 			}
 		}
 		return data;

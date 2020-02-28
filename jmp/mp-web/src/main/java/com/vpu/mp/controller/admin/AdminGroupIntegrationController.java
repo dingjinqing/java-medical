@@ -139,7 +139,7 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@PostMapping("/getqrcode/{actId}")
 	public JsonResult getQrcode(@PathVariable Integer actId) {
-		GroupIntegrationShareQrCodeVo maQrCode = shop().groupIntegration.getMaQrCode(actId);
+		GroupIntegrationShareQrCodeVo maQrCode = shop().groupIntegration.getMaQrCode(actId,null,null);
 		if(maQrCode != null) {
 			return success(maQrCode);
 		}

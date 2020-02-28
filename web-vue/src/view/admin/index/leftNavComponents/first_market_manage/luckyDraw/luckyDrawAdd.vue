@@ -395,6 +395,7 @@
                           v-model="item.integralScore"
                         ></el-input>
                       </el-form-item>
+                      <!-- 优惠券 -->
                       <el-form-item
                         v-if="item.lotteryType===3"
                         :prop="`prizeList[${index}].couponId`"
@@ -407,7 +408,7 @@
                           v-model="item.couponId"
                           size="small"
                           style="width: 120px"
-                          @change="couponChange"
+                          @change="couponChange(item)"
                         >
                           <el-option
                             v-for="itema in couponlist"
@@ -427,8 +428,9 @@
                           @click="createCouponList()"
                         >{{$t('luckyDraw.make')}}
                         </span>
+                        <!-- 优惠券可用库存 -->
                         <p style="color: #999;">
-                          {{$t('luckyDraw.couponsTips',[couponNumber])}}</p>
+                          {{$t('luckyDraw.couponsTips',[item.couponNumber])}}</p>
                       </el-form-item>
                       <el-form-item
                         v-if="item.lotteryType===4"
@@ -514,7 +516,7 @@
                           v-model="item.lotteryDetail"
                         ></el-input>
                       </el-form-item>
-                      <el-form-item>
+                      <el-form-item prop="prizeNumber">
                         <span>{{$t('luckyDraw.prizeNumber')}}：</span>
                         <el-input
                           size="small"
@@ -591,7 +593,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack="[requestParam.prizeList[tabSwitch-1].prdId]"
+        :chooseGoodsBack="chooseGoodsBackData"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"
@@ -671,19 +673,33 @@ export default {
       }
       callback()
     }
+    // 优惠券限制数量时，校验奖品份数不能大于优惠券数量
+    function validPrizeNumber (rule, value, callback) {
+      for (let i = 0; i < that.requestParam.prizeList.length; i++) {
+        let item = that.requestParam.prizeList[i]
+        let couponNum = item.couponNumber
+        if (item.lotteryType === 3) {
+          if (couponNum !== '不限制' && Number(item.lotteryNumber) > Number(couponNum)) {
+            callback(new Error('奖品数量不能大于优惠券可用份数'))
+            break
+          }
+        }
+      }
+      callback()
+    }
     return {
       requestParam: {
         lotteryName: '',
         lotteryExplain: '',
         startTime: '',
         endTime: '',
-        freeChances: 0,
+        freeChances: '',
         canShare: 2,
         shareChances: 0,
         canUseScore: 2,
         scorePerChance: 0,
         scoreChances: 0,
-        noAwardScore: 0,
+        noAwardScore: '',
         noAwardIcon: this.$t('luckyDraw.thanksParticipation'),
         noAwardImage: '/image/admin/icon_lottery/thank.png',
         prizeList: [
@@ -706,7 +722,6 @@ export default {
       imageSize: [80, 80],
       // 优惠劵列表
       couponlist: [],
-      couponNumber: 5,
       tabSwitch: '1',
       imgHost: `${this.$imageHost}`,
       formRules: {
@@ -717,7 +732,8 @@ export default {
           { validator: validTime, trigger: 'blur' }
         ],
         lotteryExplain: [{ required: true, validator: validLotteryExplain, trigger: 'change' }],
-        prizeList: [{ validator: validChance, trigger: 'change' }]
+        prizeList: [{ validator: validChance, trigger: 'change' }],
+        prizeNumber: [{ validator: validPrizeNumber, trigger: 'blur' }]
       }
     }
   },
@@ -726,6 +742,11 @@ export default {
     this.langDefault()
     this.refreshCouponList()
     this.isEditeShowData()
+  },
+  computed: {
+    chooseGoodsBackData () {
+      return [this.requestParam.prizeList[this.tabSwitch - 1].prdId]
+    }
   },
   watch: {},
   methods: {
@@ -744,6 +765,7 @@ export default {
               console.log('update', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
+                this.$parent.closeAddGroupTab()
               } else {
                 this.$message.warning(res.message)
               }
@@ -756,6 +778,7 @@ export default {
               console.log('addLottery', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
+                this.$parent.closeAddGroupTab()
               } else {
                 this.$message.warning(res.message)
               }
@@ -771,7 +794,6 @@ export default {
     },
     // 清空中奖图标
     handleClear () {
-      console.log(1111)
       this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage = ''
     },
     handleTabClick (tab, event) {
@@ -866,6 +888,19 @@ export default {
                 item.goodsNumber = item.product.prdNumber
                 item.goodsShow = true
               }
+              // 如果奖励是优惠券
+              if (item.lotteryType === 3) {
+                this.$nextTick(() => {
+                  let coupon = this.couponlist.find(citem => {
+                    return citem.id === item.couponId
+                  })
+                  if (Number(coupon.limitSurplusFlag) === 1) {
+                    item.couponNumber = '不限制'
+                  } else {
+                    item.couponNumber = coupon.surplus
+                  }
+                })
+              }
             })
             this.requestParam = res.content
             console.log('数据回显', res, this.requestParam)
@@ -877,16 +912,23 @@ export default {
         })
       }
     },
-    couponChange (id) {
+    couponChange (item) {
+      console.log('arguments', arguments)
+      let id = item.couponId
       console.log('couponitem', id)
       if (!id) {
-        this.couponNumber = 0
+        item.couponNumber = 0
       } else {
-        this.couponNumber = this.couponlist.filter(item => {
+        let coupon = this.couponlist.find(item => {
           return item.id === id
-        })[0].surplus
+        })
+        if (Number(coupon.limitSurplusFlag) === 1) {
+          item.couponNumber = '不限制'
+        } else {
+          item.couponNumber = coupon.surplus
+        }
       }
-      console.log('this.couponNumber', this.couponNumber)
+      console.log('this.couponNumber', item.couponNumber)
     }
   }
 }

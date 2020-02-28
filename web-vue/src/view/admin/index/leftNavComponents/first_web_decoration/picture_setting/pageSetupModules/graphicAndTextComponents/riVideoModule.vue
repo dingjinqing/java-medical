@@ -58,8 +58,8 @@
           <div class="imgDiv">
 
             <img
-              :style="moduleSaveData.custom_url?'width:100%;height:100%;':''"
-              :src="moduleSaveData.custom_url?moduleSaveData.custom_url:($imageHost+'/image/admin/shop_beautify/add_decorete.png')"
+              :style="moduleSaveData.img_url?'width:100%;height:100%;':''"
+              :src="moduleSaveData.img_url?moduleSaveData.img_url:($imageHost+'/image/admin/shop_beautify/add_decorete.png')"
               @click="handleToCallAddImg()"
             >
           </div>
@@ -133,8 +133,7 @@ export default {
     // 添加图片弹窗后选中图片后回传事件
     handleSelectImg (res) {
       console.log(res)
-      this.moduleSaveData.custom_path = res.imgPath
-      this.moduleSaveData.custom_url = res.imgUrl
+      this.moduleSaveData.img_url = res.imgUrl
     },
     // 调起添加视频弹窗
     handleToCallAddVideo () {
