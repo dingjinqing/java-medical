@@ -58,6 +58,8 @@ public class GroupIntegrationDefineParam {
 	
 	/** 用户开团24小时后,拼团未满员是否可以瓜分积分 */
 	private Byte isDayDivide ; 
+	
+	private ActivityCopywriting activityCopywriting;
 
 }
 

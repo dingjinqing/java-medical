@@ -30,6 +30,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
 import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
+import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
@@ -111,6 +112,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		if(fetchOneInto == null) {
 			return null;
 		}
+		String activityCopywriting = fetchOneInto.getActivityCopywriting();
 		return fetchOneInto;
 		
 	}
@@ -150,6 +152,11 @@ public class GroupIntegrationService extends ShopBaseService {
 			return JsonResultCode.GROUP_INTEGRATION_TOTAL;
 		}
 		Double paramNum = calculateParamNum(inteGroup,param.getLimitAmount());
+		ActivityCopywriting activityCopywriting = param.getActivityCopywriting();
+		String json=null;
+		if(activityCopywriting!=null) {
+			json = Util.toJson(activityCopywriting);
+		}
 		GroupIntegrationDefineRecord record = db().newRecord(GROUP_INTEGRATION_DEFINE,param);
 		record.setStatus(GroupIntegrationDefineEnums.Status.NORMAL.value());
 		record.setDelFlag(DelFlag.NORMAL_VALUE);
@@ -157,6 +164,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		record.setIsContinue(GroupIntegrationDefineEnums.IsContinue.TRUE.value());
 		record.setParamN(paramNum);
 		record.setShopId(getShopId());
+		record.setActivityCopywriting(json);
 		int executeInsert = db().executeInsert(record);
 		if(executeInsert>0) {
 			logger().info("【组队瓜分积分】 添加活动"+param.getName()+" 创建成功");
