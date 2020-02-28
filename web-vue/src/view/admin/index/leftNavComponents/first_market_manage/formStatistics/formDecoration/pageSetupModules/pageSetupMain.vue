@@ -149,13 +149,13 @@
             v-if="!ruleForm.bg_img"
             :src="$imageHost+'/image/admin/add_img_bg.png'"
             class="bgImgDiv"
-            @click="handleToAddImg()"
+            @click="handleToAddImg(1)"
           />
           <img
             v-else
-            style="width:100%;height:40px"
+            style="width:100%;"
             :src="ruleForm.bg_img"
-            @click="handleToAddImg()"
+            @click="handleToAddImg(1)"
           >
         </div>
         <span class="sharePic">{{$t('pageSetUp.recommendedDimensions')}}:800*800像素</span>
@@ -174,7 +174,10 @@
         </div>
       </div>
     </div>
-    <div class="listContainer">
+    <div
+      class="listContainer"
+      v-if="ruleForm.set_own_link"
+    >
       <span></span>
       <div class="customLinks">
         <div class="customLinksList">
@@ -186,7 +189,18 @@
         </div>
         <div class="customLinksList">
           <div>跳转链接：</div>
-          <div class="toChoiseLink">选择跳转链接</div>
+          <div
+            class="toChoiseLink"
+            @click="handleToClickLick()"
+          >{{ruleForm.custom_link_path?'重新选择':'选择跳转链接'}}</div>
+        </div>
+        <!--当跳转链接有值时显示模块-->
+        <div>
+          <div>{{ruleForm.custom_link_path}}</div>
+          <div
+            style="margin-top:10px"
+            v-if="ruleForm.custom_link_name"
+          >({{ruleForm.custom_link_name}})</div>
         </div>
       </div>
     </div>
@@ -209,11 +223,51 @@
     </div>
     <!--选中参与优惠卷显示的隐藏模块-->
     <div
-      class="listContainer"
+      class="couponListContainer"
       v-if="ruleForm.send_coupon"
     >
       <div class="sendCouponHidden">
-        <div class="bgCoupon">
+        <div
+          v-for="(item,index) in ruleForm.send_coupon_list"
+          :key="index"
+          class="coupon_list"
+          :style="'border-color:'+backgroundColorTransparent"
+        >
+          <img
+            class="couponDel"
+            :src="$imageHost+'/image/admin/sign_del.png'"
+            @click="handleToDelCoupon(index)"
+          >
+          <div
+            class="coupon_list_top"
+            :style="'color:'+backgroundColor"
+          >
+            {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.act_code==='discount'?$t('coupon.fracture'):''}}</i></span>
+          </div>
+          <div class="coupon_list_center">
+            <div
+              class="coupon_center_limit"
+              :style="'color:'+backgroundColor"
+            >
+              {{item.consume_text}}
+            </div>
+            <div
+              class="coupon_center_number"
+              :style="'color:'+backgroundColorTransparent+';margin-top:3px;word-break: break-all'"
+            >{{item.receive_text}}</div>
+          </div>
+          <div
+            class="coupon_list_bottom new_back"
+            :style="'background-color:'+backgroundColor"
+          >
+            {{item.use_score===0?$t('coupon.receive'):item.score_number+$t('coupon.integral')}}
+          </div>
+        </div>
+        <div
+          class="bgCoupon"
+          v-if="ruleForm.send_coupon_list.length<5"
+          @click="handleToClickAddCoupon()"
+        >
           <img
             :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'"
             class="bgImgDiv"
@@ -234,10 +288,42 @@
         v-model="ruleForm.send_score_number"
       ></el-input>&nbsp;&nbsp;分
     </div>
+    <div class="sure">
+      <el-button
+        type="primary"
+        size="small"
+      >确定</el-button>
+    </div>
+    <!--选择图片弹窗-->
+    <ImageDialog
+      pageIndex='pictureSpace'
+      :imageSize="[800,800]"
+      :tuneUp="imageFlag"
+      @handleSelectImg="handleSelectImg"
+    />
+    <!--选择链接弹窗-->
+    <SelectLinks
+      :tuneUpSelectLink="tuneUpLinkFlag"
+      @handleToGetData="handleToGetLinkData"
+    />
+    <!--选择优惠卷弹窗-->
+    <AddCouponDialog
+      :type='-1'
+      :tuneUpCoupon="tuneUpCouponFlag"
+      @handleToCheck="handleToCheck"
+      :formDecType="true"
+      :couponBack="couponBackData"
+      :origin="false"
+    />
   </div>
 </template>
 <script>
 export default {
+  components: {
+    ImageDialog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
+    SelectLinks: () => import('@/components/admin/selectLinks'), // 选择链接弹窗
+    AddCouponDialog: () => import('@/components/admin/addCouponDialog') // 选择优惠卷弹窗
+  },
   props: {
     pageSet: Object
   },
@@ -296,16 +382,35 @@ export default {
         'send_score_number': null, // 输入的送积分input值
         'authorized_name': 0, // 授权手机号
         'authorized_mobile': 0 // 授权用户信息
-      }
+      },
+      imageFlag: false, // 图片弹窗调起
+      tuneUpLinkFlag: false, // 选择链接弹窗调起
+      tuneUpCouponFlag: false, // 选择优惠卷弹窗调起
+      couponBackData: [], // 选择优惠卷回显数据
+      backgroundColorTransparent: '',
+      backgroundColor: '',
+      noThreshold: '', // 优惠卷相关
+      full: '', // 优惠卷相关
+      available: '', // 优惠卷相关
+      surplus: '', // 优惠卷相关
+      zhang: '', // 优惠卷相关
+      unlimitedInventory: ''// 优惠卷相关
     }
   },
   watch: {
     lang () {
+      this.noThreshold = this.$t('coupon.noThreshold')
+      this.full = this.$t('coupon.full')
+      this.available = this.$t('coupon.available')
+      this.surplus = this.$t('coupon.surplus')
+      this.zhang = this.$t('coupon.zhang')
+      this.unlimitedInventory = this.$t('coupon.unlimitedInventory')
     },
     pageSet: {
       handler (newData) {
         console.log(newData)
         // 中部传递过来的初始表单配置数据初始回显
+        // push进couponBackData
       },
       immediate: true,
       deep: true
@@ -321,11 +426,71 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
+    this.backgroundColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
+    this.backgroundColorTransparent = this.backgroundColor.split(')')[0] + ',0.4)'
   },
   methods: {
     // 表单海报背景图点击添加图片
-    handleToAddImg () {
-
+    handleToAddImg (flag) {
+      console.log(flag)
+      if (flag === 1) {
+        this.imageFlag = !this.imageFlag
+      }
+    },
+    // 选择图片弹窗选中回传
+    handleSelectImg (res) {
+      console.log(res)
+      this.ruleForm.bg_img = res.imgUrl
+    },
+    handleToClickLick () {
+      this.tuneUpLinkFlag = !this.tuneUpLinkFlag
+      console.log(this.tuneUpLinkFlag)
+    },
+    // 选择链接弹窗选中回传
+    handleToGetLinkData (res) {
+      console.log(res)
+      this.ruleForm.custom_link_path = res.path
+      this.ruleForm.custom_link_name = res.title
+    },
+    // 点击添加优惠卷
+    handleToClickAddCoupon () {
+      this.tuneUpCouponFlag = !this.tuneUpCouponFlag
+    },
+    // 选中优惠卷回传
+    handleToCheck (res) {
+      console.log(res)
+      res.forEach((item, index) => {
+        let useConsumeRestrict = ''
+        // 判断优惠券是否已被选过
+        let isExistence = this.ruleForm.send_coupon_list.filter((itemC, indexC) => {
+          return itemC.coupon_id === item.id
+        })
+        if (item.useConsumeRestrict === 0) {
+          useConsumeRestrict = this.noThreshold
+        } else {
+          useConsumeRestrict = `${this.full}${item.leastConsume}${this.available}`
+        }
+        let obj = {
+          'act_code': item.actCode, // 是否是打折卷  discount：打折卷   voucher不是打折卷
+          'denomination': item.denomination, // 面额
+          'consume_text': useConsumeRestrict, // 使用门槛
+          'receive_text': item.limitSurplusFlag === 0 ? `${this.surplus}${item.surplus}${this.zhang}` : this.unlimitedInventory, // 卡卷剩余数
+          'coupon_id': item.id, // 优惠券id
+          'use_score': item.useScore, // 是否可以积分兑换
+          'score_number': item.scoreNumber, // 需要积分数
+          'limitSurplusFlag': item.limitSurplusFlag
+        }
+        console.log(isExistence, obj)
+        if (isExistence.length === 0) {
+          this.ruleForm.send_coupon_list.push(obj)
+          this.couponBackData.push(item.id)
+        }
+      })
+    },
+    // 点击优惠券右上角删除icon
+    handleToDelCoupon (index) {
+      this.ruleForm.send_coupon_list.splice(index, 1)
+      this.couponBackData.splice(index, 1)
     }
   }
 }
@@ -406,20 +571,7 @@ export default {
         margin-top: 10px;
       }
     }
-    .bgCoupon {
-      background: #fff;
-      border: 1px solid #e4e4e4;
-      text-align: center;
-      width: 100px;
-      border-radius: 3px;
-      padding: 13px 0;
-      cursor: pointer;
-      p {
-        color: #999;
-        font-size: 12px;
-        margin: 8px 0 0 0;
-      }
-    }
+
     .toCheck {
       color: #5a8bff;
       cursor: pointer;
@@ -480,13 +632,6 @@ export default {
       width: 20%;
       text-align: center;
     }
-    .sendCouponHidden {
-      border: 1px solid #eee;
-      background: #fff;
-      width: 360px;
-      padding: 10px;
-      margin-left: 15px;
-    }
   }
   .sendScore {
     align-items: center;
@@ -494,6 +639,83 @@ export default {
   .linContainer {
     display: flex;
     align-items: center;
+  }
+  .sure {
+    display: flex;
+    justify-content: center;
+  }
+  .couponListContainer {
+    margin-bottom: 20px;
+    .sendCouponHidden {
+      border: 1px solid #eee;
+      background: #fff;
+      width: 390px;
+      padding: 10px;
+      margin-left: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      .coupon_list {
+        width: 100px;
+        margin-right: 20px;
+        margin-bottom: 10px;
+        border: 1px solid #fbb;
+        -webkit-border-radius: 110px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+        .couponDel {
+          position: absolute;
+          top: -5px;
+          right: -5px;
+          cursor: pointer;
+        }
+        .coupon_list_top {
+          margin-top: 10px;
+          color: #f66;
+          font-size: 14px;
+          height: 34px;
+          span {
+            font-size: 20px;
+            font-weight: bold;
+            display: inline-block;
+          }
+        }
+        .coupon_list_center {
+          height: 40px;
+          color: #f66;
+          font-size: 12px;
+        }
+        .coupon_list_bottom {
+          font-size: 12px;
+          background: #f66
+            url(../../../../../../../../assets/adminImg/coupon_border.png)
+            repeat-x top;
+          -webkit-background-size: 12px;
+          background-size: 12px;
+          height: 24px;
+          line-height: 30px;
+          color: #fff;
+          border-radius: 0 0 7px 7px;
+          margin-left: -1px;
+        }
+      }
+      .bgCoupon {
+        background: #fff;
+        border: 1px solid #e4e4e4;
+        text-align: center;
+        width: 100px;
+        height: 82px;
+        border-radius: 3px;
+        padding: 13px 0;
+        cursor: pointer;
+        p {
+          color: #999;
+          font-size: 12px;
+          margin: 8px 0 0 0;
+        }
+      }
+    }
   }
 }
 </style>

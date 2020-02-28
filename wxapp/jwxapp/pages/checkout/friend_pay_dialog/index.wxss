@@ -1,0 +1,52 @@
+.friend-pay-content{
+  background-color: #fff;
+}
+.friend-pay-title{
+  text-align: center;
+  line-height: 80rpx;
+  position: relative;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+.friend-pay-title > image{
+  width: 40rpx;
+  height: 40rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 20rpx;
+}
+.type-content{
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  width: 570rpx;
+  box-sizing: border-box;
+}
+.type-content > .tips{
+  color: #999;
+  font-size: 24rpx;
+  margin-top: 24rpx;
+}
+.item-content{
+  display: flex;
+  justify-content: center;
+}
+.item-content > .item{
+  width: 240rpx;
+  height: 194rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+  font-size: 24rpx;
+  background: #f5f5f5;
+}
+.item-content > .item+.item{
+  margin-left: 12rpx;
+}
+.item-content > .item > image{
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 20rpx;
+}

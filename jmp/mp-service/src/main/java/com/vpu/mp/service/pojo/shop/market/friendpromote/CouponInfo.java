@@ -25,4 +25,6 @@ public class CouponInfo {
     private Byte useConsumeRestrict;
     /** 最低使用价格 */
     private BigDecimal leastConsume;
+    /** 展示库存 */
+    private Integer marketStore;
 }

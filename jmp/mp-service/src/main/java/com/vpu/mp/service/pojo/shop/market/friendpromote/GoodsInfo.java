@@ -28,4 +28,6 @@ public class GoodsInfo {
     private BigDecimal marketPrice;
     /** 更新时间 */
     private Timestamp updateTime;
+    /** 展示库存 */
+    private Integer marketStore;
 }
