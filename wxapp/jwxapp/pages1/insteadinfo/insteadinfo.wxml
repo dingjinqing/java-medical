@@ -1,0 +1,65 @@
+<include src="../../pages/common/header.wxml" />
+<view class='main_container' style="height:calc(100vh - {{margin_top_nav + 8}}px;">
+  <view class="page-top" style="background:-webkit-linear-gradient(bottom,{{linColor}},{{comColor1}})">
+    <view class="help-status">
+      <image src="{{imageUrl}}/image/wxapp/ins_conin1.png"></image>
+      <view>心愿已达成，我会感谢你哒</view>
+    </view>
+  </view>
+  <view class="goods-content">
+    <view class="goods-item">
+      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <view class="goods-right">
+        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
+        <text class="goods-desc">颜色:白色</text>
+        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      </view>
+    </view>
+    <view class="goods-item">
+      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <view class="goods-right">
+        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
+        <text class="goods-desc">颜色:白色</text>
+        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      </view>
+    </view>
+    <view class="goods-item">
+      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <view class="goods-right">
+        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
+        <text class="goods-desc">颜色:白色</text>
+        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      </view>
+    </view>
+    <view class="goods-item">
+      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <view class="goods-right">
+        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
+        <text class="goods-desc">颜色:白色</text>
+        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="page-item-content">
+    <view class="item-title">
+      编辑留言
+    </view>
+    <input type="text" class="message-input" value="相中了一件商品"></input>
+  </view>
+  <view class="page-item-content">
+    <view class="item-title">
+      好朋友们快来助我一臂之力吧
+    </view>
+    <view class="progress-info">
+      <view class="top">
+        <view>已付款：<text>￥40.00</text></view>
+        <view>剩余金额：<text>￥9.50</text></view>
+      </view>
+      <view class="progress-bg">
+        <view class="progress-color" style="background:-webkit-linear-gradient(right,{{linColor}},{{comColor1}});width:80%;"></view>
+      </view>
+    </view>
+  </view>
+  <include src="../../pages/common/footer.wxml" />
+</view>

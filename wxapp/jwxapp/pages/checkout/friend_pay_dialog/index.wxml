@@ -1,0 +1,21 @@
+<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="center" bindtap='bindClose'>
+    <view class="friend-pay-content">
+      <view class="friend-pay-title">
+        选择代付方式
+        <image src="{{ imageUrl }}/image/wxapp/close_icon.png" bindtap="bindClose"></image>
+      </view>
+      <view class="type-content">
+        <view class="item-content">
+          <view class="item" bindtap="triggerPay" data-type="1">
+            <image src="{{imageUrl}}/image/wxapp/ins_one.png"></image>
+            <text>一个好友全额代付</text>
+          </view>
+          <view class="item" bindtap="triggerPay" data-type="2">
+            <image src="{{imageUrl}}/image/wxapp/ins_more.png"></image>
+            <text>多个好友帮您付款</text>
+          </view>
+        </view>
+        <text class="tips">温馨提示：24小时内未完成支付，订单将会自动取消，所有款项将自动退回代付款人账户</text>
+      </view>
+    </view>
+</v-popup>

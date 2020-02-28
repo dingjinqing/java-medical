@@ -45,6 +45,7 @@ global.wxPage({
     invoiceArray: ['不需要', '普通发票', '增值税普通发票', '增值税专用发票'],
     invoiceIndex: 0,
     message: '', //买家备注
+    showFriendPayDialog:false,
     must: {
       orderRealName: '',
       orderCid: '',
@@ -604,7 +605,9 @@ global.wxPage({
         res => {
           if (res.error === 0) {
             let { orderSn } = res.content
-            if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay) {
+            if(this.data.friendPayType){
+              util.jumpLink(`/pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`,'redirectTo')
+            } else if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay) {
               wx.requestPayment({
                 timeStamp: res.content.webPayVo.timeStamp,
                 nonceStr: res.content.webPayVo.nonceStr,
@@ -652,6 +655,16 @@ global.wxPage({
       if (index !== 0) UrlStr += `&`
       return (UrlStr += `${item}=${obj[item]}`)
     }, '?')
+  },
+  showShareFriend(){
+    this.setData({
+      showFriendPayDialog:true
+    })
+  },
+  friendPayData(e){
+    this.setData({
+      friendPayType:e.detail.type
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -90,7 +90,8 @@
         "promoteinfo/promoteinfo",
         "virtualCheckout/virtualCheckout",
         "pinintegration/pinintegration",
-        "pinintegrationdetail/pinintegrationdetail"
+        "pinintegrationdetail/pinintegrationdetail",
+        "insteadinfo/insteadinfo"
       ]
     }
   ],
