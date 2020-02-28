@@ -144,7 +144,7 @@ public abstract class AbstractExcelDisposer {
             
             columnBean.fieldClazz = stringClassEntry.getValue();
             columnBean.isDynamicColumn = true;
-            sheetBean.columnMap.put(columnBean.columnName,columnBean);
+            sheetBean.columnMap.put(stringClassEntry.getKey(),columnBean);
         }
     }
     /**
