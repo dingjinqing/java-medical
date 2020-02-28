@@ -66,9 +66,13 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     List<String> labels;
     /**商品购买时需要的运费，详情展示时的默认运费*/
     private BigDecimal deliverPrice;
-    /**是否已删除*/
+    /**是否已删除，当搜索的商品已删除时，需要前端判断并进行处理*/
     private Byte delFlag;
+    /**是否在售，0否1是*/
+    private Byte isOnSale;
+    /**是否收藏*/
     private Boolean isCollected;
+    /**商品评价信息*/
     private CommentDetailVo comment;
     /**商品赠品*/
     private List<GoodsGiftMpVo> goodsGifts;
