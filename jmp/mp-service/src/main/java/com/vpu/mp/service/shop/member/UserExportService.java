@@ -86,7 +86,7 @@ public class UserExportService extends ShopBaseService{
 			expCols.add(0, firstColName);
 		}
 		
-		//	模拟查询数据库
+		//	查询数据库
 		List<UserExpVo> data = memDao.getExportAllUserList(mParam);
 		
 		List<UserExcelModel> excelModel = new ArrayList<>();
@@ -96,8 +96,6 @@ public class UserExportService extends ShopBaseService{
 		
 			//	创建UserExcelModel
 			UserExcelModel model = new UserExcelModel();
-			
-			
 			Map<String,Object> map = new LinkedHashMap<>();
 			for(String key: columns) {
 				// TODO	直接获取的数据
