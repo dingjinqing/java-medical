@@ -129,15 +129,19 @@ export const en = {
   lotteryPrize: 'prize ',
   luckSourceList: [
     [null, 'all '],
-    [0, 'share '],
-    [1, 'open screen courtesy '],
-    [2, 'payment polite ']
+    [0, 'Decoration link'],
+    [1, 'Open screen with courtesy'],
+    [2, 'Pay courtesy'],
+    [3, 'Share'],
+    [4, 'Polite evaluation'],
+    [5, 'Share courtesy'],
+    [6, 'Scan code']
   ],
   chanceSourceList: [
     [null, 'all '],
-    [0, 'free '],
-    [1, 'share '],
-    [2, 'integral ']
+    [1, 'free '],
+    [2, 'share '],
+    [3, 'integral ']
   ],
   lotteryGradeList: [
     [null, 'all '],

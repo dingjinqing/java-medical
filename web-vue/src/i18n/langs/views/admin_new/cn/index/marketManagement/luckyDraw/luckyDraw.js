@@ -130,11 +130,13 @@ export const cn = {
   lotteryPrize: '奖品',
   luckSourceList: [
     [null, '全部'],
+    [0, '装修链接'],
     [1, '开屏有礼'],
     [2, '支付有礼'],
     [3, '分享'],
     [4, '评价有礼'],
-    [5, '分享有礼']
+    [5, '分享有礼'],
+    [6, '扫码']
   ],
   chanceSourceList: [
     [null, '全部'],

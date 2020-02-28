@@ -153,7 +153,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages1/lottery/lottery?lotteryId='
+                this.path = 'pages1/lottery/lottery?lotterySource=0&lotteryId='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -167,7 +167,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages1/lottery/lottery?lotteryId='
+                this.path = 'pages1/lottery/lottery?lotterySource=0&lotteryId='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
