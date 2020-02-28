@@ -103,7 +103,7 @@ public class FreeShippingGoodsService extends ShopBaseService {
         //活动时间 0:固定日期 1：永久有效
         if (FreeShippingConstant.FREE_SHIPPING_EXPIRE_FIXED.equals(freeShip.getExpireType())){
             ruleInfoVo.setExpire(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_FIXED, MESSAGE,
-                    new Object[]{freeShip.getStartTime().toString().substring(0,10),freeShip.getEndTime().toString().substring(0,10)}));
+                    new Object[]{freeShip.getStartTime().toString().substring(0,19),freeShip.getEndTime().toString().substring(0,19)}));
         }else {
             ruleInfoVo.setExpire(Util.translateMessage(lang, JsonResultMessage.FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_NEVER, MESSAGE));
         }
