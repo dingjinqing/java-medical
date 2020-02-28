@@ -13,11 +13,19 @@
         class="name"
         :style="'backgroundColor:'+data.box_color"
       >
-        <div
-          class="nameMain"
-          style="height:30px"
-        >
-          姓名模块测试
+        <div class="nameMain">
+          <b class="moduleStar">*</b>
+          <img
+            src="http://mpdevimg2.weipubao.cn/image/admin/shop_deco/name_change.png"
+            class="image"
+          >
+          <span class="name_title">姓名</span>
+          <input
+            class="name_title_place"
+            placeholder="请输入姓名"
+            type="text"
+            readonly="readonly"
+          >
         </div>
 
       </div>
@@ -164,11 +172,13 @@ export default {
 @import "@/style/admin/formdecorationModules.scss"; // 模块公共
 
 .name {
-  background: rgb(238, 238, 238);
+  background-color: #ffffff;
   .nameMain {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     position: relative;
+    height: 30px;
+    padding-left: 10px;
     .Search {
       flex: 1;
       // line-height: 24px;
@@ -195,6 +205,37 @@ export default {
         display: inline-block;
         text-align: right;
       }
+    }
+    .moduleStar {
+      color: red;
+      height: 30px;
+      line-height: 30px;
+    }
+    .name_title {
+      width: 85px;
+      height: 30px;
+      line-height: 30px;
+      color: #333;
+      font-size: 14px;
+      display: inline-block;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+      position: relative;
+      top: 5px;
+    }
+    input {
+      height: 30px;
+      line-height: 30px;
+      border: none;
+      padding-left: 12px;
+      background: #ebebe4;
     }
   }
 }
