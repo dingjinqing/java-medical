@@ -96,15 +96,19 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
             // 未开始2
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
             // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
         }
         Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
