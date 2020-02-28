@@ -35,8 +35,8 @@ global.wxPage({
 
   // 查看地图
   showMap: function (e) {
-    var latitude = Number(orderInfo.store_info.latitude);
-    var longitude = Number(orderInfo.store_info.longitude);
+    var latitude = Number(this.data.orderInfo.latitude);
+    var longitude = Number(this.data.orderInfo.longitude);
     wx.openLocation({
       latitude: latitude,
       longitude: longitude,
