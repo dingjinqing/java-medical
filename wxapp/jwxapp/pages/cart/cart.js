@@ -55,6 +55,25 @@ global.wxPage({
               if (val.activityType == 22) {
                 item.isMemPrice = 1
               }
+              // 拼接促销活动
+              if (item.activityId == val.activityId) {
+                item.ruleList = ""
+                if (val.activityType == 21) {
+                  val.fullReduction.rules.forEach((ritem, rindex) => {
+                    item.ruleList += ritem.name + '或'
+                  })
+                  if (item.ruleList.length > 0) {
+                    item.ruleList = item.ruleList.substr(0, item.ruleList.length - 1);
+                  }
+                } else if (val.activityType == 7) {
+                  val.purchasePriceRule.forEach((pitem, pindex) => {
+                    item.ruleList += '满' + pitem.fullPrice + '元另加' + pitem.purchasePrice + '元即可换购商品' + ','
+                  })
+                  if (item.ruleList.length > 0) {
+                    item.ruleList = item.ruleList.substr(0, item.ruleList.length - 1);
+                  }
+                }
+              }
             })
           }
 

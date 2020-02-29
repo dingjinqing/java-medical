@@ -565,3 +565,12 @@ page{
   font-size: 20rpx;
   z-index: 3;
 }
+
+.load_style {
+  font-size: 24rpx;
+  color: #666;
+  width: 100%;
+  padding: 15rpx 0;
+  text-align: center;
+  padding-bottom: 100rpx;
+}

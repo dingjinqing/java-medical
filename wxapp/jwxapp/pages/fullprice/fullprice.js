@@ -335,13 +335,14 @@ global.wxPage({
   },
   // 加入购物车
   add_to_cart: function (e) {
-    debugger
     var that = this;
+    // 不可参与购买且会员列表不为空
     if (full_info.state == 4 && full_info.card_list.length == 1 && full_info.card_list[0].card_type == 2) {
       util.showModal("提示", '您当前的会员等级不满足，仅拥有' + full_info.card_list[0].card_name + '等级卡用户可购买此商品。可在"个人中心"查看会员卡权益');
       return false
     }
-    if (full_info.state == 0) {
+    // 不可参与购买跳转会员卡列表
+    if (full_info.state == 4) {
       wx.showModal({
         title: '提示',
         content: '会员专享活动，开通会员即可参与！',
@@ -354,43 +355,36 @@ global.wxPage({
             util.navigateTo({
               url: '/pages/buycardlist/buycardlist?strategy_id=' + strategy_id + "&is_fullprice=" + strategy_id,
             })
-          } else {
-
           }
-
         }
       })
       return false;
     }
-
-    var send_data = {};
-
-    var this_goods_id = e.currentTarget.dataset.goods_id;
-    send_data.goods_id = this_goods_id;
-    send_data.action = 2;
-    send_data.identity_id = strategy_id;
-    send_data.user_id = util.getCache('user_id');
-    send_data.store_id = store_id;
-    // util.api('/api/wxapp/cart/addnew', function (res) {
-    //   if (res.error == 0) {
-    //     //规格
-    //     if (res.content.is_show_spec) {
-    //       res.content.goods.specs = res.content.goods.spec;
-    //       that.setData({ goodsData: res.content.goods })
-    //       that.bindAddCart()
-    //     }
-    //     else {
-    //       util.toast_success('已加入购物车');
-    //       that.setData({
-    //         al_goods_prices: res.content.full_price,
-    //         all_goods_doc: res.content.change_doc,
-    //       })
-    //     }
-    //   } else {
-    //     util.showModal("提示", res.message);
-    //     return false;
-    //   }
-    // }, send_data);
+    // 添加购物车
+    util.api('/api/wxapp/cart/add', function (res) {
+      if (res.error == 0) {
+        util.toast_success('添加成功')
+        // //规格
+        // if (res.content.is_show_spec) {
+        //   res.content.goods.specs = res.content.goods.spec;
+        //   that.setData({ goodsData: res.content.goods })
+        //   that.bindAddCart()
+        // }
+        // else {
+        //   util.toast_success('已加入购物车');
+        //   that.setData({
+        //     al_goods_prices: res.content.full_price,
+        //     all_goods_doc: res.content.change_doc,
+        //   })
+        // }
+      } else {
+        util.showModal("提示", res.message);
+        return false;
+      }
+    }, {
+        goodsNumber: 1,
+        prdId: e.currentTarget.dataset.goods_id
+    });
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
