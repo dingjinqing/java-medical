@@ -114,21 +114,8 @@
                 <view class='cf_left'>
                   <view class="cf_left_title">促销</view>
                   <view wx:if="{{item.activityType == null}}" class="cf_left_content">不参与促销活动</view>
-                  <view wx:if="{{item.activityType == 7}}" class="cf_left_content">
-                    <view wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key' wx:if="{{item.activityId == proItem.activityId}}" class="cf_left_content_rule">
-                      <view wx:for='{{proItem.purchasePriceRule}}' wx:for-item="rItem" wx:key='index' class="cf_left_content_text">
-                        满{{rItem.fullPrice}}元另加{{rItem.purchasePrice}}元即可换购商品
-                        <text wx:if="{{index != (proItem.purchasePriceRule.length - 1)}}">或</text>
-                      </view>
-                    </view>
-                  </view>
-                  <view wx:if="{{item.activityType == 21}}" class="cf_left_content">
-                    <view wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key' wx:if="{{item.activityId == proItem.activityId}}" class="cf_left_content_rule">
-                      <view wx:for='{{proItem.fullReduction.rules}}' wx:for-item="rItem" wx:key='index' class="cf_left_content_text">
-                        {{rItem.name}} <text wx:if="{{index != (proItem.fullReduction.rules.length - 1)}}">或</text>
-                      </view>
-                    </view>
-                  </view>
+                  <view wx:if="{{item.activityType == 7}}" class="cf_left_content">{{item.ruleList}}</view>
+                  <view wx:if="{{item.activityType == 21}}" class="cf_left_content">{{item.ruleList}}</view>
                 </view>
                 <view class='cf_right'>
                   <view>修改</view>
