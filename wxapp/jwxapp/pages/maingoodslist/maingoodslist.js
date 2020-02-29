@@ -50,6 +50,8 @@ global.wxPage({
     main_goods_info: [],
     change_goods_info: [],
     searchText: "",
+    page: 1,
+    last_page: 1,
     get_price: '',
     get_doc: "",
     specMove: true,
@@ -88,7 +90,7 @@ global.wxPage({
     if (options.is_show_change_page == 1) {
       this.showGoods();
     }
-    // main_request(that);
+    main_request(that);
   },
   proActionChange: function () {
     this.setData({
@@ -112,26 +114,26 @@ global.wxPage({
     that.setData({
       changeMove: false
     })
-    util.api('/api/wxapp/purchase/changegoods', function (res) {
-      if (res.error == 0) {
-        change_goods_info = res.content;
-        for (var i = 0; i < change_goods_info.list.length; i++) {
-          if (change_goods_info.list[i].is_checked == 1) {
-            purchase_change_goods[change_goods_info.list[i].prd_id] = change_goods_info.list[i].purchase_rule_id;
-          }
-        }
-        that.setData({
-          change_goods_info: change_goods_info
-        })
-      } else {
-        util.showModal("提示", res.message, function () {
-          util.reLaunch({
-            url: '/pages/index/index'
-          })
-        });
-        return false;
-      }
-    }, { purchase_price_id: identity_id, store_id: store_id, open_id: open_id, form_id: form_id });
+    // util.api('/api/wxapp/purchase/changegoods', function (res) {
+    //   if (res.error == 0) {
+    //     change_goods_info = res.content;
+    //     for (var i = 0; i < change_goods_info.list.length; i++) {
+    //       if (change_goods_info.list[i].is_checked == 1) {
+    //         purchase_change_goods[change_goods_info.list[i].prd_id] = change_goods_info.list[i].purchase_rule_id;
+    //       }
+    //     }
+    //     that.setData({
+    //       change_goods_info: change_goods_info
+    //     })
+    //   } else {
+    //     util.showModal("提示", res.message, function () {
+    //       util.reLaunch({
+    //         url: '/pages/index/index'
+    //       })
+    //     });
+    //     return false;
+    //   }
+    // }, { purchase_price_id: identity_id, store_id: store_id, open_id: open_id, form_id: form_id });
   },
   close_change: function () {
     var that = this;
@@ -201,31 +203,31 @@ global.wxPage({
     send_data.identity_id = identity_id;
     send_data.store_id = store_id;
     send_data.user_id = util.getCache('user_id');
-    util.api('/api/wxapp/cart/addnew', function (res) {
-      if (res.error == 0) {
-        get_price = res.content.main_price;
-        get_doc = res.content.change_doc;
-        //规格
-        if (res.content.is_show_spec) {
-          res.content.goods.specs = res.content.goods.spec;
-          that.setData({ goodsData: res.content.goods })
-          that.bindAddCart()
-        }
-        else {
-          util.toast_success('已加入购物车');
-          that.setData({
-            get_price: res.content.main_price
-          })
-        }
-        that.setData({
-          get_price: get_price,
-          get_doc: get_doc,
-        })
-      } else {
-        util.showModal("提示", res.message);
-        return false;
-      }
-    }, send_data);
+    // util.api('/api/wxapp/cart/addnew', function (res) {
+    //   if (res.error == 0) {
+    //     get_price = res.content.main_price;
+    //     get_doc = res.content.change_doc;
+    //     //规格
+    //     if (res.content.is_show_spec) {
+    //       res.content.goods.specs = res.content.goods.spec;
+    //       that.setData({ goodsData: res.content.goods })
+    //       that.bindAddCart()
+    //     }
+    //     else {
+    //       util.toast_success('已加入购物车');
+    //       that.setData({
+    //         get_price: res.content.main_price
+    //       })
+    //     }
+    //     that.setData({
+    //       get_price: get_price,
+    //       get_doc: get_doc,
+    //     })
+    //   } else {
+    //     util.showModal("提示", res.message);
+    //     return false;
+    //   }
+    // }, send_data);
   },
 
   // 去购物车
@@ -341,8 +343,32 @@ function main_request(that) {
   util.api('/api/wxapp/purchase/goodslist', function (res) {
     if (res.error == 0) {
       main_goods_info = res.content;
-      get_price = main_goods_info.main_price;
-      get_doc = main_goods_info.change_doc;
+      that.data.last_page = main_goods_info.goods.page.lastPage;
+      var add_goods_info = main_goods_info.goods.dataList; // 商品列表
+      get_price = main_goods_info.mainPrice; // 金额
+      // 金额提示
+      if (main_goods_info.changeDoc) {
+        if (main_goods_info.changeDoc.state == 0) {
+          get_doc = '快选择商品参加活动吧'
+        } else if (main_goods_info.changeDoc.state == 1) {
+          get_doc = '再选' + main_goods_info.changeDoc.diffPrice + '元可以换购'
+        } else if (main_goods_info.changeDoc.state == 2) {
+          get_doc = '已满足一条换购规则'
+        }
+      }
+
+      if (add_goods_info.length > 0) {
+        // 是否存在限时降价活动
+        var flag = add_goods_info.find((item, index) => {
+          return item.goodsPriceAction == 2
+        })
+        if (flag != undefined) {
+          main_goods_info.is_show_reduce_doc = 1
+        } else {
+          main_goods_info.is_show_reduce_doc = 0
+        }
+      }
+
       that.setData({
         main_goods_info: main_goods_info,
         searchText: searchText,
@@ -357,5 +383,5 @@ function main_request(that) {
       });
       return false;
     }
-  }, { search: searchText, purchase_price_id: identity_id, store_id: store_id });
+  }, { purchasePriceId: identity_id, search: searchText, currentPage: that.data.page, pageRows: 10 });
 }
