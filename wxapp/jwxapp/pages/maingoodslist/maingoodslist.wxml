@@ -1,43 +1,54 @@
 <!--pages/maingoodslist/maingoodslist.wxml-->
 <include src="../common/header.wxml" />
 <view class='main-container' style='padding-bottom:{{isIpx == 1?"160rpx":"110rpx"}}'>
+  <!-- 搜索 -->
   <view class='search_input'>
     <icon type="search" class="search-img" size="13"></icon>
     <input type="text" placeholder="请输入搜索关键字" bindblur='searchGoods' />
   </view>
   <view class='main_goods_content'>
+    <!-- 限时降价提示 -->
     <view class='pro_tips' wx:if='{{main_goods_info.is_show_reduce_doc == 1}}' style='padding-bottom:0'>
       限时降价：购买超出限购数量以结算价为准
     </view>
+    <!-- 活动规则 -->
     <view class='pro_tips'>
-      {{main_goods_info.rule_str}}
+      <view style="display: flex;">
+        <view>限时促销：</view>
+        <view wx:for="{{main_goods_info.rules}}" wx:key="index">
+          满{{item.fullPrice}}元另加{{item.purchasePrice}}元即可换购商品
+        </view>
+      </view>
     </view>
+    <!-- 活动列表 -->
     <view class='goods_content'>
-      <view class='each_goods clearfix' wx:for='{{main_goods_info.goods}}' wx:key='key' wx:if="{{item.is_card_exclusive == 0}}">
-        <view class='goods_lefts' bindtap='to_items' data-goods_id="{{item.goods_id}}">
-          <image src='{{item.goods_img}}'></image>
-          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
-          <view class='reduce_price' wx:if="{{item.goods_price_action == 2}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
-          <view class='reduce_price' wx:if="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>新人专享,首单特惠</view>
+      <view class='each_goods clearfix' wx:for='{{main_goods_info.goods.dataList}}' wx:key='key' wx:if="{{item.isCardExclusive == 0}}">
+        <view class='goods_lefts' bindtap='to_items' data-goods_id="{{item.goodsId}}">
+          <image src='{{item.goodsImg}}'></image>
+          <image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
+          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 2}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 3}}" style='background:{{linColor}};color:#fff'>新人专享,首单特惠</view>
         </view>
         <view class='goods_right'>
-          <view class='goods_name' bindtap='to_items' data-goods_id="{{item.goods_id}}">{{item.goods_name}}</view>
-          <view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limit_amount > 0}}'>限购1件</view>
+          <view class='goods_name' bindtap='to_items' data-goods_id="{{item.goodsId}}">{{item.goodsName}}</view>
+          <!-- <view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limitAmount > 0}}'>限购1件</view> -->
+          <view class='member_label' wx:if='{{item.goodsPriceAction == 1}}'>会员价</view>
           <view class='price_info clearfix'>
             <view class='jiaqian'>
-              <view class='member_icon' wx:if='{{item.goods_price_action == 1}}'>会员专享</view>
+              <!-- <view class='member_icon' wx:if='{{item.goodsPriceAction == 1}}'>会员专享</view> -->
               <view class='sale_price' style='color:{{comColor}}'>￥
-                <text>{{item.goods_price}}</text>
+                <text>{{item.goodsPrice}}</text>
               </view>
-              <view class='original_price' wx:if='{{item.market_price!=null && item.market_price != ""}}'>￥{{item.market_price}}</view>
+              <view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != ""}}'>￥{{item.marketPrice}}</view>
             </view>
-            <view class='btn_add_cart' data-goods_id='{{item.goods_id}}' bindtap='add_to_cart'>
+            <view class='btn_add_cart' data-goods_id='{{item.goodsId}}' bindtap='add_to_cart'>
               <text class='iconfont iconjiarugouwuche' style='color:{{comColor}};font-size:60rpx;'></text>
             </view>
           </view>
         </view>
       </view>
     </view>
+    <!-- 底部 -->
     <view class='main_footers clearfix' style='background:#fff;height:{{isIpx == 1 ? "160rpx":"100rpx"}}'>
       <view class='foot_left'>
         <view class='fl_top'>已选
