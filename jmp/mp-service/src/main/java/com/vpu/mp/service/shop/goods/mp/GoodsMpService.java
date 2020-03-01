@@ -371,6 +371,10 @@ public class GoodsMpService extends ShopBaseService {
                 if (goodsDetailMpBo == null) {
                     return createDeletedGoodsDetailMpVo();
                 }
+                // 商品已下架则不再处理
+                if (GoodsConstant.OFF_SALE.equals(goodsDetailMpBo.getIsOnSale())) {
+                    return goodsDetailMpBo;
+                }
                 goodsDetailMpBo.setIsDisposedByEs(true);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品详情错误-转换db获取数据:" + e.getMessage());
@@ -380,7 +384,8 @@ public class GoodsMpService extends ShopBaseService {
                 if (goodsDetailMpBo == null) {
                     return createDeletedGoodsDetailMpVo();
                 }
-                if (DelFlag.DISABLE_VALUE.equals(goodsDetailMpBo.getDelFlag())) {
+                // 商品已下架则不再处理
+                if (GoodsConstant.OFF_SALE.equals(goodsDetailMpBo.getIsOnSale())) {
                     return goodsDetailMpBo;
                 }
             }
@@ -392,7 +397,8 @@ public class GoodsMpService extends ShopBaseService {
             if (goodsDetailMpBo == null) {
                 return createDeletedGoodsDetailMpVo();
             }
-            if (DelFlag.DISABLE_VALUE.equals(goodsDetailMpBo.getDelFlag())) {
+            // 商品已下架则不再处理
+            if (GoodsConstant.OFF_SALE.equals(goodsDetailMpBo.getIsOnSale())) {
                 return goodsDetailMpBo;
             }
         }
@@ -412,12 +418,11 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 创建一个处于删除状态的vo
-     *
      * @return {@link GoodsDetailMpVo}
      */
     private GoodsDetailMpVo createDeletedGoodsDetailMpVo() {
         GoodsDetailMpBo goodsDetailMpBo = new GoodsDetailMpBo();
-        goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
+        goodsDetailMpBo.setDelFlag(DelFlag.DISABLE_VALUE);
         return goodsDetailMpBo;
     }
 
@@ -764,9 +769,8 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 获取商品基本信息详情
-     *
-     * @param goodsId 商品id（该商品可能已删除或下架）
-     * @return {@link GoodsDetailMpBo}
+     * @param goodsId 商品id
+     * @return {@link GoodsDetailMpBo} 当商品已删除时返回null
      */
     private GoodsDetailMpBo getGoodsDetailMpInfoDao(Integer goodsId) {
         Record record1 = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
@@ -774,17 +778,13 @@ public class GoodsMpService extends ShopBaseService {
             GOODS.GOODS_IMG, GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
             GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_AD, GOODS.GOODS_DESC)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
-            .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
+            .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
         if (record1 == null) {
             log.debug("商品详情-{}已被从数据库真删除", goodsId);
             return null;
         }
 
         GoodsDetailMpBo capsule = record1.into(GoodsDetailMpBo.class);
-        if (DelFlag.DISABLE_VALUE.equals(capsule.getDelFlag())) {
-            return capsule;
-        }
-
         // 图片处理
         List<String> imgs = db().select().from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
         capsule.getGoodsImgs().addAll(imgs);

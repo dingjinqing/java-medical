@@ -751,4 +751,11 @@ public class MemberDaoService extends ShopBaseService {
 	public void updateUserDetail(UserDetailRecord record) {
 		db().executeUpdate(record, USER_DETAIL.USER_ID.eq(record.getUserId()));
 	}
+	
+	/**
+	 * 	获取用户总数
+	 */
+	public int getNumOfUser() {
+		return db().fetchCount(USER);
+	}
 }

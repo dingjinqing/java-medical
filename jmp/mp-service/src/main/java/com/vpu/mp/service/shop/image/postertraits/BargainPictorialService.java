@@ -67,7 +67,7 @@ public class BargainPictorialService extends ShopBaseService {
         // 砍价活动信息不可用
         if (bargainRecord == null) {
             bargainLog("分享", "砍价活动信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
             return shareInfoVo;
         }
 
@@ -75,12 +75,11 @@ public class BargainPictorialService extends ShopBaseService {
         // 砍价商品信息不可用
         if (goodsRecord == null) {
             bargainLog("分享", "砍价商品信息不可用");
-            shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
+            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
             return shareInfoVo;
         }
 
         PictorialShareConfig shareConfig = Util.parseJson(bargainRecord.getShareConfig(), PictorialShareConfig.class);
-        shareInfoVo.setShareAction(shareConfig.getShareAction());
 
         // 用户自定义分享样式
         if (PictorialShareConfig.CUSTOMER_STYLE.equals(shareConfig.getShareAction())) {
@@ -91,11 +90,15 @@ public class BargainPictorialService extends ShopBaseService {
             }
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
         } else {
+            String imgPath = createBargainShareImg(bargainRecord, goodsRecord, param);
+            if (imgPath == null) {
+                shareInfoVo.setShareCode(PictorialConstant.GOODS_PIC_ERROR);
+                return shareInfoVo;
+            }
+            shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
             String shareDoc =Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_DOC, "messages",param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP));
             shareInfoVo.setShareDoc(shareDoc);
-            String imgPath = createBargainShareImg(bargainRecord, goodsRecord, param);
-            shareInfoVo.setImgUrl(imgPath);
         }
 
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));

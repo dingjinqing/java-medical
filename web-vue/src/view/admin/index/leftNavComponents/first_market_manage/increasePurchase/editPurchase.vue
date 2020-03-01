@@ -72,9 +72,9 @@
           <span class="span">每单最多换购商品数，填写0表示不限制</span>
         </el-form-item>
         <el-form-item label="换购商品运费计算策略">
-          <el-radio-group v-model="form1.strategy">
-            <el-radio label="免运费"></el-radio>
-            <el-radio label="使用原商品运费模板"></el-radio>
+          <el-radio-group v-model.number="form1.redemptionFreight">
+            <el-radio :label=0>免运费</el-radio>
+            <el-radio :label=1>使用原商品运费模板</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
@@ -434,7 +434,7 @@ export default {
         startTime: '',
         endTime: '',
         maxChangePurchase: 0,
-        strategy: 0,
+        redemptionFreight: 0,
         rule_setting: '非空'
       },
       // 换购规则
@@ -520,8 +520,9 @@ export default {
     setPurchaseRule (dataRule, dataGoods) {
       if (dataRule.length >= 1) {
         var array = dataRule[0].split(' --- ')
-        this.purcahse_rule1.fullPrice = parseFloat(array[0])
-        this.purcahse_rule1.purchasePrice = parseFloat(array[1])
+        this.purcahse_rule1.id = parseFloat(array[0])
+        this.purcahse_rule1.fullPrice = parseFloat(array[1])
+        this.purcahse_rule1.purchasePrice = parseFloat(array[2])
         this.purchase_table1 = dataGoods[0]
         this.setDomainImg(this.purchase_table1)
         this.purchase_table1.map((item, index) => {
@@ -530,25 +531,29 @@ export default {
       }
       if (dataRule.length >= 2) {
         var array1 = dataRule[1].split(' --- ')
-        this.purcahse_rule2.fullPrice = parseFloat(array1[0])
-        this.purcahse_rule2.purchasePrice = parseFloat(array1[1])
+        this.purcahse_rule2.id = parseFloat(array1[0])
+        this.purcahse_rule2.fullPrice = parseFloat(array1[1])
+        this.purcahse_rule2.purchasePrice = parseFloat(array1[2])
         this.purchase_table2 = dataGoods[1]
         this.setDomainImg(this.purchase_table2)
         this.purchase_table2.map((item, index) => {
           this.purcahse_rule2.productId.push(item.goodsId)
         })
         this.rule_line2 = true
+        this.rule_button1 = false
       }
       if (dataRule.length >= 3) {
         var array2 = dataRule[2].split(' --- ')
-        this.purcahse_rule3.fullPrice = parseFloat(array2[0])
-        this.purcahse_rule3.purchasePrice = parseFloat(array2[1])
+        this.purcahse_rule3.id = parseFloat(array2[0])
+        this.purcahse_rule3.fullPrice = parseFloat(array2[1])
+        this.purcahse_rule3.purchasePrice = parseFloat(array2[2])
         this.purchase_table3 = dataGoods[2]
         this.setDomainImg(this.purchase_table3)
         this.purchase_table3.map((item, index) => {
           this.purcahse_rule3.productId.push(item.goodsId)
         })
         this.rule_line3 = true
+        this.rule_button2 = false
       }
       this.rule_num = dataRule.length
     },
@@ -753,14 +758,13 @@ export default {
         showClose: true
       })
     },
-    // 添加加价购
+    // 更新加价购
     updatePurchase () {
       if (this.purchaseCheck()) {
         this.form1.startTime = this.form1.activityDate[0]
         this.form1.endTime = this.form1.activityDate[1]
-        this.goodsId = JSON.stringify(this.goodsId)
         let param = Object.assign({}, this.form1)
-        param.goodsId = this.goodsId
+        param.goodsId = this.goodsId.join()
         param.rules = this.getPurchaseRules()
         update(param).then(res => {
           if (res.error === 0) {
@@ -780,19 +784,18 @@ export default {
     },
     getPurchaseRules () {
       let rules = []
-      if (this.rule_num === 1) {
+      if (this.rule_num >= 1) {
+        this.purcahse_rule1.productId = this.purcahse_rule1.productId.join()
         rules.push(this.purcahse_rule1)
-      } else if (this.rule_num === 2) {
-        rules.push(this.purcahse_rule1)
+      }
+      if (this.rule_num >= 2) {
+        this.purcahse_rule2.productId = this.purcahse_rule2.productId.join()
         rules.push(this.purcahse_rule2)
-      } else if (this.rule_num === 3) {
-        rules.push(this.purcahse_rule1)
-        rules.push(this.purcahse_rule2)
+      }
+      if (this.rule_num >= 3) {
+        this.purcahse_rule3.productId = this.purcahse_rule3.productId.join()
         rules.push(this.purcahse_rule3)
       }
-      rules.map((item, index) => {
-        item.productId = JSON.stringify(item.productId)
-      })
       return rules
     },
     // 编辑成功后跳转到列表页

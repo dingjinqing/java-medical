@@ -61,7 +61,7 @@
             <div
               class="zbTips"
               v-if="!showModulesList.length"
-              style='z-index:1000'
+              style='z-index:100'
             >
               <div class="drag_notice">{{$t('decorationHome.seizeASeat')}}</div>
             </div>
@@ -95,9 +95,9 @@
             <!--底部提交显示-->
             <div
               class="btn_tijiao"
-              style="color: #ffffff;background-color: #ff6666"
+              :style="`color:${pageSetData.font_color?pageSetData.font_color:'#fff'};background-color: ${pageSetData.bg_color?pageSetData.bg_color:'#ff6666'}`"
             >
-              提交</div>
+              {{pageSetData.notice_name?pageSetData.notice_name:'提交'}}</div>
           </div>
         </vue-scroll>
       </div>
@@ -165,9 +165,9 @@ export default {
     // 右侧显示出口组件
     PageSetup: () => import('./pageSetup'),
     // 表单元素模块池
-    Name: () => import('./decorationModules/name'), // 姓名模块
-    CellPhoneNumber: () => import('./decorationModules/cellPhoneNumber'), // 手机号模块
-    ProvinceAndCity: () => import('./decorationModules/provinceAndCity') // 省市区模块
+    Name: () => import('./decorationModules/formModule/name'), // 姓名模块
+    CellPhoneNumber: () => import('./decorationModules/formModule/cellPhoneNumber'), // 手机号模块
+    ProvinceAndCity: () => import('./decorationModules/formModule/provinceAndCity') // 省市区模块
   },
   data () {
     return {

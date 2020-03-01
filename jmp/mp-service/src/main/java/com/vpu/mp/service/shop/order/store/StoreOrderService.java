@@ -341,9 +341,13 @@ public class StoreOrderService extends ShopBaseService {
             BigDecimal proportion = BigDecimal.valueOf(scoreProportion);
             // 积分使用上下限限制
             int scoreValue = scoreAmount.multiply(proportion).intValue();
-            if (scoreValue < baseScoreCfgService.getScorePayNum()) {
-                log.debug("低于积分使用下限配置，不可使用积分支付");
-                throw new BusinessException(JsonResultCode.CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG);
+            // 积分下限开关（0： 不限制使用下限值；1：限制）
+            byte scorePayLimitSwitch = baseScoreCfgService.getScorePayLimit();
+            if (scorePayLimitSwitch != 0) {
+                if (scoreValue < baseScoreCfgService.getScorePayNum()) {
+                    log.debug("低于积分使用下限配置，不可使用积分支付");
+                    throw new BusinessException(JsonResultCode.CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG);
+                }
             }
             BigDecimal ratio = BigDecimal.valueOf(baseScoreCfgService.getScoreDiscountRatio()).divide(HUNDRED);
             if (scoreAmount.compareTo(payAmount.multiply(ratio)) > INTEGER_ZERO) {

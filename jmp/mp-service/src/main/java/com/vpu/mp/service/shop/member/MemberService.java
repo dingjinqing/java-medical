@@ -791,5 +791,5 @@ public class MemberService extends ShopBaseService {
 		memberDao.updateUserDetail(record);
 	}
 	
-	
+
 }

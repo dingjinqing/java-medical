@@ -1678,6 +1678,7 @@ CREATE TABLE `b2c_group_integration_define` (
   `param_n` float NOT NULL DEFAULT '0' COMMENT '常数n',
   `is_continue` tinyint(1) NOT NULL DEFAULT '1' COMMENT '继续： 1：继续  0： 结束',
   `advertise` varchar(100) NOT NULL COMMENT '活动宣传语',
+  `activity_copywriting` text COMMENT '活动规则说明',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`)

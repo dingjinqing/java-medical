@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListParti
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationVo;
 
 /**
  * @author huangronggang  zhaojianqiang
@@ -66,7 +67,7 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@GetMapping("/select/{id}")
 	public JsonResult select(@PathVariable Integer id) {
-		GroupIntegrationDefineEditVo defineVo = shop().groupIntegration.selectGroupIntegrationDefineById(id);
+		GroupIntegrationVo defineVo = shop().groupIntegration.selectGroupIntegrationDefineById(id);
 		return success(defineVo);
 	}
 	/**

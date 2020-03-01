@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -13,6 +14,7 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  * author liufei
  * date 2019/7/18
  */
+@Slf4j
 @Data
 @Builder
 @NoArgsConstructor
@@ -67,6 +69,8 @@ public class AssiDataGoods implements PendingRule<AssiDataGoods> {
 
     @Override
     public int getUnFinished() {
-        return unFinished(shipTemplateConf, goodsConf, goodsStoreConf, goodsUnsalableConf, goodsComment, goodsRecommend, shopSort);
+        int num = unFinished(shipTemplateConf, goodsConf, goodsStoreConf, goodsUnsalableConf, goodsComment, goodsRecommend, shopSort);
+        log.debug("Goods unFinished Num:{}", num);
+        return num;
     }
 }

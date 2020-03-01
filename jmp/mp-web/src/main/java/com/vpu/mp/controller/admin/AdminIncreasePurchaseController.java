@@ -1,32 +1,23 @@
 package com.vpu.mp.controller.admin;
 
-import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.LANGUAGE_TYPE_EXCEL;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.AddPurchaseParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePriorityParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
+import javax.servlet.http.HttpServletResponse;
+
+import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.LANGUAGE_TYPE_EXCEL;
 
 /**
  * @author liufei
  * @date 2019/8/14
- * @description
  */
 @RestController
 public class AdminIncreasePurchaseController extends AdminBaseController {
@@ -118,9 +109,10 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      * @param param 筛选条件
      */
     @PostMapping("/api/admin/market/increasepurchase/exportorderlist")
-    public void exportOrderList(@RequestBody MarketOrderListParam param, HttpServletResponse response, HttpServletRequest request) {
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_ORDER_EXCEL,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
-        export2Excel(shop().increaseService.exportOrderList(param),fileName,response);
+    public void exportOrderList(@RequestBody MarketOrderListParam param, HttpServletResponse response) {
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_ORDER_EXCEL, LANGUAGE_TYPE_EXCEL);
+        String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+        export2Excel(shop().increaseService.exportOrderList(param), fileName + dateFormat, response);
     }
     /**
      * 换购明细导出
@@ -128,9 +120,10 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      * @param param 筛选条件
      */
     @PostMapping("/api/admin/market/increasepurchase/exportorderdetail")
-    public void exportOrderDetail(@RequestBody RedemptionDetailParam param, HttpServletResponse response,HttpServletRequest request) {
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_DETAIL_EXCEL,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
-        export2Excel(shop().increaseService.exportOrderDetail(param),fileName,response);
+    public void exportOrderDetail(@RequestBody RedemptionDetailParam param, HttpServletResponse response) {
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_DETAIL_EXCEL, LANGUAGE_TYPE_EXCEL);
+        String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+        export2Excel(shop().increaseService.exportOrderDetail(param), fileName + dateFormat, response);
     }
 
     /**

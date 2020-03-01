@@ -1,17 +1,15 @@
 package com.vpu.mp.service.pojo.shop.market.increasepurchase;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author liufei
  * @date 2019/8/14
- * @description
  */
 @Data
 public class PurchaseDetailVo {
@@ -56,4 +54,8 @@ public class PurchaseDetailVo {
      * 不同换购规则的加价购商品信息
      */
     private List<GoodsInfo>[] redemptionGoods;
+    /**
+     * 换购商品运费策略，0免运费，1使用原商品运费模板
+     */
+    private Byte redemptionFreight;
 }

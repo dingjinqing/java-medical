@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
@@ -41,9 +41,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -77,6 +76,8 @@ public class IncreasePurchaseService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 分页查询加价购活动信息
@@ -97,15 +98,19 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
             // 未开始2
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
             // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())))
+                    .and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
         }
         Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
@@ -146,9 +151,9 @@ public class IncreasePurchaseService extends ShopBaseService {
     }
 
     private List<String> getPurchaseDetailInfo(Integer purchasePriceId) {
-        List<String> list = db().select(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE))
+        List<String> list = db().select(concatWs(CONCAT_WS_SEPARATOR, ppr.ID, ppr.FULL_PRICE, ppr.PURCHASE_PRICE))
             .from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId))
-            .orderBy(ppr.ID).fetch(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE));
+            .orderBy(ppr.FULL_PRICE).fetch(concatWs(CONCAT_WS_SEPARATOR, ppr.ID, ppr.FULL_PRICE, ppr.PURCHASE_PRICE));
         log.debug("获取加价购活动详细规则 [{}]", list);
         return list;
     }
@@ -199,22 +204,66 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @param param 加价购活动详情参数
      */
     public void updateIncreasePurchase(UpdatePurchaseParam param) {
-        Integer count = db().selectCount().from(ppd).where(ppd.ID.eq(param.getId())).fetchOptionalInto(Integer.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        int purchaseId = param.getId();
+        Integer count = db().selectCount().from(ppd).where(ppd.ID.eq(purchaseId)).fetchOptionalInto(Integer.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         if (count == 0) {
             throw new RuntimeException("Information doesn't exist!");
         }
+        // 获取已存在的加价购规则
+        Set<Integer> result = new HashSet<>(4);
+        Set<Integer> pprIds = db().select(ppr.ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(purchaseId)).fetchSet(ppr.ID);
+        // 筛选出那些是新增的，那些是删除的，那些是修改的
+        Set<Integer> paramIds = param.getRules().stream().map(PurchaseRule::getId).collect(Collectors.toSet());
+
         PurchasePriceDefineRecord defineRecord = new PurchasePriceDefineRecord();
-        PurchasePriceRuleRecord ruleRecord = new PurchasePriceRuleRecord();
         FieldsUtil.assignNotNull(param, defineRecord);
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
+            // 更新活动表
             db.executeUpdate(defineRecord);
-            for (PurchaseRule rule : param.getRules()) {
-                FieldsUtil.assignNotNull(rule, ruleRecord);
-                ruleRecord.setPurchasePriceId(param.getId());
-                db.executeUpdate(ruleRecord);
-                ruleRecord.reset();
-            }
+            // 更新活动规则表
+            result.clear();
+            result.addAll(pprIds);
+            result.retainAll(paramIds);
+            // 更新已有记录
+            modifyPpr(param.getRules().stream().filter(e -> result.contains(e.getId())).collect(Collectors.toSet()), db);
+
+            result.clear();
+            result.addAll(pprIds);
+            result.removeAll(paramIds);
+            // 删除多余记录
+            deletePpr(result, db);
+
+            result.clear();
+            result.addAll(paramIds);
+            result.removeAll(pprIds);
+            // 新增缺失记录
+            addPpr(param.getRules().stream().filter(e -> result.contains(e.getId())).collect(Collectors.toSet()), db, purchaseId);
+        });
+    }
+
+    private void modifyPpr(Set<PurchaseRule> rules, DSLContext db) {
+        PurchasePriceRuleRecord ruleRecord = new PurchasePriceRuleRecord();
+        rules.forEach(e -> {
+            FieldsUtil.assignNotNull(e, ruleRecord);
+            db.executeUpdate(ruleRecord);
+        });
+    }
+
+    private void deletePpr(Set<Integer> rules, DSLContext db) {
+        PurchasePriceRuleRecord ruleRecord = new PurchasePriceRuleRecord();
+        rules.forEach(e -> {
+            ruleRecord.setId(e);
+            db.executeDelete(ruleRecord, PURCHASE_PRICE_RULE.ID.eq(e));
+        });
+    }
+
+    private void addPpr(Set<PurchaseRule> rules, DSLContext db, int purchaseId) {
+        PurchasePriceRuleRecord ruleRecord = new PurchasePriceRuleRecord();
+        rules.forEach(e -> {
+            FieldsUtil.assignNotNull(e, ruleRecord);
+            ruleRecord.setPurchasePriceId(purchaseId);
+            db.executeInsert(ruleRecord);
         });
     }
 
@@ -225,20 +274,21 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     @SuppressWarnings("unchecked")
     public PurchaseDetailVo getPurchaseDetail(PurchaseDetailParam param) {
-        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE,
+            ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID, ppd.REDEMPTION_FREIGHT).from(ppd)
+            .where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class)
+            .orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
-        List<Integer> goodsIdArray = Util.json2Object(goodsId, new TypeReference<List<Integer>>() {
-        }, false);
+        Integer[] goodsIdArray = stringArray2Int(goodsId.split(","));
         vo.setMainGoods(db().select(g.GOODS_ID, g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
         List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
         int integer = 0;
         for (String s : redemptionGoods) {
-            List<Integer> array = Util.json2Object(s, new TypeReference<List<Integer>>() {
-            }, false);
+            Integer[] array = stringArray2Int(s.split(","));
             redemptionresult[integer++] = db().select(g.GOODS_ID, g.GOODS_NAME, g.GOODS_IMG, g.SHOP_PRICE, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
         }
         vo.setRedemptionGoods(redemptionresult);
@@ -289,7 +339,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.RAISE_PRICE_BUY_MAIN_GOODS, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.RAISE_PRICE_BUY_MAIN_GOODS.getPathUrl(pathParam));
         return vo;
 
     }
@@ -302,7 +352,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     public PageResult<RedemptionOrderVo> getRedemptionOrderList(MarketOrderListParam param) {
         //默认排序方式---下单时间
-        PageResult<RedemptionOrderVo> vo = this.getPageResult(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionOrderVo.class);
+        PageResult<RedemptionOrderVo> vo = this.getPageResult(buildRedemptionListOption(param)
+            .groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionOrderVo.class);
 
         log.debug("进行商品展示信息的组合");
         preExportList(vo.getDataList());
@@ -318,7 +369,22 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return the select condition step
      */
     private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(MarketOrderListParam param) {
-        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(min(oi.ORDER_SN).as("orderSn"), groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), min(oi.CREATE_TIME).as("createTime"), min(oi.CONSIGNEE).as("consignee"), min(oi.MOBILE).as("mobile"), min(oi.ORDER_STATUS_NAME).as("orderStatusName")).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte) 7));
+        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db()
+            .select(min(oi.ORDER_SN).as("orderSn")
+                , groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId")
+                , groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName")
+                , groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber")
+                , groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds")
+                , groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules")
+                , groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg")
+                , min(oi.CREATE_TIME).as("createTime")
+                , min(oi.CONSIGNEE).as("consignee")
+                , min(oi.MOBILE).as("mobile")
+                , min(oi.ORDER_STATUS_NAME).as("orderStatusName"))
+            .from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID))
+            .leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
+            .where(og.ACTIVITY_ID.eq(param.getActivityId()))
+            .and(og.ACTIVITY_TYPE.eq((byte) 7));
 
         if (StringUtils.isNotBlank(param.getGoodsName())) {
             conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
@@ -354,7 +420,10 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return Workbook
      */
     public Workbook exportOrderList(MarketOrderListParam param) {
-        List<RedemptionOrderVo> list = buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME).fetchInto(RedemptionOrderVo.class);
+        List<RedemptionOrderVo> list = buildRedemptionListOption(param)
+            .groupBy(og.ORDER_SN)
+            .orderBy(oi.CREATE_TIME)
+            .fetchInto(RedemptionOrderVo.class);
         preExportList(list);
         return this.export(list, RedemptionOrderVo.class);
     }
@@ -566,6 +635,9 @@ public class IncreasePurchaseService extends ShopBaseService {
             goods.setMaxPrice(goodsPriceBo.getMaxPrice());
             goods.setMarketPrice(goodsPriceBo.getMaxPrice());
             goods.setLimitAmount(goodsPriceBo.getLimitAmount());
+            if(StringUtil.isNotEmpty(goods.getGoodsImg())){
+                goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+            }
         });
         vo.setGoods(goodsPageResult);
 

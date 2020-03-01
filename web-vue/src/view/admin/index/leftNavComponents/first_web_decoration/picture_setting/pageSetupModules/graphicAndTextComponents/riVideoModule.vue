@@ -11,7 +11,7 @@
             class="videoZb"
             @click="handleToCallAddVideo()"
           >
-            <img :src="moduleSaveData.video_showpath?moduleSaveData.video_showpath:($imageHost+'/image/admin/add_video.png')">
+            <img :src="moduleSaveData.video_img?moduleSaveData.video_img:($imageHost+'/image/admin/add_video.png')">
           </div>
         </div>
         <div class="videoTips">

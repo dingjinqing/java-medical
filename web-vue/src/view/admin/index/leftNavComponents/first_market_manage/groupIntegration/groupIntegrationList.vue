@@ -244,7 +244,7 @@ export default {
   data () {
     return {
       type: 0,
-      activeName: 'first',
+      activeName: 'second',
       shareImgPath: '',
       sharePagePath: '',
       shareDialogShow: false,
@@ -258,6 +258,7 @@ export default {
   },
   mounted () {
     // 初始化数据
+    this.langDefault()
     this.seacherGroupIntegrationList()
   },
   methods: {

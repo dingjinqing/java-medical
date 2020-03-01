@@ -76,16 +76,16 @@
           class="limit-card"
         >
           <div class="use-time">
-            <span>允许适用时间</span>
-            <el-checkbox v-model="workdayChecked">工作日 </el-checkbox>
-            <el-checkbox v-model="weekendChecked">双休日 </el-checkbox>
+            <span>{{$t('memberCard.allowUseTime')}}</span>
+            <el-checkbox v-model="workdayChecked">{{$t('memberCard.workDay')}} </el-checkbox>
+            <el-checkbox v-model="weekendChecked">{{$t('memberCard.breakDay')}} </el-checkbox>
             <span
               class="suite-times"
               v-if="timeValid"
-            >至少选择一项使用时间</span>
+            >{{$t('memberCard.timeTip')}}</span>
           </div>
           <div class="use-num">
-            <span>允许使用</span>
+            <span>{{$t('memberCard.allowUse')}}</span>
             <el-input-number
               v-model="ruleForm.count"
               size="small"
@@ -94,11 +94,11 @@
               :max="999999999"
             >
             </el-input-number>
-            <span>次</span>
+            <span>{{$t('memberCard.times')}}</span>
             <span
               class="suite-times"
               v-if="countValid"
-            >请输入允许使用次数</span>
+            >{{$t('memberCard.storeUseTimes')}}</span>
           </div>
         </div>
       </el-form-item>

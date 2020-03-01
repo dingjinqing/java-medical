@@ -495,7 +495,7 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
 	public static final String CODE_CARD_NO = "code.card.no";
-
+	
 	//会员导入
 	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
 	public static final String CODE_NEED_ONE = "code.need.one";
@@ -522,6 +522,38 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_NUM_MIN = "code.excel.num.min";
 	public static final String CODE_EXCEL_HAVE_SAME = "code.excel.have.same";
 	
+	/**
+	 *  会员列表导出
+	 */
+    public static final String USER_EXPORT="user.export";
+    public static final String UEXP_USER_ID = "user.export.user_id";
+    public static final String UEXP_USERNAME = "user.export.username";
+    public static final String UEXP_MOBILE = "user.export.mobile";
+    public static final String UEXP_WX_OPENID = "user.export.wx_openid";
+    public static final String UEXP_ACCOUNT = "user.export.account";
+    public static final String UEXP_SCORE = "user.export.score";
+    public static final String UEXP_USER_SOURCE = "user.export.user_source";
+    public static final String UEXP_CREATE_TIME = "user.export.create_time";
+    public static final String UEXP_USER_CARD = "user.export.user_card";
+    public static final String UEXP_USER_ADDRESS = "user.export.user_address";
+    public static final String UEXP_ORDER_AMOUNT = "user.export.order_amount";
+    public static final String UEXP_ORDER = "user.export.order";
+    public static final String UEXP_RETURN_ORDER_MONEY = "user.export.return_order_money";
+    public static final String UEXP_RETURN_ORDER = "user.export.return_order";
+    public static final String UEXP_REMARK = "user.export.remark";
+    public static final String UEXP_INVITE_USER_NAME = "user.export.invite_user_name";
+    public static final String UEXP_INVITE_MOBILE = "user.export.invite_mobile";
+    public static final String UEXP_INVITE_GROUP_NAME = "user.export.invite_group_name";
+    public static final String UEXP_REBATE_ORDER_NUM = "user.export.rebate_order_num";
+    public static final String UEXP_CALCULATE_MONEY = "user.export.calculate_money";
+    public static final String UEXP_REBATE_MONEY = "user.export.rebate_money";
+    public static final String UEXP_WITHDRAW_MONEY = "user.export.withdraw_money";
+    public static final String UEXP_SUBLAYER_NUMBER = "user.export.sublayer_number";
+    public static final String UEXP_LEVEL_NAME = "user.export.level_name";
+    public static final String UEXP_GROUP_NAM = "user.export.group_name";
+    
+
+    
 	/**
 	 * 概览
 	 */
@@ -866,8 +898,6 @@ public class JsonResultMessage {
     public static final String WX_MA_PICTORIAL_MONEY_FLAG = "wx.ma.pictorial.money.flag";
     /** 神秘人 */
     public static final String WX_MA_DEFAULT_USER_NAME = "wx.ma.default.user.name";
-    /** 逗号分隔符 */
-    public static final String WX_MA_DOT = "wx.ma.dot";
     /** 元 */
     public static final String WX_MA_PICTORIAL_MONEY = "wx.ma.pictorial.money";
     /**普通商品分享时默认海报分享语*/
@@ -885,10 +915,8 @@ public class JsonResultMessage {
     /** 拼团相关 */
     /** 开团省 */
     public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
-    /** 2人品仅需*/
-    public static final String WX_MA_GROUP_BUY_DOC_PERSON_NUM = "wx.ma.group.buy.doc.person.num";
-    /** 推荐给你 */
-    public static final String WX_MA_GROUP_BUY_DOC_RECOMMEND_TO_YOU="wx.ma.group.buy.doc.recommend.to.you";
+    /** 2人品仅需5元推荐给你*/
+    public static final String WX_MA_GROUP_BUY_DOC = "wx.ma.group.buy.doc";
     /** 砍价 */
     public static final String  WX_MA_BARGAIN_DOC="wx.ma.bargain.doc";
     /** 砍走*/
@@ -911,7 +939,7 @@ public class JsonResultMessage {
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
     public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
-
+    
     // 商品效果导出
     public static final String GOODS_EFFECT_FILE_NAME = "overview.commodity.effect.file_name";
     public static final String GOODS_EFFECT_GOODS_INFO = "overview.commodity.effect.goods_info";
@@ -937,5 +965,9 @@ public class JsonResultMessage {
     public static final String GOODS_RANKING_SALES_ORDER_TOP10 = "overview.commodity.rank.sales_order_top10";
     public static final String GOODS_RANKING_GOODS_NAME = "overview.commodity.rank.goods_name";
 
-
+    // 小程序-分享图片-下载海报错误信息
+    public static final String WX_SHARE_ACTIVITY_DELETED = "wx.share.activity.deleted";
+    public static final String WX_SHARE_GOODS_DELETED = "wx.share.goods.deleted";
+    public static final String WX_SHARE_PIC_ERROR = "wx.share.pic.error";
+    public static final String WX_SHARE_QRCDOE_ERROR = "wx.share.qrcode.error";
 }

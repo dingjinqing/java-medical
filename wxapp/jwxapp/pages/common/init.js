@@ -15,7 +15,7 @@ var init = {
       loading: this.loading
     });
     console.log("init onLoad path: ", this.currentUrl);
-    console.log(this.loading, this.bottom.status)
+    // console.log(this.loading, this.bottom.status)
     //暂时注释
     if (this.loading) {
       if (!this.isBottomPage()) {

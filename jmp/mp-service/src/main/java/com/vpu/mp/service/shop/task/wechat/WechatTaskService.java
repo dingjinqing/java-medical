@@ -151,7 +151,7 @@ public class WechatTaskService extends ShopBaseService {
             }
             List<MpSummaryTrendRecord> list = new ArrayList<>(result.size());
             result.forEach(v->list.add(db().newRecord(MP_SUMMARY_TREND,v)));
-            db().batchInsert(list);
+            db().batchInsert(list).execute();
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
@@ -169,7 +169,7 @@ public class WechatTaskService extends ShopBaseService {
             }
             List<MpVisitPageRecord> list = new ArrayList<>(result.size());
             result.forEach(v->list.add(db().newRecord(MP_VISIT_PAGE,v)));
-            db().batchInsert(list);
+            db().batchInsert(list).execute();
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
@@ -263,7 +263,7 @@ public class WechatTaskService extends ShopBaseService {
                 MpDailyVisitRecord record = db().newRecord(MP_DAILY_VISIT,v);
                 list.add(record);
             });
-            db().batchInsert(list);
+            db().batchInsert(list).execute();
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
@@ -287,7 +287,7 @@ public class WechatTaskService extends ShopBaseService {
                 MpWeeklyVisitRecord record = db().newRecord(MP_WEEKLY_VISIT,v);
                 list.add(record);
             });
-            db().batchInsert(list);
+            db().batchInsert(list).execute();
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
@@ -311,7 +311,7 @@ public class WechatTaskService extends ShopBaseService {
                 MpMonthlyVisitRecord record = db().newRecord(MP_MONTHLY_VISIT,v);
                 list.add(record);
             });
-            db().batchInsert(list);
+            db().batchInsert(list).execute();
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
@@ -407,4 +407,10 @@ public class WechatTaskService extends ShopBaseService {
 		Date from = Date.from(instant);
 		return from;
 	}
+	public void test(){
+        Date date = java.sql.Date.valueOf(LocalDate.now().minusDays(1));
+        WxMaAnalysisService service = getServiceByShopId(getShopId());
+        WxGetWeAnalysService maService=open().getMaExtService();
+        this.getDailyVisitTrend(service,date);
+    }
 }

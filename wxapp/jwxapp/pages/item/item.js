@@ -163,6 +163,14 @@ global.wxPage({
         '/api/wxapp/goods/detail',
         res => {
           if (res.error === 0) {
+            if(res.content.delFlag === 1 || res.content.isOnSale === 0){
+              let tips = res.content.delFlag === 1 ? '抱歉，该商品已删除':'抱歉，该商品已下架';
+              let pageFlag = getCurrentPages().length > 1
+              util.showModal('提示',tips,()=>{
+               if(pageFlag) {wx.navigateBack();return}
+               util.jumpLink(`pages/index/index`,'redirectTo')
+              },false,'',pageFlag ? '返回上一页':'回到首页')
+            }
             if (res.content.activity && [1, 3, 5, 10].includes(res.content.activity.activityType)){
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             }
@@ -495,7 +503,7 @@ global.wxPage({
     )
   },
   // 分享弹窗
-  share() {
+  async share() {
     let activityData = {}
     let {
       goodsId:targetId,
@@ -525,10 +533,20 @@ global.wxPage({
       linePrice,
       ...activityData
     }
-
+    // 提前请求分享内容
+    const apiInfo = {
+      1:'/api/wxapp/groupbuy/share/info',//拼团 
+      3:'/api/wxapp/bargain/share/info', //砍价
+      10:'/api/wxapp/presale/share/info', //定金膨胀
+      default:'/api/wxapp/goods/share/info'//普通商品
+    }
+    let target = [1,3,5,10].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
+    let buttonShareData = await this.requestShareData(target,shareData)
+    console.log(buttonShareData)
     this.setData({
       shareData,
-      showShareDialog: true
+      showShareDialog: true,
+      buttonShareData
     })
   },
   // 切换收藏
@@ -807,16 +825,30 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function() {
-    util.api(
-      '/api/wxapp/groupbuy/share/info',
-      res => {
-        console.log(res)
-      },
-      {
-        activityId: 38,
-        realPrice: 12,
-        linePrice: 30
-      }
-    )
+    console.log(this.data.buttonShareData)
+    return {
+      ...this.data.buttonShareData
+    }
+  },
+  requestShareData(target,shareData){
+    return new Promise(resolve=>{
+      util.api(target,res=>{
+        if(res.error === 0){
+          let path = `/pages/item/item?gid=${this.data.goodsId}`
+          if(this.data.goodsInfo.activity){
+            path +=`&atp=${this.data.goodsInfo.activity.activityType}&aid=${this.data.goodsInfo.activity.activityId}`
+          }
+          console.log(res)
+          resolve({
+            title:res.content.shareDoc,
+            path:path,
+            imageUrl:res.content.imgUrl,
+          })
+        }
+      },{
+        ...shareData,
+        userName:util.getCache('nickName')
+      })
+    })
   }
 })

@@ -64,7 +64,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
         // 拼团活动信息不可用
         if (groupDrawRecord == null) {
             groupDrawLog("分享", "拼团抽奖活动信息不可用");
-            goodsShareInfo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
+            goodsShareInfo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
             return goodsShareInfo;
         }
 
@@ -72,11 +72,10 @@ public class GroupDrawPictorialService extends ShopBaseService {
         // 拼团商品信息不可用
         if (goodsRecord == null) {
             groupDrawLog("分享", "拼团抽奖商品信息不可用");
-            goodsShareInfo.setShareCode(GoodsShareInfo.GOODS_DELETED);
+            goodsShareInfo.setShareCode(PictorialConstant.GOODS_DELETED);
             return goodsShareInfo;
         }
         GoodsSharePostConfig shareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
-        goodsShareInfo.setShareAction(shareConfig.getShareAction());
 
 
         // 用户自定义分享样式
@@ -90,10 +89,14 @@ public class GroupDrawPictorialService extends ShopBaseService {
             goodsShareInfo.setShareDoc(shareConfig.getShareDoc());
         } else {
             // 使用默认分享图片样式
-            ShopRecord shop = saas.shop.getShopById(getShopId());
             String imgPath = createGroupDrawShareImg(groupDrawRecord, goodsRecord, param);
-            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_DOC, "messages",param.getRealPrice());
+            if (imgPath == null) {
+                goodsShareInfo.setShareCode(PictorialConstant.GOODS_PIC_ERROR);
+                return goodsShareInfo;
+            }
             goodsShareInfo.setImgUrl(imgPath);
+            ShopRecord shop = saas.shop.getShopById(getShopId());
+            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_DOC, "messages",param.getRealPrice());
             goodsShareInfo.setShareDoc(doc);
         }
         goodsShareInfo.setImgUrl(imageService.getImgFullUrl(goodsShareInfo.getImgUrl()));

@@ -18,6 +18,11 @@ public class CouponConstant {
      */
     public static final byte COUPON_TYPE_SPILT =1;
 
+    //******b2c_customer_avail_coupons 的获取方式，0：发放，1：领取，2：优惠券礼包活动
+    public static final byte ACCESS_MODE_GRANT = 0;
+    public static final byte ACCESS_MODE_RECEIVE = 1;
+    public static final byte ACCESS_MODE_COUPON_PACK = 2;
+
     //*********发卷来源   1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券
     /**
      * 支付送券

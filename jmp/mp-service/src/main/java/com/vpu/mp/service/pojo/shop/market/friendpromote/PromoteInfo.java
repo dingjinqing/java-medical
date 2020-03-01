@@ -1,7 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.friendpromote;
 
+import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -53,4 +55,22 @@ public class PromoteInfo {
     private Byte orderFlag;
     /** 单个用户每天最多可帮忙助力次数 */
     private Integer promoteTimesPerDay;
+    /** 是否可以继续助力 */
+    private CanPromote canPromote;
+    /** 分享可得助力次数*/
+    private Byte shareCreateTimes;
+    /** 是否可以分享获取助力次数*/
+    private Byte canShare;
+    /** 活动结束时间 */
+    private Timestamp endTime;
+    /** 剩余秒数 */
+    private Integer surplusSecond;
+    /** 助力总是 */
+    private Integer hasPromoteValue;
+    /** 发起id */
+    private Integer launchId;
+    /** 更多的助力活动 */
+    private List<PromoteActList> promoteActList;
+    /** 发起标识 */
+    private Integer launchFlag;
 }

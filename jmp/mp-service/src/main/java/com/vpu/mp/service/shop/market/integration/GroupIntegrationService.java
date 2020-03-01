@@ -13,9 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,12 +32,14 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
 import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
+import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -100,7 +104,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param id
 	 * @return
 	 */
-	public GroupIntegrationDefineEditVo selectGroupIntegrationDefineById(Integer id) {
+	public GroupIntegrationVo selectGroupIntegrationDefineById(Integer id) {
 		if(id == null) {
 			return null;
 		}
@@ -111,7 +115,15 @@ public class GroupIntegrationService extends ShopBaseService {
 		if(fetchOneInto == null) {
 			return null;
 		}
-		return fetchOneInto;
+		String activityCopywriting = fetchOneInto.getActivityCopywriting();
+		ActivityCopywriting parseJson=null;
+		if(StringUtils.isNotEmpty(activityCopywriting)) {
+			parseJson = Util.parseJson(activityCopywriting, ActivityCopywriting.class);
+		}
+		GroupIntegrationVo vo=new GroupIntegrationVo();
+		BeanUtils.copyProperties(fetchOneInto, vo);
+		vo.setActivityCopywriting(parseJson);
+		return vo;
 		
 	}
 	/**
@@ -150,6 +162,11 @@ public class GroupIntegrationService extends ShopBaseService {
 			return JsonResultCode.GROUP_INTEGRATION_TOTAL;
 		}
 		Double paramNum = calculateParamNum(inteGroup,param.getLimitAmount());
+		ActivityCopywriting activityCopywriting = param.getActivityCopywriting();
+		String json=null;
+		if(activityCopywriting!=null) {
+			json = Util.toJson(activityCopywriting);
+		}
 		GroupIntegrationDefineRecord record = db().newRecord(GROUP_INTEGRATION_DEFINE,param);
 		record.setStatus(GroupIntegrationDefineEnums.Status.NORMAL.value());
 		record.setDelFlag(DelFlag.NORMAL_VALUE);
@@ -157,6 +174,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		record.setIsContinue(GroupIntegrationDefineEnums.IsContinue.TRUE.value());
 		record.setParamN(paramNum);
 		record.setShopId(getShopId());
+		record.setActivityCopywriting(json);
 		int executeInsert = db().executeInsert(record);
 		if(executeInsert>0) {
 			logger().info("【组队瓜分积分】 添加活动"+param.getName()+" 创建成功");

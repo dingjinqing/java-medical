@@ -21,7 +21,7 @@ global.wxComponent({
    */
   methods: {
     share(){
-      this.triggerEvent('shareMoments')
+      // this.triggerEvent('shareMoments')
       this.bindClose()
     },
     async downloadPoster(e){

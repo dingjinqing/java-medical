@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.member;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.junit.Test;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +18,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExcelModel;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
+import com.vpu.mp.service.shop.member.excel.UserExpColNameI18n;
 
+/**
+ * 	会员导出
+ * @author 黄壮壮
+ *
+ */
 @Service
 public class UserExportService extends ShopBaseService{
 	@Autowired
 	private MemberDaoService memDao;
+	@Autowired
+	private UserExpCfgService uExpCfgSvc;
 	/**
 	 * 	用户可选的全部数据
 	 */
@@ -42,6 +53,11 @@ public class UserExportService extends ShopBaseService{
 	private static final String MAX__KEY = "max_num";
 	private static final Integer MAX_VALUE = 5000;
 	/**
+	 * 	系统中可导出的数据量
+	 */
+	private static final String AVAIL_KEY="avail_num";
+
+	/**
 	 * 	第一行固定的值
 	 */
 	private static final String firstColName;
@@ -49,7 +65,6 @@ public class UserExportService extends ShopBaseService{
 	 * 	初始化excel第一列固定的值
 	 */
 	static {
-		System.out.println("初始化固定的第一行");
 		Class<?> clazz = UserExpVo.class;
 		String tmpName = null;
 		for(Field field: clazz.getDeclaredFields()) {
@@ -63,8 +78,9 @@ public class UserExportService extends ShopBaseService{
 	}
 	/**
 	 * 	导出用户
+	 * @return 
 	 */
-	public void userExport(MemberPageListParam mParam) {
+	public Workbook userExport(MemberPageListParam mParam,String language) {
 		UserExpParam param = mParam.getUserExpParam();
 		//	确保导出的数据是在0-5000条之间
 		Integer startNum = param.getStartNum();
@@ -75,19 +91,26 @@ public class UserExportService extends ShopBaseService{
 		if(endNum==null || endNum>MAX_VALUE) {
 			param.setEndNum(MAX_VALUE);
 		}
-		//	TODO	模拟查询数据库
+		List<String> expCols = param.getColumns();
+		if(expCols==null || expCols.size()==0) {
+			param.setColumns(new ArrayList<String>(Arrays.asList(firstColName)));
+		}else if(!firstColName.equalsIgnoreCase(expCols.get(0))) {
+			expCols.add(0, firstColName);
+		}
+		
+		//	保存用户导出配置
+		uExpCfgSvc.setUserExpCfg(param.getColumns());
+		
+		//	查询数据库
 		List<UserExpVo> data = memDao.getExportAllUserList(mParam);
 		
 		List<UserExcelModel> excelModel = new ArrayList<>();
-		List<String> columns = null;
+		List<String> columns = param.getColumns();
 		for(UserExpVo vo: data) {
 			Map<String, Object> uExpMap = changeUserExpVo2Map(vo);
-			columns = param.getColumns();
-			// 	循环
+		
 			//	创建UserExcelModel
 			UserExcelModel model = new UserExcelModel();
-			
-			
 			Map<String,Object> map = new LinkedHashMap<>();
 			for(String key: columns) {
 				// TODO	直接获取的数据
@@ -103,16 +126,16 @@ public class UserExportService extends ShopBaseService{
 					// TODO	进一步需要处理的数据
 					logger().info("查询其他数据");
 				}
-				
-				
-				
 			}
 			model.setOther(map);
+			excelModel.add(model);
 		}
-			
 		
-
-		
+		Workbook workbook = ExcelFactory.createWorkbook();
+		ExcelWriter excelWriter = new ExcelWriter(language,workbook);
+		excelWriter.setColI18n(new UserExpColNameI18n());
+		excelWriter.writeModelListWithDynamicColumn(excelModel, UserExcelModel.class);
+		return workbook;
 	}
 	
 	public Map<String, Object> changeUserExpVo2Map(UserExpVo vo) {
@@ -129,12 +152,13 @@ public class UserExportService extends ShopBaseService{
 				} 
 			}
 		}
-		System.out.println(map);
 		return map;
 	}
 	
 	
-	
+	public String getFirstColName() {
+		return firstColName;
+	}
 	
 	
 	/**
@@ -148,10 +172,14 @@ public class UserExportService extends ShopBaseService{
 		JsonNode ars = mapper.valueToTree(getAllExportCfg());
 		ob.set(ALL_CFG, ars);
 		//TODO 从数据取数据
-		ob.set(CHOOSED_CFG, null);
+		JsonNode cfg = mapper.valueToTree(uExpCfgSvc.getUserExpCfg());
+		ob.set(CHOOSED_CFG, cfg);
 		//	设置允许导出最大数量
 		JsonNode maxNum = mapper.valueToTree(MAX_VALUE);
 		ob.set(MAX__KEY, maxNum);
+		//	目前可导出数量
+		JsonNode availNum = mapper.valueToTree(memDao.getNumOfUser());
+		ob.set(AVAIL_KEY, availNum);
 		return ob;
 	}
 	

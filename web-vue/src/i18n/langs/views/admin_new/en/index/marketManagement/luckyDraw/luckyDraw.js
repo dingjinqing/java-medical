@@ -114,6 +114,7 @@ export const en = {
     name: '4'
   }],
   changeStatusComment: 'This operation will enable the activity, do you want to continue?',
+  stopStatusComment: 'This action will deactivate the event. Do you want to continue?',
   DeleteLuckDrawComment: 'This operation will delete the activity, will it continue?',
   confirm: 'OK',
   cancel: 'Cancel',
@@ -128,15 +129,19 @@ export const en = {
   lotteryPrize: 'prize ',
   luckSourceList: [
     [null, 'all '],
-    [0, 'share '],
-    [1, 'open screen courtesy '],
-    [2, 'payment polite ']
+    [0, 'Decoration link'],
+    [1, 'Open screen with courtesy'],
+    [2, 'Pay courtesy'],
+    [3, 'Share'],
+    [4, 'Polite evaluation'],
+    [5, 'Share courtesy'],
+    [6, 'Scan code']
   ],
   chanceSourceList: [
     [null, 'all '],
-    [0, 'free '],
-    [1, 'share '],
-    [2, 'integral ']
+    [1, 'free '],
+    [2, 'share '],
+    [3, 'integral ']
   ],
   lotteryGradeList: [
     [null, 'all '],

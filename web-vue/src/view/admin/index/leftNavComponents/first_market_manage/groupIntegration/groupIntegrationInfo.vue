@@ -1,6 +1,6 @@
 <template>
   <div class="groupwrapper">
-    <div class="integralAct">
+    <div class="integralAct" v-show="isMain">
       <el-form
         ref="activity"
         :model="activity"
@@ -187,27 +187,37 @@
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item
+          label="活动规则说明："
+           prop="activityInfo"
+        >
+        <el-button type="primary" @click="showAct" size="small">设置规则说明</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
-    <div class="btn">
+    <div class="btn" v-show="isMain">
       <el-button
         type="primary"
         size="small"
         @click="saveActivity()"
       >保存</el-button>
     </div>
+    <groupIntegrationActivityWrtie v-if="!isMain" @ActivityMsg="activityMsg" :sendMsg="sendMsg"/>
   </div>
-
 </template>
 <script>
 import { createGroupIntegration, editGroupIntegration, selectGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
+import groupIntegrationActivityWrtie from './groupIntegrationActivityWrtie'
 export default {
   props: {
     isEditId: {
       type: Number,
       default: 0
     }
+  },
+  components: {
+    groupIntegrationActivityWrtie
   },
   data () {
     var checklimitAmount = (rule, value, callback) => {
@@ -270,9 +280,15 @@ export default {
         callback()
       }
     }
+    var checkActivityInfo = (rule, value, callback) => {
+      callback()
+    }
     return {
+      isMain: true,
       edit: false,
       paramId: null,
+      sendMsg: null,
+      canSave: false,
       activity: {
         id: null,
         name: '',
@@ -284,7 +300,11 @@ export default {
         limitAmount: null,
         joinLimit: 1,
         divideType: 0,
-        isDayDivide: 0
+        isDayDivide: 0,
+        activityCopywriting: {
+          document: null,
+          is_use_default: null
+        }
       },
       fromRules: {
         name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
@@ -296,7 +316,8 @@ export default {
         inteGroup: [{ required: true, validator: checkInteGroup, trigger: 'blur' }],
         joinLimit: [{ required: true, validator: checkJoinLimit, trigger: 'blur' }],
         divideType: [{ required: true, trigger: 'blur' }],
-        isDayDivide: [{ required: true, trigger: 'blur' }]
+        isDayDivide: [{ required: true, trigger: 'blur' }],
+        activityInfo: [{ required: true, validator: checkActivityInfo }]
       },
       srcList: {
         src1: `${this.$imageHost}/image/admin/new_preview_image/pin_integration.jpg`
@@ -310,6 +331,9 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.activity = res.content
+          if (!this.isEmpty(res.content.activityCopywriting.document)) {
+            this.canSave = true
+          }
           console.log('编辑返回')
           console.log(this.activity)
         }
@@ -376,6 +400,10 @@ export default {
         this.$message.warning('开始时间应小于结束时间')
         return false
       }
+      if (!this.canSave) {
+        this.$message.warning('请填写活动规则说明')
+        return false
+      }
       return true
     },
     isEmpty (obj) {
@@ -384,11 +412,25 @@ export default {
       } else {
         return false
       }
+    },
+    // 显示活动规则说明
+    showAct () {
+      this.isMain = false
+      console.log(this.activity.activityCopywriting)
+      this.sendMsg = this.activity.activityCopywriting
+    },
+    activityMsg (data) {
+      console.log('回来的值')
+      console.log(data)
+      this.canSave = true
+      this.activity.activityCopywriting = data
+      this.isMain = true
     }
   },
   mounted () {
     // const id = this.$route.params.id
     // this.edit = !!id
+    this.langDefault()
     if (this.isEditId === 0) {
       this.edit = false
       return

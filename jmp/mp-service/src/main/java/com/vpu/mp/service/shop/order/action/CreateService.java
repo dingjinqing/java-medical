@@ -1126,17 +1126,21 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 活动满包邮商品
      *  满包邮活动
-     * @param address
+     * @param address 地址
      * @param bos
-     * @param tolalNumberAndPrice
-     * @param date
+     * @param tolalNumberAndPrice 总价
+     * @param date 时间
+     * @return  符合满包邮的商品
      */
     public List<Integer> fullPackage(UserAddressVo address, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice, Timestamp date){
+        logger().info("满包邮活动开始---");
         List<FreeShippingVo> validFreeList = freeShippingService.getValidFreeList(date);
+        logger().info("满包邮---有效活动{}个",validFreeList.size());
         if (validFreeList.size()==0){
             return new ArrayList<>();
         }
         List<Integer> goodsIds = bos.stream().map(OrderGoodsBo::getGoodsId).distinct().collect(Collectors.toList());
+        logger().info("商品{}",Util.listToString(goodsIds));
         List<Integer> freeGoodsIds=new ArrayList<>();
         for (FreeShippingVo freeShip : validFreeList) {
             if (goodsIds.isEmpty()) {

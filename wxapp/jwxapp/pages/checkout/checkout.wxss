@@ -188,7 +188,7 @@
   width: 100%;
 }
 .checkout_footer > text{
-  line-height: 80rpx;
+  line-height: 100rpx;
 }
 .checkout_footer > .footer_content{
   flex: 1;
@@ -198,6 +198,8 @@
   padding: 0 30rpx;
   margin-left: 20rpx;
   color:#fff;
+  text-align: center;
+  min-width: 180rpx;
 }
 
 .picker{
