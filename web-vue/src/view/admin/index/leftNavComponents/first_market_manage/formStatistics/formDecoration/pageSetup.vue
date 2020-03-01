@@ -35,7 +35,9 @@
 <script>
 export default {
   components: {
-    pageSetupMain: () => import('./pageSetupModules/pageSetupMain') // 表单信息配置
+    pageSetupMain: () => import('./pageSetupModules/pageSetupMain'), // 表单信息配置
+    // 表单信息模块
+    RiName: () => import('./pageSetupModules/formModule/riName') // 姓名模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -49,7 +51,10 @@ export default {
       topIconFlag: true,
       modulesShow: false,
       thirdRightModulesList: [
-
+        {
+          id: 0,
+          name: 'RiName'
+        }
       ],
       showModule: null,
       modulesData: {}, //  当前右侧模块显示数据
@@ -64,7 +69,7 @@ export default {
     nowRightShowMoudlesIndex: {
       handler (newData) {
         console.log(newData)
-        if (newData) {
+        if (newData !== -1) {
           this.topIconFlag = false
           this.thirdRightModulesList.forEach(item => {
             if (item.id === newData) {
