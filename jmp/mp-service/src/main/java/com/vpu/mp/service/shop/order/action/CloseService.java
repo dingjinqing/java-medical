@@ -88,7 +88,6 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		try {
 			transaction(()->{
 				returnOrder(order);
-				//TODO 好友代付退
 				orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_CLOSED);
                 //退优惠券
                 if(BigDecimalUtil.compareTo(order.getDiscount() , null) > 0) {
@@ -107,6 +106,9 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 	}
 
 	public void returnOrder(OrderInfoVo order) throws MpException {
+	    if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+
+        }
 	    if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_DEPOSIT)){
 	        //预售订单特殊处理
             if(order.getBkReturnType() != null && order.getBkReturnType().equals(OrderConstant.BK_RETURN_TYPE_Y)){

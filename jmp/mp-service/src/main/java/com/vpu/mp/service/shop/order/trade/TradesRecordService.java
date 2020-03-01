@@ -5,12 +5,11 @@ import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
-
-import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 
 /**
  * table:b2c_trades_record

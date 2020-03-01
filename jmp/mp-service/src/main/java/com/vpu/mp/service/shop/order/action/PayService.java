@@ -288,7 +288,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         //TODO 异常订单处理等等
 
         // 订单生效时营销活动后续处理
-        processOrderEffective(orderInfo, orderInfo);
+        processOrderEffective(orderInfo);
         //模板消息
         sendMessage.send(orderInfo, goods);
 
@@ -308,11 +308,10 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     /**
      *  支付活动
-     * @param param
      * @param orderInfo
      * @throws MpException
      */
-    private void processOrderEffective(OrderInfoRecord param, OrderInfoRecord orderInfo) throws MpException {
+    public void processOrderEffective(OrderInfoRecord orderInfo) throws MpException {
         if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
             return;
         }
@@ -322,7 +321,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         OrderBeforeParam orderBeforeParam =new OrderBeforeParam();
         orderBeforeParam.setActivityType(activityType);
         orderBeforeParam.setActivityId(orderInfo.getActivityId());
-        orderBeforeParam.setDate(param.getCreateTime());
+        orderBeforeParam.setDate(orderInfo.getCreateTime());
         orderBeforeParam.setGoods(new ArrayList<>());
         List<GoodsRecord> goodsList = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
         Map<Integer, OrderBeforeParam.Goods> orderGoodsMap = orderGoodsService.getOrderGoods(orderInfo.getOrderSn()).intoMap(OrderGoods.ORDER_GOODS.GOODS_ID, OrderBeforeParam.Goods.class);

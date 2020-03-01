@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -9,6 +11,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
@@ -16,20 +19,27 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayVo;
+import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.sub.SubOrderService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
+import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
+import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,6 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 好友代付
  * @author 王帅
  */
+@Service
 public class InsteadPayService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, InsteadPayParam> {
 
     @Autowired
@@ -59,6 +70,21 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
 
     @Autowired
     private OrderGoodsService orderGoodsService;
+
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
+
+    @Autowired
+    private TradesRecordService tradesRecord;
+
+    @Autowired
+    public PaymentRecordService record;
+
+    @Autowired
+    private AtomicOperation atomicOperation;
+
+    @Autowired
+    private PayService payService;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -218,5 +244,65 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         return null;
     }
 
+    public void businessLogic(PaymentRecordParam param, SubOrderInfoRecord order) throws MpException {
+        //添加支付记录
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+        //交易记录
+        tradesRecord.addRecord(order.getMoneyPaid(),order.getSubOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CRASH_WX_PAY.val(),RecordTradeEnum.TRADE_FLOW_IN.val(),TradesRecordService.TRADE_CONTENT_MONEY);
+        //完成支付
+        subOrderService.finish(order.getSubOrderSn(), paymentRecord);
+        //订单
+        checkMainOrderToWaitDeliver(order.getSubOrderSn());
+    }
 
+    public void checkMainOrderToWaitDeliver(String subOrderSn) throws MpException {
+        //代付订单
+        SubOrderInfoRecord subOrder = subOrderService.get(subOrderSn);
+        //订单
+        OrderInfoRecord order = orderInfo.getOrderByOrderSn(subOrder.getMainOrderSn());
+        //获取已支付金额（包含当此）
+        BigDecimal moneyPaid = BigDecimalUtil.add(order.getMoneyPaid(), subOrder.getMoneyPaid());
+        if(BigDecimalUtil.compareTo(moneyPaid, order.getInsteadPayMoney()) > -1){
+            logger().info("代付子单支付回调_支付金额大于代付金额");
+            //支付金额大于代付金额
+            toWaitDeliver(order);
+            //超付退款
+            overpay(moneyPaid, order.getInsteadPayMoney());
+            //设置支付金额
+            moneyPaid = order.getInsteadPayMoney();
+        }
+        //设置订单moneyPaid
+        orderInfo.insteadPayOrderSetMoney(order, moneyPaid);
+        //消息推送
+        sendMessage.sendinsteadPay(subOrder, order);
+    }
+
+    private void toWaitDeliver(OrderInfoRecord order) throws MpException {
+        if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY)) {
+            logger().info("代付子单支付回调,设置订单为待发货,更新库存");
+            orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_WAIT_DELIVERY);
+            //订单商品
+            Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
+            //库存销量
+            atomicOperation.updateStockAndSalesByLock(order, goods.into(OrderGoodsBo.class), false);
+            // 订单生效时营销活动后续处理
+            try {
+                payService.processOrderEffective(order);
+            } catch (MpException e) {
+                if(!JsonResultCode.CODE_ORDER_GIFT_GOODS_ZERO.equals(e.getErrorCode())){
+                    //赠品减活动库存失败忽略
+                    throw e;
+                }
+            }
+        }
+    }
+
+    private void overpay(BigDecimal moneyPaid, BigDecimal insteadPayMoney) {
+        if(BigDecimalUtil.compareTo(moneyPaid, insteadPayMoney) == 1){
+            logger().info("代付子单支付回调,超付退款");
+
+        }
+
+
+    }
 }

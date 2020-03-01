@@ -684,8 +684,11 @@ public class OrderInfoService extends ShopBaseService {
 			order.setOrderStatus(OrderConstant.ORDER_FINISHED);
 			order.setFinishedTime(DateUtil.getSqlTimestamp());
 			break;
+        case OrderConstant.ORDER_WAIT_DELIVERY:
+            order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+            break;
 		default:
-			break;
+			return;
 		}
 		order.update();
 	}
@@ -931,6 +934,11 @@ public class OrderInfoService extends ShopBaseService {
 
     public Byte getOrderIsReturnCoupon(Integer orderId) {
         return db().select(TABLE.IS_REFUND_COUPON).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(Byte.class);
+    }
+
+    public void insteadPayOrderSetMoney(OrderInfoRecord order, BigDecimal money){
+        order.setMoneyPaid(money);
+        order.update();
     }
 
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/

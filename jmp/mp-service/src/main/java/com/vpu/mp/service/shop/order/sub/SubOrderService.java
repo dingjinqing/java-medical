@@ -2,8 +2,10 @@ package com.vpu.mp.service.shop.order.sub;
 
 import com.vpu.mp.db.shop.tables.SubOrderInfo;
 import com.vpu.mp.db.shop.tables.UserDetail;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -20,9 +22,9 @@ import java.math.BigDecimal;
  */
 @Service
 public class SubOrderService  extends ShopBaseService {
+
     private SubOrderInfo TABLE = SubOrderInfo.SUB_ORDER_INFO;
     private UserDetail TABLE_USER_DETAIL = UserDetail.USER_DETAIL;
-
 
     public SubOrderInfoRecord create(String orderSn, BigDecimal money, String message, Integer userId, String UserName){
         logger().info("代付生成sub order start");
@@ -52,5 +54,17 @@ public class SubOrderService  extends ShopBaseService {
             .where(TABLE.MAIN_ORDER_SN.eq(orderSn).and(TABLE.ORDER_STATUS.in(OrderConstant.SubOrderConstant.SUB_ORDER_PAY_OK, OrderConstant.SubOrderConstant.SUB_ORDER_REFUND_SUCESS)))
             .orderBy(TABLE.PAY_TIME.desc());
         return getPageResult(select, currentPage, pageRows, InsteadPayDetailsVo.class);
+    }
+
+    public SubOrderInfoRecord get(String subOrderSn){
+        return db().selectFrom(TABLE).where(TABLE.SUB_ORDER_SN.eq(subOrderSn)).fetchAny();
+    }
+
+    public void finish(String subOrderSn, PaymentRecordRecord record){
+        SubOrderInfoRecord order = get(subOrderSn);
+        order.setOrderStatus(OrderConstant.SubOrderConstant.SUB_ORDER_PAY_OK);
+        order.setPaySn(record.getPaySn());
+        order.setPayTime(DateUtil.getSqlTimestamp());
+        order.update();
     }
 }

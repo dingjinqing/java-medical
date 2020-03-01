@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -249,6 +250,14 @@ public class OrderOperateSendMessage extends ShopBaseService {
         logger().info("订单收货模板消息end");
     }
 
+    /**
+     * TODO 代付成功消息推送(目前AT0654为小程序消息推送，在下单获取小程序授权推送无此模板)
+     * @param subOrder
+     * @param order
+     */
+    public void sendinsteadPay(SubOrderInfoRecord subOrder, OrderInfoRecord order) {
+
+    }
 
     private String getGoodsName(List<OrderGoodsRecord> orderGoods) {
         return getString(orderGoods.get(0).getGoodsName(), orderGoods.stream().mapToInt(OrderGoodsRecord::getGoodsNumber).sum(), orderGoods.size());
@@ -274,5 +283,4 @@ public class OrderOperateSendMessage extends ShopBaseService {
         }
         return false;
     }
-
 }
