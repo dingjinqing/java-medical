@@ -493,7 +493,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             case ORDER_PIN_SUCCESSS:
                 return "已成团";
             case ORDER_GIVE_GIFT_FINISHED:
-                return "礼单(主订单)环节已完成";
+                return "送礼完成";
             default:
                 log.debug("订单状态[{}]无效！", status);
                 throw new IllegalArgumentException();

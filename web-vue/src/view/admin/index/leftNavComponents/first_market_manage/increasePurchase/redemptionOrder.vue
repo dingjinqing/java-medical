@@ -24,7 +24,7 @@
         </el-table-column>
         <el-table-column
           :label="$t('purchase.majorgoods')"
-          align="left"
+          align="center"
         >
           <template slot-scope="scope">
             <ul>
@@ -37,7 +37,6 @@
                     <el-image
                       style="width: 50px; height: 50px"
                       :src="item.goodsImg"
-                      :fit="fit"
                     ></el-image>
                   </el-form-item>
                   <el-form-item style="width: 100px">
@@ -53,7 +52,7 @@
         </el-table-column>
         <el-table-column
           :label="$t('purchase.redemptiongoods')"
-          align="left"
+          align="center"
         >
           <template slot-scope="scope">
             <ul>
@@ -66,7 +65,6 @@
                     <el-image
                       style="width: 50px; height: 50px"
                       :src="item.goodsImg"
-                      :fit="fit"
                     ></el-image>
                   </el-form-item>
                   <el-form-item style="width: 100px">
@@ -112,16 +110,17 @@
   </div>
 </template>
 <script>
-import { orderList } from '@/api/admin/marketManage/increasePurchase.js'
-// import { getList, changeActivity, add, update, getDetail, share, orderList, detailList, orderExport, detailExport } from '@/api/admin/marketManage/increasePurchase.js'
+import { orderList, orderExport } from '@/api/admin/marketManage/increasePurchase.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: {
     pagination,
     wrapper,
-    marketOrderSearchTab
+    marketOrderSearchTab,
+    download
   },
   mounted () {
     this.langDefault()
@@ -146,7 +145,14 @@ export default {
         districtCode: null,
         currentPage: 0,
         pageRows: 20
-      }
+      },
+      imgHost: `${this.$imageHost}`,
+      orderStatusArr: this.$t('groupBuy.orderStatusArr')
+    }
+  },
+  watch: {
+    lang () {
+      this.orderStatusArr = this.$t('groupBuy.orderStatusArr')
     }
   },
   methods: {
@@ -155,23 +161,19 @@ export default {
       this.param.category = this.param.status
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
-      console.log(this.param)
       orderList(this.param).then((res) => {
-        console.log(res)
         if (res.error === 0) {
-          this.handleData(res.content)
+          this.tableData = res.content.dataList
+          this.tableData.map((item, index) => {
+            this.setDomainImg(item.mainGoods)
+            this.setDomainImg(item.redemptionGoods)
+            item.orderStatusName = this.orderStatusArr[item.orderStatus]
+          })
           this.pageParams = res.content.page
           this.param.currentPage = res.content.page.currentPage
           this.param.pageRows = res.content.page.pageRows
         }
       })
-    },
-    // 表格数据处理
-    handleData (data) {
-      // data.dataList.map((item, index) => {
-      //   console.log(item.purchaseInfo)
-      // })
-      this.tableData = data.dataList
     },
     // 省市区三级联动
     handleAreaData (val) {
@@ -180,7 +182,19 @@ export default {
       this.param.districtCode = val['district']
     },
     exportDataList () {
-      alert(11)
+      this.param.category = this.param.status
+      let params = Object.assign({}, this.param)
+      orderExport(params).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      })
+    },
+    // 图片加域名
+    setDomainImg (data) {
+      data.map((item, index) => {
+        item.goodsImg = this.imgHost + '/' + item.goodsImg
+      })
     }
   }
 }
