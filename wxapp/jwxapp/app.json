@@ -34,7 +34,8 @@
     "pages/servicecomment/servicecomment",
     "pages/cardrecord/cardrecord",
     "pages/fullprice/fullprice",
-    "pages/maingoodslist/maingoodslist"
+    "pages/maingoodslist/maingoodslist",
+    "pages/usercardup/usercardup"
   ],
   "window": {
     "backgroundTextStyle": "dark",

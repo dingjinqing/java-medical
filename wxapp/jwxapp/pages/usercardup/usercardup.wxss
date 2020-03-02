@@ -1,0 +1,33 @@
+/* pages/usercardup/usercardup.wxss */
+page{
+  background: #f5f5f5;
+}
+.main-container{
+  padding: 0 24rpx;
+}
+.main-container .clearfix{
+  background: #fff;
+  margin-top: 20rpx;
+  padding: 24rpx 20rpx;
+  font-size: 26rpx;
+  color: #888;
+  border-radius: 8rpx;
+}
+.clearfix view{
+  float: left;
+}
+.clearfix view:last-child{
+  float: right;
+  color: #000;
+}
+.no_state{
+    height: 100%;
+    text-align: center;
+    color: #666;
+    font-size: 26rpx;
+}
+.no_state image{
+  width: 200rpx;
+  margin-top: 380rpx;
+  margin-bottom: 20rpx;
+}

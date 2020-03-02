@@ -143,7 +143,7 @@ global.wxPage({
         cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
-        cardInfo.storeList = cardInfo.storeList 
+        cardInfo.storeList = cardInfo.storeList
         if (cardInfo.activation) {
           card_activation = card_info.activation;
         }
@@ -497,14 +497,19 @@ global.wxPage({
   },
   // 点击使用门店
   toStoreList () {
-      console.log(this.data)
-      util.jumpLink('/pages/storelist/storelist?cardId=' + this.data.cardInfo.cardId)
+    util.jumpLink('/pages/storelist/storelist?cardId=' + this.data.cardInfo.cardId)
   },
   // 点击使用记录
   toCardRecord (e) {
     console.log(e)
     util.navigateTo({
       url: '/pages1/usercardrecord/usercardrecord?cardNo=' + e.currentTarget.dataset.cardno,
+    })
+  },
+  // 点击升降级记录
+  toUserCardUp () {
+    util.navigateTo({
+      url: '/pages/usercardup/usercardup',
     })
   }
 })
