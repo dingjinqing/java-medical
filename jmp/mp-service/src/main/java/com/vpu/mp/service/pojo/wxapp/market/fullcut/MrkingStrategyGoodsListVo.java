@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.market.fullcut;
 
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
+import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +35,11 @@ public class MrkingStrategyGoodsListVo {
      * 当前已选商品总价
      */
     private BigDecimal totalPrice;
+
+    /**
+     * state==4时，活动需要的会员卡列表
+     */
+    private List<SimpleMemberCardVo> cardList;
 
     @Setter
     @Getter
