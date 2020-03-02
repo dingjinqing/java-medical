@@ -464,8 +464,8 @@ public class IncreasePurchaseService extends ShopBaseService {
         }
     }
 
-    private String orderStatus2Name(byte staus) {
-        switch (staus) {
+    private String orderStatus2Name(byte status) {
+        switch (status) {
             case ORDER_WAIT_PAY:
                 return "待付款";
             case ORDER_CANCELLED:
@@ -495,7 +495,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             case ORDER_GIVE_GIFT_FINISHED:
                 return "礼单(主订单)环节已完成";
             default:
-                log.debug("订单状态[{}]无效！", staus);
+                log.debug("订单状态[{}]无效！", status);
                 throw new IllegalArgumentException();
         }
     }
