@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.wxapp.market.fullcut.MrkingStrategyGoodsListVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
+import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -79,6 +80,8 @@ public class MrkingStrategyService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private MemberCardService memberCardService;
 
     /**
      * 新建满折满减活动
@@ -162,7 +165,7 @@ public class MrkingStrategyService extends ShopBaseService {
         }
         if(StringUtil.isNotEmpty(record.getCardId())){
             res.setCardIds(Util.splitValueToList(record.getCardId()));
-            res.setMemberCards(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIdsString(record.getCardId()));
+            res.setMemberCards(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIds(Util.splitValueToList(record.getCardId())));
         }
         if(StringUtil.isNotEmpty(record.getRecommendCatId())){
             res.setRecommendCatIds(Util.splitValueToList(record.getRecommendCatId()));
@@ -228,6 +231,7 @@ public class MrkingStrategyService extends ShopBaseService {
 
             if(validCardIds == null || validCardIds.size() == 0){
                 vo.setState((byte)4);
+                vo.setCardList(memberCardService.getMemberCardByCardIds(cardIds));
             }
         }
 
