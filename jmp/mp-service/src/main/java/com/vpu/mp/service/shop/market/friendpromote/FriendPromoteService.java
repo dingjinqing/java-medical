@@ -581,7 +581,7 @@ public class FriendPromoteService extends ShopBaseService {
         //得到当前活动部分信息
         FriendPromoteActivityRecord record = getInfo(actCode);
         //设置奖励内容
-        FpRewardContent rewardContent = Util.json2Object(record.getRewardContent(),FpRewardContent.class,false);
+        FpRewardContent rewardContent = Util.json2Object(record.getRewardContent().substring(1,record.getRewardContent().length()-1),FpRewardContent.class,false);
         promoteInfo.setRewardContent(rewardContent);
         //设置活动id
         promoteInfo.setId(record.getId());
@@ -1101,7 +1101,7 @@ public class FriendPromoteService extends ShopBaseService {
             //活动状态
             item.setActStatus(getActStatus(item.getActCode()));
             //活动奖励
-            item.setFpRewardContent(Util.json2Object(item.getRewardContent(),FpRewardContent.class,false));
+            item.setFpRewardContent(Util.json2Object(item.getRewardContent().substring(1,item.getRewardContent().length()-1),FpRewardContent.class,false));
             //奖励内容
             if (item.getRewardType()==TWO){
                 CouponInfo couponInfo = getCouponById(item.getFpRewardContent().getRewardIds());
