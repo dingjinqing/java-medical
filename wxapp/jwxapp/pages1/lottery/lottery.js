@@ -54,6 +54,12 @@ global.wxPage({
     let that = this
     let lotteryId = options.lotteryId
     let lotterySource = options.lotterySource || 3
+    if (options.scene) {
+      let scene = decodeURIComponent(options.scene).split('&')
+      console.log(scene)
+      lotteryId = scene[0].split('=')[1]
+      lotterySource = scene[1] ? scene[1].split('=')[1] : 3
+    }
     this.setData({
       lotteryId: lotteryId,
       lotterySource: lotterySource
