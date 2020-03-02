@@ -49,6 +49,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    debugger
     if (!util.check_setting(options)) return;
     actCode = options.actCode;
     if (options.launch_user_id && options.launch_user_id != "") {
@@ -464,6 +465,18 @@ function launchAct(that) {
   }, { actCode: actCode });
 };
 function promote_request(that) {
+  util.api('/api/wxapp/promote/info', function (res) {
+    if (res.error == 0) {
+
+    } else {
+      util.showModal('提示', res.message);
+      return false
+    }
+  }, {
+      actCode: actCode,
+      userId: util.getCache('user_id'),
+      launchId: launch_id
+  })
   // util.api('/api/wxapp/promote/info', function (res) {
   //   if (res.error == 0) {
   //     promote_info = res.content;
