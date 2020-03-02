@@ -440,7 +440,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		GroupIntegrationPojo fetch = db().selectFrom(GROUP_INTEGRATION_DEFINE)
 				.where(GROUP_INTEGRATION_DEFINE.ID.eq(actId)).fetchOneInto(GroupIntegrationPojo.class);
 		if (fetch == null) {
-			// return null;
+			return null;
 		}
 		if (null == startTime) {
 			startTime = fetch.getStartTime();
@@ -461,6 +461,9 @@ public class GroupIntegrationService extends ShopBaseService {
 				.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId)
 						.and(GROUP_INTEGRATION_LIST.START_TIME.between(startTime, endTime)))
 				.fetchInto(GroupIntegrationListPojo.class);
+		if(recordList.size()==0) {
+			return null;
+		}
 		String format = DateUtil.DATE_FORMAT_SIMPLE;
 		for (GroupIntegrationListPojo groupIntegrationListPojo : recordList) {
 			groupIntegrationListPojo.setStartDate(DateUtil.dateFormat(format, groupIntegrationListPojo.getStartTime()));
