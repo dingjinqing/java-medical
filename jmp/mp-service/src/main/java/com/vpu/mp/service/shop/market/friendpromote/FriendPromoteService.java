@@ -503,7 +503,7 @@ public class FriendPromoteService extends ShopBaseService {
                 promoteInfo.setPromoteDetailList(friendPromoteDetail(launchInfo.getId()));
             }
             //设置订单
-            promoteInfo.setOrderSn(launchInfo.getOrderSn());
+            promoteInfo.setOrderSn(launchInfo==null?null:launchInfo.getOrderSn());
             //助力完成订单操作标识：0不可下单，1立即下单，2查看订单详情
             Byte orderFlag = 0;
             //奖励类型不为优惠券
@@ -613,7 +613,7 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setEndTime(record.getEndTime());
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
-            GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getRewardIds());
+            GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
             goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
