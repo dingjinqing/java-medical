@@ -1,3 +1,4 @@
+
 module.exports = {
   "title": {
     "account": "我的余额",
@@ -114,6 +115,7 @@ module.exports = {
     "presentchoose": "礼物商品",
     "history": "我的足迹",
     "returnorderlist": "退货中心",
-    "returndetail": "退货/退款详情"
+    "returndetail": "退货/退款详情",
+    "usercardup": '升级记录'
   }
 }

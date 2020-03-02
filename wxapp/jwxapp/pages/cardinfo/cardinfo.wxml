@@ -207,7 +207,7 @@
         查看 >
       </view>
     </view>
-    <view class="card_item_title" wx:if="{{ cardInfo.cardNo && cardInfo.cardType === 2}}">
+    <view class="card_item_title" wx:if="{{ cardInfo.cardNo && cardInfo.cardType === 2}}" bindtap="toUserCardUp">
       <view class="item_title_left">
         <image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png"></image>
       </view>
