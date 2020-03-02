@@ -455,11 +455,11 @@ public class GroupIntegrationService extends ShopBaseService {
 				endTime = DateUtil.getLocalDateTime();
 			}
 		}
-		List<GroupIntegrationAnalysisListVo> pinIntegrationInfo = getPinIntegrationInfo(actId, startTime, endTime);
-		return new GroupIntegrationAnalysisVo(pinIntegrationInfo,startTime,endTime);
+
+		return getPinIntegrationInfo(actId, startTime, endTime);
 	}
     
-	public List<GroupIntegrationAnalysisListVo> getPinIntegrationInfo(Integer actId, Timestamp startTime,
+	public GroupIntegrationAnalysisVo getPinIntegrationInfo(Integer actId, Timestamp startTime,
 			Timestamp endTime) {
 		List<GroupIntegrationListPojo> recordList = db().selectFrom(GROUP_INTEGRATION_LIST)
 				.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId)
@@ -473,6 +473,10 @@ public class GroupIntegrationService extends ShopBaseService {
 			groupIntegrationListPojo.setStartDate(DateUtil.dateFormat(format, groupIntegrationListPojo.getStartTime()));
 		}
 		byte one = 1;
+		int integrationNum=0;
+		int joinNum=0;
+		int successUserNum=0;
+		int newUser=0;
 		List<String> betweenTime = getBetweenTime(startTime, endTime);
 		List<GroupIntegrationAnalysisListVo> returnVo = new ArrayList<GroupIntegrationAnalysisListVo>();
 		for (String date : betweenTime) {
@@ -495,10 +499,21 @@ public class GroupIntegrationService extends ShopBaseService {
 					vo.setIntegrationNum(vo.getIntegrationNum() + pojo.getIntegration());
 				}
 			}
+			integrationNum=integrationNum+vo.getIntegrationNum();
+			joinNum=joinNum+vo.getJoinNum();
+			successUserNum=successUserNum+vo.getSuccessUserNum();
+			newUser=newUser+vo.getNewUser();
 			returnVo.add(vo);
 		}
-		
-		return returnVo;
+		GroupIntegrationAnalysisVo gbaVo = new GroupIntegrationAnalysisVo();
+		gbaVo.setEndTime(endTime);
+		gbaVo.setStartTime(startTime);
+		gbaVo.setList(returnVo);
+		gbaVo.setIntegrationNum(integrationNum);
+		gbaVo.setJoinNum(joinNum);
+		gbaVo.setSuccessUserNum(successUserNum);
+		gbaVo.setNewUser(newUser);
+		return gbaVo;
 	}
 	
 	private List<String> getBetweenTime(Timestamp startTime,Timestamp endTime){
