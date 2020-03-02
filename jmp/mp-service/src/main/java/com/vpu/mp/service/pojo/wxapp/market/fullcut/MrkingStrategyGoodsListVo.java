@@ -76,6 +76,11 @@ public class MrkingStrategyGoodsListVo {
         private Integer sortId;
         private Integer catId;
 
+        /**
+         * 1默认规格，0自定义规格（多规格）
+         */
+        private Byte isDefaultProduct;
+
 
         //活动数据
         /**
