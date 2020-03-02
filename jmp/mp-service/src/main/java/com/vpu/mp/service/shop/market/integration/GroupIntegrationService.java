@@ -9,9 +9,12 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.SelectConditionStep;
@@ -33,19 +36,22 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
 import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
+import com.vpu.mp.service.pojo.shop.market.integration.ActivityInfo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListPojo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationPojo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-
-import lombok.Data;
 
 
 /**
@@ -425,36 +431,66 @@ public class GroupIntegrationService extends ShopBaseService {
         }
         return 0;
     }
-}
-@Data
-class ActivityInfo{
-	/**活动Id*/
-	private Integer inteActivityId;
-	/** 消耗积分 */
-	private Integer useIntegration;
-	/**参与人数 */
-	private Integer inteUserSum;
-	/** 	团数量 */
-	private Integer inteGroupSum;
-	/**
-	 * @param inteActivityId
-	 * @param useIntegration
-	 * @param inteUserSum
-	 * @param inteGroupSum
-	 */
-	public ActivityInfo(Integer inteActivityId, Integer useIntegration, Integer inteUserSum, Integer inteGroupSum) {
-		super();
-		this.inteActivityId = inteActivityId;
-		this.useIntegration = useIntegration;
-		this.inteUserSum = inteUserSum;
-		this.inteGroupSum = inteGroupSum;
+    
+    
+	public List<GroupIntegrationAnalysisVo> getAnalysis(GroupIntegrationAnalysisParam param) {
+		Integer actId = param.getActId();
+		Timestamp startTime = param.getStartTime();
+		Timestamp endTime = param.getEndTime();
+		GroupIntegrationPojo fetch = db().selectFrom(GROUP_INTEGRATION_DEFINE)
+				.where(GROUP_INTEGRATION_DEFINE.ID.eq(actId)).fetchOneInto(GroupIntegrationPojo.class);
+		if (fetch == null) {
+			// return null;
+		}
+		if (null == startTime) {
+			startTime = fetch.getStartTime();
+		}
+		if (null == endTime) {
+			endTime = fetch.getEndTime();
+			if (endTime.after(DateUtil.getLocalDateTime())) {
+				// 结束日期晚于今天
+				endTime = DateUtil.getLocalDateTime();
+			}
+		}
+		return getPinIntegrationInfo(actId, startTime, endTime);
 	}
-	/**
-	 * 
-	 */
-	public ActivityInfo() {
-		super();
+    
+	public List<GroupIntegrationAnalysisVo> getPinIntegrationInfo(Integer actId, Timestamp startTime,
+			Timestamp endTime) {
+		List<GroupIntegrationListPojo> recordList = db().selectFrom(GROUP_INTEGRATION_LIST)
+				.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId)
+						.and(GROUP_INTEGRATION_LIST.START_TIME.between(startTime, endTime)))
+				.fetchInto(GroupIntegrationListPojo.class);
+		String format = DateUtil.DATE_FORMAT_SIMPLE;
+		for (GroupIntegrationListPojo groupIntegrationListPojo : recordList) {
+			groupIntegrationListPojo.setStartDate(DateUtil.dateFormat(format, groupIntegrationListPojo.getStartTime()));
+		}
+		byte one = 1;
+		Map<String, List<GroupIntegrationListPojo>> collect = recordList.stream()
+				.collect(Collectors.groupingBy(GroupIntegrationListPojo::getStartDate));
+		Set<String> keySet = collect.keySet();
+		List<GroupIntegrationAnalysisVo> returnVo = new ArrayList<GroupIntegrationAnalysisVo>();
+		for (String timestamp : keySet) {
+			GroupIntegrationAnalysisVo vo = new GroupIntegrationAnalysisVo();
+			vo.setDateTime(timestamp);
+			List<GroupIntegrationListPojo> list = collect.get(timestamp);
+			for (GroupIntegrationListPojo pojo : list) {
+				if (pojo.getIsNew().equals(one)) {
+					// 是新用户
+					vo.setNewUser(vo.getNewUser() == 0 ? 1 : vo.getNewUser() + 1);
+				}
+				if (pojo.getStatus().equals(one)) {
+					// 1:拼团成功
+					vo.setJoinNum(vo.getJoinNum() == 0 ? 1 : vo.getJoinNum() + 1);
+					vo.setSuccessUserNum(vo.getSuccessUserNum() == 0 ? 1 : vo.getSuccessUserNum() + 1);
+				} else {
+					// 0: 拼团中 2:拼团失败
+					vo.setJoinNum(vo.getJoinNum() == 0 ? 1 : vo.getJoinNum() + 1);
+				}
+				vo.setIntegrationNum(vo.getIntegrationNum() + pojo.getIntegration());
+			}
+			returnVo.add(vo);
+		}
+		return returnVo;
 	}
-	
 }
-
