@@ -87,6 +87,7 @@
                     :nowRightShowIndex="nowRightShowIndex"
                     @handleToClickIcon="handleToClickIcon"
                     @middleDragData='middleDragData'
+                    :backData='modulesData[index]'
                   ></components>
                 </div>
 
@@ -560,7 +561,7 @@ export default {
       if (!flag) return
       this.handleToSaveModules(this.showModulesList, this.modulesData)
       this.nowRightShowMoudlesIndex = -1
-      console.log(this.showModulesList, this.nowRightShowIndex)
+      console.log(this.showModulesList, this.modulesData, this.nowRightShowIndex)
       this.$nextTick(() => {
         this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
         this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
@@ -690,7 +691,7 @@ export default {
         height: 100%;
         position: relative;
         .hereDaily {
-          height: 5px;
+          height: 10px;
           z-index: 1000;
           margin-top: -5px;
           .setHereSpan {
