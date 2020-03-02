@@ -80,6 +80,10 @@ public class MrkingStrategyGoodsListVo {
          * 1默认规格，0自定义规格（多规格）
          */
         private Byte isDefaultProduct;
+        /**
+         * 单规格商品的规格ID
+         */
+        private Integer prdId;
 
 
         //活动数据

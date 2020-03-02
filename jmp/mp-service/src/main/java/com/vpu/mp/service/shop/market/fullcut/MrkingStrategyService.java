@@ -251,6 +251,9 @@ public class MrkingStrategyService extends ShopBaseService {
             if(StringUtil.isNotEmpty(goods.getGoodsImg())){
                 goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
             }
+            if(goods.getIsDefaultProduct() == 1){
+                goods.setPrdId(goodsService.goodsSpecProductService.getDefaultPrdId(goods.getGoodsId()));
+            }
 
             //处理限时降价、首单特惠、会员等级价对商品价格的覆盖
             GoodsPriceBo goodsPriceBo = saas.getShopApp(getShopId()).reducePrice.parseGoodsPrice(goods.getGoodsId(),userId);
