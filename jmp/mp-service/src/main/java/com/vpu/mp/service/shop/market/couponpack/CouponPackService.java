@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.market.couponpack;
 
+import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -15,9 +17,13 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.coupon.CouponPackActInfoVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackActInfoVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackCheckVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackVoucherVo;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import jodd.util.StringUtil;
@@ -51,6 +57,10 @@ public class CouponPackService extends ShopBaseService {
     private QrCodeService qrCode;
     @Autowired
     private CouponService couponService;
+    @Autowired
+    public MemberService memberService;
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 获取方式，0：现金购买
@@ -314,6 +324,12 @@ public class CouponPackService extends ShopBaseService {
         return vo;
     }
 
+    /**
+     * 小程序活动页面数据拼装
+     * @param packId
+     * @param userId
+     * @return
+     */
     public CouponPackActInfoVo getCouponPackActInfo(Integer packId,Integer userId){
         CouponPackActInfoVo vo = new CouponPackActInfoVo();
 
@@ -323,7 +339,7 @@ public class CouponPackService extends ShopBaseService {
         }
         vo.setPackInfo(packInfo);
 
-        List<CouponPackActInfoVo.CouponPackVoucher> packList = couponPackVoucherService.getCouponPackVoucherList(packId);
+        List<CouponPackVoucherVo> packList = couponPackVoucherService.getCouponPackVoucherList(packId);
         packList.forEach(p->{
             p.setGrantCount(couponService.getUserCouponCountByPackId(packId,userId,p.getVoucherId()));
             if(StringUtil.isNotEmpty(p.getRecommendCatId()) || StringUtil.isNotEmpty(p.getRecommendGoodsId()) || StringUtil.isNotEmpty(p.getRecommendProductId()) || StringUtil.isNotEmpty(p.getRecommendSortId())){
@@ -334,6 +350,71 @@ public class CouponPackService extends ShopBaseService {
         });
         vo.setPackList(packList);
         vo.setBuyCount(couponPackOrderService.getUserCouponPackBuyCount(packId,userId));
+
+        return vo;
+    }
+
+    public CouponPackCheckVo couponPackToBuy(Integer packId, Integer userId){
+        CouponPackCheckVo vo = new CouponPackCheckVo();
+        CouponPackRecord couponPackRecord = db().fetchAny(COUPON_PACK,COUPON_PACK.ID.eq(packId));
+
+        byte state = checkIsCanOrder(couponPackRecord,userId);
+        vo.setState(state);
+        if(vo.getState() > 0){
+            return vo;
+        }
+
+        //直接领取
+        if(couponPackRecord.getAccessMode().equals(ACCESS_MODE_FREE)){
+
+        }
+
+
+        return vo;
+    }
+
+    /**
+     * 下单前的活动校验
+     * @param couponPackRecord
+     * @param userId
+     * @return
+     */
+    private byte checkIsCanOrder(CouponPackRecord couponPackRecord,int userId){
+        if(couponPackRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE) || couponPackRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE) || couponPackRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+            return (byte)1;
+        }
+        if(couponPackRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+            return (byte)2;
+        }
+        if(couponPackRecord.getTotalAmount() > 0 && couponPackRecord.getTotalAmount() <= couponPackOrderService.getCouponPackIssueAmount(couponPackRecord.getId())){
+            return (byte)3;
+        }
+        if(couponPackRecord.getLimitGetTimes() > 0 && couponPackRecord.getLimitGetTimes() <= couponPackOrderService.getUserCouponPackBuyCount(couponPackRecord.getId(),userId)){
+            return (byte)4;
+        }
+        if(couponPackRecord.getAccessMode().equals(ACCESS_MODE_SCORE) && (memberService.score.getUserScore(userId) < couponPackRecord.getAccessCost().intValue())){
+            return (byte)5;
+        }
+        return (byte)0;
+    }
+
+    /**
+     * 订单确认页数据组装
+     * @param packId
+     * @param userId
+     * @return
+     */
+    public CouponPackOrderBeforeVo couponPackOrderConfirm(Integer packId, Integer userId){
+        CouponPackOrderBeforeVo vo = new CouponPackOrderBeforeVo();
+        ShopRecord shop = saas.shop.getShopById(getShopId());
+        if(StringUtil.isNotEmpty(shop.getLogo())){
+            vo.setShopLogo(domainConfig.imageUrl(shop.getLogo()));
+        }
+        if(StringUtil.isNotEmpty(shop.getShopAvatar())){
+            vo.setShopAvatar(domainConfig.imageUrl(shop.getShopAvatar()));
+        }
+
+
 
         return vo;
     }

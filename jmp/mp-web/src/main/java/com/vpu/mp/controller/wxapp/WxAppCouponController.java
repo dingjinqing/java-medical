@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackIdParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -90,5 +91,25 @@ public class WxAppCouponController extends WxAppBaseController {
     @PostMapping("/pack")
     public JsonResult couponPack(@RequestBody CouponPackIdParam param){
         return this.success(shop().couponPack.getCouponPackActInfo(param.getPackId(),wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 优惠券礼包结算页跳转
+     * @param param
+     * @return
+     */
+    @PostMapping("/pack/tobuy")
+    public JsonResult couponPackToBuy(@RequestBody CouponPackIdParam param){
+        return this.success(shop().couponPack.couponPackToBuy(param.getPackId(),wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 优惠券礼包结算页跳转
+     * @param param
+     * @return
+     */
+    @PostMapping("/pack/pay")
+    public JsonResult createOrderBefore(@RequestBody CouponPackIdParam param){
+        return this.success(shop().couponPack.couponPackOrderConfirm(param.getPackId(),wxAppAuth.user().getUserId()));
     }
 }
