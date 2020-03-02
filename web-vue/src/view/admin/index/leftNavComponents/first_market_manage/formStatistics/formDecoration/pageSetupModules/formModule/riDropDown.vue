@@ -14,40 +14,40 @@
           <span></span>
           <div class="tips">最多可输入20个字</div>
         </div>
-        <div class="list">
-          <span>展现形式：</span>
-          <el-radio
-            v-model="modulesSaveData.image_type"
-            :label="1"
-          >有图标</el-radio>
-          <el-radio
-            v-model="modulesSaveData.image_type"
-            :label="0"
-          >无图标</el-radio>
-        </div>
-        <!--展现形式选择有图标时显示的隐藏模块-->
         <div
           class="list"
-          v-if="modulesSaveData.image_type===1"
+          style="margin-bottom:0px"
         >
-          <span class="iconSpan">图标：</span>
-          <div class="icon">
+          <span class="opTitle">选项设置：</span>
+          <div class="options">
             <div
-              class="iconContainer"
-              :style="`background:url(${$imageHost}/image/admin/shop_deco/name_change.png) no-repeat`"
+              class="optionsList"
+              v-for="(value,key,index) in modulesSaveData.selects"
+              :key="index"
             >
+              <div class="title">选项</div>
+              <el-input
+                v-model="modulesSaveData.selects[key]"
+                size="small"
+              ></el-input>
               <div
-                class="click_to_change"
-                @click="handleToImageDialog()"
-              >更换图标</div>
-              <img
-                v-if="modulesSaveData.name_url"
-                :src="modulesSaveData.name_url"
-              >
+                class="title delete"
+                v-if="index>0"
+                @click="handleToDElete(key)"
+              >删除</div>
             </div>
-            <div class="iconTips">建议尺寸：36X36</div>
-          </div>
 
+          </div>
+        </div>
+        <div class="list">
+          <span></span>
+          <div
+            class="add_opn"
+            @click="handleToAddOption()"
+          >
+            <img :src="$imageHost+'/image/admin/icon_jia.png'">
+            添加选项
+          </div>
         </div>
         <div class="list">
           <span>条件验证：</span>
@@ -63,21 +63,11 @@
         </div>
       </div>
     </div>
-    <!--选择图片弹窗-->
-    <ImageDalog
-      pageIndex="pictureSpace"
-      :tuneUp="imageTuneUp"
-      :imageSize="[36,36]"
-      @handleSelectImg="handleSelectImg"
-    />
   </div>
 </template>
 <script>
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
-  components: {
-    ImageDalog: () => import('@/components/admin/imageDalog') // 选择图片弹窗
-  },
   mixins: [decMixins],
   props: {
     modulesData: Object, // 模块公共
@@ -87,9 +77,11 @@ export default {
     return {
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
-        'form_title': '姓名',
-        'image_type': 0,
-        'name_url': '',
+        'form_title': '下拉',
+        'selects': {
+          '1': '选项1',
+          '2': '选项2'
+        },
         'confirm': 0,
         'ok_ajax': 0
       } // 模块保存数据
@@ -116,15 +108,6 @@ export default {
     }
   },
   methods: {
-    // 选择弹窗调起
-    handleToImageDialog () {
-      this.imageTuneUp = !this.imageTuneUp
-    },
-    // 选择图片弹窗选中数据回传
-    handleSelectImg (res) {
-      console.log(res)
-      this.modulesSaveData.name_url = res.imgUrl
-    },
     // 点击确定按钮
     handleToClickSure () {
       this.modulesSaveData.ok_ajax = 1
@@ -132,6 +115,21 @@ export default {
         message: '模块保存成功',
         showClose: true
       })
+    },
+    // 点击添加选项
+    handleToAddOption () {
+      let key = Object.keys(this.modulesSaveData.selects).map(item => {
+        return Number(item)
+      })
+      console.log(key)
+      let newKey = Math.max(...key) + 1
+      this.$set(this.modulesSaveData.selects, newKey, `选项${newKey}`)
+      console.log(this.modulesSaveData.selects)
+    },
+    // 点击删除
+    handleToDElete (key) {
+      this.$delete(this.modulesSaveData.selects, key)
+      console.log(key, this.modulesSaveData)
     }
   }
 }
@@ -146,6 +144,11 @@ export default {
     padding: 20px 2%;
     .list {
       margin-bottom: 20px;
+      .opTitle {
+        display: flex;
+        align-items: flex-start;
+        padding-top: 8px;
+      }
       span {
         display: inline-block;
         width: 100px;
@@ -190,6 +193,36 @@ export default {
       }
       .iconSpan {
         align-items: flex-start;
+      }
+      .add_opn {
+        margin-left: 0px;
+        width: 120px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        color: #5a8bff;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        .optionsList {
+          display: flex;
+          margin-bottom: 10px;
+          /deep/ .el-input {
+            width: 180px;
+          }
+          .title {
+            display: flex;
+            align-items: center;
+            margin: 0 5px;
+          }
+          .delete {
+            cursor: pointer;
+          }
+        }
       }
     }
     .sure {

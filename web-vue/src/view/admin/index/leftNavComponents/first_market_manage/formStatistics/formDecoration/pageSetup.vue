@@ -37,7 +37,12 @@ export default {
   components: {
     pageSetupMain: () => import('./pageSetupModules/pageSetupMain'), // 表单信息配置
     // 表单信息模块
-    RiName: () => import('./pageSetupModules/formModule/riName') // 姓名模块
+    RiName: () => import('./pageSetupModules/formModule/riName'), // 姓名模块
+    RiCellPhoneNumber: () => import('./pageSetupModules/formModule/riCellPhoneNumber'), // 手机号模块
+    RiProvinceAndCity: () => import('./pageSetupModules/formModule/riProvinceAndCity'), // 省市区模块
+    RiEmail: () => import('./pageSetupModules/formModule/riEmail'), // 邮箱模块
+    RiGender: () => import('./pageSetupModules/formModule/riGender'), // 性别模块
+    RiDropDown: () => import('./pageSetupModules/formModule/riDropDown') // 下拉模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -54,6 +59,26 @@ export default {
         {
           id: 0,
           name: 'RiName'
+        },
+        {
+          id: 1,
+          name: 'RiCellPhoneNumber'
+        },
+        {
+          id: 2,
+          name: 'RiProvinceAndCity'
+        },
+        {
+          id: 3,
+          name: 'RiEmail'
+        },
+        {
+          id: 4,
+          name: 'RiGender'
+        },
+        {
+          id: 5,
+          name: 'RiDropDown'
         }
       ],
       showModule: null,
@@ -69,7 +94,7 @@ export default {
     nowRightShowMoudlesIndex: {
       handler (newData) {
         console.log(newData)
-        if (newData !== -1) {
+        if (newData !== -1 && newData !== null) {
           this.topIconFlag = false
           this.thirdRightModulesList.forEach(item => {
             if (item.id === newData) {

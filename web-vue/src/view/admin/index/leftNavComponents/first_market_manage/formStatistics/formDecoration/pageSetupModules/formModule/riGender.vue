@@ -4,6 +4,17 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
+          <span>展示形式：</span>
+          <el-radio
+            v-model="modulesSaveData.show_types"
+            :label="0"
+          >横向</el-radio>
+          <el-radio
+            v-model="modulesSaveData.show_types"
+            :label="1"
+          >纵向</el-radio>
+        </div>
+        <div class="list">
           <span>标题文字：</span>
           <el-input
             v-model="modulesSaveData.form_title"
@@ -13,41 +24,6 @@
         <div class="list">
           <span></span>
           <div class="tips">最多可输入20个字</div>
-        </div>
-        <div class="list">
-          <span>展现形式：</span>
-          <el-radio
-            v-model="modulesSaveData.image_type"
-            :label="1"
-          >有图标</el-radio>
-          <el-radio
-            v-model="modulesSaveData.image_type"
-            :label="0"
-          >无图标</el-radio>
-        </div>
-        <!--展现形式选择有图标时显示的隐藏模块-->
-        <div
-          class="list"
-          v-if="modulesSaveData.image_type===1"
-        >
-          <span class="iconSpan">图标：</span>
-          <div class="icon">
-            <div
-              class="iconContainer"
-              :style="`background:url(${$imageHost}/image/admin/shop_deco/name_change.png) no-repeat`"
-            >
-              <div
-                class="click_to_change"
-                @click="handleToImageDialog()"
-              >更换图标</div>
-              <img
-                v-if="modulesSaveData.name_url"
-                :src="modulesSaveData.name_url"
-              >
-            </div>
-            <div class="iconTips">建议尺寸：36X36</div>
-          </div>
-
         </div>
         <div class="list">
           <span>条件验证：</span>

@@ -34,7 +34,7 @@
           <div class="icon">
             <div
               class="iconContainer"
-              :style="`background:url(${$imageHost}/image/admin/shop_deco/name_change.png) no-repeat`"
+              :style="`background:url(${$imageHost}/image/admin/shop_deco/mobile_change.png) no-repeat`"
             >
               <div
                 class="click_to_change"

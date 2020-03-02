@@ -16,7 +16,7 @@
             v-if="modulesShowData.confirm"
           >*</b>
           <img
-            :src="modulesShowData.name_url?modulesShowData.name_url:($imageHost+'/image/admin/shop_deco/name_change.png')"
+            :src="modulesShowData.name_url?modulesShowData.name_url:($imageHost+'/image/admin/shop_deco/email_change.png')"
             class="image"
             v-if="modulesShowData.image_type"
           >

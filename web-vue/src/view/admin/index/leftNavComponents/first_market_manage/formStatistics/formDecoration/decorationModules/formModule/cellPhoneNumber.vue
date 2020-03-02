@@ -9,20 +9,32 @@
       :class="activeBorder?'activeBorder':'noBoderColor'"
     >
       <!--模块编辑区-->
-      <div
-        class="name"
-        :style="'backgroundColor:'+data.box_color"
-      >
-        <div
-          class="nameMain"
-          style="height:30px"
-        >
-          手机号模块测试
+      <div class="name">
+        <div class="nameMain">
+          <b
+            class="moduleStar"
+            v-if="modulesShowData.confirm"
+          >*</b>
+          <img
+            :src="modulesShowData.name_url?modulesShowData.name_url:($imageHost+'/image/admin/shop_deco/mobile_change.png')"
+            class="image"
+            v-if="modulesShowData.image_type"
+          >
+          <span class="name_title">{{modulesShowData.form_title}}</span>
+          <input
+            class="name_title_place"
+            placeholder="请输入姓名"
+            type="text"
+            readonly="readonly"
+          >
         </div>
 
       </div>
       <!--模块编辑区结束-->
-      <div class="item_operation">
+      <div
+        class="item_operation"
+        v-if="activeBorder"
+      >
         <img
           class="up_img"
           style="cursor:pointer;z-index:1000"
@@ -52,9 +64,7 @@
   </div>
 </template>
 <script>
-import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
-  mixins: [decMixins],
   props: {
     flag: Number, // 模块公共
     nowRightShowIndex: Number, // 模块公共
@@ -67,18 +77,14 @@ export default {
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
       // 模块私有
-      data: {
-        search_style: '1',
-        search_font: '1',
-        box_color: '',
-        sort_bg_color: '',
-        back_color: '',
-        search_sort: ''
+      modulesShowData: {
+
       }
     }
   },
   watch: {
     nowRightShowIndex (newData) { // 模块公共
+      console.log(this.flag, newData)
       if (this.flag === newData) {
         this.activeBorder = true
       } else {
@@ -92,12 +98,13 @@ export default {
       }
     },
     activeBorder (newData) { // 模块公共
-      console.log(newData, this.index)
+      console.log(newData)
       if (newData) {
         this.$http.$emit('nowHightLightModules', this.flag)
       }
     },
     middleHereFlag (newData) { // 模块公共
+      console.log(newData)
       if (newData) {
         this.activeSetHere = true
       } else {
@@ -109,7 +116,7 @@ export default {
       handler (newData) {
         console.log(newData)
         if (newData) {
-
+          this.modulesShowData = newData
         }
         console.log(newData)
       },
@@ -167,11 +174,13 @@ export default {
 @import "@/style/admin/formdecorationModules.scss"; // 模块公共
 
 .name {
-  background: rgb(238, 238, 238);
+  background-color: #ffffff;
   .nameMain {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     position: relative;
+    height: 30px;
+    padding-left: 10px;
     .Search {
       flex: 1;
       // line-height: 24px;
@@ -198,6 +207,37 @@ export default {
         display: inline-block;
         text-align: right;
       }
+    }
+    .moduleStar {
+      color: red;
+      height: 30px;
+      line-height: 30px;
+    }
+    .name_title {
+      width: 85px;
+      height: 30px;
+      line-height: 30px;
+      color: #333;
+      font-size: 14px;
+      display: inline-block;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+      position: relative;
+      top: 5px;
+    }
+    input {
+      height: 30px;
+      line-height: 30px;
+      border: none;
+      padding-left: 12px;
+      background: #ebebe4;
     }
   }
 }

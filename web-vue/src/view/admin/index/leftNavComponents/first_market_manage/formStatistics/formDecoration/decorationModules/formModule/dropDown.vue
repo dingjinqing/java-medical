@@ -11,22 +11,21 @@
       <!--模块编辑区-->
       <div class="name">
         <div class="nameMain">
-          <b
-            class="moduleStar"
-            v-if="modulesShowData.confirm"
-          >*</b>
-          <img
-            :src="modulesShowData.name_url?modulesShowData.name_url:($imageHost+'/image/admin/shop_deco/name_change.png')"
-            class="image"
-            v-if="modulesShowData.image_type"
-          >
-          <span class="name_title">{{modulesShowData.form_title}}</span>
-          <input
-            class="name_title_place"
-            placeholder="请输入姓名"
-            type="text"
-            readonly="readonly"
-          >
+          <div class="address_module">
+            <div class="choose_area">
+              <div class="left">
+                <b
+                  v-if="modulesShowData.confirm"
+                  class="module-star"
+                >*</b>
+                <div class="address_names">{{modulesShowData.form_title}}</div>
+              </div>
+
+              <div class="have_bg">请选择
+                <img :src="$imageHost+'/image/wxapp/right_into.png'">
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -174,70 +173,62 @@ export default {
 @import "@/style/admin/formdecorationModules.scss"; // 模块公共
 
 .name {
-  background-color: #ffffff;
+  background: rgb(238, 238, 238);
   .nameMain {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     position: relative;
-    height: 30px;
-    padding-left: 10px;
-    .Search {
-      flex: 1;
-      // line-height: 24px;
-      padding: 0 5px;
-      margin: 5px 10px;
-      border-color: #ccc;
-      border: 1px solid transparent;
-      display: flex;
-      align-items: center;
-      span {
-        color: #b4b4b4;
+    .address_module {
+      background: #fff;
+      padding-left: 10px;
+      padding-top: 5px;
+      width: 100%;
+      .choose_area {
+        padding-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        .left {
+          display: flex;
+          .module-star {
+            color: red;
+            height: 30px;
+            line-height: 30px;
+          }
+          .address_names {
+            font-size: 14px;
+            color: #353535;
+            width: 165px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+        }
+        .have_bg {
+          font-size: 14px;
+          padding-right: 15px;
+          color: #999;
+          display: flex;
+          align-items: center;
+          img {
+            width: 10px;
+            height: 12px;
+            position: relative;
+            margin-left: 5px;
+          }
+        }
       }
-    }
-    .icon {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      margin-right: 10px;
-      span:nth-of-type(1) {
-        font-size: 30px;
-        display: inline-block;
+      .area_detail {
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        input {
+          background: #ebebe4;
+          border: none;
+          text-align: right;
+          padding-right: 25px;
+        }
       }
-      span:nth-of-type(2) {
-        display: inline-block;
-        text-align: right;
-      }
-    }
-    .moduleStar {
-      color: red;
-      height: 30px;
-      line-height: 30px;
-    }
-    .name_title {
-      width: 85px;
-      height: 30px;
-      line-height: 30px;
-      color: #333;
-      font-size: 14px;
-      display: inline-block;
-      text-align: left;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    img {
-      width: 20px;
-      height: 20px;
-      margin-right: 5px;
-      position: relative;
-      top: 5px;
-    }
-    input {
-      height: 30px;
-      line-height: 30px;
-      border: none;
-      padding-left: 12px;
-      background: #ebebe4;
     }
   }
 }

@@ -743,7 +743,7 @@ export default {
 .left_menu {
   background: #323a4d;
   width: 150px;
-  z-index: 100;
+  z-index: 1000;
   height: 100%;
 }
 .leftMenuEn {
