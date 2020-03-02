@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.integration.ChangeStatusParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisListVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
@@ -158,7 +159,7 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@PostMapping("/getAnalysis")
 	public JsonResult getAnalysis(@RequestBody @Valid  GroupIntegrationAnalysisParam param) {
-		List<GroupIntegrationAnalysisListVo> analysis = shop().groupIntegration.getAnalysis(param);
+		GroupIntegrationAnalysisVo analysis = shop().groupIntegration.getAnalysis(param);
 		return success(analysis);
 	}
 	

@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityInfo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisListVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
@@ -435,7 +436,7 @@ public class GroupIntegrationService extends ShopBaseService {
     }
     
     
-	public List<GroupIntegrationAnalysisListVo> getAnalysis(GroupIntegrationAnalysisParam param) {
+	public GroupIntegrationAnalysisVo getAnalysis(GroupIntegrationAnalysisParam param) {
 		Integer actId = param.getActId();
 		Timestamp startTime = param.getStartTime();
 		Timestamp endTime = param.getEndTime();
@@ -454,7 +455,8 @@ public class GroupIntegrationService extends ShopBaseService {
 				endTime = DateUtil.getLocalDateTime();
 			}
 		}
-		return getPinIntegrationInfo(actId, startTime, endTime);
+		List<GroupIntegrationAnalysisListVo> pinIntegrationInfo = getPinIntegrationInfo(actId, startTime, endTime);
+		return new GroupIntegrationAnalysisVo(pinIntegrationInfo,startTime,endTime);
 	}
     
 	public List<GroupIntegrationAnalysisListVo> getPinIntegrationInfo(Integer actId, Timestamp startTime,
