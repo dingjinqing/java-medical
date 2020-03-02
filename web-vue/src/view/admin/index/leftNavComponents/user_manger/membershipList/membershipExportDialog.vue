@@ -20,12 +20,15 @@
         <div>
           <el-input-number
             size="small"
+            v-model="cfgInfo.min_num"
             controls-position="right"
             style="width:100px;"
+            :max="cfgInfo.avail_num"
           ></el-input-number>
           至
           <el-input-number
             size="small"
+            v-model="cfgInfo.avail_num"
             controls-position="right"
             style="width:100px;"
           ></el-input-number>
@@ -49,46 +52,46 @@
                         <el-checkbox label="user_id">用户id</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>昵称</el-checkbox>
+                        <el-checkbox label="username">昵称</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>手机号</el-checkbox>
+                        <el-checkbox label="mobile">手机号</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>OpenID</el-checkbox>
+                        <el-checkbox label="wx_openid">OpenID</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>余额</el-checkbox>
+                        <el-checkbox label="account">余额</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>积分</el-checkbox>
+                        <el-checkbox label="score">积分</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>用户来源</el-checkbox>
+                        <el-checkbox label="user_source">用户来源</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>注册时间</el-checkbox>
+                        <el-checkbox label="create_time">注册时间</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>会员卡</el-checkbox>
+                        <el-checkbox label="user_card">会员卡</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>地址</el-checkbox>
+                        <el-checkbox label="user_address">地址</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>累计消费金额</el-checkbox>
+                        <el-checkbox label="order_account">累计消费金额</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>累计消费单数</el-checkbox>
+                        <el-checkbox label="order">累计消费单数</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>累计退款金额</el-checkbox>
+                        <el-checkbox label="return_order_money">累计退款金额</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>累计退款订单数</el-checkbox>
+                        <el-checkbox label="return_order">累计退款订单数</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>备注</el-checkbox>
+                        <el-checkbox label="remark">备注</el-checkbox>
                       </li>
                     </ul>
                   </el-checkbox-group>
@@ -102,34 +105,34 @@
                   <el-checkbox-group v-model="checkedCfgs">
                     <ul class="check-list">
                       <li>
-                        <el-checkbox>邀请人</el-checkbox>
+                        <el-checkbox label="invite_user_name">邀请人</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>邀请人手机号</el-checkbox>
+                        <el-checkbox label="invite_mobile">邀请人手机号</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>邀请人分销员分组</el-checkbox>
+                        <el-checkbox label="invite_group_name">邀请人分销员分组</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>获返利订单数量</el-checkbox>
+                        <el-checkbox label="rebate_order_num">获返利订单数量</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>返利商品总金额</el-checkbox>
+                        <el-checkbox label="calculate_money">返利商品总金额</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>获返利订单佣金总额</el-checkbox>
+                        <el-checkbox label="rebate_money">获返利订单佣金总额</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>已提现佣金总额</el-checkbox>
+                        <el-checkbox label="withdraw_money">已提现佣金总额</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>下级用户数</el-checkbox>
+                        <el-checkbox label="sublayer_number">下级用户数</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>分销员等级</el-checkbox>
+                        <el-checkbox label="level_name">分销员等级</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox>分销员分组</el-checkbox>
+                        <el-checkbox label="group_name">分销员分组</el-checkbox>
                       </li>
                     </ul>
                   </el-checkbox-group>
@@ -165,7 +168,9 @@ export default {
   },
   data () {
     return {
-      cfgInfo: {},
+      cfgInfo: {
+        min_num: 1
+      },
       checkedCfgs: []
     }
   },
@@ -187,7 +192,8 @@ export default {
       console.log('init....')
       getExportCfg().then(res => {
         if (res.error === 0) {
-          this.cfgInfo = res.content
+          this.cfgInfo = Object.assign({}, this.cfgInfo, res.content)
+          this.checkedCfgs = res.content.choosed_cfg
         } else {
           this.$message.error(res.message)
         }
