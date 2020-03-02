@@ -45,7 +45,7 @@ public class PromoteInfo {
     private Byte launchLimitTimes;
     /** 发起次数限制时长，0不限制 */
     private Integer launchLimitDuration;
-    /** 发起次数限制时长单位：0天，1周，2月，3年 */
+    /** 发起次数限制时长单位：0小时 1天，2周，3月，4年 */
     private Byte launchLimitUnit;
     /** 好友助力明细列表 */
     private List<PromoteDetail> promoteDetailList;
@@ -65,7 +65,7 @@ public class PromoteInfo {
     private Timestamp endTime;
     /** 剩余秒数 */
     private Integer surplusSecond;
-    /** 助力总是 */
+    /** 助力总值 */
     private Integer hasPromoteValue;
     /** 发起id */
     private Integer launchId;
