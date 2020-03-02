@@ -461,12 +461,16 @@ public class GroupIntegrationService extends ShopBaseService {
     
 	public GroupIntegrationAnalysisVo getPinIntegrationInfo(Integer actId, Timestamp startTime,
 			Timestamp endTime) {
+		GroupIntegrationAnalysisVo gbaVo = new GroupIntegrationAnalysisVo();
+		gbaVo.setEndTime(endTime);
+		gbaVo.setStartTime(startTime);
 		List<GroupIntegrationListPojo> recordList = db().selectFrom(GROUP_INTEGRATION_LIST)
 				.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId)
 						.and(GROUP_INTEGRATION_LIST.START_TIME.between(startTime, endTime)))
 				.fetchInto(GroupIntegrationListPojo.class);
 		if(recordList.size()==0) {
-			return null;
+			logger().info("没有数据");
+			return gbaVo;
 		}
 		String format = DateUtil.DATE_FORMAT_SIMPLE;
 		for (GroupIntegrationListPojo groupIntegrationListPojo : recordList) {
@@ -505,9 +509,6 @@ public class GroupIntegrationService extends ShopBaseService {
 			newUser=newUser+vo.getNewUser();
 			returnVo.add(vo);
 		}
-		GroupIntegrationAnalysisVo gbaVo = new GroupIntegrationAnalysisVo();
-		gbaVo.setEndTime(endTime);
-		gbaVo.setStartTime(startTime);
 		gbaVo.setList(returnVo);
 		gbaVo.setIntegrationNum(integrationNum);
 		gbaVo.setJoinNum(joinNum);
