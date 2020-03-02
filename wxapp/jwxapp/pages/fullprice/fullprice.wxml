@@ -57,7 +57,7 @@
               </view>
               <view class='original_price' wx:if='{{item.marketPrice!=null}}'>￥{{item.marketPrice}}</view>
             </view>
-            <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goodsId}}' data-indexs='{{index}}'>
+            <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goodsId}}' data-prd_id="{{item.prdId}}">
               <text class='iconfont iconjiarugouwuche' style='color:{{comColor}};font-size:60rpx;'></text>
             </view>
           </view>
@@ -144,6 +144,10 @@
   </action-sheet>
 
   <!--  选择规格（包含无规格情况）  -->
+  <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}" />
+
+  <!-- <v-sel-spec show="{{showSpec}}" products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}" /> -->
+
   <!-- <v-sel-spec gd="{{goodsData}}" show="{{show_spec}}" hide_cell='true' bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
     <view slot="footer-nav" class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
       <button bindtap='bindAddCart' style='background:{{comColor}}'>加入购物车</button>
