@@ -40,7 +40,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityInfo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisListVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
@@ -435,7 +435,7 @@ public class GroupIntegrationService extends ShopBaseService {
     }
     
     
-	public List<GroupIntegrationAnalysisVo> getAnalysis(GroupIntegrationAnalysisParam param) {
+	public List<GroupIntegrationAnalysisListVo> getAnalysis(GroupIntegrationAnalysisParam param) {
 		Integer actId = param.getActId();
 		Timestamp startTime = param.getStartTime();
 		Timestamp endTime = param.getEndTime();
@@ -457,7 +457,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		return getPinIntegrationInfo(actId, startTime, endTime);
 	}
     
-	public List<GroupIntegrationAnalysisVo> getPinIntegrationInfo(Integer actId, Timestamp startTime,
+	public List<GroupIntegrationAnalysisListVo> getPinIntegrationInfo(Integer actId, Timestamp startTime,
 			Timestamp endTime) {
 		List<GroupIntegrationListPojo> recordList = db().selectFrom(GROUP_INTEGRATION_LIST)
 				.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId)
@@ -472,9 +472,9 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		byte one = 1;
 		List<String> betweenTime = getBetweenTime(startTime, endTime);
-		List<GroupIntegrationAnalysisVo> returnVo = new ArrayList<GroupIntegrationAnalysisVo>();
+		List<GroupIntegrationAnalysisListVo> returnVo = new ArrayList<GroupIntegrationAnalysisListVo>();
 		for (String date : betweenTime) {
-			GroupIntegrationAnalysisVo vo = new GroupIntegrationAnalysisVo();
+			GroupIntegrationAnalysisListVo vo = new GroupIntegrationAnalysisListVo();
 			vo.setDateTime(date);
 			for (GroupIntegrationListPojo pojo : recordList) {
 				if(pojo.getStartDate().equals(date)) {

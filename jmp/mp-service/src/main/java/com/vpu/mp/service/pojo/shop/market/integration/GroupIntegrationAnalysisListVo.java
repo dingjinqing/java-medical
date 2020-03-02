@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupIntegrationAnalysisVo {
+public class GroupIntegrationAnalysisListVo {
 	/** 已瓜分积分数 */
 	private Integer integrationNum = 0;
 	/** 已瓜分积分数 */
