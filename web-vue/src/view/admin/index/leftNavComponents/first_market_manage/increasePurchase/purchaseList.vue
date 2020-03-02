@@ -119,7 +119,7 @@
               >
                 <el-form :inline="true">
                   <el-form-item>
-                    {{$t('purchase.full')}}{{item.split('---')[1] + '加价' + item.split('---')[2]}}{{$t('purchase.redemption')}}<br>
+                    {{$t('purchase.full')}}{{item.split('---')[1]}} {{$t('purchase.activityinfo')}} {{item.split('---')[2]}}{{$t('purchase.redemption')}}<br>
                   </el-form-item>
                 </el-form>
               </li>
@@ -260,7 +260,7 @@ export default {
   },
   data () {
     return {
-      activityName: '加价购',
+      activityName: this.$t('purchase.addPriceBuy'),
       tableData: [],
       pageParams: {},
       param: {
