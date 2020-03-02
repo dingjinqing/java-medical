@@ -674,6 +674,7 @@ export default {
       callback()
     }
     // 优惠券限制数量时，校验奖品份数不能大于优惠券数量
+    // 赠品限制数量时，校验赠品奖品份数不能大于商品库存
     function validPrizeNumber (rule, value, callback) {
       for (let i = 0; i < that.requestParam.prizeList.length; i++) {
         let item = that.requestParam.prizeList[i]
@@ -681,6 +682,11 @@ export default {
         if (item.lotteryType === 3) {
           if (couponNum !== '不限制' && Number(item.lotteryNumber) > Number(couponNum)) {
             callback(new Error('奖品数量不能大于优惠券可用份数'))
+            break
+          }
+        } else if (item.lotteryType === 4) {
+          if (Number(item.goodsNumber) < Number(item.lotteryNumber)) {
+            callback(new Error('奖品数量不能大于商品库存'))
             break
           }
         }
@@ -806,12 +812,25 @@ export default {
     // 放回商品信息
     choosingGoodsResult (res) {
       console.log(res)
-      this.requestParam.prizeList[this.tabSwitch - 1].prdId = res.prdId
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsShow = true
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsName = res.goodsName
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsImage = res.goodsImg
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsPrice = res.prdPrice
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsNumber = res.prdNumber
+      // this.requestParam.prizeList[this.tabSwitch - 1].prdId = res.prdId
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsShow = true
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsName = res.goodsName
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsImage = res.goodsImg
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsPrice = res.prdPrice
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsNumber = res.prdNumber
+      let goodsInfo = {
+        prdId: res.prdId,
+        goodsName: res.goodsName,
+        goodsImage: res.goodsImg,
+        goodsPrice: res.prdPrice,
+        goodsNumber: res.prdNumber
+      }
+      if (goodsInfo.prdId) {
+        goodsInfo.goodsShow = true
+      } else {
+        goodsInfo.goodsShow = false
+      }
+      this.$set(this.requestParam.prizeList, this.tabSwitch - 1, Object.assign({}, this.requestParam.prizeList[this.tabSwitch - 1], goodsInfo))
       this.$forceUpdate()
     },
     // 删除商品
@@ -821,6 +840,7 @@ export default {
       item.goodsPrice = ''
       item.goodsNumber = ''
       item.goodsShow = false
+      item.prdId = ''
     },
     // 显示图片弹窗
     changeImgHandler (index) {
