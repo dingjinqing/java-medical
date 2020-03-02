@@ -495,7 +495,7 @@ public class LotteryService extends ShopBaseService {
      */
     public ShareQrCodeVo getMpQRCode(LotteryByIdParam param) {
         Integer groupDrawId = param.getId();
-        String pathParam = "lotteryId=" + groupDrawId;
+        String pathParam = "lotteryId="+ groupDrawId+"&lotterySource=6";
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.LOTTERY, pathParam);
         ShareQrCodeVo share =new ShareQrCodeVo();
         share.setImageUrl(imageUrl);
