@@ -51,6 +51,7 @@ import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
 import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.jooq.impl.DSL.*;
 
@@ -126,16 +127,16 @@ public class IncreasePurchaseService extends ShopBaseService {
         if (param.getEndTime() != null) {
             selectConditon = selectConditon.and(ppd.END_TIME.lessThan(param.getEndTime()));
         }
-        if (param.getFullPriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
+        if (param.getFullPriceUp() != null && !BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.lessOrEqual(param.getFullPriceUp()));
         }
-        if (param.getFullPriceDown() != null&&!BigDecimal.ZERO.equals(param.getFullPriceDown())) {
+        if (param.getFullPriceDown() != null && !BigDecimal.ZERO.equals(param.getFullPriceDown())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.greaterOrEqual(param.getFullPriceDown()));
         }
-        if (param.getPurchasePriceUp() != null&&!BigDecimal.ZERO.equals(param.getPurchasePriceUp())) {
+        if (param.getPurchasePriceUp() != null && !BigDecimal.ZERO.equals(param.getPurchasePriceUp())) {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.lessOrEqual(param.getPurchasePriceUp()));
         }
-        if (param.getPurchasePriceDown() != null&&!BigDecimal.ZERO.equals(param.getPurchasePriceDown())) {
+        if (param.getPurchasePriceDown() != null && !BigDecimal.ZERO.equals(param.getPurchasePriceDown())) {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterOrEqual(param.getPurchasePriceDown()));
         }
 
@@ -321,7 +322,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             case CONDITION_TWO:
                 //删除，更新删除标志和删除时间
-                db().update(ppd).set(ppd.DEL_FLAG, FLAG_ONE).set(ppd.DEL_TIME,Timestamp.valueOf(LocalDateTime.now())).where(ppd.ID.eq(param.getId())).execute();
+                db().update(ppd).set(ppd.DEL_FLAG, FLAG_ONE).set(ppd.DEL_TIME, Timestamp.valueOf(LocalDateTime.now())).where(ppd.ID.eq(param.getId())).execute();
                 break;
             default:
                 break;
@@ -368,8 +369,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @param param the param
      * @return the select condition step
      */
-    private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(MarketOrderListParam param) {
-        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db()
+    private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, Byte>> buildRedemptionListOption(MarketOrderListParam param) {
+        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, Byte>> conditionStep = db()
             .select(min(oi.ORDER_SN).as("orderSn")
                 , groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId")
                 , groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName")
@@ -380,7 +381,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                 , min(oi.CREATE_TIME).as("createTime")
                 , min(oi.CONSIGNEE).as("consignee")
                 , min(oi.MOBILE).as("mobile")
-                , min(oi.ORDER_STATUS_NAME).as("orderStatusName"))
+                , min(oi.ORDER_STATUS).as("orderStatus"))
             .from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID))
             .leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
             .where(og.ACTIVITY_ID.eq(param.getActivityId()))
@@ -398,7 +399,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         if (StringUtils.isNotBlank(param.getMobile())) {
             conditionStep = conditionStep.and(oi.MOBILE.like(likeValue(param.getMobile())));
         }
-        if(param.getOrderStatus() != null && param.getOrderStatus().length != 0){
+        if (param.getOrderStatus() != null && param.getOrderStatus().length != 0) {
             conditionStep = conditionStep.and(oi.ORDER_STATUS.in(param.getOrderStatus()));
         }
         if (param.getProvinceCode() != null) {
@@ -459,6 +460,43 @@ public class IncreasePurchaseService extends ShopBaseService {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+            redemption.setOrderStatusName(orderStatus2Name(redemption.getOrderStatus()));
+        }
+    }
+
+    private String orderStatus2Name(byte staus) {
+        switch (staus) {
+            case ORDER_WAIT_PAY:
+                return "待付款";
+            case ORDER_CANCELLED:
+                return "已取消";
+            case ORDER_CLOSED:
+                return "卖家关闭";
+            case ORDER_WAIT_DELIVERY:
+                return "待发货";
+            case ORDER_SHIPPED:
+                return "已发货";
+            case ORDER_RECEIVED:
+                return "已收货";
+            case ORDER_FINISHED:
+                return "已完成";
+            case ORDER_RETURNING:
+                return "退货中";
+            case ORDER_RETURN_FINISHED:
+                return "完成退货";
+            case ORDER_REFUNDING:
+                return "退款中";
+            case ORDER_REFUND_FINISHED:
+                return "退款成功";
+            case ORDER_PIN_PAYED_GROUPING:
+                return "拼团中";
+            case ORDER_PIN_SUCCESSS:
+                return "已成团";
+            case ORDER_GIVE_GIFT_FINISHED:
+                return "礼单(主订单)环节已完成";
+            default:
+                log.debug("订单状态[{}]无效！", staus);
+                throw new IllegalArgumentException();
         }
     }
 
@@ -557,7 +595,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     public Workbook exportOrderDetail(RedemptionDetailParam param) {
         List<RedemptionDetailVo> list = buildDetailSelectStep(param).fetchInto(RedemptionDetailVo.class);
-            preExportDetail(list);
+        preExportDetail(list);
         return this.export(list, RedemptionDetailVo.class);
     }
 
@@ -592,9 +630,9 @@ public class IncreasePurchaseService extends ShopBaseService {
     /**
      * Update priority.更新活动优先级
      */
-    public void updatePriority(UpdatePriorityParam param){
-        if (db().fetchExists(db().selectFrom(ppd).where(ppd.ID.eq(param.getId())))){
-            db().update(ppd).set(ppd.LEVEL,param.getPriority()).where(ppd.ID.eq(param.getId())).execute();
+    public void updatePriority(UpdatePriorityParam param) {
+        if (db().fetchExists(db().selectFrom(ppd).where(ppd.ID.eq(param.getId())))) {
+            db().update(ppd).set(ppd.LEVEL, param.getPriority()).where(ppd.ID.eq(param.getId())).execute();
             return;
         }
         throw new NullPointerException("Activity Not Exist !");
@@ -602,40 +640,41 @@ public class IncreasePurchaseService extends ShopBaseService {
 
     /**
      * 小程序端活动页数据
+     *
      * @param param
      * @param userId
      * @return
      */
-    public PurchaseGoodsListVo getWxAppGoodsList(PurchaseGoodsListParam param, Integer userId){
+    public PurchaseGoodsListVo getWxAppGoodsList(PurchaseGoodsListParam param, Integer userId) {
         PurchaseGoodsListVo vo = new PurchaseGoodsListVo();
         PurchasePriceDefineRecord purchasePriceDefineRecord = db().selectFrom(ppd).where(ppd.ID.eq(param.getPurchasePriceId())).fetchAny();
-        if(purchasePriceDefineRecord == null || purchasePriceDefineRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
-            vo.setState((byte)1);
+        if (purchasePriceDefineRecord == null || purchasePriceDefineRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
+            vo.setState((byte) 1);
             return vo;
-        }else if(purchasePriceDefineRecord.getStartTime().after(DateUtil.getLocalDateTime())){
-            vo.setState((byte)2);
+        } else if (purchasePriceDefineRecord.getStartTime().after(DateUtil.getLocalDateTime())) {
+            vo.setState((byte) 2);
             return vo;
-        }else if(purchasePriceDefineRecord.getEndTime().before(DateUtil.getLocalDateTime())){
-            vo.setState((byte)3);
+        } else if (purchasePriceDefineRecord.getEndTime().before(DateUtil.getLocalDateTime())) {
+            vo.setState((byte) 3);
             return vo;
         }
-        vo.setState((byte)0);
+        vo.setState((byte) 0);
 
         //过滤掉用户不能买的专属商品
         List<Integer> inGoodsIds = Util.splitValueToList(purchasePriceDefineRecord.getGoodsId());
         List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
-        inGoodsIds = Util.diffList(inGoodsIds,userExclusiveGoodsIds);
+        inGoodsIds = Util.diffList(inGoodsIds, userExclusiveGoodsIds);
 
         //商品列表
-        PageResult<PurchaseGoodsListVo.Goods> goodsPageResult = getGoods(inGoodsIds,param.getSearch(),param.getCurrentPage(),param.getPageRows());
-        goodsPageResult.getDataList().forEach(goods->{
-            GoodsPriceBo goodsPriceBo = saas.getShopApp(getShopId()).reducePrice.parseGoodsPrice(goods.getGoodsId(),userId);
+        PageResult<PurchaseGoodsListVo.Goods> goodsPageResult = getGoods(inGoodsIds, param.getSearch(), param.getCurrentPage(), param.getPageRows());
+        goodsPageResult.getDataList().forEach(goods -> {
+            GoodsPriceBo goodsPriceBo = saas.getShopApp(getShopId()).reducePrice.parseGoodsPrice(goods.getGoodsId(), userId);
             goods.setGoodsPriceAction(goodsPriceBo.getGoodsPriceAction());
             goods.setGoodsPrice(goodsPriceBo.getGoodsPrice());
             goods.setMaxPrice(goodsPriceBo.getMaxPrice());
             goods.setMarketPrice(goodsPriceBo.getMaxPrice());
             goods.setLimitAmount(goodsPriceBo.getLimitAmount());
-            if(StringUtil.isNotEmpty(goods.getGoodsImg())){
+            if (StringUtil.isNotEmpty(goods.getGoodsImg())) {
                 goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
             }
         });
@@ -644,7 +683,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         //换购规则
         List<PurchasePriceRuleRecord> ruleRecords = getRules(param.getPurchasePriceId());
         List<PurchaseGoodsListVo.Rule> rules = new ArrayList<>();
-        ruleRecords.forEach(r->{
+        ruleRecords.forEach(r -> {
             PurchaseGoodsListVo.Rule rule = new PurchaseGoodsListVo.Rule();
             rule.setFullPrice(r.getFullPrice());
             rule.setPurchasePrice(r.getPurchasePrice());
@@ -652,68 +691,69 @@ public class IncreasePurchaseService extends ShopBaseService {
         });
         vo.setRules(rules);
 
-        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+        WxAppCartBo cartBo = cartService.getCartList(userId, null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE, param.getPurchasePriceId());
         vo.setMainPrice(cartBo.getTotalPrice());
-        vo.setChangeDoc(getChangeGoodsDoc(cartBo.getTotalPrice(),ruleRecords));
+        vo.setChangeDoc(getChangeGoodsDoc(cartBo.getTotalPrice(), ruleRecords));
 
         return vo;
     }
 
     /**
      * 查出goods列表
+     *
      * @param inGoodsIds
      * @param search
      * @param currentPage
      * @param pageRows
      * @return
      */
-    private PageResult<PurchaseGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,String search,Integer currentPage,Integer pageRows){
+    private PageResult<PurchaseGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds, String search, Integer currentPage, Integer pageRows) {
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
-        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE, GOODS.CAT_ID, GOODS.GOODS_TYPE, GOODS.SORT_ID, GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-        if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
+        if (!NumberUtils.BYTE_ONE.equals(soldOutGoods)) {
             select.where(GOODS.GOODS_NUMBER.gt(0));
         }
-        if(StringUtil.isNotEmpty(search)){
+        if (StringUtil.isNotEmpty(search)) {
             select.where(GOODS.GOODS_NAME.contains(search));
         }
-        if(CollectionUtils.isNotEmpty(inGoodsIds)){
+        if (CollectionUtils.isNotEmpty(inGoodsIds)) {
             select.where(GOODS.GOODS_ID.in(inGoodsIds));
         }
-        return getPageResult(select,currentPage,pageRows,PurchaseGoodsListVo.Goods.class);
+        return getPageResult(select, currentPage, pageRows, PurchaseGoodsListVo.Goods.class);
     }
 
     /**
      * 根据活动ID取换购规则
+     *
      * @param purchasePriceId
      * @return
      */
-    private List<PurchasePriceRuleRecord> getRules(int purchasePriceId){
+    private List<PurchasePriceRuleRecord> getRules(int purchasePriceId) {
         return db().selectFrom(ppr).where(ppr.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId)).fetch();
     }
 
     /**
-     *
      * @param totalPrice
      * @param ruleRecords
      * @return
      */
-    private PurchaseGoodsListVo.ChangeDoc getChangeGoodsDoc(BigDecimal totalPrice,List<PurchasePriceRuleRecord> ruleRecords){
+    private PurchaseGoodsListVo.ChangeDoc getChangeGoodsDoc(BigDecimal totalPrice, List<PurchasePriceRuleRecord> ruleRecords) {
         PurchaseGoodsListVo.ChangeDoc doc = new PurchaseGoodsListVo.ChangeDoc();
-        if(totalPrice.compareTo(BigDecimal.ZERO) <= 0){
-            doc.setState((byte)0);
+        if (totalPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            doc.setState((byte) 0);
             return doc;
         }
         ruleRecords = ruleRecords.stream().sorted(Comparator.comparing(PurchasePriceRuleRecord::getFullPrice)).collect(Collectors.toList());
-        for(PurchasePriceRuleRecord rule:ruleRecords){
-            if(totalPrice.compareTo(rule.getFullPrice()) >= 0){
-                doc.setState((byte)2);
+        for (PurchasePriceRuleRecord rule : ruleRecords) {
+            if (totalPrice.compareTo(rule.getFullPrice()) >= 0) {
+                doc.setState((byte) 2);
                 return doc;
             }
         }
-        BigDecimal diffPrice = ruleRecords.get(0).getFullPrice().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
-        doc.setState((byte)1);
+        BigDecimal diffPrice = ruleRecords.get(0).getFullPrice().subtract(totalPrice).setScale(2, BigDecimal.ROUND_HALF_UP);
+        doc.setState((byte) 1);
         doc.setDiffPrice(diffPrice);
         return doc;
     }
