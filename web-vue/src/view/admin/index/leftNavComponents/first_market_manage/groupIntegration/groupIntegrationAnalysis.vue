@@ -36,7 +36,7 @@
       <section>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">付款订单数</div>
+            <div class="titless">已瓜分积分数</div>
             <el-tooltip
               class="item"
               effect="light"
@@ -49,7 +49,7 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >{{ totalOrderNumber }}</div>
+          >{{ integrationNum }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -66,7 +66,7 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >{{ totalJoinNum }}</div>
+          >{{ joinNum }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -83,7 +83,7 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >{{ totalSuccessUserNum }}</div>
+          >{{ successUserNum }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -100,12 +100,12 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >{{ totalNewUser }}</div>
+          >{{ newUser }}</div>
         </div>
       </section>
 
       <div id="charts">
-        <ve-line :data="chartData" :settings="chartSettings"></ve-line>
+        <ve-line :data="chartData" :settings="chartSettings" :data-empty="dataEmpty"></ve-line>
       </div>
 
     </wrapper>
@@ -139,19 +139,23 @@ export default {
     return {
       starDate: null,
       endDate: null,
-      totalOrderNumber: 0, // 付款订单数
-      totalJoinNum: 0, // 参与用户数
-      totalSuccessUserNum: 0, // 成团用户数
-      totalNewUser: 0, // 拉新用户数
+      integrationNum: 0, // 付款订单数
+      joinNum: 0, // 参与用户数
+      successUserNum: 0, // 成团用户数
+      newUser: 0, // 拉新用户数
       chartData: {
         columns: ['dateTime', 'integrationNum', 'joinNum', 'successUserNum', 'newUser'],
         rows: [
         ]
       },
-      actId: null
+      actId: null,
+      dataEmpty: true
     }
   },
   watch: {
+    lang () {
+      this.changeDivInnerHtml()
+    }
   },
   mounted () {
     // 初始化语言
@@ -169,13 +173,24 @@ export default {
       getAnalysisRequest(params).then((res) => {
         console.log(res)
         if (res.error === 0) {
-          this.chartData.rows = res.content.list
           this.starDate = res.content.startTime
           this.endDate = res.content.endTime
+          this.chartData.rows = res.content.list
+          this.dataEmpty = res.content.list === null
+          this.integrationNum = res.content.integrationNum
+          this.joinNum = res.content.joinNum
+          this.successUserNum = res.content.successUserNum
+          this.newUser = res.content.newUser
         } else {
           this.$message.error(res.message)
         }
       })
+    },
+    changeDivInnerHtml () {
+      var charts = document.getElementsByClassName('v-charts-data-empty')
+      for (let i = 0; i < charts.length; i++) {
+        charts[i].innerHTML = this.$t('userportrait.noData')
+      }
     }
   }
 }
