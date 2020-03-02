@@ -196,9 +196,9 @@ global.wxPage({
           : moneyPaid * 100 > userScore
           ? userScore
           : moneyPaid * 100
-      moneyPaid -= useScore
+      moneyPaid -= parseInt(useScore)
       this.setData({
-        'usePayInfo.useScore': useScore,
+        'usePayInfo.useScore': parseInt(useScore),
         scoreStatus: useScore > 0 ? 1 : 0
       })
     } else {
@@ -265,7 +265,7 @@ global.wxPage({
   //获取输入的积分数
   getInputScore(data) {
     this.setData({
-      'usePayInfo.useScore': data.detail,
+      'usePayInfo.useScore': parseInt(data.detail),
       scoreStatus: 1
     })
     this.getPayMoney()
