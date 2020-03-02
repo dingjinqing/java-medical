@@ -13,4 +13,9 @@ public class SimpleMemberCardVo {
     private Integer id;
 
     private String cardName;
+
+    /**
+     * 0:普通会员卡，1:次卡,2:等级卡
+     */
+    private Byte cardType;
 }

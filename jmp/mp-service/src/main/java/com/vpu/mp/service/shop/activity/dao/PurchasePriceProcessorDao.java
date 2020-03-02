@@ -63,12 +63,10 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
      * @param date
      * @return
      */
-    public Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>  getPurchasePriceInfo(Integer goodsId, Timestamp date){
-
-        Result<Record4<Integer, Integer, BigDecimal, BigDecimal>> purchaseList = db()
-                .select(PURCHASE_PRICE_DEFINE.ID,PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID, PURCHASE_PRICE_RULE.FULL_PRICE, PURCHASE_PRICE_RULE.PURCHASE_PRICE)
-                .from(PURCHASE_PRICE_RULE)
-                .innerJoin(PURCHASE_PRICE_DEFINE).on(PURCHASE_PRICE_DEFINE.ID.eq(PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID))
+    public Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> getPurchasePriceInfo(Integer goodsId, Timestamp date){
+        return db().select(PURCHASE_PRICE_DEFINE.ID,PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID, PURCHASE_PRICE_RULE.FULL_PRICE, PURCHASE_PRICE_RULE.PURCHASE_PRICE)
+                .from(PURCHASE_PRICE_DEFINE)
+                .innerJoin(PURCHASE_PRICE_RULE).on(PURCHASE_PRICE_DEFINE.ID.eq(PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID))
                 .where(PURCHASE_PRICE_DEFINE.STATUS.eq(STATUS_NORMAL))
                 .and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(PURCHASE_PRICE_RULE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
@@ -76,11 +74,7 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
                 .and(PURCHASE_PRICE_DEFINE.START_TIME.le(date))
                 .and(PURCHASE_PRICE_DEFINE.END_TIME.ge(date))
                 .orderBy(PURCHASE_PRICE_DEFINE.LEVEL.desc(), PURCHASE_PRICE_DEFINE.CREATE_TIME.desc())
-                .fetch();
-
-        return purchaseList;
-
-
+                .fetch().intoGroups(PURCHASE_PRICE_DEFINE.ID);
     }
 
 
