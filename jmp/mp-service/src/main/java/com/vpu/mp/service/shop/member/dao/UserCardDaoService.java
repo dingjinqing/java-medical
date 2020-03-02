@@ -170,8 +170,26 @@ public class UserCardDaoService extends ShopBaseService{
             // 其次是否包含指定门店
             .filter((c) -> isStoreAvalid(c.getStoreList(), storeId))
             .collect(toList());
+        // 设置会员卡有效时间
+        result.forEach(this::setCardEffectTime);
         log.debug("用户【{}】在门店【{}】的有效会员卡列表：{}", userId, storeId, result);
         return result;
+    }
+
+    private void setCardEffectTime(ValidUserCardBean bean) {
+        // 设置会员卡有效时间
+        EffectTimeParam etParam = new EffectTimeParam();
+        etParam.setStartTime(bean.getStartTime());
+        etParam.setEndTime(bean.getEndTime());
+        etParam.setCreateTime(bean.getCreateTime());
+        etParam.setExpireTime(bean.getExpireTime());
+        etParam.setExpireType(bean.getExpireType());
+        EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+        bean.setStartTime(etBean.getStartTime());
+        bean.setEndTime(etBean.getEndTime());
+        bean.setStartDate(etBean.getStartDate());
+        bean.setEndDate(etBean.getEndDate());
+        bean.setExpireType(etBean.getExpireType());
     }
 
     private boolean isStoreAvalid(String s, Integer storeId) {
