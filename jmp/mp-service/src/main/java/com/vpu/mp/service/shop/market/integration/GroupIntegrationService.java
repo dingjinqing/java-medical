@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.SelectConditionStep;
@@ -469,31 +471,50 @@ public class GroupIntegrationService extends ShopBaseService {
 			groupIntegrationListPojo.setStartDate(DateUtil.dateFormat(format, groupIntegrationListPojo.getStartTime()));
 		}
 		byte one = 1;
-		Map<String, List<GroupIntegrationListPojo>> collect = recordList.stream()
-				.collect(Collectors.groupingBy(GroupIntegrationListPojo::getStartDate));
-		Set<String> keySet = collect.keySet();
+		List<String> betweenTime = getBetweenTime(startTime, endTime);
 		List<GroupIntegrationAnalysisVo> returnVo = new ArrayList<GroupIntegrationAnalysisVo>();
-		for (String timestamp : keySet) {
+		for (String date : betweenTime) {
 			GroupIntegrationAnalysisVo vo = new GroupIntegrationAnalysisVo();
-			vo.setDateTime(timestamp);
-			List<GroupIntegrationListPojo> list = collect.get(timestamp);
-			for (GroupIntegrationListPojo pojo : list) {
-				if (pojo.getIsNew().equals(one)) {
-					// 是新用户
-					vo.setNewUser(vo.getNewUser() == 0 ? 1 : vo.getNewUser() + 1);
+			vo.setDateTime(date);
+			for (GroupIntegrationListPojo pojo : recordList) {
+				if(pojo.getStartDate().equals(date)) {
+					if (pojo.getIsNew().equals(one)) {
+						// 是新用户
+						vo.setNewUser(vo.getNewUser() == 0 ? 1 : vo.getNewUser() + 1);
+					}
+					if (pojo.getStatus().equals(one)) {
+						// 1:拼团成功
+						vo.setJoinNum(vo.getJoinNum() == 0 ? 1 : vo.getJoinNum() + 1);
+						vo.setSuccessUserNum(vo.getSuccessUserNum() == 0 ? 1 : vo.getSuccessUserNum() + 1);
+					} else {
+						// 0: 拼团中 2:拼团失败
+						vo.setJoinNum(vo.getJoinNum() == 0 ? 1 : vo.getJoinNum() + 1);
+					}
+					vo.setIntegrationNum(vo.getIntegrationNum() + pojo.getIntegration());
 				}
-				if (pojo.getStatus().equals(one)) {
-					// 1:拼团成功
-					vo.setJoinNum(vo.getJoinNum() == 0 ? 1 : vo.getJoinNum() + 1);
-					vo.setSuccessUserNum(vo.getSuccessUserNum() == 0 ? 1 : vo.getSuccessUserNum() + 1);
-				} else {
-					// 0: 拼团中 2:拼团失败
-					vo.setJoinNum(vo.getJoinNum() == 0 ? 1 : vo.getJoinNum() + 1);
-				}
-				vo.setIntegrationNum(vo.getIntegrationNum() + pojo.getIntegration());
 			}
 			returnVo.add(vo);
 		}
+		
 		return returnVo;
+	}
+	
+	private List<String> getBetweenTime(Timestamp startTime,Timestamp endTime){
+		String format = DateUtil.DATE_FORMAT_SIMPLE;
+		String startDate = DateUtil.dateFormat(format,startTime);
+		String endDate = DateUtil.dateFormat(format,endTime);
+		logger().info("开始时间："+startDate+"  结束时间："+endDate);
+		List<String> list=new ArrayList<String>();
+		long add=24*60*60*1000L;
+		list.add(startDate);
+		while (!startDate.equals(endDate)) {
+			//System.out.println("插入："+startDate);
+			long time = startTime.getTime();
+			time=time+add;
+			startTime = new Timestamp(time);
+			startDate = DateUtil.dateFormat(format,startTime);
+			list.add(startDate);
+		}
+		return list;
 	}
 }
