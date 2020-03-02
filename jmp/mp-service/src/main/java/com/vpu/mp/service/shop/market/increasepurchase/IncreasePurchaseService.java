@@ -387,6 +387,12 @@ public class IncreasePurchaseService extends ShopBaseService {
             .where(og.ACTIVITY_ID.eq(param.getActivityId()))
             .and(og.ACTIVITY_TYPE.eq((byte) 7));
 
+        if (Objects.nonNull(param.getCreateTimeStart())) {
+            conditionStep = conditionStep.and(oi.CREATE_TIME.greaterThan(param.getCreateTimeStart()));
+        }
+        if (Objects.nonNull(param.getCreateTimeEnd())) {
+            conditionStep = conditionStep.and(oi.CREATE_TIME.lessThan(param.getCreateTimeEnd()));
+        }
         if (StringUtils.isNotBlank(param.getGoodsName())) {
             conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
         }
