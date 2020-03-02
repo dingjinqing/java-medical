@@ -254,7 +254,7 @@ public class SeckillService extends ShopBaseService{
         SeckillVo res = record.into(SeckillVo.class);
 
         res.setGoods(this.getSecKillGoods(skId));
-        res.setMemberCard(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIdsString(record.getCardId()));
+        res.setMemberCard(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIds(Util.splitValueToList(record.getCardId())));
         if(res.getShopShareConfig() != null && StringUtil.isNotEmpty(res.getShopShareConfig().getShareImg())){
             res.getShopShareConfig().setShareImg(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
         }
