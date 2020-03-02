@@ -74,13 +74,16 @@ public class NormalGoodsPictorialService extends ShopBaseService {
     /**
      * 普通商品海报生成接口
      * @param param 获取海报参数
-     * @return 海报图片base64
+     * @return GoodsPictorialInfo 海报获取信息
      */
-    public String getNormalGoodsPictorialInfo(GoodsShareBaseParam param) {
+    public GoodsPictorialInfo getNormalGoodsPictorialInfo(GoodsShareBaseParam param) {
+        GoodsPictorialInfo goodsPictorialInfo=new GoodsPictorialInfo();
+
         GoodsVo goodsVo = goodsService.selectGoodsShareInfo(param.getTargetId());
         if (goodsVo == null) {
             log("pictorial","商品不可用");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
         }
 
         ShopRecord shop = saas.shop.getShopById(getShopId());
@@ -92,7 +95,8 @@ public class NormalGoodsPictorialService extends ShopBaseService {
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(),shop);
         } catch (IOException e) {
             log("pictorial", "获取用户信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
         }
         BufferedImage goodsImage;
         String shareDoc;
@@ -112,7 +116,8 @@ public class NormalGoodsPictorialService extends ShopBaseService {
             goodsImage = ImageIO.read(new URL(imageService.getImgFullUrl(goodsImg)));
         } catch (IOException e) {
             logger().debug("小程序-生成图片-获取商品图片错误，图片地址{}：{}",imageService.getImgFullUrl(goodsImg),e.getMessage());
-           return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return goodsPictorialInfo;
         }
 
         // 获取分享码
@@ -122,14 +127,17 @@ public class NormalGoodsPictorialService extends ShopBaseService {
             qrCodeImage = ImageIO.read(new URL(mpQrCode));
         } catch (IOException e) {
             log("pictorial", "获取二维码失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return goodsPictorialInfo;
         }
 
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc,goodsVo.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,false);
 
-        return ImageUtil.toBase64(bgBufferedImage);
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
+        return goodsPictorialInfo;
     }
 
     private void log(String share, String msg) {

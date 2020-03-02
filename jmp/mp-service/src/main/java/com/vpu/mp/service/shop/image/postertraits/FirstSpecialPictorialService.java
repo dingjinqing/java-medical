@@ -24,8 +24,6 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -152,14 +150,20 @@ public class FirstSpecialPictorialService extends ShopBaseService {
      * @return base64海报信息
      */
     @SuppressWarnings("all")
-    public String getFirstSpecialPictorialInfo(FirstSpecialShareInfoParam param) {
+    public GoodsPictorialInfo getFirstSpecialPictorialInfo(FirstSpecialShareInfoParam param) {
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
         FirstSpecialRecord firstSpecialRecord = firstSpecialService.getFirstSpecialRecord(param.getActivityId());
+        if (firstSpecialRecord == null) {
+            pictorialLog("pictorial", "首单特惠活动已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-
-        if (firstSpecialRecord == null || goodsRecord == null) {
-            pictorialLog("pictorial", "商品或首单特惠活动已删除或失效");
-            return null;
+        if (goodsRecord == null) {
+            pictorialLog("pictorial", "商品已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
         }
         PictorialShareConfig shareConfig = Util.parseJson(firstSpecialRecord.getShareConfig(), PictorialShareConfig.class);
 
@@ -169,22 +173,25 @@ public class FirstSpecialPictorialService extends ShopBaseService {
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
         } catch (IOException e) {
             pictorialLog("pictorial", "获取用户信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
         }
 
-        return getFirstSpecialPictorialImg(pictorialUserInfo,shareConfig,firstSpecialRecord,goodsRecord,shop,param);
+        getFirstSpecialPictorialImg(pictorialUserInfo,shareConfig,firstSpecialRecord,goodsRecord,shop,param,goodsPictorialInfo);
+        return goodsPictorialInfo;
     }
 
     private static final String FIRST_SPECIAL_BG_IMG = "image/wxapp/first_special.png";
 
-    private String getFirstSpecialPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, FirstSpecialRecord firstSpecialRecord, GoodsRecord goodsRecord, ShopRecord shop, FirstSpecialShareInfoParam param) {
+    private void getFirstSpecialPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, FirstSpecialRecord firstSpecialRecord, GoodsRecord goodsRecord, ShopRecord shop, FirstSpecialShareInfoParam param,GoodsPictorialInfo goodsPictorialInfo) {
         BufferedImage goodsImage;
         try {
             pictorialLog("pictorial", "获取商品图片信息");
             goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
         } catch (IOException e) {
             pictorialLog("pictorial", "获取商品图片信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
         pictorialLog("pictorial", "获取商品分享语");
 
@@ -198,11 +205,11 @@ public class FirstSpecialPictorialService extends ShopBaseService {
 
         BufferedImage qrCodeImage;
         try {
-//            qrCodeImage = ImageIO.read(new URL(mpQrcode));
-            qrCodeImage = ImageIO.read(new FileInputStream(new File("E:/qrcode.jpg")));
+            qrCodeImage = ImageIO.read(new URL(mpQrcode));
         } catch (IOException e) {
             pictorialLog("pictorial", "获取二维码失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return;
         }
 
         PictorialImgPx imgPx = new PictorialImgPx();
@@ -226,17 +233,13 @@ public class FirstSpecialPictorialService extends ShopBaseService {
             ImageUtil.addFontWithLine(bgBufferedImage,linePriceStartX,imgPx.getPriceY(),linePriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()),imgPx.getLinePriceColor());
 
         } catch (IOException e) {
-            pictorialLog("pictorial", "装载限时降价图标失败");
-            return null;
+            pictorialLog("pictorial", "装载首单特惠图标失败");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
 
-        try {
-            ImageIO.write(bgBufferedImage, "jpg", new File("E:/a.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return ImageUtil.toBase64(bgBufferedImage);
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
     }
 
     /**

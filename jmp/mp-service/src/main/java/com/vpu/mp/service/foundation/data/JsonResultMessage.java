@@ -970,4 +970,5 @@ public class JsonResultMessage {
     public static final String WX_SHARE_GOODS_DELETED = "wx.share.goods.deleted";
     public static final String WX_SHARE_PIC_ERROR = "wx.share.pic.error";
     public static final String WX_SHARE_QRCDOE_ERROR = "wx.share.qrcode.error";
+    public static final String WX_SHARE_USER_PIC_ERROR = "wx.share.user.pic.error";
 }

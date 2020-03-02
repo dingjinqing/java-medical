@@ -166,14 +166,20 @@ public class BargainPictorialService extends ShopBaseService {
      * @param param 砍价分享参数
      * @return 砍价海报图片base64
      */
-    public String getBargainPictorialInfo(BargainShareInfoParam param) {
+    public GoodsPictorialInfo getBargainPictorialInfo(BargainShareInfoParam param) {
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
         BargainRecord bargainRecord = bargainService.getBargainActById(param.getActivityId());
+        if (bargainRecord == null) {
+            bargainLog("pictorial", "砍价信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(bargainRecord.getGoodsId());
-
-        if (bargainRecord == null || goodsRecord == null) {
-            bargainLog("pictorial", "商品或砍价信息已删除或失效");
-            return null;
+        if (goodsRecord == null) {
+            bargainLog("pictorial", "商品信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
         }
         bargainLog("pictorial", "读取砍价海报配置信息");
         PictorialShareConfig shareConfig = Util.parseJson(bargainRecord.getShareConfig(), PictorialShareConfig.class);
@@ -185,22 +191,25 @@ public class BargainPictorialService extends ShopBaseService {
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(),shop);
         } catch (IOException e) {
             bargainLog("pictorial", "获取用户信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
         }
-        return getBargainPictorialImg(pictorialUserInfo,shareConfig,bargainRecord,goodsRecord,shop,param);
+        getBargainPictorialImg(pictorialUserInfo,shareConfig,bargainRecord,goodsRecord,shop,param,goodsPictorialInfo);
+        return goodsPictorialInfo;
     }
 
     /** 砍价海报中的硬币图片 */
     private static final String BARGAIN_MONEY_ICON_IMG="image/wxapp/money_icon.png";
 
-    private String getBargainPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, BargainRecord bargainRecord, GoodsRecord goodsRecord, ShopRecord shop, BargainShareInfoParam param){
+    private void getBargainPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, BargainRecord bargainRecord, GoodsRecord goodsRecord, ShopRecord shop, BargainShareInfoParam param,GoodsPictorialInfo goodsPictorialInfo){
         BufferedImage goodsImage;
         try {
             bargainLog("pictorial", "获取商品图片信息");
             goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
         } catch (IOException e) {
             bargainLog("pictorial", "获取商品图片信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
         bargainLog("pictorial", "获取商品分享语");
         String shareDoc;
@@ -222,7 +231,8 @@ public class BargainPictorialService extends ShopBaseService {
             qrCodeImage = ImageIO.read(new URL(mpQrCode));
         } catch (IOException e) {
             bargainLog("pictorial", "获取二维码失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return;
         }
 
         // 拼装背景图
@@ -235,7 +245,8 @@ public class BargainPictorialService extends ShopBaseService {
             ImageUtil.addTwoImage(bgBufferedImage,moneyIconImg,imgPx.getCustomerTextStartX(),imgPx.getCustomerRectStartY()+imgPx.getLargeFontAscent(bgBufferedImage)/2);
         }catch (IOException e){
             bargainLog("pictorial", "读取本地图片money_icon错误"+e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
 
         // 原价
@@ -248,7 +259,8 @@ public class BargainPictorialService extends ShopBaseService {
         Integer linePriceStartX = imgPx.getCustomerTextStartX()+42+realPriceLength;
         ImageUtil.addFontWithLine(bgBufferedImage,linePriceStartX,imgPx.getCustomerSecondTextStartY(),linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextFontColor());
 
-        return ImageUtil.toBase64(bgBufferedImage);
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
     }
 
     /**

@@ -168,14 +168,21 @@ public class PreSalePictorialService extends ShopBaseService {
      * @param param 定金膨胀参数
      * @return base64海报信息
      */
-    public String getPreSalePictorialInfo(PreSaleShareInfoParam param){
+    public GoodsPictorialInfo getPreSalePictorialInfo(PreSaleShareInfoParam param){
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
         PresaleRecord presaleRecord = preSaleService.getPresaleRecord(param.getActivityId());
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if (presaleRecord == null) {
+            preSaleLog("pictorial", "预售信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
 
-        if (presaleRecord == null || goodsRecord == null) {
-            preSaleLog("pictorial", "商品或拼团信息已删除或失效");
-            return null;
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if ( goodsRecord == null) {
+            preSaleLog("pictorial", "商品信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
         }
         PictorialShareConfig shareConfig = Util.parseJson(presaleRecord.getShareConfig(), PictorialShareConfig.class);
 
@@ -185,19 +192,22 @@ public class PreSalePictorialService extends ShopBaseService {
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(),shop);
         } catch (IOException e) {
             preSaleLog("pictorial", "获取用户信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
         }
-        return getPreSalePictorialImg(pictorialUserInfo,shareConfig,presaleRecord,goodsRecord,shop,param);
+        getPreSalePictorialImg(pictorialUserInfo,shareConfig,presaleRecord,goodsRecord,shop,param,goodsPictorialInfo);
+        return goodsPictorialInfo;
     }
 
-    private String getPreSalePictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, PresaleRecord presaleRecord, GoodsRecord goodsRecord, ShopRecord shop, PreSaleShareInfoParam param){
+    private void getPreSalePictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, PresaleRecord presaleRecord, GoodsRecord goodsRecord, ShopRecord shop, PreSaleShareInfoParam param,GoodsPictorialInfo goodsPictorialInfo){
         BufferedImage goodsImage;
         try {
             preSaleLog("pictorial", "获取商品图片信息");
             goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
         } catch (IOException e) {
             preSaleLog("pictorial", "获取商品图片信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
         preSaleLog("pictorial", "获取商品分享语");
         String shareDoc;
@@ -213,7 +223,8 @@ public class PreSalePictorialService extends ShopBaseService {
             qrCodeImage = ImageIO.read(new URL(mpQrcode));
         } catch (IOException e) {
             preSaleLog("pictorial", "获取二维码失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return;
         }
         PictorialImgPx imgPx = new PictorialImgPx();
 
@@ -229,7 +240,9 @@ public class PreSalePictorialService extends ShopBaseService {
         int depositPriceTextStartX = imgPx.getCustomerTextStartX()+rectWidth+10;
         ImageUtil.addFont(bgBufferedImage,depositPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),depositPriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor(),false);
 
-        return ImageUtil.toBase64(bgBufferedImage);
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
+        return;
     }
 
     /**
