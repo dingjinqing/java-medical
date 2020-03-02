@@ -36,9 +36,13 @@ global.wxPage({
 
   lotteryListRequest () {
     let that = this
+    let nextPage = this.data.pageParams.currentPage + 1
+    if (this.data.pageParams.nextPage < nextPage) {
+      return false
+    }
     let params = Object.assign({}, {
       lotteryId: Number(this.data.lotteryId),
-      currentPage: this.data.pageParams.currentPage + 1,
+      currentPage: nextPage,
       pageRows: this.data.pageParams.pageRows?this.data.pageParams.pageRows:20
     })
     util.api('/api/wxapp/lottery/user/list', function(res) {
