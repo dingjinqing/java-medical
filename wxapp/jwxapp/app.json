@@ -91,7 +91,8 @@
         "virtualCheckout/virtualCheckout",
         "pinintegration/pinintegration",
         "pinintegrationdetail/pinintegrationdetail",
-        "insteadinfo/insteadinfo"
+        "insteadinfo/insteadinfo",
+        "insteadcheckout/insteadcheckout"
       ]
     }
   ],

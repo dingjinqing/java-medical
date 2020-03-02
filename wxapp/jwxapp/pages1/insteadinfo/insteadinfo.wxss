@@ -1,6 +1,9 @@
 .page-top{
   height: 380rpx;
 }
+.main_container{
+  padding-bottom: 100rpx;
+}
 .help-status{
   display: flex;
   flex-direction: column;
@@ -90,4 +93,77 @@
 .progress-bg{
   margin-top: 20rpx;
   margin-bottom: 20rpx;
+}
+.friend-pay-footer{
+  display: flex;
+  color: #fff;
+  position: fixed;
+  bottom: 20rpx;
+  box-sizing: border-box;
+  padding:0 25rpx;
+  width: 750rpx;
+  z-index: 2;
+}
+.friend-pay-footer > view{
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 30rpx;
+  border-radius: 40rpx;
+}
+.friend-pay-footer > view+view{
+  margin-left: 20rpx;
+}
+.friend-pay-footer > .flex-one{
+  flex: 1;
+}
+.friend-pay-footer > .flex-two{
+  flex: 1.5;
+}
+.friend-content{
+  overflow:hidden;
+}
+.friend-content .item-title{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: none;
+}
+.friend-content .item-title .line{
+  width: 100rpx;
+  height: 4rpx;
+  background-color: #f5f5f5;
+}
+.friend-content .item-title text{
+  margin: 0 15rpx;
+}
+.friend-item{
+  display: flex;
+  margin: 20rpx 0;
+}
+.friend-item > image{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 100rpx;
+}
+.friend-item > .user-pay-info{
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 20rpx;
+}
+.friend-item > .user-pay-info > view{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.friend-item > .user-pay-info > view > view:first-of-type{
+  color: #333;
+  font-size: 26rpx;
+}
+.friend-item > .user-pay-info > view > view:last-of-type{
+  color: #666;
+  font-size: 24rpx;
+}
+.user-rigth > view:last-of-type{
+  color: #999;
 }

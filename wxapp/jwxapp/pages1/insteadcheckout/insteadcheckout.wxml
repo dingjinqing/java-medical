@@ -1,91 +1,91 @@
 <include src="../../pages/common/header.wxml" />
 <view class='main_container' style="height:calc(100vh - {{margin_top_nav + 8}}px;">
-  <view class="page-top" style="background:-webkit-linear-gradient(bottom,{{linColor}},{{comColor1}})">
-    <view class="help-status">
-      <image src="{{imageUrl}}/image/wxapp/ins_conin1.png"></image>
-      <view>心愿已达成，我会感谢你哒</view>
+  <view class="page-item-content goods-content">
+    <view class="goods-item">
+      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <view class="goods-right">
+        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
+        <text class="goods-desc">颜色:白色</text>
+        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      </view>
+    </view>
+    <view class="goods-item">
+      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <view class="goods-right">
+        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
+        <text class="goods-desc">颜色:白色</text>
+        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      </view>
+    </view>
+    <view class="goods-item">
+      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <view class="goods-right">
+        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
+        <text class="goods-desc">颜色:白色</text>
+        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      </view>
+    </view>
+    <view class="goods-item">
+      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <view class="goods-right">
+        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
+        <text class="goods-desc">颜色:白色</text>
+        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      </view>
+    </view>
+    <view class="goods-price-total">
+      <view>已付款：<text>￥10.00</text></view>
+      <view>剩余金额：<text>￥200.25</text></view>
     </view>
   </view>
-  <view class="goods-content">
-    <view class="goods-item">
-      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
-      <view class="goods-right">
-        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
-        <text class="goods-desc">颜色:白色</text>
-        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
-      </view>
+
+  <view class="page-item-content">
+    <view class="item-title">
+      待付款金额
     </view>
-    <view class="goods-item">
-      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
-      <view class="goods-right">
-        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
-        <text class="goods-desc">颜色:白色</text>
-        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
-      </view>
+    <view class="pay-input-content">
+      <text>￥</text>
+      <input type="text" class="pay-input" value="11.00"></input>
     </view>
-    <view class="goods-item">
-      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
-      <view class="goods-right">
-        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
-        <text class="goods-desc">颜色:白色</text>
-        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+    <radio-group>
+      <view class="radio-item">
+        <radio color="{{comColor}}"></radio>
+        <view class="radio-info">
+          <view>意思意思</view>
+          <view>￥12.50</view>
+        </view>
       </view>
-    </view>
-    <view class="goods-item">
-      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
-      <view class="goods-right">
-        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
-        <text class="goods-desc">颜色:白色</text>
-        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+      <view class="radio-item">
+        <radio color="{{comColor}}"></radio>
+        <view class="radio-info">
+          <view>意思意思</view>
+          <view>￥12.50</view>
+        </view>
       </view>
-    </view>
+    </radio-group>
   </view>
 
   <view class="page-item-content">
     <view class="item-title">
       编辑留言
     </view>
-    <input type="text" class="message-input" value="相中了一件商品"></input>
+    <input type="text" class="message-input" value="帮你付款啦"></input>
   </view>
-  <view class="page-item-content">
+
+  <view class="page-item-content friend-user">
     <view class="item-title">
-      好朋友们快来助我一臂之力吧
+      <text>匿名付款</text>
+      <checkbox color="{{comColor}}" bindtap="changeHide" value="0"></checkbox>
     </view>
-    <view class="progress-info">
-      <view class="top">
-        <view>已付款：<text>￥40.00</text></view>
-        <view>剩余金额：<text>￥9.50</text></view>
-      </view>
-      <view class="progress-bg">
-        <view class="progress-color" style="background:-webkit-linear-gradient(right,{{linColor}},{{comColor1}});width:80%;"></view>
-      </view>
+    <view class="nick-name">
+      <text>我的昵称：</text>
+      <input type="text" value="帮你付款啦"></input>
     </view>
   </view>
 
-  <view class="page-item-content friend-content">
-    <view class="item-title">
-      <view class="line"></view>
-      <text>好友助力</text>
-      <view class="line"></view>
-    </view>
-    <view class="friend-item">
-      <image class="user-avatar" src="http://mpdevimg2.weipubao.cn/upload/4748160/avatar/thousand_2/20191218171020_2310.jpg"></image>
-      <view class="user-pay-info">
-        <view class="user-left">
-          <view>子辰大魔王</view>
-          <view>帮你付款啦！</view>
-        </view>
-        <view class="user-rigth">
-          <view>代付：</view>
-          <view>退款：</view>
-        </view>
-      </view>
-    </view>
+  <view class="friend-footer" style="background-color:{{comColor}};">
+    微信支付
   </view>
 
-  <view class="friend-pay-footer">
-    <view class="flex-one" style="background:{{commonColor}};color:{{(comColor != '#ff6666' || !comColor)?'#fff':'#f66'}};">自己付点</view>
-    <view class="flex-two" style="background:{{comColor}}">发送好友</view>
-  </view>
   <include src="../../pages/common/footer.wxml" />
 </view>
