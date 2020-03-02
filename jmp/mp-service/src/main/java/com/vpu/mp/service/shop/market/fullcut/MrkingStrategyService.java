@@ -227,7 +227,7 @@ public class MrkingStrategyService extends ShopBaseService {
             List<Integer> cardIds = Util.splitValueToList(MrkingStrategyAct.getCardId());
             List<ValidUserCardBean> cards = saas.getShopApp(getShopId()).userCard.userCardDao.getValidCardList(userId);
             List<Integer> validCardIds = cards.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
-            validCardIds.removeAll(cardIds);
+            validCardIds.retainAll(cardIds);
 
             if(validCardIds == null || validCardIds.size() == 0){
                 vo.setState((byte)4);
