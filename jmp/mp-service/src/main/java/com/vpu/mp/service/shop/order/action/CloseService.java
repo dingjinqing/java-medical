@@ -107,7 +107,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 
 	public void returnOrder(OrderInfoVo order) throws MpException {
 	    if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
-
+            returnMethod.returnSubOrder(order.getOrderSn(), order.getMoneyPaid(), 0);
         }
 	    if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_DEPOSIT)){
 	        //预售订单特殊处理

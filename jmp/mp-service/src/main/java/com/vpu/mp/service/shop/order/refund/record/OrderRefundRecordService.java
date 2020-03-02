@@ -7,7 +7,6 @@ import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,15 +28,14 @@ public class OrderRefundRecordService extends ShopBaseService{
      * 非系统金额退款记录
      * @param refundSn 退款流水号
      * @param refundResult 退款结果（失败==null）
-     * @param order 订单
      * @param retId 退订单号
      */
-	public void addRecord(String refundSn, PaymentRecordRecord payRecord, WxPayRefundResult refundResult, OrderInfoVo order, Integer retId) {
+	public void addRecord(String refundSn, PaymentRecordRecord payRecord, WxPayRefundResult refundResult, Integer retId) {
         OrderRefundRecordRecord record = db().newRecord(TABLE);
         record.setRefundSn(refundSn);
         record.setPaySn(payRecord.getPaySn());
-        record.setOrderSn(order.getOrderSn());
-        record.setPayCode(order.getPayCode());
+        record.setOrderSn(payRecord.getOrderSn());
+        record.setPayCode(payRecord.getPayCode());
         record.setRefundTime(DateUtil.getSqlTimestamp());
         record.setRetId(retId);
         record.setTransSn(payRecord.getTradeNo());

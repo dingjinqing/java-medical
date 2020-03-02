@@ -256,7 +256,36 @@ public class OrderOperateSendMessage extends ShopBaseService {
      * @param order
      */
     public void sendinsteadPay(SubOrderInfoRecord subOrder, OrderInfoRecord order) {
+        //pages/insteadinfo/insteadinfo?order_sn={$mainOrderSn}"
+    }
 
+    /**
+     * 代付退款
+     * @param money
+     * @param subOrder
+     * @param orderId
+     */
+    public void sendinsteadPayReturn(BigDecimal money, SubOrderInfoRecord subOrder, Integer orderId){
+        logger().info("代付退款操作消息推送start");
+        //商品名称
+        String goodsName = getGoodsName(orderGoods.getByOrderId(orderId));
+        //小程序数据
+        //String[][] maData = new String[][] { { money.toString() }, { subOrder.getMainOrderSn() }, { applyTime }, { goodsName }, { "卖家已同意退款,将原路退回到你的账户" }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
+        //公众号数据
+        String[][] mpData = null;
+        if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
+            mpData = new String[][] { { "退款" }, { "代付处理退款" }, { money.toString() }, { StringUtils.EMPTY }};
+        }
+            //参数
+        RabbitMessageParam param = RabbitMessageParam.builder()
+            .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND).data(mpData).build())
+            .page(null)
+            .shopId(getShopId())
+            .userIdList(Collections.singletonList(subOrder.getUserId()))
+            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE)
+            .build();
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        logger().info("代付退款操作消息推送end");
     }
 
     private String getGoodsName(List<OrderGoodsRecord> orderGoods) {

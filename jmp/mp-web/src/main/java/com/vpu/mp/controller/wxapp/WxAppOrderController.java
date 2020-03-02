@@ -210,8 +210,13 @@ public class WxAppOrderController extends WxAppBaseController{
      * 代付详情
      */
     @PostMapping("/pay/instead/detail")
-    public JsonResult insteadDetail(@RequestBody @Valid OrderGoodsHistoryListParam param){
-        return success();
+    public JsonResult insteadDetail(@RequestBody @Valid InsteadPayDetailsParam param){
+        try {
+            shop().readOrder.InsteadPayInfo(param);
+            return success();
+        } catch (MpException e) {
+            return fail(e.getErrorCode(), e.getCodeParam());
+        }
     }
 
     /**

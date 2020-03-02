@@ -1,15 +1,16 @@
 package com.vpu.mp.service.shop.order;
 
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkVo;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
+import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 /**
  * 订单普通写操作
@@ -18,6 +19,9 @@ import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
  */
 @Service
 public class OrderWriteService extends ShopBaseService {
+
+    @Autowired
+    public ReturnMethodService returnMethodService;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

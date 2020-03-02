@@ -30,6 +30,7 @@ import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 import com.vpu.mp.service.shop.order.sub.SubOrderService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
@@ -85,6 +86,9 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
 
     @Autowired
     private PayService payService;
+
+    @Autowired
+    private ReturnMethodService returnMethodService;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -250,7 +254,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         //交易记录
         tradesRecord.addRecord(order.getMoneyPaid(),order.getSubOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CRASH_WX_PAY.val(),RecordTradeEnum.TRADE_FLOW_IN.val(),TradesRecordService.TRADE_CONTENT_MONEY);
         //完成支付
-        subOrderService.finish(order.getSubOrderSn(), paymentRecord);
+        subOrderService.payFinish(order.getSubOrderSn(), paymentRecord);
         //订单
         checkMainOrderToWaitDeliver(order.getSubOrderSn());
     }
@@ -267,7 +271,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
             //支付金额大于代付金额
             toWaitDeliver(order);
             //超付退款
-            overpay(moneyPaid, order.getInsteadPayMoney());
+            overpay(moneyPaid, order.getInsteadPayMoney(), subOrder.getMainOrderSn());
             //设置支付金额
             moneyPaid = order.getInsteadPayMoney();
         }
@@ -297,10 +301,11 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         }
     }
 
-    private void overpay(BigDecimal moneyPaid, BigDecimal insteadPayMoney) {
+    private void overpay(BigDecimal moneyPaid, BigDecimal insteadPayMoney, String mainOrderSn) {
         if(BigDecimalUtil.compareTo(moneyPaid, insteadPayMoney) == 1){
             logger().info("代付子单支付回调,超付退款");
-
+            BigDecimal overMoney = BigDecimalUtil.subtrac(moneyPaid, insteadPayMoney);
+            returnMethodService.returnSubOrder(mainOrderSn, overMoney, 0);
         }
 
 

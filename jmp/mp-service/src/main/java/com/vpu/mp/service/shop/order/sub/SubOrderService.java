@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.UserDetail;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -15,6 +16,7 @@ import org.jooq.SelectLimitStep;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 代付订单的支付订单
@@ -60,11 +62,31 @@ public class SubOrderService  extends ShopBaseService {
         return db().selectFrom(TABLE).where(TABLE.SUB_ORDER_SN.eq(subOrderSn)).fetchAny();
     }
 
-    public void finish(String subOrderSn, PaymentRecordRecord record){
+    public void payFinish(String subOrderSn, PaymentRecordRecord record){
         SubOrderInfoRecord order = get(subOrderSn);
         order.setOrderStatus(OrderConstant.SubOrderConstant.SUB_ORDER_PAY_OK);
         order.setPaySn(record.getPaySn());
         order.setPayTime(DateUtil.getSqlTimestamp());
         order.update();
+    }
+
+    public List<SubOrderInfoRecord> getCanReturn(String orderSn) {
+        return db().selectFrom(TABLE)
+            .where(TABLE.MAIN_ORDER_SN.eq(orderSn)
+                .and(TABLE.ORDER_STATUS.eq(OrderConstant.SubOrderConstant.SUB_ORDER_PAY_OK)).and(TABLE.MONEY_PAID.gt(TABLE.REFUND_MONEY)))
+            .orderBy(TABLE.PAY_TIME)
+            .fetch();
+    }
+
+    public void updateBeforeReturn(SubOrderInfoRecord record, BigDecimal currMoney) {
+        BigDecimal returned = BigDecimalUtil.add(currMoney, record.getRefundMoney());
+        if(BigDecimalUtil.compareTo(
+            returned,
+            record.getMoneyPaid()) == 0) {
+            record.setOrderStatus(OrderConstant.SubOrderConstant.SUB_ORDER_REFUND_SUCESS);
+        }
+        record.setRefundMoney(returned);
+        record.setRefundTime(DateUtil.getSqlTimestamp());
+        record.update();
     }
 }
