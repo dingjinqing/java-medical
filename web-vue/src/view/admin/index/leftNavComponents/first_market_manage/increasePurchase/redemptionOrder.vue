@@ -1,13 +1,85 @@
 <template>
   <div>
     <wrapper>
-      <marketOrderSearchTab
-        :requestParams="param"
-        @filter="initDataList"
-        @export="exportDataList"
-      />
+      <!-- 查询条件 -->
+      <el-form
+        label-width="100px"
+        :inline="true"
+      >
+        <el-form-item :label="$t('marketCommon.goodsName')">
+          <el-input
+            v-model="param.goodsName"
+            :placeholder="$t('marketCommon.goodsName')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('marketCommon.orderSn')">
+          <el-input
+            v-model="param.orderSn"
+            :placeholder="$t('marketCommon.orderSn')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('marketCommon.orderStatus')">
+          <el-select
+            v-model="param.orderStatus[0]"
+            :placeholder="$t('marketCommon.selectPlaceholder')"
+            size="small"
+          >
+            <el-option
+              v-for="item in $t('order.orderStatusList')"
+              :key="item[0]"
+              :label="item[1]"
+              :value="item[0]"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('marketCommon.consigneeName')">
+          <el-input
+            v-model="param.consignee"
+            :placeholder="$t('marketCommon.consigneeName')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('marketCommon.consigneeMobile')">
+          <el-input
+            v-model="param.mobile"
+            :placeholder="$t('marketCommon.consigneeMobile')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('marketCommon.orderTime')">
+          <el-date-picker
+            v-model="param.orderTime"
+            type="datetimerange"
+            :placeholder="$t('marketCommon.orderTime')"
+            size="small"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item :label="$t('marketCommon.shippingAddress')">
+          <template>
+            <areaLinkage
+              @areaData="handleAreaData"
+              style="width:365px;"
+            />
+          </template>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="initDataList"
+          >{{$t('marketCommon.filter')}}</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            style="float:right;"
+            @click="exportDataList"
+          >
+            {{$t('marketCommon.export')}}
+          </el-button>
+        </el-form-item>
+      </el-form>
     </wrapper>
     <wrapper>
+      <!-- 表格数据 -->
       <el-table
         class="version-manage-table"
         header-row-class-name="tableHeader"
@@ -113,14 +185,14 @@
 import { orderList, orderExport } from '@/api/admin/marketManage/increasePurchase.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
 import { download } from '@/util/excelUtil.js'
+import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
 export default {
   components: {
     pagination,
     wrapper,
-    marketOrderSearchTab,
-    download
+    download,
+    areaLinkage
   },
   mounted () {
     this.langDefault()
@@ -139,10 +211,15 @@ export default {
         activityId: this.activityId,
         goodsName: '',
         orderSn: '',
-        orderStatus: null,
-        provinceCode: null,
-        cityCode: null,
-        districtCode: null,
+        orderStatus: [],
+        consignee: '',
+        mobile: '',
+        createTimeStart: '',
+        createTimeEnd: '',
+        orderTime: [],
+        provinceCode: '',
+        cityCode: '',
+        districtCode: '',
         currentPage: 0,
         pageRows: 20
       },
@@ -161,6 +238,8 @@ export default {
       this.param.category = this.param.status
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
+      this.param.createTimeStart = this.param.orderTime[0]
+      this.param.createTimeEnd = this.param.orderTime[1]
       orderList(this.param).then((res) => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
@@ -174,12 +253,6 @@ export default {
           this.param.pageRows = res.content.page.pageRows
         }
       })
-    },
-    // 省市区三级联动
-    handleAreaData (val) {
-      this.param.provinceCode = val['province']
-      this.param.cityCode = val['city']
-      this.param.districtCode = val['district']
     },
     exportDataList () {
       this.param.category = this.param.status
@@ -195,6 +268,12 @@ export default {
       data.map((item, index) => {
         item.goodsImg = this.imgHost + '/' + item.goodsImg
       })
+    },
+    // 省市区下拉处理
+    handleAreaData (data) {
+      this.param.provinceCode = data.province
+      this.param.cityCode = data.city
+      this.param.districtCode = data.district
     }
   }
 }

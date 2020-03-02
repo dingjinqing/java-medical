@@ -466,6 +466,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+            redemption.setReceiverInfo(String.join("  ", redemption.getConsignee(), redemption.getMobile()));
             redemption.setOrderStatusName(orderStatus2Name(redemption.getOrderStatus()));
         }
     }
@@ -616,8 +617,8 @@ public class IncreasePurchaseService extends ShopBaseService {
             String[] concatPrices = redemption.getConcatPrices().split(GROUPCONCAT_SEPARATOR);
             String[] concatNumbers = redemption.getConcatNumbers().split(GROUPCONCAT_SEPARATOR);
             String[] activityRules = redemption.getActivityRules().split(GROUPCONCAT_SEPARATOR);
-            BigDecimal mainMoney = new BigDecimal(0);
-            BigDecimal redempMoney = new BigDecimal(0);
+            BigDecimal mainMoney = BigDecimal.ZERO;
+            BigDecimal redempMoney = BigDecimal.ZERO;
             Integer redempNum = 0;
             for (int i = 0; i < activityRules.length; i++) {
                 if (Integer.valueOf(activityRules[i]) > 0) {
