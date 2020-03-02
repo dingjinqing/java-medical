@@ -117,7 +117,7 @@
   align-items: center;
 } */
 .cart-goods_item .act_info .ai_left {
-  flex: 1.7;
+  flex: 1.6;
   display: flex;
   align-items: center;
   justify-content: flex-start
@@ -139,7 +139,7 @@
 }
 .go_full {
   color: #f66;
-  flex: 0.3;
+  flex: 0.4;
   display: flex;
   align-items: center;
   justify-content: flex-end;

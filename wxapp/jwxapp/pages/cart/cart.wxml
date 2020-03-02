@@ -24,7 +24,7 @@
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
                   <!-- <view class='act_content' style='width:350rpx;'>满1.00元另加1.00元即可换购商品</view> -->
                   <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
-                    <view wx:if="{{proItem.activityType == 7 && item.activityId == proItem.activityId}}">{{ proItem.fullReduction.condition }}</view>
+                    <view wx:if="{{proItem.activityType == 7 && item.activityId == proItem.activityId}}">{{ proItem.purchasePrice.rule }}</view>
                   </view>
                 </view>
                 <view class='go_full clearfix'>
@@ -214,7 +214,7 @@
                     <view wx:if="{{item.activityType == 7}}" style="display: flex;">
                       <view class='pro_list_span jiajiagou_icon' style='color:{{comColor}};border-color:{{comColor}};flex: 0.2'>加价购</view>
                         <view style="flex: 0.8;">
-                          <view wx:for="{{item.purchasePriceRule}}" wx:for-item="ritem" wx:key="index">
+                          <view wx:for="{{item.purchasePrice.purchasePriceRule}}" wx:for-item="ritem" wx:key="index">
                           <!-- 该活动规则是否为会员专享 -->
                           <!-- wx:if="{{item.fullReduction.isExclusive == true}}" -->
                             <view>满{{ritem.fullPrice}}元另加{{ritem.purchasePrice}}元即可换购商品</view>
