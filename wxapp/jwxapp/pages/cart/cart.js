@@ -1,4 +1,6 @@
 let util = require('../../utils/util.js');
+var app = getApp()
+var imageUrl = app.globalData.imageUrl;
 global.wxPage({
 
   /**
@@ -66,7 +68,7 @@ global.wxPage({
                     item.ruleList = item.ruleList.substr(0, item.ruleList.length - 1);
                   }
                 } else if (val.activityType == 7) {
-                  val.purchasePriceRule.forEach((pitem, pindex) => {
+                  val.purchasePrice.purchasePriceRule.forEach((pitem, pindex) => {
                     item.ruleList += '满' + pitem.fullPrice + '元另加' + pitem.purchasePrice + '元即可换购商品' + ','
                   })
                   if (item.ruleList.length > 0) {
@@ -81,6 +83,7 @@ global.wxPage({
         this.setData({
           canBuyGoodsList: this.data.canBuyGoodsList,
         })
+        console.log(this.data.canBuyGoodsList)
       }
     })
   },

@@ -1,99 +1,29 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.impl.DSL;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
-import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
-import com.vpu.mp.service.pojo.shop.member.account.GradeCardData;
-import com.vpu.mp.service.pojo.shop.member.account.NextGradeCardVo;
-import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardCoupon;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
-import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
-import com.vpu.mp.service.pojo.shop.member.account.WxAppCardExamineVo;
-import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
-import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
-import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
-import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
-import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
-import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
-import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneException;
-import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
-import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.exception.*;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -122,8 +52,30 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 
 /**
  * @author 黄壮壮
@@ -1741,7 +1693,23 @@ public class UserCardService extends ShopBaseService {
 	public Integer insertRow(UserCardRecord record) {
 		return db().executeInsert(record);
 	}
-	
+
+    /**
+     * 获得可用的、余额大于0的普通会员卡
+     * @param userId
+     * @return
+     */
+	public List<UserCardVo> getCanUseGeneralCardList(Integer userId){
+	    return db().select(USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,USER_CARD.MONEY,MEMBER_CARD.ID,MEMBER_CARD.BG_COLOR,MEMBER_CARD.CARD_NAME,MEMBER_CARD.DISCOUNT).
+            from(USER_CARD).leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)).
+            where(USER_CARD.USER_ID.eq(userId)).
+            and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_NORMAL)).
+            and(USER_CARD.FLAG.eq(DelFlag.NORMAL_VALUE)).
+            and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.gt(DateUtil.getLocalDateTime()))).
+            and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(USER_CARD.ACTIVATION_TIME.isNotNull().and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES)))).
+            and(USER_CARD.MONEY.gt(BigDecimal.ZERO)).
+            fetchInto(UserCardVo.class);
+    }
 	
 }
 

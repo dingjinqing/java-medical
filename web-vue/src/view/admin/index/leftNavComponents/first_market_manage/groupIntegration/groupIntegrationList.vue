@@ -259,7 +259,11 @@ export default {
   mounted () {
     // 初始化数据
     this.langDefault()
-    this.seacherGroupIntegrationList()
+    let params = {
+      'index': 1
+    }
+    this.handleClick(params)
+    // this.seacherGroupIntegrationList()
   },
   methods: {
 
@@ -366,9 +370,6 @@ export default {
         })
       })
     },
-    gotoAnalysis (id) {
-      console.log('活动效果数据' + id)
-    },
     // 增加瓜分积分活动
     addActivity () {
       // this.$router.push({
@@ -404,6 +405,10 @@ export default {
     // 前往成团明细页面
     gotoSuccess (id) {
       this.$router.push(`/admin/home/main/integration/success/${id}`)
+    },
+    gotoAnalysis (id) {
+      console.log('活动效果数据' + id)
+      this.$router.push(`/admin/home/main/integration/analysis/${id}`)
     },
     backHome (data) {
       if (data.flag === 6) {

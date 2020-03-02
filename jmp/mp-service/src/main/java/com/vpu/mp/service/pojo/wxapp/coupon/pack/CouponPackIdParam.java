@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.coupon;
+package com.vpu.mp.service.pojo.wxapp.coupon.pack;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -73,6 +73,10 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<GroupIntegrationSuccessVo> getSuccessPageList(GroupIntegrationSuccessParam param){
+		GroupIntegrationDefineRecord defineRecord =saas().getShopApp(getShopId()).groupIntegration.selectDefineById(param.getActId());
+		if(null==defineRecord) {
+			return null;
+		}
 		SelectJoinStep<?> selectFrom = db().select(GROUP_INTEGRATION_LIST.GROUP_ID,DSL.count(GROUP_INTEGRATION_LIST.ID).as("participantNum"),DSL.sum(GROUP_INTEGRATION_LIST.INTEGRATION).as("useIntegration"))
 			.from(GROUP_INTEGRATION_LIST);
 		SelectConditionStep<?> select = buildOptionSuccess(selectFrom,param);
@@ -81,7 +85,6 @@ public class GroupIntegrationListService extends ShopBaseService {
 		if(list == null ||list.isEmpty()) {
 			return result;
 		}
-		GroupIntegrationDefineRecord defineRecord =saas().getShopApp(getShopId()).groupIntegration.selectDefineById(param.getActId());
 		for(GroupIntegrationSuccessVo vo :list) {
 			GroupperInfoPojo grouperInfo = getGrouperInfo(param.getActId(),vo.getGroupId());
 			if(grouperInfo == null) {
@@ -319,7 +322,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @return 
 	 */
 	private SelectConditionStep<?> buildOptionDetail(SelectOnConditionStep<?> select, GroupIntegrationListDetailParam param) {
-		SelectConditionStep<?> step = select.where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+		SelectConditionStep<?> step = select.where(GROUP_INTEGRATION_DEFINE.ID.eq(param.getActId()))
 			.and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(param.getActId()));
 		if(!StringUtils.isBlank(param.getMobile())) {
 			step.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
@@ -362,8 +365,8 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @return 
 	 */
 	private SelectConditionStep<?> buildOptionSuccess(SelectJoinStep<?> selectFrom, GroupIntegrationSuccessParam param) {
-		SelectConditionStep<?> select = selectFrom.where(GROUP_INTEGRATION_LIST.STATUS.gt(Status.UNDERWAY.value()));
-		select.and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(param.getActId()));
+		SelectConditionStep<?> select = selectFrom.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(param.getActId()));
+		//select.and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(param.getActId()));
 		select.groupBy(GROUP_INTEGRATION_LIST.GROUP_ID);
 		if(param.getGroupId() != null) {
 			select.and(GROUP_INTEGRATION_LIST.GROUP_ID.eq(param.getGroupId()));

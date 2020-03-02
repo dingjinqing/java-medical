@@ -64,6 +64,9 @@ global.wxPage({
     al_goods_prices: '',
     can_del: 0,
     all_goods_doc: "",
+    showSpec: false, // 规格弹窗
+    // triggerButton: 'left',
+    // specParams: {} // 规格信息
   },
 
   /**
@@ -77,7 +80,7 @@ global.wxPage({
     searchText = "";
     full_request(that);
   },
-  // 去购物车
+  // 跳转购物车
   go_to_cart: function () {
     if (store_id > 0) {
       util.navigateTo({
@@ -219,7 +222,7 @@ global.wxPage({
       can_del: 0
     });
   },
-  //减号
+  // 换购商品-
   btn_del_al: function (e) {
     var that = this;
     this_cheks = e.currentTarget.dataset.idnes;
@@ -271,6 +274,7 @@ global.wxPage({
       }
     }, { action: 2, btn_click: 0, identity_id: strategy_id, change_goods_number: 1, product_id: full_change_info.list[this_cheks].prd_id, prd_number: full_change_info.list[this_cheks].goods_number, store_id: store_id })
   },
+  // 换购商品+
   btn_add_al: function (e) {
     var that = this;
     this_chek = e.currentTarget.dataset.indexs;
@@ -335,10 +339,12 @@ global.wxPage({
   },
   // 加入购物车
   add_to_cart: function (e) {
+    var prdId = e.currentTarget.dataset.prd_id
+    var goodsId = e.currentTarget.dataset.goods_id
     var that = this;
     // 不可参与购买且会员列表不为空
-    if (full_info.state == 4 && full_info.card_list.length == 1 && full_info.card_list[0].card_type == 2) {
-      util.showModal("提示", '您当前的会员等级不满足，仅拥有' + full_info.card_list[0].card_name + '等级卡用户可购买此商品。可在"个人中心"查看会员卡权益');
+    if (full_info.state == 4 && full_info.cardList.length == 1 && full_info.cardList[0].cardType == 2) {
+      util.showModal("提示", '您当前的会员等级不满足，仅拥有' + full_info.cardList[0].cardName + '等级卡用户可购买此商品。可在"个人中心"查看会员卡权益');
       return false
     }
     // 不可参与购买跳转会员卡列表
@@ -361,31 +367,132 @@ global.wxPage({
       return false;
     }
     // 添加购物车
-    util.api('/api/wxapp/cart/add', function (res) {
-      if (res.error == 0) {
-        util.toast_success('添加成功')
-        // //规格
-        // if (res.content.is_show_spec) {
-        //   res.content.goods.specs = res.content.goods.spec;
-        //   that.setData({ goodsData: res.content.goods })
-        //   that.bindAddCart()
-        // }
-        // else {
-        //   util.toast_success('已加入购物车');
-        //   that.setData({
-        //     al_goods_prices: res.content.full_price,
-        //     all_goods_doc: res.content.change_doc,
-        //   })
-        // }
-      } else {
-        util.showModal("提示", res.message);
-        return false;
-      }
-    }, {
-        goodsNumber: 1,
-        prdId: e.currentTarget.dataset.goods_id
-    });
+    if (prdId != null) {
+      // 单规格
+      util.api('/api/wxapp/cart/add', function (res) {
+        if (res.error == 0) {
+          util.toast_success('已加入购物车');
+        } else {
+          util.showModal("提示", res.message);
+          return false;
+        }
+      }, {
+          goodsNumber: 1,
+          prdId: prdId
+        })
+    } else {
+      // 选择规格
+      that.setData({
+        showSpec: true,
+        triggerButton: 'left'
+      })
+      that.requestGoodsInfo(goodsId)
+    }
   },
+
+  // 商品详情请求
+  async requestGoodsInfo(goodsId) {
+    let result = new Promise((resolve, reject) => {
+      util.api('/api/wxapp/goods/detail', res => {
+        if (res.error === 0) {
+          let {
+            comment,
+            goodsImgs,
+            goodsVideo,
+            goodsVideoImg,
+            coupons,
+            goodsDesc = null,
+            isPageUp = 0,
+            goodsPageId = null,
+            deliverPlace,
+            defaultPrd,
+            activity,
+            goodsNumber,
+            goodsSaleNum,
+            labels,
+            goodsAd,
+            isCollected,
+            products,
+            goodsName,
+            deliverPrice,
+            limitBuyNum,
+            limitMaxNum,
+            goodsId,
+            goodsGifts
+          } = res.content
+          let specParams = {
+            goodsId,
+            goodsNumber,
+            defaultPrd,
+            activity,
+            products,
+            limitBuyNum,
+            limitMaxNum,
+            goodsImgs
+          }
+          // this.setData({
+          //   comment, //评价
+          //   deliverPlace, //发货地
+          //   defaultPrd, //是否单规格
+          //   // goodsMediaInfo,
+          //   couponList: coupons, //优惠券
+          //   // goodsDescInfo,
+          //   goodsGifts // 赠品
+          // })
+          this.setData({
+            specParams
+          })
+        }
+      },
+      {
+        goodsId: goodsId,
+        activityId: strategy_id,
+        activityType: 21,
+        userId: util.getCache('user_id'),
+        lon: null,
+        lat: null
+      })
+    })
+  },
+
+  // 获取规格信息
+  getProduct({
+    detail: { prdNumber, limitBuyNum = null, limitMaxNum = null}
+  }) {
+    this.setData({
+      limitInfo: {
+        prdNumber,
+        limitBuyNum,
+        limitMaxNum
+      }
+    })
+  },
+
+  // 获取选中规格详情
+  getProductInfo(data) {
+    this.setData({
+      productInfo: data.detail
+    })
+    this.setDealtAct()
+  },
+
+  setDealtAct(actState) {
+    let dealtAct = {
+      error: 0
+    }
+    this.setData({
+      dealtAct
+    })
+  },
+
+  // 关闭规格弹窗
+  bindCloseSpec() {
+    this.setData({
+      showSpec: false,
+      triggerButton: ''
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -557,7 +664,6 @@ function full_request(that) {
       al_goods_prices = full_info.totalPrice; // 金额
       // 金额提示
       if (full_info.fullPriceDoc) {
-        // all_goods_doc = full_info.change_doc;
         if (full_info.fullPriceDoc.docType == 0) {
           all_goods_doc = '快选择商品参加活动吧'
         } else if (full_info.fullPriceDoc.docType == 1) {

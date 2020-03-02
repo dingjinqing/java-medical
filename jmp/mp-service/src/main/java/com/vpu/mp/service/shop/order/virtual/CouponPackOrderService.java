@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.virtual;
 
+import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -8,12 +9,16 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeParam;
+import com.vpu.mp.service.shop.member.MemberCardService;
+import org.checkerframework.checker.units.qual.A;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -34,6 +39,9 @@ import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 public class CouponPackOrderService extends VirtualOrderService {
 	/** 发放优惠劵的获取方式，0：发放，1：领取，2：礼包*/
 	public static final Byte CUSTOMER_AVAIL_COUPONS_ACCESSMODE_PACK=2;
+
+	@Autowired
+	private MemberCardService memberCardService;
 
 	/**
 	 * 分页查询优惠劵礼包订单 
@@ -159,7 +167,11 @@ public class CouponPackOrderService extends VirtualOrderService {
      * @return
      */
 	public int getCouponPackIssueAmount(int couponPackId){
-	    return db().selectCount().from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK)).and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED)).and(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(couponPackId)).fetchOneInto(Integer.class);
+	    return db().selectCount().from(VIRTUAL_ORDER).
+            where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK)).
+            and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED)).
+            and(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(couponPackId)).
+            fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
@@ -170,6 +182,15 @@ public class CouponPackOrderService extends VirtualOrderService {
      */
     public int getUserCouponPackBuyCount(int packId,int userId){
         return db().selectCount().from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK)).and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED)).and(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(packId)).and(VIRTUAL_ORDER.USER_ID.eq(userId)).fetchOptionalInto(Integer.class).orElse(0);
+    }
+
+    /**
+     * 优惠券礼包下单
+     * @param param
+     * @return
+     */
+    public VirtualOrderRecord createOrder(CouponPackOrderBeforeParam param){
+        return null;
     }
 
 

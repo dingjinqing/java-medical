@@ -503,7 +503,7 @@ public class FriendPromoteService extends ShopBaseService {
                 promoteInfo.setPromoteDetailList(friendPromoteDetail(launchInfo.getId()));
             }
             //设置订单
-            promoteInfo.setOrderSn(launchInfo.getOrderSn());
+            promoteInfo.setOrderSn(launchInfo==null?null:launchInfo.getOrderSn());
             //助力完成订单操作标识：0不可下单，1立即下单，2查看订单详情
             Byte orderFlag = 0;
             //奖励类型不为优惠券
@@ -581,7 +581,7 @@ public class FriendPromoteService extends ShopBaseService {
         //得到当前活动部分信息
         FriendPromoteActivityRecord record = getInfo(actCode);
         //设置奖励内容
-        FpRewardContent rewardContent = Util.json2Object(record.getRewardContent(),FpRewardContent.class,false);
+        FpRewardContent rewardContent = Util.json2Object(record.getRewardContent().substring(1,record.getRewardContent().length()-1),FpRewardContent.class,false);
         promoteInfo.setRewardContent(rewardContent);
         //设置活动id
         promoteInfo.setId(record.getId());
@@ -613,7 +613,7 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setEndTime(record.getEndTime());
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
-            GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getRewardIds());
+            GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
             goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
@@ -1101,7 +1101,7 @@ public class FriendPromoteService extends ShopBaseService {
             //活动状态
             item.setActStatus(getActStatus(item.getActCode()));
             //活动奖励
-            item.setFpRewardContent(Util.json2Object(item.getRewardContent(),FpRewardContent.class,false));
+            item.setFpRewardContent(Util.json2Object(item.getRewardContent().substring(1,item.getRewardContent().length()-1),FpRewardContent.class,false));
             //奖励内容
             if (item.getRewardType()==TWO){
                 CouponInfo couponInfo = getCouponById(item.getFpRewardContent().getRewardIds());

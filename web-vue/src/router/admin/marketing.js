@@ -822,6 +822,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationDetail'
       )
   },
+  // 瓜分积分活动--活动效果数据
+  {
+    path: '/admin/home/main/integration/analysis/:id',
+    name: 'group_integration_analysis',
+    meta: {
+      crumbTitle: 'router.pin_integration_analysis',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAnalysis'
+      )
+  },
   // 瓜分积分活动--成团明细
   {
     path: '/admin/home/main/integration/success/:id',

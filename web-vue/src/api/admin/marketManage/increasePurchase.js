@@ -77,7 +77,8 @@ export function orderExport (data) {
   return service({
     url: `/api/admin/market/increasepurchase/exportorderlist`,
     method: 'post',
-    data: data
+    data: data,
+    responseType: 'blob'
   })
 }
 // 换购明细导出
@@ -85,6 +86,7 @@ export function detailExport (data) {
   return service({
     url: `/api/admin/market/increasepurchase/exportorderdetail`,
     method: 'post',
-    data: data
+    data: data,
+    responseType: 'blob'
   })
 }

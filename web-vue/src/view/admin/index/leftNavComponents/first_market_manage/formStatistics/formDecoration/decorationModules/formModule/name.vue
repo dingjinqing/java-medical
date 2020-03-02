@@ -9,17 +9,18 @@
       :class="activeBorder?'activeBorder':'noBoderColor'"
     >
       <!--模块编辑区-->
-      <div
-        class="name"
-        :style="'backgroundColor:'+data.box_color"
-      >
+      <div class="name">
         <div class="nameMain">
-          <b class="moduleStar">*</b>
+          <b
+            class="moduleStar"
+            v-if="modulesShowData.confirm"
+          >*</b>
           <img
-            src="http://mpdevimg2.weipubao.cn/image/admin/shop_deco/name_change.png"
+            :src="modulesShowData.name_url?modulesShowData.name_url:($imageHost+'/image/admin/shop_deco/name_change.png')"
             class="image"
+            v-if="modulesShowData.image_type"
           >
-          <span class="name_title">姓名</span>
+          <span class="name_title">{{modulesShowData.form_title}}</span>
           <input
             class="name_title_place"
             placeholder="请输入姓名"
@@ -30,7 +31,10 @@
 
       </div>
       <!--模块编辑区结束-->
-      <div class="item_operation">
+      <div
+        class="item_operation"
+        v-if="activeBorder"
+      >
         <img
           class="up_img"
           style="cursor:pointer;z-index:1000"
@@ -60,9 +64,7 @@
   </div>
 </template>
 <script>
-import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
-  mixins: [decMixins],
   props: {
     flag: Number, // 模块公共
     nowRightShowIndex: Number, // 模块公共
@@ -75,7 +77,7 @@ export default {
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
       // 模块私有
-      data: {
+      modulesShowData: {
 
       }
     }
@@ -114,7 +116,7 @@ export default {
       handler (newData) {
         console.log(newData)
         if (newData) {
-
+          this.modulesShowData = newData
         }
         console.log(newData)
       },

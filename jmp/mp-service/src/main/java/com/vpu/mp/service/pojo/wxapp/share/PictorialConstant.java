@@ -29,4 +29,6 @@ public class PictorialConstant {
     public static final Byte GOODS_PIC_ERROR= 3;
     /**读取二维码异常*/
     public static final Byte QRCODE_ERROR= 4;
+    /**读取用户头像信息异常*/
+    public static final Byte USER_PIC_ERROR = 5;
 }

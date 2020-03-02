@@ -1,0 +1,68 @@
+@import "../insteadinfo/insteadinfo.wxss";
+.main_container{
+  padding-top: 20rpx;
+}
+.goods-content{
+  margin-top:0;
+  padding-top: 20rpx;
+}
+.goods-price-total{
+  border-top: 2rpx solid #eee;
+  margin-top: 20rpx;
+}
+.goods-price-total{
+  display: flex;
+  justify-content: space-between;
+  line-height: 80rpx;
+}
+.goods-price-total text{
+  font-weight: 600;
+}
+.friend-user > .item-title{
+  display: flex;
+  justify-content: space-between;
+}
+.nick-name{
+  display: flex;
+  align-items: center;
+  height: 80rpx;
+}
+.nick-name > input{
+  flex: 1;
+}
+.pay-input-content{
+  display: flex;
+}
+.pay-input-content > text{
+  font-size: 55rpx;
+  line-height: 100rpx;
+}
+.pay-input-content > .pay-input{
+  flex:1;
+  font-size: 55rpx;
+  line-height: 100rpx;
+  height: 100rpx;
+}
+.radio-item{
+  height: 100rpx;
+  border-top: 2rpx solid #eee;
+  display: flex;
+  align-items: center;
+}
+.radio-item > .radio-info{
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 20rpx;
+}
+.radio-item > .radio-info > view:last-of-type{
+  font-weight: 600;
+}
+.friend-footer{
+  margin: 20rpx auto 0;
+  width: 700rpx;
+  color: #fff;
+  line-height: 80rpx;
+  border-radius: 8rpx;
+  text-align: center;
+}

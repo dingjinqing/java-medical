@@ -363,7 +363,7 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    @click="refreshCoupn"
+                    @click="refreshLuckyDraw(index)"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.refresh')}}
                   </el-link>
@@ -371,14 +371,14 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    @click="jumpToAddCoupon"
+                    @click="toAddLuckyDrawActivity"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.createLabel')}}</el-link>
                   |
                   <el-link
                     type="primary"
                     :underline="false"
-                    @click="jumpToOrdinaryCoupon"
+                    @click="toLuckyDrawList"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                 </el-form-item>
@@ -917,6 +917,31 @@ export default {
     // 优惠券刷新
     refreshCoupn () {
       this.$refs.templateRefresh.handleToSure()
+      this.$nextTick(() => {
+        this.$message.success('刷新成功')
+      })
+    },
+
+    // 跳转到新建幸运大抽奖活动页面
+    toAddLuckyDrawActivity () {
+      this.$router.push({
+        name: 'lottery_activity',
+        query: {
+          add: 1
+        }
+      })
+    },
+
+    // 跳转到幸运大抽奖列表页面
+    toLuckyDrawList () {
+      this.$router.push({
+        name: 'lottery_activity'
+      })
+    },
+
+    // 幸运大抽奖刷新
+    refreshLuckyDraw () {
+      this.getIsGonigLotteryActivity()
       this.$nextTick(() => {
         this.$message.success('刷新成功')
       })

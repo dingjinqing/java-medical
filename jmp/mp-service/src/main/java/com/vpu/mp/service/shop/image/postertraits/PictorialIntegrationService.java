@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.image.postertraits;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
+import com.vpu.mp.service.pojo.wxapp.share.GoodsPictorialInfo;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
@@ -56,7 +57,6 @@ public class PictorialIntegrationService extends ShopBaseService {
 
     /**
      * 获取商品所有图片base64格式集合
-     *
      * @return
      */
     public List<String> getGoodsImagesBase64(Integer goodsId) {
@@ -99,67 +99,21 @@ public class PictorialIntegrationService extends ShopBaseService {
         }
     }
 
-    /**
-     * 商品还报下载
-     * @param param 商品信息
-     * @return base64图片信息
-     */
-    public String getNormalPictorialInfo(GoodsShareBaseParam param) {
-        return normalGoodsPictorialService.getNormalGoodsPictorialInfo(param);
+    public GoodsPictorialInfo getActivityPictorialInfo(GoodsShareBaseParam param) {
+        if (param instanceof GroupBuyShareInfoParam) {
+            return groupBuyPictorialService.getGroupBuyPictorialInfo((GroupBuyShareInfoParam) param);
+        } else if (param instanceof BargainShareInfoParam) {
+            return bargainPictorialService.getBargainPictorialInfo((BargainShareInfoParam) param);
+        } else if (param instanceof GroupDrawShareInfoParam) {
+            return groupDrawPictorialService.getGroupDrawPictorialInfo((GroupDrawShareInfoParam) param);
+        } else if (param instanceof PreSaleShareInfoParam) {
+            return preSalePictorialService.getPreSalePictorialInfo((PreSaleShareInfoParam) param);
+        } else if (param instanceof ReducePriceShareInfoParam) {
+            return reducePricePictorialService.getReducePricePictorialInfo((ReducePriceShareInfoParam) param);
+        } else if (param instanceof FirstSpecialShareInfoParam) {
+            return firstSpecialPictorialService.getFirstSpecialPictorialInfo((FirstSpecialShareInfoParam) param);
+        } else {
+            return normalGoodsPictorialService.getNormalGoodsPictorialInfo(param);
+        }
     }
-
-    /**
-     * 拼团还报下载
-     * @param param 拼团活动信息
-     * @return base64图片信息
-     */
-    public String getGroupBuyPictorialInfo(GroupBuyShareInfoParam param) {
-        return groupBuyPictorialService.getGroupBuyPictorialInfo(param);
-    }
-
-    /**
-     * 砍价还报下载
-     * @param param 拼团活动信息
-     * @return base64图片信息
-     */
-    public String getBargainPictorialInfo(BargainShareInfoParam param) {
-        return bargainPictorialService.getBargainPictorialInfo(param);
-    }
-
-    /**
-     * 拼团抽奖海报获取
-     * @param param 拼团抽奖参数信息
-     * @return base64图片信息
-     */
-    public String getGroupDrawPictorialInfo(GroupDrawShareInfoParam param) {
-        return groupDrawPictorialService.getGroupDrawPictorialInfo(param);
-    }
-
-    /**
-     * 预售海报获取
-     * @param param 拼团抽奖参数信息
-     * @return base64图片信息
-     */
-    public String getPreSalePictorialInfo(PreSaleShareInfoParam param) {
-        return preSalePictorialService.getPreSalePictorialInfo(param);
-    }
-
-    /**
-     * 限时降价海报获取
-     * @param param 拼团抽奖参数信息
-     * @return base64图片信息
-     */
-    public String getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
-        return reducePricePictorialService.getReducePricePictorialInfo(param);
-    }
-
-    /**
-     * 首单特惠海报获取
-     * @param param 首单特惠参数信息
-     * @return base64图片信息
-     */
-    public String getFirstSpecialPictorialInfo(FirstSpecialShareInfoParam param) {
-        return firstSpecialPictorialService.getFirstSpecialPictorialInfo(param);
-    }
-
 }

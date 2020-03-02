@@ -61,5 +61,31 @@
       </view>
     </view>
   </view>
+
+  <view class="page-item-content friend-content">
+    <view class="item-title">
+      <view class="line"></view>
+      <text>好友助力</text>
+      <view class="line"></view>
+    </view>
+    <view class="friend-item">
+      <image class="user-avatar" src="http://mpdevimg2.weipubao.cn/upload/4748160/avatar/thousand_2/20191218171020_2310.jpg"></image>
+      <view class="user-pay-info">
+        <view class="user-left">
+          <view>子辰大魔王</view>
+          <view>帮你付款啦！</view>
+        </view>
+        <view class="user-rigth">
+          <view>代付：</view>
+          <view>退款：</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="friend-pay-footer">
+    <view class="flex-one" style="background:{{commonColor}};color:{{(comColor != '#ff6666' || !comColor)?'#fff':'#f66'}};">自己付点</view>
+    <view class="flex-two" style="background:{{comColor}}">发送好友</view>
+  </view>
   <include src="../../pages/common/footer.wxml" />
 </view>

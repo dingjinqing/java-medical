@@ -193,6 +193,8 @@ export const cn = {
   pin_integration_edit: ['营销管理', '组团瓜分积分', '编辑瓜分积分活动'],
   // 营销管理 瓜分积分 参与用户明细
   pin_integration_detail: ['营销管理', '组团瓜分积分', '参与用户明细'],
+  // 营销管理 瓜分积分 效果数据
+  pin_integration_analysis: ['营销管理', '组团瓜分积分', '效果数据'],
   // 营销管理 瓜分积分 成团明细
   pin_integration_success: ['营销管理', '组团瓜分积分', '成团明细'],
   // 营销管理 赠品

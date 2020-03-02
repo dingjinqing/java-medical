@@ -318,7 +318,9 @@
   </div>
 </template>
 <script>
+import decMixins from '@/mixins/decorationModulesMixins/formdecorationModulesMixins' // 装修方法混入
 export default {
+  mixins: [decMixins],
   components: {
     ImageDialog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
     SelectLinks: () => import('@/components/admin/selectLinks'), // 选择链接弹窗
@@ -411,6 +413,28 @@ export default {
         console.log(newData)
         // 中部传递过来的初始表单配置数据初始回显
         // push进couponBackData
+        let turnArr = ['set_own_link', 'authorized_name', 'authorized_mobile', 'send_coupon', 'send_score']
+        if (newData) {
+          let data = JSON.parse(JSON.stringify(newData))
+          Object.keys(data).forEach((item, index) => {
+            console.log(turnArr.indexOf(item))
+            if (turnArr.indexOf(item) !== -1) {
+              console.log(typeof data[item])
+              if (typeof data[item] === 'number') {
+                data[item] = this.handleToTurnBoolean(data[item])
+              }
+
+              console.log(data[item])
+            }
+          })
+          let arr = []
+          data.send_coupon_list.forEach((item, index) => {
+            arr.push(item.id)
+          })
+          console.log(data)
+          this.couponBackData = arr
+          this.ruleForm = newData
+        }
       },
       immediate: true,
       deep: true
@@ -418,6 +442,16 @@ export default {
     ruleForm: {
       handler (newData) {
         console.log(newData)
+        // let arr = ['set_own_link', 'authorized_name', 'authorized_mobile', 'send_coupon', 'send_score']
+        // let data = JSON.parse(JSON.stringify(newData))
+        // Object.keys(data).forEach((item, index) => {
+        //   console.log(arr.indexOf(item))
+        //   if (arr.indexOf(item) !== -1) {
+        //     data[item] = this.handleToTurnBoolean(data[item])
+        //     console.log(data[item])
+        //   }
+        // })
+        // console.log(data)
         this.$emit('hanelToPageSet', newData)
       },
       deep: true

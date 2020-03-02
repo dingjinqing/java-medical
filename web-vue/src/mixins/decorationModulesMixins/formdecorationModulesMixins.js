@@ -7,19 +7,21 @@ export default {
         case 0: // 姓名模块
           obj = {
             'module_name': 'm_input_name',
-            'form_title': '姓名',
-            'image_type': 0,
-            'confirm': 0,
-            'ok_ajax': 1
+            'form_title': '姓名', // 标题文字input值
+            'image_type': 0, // 展现形式radio
+            'name_url': '', // 图标图片地址
+            'confirm': 0, // 条件验证
+            'ok_ajax': 0 // 是否点击确认
           }
           break
         case 1: // 姓名模块
           obj = {
             'module_name': 'm_input_mobile',
-            'form_title': '手机号',
-            'image_type': 0,
-            'confirm': 0,
-            'ok_ajax': 1
+            'form_title': '手机号', // 标题文字input值
+            'image_type': 0, // 展现形式radio
+            'name_url': '', // 图标图片地址
+            'confirm': 0, // 条件验证
+            'ok_ajax': 0// 是否点击确认
           }
           break
         case 2: // 省市区模块
@@ -28,12 +30,145 @@ export default {
             'form_title': '省/市/区',
             'with_detail': 0,
             'confirm': 0,
-            'ok_ajax': 1
+            'ok_ajax': 0
+          }
+          break
+        case 3: // 邮箱模块
+          obj = {
+            'module_name': 'm_input_email',
+            'form_title': '邮箱', // 标题文字input值
+            'image_type': 0, // 展现形式radio
+            'name_url': '', // 图标图片地址
+            'confirm': 0, // 条件验证
+            'ok_ajax': 0// 是否点击确认
+          }
+          break
+        case 4: // 性别模块
+          obj = {
+            'module_name': 'm_sex',
+            'form_title': '性别',
+            'show_types': 0,
+            'confirm': 0,
+            'ok_ajax': 0
+          }
+          break
+        case 5: // 下拉模块
+          obj = {
+            'module_name': 'm_slide',
+            'form_title': '下拉',
+            'selects': {
+              '1': '选项1',
+              '2': '选项2'
+            },
+            'confirm': 0,
+            'ok_ajax': 0
           }
           break
       }
       console.log(obj)
       return obj
+    },
+    // 对模块某些数据进行非空校验
+    handleToJudgeModulesData (data) {
+      console.log(this.pageSetData, data)
+      let flag = true
+      // 判断页面设置页面名称是否为空
+      if (!this.pageSetData.page_name) {
+        this.$message.error({
+          message: '表单标题不能为空',
+          showClose: true
+        })
+        flag = false
+      }
+      // 判断装修模块数量是否为空
+      if (!data.length) {
+        this.$message.error({
+          message: '请添加表单模块',
+          showClose: true
+        })
+        flag = false
+      }
+      // 判断是否保存表单
+      let isSaveModule = false
+      data.forEach((item, index) => {
+        if (item.ok_ajax) {
+          isSaveModule = true
+        }
+      })
+      if (isSaveModule) {
+        data.forEach((item, index) => {
+          item.ok_ajax = 1
+        })
+      } else {
+        this.$message.error({
+          message: '请保存表单',
+          showClose: true
+        })
+        flag = false
+      }
+      return flag
+    },
+    // 处理保存数据
+    handleToSaveModulesData (data, pageSetData, lastIdx) {
+      console.log(data)
+      let lastPageSetData = JSON.parse(JSON.stringify(pageSetData))
+      let idx = lastIdx + 1
+      let params = {}
+      let obj = {}
+      data.forEach(item => {
+        // 处理checkbox值
+        Object.keys(item).forEach(itemC => {
+          console.log(typeof true, item[itemC])
+          if (typeof item[itemC] === 'boolean') {
+            console.log(this.handleToTurnBoolean(item[itemC]))
+            item[itemC] = this.handleToTurnBoolean(item[itemC])
+          }
+        })
+        // 处理cur_idx
+        if (!item.cur_idx) {
+          obj[`c_${idx}`] = item
+          item.cur_idx = idx
+          idx = idx + 1
+        } else {
+          obj[`c_${item.cur_idx}`] = item
+        }
+      })
+      Object.keys(lastPageSetData).forEach(item => {
+        console.log(typeof true, lastPageSetData[item])
+        if (typeof lastPageSetData[item] === 'boolean') {
+          console.log(this.handleToTurnBoolean(lastPageSetData[item]))
+          lastPageSetData[item] = this.handleToTurnBoolean(lastPageSetData[item])
+        }
+      })
+      params['pageId'] = null
+      params['shopId'] = Number(localStorage.getItem('V-ShopId'))
+      params['pageName'] = lastPageSetData.page_name
+      params['status'] = null
+      params['pageContent'] = JSON.stringify(obj)
+      params['formCfg'] = JSON.stringify(lastPageSetData)
+      params['startTime'] = lastPageSetData.start_time
+      params['endTime'] = lastPageSetData.end_time
+      params['validityPeriod'] = lastPageSetData.is_forever_valid
+      return params
+    },
+    // 数字与Boolean互转
+    handleToTurnBoolean (flag) {
+      let res = ''
+      switch (flag) {
+        case 0:
+          res = false
+          break
+        case 1:
+          res = true
+          break
+        case false:
+          res = 0
+          break
+        case true:
+          res = 1
+          break
+      }
+      return res
     }
   }
 }

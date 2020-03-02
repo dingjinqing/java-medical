@@ -48,6 +48,7 @@
           <el-button
             type="info"
             style="float:right;"
+            @click="dataExport"
           >
             {{$t('purchase.export')}}
           </el-button>
@@ -123,14 +124,15 @@
   </div>
 </template>
 <script>
-import { detailList } from '@/api/admin/marketManage/increasePurchase.js'
-// import { getList, changeActivity, add, update, getDetail, share, orderList, detailList, orderExport, detailExport } from '@/api/admin/marketManage/increasePurchase.js'
+import { detailList, detailExport } from '@/api/admin/marketManage/increasePurchase.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: {
     pagination,
-    wrapper
+    wrapper,
+    download
   },
   mounted () {
     this.langDefault()
@@ -158,9 +160,7 @@ export default {
     initDateList () {
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
-      console.log(this.param)
       detailList(this.param).then((res) => {
-        console.log(res)
         if (res.error === 0) {
           this.handleData(res.content)
           this.pageParams = res.content.page
@@ -172,6 +172,15 @@ export default {
     // 表格数据处理
     handleData (data) {
       this.tableData = data.dataList
+    },
+    // 换购明细导出
+    dataExport () {
+      let params = Object.assign({}, this.param)
+      detailExport(params).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      })
     }
   }
 }

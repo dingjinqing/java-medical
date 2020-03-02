@@ -266,6 +266,12 @@ export const en = {
     'Group partition integral',
     'Group partition integral success'
   ],
+  // 营销管理 瓜分积分 成团明细
+  pin_integration_analysis: [
+    'Marketing management',
+    'Group partition integral',
+    'Performance data'
+  ],
   // 营销管理 赠品
   gift: ['Marketing Management', 'Gift'],
   // 营销管理 赠品 添加赠品

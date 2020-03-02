@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.pojo.wxapp.share.GoodsPictorialInfo;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
@@ -130,9 +131,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/goods/pictorial/info")
     public JsonResult getGoodsPictorial(@RequestBody GoodsShareBaseParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        return success(shop().pictorialIntegrationService.getNormalPictorialInfo(param));
+       return getActivityPictorialInfo(param);
     }
 
     /**
@@ -142,9 +141,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/groupbuy/pictorial/info")
     public JsonResult getGroupBuyPictorial(@RequestBody GroupBuyShareInfoParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        return success(shop().pictorialIntegrationService.getGroupBuyPictorialInfo(param));
+        return getActivityPictorialInfo(param);
     }
 
     /**
@@ -154,9 +151,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/bargain/pictorial/info")
     public JsonResult getBargainPictorial(@RequestBody BargainShareInfoParam param){
-        WxAppSessionUser user = wxAppAuth.user();
-        param.setUserId(user.getUserId());
-        return success(shop().pictorialIntegrationService.getBargainPictorialInfo(param));
+        return getActivityPictorialInfo(param);
     }
 
     /**
@@ -166,8 +161,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/groupdraw/pictorial/info")
     public JsonResult getGroupDrawPictorial(@RequestBody GroupDrawShareInfoParam param) {
-        param.setUserId(wxAppAuth.user().getUserId());
-        return success(shop().pictorialIntegrationService.getGroupDrawPictorialInfo(param));
+        return getActivityPictorialInfo(param);
     }
 
     /**
@@ -177,8 +171,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/presale/pictorial/info")
     public JsonResult getPreSalePictorial(@RequestBody PreSaleShareInfoParam param) {
-        param.setUserId(wxAppAuth.user().getUserId());
-        return success(shop().pictorialIntegrationService.getPreSalePictorialInfo(param));
+        return getActivityPictorialInfo(param);
     }
 
     /**
@@ -188,8 +181,7 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/reduceprice/pictorial/info")
     public JsonResult getReducePricePictorial(@RequestBody ReducePriceShareInfoParam param) {
-        param.setUserId(wxAppAuth.user().getUserId());
-        return success(shop().pictorialIntegrationService.getReducePricePictorialInfo(param));
+        return getActivityPictorialInfo(param);
     }
 
     /**
@@ -199,7 +191,32 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/firstspecial/pictorial/info")
     public JsonResult getFirstSpecialPictorial(@RequestBody FirstSpecialShareInfoParam param) {
-        param.setUserId(wxAppAuth.user().getUserId());
-        return success(shop().pictorialIntegrationService.getFirstSpecialPictorialInfo(param));
+        return getActivityPictorialInfo(param);
     }
+
+    /**
+     * 获取活动海报信息
+     * @param param GoodsShareBaseParam
+     * @return JsonResult content 为base64或 null
+     */
+    private JsonResult getActivityPictorialInfo(GoodsShareBaseParam param) {
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        GoodsPictorialInfo activityPictorialInfo = shop().pictorialIntegrationService.getActivityPictorialInfo(param);
+        Byte code = activityPictorialInfo.getPictorialCode();
+        if (PictorialConstant.ACTIVITY_DELETED.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_ACTIVITY_DELETED);
+        } else if (PictorialConstant.GOODS_DELETED.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_GOODS_DELETED);
+        } else if (PictorialConstant.GOODS_PIC_ERROR.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_PIC_ERROR);
+        } else if (PictorialConstant.QRCODE_ERROR.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_QRCDOE_ERROR);
+        } else if (PictorialConstant.USER_PIC_ERROR.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_USER_PIC_ERROR);
+        } else {
+            return success(activityPictorialInfo.getBase64());
+        }
+    }
+
 }

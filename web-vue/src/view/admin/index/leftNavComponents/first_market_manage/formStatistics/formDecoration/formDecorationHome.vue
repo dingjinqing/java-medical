@@ -87,6 +87,7 @@
                     :nowRightShowIndex="nowRightShowIndex"
                     @handleToClickIcon="handleToClickIcon"
                     @middleDragData='middleDragData'
+                    :backData='modulesData[index]'
                   ></components>
                 </div>
 
@@ -141,8 +142,12 @@
         <el-button
           type="primary"
           size="small"
+          @click="handleToClickSave(0)"
         >保存</el-button>
-        <el-button size="small">保存并发布</el-button>
+        <el-button
+          size="small"
+          @click="handleToClickSave(1)"
+        >保存并发布</el-button>
         <span>发布后不可更改</span>
       </div>
     </div>
@@ -154,7 +159,8 @@ import 'vuescroll/dist/vuescroll.css'
 import Vue from 'vue'
 import draggable from 'vuedraggable'
 import $ from 'jquery'
-import decMixins from '@/mixins/decorationModulesMixins/formdecorationModulesMixins' // 装修方法混入
+import decMixins from '@/mixins/decorationModulesMixins/formdecorationModulesMixins'
+import { formDecorationAdd } from '@/api/admin/marketManage/formDecoration' // 装修方法混入
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
@@ -167,13 +173,16 @@ export default {
     // 表单元素模块池
     Name: () => import('./decorationModules/formModule/name'), // 姓名模块
     CellPhoneNumber: () => import('./decorationModules/formModule/cellPhoneNumber'), // 手机号模块
-    ProvinceAndCity: () => import('./decorationModules/formModule/provinceAndCity') // 省市区模块
+    ProvinceAndCity: () => import('./decorationModules/formModule/provinceAndCity'), // 省市区模块
+    Email: () => import('./decorationModules/formModule/email'), // 邮箱模块
+    Gender: () => import('./decorationModules/formModule/gender'), // 性别模块
+    DropDown: () => import('./decorationModules/formModule/dropDown') // 下拉模块
   },
   data () {
     return {
       middleHereFlag: false, // 中间拖动滑过模块出现的空白占位控制变量
       nowRightShowIndex: null, // 中间高亮模块索引
-      middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity'], // 中间显示模块名称池
+      middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity', 'Email', 'Gender', 'DropDown'], // 中间显示模块名称池
       showModulesList: [], // 中间显示模块id数组
       insertModulesId: -1, // 左侧模块将要插入位置
       isAddBottom: false, // 是否添加到底部flag
@@ -206,7 +215,31 @@ export default {
           background: '#c1c1c1'
         }
       },
-      pageSetData: {}, // 初始向右侧传递的表单信息配置数据
+      pageSetData: {
+        'page_name': '', // 标题input值
+        'is_forever_valid': '1', // 有效期radio
+        'has_bottom': '0', // 底部导航radio
+        'start_time': '', // 开始时间
+        'end_time': '', // 结束时间
+        'post_times': '1', // 提交次数限制radio
+        'day_times': '1', // 每天input值
+        'total_times': '1', // 累计input值
+        'get_times': '0', // 总反馈数量限制input值
+        'notice_name': '', // 提交按钮文字
+        'font_color': '#ffffff', // 提交按钮文字颜色
+        'bg_color': '#ff6666', // 提交按钮背景颜色
+        'bg_img': '', // 表单海报背景图片
+        'set_own_link': 0, // 自定义跳转checked
+        'custom_btn_name': '', // 自定义按钮名称
+        'custom_link_path': '', // 跳转链接
+        'custom_link_name': '', // 跳转链接名称
+        'send_coupon': 0, // 参与送优惠卷checkbox
+        'send_coupon_list': [], // 选择的优惠卷数据列表
+        'send_score': 0, // 参与送积分选中checkbox
+        'send_score_number': null, // 输入的送积分input值
+        'authorized_name': 0, // 授权手机号
+        'authorized_mobile': 0 // 授权用户信息
+      }, // 初始向右侧传递的表单信息配置数据
       nowRightShowMoudlesIndex: null, // 当前右侧显示模块索引
       nowRightModulesData: {}, // 当前右侧显示的中部高亮模块数据
       isClickPageSetIcon: false, // 是否是右侧店家顶部icon引起的高亮模块索引变化
@@ -321,6 +354,15 @@ export default {
               break
             case 2:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 2)
+              break
+            case 3:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 3)
+              break
+            case 4:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 4)
+              break
+            case 5:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 5)
               break
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
@@ -560,7 +602,7 @@ export default {
       if (!flag) return
       this.handleToSaveModules(this.showModulesList, this.modulesData)
       this.nowRightShowMoudlesIndex = -1
-      console.log(this.showModulesList, this.nowRightShowIndex)
+      console.log(this.showModulesList, this.modulesData, this.nowRightShowIndex)
       this.$nextTick(() => {
         this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
         this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
@@ -614,6 +656,37 @@ export default {
           this.modulesData.splice(this.nowRightShowIndex, 0, temp)
         }
         this.oldIndex = -1
+      }
+    },
+    //  底部点击保存综合处理
+    handleToClickSave (index) {
+      let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
+      // 对模块某些数据进行非空校验
+      let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
+      console.log(judgeFlag)
+      if (!judgeFlag) return
+      // 处理数据结构
+      let lastData = this.handleToSaveModulesData(saveMosulesData, this.pageSetData, this.cur_idx)
+      console.log(lastData)
+      // 保存处理
+      if (index === 0) {
+        lastData.status = 0
+        formDecorationAdd(lastData).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true
+            })
+          } else {
+            this.$message.success({
+              message: '保存失败',
+              showClose: true
+            })
+          }
+        })
+      } else {
+        lastData.status = 1
       }
     }
   }
@@ -690,7 +763,7 @@ export default {
         height: 100%;
         position: relative;
         .hereDaily {
-          height: 5px;
+          height: 10px;
           z-index: 1000;
           margin-top: -5px;
           .setHereSpan {
@@ -729,7 +802,6 @@ export default {
       }
     }
     .decRight {
-      z-index: 100;
       width: 41.4%;
       margin-left: 20px;
     }

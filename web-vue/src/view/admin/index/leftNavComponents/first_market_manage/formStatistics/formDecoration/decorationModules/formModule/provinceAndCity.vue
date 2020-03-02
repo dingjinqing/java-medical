@@ -9,20 +9,42 @@
       :class="activeBorder?'activeBorder':'noBoderColor'"
     >
       <!--模块编辑区-->
-      <div
-        class="name"
-        :style="'backgroundColor:'+data.box_color"
-      >
-        <div
-          class="nameMain"
-          style="height:30px"
-        >
-          省市区模块测试
+      <div class="name">
+        <div class="nameMain">
+          <div class="address_module">
+            <div class="choose_area">
+              <div class="left">
+                <b
+                  v-if="modulesShowData.confirm"
+                  class="module-star"
+                >*</b>
+                <div class="address_names">{{modulesShowData.form_title}}</div>
+              </div>
+
+              <div class="have_bg">请选择
+                <img :src="$imageHost+'/image/wxapp/right_into.png'">
+              </div>
+            </div>
+            <div
+              class="area_detail"
+              v-if="modulesShowData.with_detail"
+            >
+              <div>详细地址</div>
+              <input
+                type="text"
+                readonly=""
+                placeholder="请填写详细地址"
+              >
+            </div>
+          </div>
         </div>
 
       </div>
       <!--模块编辑区结束-->
-      <div class="item_operation">
+      <div
+        class="item_operation"
+        v-if="activeBorder"
+      >
         <img
           class="up_img"
           style="cursor:pointer;z-index:1000"
@@ -52,9 +74,7 @@
   </div>
 </template>
 <script>
-import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
-  mixins: [decMixins],
   props: {
     flag: Number, // 模块公共
     nowRightShowIndex: Number, // 模块公共
@@ -67,18 +87,14 @@ export default {
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
       // 模块私有
-      data: {
-        search_style: '1',
-        search_font: '1',
-        box_color: '',
-        sort_bg_color: '',
-        back_color: '',
-        search_sort: ''
+      modulesShowData: {
+
       }
     }
   },
   watch: {
     nowRightShowIndex (newData) { // 模块公共
+      console.log(this.flag, newData)
       if (this.flag === newData) {
         this.activeBorder = true
       } else {
@@ -92,12 +108,13 @@ export default {
       }
     },
     activeBorder (newData) { // 模块公共
-      console.log(newData, this.index)
+      console.log(newData)
       if (newData) {
         this.$http.$emit('nowHightLightModules', this.flag)
       }
     },
     middleHereFlag (newData) { // 模块公共
+      console.log(newData)
       if (newData) {
         this.activeSetHere = true
       } else {
@@ -109,7 +126,7 @@ export default {
       handler (newData) {
         console.log(newData)
         if (newData) {
-
+          this.modulesShowData = newData
         }
         console.log(newData)
       },
@@ -172,31 +189,56 @@ export default {
     display: flex;
     justify-content: space-between;
     position: relative;
-    .Search {
-      flex: 1;
-      // line-height: 24px;
-      padding: 0 5px;
-      margin: 5px 10px;
-      border-color: #ccc;
-      border: 1px solid transparent;
-      display: flex;
-      align-items: center;
-      span {
-        color: #b4b4b4;
+    .address_module {
+      background: #fff;
+      padding-left: 10px;
+      padding-top: 5px;
+      width: 100%;
+      .choose_area {
+        padding-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        .left {
+          display: flex;
+          .module-star {
+            color: red;
+            height: 30px;
+            line-height: 30px;
+          }
+          .address_names {
+            font-size: 14px;
+            color: #353535;
+            width: 165px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+        }
+        .have_bg {
+          font-size: 14px;
+          padding-right: 15px;
+          color: #999;
+          display: flex;
+          align-items: center;
+          img {
+            width: 10px;
+            height: 12px;
+            position: relative;
+            margin-left: 5px;
+          }
+        }
       }
-    }
-    .icon {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      margin-right: 10px;
-      span:nth-of-type(1) {
-        font-size: 30px;
-        display: inline-block;
-      }
-      span:nth-of-type(2) {
-        display: inline-block;
-        text-align: right;
+      .area_detail {
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        input {
+          background: #ebebe4;
+          border: none;
+          text-align: right;
+          padding-right: 25px;
+        }
       }
     }
   }

@@ -173,15 +173,22 @@ public class GroupBuyPictorialService extends ShopBaseService {
      * @param param 拼团海报参数
      * @return 拼团海报图片base64
      */
-    public String getGroupBuyPictorialInfo(GroupBuyShareInfoParam param) {
-
+    public GoodsPictorialInfo getGroupBuyPictorialInfo(GroupBuyShareInfoParam param) {
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
         GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecord(param.getActivityId());
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
 
-        if (groupBuyDefineRecord == null || goodsRecord == null) {
-            groupBuyLog("pictorial", "商品或拼团信息已删除或失效");
-            return null;
+        if (groupBuyDefineRecord == null) {
+            groupBuyLog("pictorial", "拼团信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
+
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if (goodsRecord == null) {
+            groupBuyLog("pictorial", "商品信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
         }
         groupBuyLog("pictorial", "读取拼团海报配置信息");
         PictorialShareConfig shareConfig = Util.parseJson(groupBuyDefineRecord.getShareConfig(), PictorialShareConfig.class);
@@ -193,19 +200,22 @@ public class GroupBuyPictorialService extends ShopBaseService {
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
         } catch (IOException e) {
             groupBuyLog("pictorial", "获取用户信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
         }
-        return getGroupBuyPictorialImg(pictorialUserInfo, shareConfig, groupBuyDefineRecord, goodsRecord, shop, param);
+        getGroupBuyPictorialImg(pictorialUserInfo, shareConfig, groupBuyDefineRecord, goodsRecord, shop, param, goodsPictorialInfo);
+        return goodsPictorialInfo;
     }
 
-    private String getGroupBuyPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, GroupBuyDefineRecord groupBuyDefineRecord, GoodsRecord goodsRecord, ShopRecord shop, GroupBuyShareInfoParam param) {
+    private void getGroupBuyPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, GroupBuyDefineRecord groupBuyDefineRecord, GoodsRecord goodsRecord, ShopRecord shop, GroupBuyShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
         BufferedImage goodsImage;
         try {
             groupBuyLog("pictorial", "获取商品图片信息");
             goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
         } catch (IOException e) {
             groupBuyLog("pictorial", "获取商品图片信息失败：" + e.getMessage());
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
         }
 
         groupBuyLog("pictorial", "获取商品分享语");
@@ -228,7 +238,8 @@ public class GroupBuyPictorialService extends ShopBaseService {
             qrCodeImage = ImageIO.read(new URL(mpQrCode));
         } catch (IOException e) {
             groupBuyLog("pictorial", "获取二维码失败");
-            return null;
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return;
         }
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
@@ -256,7 +267,8 @@ public class GroupBuyPictorialService extends ShopBaseService {
         int linePriceTextStartX = realPriceTextStartX + realPriceTextWidth + 5;
         ImageUtil.addFontWithLine(bgBufferedImage, linePriceTextStartX, imgPx.getCustomerSecondTextStartY(), linePriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor());
 
-        return ImageUtil.toBase64(bgBufferedImage);
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
     }
 
 
