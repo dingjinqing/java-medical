@@ -516,7 +516,8 @@ public class GoodsCommentService extends ShopBaseService {
                 COMMENT_AWARD.ID,
                 COMMENT_AWARD.GOODS_TYPE,
                 COMMENT_AWARD.GOODS_IDS,
-                COMMENT_AWARD.COMMENT_NUM)
+                COMMENT_AWARD.COMMENT_NUM,
+                COMMENT_AWARD.FIRST_COMMENT_GOODS)
             .from(COMMENT_AWARD)
             .where(COMMENT_AWARD.DEL_FLAG.eq(BYTE_ZERO))
             .and(COMMENT_AWARD.STATUS.eq(NumberUtils.BYTE_ONE))
@@ -545,12 +546,27 @@ public class GoodsCommentService extends ShopBaseService {
     // 声明一个集合来存放满足条件的活动id
     Set<Integer> actIds = new HashSet<>();
     for (TriggerConditionVo vo : triggerConditionVos) {
+        //先判断是否只有首次评价商品才送礼
+        if(vo.getFirstCommentGoods()!=null&&vo.getFirstCommentGoods()==(byte)1){
+            //判断当前商品 对于当前的评价有礼活动 是否是首次评价
+            List<CommentGoodsRecord> record = db().select()
+                .from(COMMENT_GOODS)
+                .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(COMMENT_GOODS.GOODS_ID.eq(goodsId))
+                .and(COMMENT_GOODS.COMMENT_AWARD_ID.eq(vo.getId()))
+                .fetchInto(CommentGoodsRecord.class);
+            //对于当前的评价有礼活动 当前商品 已经有人评价过了
+            if (record!=null&&record.size()>0){
+                //这个活动不符合当前商品 跳出当前活动循环
+                continue;
+            }
+        }
       // 触发条件：全部商品
       if (vo.getGoodsType().equals(NumberUtils.INTEGER_ONE)) {
         actIds.add(vo.getId());
       } // 触发条件：指定商品
       else if (vo.getGoodsType().equals(NumberUtils.INTEGER_TWO)) {
-        String[] arr = vo.getGoodsIds().split(",");
+        String[] arr = vo.getGoodsIds().substring(1,vo.getGoodsIds().length()-1).split(",");
         if (Arrays.asList(arr).contains(goodsId.toString())) {
           actIds.add(vo.getId());
         }

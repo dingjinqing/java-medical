@@ -17,4 +17,6 @@ public class TriggerConditionVo {
   private String goodsIds;
   /** 评论数 */
   private Integer commentNum;
+  /** 首次评价商品 */
+  private Byte firstCommentGoods;
 }
