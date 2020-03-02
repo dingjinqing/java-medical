@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
@@ -330,7 +331,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             if (StringUtils.isNotBlank(record.get(MRKING_STRATEGY.CARD_ID))) {
                 fullReduction.setIsExclusive(true);
                 for (Integer id : cardIds) {
-                    if (record.get(MRKING_STRATEGY.CARD_ID).indexOf(id)==-1) {
+                    if (!Util.splitValueToList(record.get(MRKING_STRATEGY.CARD_ID)).contains(id)) {
                         break AA;
                     }
                 }
