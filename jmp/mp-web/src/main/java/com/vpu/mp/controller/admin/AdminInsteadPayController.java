@@ -73,27 +73,21 @@ public class AdminInsteadPayController extends AdminBaseController {
                     param.getInsteadPayMessageMultiple().length() > messageLength) {
                     return fail(JsonResultCode.INSTEAD_PAY_MULTIPLE_PAY_MESSAGE_TOO_LONG);
                 }
-                //多人代付金额比需要3个
-                if (param.getPayRatio() == null || param.getPayRatio().size() != ratioLen) {
+                //多人代付金额比中文需要3个
+                if (param.getPayRatioText() == null || param.getPayRatioText().size() != ratioLen) {
                     return fail(JsonResultCode.INSTEAD_PAY_NEED_AT_LEAST_THREE_PAY_RATIO);
                 }
-                //检查用户设置的金额比
-                int doubleNum = 0;
-                for (Object value : param.getPayRatio().values()) {
-                    //如果值为浮点数就表示设置的定额，为字符串表示剩余款项全部支付
-                    if (value instanceof Double||value instanceof Integer) {
-                        doubleNum++;
-                        Double d = Double.parseDouble(value.toString());
-                        //代付金额比例需要在0-100之间
-                        if (d<=0 || d >=100) {
-                            return fail(JsonResultCode.INSTEAD_PAY_VALUE_OVER_RANGE);
-                        }
-                    }
-                }
-                //最少设置两个浮点金额比
-                if (doubleNum < ratioNumLen) {
+                //多人代付金额比数字需要2个
+                if (param.getPayRatioNumber() == null || param.getPayRatioNumber().size() != ratioNumLen) {
                     return fail(JsonResultCode.INSTEAD_PAY_NEED_AT_LEAST_TWO_DOUBLE_PAY_RATIO);
                 }
+                //检查用户设置的金额比 范围
+                int ratioNum1 = param.getPayRatioNumber().get(0);
+                int ratioNum2 = param.getPayRatioNumber().get(1);
+                if (ratioNum1 > 100 || ratioNum1 < 0 || ratioNum2 > 100 || ratioNum2 < 0) {
+                    return fail(JsonResultCode.INSTEAD_PAY_VALUE_OVER_RANGE);
+                }
+
             }
 
             if (param.getSinglePay() && param.getMultiplePay()) {

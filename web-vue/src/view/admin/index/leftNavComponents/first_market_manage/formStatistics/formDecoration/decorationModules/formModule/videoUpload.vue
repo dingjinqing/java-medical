@@ -20,39 +20,9 @@
                 >*</b>
                 <div class="address_names">{{modulesShowData.form_title}}</div>
               </div>
-
-              <div
-                class="have_bg"
-                v-if="!modulesShowData.show_types"
-              >
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
-              </div>
             </div>
-            <div
-              class="area_detail"
-              v-if="modulesShowData.show_types"
-            >
-              <div class="radio">
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-              </div>
-              <div class="radio bottom">
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
-              </div>
+            <div class="area_detail">
+              <img :src="$imageHost+'/image/admin/shop_deco/upload_deco.png'">
             </div>
           </div>
         </div>
@@ -215,7 +185,10 @@ export default {
       width: 100%;
 
       .choose_area {
+        background: #f5f5f5;
         padding-bottom: 5px;
+        height: 25px;
+        line-height: 25px;
         display: flex;
         justify-content: space-between;
         /deep/ .is-disabled {
@@ -252,38 +225,15 @@ export default {
         }
       }
       .area_detail {
-        // padding-top: 10px;
+        padding: 10px;
+        padding-left: 0;
         border-top: 1px solid #eee;
         display: flex;
         flex-direction: column;
-        /deep/ .is-disabled {
-          .el-radio__inner {
-            background-color: #e4e7ed !important;
-            background: #fff !important;
-            border-color: #e4e7ed !important;
-          }
-          .el-radio__label {
-            color: #333;
-          }
+        img {
+          width: 84px;
+          height: 84px;
         }
-        /deep/ .el-radio__inner {
-          border-color: #409eff;
-          background: #409eff !important;
-        }
-        /deep/ .el-radio__label {
-          color: #333;
-        }
-        .radio {
-          height: 30px;
-          line-height: 30px;
-        }
-        .bottom {
-          // margin-top: 10px;
-          border-top: 1px solid #eee;
-        }
-      }
-      /deep/ .el-radio__label {
-        color: #333 !important;
       }
     }
   }

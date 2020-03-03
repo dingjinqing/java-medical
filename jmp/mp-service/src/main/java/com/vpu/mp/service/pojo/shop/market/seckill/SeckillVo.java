@@ -22,6 +22,9 @@ public class SeckillVo {
     /** 活动名称*/
     private String name;
 
+    /** 优先级*/
+    private Byte first;
+
     /** 商品信息*/
     private List<SeckillGoods> goods;
 

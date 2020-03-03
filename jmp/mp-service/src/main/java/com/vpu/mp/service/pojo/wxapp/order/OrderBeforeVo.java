@@ -188,6 +188,9 @@ public class OrderBeforeVo {
         if(getBkReturnType() != null){
             orderRecord.setReturnTypeCfg(getBkReturnType());
         }
+        if(insteadPayNum != null) {
+            orderRecord.setInsteadPayNum(insteadPayNum.shortValue());
+        }
         orderRecord.setInsteadPayMoney(getInsteadPayMoney());
         orderRecord.setExchang(getExchang());
 

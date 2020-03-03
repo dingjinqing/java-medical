@@ -610,13 +610,21 @@ public class FriendPromoteService extends ShopBaseService {
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
-            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
+//            if (rewardContent.getMarketPrice()==null){
+//                rewardContent.setMarketPrice(BigDecimal.ZERO);
+//            }
+            if (goodsInfo==null){
+                goodsInfo = new GoodsInfo();
+            }
+            goodsInfo.setMarketPrice(record.getRewardType()==ZERO?rewardContent.getMarketPrice():BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
             //检查活动库存是否发完
             promoteInfo.setMarketStore(promoteInfo.getMarketStore()>promoteInfo.getHasLaunchNum()?promoteInfo.getMarketStore()-promoteInfo.getHasLaunchNum():0);
             //商品库存与活动库存比较 重新设置活动库存
-            promoteInfo.setMarketStore(goodsInfo.getGoodsStore()>promoteInfo.getMarketStore()?promoteInfo.getMarketStore():goodsInfo.getGoodsStore());
+            if (goodsInfo.getGoodsStore()!=null){
+                promoteInfo.setMarketStore(goodsInfo.getGoodsStore()>promoteInfo.getMarketStore()?promoteInfo.getMarketStore():goodsInfo.getGoodsStore());
+            }
         }
         //判断奖励类型-为赠送优惠券时
         else if (record.getRewardType()==TWO){
@@ -1104,7 +1112,7 @@ public class FriendPromoteService extends ShopBaseService {
                 couponInfo.setMarketStore(item.getFpRewardContent().getMarketStore()>receiveNum?item.getFpRewardContent().getMarketStore()-receiveNum:0);
                 item.setCouponInfo(couponInfo);
             }else{
-                GoodsInfo goodsInfo = getGoodsInfo(item.getFpRewardContent().getRewardIds());
+                GoodsInfo goodsInfo = getGoodsInfo(item.getFpRewardContent().getGoodsIds());
                 goodsInfo.setMarketPrice(item.getRewardType()==ONE?item.getFpRewardContent().getMarketPrice():BigDecimal.ZERO);
                 goodsInfo.setMarketStore(item.getFpRewardContent().getMarketStore());
                 //设置库存
@@ -1114,5 +1122,13 @@ public class FriendPromoteService extends ShopBaseService {
             }
         }
         return promoteActList;
+    }
+
+    /**
+     * 小程序-发起好友助力
+     *
+     */
+    public void friendPromoteLaunch(PromoteParam param){
+
     }
 }

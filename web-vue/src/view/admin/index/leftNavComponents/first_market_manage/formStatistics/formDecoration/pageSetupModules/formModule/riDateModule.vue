@@ -4,17 +4,6 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>展示形式：</span>
-          <el-radio
-            v-model="modulesSaveData.show_types"
-            :label="0"
-          >横向</el-radio>
-          <el-radio
-            v-model="modulesSaveData.show_types"
-            :label="1"
-          >纵向</el-radio>
-        </div>
-        <div class="list">
           <span>标题文字：</span>
           <el-input
             v-model="modulesSaveData.form_title"
@@ -24,6 +13,13 @@
         <div class="list">
           <span></span>
           <div class="tips">最多可输入20个字</div>
+        </div>
+        <div class="list">
+          <span>时间格式：</span>
+          <el-radio
+            v-model="modulesSaveData.date_types"
+            :label="0"
+          >年-月-日</el-radio>
         </div>
         <div class="list">
           <span>条件验证：</span>
@@ -53,8 +49,8 @@ export default {
     return {
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
-        'form_title': '性别',
-        'show_types': 0,
+        'form_title': '日期',
+        'date_types': 0,
         'confirm': 0,
         'ok_ajax': 0
       } // 模块保存数据

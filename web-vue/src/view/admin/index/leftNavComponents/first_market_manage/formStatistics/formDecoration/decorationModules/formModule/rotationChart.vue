@@ -10,49 +10,22 @@
     >
       <!--模块编辑区-->
       <div class="name">
-        <div class="nameMain">
-          <div class="address_module">
-            <div class="choose_area">
-              <div class="left">
-                <b
-                  v-if="modulesShowData.confirm"
-                  class="module-star"
-                >*</b>
-                <div class="address_names">{{modulesShowData.form_title}}</div>
-              </div>
-
-              <div
-                class="have_bg"
-                v-if="!modulesShowData.show_types"
-              >
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
-              </div>
-            </div>
-            <div
-              class="area_detail"
-              v-if="modulesShowData.show_types"
+        <div
+          class="carousel_module"
+          :style="`background-image: url(${$imageHost}/image/admin/shop_beautify/decorate_model.png)`"
+        >
+          <div v-if="imgLen">
+            <img
+              class="scroll_image"
+              :src="modulesShowData.img_items[imgLen-1].img_url"
+              alt=""
             >
-              <div class="radio">
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-              </div>
-              <div class="radio bottom">
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
-              </div>
+            <div class="contain_circle">
+              <div
+                class="small_circle"
+                v-for="(item, index) in modulesShowData.img_items"
+                :key="index"
+              ></div>
             </div>
           </div>
         </div>
@@ -104,7 +77,7 @@ export default {
       activeBorder: false, // 模块公共
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
-      sexRadio: '2', // 男女radio
+      imgLen: 0, // 上传的图片数量
       // 模块私有
       modulesShowData: {
 
@@ -146,6 +119,7 @@ export default {
         console.log(newData)
         if (newData) {
           this.modulesShowData = newData
+          this.imgLen = this.modulesShowData.img_items.length
         }
         console.log(newData)
       },
@@ -202,88 +176,37 @@ export default {
 <style lang="scss" scoped>
 @import "@/style/admin/formdecorationModules.scss"; // 模块公共
 
-.name {
-  background: rgb(238, 238, 238);
-  .nameMain {
+.carousel_module {
+  overflow: hidden;
+  position: relative;
+  min-height: 150px;
+  max-height: 317px;
+  background: #eaf2ff center no-repeat;
+  .scroll_image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 317px;
+    min-height: 150px;
+  }
+  .contain_circle {
+    position: absolute;
     display: flex;
-    justify-content: space-between;
-    position: relative;
-    .address_module {
-      background: #fff;
-      padding-left: 10px;
-      padding-top: 5px;
-      width: 100%;
-
-      .choose_area {
-        padding-bottom: 5px;
-        display: flex;
-        justify-content: space-between;
-        /deep/ .is-disabled {
-          .el-radio__inner {
-            background-color: #fff;
-          }
-          .el-radio__label {
-            color: #333;
-          }
-        }
-        .left {
-          display: flex;
-          .module-star {
-            color: red;
-          }
-          .address_names {
-            font-size: 14px;
-            color: #353535;
-            width: 165px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-          }
-        }
-        .have_bg {
-          font-size: 14px;
-          padding-right: 15px;
-          color: #999;
-          display: flex;
-          align-items: center;
-          /deep/ .el-radio {
-            margin-right: 10px;
-          }
-        }
-      }
-      .area_detail {
-        // padding-top: 10px;
-        border-top: 1px solid #eee;
-        display: flex;
-        flex-direction: column;
-        /deep/ .is-disabled {
-          .el-radio__inner {
-            background-color: #e4e7ed !important;
-            background: #fff !important;
-            border-color: #e4e7ed !important;
-          }
-          .el-radio__label {
-            color: #333;
-          }
-        }
-        /deep/ .el-radio__inner {
-          border-color: #409eff;
-          background: #409eff !important;
-        }
-        /deep/ .el-radio__label {
-          color: #333;
-        }
-        .radio {
-          height: 30px;
-          line-height: 30px;
-        }
-        .bottom {
-          // margin-top: 10px;
-          border-top: 1px solid #eee;
-        }
-      }
-      /deep/ .el-radio__label {
-        color: #333 !important;
+    width: 100%;
+    height: 20px;
+    bottom: 10px;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0);
+    .small_circle {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+      background-color: #eaf2ff;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      &:last-child {
+        background-color: gray;
       }
     }
   }

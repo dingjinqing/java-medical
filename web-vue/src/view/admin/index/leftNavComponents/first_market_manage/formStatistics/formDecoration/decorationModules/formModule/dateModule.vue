@@ -21,37 +21,8 @@
                 <div class="address_names">{{modulesShowData.form_title}}</div>
               </div>
 
-              <div
-                class="have_bg"
-                v-if="!modulesShowData.show_types"
-              >
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
-              </div>
-            </div>
-            <div
-              class="area_detail"
-              v-if="modulesShowData.show_types"
-            >
-              <div class="radio">
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-              </div>
-              <div class="radio bottom">
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
+              <div class="have_bg">请选择
+                <img :src="$imageHost+'/image/wxapp/right_into.png'">
               </div>
             </div>
           </div>
@@ -104,7 +75,6 @@ export default {
       activeBorder: false, // 模块公共
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
-      sexRadio: '2', // 男女radio
       // 模块私有
       modulesShowData: {
 
@@ -213,23 +183,16 @@ export default {
       padding-left: 10px;
       padding-top: 5px;
       width: 100%;
-
       .choose_area {
         padding-bottom: 5px;
         display: flex;
         justify-content: space-between;
-        /deep/ .is-disabled {
-          .el-radio__inner {
-            background-color: #fff;
-          }
-          .el-radio__label {
-            color: #333;
-          }
-        }
         .left {
           display: flex;
           .module-star {
             color: red;
+            height: 30px;
+            line-height: 30px;
           }
           .address_names {
             font-size: 14px;
@@ -246,44 +209,25 @@ export default {
           color: #999;
           display: flex;
           align-items: center;
-          /deep/ .el-radio {
-            margin-right: 10px;
+          img {
+            width: 10px;
+            height: 12px;
+            position: relative;
+            margin-left: 5px;
           }
         }
       }
       .area_detail {
-        // padding-top: 10px;
+        padding-top: 10px;
         border-top: 1px solid #eee;
         display: flex;
-        flex-direction: column;
-        /deep/ .is-disabled {
-          .el-radio__inner {
-            background-color: #e4e7ed !important;
-            background: #fff !important;
-            border-color: #e4e7ed !important;
-          }
-          .el-radio__label {
-            color: #333;
-          }
+        justify-content: space-between;
+        input {
+          background: #ebebe4;
+          border: none;
+          text-align: right;
+          padding-right: 25px;
         }
-        /deep/ .el-radio__inner {
-          border-color: #409eff;
-          background: #409eff !important;
-        }
-        /deep/ .el-radio__label {
-          color: #333;
-        }
-        .radio {
-          height: 30px;
-          line-height: 30px;
-        }
-        .bottom {
-          // margin-top: 10px;
-          border-top: 1px solid #eee;
-        }
-      }
-      /deep/ .el-radio__label {
-        color: #333 !important;
       }
     }
   }

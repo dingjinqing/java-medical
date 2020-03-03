@@ -358,7 +358,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //门店
             store(param.getStoreId() == null ? null : store.getStore(param.getStoreId())).
             //支付方式
-            payment(param.getOrderPayWay() == null ? null : payment.getPaymentInfo(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])).
+            payment(param.getOrderPayWay() == null || Byte.valueOf(OrderConstant.PAY_WAY_FRIEND_PAYMENT).equals(param.getOrderPayWay()) ? null : payment.getPaymentInfo(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])).
             //发票
             invoice(param.getInvoiceId() == null ? null : invoice.get(param.getInvoiceId())).
             //TODO 自提时间
@@ -820,8 +820,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //好友代付
         if(param.getOrderPayWay() != null && param.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
             vo.setOrderPayWay(OrderConstant.PAY_WAY_FRIEND_PAYMENT);
-            moneyPaid = BigDecimal.ZERO;
             vo.setInsteadPayMoney(moneyPaid);
+            moneyPaid = BigDecimal.ZERO;
             vo.setInsteadPayNum(param.getInsteadPayNum());
         }
 
@@ -932,7 +932,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         //TODO 订单类型拼接(支付有礼)
-        orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderBo.getOrderGoodsBo()));//支付信息
+        orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
+
         if(BigDecimalUtil.add(beforeVo.getMoneyPaid(), beforeVo.getBkOrderMoney()).compareTo(BigDecimal.ZERO) == 0){
             logger().info("支付信息:余额支付");
             //非补款

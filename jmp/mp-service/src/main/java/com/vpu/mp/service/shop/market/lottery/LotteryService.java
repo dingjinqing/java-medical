@@ -398,7 +398,7 @@ public class LotteryService extends ShopBaseService {
         //积分抽奖
         if (lottery.getCanUseScore().equals(YES)) {
             Integer userScoreTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SCORE);
-            if (lottery.getScoreChances() != null && userScoreTimes < lottery.getScoreChances()) {
+            if (lottery.getScoreChances() == null || userScoreTimes < lottery.getScoreChances()) {
                 join.setChanceSource(LOTTERY_TIME_SCORE);
                 join.setFlag(true);
                 if (lottery.getScoreChances() != null) {
@@ -406,11 +406,9 @@ public class LotteryService extends ShopBaseService {
                 }
                 Integer lotteryScore = lottery.getScorePerChance();
                 Integer userScore = memberService.getUserFieldById(userId, USER.SCORE);
-
                 //积分不足
-
                 if (userScore < lotteryScore) {
-                    join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_ACTIVITY_OUT_DATE).build());
+                    join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_TIME_USE_UP).build());
                     join.setFlag(false);
                     return join;
                 }

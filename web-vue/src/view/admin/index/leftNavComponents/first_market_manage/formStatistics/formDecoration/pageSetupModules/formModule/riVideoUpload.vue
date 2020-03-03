@@ -4,17 +4,6 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>展示形式：</span>
-          <el-radio
-            v-model="modulesSaveData.show_types"
-            :label="0"
-          >横向</el-radio>
-          <el-radio
-            v-model="modulesSaveData.show_types"
-            :label="1"
-          >纵向</el-radio>
-        </div>
-        <div class="list">
           <span>标题文字：</span>
           <el-input
             v-model="modulesSaveData.form_title"
@@ -28,6 +17,10 @@
         <div class="list">
           <span>条件验证：</span>
           <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+        </div>
+        <div class="videoTips">
+          <span>注：</span>
+          <div class="videoTipsContent">每个表单视频模块最多可由用户上传一个小视频，时长不可超过3min，大小不能超过10M</div>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -53,11 +46,35 @@ export default {
     return {
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
-        'form_title': '性别',
-        'show_types': 0,
+        'form_title': '图片上传',
+        'max_number': '6',
+        'size_types': 0,
+        'width_size': '',
+        'height_size': '',
         'confirm': 0,
-        'ok_ajax': 0
-      } // 模块保存数据
+        'ok_ajax': 1
+      }, // 模块保存数据
+      options: [{
+        value: '6',
+        label: '6'
+      }, {
+        value: '5',
+        label: '5'
+      }, {
+        value: '4',
+        label: '4'
+      }, {
+        value: '3',
+        label: '3'
+      }, {
+        value: '2',
+        label: '2'
+      },
+      {
+        value: '1',
+        label: '1'
+      }
+      ]
     }
   },
   watch: {
@@ -117,35 +134,32 @@ export default {
         color: #a7a7a7;
         font-size: 12px;
       }
-      .iconContainer {
-        background-size: 45% !important;
-        background-position: center !important;
-        width: 70px;
-        height: 70px;
-        border: 1px solid #e5e5e5;
-        position: relative;
-        .click_to_change {
-          position: absolute;
-          cursor: pointer;
-          bottom: 0;
-          width: 100%;
-          text-align: center;
-          color: #fff;
-          background: rgba(0, 0, 0, 0.5);
-          padding: 3px 0;
-          font-size: 11px;
-        }
-        img {
-          width: 100%;
+      .sizeTypes {
+        display: flex;
+        align-items: center;
+        /deep/ .el-input {
+          width: 90px;
         }
       }
-      .iconTips {
-        color: #a7a7a7;
-        font-size: 12px;
-        margin-top: 20px;
+    }
+    .videoTips {
+      padding-left: 30px;
+      display: flex;
+      color: #999;
+      line-height: 20px;
+      .videoTipsContent {
+        width: 270px;
+        text-align: justify;
       }
-      .iconSpan {
-        align-items: flex-start;
+    }
+    .select {
+      /deep/ .el-input {
+        width: 100px;
+      }
+      i {
+        display: flex;
+        align-items: center;
+        margin-right: 5px;
       }
     }
     .sure {

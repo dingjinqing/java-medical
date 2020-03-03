@@ -7,12 +7,16 @@
           <span>展示形式：</span>
           <el-radio
             v-model="modulesSaveData.show_types"
-            :label="0"
-          >横向</el-radio>
+            label="0"
+          >多行</el-radio>
           <el-radio
             v-model="modulesSaveData.show_types"
-            :label="1"
-          >纵向</el-radio>
+            label="1"
+          >单行</el-radio>
+          <el-radio
+            v-model="modulesSaveData.show_types"
+            label="2"
+          >单行纵向</el-radio>
         </div>
         <div class="list">
           <span>标题文字：</span>
@@ -26,8 +30,38 @@
           <div class="tips">最多可输入20个字</div>
         </div>
         <div class="list">
+          <span>提示语：</span>
+          <el-input
+            v-model="modulesSaveData.placeholder"
+            size="small"
+            placeholder="请输入提示语"
+          ></el-input>
+        </div>
+        <div class="list">
+          <span></span>
+          <div class="tips">最多可输入20个字</div>
+        </div>
+        <div class="list">
           <span>条件验证：</span>
           <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+        </div>
+        <div class="list lastInput">
+          <span></span>
+          至少输入<el-input
+            v-model="modulesSaveData.least_number"
+            onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+            size="small"
+            placeholder="1"
+          ></el-input>字
+        </div>
+        <div class="list lastInput">
+          <span></span>
+          至多输入<el-input
+            v-model="modulesSaveData.least_number"
+            onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+            size="small"
+            placeholder="500"
+          ></el-input>字不可超过500字
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -53,10 +87,13 @@ export default {
     return {
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
-        'form_title': '性别',
-        'show_types': 0,
+        'show_types': '0',
+        'form_title': '输入框',
+        'placeholder': '',
         'confirm': 0,
-        'ok_ajax': 0
+        'least_number': 1,
+        'most_number': 500,
+        'ok_ajax': 1
       } // 模块保存数据
     }
   },
@@ -147,6 +184,13 @@ export default {
       .iconSpan {
         align-items: flex-start;
       }
+    }
+    .lastInput {
+      /deep/ .el-input {
+        width: 80px;
+      }
+      display: flex;
+      align-items: center;
     }
     .sure {
       display: flex;
