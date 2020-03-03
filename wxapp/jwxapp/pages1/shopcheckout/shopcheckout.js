@@ -277,14 +277,16 @@ global.wxPage({
     if (cardNo === null) {
       this.setData({
         useCard: {},
-        'payInfo.cardNo': ''
+        'payInfo.cardNo': '',
+        'payInfo.cardAmount': ''
       })
     } else {
       let useCard = this.data.orderInfo.memberCardList.find(item => item.cardNo === cardNo)
       console.log(useCard)
       this.setData({
         useCard: useCard,
-        'payInfo.cardNo': useCard.cardNo
+        'payInfo.cardNo': useCard.cardNo,
+        'payInfo.cardAmount': ''
       })
     }
     this.computedMoney()
