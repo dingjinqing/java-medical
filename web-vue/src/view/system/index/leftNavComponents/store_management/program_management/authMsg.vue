@@ -934,14 +934,14 @@ export default {
           height: 50px;
         }
         td.elippse {
-          max-width: 28em;
+          max-width: 26em;
           word-break: keep-all;
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
         }
         .warp {
-          max-width: 27em;
+          max-width: 26em;
           word-wrap: break-word;
           display: inline-block;
           overflow: hidden;
