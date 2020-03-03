@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.info;
 
+import com.beust.jcommander.internal.Lists;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
@@ -190,7 +192,23 @@ public class OrderInfoService extends ShopBaseService {
 			select.where(ORDER_INFO.ORDER_SN.contains(param.orderSn));
 		}
 		if (param.orderStatus != null && param.orderStatus.length != 0) {
-			select.where(ORDER_INFO.ORDER_STATUS.in(param.orderStatus));
+            List<Byte> status = Lists.newArrayList(param.orderStatus);
+            Condition condition = DSL.noCondition();
+            if(status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING)) {
+                select.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
+                if(status.contains(ORDER_RETURNING)) {
+                    condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    status.remove(ORDER_RETURNING);
+                }
+                if(status.contains(ORDER_REFUNDING)) {
+                    condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    status.remove(ORDER_REFUNDING);
+                }
+            }
+            if(CollectionUtils.isNotEmpty(status)) {
+                condition.or(TABLE.ORDER_STATUS.in(status));
+            }
+            select.where().and(condition);
 		}
 		if (param.goodsType != null && param.goodsType.length != 0) {
 			select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(param.getGoodsType())));
