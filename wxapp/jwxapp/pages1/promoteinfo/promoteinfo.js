@@ -49,7 +49,6 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    debugger
     if (!util.check_setting(options)) return;
     actCode = options.actCode;
     if (options.launch_user_id && options.launch_user_id != "") {
