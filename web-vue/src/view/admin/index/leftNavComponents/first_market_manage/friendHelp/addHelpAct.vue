@@ -115,7 +115,7 @@
               </el-table-column>
 
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('promoteList.goodsStore')"
                 align="center"
               ><template></template>
@@ -542,6 +542,7 @@
     </div>
     <choosingGoods
       @resultGoodsRow="choosingGoodsResult"
+      :loadProduct="true"
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="goodsIdList"
       :singleElection="true"
@@ -923,7 +924,7 @@ export default {
     // 选择商品弹窗
     showChoosingGoods () {
       this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
-      // console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
+      console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
       this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
@@ -936,7 +937,8 @@ export default {
       this.goodsIdList = []
       this.goodsIdList.push(row.goodsId)
       console.log('goodsInfo:', this.form.goodsInfo[0])
-      this.form.rewardSet.goods_ids = row.goodsId
+      // this.form.rewardSet.goods_ids = row.goodsId
+      this.form.rewardSet.goods_ids = row.prdId
 
       // })
     },

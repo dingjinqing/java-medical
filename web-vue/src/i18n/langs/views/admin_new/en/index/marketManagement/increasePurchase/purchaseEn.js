@@ -25,6 +25,8 @@ export const en = {
   searchredemptionorder: 'View replacement order',
   redemptiondetail: 'Redemption details',
   share: 'share',
+  addPrice: 'Markup',
+  addPriceBuy: 'Markup',
 
   // 换购订单
   goodsName: 'product name',
@@ -54,6 +56,40 @@ export const en = {
   userid: 'user id',
   redemptiontime: 'redemption time',
   mainGoodsTotalMoney: 'Total amount of main goods',
-  redemptionTotalMoney: 'Total amount of money redemption'
+  redemptionTotalMoney: 'Total amount of money redemption',
+
+  // 添加/编辑加价购
+  setActivityRule: 'Set active rules',
+  setMainGoods: 'Set main product',
+  setRedemptionGoods: 'Set up redemption items',
+  content: 'Used only as a merchant record, users will not see this name',
+  content1: 'For distinguishing the priority of different markup activities, please fill in a positive integer, the larger the value, the higher the priority',
+  content2: 'Maximum number of redemption items per order, fill in 0 for unlimited',
+  redemptionGoodsFeright: 'Calculation strategy for redemption of goods',
+  free: 'free shipping',
+  noFree: 'Use original product shipping template',
+  activityRule: 'Activity Rules',
+  content3: 'Up to 3 levels of redemption rules can be set, and the amount must be increased in order.',
+  rule1: 'Redemption Rule 1',
+  rule2: 'Redemption Rule 2',
+  rule3: 'Redemption Rule 3',
+  mainFull: 'Full purchase of main product',
+  add: 'Yuan can add',
+  redemp: 'Yuan Redemption',
+  addRule: 'Add rule',
+  deleteRule: 'delete',
+  nextStep: 'Next',
+  preStep: 'Previous',
+  chooseGoods: 'Select product',
+  goodsPrice: 'Products original price',
+  goodsSupply: 'Commodity stocks',
+  chooseRedempGoods: 'Choose an exchange item',
+  save: 'save',
+  content4: 'Please set the redemption rules correctly! ',
+  inputName: 'Please enter event name',
+  choosepriority: 'Please select event priority',
+  chooseTime: 'Please select an event time',
+  chooseMain: 'Please select the main product! ',
+  chooseRedemp: 'Please select a redemption item! '
 
 }

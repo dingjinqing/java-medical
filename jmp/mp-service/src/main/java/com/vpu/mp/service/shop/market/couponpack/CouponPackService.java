@@ -4,6 +4,7 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackVoucherRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -17,24 +18,27 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackActInfoVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackCheckVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackVoucherVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.*;
+import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import jodd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
 import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
@@ -61,6 +65,10 @@ public class CouponPackService extends ShopBaseService {
     public MemberService memberService;
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private TradeService tradeService;
 
     /**
      * 获取方式，0：现金购买
@@ -333,7 +341,7 @@ public class CouponPackService extends ShopBaseService {
     public CouponPackActInfoVo getCouponPackActInfo(Integer packId,Integer userId){
         CouponPackActInfoVo vo = new CouponPackActInfoVo();
 
-        CouponPackActInfoVo.PackInfo packInfo = db().selectFrom(COUPON_PACK).where(COUPON_PACK.ID.eq(packId)).fetchOptionalInto(CouponPackActInfoVo.PackInfo.class).orElse(null);
+        CouponPackActBaseVo packInfo = db().selectFrom(COUPON_PACK).where(COUPON_PACK.ID.eq(packId)).fetchOptionalInto(CouponPackActBaseVo.class).orElse(null);
         if(packInfo == null){
             return null;
         }
@@ -342,11 +350,6 @@ public class CouponPackService extends ShopBaseService {
         List<CouponPackVoucherVo> packList = couponPackVoucherService.getCouponPackVoucherList(packId);
         packList.forEach(p->{
             p.setGrantCount(couponService.getUserCouponCountByPackId(packId,userId,p.getVoucherId()));
-            if(StringUtil.isNotEmpty(p.getRecommendCatId()) || StringUtil.isNotEmpty(p.getRecommendGoodsId()) || StringUtil.isNotEmpty(p.getRecommendProductId()) || StringUtil.isNotEmpty(p.getRecommendSortId())){
-                p.setIsAllGoodsUse(false);
-            }else{
-                p.setIsAllGoodsUse(true);
-            }
         });
         vo.setPackList(packList);
         vo.setBuyCount(couponPackOrderService.getUserCouponPackBuyCount(packId,userId));
@@ -400,12 +403,14 @@ public class CouponPackService extends ShopBaseService {
 
     /**
      * 订单确认页数据组装
-     * @param packId
+     * @param param
      * @param userId
      * @return
      */
-    public CouponPackOrderBeforeVo couponPackOrderConfirm(Integer packId, Integer userId){
+    public CouponPackOrderBeforeVo couponPackOrderConfirm(CouponPackOrderBeforeParam param, Integer userId){
         CouponPackOrderBeforeVo vo = new CouponPackOrderBeforeVo();
+
+        //店铺通用信息
         ShopRecord shop = saas.shop.getShopById(getShopId());
         if(StringUtil.isNotEmpty(shop.getLogo())){
             vo.setShopLogo(domainConfig.imageUrl(shop.getLogo()));
@@ -413,8 +418,55 @@ public class CouponPackService extends ShopBaseService {
         if(StringUtil.isNotEmpty(shop.getShopAvatar())){
             vo.setShopAvatar(domainConfig.imageUrl(shop.getShopAvatar()));
         }
+        vo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
+        vo.setScoreProportion(memberService.score.scoreCfgService.getScoreProportion());
+        vo.setIsShowserviceTerms(shopCommonConfigService.getServiceTerms());
+        if(vo.getIsShowserviceTerms() == 1){
+            vo.setServiceChoose(tradeService.getServiceChoose());
+            vo.setServiceName(tradeService.getServiceName());
+            vo.setServiceDocument(tradeService.getServiceDocument());
+        }
+        vo.setCardFirst(tradeService.getCardFirst());
+        vo.setBalanceFirst(tradeService.getBalanceFirst());
+        vo.setScoreFirst(tradeService.getScoreFirst());
 
+        //用户的余额和积分
+        UserRecord user = memberService.getUserRecordById(userId);
+        vo.setAccount(user.getAccount());
+        vo.setScore(user.getScore());
 
+        //活动信息
+        CouponPackRecord couponPackRecord = db().fetchAny(COUPON_PACK,COUPON_PACK.ID.eq(param.getPackId()));
+        vo.setPackInfo(couponPackRecord.into(CouponPackActBaseVo.class));
+        List<CouponPackVoucherVo> packList = couponPackVoucherService.getCouponPackVoucherList(param.getPackId());
+        vo.setOrderGoods(packList);
+        if(couponPackRecord.getAccessMode().equals(ACCESS_MODE_SCORE)){
+            vo.setOrderAmount(couponPackRecord.getAccessCost().divide(BigDecimal.valueOf(vo.getScoreProportion()),0,BigDecimal.ROUND_FLOOR));
+            vo.setMoneyPaid(BigDecimal.ZERO);
+        }else {
+            vo.setOrderAmount(couponPackRecord.getAccessCost());
+            vo.setMoneyPaid(couponPackRecord.getAccessCost());
+        }
+
+        //会员卡
+        List<GeneralUserCardVo> memberCardLit = memberService.userCardService.getCanUseGeneralCardList(userId);
+        vo.setMemberCardList(memberCardLit);
+        if(StringUtils.isNoneBlank(param.getCardNo())){
+            //主动不选会员卡
+            if(param.getCardNo().equals("1")){
+                vo.setMemberCardInfo(null);
+                vo.setMemberCardNo(null);
+            }else{
+                vo.setMemberCardInfo(memberCardLit.stream().filter(GeneralUserCardVo->GeneralUserCardVo.getCardNo().equals(param.getCardNo())).collect(Collectors.toList()).get(0));
+                vo.setMemberCardNo(param.getCardNo());
+            }
+        }else{
+            //默认选第一个
+            if(!memberCardLit.isEmpty()){
+                vo.setMemberCardNo(memberCardLit.get(0).getCardNo());
+                vo.setMemberCardInfo(memberCardLit.get(0));
+            }
+        }
 
         return vo;
     }

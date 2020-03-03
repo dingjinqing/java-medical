@@ -36,7 +36,7 @@ public class PurchaseConstant {
     /**
      * 获取分享二维码常量参数
      */
-    public static final String IDENTITY_ID = "identity_id";
+    public static final String IDENTITY_ID = "identity_id=";
     /**
      * 使用mysql GROUPCONCAT()函数 分隔符常量
      */

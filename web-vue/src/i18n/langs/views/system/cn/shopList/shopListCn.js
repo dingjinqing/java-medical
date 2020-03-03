@@ -122,7 +122,7 @@ export const cn = {
   selectData: '请选择日期时间',
   selectFlag: '请选择店铺标记',
   flag_type: [{
-    value: '',
+    value: 0,
     label: '选择店铺标记'
   },
   {

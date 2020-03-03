@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.coupon.pack;
 
-import com.vpu.mp.service.pojo.wxapp.member.card.UserCardVo;
+import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,6 +39,10 @@ public class CouponPackOrderBeforeVo {
     private String shopAvatar;
 
     /**
+     * 活动配置内容
+     */
+    private CouponPackActBaseVo packInfo;
+    /**
      * 活动下属优惠券
      */
    private List<CouponPackVoucherVo> orderGoods;
@@ -58,7 +62,18 @@ public class CouponPackOrderBeforeVo {
      */
    private Integer scoreProportion;
 
-    private List<UserCardVo> memberCardList;
+    /**
+     * 可用的会员卡
+     */
+    private List<GeneralUserCardVo> memberCardList;
+    /**
+     * 手动或默认选择的会员卡
+     */
+    private GeneralUserCardVo memberCardInfo;
+    /**
+     * 手动或默认选择的会员卡卡号
+     */
+    private String memberCardNo;
 
     /**服务条款_展示开关*/
     private Byte isShowserviceTerms;
@@ -84,5 +99,4 @@ public class CouponPackOrderBeforeVo {
      * 积分支付
      */
     private Byte scoreFirst;
-
 }

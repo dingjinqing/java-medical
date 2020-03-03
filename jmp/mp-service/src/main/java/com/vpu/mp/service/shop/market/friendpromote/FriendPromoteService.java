@@ -19,21 +19,17 @@ import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.aspectj.weaver.ast.And;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -62,8 +58,8 @@ public class FriendPromoteService extends ShopBaseService {
 	public PageResult<FriendPromoteListVo> friendPromoteList(FriendPromoteListParam param) {
 		/* 查询好友助力活动 */
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
-		SelectConditionStep<Record7<Integer, String, Timestamp, Timestamp, Byte, String, Byte>> sql = db()
-				.select(fpa.ID, fpa.ACT_NAME, fpa.START_TIME, fpa.END_TIME, fpa.REWARD_TYPE, fpa.REWARD_CONTENT,
+		SelectConditionStep<Record8<Integer, String,String, Timestamp, Timestamp, Byte, String, Byte>> sql = db()
+				.select(fpa.ID, fpa.ACT_CODE,fpa.ACT_NAME, fpa.START_TIME, fpa.END_TIME, fpa.REWARD_TYPE, fpa.REWARD_CONTENT,
 						fpa.IS_BLOCK)
 				.from(fpa).where(fpa.DEL_FLAG.eq((byte) FriendPromoteListParam.NOT_DELETE));
 		/* 查询条件：活动名称 */

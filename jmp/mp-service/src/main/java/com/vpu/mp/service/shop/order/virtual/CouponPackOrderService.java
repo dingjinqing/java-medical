@@ -9,9 +9,8 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderParam;
 import com.vpu.mp.service.shop.member.MemberCardService;
-import org.checkerframework.checker.units.qual.A;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
@@ -189,7 +188,7 @@ public class CouponPackOrderService extends VirtualOrderService {
      * @param param
      * @return
      */
-    public VirtualOrderRecord createOrder(CouponPackOrderBeforeParam param){
+    public VirtualOrderRecord createOrder(CouponPackOrderParam param){
         return null;
     }
 

@@ -26,6 +26,8 @@ export const cn = {
   searchredemptionorder: '查看换购订单',
   redemptiondetail: '换购明细',
   share: '分享',
+  addPrice: '加价',
+  addPriceBuy: '加价购',
 
   // 换购订单
   goodsName: '商品名称',
@@ -55,6 +57,40 @@ export const cn = {
   userid: '用户id',
   redemptiontime: '换购时间',
   mainGoodsTotalMoney: '主商品总金额',
-  redemptionTotalMoney: '换购总金额'
+  redemptionTotalMoney: '换购总金额',
+
+  // 添加/编辑加价购
+  setActivityRule: '设置活动规则',
+  setMainGoods: '设置主商品',
+  setRedemptionGoods: '设置换购商品',
+  content: '只作为商家记录使用，用户不会看到这个名称',
+  content1: '用于区分不同加价购活动的优先级，请填写正整数，数值越大优先级越高',
+  content2: '每单最多换购商品数，填写0表示不限制',
+  redemptionGoodsFeright: '换购商品运费计算策略',
+  free: '免运费',
+  noFree: '使用原商品运费模板',
+  activityRule: '活动规则',
+  content3: '最多可设置3档换购规则，需满足金额依次递增',
+  rule1: '换购规则1',
+  rule2: '换购规则2',
+  rule3: '换购规则3',
+  mainFull: '主商品购满',
+  add: '元可加',
+  redemp: '元换购',
+  addRule: '添加规则',
+  deleteRule: '删除',
+  nextStep: '下一步',
+  preStep: '上一步',
+  chooseGoods: '选择商品',
+  goodsPrice: '商品原价',
+  goodsSupply: '商品库存',
+  chooseRedempGoods: '选择换购商品',
+  save: '保存',
+  content4: '请正确设置换购规则！',
+  inputName: '请输入活动名称',
+  choosepriority: '请选择活动优先级',
+  chooseTime: '请选择活动时间',
+  chooseMain: '请选择主商品！',
+  chooseRedemp: '请选择换购商品！'
 
 }

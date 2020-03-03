@@ -12,9 +12,9 @@
         simple
         align-center
       >
-        <el-step title="设置活动规则"></el-step>
-        <el-step title="设置主商品"></el-step>
-        <el-step title="设置换购商品"></el-step>
+        <el-step :title="$t('purchase.setActivityRule')"></el-step>
+        <el-step :title="$t('purchase.setMainGoods')"></el-step>
+        <el-step :title="$t('purchase.setRedemptionGoods')"></el-step>
       </el-steps>
     </div>
     <!-- 活动规则 -->
@@ -30,27 +30,27 @@
         label-width="180px"
       >
         <el-form-item
-          label="活动名称"
+          :label="$t('purchase.activityName')"
           prop="name"
         >
           <el-input
             v-model="form1.name"
             class="input"
           ></el-input>
-          <span class="span">只作为商家记录使用，用户不会看到这个名称</span>
+          <span class="span">{{$t('purchase.content')}}</span>
         </el-form-item>
         <el-form-item
-          label="活动优先级"
+          :label="$t('purchase.activityprioty')"
           prop="level"
         >
           <el-input
             v-model.number="form1.level"
             class="input"
           ></el-input>
-          <span class="span">用于区分不同加价购活动的优先级，请填写正整数，数值越大优先级越高</span>
+          <span class="span">{{$t('purchase.content1')}}</span>
         </el-form-item>
         <el-form-item
-          label="活动时间"
+          :label="$t('purchase.activityTime')"
           prop="activityDate"
         >
           <el-date-picker
@@ -59,92 +59,92 @@
             format="yyyy-MM-dd HH:mm:ss"
             value-format="yyyy-MM-dd HH:mm:ss"
             range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :start-placeholder="$t('purchase.startdate')"
+            :end-placeholder="$t('purchase.enddate')"
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="每单最多换购件数">
+        <el-form-item :label="$t('purchase.singlemax')">
           <el-input
             v-model.number="form1.maxChangePurchase"
             class="input"
           ></el-input>
-          <span class="span">每单最多换购商品数，填写0表示不限制</span>
+          <span class="span">{{$t('purchase.content2')}}</span>
         </el-form-item>
-        <el-form-item label="换购商品运费计算策略">
+        <el-form-item :label="$t('purchase.redemptionGoodsFeright')">
           <el-radio-group v-model.number="form1.redemptionFreight">
-            <el-radio :label=0>免运费</el-radio>
-            <el-radio :label=1>使用原商品运费模板</el-radio>
+            <el-radio :label=0>{{$t('purchase.free')}}</el-radio>
+            <el-radio :label=1>{{$t('purchase.noFree')}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="活动规则"
+          :label="$t('purchase.activityRule')"
           prop="rule_setting"
         >
-          <span class="span">最多可设置3档换购规则，需满足金额依次递增</span>
+          <span class="span">{{$t('purchase.content3')}}</span>
         </el-form-item>
-        <el-form-item label="换购规则1">
-          主商品购满<el-input
+        <el-form-item :label="$t('purchase.rule1')">
+          {{$t('purchase.mainFull')}}<el-input
             class="input1"
             v-model.number="purcahse_rule1.fullPrice"
-          ></el-input>元可加<el-input
+          ></el-input>{{$t('purchase.add')}}<el-input
             class="input1"
             v-model.number="purcahse_rule1.purchasePrice"
-          ></el-input>元换购
+          ></el-input>{{$t('purchase.redemp')}}
           <el-button
             type="primary"
             size="small"
             style="margin-left:5px"
             v-if="rule_button1"
             @click="ruleButton1"
-          >+添加规则</el-button>
+          >+{{$t('purchase.addRule')}}</el-button>
         </el-form-item>
         <el-form-item
-          label="换购规则2"
+          :label="$t('purchase.rule2')"
           v-if="rule_line2"
         >
-          主商品购满<el-input
+          {{$t('purchase.mainFull')}}<el-input
             class="input1"
             v-model.number="purcahse_rule2.fullPrice"
-          ></el-input>元可加<el-input
+          ></el-input>{{$t('purchase.add')}}<el-input
             class="input1"
             v-model.number="purcahse_rule2.purchasePrice"
-          ></el-input>元换购
+          ></el-input>{{$t('purchase.redemp')}}
           <el-button
             type="primary"
             size="small"
             style="margin-left:5px"
             v-if="rule_button2"
             @click="ruleButton2"
-          >+添加规则</el-button>
+          >+{{$t('purchase.addRule')}}</el-button>
           <el-link
             type="primary"
             style="margin-left:5px"
             @click="ruleDelete2"
-          >删除</el-link>
+          >{{$t('purchase.deleteRule')}}</el-link>
         </el-form-item>
         <el-form-item
-          label="换购规则3"
+          :label="$t('purchase.rule3')"
           v-if="rule_line3"
         >
-          主商品购满<el-input
+          {{$t('purchase.mainFull')}}<el-input
             class="input1"
             v-model.number="purcahse_rule3.fullPrice"
-          ></el-input>元可加<el-input
+          ></el-input>{{$t('purchase.add')}}<el-input
             class="input1"
             v-model.number="purcahse_rule3.purchasePrice"
-          ></el-input>元换购
+          ></el-input>{{$t('purchase.redemp')}}
           <el-link
             type="primary"
             style="margin-left:5px"
             @click="ruleDelete3"
-          >删除</el-link>
+          >{{$t('purchase.deleteRule')}}</el-link>
         </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
             @click="nextStep(1)"
-          >下一步</el-button>
+          >{{$t('purchase.nextStep')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -157,7 +157,7 @@
         <el-button
           type="primary"
           @click="showChoosingGoods"
-        >选择商品</el-button>
+        >{{$t('purchase.chooseGoods')}}</el-button>
         <!--选择商品弹窗-->
         <ChoosingGoods
           :tuneUpChooseGoods="tuneUpChooseGoods"
@@ -170,7 +170,7 @@
           :data="main_table"
           style="width: 100%"
         >
-          <el-table-column label="商品名称">
+          <el-table-column :label="$t('purchase.goodsName')">
             <template slot-scope="{ row }">
               <img
                 :src="row.goodsImg"
@@ -181,15 +181,15 @@
           </el-table-column>
           <el-table-column
             prop="shopPrice"
-            label="商品原价"
+            :label="$t('purchase.goodsPrice')"
           >
           </el-table-column>
           <el-table-column
             prop="goodsNumber"
-            label="商品库存"
+            :label="$t('purchase.goodsSupply')"
           >
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column :label="$t('purchase.opration')">
             <template slot-scope="{ row }">
               <el-link
                 type="primary"
@@ -203,11 +203,11 @@
         <el-button
           type="primary"
           @click="preStep"
-        >上一步</el-button>
+        >{{$t('purchase.preStep')}}</el-button>
         <el-button
           type="primary"
           @click="nextStep(2)"
-        >下一步</el-button>
+        >{{$t('purchase.nextStep')}}</el-button>
       </div>
     </div>
     <!-- 换购商品 -->
@@ -220,14 +220,14 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="规则1"
+          :label="$t('purchase.rule1')"
           name="first"
         >
           <div style="margin_top:10px">
             <el-button
               type="primary"
               @click="showChoosingGoods1"
-            >选择换购商品</el-button>
+            >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
               :tuneUpChooseGoods="tuneUpChooseGoods1"
@@ -240,7 +240,7 @@
               :data="purchase_table1"
               style="width: 100%"
             >
-              <el-table-column label="商品名称">
+              <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
                   <img
                     :src="row.goodsImg"
@@ -251,15 +251,15 @@
               </el-table-column>
               <el-table-column
                 prop="shopPrice"
-                label="商品原价"
+                :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
                 prop="goodsNumber"
-                label="商品库存"
+                :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column label="操作">
+              <el-table-column :label="$t('purchase.opration')">
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
@@ -271,7 +271,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane
-          label="规则2"
+          :label="$t('purchase.rule2')"
           name="second"
           v-if="rule_num >= 2"
         >
@@ -279,7 +279,7 @@
             <el-button
               type="primary"
               @click="showChoosingGoods2"
-            >选择换购商品</el-button>
+            >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
               :tuneUpChooseGoods="tuneUpChooseGoods2"
@@ -292,7 +292,7 @@
               :data="purchase_table2"
               style="width: 100%"
             >
-              <el-table-column label="商品名称">
+              <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
                   <img
                     :src="row.goodsImg"
@@ -303,15 +303,15 @@
               </el-table-column>
               <el-table-column
                 prop="shopPrice"
-                label="商品原价"
+                :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
                 prop="goodsNumber"
-                label="商品库存"
+                :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column label="操作">
+              <el-table-column :label="$t('purchase.opration')">
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
@@ -323,7 +323,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane
-          label="规则3"
+          :label="$t('purchase.rule3')"
           name="third"
           v-if="rule_num === 3"
         >
@@ -331,7 +331,7 @@
             <el-button
               type="primary"
               @click="showChoosingGoods3"
-            >选择换购商品</el-button>
+            >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
               :tuneUpChooseGoods="tuneUpChooseGoods3"
@@ -344,7 +344,7 @@
               :data="purchase_table3"
               style="width: 100%"
             >
-              <el-table-column label="商品名称">
+              <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
                   <img
                     :src="row.goodsImg"
@@ -355,15 +355,15 @@
               </el-table-column>
               <el-table-column
                 prop="shopPrice"
-                label="商品原价"
+                :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
                 prop="goodsNumber"
-                label="商品库存"
+                :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column label="操作">
+              <el-table-column :label="$t('purchase.opration')">
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
@@ -379,11 +379,11 @@
         <el-button
           type="primary"
           @click="preStep"
-        >上一步</el-button>
+        >{{$t('purchase.preStep')}}</el-button>
         <el-button
           type="primary"
           @click="addPurchase"
-        >保存</el-button>
+        >{{$t('purchase.save')}}</el-button>
       </div>
     </div>
   </div>
@@ -400,18 +400,18 @@ export default {
     var validateRule = (rule, value, callback) => {
       if (this.rule_num === 1) {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '') {
-          callback(new Error('请正确设置换购规则！'))
+          callback(new Error(this.$t('purchase.content4')))
         } else { callback() }
       } else if (this.rule_num === 2) {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '' ||
           this.purcahse_rule2.fullPrice === '' || this.purcahse_rule2.purchasePrice === '') {
-          callback(new Error('请正确设置换购规则！'))
+          callback(new Error(this.$t('purchase.content4')))
         } else { callback() }
       } else if (this.rule_num === 3) {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '' ||
           this.purcahse_rule2.fullPrice === '' || this.purcahse_rule2.purchasePrice === '' ||
           this.purcahse_rule3.fullPrice === '' || this.purcahse_rule3.purchasePrice === '') {
-          callback(new Error('请正确设置换购规则！'))
+          callback(new Error(this.$t('purchase.content4')))
         } else { callback() }
       } else { callback() }
     }
@@ -455,13 +455,13 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
+          { required: true, message: this.$t('purchase.inputName'), trigger: 'blur' }
         ],
         level: [
-          { required: true, message: '请选择活动优先级', trigger: 'blur' }
+          { required: true, message: this.$t('purchase.choosepriority'), trigger: 'blur' }
         ],
         activityDate: [
-          { type: 'array', required: true, message: '请选择活动时间', trigger: 'change' }
+          { type: 'array', required: true, message: this.$t('purchase.chooseTime'), trigger: 'change' }
         ],
         rule_setting: [
           { required: true, validator: validateRule }
@@ -495,7 +495,7 @@ export default {
       } else if (value === 2) {
         if (this.main_table.length === 0) {
           this.$message.info({
-            message: '请选择主商品！',
+            message: this.$t('purchase.chooseMain'),
             showClose: true
           })
         } else {
@@ -554,7 +554,6 @@ export default {
     },
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
-      console.log('选择商品弹窗回调显示:', row)
       this.main_table = row
       this.updateGoodsId(this.main_table)
     },
@@ -677,7 +676,7 @@ export default {
     },
     purchaseInfo () {
       this.$message.info({
-        message: '请选择换购商品！',
+        message: this.$t('purchase.chooseRedemp'),
         showClose: true
       })
     },

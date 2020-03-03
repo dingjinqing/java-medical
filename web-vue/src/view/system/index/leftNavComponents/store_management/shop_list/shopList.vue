@@ -130,6 +130,7 @@ export default {
         }
         if (data.flag === 1) {
           this.tabActive = 'first'
+          this.handleClick()
         }
         if (data.flag === 5) {
           this.$store.commit('UPDATE_BREADCRUMB_TITLE', '店铺续费明细')
