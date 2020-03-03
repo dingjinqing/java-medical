@@ -341,9 +341,10 @@ public class OrderGoodsService extends ShopBaseService{
     /**
      * 获取订单商品的活动类型
      * @param bos
+     * @param insteadPayMoney
      * @return
      */
-    public Set<Byte> getGoodsType(List<OrderGoodsBo> bos){
+    public Set<Byte> getGoodsType(List<OrderGoodsBo> bos, BigDecimal insteadPayMoney){
         HashSet<Byte> type = new HashSet<>();
         for(OrderGoodsBo bo : bos){
             if(bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0){
@@ -366,6 +367,9 @@ public class OrderGoodsService extends ShopBaseService{
                 //满包邮
                 type.add(BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER);
             }
+        }
+        if(BigDecimalUtil.compareTo(insteadPayMoney, null) == 1) {
+            type.add(BaseConstant.ACTIVITY_TYPE_PAY_FOR_ANOTHER);
         }
         return type;
     }

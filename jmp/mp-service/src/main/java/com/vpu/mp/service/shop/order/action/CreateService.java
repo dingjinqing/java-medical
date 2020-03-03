@@ -820,8 +820,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //好友代付
         if(param.getOrderPayWay() != null && param.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
             vo.setOrderPayWay(OrderConstant.PAY_WAY_FRIEND_PAYMENT);
-            moneyPaid = BigDecimal.ZERO;
             vo.setInsteadPayMoney(moneyPaid);
+            moneyPaid = BigDecimal.ZERO;
             vo.setInsteadPayNum(param.getInsteadPayNum());
         }
 
@@ -932,7 +932,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         //TODO 订单类型拼接(支付有礼)
-        orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderBo.getOrderGoodsBo()));//支付信息
+        orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
+
         if(BigDecimalUtil.add(beforeVo.getMoneyPaid(), beforeVo.getBkOrderMoney()).compareTo(BigDecimal.ZERO) == 0){
             logger().info("支付信息:余额支付");
             //非补款
