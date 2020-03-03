@@ -393,4 +393,15 @@ public class IntegralConvertService extends ShopBaseService {
 
         return moduleIntegral;
     }
+
+    /**
+     * 获取该用户参与此活动兑换的商品数量
+     * @param userId
+     * @param activityId
+     * @return
+     */
+    public int getUserExchangeCount(Integer userId, Integer activityId) {
+        Integer sum = db().select(DSL.sum(imr.NUMBER)).where(imr.USER_ID.eq(userId).and(imr.INTEGRAL_MALL_DEFINE_ID.eq(activityId))).fetchOneInto(Integer.class);
+        return sum == null ? 0 : sum;
+    }
 }
