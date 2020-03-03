@@ -213,7 +213,6 @@
   </view>
 
   <!-- 分享弹框 -->
-  <!-- <v-share show="{{showShareDialog}}" share-data="{{shareData}}"/> -->
   <block wx:if='{{share_good == true}}'>
     <view class='modal_bg'></view>
     <view class="share_goods_box">
@@ -222,7 +221,7 @@
         <image src="{{ imageUrl }}image/wxapp/close_icon.png" mode='widthFix' bindtap='bindClose'></image>
       </view>
       <view class="content_box">
-        <button  open-type='share'>
+        <button open-type='share'>
           <image src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix'></image>
           <text>分享给朋友</text>
         </button>

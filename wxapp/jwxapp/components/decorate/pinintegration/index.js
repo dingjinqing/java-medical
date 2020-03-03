@@ -12,8 +12,8 @@ global.wxComponent({
     bindToPinIntegration (e) {
       var act_id = e.currentTarget.dataset.act_id;
       console.log(act_id)
-      util.jumpLink('/pages/pinintegration/pinintegration');
-
+      util.jumpLink('/pages/pinintegration/pinintegration?pinInte_id=' + act_id);
+      // 发起瓜分积分活动
       // util.api('/api/wxapp/pin/integration/start', function (res) {
       //   console.log(res)
       //   var group_id = '';
