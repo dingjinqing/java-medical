@@ -11,9 +11,17 @@ import lombok.Data;
  */
 @Data
 public class IntegralConvertProductVo {
-	
+    /** 规格id */
+    private Integer prdId;
+
 	/** 规格描述 */
 	private String prdDesc;
+
+    /** 商品规格价格 */
+    private BigDecimal prdPrice;
+
+    /** 商品规格库存 */
+    private Integer prdNumber;
 	
 	/** 商品兑换金额 */
 	private BigDecimal money;
@@ -23,6 +31,7 @@ public class IntegralConvertProductVo {
 	
 	/** 兑换商品库存 */
 	private Short stock;
-	
+
+
 	
 }
