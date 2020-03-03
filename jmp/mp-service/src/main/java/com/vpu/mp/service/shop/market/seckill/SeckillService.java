@@ -88,6 +88,7 @@ public class SeckillService extends ShopBaseService{
         PageResult<SeckillPageListQueryVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),SeckillPageListQueryVo.class);
         for(SeckillPageListQueryVo vo : res.dataList){
             vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+            vo.setGoods(vo.getGoodsId().split(",").length);
         }
         return res;
     }
