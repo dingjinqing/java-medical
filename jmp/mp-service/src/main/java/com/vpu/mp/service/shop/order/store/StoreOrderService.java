@@ -295,7 +295,8 @@ public class StoreOrderService extends ShopBaseService {
                     .setMoney(orderInfo.getCardAmount().negate())
                     .setCardNo(cardNo)
                     .setCardId(userCardParam.getCardId())
-                    .setReason(orderSn)
+                    .setReasonId(RemarkTemplate.STORE_PAYMEMBT.code)
+                    .setReason(RemarkTemplate.getMessageByCode(RemarkTemplate.STORE_PAYMEMBT.code))
                     // 消费类型 :门店只支持普通会员卡：cardType=0
                     .setType(MCARD_TP_NORMAL);
                 log.debug("会员卡余额抵扣金额:{}", cardAmount);
@@ -325,7 +326,7 @@ public class StoreOrderService extends ShopBaseService {
                 setPayment(PAY_CODE_BALANCE_PAY);
                 // 支付类型，0：充值，1：消费
                 setIsPaid(BYTE_ONE);
-                setUserInputRemark(orderSn);
+                setRemarkId(RemarkTemplate.STORE_PAYMEMBT.code);
             }};
             log.debug("余额抵扣金额:{}", balanceAmount);
             moneyPaid = moneyPaid.subtract(balanceAmount).setScale(2, RoundingMode.UP);
@@ -362,8 +363,7 @@ public class StoreOrderService extends ShopBaseService {
                 // 积分变动数额
                 setScore(scoreValue);
                 setOrderSn(orderSn);
-                setRemarkData(orderSn);
-                //setRemark(orderSn);
+                setRemarkCode(RemarkTemplate.STORE_PAYMEMBT.code);
             }};
             log.debug("积分抵扣金额:{}", scoreAmount);
             moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);
