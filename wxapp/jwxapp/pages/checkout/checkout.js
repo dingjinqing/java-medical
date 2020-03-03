@@ -10,8 +10,8 @@ global.wxPage({
     cardBalanceStatus: 0, //使用会员卡余额状态
     couponArray: null, //优惠券列表
     defaultCouponIndex: null, //默认选择优惠券
-    payType: [0, 1, 2],
-    choosePayTypeIndex: 0, //所选支付方式
+    payType: [0, 1],
+    choosePayType: 0, //所选支付方式
     showCardBalanceDialog: false, //是否显示会员卡余额弹框
     showBalanceDialog: false, //是否显示余额弹框
     showScoreDialog: false, //是否显示积分弹框
@@ -96,6 +96,7 @@ global.wxPage({
           })
           this.getCouponData(orderInfo)
           this.defaultInput(orderInfo)
+          this.getPayType(orderInfo)
         } else {
             util.showModal('提示', res.message, function () {
               let pages = getCurrentPages()
@@ -109,6 +110,15 @@ global.wxPage({
       },
       { ...this.data.params }
     )
+  },
+  getPayType(orderinfo){
+    let payType = this.data.payType
+    if(orderinfo.insteadPayCfg && orderinfo.insteadPayCfg.status && (orderinfo.insteadPayCfg.singlePay || orderinfo.insteadPayCfg.multiplePay)){
+      payType.push(2)
+    }
+    this.setData({
+      payType 
+    })
   },
   // 选择地址
   addAddress() {
@@ -371,7 +381,7 @@ global.wxPage({
   // 变更支付类型
   changePayType(e) {
     this.setData({
-      choosePayTypeIndex: e.currentTarget.dataset.index
+      choosePayType: e.currentTarget.dataset.payType
     })
   },
   // 变更配送方式
@@ -576,7 +586,13 @@ global.wxPage({
       goods = goods.filter(item => {
         return item.isGift !== 1
       })
-
+      let addParams = {}
+      if(this.data.choosePayType === 2 && this.data.insteadPayNum !== null){
+        addParams.insteadPayNum = this.data.insteadPayNum
+      } else if(addParams.insteadPayNum) {
+        delete addParams.insteadPayNum
+      }
+      console.log(addParams)
       if(!this.canSubmit()) return
       let params = {
         goods,
@@ -587,7 +603,7 @@ global.wxPage({
         cardBalance,
         scoreDiscount,
         deliverType: this.data.params.deliverType,
-        orderPayWay: this.data.choosePayTypeIndex,
+        orderPayWay: this.data.choosePayType,
         couponSn,
         message: this.data.message,
         memberCardNo,
@@ -595,7 +611,8 @@ global.wxPage({
         activityId,
         recordId: this.data.params.recordId,
         groupId: this.data.params.groupId,
-        isCart:this.data.params.isCart
+        isCart:this.data.params.isCart,
+        ...addParams
       }
       this.getMust(params)
       util.api(
@@ -603,9 +620,9 @@ global.wxPage({
         res => {
           if (res.error === 0) {
             let { orderSn } = res.content
-            if(this.data.friendPayType){
+            if(this.data.insteadPayNum !== null && this.data.choosePayType === 2){
               util.jumpLink(`/pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`,'redirectTo')
-            } else if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay) {
+            } else if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
               wx.requestPayment({
                 timeStamp: res.content.webPayVo.timeStamp,
                 nonceStr: res.content.webPayVo.nonceStr,
@@ -659,10 +676,11 @@ global.wxPage({
       showFriendPayDialog:true
     })
   },
-  friendPayData(e){
+  getFriendPayData(e){
     this.setData({
-      friendPayType:e.detail.type
+      insteadPayNum:e.detail.type
     })
+    this.confirmOrder()
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

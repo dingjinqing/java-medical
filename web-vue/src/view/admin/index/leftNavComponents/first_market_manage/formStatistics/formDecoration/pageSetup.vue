@@ -47,7 +47,10 @@ export default {
     RiOption: () => import('./pageSetupModules/formModule/riOption'), // 选项模块
     RiDateModule: () => import('./pageSetupModules/formModule/riDateModule'), // 日期模块
     RiPictureUpload: () => import('./pageSetupModules/formModule/riPictureUpload'), // 图片上传模块
-    RiVideoUpload: () => import('./pageSetupModules/formModule/riVideoUpload') // 视频上传模块
+    RiVideoUpload: () => import('./pageSetupModules/formModule/riVideoUpload'), // 视频上传模块
+    // 图文类
+    RiRotationChart: () => import('./pageSetupModules/formModule/riRotationChart'), // 轮播图模块
+    RiRichText: () => import('./pageSetupModules/formModule/riRichText') // 富文本模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -104,6 +107,14 @@ export default {
         {
           id: 10,
           name: 'RiVideoUpload'
+        },
+        {
+          id: 11,
+          name: 'RiRotationChart'
+        },
+        {
+          id: 12,
+          name: 'RiRichText'
         }
       ],
       showModule: null,

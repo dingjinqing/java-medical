@@ -2,16 +2,19 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackIdParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 
 /**
@@ -113,8 +116,18 @@ public class WxAppCouponController extends WxAppBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/pack/pay")
+    @PostMapping("/pack/order")
     public JsonResult createOrderBefore(@RequestBody @Validated CouponPackOrderBeforeParam param){
         return this.success(shop().couponPack.couponPackOrderConfirm(param,wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 优惠券礼包结算
+     * @param param
+     * @return
+     */
+    @PostMapping("/pack/checkout")
+    public JsonResult createOrder(@RequestBody @Validated CouponPackOrderParam param, HttpServletRequest request){
+        return this.success(shop().couponPackOrder.createOrder(param,wxAppAuth.user().getUserId(), RequestUtil.getIp(request)));
     }
 }

@@ -127,6 +127,12 @@ export default {
             'is_preview': '0'
           }
           break
+        case 12: // 富文本模块
+          obj = {
+            'module_name': 'm_rich_text',
+            'rich_text': ''
+          }
+          break
       }
       console.log(obj)
       return obj
@@ -153,21 +159,29 @@ export default {
       }
       // 判断是否保存表单
       let isSaveModule = false
+      let isHaveOkajax = false
       data.forEach((item, index) => {
         if (item.ok_ajax) {
           isSaveModule = true
+          isHaveOkajax = true
+        } else if (item.ok_ajax === 0) {
+          isHaveOkajax = true
         }
       })
       if (isSaveModule) {
         data.forEach((item, index) => {
-          item.ok_ajax = 1
+          if (item.ok_ajax === 0) {
+            item.ok_ajax = 1
+          }
         })
       } else {
-        this.$message.error({
-          message: '请保存表单',
-          showClose: true
-        })
-        flag = false
+        if (isHaveOkajax) {
+          this.$message.error({
+            message: '请保存表单',
+            showClose: true
+          })
+          flag = false
+        }
       }
       return flag
     },
