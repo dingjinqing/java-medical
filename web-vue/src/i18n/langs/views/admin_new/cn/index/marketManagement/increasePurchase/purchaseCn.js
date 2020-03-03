@@ -26,7 +26,6 @@ export const cn = {
   searchredemptionorder: '查看换购订单',
   redemptiondetail: '换购明细',
   share: '分享',
-
   addPrice: '加价',
   addPriceBuy: '加价购',
 
@@ -60,8 +59,7 @@ export const cn = {
   mainGoodsTotalMoney: '主商品总金额',
   redemptionTotalMoney: '换购总金额',
 
-  // 添加加价购
-
+  // 添加/编辑加价购
   setActivityRule: '设置活动规则',
   setMainGoods: '设置主商品',
   setRedemptionGoods: '设置换购商品',
@@ -87,6 +85,12 @@ export const cn = {
   goodsPrice: '商品原价',
   goodsSupply: '商品库存',
   chooseRedempGoods: '选择换购商品',
-  save: '保存'
+  save: '保存',
+  content4: '请正确设置换购规则！',
+  inputName: '请输入活动名称',
+  choosepriority: '请选择活动优先级',
+  chooseTime: '请选择活动时间',
+  chooseMain: '请选择主商品！',
+  chooseRedemp: '请选择换购商品！'
 
 }

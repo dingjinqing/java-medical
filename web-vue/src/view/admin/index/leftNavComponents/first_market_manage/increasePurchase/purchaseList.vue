@@ -119,7 +119,7 @@
               >
                 <el-form :inline="true">
                   <el-form-item>
-                    {{$t('purchase.full')}}{{item.split('---')[1]}} {{$t('purchase.activityinfo')}} {{item.split('---')[2]}}{{$t('purchase.redemption')}}<br>
+                    {{$t('purchase.full')}}{{item.split('---')[1]}} {{$t('purchase.addPrice')}} {{item.split('---')[2]}}{{$t('purchase.redemption')}}<br>
                   </el-form-item>
                 </el-form>
               </li>

@@ -133,7 +133,7 @@
           ></el-input>{{$t('purchase.add')}}<el-input
             class="input1"
             v-model.number="purcahse_rule3.purchasePrice"
-          ></el-input>{{$t('purchase.redemp')}}}
+          ></el-input>{{$t('purchase.redemp')}}
           <el-link
             type="primary"
             style="margin-left:5px"
@@ -400,18 +400,18 @@ export default {
     var validateRule = (rule, value, callback) => {
       if (this.rule_num === 1) {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '') {
-          callback(new Error('请正确设置换购规则！'))
+          callback(new Error(this.$t('purchase.content4')))
         } else { callback() }
       } else if (this.rule_num === 2) {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '' ||
           this.purcahse_rule2.fullPrice === '' || this.purcahse_rule2.purchasePrice === '') {
-          callback(new Error('请正确设置换购规则！'))
+          callback(new Error(this.$t('purchase.content4')))
         } else { callback() }
       } else if (this.rule_num === 3) {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '' ||
           this.purcahse_rule2.fullPrice === '' || this.purcahse_rule2.purchasePrice === '' ||
           this.purcahse_rule3.fullPrice === '' || this.purcahse_rule3.purchasePrice === '') {
-          callback(new Error('请正确设置换购规则！'))
+          callback(new Error(this.$t('purchase.content4')))
         } else { callback() }
       } else { callback() }
     }
@@ -455,13 +455,13 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
+          { required: true, message: this.$t('purchase.inputName'), trigger: 'blur' }
         ],
         level: [
-          { required: true, message: '请选择活动优先级', trigger: 'blur' }
+          { required: true, message: this.$t('purchase.choosepriority'), trigger: 'blur' }
         ],
         activityDate: [
-          { type: 'array', required: true, message: '请选择活动时间', trigger: 'change' }
+          { type: 'array', required: true, message: this.$t('purchase.chooseTime'), trigger: 'change' }
         ],
         rule_setting: [
           { required: true, validator: validateRule }
@@ -495,7 +495,7 @@ export default {
       } else if (value === 2) {
         if (this.main_table.length === 0) {
           this.$message.info({
-            message: '请选择主商品！',
+            message: this.$t('purchase.chooseMain'),
             showClose: true
           })
         } else {
@@ -554,7 +554,6 @@ export default {
     },
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
-      console.log('选择商品弹窗回调显示:', row)
       this.main_table = row
       this.updateGoodsId(this.main_table)
     },
@@ -677,7 +676,7 @@ export default {
     },
     purchaseInfo () {
       this.$message.info({
-        message: '请选择换购商品！',
+        message: this.$t('purchase.chooseRedemp'),
         showClose: true
       })
     },
