@@ -19,9 +19,10 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record5;
 import org.jooq.Record6;
+import org.jooq.Record7;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,11 +67,14 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 分页结果集
      */
     public PageResult<FormInfoVo> selectFormInfo(FormSearchParam param) {
-        SelectConditionStep<Record5<String, Timestamp, Integer, Byte, Byte>> conditionStep = db().select(fp.PAGE_NAME, fp.CREATE_TIME, fp.SUBMIT_NUM, fp.STATE.as("status"), fp.IS_FOREVER_VALID.as("validityPeriod")).from(fp).where();
+        SelectConditionStep<Record7<String, Timestamp, Integer, Byte, Byte, Timestamp, Timestamp>> conditionStep = db()
+            .select(fp.PAGE_NAME, fp.CREATE_TIME, fp.SUBMIT_NUM, fp.STATE.as("status")
+                , fp.IS_FOREVER_VALID.as("validityPeriod"), fp.START_TIME, fp.END_TIME)
+            .from(fp).where(DSL.trueCondition());
         if (param.getStatus() != null) {
             conditionStep = conditionStep.and(fp.STATE.eq(param.getStatus()));
         }
-        if (param.getPageName() != null && !"".equals(param.getPageName())) {
+        if (StringUtils.isNoneBlank(param.getPageName())) {
             conditionStep = conditionStep.and(fp.PAGE_NAME.like(this.likeValue(param.getPageName())));
         }
         if (param.getStartTime() != null) {
