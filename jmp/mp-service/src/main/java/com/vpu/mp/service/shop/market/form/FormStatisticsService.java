@@ -5,9 +5,11 @@ import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitListRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -36,7 +38,6 @@ import static org.jooq.impl.DSL.countDistinct;
 /**
  * @author liufei
  * @date 2019/8/7
- * @description
  */
 @Slf4j
 @Service
@@ -95,7 +96,11 @@ public class FormStatisticsService extends ShopBaseService {
      * @return formpage表单详细信息
      */
     public FormDetailVo getFormDetailInfo(FormDetailParam param) {
-        return db().selectFrom(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(FormDetailVo.class).orElse(new FormDetailVo());
+        return db().selectFrom(fp)
+            .where(fp.PAGE_ID.eq(param.getPageId()))
+            .fetchOptionalInto(FormDetailVo.class)
+            .orElseThrow(() -> new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST
+                , String.join(StringUtils.SPACE, "Form", param.getPageId().toString())));
     }
 
     /**
