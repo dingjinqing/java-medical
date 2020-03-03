@@ -942,7 +942,7 @@ export default {
       console.log('点了')
       let params = {
         'shopId': data.shopId,
-        'userName': data.userName,
+        'accountUserName': data.userName,
         'flag': 4
       }
       this.$emit('sendShopId', params)

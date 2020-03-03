@@ -522,7 +522,7 @@
       <el-dialog
         :title="$t('programVersion.SettingPaymentMethod')"
         :visible.sync="dialogVisible"
-        width="25%"
+        width="400px"
       >
         <div
           class="payDialogDiv first"
