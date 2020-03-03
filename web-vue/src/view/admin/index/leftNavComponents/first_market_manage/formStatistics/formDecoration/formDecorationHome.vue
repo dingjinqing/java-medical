@@ -176,13 +176,17 @@ export default {
     ProvinceAndCity: () => import('./decorationModules/formModule/provinceAndCity'), // 省市区模块
     Email: () => import('./decorationModules/formModule/email'), // 邮箱模块
     Gender: () => import('./decorationModules/formModule/gender'), // 性别模块
-    DropDown: () => import('./decorationModules/formModule/dropDown') // 下拉模块
+    DropDown: () => import('./decorationModules/formModule/dropDown'), // 下拉模块
+    InputBox: () => import('./decorationModules/formModule/inputBox'), // 输入框波快
+    Option: () => import('./decorationModules/formModule/option'), // 选项模块
+    DateModule: () => import('./decorationModules/formModule/dateModule'), // 日期模块
+    PictureUpload: () => import('./decorationModules/formModule/pictureUpload') // 图片上传模块
   },
   data () {
     return {
       middleHereFlag: false, // 中间拖动滑过模块出现的空白占位控制变量
       nowRightShowIndex: null, // 中间高亮模块索引
-      middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity', 'Email', 'Gender', 'DropDown'], // 中间显示模块名称池
+      middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity', 'Email', 'Gender', 'DropDown', 'InputBox', 'Option', 'DateModule', 'PictureUpload'], // 中间显示模块名称池
       showModulesList: [], // 中间显示模块id数组
       insertModulesId: -1, // 左侧模块将要插入位置
       isAddBottom: false, // 是否添加到底部flag
@@ -363,6 +367,18 @@ export default {
               break
             case 5:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 5)
+              break
+            case 6:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 6)
+              break
+            case 7:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 7)
+              break
+            case 8:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 8)
+              break
+            case 9:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 9)
               break
           }
           console.log(this_.showModulesList, this_.modulesData, insert)

@@ -20,38 +20,20 @@
                 >*</b>
                 <div class="address_names">{{modulesShowData.form_title}}</div>
               </div>
-
+            </div>
+            <div class="area_detail">
               <div
-                class="have_bg"
-                v-if="!modulesShowData.show_types"
+                class="radio"
+                :class="modulesShowData.show_types?'moreSelect':''"
+                v-for="(value,key,index) in modulesShowData.selects"
+                :key="index"
+                :style="index>0?'border-top: 1px solid #eee':''"
               >
                 <el-radio
                   v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
-              </div>
-            </div>
-            <div
-              class="area_detail"
-              v-if="modulesShowData.show_types"
-            >
-              <div class="radio">
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-              </div>
-              <div class="radio bottom">
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
+                  :disabled="key==='1'?false:true"
+                  :label="key"
+                >{{value}}</el-radio>
               </div>
             </div>
           </div>
@@ -104,7 +86,7 @@ export default {
       activeBorder: false, // 模块公共
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
-      sexRadio: '2', // 男女radio
+      sexRadio: '1', // 男女radio
       // 模块私有
       modulesShowData: {
 
@@ -215,6 +197,9 @@ export default {
       width: 100%;
 
       .choose_area {
+        background: #f5f5f5;
+        height: 25px;
+        line-height: 25px;
         padding-bottom: 5px;
         display: flex;
         justify-content: space-between;
@@ -276,6 +261,11 @@ export default {
         .radio {
           height: 30px;
           line-height: 30px;
+        }
+        .moreSelect {
+          /deep/ .el-radio__inner {
+            border-radius: 0;
+          }
         }
         .bottom {
           // margin-top: 10px;

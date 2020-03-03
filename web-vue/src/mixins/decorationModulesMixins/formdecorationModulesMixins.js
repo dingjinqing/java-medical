@@ -64,6 +64,52 @@ export default {
             'ok_ajax': 0
           }
           break
+        case 6: // 输入框模块
+          obj = {
+            'module_name': 'm_input_text',
+            'show_types': '0', // 展现形式radio
+            'form_title': '输入框',
+            'placeholder': '', // 提示语input值
+            'confirm': 0,
+            'least_number': 1,
+            'most_number': 500,
+            'ok_ajax': 0
+          }
+          break
+        case 7: // 选项模块
+          obj = {
+            'module_name': 'm_choose',
+            'form_title': '选项',
+            'show_types': 0,
+            'selects': {
+              '1': '选项1',
+              '2': '选项2'
+            },
+            'confirm': 0,
+            'ok_ajax': 0
+          }
+          break
+        case 8: // 日期模块
+          obj = {
+            'module_name': 'm_dates',
+            'form_title': '日期',
+            'date_types': 0, // 时间格式radio
+            'confirm': 0,
+            'ok_ajax': 0
+          }
+          break
+        case 9: // 图片上传模块
+          obj = {
+            'module_name': 'm_imgs',
+            'form_title': '图片上传',
+            'max_number': '6',
+            'size_types': 0,
+            'width_size': '',
+            'height_size': '',
+            'confirm': 0,
+            'ok_ajax': 1
+          }
+          break
       }
       console.log(obj)
       return obj

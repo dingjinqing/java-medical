@@ -10,53 +10,39 @@
     >
       <!--模块编辑区-->
       <div class="name">
-        <div class="nameMain">
-          <div class="address_module">
-            <div class="choose_area">
-              <div class="left">
-                <b
-                  v-if="modulesShowData.confirm"
-                  class="module-star"
-                >*</b>
-                <div class="address_names">{{modulesShowData.form_title}}</div>
-              </div>
-
-              <div
-                class="have_bg"
-                v-if="!modulesShowData.show_types"
-              >
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
-              </div>
-            </div>
-            <div
-              class="area_detail"
-              v-if="modulesShowData.show_types"
-            >
-              <div class="radio">
-                <el-radio
-                  v-model="sexRadio"
-                  disabled
-                  label="1"
-                >男</el-radio>
-              </div>
-              <div class="radio bottom">
-                <el-radio
-                  v-model="sexRadio"
-                  label="2"
-                >女</el-radio>
-              </div>
-            </div>
-          </div>
+        <div
+          class="nameMain"
+          :style="modulesShowData.show_types==='0'?'background:#f5f5f5':''"
+        >
+          <b
+            class="moduleStar"
+            v-if="modulesShowData.confirm"
+          >*</b>
+          <span class="name_title">{{modulesShowData.form_title}}</span>
+          <input
+            v-if="modulesShowData.show_types==='1'"
+            class="name_title_place"
+            :placeholder="modulesShowData.placeholder?modulesShowData.placeholder:'请输入内容'"
+            type="text"
+            readonly="readonly"
+          >
         </div>
-
+        <el-input
+          v-if="modulesShowData.show_types==='0'"
+          type="textarea"
+          :rows="2"
+          disabled
+          :placeholder="modulesShowData.placeholder?modulesShowData.placeholder:'请输入内容'"
+          v-model="textarea"
+        >
+        </el-input>
+        <input
+          v-if="modulesShowData.show_types==='2'"
+          class="portrait"
+          :placeholder="modulesShowData.placeholder?modulesShowData.placeholder:'请输入内容'"
+          type="text"
+          readonly="readonly"
+        >
       </div>
       <!--模块编辑区结束-->
       <div
@@ -104,7 +90,6 @@ export default {
       activeBorder: false, // 模块公共
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
-      sexRadio: '2', // 男女radio
       // 模块私有
       modulesShowData: {
 
@@ -203,89 +188,80 @@ export default {
 @import "@/style/admin/formdecorationModules.scss"; // 模块公共
 
 .name {
-  background: rgb(238, 238, 238);
+  background-color: #ffffff;
   .nameMain {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     position: relative;
-    .address_module {
-      background: #fff;
-      padding-left: 10px;
-      padding-top: 5px;
-      width: 100%;
-
-      .choose_area {
-        padding-bottom: 5px;
-        display: flex;
-        justify-content: space-between;
-        /deep/ .is-disabled {
-          .el-radio__inner {
-            background-color: #fff;
-          }
-          .el-radio__label {
-            color: #333;
-          }
-        }
-        .left {
-          display: flex;
-          .module-star {
-            color: red;
-          }
-          .address_names {
-            font-size: 14px;
-            color: #353535;
-            width: 165px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-          }
-        }
-        .have_bg {
-          font-size: 14px;
-          padding-right: 15px;
-          color: #999;
-          display: flex;
-          align-items: center;
-          /deep/ .el-radio {
-            margin-right: 10px;
-          }
-        }
-      }
-      .area_detail {
-        // padding-top: 10px;
-        border-top: 1px solid #eee;
-        display: flex;
-        flex-direction: column;
-        /deep/ .is-disabled {
-          .el-radio__inner {
-            background-color: #e4e7ed !important;
-            background: #fff !important;
-            border-color: #e4e7ed !important;
-          }
-          .el-radio__label {
-            color: #333;
-          }
-        }
-        /deep/ .el-radio__inner {
-          border-color: #409eff;
-          background: #409eff !important;
-        }
-        /deep/ .el-radio__label {
-          color: #333;
-        }
-        .radio {
-          height: 30px;
-          line-height: 30px;
-        }
-        .bottom {
-          // margin-top: 10px;
-          border-top: 1px solid #eee;
-        }
-      }
-      /deep/ .el-radio__label {
-        color: #333 !important;
+    height: 30px;
+    padding-left: 10px;
+    .Search {
+      flex: 1;
+      // line-height: 24px;
+      padding: 0 5px;
+      margin: 5px 10px;
+      border-color: #ccc;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      span {
+        color: #b4b4b4;
       }
     }
+    .icon {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin-right: 10px;
+      span:nth-of-type(1) {
+        font-size: 30px;
+        display: inline-block;
+      }
+      span:nth-of-type(2) {
+        display: inline-block;
+        text-align: right;
+      }
+    }
+    .moduleStar {
+      color: red;
+      height: 30px;
+      line-height: 30px;
+    }
+    .name_title {
+      width: 85px;
+      height: 30px;
+      line-height: 30px;
+      color: #333;
+      font-size: 14px;
+      display: inline-block;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+      position: relative;
+      top: 5px;
+    }
+    input {
+      height: 30px;
+      line-height: 30px;
+      border: none;
+      padding-left: 12px;
+      background: #ebebe4;
+    }
+  }
+  .portrait {
+    width: 100%;
+    height: 30px;
+    padding-left: 12px;
+    line-height: 30px;
+    border: none;
+    width: 100%;
+    background: #ebebe4;
   }
 }
 </style>
