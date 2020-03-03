@@ -10,7 +10,7 @@
     </view>
     <view class="l-a-center">
       <view class="l-a-c-top">恭喜您获得</view>
-      <block wx:if="{{lotteryInfo.lotteryGrade === 4}}">
+      <block wx:if="{{lotteryInfo.resultsType === 4}}">
         <view class="gift-name">{{lotteryInfo.lotteryAward}}</view>
         <view class="gift-img"><image src="{{lotteryInfo.goodsImage}}"></image></view>
         <view class="gift-tips">已放入“我的奖品”快领取吧</view>
