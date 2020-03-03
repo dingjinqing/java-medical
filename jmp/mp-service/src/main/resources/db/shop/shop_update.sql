@@ -111,8 +111,8 @@ ALTER TABLE `b2c_purchase_price_define` ADD COLUMN `redemption_freight` tinyint(
 -- 2020年03月03日 添加包邮,自定义权益字段
 ALTER TABLE `b2c_member_card` 
 ADD COLUMN `custom_rights` text COMMENT '自定义权益' AFTER `send_coupon_ids`,
-ADD COLUMN `freeship_limit` tinyint(3) DEFAULT -1 COMMENT '-1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日' AFTER `custom_rights`,
-ADD COLUMN `freeship_num` int(11) DEFAULT 0 COMMENT '周期内包邮次数' AFTER `freeship_limit`;
+ADD COLUMN `freeship_limit` tinyint(3) DEFAULT -1 COMMENT '-1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日';
+ADD COLUMN `freeship_num` int(11) DEFAULT 0 COMMENT '周期内包邮次数';
 
 /***********************2.10*********************END*/
 -- 瓜分积分 添加活动规则说明
