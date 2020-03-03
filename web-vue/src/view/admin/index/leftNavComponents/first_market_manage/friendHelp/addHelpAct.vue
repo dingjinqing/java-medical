@@ -542,6 +542,7 @@
     </div>
     <choosingGoods
       @resultGoodsRow="choosingGoodsResult"
+      :loadProduct="true"
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="goodsIdList"
       :singleElection="true"
@@ -826,6 +827,7 @@ export default {
       })
     },
     addAct () {
+      debugger
       console.log('this.form.rewardType:', this.form.rewardType)
       if (this.form.rewardType === '0' || this.form.rewardType === '1') {
         if (this.form.goodsInfo[0].market_price == null) {
@@ -836,6 +838,7 @@ export default {
         console.log(this.form.goodsInfo[0].market_store)
         this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
+        console.log('this.form.rewardSet.prd_id:', this.form.rewardSet.prd_id)
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
       }
@@ -923,7 +926,7 @@ export default {
     // 选择商品弹窗
     showChoosingGoods () {
       this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
-      // console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
+      console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
       this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
@@ -936,7 +939,8 @@ export default {
       this.goodsIdList = []
       this.goodsIdList.push(row.goodsId)
       console.log('goodsInfo:', this.form.goodsInfo[0])
-      this.form.rewardSet.goods_ids = row.goodsId
+      // this.form.rewardSet.goods_ids = row.goodsId
+      this.form.rewardSet.prd_id = row.prdId
 
       // })
     },

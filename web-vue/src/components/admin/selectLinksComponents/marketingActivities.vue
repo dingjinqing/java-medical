@@ -127,6 +127,9 @@ export default {
                 }
                 this.path = 'pages1/promoteinfo/promoteinfo?actCode='
                 this.trList = res.content
+                this.trList.forEach((item, index) => {
+                  item.id = item.actCode
+                })
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
             })
