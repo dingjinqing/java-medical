@@ -18,6 +18,7 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 public class BigDecimalUtil {
     public static final int DEFAULT_SCALE = 2;
     public static final BigDecimal BIGDECIMAL_ZERO = BigDecimal.ZERO.setScale(DEFAULT_SCALE);
+    public static final BigDecimal BIGDECIMAL_100 = new BigDecimal("100");
 
     public enum Operator {
         //加
