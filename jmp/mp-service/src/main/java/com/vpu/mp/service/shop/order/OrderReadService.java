@@ -51,6 +51,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayOrderDetails;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -857,11 +858,15 @@ public class OrderReadService extends ShopBaseService {
         }
     }
 
-    public void InsteadPayInfo(InsteadPayDetailsParam param) throws MpException {
+    public InsteadPayOrderDetails InsteadPayInfo(InsteadPayDetailsParam param) throws MpException {
+        InsteadPayOrderDetails result = new InsteadPayOrderDetails();
         //订单
-        OrderInfoMpVo orderInfoMpVo = mpGet(param);
+        OrderInfoMpVo order = mpGet(param);
+        result.setOrder(order);
         //代付信息
         PageResult<InsteadPayDetailsVo> insteadPayDetailsVoPageResult = subOrderService.paymentDetails(param.getOrderSn(), param.getCurrentPage(), param.getPageRows());
+        result.setInsteadPayDetails(insteadPayDetailsVoPageResult);
+        return result;
     }
 
     /*********************************************************************************************************/
