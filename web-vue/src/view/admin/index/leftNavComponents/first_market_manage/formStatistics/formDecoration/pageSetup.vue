@@ -46,7 +46,8 @@ export default {
     RiInputBox: () => import('./pageSetupModules/formModule/riInputBox'), // 输入框模块
     RiOption: () => import('./pageSetupModules/formModule/riOption'), // 选项模块
     RiDateModule: () => import('./pageSetupModules/formModule/riDateModule'), // 日期模块
-    RiPictureUpload: () => import('./pageSetupModules/formModule/riPictureUpload') // 图片上传模块
+    RiPictureUpload: () => import('./pageSetupModules/formModule/riPictureUpload'), // 图片上传模块
+    RiVideoUpload: () => import('./pageSetupModules/formModule/riVideoUpload') // 视频上传模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -99,6 +100,10 @@ export default {
         {
           id: 9,
           name: 'RiPictureUpload'
+        },
+        {
+          id: 10,
+          name: 'RiVideoUpload'
         }
       ],
       showModule: null,
