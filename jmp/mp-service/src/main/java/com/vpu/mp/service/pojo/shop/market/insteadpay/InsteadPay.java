@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.insteadpay;
 
 import lombok.Data;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * 好友代付
@@ -48,9 +48,13 @@ public class InsteadPay {
     private String insteadPayMessageMultiple;
 
     /**
-     * 多人代付时的金额比例
+     * 多人代付时的金额比例中文文字
      */
-    private Map<String,Object> payRatio;
+    private List<String> payRatioText;
+    /**
+     * 多人代付时的金额比例 比例值
+     */
+    private List<Integer> payRatioNumber;
 
 
     public static final Byte NOT_SET=0;
