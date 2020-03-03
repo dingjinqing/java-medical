@@ -55,7 +55,7 @@ global.wxPage({
     new_options = options;
     choose_list = {};
     clearTimeout(set_time_out);
-    // request_pinIntegration(that);
+    request_pinIntegration(that);
     var user_name = util.getCache('nickName');
     var user_avatar = util.getCache('avatarUrl');
     if (!user_name || user_name == '用户' + parseInt(util.getCache('user_id') + 10000)
@@ -330,147 +330,147 @@ function request_pinIntegration(that) {
   mobile = util.getCache('mobile');
   if (new_options.invite_user) {
     invite_user = new_options.invite_user;
-    util.api('/api/wxapp/pin/integration/start', function (res) {
-      group_gd = res.content;
-      if (group_gd.can_pin.status == 0) {
-        group_id = group_gd.group_id;
-      }
-      that.setData({
-        group_gd: group_gd,
-      })
-      util.api('/api/wxapp/pin/integration/detail', function (ress) {
-        gd = ress.content;
-        if (ress.content) {
-          util.api('/api/wxapp/user_goods/record', function (res1) {
+    // util.api('/api/wxapp/pin/integration/start', function (res) {
+    //   group_gd = res.content;
+    //   if (group_gd.can_pin.status == 0) {
+    //     group_id = group_gd.group_id;
+    //   }
+    //   that.setData({
+    //     group_gd: group_gd,
+    //   })
+    //   util.api('/api/wxapp/pin/integration/detail', function (ress) {
+    //     gd = ress.content;
+    //     if (ress.content) {
+    //       util.api('/api/wxapp/user_goods/record', function (res1) {
 
-          }, { goods_id: group_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
-        }
-        pin_info = ress.content.pinInteInfo;
-        inteGoods = ress.content.inteGoodsInfo;
-        choose_list['limit_amount'] = pin_info.limit_amount;
-        choose_list['inte_group'] = pin_info.inte_group;
-        choose_list['join_limit'] = pin_info.join_limit;
-        choose_list['is_day_divide'] = pin_info.is_day_divide;
-        num = pin_info.limit_amount - 1;
-        person = ress.content.groupInfo;
-        limit = [];
-        for (var i = 0; i < num; i++) {
-          limit.push(i);
-        }
-        that.setData({
-          gd: gd,
-          pin_info: pin_info,
-          inteGoods: inteGoods,
-          person: person,
-          limit: limit,
-        })
-        // 倒计时
-        if (gd.remain_time) {
-          total_micro_second = gd.remain_time;
-        }
-        if (total_micro_second > 0) {
-          that.countdown(that);
-          that.setData({
-            act_open: 1
-          });
-        }
-      }, { pinInte_id: new_options.pinInte_id, group_id: group_id });
-    }, { pinInte_id: new_options.pinInte_id, group_id: group_id, invite_user: invite_user });
+    //       }, { goods_id: group_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
+    //     }
+    //     pin_info = ress.content.pinInteInfo;
+    //     inteGoods = ress.content.inteGoodsInfo;
+    //     choose_list['limit_amount'] = pin_info.limit_amount;
+    //     choose_list['inte_group'] = pin_info.inte_group;
+    //     choose_list['join_limit'] = pin_info.join_limit;
+    //     choose_list['is_day_divide'] = pin_info.is_day_divide;
+    //     num = pin_info.limit_amount - 1;
+    //     person = ress.content.groupInfo;
+    //     limit = [];
+    //     for (var i = 0; i < num; i++) {
+    //       limit.push(i);
+    //     }
+    //     that.setData({
+    //       gd: gd,
+    //       pin_info: pin_info,
+    //       inteGoods: inteGoods,
+    //       person: person,
+    //       limit: limit,
+    //     })
+    //     // 倒计时
+    //     if (gd.remain_time) {
+    //       total_micro_second = gd.remain_time;
+    //     }
+    //     if (total_micro_second > 0) {
+    //       that.countdown(that);
+    //       that.setData({
+    //         act_open: 1
+    //       });
+    //     }
+    //   }, { pinInte_id: new_options.pinInte_id, group_id: group_id });
+    // }, { pinInte_id: new_options.pinInte_id, group_id: group_id, invite_user: invite_user });
   } else if (group_id != '') {
-    util.api('/api/wxapp/pin/integration/detail', function (ress) {
-      gd = ress.content;
-      if (ress.content) {
-        if (ress.content) {
-          util.api('/api/wxapp/user_goods/record', function (res1) {
+    // util.api('/api/wxapp/pin/integration/detail', function (ress) {
+    //   gd = ress.content;
+    //   if (ress.content) {
+    //     if (ress.content) {
+    //       util.api('/api/wxapp/user_goods/record', function (res1) {
 
-          }, { goods_id: pinInte_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
-        }
-      }
-      pin_info = ress.content.pinInteInfo;
-      choose_list['limit_amount'] = pin_info.limit_amount;
-      choose_list['inte_group'] = pin_info.inte_group;
-      choose_list['join_limit'] = pin_info.join_limit;
-      choose_list['is_day_divide'] = pin_info.is_day_divide;
-      num = pin_info.limit_amount - 1;
-      person = ress.content.groupInfo;
-      inteGoods = ress.content.inteGoodsInfo;
-      limit = [];
-      for (var i = 0; i < num; i++) {
-        limit.push(i);
-      }
-      that.setData({
-        gd: gd,
-        pin_info: pin_info,
-        person: person,
-        limit: limit,
-        inteGoods: inteGoods,
-      })
-      // 倒计时
-      if (gd.remain_time) {
-        total_micro_second = gd.remain_time;
-      }
-      if (total_micro_second > 0) {
-        that.countdown(that);
-        that.setData({
-          act_open: 1
-        });
+    //       }, { goods_id: pinInte_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
+    //     }
+    //   }
+    //   pin_info = ress.content.pinInteInfo;
+    //   choose_list['limit_amount'] = pin_info.limit_amount;
+    //   choose_list['inte_group'] = pin_info.inte_group;
+    //   choose_list['join_limit'] = pin_info.join_limit;
+    //   choose_list['is_day_divide'] = pin_info.is_day_divide;
+    //   num = pin_info.limit_amount - 1;
+    //   person = ress.content.groupInfo;
+    //   inteGoods = ress.content.inteGoodsInfo;
+    //   limit = [];
+    //   for (var i = 0; i < num; i++) {
+    //     limit.push(i);
+    //   }
+    //   that.setData({
+    //     gd: gd,
+    //     pin_info: pin_info,
+    //     person: person,
+    //     limit: limit,
+    //     inteGoods: inteGoods,
+    //   })
+    //   // 倒计时
+    //   if (gd.remain_time) {
+    //     total_micro_second = gd.remain_time;
+    //   }
+    //   if (total_micro_second > 0) {
+    //     that.countdown(that);
+    //     that.setData({
+    //       act_open: 1
+    //     });
 
-      }
-    }, { pinInte_id: new_options.pinInte_id, group_id: group_id });
+    //   }
+    // }, { pinInte_id: new_options.pinInte_id, group_id: group_id });
   } else {
-    util.api('/api/wxapp/pin/integration/start', function (res) {
-      if (res.content.can_pin.status == 0) {
-        group_id = res.content.group_id;
-        util.api('/api/wxapp/pin/integration/detail', function (ress) {
-          gd = ress.content;
-          pin_info = ress.content.pinInteInfo;
-          choose_list['limit_amount'] = pin_info.limit_amount;
-          choose_list['inte_group'] = pin_info.inte_group;
-          choose_list['join_limit'] = pin_info.join_limit;
-          choose_list['is_day_divide'] = pin_info.is_day_divide;
-          num = pin_info.limit_amount - 1;
-          person = ress.content.groupInfo;
-          inteGoods = ress.content.inteGoodsInfo;
-          limit = [];
-          for (var i = 0; i < num; i++) {
-            limit.push(i);
-          }
-          that.setData({
-            gd: gd,
-            pin_info: pin_info,
-            person: person,
-            limit: limit,
-            inteGoods: inteGoods,
-          })
-          // 倒计时
-          if (gd.remain_time) {
-            total_micro_second = gd.remain_time;
-          }
-          if (total_micro_second > 0) {
-            that.countdown(that);
-            that.setData({
-              act_open: 1
-            });
+    // util.api('/api/wxapp/pin/integration/start', function (res) {
+    //   if (res.content.can_pin.status == 0) {
+    //     group_id = res.content.group_id;
+    //     util.api('/api/wxapp/pin/integration/detail', function (ress) {
+    //       gd = ress.content;
+    //       pin_info = ress.content.pinInteInfo;
+    //       choose_list['limit_amount'] = pin_info.limit_amount;
+    //       choose_list['inte_group'] = pin_info.inte_group;
+    //       choose_list['join_limit'] = pin_info.join_limit;
+    //       choose_list['is_day_divide'] = pin_info.is_day_divide;
+    //       num = pin_info.limit_amount - 1;
+    //       person = ress.content.groupInfo;
+    //       inteGoods = ress.content.inteGoodsInfo;
+    //       limit = [];
+    //       for (var i = 0; i < num; i++) {
+    //         limit.push(i);
+    //       }
+    //       that.setData({
+    //         gd: gd,
+    //         pin_info: pin_info,
+    //         person: person,
+    //         limit: limit,
+    //         inteGoods: inteGoods,
+    //       })
+    //       // 倒计时
+    //       if (gd.remain_time) {
+    //         total_micro_second = gd.remain_time;
+    //       }
+    //       if (total_micro_second > 0) {
+    //         that.countdown(that);
+    //         that.setData({
+    //           act_open: 1
+    //         });
 
-          }
-        }, { pinInte_id: pinInte_id, group_id: group_id });
-      }
-      if (res.content.can_pin.status > 0) {
-        // util.showModal('提示', res.content.can_pin.msg);
-        util.showModal('提示', res.content.can_pin.msg, function () {
-          wx.navigateBack({
-            delta: 1,
-            fail: function (e) {
-              util.navigateTo({
-                url: '/pages/index/index',
-              })
-            }
-          })
-        }, false);
-        return;
-      }
-    }, {
-        pinInte_id: pinInte_id
-      });
+    //       }
+    //     }, { pinInte_id: pinInte_id, group_id: group_id });
+    //   }
+    //   if (res.content.can_pin.status > 0) {
+    //     // util.showModal('提示', res.content.can_pin.msg);
+    //     util.showModal('提示', res.content.can_pin.msg, function () {
+    //       wx.navigateBack({
+    //         delta: 1,
+    //         fail: function (e) {
+    //           util.navigateTo({
+    //             url: '/pages/index/index',
+    //           })
+    //         }
+    //       })
+    //     }, false);
+    //     return;
+    //   }
+    // }, {
+    //     pinInte_id: pinInte_id
+    //   });
   }
 }

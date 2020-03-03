@@ -42,7 +42,15 @@ export default {
     RiProvinceAndCity: () => import('./pageSetupModules/formModule/riProvinceAndCity'), // 省市区模块
     RiEmail: () => import('./pageSetupModules/formModule/riEmail'), // 邮箱模块
     RiGender: () => import('./pageSetupModules/formModule/riGender'), // 性别模块
-    RiDropDown: () => import('./pageSetupModules/formModule/riDropDown') // 下拉模块
+    RiDropDown: () => import('./pageSetupModules/formModule/riDropDown'), // 下拉模块
+    RiInputBox: () => import('./pageSetupModules/formModule/riInputBox'), // 输入框模块
+    RiOption: () => import('./pageSetupModules/formModule/riOption'), // 选项模块
+    RiDateModule: () => import('./pageSetupModules/formModule/riDateModule'), // 日期模块
+    RiPictureUpload: () => import('./pageSetupModules/formModule/riPictureUpload'), // 图片上传模块
+    RiVideoUpload: () => import('./pageSetupModules/formModule/riVideoUpload'), // 视频上传模块
+    // 图文类
+    RiRotationChart: () => import('./pageSetupModules/formModule/riRotationChart'), // 轮播图模块
+    RiRichText: () => import('./pageSetupModules/formModule/riRichText') // 富文本模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -79,6 +87,34 @@ export default {
         {
           id: 5,
           name: 'RiDropDown'
+        },
+        {
+          id: 6,
+          name: 'RiInputBox'
+        },
+        {
+          id: 7,
+          name: 'RiOption'
+        },
+        {
+          id: 8,
+          name: 'RiDateModule'
+        },
+        {
+          id: 9,
+          name: 'RiPictureUpload'
+        },
+        {
+          id: 10,
+          name: 'RiVideoUpload'
+        },
+        {
+          id: 11,
+          name: 'RiRotationChart'
+        },
+        {
+          id: 12,
+          name: 'RiRichText'
         }
       ],
       showModule: null,

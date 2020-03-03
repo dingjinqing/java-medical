@@ -21,7 +21,10 @@
                 <div class="address_names">{{modulesShowData.form_title}}</div>
               </div>
 
-              <div class="have_bg">
+              <div
+                class="have_bg"
+                v-if="!modulesShowData.show_types"
+              >
                 <el-radio
                   v-model="sexRadio"
                   disabled
@@ -249,13 +252,15 @@ export default {
         }
       }
       .area_detail {
-        padding-top: 10px;
+        // padding-top: 10px;
         border-top: 1px solid #eee;
         display: flex;
         flex-direction: column;
         /deep/ .is-disabled {
           .el-radio__inner {
-            background-color: #fff !important;
+            background-color: #e4e7ed !important;
+            background: #fff !important;
+            border-color: #e4e7ed !important;
           }
           .el-radio__label {
             color: #333;
@@ -273,9 +278,12 @@ export default {
           line-height: 30px;
         }
         .bottom {
-          margin-top: 10px;
+          // margin-top: 10px;
           border-top: 1px solid #eee;
         }
+      }
+      /deep/ .el-radio__label {
+        color: #333 !important;
       }
     }
   }

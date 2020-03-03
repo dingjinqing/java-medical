@@ -64,6 +64,75 @@ export default {
             'ok_ajax': 0
           }
           break
+        case 6: // 输入框模块
+          obj = {
+            'module_name': 'm_input_text',
+            'show_types': '0', // 展现形式radio
+            'form_title': '输入框',
+            'placeholder': '', // 提示语input值
+            'confirm': 0,
+            'least_number': 1,
+            'most_number': 500,
+            'ok_ajax': 0
+          }
+          break
+        case 7: // 选项模块
+          obj = {
+            'module_name': 'm_choose',
+            'form_title': '选项',
+            'show_types': 0,
+            'selects': {
+              '1': '选项1',
+              '2': '选项2'
+            },
+            'confirm': 0,
+            'ok_ajax': 0
+          }
+          break
+        case 8: // 日期模块
+          obj = {
+            'module_name': 'm_dates',
+            'form_title': '日期',
+            'date_types': 0, // 时间格式radio
+            'confirm': 0,
+            'ok_ajax': 0
+          }
+          break
+        case 9: // 图片上传模块
+          obj = {
+            'module_name': 'm_imgs',
+            'form_title': '图片上传',
+            'max_number': '6',
+            'size_types': 0,
+            'width_size': '',
+            'height_size': '',
+            'confirm': 0,
+            'ok_ajax': 1
+          }
+          break
+        case 10: // 视频上传模块
+          obj = {
+            'module_name': 'm_upload_video',
+            'form_title': '视频上传',
+            'confirm': 0,
+            'ok_ajax': 1
+          }
+          break
+        case 11: // 轮播图模块
+          obj = {
+            'module_name': 'm_scroll_image',
+            'img_items': [
+
+            ],
+            'is_preview': '0'
+          }
+          break
+        case 12: // 富文本模块
+          obj = {
+            'module_name': 'm_rich_text',
+            'rich_text': ''
+          }
+          break
       }
       console.log(obj)
       return obj
@@ -90,21 +159,29 @@ export default {
       }
       // 判断是否保存表单
       let isSaveModule = false
+      let isHaveOkajax = false
       data.forEach((item, index) => {
         if (item.ok_ajax) {
           isSaveModule = true
+          isHaveOkajax = true
+        } else if (item.ok_ajax === 0) {
+          isHaveOkajax = true
         }
       })
       if (isSaveModule) {
         data.forEach((item, index) => {
-          item.ok_ajax = 1
+          if (item.ok_ajax === 0) {
+            item.ok_ajax = 1
+          }
         })
       } else {
-        this.$message.error({
-          message: '请保存表单',
-          showClose: true
-        })
-        flag = false
+        if (isHaveOkajax) {
+          this.$message.error({
+            message: '请保存表单',
+            showClose: true
+          })
+          flag = false
+        }
       }
       return flag
     },

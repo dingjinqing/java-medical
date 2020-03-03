@@ -36,5 +36,11 @@ public class IntegralConvertSelectVo {
 	
 	/** 店铺分享配置 */
 	public String shareConfig;
+
+    /** 是否删除 */
+    private Byte delFlag;
+
+    /** 状态 */
+    private Byte status;
 	
 }

@@ -23,4 +23,5 @@ public class InsteadPayVo {
     private BigDecimal amountPaid;
     private BigDecimal waitPayMoney;
     private OrderInfoMpVo order;
+    private Byte isSelf;
 }

@@ -147,11 +147,19 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
             //代付金额三阶梯
             List<BigDecimal> threeStages = new ArrayList<>(3);
             //一阶段
-            threeStages.add(0, BigDecimalUtil.BIGDECIMAL_ZERO);
+            threeStages.add(0, BigDecimalUtil.multiplyOrDivide(
+                BigDecimalUtil.BigDecimalPlus.create(orderAmount, BigDecimalUtil.Operator.multiply),
+                BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(cfg.getPayRatioNumber().get(0)), BigDecimalUtil.Operator.divide),
+                BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.BIGDECIMAL_100)
+                ));
             //二阶段
-            threeStages.add(1, BigDecimalUtil.BIGDECIMAL_ZERO);
+            threeStages.add(1, BigDecimalUtil.multiplyOrDivide(
+                BigDecimalUtil.BigDecimalPlus.create(orderAmount, BigDecimalUtil.Operator.multiply),
+                BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(cfg.getPayRatioNumber().get(1)), BigDecimalUtil.Operator.divide),
+                BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.BIGDECIMAL_100)
+                ));
             //三阶段
-            threeStages.add(2, BigDecimalUtil.BIGDECIMAL_ZERO);
+            threeStages.add(2, waitPayMoney);
 
             vo.setThreeStages(threeStages);
             vo.setIsShowEdit(OrderConstant.YES);
@@ -163,6 +171,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         vo.setAmountPaid(amountPaid);
         vo.setWaitPayMoney(waitPayMoney);
         vo.setOrder(orderReadService.mpGet(new OrderParam(param.getOrderSn())));
+        vo.setIsSelf(param.getWxUserInfo().getUserId().equals(order.getUserId()) ? OrderConstant.YES : OrderConstant.NO);
         logger().info("代付query end:");
         return vo;
     }

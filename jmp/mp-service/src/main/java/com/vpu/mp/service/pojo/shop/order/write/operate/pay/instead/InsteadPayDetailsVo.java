@@ -20,7 +20,7 @@ public class InsteadPayDetailsVo {
     private String username;
     private Byte orderStatus;
     private BigDecimal moneyPaid;
-    private BigDecimal refund_money;
+    private BigDecimal refundMoney;
     private String message;
     private String userAvatar;
 

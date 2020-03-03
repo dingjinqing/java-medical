@@ -54,6 +54,11 @@ public class GoodsConstant {
      * 满包邮
      */
     public final static Byte ACTIVITY_FREE_SHIP_PRIORITY = 47;
+
+    /**
+     * 积分兑换
+     */
+    public final static Byte ACTIVITY_INTEGER_MALL_PRIORITY = 50;
     /**************** 结束 *****************/
 
     /** 小程序海报分享码跳转地址，商品详情页或对应活动页 */

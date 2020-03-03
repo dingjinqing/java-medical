@@ -48,8 +48,12 @@
           </div>
           <div
             class="num"
-            style="color: #5A8BFF"
+            style="color: #3dcf9a"
           >{{ integrationNum }}</div>
+         <el-image
+            class="left_image"
+            :src="urls.url4"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -65,8 +69,12 @@
           </div>
           <div
             class="num"
-            style="color: #5A8BFF"
+            style="color: #5a8bff"
           >{{ joinNum }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url1"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -82,8 +90,12 @@
           </div>
           <div
             class="num"
-            style="color: #5A8BFF"
+            style="color: #fc6181"
           >{{ successUserNum }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url2"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -99,8 +111,12 @@
           </div>
           <div
             class="num"
-            style="color: #5A8BFF"
+            style="color: #fdb64a"
           >{{ newUser }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url3"
+          ></el-image>
         </div>
       </section>
 
@@ -149,7 +165,13 @@ export default {
         ]
       },
       actId: null,
-      dataEmpty: true
+      dataEmpty: true,
+      urls: {
+        url1: `${this.$imageHost}/image/admin/any_coner/any_coner_blue.png`,
+        url2: `${this.$imageHost}/image/admin/any_coner/any_coner_pink.png`,
+        url3: `${this.$imageHost}/image/admin/any_coner/any_coner_orange.png`,
+        url4: `${this.$imageHost}/image/admin/any_coner/any_coner_green.png`
+      }
     }
   },
   watch: {
@@ -234,6 +256,13 @@ export default {
     width: 100%;
     height: 500px;
     left: -30px;
+  }
+ .left_image {
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    width:44px;
+    height:40px;
   }
 }
 </style>

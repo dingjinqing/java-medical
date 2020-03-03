@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 /**
  * @author liufei
  * @date 2019/8/12
- * @description
  */
 @Data
 public class FormUpdateParam {

@@ -51,6 +51,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayOrderDetails;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -603,14 +604,14 @@ public class OrderReadService extends ShopBaseService {
 			order.setVerifierInfo(userInfo.getUsername(), userInfo.getMobile());
 		}
 		//子单
-		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT).toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
+		if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT.toString()) != -1 && order.getOrderSn().equals(order.getMainOrderSn()) && orders.size() > 1) {
 			//只显示生成订单的子订单
 			order.setSubOrder(getSubOrder(orders.subList(1, orders.size())));
 		}
 		//好物圈
 
 		// 拼团
-		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY).toString()) != -1){
+		if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY.toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
 			//未退款
 			if (!groupOrder.getStatus().equals(GroupBuyConstant.STATUS_FAILED)&&!groupOrder.getStatus().equals(STATUS_WAIT_PAY)){
@@ -623,7 +624,7 @@ public class OrderReadService extends ShopBaseService {
 				groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
                 order.setGroupBuyInfo(groupOrderVo);
             }
-		}else if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW).toString()) != -1) {
+		}else if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW.toString()) != -1) {
 
 		}
 		//拼团抽奖
@@ -857,11 +858,15 @@ public class OrderReadService extends ShopBaseService {
         }
     }
 
-    public void InsteadPayInfo(InsteadPayDetailsParam param) throws MpException {
+    public InsteadPayOrderDetails InsteadPayInfo(InsteadPayDetailsParam param) throws MpException {
+        InsteadPayOrderDetails result = new InsteadPayOrderDetails();
         //订单
-        OrderInfoMpVo orderInfoMpVo = mpGet(param);
+        OrderInfoMpVo order = mpGet(param);
+        result.setOrder(order);
         //代付信息
         PageResult<InsteadPayDetailsVo> insteadPayDetailsVoPageResult = subOrderService.paymentDetails(param.getOrderSn(), param.getCurrentPage(), param.getPageRows());
+        result.setInsteadPayDetails(insteadPayDetailsVoPageResult);
+        return result;
     }
 
     /*********************************************************************************************************/

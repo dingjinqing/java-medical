@@ -628,7 +628,67 @@ button::after{
   color: rgb(102,102,102)
 }
 .share_goods_box{
-  position:fixed;
-  bottom:0;
-  z-index:99999;
+  position: fixed;
+  bottom: 0;
+  width: 750rpx;
+  height: 390rpx;
+  background-color: #fff;
+  z-index: 99999;
 }
+.share_goods_box .popup_title {
+  line-height: 90rpx;
+  text-align: center;
+  font-size: 30rpx;
+  background-color: #f5f5f5;
+  position: relative;
+}
+.share_goods_box .popup_title image {
+  position: absolute;
+  width: 40rpx;
+  height: 40rpx;
+  right: 24rpx;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.share_goods_box .content_box {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 300rpx;
+}
+.content_box > view,
+.content_box > button {
+  text-align: center;
+  font-size: 0;
+}
+.share_goods_box .content_box > button {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  line-height: normal;
+  border: none;
+  background-color: #fff;
+  border-radius: 0;
+  display: block;
+  z-index: 1;
+}
+.content_box > view image,
+.content_box > button image {
+  width: 84rpx;
+  height: 84rpx;
+  margin-bottom: 27rpx;
+}
+.content_box > view > text,
+.content_box > button > text {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1;
+}
+
+
+
+
+
+

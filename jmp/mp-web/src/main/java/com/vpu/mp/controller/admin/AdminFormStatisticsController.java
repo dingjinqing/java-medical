@@ -1,30 +1,20 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.form.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackDetailParam;
-import com.vpu.mp.service.pojo.shop.market.form.FeedBackInfoParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormAddParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormDetailParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormFeedParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormSearchParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormStatusParam;
-import com.vpu.mp.service.pojo.shop.market.form.FormUpdateParam;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * @author liufei
  * @date 2019/8/7
- * @description
  */
 @RestController
 public class AdminFormStatisticsController extends AdminBaseController {
@@ -75,25 +65,6 @@ public class AdminFormStatisticsController extends AdminBaseController {
     }
 
     /**
-     * 表单反馈列表导出
-     *
-     * @param param 筛选条件
-     */
-    @PostMapping("/api/admin/formstatistics/export2Excel")
-    public void export2Excel(@RequestBody FormFeedParam param, HttpServletResponse response) {
-        try {
-            Workbook workbook = shop().formService.exportFeedBack(param);
-            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            String fileName = "表单反馈" + System.currentTimeMillis() + ".xlsx";
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            response.setLocale(Locale.ENGLISH);
-            workbook.write(response.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * 表单复制
      */
     @PostMapping("/api/admin/formstatistics/copyForm")
@@ -111,6 +82,14 @@ public class AdminFormStatisticsController extends AdminBaseController {
     }
 
     /**
+     * 分享,获取小程序二维码
+     */
+    @PostMapping("/api/admin/formstatistics/shareForm")
+    public JsonResult shareForm(@RequestBody @Validated FormDetailParam param) {
+        return success(shop().formService.shareForm(param));
+    }
+
+    /**
      * 反馈列表
      *
      * @param param 默认必要条件pageId和shopId，可选条件时间和昵称
@@ -122,11 +101,22 @@ public class AdminFormStatisticsController extends AdminBaseController {
     }
 
     /**
-     * 分享,获取小程序二维码
+     * 表单反馈列表导出
+     *
+     * @param param 筛选条件
      */
-    @PostMapping("/api/admin/formstatistics/shareForm")
-    public JsonResult shareForm(@RequestBody @Validated FormDetailParam param) {
-        return success(shop().formService.shareForm(param));
+    @PostMapping("/api/admin/formstatistics/export2Excel")
+    public void export2Excel(@RequestBody FormFeedParam param, HttpServletResponse response) {
+        try {
+            Workbook workbook = shop().formService.exportFeedBack(param);
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            String fileName = "表单反馈" + System.currentTimeMillis() + ".xlsx";
+            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+            response.setLocale(Locale.ENGLISH);
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

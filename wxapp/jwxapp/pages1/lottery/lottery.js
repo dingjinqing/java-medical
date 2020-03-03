@@ -43,7 +43,8 @@ global.wxPage({
     btnstatus: 1, // 按钮状态 1立即抽奖，2去分享，3消耗积分抽奖，4抽奖次数用光啦
     prizeInfo: null, // 奖品信息
     hasClick: false,
-    canTime: 0 // 抽奖次数
+    canTime: 0, // 抽奖次数
+    getsq: false
   },
 
   /**
@@ -54,11 +55,26 @@ global.wxPage({
     let that = this
     let lotteryId = options.lotteryId
     let lotterySource = options.lotterySource || 3
+    // 处理扫码进入的情况
     if (options.scene) {
       let scene = decodeURIComponent(options.scene).split('&')
       console.log(scene)
       lotteryId = scene[0].split('=')[1]
       lotterySource = scene[1] ? scene[1].split('=')[1] : 3
+    }
+    // 处理新用户登录的情况
+    var user_name = util.getCache('nickName');
+    var user_avatar = util.getCache('avatarUrl');
+    if (!user_name || user_name == '用户' + parseInt(util.getCache('user_id') + 10000)
+      || user_name == util.getCache('openid') || !user_avatar
+      || user_avatar.indexOf('image/admin/head_icon.png') > -1) {
+      that.setData({
+        getsq: false
+      })
+    } else {
+      that.setData({
+        getsq: true
+      })
     }
     this.setData({
       lotteryId: lotteryId,
@@ -164,7 +180,7 @@ global.wxPage({
       btnstatus = 1
     } else if (Number(lotteryInfo.canShare) === 1 && raffleInfo.shareMaximum > raffleInfo.shareTime && canShareTime === 0) {
       btnstatus = 2
-    } else if (Number(lotteryInfo.canUseScore) === 1 && raffleInfo.scoreMaximum > raffleInfo.usedScoreTime) {
+    } else if (Number(lotteryInfo.canUseScore) === 1 && (raffleInfo.scoreMaximum > raffleInfo.usedScoreTime || raffleInfo.scoreMaximum === null)) {
       btnstatus = 3
     } else {
       btnstatus = 4
@@ -173,6 +189,54 @@ global.wxPage({
       btnstatus: btnstatus,
       canTime: canTime
     })
+  },
+
+  // 获取用户信息后
+  getUserInfo (e) {
+    var that = this;
+    if (util.getUserInfoCommon) {
+      util.getUserInfoCommon(e, function (userInfo) {
+        if (userInfo) {
+          console.log(userInfo)
+          that.setData({
+            islogin: true
+          })
+        }
+      });
+    } else {
+      var canIUse = wx.canIUse('button.open-type.getUserInfo');
+      if (e.detail.userInfo) {
+        if (canIUse) {
+          var user_avatar = e.detail.userInfo.avatarUrl;
+          var user_name = e.detail.userInfo.nickName;
+          util.setCache("nickName", user_name);
+          util.setCache("avatarUrl", user_avatar);
+          util.api('/api/wxapp/account/updateUser', function (res) {
+          }, {
+            username: user_name,
+            user_avatar: user_avatar
+          });
+        } else {
+          wx.getUserInfo({
+            success: res => {
+              var user_avatar = e.detail.userInfo.avatarUrl;
+              var user_name = e.detail.userInfo.nickName;
+              util.setCache("nickName", user_name);
+              util.setCache("avatarUrl", user_avatar);
+              util.api('/api/wxapp/account/updateUser', function (res) {
+              }, {
+                username: user_name,
+                user_avatar: user_avatar
+              });
+            }
+          })
+        }
+        that.setData({
+          islogin: true
+        })
+      }
+    }
+    that.drawNow()
   },
 
   // 调用抽奖接口

@@ -212,8 +212,7 @@ public class WxAppOrderController extends WxAppBaseController{
     @PostMapping("/pay/instead/detail")
     public JsonResult insteadDetail(@RequestBody @Valid InsteadPayDetailsParam param){
         try {
-            shop().readOrder.InsteadPayInfo(param);
-            return success();
+            return success(shop().readOrder.InsteadPayInfo(param));
         } catch (MpException e) {
             return fail(e.getErrorCode(), e.getCodeParam());
         }
@@ -226,11 +225,10 @@ public class WxAppOrderController extends WxAppBaseController{
     public JsonResult insteadPay(@RequestBody @Valid OrderOperateQueryParam param){
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
-        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult == null || executeResult.isSuccess()) {
-            return success(executeResult == null ? null : executeResult.getResult());
-        }else {
-            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+        try {
+            return success(shop().orderActionFactory.orderQuery(param));
+        } catch (MpException e) {
+            return fail(e.getErrorCode(), e.getCodeParam());
         }
     }
 

@@ -17,13 +17,16 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
@@ -41,6 +44,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Service
 public class FriendPromoteService extends ShopBaseService {
+    @Autowired ImageService imageService;
 	private static FriendPromoteActivity fpa = FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY.as("fpa");
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
@@ -607,16 +611,25 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setShareCreateTimes(record.getShareCreateTimes());
         //设置结束时间
         promoteInfo.setEndTime(record.getEndTime());
+        //设置所需助力总值
+        promoteInfo.setPromoteAmount(record.getPromoteAmount());
+        //设置助力类型 0平均 1随机
+        promoteInfo.setPromoteType(record.getPromoteType());
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
-            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
+            if (goodsInfo==null){
+                goodsInfo = new GoodsInfo();
+            }
+            goodsInfo.setMarketPrice(record.getRewardType()==ZERO?rewardContent.getMarketPrice():BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
             //检查活动库存是否发完
             promoteInfo.setMarketStore(promoteInfo.getMarketStore()>promoteInfo.getHasLaunchNum()?promoteInfo.getMarketStore()-promoteInfo.getHasLaunchNum():0);
             //商品库存与活动库存比较 重新设置活动库存
-            promoteInfo.setMarketStore(goodsInfo.getGoodsStore()>promoteInfo.getMarketStore()?promoteInfo.getMarketStore():goodsInfo.getGoodsStore());
+            if (goodsInfo.getGoodsStore()!=null){
+                promoteInfo.setMarketStore(goodsInfo.getGoodsStore()>promoteInfo.getMarketStore()?promoteInfo.getMarketStore():goodsInfo.getGoodsStore());
+            }
         }
         //判断奖励类型-为赠送优惠券时
         else if (record.getRewardType()==TWO){
@@ -662,6 +675,9 @@ public class FriendPromoteService extends ShopBaseService {
             .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchOneInto(GoodsInfo.class);
+        //图片地址添加域名
+        String goodsImg = imageService.getImgFullUrl(goodsInfo.getGoodsImg());
+        goodsInfo.setGoodsImg(goodsImg);
         return goodsInfo;
     }
 
@@ -725,6 +741,7 @@ public class FriendPromoteService extends ShopBaseService {
                 .from(FRIEND_PROMOTE_LAUNCH)
                 .where(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
                 .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
+                .orderBy(FRIEND_PROMOTE_LAUNCH.ID.desc())
                 .fetchOneInto(FriendPromoteLaunchRecord.class);
         }
         return record;
@@ -1104,7 +1121,7 @@ public class FriendPromoteService extends ShopBaseService {
                 couponInfo.setMarketStore(item.getFpRewardContent().getMarketStore()>receiveNum?item.getFpRewardContent().getMarketStore()-receiveNum:0);
                 item.setCouponInfo(couponInfo);
             }else{
-                GoodsInfo goodsInfo = getGoodsInfo(item.getFpRewardContent().getRewardIds());
+                GoodsInfo goodsInfo = getGoodsInfo(item.getFpRewardContent().getGoodsIds());
                 goodsInfo.setMarketPrice(item.getRewardType()==ONE?item.getFpRewardContent().getMarketPrice():BigDecimal.ZERO);
                 goodsInfo.setMarketStore(item.getFpRewardContent().getMarketStore());
                 //设置库存
@@ -1114,5 +1131,51 @@ public class FriendPromoteService extends ShopBaseService {
             }
         }
         return promoteActList;
+    }
+
+    /**
+     * 小程序-发起好友助力
+     *
+     */
+    public LaunchVo friendPromoteLaunch(PromoteParam param){
+        LaunchVo launchVo = new LaunchVo();
+        PromoteInfo  promoteInfo = getPromoteInfo(param.getActCode());
+        //最新一次的发起的好友助力
+        FriendPromoteLaunchRecord launchInfo = getLaunchInfo(null,param.getUserId(),promoteInfo.getId());
+        //助力进度：-1未发起，0助力中，1助力完成待领取，2助力完成已领取,3助力未领取失效，4助力未完成失败，5取消订单未领取
+        promoteInfo.setPromoteStatus(launchInfo!=null?launchInfo.getPromoteStatus():-1);
+        //是否可以再次发起好友助力
+        CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
+        promoteInfo.setCanLaunch(canLaunch.getCode());
+        if (canLaunch.getCode().equals(NumberUtils.BYTE_ZERO)){
+            //返回失败信息
+            launchVo.setMsg(canLaunch.getMsg());
+            return launchVo;
+        }
+        //发起入库
+        Integer effectRows = promoteLaunch(param.getUserId(),promoteInfo.getId());
+        if (effectRows==0){
+            launchVo.setMsg("入库失败");
+            return launchVo;
+        }
+        Integer launchId = db().lastID().intValue();
+        launchVo.setMsg("发起成功");
+        launchVo.setActCode(param.getActCode());
+        launchVo.setLaunchUserId(param.getUserId());
+        launchVo.setLaunchId(launchId);
+        return launchVo;
+    }
+
+    /**
+     * 发起助力活动入库
+     * @param userId 用户id
+     * @param promoteId 助力活动id
+     * @return 受影响的行数
+     */
+    public Integer promoteLaunch(Integer userId,Integer promoteId){
+        Integer effectRows = db().insertInto(FRIEND_PROMOTE_LAUNCH,FRIEND_PROMOTE_LAUNCH.USER_ID,FRIEND_PROMOTE_LAUNCH.PROMOTE_ID,FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME)
+            .values(userId,promoteId,DateUtil.getSqlTimestamp())
+            .execute();
+        return effectRows;
     }
 }

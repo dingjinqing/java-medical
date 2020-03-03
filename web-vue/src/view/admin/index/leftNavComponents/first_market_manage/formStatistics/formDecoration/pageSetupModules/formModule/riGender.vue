@@ -39,21 +39,11 @@
         </div>
       </div>
     </div>
-    <!--选择图片弹窗-->
-    <ImageDalog
-      pageIndex="pictureSpace"
-      :tuneUp="imageTuneUp"
-      :imageSize="[36,36]"
-      @handleSelectImg="handleSelectImg"
-    />
   </div>
 </template>
 <script>
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
-  components: {
-    ImageDalog: () => import('@/components/admin/imageDalog') // 选择图片弹窗
-  },
   mixins: [decMixins],
   props: {
     modulesData: Object, // 模块公共
@@ -63,9 +53,8 @@ export default {
     return {
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
-        'form_title': '姓名',
-        'image_type': 0,
-        'name_url': '',
+        'form_title': '性别',
+        'show_types': 0,
         'confirm': 0,
         'ok_ajax': 0
       } // 模块保存数据
@@ -92,15 +81,6 @@ export default {
     }
   },
   methods: {
-    // 选择弹窗调起
-    handleToImageDialog () {
-      this.imageTuneUp = !this.imageTuneUp
-    },
-    // 选择图片弹窗选中数据回传
-    handleSelectImg (res) {
-      console.log(res)
-      this.modulesSaveData.name_url = res.imgUrl
-    },
     // 点击确定按钮
     handleToClickSure () {
       this.modulesSaveData.ok_ajax = 1

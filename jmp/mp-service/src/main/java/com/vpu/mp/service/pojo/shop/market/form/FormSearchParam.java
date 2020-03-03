@@ -7,7 +7,6 @@ import java.sql.Date;
 /**
  * @author liufei
  * @date 2019/8/7
- * @description
  */
 @Data
 public class FormSearchParam {

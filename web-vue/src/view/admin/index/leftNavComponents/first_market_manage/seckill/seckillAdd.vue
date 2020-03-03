@@ -23,32 +23,6 @@
           </el-col>
         </el-form-item>
         <el-form-item
-          :label="$t('seckill.goodsName') + '：'"
-          prop="goodsId"
-        >
-          <el-input
-            :disabled="true"
-            v-model="goodsRow.goodsName"
-            v-if="goodsRow.ischecked"
-            size="small"
-            style="width: 170px;"
-          ></el-input>
-          <el-input
-            :disabled="true"
-            v-if="false"
-            v-model="form.goodsId"
-            size="small"
-            style="width: 170px;"
-          ></el-input>
-
-          <el-button
-            :disabled="this.isEdite"
-            class="el-icon-plus"
-            size="small"
-            @click="showChoosingGoods"
-          >{{ $t('seckill.select') }}</el-button>
-        </el-form-item>
-        <el-form-item
           :label="$t('seckill.validDate') + '：'"
           prop="validity"
         >
@@ -64,6 +38,18 @@
             size="small"
           >
           </el-date-picker>
+        </el-form-item>
+        <el-form-item
+          :label="'优先级' + '：'"
+          prop="first"
+        >
+           <el-input-number
+            :disabled="this.isEdite"
+            v-model="form.first"
+            controls-position="right"
+            :min="1"
+            size="small"
+          ></el-input-number>
         </el-form-item>
         <el-form-item
           :label="$t('seckill.limitNum') + '：'"
@@ -93,6 +79,17 @@
           <p style="color: #999;">{{ $t('seckill.langTip') }}</p>
         </el-form-item>
         <el-form-item
+          :label="$t('seckill.goodsName') + '：'"
+          prop="goodsId"
+        >
+          <el-button
+            :disabled="this.isEdite"
+            class="el-icon-plus"
+            size="small"
+            @click="showChoosingGoods"
+          >{{ $t('seckill.select') }}</el-button>
+        </el-form-item>
+        <el-form-item
           :label="$t('seckill.seckillPrice') + '：'"
           prop="secKillProduct"
         >
@@ -104,79 +101,65 @@
             style="width: 100%"
           >
             <el-table-column
-              :label="$t('seckill.specifications')"
-              prop="prdDesc"
+              :label="$t('seckill.goodsName')"
+              prop="goodsName"
               align="center"
             >
             </el-table-column>
             <el-table-column
               :label="$t('seckill.shopPrice')"
-              prop="prdPrice"
+              prop="shopPrice"
               align="center"
             ></el-table-column>
             <el-table-column
               :label="$t('seckill.prdPrice')"
               align="center"
             >
-              <template slot="append">
-                <span>{{$t('groupBuy.groupBuyPrice')}}</span>
-                <el-button
-                  @click="setCurrent(1)"
-                  size="small"
-                  icon="el-icon-edit"
-                >{{$t('groupBuy.batchOption')}}
-                </el-button>
-              </template>
               <template slot-scope="scope">
                 <el-form-item
-                  :prop="'secKillProduct.' +  scope.$index+ '.secKillPrice'"
+                  :prop="'secKillProduct.' + scope.$index+ '.secKillPrice'"
                   :rules="[
                     { required: true, message: '秒杀价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
                   ]"
-                  style="height: 56px;line-height: 56px;"
                 >
+                <div class="input-error" v-if="scope.row.priceErrorMsg">{{scope.row.priceErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.secKillPrice"
                     size="small"
                     :disabled="isEdite || disabledFlag"
+                    @input="changePriceInput(scope.row)"
                   />
                 </el-form-item>
+                <div class="spec-tips" @click="showSpec(scope.row)" v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0">包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
             <el-table-column
               :label="$t('seckill.goodsNumber')"
-              prop="prdNumber"
+              prop="goodsNumber"
               align="center"
             ></el-table-column>
             <el-table-column
               :label="$t('seckill.prdNumber')"
               align="center"
             >
-              <template slot="append">
-                <span>{{$t('groupBuy.groupBuyStock')}}</span>
-                <el-button
-                  @click="setCurrent(2)"
-                  size="mini"
-                  icon="el-icon-edit"
-                >{{$t('groupBuy.batchOption')}}
-                </el-button>
-              </template>
               <template slot-scope="scope">
                 <el-form-item
-                  :prop="'secKillProduct.' +  scope.$index+ '.stock'"
+                  :prop="'secKillProduct.' + scope.$index+ '.stock'"
                   :rules="[
                     { required: true, message: '秒杀库存不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.prdNumber)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber)}, trigger: ['blur', 'change'] }
                   ]"
-                  style="height: 56px;line-height: 56px;"
                 >
+                  <div class="input-error" v-if="scope.row.stockErrorMsg">{{scope.row.stockErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.stock"
                     size="small"
                     :disabled="isEdite || disabledFlag"
+                    @input="changeStockInput(scope.row)"
                   />
                 </el-form-item>
+                <div class="spec-tips" @click="showSpec(scope.row)" v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0">包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
               </template>
             </el-table-column>
             <div
@@ -382,11 +365,11 @@
 
       <!--添加商品弹窗-->
       <choosingGoods
-        :singleElection="true"
+        :singleElection="false"
         :showTips="true"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
-        :chooseGoodsBack="[form.goodsId]"
-        @resultGoodsRow="choosingGoodsResult"
+        :chooseGoodsBack="form.goodsId"
+        @resultGoodsDatas="choosingGoodsResult"
       />
 
     </div>
@@ -409,6 +392,14 @@
       >{{ $t('seckill.save') }}</el-button>
     </div>
 
+    <!-- 规格信息弹框 -->
+    <seckillSpecDialog
+      :productDialog.sync="showSpecDialog"
+      :product-info="productInfo"
+      :isEdit="isEdite"
+      @confrim="getProductdata"
+    />
+
   </div>
 </template>
 <script>
@@ -418,13 +409,14 @@ import actShare from '@/components/admin/marketManage/marketActivityShareSetting
 import ImageDalog from '@/components/admin/imageDalog'
 import { getSeckillList, addSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
 import { allCardApi } from '@/api/admin/marketManage/messagePush'
-import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
-import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
+// import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
+// import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     choosingGoods,
     actShare,
-    ImageDalog
+    ImageDalog,
+    seckillSpecDialog: () => import('./seckillSpecDialog')
   },
   props: ['isEdite', 'editId'],
   data () {
@@ -457,7 +449,7 @@ export default {
       // 表单
       form: {
         name: '', // 活动名称
-        goodsId: '', // 商品id
+        goodsId: [], // 商品id
         validity: '', // 有效期
         startTime: '', // 开始时间
         endTime: '', // 结束时间
@@ -466,6 +458,7 @@ export default {
         secKillProduct: [], // 秒杀价格表格数据
         freeFreight: 0, // 运费设置
         baseSale: 0,
+        first: 1, // 活动优先级
         stock: 0, // 活动总库存
         cardId: [], // 会员卡id
         shareConfig: {
@@ -494,6 +487,9 @@ export default {
         ],
         freeFreight: [
           { required: true, message: '请填写运费设置', trigger: 'change' }
+        ],
+        first: [
+          { required: true, message: '请填写优先级', trigger: 'change' }
         ],
         cardId: [
           { validator: validateCard, trigger: 'change' }
@@ -525,8 +521,10 @@ export default {
 
       isShowChoosingGoodsDialog: false, // 商品弹窗
       // 选中商品id
-      goodsRow: {},
-      goodsIds: []
+      goodsIds: [],
+      showSpecDialog: false,
+      productInfo: {}
+
     }
   },
   mounted () {
@@ -596,24 +594,52 @@ export default {
         }
       })
     },
-
-    // 获取商品信息
-    getGoodsInfo (id) {
-      getSelectGoods({ goodsId: id }).then((res) => {
-        if (res.error === 0) {
-          this.goodsRow = res.content
-          this.goodsRow.ischecked = true
-        }
-      })
+    showSpec (goodsInfo) {
+      this.productInfo = goodsInfo
+      this.showSpecDialog = true
+      console.log(this.showSpecDialog)
     },
+    changePriceInput (goodsInfo) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.priceErrorMsg = null
+        goodsInfo.goodsSpecProducts.forEach(item => {
+          item.secKillPrice = goodsInfo.secKillPrice
+          if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
+            goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
+          }
+        })
+      }
+    },
+    changeStockInput (goodsInfo) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.stockErrorMsg = null
+        goodsInfo.totalStock = 0
+        goodsInfo.goodsSpecProducts.forEach(item => {
+          item.stock = goodsInfo.stock
+          goodsInfo.totalStock += parseInt(item.stock)
+          if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
+            goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
+          }
+        })
+      }
+    },
+
+    // // 获取商品信息
+    // getGoodsInfo (id) {
+    //   getSelectGoods({ goodsId: id }).then((res) => {
+    //     if (res.error === 0) {
+    //       this.goodsRow = res.content
+    //       this.goodsRow.ischecked = true
+    //     }
+    //   })
+    // },
 
     // 保存秒杀活动
     saveClickHandler () {
       this.$refs['form'].validate((valid) => {
+        let goodsId = this.form.goodsId.join(',')
         if (valid) {
           this.submitStatus = true
-
-          this.form.goodsId = Number(this.form.goodsId)
           // 有效期
           this.form.startTime = this.form.validity[0]
           this.form.endTime = this.form.validity[1]
@@ -630,25 +656,39 @@ export default {
             this.form.shareConfig.share_img = ''
           }
           // 总库存
-          this.form.stock = 0
           this.form.secKillProduct.forEach((item, index) => {
             item.productId = item.prdId
             item.secKillPrice = Number(item.secKillPrice)
-            item.stock = Number(item.stock)
-            this.form.stock += item.stock
           })
 
           console.log(this.form)
 
-          if (this.form.goodsId === '') {
+          if (this.form.goodsId.length === 0) {
             this.$message.warning({ message: '请选择商品!' })
             this.submitStatus = false
             return
           }
-
+          let secKillProduct = []
+          this.form.stock = 0
+          this.form.secKillProduct.forEach(item => {
+            if (item.goodsSpecProducts) {
+              item.goodsSpecProducts.forEach(specItem => {
+                let {prdId: productId, secKillPrice, stock} = specItem
+                let goodsId = item.goodsId
+                secKillProduct.push({goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock)})
+                this.form.stock += Number(stock)
+              })
+            } else {
+              let {goodsId, prdId: productId, secKillPrice, stock} = item
+              secKillProduct.push({goodsId, productId, secKillPrice, stock: Number(stock)})
+              this.form.stock += Number(stock)
+            }
+          })
+          console.log(secKillProduct)
+          debugger
           if (this.isEdite === false) {
             // 添加秒杀
-            addSeckillList(this.form).then((res) => {
+            addSeckillList({...this.form, secKillProduct, goodsId}).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: '添加成功' })
                 this.$emit('addSeckillSubmit')
@@ -684,30 +724,37 @@ export default {
 
     // 商品弹窗的回调函数
     choosingGoodsResult (row) {
-      this.goodsRow = row
-      this.form.goodsId = row.goodsId
-      if (Object.keys(row).length === 0) {
+      if (row.length === 0) {
         return
       }
-      this.initTableData()
+      console.log(row)
+      this.form.goodsId = row.map(item => { return item.goodsId })
+      // this.initTableData()
+      this.form.secKillProduct = row
       // 可编辑状态
       this.disabledFlag = false
     },
-
-    // 初始化规格表格
-    initTableData () {
-      getAllGoodsProductList(this.form.goodsId).then(res => {
-        res.content.forEach((item, index) => {
-          item.index = index
-          // 单规格名称回显
-          if (item.prdDesc === '') {
-            item.prdDesc = this.goodsRow.goodsName
-          }
-        })
-        this.form.secKillProduct = res.content
-        console.log(' this.form.secKillProduct ', this.form.secKillProduct)
-      })
+    getProductdata ({goodsId, prdInfo}) {
+      let target = this.form.secKillProduct.find(item => { return item.goodsId === goodsId })
+      target.goodsSpecProducts = prdInfo
+      this.changePriceInput(target)
+      this.changeStockInput(target)
     },
+    // // 初始化规格表格
+    // initTableData () {
+    //   // getAllGoodsProductList(this.form.goodsId).then(res => {
+    //   //   res.content.forEach((item, index) => {
+    //   //     item.index = index
+    //   //     // 单规格名称回显
+    //   //     if (item.prdDesc === '') {
+    //   //       item.prdDesc = this.goodsRow.goodsName
+    //   //     }
+    //   //   })
+    //   //   this.form.secKillProduct = res.content
+    //   //   console.log(' this.form.secKillProduct ', this.form.secKillProduct)
+    //   // })
+
+    // },
 
     // 图片弹窗
     addGoodsImg () {
@@ -762,7 +809,14 @@ export default {
         callback()
       }
     },
-
+    validatePrdPrice (item) {
+      if (item.prdPrice < item.secKillPrice) return true
+      return false
+    },
+    validatePrdStock (item) {
+      if (item.prdNumber < item.stock) return true
+      return false
+    },
     // 批量设置数据
     setCurrent (index) {
       // 拷贝一份数据
@@ -771,12 +825,15 @@ export default {
         case 1:
           price.forEach(row => {
             row.secKillPrice = price[0].secKillPrice
+            console.log(row)
+            this.changePriceInput(row)
           })
           this.activeIndex = 1
           break
         case 2:
           price.forEach(row => {
             row.stock = price[0].stock
+            this.changeStockInput(row)
           })
           this.activeIndex = 2
           break
@@ -850,11 +907,25 @@ export default {
   color: #000;
   padding: 8px 10px;
 }
+/deep/ .el-form-item__error{
+  position: relative;
+  text-align: left;
+}
 .moreSetUp a {
   margin-right: 10px;
   cursor: pointer;
 }
 .settings {
   color: #5a8bff;
+}
+.spec-tips{
+  text-align: center;
+  color: #409eff;
+  cursor: pointer;
+}
+.input-error{
+  text-align: center;
+  color: red;
+  line-height: 1;
 }
 </style>

@@ -8,14 +8,11 @@ import java.sql.Date;
 /**
  * @author liufei
  * @date 2019/8/8
- * @description
  */
 @Data
 public class FormFeedParam {
     @NotNull
     private Integer pageId;
-    @NotNull
-    private Integer shopId;
     private String nickName;
     private Date startTime;
     private Date endTime;

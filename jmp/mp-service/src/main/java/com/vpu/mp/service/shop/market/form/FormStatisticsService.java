@@ -5,9 +5,11 @@ import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
 import com.vpu.mp.db.shop.tables.records.FormSubmitListRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -19,9 +21,10 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record5;
 import org.jooq.Record6;
+import org.jooq.Record7;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +38,6 @@ import static org.jooq.impl.DSL.countDistinct;
 /**
  * @author liufei
  * @date 2019/8/7
- * @description
  */
 @Slf4j
 @Service
@@ -52,6 +54,8 @@ public class FormStatisticsService extends ShopBaseService {
      * 分享二维码页面显示图片路径
      */
     private static final String PARAM = "page_id=";
+    public static final String PLUS = "+";
+    public static final String COPY_TEXT = "副本";
 
     private static FormPage fp = FormPage.FORM_PAGE.as("fp");
     private static FormSubmitDetails fsd = FormSubmitDetails.FORM_SUBMIT_DETAILS.as("fsd");
@@ -66,11 +70,14 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 分页结果集
      */
     public PageResult<FormInfoVo> selectFormInfo(FormSearchParam param) {
-        SelectConditionStep<Record5<String, Timestamp, Integer, Byte, Byte>> conditionStep = db().select(fp.PAGE_NAME, fp.CREATE_TIME, fp.SUBMIT_NUM, fp.STATE.as("status"), fp.IS_FOREVER_VALID.as("validityPeriod")).from(fp).where();
+        SelectConditionStep<Record7<String, Timestamp, Integer, Byte, Byte, Timestamp, Timestamp>> conditionStep = db()
+            .select(fp.PAGE_NAME, fp.CREATE_TIME, fp.SUBMIT_NUM, fp.STATE.as("status")
+                , fp.IS_FOREVER_VALID.as("validityPeriod"), fp.START_TIME, fp.END_TIME)
+            .from(fp).where(DSL.trueCondition());
         if (param.getStatus() != null) {
             conditionStep = conditionStep.and(fp.STATE.eq(param.getStatus()));
         }
-        if (param.getPageName() != null && !"".equals(param.getPageName())) {
+        if (StringUtils.isNoneBlank(param.getPageName())) {
             conditionStep = conditionStep.and(fp.PAGE_NAME.like(this.likeValue(param.getPageName())));
         }
         if (param.getStartTime() != null) {
@@ -91,7 +98,11 @@ public class FormStatisticsService extends ShopBaseService {
      * @return formpage表单详细信息
      */
     public FormDetailVo getFormDetailInfo(FormDetailParam param) {
-        return db().selectFrom(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(FormDetailVo.class).orElse(new FormDetailVo());
+        return db().selectFrom(fp)
+            .where(fp.PAGE_ID.eq(param.getPageId()))
+            .fetchOptionalInto(FormDetailVo.class)
+            .orElseThrow(() -> new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST
+                , String.join(StringUtils.SPACE, "Form", param.getPageId().toString())));
     }
 
     /**
@@ -100,10 +111,9 @@ public class FormStatisticsService extends ShopBaseService {
      * @param param 表单信息
      */
     public void addFormInfo(FormAddParam param) {
-        param.setPageId(null);
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
-        //设置初始反馈数量为0
+        //设置初始反馈数量（表单实际反馈数量）为0（默认为0，0代表不限制），form_cfg中的get_times字段为总反馈数量限制
         fpRecord.setSubmitNum(0);
         db().executeInsert(fpRecord);
     }
@@ -116,9 +126,11 @@ public class FormStatisticsService extends ShopBaseService {
     public void updateFormInfo(FormUpdateParam param) {
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
-        //TODO 空字串处理，不插库
         if (db().fetchExists(fp, fp.PAGE_ID.eq(param.getPageId()))) {
             db().executeUpdate(fpRecord);
+        } else {
+            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST
+                , String.join(StringUtils.SPACE, "Form", param.getPageId().toString()));
         }
     }
 
@@ -133,7 +145,7 @@ public class FormStatisticsService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FORM, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.FORM.getPathUrl(pathParam));
         return vo;
 
     }
@@ -154,6 +166,7 @@ public class FormStatisticsService extends ShopBaseService {
     public FormCopyVo copyForm(FormDetailParam param) {
         FormCopyVo vo = new FormCopyVo();
         FieldsUtil.assignNotNull(getFormDetailInfo(param),vo);
+        vo.setPageName(String.join(PLUS, vo.getPageName(), COPY_TEXT));
         return vo;
 
     }
@@ -169,8 +182,11 @@ public class FormStatisticsService extends ShopBaseService {
     }
 
     private SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> getFeedBackStep(FormFeedParam param) {
-        SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> conditionStep = db().select(fsl.SUBMIT_ID, fsl.PAGE_ID, fsl.USER_ID, fsl.NICK_NAME, fsl.CREATE_TIME, u.MOBILE).from(fsl).leftJoin(u).on(fsl.USER_ID.eq(u.USER_ID)).where(fsl.PAGE_ID.eq(param.getPageId())).and(fsl.SHOP_ID.eq(param.getShopId()));
-        if (param.getNickName() != null && !"".equals(param.getNickName())) {
+        SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> conditionStep = db()
+            .select(fsl.SUBMIT_ID, fsl.PAGE_ID, fsl.USER_ID, fsl.NICK_NAME, fsl.CREATE_TIME, u.MOBILE)
+            .from(fsl).leftJoin(u).on(fsl.USER_ID.eq(u.USER_ID))
+            .where(fsl.PAGE_ID.eq(param.getPageId()));
+        if (StringUtils.isNoneBlank(param.getNickName())) {
             conditionStep = conditionStep.and(fsl.NICK_NAME.like(param.getNickName()));
         }
         if (param.getStartTime() != null) {
