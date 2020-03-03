@@ -109,10 +109,9 @@ public class FormStatisticsService extends ShopBaseService {
      * @param param 表单信息
      */
     public void addFormInfo(FormAddParam param) {
-        param.setPageId(null);
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
-        //设置初始反馈数量为0
+        //设置初始反馈数量（表单实际反馈数量）为0（默认为0，0代表不限制），form_cfg中的get_times字段为总反馈数量限制
         fpRecord.setSubmitNum(0);
         db().executeInsert(fpRecord);
     }
@@ -125,9 +124,11 @@ public class FormStatisticsService extends ShopBaseService {
     public void updateFormInfo(FormUpdateParam param) {
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
-        //TODO 空字串处理，不插库
         if (db().fetchExists(fp, fp.PAGE_ID.eq(param.getPageId()))) {
             db().executeUpdate(fpRecord);
+        } else {
+            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST
+                , String.join(StringUtils.SPACE, "Form", param.getPageId().toString()));
         }
     }
 
