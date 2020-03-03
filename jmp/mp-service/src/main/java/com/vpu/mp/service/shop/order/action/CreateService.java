@@ -358,7 +358,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //门店
             store(param.getStoreId() == null ? null : store.getStore(param.getStoreId())).
             //支付方式
-            payment(param.getOrderPayWay() == null ? null : payment.getPaymentInfo(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])).
+            payment(param.getOrderPayWay() == null || Byte.valueOf(OrderConstant.PAY_WAY_FRIEND_PAYMENT).equals(param.getOrderPayWay()) ? null : payment.getPaymentInfo(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])).
             //发票
             invoice(param.getInvoiceId() == null ? null : invoice.get(param.getInvoiceId())).
             //TODO 自提时间
