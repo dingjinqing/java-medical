@@ -1,97 +1,107 @@
 <!--pages1/promoteinfo/promoteinfo.wxml-->
 <include src="/pages/common/header.wxml" />
 <view class='main-container'>
-   <view class='top_area' style='height:{{promote_info.reward_type != 2?"735rpx":"815rpx"}}'>
+   <view class='top_area' style='height:{{promote_info.rewardType != 2?"735rpx":"815rpx"}}'>
+      <!-- 背景图 -->
       <view class='top_bg' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
       <view class='one_tip'>好友帮忙助力得奖品</view>
+      <!-- 奖品信息 -->
       <view class='top_info'>
-          <image src='{{imageUrl}}image/wxapp/promote_icon8.png' class='act_biaozhi' wx:if='{{promote_info.promote_status == 1 || promote_info.promote_status == 2}}'></image>
-          <image src='{{imageUrl}}image/wxapp/promote_icon7.png' class='act_biaozhi' wx:if='{{promote_info.promote_status == 3 || promote_info.promote_status == 4}}'></image>
-          <view class='goods_area clearfix' wx:if='{{promote_info.reward_type != 2}}' bindtap='to_goods' data-goods_id="{{promote_info.goods_info.goods_id}}">
-              <view class='goods_img'><image src='{{promote_info.goods_info.goods_img}}'></image></view>
+          <!-- 已完成logo -->
+          <image src='{{imageUrl}}image/wxapp/promote_icon8.png' class='act_biaozhi' wx:if='{{promote_info.promoteStatus == 1 || promote_info.promoteStatus == 2}}'></image>
+          <!-- 已结束logo -->
+          <image src='{{imageUrl}}image/wxapp/promote_icon7.png' class='act_biaozhi' wx:if='{{promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4}}'></image>
+          <!-- 赠送商品 / 折扣商品 -->
+          <view class='goods_area clearfix' wx:if='{{promote_info.rewardType != 2}}' bindtap='to_goods' data-goods_id="{{promote_info.goodsInfo.goodsId}}">
+              <view class='goods_img'><image src='{{promote_info.goodsInfo.goodsImg}}'></image></view>
               <view class='goods_right'>
-                  <view class='goods_name'>{{promote_info.goods_info.goods_name}}</view>
-                  <view class='price_info' wx:if='{{promote_info.reward_type == 0}}'>
-                      <text style='color:{{comColor}}' class='zi'>免费拿</text> 仅剩{{promote_info.market_store}}件，抢完即止
+                  <view class='goods_name'>{{promote_info.goodsInfo.goodsName}}</view>
+                  <view class='price_info' wx:if='{{promote_info.rewardType == 0}}'>
+                      <text style='color:{{comColor}}' class='zi'>免费拿</text> 仅剩{{promote_info.marketStore}}件，抢完即止
                   </view>
-                  <view class='price_info' wx:if='{{promote_info.reward_type == 1}}'>
-                      <text style='color:{{comColor}}'>￥<text class='zi' style='color:{{comColor}}'>{{promote_info.goods_info.market_price}}</text></text> 仅剩{{promote_info.market_store}}件，抢完即止
+                  <view class='price_info' wx:if='{{promote_info.rewardType == 1}}'>
+                      <text style='color:{{comColor}}'>￥<text class='zi' style='color:{{comColor}}'>{{promote_info.goodsInfo.marketPrice}}</text></text> 仅剩{{promote_info.marketStore}}件，抢完即止
                   </view>
               </view>
           </view>
-          <view class='goods_area coupon_area' wx:if='{{promote_info.reward_type == 2}}'>
+          <!-- 赠送优惠券 -->
+          <view class='goods_area coupon_area' wx:if='{{promote_info.rewardType == 2}}'>
               <view class='ca_top' style='color:{{comColor}}'>
-                <block wx:if='{{promote_info.coupon_info.act_code != "discount" }}'>￥<text>{{promote_info.coupon_info.denomination}}</text></block>
-                <block wx:if='{{promote_info.coupon_info.act_code == "discount" }}'><text>{{promote_info.coupon_info.denomination}}</text>折</block>
+                <block wx:if='{{promote_info.couponInfo.actCode != "discount" }}'>￥<text>{{promote_info.couponInfo.denomination}}</text></block>
+                <block wx:if='{{promote_info.coupon_info.actCode == "discount" }}'><text>{{promote_info.couponInfo.denomination}}</text>折</block>
                优惠券
               </view>
-              <view class='ca_center'>仅剩{{promote_info.market_store}}张，抢完为止</view>
+              <view class='ca_center'>仅剩{{promote_info.marketStore}}张，抢完为止</view>
               <view class='ca_bottom' bindtap='to_cou_search' style='color:{{comColor}};background:{{somColor}}'>
                 查看适用商品 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
               </view>
           </view>
+          <!-- 助力进度 -->
           <view class='promote_progress'>
               <view class='pro_top'>
                   <view class='pro_left'>助力值</view>
-                  <view class='pro_right' style='color:#999' wx:if='{{promote_info.promote_type == 0}}'>好友帮忙助力{{promote_info.promote_times}}次即可获得奖励</view>
+                  <view class='pro_right' style='color:#999' wx:if='{{promote_info.promoteType == 0}}'>好友帮忙助力{{promote_info.promoteTimes}}次即可获得奖励</view>
               </view>
               <view class='pro_center'>
                   <view class='promoted_area' style='width:{{launched_width}}rpx;;background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
               </view>
               <view class='pro_bottom clearfix'>
                 <view wx:if='{{is_promote_value == 0 || promote_info.hasPromoteTimes == 0}}'>0</view>
-                <block wx:if='{{promote_info.promote_type == 1}}'>
-                  <view class='random_num' style='color:{{comColor}};left:{{launched_width-20}}rpx;' wx:if='{{is_promote_value != 0 && is_promote_value != promote_info.promote_amount}}'>{{is_promote_value}}</view>
-                  <view style='color:{{is_promote_value == promote_info.promote_amount?comColor:""}}'>{{promote_info.promote_amount}}</view>
+                <block wx:if='{{promote_info.promoteType == 1}}'>
+                  <view class='random_num' style='color:{{comColor}};left:{{launched_width-20}}rpx;' wx:if='{{is_promote_value != 0 && is_promote_value != promote_info.promoteAmount}}'>{{is_promote_value}}</view>
+                  <view style='color:{{is_promote_value == promote_info.promoteAmount?comColor:""}}'>{{promote_info.promoteAmount}}</view>
                 </block>
-                <block wx:if='{{promote_info.promote_type == 0}}'>
-                   <view class='random_num' style='color:{{comColor}};left:{{launched_width-20}}rpx;' wx:if='{{promote_info.hasPromoteTimes!=0 && promote_info.hasPromoteTimes != promote_info.promote_times}}'>{{promote_info.hasPromoteTimes}}</view>
-                   <view style='color:{{promote_info.hasPromoteTimes == promote_info.promote_times?comColor:""}}'>{{promote_info.promote_times}}</view>
+                <block wx:if='{{promote_info.promoteType == 0}}'>
+                   <view class='random_num' style='color:{{comColor}};left:{{launched_width-20}}rpx;' wx:if='{{promote_info.hasPromoteTimes!=0 && promote_info.hasPromoteTimes != promote_info.promoteTimes}}'>{{promote_info.hasPromoteTimes}}</view>
+                   <view style='color:{{promote_info.hasPromoteTimes == promote_info.promoteTimes?comColor:""}}'>{{promote_info.promoteTimes}}</view>
                 </block>
               </view>
           </view>
+          <!-- 助力按钮 -->
           <view class='time_daojishi'>
-            <block wx:if='{{promote_info.promote_status == 0}}'>距结束仅剩 <text style='color:{{comColor}}' >{{clock}}</text></block>
-            <block wx:if='{{promote_info.promote_status == 1 && promote_info.launchFlag == 1 && (promote_info.reward_type == 1 || promote_info.reward_type == 0)}}'>请在 <text style='color:{{comColor}}' >{{clock}}</text> 内领取，逾期未领取将失效</block>
-            <block wx:if='{{promote_info.promote_status == 2 && promote_info.launchFlag == 1 && (promote_info.reward_type == 1 || promote_info.reward_type == 0)}}'>已领取，请在订单中查看</block>
+            <block wx:if='{{promote_info.promoteStatus == 0}}'>距结束仅剩 <text style='color:{{comColor}}' >{{clock}}</text></block>
+            <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>请在 <text style='color:{{comColor}}' >{{clock}}</text> 内领取，逾期未领取将失效</block>
+            <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>已领取，请在订单中查看</block>
 
-            <block wx:if='{{promote_info.promote_status == 2 && promote_info.launchFlag == 1 && promote_info.reward_type == 2}}'> <view bindtap='to_coupon'>奖励已经放入您的优惠券包，去看看 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' style='width:15rpx;'></image> </view>  </block>
+            <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'> <view bindtap='to_coupon'>奖励已经放入您的优惠券包，去看看 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' style='width:15rpx;'></image> </view>  </block>
           </view>
           <form report-submit='true' bindsubmit='shareGoods'>
-            <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promote_status == -1 && promote_info.launchFlag == 1}}'>发起助力</button>
+            <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promoteStatus == -1 && promote_info.launchFlag == 1}}'>发起助力</button>
           </form>
           <form report-submit='true' bindsubmit='shareGoods'>
-            <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promote_status == 0 && promote_info.launchFlag == 1}}'>邀请好友帮忙助力</button>
+            <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 1}}'>邀请好友帮忙助力</button>
           </form>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_checkout' wx:if='{{promote_info.promote_status == 1 && promote_info.launchFlag == 1}}'>立即领取</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_order' wx:if='{{promote_info.promote_status == 2 && promote_info.launchFlag == 1 && (promote_info.reward_type == 1||promote_info.reward_type == 0)}}'>查看订单</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{(promote_info.promote_status == 3 || promote_info.promote_status == 4) && promote_info.launchFlag == 1}}'>去逛逛</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promote_status == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote == 1}}'>助力好友得奖品</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promote_status == 0  && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote == 0}}'>我也要发起助力</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_checkout' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1}}'>立即领取</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_order' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1||promote_info.rewardType == 0)}}'>查看订单</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{(promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4) && promote_info.launchFlag == 1}}'>去逛逛</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote == 1}}'>助力好友得奖品</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 0  && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote == 0}}'>我也要发起助力</button>
           <!-- <button class='btn_launch' data-showquan = "showquan"  wx:if='{{is_userinfos==0&&promote_info.promote_status == 0 && promote_info.launchFlag == 2&&is_shares==0}}' open-type='getUserInfo' bindgetuserinfo="getUserInfo" style='background:{{comColor}}'>授权再得一次助力机会</button> -->
-          <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promote_status == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>分享再得一次助力机会</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promote_status == 1 && promote_info.launchFlag == 2 & is_shares == 0&&promote_info.canPromote == 0}}'>我也要发起助力</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promote_status ==2 && promote_info.launchFlag == 2}}'>我也要发起助力</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promote_status == 2 && promote_info.launchFlag == 1 && promote_info.reward_type == 2}}'>去使用</button>
+          <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>分享再得一次助力机会</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 & is_shares == 0&&promote_info.canPromote == 0}}'>我也要发起助力</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus ==2 && promote_info.launchFlag == 2}}'>我也要发起助力</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'>去使用</button>
       </view>
    </view>
-   <view class='promote_list' wx:if='{{promote_info.promote_detail_list && promote_info.promote_detail_list!=""}}'>
+   <!-- 助力列表 -->
+   <view class='promote_list' wx:if='{{promote_info.promoteDetailList && promote_info.promoteDetailList!=""}}'>
       <view class='list_top'>
           <view class='lt_title'>好友助力</view>
-          <view class='to_list' style='color:{{comColor}}' bindtap='to_list' wx:if='{{promote_info.promote_detail_list.length>=10}}'>
+          <view class='to_list' style='color:{{comColor}}' bindtap='to_list' wx:if='{{promote_info.promoteDetailList.length>=10}}'>
               查看全部 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
           </view>
       </view>
       <view class='frind_list'>
-          <view class='each_col' wx:for='{{promote_info.promote_detail_list}}' wx:key='key'>
+          <view class='each_col' wx:for='{{promote_info.promoteDetailList}}' wx:key='key'>
             <view class='col_left'>
-                <view class='user_img'><image src='{{item.user_avatar}}'></image></view>
+                <view class='user_img'><image src='{{item.userAvatar}}'></image></view>
                 <view class='user_name'>{{item.username}}</view>
             </view>
-            <view class='col_right' style='color:{{comColor}}'>{{item.promote_value}}</view>
+            <view class='col_right' style='color:{{comColor}}'>{{item.promoteValue}}</view>
           </view>
       </view>
    </view>
+   <!-- 好友助力玩法 -->
    <view class='act_notices'>
        <view class='an_top' bindtap='toRule'>
           <view class='at_left'>好友助力玩法</view>
@@ -123,43 +133,44 @@
        <view class='effect_tips' style='margin-bottom:20rpx;'>助力有效期：发起活动后24小时</view>
        <view class='effect_tips'>领取提示：中奖后指定领取时间内未领取奖品将失效</view>
   </view>
-  <view class='more_active' wx:if='{{promote_info.promote_act_list && promote_info.promote_act_list!=""}}'>
+  <!-- 更多助力活动 -->
+  <view class='more_active' wx:if='{{promote_info.promoteActList && promote_info.promoteActList!=""}}'>
     <view class='reco_title'>
       <image src='{{imageUrl}}/image/wxapp/re_l.png' mode='widthFix'></image>
       <text>更多助力活动</text>
       <image src='{{imageUrl}}/image/wxapp/re_r.png' mode='widthFix'></image>
     </view>
      <view class='act_goods_area clearfix'>
-        <view class='each_item' wx:for='{{promote_info.promote_act_list}}' wx:key='key' wx:if='{{item.reward_type != 2}}' bindtap='to_other_act' data-actcode='{{item.act_code}}'>
-            <view class='ei_img'><image src='{{item.goods_info.goods_img}}'></image></view>
-            <view class='ei_name'>{{item.goods_info.goods_name}}</view>
+        <view class='each_item' wx:for='{{promote_info.promoteActList}}' wx:key='key' wx:if='{{item.rewardType != 2}}' bindtap='to_other_act' data-actcode='{{item.actCode}}'>
+            <view class='ei_img'><image src='{{item.goodsInfo.goodsImg}}'></image></view>
+            <view class='ei_name'>{{item.goodsInfo.goodsName}}</view>
             <view class='ei_bottom'>
-              <view class='price_sale' style='color:{{comColor}}'>￥<text>{{item.goods_info.market_price}}</text></view>
-              <view class='price_market'>￥{{item.goods_info.goods_price}}</view>
+              <view class='price_sale' style='color:{{comColor}}'>￥<text>{{item.goodsInfo.marketPrice}}</text></view>
+              <view class='price_market'>￥{{item.goodsInfo.goodsPrice}}</view>
             </view>
-            <button class='ei_btn' style='background:{{comColor}}' wx:if='{{item.act_status == 1}}'>马上抢</button> 
-            <button class='ei_btn other_color' wx:if='{{item.act_status == 0}}'>{{item.start_time_str}}开始</button>
+            <button class='ei_btn' style='background:{{comColor}}' wx:if='{{item.actStatus == 1}}'>马上抢</button> 
+            <button class='ei_btn other_color' wx:if='{{item.actStatus == 0}}'>{{item.startTime}}开始</button>
         </view>
      </view>
      <view class='act_coupon_area'>
-        <view class='each_coupon clearfix' style='border-color:{{borColor}}' wx:for='{{promote_info.promote_act_list}}' wx:key='key' wx:if='{{item.reward_type == 2}}' bindtap='to_other_act' data-actcode='{{item.act_code}}'>
+        <view class='each_coupon clearfix' style='border-color:{{borColor}}' wx:for='{{promote_info.promoteActList}}' wx:key='key' wx:if='{{item.rewardType == 2}}' bindtap='to_other_act' data-actcode='{{item.actCode}}'>
             <view class='cou_left'>
               <view class='cou_money' style='color:{{comColor}}'>
-                <block wx:if='{{item.coupon_info.act_code != "discount" }}'>￥<text>{{item.coupon_info.denomination}}</text></block>
-                <block wx:if='{{item.coupon_info.act_code == "discount" }}'><text>{{item.coupon_info.denomination}}</text>折</block>
+                <block wx:if='{{item.couponInfo.actcCode != "discount" }}'>￥<text>{{item.couponInfo.denomination}}</text></block>
+                <block wx:if='{{item.couponInfo.actcCode == "discount" }}'><text>{{item.couponInfo.denomination}}</text>折</block>
               </view>
               <view class='cou_rule'>
                   <view class='cou_limit'style='color:{{comColor}}'>
-                      <block wx:if='{{item.least_consume == null}}'>无门槛</block>
-                      <block wx:if='{{item.least_consume != null}}'>满{{item.coupon_info.least_consume}}元可用</block>
+                      <block wx:if='{{item.leastConsume == null}}'>无门槛</block>
+                      <block wx:if='{{item.leastConsume != null}}'>满{{item.couponInfo.leastConsume}}元可用</block>
                   </view>
-                  <view class='cou_num' style='color:{{linColor}}'>剩余{{item.coupon_info.market_store}}张</view>
+                  <view class='cou_num' style='color:{{linColor}}'>剩余{{item.couponInfo.marketStore}}张</view>
               </view>
             </view>
             <view class='cou_right'>
               <view class='cou_xian'><image src='{{imageUrl}}image/wxapp/new_cou_bg.png'></image></view>
-              <view class='cou_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{item.act_status == 1}}'>马上抢</view>
-              <view class='cou_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{item.act_status == 0}}'>{{item.start_time_str}}开始</view>
+              <view class='cou_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{item.actStatus == 1}}'>马上抢</view>
+              <view class='cou_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{item.actStatus == 0}}'>{{item.startTime}}开始</view>
             </view>
         </view>
      </view>
@@ -202,6 +213,7 @@
   </view>
 
   <!-- 分享弹框 -->
+  <!-- <v-share show="{{showShareDialog}}" share-data="{{shareData}}"/> -->
   <block wx:if='{{share_good == true}}'>
     <view class='modal_bg'></view>
     <view class="share_goods_box">

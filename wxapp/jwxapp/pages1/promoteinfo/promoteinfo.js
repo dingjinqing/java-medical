@@ -71,10 +71,10 @@ global.wxPage({
     var that = this;
     var form_id = e.detail.formId;
     var open_id = util.getCache("openid");
-    util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
-    if (promote_info.promote_status == -1) {
-      launchAct(that);
-    }
+    // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
+    // if (promote_info.promote_status == -1) {
+    //   launchAct(that);
+    // }
     this.setData({
       share_good: true
     })
@@ -463,10 +463,46 @@ function launchAct(that) {
     }
   }, { actCode: actCode });
 };
+// 助力详情
 function promote_request(that) {
   util.api('/api/wxapp/promote/info', function (res) {
     if (res.error == 0) {
+      promote_info = res.content;
+      console.log(promote_info);
+      // 助力值
+      // if (promote_info.promoteAmount) {
+      //   promote_info.promoteAmount = promote_info.promoteAmount.replace('.00', '');
+      // }
+      // 当前活动的助力总值
+      if (promote_info.hasPromoteValue == 0) { 
+        is_promote_value = 0; 
+      } else { 
+        is_promote_value = promote_info.hasPromoteValue 
+      }
+      // 助力进度
+      launched_width = parseFloat(660 * parseFloat(is_promote_value) / promote_info.promoteAmount).toFixed(0);
+      total_micro_second = promote_info.surplusSecond;
+      if (total_micro_second > 0) {
+        that.countdown(that);
+      }
+      if (promote_info.launchId) {
+        launch_id = promote_info.launchId
+      }
+      that.setData({
+        promote_info: promote_info,
+        is_promote_value: is_promote_value,
+        launched_width: launched_width
+      })
 
+      // 统计浏览记录
+      if (promote_info.rewardType == 2) {
+        goods_id = promote_info.couponInfo.couponId;
+      } else {
+        goods_id = promote_info.goodsInfo.goodsId;
+      }
+      // util.api('/api/wxapp/user_goods/record', function (res1) { }, {
+      //   goods_id: goods_id, active_type: 14, active_id: promote_info.id, type: 1
+      // })
     } else {
       util.showModal('提示', res.message);
       return false
@@ -476,40 +512,4 @@ function promote_request(that) {
       userId: util.getCache('user_id'),
       launchId: launch_id
   })
-  // util.api('/api/wxapp/promote/info', function (res) {
-  //   if (res.error == 0) {
-  //     promote_info = res.content;
-  //     console.log(promote_info);
-  //     if (promote_info.promote_amount) {
-  //       promote_info.promote_amount = promote_info.promote_amount.replace('.00', '');
-  //     }
-  //     if (promote_info.hasPromoteValue == 0) { is_promote_value = 0; } else { is_promote_value = promote_info.hasPromoteValue };
-  //     launched_width = parseFloat(660 * parseFloat(is_promote_value) / promote_info.promote_amount).toFixed(0);
-  //     total_micro_second = promote_info.surplus_second;
-  //     if (total_micro_second > 0) {
-  //       that.countdown(that);
-  //     }
-  //     if (promote_info.launch_id) {
-  //       launch_id = promote_info.launch_id
-  //     }
-  //     that.setData({
-  //       promote_info: promote_info,
-  //       is_promote_value: is_promote_value,
-  //       launched_width: launched_width
-  //     })
-
-  //     // 统计浏览记录
-  //     if (promote_info.reward_type == 2) {
-  //       goods_id = promote_info.coupon_info.coupon_id;
-  //     } else {
-  //       goods_id = promote_info.goods_info.goods_id;
-  //     }
-  //     util.api('/api/wxapp/user_goods/record', function (res1) { }, {
-  //       goods_id: goods_id, active_type: 14, active_id: promote_info.id, type: 1
-  //     })
-  //   } else {
-  //     util.showModal('提示', res.message);
-  //     return false
-  //   }
-  // }, { actCode: actCode, launch_user_id: launch_user_id, launch_id: launch_id })
 }
