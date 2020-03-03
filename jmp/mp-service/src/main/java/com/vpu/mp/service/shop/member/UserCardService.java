@@ -31,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
+import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
@@ -1699,7 +1700,7 @@ public class UserCardService extends ShopBaseService {
      * @param userId
      * @return
      */
-	public List<UserCardVo> getCanUseGeneralCardList(Integer userId){
+	public List<GeneralUserCardVo> getCanUseGeneralCardList(Integer userId){
 	    return db().select(USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,USER_CARD.MONEY,MEMBER_CARD.ID,MEMBER_CARD.BG_COLOR,MEMBER_CARD.CARD_NAME,MEMBER_CARD.DISCOUNT).
             from(USER_CARD).leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)).
             where(USER_CARD.USER_ID.eq(userId)).
@@ -1708,7 +1709,7 @@ public class UserCardService extends ShopBaseService {
             and(USER_CARD.EXPIRE_TIME.isNull().or(USER_CARD.EXPIRE_TIME.gt(DateUtil.getLocalDateTime()))).
             and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(USER_CARD.ACTIVATION_TIME.isNotNull().and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES)))).
             and(USER_CARD.MONEY.gt(BigDecimal.ZERO)).
-            fetchInto(UserCardVo.class);
+            fetchInto(GeneralUserCardVo.class);
     }
 	
 }

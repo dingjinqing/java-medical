@@ -5,7 +5,12 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackIdParam;
-import org.springframework.web.bind.annotation.*;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeParam;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 
@@ -109,7 +114,7 @@ public class WxAppCouponController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/pack/pay")
-    public JsonResult createOrderBefore(@RequestBody CouponPackIdParam param){
-        return this.success(shop().couponPack.couponPackOrderConfirm(param.getPackId(),wxAppAuth.user().getUserId()));
+    public JsonResult createOrderBefore(@RequestBody @Validated CouponPackOrderBeforeParam param){
+        return this.success(shop().couponPack.couponPackOrderConfirm(param,wxAppAuth.user().getUserId()));
     }
 }

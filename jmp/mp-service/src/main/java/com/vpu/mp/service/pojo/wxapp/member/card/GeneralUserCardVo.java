@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  **/
 @Setter
 @Getter
-public class UserCardVo {
+public class GeneralUserCardVo {
     /**
      * member_card的ID
      */
