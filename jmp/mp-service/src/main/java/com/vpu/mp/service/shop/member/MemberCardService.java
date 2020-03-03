@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -196,6 +197,22 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 		initActivationAndExamine(param, cardBuilder);
+	}
+	
+	/**
+	 * 	初始化包邮信息
+	 */
+	private void initFreeshipCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
+		logger().info("初始化包邮信息");
+		CardFreeship freeship = param.getFreeship();
+		if(freeship==null) {
+			if(freeship.getType()!=null) {
+				cardBuilder.freeshipLimit(freeship.getType());	  
+			}
+			if(freeship.getNum()!=null && freeship.getNum()>= 0) {
+				cardBuilder.freeshipNum(freeship.getNum());
+			}
+		}
 	}
 
 	/**
@@ -663,7 +680,10 @@ public class MemberCardService extends ShopBaseService {
 		initCardValidityPeriod(param, cardBuilder);
 		initCardStoreList(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
+		initFreeshipCfg(param,cardBuilder);
 	}
+
+
 
 	/**
 	 * 初始化限次会员卡配置信息
@@ -1292,7 +1312,10 @@ public class MemberCardService extends ShopBaseService {
 
 		/** 1.-获取数据库中的存储的信息 */
 		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
-
+		if(userCard == null) {
+			return;
+		}
+		data.setCardId(userCard.getCardId());
 		/** 2-判断会员卡余额是属于充值还是消费 */
 		if (isConsump(data)) {
 			/** 2.1-如果消费余额超出用户会员卡现有余额，则抛出异常 */
