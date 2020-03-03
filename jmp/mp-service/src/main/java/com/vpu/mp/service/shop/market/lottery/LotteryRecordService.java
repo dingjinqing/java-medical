@@ -297,7 +297,6 @@ public class LotteryRecordService extends ShopBaseService {
                 recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                 recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
                 recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                goodsService.getGoodsView(lotteryPrizeRecord.getPrdId());
                 Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
                 recordRecord.setLotteryExpiredTime(timeStampPlus);
                 recordRecord.insert();
