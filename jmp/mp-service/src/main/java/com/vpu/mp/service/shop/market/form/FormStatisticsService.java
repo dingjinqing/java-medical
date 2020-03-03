@@ -54,6 +54,8 @@ public class FormStatisticsService extends ShopBaseService {
      * 分享二维码页面显示图片路径
      */
     private static final String PARAM = "page_id=";
+    public static final String PLUS = "+";
+    public static final String COPY_TEXT = "副本";
 
     private static FormPage fp = FormPage.FORM_PAGE.as("fp");
     private static FormSubmitDetails fsd = FormSubmitDetails.FORM_SUBMIT_DETAILS.as("fsd");
@@ -143,7 +145,7 @@ public class FormStatisticsService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FORM, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.FORM.getPathUrl(pathParam));
         return vo;
 
     }
@@ -164,6 +166,7 @@ public class FormStatisticsService extends ShopBaseService {
     public FormCopyVo copyForm(FormDetailParam param) {
         FormCopyVo vo = new FormCopyVo();
         FieldsUtil.assignNotNull(getFormDetailInfo(param),vo);
+        vo.setPageName(String.join(PLUS, vo.getPageName(), COPY_TEXT));
         return vo;
 
     }
