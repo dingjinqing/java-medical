@@ -46,6 +46,7 @@ public class IntegralMallProcessorDao extends ShopBaseService {
         vo.setActState(BaseConstant.ACTIVITY_STATUS_CAN_USE);
 
         IntegralMallDefineRecord integralMallRecord = getRecordByIdDao(activityId);
+        int userJoinNum = getUserJoinTime(activityId, userId);
         Timestamp now = DateUtil.getLocalDateTime();
         if (integralMallRecord == null) {
             logger().debug("小程序-商品详情-积分兑换商品信息-活动已删除");
@@ -64,14 +65,17 @@ public class IntegralMallProcessorDao extends ShopBaseService {
             vo.setActState(BaseConstant.ACTIVITY_STATUS_END);
         } else {
             vo.setEndTime((integralMallRecord.getEndTime().getTime() - now.getTime()) / 1000);
-            int userJoinTime = getUserJoinTime(activityId, userId);
-            if (userJoinTime > integralMallRecord.getMaxExchangeNum()) {
+            if (userJoinNum > integralMallRecord.getMaxExchangeNum()&&integralMallRecord.getMaxExchangeNum()!=0) {
                 logger().debug("小程序-商品详情-积分兑换商品信息-用户参与达到上限");
                 vo.setActState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
             }
         }
+        if (integralMallRecord.getMaxExchangeNum() == 0) {
+            vo.setMaxExchangeNum(-1);
+        } else {
+            vo.setMaxExchangeNum(integralMallRecord.getMaxExchangeNum()-userJoinNum);
+        }
 
-        vo.setMaxExchangeNum(integralMallRecord.getMaxExchangeNum());
         vo.setUserScore(scoreService.getUserScore(userId));
         vo.setRedeemNum(getUserJoinTime(activityId, null));
 
