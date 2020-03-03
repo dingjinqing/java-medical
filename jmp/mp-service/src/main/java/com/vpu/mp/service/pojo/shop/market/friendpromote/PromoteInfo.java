@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.friendpromote;
 
-import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -73,4 +73,9 @@ public class PromoteInfo {
     private List<PromoteActList> promoteActList;
     /** 发起标识 */
     private Integer launchFlag;
+    /** 所需助力总值 */
+    private BigDecimal promoteAmount;
+    /** 单次助力值类型：0平均，1随机 */
+    private Byte promoteType;
+
 }

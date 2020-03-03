@@ -110,6 +110,23 @@ export default {
             'ok_ajax': 1
           }
           break
+        case 10: // 视频上传模块
+          obj = {
+            'module_name': 'm_upload_video',
+            'form_title': '视频上传',
+            'confirm': 0,
+            'ok_ajax': 1
+          }
+          break
+        case 11: // 轮播图模块
+          obj = {
+            'module_name': 'm_scroll_image',
+            'img_items': [
+
+            ],
+            'is_preview': '0'
+          }
+          break
       }
       console.log(obj)
       return obj

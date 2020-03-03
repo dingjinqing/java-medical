@@ -180,13 +180,16 @@ export default {
     InputBox: () => import('./decorationModules/formModule/inputBox'), // 输入框波快
     Option: () => import('./decorationModules/formModule/option'), // 选项模块
     DateModule: () => import('./decorationModules/formModule/dateModule'), // 日期模块
-    PictureUpload: () => import('./decorationModules/formModule/pictureUpload') // 图片上传模块
+    PictureUpload: () => import('./decorationModules/formModule/pictureUpload'), // 图片上传模块
+    VideoUpload: () => import('./decorationModules/formModule/videoUpload'), // 视频上传模块
+    // 图文类模块池
+    RotationChart: () => import('./decorationModules/formModule/rotationChart') // 轮播图模块
   },
   data () {
     return {
       middleHereFlag: false, // 中间拖动滑过模块出现的空白占位控制变量
       nowRightShowIndex: null, // 中间高亮模块索引
-      middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity', 'Email', 'Gender', 'DropDown', 'InputBox', 'Option', 'DateModule', 'PictureUpload'], // 中间显示模块名称池
+      middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity', 'Email', 'Gender', 'DropDown', 'InputBox', 'Option', 'DateModule', 'PictureUpload', 'VideoUpload', 'RotationChart'], // 中间显示模块名称池
       showModulesList: [], // 中间显示模块id数组
       insertModulesId: -1, // 左侧模块将要插入位置
       isAddBottom: false, // 是否添加到底部flag
@@ -379,6 +382,12 @@ export default {
               break
             case 9:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 9)
+              break
+            case 10:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 10)
+              break
+            case 11:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 11)
               break
           }
           console.log(this_.showModulesList, this_.modulesData, insert)

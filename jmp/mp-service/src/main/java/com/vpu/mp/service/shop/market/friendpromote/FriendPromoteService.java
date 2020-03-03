@@ -17,10 +17,12 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -41,6 +43,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Service
 public class FriendPromoteService extends ShopBaseService {
+    @Autowired ImageService imageService;
 	private static FriendPromoteActivity fpa = FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY.as("fpa");
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
@@ -607,12 +610,13 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setShareCreateTimes(record.getShareCreateTimes());
         //设置结束时间
         promoteInfo.setEndTime(record.getEndTime());
+        //设置所需助力总值
+        promoteInfo.setPromoteAmount(record.getPromoteAmount());
+        //设置助力类型 0平均 1随机
+        promoteInfo.setPromoteType(record.getPromoteType());
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
-//            if (rewardContent.getMarketPrice()==null){
-//                rewardContent.setMarketPrice(BigDecimal.ZERO);
-//            }
             if (goodsInfo==null){
                 goodsInfo = new GoodsInfo();
             }
@@ -670,6 +674,9 @@ public class FriendPromoteService extends ShopBaseService {
             .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchOneInto(GoodsInfo.class);
+        //图片地址添加域名
+        String goodsImg = imageService.getImgFullUrl(goodsInfo.getGoodsImg());
+        goodsInfo.setGoodsImg(goodsImg);
         return goodsInfo;
     }
 
@@ -733,6 +740,7 @@ public class FriendPromoteService extends ShopBaseService {
                 .from(FRIEND_PROMOTE_LAUNCH)
                 .where(FRIEND_PROMOTE_LAUNCH.USER_ID.eq(userId))
                 .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(promoteId))
+                .orderBy(FRIEND_PROMOTE_LAUNCH.ID.desc())
                 .fetchOneInto(FriendPromoteLaunchRecord.class);
         }
         return record;
@@ -1129,6 +1137,13 @@ public class FriendPromoteService extends ShopBaseService {
      *
      */
     public void friendPromoteLaunch(PromoteParam param){
-
+        PromoteInfo  promoteInfo = getPromoteInfo(param.getActCode());
+        //最新一次的发起的好友助力
+        FriendPromoteLaunchRecord launchInfo = getLaunchInfo(null,param.getUserId(),promoteInfo.getId());
+        //助力进度：-1未发起，0助力中，1助力完成待领取，2助力完成已领取,3助力未领取失效，4助力未完成失败，5取消订单未领取
+        promoteInfo.setPromoteStatus(launchInfo!=null?launchInfo.getPromoteStatus():-1);
+        //是否可以再次发起好友助力
+        CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
+        promoteInfo.setCanLaunch(canLaunch.getCode());
     }
 }
