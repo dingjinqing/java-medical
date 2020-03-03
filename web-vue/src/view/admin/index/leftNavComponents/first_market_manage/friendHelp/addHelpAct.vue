@@ -827,7 +827,6 @@ export default {
       })
     },
     addAct () {
-      debugger
       console.log('this.form.rewardType:', this.form.rewardType)
       if (this.form.rewardType === '0' || this.form.rewardType === '1') {
         if (this.form.goodsInfo[0].market_price == null) {
