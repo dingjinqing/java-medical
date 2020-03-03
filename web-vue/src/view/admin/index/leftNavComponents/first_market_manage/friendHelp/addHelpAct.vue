@@ -115,7 +115,7 @@
               </el-table-column>
 
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('promoteList.goodsStore')"
                 align="center"
               ><template></template>
@@ -837,7 +837,6 @@ export default {
         console.log(this.form.goodsInfo[0].market_store)
         this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
-        console.log('this.form.rewardSet.prd_id:', this.form.rewardSet.prd_id)
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
       }
@@ -939,7 +938,7 @@ export default {
       this.goodsIdList.push(row.goodsId)
       console.log('goodsInfo:', this.form.goodsInfo[0])
       // this.form.rewardSet.goods_ids = row.goodsId
-      this.form.rewardSet.prd_id = row.prdId
+      this.form.rewardSet.goods_ids = row.prdId
 
       // })
     },
