@@ -21,4 +21,6 @@ public class InsteadPayOrderDetails {
     private BigDecimal amountPaid;
     private BigDecimal waitPayMoney;
     private InsteadPay insteadPayCfg;
+    private Byte isSelf;
+    private String message;
 }

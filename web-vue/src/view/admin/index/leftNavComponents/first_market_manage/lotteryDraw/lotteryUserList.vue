@@ -4,19 +4,19 @@
     <div class="main">
       <el-form label-width="100px">
         <el-form-item
-          label="用户昵称："
+          :label="$t('lotteryDraw.nickName') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.nickName"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('lotteryDraw.nickNameTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="参与时间："
+          :label="$t('lotteryDraw.startTime') + '：'"
           class="item"
         >
           <el-date-picker
@@ -29,7 +29,7 @@
             :placeholder="$t('actionRecord.startTime')"
           >
           </el-date-picker>
-          <span>至</span>
+          <span>{{ this.$t('lotteryDraw.to') }}</span>
           <el-date-picker
             size="small"
             v-model="requestParams.endTime"
@@ -43,31 +43,31 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item
-          label="订单号："
+          :label="$t('lotteryDraw.orderSn') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.orderSn"
-            placeholder="请输入订单号"
+            :placeholder="$t('lotteryDraw.orderSnTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="手机号："
+          :label="$t('lotteryDraw.mobile') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.mobile"
-            placeholder="请输入手机号"
+            :placeholder="$t('lotteryDraw.mobileTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="邀请用户数："
+          :label="$t('lotteryDraw.minInviteUserCount') + '：'"
           class="item"
         >
           <el-input
@@ -76,7 +76,7 @@
             clearable
             class="inputWidth"
           ></el-input>
-          至
+          {{ this.$t('lotteryDraw.to') }}
           <el-input
             size="small"
             v-model="requestParams.maxInviteUserCount"
@@ -85,26 +85,26 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="团ID："
+          :label="$t('lotteryDraw.groupId') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.groupId"
-            placeholder="请输入团ID"
+            :placeholder="$t('lotteryDraw.groupIdTip')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="成团状态："
+          :label="$t('lotteryDraw.grouped') + '：'"
           class="item"
         >
           <el-select
             size="small"
             v-model="requestParams.grouped"
             class="inputWidth"
-            placeholder="请选择"
+            :placeholder="$t('lotteryDraw.groupedTip')"
           >
             <el-option
               v-for="item in statusList"
@@ -115,14 +115,14 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="是否团长："
+          :label="$t('lotteryDraw.isGrouper') + '：'"
           class="item"
         >
           <el-select
             size="small"
             v-model="requestParams.isGrouper"
             class="inputWidth"
-            placeholder="请选择"
+            :placeholder="$t('lotteryDraw.groupedTip')"
           >
             <el-option
               v-for="item in groupList"
@@ -138,13 +138,13 @@
           class="item"
           style="margin-left: 10px;"
           @click="initDataList"
-        >筛选</el-button>
+        >{{ this.$t('lotteryDraw.select') }}</el-button>
         <el-button
           size="small"
           type="primary"
           class="item"
           style="margin-left: 10px;"
-        >重置筛选</el-button>
+        >{{ this.$t('lotteryDraw.resetSelect') }}</el-button>
       </el-form>
     </div>
 
@@ -157,51 +157,51 @@
         style="width: 100%"
       >
         <el-table-column
-          label="昵称"
+          :label="$t('lotteryDraw.username')"
           prop="username"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="手机号"
+          :label="$t('lotteryDraw.mobile')"
           prop="mobile"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="参与时间"
+          :label="$t('lotteryDraw.startTime')"
           prop="createTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="订单号"
+          :label="$t('lotteryDraw.orderSn')"
           prop="orderSn"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="是否团长"
+          :label="$t('lotteryDraw.isGrouper')"
           align="center"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.isGrouper === true">是</span>
-            <span v-if="scope.row.isGrouper === false">否</span>
+            <span v-if="scope.row.isGrouper === true">{{ this.$t('lotteryDraw.isYes') }}</span>
+            <span v-if="scope.row.isGrouper === false">{{ this.$t('lotteryDraw.isNo') }}</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="团ID"
+          :label="$t('lotteryDraw.groupId')"
           prop="groupId"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="成团时间"
+          :label="$t('lotteryDraw.groupTime')"
           prop=""
           align="center"
         ></el-table-column>
         <el-table-column
-          label="抽奖码数量"
+          :label="$t('lotteryDraw.codeCount')"
           prop="codeCount"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="邀请用户数"
+          :label="$t('lotteryDraw.minInviteUserCount')"
           prop="inviteUserNum"
           align="center"
         ></el-table-column>
