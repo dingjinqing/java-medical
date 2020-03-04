@@ -453,14 +453,14 @@ function shareAdd(that) {
 };
 // 发起助力
 function launchAct(that) {
-  // util.api("/api/wxapp/promote/launch", function (res) {
-  //   if (res.error == 0) {
-  //     launch_id = res.content.launchId;
-  //   } else {
-  //     util.showModal('提示', res.message);
-  //     return false
-  //   }
-  // }, { actCode: actCode });
+  util.api("/api/wxapp/promote/launch", function (res) {
+    if (res.error == 0) {
+      launch_id = res.content.launchId;
+    } else {
+      util.showModal('提示', res.message);
+      return false
+    }
+  }, { actCode: actCode, userId: launch_user_id });
 };
 // 助力详情
 function promote_request(that) {

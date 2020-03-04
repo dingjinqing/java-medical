@@ -1140,7 +1140,8 @@ public class FriendPromoteService extends ShopBaseService {
 
     /**
      * 小程序-发起好友助力
-     *
+     * @param param 用户id 活动码
+     * @return 发起信息
      */
     public LaunchVo friendPromoteLaunch(PromoteParam param){
         LaunchVo launchVo = new LaunchVo();
