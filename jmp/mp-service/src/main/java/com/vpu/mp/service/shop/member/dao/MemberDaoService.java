@@ -50,6 +50,8 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.OrderRuleParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -119,6 +121,23 @@ public class MemberDaoService extends ShopBaseService {
 				UserRecord.class);
 		return memberList.dataList;
 	}
+	
+	/**
+	 * 	获取用户的导出会员 第二版
+	 * @param param
+	 * @return
+	 */
+	public List<UserExpVo> getExportAllUserList(MemberPageListParam param) {
+		SelectJoinStep<Record> select = db().select(USER.asterisk()).from(USER);
+		buildOptionsForTable(param,select);
+		UserExpParam expParam = param.getUserExpParam();
+		return select.where(buildOptions(param))
+			  .orderBy(USER.USER_ID.desc())
+			  .limit(expParam.getStartNum(), expParam.getEndNum())
+			  .fetchInto(UserExpVo.class);
+	}
+	
+	
 	
 	/**
 	 * 通过活动新增用户
@@ -731,5 +750,12 @@ public class MemberDaoService extends ShopBaseService {
 	
 	public void updateUserDetail(UserDetailRecord record) {
 		db().executeUpdate(record, USER_DETAIL.USER_ID.eq(record.getUserId()));
+	}
+	
+	/**
+	 * 	获取用户总数
+	 */
+	public int getNumOfUser() {
+		return db().fetchCount(USER);
 	}
 }

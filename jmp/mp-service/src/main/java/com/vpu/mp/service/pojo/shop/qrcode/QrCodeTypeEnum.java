@@ -41,7 +41,7 @@ public enum QrCodeTypeEnum {
     /*积分商品详情*/
     INTEGRAL_ITEM_INFO((byte) 16, "pages/integralitem/integralitem"),
     /*抽奖*/
-    LOTTERY((byte) 17, "pages/lottery/lottery"),
+    LOTTERY((byte) 17, "pages1/lottery/lottery"),
     /*返利推广文案*/
     REBATE_POPULARIZE_DOCUMENT((byte) 18, "pages/distributionspread/distributionspread"),
     /*秒杀商品详情页*/

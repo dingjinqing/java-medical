@@ -2,12 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
-import com.vpu.mp.service.pojo.wxapp.cart.CartGoodsNumVo;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductsParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppSwitchCartProductsParam;
+import com.vpu.mp.service.pojo.wxapp.cart.*;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,10 +45,10 @@ public class WxAppCartController extends WxAppBaseController {
             return fail(resultMessage);
         }
         //检查商品活动
-        // 活动校验
+        // 活动校验 todo
 
         //添加商品到购物车
-        shop().cart.addSpecProduct(user.getUserId(),param.getPrdId(),param.getGoodsNumber());
+        shop().cart.addSpecProduct(user.getUserId(),param.getPrdId(),param.getGoodsNumber(),param.getActivityId(),param.getActivityType());
         return success();
     }
 
@@ -105,6 +100,21 @@ public class WxAppCartController extends WxAppBaseController {
     public JsonResult checked(@RequestBody @Valid WxAppSwitchCartProductsParam param){
         WxAppSessionUser user = wxAppAuth.user();
         int flag = shop().cart.switchCheckedProduct(user.getUserId(), param.getRecIds(),param.getIsChecked());
+        if (flag>0){
+            return success();
+        }
+        return fail();
+    }
+
+    /**
+     *  切换选择活动
+     * @param param id
+     * @return
+     */
+    @PostMapping("/switch/activity")
+    public JsonResult checkedActivity(@RequestBody @Valid CartSwitchActivityParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        int flag = shop().cart.switchActivityGoods(user.getUserId(), param.getRecIds(),param.getActivityId(),param.getActivityType());
         if (flag>0){
             return success();
         }

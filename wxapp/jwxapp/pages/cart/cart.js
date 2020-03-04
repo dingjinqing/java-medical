@@ -1,4 +1,6 @@
 let util = require('../../utils/util.js');
+var app = getApp()
+var imageUrl = app.globalData.imageUrl;
 global.wxPage({
 
   /**
@@ -6,12 +8,14 @@ global.wxPage({
    */
   data: {
     canBuyGoodsList: null,
-    invalidGoodsList:null,
-    totalPrice:0,
+    invalidGoodsList: null,
+    totalPrice: 0,
     proMode: true,
     // 切换活动弹框要用到的数组
     activityType: null, // 正在参与的活动类型
-    proPurchaseInfo: []
+    proPurchaseInfo: [],
+    cartId: '', // 切换促销活动当前购物车id
+    isType: 0 // 判断当前参与活动类型
   },
 
   /**
@@ -33,6 +37,53 @@ global.wxPage({
           isAllCheck,
           totalPrice
         })
+
+        this.data.canBuyGoodsList.forEach((item, index) => {
+          item.isSales = 0
+          item.isMemPrice = 0
+          if (item.cartActivityInfos.length > 0) {
+            // 添加不参与活动
+            item.cartActivityInfos[item.cartActivityInfos.length] = {
+              activityId: null,
+              activityType: null,
+              status: 1
+            }
+            item.cartActivityInfos.forEach((val, key) => {
+              // 判断是否参加活动
+              if ((val.activityType == 7 || val.activityType == 21) && item.activityType != 5) {
+                item.isSales = 1
+              }
+              // 判断是否存在会员价
+              if (val.activityType == 22) {
+                item.isMemPrice = 1
+              }
+              // 拼接促销活动
+              if (item.activityId == val.activityId) {
+                item.ruleList = ""
+                if (val.activityType == 21) {
+                  val.fullReduction.rules.forEach((ritem, rindex) => {
+                    item.ruleList += ritem.name + '或'
+                  })
+                  if (item.ruleList.length > 0) {
+                    item.ruleList = item.ruleList.substr(0, item.ruleList.length - 1);
+                  }
+                } else if (val.activityType == 7) {
+                  val.purchasePrice.purchasePriceRule.forEach((pitem, pindex) => {
+                    item.ruleList += '满' + pitem.fullPrice + '元另加' + pitem.purchasePrice + '元即可换购商品' + ','
+                  })
+                  if (item.ruleList.length > 0) {
+                    item.ruleList = item.ruleList.substr(0, item.ruleList.length - 1);
+                  }
+                }
+              }
+            })
+          }
+
+        })
+        this.setData({
+          canBuyGoodsList: this.data.canBuyGoodsList,
+        })
+        console.log(this.data.canBuyGoodsList)
       }
     })
   },
@@ -113,26 +164,26 @@ global.wxPage({
       }
     }, { recId: cartId })
   },
-  
+
   // 清除无效购物车列表
-  clearCart(){
+  clearCart() {
     let cartIds = this.data.invalidGoodsList.map(item => { return item.cartId })
-    util.api('/api/wxapp/cart/removes',res=>{
-      if(res.error === 0){
+    util.api('/api/wxapp/cart/removes', res => {
+      if (res.error === 0) {
         this.requestCartList()
       }
-    },{ recIds: cartIds })
+    }, { recIds: cartIds })
   },
-  
+
   //触摸改变
-  handleTouchChange(e){
+  handleTouchChange(e) {
     this.moveX = e.detail.x
   },
 
   //触摸结束
-  handleTouchEnd(e){
+  handleTouchEnd(e) {
     let idx = e.currentTarget.dataset.index
-    let target = 'canBuyGoodsList['+idx+'].x'
+    let target = 'canBuyGoodsList[' + idx + '].x'
     if (this.moveX <= -20) {
       this.setData({
         [target]: -100
@@ -157,17 +208,17 @@ global.wxPage({
   // },
 
   //  去结算
-  toCheckOut(){
-    let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item=>{
+  toCheckOut() {
+    let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item => {
       let { goodsId, prdPrice: prdRealPrice, cartNumber: goodsNum, productId: prdId } = item
-      return { goodsId, prdRealPrice, goodsNum, prdId, isCart:1 }
+      return { goodsId, prdRealPrice, goodsNum, prdId, isCart: 1 }
     })
     util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify(goodsList)}`, "navigateTo")
   },
-  
+
   // 列表无数据跳转
-  toIndex(){
-    util.jumpLink('pages/index/index','navigateTo')
+  toIndex() {
+    util.jumpLink('pages/index/index', 'navigateTo')
   },
   onReachBottom: function () {
     this.selectComponent('#recommend').requestData()
@@ -183,7 +234,33 @@ global.wxPage({
     })
     that.data.canBuyGoodsList.forEach((item, index) => {
       if (item.cartId == cartId) {
+        // 判断参与活动
+        if (item.activityType == 7) {
+          // 加价购
+          that.setData({
+            isType: 1
+          })
+        } else if (item.activityType == 21) {
+          // 满折满减
+          that.setData({
+            isType: 2
+          })
+        } else {
+          // 不参与活动
+          that.setData({
+            isType: 0
+          })
+        }
+        item.cartActivityInfos.forEach((val, key) => {
+          // 判断当前选中活动
+          if (item.activityType == val.activityType && item.activityId == val.activityId) {
+            val.is_che = 1
+          } else {
+            val.is_che = 0
+          }
+        })
         that.setData({
+          cartId: cartId,
           proPurchaseInfo: item.cartActivityInfos
         })
       }
@@ -209,24 +286,41 @@ global.wxPage({
   // 切换促销活动
   choose_acts: function (e) {
     var that = this;
-    var activityType = e.currentTarget.dataset.activity_type;
-    for (var i in pro_purchase_info) {
-      pro_purchase_info[i].is_che = 0;
-      pro_purchase_info[i].rec_id = this_rec_id;
+    var activityId = e.currentTarget.dataset.activity_id; // 选择的活动id
+    var activityType = e.currentTarget.dataset.activity_type; // 选择的活动类型
+    // 不参与活动
+    if (activityId == null) {
+      activityId = 0
     }
-    pro_purchase_info[this_indexs].is_che = 1;
-    that.setData({
-      pro_purchase_info: pro_purchase_info,
+    if (activityType == null) {
+      activityType = 0
+    }
+    that.data.proPurchaseInfo.forEach((item, index) => {
+      item.is_che = 0
+      if (item.activityType == activityType) {
+        item.is_che = 1
+      }
     })
-    // var cart_data = {};
-    // cart_data.action = this_actx;
-    // cart_data.identity_id = this_iden_id;
-    // cart_data.product_id = this_prd_id;
-    // cart_data.rec_id = this_rec_id;
-    // that.data.gd_actoins = this_actx;
-    // that.data.post_act = 'switch_goods_action';
-    // that.data.cart_datas = JSON.stringify(cart_data);
-    // cart_request(that);
+    that.setData({
+      proPurchaseInfo: that.data.proPurchaseInfo,
+    })
+    // 保存切换营销活动
+    var ids = []
+    ids.push(this.data.cartId)
+    util.api('/api/wxapp/cart/switch/activity', function (res) {
+      if (res.error == 0) {
+        // 隐藏弹窗
+        that.setData({
+          proMode: true
+        })
+        that.requestCartList()
+      }
+    }, {
+        recIds: ids,
+        activityId: activityId,
+        activityType: activityType,
+        isChecked: 1
+      })
   },
 
   // 跳转秒杀抢购
@@ -238,28 +332,16 @@ global.wxPage({
   to_fullpage: function (e) {
     var activity_id = e.currentTarget.dataset.activity_id;
     util.navigateTo({
-      // url: '/pages/fullprice/fullprice',
-      url: '/pages/fullprice/fullprice?strategyId=' + activity_id,
+      url: '/pages/fullprice/fullprice?identity_id=' + activity_id,
     })
-    
-    // var iden_id = e.currentTarget.dataset.ids;
-    // var store_id = this.data.options.store_id ? this.data.options.store_id : 0;
-    // util.navigateTo({
-    //   url: '/pages/fullprice/fullprice?identity_id=' + iden_id + '&store_id=' + store_id,
-    // })
   },
 
   // 跳转加价购商品列表
   to_purchase: function (e) {
-    console.log(e.currentTarget.dataset.item)
+    var activity_id = e.currentTarget.dataset.activity_id;
     util.navigateTo({
-      url: '/pages/maingoodslist/maingoodslist',
+      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activity_id,
     })
-    // var iden_id = e.currentTarget.dataset.ids;
-    // var store_id = this.data.options.store_id ? this.data.options.store_id : 0;
-    // util.navigateTo({
-    //   url: '/pages/maingoodslist/maingoodslist?identity_id=' + iden_id + '&store_id=' + store_id,
-    // })
   },
 
 })

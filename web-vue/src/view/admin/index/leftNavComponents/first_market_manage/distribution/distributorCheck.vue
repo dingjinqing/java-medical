@@ -335,6 +335,12 @@ export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
   },
+  props: {
+    params: {
+      type: Number,
+      default: 0
+    }
+  },
   data () {
     return {
       // 搜索
@@ -350,7 +356,6 @@ export default {
         currentPage: 1,
         pageRows: 20
       },
-      requestParams: {},
       tableData: [], // 表格数据
 
       // 分销员分组弹窗
@@ -382,14 +387,16 @@ export default {
   },
   methods: {
     initDataList () {
-      this.requestParams.nav = Number(this.activeName)
-      this.requestParams.mobile = this.searchForm.mobile
-      this.requestParams.username = this.searchForm.username
-      this.requestParams.startTime = this.searchForm.startTime
-      this.requestParams.endTime = this.searchForm.endTime
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      getCheckList(this.requestParams).then((res) => {
+      var requestParams = {}
+      requestParams = this.searchForm
+      requestParams.nav = Number(this.activeName)
+      requestParams.currentPage = this.pageParams.currentPage
+      requestParams.pageRows = this.pageParams.pageRows
+      if (this.$route.params.flag === 1) {
+        requestParams.flag = this.$route.params.flag
+        requestParams.numberDays = this.$route.params.IntegerDays
+      }
+      getCheckList(requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page

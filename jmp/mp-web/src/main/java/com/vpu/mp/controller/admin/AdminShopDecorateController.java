@@ -169,8 +169,9 @@ public class AdminShopDecorateController extends AdminBaseController {
             return this.success(shop().adminDecoration.getPreviewCode(param));
         }else{
             //新建或更新
-            if(shop().adminDecoration.storePage(param)){
-                return this.success();
+            int res = shop().adminDecoration.storePage(param);
+            if(res > 0){
+                return this.success(res);
             }else {
                 return fail();
             }

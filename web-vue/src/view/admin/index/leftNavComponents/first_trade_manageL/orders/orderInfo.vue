@@ -320,7 +320,7 @@
                       alt=""
                     >
                     <div class="right_info">
-                      <div class="goods_name"><span>{{goodsInfo.goodsName}}</span></div>
+                      <div class="goods_name"><span><i class="goods-tag" v-if="goodsInfo.isGift === 1">赠品</i>{{goodsInfo.goodsName}}</span></div>
                       <div class="goods_spec">{{goodsInfo.goodsAttr}}</div>
                     </div>
                   </div>
@@ -1096,6 +1096,13 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
+                  .goods-tag{
+                    border: 1px solid;
+                    vertical-align: middle;
+                    margin-right: 5px;
+                    padding: 0 4px;
+                    color: red;
+                  }
                   > span {
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -1103,6 +1110,7 @@ export default {
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
                     text-align: left;
+                    line-height: 25px;
                   }
                 }
               }

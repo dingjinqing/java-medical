@@ -1,5 +1,25 @@
 package com.vpu.mp.service.foundation.excel;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
+
 import com.vpu.mp.service.foundation.excel.annotation.ExcelDynamicColumn;
 import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.excel.bean.ExcelColumnBean;
@@ -7,23 +27,24 @@ import com.vpu.mp.service.foundation.excel.bean.ExcelSheetBean;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.RegionUtil;
+import com.vpu.mp.service.foundation.excel.util.IDymicColNameI18n;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 李晓冰
  * @date 2019年07月19日
  */
+/**
+ * @author Q10Viking
+ *
+ */
 @Slf4j
 public class ExcelWriter extends AbstractExcelDisposer {
     private Workbook workbook;
     private String sheetName;
-
+    
+    
     public ExcelWriter(Workbook workbook, String sheetName) {
         this(AbstractExcelDisposer.DEFAULT_LANGUAGE, workbook, sheetName);
     }
@@ -166,6 +187,8 @@ public class ExcelWriter extends AbstractExcelDisposer {
         return returnMap;
     }
 
+   
+    
     public <T> void writeModelListWithDynamicColumn(List<T> dataArray, Class<T> clazz) {
         if (dataArray.size() == 0) {
             // 如果传入的是空数据，则按照无动态列进行处理
@@ -203,6 +226,11 @@ public class ExcelWriter extends AbstractExcelDisposer {
 
         writeDataIntoSheet(sheetBean,sheet,dataArray,dynamicField);
     }
+    
+    
+    
+    
+    
 
     /**
      * 将数据写入到excel中
@@ -419,4 +447,6 @@ public class ExcelWriter extends AbstractExcelDisposer {
         RegionUtil.setBorderRight(border, region, sheet);    //右边框
         RegionUtil.setBorderTop(border, region, sheet);      //上边框
     }
+
+    
 }

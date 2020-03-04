@@ -12,17 +12,30 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.*;
+import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
+import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryByIdParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListVo;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryListUserParam;
 import com.vpu.mp.service.pojo.wxapp.market.lottery.LotteryUserTimeInfo;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.ScoreService;
 import org.jooq.AggregateFunction;
 import org.jooq.Record7;
 import org.jooq.Result;
@@ -36,12 +49,23 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.LOTTERY;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
-import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.*;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.YES;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_ALL;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_FREE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_SCORE;
+import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_SHARE;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_LOTTERY;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * @author 孔德成
@@ -62,6 +86,10 @@ public class LotteryService extends ShopBaseService {
     private MemberService memberService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private QrCodeService qrCode;
+    @Autowired
+    private ScoreService scoreService;
 
     /**
      * 添加幸运抽奖
@@ -177,6 +205,10 @@ public class LotteryService extends ShopBaseService {
             case BaseConstant.NAVBAR_TYPE_DISABLED:
                 select.and(LOTTERY.STATUS.eq(ACTIVITY_STATUS_DISABLE));
                 break;
+            case BaseConstant.NAVBAR_TYPE_AVAILABLE:
+                select.and(LOTTERY.STATUS.eq(ACTIVITY_STATUS_NORMAL))
+                        .and(LOTTERY.END_TIME.gt(nowTime));
+                break;
             default:
         }
         select.orderBy(LOTTERY.CREATE_TIME.desc());
@@ -212,6 +244,7 @@ public class LotteryService extends ShopBaseService {
         LotteryVo lotteryVo =lottery.into(LotteryVo.class);
         List<LotteryPrizeVo>  lotteryPrizeVoList =lotteryPrizeList.into(LotteryPrizeVo.class);
         lotteryPrizeVoList.forEach( lotteryPrizeVo -> {
+            lotteryPrizeVo.setAccount(lotteryPrizeVo.getAwardAccount());
             if (lotteryPrizeVo.getLotteryType().equals(LotteryConstant.LOTTERY_TYPE_GOODS)){
                 ProductSmallInfoVo product =  goodsService.getProductVoInfoByProductId(lotteryPrizeVo.getPrdId());
                 lotteryPrizeVo.setProduct(product);
@@ -275,20 +308,21 @@ public class LotteryService extends ShopBaseService {
      * @return JoinLottery
      */
     public JoinLottery joinLottery(JoinLotteryParam param) {
-        //校验,扣积分
-        JoinLottery joinValid = this.validJoinLottery(param);
-        if (!joinValid.getFlag()) {
-            return joinValid;
-        }
-        //抽奖
-        lotteryPrizeService.joinLotteryAction(joinValid);
-        //发送奖品 记录
         try {
+            //校验,扣积分
+            JoinLottery joinValid = this.validJoinLottery(param);
+            if (!joinValid.getFlag()) {
+                return joinValid;
+            }
+            //抽奖
+            lotteryPrizeService.joinLotteryAction(joinValid);
+            //发送奖品 记录
             lotteryRecordService.sendAwardPresent(param.getUserId(),joinValid);
+            return joinValid;
         } catch (MpException e) {
             e.printStackTrace();
         }
-        return joinValid;
+        return null;
     }
 
 
@@ -298,7 +332,7 @@ public class LotteryService extends ShopBaseService {
      * @param param 入参
      * @return JoinLottery
      */
-    public JoinLottery validJoinLottery(JoinLotteryParam param) {
+    public JoinLottery validJoinLottery(JoinLotteryParam param) throws MpException {
         Integer userId = param.getUserId();
         Integer lotteryId = param.getLotteryId();
 
@@ -306,7 +340,7 @@ public class LotteryService extends ShopBaseService {
         //获取活动
         LotteryRecord lottery = this.getLotteryById(lotteryId);
         join.setLottery(lottery);
-        join.setChanceSource(param.getLotterySource());
+        join.setLotterySource(param.getLotterySource());
         //活动不存在了
         if (lottery == null || DelFlag.DISABLE_VALUE.equals(lottery.getDelFlag())) {
             join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_ACTIVITY_FAIL).build());
@@ -330,7 +364,7 @@ public class LotteryService extends ShopBaseService {
         }
         //活动免费
         Integer freeTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId,LOTTERY_TIME_FREE);
-        if (lottery.getFreeChances() != null && lottery.getFreeChances() > freeTimes) {
+        if (lottery.getFreeChances() == null || lottery.getFreeChances() > freeTimes) {
             join.setChanceSource(LOTTERY_TIME_FREE);
             join.setFlag(true);
             if (lottery.getFreeChances() != null) {
@@ -342,13 +376,16 @@ public class LotteryService extends ShopBaseService {
         if (lottery.getCanShare() != null && lottery.getCanShare().equals(YES)) {
             LotteryShareRecord shareRecord = lotteryShareService.getLotteryShareByUser(userId, lotteryId);
             //分享次数
+            Integer usedShareRecordTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SHARE);
             Integer shareTimes = shareRecord != null ? shareRecord.getShareTimes() : 0;
             Integer usedShareTimes= shareRecord != null ? shareRecord.getUseShareTimes() : 0;
-            if (shareTimes >usedShareTimes) {
+            if (shareTimes >usedShareRecordTimes&& usedShareRecordTimes < lottery.getShareChances()) {
                 //分享抽奖
                 join.setChanceSource(LOTTERY_TIME_SHARE);
-                join.setCanUseTime(shareTimes - usedShareTimes);
+                join.setCanUseTime(shareTimes - usedShareRecordTimes);
                 join.setFlag(true);
+                shareRecord.setUseShareTimes(usedShareRecordTimes+1);
+                shareRecord.update();
                 return join;
             }
             // 去分享
@@ -361,10 +398,9 @@ public class LotteryService extends ShopBaseService {
         //积分抽奖
         if (lottery.getCanUseScore().equals(YES)) {
             Integer userScoreTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SCORE);
-            if (lottery.getScoreChances() != null && userScoreTimes < lottery.getScoreChances()) {
+            if (lottery.getScoreChances() == null || userScoreTimes < lottery.getScoreChances()) {
                 join.setChanceSource(LOTTERY_TIME_SCORE);
                 join.setFlag(true);
-                join.setSource(lottery.getScorePerChance().byteValue());
                 if (lottery.getScoreChances() != null) {
                     join.setCanUseTime(lottery.getScoreChances() - userScoreTimes);
                 }
@@ -372,10 +408,16 @@ public class LotteryService extends ShopBaseService {
                 Integer userScore = memberService.getUserFieldById(userId, USER.SCORE);
                 //积分不足
                 if (userScore < lotteryScore) {
-                    join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_ACTIVITY_OUT_DATE).build());
+                    join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_TIME_USE_UP).build());
                     join.setFlag(false);
                     return join;
                 }
+                ScoreParam scoreParam = new ScoreParam();
+                scoreParam.setScore(lotteryScore);
+                scoreParam.setUserId(userId);
+                scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
+                scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_OUT.val());
                 return join;
             }
         }
@@ -443,4 +485,19 @@ public class LotteryService extends ShopBaseService {
       return  lotteryRecordService.lotteryListByParam(param);
     }
 
+    /**
+     * 分享
+     * @param param
+     * @retuen
+     * @return
+     */
+    public ShareQrCodeVo getMpQRCode(LotteryByIdParam param) {
+        Integer groupDrawId = param.getId();
+        String pathParam = "lotteryId="+ groupDrawId+"&lotterySource=6";
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.LOTTERY, pathParam);
+        ShareQrCodeVo share =new ShareQrCodeVo();
+        share.setImageUrl(imageUrl);
+        share.setPagePath(QrCodeTypeEnum.LOTTERY.getPathUrl(pathParam));
+        return share;
+    }
 }

@@ -300,7 +300,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
                         moduleVideo.setVideoUrl(domainConfig.videoUrl(moduleVideo.getVideoUrl()));
                         moduleVideo.setVideoImg(domainConfig.videoUrl(moduleVideo.getVideoImg()));
-                    }else if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+                    }
+                    if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
                         moduleVideo.setImgUrl(imageUrl(moduleVideo.getImgUrl()));
                     }
                     return moduleVideo;
@@ -495,13 +496,13 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      * @param page
      * @return
      */
-    public boolean storePage(PageStoreParam page){
+    public int storePage(PageStoreParam page){
         try {
             //处理PageContent里的json数据，校验格式
             page.setPageContent(processPageContentBeforeSave(page.getPageContent()));
         }catch (IOException e){
             logger().error("装修页面保存格式错误：", e);
-            return false;
+            return 0;
         }
 
         //记录页面变化
@@ -530,14 +531,14 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         //入库
         if(page.getPageId() != null && page.getPageId() > 0){
             record.setPageId(page.getPageId());
-            return record.update() > 0;
+            return record.update();
         }else {
             if(record.insert() > 0){
                 page.setPageId(record.getPageId());
-                return true;
+                return record.getPageId();
             }
         }
-        return false;
+        return 0;
     }
 
     /**
@@ -546,7 +547,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      * @return
      */
     public String getPreviewCode(PageStoreParam param){
-        if(this.storePage(param)){
+        if(this.storePage(param) > 0){
             String pathParam="page_id="+param.getPageId();
             String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
             return imageUrl;
@@ -626,7 +627,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
                         moduleVideo.setVideoUrl(new URL(moduleVideo.getVideoUrl()).getPath());
                         moduleVideo.setVideoImg(new URL(moduleVideo.getVideoImg()).getPath());
-                    }else if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+                    }
+                    if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
                         moduleVideo.setImgUrl(new URL(moduleVideo.getImgUrl()).getPath());
                     }
                     return moduleVideo;

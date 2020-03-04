@@ -228,6 +228,7 @@ export function advertisementDelete (data) {
   })
 }
 
+// -------------分销员分组---------------------
 // 分销员分组列表
 export function distributionGroup (data) {
   return service({
@@ -269,6 +270,33 @@ export function distributionGroupDel (data) {
   return service({
     url: `/api/admin/distribution/group/del?id=${data}`,
     method: 'get',
+    data: data
+  })
+}
+
+// 设置分组是否在小程序端展示
+export function setGroupShow (data) {
+  return service({
+    url: '/api/admin/distribution/group/show',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取分组是否在小程序端展示
+export function getGroupShow (data) {
+  return service({
+    url: '/api/admin/distribution/group/get',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取分销员弹窗数据( 数据筛选 )
+export function getDistributor (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/list',
+    method: 'post',
     data: data
   })
 }
@@ -438,6 +466,15 @@ export function cancleDefaultGroup (data) {
   return service({
     url: `/api/admin/distribution/group/cancle?id=${data}`,
     method: 'get',
+    data: data
+  })
+}
+
+// 返利提现审核
+export function setCanSelect (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/group/select',
+    method: 'post',
     data: data
   })
 }

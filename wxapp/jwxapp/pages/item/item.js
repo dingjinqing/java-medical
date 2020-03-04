@@ -163,8 +163,14 @@ global.wxPage({
         '/api/wxapp/goods/detail',
         res => {
           if (res.error === 0) {
-            if (res.content.activity && [1, 3, 5, 10].includes(res.content.activity.activityType))
+            if (res.content.activity && [1, 3, 5, 10].includes(res.content.activity.activityType)){
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
+            }
+            if (res.content.activity && [1,3,5,10].includes(res.content.activity.activityType)){
+              this.setData({
+                page_name:actBaseInfo[res.content.activity.activityType]['actName'] + this.$t("components.navigation.title.item")
+              })
+            }
             let {
               comment,
               goodsImgs,
@@ -238,6 +244,9 @@ global.wxPage({
                 ...this.getPrice(goodsInfo)
               }
             })
+            if(activity && activity.activityType === 3 && activity.actState === 6){
+              util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`,'navigateTo')
+            }
             // 限时降价状态栏
             if (res.content.activity && [6, 98].includes(res.content.activity.activityType)) {
               this.setData({
@@ -285,14 +294,13 @@ global.wxPage({
   },
   // 获取规格信息
   getProduct({
-    detail: { prdNumber, limitBuyNum = null, limitMaxNum = null, activityType = null }
+    detail: { prdNumber, limitBuyNum = null, limitMaxNum = null}
   }) {
     this.setData({
       limitInfo: {
         prdNumber,
         limitBuyNum,
-        limitMaxNum,
-        activityType
+        limitMaxNum
       }
     })
   },
@@ -701,21 +709,13 @@ global.wxPage({
           actState === 4 ? actBaseInfo[activity.activityType]['actStatus'][actState] : '活动未开始'
         }`
       }
-    } else if (
-      activity &&
-      [1, 3, 5].includes(activity.activityType) &&
-      [1, 2, 3, 4, 5, 6].includes(activity.actState)
+    } else if (activity && [1, 3, 5, 10].includes(activity.activityType) && [1, 2, 3, 4, 5, 6].includes(activity.actState)
     ) {
       dealtAct = {
         error: 1,
         errorMessage: `${actBaseInfo[activity.activityType]['actName']}${
           actBaseInfo[activity.activityType]['actStatus'][activity.actState]
         }`
-      }
-    }
-    if (productInfo.stock === 0) {
-      dealtAct = {
-        error: 2
       }
     }
     this.setData({
@@ -725,9 +725,9 @@ global.wxPage({
   getPreSaleAct(){
     let preActBarStr = ''
     if(this.data.specParams.activity.preSaleType !== 1){
-      preActBarStr = `付定金立减:￥${this.data.productInfo.discountPrice - this.data.productInfo.depositPrice}`
+      preActBarStr = `付定金立减:￥${this.data.productInfo.actProduct.discountPrice - this.data.productInfo.actProduct.depositPrice}`
     } else {
-      preActBarStr = `定金:￥${this.data.productInfo.depositPrice}`
+      preActBarStr = `定金:￥${this.data.productInfo.actProduct.depositPrice}`
     }
     this.setData({
       'actBarInfo.preSaleActInfo':preActBarStr

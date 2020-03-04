@@ -223,7 +223,7 @@ public class SeckillService extends ShopBaseService{
         GoodsView goods = saas().getShopApp(getShopId()).goods.getGoodsView(record.getGoodsId());
         res.setGoods(goods);
         res.setSecKillProduct(this.getSecKillProductVo(skId));
-        res.setMemberCard(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIdsString(record.getCardId()));
+        res.setMemberCard(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIds(Util.splitValueToList(record.getCardId())));
         res.setShopShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
 
         return res;

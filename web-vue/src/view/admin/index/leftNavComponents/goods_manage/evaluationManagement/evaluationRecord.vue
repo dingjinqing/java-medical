@@ -394,7 +394,8 @@ export default {
       loading: false,
       showReply: false,
       replyContent: null,
-      replyId: null
+      replyId: null,
+      shopHelperParams: {}
     }
   },
   mounted () {
@@ -407,6 +408,12 @@ export default {
     }
     if (this.$route.query.orderSn) {
       this.$set(this.searchParams, 'orderSn', this.$route.query.orderSn)
+    }
+    if (this.$route.params.flag) {
+      this.$set(this.shopHelperParams, 'shopAssistantFlag', this.$route.params.flag)
+    }
+    if (this.$route.params.IntegerDays) {
+      this.$set(this.shopHelperParams, 'nDays', this.$route.params.IntegerDays)
     }
     this.initDataList()
     this.langDefault()
@@ -421,7 +428,8 @@ export default {
         awardActivityId:
           this.searchParams.awardActivityId === -1
             ? null
-            : this.searchParams.awardActivityId
+            : this.searchParams.awardActivityId,
+        ...this.shopHelperParams
       }
       if (this.target !== 'Record') {
         delete obj.flag
@@ -449,7 +457,7 @@ export default {
           this.loading = false
         }
       })
-      getEvaluationGiftList({navType: 1, pageRows: 100}).then(res => {
+      getEvaluationGiftList({navType: 0, pageRows: 300}).then(res => {
         if (res.error === 0) {
           let dataList = res.content.dataList.map(item => {
             return {id: item.id, name: item.name}

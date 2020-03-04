@@ -53,7 +53,7 @@ export const en = {
     account: 'Account',
     money: 'Total renewal amount',
     shopFlag: 'Store identification',
-    bottom: 'Bottom navigation',
+    bottom: 'Bottom LOGO',
     special: 'Special configuration',
     operating: 'operating'
   },
@@ -91,16 +91,16 @@ export const en = {
   selectData: 'Please select a date and time',
   selectFlag: 'Please select a store tag',
   flag_type: [{
-    value: '',
-    label: '选择店铺标记'
+    value: 0,
+    label: 'Select shop mark'
   },
   {
     value: 1,
-    label: '欧派'
+    label: 'OPPEIN'
   },
   {
     value: 2,
-    label: '寺库'
+    label: 'SECOO'
   }
   ],
   shopDisabled: 'Disable',

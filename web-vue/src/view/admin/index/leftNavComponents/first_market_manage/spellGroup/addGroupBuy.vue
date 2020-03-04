@@ -756,9 +756,9 @@ export default {
       }
     },
     validateNum (rule, value, callback, prdNumber) {
-      var re = /^[1-9]\d*$/
+      var re = /(^0|\+?[1-9][0-9]\d*)$/
       if (!re.test(value)) {
-        callback(new Error('请填写正整数'))
+        callback(new Error('请填写0和正整数'))
       } else if (value > prdNumber) {
         callback(new Error('拼团库存不能大于商品库存'))
       } else {

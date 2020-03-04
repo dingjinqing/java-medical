@@ -54,67 +54,34 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(val) {
+        console.log(val)
         let productsInfo = this.data.productsInfo
-        console.log(productsInfo)
-        // if (productsInfo.defaultPrd === true) {
-        //   // 活动规格限制
-        //   let actLimit = {}
-        //   if (val.activity) {
-        //     actLimit.activityType = val.activity.activityType
-        //     if (val.activity.limitMaxNum) {
-        //       actLimit.limitMaxNum = val.activity.limitMaxNum
-        //     }
-        //     if (actPrdType[val.activity.activityType]['prdListName']) {
-        //       actLimit.prdNumber =
-        //         val.activity[actPrdType[val.activity.activityType]['prdListName']][0].stock
-        //     }
-        //     if (val.activity.limitBuyNum) {
-        //       actLimit.limitBuyNum = val.activity.limitBuyNum
-        //     }
-        //   }
-        //   this.setData({
-        //     checkedProduct: val.products[0]
-        //   })
-        //   this.triggerEvent('productData', {
-        //     goodsId: val.goodsId,
-        //     ...val.products[0],
-        //     limitBuyNum: val.limitBuyNum,
-        //     limitMaxNum: val.limitMaxNum,
-        //     ...actLimit
-        //   })
-        // } else {
-        //   if (val.activity) {
-        //     if (actPrdType[val.activity.activityType].multiSkuAct) {
-        //       let activityPrds = val.activity[
-        //         actPrdType[val.activity.activityType]['prdListName']
-        //       ].map(
-        //         ({
-        //           productId: prdId,
-        //           stock: prdNumber,
-        //           [actPrdType[val.activity.activityType].prdRealPrice]: prdRealPrice,
-        //           [actPrdType[val.activity.activityType].prdLinePrice]: prdLinePrice,
-        //           isGradePrice = null
-        //         }) => {
-        //           return { prdId, prdNumber, prdRealPrice, prdLinePrice, isGradePrice }
-        //         }
-        //       )
-        //       this.setData({
-        //         activityPrds
-        //       })
-        //     }
-        //   }
-        //   console.log(this.data.activityPrds)
           if(productsInfo.defaultPrd === true){
+            let {limitBuyNum,limitMaxNum,activity} = productsInfo
             this.setData({
-              goodsId: val.goodsId,
               checkedProduct: val.products[0]
             })
-            console.log(this.data.checkedProduct)
+            if(activity && [1,5,10].includes(activity.activityType)){
+              val.products[0].prdNumber = activity[actPrdType[activity.activityType]['prdListName']][0].stock
+              if(activity.activityType === 1){
+                console.log(1)
+                limitBuyNum = activity.limitBuyNum
+                limitMaxNum = activity.limitMaxNum
+              }
+              if([5,10].includes(activity.activityType)){
+                limitMaxNum = activity.limitAmount
+              }
+            } else if (activity && activity.activityType === 3) {
+              val.products[0].prdNumber = activity.stock
+            }
+            if(activity && [6,18,22].includes(activity.activityType) && activity.isLimit){
+              limitMaxNum = activity.limitAmount
+            }
             this.triggerEvent('productData', {
               goodsId: val.goodsId,
               ...val.products[0],
-              limitBuyNum: val.limitBuyNum,
-              limitMaxNum: val.limitMaxNum
+              limitBuyNum,
+              limitMaxNum
             })
           } else {
             this.spec = this.data.productsInfo.products
@@ -250,44 +217,35 @@ global.wxComponent({
     },
     getPrdInfo() {
       let select_prd = JSON.parse(JSON.stringify(this.select_prd))
-      console.log(select_prd)
-      if(this.data.productsInfo.activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && this.data.productsInfo.activity.activityType !== 3){
-        select_prd.prdRealPrice = select_prd['actProduct'][actPrdType[this.data.productsInfo.activity.activityType]['prdRealPrice']]
-        select_prd.prdLinePrice = select_prd['actProduct'][actPrdType[this.data.productsInfo.activity.activityType]['prdLinePrice']]
-      } else if(this.data.productsInfo.activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && this.data.productsInfo.activity.activityType === 3){
-        select_prd.prdRealPrice = this.data.productsInfo.activity.bargainPrice
+      let { limitBuyNum, limitMaxNum,activity} = this.data.productsInfo
+      if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType !== 3){
+        select_prd.prdRealPrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdRealPrice']]
+        select_prd.prdLinePrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdLinePrice']]
+        if(activity.activityType === 1){
+          limitBuyNum = activity.limitBuyNum
+          limitMaxNum = activity.limitMaxNum
+        }
+        if([5,10].includes(activity.activityType) || ([6,18,22].includes(activity.activityType) && activity.isLimit)){
+          limitMaxNum = activity.limitAmount
+        }
+      } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 3){
+        select_prd.prdRealPrice = activity.bargainPrice
       }
-      if(this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(this.data.productsInfo.activity.activityType)){
+      if(activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(activity.activityType)){
         select_prd.prdNumber = select_prd['actProduct']['stock']
+      } else if (activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && activity.activityType === 3){
+        select_prd.prdNumber = activity.stock
       } else {
         select_prd.prdNumber = select_prd['prdNumber']
       }
-      let { limitBuyNum, limitMaxNum } = this.data.productsInfo
-      let actLimit = {}
-      // if(this.data.productsInfo.activity){
-      //   actLimit.activityType = this.data.productsInfo.activity.activityType
-      //   if(this.data.productsInfo.activity.limitBuyNum){
-      //     actLimit.limitMaxNum = this.data.productsInfo.activity.limitMaxNum
-      //   }
-      //   if(this.data.activityPrds){
-      //     actLimit.prdNumber = this.data.activityPrds.find(item=>item.prdId === select_prd.prdId).prdNumber
-      //   }
-      //   if(this.data.productsInfo.activity.limitBuyNum){
-      //     actLimit.limitBuyNum = this.data.productsInfo.activity.limitBuyNum
-      //   }
-      // }
       this.setData({
         checkedProduct: select_prd
       })
-      if(this.data.productsInfo.activity && this.data.productsInfo.activity.activityType !== 3){
-        actLimit = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']].find(item => {return item.productId === select_prd.prdId})
-      }
       this.triggerEvent('productData', {
         goodsId: this.data.productsInfo.goodsId,
         ...select_prd,
         limitBuyNum,
-        limitMaxNum,
-        ...actLimit
+        limitMaxNum
       })
     },
     check(specName, valName) {
@@ -324,6 +282,8 @@ global.wxComponent({
           var stock = null
           if(this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(this.data.productsInfo.activity.activityType)){
             stock = prd_list[prd_specs]['actProduct']['stock']
+          } else if (this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && this.data.productsInfo.activity.activityType === 3){
+            stock = this.data.productsInfo.activity.stock
           } else {
             stock = prd_list[prd_specs]['prdNumber']
           }

@@ -4,12 +4,26 @@
       <div class="header">
         <span>{{$t('templateMessage.title')}}</span>
         <span>{{$t('templateMessage.templateContent1')}}</span>
-        <span @click="toWXCommunity">
-          {{$t('templateMessage.templateContent2')}}
+        <span
+          @click="toWXCommunity"
+          class="notice"
+        >
+          <a
+            href="https://developers.weixin.qq.com/community/develop/doc/00008a8a7d8310b6bf4975b635a401?highLine=%25E8%25AE%25A2%25E9%2598%2585%25E6%25B6%2588%25E6%2581%25AF"
+            target='_blank'
+          >{{$t('templateMessage.templateContent2')}}</a>
         </span>
         <span>{{$t('templateMessage.templateContent3')}}</span>
         <span>{{$t('templateMessage.templateContent4')}}</span>
-        <span @click="toViewDocument">{{$t('templateMessage.templateContent5')}}</span>
+        <span
+          @click="toViewDocument"
+          class="notice"
+        >
+          <a
+            href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=76&fromuid=1"
+            target='_blank'
+          >{{$t('templateMessage.templateContent5')}}</a>
+        </span>
       </div>
       <el-divider></el-divider>
       <div class="title">
@@ -473,6 +487,10 @@ export default {
         color: #5a8bff;
         cursor: pointer;
       }
+    }
+    .notice > a {
+      color: #5a8bff;
+      text-decoration: none;
     }
   }
   /deep/ .el-divider {

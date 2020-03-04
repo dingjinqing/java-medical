@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.goods.comment;
 import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 
+import java.util.List;
+
 
 /**
  * 映射分页查询条件实体类
@@ -23,6 +25,10 @@ public class GoodsCommentPageListParam {
     public static final Byte IS_DELETE_DEFAULT_VALUE = 0;
     /** 种类名称默认搜索条为空 */
     public static final Integer CAT_DEFAULT_VALUE=-1;
+    /** 不是从店铺助手跳转来 */
+    public static final Byte NOT_FROM_SHOP_ASSISTANT=0;
+    /** 从店铺助手跳转来 */
+    public static final Byte FROM_SHOP_ASSISTANT=1;
     /**
      * 	搜索条件
      */
@@ -33,7 +39,9 @@ public class GoodsCommentPageListParam {
     private Byte flag = FLAG_DEFAULT_VALUE;
     private Byte commstar = COMMSTAR_DEFAULT_VALUE;
     private Integer awardActivityId;
-
+    private Integer nDays = 3;
+    /** 是否从店铺助手跳转来 默认否 */
+    private Byte shopAssistantFlag = NOT_FROM_SHOP_ASSISTANT;
     /**
      * 	分页信息
      */

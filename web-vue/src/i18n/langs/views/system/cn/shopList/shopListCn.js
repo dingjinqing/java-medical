@@ -57,7 +57,7 @@ export const cn = {
     account: '所属账号',
     money: '续费总金额',
     shopFlag: '店铺标识',
-    bottom: '底部导航',
+    bottom: '底部LOGO',
     special: '特殊配置',
     operating: '操作'
   },
@@ -122,7 +122,7 @@ export const cn = {
   selectData: '请选择日期时间',
   selectFlag: '请选择店铺标记',
   flag_type: [{
-    value: '',
+    value: 0,
     label: '选择店铺标记'
   },
   {

@@ -239,3 +239,45 @@
 .must{
   color: #f66;
 }
+.presale-info .dotted{
+  width: 26rpx;
+  height: 26rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  background-color: #ccc;
+}
+.presale-info > .detail_item{
+  position: relative;
+}
+.presale-info > .detail_item+.detail_item{
+  margin-top: 14rpx;
+}
+.presale-info > .detail_item+.detail_item::before{
+  content: '';
+  height: 25rpx;
+  width: 2rpx;
+  background: #ccc;
+  position: absolute;
+  top: -19rpx;
+  left: 13rpx;
+}
+.presale-info .rule{
+  border-top: 2rpx solid #eee;
+}
+.presale-info > .detail_item:last-of-type::before{
+  content: none;
+}
+.presale-info .rule .detail_title{
+  color: #999;
+}
+.presale_tips {
+  position: fixed;
+  width: 100%;
+  bottom: 80rpx;
+  background: #fcf9dd;
+  color: #ff6660;
+  font-size: 24rpx;
+  padding-left: 30rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+}

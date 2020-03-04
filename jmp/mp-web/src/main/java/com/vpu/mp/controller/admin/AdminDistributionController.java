@@ -186,6 +186,22 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<DistributorGroupListVo> groupList = shop().distributorGroup.getDistributorGroupList(param);
 		return this.success(groupList);
 	}
+
+    /**
+     * 设置分销分组是否在小程序端展示
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/group/show")
+	public JsonResult showDistributionGroup(@RequestBody ShowDistributionGroupParam param){
+        int res = shop().distributorGroup.showDistributionGroup(param);
+        return this.success(res);
+    }
+    @PostMapping("/admin/distribution/group/get")
+    public JsonResult getGroupCfg(){
+        int groupCfg = shop().distributorGroup.getGroupCfg();
+        return this.success(groupCfg);
+    }
 	
 	/**
 	 * 添加分销员分组
@@ -280,6 +296,17 @@ public class AdminDistributionController extends AdminBaseController{
 		boolean res = shop().distributorGroup.addDistributorGroup(param);
 		return this.success(res);
 	}
+
+    /**
+     * 分销分组是否支持用户可选 1；支持 0：不支持
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/distributor/group/select")
+	public JsonResult userCanSelect(@RequestBody GroupCanSelectParam param){
+        int res = shop().distributorGroup.userCanSelect(param);
+        return this.success(res);
+    }
 	
 	//分销员等级配置
 	/**
@@ -664,9 +691,9 @@ public class AdminDistributionController extends AdminBaseController{
                 list.getCheckField().setEducationName(education);
             }
             //性别
-            if(list.getCheckField().getSex().equalsIgnoreCase("f")){
+            if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("f")){
                 list.getCheckField().setSex("女");
-            }else if(list.getCheckField().getSex().equalsIgnoreCase("m")){
+            }else if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("m")){
                 list.getCheckField().setSex("男");
             }
             //婚姻状况
@@ -677,7 +704,13 @@ public class AdminDistributionController extends AdminBaseController{
             //分销分组名称
             if(list.getCheckField().getRebateGroup() != null){
                 DistributorGroupListVo oneInfo = shop().distributorGroup.getOneInfo(list.getCheckField().getRebateGroup());
-                list.getCheckField().setRebateGroupName(oneInfo.getGroupName());
+                String groupName;
+                if(oneInfo != null){
+                    groupName = oneInfo.getGroupName();
+                }else{
+                    groupName = null;
+                }
+                list.getCheckField().setRebateGroupName(groupName);
             }
 
         }

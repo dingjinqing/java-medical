@@ -45,7 +45,7 @@ public class WxAppCartBo {
     private List<WxAppCartGoods> invalidCartList;
 
     @JsonIgnore
-    private Integer activityType;
+    private Byte activityType;
     @JsonIgnore
     private Integer activityId;
     @JsonIgnore

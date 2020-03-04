@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParamBuilder;
@@ -51,8 +52,8 @@ public class EsUtilSearchService extends EsBaseSearchService{
     @Autowired
     private OrderGoodsService orderGoodsService;
 
-    public int getZhiXiaoGoodsNumbers() throws IOException {
-        int result = 0;
+    public Set<Integer> getZhiXiaoGoodsNumbers() throws IOException {
+        Set<Integer> result = Sets.newHashSet();
         List<FieldProperty> propertyList = new ArrayList<>();
         propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,getShopId()));
         propertyList.add(new FieldProperty(EsSearchName.UPDATE_TIME, DateUtil.getBeforeLocalFor(30), Operator.LT));
@@ -71,7 +72,7 @@ public class EsUtilSearchService extends EsBaseSearchService{
         List<Integer> buydIds = orderGoodsService.getZhixiaoGoodsIds();
         for(Integer id: buydIds) {
             if (ids.contains(id)) {
-                result++;
+                result.add(id);
             }
         }
         return result;

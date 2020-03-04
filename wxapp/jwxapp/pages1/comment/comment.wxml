@@ -37,7 +37,7 @@
             <!-- 余额 -->
             <text wx:elif="{{item.awardType === 3}}">{{item.award}}{{i18n.$t(localePack,"page1.comment.yuan")}}</text>
             <!-- 幸运大抽奖 -->
-            <text wx:elif="{{item.awardType === 4}}">{{item.award}}</text>
+            <text wx:elif="{{item.awardType === 4}}">"{{i18n.$t(localePack,'page1.comment.sweepstakes')}}"</text>
             <!-- 自定义奖励 -->
             <text wx:elif="{{item.awardType === 5}}">“{{i18n.$t(localePack,"page1.comment.mysteryReward")}}”</text>
           </view>

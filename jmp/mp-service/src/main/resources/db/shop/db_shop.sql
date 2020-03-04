@@ -668,6 +668,8 @@ CREATE TABLE `b2c_distribution_order` (
   `order_num` int(11) DEFAULT NULL COMMENT '订单数',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `ref_date` (`ref_date`),
   KEY `pay_order_money` (`pay_order_money`)
 )COMMENT='交易订单地区分布';
@@ -835,7 +837,9 @@ CREATE TABLE `b2c_fanli_goods_statistics` (
   `sale_number` int(11) DEFAULT NULL COMMENT '销量',
   `prd_total_fanli` decimal(10,2) DEFAULT '0.00' COMMENT '商品返利总金额',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间'
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 )COMMENT='商品返利统计';
 
 
@@ -1103,24 +1107,6 @@ CREATE TABLE `b2c_gift` (
   PRIMARY KEY (`id`),
   KEY `level` (`level`)
 )COMMENT='赠品活动';
-
-
-CREATE TABLE `b2c_sort` (
-  `sort_id` int(11) NOT NULL,
-  `sort_name` varchar(90)  NOT NULL DEFAULT '',
-  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '分类父节点，0表示一级',
-  `level` smallint(5) NOT NULL DEFAULT '0',
-  `has_child` tinyint(1) NOT NULL DEFAULT '0',
-  `sort_img` varchar(191)  NOT NULL DEFAULT '' COMMENT '一级分类是头图 其他为分类图标',
-  `img_link` varchar(191)  NOT NULL DEFAULT '' COMMENT '图标或者头图链接',
-  `first` smallint(2) NOT NULL DEFAULT '0' COMMENT '优先级',
-  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0普通商家分类 1推荐分类',
-  `sort_desc` varchar(191)  NOT NULL DEFAULT '',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
-  PRIMARY KEY (`sort_id`),
-  KEY `parent_id` (`parent_id`)
-)COMMENT='店铺自定义分类';
 
 CREATE TABLE `b2c_gift_product` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1415,39 +1401,6 @@ CREATE TABLE `b2c_goods_opai_spec` (
   PRIMARY KEY (`id`)
 )COMMENT='欧派记录价格变化表';
 
-
-CREATE TABLE `b2c_user_detail` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
-  `username` varchar(100)  DEFAULT NULL COMMENT '昵称',
-  `sex` char(5)  DEFAULT NULL COMMENT '性别：女f,男m',
-  `birthday_year` int(4) DEFAULT NULL COMMENT '生日年份',
-  `birthday_month` int(2) DEFAULT NULL,
-  `birthday_day` int(2) DEFAULT NULL,
-  `email` varchar(100)  DEFAULT NULL COMMENT '邮箱',
-  `real_name` varchar(50)  DEFAULT NULL COMMENT '真实姓名',
-  `province_code` mediumint(10) DEFAULT NULL COMMENT '所在地省编号',
-  `city_code` mediumint(10) DEFAULT NULL COMMENT '所在地市编号',
-  `district_code` mediumint(10) DEFAULT NULL COMMENT '所在地区编号',
-  `address` varchar(120)  DEFAULT NULL COMMENT '所在地',
-  `marital_status` tinyint(1) DEFAULT NULL COMMENT '婚姻状况：1未婚，2已婚，3保密',
-  `monthly_income` int(8) DEFAULT NULL,
-  `cid` varchar(18)  DEFAULT NULL COMMENT '身份证号码',
-  `education` tinyint(1) DEFAULT NULL COMMENT '教育程度',
-  `industry_info` tinyint(1) DEFAULT NULL COMMENT '所在行业',
-  `big_image` varchar(191)  DEFAULT NULL COMMENT '头像',
-  `bank_user_name` varchar(100)  DEFAULT NULL COMMENT '开户行姓名',
-  `shop_bank` varchar(100)  DEFAULT NULL COMMENT '开户行',
-  `bank_no` varchar(32)  DEFAULT NULL COMMENT '开户行卡号',
-  `withdraw_passwd` varchar(64)  DEFAULT NULL COMMENT '提现密码验证',
-  `user_avatar` varchar(191)  NOT NULL DEFAULT '/image/admin/head_icon.png' COMMENT '用户头像',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_id` (`user_id`)
-)COMMENT='用户详情表';
-
 CREATE TABLE `b2c_goods_overview_summary` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_date` date DEFAULT NULL COMMENT '2018-09-04',
@@ -1584,18 +1537,6 @@ CREATE TABLE `b2c_goods_user_summary` (
   KEY `ref_type` (`ref_date`,`type`)
 ) ROW_FORMAT=COMPACT;
 
-
-CREATE TABLE `b2c_user_rebate_price` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
-  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品id',
-  `product_id` int(11) NOT NULL DEFAULT '0' COMMENT '产品id',
-  `advice_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分销价格',
-  `expire_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '过期时间',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后修改时间',
-  PRIMARY KEY (`id`)
-)COMMENT='分销改价价格表';
 
 CREATE TABLE `b2c_grade_prd` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2095,6 +2036,8 @@ CREATE TABLE `b2c_mp_daily_retain` (
   `visit_uv` text COMMENT '活跃用户留存',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `ref_date` (`ref_date`)
 )COMMENT='日留存';
 
@@ -2110,6 +2053,8 @@ CREATE TABLE `b2c_mp_daily_visit` (
   `stay_time_session` float NOT NULL DEFAULT '0' COMMENT '次均停留时长 (浮点型，单位：秒)',
   `visit_depth` float NOT NULL DEFAULT '0' COMMENT '平均访问深度 (浮点型)',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `ref_date` (`ref_date`)
 ) ROW_FORMAT=COMPACT;
 
@@ -2120,6 +2065,8 @@ CREATE TABLE `b2c_mp_distribution_visit` (
   `list` text COMMENT '存入所有类型的指标情况',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `ref_date` (`ref_date`)
 )COMMENT='访问分布';
 
@@ -2155,7 +2102,9 @@ CREATE TABLE `b2c_mp_monthly_retain` (
   `visit_uv_new` text COMMENT '新增用户留存',
   `visit_uv` text COMMENT '活跃用户留存',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间'
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 )COMMENT='月留存';
 
 
@@ -2170,7 +2119,9 @@ CREATE TABLE `b2c_mp_monthly_visit` (
   `stay_time_session` float NOT NULL DEFAULT '0' COMMENT '次均停留时长 (浮点型，单位：秒)',
   `visit_depth` float NOT NULL DEFAULT '0' COMMENT '平均访问深度 (浮点型)',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间'
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 )COMMENT='月趋势';
 
 
@@ -2208,6 +2159,8 @@ CREATE TABLE `b2c_mp_scene_record` (
   `count` int(11) DEFAULT NULL COMMENT '记录次数',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `user_path` (`user_id`,`path`,`scene`),
   KEY `scene_create_time` (`scene`,`create_time`),
   KEY `path_create_time` (`path`,`create_time`)
@@ -2221,6 +2174,8 @@ CREATE TABLE `b2c_mp_summary_trend` (
   `share_pv` int(11) NOT NULL DEFAULT '0' COMMENT '转发次数',
   `share_uv` int(11) NOT NULL DEFAULT '0' COMMENT '转发人数',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `ref_date` (`ref_date`)
 ) ROW_FORMAT=COMPACT;
 
@@ -2277,6 +2232,8 @@ CREATE TABLE `b2c_mp_visit_page` (
   `page_share_pv` int(11) DEFAULT NULL COMMENT '转发次数',
   `page_share_uv` int(11) DEFAULT NULL COMMENT '转发人数',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `ref_date` (`ref_date`),
   KEY `page_path` (`page_path`(191)),
   KEY `page_visit_pv` (`page_visit_pv`)
@@ -2289,7 +2246,9 @@ CREATE TABLE `b2c_mp_weekly_retain` (
   `visit_uv_new` text COMMENT '新增用户留存',
   `visit_uv` text COMMENT '活跃用户留存',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间'
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 )COMMENT='周留存';
 
 
@@ -2304,7 +2263,9 @@ CREATE TABLE `b2c_mp_weekly_visit` (
   `stay_time_session` float NOT NULL DEFAULT '0' COMMENT '次均停留时长 (浮点型，单位：秒)',
   `visit_depth` float NOT NULL DEFAULT '0' COMMENT '平均访问深度 (浮点型)',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间'
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 )COMMENT='周趋势';
 
 
@@ -3387,6 +3348,8 @@ CREATE TABLE `b2c_search_history` (
   `del_time` timestamp NULL DEFAULT NULL COMMENT '过期时间',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `hot_words` (`hot_words`)
 )COMMENT='搜索热词表';
@@ -3466,6 +3429,8 @@ CREATE TABLE `b2c_service_message_record` (
   `link_identity` varchar(50) DEFAULT NULL COMMENT '模板消息关联id',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `user_request` (`user_id`,`request_action`,`template_platform`)
 )COMMENT='模板发送记录';
 
@@ -4005,6 +3970,8 @@ CREATE TABLE `b2c_trades` (
   `uv_pay_ratio` decimal(4,2) DEFAULT NULL COMMENT '转化率',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `ref_date` (`ref_date`),
   KEY `ref_hour` (`ref_date`,`hour`)
 )COMMENT='交易统计 每小时统计数据';
@@ -4249,6 +4216,8 @@ CREATE TABLE `b2c_user_card` (
   `exchang_surplus` int(11) NOT NULL DEFAULT '0' COMMENT '卡剩余兑换次数',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `card_no` (`card_no`)
 )COMMENT='会员绑定的会员卡信息';
 

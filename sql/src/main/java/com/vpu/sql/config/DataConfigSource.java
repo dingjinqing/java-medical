@@ -4,6 +4,7 @@ package com.vpu.sql.config;
 import com.google.common.collect.Lists;
 import com.vpu.sql.config.source.MainDataSource;
 import com.vpu.sql.config.source.ShopDataSource;
+import com.vpu.sql.constant.DBOperator;
 import com.vpu.sql.constant.Scope;
 import com.vpu.sql.constant.SqlTemplate;
 import com.vpu.sql.entity.DBConfig;
@@ -139,6 +140,7 @@ public class DataConfigSource {
                                 insertIntoDB(sql,shopId,md5SQL,"shop_sql");
                             }else{
                                 DBUtil.realExecuteSQL(con,sql);
+
                                 insertIntoDB(sql,shopId,md5SQL,"shop_sql");
                             }
                         }

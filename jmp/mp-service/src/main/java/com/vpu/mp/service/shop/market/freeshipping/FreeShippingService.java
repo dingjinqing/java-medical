@@ -337,15 +337,45 @@ public class FreeShippingService extends ShopBaseService {
     public boolean checkedFreeshipCondition(UserAddressVo address, BigDecimal[] tolalNumberAndPrice, List<FreeShippingRuleVo> ruleList) {
         for (FreeShippingRuleVo rule : ruleList) {
             List<Integer> districtCode = Util.stringToList(rule.getArea());
-            if (districtCode.contains(address.getDistrictCode())) {
+            if (matchDistrictCode(address.getDistrictCode(),districtCode)) {
+                logger().info("满包邮-在包邮地区");
                 if ((rule.getConType().equals(CONTYPE_NUM)||rule.getConType().equals(CONTYPE_NUM_MONEY)) && tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].intValue() >= rule.getNum()) {
+                    logger().info("满{}件包邮,商品数量{}",rule.getNum().toString(),tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].toString());
                     return true;
                 }
-                if ((rule.getConType().equals(CONTYPE_MONEY)||rule.getConType().equals(CONTYPE_NUM_MONEY))&&tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].intValue()>=rule.getMoney()){
+                if ((rule.getConType().equals(CONTYPE_MONEY)||rule.getConType().equals(CONTYPE_NUM_MONEY))&&tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].compareTo(rule.getMoney())>=0){
+                    logger().info("满{}元包邮,商品价格{}",rule.getMoney().toString(),tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].toString());
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    /**
+     *  判断是否匹配当前区县码
+     * @param districtCode  区县码
+     * @param areaList 地区列表
+     * @return true, false
+     */
+    public boolean matchDistrictCode(Integer districtCode,List<Integer> areaList ){
+         if (districtCode!=null){
+             Integer deliverCodeProvince = districtCode/1000*1000;
+             Integer deliverCodeCity = districtCode/100*100;
+             if (areaList.contains(districtCode)){
+                 return true;
+             }
+             if (areaList.contains(deliverCodeCity)){
+                 return true;
+             }
+             if (areaList.contains(deliverCodeProvince)){
+                 return true;
+             }
+             /**
+              * 全国
+              */
+             return areaList.contains(0);
+         }
+         return false;
     }
 }

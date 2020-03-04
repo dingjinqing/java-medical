@@ -277,8 +277,8 @@ public class StoreOrderService extends ShopBaseService {
                 }
                 log.debug("会员卡折扣金额:{}", cardDisAmount);
                 moneyPaid = moneyPaid.subtract(cardDisAmount).setScale(2, RoundingMode.UP);
-                payAmount = moneyPaid;
             }
+            payAmount = moneyPaid;
             // 会员卡余额抵扣金额
             if (BigDecimalUtil.greaterThanZero(cardAmount)) {
                 if (cardAmount.compareTo(money) > 0) {
@@ -295,12 +295,15 @@ public class StoreOrderService extends ShopBaseService {
                     .setMoney(orderInfo.getCardAmount().negate())
                     .setCardNo(cardNo)
                     .setCardId(userCardParam.getCardId())
-                    .setReason(orderSn)
+                    .setReasonId(RemarkTemplate.STORE_PAYMEMBT.code)
+                    .setReason(RemarkTemplate.getMessageByCode(RemarkTemplate.STORE_PAYMEMBT.code))
                     // 消费类型 :门店只支持普通会员卡：cardType=0
                     .setType(MCARD_TP_NORMAL);
                 log.debug("会员卡余额抵扣金额:{}", cardAmount);
                 moneyPaid = moneyPaid.subtract(cardAmount).setScale(2, RoundingMode.UP);
             }
+        } else {
+            payAmount = moneyPaid;
         }
         // 余额抵扣金额
         if (BigDecimalUtil.greaterThanZero(balanceAmount)) {
@@ -323,7 +326,7 @@ public class StoreOrderService extends ShopBaseService {
                 setPayment(PAY_CODE_BALANCE_PAY);
                 // 支付类型，0：充值，1：消费
                 setIsPaid(BYTE_ONE);
-                setUserInputRemark(orderSn);
+                setRemarkId(RemarkTemplate.STORE_PAYMEMBT.code);
             }};
             log.debug("余额抵扣金额:{}", balanceAmount);
             moneyPaid = moneyPaid.subtract(balanceAmount).setScale(2, RoundingMode.UP);
@@ -339,9 +342,13 @@ public class StoreOrderService extends ShopBaseService {
             BigDecimal proportion = BigDecimal.valueOf(scoreProportion);
             // 积分使用上下限限制
             int scoreValue = scoreAmount.multiply(proportion).intValue();
-            if (scoreValue < baseScoreCfgService.getScorePayNum()) {
-                log.debug("低于积分使用下限配置，不可使用积分支付");
-                throw new BusinessException(JsonResultCode.CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG);
+            // 积分下限开关（0： 不限制使用下限值；1：限制）
+            byte scorePayLimitSwitch = baseScoreCfgService.getScorePayLimit();
+            if (scorePayLimitSwitch != 0) {
+                if (scoreValue < baseScoreCfgService.getScorePayNum()) {
+                    log.debug("低于积分使用下限配置，不可使用积分支付");
+                    throw new BusinessException(JsonResultCode.CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG);
+                }
             }
             BigDecimal ratio = BigDecimal.valueOf(baseScoreCfgService.getScoreDiscountRatio()).divide(HUNDRED);
             if (scoreAmount.compareTo(payAmount.multiply(ratio)) > INTEGER_ZERO) {
@@ -359,8 +366,7 @@ public class StoreOrderService extends ShopBaseService {
                 // 积分变动数额
                 setScore(scoreValue);
                 setOrderSn(orderSn);
-                setRemarkData(orderSn);
-                //setRemark(orderSn);
+                setRemarkCode(RemarkTemplate.STORE_PAYMEMBT.code);
             }};
             log.debug("积分抵扣金额:{}", scoreAmount);
             moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);

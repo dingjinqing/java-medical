@@ -541,6 +541,18 @@ page{
   bottom: 66rpx;
   font-size: 24rpx;
 }
+.member_label {
+  position: absolute;
+  bottom: 66rpx;
+
+  padding: 0rpx 12rpx;
+  color: #fff;
+  background: linear-gradient(to left, #e0c787, #d9ae69);
+  border-radius: 5rpx;
+  margin-right: 10rpx;
+  font-size: 20rpx;
+  line-height: 38rpx;
+}
 .reduce_price {
   background-color: #f9dbdb;
   color: #f66;
@@ -552,4 +564,13 @@ page{
   bottom: 0;
   font-size: 20rpx;
   z-index: 3;
+}
+
+.load_style {
+  font-size: 24rpx;
+  color: #666;
+  width: 100%;
+  padding: 15rpx 0;
+  text-align: center;
+  padding-bottom: 100rpx;
 }

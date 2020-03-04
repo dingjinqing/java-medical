@@ -1,7 +1,10 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.CommentGoods;
+import com.vpu.mp.db.shop.tables.records.CommentGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -158,6 +161,11 @@ public class GoodsCommentService extends ShopBaseService {
     if (!GoodsCommentPageListParam.FLAG_DEFAULT_VALUE.equals(param.getFlag())) {
         select.and(COMMENT_GOODS.FLAG.eq(param.getFlag()));
     }
+    //店铺助手查出商品评价审核逾期的评价id列表
+      if(GoodsCommentPageListParam.FROM_SHOP_ASSISTANT.equals(param.getShopAssistantFlag())){
+          select.and(COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
+              .and(COMMENT_GOODS.CREATE_TIME.add(param.getNDays()).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+      }
   }
 
     /**
@@ -479,6 +487,7 @@ public class GoodsCommentService extends ShopBaseService {
                         .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(BYTE_ZERO)))
                 .where(ORDER_GOODS.ORDER_SN.eq(orderSnTemp))
 //                .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
+                .and(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(ORDER_GOODS.COMMENT_FLAG.eq(param.getCommentFlag()))
                 .and(ORDER_GOODS.GOODS_NUMBER.greaterThan(ORDER_GOODS.RETURN_NUMBER))
                 .orderBy(COMMENT_GOODS.CREATE_TIME.desc())
@@ -507,7 +516,8 @@ public class GoodsCommentService extends ShopBaseService {
                 COMMENT_AWARD.ID,
                 COMMENT_AWARD.GOODS_TYPE,
                 COMMENT_AWARD.GOODS_IDS,
-                COMMENT_AWARD.COMMENT_NUM)
+                COMMENT_AWARD.COMMENT_NUM,
+                COMMENT_AWARD.FIRST_COMMENT_GOODS)
             .from(COMMENT_AWARD)
             .where(COMMENT_AWARD.DEL_FLAG.eq(BYTE_ZERO))
             .and(COMMENT_AWARD.STATUS.eq(NumberUtils.BYTE_ONE))
@@ -536,13 +546,26 @@ public class GoodsCommentService extends ShopBaseService {
     // 声明一个集合来存放满足条件的活动id
     Set<Integer> actIds = new HashSet<>();
     for (TriggerConditionVo vo : triggerConditionVos) {
+        //先判断是否只有首次评价商品才送礼
+        if(vo.getFirstCommentGoods()!=null&&vo.getFirstCommentGoods()==(byte)1){
+            //判断当前商品 对于当前的评价有礼活动 是否是首次评价
+            List<CommentGoodsRecord> record = db().select()
+                .from(COMMENT_GOODS)
+                .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(COMMENT_GOODS.GOODS_ID.eq(goodsId))
+                .and(COMMENT_GOODS.COMMENT_AWARD_ID.eq(vo.getId()))
+                .fetchInto(CommentGoodsRecord.class);
+            //对于当前的评价有礼活动 当前商品 已经有人评价过了
+            if (record!=null&&record.size()>0){
+                //这个活动不符合当前商品 跳出当前活动循环
+                continue;
+            }
+        }
       // 触发条件：全部商品
       if (vo.getGoodsType().equals(NumberUtils.INTEGER_ONE)) {
         actIds.add(vo.getId());
       } // 触发条件：指定商品
       else if (vo.getGoodsType().equals(NumberUtils.INTEGER_TWO)) {
-          logger().info("before:"+vo.getGoodsIds());
-          logger().info("after:"+vo.getGoodsIds().substring(1,vo.getGoodsIds().length()-1));
         String[] arr = vo.getGoodsIds().substring(1,vo.getGoodsIds().length()-1).split(",");
         if (Arrays.asList(arr).contains(goodsId.toString())) {
           actIds.add(vo.getId());
@@ -704,8 +727,16 @@ public class GoodsCommentService extends ShopBaseService {
     } else {
         flag = BYTE_ZERO;
     }
-    // 为指定商品添加评论
-    db().insertInto(
+    //添加前查找是否有这样的记录
+      CommentGoodsRecord record = db().select()
+          .from(COMMENT_GOODS)
+          .where(COMMENT_GOODS.REC_ID.eq(param.getRecId()))
+          .and(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+          .fetchOneInto(CommentGoodsRecord.class);
+    if (record==null) {
+
+        // 为指定商品添加评论
+        db().insertInto(
             COMMENT_GOODS,
             COMMENT_GOODS.SHOP_ID,
             COMMENT_GOODS.USER_ID,
@@ -718,120 +749,173 @@ public class GoodsCommentService extends ShopBaseService {
             COMMENT_GOODS.FLAG,
             COMMENT_GOODS.REC_ID,
             COMMENT_GOODS.PRD_ID)
-        .values(
-            0,
-            param.getUserId(),
-            param.getGoodsId(),
-            param.getOrderSn(),
-            param.getCommstar(),
-            param.getCommNote(),
-            param.getCommImg(),
-            param.getAnonymousflag(),
-            flag,
-            param.getRecId(),
-            param.getPrdId())
-        .execute();
-    // 添加评论后将order_goods表中comment_flag置为1
-    db().update(ORDER_GOODS)
-        .set(ORDER_GOODS.COMMENT_FLAG, NumberUtils.BYTE_ONE)
-        .where(ORDER_GOODS.REC_ID.eq(param.getRecId()))
-        .execute();
-    // order表中的comment_flag也置为1
-    db().update(ORDER_INFO)
-        .set(ORDER_INFO.COMMENT_FLAG, NumberUtils.BYTE_ONE)
-        .where(ORDER_INFO.ORDER_SN.eq(param.getOrderSn()))
-        .execute();
-    // 添加评价关联评价有礼-发放礼物
-    if (null != param.getId()) {
-      // 判断是否满足当前活动需要的评价条件
-      AwardConditionVo awardCondition =
-          db().select(
-                  COMMENT_AWARD.COMMENT_TYPE,
-                  COMMENT_AWARD.COMMENT_WORDS,
-                  COMMENT_AWARD.HAS_PIC_NUM,
-                  COMMENT_AWARD.HAS_FIVE_STARS)
-              .from(COMMENT_AWARD)
-              .where(COMMENT_AWARD.ID.eq(param.getId()))
-              .fetchOneInto(AwardConditionVo.class);
-      if (awardCondition.getCommentType().equals((byte)2)) {
-        // 心得超过规定字数
-        if (param.getCommNote().length() < awardCondition.getCommentWords()) {
-          return;
-        }
-        // 晒图评论
-        else if (awardCondition.getHasPicNum().equals(NumberUtils.BYTE_ONE)
-            && StringUtils.isBlank(param.getCommImg())) {
-          return;
-        }
-        // 五星好评
-        else if (awardCondition.getHasFiveStars().equals(NumberUtils.BYTE_ONE)
-            && param.getCommstar() != FIVE) {
-          return;
-        }
-      }
-      // 为参与评价有礼活动的商品设置活动id 此时已经经过满足评价条件的校验了
-      db().update(COMMENT_GOODS)
-          .set(COMMENT_GOODS.COMMENT_AWARD_ID, param.getId())
-          .where(COMMENT_GOODS.REC_ID.eq(param.getRecId()))
-          .and(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO))
-          .execute();
-      // 活动奖励1：赠送积分
-      if (param.getAwardType().equals(NumberUtils.INTEGER_ONE)) {
-        // 给当前用户赠送积分
-        Integer[] userIdArray = {param.getUserId()};
-        scoreService.updateMemberScore(
-            new ScoreParam() {
-              {
-                setUserId(param.getUserId());
-                setScore(Integer.valueOf(param.getAward()));
-                setScoreStatus(BYTE_ZERO);
-                setDesc("score");
-                setOrderSn(param.getOrderSn());
-                setRemarkCode(RemarkTemplate.COMMENT_HAS_GIFT.code);
-                //setRemark("评价有礼获得");
-              }
-            },
-            0,
-            (byte) 11,
-            (byte) 0);
-      }
-      // 活动奖励2：赠送优惠券
-      else if (param.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
-        // 给当前用户赠送优惠券
+            .values(
+                0,
+                param.getUserId(),
+                param.getGoodsId(),
+                param.getOrderSn(),
+                param.getCommstar(),
+                param.getCommNote(),
+                param.getCommImg(),
+                param.getAnonymousflag(),
+                flag,
+                param.getRecId(),
+                param.getPrdId())
+            .execute();
+        // 添加评论后将order_goods表中comment_flag置为1
+        db().update(ORDER_GOODS)
+            .set(ORDER_GOODS.COMMENT_FLAG, NumberUtils.BYTE_ONE)
+            .where(ORDER_GOODS.REC_ID.eq(param.getRecId()))
+            .execute();
+        // order表中的comment_flag也置为1
+        db().update(ORDER_INFO)
+            .set(ORDER_INFO.COMMENT_FLAG, NumberUtils.BYTE_ONE)
+            .where(ORDER_INFO.ORDER_SN.eq(param.getOrderSn()))
+            .execute();
+        // 添加评价关联评价有礼-发放礼物
+        if (null != param.getId()) {
+            //获取奖品份数和已发放份数
+            Integer awardNum = db().select(COMMENT_AWARD.AWARD_NUM)
+                .from(COMMENT_AWARD)
+                .where(COMMENT_AWARD.ID.eq(param.getId()))
+                .fetchOptionalInto(Integer.class)
+                .orElse(0);
+            Integer sendNum = db().select(COMMENT_AWARD.SEND_NUM)
+                .from(COMMENT_AWARD)
+                .where(COMMENT_AWARD.ID.eq(param.getId()))
+                .fetchOneInto(Integer.class);
+            //判断奖品是否发完
+            if (awardNum <= sendNum) {
+                return;
+            }
+            // 判断是否满足当前活动需要的评价条件
+            AwardConditionVo awardCondition =
+                db().select(
+                    COMMENT_AWARD.COMMENT_TYPE,
+                    COMMENT_AWARD.COMMENT_WORDS,
+                    COMMENT_AWARD.HAS_PIC_NUM,
+                    COMMENT_AWARD.HAS_FIVE_STARS)
+                    .from(COMMENT_AWARD)
+                    .where(COMMENT_AWARD.ID.eq(param.getId()))
+                    .fetchOneInto(AwardConditionVo.class);
+            if (awardCondition.getCommentType().equals((byte) 2)) {
+                // 心得超过规定字数
+                if (param.getCommNote().length() < awardCondition.getCommentWords()) {
+                    return;
+                }
+                // 晒图评论
+                else if (awardCondition.getHasPicNum().equals(NumberUtils.BYTE_ONE)
+                    && StringUtils.isBlank(param.getCommImg())) {
+                    return;
+                }
+                // 五星好评
+                else if (awardCondition.getHasFiveStars().equals(NumberUtils.BYTE_ONE)
+                    && param.getCommstar() != FIVE) {
+                    return;
+                }
+            }
+            // 为参与评价有礼活动的商品设置活动id 此时已经经过满足评价条件的校验了
+            db().update(COMMENT_GOODS)
+                .set(COMMENT_GOODS.COMMENT_AWARD_ID, param.getId())
+                .where(COMMENT_GOODS.REC_ID.eq(param.getRecId()))
+                .and(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO))
+                .execute();
+            //当前活动的评价数量
+            Integer commentNum = db().select(COMMENT_AWARD.COMMENT_NUM)
+                .from(COMMENT_AWARD)
+                .where(COMMENT_AWARD.ID.eq(param.getId()))
+                .fetchOptionalInto(Integer.class)
+                .orElse(0);
+            // 活动奖励1：赠送积分
+            if (param.getAwardType().equals(NumberUtils.INTEGER_ONE)) {
+                // 给当前用户赠送积分
+                Integer[] userIdArray = {param.getUserId()};
+                scoreService.updateMemberScore(
+                    new ScoreParam() {
+                        {
+                            setUserId(param.getUserId());
+                            setScore(Integer.valueOf(param.getAward()));
+                            setScoreStatus(BYTE_ZERO);
+                            setDesc("score");
+                            setOrderSn(param.getOrderSn());
+                            setRemarkCode(RemarkTemplate.COMMENT_HAS_GIFT.code);
+                            //setRemark("评价有礼获得");
+                        }
+                    },
+                    0,
+                    (byte) 11,
+                    (byte) 0);
+                //更新奖品分数
+                db().update(COMMENT_AWARD)
+                    .set(COMMENT_AWARD.SEND_NUM, (sendNum + 1))
+                    .set(COMMENT_AWARD.COMMENT_NUM, (commentNum + 1))
+                    .where(COMMENT_AWARD.ID.eq(param.getId()))
+                    .execute();
+            }
+            // 活动奖励2：赠送优惠券
+            else if (param.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
+                // 给当前用户赠送优惠券
 //          Integer shopId = getShopId();
-          CouponGiveQueueParam giveCoupon = new CouponGiveQueueParam(){{
-              setActId(1);
-              setGetSource(GET_SOURCE);
-              setAccessMode(BYTE_ZERO);
-              setCouponArray(new String[] {param.getAward()});
-              setUserIds(new ArrayList<Integer>(){{add(param.getUserId());}});
-          }};
-          //调用定向发券中抽取出来的公共方法
-          couponGiveService.handlerCouponGive(giveCoupon);
-      }
-      // 活动奖励3：赠送用户余额
-      else if (param.getAwardType().equals(THREE)) {
-        // 给当前用户赠送余额
-        // 获取语言 用于国际化
-          accountService.updateUserAccount(
-            new AccountParam() {
-              {
-                setUserId(param.getUserId());
-                setAmount(BigDecimal.valueOf(Double.parseDouble(param.getAward())));
-                setOrderSn(param.getOrderSn());
-                setRemarkId(RemarkTemplate.COMMENT_HAS_GIFT.code);
-              }
-            },
-            TradeOptParam.builder().tradeType((byte)8).tradeFlow((byte)1).build());
-      }
-      // 活动奖励4：赠送抽奖机会
-      else if (param.getAwardType().equals(FOUR)) {
-        // 前端展示内容为：获得一次抽奖机会，可以选择进入抽奖页面
-      }
-      // 活动奖励5：自定义奖励
-      else if (param.getAwardType().equals(FIVE)) {
-        // 前端展示内容：查看神秘奖励，可以选择进入path链接
-      }
+                CouponGiveQueueParam giveCoupon = new CouponGiveQueueParam() {{
+                    setActId(1);
+                    setGetSource(GET_SOURCE);
+                    setAccessMode(BYTE_ZERO);
+                    setCouponArray(new String[]{param.getAward()});
+                    setUserIds(new ArrayList<Integer>() {{
+                        add(param.getUserId());
+                    }});
+                }};
+                //调用定向发券中抽取出来的公共方法
+                couponGiveService.handlerCouponGive(giveCoupon);
+                //更新奖品分数
+                db().update(COMMENT_AWARD)
+                    .set(COMMENT_AWARD.SEND_NUM, (sendNum + 1))
+                    .set(COMMENT_AWARD.COMMENT_NUM, (commentNum + 1))
+                    .where(COMMENT_AWARD.ID.eq(param.getId()))
+                    .execute();
+            }
+            // 活动奖励3：赠送用户余额
+            else if (param.getAwardType().equals(THREE)) {
+                // 给当前用户赠送余额
+                // 获取语言 用于国际化
+                accountService.updateUserAccount(
+                    new AccountParam() {
+                        {
+                            setUserId(param.getUserId());
+                            setAmount(BigDecimal.valueOf(Double.parseDouble(param.getAward())));
+                            setOrderSn(param.getOrderSn());
+                            setRemarkId(RemarkTemplate.COMMENT_HAS_GIFT.code);
+                        }
+                    },
+                    TradeOptParam.builder().tradeType((byte) 8).tradeFlow((byte) 1).build());
+                //更新奖品分数
+                db().update(COMMENT_AWARD)
+                    .set(COMMENT_AWARD.SEND_NUM, (sendNum + 1))
+                    .set(COMMENT_AWARD.COMMENT_NUM, (commentNum + 1))
+                    .where(COMMENT_AWARD.ID.eq(param.getId()))
+                    .execute();
+            }
+            // 活动奖励4：赠送抽奖机会
+            else if (param.getAwardType().equals(FOUR)) {
+                // 前端展示内容为：获得一次抽奖机会，可以选择进入抽奖页面
+                //更新奖品分数
+                db().update(COMMENT_AWARD)
+                    .set(COMMENT_AWARD.SEND_NUM, (sendNum + 1))
+                    .set(COMMENT_AWARD.COMMENT_NUM, (commentNum + 1))
+                    .where(COMMENT_AWARD.ID.eq(param.getId()))
+                    .execute();
+            }
+            // 活动奖励5：自定义奖励
+            else if (param.getAwardType().equals(FIVE)) {
+                // 前端展示内容：查看神秘奖励，可以选择进入path链接
+                //更新奖品分数
+                db().update(COMMENT_AWARD)
+                    .set(COMMENT_AWARD.SEND_NUM, (sendNum + 1))
+                    .set(COMMENT_AWARD.COMMENT_NUM, (commentNum + 1))
+                    .where(COMMENT_AWARD.ID.eq(param.getId()))
+                    .execute();
+            }
+        }
     }
   }
 
@@ -898,5 +982,18 @@ public class GoodsCommentService extends ShopBaseService {
         return db().fetchCount(CommentGoods.COMMENT_GOODS, CommentGoods.COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO)
             .and(CommentGoods.COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
             .and(CommentGoods.COMMENT_GOODS.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
+
+    /**
+     * Review overdue integer.商品评价审核逾期id列表
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> reviewOverdueSet(Integer nDays) {
+        Condition condition = COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO)
+            .and(COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
+            .and(COMMENT_GOODS.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+        return db().select(COMMENT_GOODS.ID).from(COMMENT_GOODS).where(condition).fetchSet(COMMENT_GOODS.ID);
     }
 }

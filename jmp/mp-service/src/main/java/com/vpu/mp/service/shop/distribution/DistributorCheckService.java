@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -14,9 +15,11 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import java.util.Set;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * 分销员审核service
@@ -66,8 +69,14 @@ public class DistributorCheckService extends ShopBaseService{
         if(param.getEndTime() != null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.ge(param.getEndTime()));
         }
+        //flag = 1是从店铺助手过来
+        if(param.getFlag() == 1){
+            select.and(DISTRIBUTOR_APPLY.STATUS.eq((byte)0).and(DISTRIBUTOR_APPLY.CREATE_TIME.add(param.getNumberDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+        }
         //状态 0：待审核；1：审核通过；2：未通过
-        select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
+        if(param.getNav() != null) {
+            select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
+        }
         //根据申请时间降序排序
         select.orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc());
     }
@@ -80,6 +89,17 @@ public class DistributorCheckService extends ShopBaseService{
      */
     public Integer distributionReviewTimeout(Integer nDays) {
         return db().fetchCount(DISTRIBUTOR_APPLY, DISTRIBUTOR_APPLY.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+    }
+
+    /**
+     * Distribution review timeout integer.分销审核超过N天未处理集合
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> distributionReviewTimeoutSet(Integer nDays) {
+        Condition condition = DISTRIBUTOR_APPLY.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()));
+        return db().select(DISTRIBUTOR_APPLY.ID).from(DISTRIBUTOR_APPLY).where(condition).fetchSet(DISTRIBUTOR_APPLY.ID);
     }
 
     /**

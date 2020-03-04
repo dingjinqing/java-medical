@@ -19,7 +19,12 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
@@ -30,6 +35,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -131,6 +137,13 @@ public class ReturnOrderService extends ShopBaseService{
 		}
 		if (param.getReturnEnd() != null) {
             select.where(TABLE.CREATE_TIME.le(param.getReturnEnd()));
+        }
+        if (param.getRetIds() != null && param.getRetIds().length != 0) {
+            select.where(TABLE.RET_ID.in(param.getRetIds()));
+        }
+        if(OrderConstant.SHOP_HELPER_OVERDUE_RETURN_APPLY.equals(param.getShopHelperAction())) {
+            select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
+                .and(TABLE.CREATE_TIME.add(param.getShopHelperActionDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
         }
 		return select;
 	}
@@ -490,6 +503,18 @@ public class ReturnOrderService extends ShopBaseService{
     public Integer refundOverdue(Integer nDays) {
         return db().fetchCount(TABLE, TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
             .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
+
+    /**
+     * Refund overdue integer.退款申请逾期订单id列表
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> refundOverdueSet(Integer nDays) {
+        Condition condition = TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+        return db().select(TABLE.RET_ID).from(TABLE).where(condition).fetchSet(TABLE.RET_ID);
     }
 
     /**

@@ -145,7 +145,8 @@
       </view>
     </block>
     <view class='btn_kanjia' bindtap='toWhere' wx:if='{{bargain_info.state == 9}}'>我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物</view>
-    <view class='btn_kanjia' bindtap='toOrder' data-order_sn="{{bargain_info.record_status.order_sn}}" wx:if='{{bargain_info.state == 10}}'>已完成订单,点击查看详情</view>
+    <view class='btn_kanjia' bindtap='toOrder' data-order_sn="{{bargain_info.recordInfo.orderSn}}" wx:if='{{bargain_info.state == 10}}'>已完成订单,点击查看详情</view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.state == 12}}' bindtap='toIndex'>已达到设置的每日砍价次数限制</view>
     <!-- 砍价记录 -->
     <view class='kanjia_person' wx:if='{{bargain_info.recordUserList.length > 0}}'>
       <view class='list_title'>
@@ -241,4 +242,5 @@
   </view>
   
 </view>
+<v-recommend id="recommend" pageName="bargainitem"/>
 <include src="../common/footer.wxml" />

@@ -178,7 +178,7 @@
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList, manualAddDistributor } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
@@ -188,6 +188,11 @@ export default {
     turnUp: {
       type: Boolean,
       default: () => false
+    },
+    // 当前操作的分组id
+    optGroupId: {
+      type: Number,
+      default: () => null
     },
     // 选中的数据id
     selectRowIds: {
@@ -209,7 +214,11 @@ export default {
   data () {
     return {
       dialogTableVisible: false, // 分销员弹框
-      pageParams: {}, // 分页
+      // 分页
+      pageParams: {
+        currentPage: 1,
+        pageRows: 10
+      },
       valueLevel: '',
       valueGroup: '',
       groupLevelList: [], // 分销员等级
@@ -239,7 +248,13 @@ export default {
         }
       })
       // 分销员表格
-      distributorList(this.pageParams).then(res => {
+      var requestParams = {}
+      if (this.optGroupId) {
+        requestParams.optGroupId = this.optGroupId
+      }
+      requestParams.currentPage = this.pageParams.currentPage
+      requestParams.pageRows = this.pageParams.pageRows
+      distributorList(requestParams).then(res => {
         if (res.error === 0) {
           this.distributorList = res.content.dataList
           this.pageParams = res.content.page
@@ -271,16 +286,9 @@ export default {
       this.multipleData.filter((item, index) => {
         userIds.push(item.userId)
       })
-      manualAddDistributor({
-        level: this.level,
-        userIds: userIds
-      }).then(res => {
-        if (res.error === 0) {
-          this.$emit('handleSelect', userIds)
-          this.dialogTableVisible = false
-          this.$message.success({ message: '添加成功!' })
-        }
-      })
+
+      this.$emit('handleSelect', userIds)
+      this.dialogTableVisible = false
     },
 
     // 取消添加

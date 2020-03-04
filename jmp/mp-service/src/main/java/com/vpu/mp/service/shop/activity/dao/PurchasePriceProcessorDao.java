@@ -4,8 +4,11 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PurchasePricePromotion;
+import org.jooq.Record4;
+import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,4 +56,27 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
 
         return promotions;
     }
+
+    /**
+     *加价购
+     * @param goodsId
+     * @param date
+     * @return
+     */
+    public Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> getPurchasePriceInfo(Integer goodsId, Timestamp date){
+        return db().select(PURCHASE_PRICE_DEFINE.ID,PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID, PURCHASE_PRICE_RULE.FULL_PRICE, PURCHASE_PRICE_RULE.PURCHASE_PRICE)
+                .from(PURCHASE_PRICE_DEFINE)
+                .innerJoin(PURCHASE_PRICE_RULE).on(PURCHASE_PRICE_DEFINE.ID.eq(PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID))
+                .where(PURCHASE_PRICE_DEFINE.STATUS.eq(STATUS_NORMAL))
+                .and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(PURCHASE_PRICE_RULE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(DslPlus.findInSet(goodsId, PURCHASE_PRICE_DEFINE.GOODS_ID))
+                .and(PURCHASE_PRICE_DEFINE.START_TIME.le(date))
+                .and(PURCHASE_PRICE_DEFINE.END_TIME.ge(date))
+                .orderBy(PURCHASE_PRICE_DEFINE.LEVEL.desc(), PURCHASE_PRICE_DEFINE.CREATE_TIME.desc())
+                .fetch().intoGroups(PURCHASE_PRICE_DEFINE.ID);
+    }
+
+
+
 }

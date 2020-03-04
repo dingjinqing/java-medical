@@ -30,13 +30,19 @@
           :label="$t('distribution.distributorList')"
           name="fouth"
         >
-          <distributorList :inviteFlag="inviteCode" />
+          <distributorList
+            :inviteFlag="inviteCode"
+            :optGroupId="optGroupId"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorGroup')"
           name="fifth"
         >
-          <distributorGroup />
+          <distributorGroup
+            @tabChange="tabChange"
+            @optGroupId="getGroupId"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.commissionStatistics')"
@@ -100,7 +106,8 @@ export default {
   data () {
     return {
       activeName: 'first',
-      inviteCode: false
+      inviteCode: '',
+      optGroupId: 0
     }
   },
   mounted () {
@@ -109,6 +116,15 @@ export default {
         this.activeName = 'first'
       }
     })
+
+    // 店铺助手跳转分销审核
+    console.log(this.$route.params)
+    if (this.$route.params.flag === 1) {
+      if (this.$route.params.distributorName) {
+        // tab重新赋值
+        this.activeName = this.$route.params.distributorName
+      }
+    }
   },
   methods: {
     handleClick (tab) {
@@ -117,6 +133,10 @@ export default {
     },
     tabChange () {
       this.activeName = 'fouth'
+    },
+    getGroupId (data) {
+      this.optGroupId = data
+      console.log(this.optGroupId)
     },
     inviteCodeHandler (val) {
       this.inviteCode = val

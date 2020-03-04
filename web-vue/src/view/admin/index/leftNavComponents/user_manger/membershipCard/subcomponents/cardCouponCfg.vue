@@ -142,6 +142,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       if (this.ruleForm.powerCoupon) {
         if (this.ruleForm.couponType === '1') {

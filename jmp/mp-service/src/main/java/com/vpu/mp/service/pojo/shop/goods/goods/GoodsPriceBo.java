@@ -21,4 +21,9 @@ public class GoodsPriceBo {
     private BigDecimal goodsPrice;
 
     private BigDecimal maxPrice;
+
+    /**
+     * 限时降价、首单特惠活动的限购
+     */
+    private Integer limitAmount;
 }

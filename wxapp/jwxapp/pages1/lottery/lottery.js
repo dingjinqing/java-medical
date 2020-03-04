@@ -15,21 +15,21 @@ global.wxPage({
   data: {
     imageUrl: imageUrl,
     bgImg: imageUrl + '/image/wxapp/lo_bg4.jpg',
-    rightIcon: imageUrl+ '/image/wxapp/go_cou_list.png',
+    rightIcon: imageUrl + '/image/wxapp/go_cou_list.png',
     defaultGiftIcon: imageUrl + '/image/admin/icon_lottery/1.png',
     broadcastIcon: imageUrl + '/image/wxapp/lo_words.png',
     lotteryInfo: {},
     userInfo: {},
     rawards: [
       { name: '四等奖', path: fourthGiftIcon },
-      { name: '谢谢参与', path: thanksGiftIcon},
-      { name: '三等奖', path: thirdGiftIcon},
-      { name: '一等奖', path: firstGiftIcon},
-      { name: '二等奖', path: secondGiftIcon},
-      { name: '四等奖', path: fourthGiftIcon},
-      { name: '三等奖', path: thirdGiftIcon},
-      { name: '四等奖', path: fourthGiftIcon},
-      { name: '二等奖', path: secondGiftIcon}
+      { name: '谢谢参与', path: thanksGiftIcon },
+      { name: '三等奖', path: thirdGiftIcon },
+      { name: '一等奖', path: firstGiftIcon },
+      { name: '二等奖', path: secondGiftIcon },
+      { name: '四等奖', path: fourthGiftIcon },
+      { name: '三等奖', path: thirdGiftIcon },
+      { name: '四等奖', path: fourthGiftIcon },
+      { name: '二等奖', path: secondGiftIcon }
     ],
     isCover: false, // 是否遮罩
     winIndex: 1, // 哪个选中（0~8）
@@ -37,12 +37,14 @@ global.wxPage({
     speed: 100, // 抽奖转动速度
     awardDialogVisible: false, // 奖品弹窗
     noAwardDialogVisible: false, // 未中奖弹窗
-    lotteryId: '', 
+    lotteryId: '',
     lotteryType: '', // 抽奖类型（抽奖次数来源） 1免费,2分享,3积分
     lotterySource: 3, // 活动来源 1开屏有礼,2支付有礼,3分享,4评价有礼,5分享有礼
     btnstatus: 1, // 按钮状态 1立即抽奖，2去分享，3消耗积分抽奖，4抽奖次数用光啦
     prizeInfo: null, // 奖品信息
-    hasClick: false
+    hasClick: false,
+    canTime: 0, // 抽奖次数
+    getsq: false
   },
 
   /**
@@ -53,6 +55,27 @@ global.wxPage({
     let that = this
     let lotteryId = options.lotteryId
     let lotterySource = options.lotterySource || 3
+    // 处理扫码进入的情况
+    if (options.scene) {
+      let scene = decodeURIComponent(options.scene).split('&')
+      console.log(scene)
+      lotteryId = scene[0].split('=')[1]
+      lotterySource = scene[1] ? scene[1].split('=')[1] : 3
+    }
+    // 处理新用户登录的情况
+    var user_name = util.getCache('nickName');
+    var user_avatar = util.getCache('avatarUrl');
+    if (!user_name || user_name == '用户' + parseInt(util.getCache('user_id') + 10000)
+      || user_name == util.getCache('openid') || !user_avatar
+      || user_avatar.indexOf('image/admin/head_icon.png') > -1) {
+      that.setData({
+        getsq: false
+      })
+    } else {
+      that.setData({
+        getsq: true
+      })
+    }
     this.setData({
       lotteryId: lotteryId,
       lotterySource: lotterySource
@@ -64,15 +87,13 @@ global.wxPage({
   },
 
   // 请求抽奖信息
-  lotteryRequest() {
+  lotteryRequest () {
     let that = this
-    console.log('lotteryRequest')
     util.api('/api/wxapp/lottery/get', function (res) {
-      console.log(res)
       if (res.error === 0) {
         let content = res.content
         that.initRawards(content.lotteryInfo.prizeList)
-        that.initRaffleButton(content.lotteryUserTimeInfo)
+        that.initRaffleButton(content.lotteryUserTimeInfo, content.lotteryInfo)
         that.setData({
           lotteryInfo: content.lotteryInfo,
           userInfo: content.lotteryUserTimeInfo
@@ -88,8 +109,8 @@ global.wxPage({
   // 初始化奖品
   initRawards (rawards) {
     let lotteryRawards = []
-    for(let i = 0; i<9; i++) {
-      switch(i) {
+    for (let i = 0; i < 9; i++) {
+      switch (i) {
         case 0:
         case 5:
         case 7:
@@ -138,8 +159,12 @@ global.wxPage({
    * 2.分享抽奖
    * 3.积分抽奖
    * 4.不能抽奖
+   * 根据lotteryInfo中的
+   * freeChances=null表示不限次
+   * canShare=2表示不能分享
+   * canUseScore=2表示不能用积分
    */
-  initRaffleButton(userInfo) {
+  initRaffleButton (userInfo, lotteryInfo) {
     let raffleInfo = userInfo
     let btnstatus = 4
     let canFreeTime = raffleInfo.freeTime - raffleInfo.usedFreeTime
@@ -150,24 +175,74 @@ global.wxPage({
       canShareTime = raffleInfo.shareMaximum - raffleInfo.usedShareTime
     }
     console.log('canFreeTime:', canFreeTime, 'canShareTime', canShareTime)
-    if (canFreeTime + canShareTime > 0) {
+    let canTime = canFreeTime + canShareTime
+    if (lotteryInfo.freeChances === null || canTime > 0) {
       btnstatus = 1
-    } else if (raffleInfo.shareMaximum > raffleInfo.shareTime && canShareTime === 0) {
+    } else if (Number(lotteryInfo.canShare) === 1 && raffleInfo.shareMaximum > raffleInfo.shareTime && canShareTime === 0) {
       btnstatus = 2
-    } else if (raffleInfo.scoreMaximum > raffleInfo.usedScoreTime) {
+    } else if (Number(lotteryInfo.canUseScore) === 1 && (raffleInfo.scoreMaximum > raffleInfo.usedScoreTime || raffleInfo.scoreMaximum === null)) {
       btnstatus = 3
     } else {
       btnstatus = 4
     }
     this.setData({
-      btnstatus: btnstatus
+      btnstatus: btnstatus,
+      canTime: canTime
     })
+  },
+
+  // 获取用户信息后
+  getUserInfo (e) {
+    var that = this;
+    if (util.getUserInfoCommon) {
+      util.getUserInfoCommon(e, function (userInfo) {
+        if (userInfo) {
+          console.log(userInfo)
+          that.setData({
+            islogin: true
+          })
+        }
+      });
+    } else {
+      var canIUse = wx.canIUse('button.open-type.getUserInfo');
+      if (e.detail.userInfo) {
+        if (canIUse) {
+          var user_avatar = e.detail.userInfo.avatarUrl;
+          var user_name = e.detail.userInfo.nickName;
+          util.setCache("nickName", user_name);
+          util.setCache("avatarUrl", user_avatar);
+          util.api('/api/wxapp/account/updateUser', function (res) {
+          }, {
+            username: user_name,
+            user_avatar: user_avatar
+          });
+        } else {
+          wx.getUserInfo({
+            success: res => {
+              var user_avatar = e.detail.userInfo.avatarUrl;
+              var user_name = e.detail.userInfo.nickName;
+              util.setCache("nickName", user_name);
+              util.setCache("avatarUrl", user_avatar);
+              util.api('/api/wxapp/account/updateUser', function (res) {
+              }, {
+                username: user_name,
+                user_avatar: user_avatar
+              });
+            }
+          })
+        }
+        that.setData({
+          islogin: true
+        })
+      }
+    }
+    that.drawNow()
   },
 
   // 调用抽奖接口
   lotteryJoinRequest () {
     let that = this
-    return new Promise(function(resolve){
+    return new Promise(function (resolve) {
       util.api('/api/wxapp/lottery/join', function (res) {
         if (res.error === 0 && res.content.flag) {
           let content = res.content
@@ -210,19 +285,22 @@ global.wxPage({
             that.$message.error(content.msg)
           }
         } else {
-          util.toast_fail(res.message)
+          if (res.error === 0 && res.content.flag === false) {
+            util.toast_fail(res.content.msg)
+          } else {
+            util.toast_fail(res.message)
+          }
           that.setData({
             hasClick: false
           })
         }
       }, {
-          lotteryId: Number(that.data.lotteryId),
-          lotteryType: that.data.lotteryType,
-          lotterySource: that.data.lotterySource
-        }
+        lotteryId: Number(that.data.lotteryId),
+        lotteryType: that.data.lotteryType,
+        lotterySource: that.data.lotterySource
+      }
       )
     })
-    
   },
 
   // 立即抽奖
@@ -233,7 +311,7 @@ global.wxPage({
     })
     let join = await that.lotteryJoinRequest()
     that.lotteryRequest()
-    let {startStep, endStep, content} = join
+    let { startStep, endStep, content } = join
     that.rolling(startStep, endStep, content)
   },
 
@@ -241,19 +319,19 @@ global.wxPage({
    * 抽奖动画
    * params(开始位置（0~8），结束位置（0~8), 奖品信息)
    */
-  rolling(startStep, endStep, prizeInfo) {
+  rolling (startStep, endStep, prizeInfo) {
     let that = this;
     // 从winIndex开始，总共要走多少步
-    let totalStep = that.data.minturns *9 + endStep - startStep;
+    let totalStep = that.data.minturns * 9 + endStep - startStep;
     // 已经走了多少步
     let hasRunStep = 0;
     that.setData({
       isCover: true
     });
-    let timer = setInterval(function() {
+    let timer = setInterval(function () {
       hasRunStep++;
       startStep++;
-      if(startStep >= 9) {
+      if (startStep >= 9) {
         startStep = 0;
       }
       that.setData({
@@ -273,7 +351,7 @@ global.wxPage({
   },
 
   // 未中奖弹窗
-  noDraw() {
+  noDraw () {
     this.setData({
       noAwardDialogVisible: true
     })
@@ -358,13 +436,13 @@ global.wxPage({
     if (username === "" || username === null) {
       username = "神秘的小伙伴"
     }
-    util.api('/api/wxapp/lottery/share', function(res) {
+    util.api('/api/wxapp/lottery/share', function (res) {
       if (res.error === 0) {
         that.lotteryRequest()
       }
     }, { lotteryId: that.data.lotteryId })
     return {
-      path: '/pages1/lottery/lottery?lotteryId='+ that.data.lotteryId,
+      path: '/pages1/lottery/lottery?lotteryId=' + that.data.lotteryId,
       title: username + '邀你免费拿大奖，限时免费立即参加吧！！！',
       imageUrl: imageUrl + '/image/wxapp/share_lott1.jpg'
     }

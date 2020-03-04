@@ -5,12 +5,7 @@ import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelReader;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelUtil;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.excel.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
@@ -28,10 +23,6 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.*;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -41,11 +32,7 @@ import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.member.card.CardOpt;
-import com.vpu.mp.service.shop.member.card.GradeCardOpt;
-import com.vpu.mp.service.shop.member.card.GradeCardService;
-import com.vpu.mp.service.shop.member.card.LimitCardOpt;
-import com.vpu.mp.service.shop.member.card.NormalCardOpt;
+import com.vpu.mp.service.shop.member.card.*;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
@@ -66,7 +53,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -1042,11 +1028,11 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 根据会员卡ID字符串（逗号分隔）取会员卡信息列表
+	 * 根据会员卡ID列表取会员卡信息列表
 	 */
-	public List<SimpleMemberCardVo> getMemberCardByCardIdsString(String cardIdsString) {
-		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
-				.where(DslPlus.findInSet(MEMBER_CARD.ID, cardIdsString))
+	public List<SimpleMemberCardVo> getMemberCardByCardIds(List<Integer> cardIds) {
+		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE).from(MEMBER_CARD)
+				.where(MEMBER_CARD.ID.in(cardIds))
 				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(SimpleMemberCardVo.class);
 	}
 
@@ -1116,11 +1102,9 @@ public class MemberCardService extends ShopBaseService {
 			cardVo.setLegal(legal);
 			cardVo.setExchangCountLegal(exchangCountLegal);
 			cardVo.setLegalFlag(legalFlag);
-			if(CardUtil.isBgImgType(cardVo.getBgType())) {
-				if(!StringUtils.isBlank(cardVo.getBgImg())) {
-					String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(cardVo.getBgImg());
-					cardVo.setBgImg(imageUrl);
-				}
+			if(!StringUtils.isBlank(cardVo.getBgImg())) {
+				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(cardVo.getBgImg());
+				cardVo.setBgImg(imageUrl);
 			}
 			if (MCARD_TP_NORMAL.equals(cardType)) {
 				vo.getNormalCard().add(cardVo);
@@ -1863,7 +1847,7 @@ public class MemberCardService extends ShopBaseService {
 		for (int i = 0; i < number; i++) {
 			while (true) {
 				String code = generateRandomStr(param.getCodePrefix(), param.getCodeSize());
-				if (!codeList.contains(code) && !cardDao.isExistCode(code)) {
+				if (!codeList.contains(code) && !cardDao.isExistCodeInBatch(code,param.getBatchIdStr())) {
 					codeList.add(code);
 					break;
 				}
@@ -1905,7 +1889,7 @@ public class MemberCardService extends ShopBaseService {
 		for (int i = 0; i < number; i++) {
 			while (true) {
 				String cardNo = generateRandomStr(param.getCodePrefix(), param.getCodeSize());
-				if (!cardNoList.contains(cardNo) && !cardDao.isExistCardNo(cardNo)) {
+				if (!cardNoList.contains(cardNo) && !cardDao.isExistCardNoInBatch(cardNo,param.getBatchIdStr())) {
 					cardNoList.add(cardNo);
 					break;
 				}
@@ -1999,7 +1983,7 @@ public class MemberCardService extends ShopBaseService {
 
         //用户已经领取该卡的数量
         int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,cardId);
-        if(vo.getCardType().equals(MCARD_TP_LIMIT) && vo.getLimit() > 1){
+        if(vo.getCardType().equals(MCARD_TP_LIMIT)){
             //限次卡，还有库存 或 不限库存
         	int hasSend = userCardService.userCardDao.calcNumCardById(cardId);
         	boolean canSend = vo.getStock() > 0 && hasSend < vo.getStock();

@@ -101,7 +101,7 @@
   color: #fff;
   line-height: 70rpx;
   border-radius: 35rpx;
-  border: 1rpx solid #fff;
+  border: 2rpx solid #fff;
   text-align: center;
   margin: 20rpx 0 30rpx 0;
 }
@@ -187,6 +187,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 20rpx;
+  text-align: center;
 }
 .gift-image{
   width: 172rpx;

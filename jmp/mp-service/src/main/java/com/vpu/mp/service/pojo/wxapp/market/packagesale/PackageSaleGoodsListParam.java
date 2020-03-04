@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author: 王兵兵
@@ -15,8 +16,10 @@ import javax.validation.constraints.Min;
 @Setter
 public class PackageSaleGoodsListParam {
 
+    @NotNull
     private Integer packageId;
-    private Integer groupId;
+    //取值1-3
+    private Byte groupId = 1;
 
     private String search;
 

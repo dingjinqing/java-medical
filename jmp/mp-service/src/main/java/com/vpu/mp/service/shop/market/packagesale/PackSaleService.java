@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -365,6 +366,12 @@ public class PackSaleService extends ShopBaseService {
         return res;
     }
 
+    /**
+     * 小程序端活动页数据
+     * @param param
+     * @param userId
+     * @return
+     */
 	public PackageSaleGoodsListVo getWxAppGoodsList(PackageSaleGoodsListParam param,Integer userId){
         PackageSaleGoodsListVo vo = new PackageSaleGoodsListVo();
         PackageSaleRecord packageSaleRecord = db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(param.getPackageId())).fetchAny();
@@ -378,7 +385,9 @@ public class PackSaleService extends ShopBaseService {
             vo.setState((byte)3);
             return vo;
         }
+        vo.setState((byte)0);
 
+        //填充tabList
         List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
         List<PackageSaleGoodsListVo.GoodsGroup> tabList = new ArrayList<>();
         groups.forEach(g->{
@@ -389,9 +398,11 @@ public class PackSaleService extends ShopBaseService {
             tabList.add(tab);
         });
         vo.setTabList(tabList);
-        vo.setTotalGoodsNumber(groups.stream().mapToInt(PackSaleParam.GoodsGroup::getGoodsNumber).sum());
+        int allNumber = groups.stream().mapToInt(PackSaleParam.GoodsGroup::getGoodsNumber).sum();
+        vo.setTotalGoodsNumber(allNumber);
         vo.setTotalSelectNumber(tabList.stream().mapToInt(PackageSaleGoodsListVo.GoodsGroup::getSelectNumber).sum());
 
+        //填充title
         PackageSaleGoodsListVo.Title title = new PackageSaleGoodsListVo.Title();
         title.setPackageType(packageSaleRecord.getPackageType());
         title.setTotalGoodsNumber(vo.getTotalGoodsNumber());
@@ -399,9 +410,16 @@ public class PackSaleService extends ShopBaseService {
         title.setTotalMoney(packageSaleRecord.getTotalMoney());
         vo.setTitle(title);
 
+        //填充goods
+        PageResult<PackageSaleGoodsListVo.Goods> goods = getGoods(getPackageSaleGroupGoodsIds(groups.get(param.getGroupId() - 1)),param.getSortName(),param.getSortOrder(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
+        goods.getDataList().forEach(g->{
+            g.setChooseNumber(packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),param.getGroupId(),g.getGoodsId()));
+        });
+        vo.setGoods(goods);
 
+        vo.setTotalMoney(packageGoodsCartService.getUserPackageMoney(userId,packageSaleRecord,allNumber));
 
-	    return null;
+	    return vo;
     }
 
     /**
@@ -446,6 +464,25 @@ public class PackSaleService extends ShopBaseService {
             }
         }
         return getPageResult(select,currentPage,pageRows,PackageSaleGoodsListVo.Goods.class);
+    }
+
+    /**
+     * 一口价活动的一个分组包含的所有商品ID
+     * @param group
+     * @return
+     */
+    private List<Integer> getPackageSaleGroupGoodsIds(PackSaleParam.GoodsGroup group){
+        List<Integer> res = new ArrayList<>();
+
+        if(CollectionUtils.isNotEmpty(group.getGoodsIdList())){
+            res.removeAll(group.getGoodsIdList());
+            res.addAll(group.getGoodsIdList());
+        }
+        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(group.getCatIdList(),group.getSortIdList(), Collections.emptyList());
+        res.removeAll(goodsIds);
+        res.addAll(goodsIds);
+
+        return res;
     }
 }
 

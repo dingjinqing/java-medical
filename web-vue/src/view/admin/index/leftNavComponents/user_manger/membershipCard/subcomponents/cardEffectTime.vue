@@ -175,6 +175,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.dateSelectOptions = this.$t('memberCard.dateSelectOptions')
     this.$on('checkRule', () => {
       this.$refs.ruleForm.validate((valid) => {
