@@ -52,14 +52,6 @@
           <!-- 活动信息部分 -->
           <div class="contentRight">
             <div class="actInfo">{{$t('adSharePolite.activityInfo')}}</div>
-            <!-- <el-form
-            :model="param"
-            ref="param"
-            label-position="right"
-            label-width="100px"
-            style="margin-top:20px;"
-            :rules="fieldValidation"
-            > -->
             <el-form-item
               :label="$t('adSharePolite.activityName')+'：'"
               prop="name"
@@ -156,7 +148,6 @@
                 ></el-input> {{$t('adSharePolite.pvGoods')}}
               </div>
             </el-form-item>
-            <!-- </el-form> -->
           </div>
 
           <!-- 分享奖励部分 -->
@@ -220,7 +211,6 @@
                       :label=2
                       style="margin: 0 20px"
                     >{{$t('adSharePolite.coupon')}}</el-radio>
-                    <!-- 我觉得没问题 -->
                     <el-radio :label=3>{{$t('adSharePolite.lottery')}}</el-radio>
                   </el-radio-group>
                 </el-form-item>
@@ -263,7 +253,7 @@
                 </el-form-item>
                 <el-form-item
                   :prop="`shareRules[${index}].coupon_name`"
-                  v-if="item.reward_type == 2"
+                  v-if="item.reward_type == '2'"
                   :label="$t('adSharePolite.coupon')+'：'"
                   label-width="110px"
                   :rules="[
@@ -824,7 +814,7 @@ export default {
     // 校验积分奖品份数
     validateScoreNumber (rule, value, callback, scoreNum) {
       console.log(scoreNum, 'scoreNum')
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (scoreNum === '') {
         callback(new Error('请输入奖品份数'))
       } else if (!re.test(value)) {
@@ -844,12 +834,10 @@ export default {
     },
     // 验证优惠券奖励份数
     validateCouponNumber (rule, value, callback, couponNum) {
-      console.log(value, 'coupon-value')
-      console.log(couponNum, 'couponNum')
-      var re = /^(0|\+?[1-9][0-9]*)$/
-      if (couponNum === '') {
+      var re = /^[1-9]\d*$/
+      if (couponNum === '' || !couponNum) {
         callback(new Error('请输入奖品份数'))
-      } else if (re.test(!value)) {
+      } else if (!re.test(value)) {
         callback(new Error('请输入正整数'))
       } else {
         callback()
@@ -857,9 +845,8 @@ export default {
     },
     // 验证幸运大抽奖奖励总份数
     validateRewardNumber (rule, value, callback, lotteryNum) {
-      // var re = /^(0|\+?[1-9][0-9]*)$/
       console.log(lotteryNum, 'lottery_num', value, 'get value')
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (lotteryNum === '' || !lotteryNum) {
         callback(new Error('请输入奖品份数'))
       } else if (!re.test(value)) {
@@ -879,7 +866,6 @@ export default {
     },
     // 验证积分
     validateIntegral (rule, value, callback, score) {
-      console.log(value, 'radio-value')
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (score === '') {
         callback(new Error('请输入积分'))
@@ -892,7 +878,6 @@ export default {
 
     // 跳转到添加优惠券页面
     jumpToAddCoupon () {
-      console.log('jump test')
       this.$router.push({
         name: 'add_coupon'
       })
