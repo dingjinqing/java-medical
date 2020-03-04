@@ -267,8 +267,9 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                 }
             }
         }
-        //当前活动选择
+        //当前活动选择规则
         fullReductionRuleOption(ruleCartIdMap, cartActivityInfos);
+        //给商品分配规则
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getActivityType()!=null&&goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)&&goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                 List<FullReductionGoodsBo> fullReductionGoodsBos = ruleCartIdMap.get(goods.getActivityId());

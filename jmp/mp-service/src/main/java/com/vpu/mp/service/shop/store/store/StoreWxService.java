@@ -434,13 +434,7 @@ public class StoreWxService extends ShopBaseService {
         // 获取发票开关配置
         payOrderVo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         // 获取有效用户会员卡列表
-        List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
-            // 首先支持门店使用
-            .stream().filter(e -> BYTE_ONE.equals(e.getStoreUseSwitch()))
-            // 其次是否包含指定门店
-            .filter((c) -> isStoreAvalid(c.getStoreList(), storeId))
-            .collect(toList());
-        log.debug("有效用户会员卡列表:{}", cardList);
+        List<ValidUserCardBean> cardList = userCardDaoService.getStoreValidCardList(userId, storeId);
         payOrderVo.setMemberCardList(cardList);
         // 门店营业状态和删除标示
         StorePojo storePojo = store.getStore(storeId);
@@ -454,22 +448,10 @@ public class StoreWxService extends ShopBaseService {
         // 积分使用规则
         payOrderVo.setScoreDiscountRatio(baseScoreCfgService.getScoreDiscountRatio());
         payOrderVo.setScorePayNum(baseScoreCfgService.getScorePayNum());
+        payOrderVo.setScorePayLimit(baseScoreCfgService.getScorePayLimit());
         //积分兑换比
         payOrderVo.setScoreProportion(baseScoreCfgService.getScoreProportion());
         return payOrderVo;
-    }
-
-    private boolean isStoreAvalid(String s, Integer storeId) {
-        List<Integer> list = Util.json2Object(s, new TypeReference<List<Integer>>() {
-        }, false);
-        if (CollectionUtils.isEmpty(list)) {
-            return false;
-        }
-        if (list.size() == 1 && list.get(INTEGER_ZERO).equals(INTEGER_ZERO)) {
-            // 说明为全部门店
-            return true;
-        }
-        return list.contains(storeId);
     }
 
     /**

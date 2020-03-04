@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
@@ -75,6 +76,8 @@ public class IncreasePurchaseService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 分页查询加价购活动信息
@@ -553,6 +556,9 @@ public class IncreasePurchaseService extends ShopBaseService {
             goods.setMaxPrice(goodsPriceBo.getMaxPrice());
             goods.setMarketPrice(goodsPriceBo.getMaxPrice());
             goods.setLimitAmount(goodsPriceBo.getLimitAmount());
+            if(StringUtil.isNotEmpty(goods.getGoodsImg())){
+                goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+            }
         });
         vo.setGoods(goodsPageResult);
 

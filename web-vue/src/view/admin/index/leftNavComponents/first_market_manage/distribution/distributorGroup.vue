@@ -58,7 +58,10 @@
           align="center"
         >
           <template slot-scope="scope">
-            <p class="nameStyle">{{ scope.row.distributorAmount }}</p>
+            <p
+              class="nameStyle"
+              @click="amountHandler(scope.row.id)"
+            >{{ scope.row.distributorAmount }}</p>
           </template>
         </el-table-column>
         <el-table-column
@@ -428,6 +431,12 @@ export default {
           this.initGroupList()
         }
       })
+    },
+
+    // 分销员数量跳转
+    amountHandler (id) {
+      this.$emit('tabChange')
+      this.$emit('optGroupId', id)
     }
 
   }

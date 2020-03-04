@@ -32,6 +32,8 @@ import com.vpu.mp.service.shop.member.excel.UserExpColNameI18n;
 public class UserExportService extends ShopBaseService{
 	@Autowired
 	private MemberDaoService memDao;
+	@Autowired
+	private UserExpCfgService uExpCfgSvc;
 	/**
 	 * 	用户可选的全部数据
 	 */
@@ -44,6 +46,7 @@ public class UserExportService extends ShopBaseService{
 	 * 	默认最多导出数据5000条
 	 */
 	private static final String MAX__KEY = "max_num";
+	private static final String AVAIL_KEY="avail_num";
 	private static final Integer MAX_VALUE = 5000;
 	/**
 	 * 	第一行固定的值
@@ -86,7 +89,10 @@ public class UserExportService extends ShopBaseService{
 			expCols.add(0, firstColName);
 		}
 		
-		//	模拟查询数据库
+		//	保存用户导出配置
+		uExpCfgSvc.setUserExpCfg(param.getColumns());
+		
+		//	查询数据库
 		List<UserExpVo> data = memDao.getExportAllUserList(mParam);
 		
 		List<UserExcelModel> excelModel = new ArrayList<>();
@@ -96,8 +102,6 @@ public class UserExportService extends ShopBaseService{
 		
 			//	创建UserExcelModel
 			UserExcelModel model = new UserExcelModel();
-			
-			
 			Map<String,Object> map = new LinkedHashMap<>();
 			for(String key: columns) {
 				// TODO	直接获取的数据
@@ -139,12 +143,13 @@ public class UserExportService extends ShopBaseService{
 				} 
 			}
 		}
-		System.out.println(map);
 		return map;
 	}
 	
 	
-	
+	public String getFirstColName() {
+		return firstColName;
+	}
 	
 	
 	/**
@@ -158,10 +163,14 @@ public class UserExportService extends ShopBaseService{
 		JsonNode ars = mapper.valueToTree(getAllExportCfg());
 		ob.set(ALL_CFG, ars);
 		//TODO 从数据取数据
-		ob.set(CHOOSED_CFG, null);
+		JsonNode cfg = mapper.valueToTree(uExpCfgSvc.getUserExpCfg());
+		ob.set(CHOOSED_CFG, cfg);
 		//	设置允许导出最大数量
 		JsonNode maxNum = mapper.valueToTree(MAX_VALUE);
 		ob.set(MAX__KEY, maxNum);
+		//	目前可导出数量
+		JsonNode availNum = mapper.valueToTree(memDao.getNumOfUser());
+		ob.set(AVAIL_KEY, availNum);
 		return ob;
 	}
 	

@@ -540,6 +540,10 @@ export default {
     inviteFlag: {
       type: Boolean,
       default: true
+    },
+    optGroupId: {
+      type: Number,
+      default: () => 0
     }
   },
   data () {
@@ -598,6 +602,12 @@ export default {
       remarksList: []
     }
   },
+  watch: {
+    optGroupId () {
+      console.log(this.optGroupId)
+      this.initDataList()
+    }
+  },
   mounted () {
     this.initDataList()
     this.levelList() // 分销员等级
@@ -616,6 +626,9 @@ export default {
       }
       this.requestParams = obj
       // this.requestParams = this.param
+      if (this.optGroupId) {
+        this.requestParams.optGroupId = this.optGroupId
+      }
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       distributorList(this.requestParams).then(res => {

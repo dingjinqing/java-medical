@@ -121,6 +121,8 @@ public class LotteryRecordService extends ShopBaseService {
                 .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
             if (param.getUserId()!=null){
                 records.and(LOTTERY_RECORD.USER_ID.eq(param.getUserId()));
+            }else {
+                records.and(LOTTERY_RECORD.LOTTERY_GRADE.notEqual((byte) 0));
             }
             records.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
             PageResult<LotteryRecordPageListVo> pageResult = getPageResult(records, param, LotteryRecordPageListVo.class);
@@ -309,8 +311,8 @@ public class LotteryRecordService extends ShopBaseService {
                 break;
             case LOTTERY_TYPE_CUSTOM:
                 logger().info("自定义");
-                joinValid.setLotteryAward(lotteryPrizeRecord.getIconImgs());
-                recordRecord.setLotteryAward(lotteryPrizeRecord.getIconImgs());
+                joinValid.setLotteryAward(lotteryPrizeRecord.getLotteryDetail());
+                recordRecord.setLotteryAward(lotteryPrizeRecord.getLotteryDetail());
                 break;
             default:
         }

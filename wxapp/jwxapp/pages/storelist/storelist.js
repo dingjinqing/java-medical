@@ -25,12 +25,16 @@ global.wxPage({
           list: res.content
         })
       }, {
-        location: location,
+        locationAuth: !location?0:1,
+        location: !location?{
+          latitude: '',
+          longitude: ''
+        }:location,
         type: that.data.type, // 入口(type为0,普通入口;type为1,并且cardId不为空;表示入口为会员卡详情页;type为2 ,并且goodsId不为空表示入口为商品详情页自提/同城配送过来)
         scanStores: that.data.scan_stores, // 是否支持扫码购
         goodsId: that.data.goods_id, // 商品id
         cardId: that.data.card_id, // 会员卡id
-        deliverType: that.data.de_type// 配送类型
+        deliverType: that.data.de_type // 配送类型
       })
     })
   },

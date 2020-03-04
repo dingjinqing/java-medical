@@ -30,13 +30,19 @@
           :label="$t('distribution.distributorList')"
           name="fouth"
         >
-          <distributorList :inviteFlag="inviteCode" />
+          <distributorList
+            :inviteFlag="inviteCode"
+            :optGroupId="optGroupId"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorGroup')"
           name="fifth"
         >
-          <distributorGroup />
+          <distributorGroup
+            @tabChange="tabChange"
+            @optGroupId="getGroupId"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.commissionStatistics')"
@@ -99,7 +105,9 @@ export default {
   },
   data () {
     return {
-      activeName: 'first'
+      activeName: 'first',
+      inviteCode: '',
+      optGroupId: 0
     }
   },
   mounted () {
@@ -125,6 +133,10 @@ export default {
     },
     tabChange () {
       this.activeName = 'fouth'
+    },
+    getGroupId (data) {
+      this.optGroupId = data
+      console.log(this.optGroupId)
     },
     inviteCodeHandler (val) {
       this.inviteCode = val

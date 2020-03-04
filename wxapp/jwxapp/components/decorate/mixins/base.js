@@ -118,7 +118,7 @@ var base = {
             if (itemC.useConsumeRestrict === 1) {
               obj.text = `${this.$t("components.decorate.full")}${itemC.leastConsume}${this.$t("components.decorate.hit")}￥${itemC.denomination}`
             } else {
-              obj.text = `${this.$t("components.decorate.coupon")}${this.$t("components.decorate.hit")}￥${itemC.denomination}${this.$t("decorate.fracture")}`
+              obj.text = `${this.$t("components.decorate.coupon")}${this.$t("components.decorate.hit")}￥${itemC.denomination}${this.$t("components.decorate.fracture")}`
             }
           }
           break

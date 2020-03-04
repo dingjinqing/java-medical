@@ -379,7 +379,7 @@ public class LotteryService extends ShopBaseService {
             Integer usedShareRecordTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SHARE);
             Integer shareTimes = shareRecord != null ? shareRecord.getShareTimes() : 0;
             Integer usedShareTimes= shareRecord != null ? shareRecord.getUseShareTimes() : 0;
-            if (shareTimes >usedShareRecordTimes) {
+            if (shareTimes >usedShareRecordTimes&& usedShareRecordTimes < lottery.getShareChances()) {
                 //分享抽奖
                 join.setChanceSource(LOTTERY_TIME_SHARE);
                 join.setCanUseTime(shareTimes - usedShareRecordTimes);
@@ -398,7 +398,7 @@ public class LotteryService extends ShopBaseService {
         //积分抽奖
         if (lottery.getCanUseScore().equals(YES)) {
             Integer userScoreTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SCORE);
-            if (lottery.getScoreChances() != null && userScoreTimes < lottery.getScoreChances()) {
+            if (lottery.getScoreChances() == null || userScoreTimes < lottery.getScoreChances()) {
                 join.setChanceSource(LOTTERY_TIME_SCORE);
                 join.setFlag(true);
                 if (lottery.getScoreChances() != null) {
@@ -406,11 +406,9 @@ public class LotteryService extends ShopBaseService {
                 }
                 Integer lotteryScore = lottery.getScorePerChance();
                 Integer userScore = memberService.getUserFieldById(userId, USER.SCORE);
-
                 //积分不足
-
                 if (userScore < lotteryScore) {
-                    join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_ACTIVITY_OUT_DATE).build());
+                    join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_TIME_USE_UP).build());
                     join.setFlag(false);
                     return join;
                 }
@@ -495,7 +493,7 @@ public class LotteryService extends ShopBaseService {
      */
     public ShareQrCodeVo getMpQRCode(LotteryByIdParam param) {
         Integer groupDrawId = param.getId();
-        String pathParam = "lotteryId=" + groupDrawId;
+        String pathParam = "lotteryId="+ groupDrawId+"&lotterySource=6";
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.LOTTERY, pathParam);
         ShareQrCodeVo share =new ShareQrCodeVo();
         share.setImageUrl(imageUrl);

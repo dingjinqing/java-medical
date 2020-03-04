@@ -107,6 +107,11 @@
         />
       </div>
     </div>
+    <!-- 导出数据确认弹窗 -->
+    <exportForm
+      :show.sync="showExportConfirm"
+      :param="this.requestParams"
+    />
   </div>
 </template>
 
@@ -115,7 +120,8 @@ import { getBargainOrderList } from '@/api/admin/marketManage/bargain.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
-    marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue')
+    marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue'),
+    exportForm: () => import('./bargainExportConfirmDialog.vue')
   },
   mounted () {
     this.langDefault()
@@ -142,7 +148,8 @@ export default {
       actId: null,
 
       // 表格原始数据
-      originalData: []
+      originalData: [],
+      showExportConfirm: false // 是否展示导出数据弹窗
     }
   },
   methods: {
@@ -168,6 +175,7 @@ export default {
       this.requestParams.orderStatus = orderStatus
       getBargainOrderList(this.requestParams).then((res) => {
         if (res.error === 0) {
+          console.log(res, 'list-data')
           this.originalData = res.content.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))
           this.handleData(originalData)
@@ -191,7 +199,7 @@ export default {
       }
     },
     exportDataList () {
-      alert(11)
+      this.showExportConfirm = true
     }
   },
   watch: {

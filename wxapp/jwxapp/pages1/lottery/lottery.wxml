@@ -35,10 +35,15 @@
       </view>
     </view>
     <view class="lottery-opera">
-      <button class="lottery-btn" wx:if="{{btnstatus === 1}}" bindtap="drawNow" disabled="{{!!hasClick}}">立即抽奖</button>
-      <button class="lottery-btn" wx:elif="{{btnstatus === 2}}" open-type="share" disabled="{{!!hasClick}}">去分享</button>
-      <button class="lottery-btn" wx:elif="{{btnstatus === 3}}" bindtap="drawNow" disabled="{{!!hasClick}}">消耗{{userInfo.score}}积分抽奖</button>
-      <button class="lottery-btn" wx:else bindtap="noDraw">抽奖次数用光啦</button>
+      <block wx:if="{{!getsq}}">
+        <button class="lottery-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">立即抽奖</button>
+      </block>
+      <block wx:else>
+        <button class="lottery-btn" wx:if="{{btnstatus === 1}}" bindtap="drawNow" disabled="{{!!hasClick}}">立即抽奖</button>
+        <button class="lottery-btn" wx:elif="{{btnstatus === 2}}" open-type="share" disabled="{{!!hasClick}}">去分享</button>
+        <button class="lottery-btn" wx:elif="{{btnstatus === 3}}" bindtap="drawNow" disabled="{{!!hasClick}}">消耗{{userInfo.score}}积分抽奖</button>
+        <button class="lottery-btn" wx:else>抽奖次数用光啦</button>
+      </block>
     </view>
     <view class="lottery-intro">
       <view class="lottery-opportunities" wx:if="{{btnstatus === 3}}">消耗{{userInfo.score}}积分可获得额外一次抽奖机会哦</view>

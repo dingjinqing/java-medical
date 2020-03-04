@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.market.fullcut;
 
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
+import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @Setter
 public class MrkingStrategyGoodsListVo {
     /** 状态，0正常可用，1活动不存在，2活动未开始，3活动已过期 ，4活动设置了专属会员卡可参与，但该会员没有对应的卡，  */
-    private Byte state;
+    private Byte state = 0;
 
     private PageResult<Goods> goods;
 
@@ -34,6 +35,11 @@ public class MrkingStrategyGoodsListVo {
      * 当前已选商品总价
      */
     private BigDecimal totalPrice;
+
+    /**
+     * state==4时，活动需要的会员卡列表
+     */
+    private List<SimpleMemberCardVo> cardList;
 
     @Setter
     @Getter
@@ -69,6 +75,15 @@ public class MrkingStrategyGoodsListVo {
         private Byte isCardExclusive;
         private Integer sortId;
         private Integer catId;
+
+        /**
+         * 1默认规格，0自定义规格（多规格）
+         */
+        private Byte isDefaultProduct;
+        /**
+         * 单规格商品的规格ID
+         */
+        private Integer prdId;
 
 
         //活动数据

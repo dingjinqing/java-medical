@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.info;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -12,14 +13,30 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
-import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.wxapp.order.*;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.DatePart;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.context.annotation.Primary;
@@ -29,20 +46,46 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUNDING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURNING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDITING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDIT_PASS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_GOODS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_ONLY_MONEY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_OVERDUE_DELIVERY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_REMIND_DELIVERY;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.jooq.impl.DSL.count;
@@ -119,12 +162,12 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<String> getOrderSns(OrderPageListQueryParam param, OrderQueryVo result) {
+	    // 数量查询
+        calculateOrderCount(param, result);
 		SelectJoinStep<Record1<String>> mainOrder = db().select(TABLE.ORDER_SN).from(TABLE);
 		// 存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
-		// 数量查询
-		calculateOrderCount(mainOrder, param, result);
 		mainOrder.orderBy(TABLE.ORDER_ID.desc());
 		// 得到订单号
 		return getPageResult(mainOrder, param.getCurrentPage(), param.getPageRows(), String.class);
@@ -132,11 +175,9 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 计算部分订单数量
-	 * 
-	 * @param select
 	 * @param result
 	 */
-	private void calculateOrderCount(SelectJoinStep<?> select, OrderPageListQueryParam param, OrderQueryVo result) {
+	private void calculateOrderCount(OrderPageListQueryParam param, OrderQueryVo result) {
 		Map<Byte, Integer> count = new HashMap<>(OrderConstant.SEARCH_RETURN_COMPLETED);
 		for (int i = 1; i <= OrderConstant.SEARCH_RETURN_COMPLETED; i++) {
 			count.put(Integer.valueOf(i).byteValue(), calculateOrderCount(param, Integer.valueOf(i).byteValue()));
@@ -165,8 +206,9 @@ public class OrderInfoService extends ShopBaseService {
 		case OrderConstant.SEARCH_RETURN_COMPLETED:
 			// 退完成
 			return db().fetchCount(select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_FINISH)));
+        default:
+            return 0;
 		}
-		return 0;
 	}
 
 	/**
@@ -191,7 +233,23 @@ public class OrderInfoService extends ShopBaseService {
 			select.where(ORDER_INFO.ORDER_SN.contains(param.orderSn));
 		}
 		if (param.orderStatus != null && param.orderStatus.length != 0) {
-			select.where(ORDER_INFO.ORDER_STATUS.in(param.orderStatus));
+            List<Byte> status = Lists.newArrayList(param.orderStatus);
+            Condition condition = DSL.noCondition();
+            if(status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING)) {
+                select.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
+                if(status.contains(ORDER_RETURNING)) {
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    status.remove(Byte.valueOf(ORDER_RETURNING));
+                }
+                if(status.contains(ORDER_REFUNDING)) {
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    status.remove(Byte.valueOf(ORDER_REFUNDING));
+                }
+            }
+            if(CollectionUtils.isNotEmpty(status)) {
+                condition = condition.or(TABLE.ORDER_STATUS.in(status));
+            }
+            select.where().and(condition);
 		}
 		if (param.goodsType != null && param.goodsType.length != 0) {
 			select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(param.getGoodsType())));
