@@ -971,4 +971,11 @@ public class JsonResultMessage {
     public static final String WX_SHARE_PIC_ERROR = "wx.share.pic.error";
     public static final String WX_SHARE_QRCDOE_ERROR = "wx.share.qrcode.error";
     public static final String WX_SHARE_USER_PIC_ERROR = "wx.share.user.pic.error";
+
+    // 表单反馈列表导出
+    public static final String FORM_FEED_FILE_NAME = "form.feed.file_name";
+    public static final String FORM_FEED_NICKNAME = "form.feed.nickname";
+    public static final String FORM_FEED_MOBILE = "form.feed.mobile";
+    public static final String FORM_FEED_CREATE_TIME = "form.feed.create.time";
+
 }
