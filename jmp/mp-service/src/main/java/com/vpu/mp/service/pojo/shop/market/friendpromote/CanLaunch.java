@@ -11,6 +11,7 @@ import lombok.Data;
 public class CanLaunch {
     /** 是否可发起 0否 1是 */
     private Byte code;
-    /** 文字信息 */
-    private String msg;
+    /** 0：发起成功 1：活动已停用或删除 2：活动库存不足 3：活动商品库存不足
+     * 4：活动未开始 5：活动已结束 6：您已发起快邀请好友助力把 7：数据入库失败 */
+    private Integer msg;
 }
