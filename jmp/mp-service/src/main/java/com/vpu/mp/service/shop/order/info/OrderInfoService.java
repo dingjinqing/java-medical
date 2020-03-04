@@ -161,12 +161,12 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<String> getOrderSns(OrderPageListQueryParam param, OrderQueryVo result) {
+	    // 数量查询
+        calculateOrderCount(param, result);
 		SelectJoinStep<Record1<String>> mainOrder = db().select(TABLE.ORDER_SN).from(TABLE);
 		// 存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
-		// 数量查询
-		calculateOrderCount(mainOrder, param, result);
 		mainOrder.orderBy(TABLE.ORDER_ID.desc());
 		// 得到订单号
 		return getPageResult(mainOrder, param.getCurrentPage(), param.getPageRows(), String.class);
@@ -174,11 +174,9 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 计算部分订单数量
-	 * 
-	 * @param select
 	 * @param result
 	 */
-	private void calculateOrderCount(SelectJoinStep<?> select, OrderPageListQueryParam param, OrderQueryVo result) {
+	private void calculateOrderCount(OrderPageListQueryParam param, OrderQueryVo result) {
 		Map<Byte, Integer> count = new HashMap<>(OrderConstant.SEARCH_RETURN_COMPLETED);
 		for (int i = 1; i <= OrderConstant.SEARCH_RETURN_COMPLETED; i++) {
 			count.put(Integer.valueOf(i).byteValue(), calculateOrderCount(param, Integer.valueOf(i).byteValue()));
@@ -207,8 +205,9 @@ public class OrderInfoService extends ShopBaseService {
 		case OrderConstant.SEARCH_RETURN_COMPLETED:
 			// 退完成
 			return db().fetchCount(select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_FINISH)));
+        default:
+            return 0;
 		}
-		return 0;
 	}
 
 	/**
@@ -238,16 +237,16 @@ public class OrderInfoService extends ShopBaseService {
             if(status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING)) {
                 select.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
                 if(status.contains(ORDER_RETURNING)) {
-                    condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
                     status.remove(Byte.valueOf(ORDER_RETURNING));
                 }
                 if(status.contains(ORDER_REFUNDING)) {
-                    condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
                     status.remove(Byte.valueOf(ORDER_REFUNDING));
                 }
             }
             if(CollectionUtils.isNotEmpty(status)) {
-                condition.or(TABLE.ORDER_STATUS.in(status));
+                condition = condition.or(TABLE.ORDER_STATUS.in(status));
             }
             select.where().and(condition);
 		}
