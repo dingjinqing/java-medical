@@ -52,14 +52,6 @@
           <!-- 活动信息部分 -->
           <div class="contentRight">
             <div class="actInfo">{{$t('adSharePolite.activityInfo')}}</div>
-            <!-- <el-form
-            :model="param"
-            ref="param"
-            label-position="right"
-            label-width="100px"
-            style="margin-top:20px;"
-            :rules="fieldValidation"
-            > -->
             <el-form-item
               :label="$t('adSharePolite.activityName')+'：'"
               prop="name"
@@ -156,7 +148,6 @@
                 ></el-input> {{$t('adSharePolite.pvGoods')}}
               </div>
             </el-form-item>
-            <!-- </el-form> -->
           </div>
 
           <!-- 分享奖励部分 -->
@@ -213,6 +204,7 @@
                   label-width="110px"
                   :prop="`shareRules[${index}].reward_type`"
                   ref="reward_type"
+                  style="margin-top:10px"
                 >
                   <el-radio-group v-model="item.reward_type">
                     <el-radio :label="1">{{$t('adSharePolite.socre')}}</el-radio>
@@ -220,7 +212,6 @@
                       :label=2
                       style="margin: 0 20px"
                     >{{$t('adSharePolite.coupon')}}</el-radio>
-                    <!-- 我觉得没问题 -->
                     <el-radio :label=3>{{$t('adSharePolite.lottery')}}</el-radio>
                   </el-radio-group>
                 </el-form-item>
@@ -231,7 +222,7 @@
                   ref="rewardScore"
                   label-width="110px"
                   inline-message=true
-                  style="padding: 0 0 10px"
+                  style="padding: 0 0 10px;margin-top:10px"
                   :rules="[
                     { required: true, validator: (rule,value, callback)=>(validateIntegral(rule, value, callback, item.score)), trigger:['blur', 'change']}
                   ]"
@@ -249,6 +240,7 @@
                   :label="$t('adSharePolite.rewwardNum')+'：'"
                   label-width="110px"
                   v-if="item.reward_type == 1"
+                  style="margin-top:10px"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>{ validateScoreNumber(rule, value, callback, item.score_num)}, trigger: 'blur'}
                   ]"
@@ -263,9 +255,10 @@
                 </el-form-item>
                 <el-form-item
                   :prop="`shareRules[${index}].coupon_name`"
-                  v-if="item.reward_type == 2"
+                  v-if="item.reward_type == '2'"
                   :label="$t('adSharePolite.coupon')+'：'"
                   label-width="110px"
+                  style="margin-top:10px"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>  { validatedSelectCoupon(rule, value, callback, item.coupon_name)}, trigger:['blur', 'change']}
                   ]"
@@ -321,7 +314,7 @@
                   ref="coupon_num"
                   :label="$t('adSharePolite.rewwardNum')+'：'"
                   label-width="110px"
-                  style="margin-top:10px"
+                  style="margin-top:20px"
                   v-if="item.reward_type === 2"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>{ validateCouponNumber(rule, value, callback, item.coupon_num)}, trigger: 'blur'}
@@ -341,7 +334,7 @@
                   v-if="item.reward_type == 3"
                   :label="$t('adSharePolite.lottery')+'：'"
                   label-width="110px"
-                  style="padding:0 0 10px;"
+                  style="padding:0 0 10px;margin-top: 10px"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>{ validatelottery(rule, value, callback, item.lottery)}, trigger: ['blur','change']}
                   ]"
@@ -362,7 +355,7 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    @click="refreshCoupn"
+                    @click="refreshLuckyDraw(index)"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.refresh')}}
                   </el-link>
@@ -370,14 +363,14 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    @click="jumpToAddCoupon"
+                    @click="toAddLuckyDrawActivity"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.createLabel')}}</el-link>
                   |
                   <el-link
                     type="primary"
                     :underline="false"
-                    @click="jumpToOrdinaryCoupon"
+                    @click="toLuckyDrawList"
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                 </el-form-item>
@@ -387,6 +380,7 @@
                   :label="$t('adSharePolite.rewwardNum')+'：'"
                   label-width="110px"
                   v-if="item.reward_type == 3"
+                  style="margin-top: 10px"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>{ validateRewardNumber(rule, value, callback, item.lottery_num)}, trigger: ['blur', 'change']}
                   ]"
@@ -824,7 +818,7 @@ export default {
     // 校验积分奖品份数
     validateScoreNumber (rule, value, callback, scoreNum) {
       console.log(scoreNum, 'scoreNum')
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (scoreNum === '') {
         callback(new Error('请输入奖品份数'))
       } else if (!re.test(value)) {
@@ -844,12 +838,10 @@ export default {
     },
     // 验证优惠券奖励份数
     validateCouponNumber (rule, value, callback, couponNum) {
-      console.log(value, 'coupon-value')
-      console.log(couponNum, 'couponNum')
-      var re = /^(0|\+?[1-9][0-9]*)$/
-      if (couponNum === '') {
+      var re = /^[1-9]\d*$/
+      if (couponNum === '' || !couponNum) {
         callback(new Error('请输入奖品份数'))
-      } else if (re.test(!value)) {
+      } else if (!re.test(value)) {
         callback(new Error('请输入正整数'))
       } else {
         callback()
@@ -857,9 +849,8 @@ export default {
     },
     // 验证幸运大抽奖奖励总份数
     validateRewardNumber (rule, value, callback, lotteryNum) {
-      // var re = /^(0|\+?[1-9][0-9]*)$/
       console.log(lotteryNum, 'lottery_num', value, 'get value')
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (lotteryNum === '' || !lotteryNum) {
         callback(new Error('请输入奖品份数'))
       } else if (!re.test(value)) {
@@ -879,7 +870,6 @@ export default {
     },
     // 验证积分
     validateIntegral (rule, value, callback, score) {
-      console.log(value, 'radio-value')
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (score === '') {
         callback(new Error('请输入积分'))
@@ -892,7 +882,6 @@ export default {
 
     // 跳转到添加优惠券页面
     jumpToAddCoupon () {
-      console.log('jump test')
       this.$router.push({
         name: 'add_coupon'
       })
@@ -908,6 +897,31 @@ export default {
     // 优惠券刷新
     refreshCoupn () {
       this.$refs.templateRefresh.handleToSure()
+      this.$nextTick(() => {
+        this.$message.success('刷新成功')
+      })
+    },
+
+    // 跳转到新建幸运大抽奖活动页面
+    toAddLuckyDrawActivity () {
+      this.$router.push({
+        name: 'lottery_activity',
+        query: {
+          add: 1
+        }
+      })
+    },
+
+    // 跳转到幸运大抽奖列表页面
+    toLuckyDrawList () {
+      this.$router.push({
+        name: 'lottery_activity'
+      })
+    },
+
+    // 幸运大抽奖刷新
+    refreshLuckyDraw () {
+      this.getIsGonigLotteryActivity()
       this.$nextTick(() => {
         this.$message.success('刷新成功')
       })

@@ -9,6 +9,6 @@ export const cn = {
   changeIcons: '更改图标',
   clickStatus: '点击状态',
   unclickedStatus: '未点击状态',
-  addConnections: '添加连接',
+  addConnections: '添加链接',
   addMenu: '添加菜单'
 }

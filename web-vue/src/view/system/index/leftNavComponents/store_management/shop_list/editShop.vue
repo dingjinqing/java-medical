@@ -10,7 +10,7 @@
         label-position="left"
       >
         <el-form-item :label="$t('shopList.addInfo.sysId')">
-          <span style="color:#333">{{this.Data.userName}}</span>
+          <span style="color:#333">{{this.Data.accountUserName}}</span>
         </el-form-item>
         <el-form-item :label="$t('shopList.addInfo.dbConfigId')">
           <el-select
@@ -267,7 +267,7 @@ export default {
         shopEmail: '',
         isEnabled: 0,
         shopQq: '',
-        shopFlag: '',
+        shopFlag: 0,
         memberKey: '',
         tenancyName: '',
         userName: '',
@@ -303,7 +303,7 @@ export default {
         this.centerDialogVisible = false
         if (res.error === 0) {
           this.Data = res.content
-          this.Data.userName = this.editParam.userName
+          this.Data.accountUserName = this.editParam.accountUserName
           // this.Data.isEnabled = true
           this.checkBoxExchange()
           console.log('this.Data.userName')

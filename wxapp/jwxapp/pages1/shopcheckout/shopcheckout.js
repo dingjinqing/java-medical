@@ -138,7 +138,11 @@ global.wxPage({
         let scoreProportion = info.scoreProportion ? Number(info.scoreProportion) : 100// 积分兑换比
         // 积分转换成scoreProportion的整数倍
         info.score = Math.floor(info.score / scoreProportion) * scoreProportion
-        info.scorePayNum = Number(info.scorePayNum)
+        if (Number(info.scorePayLimit) === 0) {
+          info.scorePayNum = 0
+        } else {
+          info.scorePayNum = Number(info.scorePayNum)
+        }
         // 最多使用积分
         that.setData({
           orderInfo: info,
@@ -273,14 +277,16 @@ global.wxPage({
     if (cardNo === null) {
       this.setData({
         useCard: {},
-        'payInfo.cardNo': ''
+        'payInfo.cardNo': '',
+        'payInfo.cardAmount': ''
       })
     } else {
       let useCard = this.data.orderInfo.memberCardList.find(item => item.cardNo === cardNo)
       console.log(useCard)
       this.setData({
         useCard: useCard,
-        'payInfo.cardNo': useCard.cardNo
+        'payInfo.cardNo': useCard.cardNo,
+        'payInfo.cardAmount': ''
       })
     }
     this.computedMoney()
