@@ -14,7 +14,16 @@
         >
         </el-alert>
         <p style="margin-top:20px;">筛选条件：</p>
-        <p style="margin-top:10px;">来源：全部</p>
+        <div class="filters">
+          <ul>
+            <li
+              v-for="(item, key) in filters"
+              :key="key"
+            >
+              <p v-if="!!item">{{item}}</p>
+            </li>
+          </ul>
+        </div>
         <div class="dashed-line"></div>
         <div style="margin-top:10px;">导出条数(一次最多导出{{cfgInfo.max_num?cfgInfo.max_num:0}}条数据)</div>
         <div>
@@ -164,7 +173,8 @@
 import { getExportCfg } from '@/api/admin/membershipList.js'
 export default {
   props: {
-    dialogVisible: Boolean
+    dialogVisible: Boolean,
+    queryParams: Object
   },
   data () {
     return {
@@ -184,6 +194,88 @@ export default {
       },
       set: function (val) {
         this.$emit('update:dialogVisible', val)
+      }
+    },
+    filters: {
+      get () {
+        let params = this.queryParams
+        let paramDescription = {}
+        for (const key in params) {
+          if (params.hasOwnProperty(key)) {
+            let value = params[key]
+            if (value) {
+              switch (key) {
+                case 'mobile':
+                  paramDescription[key] = '手机号:' + value
+                  break
+                case 'username':
+                  paramDescription[key] = '微信昵称:' + value
+                  break
+                case 'source':
+                  paramDescription[key] = '来源:' + value
+                  break
+                case 'tagName':
+                  paramDescription[key] = '用户名:' + value
+                  break
+                case 'inviteUserName':
+                  paramDescription[key] = '邀请人:' + value
+                  break
+                case 'createTime':
+                case 'endTime':
+                  paramDescription['registrationTime'] = '注册时间:' + params.createTime + '至' + params.endTime
+                  break
+                case 'cardId':
+                  paramDescription[key] = '会员卡:' + value
+                  break
+                case 'loginStartTime':
+                case 'loginEndTime':
+                  paramDescription['loginTime'] = '指定时间内有登录记录:' + params.loginStartTime + '至' + params.loginEndTime
+                  break
+                case 'cartStartTime':
+                case 'cartEndTime':
+                  paramDescription['cartTime'] = '指定时间内有加购行为:' + params.cartStartTime + '至' + params.cartEndTime
+                  break
+                case 'buyStartTime':
+                case 'buyEndTime':
+                  paramDescription['buyTime'] = '指定时间内有交易记录:' + params.buyStartTime + '至' + params.buyEndTime
+                  break
+                case 'unitPriceLow':
+                case 'unitPriceHight':
+                  paramDescription['unitPrice'] = '客单价:' + params.unitPriceLow + '至' + params.unitPriceHight
+                  break
+                case 'buyCountLow':
+                case 'buyCountHight':
+                  paramDescription['buyCount'] = '累计购买次数:' + params.buyCountLow + '至' + params.buyCountHight
+                  break
+                case 'goodsId':
+                  paramDescription[key] = '商品名称:' + value
+                  break
+                case 'hasMobile':
+                  paramDescription[key] = '有手机号'
+                  break
+                case 'hasScore':
+                  paramDescription[key] = '有积分'
+                  break
+                case 'hasBalance':
+                  paramDescription[key] = '有余额'
+                  break
+                case 'hasCard':
+                  paramDescription[key] = '有会员卡'
+                  break
+                case 'hasDelete':
+                  paramDescription[key] = '已禁止登录'
+                  break
+                case 'hasImport':
+                  paramDescription[key] = '导入的会员'
+                  break
+              }
+            }
+          }
+        }
+        return paramDescription
+      },
+      set () {
+
       }
     }
   },
@@ -210,38 +302,47 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.table-title {
-  width: 25%;
-  vertical-align: middle;
-}
-.check-list {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  li {
-    width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 20px;
-    cursor: pointer;
-    .el-checkbox {
-      margin-right: 10px;
+.member-ship-export-dialog {
+  .dialog-content {
+    max-height: 500px;
+    overflow: auto;
+  }
+  .filters {
+    margin: 10px 0;
+  }
+  .table-title {
+    width: 25%;
+    vertical-align: middle;
+  }
+  .check-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    li {
+      width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 20px;
+      cursor: pointer;
+      .el-checkbox {
+        margin-right: 10px;
+      }
     }
   }
-}
-.dashed-line {
-  display: block;
-  width: 100%;
-  padding-top: 10px;
-  border-radius: 2px;
-  border-top: 0.5px dashed;
-  margin-top: 10px;
-}
-.export-table-items {
-  td {
-    border: 1px solid #ccc;
-    padding: 8px 10px;
+  .dashed-line {
+    display: block;
+    width: 100%;
+    padding-top: 10px;
+    border-radius: 2px;
+    border-top: 0.5px dashed;
+    margin-top: 10px;
+  }
+  .export-table-items {
+    td {
+      border: 1px solid #ccc;
+      padding: 8px 10px;
+    }
   }
 }
 </style>
