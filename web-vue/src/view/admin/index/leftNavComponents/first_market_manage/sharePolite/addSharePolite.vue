@@ -204,6 +204,7 @@
                   label-width="110px"
                   :prop="`shareRules[${index}].reward_type`"
                   ref="reward_type"
+                  style="margin-top:10px"
                 >
                   <el-radio-group v-model="item.reward_type">
                     <el-radio :label="1">{{$t('adSharePolite.socre')}}</el-radio>
@@ -221,7 +222,7 @@
                   ref="rewardScore"
                   label-width="110px"
                   inline-message=true
-                  style="padding: 0 0 10px"
+                  style="padding: 0 0 10px;margin-top:10px"
                   :rules="[
                     { required: true, validator: (rule,value, callback)=>(validateIntegral(rule, value, callback, item.score)), trigger:['blur', 'change']}
                   ]"
@@ -239,6 +240,7 @@
                   :label="$t('adSharePolite.rewwardNum')+'：'"
                   label-width="110px"
                   v-if="item.reward_type == 1"
+                  style="margin-top:10px"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>{ validateScoreNumber(rule, value, callback, item.score_num)}, trigger: 'blur'}
                   ]"
@@ -256,6 +258,7 @@
                   v-if="item.reward_type == '2'"
                   :label="$t('adSharePolite.coupon')+'：'"
                   label-width="110px"
+                  style="margin-top:10px"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>  { validatedSelectCoupon(rule, value, callback, item.coupon_name)}, trigger:['blur', 'change']}
                   ]"
@@ -311,7 +314,7 @@
                   ref="coupon_num"
                   :label="$t('adSharePolite.rewwardNum')+'：'"
                   label-width="110px"
-                  style="margin-top:10px"
+                  style="margin-top:20px"
                   v-if="item.reward_type === 2"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>{ validateCouponNumber(rule, value, callback, item.coupon_num)}, trigger: 'blur'}
@@ -331,7 +334,7 @@
                   v-if="item.reward_type == 3"
                   :label="$t('adSharePolite.lottery')+'：'"
                   label-width="110px"
-                  style="padding:0 0 10px;"
+                  style="padding:0 0 10px;margin-top: 10px"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>{ validatelottery(rule, value, callback, item.lottery)}, trigger: ['blur','change']}
                   ]"
@@ -377,6 +380,7 @@
                   :label="$t('adSharePolite.rewwardNum')+'：'"
                   label-width="110px"
                   v-if="item.reward_type == 3"
+                  style="margin-top: 10px"
                   :rules="[
                     {required: true, validator:(rule, value, callback) =>{ validateRewardNumber(rule, value, callback, item.lottery_num)}, trigger: ['blur', 'change']}
                   ]"
