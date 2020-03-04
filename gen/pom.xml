@@ -131,7 +131,7 @@
 					<jdbc>
 						<user>root</user>
 						<password>123456</password>
-						<url>jdbc:mysql://47.100.189.83:3306/?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
+						<url>jdbc:mysql://localhost:3306/?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
 						</url>
 						<driver>com.mysql.cj.jdbc.Driver</driver>
 
