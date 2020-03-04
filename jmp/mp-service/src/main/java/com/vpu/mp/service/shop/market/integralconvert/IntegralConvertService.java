@@ -262,7 +262,7 @@ public class IntegralConvertService extends ShopBaseService {
 	 */
 	public IntegralConvertSelectVo selectOne(IntegralConvertSelectParam param) {
 
-		IntegralConvertSelectVo selectVo = db().select(imd.NAME, imd.START_TIME, imd.END_TIME, imd.MAX_EXCHANGE_NUM, imd.GOODS_ID, GOODS.GOODS_NAME,
+		IntegralConvertSelectVo selectVo = db().select(imd.ID,imd.NAME, imd.START_TIME, imd.END_TIME, imd.MAX_EXCHANGE_NUM, imd.GOODS_ID, GOODS.GOODS_NAME,
 						imd.SHARE_CONFIG,imd.DEL_FLAG,imd.STATUS)
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).where(imd.ID.eq(param.getId()))
 				.fetchOneInto(IntegralConvertSelectVo.class);
