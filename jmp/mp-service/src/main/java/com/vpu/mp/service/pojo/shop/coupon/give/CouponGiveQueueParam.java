@@ -44,7 +44,7 @@ public class CouponGiveQueueParam {
 	private String[] couponArray;
     /** 获取方式，0：发放，1：领取 */
 	private Byte accessMode;
-    /** 1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券 */
+    /** 1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券10激活送券11好友帮助砍价发券12砍价失败激励13拼团失败激励14拼团抽奖失败激励15优惠券礼包16好友助力成功奖励17好友助力失败奖励18测评奖励19开通会员卡20评价有礼送券21分享有礼送券22分销送券23收藏有礼送券 */
 	private Byte getSource;
     /** 未使用队列消息时不需要传 */
 	@JsonProperty(access = Access.WRITE_ONLY)

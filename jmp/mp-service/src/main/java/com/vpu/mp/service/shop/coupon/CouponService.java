@@ -926,13 +926,35 @@ public class CouponService extends ShopBaseService {
      * @param voucherId
      * @return
      */
-	public int getUserCouponCountByPackId(int packId,int userId,int voucherId){
-	    return db().selectCount().from(CUSTOMER_AVAIL_COUPONS).
+	public int getUserCouponCountByPackId(int packId,int userId,int voucherId,String orderSn){
+	    SelectWhereStep select = (SelectWhereStep) db().selectCount().from(CUSTOMER_AVAIL_COUPONS).
+            where(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(CouponConstant.ACCESS_MODE_COUPON_PACK)).
+            and(CUSTOMER_AVAIL_COUPONS.ACCESS_ID.eq(packId)).
+            and(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId)).
+            and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+            and(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(voucherId));
+	    if(StringUtil.isNotBlank(orderSn)){
+	        select.where(CUSTOMER_AVAIL_COUPONS.ACCESS_ORDER_SN.eq(orderSn));
+        }
+        return (int) select.fetchOptionalInto(Integer.class).orElse(0);
+    }
+
+    /**
+     * 优惠券礼包订单里某种优惠券最后一次发放时间
+     * @param packId
+     * @param userId
+     * @param voucherId
+     * @param orderSn
+     * @return
+     */
+    public Timestamp getLastCouponPackVoucherSendTime(int packId,int userId,int voucherId,String orderSn){
+	    return db().select(DSL.max(CUSTOMER_AVAIL_COUPONS.CREATE_TIME)).from(CUSTOMER_AVAIL_COUPONS).
             where(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(CouponConstant.ACCESS_MODE_COUPON_PACK)).
             and(CUSTOMER_AVAIL_COUPONS.ACCESS_ID.eq(packId)).
             and(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId)).
             and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
             and(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(voucherId)).
-            fetchOptionalInto(Integer.class).orElse(0);
+            and(CUSTOMER_AVAIL_COUPONS.ACCESS_ORDER_SN.eq(orderSn)).
+            fetchAnyInto(Timestamp.class);
     }
 }

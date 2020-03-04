@@ -40,6 +40,9 @@ public class ShopTaskService {
     @Autowired
     public MyPrizeTaskService prizeTaskService;
 
+    @Autowired
+    public CouponPackTaskService couponPackTaskService;
+
     /**
      * The Goods task service.概况模块-商品统计
      */

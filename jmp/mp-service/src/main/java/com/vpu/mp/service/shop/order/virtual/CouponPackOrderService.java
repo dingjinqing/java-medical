@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackConstant;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -348,7 +350,10 @@ public class CouponPackOrderService extends VirtualOrderService {
             }
         }
 
-        //TODO 按照活动规则发放优惠券
+        //发券
+        List<VirtualOrderRecord> list = new ArrayList<>();
+        list.add(orderRecord);
+        saas.getShopApp(getShopId()).couponPack.sendCouponPack(list);
 
         return orderRecord;
     }
@@ -364,6 +369,27 @@ public class CouponPackOrderService extends VirtualOrderService {
 
     public VirtualOrderRecord getRecord(String orderSn){
         return db().fetchAny(VIRTUAL_ORDER,VIRTUAL_ORDER.ORDER_SN.eq(orderSn));
+    }
+
+    /**
+     * 更新stillSendFlag
+     * @param orderSn
+     * @param stillSendFlag
+     */
+    public void updateStillSendFlag(String orderSn,Byte stillSendFlag){
+        db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.STILL_SEND_FLAG,stillSendFlag).where(VIRTUAL_ORDER.ORDER_SN.eq(orderSn)).execute();
+    }
+
+    /**
+     * 获取待发放的优惠券礼包订单
+     * @return
+     */
+    public List<VirtualOrderRecord> getCanGrantCouponOrderList(){
+        return db().selectFrom(VIRTUAL_ORDER).
+            where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK)).
+            and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED)).
+            and(VIRTUAL_ORDER.STILL_SEND_FLAG.eq(CouponPackConstant.STILL_SEND_FLAG_CONTINUE)).
+            fetch();
     }
 
 
