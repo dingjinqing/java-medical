@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertProductVo;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.integral.IntegralMallMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.integral.IntegralMallPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -157,6 +158,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         }
         //此次购买数量
         int currentNum = 0;
+        //
         Map<Integer, IntegralConvertProductVo> productMap = activityInfo.getProductVo().stream().collect(Collectors.toMap(IntegralConvertProductVo::getPrdId, Function.identity()));
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             //累加
@@ -171,17 +173,23 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK);
             }
         }
-       /* if(activityInfo.getMaxExchangeNum() != 0) {
-            if(currentNum > activityInfo.getMaxExchangeNum() || currentNum + getUserExchangeCount(param.getWxUserInfo().getUserId(), activityInfo.getId()) > activityInfo.getMaxExchangeNum()) {
+        if(activityInfo.getMaxExchangeNum() != 0) {
+            if(currentNum > activityInfo.getMaxExchangeNum() || currentNum + getUserJoinTime(param.getWxUserInfo().getUserId(), activityInfo.getId()) > activityInfo.getMaxExchangeNum()) {
+                logger().error("积分兑换活动超出兑换次数");
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NUMBER_LIMIT);
             }
-        }*/
+        }
     }
 
     public void orderInit(OrderBeforeParam param, IntegralConvertSelectVo activityInfo) throws MpException {
         //不使用优惠券
         param.setCouponSn(StringUtils.EMPTY);
-        //积分兑换比例
+        //免运费
+        param.setIsFreeShippingAct(OrderConstant.YES);
+        //禁用货到付款、积分支付
+        param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+        param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        //计算价格
         Map<Integer, IntegralConvertProductVo> productMap = activityInfo.getProductVo().stream().collect(Collectors.toMap(IntegralConvertProductVo::getScore, Function.identity()));
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             IntegralConvertProductVo prd = productMap.get(goods.getProductId());
