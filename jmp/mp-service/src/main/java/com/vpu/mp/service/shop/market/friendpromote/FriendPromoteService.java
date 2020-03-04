@@ -615,6 +615,11 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setPromoteAmount(record.getPromoteAmount());
         //设置助力类型 0平均 1随机
         promoteInfo.setPromoteType(record.getPromoteType());
+        //设置分享图片相关
+        promoteInfo.setActivityShareType(record.getActivityShareType());
+        promoteInfo.setCustomShareWord(record.getCustomShareWord());
+        promoteInfo.setShareImgType(record.getShareImgType());
+        promoteInfo.setCustomImgPath(record.getCustomImgPath());
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());

@@ -50,6 +50,10 @@
             class="num"
             style="color: #5A8BFF"
           >{{ total.totalPayment }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url1"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -67,6 +71,10 @@
             class="num"
             style="color: #fc6181;"
           >{{ total.totalDiscount }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url2"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -84,6 +92,10 @@
             class="num"
             style="color: #fdb64a;"
           >{{ total.totalCostEffectivenessRatio === 0 ? 0 : ((total.totalDiscount / total.totalPayment) * 100).toFixed(2) }}%</div>
+          <el-image
+            class="left_image"
+            :src="urls.url3"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -101,6 +113,10 @@
             class="num"
             style="color: #3dcf9a;"
           >{{ total.totalNewUserNumber }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url4"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -118,6 +134,10 @@
             class="num"
             style="color: #8379f7;"
           >{{ total.totalOldUserNumber }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url5"
+          ></el-image>
         </div>
       </section>
 
@@ -131,7 +151,6 @@
 import { effactSeckillList } from '@/api/admin/marketManage/seckill.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import echarts from 'echarts'
-
 export default {
   components: { wrapper },
   data () {
@@ -145,7 +164,14 @@ export default {
       },
       echartData: {},
       option: {},
-      myChart: {}
+      myChart: {},
+      urls: {
+        url1: `${this.$imageHost}/image/admin/any_coner/any_coner_blue.png`,
+        url2: `${this.$imageHost}/image/admin/any_coner/any_coner_pink.png`,
+        url3: `${this.$imageHost}/image/admin/any_coner/any_coner_orange.png`,
+        url4: `${this.$imageHost}/image/admin/any_coner/any_coner_yellow.png`,
+        url5: `${this.$imageHost}/image/admin/any_coner/any_coner_aqua.png`
+      }
     }
   },
   watch: {
@@ -283,6 +309,7 @@ export default {
         ]
       })
     }
+
   }
 }
 
@@ -325,6 +352,13 @@ export default {
     width: 100%;
     height: 500px;
     left: -30px;
+  }
+  .left_image {
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    width: 44px;
+    height: 40px;
   }
 }
 </style>
