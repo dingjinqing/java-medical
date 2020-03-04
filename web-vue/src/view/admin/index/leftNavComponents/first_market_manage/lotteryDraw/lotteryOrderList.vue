@@ -18,51 +18,51 @@
         style="width: 100%"
       >
         <el-table-column
-          label="订单号"
+          :label="$t('lotteryDraw.orderSn')"
           prop="orderSn"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="活动商品"
+          :label="$t('lotteryDraw.goodsId')"
           prop="goodsName"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="是否成团"
+          :label="$t('lotteryDraw.isGroup')"
           align="center"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.grouped === true">是</span>
-            <span v-if="scope.row.grouped === false">否</span>
+            <span v-if="scope.row.grouped === true">{{ this.$t('lotteryDraw.isYes') }}</span>
+            <span v-if="scope.row.grouped === false">{{ this.$t('lotteryDraw.isNo') }}</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="收货人信息"
+          :label="$t('lotteryDraw.consignee')"
           prop="consigneeRealName"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          label="是否中奖"
+          :label="$t('lotteryDraw.isWinDraw')"
           align="center"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.isWinDraw === true">是</span>
-            <span v-if="scope.row.isWinDraw === false">否</span>
+            <span v-if="scope.row.isWinDraw === true">{{ this.$t('lotteryDraw.isYes') }}</span>
+            <span v-if="scope.row.isWinDraw === false">{{ this.$t('lotteryDraw.isNo') }}</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="下单时间"
+          :label="$t('lotteryDraw.createTime')"
           prop="createTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="抽奖码数量"
+          :label="$t('lotteryDraw.codeCount')"
           prop="codeCount"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="订单状态"
+          :label="$t('lotteryDraw.orderStatusName')"
           prop="orderStatusName"
           align="center"
         ></el-table-column>
