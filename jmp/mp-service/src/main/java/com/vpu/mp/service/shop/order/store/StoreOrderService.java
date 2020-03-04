@@ -37,6 +37,7 @@ import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.tools.StringUtils;
@@ -48,7 +49,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static com.vpu.mp.db.shop.tables.Invoice.INVOICE;
@@ -496,11 +496,12 @@ public class StoreOrderService extends ShopBaseService {
         int sendScore = 0;
         // 会员卡送积分逻辑
         if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo)) {
+            log.debug("会员卡买单赠送积分");
             // 获取会员卡购物送积分策略json数据,例如: {"offset":0,"goodsMoney":[100,200],"getScores":[1000,2000],"perGoodsMoney":1000,"perGetScores":2000}
             String buyScoreConfig = memberCardService.getSendScoreStrategy(cardNo);
             // 策略为空,不赠送积分
             if (org.apache.commons.lang3.StringUtils.isBlank(buyScoreConfig)) {
-                giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                log.debug("会员卡赠送积分策略为空，不送积分！");
                 return;
             }
             ScoreJson scoreJson = Util.json2Object(buyScoreConfig, ScoreJson.class, false);
@@ -509,17 +510,18 @@ public class StoreOrderService extends ShopBaseService {
             if (BYTE_ONE.equals(scoreJson.getOffset())) {
                 if (scoreJson.getPerGetScores().compareTo(ZERO) > 0 && scoreJson.getPerGoodsMoney().compareTo(ZERO) > 0) {
                     sendScore = totalMoney.divide(scoreJson.getPerGoodsMoney(), 0, RoundingMode.DOWN).multiply(scoreJson.getPerGetScores()).intValue();
-                    log.debug("支付完成送积分:会员卡[{}],每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
+                    log.info("支付完成送积分:会员卡[{}],每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
                 }
             } else if (BYTE_ZERO.equals(scoreJson.getOffset())) {
                 BigDecimal fullMoney = scoreJson.getGoodsMoney().stream().filter(e -> e.compareTo(totalMoney) < 0).max(Comparators.comparable()).orElse(BIGDECIMAL_ZERO);
-                int index = Arrays.asList(scoreJson.getGoodsMoney()).indexOf(fullMoney);
-                sendScore = index < scoreJson.getGetScores().size() ? scoreJson.getGetScores().get(index).intValue() : NumberUtils.INTEGER_ZERO;
-                log.debug("支付完成送积分:会员卡[{}],满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
+                int index = scoreJson.getGoodsMoney().indexOf(fullMoney);
+                sendScore = index < scoreJson.getGetScores().size() ? scoreJson.getGetScores().get(index).intValue() : INTEGER_ZERO;
+                log.info("支付完成送积分:会员卡[{}],满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
             }
             // 送积分
             giftScore(orderInfo.getOrderSn(), sendScore, orderInfo.getUserId());
         } else {
+            log.debug("非会员卡/普通买单赠送积分");
             // 非会员卡送积分逻辑
             BigDecimal totalMoney = orderInfo.getMoneyPaid().add(orderInfo.getUseAccount()).setScale(2, RoundingMode.DOWN);
 //            购物送积分类型： 0： 购物满；1：购物每满
@@ -532,11 +534,10 @@ public class StoreOrderService extends ShopBaseService {
                 // 送...积分
                 String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
                 if (org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
-                    giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
                     return;
                 }
                 sendScore = Integer.parseInt(setVal2);
-                log.debug("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
+                log.info("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
             } else if (scoreType == CONDITION_ONE) {
 //                购物每满
                 Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY_EACH);
@@ -545,13 +546,11 @@ public class StoreOrderService extends ShopBaseService {
                 // 送...积分
                 String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
                 if (org.apache.commons.lang3.StringUtils.isBlank(setVal) || org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
-                    giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
                     return;
                 }
                 sendScore = totalMoney.divide(NumberUtils.createBigDecimal(setVal), 0, RoundingMode.DOWN).multiply(NumberUtils.createBigDecimal(setVal2)).intValue();
-                log.debug("支付完成送积分:非会员卡每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
+                log.info("支付完成送积分:非会员卡每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
             } else {
-                giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
                 return;
             }
             giftScore(orderInfo.getOrderSn(), sendScore, orderInfo.getUserId());
@@ -577,18 +576,16 @@ public class StoreOrderService extends ShopBaseService {
                         setUserId(userId[0]);
                         setScore(score);
                         setScoreStatus(NO_USE_SCORE_STATUS);
-                        setDesc("score");
+                        setDesc(RemarkTemplate.getMessageByCode(RemarkTemplate.ORDER_STORE_SCORE.code));
                         setOrderSn(orderSn);
                         setRemarkCode(RemarkTemplate.ORDER_STORE_SCORE.code);
-                        //setRemark("门店支付得积分");
                     }
                 },
                 INTEGER_ZERO,
                 BYTE_ONE,
                 BYTE_ZERO);
         } catch (MpException e) {
-            log.error("门店买单支付送积分失败,原因如下:{}", e.getMessage());
-            throw new BusinessException(JsonResultCode.CODE_FAIL);
+            log.error("门店买单支付赠送积分失败,原因如下:{}", ExceptionUtils.getStackTrace(e));
         }
     }
 
