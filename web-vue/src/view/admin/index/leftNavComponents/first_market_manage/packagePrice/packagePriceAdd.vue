@@ -3,9 +3,8 @@
     <el-form
       ref="form"
       :model="param"
-      :rules="formRules"
       label-width="130px"
-      :label-position="right"
+      labelPosition="right"
     >
       <el-form-item label="活动类型：">
         <!-- <el-radio-group v-model="param.actType"> -->
@@ -81,35 +80,103 @@
       </el-form-item>
 
       <el-form-item label="商品组：">
-        <section>
-          <el-checkout v-mod="param.group1">商品组1</el-checkout>
-          <div>
-            <span>名称</span>
-            <el-input
-              size="small"
-              style="width: 80px"
-              v-model="param.groupName"
-            ></el-input>
-            <span>商品组名称，最多可填4个字</span>
-          </div>
-          <div>
-            <span>需选择</span>
-            <el-input
-              size="small"
-              style="width: 80px"
-              v-model="param.groupName"
-            ></el-input>&nbsp;件
-            <span>该商品组需要选购的商品数量，请填写正整数</span>
+        <section style="display: flex">
+          <el-checkbox v-model="param.group1">商品组1</el-checkbox>
+          <div
+            style="margin-left:20px"
+            v-if="param.group1 === true"
+          >
+            <div>
+              <span>名称</span>
+              <el-input
+                size="small"
+                style="width: 80px"
+                v-model="param.groupName"
+              ></el-input>
+              <span>商品组名称，最多可填4个字</span>
+            </div>
+            <div>
+              <span>需选择</span>
+              <el-input
+                size="small"
+                style="width: 80px"
+                v-model="param.goodsNumber"
+              ></el-input>&nbsp;件
+              <span>该商品组需要选购的商品数量，请填写正整数</span>
+            </div>
           </div>
         </section>
       </el-form-item>
+
+      <el-form-item label="添加商品：">
+        <div>
+          <span>请给每个商品组分别添加商品</span>
+          <div class="goods-area">
+            <div
+              style="display: flex"
+              class="goods-num"
+            >
+              <div>商品组1</div>
+              <div v-if="param.group2 === true">商品组2</div>
+              <div v-if="param.group3 === true">商品组3</div>
+            </div>
+            <div
+              class="add-btn"
+              @click="addGoods"
+            >+ 添加商品</div>
+            <div>
+              <table class="add-goods">
+                <thead>
+                  <tr>
+                    <th width="45%">商品名称</th>
+                    <th width="15%">价格</th>
+                    <th width="15%">库存</th>
+                    <th width="15%">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(item, index) in goodsList"
+                    :key="item.name"
+                  >
+                    <td>
+                      <div class="goods-info">
+                        <div class="goods-img">
+                          <img
+                            :src="item.goodsImg"
+                            alt=""
+                          >
+                        </div>
+                        <div class="goods-name">{{item.goodsName}}</div>
+                      </div>
+                    </td>
+                    <td>￥{{item.shopPrice}}</td>
+                    <td>{{item.goodsNumber}}</td>
+                    <td @click="deleteGoods(index)">
+                      <span>删除</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="add-btn">+ 添加平台分类</div>
+            <div class="add-btn">+ 添加商家分类</div>
+          </div>
+        </div>
+      </el-form-item>
     </el-form>
+
+    <!-- 选择商品弹窗 -->
+    <ChoosingGoods :tuneUpChooseGoods='tuneUpChooseGoodsDialog' />
+
   </div>
 </template>
 
 <script>
+import ChoosingGoods from '@/components/admin/choosingGoods'
 
 export default {
+  components: { ChoosingGoods },
   data () {
     return {
       param: {
@@ -120,11 +187,22 @@ export default {
         endTime: '',
         totalMoney: '', // 总结算价格
         group1: '',
-        groupName: ''
+        group2: false,
+        group3: false,
+        groupName: '', // 商品组名称
+        goodsNumber: '' // 至少需要选择件数
       },
       srcList: {
         src1: `${this.imageHost}//image/admin/new_preview_image/packagesale.jp`
-      }
+      },
+      // 选择商品
+      tuneUpChooseGoodsDialog: false,
+      goodsList: []
+    }
+  },
+  methods: {
+    addGoods () {
+      this.tuneUpChooseGoodsDialog = !this.tuneUpChooseGoodsDialog
     }
   }
 }
@@ -132,9 +210,67 @@ export default {
 </script>
 <style lang="scss" scoped>
 .content {
-  // padding: 10px;
   margin-top: 10px;
   padding: 15px;
   background: #fff;
+  .goods-area {
+    border: 1px solid #ccc;
+    width: 600px;
+    .goods-num {
+      height: 30px;
+      line-height: 30px;
+      border-bottom: 1px solid #ccc;
+      background: #f5f5f5;
+      div {
+        width: 70px;
+        border-right: 1px solid #ccc;
+        background: #fff;
+        text-align: center;
+      }
+    }
+    .add-btn {
+      width: 120px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      color: #5a8bff;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+      margin: 10px 0 10px 10px;
+    }
+    .add-goods {
+      border: 1px solid #ddd;
+      margin-left: 10px;
+      thead tr {
+        background: #f8f8f8;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        th {
+          border: 1px solid #ddd;
+        }
+      }
+      tbody tr {
+        text-align: center;
+        td {
+          padding: 10px;
+          border: 1px solid #ddd;
+          .goods-info {
+            display: flex;
+            .goods-img {
+              width: 40px;
+              height: 40px;
+              margin-right: 10px;
+              img {
+                width: 100%;
+                height: 100%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 </style>
