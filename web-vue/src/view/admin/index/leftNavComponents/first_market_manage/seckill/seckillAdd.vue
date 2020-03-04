@@ -567,23 +567,19 @@ export default {
     // 编辑初始化
     editSeckillInit () {
       getSeckillList({ skId: this.editId }).then((res) => {
+        console.log(res)
         if (res.error === 0) {
           var data = res.content
           this.form.name = data.name
-          this.form.goodsId = data.goods.goodsId
-          this.getGoodsInfo(data.goodsId)
-          this.form.secKillProduct = data.secKillProduct
-          this.form.secKillProduct.forEach((item, index) => {
-            if (item.prdDesc === '') {
-              item.prdDesc = data.goods.goodsName
-            }
-          })
+          this.form.goodsId = data.goods.map(item => { return item.goodsId })
+          this.form.secKillProduct = this.initEditProduct(data.goods)
           this.form.startTime = data.startTime
           this.form.endTime = data.endTime
           this.form.validity = [data.startTime, data.endTime]
           this.form.limitAmount = data.limitAmount
           this.form.limitPaytime = data.limitPaytime
           this.form.freeFreight = data.freeFreight
+          this.form.first = data.first
           // 展开设置
           this.arrorFlag = false
           // 会员卡
@@ -752,6 +748,14 @@ export default {
       target.goodsSpecProducts = prdInfo
       this.changePriceInput(target)
       this.changeStockInput(target)
+    },
+    initEditProduct (goods) {
+      let newdata = []
+      goods.forEach(item => {
+        let expand = item.secKillProduct.length < 2 ? {...item.secKillProduct[0]} : {...item.secKillProduct[0], goodsSpecProducts: item.secKillProduct}
+        newdata.push({...item, ...expand})
+      })
+      return newdata
     },
     // // 初始化规格表格
     // initTableData () {

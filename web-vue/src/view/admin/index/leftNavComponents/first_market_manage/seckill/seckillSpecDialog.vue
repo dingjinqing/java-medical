@@ -54,10 +54,10 @@
             ></el-input>
             </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="已售数量"
           v-if="isEdit"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           v-if="isEdit"
           label="剩余秒杀库存"
@@ -65,6 +65,7 @@
         <template slot-scope="scope">
             <el-input
                 v-model="scope.row.stock"
+                :disabled="isEdit"
                 size="small"
                 class="small_input"
             ></el-input>
@@ -128,7 +129,7 @@ export default {
     },
     confrim () {
       if (!this.checkInput()) return
-      this.$emit('confrim', {goodsId: this.productInfo.goodsId, prdInfo: this.secKillProduct})
+      if (!this.isEdit) this.$emit('confrim', {goodsId: this.productInfo.goodsId, prdInfo: this.secKillProduct})
       this.productShow = false
     },
     checkInput () {

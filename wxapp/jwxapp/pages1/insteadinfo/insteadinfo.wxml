@@ -1,91 +1,84 @@
 <include src="../../pages/common/header.wxml" />
-<view class='main_container' style="height:calc(100vh - {{margin_top_nav + 8}}px;">
+<view class='main_container' style="height:calc(100vh - {{margin_top_nav + 8}}px;" wx:if="{{pageInfo}}">
   <view class="page-top" style="background:-webkit-linear-gradient(bottom,{{linColor}},{{comColor1}})">
     <view class="help-status">
-      <image src="{{imageUrl}}/image/wxapp/ins_conin1.png"></image>
-      <view>心愿已达成，我会感谢你哒</view>
+      <image src="{{pageInfo.waitPayMoney > 0 ? pageInfo.userInfo.userAvatar : imageUrl + '/image/wxapp/ins_conin1.png'}}"></image>
+      <view>{{pageInfo.waitPayMoney > 0 ? '快帮 '+pageInfo.order.username+' 达成心愿吧' : '心愿已达成，我会感谢你哒'}}</view>
     </view>
   </view>
   <view class="goods-content">
+   <block wx:for="{{pageInfo.order.goods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="recId">
     <view class="goods-item">
-      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
+      <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
       <view class="goods-right">
-        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
-        <text class="goods-desc">颜色:白色</text>
-        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
+        <text class="goods-name">{{goodsItem.goodsName}}</text>
+        <text class="goods-desc">{{goodsItem.goodsAttr}}</text>
+        <text class="goods-price" style="color:{{comColor}};">￥{{goodsItem.goodsPrice}}</text>
       </view>
     </view>
-    <view class="goods-item">
-      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
-      <view class="goods-right">
-        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
-        <text class="goods-desc">颜色:白色</text>
-        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
-      </view>
-    </view>
-    <view class="goods-item">
-      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
-      <view class="goods-right">
-        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
-        <text class="goods-desc">颜色:白色</text>
-        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
-      </view>
-    </view>
-    <view class="goods-item">
-      <image src="{{imageUrl}}/image/wxapp/right_into.png"></image>
-      <view class="goods-right">
-        <text class="goods-name">门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动门店商品8--勿动</text>
-        <text class="goods-desc">颜色:白色</text>
-        <text class="goods-price" style="color:{{comColor}};">￥99.00</text>
-      </view>
-    </view>
+   </block>
   </view>
 
   <view class="page-item-content">
     <view class="item-title">
-      编辑留言
+      {{pageInfo.isSelf == 0 ? '好友' : '编辑'}}留言
     </view>
-    <input type="text" class="message-input" value="相中了一件商品"></input>
+    <input type="text" class="message-input" disabled='{{pageInfo.isSelf == 0 ||  pageInfo.waitPayMoney <= 0}}' bindinput="editMsg" value="{{manageMsg}}"></input>
   </view>
   <view class="page-item-content">
     <view class="item-title">
-      好朋友们快来助我一臂之力吧
+      好朋友们，快来助我一臂之力吧
     </view>
     <view class="progress-info">
       <view class="top">
-        <view>已付款：<text>￥40.00</text></view>
-        <view>剩余金额：<text>￥9.50</text></view>
+        <view>已付款：<text>￥{{pageInfo.amountPaid}}</text></view>
+        <view>剩余金额：<text>￥{{pageInfo.waitPayMoney}}</text></view>
       </view>
       <view class="progress-bg">
-        <view class="progress-color" style="background:-webkit-linear-gradient(right,{{linColor}},{{comColor1}});width:80%;"></view>
+        <view class="progress-color" style="background:-webkit-linear-gradient(right,{{linColor}},{{comColor1}});width:{{progress}}%;"></view>
       </view>
     </view>
   </view>
 
-  <view class="page-item-content friend-content">
+  <view class="page-item-content friend-content" wx:if="{{pageInfo.insteadPayDetails.dataList.length > 0}}">
     <view class="item-title">
       <view class="line"></view>
       <text>好友助力</text>
       <view class="line"></view>
     </view>
-    <view class="friend-item">
-      <image class="user-avatar" src="http://mpdevimg2.weipubao.cn/upload/4748160/avatar/thousand_2/20191218171020_2310.jpg"></image>
-      <view class="user-pay-info">
-        <view class="user-left">
-          <view>子辰大魔王</view>
-          <view>帮你付款啦！</view>
-        </view>
-        <view class="user-rigth">
-          <view>代付：</view>
-          <view>退款：</view>
+    <block wx:for="{{pageInfo.insteadPayDetails.dataList}}" wx:for-item="friendItem" wx:for-index="friendIndex" wx:key="{{friendIndex}}">
+      <view class="friend-item">
+        <image class="user-avatar" src="{{friendItem.userAvatar ? friendItem.userAvatar : imageUrl + '/image/wxapp/ins-icon.png'}}"></image>
+        <view class="user-pay-info">
+          <view class="user-left">
+            <view>{{friendItem.username ? friendItem.username : '（匿名好友）'}}</view>
+            <view>{{friendItem.message}}</view>
+          </view>
+          <view class="user-rigth">
+            <view>代付：{{friendItem.moneyPaid}}</view>
+            <view>退款：{{friendItem.refundMoney}}</view>
+          </view>
         </view>
       </view>
-    </view>
+    </block>
   </view>
 
   <view class="friend-pay-footer">
-    <view class="flex-one" style="background:{{commonColor}};color:{{(comColor != '#ff6666' || !comColor)?'#fff':'#f66'}};">自己付点</view>
-    <view class="flex-two" style="background:{{comColor}}">发送好友</view>
+    <block wx:if="{{pageInfo.isSelf === 1 && pageInfo.waitPayMoney > 0}}">
+      <view class="flex-one" style="background:{{commonColor}};color:{{(comColor != '#ff6666' || !comColor)?'#fff':'#f66'}};" bindtap="viewCheckout">自己付点</view>
+      <button class="flex-two" style="background:{{comColor}}" open-type="share">发送好友</button>
+    </block>
+    <block  wx:elif="{{pageInfo.isSelf === 1 && pageInfo.waitPayMoney <= 0}}">
+     <view class="flex-two" style="background:{{comColor}}" bindtap="viewOrder">查看订单</view>
+    </block>
+    <block  wx:elif="{{pageInfo.isSelf === 0 && pageInfo.waitPayMoney > 0}}">
+     <view class="flex-one" style="background:{{commonColor}};color:{{(comColor != '#ff6666' || !comColor)?'#fff':'#f66'}};" bindtap="viewItem">我也想买</view>
+     <view class="flex-two" style="background:{{comColor}}" bindtap="viewCheckout">帮他付款</view>
+    </block>
+    <block  wx:elif="{{pageInfo.isSelf === 0 && pageInfo.waitPayMoney <= 0}}">
+     <view class="flex-two" style="background:{{comColor}}" bindtap="viewItem">我也想买</view>
+    </block>
+    
   </view>
   <include src="../../pages/common/footer.wxml" />
 </view>
