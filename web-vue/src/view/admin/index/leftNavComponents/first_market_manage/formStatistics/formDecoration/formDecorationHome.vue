@@ -184,14 +184,20 @@ export default {
     PictureUpload: () => import('./decorationModules/formModule/pictureUpload'), // 图片上传模块
     VideoUpload: () => import('./decorationModules/formModule/videoUpload'), // 视频上传模块
     // 图文类模块池
-    RotationChart: () => import('./decorationModules/formModule/rotationChart'), // 轮播图模块
-    RichText: () => import('./decorationModules/formModule/richText') // 富文本模块
+    RotationChart: () => import('./decorationModules/graphicModule/rotationChart'), // 轮播图模块
+    RichText: () => import('./decorationModules/graphicModule/richText'), // 富文本模块
+    PictureAds: () => import('./decorationModules/graphicModule/pictureAds'), // 图片广告
+    TextModule: () => import('./decorationModules/graphicModule/textModule'), // 文本模块
+    Guide: () => import('./decorationModules/graphicModule/guide'), // 辅助线
+    AuxiliaryBlank: () => import('./decorationModules/graphicModule/auxiliaryBlank'), // 空白模块
+    Telephone: () => import('./decorationModules/graphicModule/telephone'), // 电话模块
+    OfficialAccount: () => import('./decorationModules/graphicModule/officialAccount') // 公众号模块
   },
   data () {
     return {
       middleHereFlag: false, // 中间拖动滑过模块出现的空白占位控制变量
       nowRightShowIndex: null, // 中间高亮模块索引
-      middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity', 'Email', 'Gender', 'DropDown', 'InputBox', 'Option', 'DateModule', 'PictureUpload', 'VideoUpload', 'RotationChart', 'RichText'], // 中间显示模块名称池
+      middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity', 'Email', 'Gender', 'DropDown', 'InputBox', 'Option', 'DateModule', 'PictureUpload', 'VideoUpload', 'RotationChart', 'RichText', 'PictureAds', 'TextModule', 'Guide', 'AuxiliaryBlank', 'Telephone', 'OfficialAccount'], // 中间显示模块名称池
       showModulesList: [], // 中间显示模块id数组
       insertModulesId: -1, // 左侧模块将要插入位置
       isAddBottom: false, // 是否添加到底部flag
@@ -203,7 +209,8 @@ export default {
         fallbackClass: 'active',
         sort: false,
         preventOnFilter: false,
-        fallbackTolerance: '1'
+        fallbackTolerance: '1',
+        handle: '.modules'
       },
       oldIndex: -1, // 中部拖动相关
       newIndex: -1, // 中部拖动相关
@@ -393,6 +400,24 @@ export default {
               break
             case 12:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 12)
+              break
+            case 13:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 13)
+              break
+            case 14:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 14)
+              break
+            case 15:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 15)
+              break
+            case 16:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 16)
+              break
+            case 17:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 17)
+              break
+            case 18:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 18)
               break
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
@@ -788,10 +813,11 @@ export default {
       height: 570px;
       .top {
         height: 55px;
+        position: relative;
       }
       .drag_area {
-        height: 100%;
-        position: relative;
+        min-height: 510px;
+        // position: relative;
         .hereDaily {
           height: 10px;
           z-index: 1000;
