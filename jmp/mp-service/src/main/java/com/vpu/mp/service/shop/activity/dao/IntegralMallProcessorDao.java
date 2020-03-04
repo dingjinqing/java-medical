@@ -161,14 +161,19 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         //
         Map<Integer, IntegralConvertProductVo> productMap = activityInfo.getProductVo().stream().collect(Collectors.toMap(IntegralConvertProductVo::getPrdId, Function.identity()));
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
+
+            IntegralConvertProductVo actPrd = productMap.get(goods.getProductId());
             //累加
             currentNum += goods.getGoodsNumber();
-
-            if(productMap.get(goods.getProductId()) == null) {
+            if(actPrd == null) {
                 logger().error("积分兑换规格不存在");
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
             }
-            if(productMap.get(goods.getProductId()).getStock().intValue() < goods.getGoodsNumber()) {
+            if(scoreService.getUserScore(param.getWxUserInfo().getUserId()) < actPrd.getScore()) {
+                logger().error("当前用户积分不足，无法兑换");
+                throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_ENOUGH);
+            }
+            if(actPrd.getStock().intValue() < goods.getGoodsNumber()) {
                 logger().error("积分兑换活动库存不足");
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK);
             }
