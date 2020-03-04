@@ -121,10 +121,8 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         if (userId!=null){
             condition =condition.and(INTEGRAL_MALL_RECORD.USER_ID.eq(userId));
         }
-        String fieldName = "count_num";
-        BigDecimal bigDecimal = db().select(DSL.sum(INTEGRAL_MALL_RECORD.NUMBER).as(DSL.field(fieldName, BigDecimal.class))).from(INTEGRAL_MALL_RECORD)
-            .where(condition).fetchAny(DSL.field(fieldName, BigDecimal.class));
-        return bigDecimal.intValue();
+        Integer sum = db().select(DSL.sum(INTEGRAL_MALL_RECORD.NUMBER)).where(condition).fetchOneInto(Integer.class);
+        return sum== null ? 0 : sum;
     }
 
     /**
