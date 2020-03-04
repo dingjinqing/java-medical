@@ -6,11 +6,11 @@
       </view>
       <view class="type-content">
         <view class="item-content">
-          <view class="item" bindtap="triggerPay" data-type="1">
+          <view class="item" wx:if="{{friendConfig.singlePay}}" bindtap="triggerPay" data-type="1">
             <image src="{{imageUrl}}/image/wxapp/ins_one.png"></image>
             <text>一个好友全额代付</text>
           </view>
-          <view class="item" bindtap="triggerPay" data-type="2">
+          <view class="item" wx:if="{{friendConfig.multiplePay}}" bindtap="triggerPay" data-type="0">
             <image src="{{imageUrl}}/image/wxapp/ins_more.png"></image>
             <text>多个好友帮您付款</text>
           </view>

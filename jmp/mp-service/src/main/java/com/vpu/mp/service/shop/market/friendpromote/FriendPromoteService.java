@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
@@ -1136,7 +1137,8 @@ public class FriendPromoteService extends ShopBaseService {
      * 小程序-发起好友助力
      *
      */
-    public void friendPromoteLaunch(PromoteParam param){
+    public LaunchVo friendPromoteLaunch(PromoteParam param){
+        LaunchVo launchVo = new LaunchVo();
         PromoteInfo  promoteInfo = getPromoteInfo(param.getActCode());
         //最新一次的发起的好友助力
         FriendPromoteLaunchRecord launchInfo = getLaunchInfo(null,param.getUserId(),promoteInfo.getId());
@@ -1145,5 +1147,35 @@ public class FriendPromoteService extends ShopBaseService {
         //是否可以再次发起好友助力
         CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
         promoteInfo.setCanLaunch(canLaunch.getCode());
+        if (canLaunch.getCode().equals(NumberUtils.BYTE_ZERO)){
+            //返回失败信息
+            launchVo.setMsg(canLaunch.getMsg());
+            return launchVo;
+        }
+        //发起入库
+        Integer effectRows = promoteLaunch(param.getUserId(),promoteInfo.getId());
+        if (effectRows==0){
+            launchVo.setMsg("入库失败");
+            return launchVo;
+        }
+        Integer launchId = db().lastID().intValue();
+        launchVo.setMsg("发起成功");
+        launchVo.setActCode(param.getActCode());
+        launchVo.setLaunchUserId(param.getUserId());
+        launchVo.setLaunchId(launchId);
+        return launchVo;
+    }
+
+    /**
+     * 发起助力活动入库
+     * @param userId 用户id
+     * @param promoteId 助力活动id
+     * @return 受影响的行数
+     */
+    public Integer promoteLaunch(Integer userId,Integer promoteId){
+        Integer effectRows = db().insertInto(FRIEND_PROMOTE_LAUNCH,FRIEND_PROMOTE_LAUNCH.USER_ID,FRIEND_PROMOTE_LAUNCH.PROMOTE_ID,FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME)
+            .values(userId,promoteId,DateUtil.getSqlTimestamp())
+            .execute();
+        return effectRows;
     }
 }

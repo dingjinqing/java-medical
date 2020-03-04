@@ -51,11 +51,12 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     actCode = options.actCode;
-    if (options.launch_user_id && options.launch_user_id != "") {
-      launch_user_id = options.launch_user_id
-    } else {
-      launch_user_id = ''
-    }
+    // if (options.launch_user_id && options.launch_user_id != "") {
+    //   launch_user_id = options.launch_user_id
+    // } else {
+    //   launch_user_id = ''
+    // }
+    launch_user_id = util.getCache('user_id');
     if (options.launch_id && options.launch_id != "") {
       launch_id = options.launch_id;
     } else {
@@ -71,14 +72,16 @@ global.wxPage({
     var that = this;
     var form_id = e.detail.formId;
     var open_id = util.getCache("openid");
-    util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
-    if (promote_info.promote_status == -1) {
+    // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
+    if (promote_info.promoteStatus == -1) {
       launchAct(that);
     }
+    // 打开分享弹窗
     this.setData({
       share_good: true
     })
   },
+  // 关闭分享弹窗
   bindClose: function () {
     this.setData({
       share_good: false
@@ -95,32 +98,26 @@ global.wxPage({
     wx.showLoading({
       title: '生成中',
     })
-    util.api('/api/wxapp/pictorial', function (res) {
-      if (res.error == 0) {
-        pictorial = res.content.pictorial;
-        if (pictorial) {
-          util.api('/api/wxapp/upayyun/image', function (res) {
-            if (res.error == 0) {
-              pictorial = imageUrl + pictorial + "!big";
-              posterBase64 = res.content;
-              that.setData({
-                pictorial: posterBase64,
-                share_good: false
-              })
-              wx.hideLoading();
-              that.setData({
-                is_share: 1
-              })
-            }
-          }, { image_path: pictorial });
-        }
-      } else {
-        wx.hideLoading();
-        util.toast_fail(res.message);
-        return false;
-      }
-    }, { action: 14, identity_id: launch_id })
+    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
+    //   wx.hideLoading();
+    //   if (res.error == 0) {
+    //     posterBase64 = res.content
+    //     that.setData({
+    //       pictorial: posterBase64,
+    //       is_share: 1
+    //     })
+    //   } else {
+    //     util.toast_fail(res.message);
+    //     return false;
+    //   }
+    // }, { 
+    //   activityId: promote_info.id,
+    //   realPrice: promote_info.goodsInfo.marketPrice ? promote_info.goodsInfo.marketPrice : 0,
+    //   linePrice: promote_info.goodsPrice,
+    //   pageType: 2
+    // })
   },
+  // 关闭海报
   not_show_share: function () {
     var that = this;
     that.setData({
@@ -396,30 +393,32 @@ global.wxPage({
   onShareAppMessage: function () {
     var that = this;
 
-    if (promote_info.promote_status == 0 && promote_info.launchFlag == 2 && promote_info.canShare == 1) {
+    if (promote_info.promoteStatus == 0 && promote_info.launchFlag == 2 && promote_info.canShare == 1) {
       shareAdd(that);
       that.setData({
         is_shares: 0,
         promote_ok: 0,
       })
     }
-    if (promote_info.activity_share_type == 0) {
-      if (promote_info.reward_type == 2) {
-        if (promote_info.coupon_info.act_code == "discount") {
-          var title_text = "我正在抢购" + promote_info.coupon_info.denomination + "折优惠券，需要你的助力！"
+    if (promote_info.activityShareType == 0) {
+      if (promote_info.rewardType == 2) {
+        // 优惠券
+        if (promote_info.couponInfo.actCode == "discount") {
+          var title_text = "我正在抢购" + promote_info.couponInfo.denomination + "折优惠券，需要你的助力！"
         } else {
-          var title_text = "我正在抢购" + promote_info.coupon_info.denomination + "元优惠券，需要你的助力！"
+          var title_text = "我正在抢购" + promote_info.couponInfo.denomination + "元优惠券，需要你的助力！"
         }
       } else {
-        var title_text = "我正在抢购" + promote_info.goods_info.goods_name + "，需要你的助力！";
+        // 商品
+        var title_text = "我正在抢购" + promote_info.goodsInfo.goodsName + "，需要你的助力！";
       }
-      var share_img = imageUrl + promote_info.share_img_path;
+      var share_img = imageUrl + promote_info.shareImgPath;
     } else {
-      var title_text = promote_info.custom_share_word;
-      if (promote_info.share_img_type == 0) {
+      var title_text = promote_info.customShareWord;
+      if (promote_info.shareImgType == 0) {
         var share_img = ""
       } else {
-        var share_img = imageUrl + promote_info.custom_img_path
+        var share_img = imageUrl + promote_info.customImgPath
       }
     }
     that.setData({
@@ -429,7 +428,7 @@ global.wxPage({
       clearTimeout(set_time_out);
       that.onPullDownRefresh();
     }, 200);
-    util.api("/api/wxapp/share/record", function (d) { }, { activity_id: launch_id, activity_type: 14 });
+    // util.api("/api/wxapp/share/record", function (d) { }, { activity_id: launch_id, activity_type: 14 });
     return {
       path: '/pages1/promoteinfo/promoteinfo?actCode=' + actCode + '&launch_user_id=' + launch_user_id + "&launch_id=" + launch_id,
       title: title_text,
@@ -439,77 +438,73 @@ global.wxPage({
 })
 // 分享加机会
 function shareAdd(that) {
-  util.api("/api/wxapp/promote/addTimes", function (res) {
-    if (res.error == 0) {
-      util.api("/api/wxapp/share/record", function (d) { }, { activity_id: launch_id, activity_type: 14 });
-    } else if (res.error == 400004) {
-      that.setData({
-        promote_fail: 1
-      })
-    } else {
-      util.showModal('提示', res.message);
-      return false
-    }
-  }, { launch_id: launch_id, add_promote_type: 'share' });
+  // util.api("/api/wxapp/promote/addTimes", function (res) {
+  //   if (res.error == 0) {
+  //     util.api("/api/wxapp/share/record", function (d) { }, { activity_id: launch_id, activity_type: 14 });
+  //   } else if (res.error == 400004) {
+  //     that.setData({
+  //       promote_fail: 1
+  //     })
+  //   } else {
+  //     util.showModal('提示', res.message);
+  //     return false
+  //   }
+  // }, { launch_id: launch_id, add_promote_type: 'share' });
 };
 // 发起助力
 function launchAct(that) {
-  util.api("/api/wxapp/promote/launch", function (res) {
-    if (res.error == 0) {
-      launch_id = res.content.launchId;
-    } else {
-      util.showModal('提示', res.message);
-      return false
-    }
-  }, { actCode: actCode });
+  // util.api("/api/wxapp/promote/launch", function (res) {
+  //   if (res.error == 0) {
+  //     launch_id = res.content.launchId;
+  //   } else {
+  //     util.showModal('提示', res.message);
+  //     return false
+  //   }
+  // }, { actCode: actCode });
 };
+// 助力详情
 function promote_request(that) {
   util.api('/api/wxapp/promote/info', function (res) {
     if (res.error == 0) {
+      promote_info = res.content;
+      console.log(promote_info);
+      // 当前活动的助力总值
+      if (promote_info.hasPromoteValue == 0) { 
+        is_promote_value = 0; 
+      } else { 
+        is_promote_value = promote_info.hasPromoteValue 
+      }
+      // 助力进度
+      launched_width = parseFloat(660 * parseFloat(is_promote_value) / promote_info.promoteAmount).toFixed(0);
+      total_micro_second = promote_info.surplusSecond;
+      if (total_micro_second > 0) {
+        that.countdown(that);
+      }
+      if (promote_info.launchId) {
+        launch_id = promote_info.launchId
+      }
+      that.setData({
+        promote_info: promote_info,
+        is_promote_value: is_promote_value,
+        launched_width: launched_width
+      })
 
+      // 统计浏览记录
+      if (promote_info.rewardType == 2) {
+        goods_id = promote_info.couponInfo.couponId;
+      } else {
+        goods_id = promote_info.goodsInfo.goodsId;
+      }
+      // util.api('/api/wxapp/user_goods/record', function (res1) { }, {
+      //   goods_id: goods_id, active_type: 14, active_id: promote_info.id, type: 1
+      // })
     } else {
       util.showModal('提示', res.message);
       return false
     }
   }, {
       actCode: actCode,
-      userId: util.getCache('user_id'),
+      userId: launch_user_id,
       launchId: launch_id
   })
-  // util.api('/api/wxapp/promote/info', function (res) {
-  //   if (res.error == 0) {
-  //     promote_info = res.content;
-  //     console.log(promote_info);
-  //     if (promote_info.promote_amount) {
-  //       promote_info.promote_amount = promote_info.promote_amount.replace('.00', '');
-  //     }
-  //     if (promote_info.hasPromoteValue == 0) { is_promote_value = 0; } else { is_promote_value = promote_info.hasPromoteValue };
-  //     launched_width = parseFloat(660 * parseFloat(is_promote_value) / promote_info.promote_amount).toFixed(0);
-  //     total_micro_second = promote_info.surplus_second;
-  //     if (total_micro_second > 0) {
-  //       that.countdown(that);
-  //     }
-  //     if (promote_info.launch_id) {
-  //       launch_id = promote_info.launch_id
-  //     }
-  //     that.setData({
-  //       promote_info: promote_info,
-  //       is_promote_value: is_promote_value,
-  //       launched_width: launched_width
-  //     })
-
-  //     // 统计浏览记录
-  //     if (promote_info.reward_type == 2) {
-  //       goods_id = promote_info.coupon_info.coupon_id;
-  //     } else {
-  //       goods_id = promote_info.goods_info.goods_id;
-  //     }
-  //     util.api('/api/wxapp/user_goods/record', function (res1) { }, {
-  //       goods_id: goods_id, active_type: 14, active_id: promote_info.id, type: 1
-  //     })
-  //   } else {
-  //     util.showModal('提示', res.message);
-  //     return false
-  //   }
-  // }, { actCode: actCode, launch_user_id: launch_user_id, launch_id: launch_id })
 }

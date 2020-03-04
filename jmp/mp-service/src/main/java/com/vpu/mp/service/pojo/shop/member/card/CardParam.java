@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -175,4 +177,14 @@ public class CardParam {
 	private List<Integer> couponIds;
 	// 赠送优惠礼包id
 	private Integer couponPackage;
+	
+	/**
+	 * 	包邮信息
+	 */
+	private CardFreeship freeship;
+	
+	/**
+	 * 	卡的自定义权益信息
+	 */
+	private CardCustomRights customRights;
 }

@@ -35,6 +35,7 @@ public class LotteryShareService extends ShopBaseService {
         LotteryShareRecord lotteryShareByUser = getLotteryShareByUser(userId, lotteryId);
         if (lotteryShareByUser!=null){
             lotteryShareByUser.setShareTimes(lotteryShareByUser.getShareTimes()+1);
+            lotteryShareByUser.update();
         }else {
             db().insertInto(LOTTERY_SHARE)
                     .set(LOTTERY_SHARE.USER_ID,userId)

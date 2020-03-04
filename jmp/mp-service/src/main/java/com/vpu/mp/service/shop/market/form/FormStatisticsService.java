@@ -54,6 +54,8 @@ public class FormStatisticsService extends ShopBaseService {
      * 分享二维码页面显示图片路径
      */
     private static final String PARAM = "page_id=";
+    public static final String PLUS = "+";
+    public static final String COPY_TEXT = "副本";
 
     private static FormPage fp = FormPage.FORM_PAGE.as("fp");
     private static FormSubmitDetails fsd = FormSubmitDetails.FORM_SUBMIT_DETAILS.as("fsd");
@@ -143,7 +145,7 @@ public class FormStatisticsService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FORM, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.FORM.getPathUrl(pathParam));
         return vo;
 
     }
@@ -164,6 +166,7 @@ public class FormStatisticsService extends ShopBaseService {
     public FormCopyVo copyForm(FormDetailParam param) {
         FormCopyVo vo = new FormCopyVo();
         FieldsUtil.assignNotNull(getFormDetailInfo(param),vo);
+        vo.setPageName(String.join(PLUS, vo.getPageName(), COPY_TEXT));
         return vo;
 
     }
@@ -179,8 +182,11 @@ public class FormStatisticsService extends ShopBaseService {
     }
 
     private SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> getFeedBackStep(FormFeedParam param) {
-        SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> conditionStep = db().select(fsl.SUBMIT_ID, fsl.PAGE_ID, fsl.USER_ID, fsl.NICK_NAME, fsl.CREATE_TIME, u.MOBILE).from(fsl).leftJoin(u).on(fsl.USER_ID.eq(u.USER_ID)).where(fsl.PAGE_ID.eq(param.getPageId())).and(fsl.SHOP_ID.eq(param.getShopId()));
-        if (param.getNickName() != null && !"".equals(param.getNickName())) {
+        SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> conditionStep = db()
+            .select(fsl.SUBMIT_ID, fsl.PAGE_ID, fsl.USER_ID, fsl.NICK_NAME, fsl.CREATE_TIME, u.MOBILE)
+            .from(fsl).leftJoin(u).on(fsl.USER_ID.eq(u.USER_ID))
+            .where(fsl.PAGE_ID.eq(param.getPageId()));
+        if (StringUtils.isNoneBlank(param.getNickName())) {
             conditionStep = conditionStep.and(fsl.NICK_NAME.like(param.getNickName()));
         }
         if (param.getStartTime() != null) {

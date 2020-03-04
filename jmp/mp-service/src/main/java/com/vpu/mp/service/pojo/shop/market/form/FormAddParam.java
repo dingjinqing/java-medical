@@ -13,8 +13,6 @@ import java.sql.Timestamp;
 public class FormAddParam {
     private Integer pageId;
     @NotNull
-    private Integer shopId;
-    @NotNull
     private String pageName;
     @NotNull
     private Byte status;

@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.builder.UserAccountRecordBuilder;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
@@ -201,6 +202,13 @@ public class AccountService extends ShopBaseService {
 	 */
 	public void addRow(AccountParam param, int adminUser) {
 		logger().info("插入userAccount记录");
+		if(param.getIsPaid()==null) {
+			if(isConsump(param)) {
+				param.setIsPaid(RecordTradeEnum.UACCOUNT_CONSUMPTION.val());
+			}else {
+				param.setIsPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val());
+			}
+		}
 		UserAccountRecordBuilder
 			.create(db().newRecord(USER_ACCOUNT))
 			.userId(param.getUserId())

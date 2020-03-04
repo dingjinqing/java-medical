@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 @Data
 public class FormDetailVo{
     private Integer pageId;
-    private Integer shopId;
     private String pageName;
     private Byte status;
     private String pageContent;

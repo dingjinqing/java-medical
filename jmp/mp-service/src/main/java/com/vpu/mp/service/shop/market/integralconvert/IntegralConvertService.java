@@ -262,33 +262,27 @@ public class IntegralConvertService extends ShopBaseService {
 	 */
 	public IntegralConvertSelectVo selectOne(IntegralConvertSelectParam param) {
 
-		IntegralConvertSelectVo selectVo = db()
-				.select(imd.NAME, imd.START_TIME, imd.END_TIME, imd.MAX_EXCHANGE_NUM, imd.GOODS_ID, GOODS.GOODS_NAME,
-						imd.SHARE_CONFIG)
+		IntegralConvertSelectVo selectVo = db().select(imd.NAME, imd.START_TIME, imd.END_TIME, imd.MAX_EXCHANGE_NUM, imd.GOODS_ID, GOODS.GOODS_NAME,
+						imd.SHARE_CONFIG,imd.DEL_FLAG,imd.STATUS)
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).where(imd.ID.eq(param.getId()))
 				.fetchOneInto(IntegralConvertSelectVo.class);
 		int goodId = selectVo.getGoodsId();
-
+        //当前商品的所有规格
 		List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
 				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodId))
 				.fetchInto(Integer.class);
 
-		List<IntegralConvertProductVo> productList = new ArrayList<IntegralConvertProductVo>(1024);
-		for (int i = 0; i < productIds.size(); i++) {
-
-			IntegralConvertProductVo listVo = db().select(imp.MONEY, imp.SCORE, imp.STOCK).from(imp)
-					.where(imp.PRODUCT_ID.eq(productIds.get(i))).and(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
-					.fetchOneInto(IntegralConvertProductVo.class);
-
-			String prdDesc = db().select(GOODS_SPEC_PRODUCT.PRD_DESC).from(GOODS_SPEC_PRODUCT)
-					.where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productIds.get(i)))
-					.fetchOptionalInto(String.class).orElse(null);
-
-			listVo.setPrdDesc(prdDesc);
-
-			productList.add(i, listVo);
-
-		}
+		List<IntegralConvertProductVo> productList = new ArrayList<>();
+		//遍历规格
+		for (Integer prdId : productIds){
+            IntegralConvertProductVo listVo = db().select(imp.MONEY, imp.SCORE, imp.STOCK,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_DESC
+                ,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER)
+                .from(imp)
+                .leftJoin(GOODS_SPEC_PRODUCT).on(imp.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+                .where(imp.PRODUCT_ID.eq(prdId)).and(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
+                .fetchOneInto(IntegralConvertProductVo.class);
+            productList.add(listVo);
+        }
 		selectVo.setProductVo(productList);
 
 		return selectVo;
@@ -398,5 +392,16 @@ public class IntegralConvertService extends ShopBaseService {
     public ModuleIntegral getPageIndexIntegral(ModuleIntegral moduleIntegral){
 
         return moduleIntegral;
+    }
+
+    /**
+     * 获取该用户参与此活动兑换的商品数量
+     * @param userId
+     * @param activityId
+     * @return
+     */
+    public int getUserExchangeCount(Integer userId, Integer activityId) {
+        Integer sum = db().select(DSL.sum(imr.NUMBER)).where(imr.USER_ID.eq(userId).and(imr.INTEGRAL_MALL_DEFINE_ID.eq(activityId))).fetchOneInto(Integer.class);
+        return sum == null ? 0 : sum;
     }
 }

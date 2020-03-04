@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.coupon.pack;
 
-import com.vpu.mp.db.shop.tables.records.InvoiceRecord;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -16,10 +16,11 @@ public class CouponPackOrderParam {
     /**
      * 优惠券包主键
      */
+    @NotNull
     private Integer packId;
 
     /**
-     * 订单金额
+     * 订单金额(积分支付时是0)
      */
     private BigDecimal orderAmount;
     /**
@@ -39,7 +40,11 @@ public class CouponPackOrderParam {
      */
     private String cardNo;
     /**
-     * 发票 TODO
+     * 发票id
      */
-    private InvoiceRecord invoice;
+    private Integer invoiceId;
+    /**
+     * 发票内容
+     */
+    private String invoiceDetail;
 }
