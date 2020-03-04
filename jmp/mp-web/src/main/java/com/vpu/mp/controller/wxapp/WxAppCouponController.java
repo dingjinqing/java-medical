@@ -107,8 +107,8 @@ public class WxAppCouponController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/pack/tobuy")
-    public JsonResult couponPackToBuy(@RequestBody CouponPackIdParam param){
-        return this.success(shop().couponPack.couponPackToBuy(param.getPackId(),wxAppAuth.user().getUserId()));
+    public JsonResult couponPackToBuy(@RequestBody CouponPackIdParam param, HttpServletRequest request){
+        return this.success(shop().couponPack.couponPackToBuy(param.getPackId(),wxAppAuth.user().getUserId(),RequestUtil.getIp(request)));
     }
 
     /**

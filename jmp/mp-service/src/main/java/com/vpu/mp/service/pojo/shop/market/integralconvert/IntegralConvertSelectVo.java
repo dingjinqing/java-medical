@@ -12,7 +12,8 @@ import lombok.Data;
  */
 @Data
 public class IntegralConvertSelectVo {
-	
+    /** 活动id */
+    private Integer id;
 	/** 活动名称 */
 	private String name;
 	

@@ -212,7 +212,7 @@ public class CouponPackOrderService extends VirtualOrderService {
      * @param userId
      * @return
      */
-    public VirtualOrderRecord createOrder(CouponPackOrderParam param,Integer userId,String clientIp){
+    public String createOrder(CouponPackOrderParam param,Integer userId,String clientIp){
         //用户的余额和积分
         UserRecord user = memberService.getUserRecordById(userId);
         if(param.getAccountDiscount() != null && param.getAccountDiscount().compareTo(user.getAccount()) > 0){
@@ -234,7 +234,7 @@ public class CouponPackOrderService extends VirtualOrderService {
         CouponPackRecord couponPackRecord = db().fetchAny(COUPON_PACK,COUPON_PACK.ID.eq(param.getPackId()));
 
         BigDecimal moneyPaid = param.getOrderAmount() == null ? BigDecimal.ZERO : (param.getOrderAmount().subtract(param.getAccountDiscount() == null ? BigDecimal.ZERO : param.getAccountDiscount()).subtract(param.getMemberCardBalance() == null ? BigDecimal.ZERO : param.getMemberCardBalance()).setScale(2,BigDecimal.ROUND_HALF_UP));
-        String payCode = moneyPaid.compareTo(BigDecimal.ZERO) > 0 ? OrderConstant.PAY_CODE_WX_PAY : OrderConstant.PAY_CODE_BALANCE_PAY;
+        String payCode = moneyPaid.compareTo(BigDecimal.ZERO) > 0 ? OrderConstant.PAY_CODE_WX_PAY : (param.getScoreDiscount() > 0 ? OrderConstant.PAY_CODE_SCORE_PAY : OrderConstant.PAY_CODE_BALANCE_PAY);
         String orderSn = IncrSequenceUtil.generateOrderSn("M");
 
 
@@ -258,7 +258,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 
         insertVirtualOrderRecord.insert();
         if(moneyPaid.compareTo(BigDecimal.ZERO) <= 0){
-
+            this.finishPayCallback(insertVirtualOrderRecord,null);
         }else{
             AtomicReference<WebPayVo> webPayVo = new AtomicReference<>();
 
@@ -278,7 +278,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 
 
         }
-        return insertVirtualOrderRecord;
+        return insertVirtualOrderRecord.getOrderSn();
     }
 
     /**
@@ -290,7 +290,7 @@ public class CouponPackOrderService extends VirtualOrderService {
     public VirtualOrderRecord finishPayCallback(VirtualOrderRecord orderRecord, PaymentRecordRecord paymentRecord){
         db().update(VIRTUAL_ORDER).
             set(VIRTUAL_ORDER.ORDER_STATUS,ORDER_STATUS_FINISHED).
-            set(VIRTUAL_ORDER.PAY_SN,paymentRecord.getPaySn()).
+            set(VIRTUAL_ORDER.PAY_SN,(paymentRecord == null ? "" : paymentRecord.getPaySn())).
             set(VIRTUAL_ORDER.PAY_TIME, DateUtil.getLocalDateTime()).
             where(VIRTUAL_ORDER.ORDER_SN.eq(orderRecord.getOrderSn())).
             execute();

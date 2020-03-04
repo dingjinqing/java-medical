@@ -43,8 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -145,21 +143,25 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
                 BigDecimalUtil.BigDecimalPlus.create(order.getInsteadPayMoney())
             );
             //代付金额三阶梯
-            List<BigDecimal> threeStages = new ArrayList<>(3);
+            Object[][] threeStages = new Object[3][2];
             //一阶段
-            threeStages.add(0, BigDecimalUtil.multiplyOrDivide(
+            threeStages[0] = new Object[]{BigDecimalUtil.multiplyOrDivide(
                 BigDecimalUtil.BigDecimalPlus.create(orderAmount, BigDecimalUtil.Operator.multiply),
                 BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(cfg.getPayRatioNumber().get(0)), BigDecimalUtil.Operator.divide),
                 BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.BIGDECIMAL_100)
-                ));
+            ),
+                cfg.getPayRatioText().get(0)
+            };
             //二阶段
-            threeStages.add(1, BigDecimalUtil.multiplyOrDivide(
+            threeStages[1] = new Object[]{BigDecimalUtil.multiplyOrDivide(
                 BigDecimalUtil.BigDecimalPlus.create(orderAmount, BigDecimalUtil.Operator.multiply),
                 BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(cfg.getPayRatioNumber().get(1)), BigDecimalUtil.Operator.divide),
                 BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.BIGDECIMAL_100)
-                ));
+                ),
+                cfg.getPayRatioText().get(1)
+            };
             //三阶段
-            threeStages.add(2, waitPayMoney);
+            threeStages[2] = new Object[]{waitPayMoney, cfg.getPayRatioText().get(2)};
 
             vo.setThreeStages(threeStages);
             vo.setIsShowEdit(OrderConstant.YES);
@@ -184,7 +186,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         if(check != null && !check.isSuccess()) {
             return check;
         }
-        AtomicReference<SubOrderInfoRecord> subOrderRef = null;
+        AtomicReference<SubOrderInfoRecord> subOrderRef = new AtomicReference<>();
         transaction(()->{
             subOrderRef.set(subOrderService.create(order.getOrderSn(), param.getMoneyPaid(), param.getMessage(), param.getWxUserInfo().getUserId(), ""));
         });

@@ -1,6 +1,8 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
@@ -9,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Locale;
+
+import static com.vpu.mp.service.pojo.shop.order.OrderExportVo.LANGUAGE_TYPE_EXCEL;
 
 /**
  * @author liufei
@@ -107,16 +109,10 @@ public class AdminFormStatisticsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/formstatistics/export2Excel")
     public void export2Excel(@RequestBody FormFeedParam param, HttpServletResponse response) {
-        try {
-            Workbook workbook = shop().formService.exportFeedBack(param);
-            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            String fileName = "表单反馈" + System.currentTimeMillis() + ".xlsx";
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            response.setLocale(Locale.ENGLISH);
-            workbook.write(response.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Workbook workbook = shop().formService.exportFeedBack(param);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FORM_FEED_FILE_NAME, LANGUAGE_TYPE_EXCEL
+            , "messages");
+        export2Excel(workbook, fileName, response);
     }
 
     /**

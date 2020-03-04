@@ -57,7 +57,7 @@
                 </block>
               </view>
           </view>
-          <!-- 助力按钮 -->
+          <!-- 倒计时提示 -->
           <view class='time_daojishi'>
             <block wx:if='{{promote_info.promoteStatus == 0}}'>距结束仅剩 <text style='color:{{comColor}}' >{{clock}}</text></block>
             <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>请在 <text style='color:{{comColor}}' >{{clock}}</text> 内领取，逾期未领取将失效</block>
@@ -65,6 +65,7 @@
 
             <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'> <view bindtap='to_coupon'>奖励已经放入您的优惠券包，去看看 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' style='width:15rpx;'></image> </view>  </block>
           </view>
+          <!-- 助力按钮 -->
           <form report-submit='true' bindsubmit='shareGoods'>
             <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promoteStatus == -1 && promote_info.launchFlag == 1}}'>发起助力</button>
           </form>

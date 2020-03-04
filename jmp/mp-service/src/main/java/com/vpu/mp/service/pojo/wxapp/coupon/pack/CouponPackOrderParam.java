@@ -26,15 +26,15 @@ public class CouponPackOrderParam {
     /**
      * 使用积分
      */
-    private Integer scoreDiscount;
+    private Integer scoreDiscount = 0;
     /**
      * 使用余额
      */
-    private BigDecimal accountDiscount;
+    private BigDecimal accountDiscount = BigDecimal.ZERO;
     /**
      * 使用会员卡余额
      */
-    private BigDecimal memberCardBalance;
+    private BigDecimal memberCardBalance = BigDecimal.ZERO;
     /**
      * 使用会员卡的卡号
      */
@@ -42,7 +42,7 @@ public class CouponPackOrderParam {
     /**
      * 发票id
      */
-    private Integer invoiceId;
+    private Integer invoiceId = 0;
     /**
      * 发票内容
      */

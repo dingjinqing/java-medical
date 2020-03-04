@@ -53,7 +53,7 @@ export const en = {
     account: 'Account',
     money: 'Total renewal amount',
     shopFlag: 'Store identification',
-    bottom: 'Bottom navigation',
+    bottom: 'Bottom LOGO',
     special: 'Special configuration',
     operating: 'operating'
   },

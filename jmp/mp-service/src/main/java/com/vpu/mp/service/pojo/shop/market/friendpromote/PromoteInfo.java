@@ -77,5 +77,12 @@ public class PromoteInfo {
     private BigDecimal promoteAmount;
     /** 单次助力值类型：0平均，1随机 */
     private Byte promoteType;
-
+    /** 助力活动分享样式类型：0默认样式，1自定义样式 */
+    private Byte activityShareType;
+    /** 自定义分享样式文案 */
+    private String customShareWord;
+    /** 自定义分享图片类型：0首页截图，1自定义图片 */
+    private Byte shareImgType;
+    /** 自定义分享样式图片路径 */
+    private String customImgPath;
 }

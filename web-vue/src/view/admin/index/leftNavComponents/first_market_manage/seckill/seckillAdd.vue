@@ -43,7 +43,7 @@
           :label="'优先级' + '：'"
           prop="first"
         >
-           <el-input-number
+          <el-input-number
             :disabled="this.isEdite"
             v-model="form.first"
             controls-position="right"
@@ -123,7 +123,10 @@
                     { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
                   ]"
                 >
-                <div class="input-error" v-if="scope.row.priceErrorMsg">{{scope.row.priceErrorMsg}}</div>
+                  <div
+                    class="input-error"
+                    v-if="scope.row.priceErrorMsg"
+                  >{{scope.row.priceErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.secKillPrice"
                     size="small"
@@ -131,7 +134,11 @@
                     @input="changePriceInput(scope.row)"
                   />
                 </el-form-item>
-                <div class="spec-tips" @click="showSpec(scope.row)" v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0">包含{{scope.row.goodsSpecProducts.length}}个规格</div>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -151,7 +158,10 @@
                     { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber)}, trigger: ['blur', 'change'] }
                   ]"
                 >
-                  <div class="input-error" v-if="scope.row.stockErrorMsg">{{scope.row.stockErrorMsg}}</div>
+                  <div
+                    class="input-error"
+                    v-if="scope.row.stockErrorMsg"
+                  >{{scope.row.stockErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.stock"
                     size="small"
@@ -159,7 +169,11 @@
                     @input="changeStockInput(scope.row)"
                   />
                 </el-form-item>
-                <div class="spec-tips" @click="showSpec(scope.row)" v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0">包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
               </template>
             </el-table-column>
             <div
@@ -673,22 +687,21 @@ export default {
           this.form.secKillProduct.forEach(item => {
             if (item.goodsSpecProducts) {
               item.goodsSpecProducts.forEach(specItem => {
-                let {prdId: productId, secKillPrice, stock} = specItem
+                let { prdId: productId, secKillPrice, stock } = specItem
                 let goodsId = item.goodsId
-                secKillProduct.push({goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock)})
+                secKillProduct.push({ goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock) })
                 this.form.stock += Number(stock)
               })
             } else {
-              let {goodsId, prdId: productId, secKillPrice, stock} = item
-              secKillProduct.push({goodsId, productId, secKillPrice, stock: Number(stock)})
+              let { goodsId, prdId: productId, secKillPrice, stock } = item
+              secKillProduct.push({ goodsId, productId, secKillPrice, stock: Number(stock) })
               this.form.stock += Number(stock)
             }
           })
           console.log(secKillProduct)
-          debugger
           if (this.isEdite === false) {
             // 添加秒杀
-            addSeckillList({...this.form, secKillProduct, goodsId}).then((res) => {
+            addSeckillList({ ...this.form, secKillProduct, goodsId }).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: '添加成功' })
                 this.$emit('addSeckillSubmit')
@@ -734,7 +747,7 @@ export default {
       // 可编辑状态
       this.disabledFlag = false
     },
-    getProductdata ({goodsId, prdInfo}) {
+    getProductdata ({ goodsId, prdInfo }) {
       let target = this.form.secKillProduct.find(item => { return item.goodsId === goodsId })
       target.goodsSpecProducts = prdInfo
       this.changePriceInput(target)
@@ -907,7 +920,7 @@ export default {
   color: #000;
   padding: 8px 10px;
 }
-/deep/ .el-form-item__error{
+/deep/ .el-form-item__error {
   position: relative;
   text-align: left;
 }
@@ -918,12 +931,12 @@ export default {
 .settings {
   color: #5a8bff;
 }
-.spec-tips{
+.spec-tips {
   text-align: center;
   color: #409eff;
   cursor: pointer;
 }
-.input-error{
+.input-error {
   text-align: center;
   color: red;
   line-height: 1;

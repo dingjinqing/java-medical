@@ -74,5 +74,19 @@ export const en = {
   batchValidSet: 'Please tick the item and try again！',
   batchValidDiscount1: 'Please enter the number of discounts！',
   batchValidDiscount2: 'Discount can only be entered between 0-10！',
-  batchValidSetType: 'Please select a batch type！'
+  batchValidSetType: 'Please select a batch type！',
+
+  // 活动数据效果
+  legendData: [
+    'Total amount paid for activities',
+    'Total amount of event discount',
+    'Cost-effectiveness ratio',
+    'Number of payment orders',
+    'Number of items for payment',
+    'Number of new customers',
+    'Number of households of Laocheng'
+  ],
+  paidOrderNumberTip: 'Number of payment orders (including refund) brought by the event',
+  paidGoodsNumber: 'Number of items for payment',
+  paidGoodsNumberTip: 'Number of items for active payment'
 }

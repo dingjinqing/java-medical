@@ -270,7 +270,6 @@ public class Calculate extends ShopBaseService {
 
     /**
      * 获取会员卡列表
-     *
      * @param param
      * @param vo
      */

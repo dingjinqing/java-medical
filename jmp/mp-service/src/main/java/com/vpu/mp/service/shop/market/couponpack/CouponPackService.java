@@ -357,7 +357,7 @@ public class CouponPackService extends ShopBaseService {
         return vo;
     }
 
-    public CouponPackCheckVo couponPackToBuy(Integer packId, Integer userId){
+    public CouponPackCheckVo couponPackToBuy(Integer packId, Integer userId,String clientIp){
         CouponPackCheckVo vo = new CouponPackCheckVo();
         CouponPackRecord couponPackRecord = db().fetchAny(COUPON_PACK,COUPON_PACK.ID.eq(packId));
 
@@ -369,9 +369,14 @@ public class CouponPackService extends ShopBaseService {
 
         //直接领取
         if(couponPackRecord.getAccessMode().equals(ACCESS_MODE_FREE)){
-
+            CouponPackOrderParam orderParam = new CouponPackOrderParam();
+            orderParam.setPackId(packId);
+            orderParam.setOrderAmount(BigDecimal.ZERO);
+            orderParam.setScoreDiscount(0);
+            String orderSn = couponPackOrderService.createOrder(orderParam,userId,clientIp);
+            vo.setOrderSn(orderSn);
+            vo.setState((byte)6);
         }
-
 
         return vo;
     }

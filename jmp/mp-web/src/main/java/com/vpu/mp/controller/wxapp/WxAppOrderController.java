@@ -211,8 +211,9 @@ public class WxAppOrderController extends WxAppBaseController{
      */
     @PostMapping("/pay/instead/detail")
     public JsonResult insteadDetail(@RequestBody @Valid InsteadPayDetailsParam param){
+        param.setWxUserInfo(wxAppAuth.user());
         try {
-            return success(shop().readOrder.InsteadPayInfo(param));
+            return success(shop().readOrder.insteadPayInfo(param));
         } catch (MpException e) {
             return fail(e.getErrorCode(), e.getCodeParam());
         }

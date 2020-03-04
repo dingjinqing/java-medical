@@ -8,17 +8,18 @@ import java.util.List;
 /**
  * @author liufei
  * @date 2019/8/9
- * @description
  */
 @Data
 public class FeedBackDetailVo {
     @JsonIgnore
     private Integer submitId;
-    @JsonIgnore
     private String moduleName;
     private String moduleType;
-    /** moduleValue是个数值，表示moduleValueList中第几个页面该高亮显示，即表示当前值为用户值，其他为选项值 */
+    /**
+     * moduleValue为用户填写的值，或者是用户选中选项所表示的具体值，而不是标识
+     */
     private String moduleValue;
+    /** 当模块为选项类型时，选项所包含的所有值，包括用户所选的 */
     private List<String> moduleValueList;
     @JsonIgnore
     private String curIdx;

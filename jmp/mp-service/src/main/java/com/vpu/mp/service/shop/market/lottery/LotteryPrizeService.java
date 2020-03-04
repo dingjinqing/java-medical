@@ -62,17 +62,18 @@ public class LotteryPrizeService  extends ShopBaseService {
                 if (record.getAwardTimes() == null) {
                     record.setAwardTimes(0);
                 }
-                //中奖了 更新库存
-                int flag= updateLotteryStock(record);
-                if (flag<=0&&record.getAwardTimes() >= record.getLotteryNumber()) {
+                //中奖了
+                if (record.getAwardTimes() >= record.getLotteryNumber()) {
                     //奖品发完了
                     joinValid.setResultsType(LOTTERY_TYPE_SEND_OUT);
                     return;
+                }else {
+                    logger().info("抽奖中奖了,扣库存");
+                    updateLotteryStock(record.getId());
                 }
                 joinValid.setResultsType(record.getLotteryType());
                 joinValid.setLotteryPrize(record);
                 joinValid.setLotteryGrade(record.getLotteryGrade());
-                LotteryPrizeVo into = record.into(LotteryPrizeVo.class);
                 return;
             }
             randNumber -= chanceNumerator;
@@ -89,9 +90,9 @@ public class LotteryPrizeService  extends ShopBaseService {
      * 更新奖品库存
      * @return
      */
-    public int updateLotteryStock(LotteryPrizeRecord record){
+    public int updateLotteryStock(Integer id){
         return  db().update(LOTTERY_PRIZE).set(LOTTERY_PRIZE.AWARD_TIMES, LOTTERY_PRIZE.AWARD_TIMES.add(1))
-                .where(LOTTERY_PRIZE.LOTTERY_ID.eq(record.getLotteryId()))
+                .where(LOTTERY_PRIZE.ID.eq(id))
                 .and(LOTTERY_PRIZE.AWARD_TIMES.lt(LOTTERY_PRIZE.LOTTERY_NUMBER)).execute();
     }
 }

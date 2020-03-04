@@ -57,7 +57,7 @@ export const cn = {
     account: '所属账号',
     money: '续费总金额',
     shopFlag: '店铺标识',
-    bottom: '底部导航',
+    bottom: '底部LOGO',
     special: '特殊配置',
     operating: '操作'
   },
