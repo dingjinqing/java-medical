@@ -327,12 +327,6 @@ export default {
       set () {
 
       }
-    },
-    baseCheckAll: {
-      get () {
-        return false
-      },
-      set () { }
     }
   },
   // watch: {
