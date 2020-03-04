@@ -520,7 +520,8 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="chooseGoodsBack"
-      @result="chooseGoodsHandle"
+      @resultGoodsDatas="chooseGoodsHandle"
+      @result="chooseGoodIdssHandle"
     />
     <!--修改余额&修改积分弹窗-->
     <div class="balanceDialo">
@@ -1009,6 +1010,7 @@ export default {
       tuneUpChooseGoods: false,
       singleElection: true,
       chooseGoodsBack: [],
+      chooseGoodsDatas: [],
       orderRule: null,
       scoreDesc: false,
       scoreArrow: false,
@@ -1056,18 +1058,30 @@ export default {
   computed: {
     queryParams: {
       get () {
-        // 来源sourceOptions 会员卡membershipCardOptions 标签tagSource 商品做额外处理
+        // 来源sourceOptions 会员卡membershipCardOptions 标签tagSource 商品chooseGoodsDatas做额外处理
+        let sourceLabel = this.sourceOptions.find(item => item.value === this.sourceValue)
+        let membershipCardLabel = this.membershipCardOptions.find(item => item.id === this.membershipCardVal)
+        let tagLabels = []
+        this.labelVal.forEach(id => {
+          let tag = this.tagSource.find(item => item.id === id)
+          tagLabels.push(tag.value)
+        })
+        let chooseGoodsLabel = this.chooseGoodsDatas.map(item => item.goodsName)
+        console.log(sourceLabel, membershipCardLabel, tagLabels, chooseGoodsLabel)
         return {
           'userId': this.userId,
           'realName': '',
           'mobile': String(this.phoneNum).trim(),
           'username': this.vxName,
           'source': this.sourceValue,
+          'sourceLabel': sourceLabel ? sourceLabel.label : '',
           'inviteUserName': this.inviteUserName,
           'createTime': this.datePickerVal ? this.datePickerVal[0] : null,
           'endTime': this.datePickerVal ? this.datePickerVal[1] : null,
           'cardId': this.membershipCardVal,
+          'membershipCardLabel': membershipCardLabel ? membershipCardLabel.cardName : '',
           'tagName': this.labelVal,
+          'tagSourceLabel': tagLabels.length > 0 ? tagLabels.join(',') : [],
           'loginStartTime': this.datePickerVal_one ? this.datePickerVal_one[0] : null,
           'loginEndTime': this.datePickerVal_one ? this.datePickerVal_one[1] : null,
           'cartStartTime': this.datePickerVal_two ? this.datePickerVal_two[0] : null,
@@ -1079,6 +1093,7 @@ export default {
           'buyCountLow': this.frequencyLeft,
           'buyCountHight': this.frequencyRight,
           'goodsId': this.goodsIdsArr,
+          'chooseGoodsLabel': chooseGoodsLabel.length > 0 ? chooseGoodsLabel.join(',') : [],
           'hasMobile': this.checkPhone,
           'hasScore': this.checkIntegr,
           'hasBalance': this.balance,
@@ -1201,6 +1216,11 @@ export default {
     // 商品选择后回调
     chooseGoodsHandle (goods) {
       console.log('goods:', goods)
+      this.chooseGoodsDatas = goods
+    },
+    // 商品选择id后回调
+    chooseGoodIdssHandle (ids) {
+      this.chooseGoodsBack = ids
     },
     // 筛选按钮
     handleScreen () {
@@ -1225,7 +1245,7 @@ export default {
     // 点击选择商品按钮
     handleClickChoiseGood () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-      this.chooseGoodsBack = [11]
+      // this.chooseGoodsBack = [11]
     },
     // 当前页发生变化
     handleCurrentChange () {

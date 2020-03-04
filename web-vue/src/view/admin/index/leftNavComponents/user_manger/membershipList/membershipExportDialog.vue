@@ -7,7 +7,7 @@
     >
       <div class="dialog-content">
         <el-alert
-          title="警告提示的文案"
+          :title="'根据以下条件筛选出' + cfgInfo.avail_num + '条数据，是否确认导出?'"
           type="warning"
           :closable="false"
           show-icon
@@ -17,6 +17,7 @@
         <div class="filters">
           <ul>
             <li
+              class="filter-li"
               v-for="(item, key) in filters"
               :key="key"
             >
@@ -25,7 +26,7 @@
           </ul>
         </div>
         <div class="dashed-line"></div>
-        <div style="margin-top:10px;">导出条数(一次最多导出{{cfgInfo.max_num?cfgInfo.max_num:0}}条数据)</div>
+        <div style="margin:10px 0;">导出条数(一次最多导出{{cfgInfo.max_num?cfgInfo.max_num:0}}条数据)</div>
         <div>
           <el-input-number
             size="small"
@@ -51,10 +52,17 @@
             <tbody>
               <tr>
                 <td class="table-title">
-                  <el-checkbox>基础信息:</el-checkbox>
+                  <el-checkbox
+                    :indeterminate="baseisIndeterminate"
+                    v-model="baseCheck"
+                    @change="baseCheckAllChange"
+                  >基础信息:</el-checkbox>
                 </td>
                 <td class="table-list">
-                  <el-checkbox-group v-model="checkedCfgs">
+                  <el-checkbox-group
+                    v-model="baseChecked"
+                    @change="baseCheckGroupChange"
+                  >
                     <ul class="check-list">
 
                       <li style="color:red;">
@@ -108,10 +116,17 @@
               </tr>
               <tr>
                 <td class="table-title">
-                  <el-checkbox>分销信息：</el-checkbox>
+                  <el-checkbox
+                    :indeterminate="distributionIndeterminate"
+                    v-model="distributionCheck"
+                    @change="distributionCheckAllChange"
+                  >分销信息：</el-checkbox>
                 </td>
                 <td class="table-list">
-                  <el-checkbox-group v-model="checkedCfgs">
+                  <el-checkbox-group
+                    v-model="distributionChecked"
+                    @change="distributionCheckGroupChange"
+                  >
                     <ul class="check-list">
                       <li>
                         <el-checkbox label="invite_user_name">邀请人</el-checkbox>
@@ -170,7 +185,7 @@
 </template>
 
 <script>
-import { getExportCfg } from '@/api/admin/membershipList.js'
+import { getExportCfg, exportCfg } from '@/api/admin/membershipList.js'
 export default {
   props: {
     dialogVisible: Boolean,
@@ -181,7 +196,42 @@ export default {
       cfgInfo: {
         min_num: 1
       },
-      checkedCfgs: []
+      checkedCfgs: [],
+      baseCheck: false,
+      baseisIndeterminate: false,
+      baseOptions: [
+        'user_id',
+        'username',
+        'mobile',
+        'wx_openid',
+        'account',
+        'score',
+        'user_source',
+        'create_time',
+        'user_card',
+        'user_address',
+        'order_account',
+        'order',
+        'return_order_money',
+        'return_order',
+        'remark'
+      ],
+      baseChecked: [],
+      distributionCheck: false,
+      distributionIndeterminate: false,
+      distributionOptions: [
+        'invite_user_name',
+        'invite_mobile',
+        'invite_group_name',
+        'rebate_order_num',
+        'calculate_money',
+        'rebate_money',
+        'withdraw_money',
+        'sublayer_number',
+        'level_name',
+        'group_name'
+      ],
+      distributionChecked: []
     }
   },
   computed: {
@@ -203,52 +253,52 @@ export default {
         for (const key in params) {
           if (params.hasOwnProperty(key)) {
             let value = params[key]
-            if (value) {
+            if (value && value.length > 0) {
               switch (key) {
                 case 'mobile':
-                  paramDescription[key] = '手机号:' + value
+                  paramDescription[key] = '手机号：' + value
                   break
                 case 'username':
-                  paramDescription[key] = '微信昵称:' + value
+                  paramDescription[key] = '微信昵称：' + value
                   break
                 case 'source':
-                  paramDescription[key] = '来源:' + value
+                  paramDescription[key] = '来源：' + params.sourceLabel
                   break
                 case 'tagName':
-                  paramDescription[key] = '用户名:' + value
+                  paramDescription[key] = '标签：' + params.tagSourceLabel
                   break
                 case 'inviteUserName':
-                  paramDescription[key] = '邀请人:' + value
+                  paramDescription[key] = '邀请人：' + value
                   break
                 case 'createTime':
                 case 'endTime':
-                  paramDescription['registrationTime'] = '注册时间:' + params.createTime + '至' + params.endTime
+                  paramDescription['registrationTime'] = '注册时间：' + params.createTime + '至' + params.endTime
                   break
                 case 'cardId':
-                  paramDescription[key] = '会员卡:' + value
+                  paramDescription[key] = '会员卡：' + params.membershipCardLabel
                   break
                 case 'loginStartTime':
                 case 'loginEndTime':
-                  paramDescription['loginTime'] = '指定时间内有登录记录:' + params.loginStartTime + '至' + params.loginEndTime
+                  paramDescription['loginTime'] = '指定时间内有登录记录：' + params.loginStartTime + '至' + params.loginEndTime
                   break
                 case 'cartStartTime':
                 case 'cartEndTime':
-                  paramDescription['cartTime'] = '指定时间内有加购行为:' + params.cartStartTime + '至' + params.cartEndTime
+                  paramDescription['cartTime'] = '指定时间内有加购行为：' + params.cartStartTime + '至' + params.cartEndTime
                   break
                 case 'buyStartTime':
                 case 'buyEndTime':
-                  paramDescription['buyTime'] = '指定时间内有交易记录:' + params.buyStartTime + '至' + params.buyEndTime
+                  paramDescription['buyTime'] = '指定时间内有交易记录：' + params.buyStartTime + '至' + params.buyEndTime
                   break
                 case 'unitPriceLow':
                 case 'unitPriceHight':
-                  paramDescription['unitPrice'] = '客单价:' + params.unitPriceLow + '至' + params.unitPriceHight
+                  paramDescription['unitPrice'] = '客单价：' + params.unitPriceLow + '至' + params.unitPriceHight
                   break
                 case 'buyCountLow':
                 case 'buyCountHight':
-                  paramDescription['buyCount'] = '累计购买次数:' + params.buyCountLow + '至' + params.buyCountHight
+                  paramDescription['buyCount'] = '累计购买次数：' + params.buyCountLow + '至' + params.buyCountHight
                   break
                 case 'goodsId':
-                  paramDescription[key] = '商品名称:' + value
+                  paramDescription[key] = '商品名称：' + params.chooseGoodsLabel
                   break
                 case 'hasMobile':
                   paramDescription[key] = '有手机号'
@@ -277,15 +327,57 @@ export default {
       set () {
 
       }
+    },
+    baseCheckAll: {
+      get () {
+        return false
+      },
+      set () { }
     }
   },
+  // watch: {
+  //   checkedCfgs: {
+  //     handler: function (val) {
+  //       let baseChecked = []
+  //       let distributionChecked = []
+  //       val = val || []
+  //       val.forEach(item => {
+  //         if (this.baseOptions.includes(item)) {
+  //           baseChecked.push(item)
+  //         } else if (this.distributionOptions.includes(item)) {
+  //           distributionChecked.push(item)
+  //         }
+  //       })
+  //       this.baseChecked = baseChecked
+  //       this.distributionChecked = distributionChecked
+  //     }
+  //   }
+  // },
   methods: {
     initData () {
       console.log('init....')
-      getExportCfg().then(res => {
+      getExportCfg(this.queryParams).then(res => {
         if (res.error === 0) {
           this.cfgInfo = Object.assign({}, this.cfgInfo, res.content)
-          this.checkedCfgs = res.content.choosed_cfg
+          let choosedCfg = res.content.choosed_cfg || []
+          this.checkedCfgs = choosedCfg
+          let baseChecked = []
+          let distributionChecked = []
+          choosedCfg.forEach(item => {
+            if (this.baseOptions.includes(item)) {
+              baseChecked.push(item)
+            } else if (this.distributionOptions.includes(item)) {
+              distributionChecked.push(item)
+            }
+          })
+          this.baseChecked = baseChecked
+          this.distributionChecked = distributionChecked
+          if (baseChecked.length > 0 && baseChecked.length < this.baseOptions.length) {
+            this.baseisIndeterminate = true
+          }
+          if (distributionChecked.length > 0 && distributionChecked.length < this.distributionOptions.length) {
+            this.distributionIndeterminate = true
+          }
         } else {
           this.$message.error(res.message)
         }
@@ -296,6 +388,41 @@ export default {
     },
     determineDialog () {
       this.visible = false
+      let checkedCfgs = this.baseChecked.concat(this.distributionChecked)
+      let params = Object.assign({}, this.queryParams, {
+        userExpParam: {
+          startNum: '',
+          endNu: '',
+          columns: checkedCfgs
+        }
+      })
+      exportCfg(params).then(res => {
+        if (res.error === 0) {
+
+        }
+      })
+    },
+    // 基础信息选中改变
+    baseCheckAllChange (val) {
+      this.baseChecked = val ? this.baseOptions : []
+      this.baseisIndeterminate = false
+    },
+    baseCheckGroupChange (val) {
+      let checkedCount = val.length
+      let baseOptionsCount = this.baseOptions.length
+      this.baseCheck = checkedCount === baseOptionsCount
+      this.baseisIndeterminate = checkedCount > 0 && checkedCount < baseOptionsCount
+    },
+    // 分销信息选中改变
+    distributionCheckAllChange (val) {
+      this.distributionChecked = val ? this.distributionOptions : []
+      this.distributionIndeterminate = false
+    },
+    distributionCheckGroupChange (val) {
+      let checkedCount = val.length
+      let distributionOptionsCount = this.distributionOptions.length
+      this.distributionCheck = checkedCount === distributionOptionsCount
+      this.distributionIndeterminate = checkedCount > 0 && checkedCount < distributionOptionsCount
     }
   }
 }
@@ -309,6 +436,9 @@ export default {
   }
   .filters {
     margin: 10px 0;
+  }
+  .filter-li {
+    padding-bottom: 5px;
   }
   .table-title {
     width: 25%;
