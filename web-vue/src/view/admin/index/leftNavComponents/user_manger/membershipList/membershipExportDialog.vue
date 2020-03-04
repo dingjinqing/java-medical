@@ -253,7 +253,7 @@ export default {
         for (const key in params) {
           if (params.hasOwnProperty(key)) {
             let value = params[key]
-            if (value && value.length > 0) {
+            if ((!!value && !Array.isArray(value)) || (Array.isArray(value) && value.length > 0)) {
               switch (key) {
                 case 'mobile':
                   paramDescription[key] = '手机号：' + value
