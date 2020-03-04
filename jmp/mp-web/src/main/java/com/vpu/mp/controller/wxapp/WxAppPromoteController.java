@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.LaunchVo;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteInfo;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,5 +32,19 @@ public class WxAppPromoteController extends WxAppBaseController {
         PromoteInfo promoteInfo = shop().friendPromoteService.promoteInfo(param);
 
         return success(promoteInfo);
+    }
+
+    /**
+     * 好友助力发起
+     *
+     * @param param 用户id 助力活动码
+     * @return launchVo 发起信息
+     */
+    @PostMapping("/launch")
+    public JsonResult promoteLaunch(@RequestBody PromoteParam param) {
+
+        LaunchVo launchVo = shop().friendPromoteService.friendPromoteLaunch(param);
+
+        return success(launchVo);
     }
 }
