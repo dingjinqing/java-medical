@@ -20,6 +20,7 @@ import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record6;
 import org.jooq.Record7;
@@ -218,36 +219,52 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 反馈信息详情列表
      */
     public List<FeedBackDetailVo> feedBackDetail(FeedBackDetailParam param) {
-        List<FeedBackDetailVo> list = db().select(fsd.SUBMIT_ID, fsd.MODULE_NAME, fsd.MODULE_TYPE, fsd.MODULE_VALUE, fsd.CUR_IDX.as("curIdx")).from(fsd).where(fsd.PAGE_ID.eq(param.getPageId())).and(fsd.USER_ID.eq(param.getUserId())).fetchInto(FeedBackDetailVo.class);
+        int pageId = param.getPageId();
+        List<FeedBackDetailVo> list = db().select(fsd.SUBMIT_ID
+            , fsd.MODULE_NAME, fsd.MODULE_TYPE, fsd.MODULE_VALUE
+            , fsd.CUR_IDX.as("curIdx"))
+            .from(fsd)
+            .where(fsd.PAGE_ID.eq(pageId))
+            .and(fsd.USER_ID.eq(param.getUserId()))
+            .fetchInto(FeedBackDetailVo.class);
 
-        for (FeedBackDetailVo vo : list) {
-            String moduleName = vo.getModuleName();
-            if (!ALL.containsKey(moduleName)) {
-                continue;
-            }
-            if (SPECIAL.containsKey(moduleName)) {
-                try {
-                    String curIdx = vo.getCurIdx();
-                    String pageContent = db().select(fp.PAGE_CONTENT).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(String.class).orElse("");
-                    JsonNode node = MAPPER.readTree(pageContent);
-                    vo.setModuleValueList(findModuleValue(node, curIdx));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        list.stream().filter((e) -> ALL.containsKey(e.getModuleName()))
+            .filter((e) -> SPECIAL.containsKey(e.getModuleName()))
+            .forEach((e) -> e.setModuleValueList(findModuleValue(pageId, e.getCurIdx())));
+
         return list;
     }
 
-    private List<String> findModuleValue(JsonNode node, String curIdx) {
+    private String getPageContent(int pageId) {
+        return db().select(fp.PAGE_CONTENT)
+            .from(fp).where(fp.PAGE_ID.eq(pageId))
+            .fetchOneInto(String.class);
+    }
+
+    private List<String> findModuleValue(int pageId, String curIdx) {
         List<String> resultList = new ArrayList<>();
-        log.debug("page_content中module对应的key值为：{}" + curIdx);
-        JsonNode targetNode = node.get(curIdx);
-        JsonNode listNode = targetNode.get(SELECT);
-        Iterator<JsonNode> iterator = listNode.elements();
-        while (iterator.hasNext()) {
-            JsonNode next = iterator.next();
-            resultList.add(next.asText());
+        String pageContent = getPageContent(pageId);
+        log.debug("表单[{}]的页面内容为：{}", pageId, pageContent);
+        try {
+            JsonNode node = MAPPER.readTree(pageContent);
+            JsonNode targetNode = node.get(curIdx);
+            if (Objects.isNull(targetNode)) {
+                log.error("表单[{}]页面内容缺失：缺少curIdx={}", pageId, curIdx);
+                return resultList;
+            }
+            JsonNode listNode = targetNode.get(SELECT);
+            if (Objects.isNull(listNode)) {
+                log.error("表单[{}]页面内容缺失：元素curIdx={}内缺少{}元素", pageId, curIdx, SELECT);
+                return resultList;
+            }
+            Iterator<JsonNode> iterator = listNode.elements();
+            while (iterator.hasNext()) {
+                JsonNode next = iterator.next();
+                resultList.add(next.asText());
+            }
+        } catch (IOException e) {
+            log.error("表单[{}]的页面内容反序列化失败！{}", pageId, ExceptionUtils.getStackTrace(e));
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
         return resultList;
     }

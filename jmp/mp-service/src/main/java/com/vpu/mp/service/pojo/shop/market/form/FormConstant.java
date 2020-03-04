@@ -1,16 +1,15 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.Data;
 
 /**
  * @author liufei
  * @date 2019/8/9
- * @description 表单元素常量
+ * 表单元素常量
  */
 @Data
 public class FormConstant {
@@ -54,10 +53,27 @@ public class FormConstant {
      * 图片
      */
     public static final String M_IMGS = "m_imgs";
+    /**
+     * 视频
+     */
+    public static final String M_UPLOAD_VIDEO = "m_upload_video";
+
+    /**
+     * 以下模块为表单展示模块，不会含有用户反馈信息
+     * m_scroll_image轮播图
+     * m_rich_text富文本
+     * m_image_small图片广告
+     * m_dashed_line辅助线
+     * m_text文本模块
+     * m_blank辅助空白
+     * m_phone电话模块
+     * m_official_accounts公众号
+     */
 
     public static Map<String, String> ALL = new HashMap<String, String>(){
-		private static final long serialVersionUID = 7311691185434226748L;
-		{
+        private static final long serialVersionUID = 7311691185434226748L;
+
+        {
             put(M_INPUT_NAME, M_INPUT_NAME);
             put(M_INPUT_MOBILE, M_INPUT_MOBILE);
             put(M_ADDRESS, M_ADDRESS);
@@ -68,6 +84,7 @@ public class FormConstant {
             put(M_SLIDE, M_SLIDE);
             put(M_DATES, M_DATES);
             put(M_IMGS, M_IMGS);
+            put(M_UPLOAD_VIDEO, M_UPLOAD_VIDEO);
         }
     };
     public static Map<String, String> SPECIAL = new HashMap<String, String>(){
