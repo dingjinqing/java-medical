@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 /**
  * @author liufei
  * @date 2019/8/9
- * @description
  */
 @Data
 public class FeedBackDetailParam {

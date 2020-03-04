@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead;
 
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,4 +22,7 @@ public class InsteadPayOrderDetails {
     private BigDecimal amountPaid;
     private BigDecimal waitPayMoney;
     private InsteadPay insteadPayCfg;
+    private Byte isSelf;
+    private String message;
+    private UserInfo userInfo;
 }

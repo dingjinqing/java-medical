@@ -74,5 +74,19 @@ export const cn = {
   batchValidSet: '请勾选商品后再试！',
   batchValidDiscount1: '请输入折扣数！',
   batchValidDiscount2: '折扣只能输入0-10之间！',
-  batchValidSetType: '请选择批量类型！'
+  batchValidSetType: '请选择批量类型！',
+
+  // 活动数据效果
+  legendData: [
+    '活动实付总金额',
+    '活动优惠总金额',
+    '费效比',
+    '付款订单数',
+    '付款商品件数',
+    '新成交用户数',
+    '老成家用户数'
+  ],
+  paidOrderNumberTip: '活动带来的付款订单数（包括退款部分）',
+  paidGoodsNumber: '付款商品件数',
+  paidGoodsNumberTip: '活动付款的商品件数'
 }

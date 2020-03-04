@@ -876,6 +876,12 @@ public class OrderReadService extends ShopBaseService {
         result.setWaitPayMoney(BigDecimalUtil.subtrac(orderRecord.getInsteadPayMoney(), orderRecord.getMoneyPaid()));
         //代付配置
         result.setInsteadPayCfg(Util.parseJson(orderRecord.getInsteadPay(), InsteadPay.class));
+        //是否本人
+        result.setIsSelf(param.getWxUserInfo().getUserId().equals(orderRecord.getUserId()) ? OrderConstant.YES : OrderConstant.NO);
+        //默认消息
+        result.setMessage(orderRecord.getInsteadPayNum() == 0 ? result.getInsteadPayCfg().getOrderUserMessageMultiple() : result.getInsteadPayCfg().getOrderUserMessageSingle());
+        //订单拥有者
+        result.setUserInfo(user.getUserInfo(orderRecord.getUserId()));
         return result;
     }
 

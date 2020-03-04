@@ -1,5 +1,5 @@
 <view class='common-footer'>
-  <view class="footer-text" style='padding-bottom:{{isIpx == 1?"70rpx":""}};' wx:if="{{hid_bottom == 0}}">
+  <view class="footer-text" style='padding-bottom:{{isIpx == 1?"70rpx":""}};'>
     <view style="margin:auto;width:30rpx;" wx:if="{{show_logo == 0 && hid_bottom == 0 }}">
       <image wx:if="{{imageUrl}}" bindtap='onClickSupport' src="{{imageUrl}}/image/wxapp/dianjia.png" mode='widthFix' />
     </view>
