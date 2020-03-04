@@ -163,7 +163,7 @@ public class RecordAdminActionService extends ShopBaseService {
 			record.setSysId(sysId);
 		}
 		record.setUserName(resultAccount.get(0));
-		record.setMobile(resultAccount.get(1));
+		record.setMobile(resultAccount.size()>1?resultAccount.get(1):"");
 		return record;
 	}
 
