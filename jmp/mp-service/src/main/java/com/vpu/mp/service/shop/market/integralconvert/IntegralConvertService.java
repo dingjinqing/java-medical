@@ -262,7 +262,7 @@ public class IntegralConvertService extends ShopBaseService {
 	 */
 	public IntegralConvertSelectVo selectOne(IntegralConvertSelectParam param) {
 
-		IntegralConvertSelectVo selectVo = db().select(imd.NAME, imd.START_TIME, imd.END_TIME, imd.MAX_EXCHANGE_NUM, imd.GOODS_ID, GOODS.GOODS_NAME,
+		IntegralConvertSelectVo selectVo = db().select(imd.ID,imd.NAME, imd.START_TIME, imd.END_TIME, imd.MAX_EXCHANGE_NUM, imd.GOODS_ID, GOODS.GOODS_NAME,
 						imd.SHARE_CONFIG,imd.DEL_FLAG,imd.STATUS)
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).where(imd.ID.eq(param.getId()))
 				.fetchOneInto(IntegralConvertSelectVo.class);
@@ -392,16 +392,5 @@ public class IntegralConvertService extends ShopBaseService {
     public ModuleIntegral getPageIndexIntegral(ModuleIntegral moduleIntegral){
 
         return moduleIntegral;
-    }
-
-    /**
-     * 获取该用户参与此活动兑换的商品数量
-     * @param userId
-     * @param activityId
-     * @return
-     */
-    public int getUserExchangeCount(Integer userId, Integer activityId) {
-        Integer sum = db().select(DSL.sum(imr.NUMBER)).where(imr.USER_ID.eq(userId).and(imr.INTEGRAL_MALL_DEFINE_ID.eq(activityId))).fetchOneInto(Integer.class);
-        return sum == null ? 0 : sum;
     }
 }

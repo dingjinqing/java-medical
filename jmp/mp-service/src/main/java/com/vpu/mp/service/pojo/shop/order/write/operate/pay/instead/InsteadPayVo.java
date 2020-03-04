@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * 代付支付页
@@ -18,7 +17,7 @@ import java.util.List;
 public class InsteadPayVo {
     private Byte isShowEdit;
     private BigDecimal moneyPaid;
-    private List<BigDecimal> threeStages;
+    private Object[][] threeStages;
     private String message;
     private BigDecimal amountPaid;
     private BigDecimal waitPayMoney;

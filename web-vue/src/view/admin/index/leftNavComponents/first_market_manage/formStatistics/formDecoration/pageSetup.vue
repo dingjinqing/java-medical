@@ -49,8 +49,14 @@ export default {
     RiPictureUpload: () => import('./pageSetupModules/formModule/riPictureUpload'), // 图片上传模块
     RiVideoUpload: () => import('./pageSetupModules/formModule/riVideoUpload'), // 视频上传模块
     // 图文类
-    RiRotationChart: () => import('./pageSetupModules/formModule/riRotationChart'), // 轮播图模块
-    RiRichText: () => import('./pageSetupModules/formModule/riRichText') // 富文本模块
+    RiRotationChart: () => import('./pageSetupModules/graphicModule/riRotationChart'), // 轮播图模块
+    RiRichText: () => import('./pageSetupModules/graphicModule/riRichText'), // 富文本模块
+    RiPictureAds: () => import('./pageSetupModules/graphicModule/riPictureAds'), // 图片广告模块
+    RiTextModule: () => import('./pageSetupModules/graphicModule/riTextModule'), // 文本模块
+    RiGuide: () => import('./pageSetupModules/graphicModule/riGuide'), // 辅助线模块
+    RiAuxiliaryBlank: () => import('./pageSetupModules/graphicModule/riAuxiliaryBlank'), // 辅助空白模块
+    RiTelephone: () => import('./pageSetupModules/graphicModule/riTelephone'), // 电话模块
+    RiOfficialAccount: () => import('./pageSetupModules/graphicModule/riOfficialAccount') // 公众号模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -115,6 +121,30 @@ export default {
         {
           id: 12,
           name: 'RiRichText'
+        },
+        {
+          id: 13,
+          name: 'RiPictureAds'
+        },
+        {
+          id: 14,
+          name: 'RiTextModule'
+        },
+        {
+          id: 15,
+          name: 'RiGuide'
+        },
+        {
+          id: 16,
+          name: 'RiAuxiliaryBlank'
+        },
+        {
+          id: 17,
+          name: 'RiTelephone'
+        },
+        {
+          id: 18,
+          name: 'RiOfficialAccount'
         }
       ],
       showModule: null,

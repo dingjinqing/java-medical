@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
+import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.InviteSourceConstant;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -858,7 +860,7 @@ public class OrderReadService extends ShopBaseService {
         }
     }
 
-    public InsteadPayOrderDetails InsteadPayInfo(InsteadPayDetailsParam param) throws MpException {
+    public InsteadPayOrderDetails insteadPayInfo(InsteadPayDetailsParam param) throws MpException {
         InsteadPayOrderDetails result = new InsteadPayOrderDetails();
         //订单
         OrderInfoMpVo order = mpGet(param);
@@ -866,6 +868,20 @@ public class OrderReadService extends ShopBaseService {
         //代付信息
         PageResult<InsteadPayDetailsVo> insteadPayDetailsVoPageResult = subOrderService.paymentDetails(param.getOrderSn(), param.getCurrentPage(), param.getPageRows());
         result.setInsteadPayDetails(insteadPayDetailsVoPageResult);
+        //订单
+        OrderInfoRecord orderRecord = orderInfo.getOrderByOrderSn(param.getOrderSn());
+        //获取已付金额
+        result.setAmountPaid(orderInfo.getOrderFinalAmount(orderRecord.into(OrderListInfoVo.class), true));
+        //待支付金额
+        result.setWaitPayMoney(BigDecimalUtil.subtrac(orderRecord.getInsteadPayMoney(), orderRecord.getMoneyPaid()));
+        //代付配置
+        result.setInsteadPayCfg(Util.parseJson(orderRecord.getInsteadPay(), InsteadPay.class));
+        //是否本人
+        result.setIsSelf(param.getWxUserInfo().getUserId().equals(orderRecord.getUserId()) ? OrderConstant.YES : OrderConstant.NO);
+        //默认消息
+        result.setMessage(orderRecord.getInsteadPayNum() == 0 ? result.getInsteadPayCfg().getOrderUserMessageMultiple() : result.getInsteadPayCfg().getOrderUserMessageSingle());
+        //订单拥有者
+        result.setUserInfo(user.getUserInfo(orderRecord.getUserId()));
         return result;
     }
 

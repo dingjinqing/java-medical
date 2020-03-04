@@ -1,12 +1,17 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.integral.IntegralMallMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.integral.IntegralMallPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.IntegralMallProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +30,10 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class IntegralMallProcessor implements Processor,GoodsDetailProcessor{
+public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, CreateOrderProcessor{
 
     @Autowired
-    private IntegralMallProcessorDao integralMallProcessorDao;
+    private IntegralMallProcessorDao dao;
 
     @Override
     public Byte getPriority() {
@@ -45,7 +50,7 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor{
         if (!BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType()) || param.getActivityId() == null) {
             return;
         }
-        IntegralMallMpVo integralMallMpVo = integralMallProcessorDao.getIntegralMallInfoForDetail(param.getActivityId(), param.getUserId());
+        IntegralMallMpVo integralMallMpVo = dao.getIntegralMallInfoForDetail(param.getActivityId(), param.getUserId());
         if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(integralMallMpVo.getActState())) {
             capsule.setActivity(integralMallMpVo);
             log.debug("小程序-商品详情-积分兑换商品信息-活动不存在[{}]-详情处理退出", param.getActivityId());
@@ -71,5 +76,25 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor{
         capsule.setGoodsNumber(goodsNum);
         capsule.setActivity(integralMallMpVo);
     }
+    @Override
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        IntegralConvertSelectVo activityInfo = dao.getDetail(param.getActivityId());
+        dao.orderCheck(param, activityInfo);
+        dao.orderInit(param, activityInfo);
+    }
 
+    @Override
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+
+    }
 }

@@ -50,6 +50,10 @@
             class="num"
             style="color: #5A8BFF"
           >{{ total.totalPayment }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url1"
+          ></el-image>
         </div>
         <div class="fromInfo topLine">
           <div style="display:flex">
@@ -67,6 +71,10 @@
             class="num"
             style="color: #fc6181;"
           >{{ total.totalDiscount }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url2"
+          ></el-image>
         </div>
         <div class="fromInfo topLine">
           <div style="display:flex">
@@ -84,14 +92,18 @@
             class="num"
             style="color: #fdb64a;"
           >{{ total.totalCostEffectivenessRatio === 0 ? 0 : ((total.totalDiscount / total.totalPayment) * 100).toFixed(2) }}%</div>
+          <el-image
+            class="left_image"
+            :src="urls.url3"
+          ></el-image>
         </div>
         <div class="fromInfo topLine">
           <div style="display:flex">
-            <div class="titless">付款订单数</div>
+            <div class="titless">{{ this.$t('reducePriceList.paidOrderNumber') }}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动带来的付款订单数（包括退款部分）"
+              :content="this.$t('reducePriceList.paidOrderNumberTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -100,15 +112,19 @@
           <div
             class="num"
             style="color: #3dcf9a;"
-          >{{ total.totalNewUserNumber }}</div>
+          >{{ total.totalPaidOrderNumber }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url4"
+          ></el-image>
         </div>
         <div class="fromInfo topLine">
           <div style="display:flex">
-            <div class="titles">付款商品件数</div>
+            <div class="titles">{{ this.$t('reducePriceList.paidGoodsNumber') }}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动付款的商品件数"
+              :content="this.$t('reducePriceList.paidGoodsNumberTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -117,7 +133,11 @@
           <div
             class="num"
             style="color: #8379f7;"
-          >{{ total.totalOldUserNumber }}</div>
+          >{{ total.totalPaidGoodsNumber }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url5"
+          ></el-image>
         </div>
       </section>
 
@@ -138,6 +158,10 @@
             class="num"
             style="color: #3dcf9a;"
           >{{ total.totalNewUserNumber }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url6"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -155,6 +179,10 @@
             class="num"
             style="color: #8379f7;"
           >{{ total.totalOldUserNumber }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url7"
+          ></el-image>
         </div>
       </section>
 
@@ -178,11 +206,20 @@ export default {
       total: {}, // 表格
       echartInit: {
         colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#3dcf9a', '#8379f7', '#5A8BFF', '#fc6181'],
-        legendData: this.$t('groupBuy.legendData')
+        legendData: this.$t('reducePriceList.legendData')
       },
       echartData: {},
       option: {},
-      myChart: {}
+      myChart: {},
+      urls: {
+        url1: `${this.$imageHost}/image/admin/any_coner/any_coner_blue.png`,
+        url2: `${this.$imageHost}/image/admin/any_coner/any_coner_pink.png`,
+        url3: `${this.$imageHost}/image/admin/any_coner/any_coner_orange.png`,
+        url4: `${this.$imageHost}/image/admin/any_coner/any_coner_yellow.png`,
+        url5: `${this.$imageHost}/image/admin/any_coner/any_coner_aqua.png`,
+        url6: `${this.$imageHost}/image/admin/any_coner/any_coner_green.png`,
+        url7: `${this.$imageHost}/image/admin/any_coner/any_coner_purple.png`
+      }
     }
   },
   watch: {
@@ -258,10 +295,9 @@ export default {
           },
           {
             name: this.echartInit.legendData[1],
-            yAxisIndex: 0,
-            color: this.echartInit.colors[1],
-
             type: 'line',
+            color: this.echartInit.colors[1],
+            yAxisIndex: 0,
             stack: '总量',
             data: this.echartData.discountAmount
           },
@@ -269,39 +305,36 @@ export default {
             name: this.echartInit.legendData[2],
             type: 'line',
             color: this.echartInit.colors[2],
-
-            yAxisIndex: 1,
+            yAxisIndex: 0,
             stack: '总量',
             data: this.echartData.costEffectivenessRatio
           },
           {
-            name: '付款订单数',
+            name: this.echartInit.legendData[3],
             type: 'line',
             color: this.echartInit.colors[3],
-
             yAxisIndex: 0,
             stack: '总量',
-            data: this.echartData.ordersNumber
+            data: this.echartData.paidOrderNumber
           },
           {
-            name: '付款商品件数',
+            name: this.echartInit.legendData[4],
             type: 'line',
             color: this.echartInit.colors[4],
             yAxisIndex: 0,
             stack: '总量',
-            data: this.echartData.goodsNumber
+            data: this.echartData.paidGoodsNumber
           },
           {
-            name: this.echartInit.legendData[3],
+            name: this.echartInit.legendData[5],
             type: 'line',
             color: this.echartInit.colors[5],
-
             yAxisIndex: 0,
             stack: '总量',
             data: this.echartData.oldUserNumber
           },
           {
-            name: this.echartInit.legendData[4],
+            name: this.echartInit.legendData[6],
             type: 'line',
             color: this.echartInit.colors[6],
             yAxisIndex: 0,
@@ -319,11 +352,11 @@ export default {
       })
     },
     updateEcharts () {
-      this.echartInit.legendData = this.$t('groupBuy.legendData')
+      this.echartInit.legendData = this.$t('reducePriceList.legendData')
       this.initEcharts()
       this.myChart.setOption({
         legend: {
-          data: this.$t('groupBuy.legendData')
+          data: this.$t('reducePriceList.legendData')
         },
         yAxis: [
           {
@@ -383,6 +416,13 @@ export default {
     width: 100%;
     height: 500px;
     left: -30px;
+  }
+  .left_image {
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    width: 44px;
+    height: 40px;
   }
 }
 </style>

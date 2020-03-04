@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteTimesRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
@@ -615,6 +616,11 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setPromoteAmount(record.getPromoteAmount());
         //设置助力类型 0平均 1随机
         promoteInfo.setPromoteType(record.getPromoteType());
+        //设置分享图片相关
+        promoteInfo.setActivityShareType(record.getActivityShareType());
+        promoteInfo.setCustomShareWord(record.getCustomShareWord());
+        promoteInfo.setShareImgType(record.getShareImgType());
+        promoteInfo.setCustomImgPath(record.getCustomImgPath());
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
@@ -796,33 +802,33 @@ public class FriendPromoteService extends ShopBaseService {
         canLaunch.setCode(NumberUtils.BYTE_ZERO);
         //检查是否停用或者删除
         if(promoteInfo.getIsBlock().equals(NumberUtils.BYTE_ONE)||promoteInfo.getDelFlag().equals(NumberUtils.BYTE_ONE)){
-            canLaunch.setMsg("活动已停用或删除");
+            canLaunch.setMsg(1);
             return canLaunch;
         }
         //检查活动库存
         if (promoteInfo.getMarketStore()<=0){
-            canLaunch.setMsg("活动库存不足了");
+            canLaunch.setMsg(2);
             return canLaunch;
         }
         //检查商品库存
         if (promoteInfo.getRewardType()!=2){
             if (promoteInfo.getGoodsInfo().getGoodsStore()<=0){
-                canLaunch.setMsg("活动商品库存不足了");
+                canLaunch.setMsg(3);
                 return canLaunch;
             }
         }
         //检查有效期
         if (promoteInfo.getActStatus()==0){
-            canLaunch.setMsg("活动未开始");
+            canLaunch.setMsg(4);
             return canLaunch;
         }
         if (promoteInfo.getActStatus()==2){
-            canLaunch.setMsg("活动已结束");
+            canLaunch.setMsg(5);
             return canLaunch;
         }
         //检查当前发起状态
         if(promoteInfo.getPromoteStatus()==0||promoteInfo.getPromoteStatus()==1){
-            canLaunch.setMsg("您已发起快邀请好友助力把");
+            canLaunch.setMsg(6);
             return canLaunch;
         }
         //检查可发起次数
@@ -1135,7 +1141,8 @@ public class FriendPromoteService extends ShopBaseService {
 
     /**
      * 小程序-发起好友助力
-     *
+     * @param param 用户id 活动码
+     * @return 发起信息
      */
     public LaunchVo friendPromoteLaunch(PromoteParam param){
         LaunchVo launchVo = new LaunchVo();
@@ -1155,11 +1162,11 @@ public class FriendPromoteService extends ShopBaseService {
         //发起入库
         Integer effectRows = promoteLaunch(param.getUserId(),promoteInfo.getId());
         if (effectRows==0){
-            launchVo.setMsg("入库失败");
+            launchVo.setMsg(7);
             return launchVo;
         }
         Integer launchId = db().lastID().intValue();
-        launchVo.setMsg("发起成功");
+        launchVo.setMsg(0);
         launchVo.setActCode(param.getActCode());
         launchVo.setLaunchUserId(param.getUserId());
         launchVo.setLaunchId(launchId);
@@ -1178,4 +1185,21 @@ public class FriendPromoteService extends ShopBaseService {
             .execute();
         return effectRows;
     }
+
+    /**
+     * 用户参与好友助力
+     */
+    public void friendPromote(PromoteParam param){
+        PromoteInfo promoteInfo = new PromoteInfo();
+        //得到活动信息
+        FriendPromoteActivityRecord record = getInfo(param.getActCode());
+        //校验必需参数
+        if(param.getLaunchId()==null||record==null){
+            //返回参数错误
+            return;
+        }
+        //活动状态：0未开始，1进行中，2已结束
+        promoteInfo.setActStatus(getActStatus(param.getActCode()));
+    }
+
 }

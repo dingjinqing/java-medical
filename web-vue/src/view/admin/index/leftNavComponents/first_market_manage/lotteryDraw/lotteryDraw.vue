@@ -19,19 +19,19 @@
       <div v-if="tableListView">
         <el-form label-width="100px">
           <el-form-item
-            label="活动名称："
+            :label="$t('lotteryDraw.activityName') + '：'"
             class="item"
           >
             <el-input
               size="small"
-              placeholder="请输入活动名称"
+              :placeholder="$t('lotteryDraw.activityNameTip')"
               v-model="requestParams.activityName"
               class="inputWidth"
               clearabl
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="活动有效期："
+            :label="$t('lotteryDraw.validDate') + '：'"
             class="item"
           >
             <el-date-picker
@@ -58,13 +58,13 @@
             class="item"
             @click="initDataList"
             style="margin-left: 10px;"
-          >筛选</el-button>
+          >{{ this.$t('lotteryDraw.select') }}</el-button>
         </el-form>
         <el-button
           type="primary"
           size="small"
           @click="addLotteryDraw"
-        >添加拼团抽奖活动</el-button>
+        >{{ this.$t('lotteryDraw.addLotteryDraw') }}</el-button>
       </div>
     </div>
 
@@ -90,67 +90,67 @@
       >
         <el-table-column
           prop="name"
-          label="活动名称"
+          :label="$t('lotteryDraw.activityName')"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="有效期"
+          :label="$t('lotteryDraw.validity')"
           align="center"
           width="160"
         >
           <template slot-scope="scope">
-            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            {{scope.row.startTime}}<br>{{ this.$t('lotteryDraw.to') }}<br>{{scope.row.endTime}}
           </template>
         </el-table-column>
         <el-table-column
           prop="statusText"
-          label="状态"
+          :label="$t('lotteryDraw.status')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="goodsCount"
-          label="有效商品数"
+          :label="$t('lotteryDraw.goodsCount')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="limitAmount"
-          label="最少成团人数"
+          :label="$t('lotteryDraw.limitAmount')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="minJoinNum"
-          label="开奖所需最少人数"
+          :label="$t('lotteryDraw.minJoinNum')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="joinUserCount"
-          label="参与人数"
+          :label="$t('lotteryDraw.joinUserCount')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="groupUserCount"
-          label="成团人数"
+          :label="$t('lotteryDraw.groupUserCount')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="groupCount"
-          label="开团数"
+          :label="$t('lotteryDraw.groupCount')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="drawUserCount"
-          label="中奖用户"
+          :label="$t('lotteryDraw.drawUserCount')"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('lotteryDraw.option')"
           align="center"
           width="150"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                content="编辑"
+                :content="$t('lotteryDraw.edit')"
                 placement="top"
                 v-if="scope.row.status === 1 || scope.row.status === 2"
               >
@@ -161,7 +161,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="分享"
+                :content="$t('lotteryDraw.share')"
                 placement="top"
                 v-if="scope.row.status === 1 || scope.row.status === 2"
               >
@@ -172,7 +172,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="停用"
+                :content="$t('lotteryDraw.stop')"
                 placement="top"
                 v-if="scope.row.status === 1 || scope.row.status === 2"
               >
@@ -183,7 +183,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="查看活动订单"
+                :content="$t('lotteryDraw.order')"
                 placement="top"
                 v-if="scope.row.status !== 2"
               >
@@ -194,7 +194,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="参与用户"
+                :content="$t('lotteryDraw.user')"
                 placement="top"
                 v-if="scope.row.status !== 2"
               >
@@ -205,7 +205,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="获取新用户明细"
+                :content="$t('lotteryDraw.userDetail')"
                 placement="top"
                 v-if="scope.row.status !== 2"
               >
@@ -216,7 +216,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="开团明细"
+                :content="$t('lotteryDraw.groupDetail')"
                 placement="top"
                 v-if="scope.row.status !== 2"
               >
@@ -227,7 +227,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('lotteryDraw.delete')"
                 placement="top"
                 v-if="scope.row.status === 3 || scope.row.status === 4"
               >
@@ -238,7 +238,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="活动效果数据"
+                :content="$t('lotteryDraw.effect')"
                 placement="top"
               >
                 <span
@@ -340,14 +340,14 @@ export default {
     // 添加
     addLotteryDraw () {
       this.isEdite = false
-      this.showTabAddGroup('添加拼团抽奖活动')
+      this.showTabAddGroup(this.$t('lotteryDraw.addLotteryDraw'))
     },
 
     // 编辑
     editHandler (id) {
       this.editId = id
       this.isEdite = true
-      this.showTabAddGroup('编辑拼团抽奖活动')
+      this.showTabAddGroup(this.$t('lotteryDraw.editLotteryDraw'))
     },
 
     showTabAddGroup (title) {
@@ -371,7 +371,7 @@ export default {
       if (this.tabInfo.length > 5) {
         this.tableListView = true
         this.tabInfo.pop({
-          title: '编辑拼团抽奖活动',
+          title: this.$t('lotteryDraw.editLotteryDraw'),
           name: '6'
         })
         console.log('closeTabAddGroup', this.tabInfo)

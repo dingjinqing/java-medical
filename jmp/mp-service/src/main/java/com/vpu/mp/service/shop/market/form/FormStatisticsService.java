@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
@@ -20,6 +21,7 @@ import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record6;
 import org.jooq.Record7;
@@ -29,11 +31,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.*;
 
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.*;
-import static org.jooq.impl.DSL.countDistinct;
+import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author liufei
@@ -200,7 +206,6 @@ public class FormStatisticsService extends ShopBaseService {
 
     /**
      * 反馈列表导出
-     * TODO 导出数量控制
      *
      * @param param 导出数据筛选条件
      */
@@ -219,36 +224,52 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 反馈信息详情列表
      */
     public List<FeedBackDetailVo> feedBackDetail(FeedBackDetailParam param) {
-        List<FeedBackDetailVo> list = db().select(fsd.SUBMIT_ID, fsd.MODULE_NAME, fsd.MODULE_TYPE, fsd.MODULE_VALUE, fsd.CUR_IDX.as("curIdx")).from(fsd).where(fsd.PAGE_ID.eq(param.getPageId())).and(fsd.USER_ID.eq(param.getUserId())).fetchInto(FeedBackDetailVo.class);
+        int pageId = param.getPageId();
+        List<FeedBackDetailVo> list = db().select(fsd.SUBMIT_ID
+            , fsd.MODULE_NAME, fsd.MODULE_TYPE, fsd.MODULE_VALUE
+            , fsd.CUR_IDX.as("curIdx"))
+            .from(fsd)
+            .where(fsd.PAGE_ID.eq(pageId))
+            .and(fsd.USER_ID.eq(param.getUserId()))
+            .fetchInto(FeedBackDetailVo.class);
 
-        for (FeedBackDetailVo vo : list) {
-            String moduleName = vo.getModuleName();
-            if (!ALL.containsKey(moduleName)) {
-                continue;
-            }
-            if (SPECIAL.containsKey(moduleName)) {
-                try {
-                    String curIdx = vo.getCurIdx();
-                    String pageContent = db().select(fp.PAGE_CONTENT).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(String.class).orElse("");
-                    JsonNode node = MAPPER.readTree(pageContent);
-                    vo.setModuleValueList(findModuleValue(node, curIdx));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        list.stream().filter((e) -> ALL.containsKey(e.getModuleName()))
+            .filter((e) -> SPECIAL.containsKey(e.getModuleName()))
+            .forEach((e) -> e.setModuleValueList(findModuleValue(pageId, e.getCurIdx())));
+
         return list;
     }
 
-    private List<String> findModuleValue(JsonNode node, String curIdx) {
+    private String getPageContent(int pageId) {
+        return db().select(fp.PAGE_CONTENT)
+            .from(fp).where(fp.PAGE_ID.eq(pageId))
+            .fetchOneInto(String.class);
+    }
+
+    private List<String> findModuleValue(int pageId, String curIdx) {
         List<String> resultList = new ArrayList<>();
-        log.debug("page_content中module对应的key值为：{}" + curIdx);
-        JsonNode targetNode = node.get(curIdx);
-        JsonNode listNode = targetNode.get(SELECT);
-        Iterator<JsonNode> iterator = listNode.elements();
-        while (iterator.hasNext()) {
-            JsonNode next = iterator.next();
-            resultList.add(next.asText());
+        String pageContent = getPageContent(pageId);
+        log.debug("表单[{}]的页面内容为：{}", pageId, pageContent);
+        try {
+            JsonNode node = MAPPER.readTree(pageContent);
+            JsonNode targetNode = node.get(curIdx);
+            if (Objects.isNull(targetNode)) {
+                log.error("表单[{}]页面内容缺失：缺少curIdx={}", pageId, curIdx);
+                return resultList;
+            }
+            JsonNode listNode = targetNode.get(SELECT);
+            if (Objects.isNull(listNode)) {
+                log.error("表单[{}]页面内容缺失：元素curIdx={}内缺少{}元素", pageId, curIdx, SELECT);
+                return resultList;
+            }
+            Iterator<JsonNode> iterator = listNode.elements();
+            while (iterator.hasNext()) {
+                JsonNode next = iterator.next();
+                resultList.add(next.asText());
+            }
+        } catch (IOException e) {
+            log.error("表单[{}]的页面内容反序列化失败！{}", pageId, ExceptionUtils.getStackTrace(e));
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
         return resultList;
     }
@@ -260,61 +281,70 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 统计数据返回，只有性别，下拉，选项三项
      */
     public FeedBackStatisticsVo feedBackStatistics(FormDetailParam param) {
-        try {
-            FeedBackStatisticsVo vo = db().select(fp.SUBMIT_NUM, fp.IS_FOREVER_VALID.as("validityPeriod"), fp.STATE.as("status")).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(FeedBackStatisticsVo.class).orElse(new FeedBackStatisticsVo());
-            Integer num = db().select(countDistinct(fsl.USER_ID)).from(fsl).where(fsl.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(Integer.class).orElse(0);
-            vo.setParticipantsNum(num);
+        int pageId = param.getPageId();
+        FeedBackStatisticsVo vo = getFormInfo(pageId).fetchOneInto(FeedBackStatisticsVo.class);
+        Assert.notNull(vo, JsonResultCode.CODE_DATA_NOT_EXIST, Assert.join("Form", pageId));
 
-            String pageContent = db().select(fp.PAGE_CONTENT).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(String.class).orElse("");
-            JsonNode node = MAPPER.readTree(pageContent);
+        vo.setParticipantsNum(getFormFeedUserNum(pageId));
 
-            List<FeedBackInnerVo> sexList = new ArrayList<>();
-            List<FeedBackInnerVo> slideList = new ArrayList<>();
-            List<FeedBackInnerVo> chooseList = new ArrayList<>();
+        vo.setSexList(getFeedStatisticData(pageId, M_SEX));
+        vo.setChooseList(getFeedStatisticData(pageId, M_CHOOSE));
+        vo.setSlideList(getFeedStatisticData(pageId, M_SLIDE));
 
-            Iterator<JsonNode> iterator = node.elements();
-            while (iterator.hasNext()) {
-                JsonNode next = iterator.next();
-                if (M_SEX.equals(next.get(MODULE_NAME).asText())) {
-                    sexList = getSpecialList(next, sexList);
-                }
-                if (M_CHOOSE.equals(next.get(MODULE_NAME).asText())) {
-                    chooseList = getSpecialList(next, chooseList);
-                }
-                if (M_SLIDE.equals(next.get(MODULE_NAME).asText())) {
-                    slideList = getSpecialList(next, slideList);
-                }
-            }
-            vo.setSexList(calPercentage(sexList, M_SEX, param.getPageId(), vo));
-            vo.setSlideList(calPercentage(slideList, M_SLIDE, param.getPageId(), vo));
-            vo.setChooseList(calPercentage(chooseList, M_CHOOSE, param.getPageId(), vo));
-            return vo;
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
-        return null;
+        vo.setSexTotal(sumVotes(vo.getSexList()));
+        vo.setChooseTotal(sumVotes(vo.getChooseList()));
+        vo.setSlideTotal(sumVotes(vo.getSlideList()));
+
+        calPercentage(vo.getSexTotal(), vo.getSexList());
+        calPercentage(vo.getChooseTotal(), vo.getChooseList());
+        calPercentage(vo.getSlideTotal(), vo.getSlideList());
+
+        return vo;
     }
 
-    private List<FeedBackInnerVo> calPercentage(List<FeedBackInnerVo> target, String moduleName, Integer pageId, FeedBackStatisticsVo vo) {
-        for (FeedBackInnerVo innerVo : target) {
-            innerVo.setVotes(db().select(countDistinct(fsd.USER_ID)).from(fsd).where(fsd.PAGE_ID.eq(pageId)).and(fsd.MODULE_NAME.eq(moduleName)).and(fsd.MODULE_VALUE.eq(innerVo.getModuleValue())).fetchOptionalInto(Integer.class).orElse(0));
-            innerVo.setPercentage(Double.valueOf(innerVo.getVotes()) / vo.getParticipantsNum());
-        }
-        return target;
+    private void calPercentage(int total, List<FeedBackInnerVo> list) {
+        list.forEach(e -> e.setPercentage(getIntPercentage(total, e.getVotes())));
     }
 
-    private List<FeedBackInnerVo> getSpecialList(JsonNode next, List<FeedBackInnerVo> list) {
-        JsonNode listNode = next.get(SELECT);
-        if (listNode == null) {
-            return new ArrayList<>();
-        }
-        Iterator<JsonNode> it = listNode.elements();
-        int value = 1;
-        while (it.hasNext()) {
-            JsonNode type = it.next();
-            list.add(new FeedBackInnerVo(String.valueOf(value++), type.asText()));
-        }
-        return list;
+    private BigDecimal getIntPercentage(int total, int value) {
+        return BigDecimal.valueOf(value).divide(BigDecimal.valueOf(total), 4, RoundingMode.HALF_UP)
+            .multiply(HUNDRED);
+    }
+
+    private int sumVotes(List<FeedBackInnerVo> list) {
+        return list.stream().map(FeedBackInnerVo::getVotes).reduce(Integer::sum).orElse(INTEGER_ZERO);
+    }
+
+    public List<FeedBackInnerVo> getFeedStatisticData(int pageId, String moduleName) {
+        return db().select(min(fsd.MODULE_NAME).as("moduleName")
+            , min(fsd.MODULE_TYPE).as("moduleType")
+            , min(fsd.MODULE_VALUE).as("moduleValue")
+            , count(fsd.MODULE_VALUE).as("votes"))
+            .from(fsd)
+            .where(fsd.PAGE_ID.eq(pageId)).and(fsd.MODULE_NAME.eq(moduleName))
+            .groupBy(fsd.MODULE_VALUE).fetchInto(FeedBackInnerVo.class);
+    }
+
+    /**
+     * Gets form feed user num.获取表单反馈用户数
+     *
+     * @param pageId the page id
+     * @return the form feed user num
+     */
+    public int getFormFeedUserNum(int pageId) {
+        return db().select(countDistinct(fsl.USER_ID))
+            .from(fsl).where(fsl.PAGE_ID.eq(pageId))
+            .fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+    }
+
+    /**
+     * Gets form info.获取表单信息
+     *
+     * @param pageId the page id
+     * @return the form info
+     */
+    public SelectConditionStep<FormPageRecord> getFormInfo(int pageId) {
+        return db().selectFrom(fp).where(fp.PAGE_ID.eq(pageId));
     }
 
     /**

@@ -1118,7 +1118,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //货到付款
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_COD);
         }
-        if(vo.getGoodsType() != null &&BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType()) && BigDecimalUtil.compareTo(vo.getScoreDiscount(), BigDecimal.ZERO) == 1 && vo.getIsScorePay() == NO){
+        if(vo.getGoodsType() != null && BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType()) && BigDecimalUtil.compareTo(vo.getScoreDiscount(), BigDecimal.ZERO) == 1 && vo.getIsScorePay() == NO){
             //积分（非积分兑换）
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
         }

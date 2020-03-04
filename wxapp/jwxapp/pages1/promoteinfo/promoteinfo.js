@@ -412,13 +412,13 @@ global.wxPage({
         // 商品
         var title_text = "我正在抢购" + promote_info.goodsInfo.goodsName + "，需要你的助力！";
       }
-      var share_img = imageUrl + promote_info.shareImgPath;
+      var share_img = promote_info.shareImgPath;
     } else {
       var title_text = promote_info.customShareWord;
       if (promote_info.shareImgType == 0) {
         var share_img = ""
       } else {
-        var share_img = imageUrl + promote_info.customImgPath
+        var share_img = promote_info.customImgPath
       }
     }
     that.setData({
@@ -453,14 +453,14 @@ function shareAdd(that) {
 };
 // 发起助力
 function launchAct(that) {
-  // util.api("/api/wxapp/promote/launch", function (res) {
-  //   if (res.error == 0) {
-  //     launch_id = res.content.launchId;
-  //   } else {
-  //     util.showModal('提示', res.message);
-  //     return false
-  //   }
-  // }, { actCode: actCode });
+  util.api("/api/wxapp/promote/launch", function (res) {
+    if (res.error == 0) {
+      launch_id = res.content.launchId;
+    } else {
+      util.showModal('提示', res.message);
+      return false
+    }
+  }, { actCode: actCode, userId: launch_user_id });
 };
 // 助力详情
 function promote_request(that) {
