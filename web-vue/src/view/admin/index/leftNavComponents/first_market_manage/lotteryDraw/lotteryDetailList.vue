@@ -46,7 +46,7 @@
           @click="initDataList"
           class="item"
           style="margin-left: 10px;"
-        >查询</el-button>
+        >{{ this.$t('lotteryDraw.query') }}</el-button>
       </el-form>
     </div>
 

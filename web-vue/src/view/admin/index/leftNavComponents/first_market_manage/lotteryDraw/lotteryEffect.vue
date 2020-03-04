@@ -50,6 +50,10 @@
             class="num"
             style="color: #5A8BFF"
           >{{ totalOrderNumber }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url1"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -67,6 +71,10 @@
             class="num"
             style="color: #5A8BFF"
           >{{ totalJoinNum }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url2"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -84,6 +92,10 @@
             class="num"
             style="color: #5A8BFF"
           >{{ totalSuccessUserNum }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url3"
+          ></el-image>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -101,6 +113,10 @@
             class="num"
             style="color: #5A8BFF"
           >{{ totalNewUser }}</div>
+          <el-image
+            class="left_image"
+            :src="urls.url4"
+          ></el-image>
         </div>
       </section>
 
@@ -126,14 +142,20 @@ export default {
       totalSuccessUserNum: 0, // 成团用户数
       totalNewUser: 0, // 拉新用户数
       echartInit: {
-        colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#3dcf9a', '#8379f7'],
-        legendData: this.$t('groupBuy.legendData')
+        colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#3dcf9a'],
+        legendData: this.$t('lotteryDraw.legendData')
       },
       echartData: {
         dataList: [] // 日期时间
       },
       option: {},
-      myChart: {}
+      myChart: {},
+      urls: {
+        url1: `${this.$imageHost}/image/admin/any_coner/any_coner_blue.png`,
+        url2: `${this.$imageHost}/image/admin/any_coner/any_coner_pink.png`,
+        url3: `${this.$imageHost}/image/admin/any_coner/any_coner_orange.png`,
+        url4: `${this.$imageHost}/image/admin/any_coner/any_coner_yellow.png`
+      }
     }
   },
   watch: {
@@ -162,17 +184,19 @@ export default {
           this.totalSuccessUserNum = res.content.totalSuccessUserNum
           this.totalNewUser = res.content.totalNewUser
           // this.echartData = res.content
+          this.echartData.dataList = []
+          for (var key in res.content.orderNumber) {
+            this.echartData.dataList.push(key)
+          }
           var orderObj = res.content.orderNumber
           var newObj = res.content.newUser
           var joinObj = res.content.joinNum
           var successObj = res.content.successUserNum
-          var dataList = []
           var orderNumber = []
           var newUser = []
           var joinNum = []
           var successUserNum = []
           Object.keys(orderObj).forEach(function (key) {
-            dataList.push(key)
             orderNumber.push(orderObj[key])
           })
           Object.keys(newObj).forEach(function (key) {
@@ -184,7 +208,6 @@ export default {
           Object.keys(successObj).forEach(function (key) {
             successUserNum.push(successObj[key])
           })
-          this.echartData.dataList = dataList
           this.echartData.orderNumber = orderNumber
           this.echartData.newUser = newUser
           this.echartData.joinNum = joinNum
@@ -214,7 +237,7 @@ export default {
         xAxis: [
           {
             type: 'category',
-            data: this.echartData.dateList,
+            data: this.echartData.dataList,
             boundaryGap: false
           }
         ],
@@ -239,10 +262,9 @@ export default {
           },
           {
             name: this.echartInit.legendData[1],
-            yAxisIndex: 0,
-            color: this.echartInit.colors[1],
-
             type: 'line',
+            color: this.echartInit.colors[1],
+            yAxisIndex: 0,
             stack: '总量',
             data: this.echartData.newUser
           },
@@ -250,8 +272,7 @@ export default {
             name: this.echartInit.legendData[2],
             type: 'line',
             color: this.echartInit.colors[2],
-
-            yAxisIndex: 1,
+            yAxisIndex: 0,
             stack: '总量',
             data: this.echartData.joinNum
           },
@@ -259,7 +280,6 @@ export default {
             name: this.echartInit.legendData[3],
             type: 'line',
             color: this.echartInit.colors[3],
-
             yAxisIndex: 0,
             stack: '总量',
             data: this.echartData.successUserNum
@@ -275,11 +295,11 @@ export default {
       })
     },
     updateEcharts () {
-      this.echartInit.legendData = this.$t('groupBuy.legendData')
+      this.echartInit.legendData = this.$t('lotteryDraw.legendData')
       this.initEcharts()
       this.myChart.setOption({
         legend: {
-          data: this.$t('groupBuy.legendData')
+          data: this.$t('lotteryDraw.legendData')
         },
         yAxis: [
           {
@@ -335,6 +355,13 @@ export default {
     width: 100%;
     height: 500px;
     left: -30px;
+  }
+  .left_image {
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    width: 44px;
+    height: 40px;
   }
 }
 </style>
