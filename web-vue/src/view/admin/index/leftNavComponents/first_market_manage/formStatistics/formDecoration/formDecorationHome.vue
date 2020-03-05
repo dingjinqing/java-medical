@@ -161,7 +161,7 @@ import Vue from 'vue'
 import draggable from 'vuedraggable'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/formdecorationModulesMixins'
-import { formDecorationAdd } from '@/api/admin/marketManage/formDecoration' // 装修方法混入
+import { formDecorationAdd, editFormListQuery, upDataFormQuery, copyFormQuery } from '@/api/admin/marketManage/formDecoration' // 装修方法混入
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
@@ -260,7 +260,8 @@ export default {
       nowRightModulesData: {}, // 当前右侧显示的中部高亮模块数据
       isClickPageSetIcon: false, // 是否是右侧店家顶部icon引起的高亮模块索引变化
       cur_idx: 100, // 初始模块保存编号
-      modulesData: [] // 当前所有模块保存数据
+      modulesData: [], // 当前所有模块保存数据
+      pageId: null
     }
   },
   watch: {
@@ -285,8 +286,142 @@ export default {
     // 初始化语言
     this.langDefault()
     this.init_drag_event()
+    // 编辑处理
+    this.handletToEdit()
   },
   methods: {
+    // 编辑处理
+    handletToEdit () {
+      console.log(this.$route)
+      if (this.$route.query.pageId && this.$route.query.flag) {
+        this.pageId = this.$route.query.pageId
+        editFormListQuery({ pageId: this.pageId }).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.handleToTurnModulesName(JSON.parse(res.content.pageContent))
+            let maxIdx = this.handleToMaxCuridx(JSON.parse(res.content.pageContent))
+            this.cur_idx = maxIdx
+            this.pageName = res.content.pageName
+            let arr = []
+            Object.keys(JSON.parse(res.content.pageContent)).forEach((item, index) => {
+              arr.push(JSON.parse(res.content.pageContent)[item])
+            })
+            this.modulesData = arr
+            console.log(this.modulesData)
+            this.pageSetData = JSON.parse(res.content.formCfg)
+          }
+        })
+      } else if (this.$route.query.pageId && !this.$route.query.flag) {
+        this.pageId = this.$route.query.pageId
+        copyFormQuery({ pageId: this.pageId }).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            res.content.pageName = res.content.pageName + '+副本'
+            this.handleToTurnModulesName(JSON.parse(res.content.pageContent))
+            let maxIdx = this.handleToMaxCuridx(JSON.parse(res.content.pageContent))
+            this.cur_idx = maxIdx
+            this.pageName = res.content.pageName
+            let arr = []
+            Object.keys(JSON.parse(res.content.pageContent)).forEach((item, index) => {
+              arr.push(JSON.parse(res.content.pageContent)[item])
+            })
+            this.modulesData = arr
+            console.log(this.modulesData)
+            this.pageSetData = JSON.parse(res.content.formCfg)
+            this.pageSetData.page_name = this.pageSetData.page_name + '+副本'
+            console.log(this.pageSetData)
+          }
+        })
+      }
+    },
+    // 模块名称转化
+    handleToTurnModulesName (data) {
+      console.log(data)
+      let showModuleArr = []
+      let arr = JSON.parse(JSON.stringify(data))
+      Object.keys(arr).forEach((item, index) => {
+        showModuleArr.push(this.modulesName(arr[item].module_name))
+      })
+      console.log(showModuleArr)
+      this.showModulesList = showModuleArr
+    },
+    // 算出最大值last_cur_idx
+    handleToMaxCuridx (res) {
+      let copyData = JSON.parse(JSON.stringify(res))
+      let arr = []
+      Object.keys(copyData).forEach((item, index) => {
+        console.log(item)
+        let idx = Number(item.split('_')[1])
+        arr.push(idx)
+      })
+      Math.max.apply(null, arr)
+      console.log(arr, Math.max.apply(null, arr))
+      return Math.max.apply(null, arr)
+    },
+    // 模块名数据池
+    modulesName (name) {
+      let moduleNameId = null
+      switch (name) {
+        case 'm_input_name':
+          moduleNameId = 0
+          break
+        case 'm_input_mobile':
+          moduleNameId = 1
+          break
+        case 'm_address':
+          moduleNameId = 2
+          break
+        case 'm_input_email':
+          moduleNameId = 3
+          break
+        case 'm_sex':
+          moduleNameId = 4
+          break
+        case 'm_slide':
+          moduleNameId = 5
+          break
+        case 'm_input_text':
+          moduleNameId = 6
+          break
+        case 'm_choose':
+          moduleNameId = 7
+          break
+        case 'm_dates':
+          moduleNameId = 8
+          break
+        case 'm_imgs':
+          moduleNameId = 9
+          break
+        case 'm_upload_video':
+          moduleNameId = 10
+          break
+        case 'm_scroll_image':
+          moduleNameId = 11
+          break
+        case 'm_rich_text':
+          moduleNameId = 12
+          break
+        case 'm_image_small':
+          moduleNameId = 13
+          break
+        case 'm_text':
+          moduleNameId = 14
+          break
+        case 'm_dashed_line':
+          moduleNameId = 15
+          break
+        case 'm_blank':
+          moduleNameId = 16
+          break
+        case 'm_phone':
+          moduleNameId = 17
+          break
+        case 'm_official_accounts':
+          moduleNameId = 18
+          break
+      }
+      return moduleNameId
+    },
     // 初始化拖拽事件
     init_drag_event () {
       let this_ = this
@@ -726,6 +861,29 @@ export default {
       // 保存处理
       if (index === 0) {
         lastData.status = 0
+      } else {
+        lastData.status = 1
+      }
+      if (this.$route.query.pageId && this.$route.query.flag) {
+        upDataFormQuery(lastData).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true
+            })
+          } else {
+            this.$message.error({
+              message: '保存失败',
+              showClose: true
+            })
+          }
+        })
+      } else {
+        console.log(lastData)
+        if (this.$route.query.flag === false) {
+          lastData.pageId = null
+        }
         formDecorationAdd(lastData).then(res => {
           console.log(res)
           if (res.error === 0) {
@@ -734,14 +892,12 @@ export default {
               showClose: true
             })
           } else {
-            this.$message.success({
+            this.$message.error({
               message: '保存失败',
               showClose: true
             })
           }
         })
-      } else {
-        lastData.status = 1
       }
     }
   }
