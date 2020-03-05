@@ -70,8 +70,8 @@ global.wxPage({
   // 发起助力
   shareGoods: function (e) {
     var that = this;
-    var form_id = e.detail.formId;
-    var open_id = util.getCache("openid");
+    // var form_id = e.detail.formId;
+    // var open_id = util.getCache("openid");
     // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
     if (promote_info.promoteStatus == -1) {
       launchAct(that);
