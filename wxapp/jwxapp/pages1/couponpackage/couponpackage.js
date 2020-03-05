@@ -76,6 +76,39 @@ global.wxPage({
     }
     return null
   },
+  viewCouponList(){
+    util.jumpLink("/pages/coupon/coupon",'navigateTo')
+  },
+  getCouponPackage(){
+    let {packId} = this.data.options
+    util.api('/api/wxapp/coupon/pack/tobuy',res=>{
+      if(res.error === 0 && res.content){
+        if(res.content.state === 0) {
+          util.jumpLink(`/pages1/virtualCheckout/virtualCheckout?packId=${packId}`,'navigateTo')
+        }
+        if(res.content.state === 6) {
+          util.showModal("提示", '领取成功', function () {
+            that.requestData();
+          })
+        }
+        if([1,2,3,4,5].includes(res.content.state)){
+          let errorMessage = {
+            1:`活动已结束`,
+            2:`活动未开始`,
+            3:`领取礼包达到上限`,
+            4:`领取礼包达到上限`,
+            5:`对不起，您的积分不足`
+          }
+          util.showModal("提示", errorMessage[res.content.state])
+        }
+
+      } else {
+        util.showModal("提示", res.message);
+      }
+    },{
+      packId
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

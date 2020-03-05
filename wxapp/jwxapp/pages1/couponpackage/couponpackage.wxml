@@ -54,8 +54,8 @@
         </view>
       </block>
     </view>
-    <view class='btn-buy' wx:if="{{pageInfo.buyCount > 0}}" bindtap='goCouponList'>立即查看</view>
-    <view class="{{buttonData.style}}" wx:if="{{buttonData}}">{{buttonData.name}}</view>
+    <view class='btn-buy' wx:if="{{pageInfo.buyCount > 0}}" bindtap='viewCouponList'>立即查看</view>
+    <view class="{{buttonData.style}}" wx:if="{{buttonData}}" bindtap="getCouponPackage">{{buttonData.name}}</view>
    </view>
    <view class="package-rule">
     <view class="rule-title">活动规则</view>
