@@ -169,7 +169,10 @@ public class ExcelWriter extends AbstractExcelDisposer {
      * @return key 列头名称，value 该列的类型
      */
     private Map<String, Class> getDynamicColumnMap(Object obj, Field field) throws Exception {
-        field.setAccessible(true);
+        log.info("-------进入方法-------");
+        System.out.println(obj);
+    	field.setAccessible(true);
+        log.info("--------是否执行---------");
         Object val = field.get(obj);
         System.out.println("val: "+ val);
         System.out.println("obj: "+val);
@@ -216,6 +219,8 @@ public class ExcelWriter extends AbstractExcelDisposer {
         T val = dataArray.get(0);
         Map<String, Class> dynamicColumnMap = null;
         try {
+        	log.info("-----------开始处理动态字段---------------");
+        	System.out.println("size: "+dataArray.size()+" val "+val);
             dynamicColumnMap = getDynamicColumnMap(val, dynamicField);
         } catch (Exception e) {
             log.debug("excel导出动态列头-动态内容字段读取异常：" + e.getMessage());
