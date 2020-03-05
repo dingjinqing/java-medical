@@ -27,9 +27,11 @@ global.wxComponent({
    */
   methods: {
     init() {
-      let { limitBuyNum } = this.data.limitInfo
+      let { limitBuyNum,limitMaxNum,prdNumber } = this.data.limitInfo
       let goodsNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
-      let canMinus = false,canPlus = true;
+      limitMaxNum = limitMaxNum && limitMaxNum > 0 ? limitMaxNum : prdNumber
+      let canMinus = false;
+      let canPlus = prdNumber < limitMaxNum ? true : false
       this.setData({
         goodsNum,
         canMinus,
