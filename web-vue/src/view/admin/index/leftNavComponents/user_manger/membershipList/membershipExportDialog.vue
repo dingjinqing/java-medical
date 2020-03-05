@@ -186,6 +186,7 @@
 
 <script>
 import { getExportCfg, exportCfg } from '@/api/admin/membershipList.js'
+import { download } from '@/util/excelUtil.js'
 export default {
   props: {
     dialogVisible: Boolean,
@@ -231,7 +232,8 @@ export default {
         'level_name',
         'group_name'
       ],
-      distributionChecked: []
+      distributionChecked: [],
+      loading: false
     }
   },
   computed: {
@@ -390,10 +392,12 @@ export default {
           columns: checkedCfgs
         }
       })
+      this.loading = true
       exportCfg(params).then(res => {
-        if (res.error === 0) {
-
-        }
+        this.loading = false
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : 'template.xlsx'
+        download(res, decodeURIComponent(fileName))
       })
     },
     // 基础信息选中改变
