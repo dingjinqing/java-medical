@@ -19,6 +19,7 @@
                         </el-option>
                     </el-select>
                     <span>享受</span>
+                    <el-input-number size="small" :controls="false" ></el-input-number>
 
                 </div>
             </el-form-item>
