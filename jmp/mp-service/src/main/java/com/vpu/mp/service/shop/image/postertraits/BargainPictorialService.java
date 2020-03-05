@@ -239,25 +239,20 @@ public class BargainPictorialService extends ShopBaseService {
         PictorialImgPx imgPx = new PictorialImgPx();
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,true);
 
+        BufferedImage moneyIconImg;
         try(InputStream moneyIconIo = Util.loadFile(BARGAIN_MONEY_ICON_IMG)) {
-            BufferedImage moneyIconImg = ImageIO.read(moneyIconIo);
-            moneyIconImg = ImageUtil.resizeImageTransparent(40,30,moneyIconImg);
-            ImageUtil.addTwoImage(bgBufferedImage,moneyIconImg,imgPx.getCustomerTextStartX(),imgPx.getCustomerRectStartY()+imgPx.getLargeFontAscent(bgBufferedImage)/2);
+            moneyIconImg = ImageIO.read(moneyIconIo);
         }catch (IOException e){
             bargainLog("pictorial", "读取本地图片money_icon错误"+e.getMessage());
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return;
         }
-
         // 原价
         String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_TAKE, null,"messages",param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP).toString());
-        ImageUtil.addFont(bgBufferedImage, realPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),imgPx.getCustomerTextStartX()+42,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor(),false);
-        Integer realPriceLength=  ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),realPriceText);
-
         // 划线价
         String linePriceText =Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2,BigDecimal.ROUND_HALF_UP);
-        Integer linePriceStartX = imgPx.getCustomerTextStartX()+42+realPriceLength;
-        ImageUtil.addFontWithLine(bgBufferedImage,linePriceStartX,imgPx.getCustomerSecondTextStartY(),linePriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getSmallFontSize()),imgPx.getCustomerTextFontColor());
+        // 自定义区域添加内容
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,moneyIconImg,realPriceText,linePriceText,true,imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);

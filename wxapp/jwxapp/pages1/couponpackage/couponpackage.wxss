@@ -160,3 +160,14 @@ page{
   -o-transform: rotate(40deg);
   margin-bottom: 0;
 }
+.send-icon{
+  color: #f66;
+  position: absolute;
+  line-height: 40rpx;
+  padding: 0 10rpx;
+  border: 2rpx solid;
+  border-radius: 20rpx;
+  right: 30rpx;
+  top: 70rpx;
+  margin-bottom: 0;
+}

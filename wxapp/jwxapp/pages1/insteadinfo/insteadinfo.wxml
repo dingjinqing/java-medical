@@ -51,7 +51,7 @@
         <image class="user-avatar" src="{{friendItem.userAvatar ? friendItem.userAvatar : imageUrl + '/image/wxapp/ins-icon.png'}}"></image>
         <view class="user-pay-info">
           <view class="user-left">
-            <view>{{friendItem.username ? friendItem.username : '（匿名好友）'}}</view>
+            <view>{{friendItem.username ? friendItem.username : '(匿名好友)'}}</view>
             <view>{{friendItem.message}}</view>
           </view>
           <view class="user-rigth">
