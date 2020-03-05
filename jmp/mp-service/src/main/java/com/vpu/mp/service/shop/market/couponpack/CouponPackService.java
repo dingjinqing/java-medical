@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.market.couponpack.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.*;
 import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -368,8 +369,8 @@ public class CouponPackService extends ShopBaseService {
             orderParam.setPackId(packId);
             orderParam.setOrderAmount(BigDecimal.ZERO);
             orderParam.setScoreDiscount(0);
-            String orderSn = couponPackOrderService.createOrder(orderParam,userId,clientIp);
-            vo.setOrderSn(orderSn);
+            WebPayVo webPayVo = couponPackOrderService.createOrder(orderParam,userId,clientIp);
+            //vo.setOrderSn(orderSn);
             vo.setState((byte)6);
         }
 
