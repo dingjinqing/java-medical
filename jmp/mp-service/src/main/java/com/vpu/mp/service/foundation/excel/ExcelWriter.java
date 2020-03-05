@@ -182,7 +182,7 @@ public class ExcelWriter extends AbstractExcelDisposer {
         Map<String, Class> returnMap = new LinkedHashMap<>(map.size());
         for (Object o : map.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
-            if(entry==null) {
+            if(entry.getValue()==null) {
             	returnMap.put(entry.getKey().toString(), String.class);
             }else {
             	returnMap.put(entry.getKey().toString(), entry.getValue().getClass());
