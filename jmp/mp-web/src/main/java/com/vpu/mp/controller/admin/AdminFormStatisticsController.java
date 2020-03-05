@@ -6,9 +6,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +15,7 @@ import static com.vpu.mp.service.pojo.shop.order.OrderExportVo.LANGUAGE_TYPE_EXC
 /**
  * @author liufei
  * @date 2019/8/7
+ * 表单统计
  */
 @RestController
 public class AdminFormStatisticsController extends AdminBaseController {
@@ -89,6 +88,15 @@ public class AdminFormStatisticsController extends AdminBaseController {
     @PostMapping("/api/admin/formstatistics/shareForm")
     public JsonResult shareForm(@RequestBody @Validated FormDetailParam param) {
         return success(shop().formService.shareForm(param));
+    }
+
+    /**
+     * 获得表单海报分享码
+     */
+    @GetMapping("/api/admin/formstatistics/pictorialCode/{pageId}")
+    public JsonResult getPictorialCode(@PathVariable int pageId) {
+        shop().formService.getFormPictorialCode(pageId);
+        return success();
     }
 
     /**

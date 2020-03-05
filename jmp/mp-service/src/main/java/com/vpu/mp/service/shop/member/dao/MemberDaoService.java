@@ -755,7 +755,7 @@ public class MemberDaoService extends ShopBaseService {
 	/**
 	 * 	获取用户总数
 	 */
-	public int getNumOfUser() {
-		return db().fetchCount(USER);
+	public int getNumOfUser(MemberPageListParam param) {
+		return db().fetchCount(USER, buildOptions(param));
 	}
 }

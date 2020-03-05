@@ -104,13 +104,17 @@
   width: 750rpx;
   z-index: 2;
 }
-.friend-pay-footer > view{
+.friend-pay-footer > view,.friend-pay-footer > button{
   line-height: 80rpx;
   text-align: center;
   font-size: 30rpx;
   border-radius: 40rpx;
+  color: #fff;
 }
 .friend-pay-footer > view+view{
+  margin-left: 20rpx;
+}
+.friend-pay-footer > view+button{
   margin-left: 20rpx;
 }
 .friend-pay-footer > .flex-one{

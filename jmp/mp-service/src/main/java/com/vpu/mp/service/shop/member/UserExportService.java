@@ -165,7 +165,7 @@ public class UserExportService extends ShopBaseService{
 	 * 	获取用户导出配置
 	 * @return ObjectNode 用户可选的导出数据以及历史选择的导出数据
 	 */
-	public ObjectNode getExportCfg() {
+	public ObjectNode getExportCfg(MemberPageListParam param) {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode ob = mapper.createObjectNode();
@@ -178,7 +178,7 @@ public class UserExportService extends ShopBaseService{
 		JsonNode maxNum = mapper.valueToTree(MAX_VALUE);
 		ob.set(MAX__KEY, maxNum);
 		//	目前可导出数量
-		JsonNode availNum = mapper.valueToTree(memDao.getNumOfUser());
+		JsonNode availNum = mapper.valueToTree(memDao.getNumOfUser(param));
 		ob.set(AVAIL_KEY, availNum);
 		return ob;
 	}

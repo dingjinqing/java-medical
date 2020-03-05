@@ -5,6 +5,7 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -15,6 +16,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -37,6 +40,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,18 +76,7 @@ public class CouponPackService extends ShopBaseService {
     @Autowired
     private TradeService tradeService;
 
-    /**
-     * 获取方式，0：现金购买
-     */
-    public static final byte ACCESS_MODE_CASH = 0;
-    /**
-     * 获取方式，1：积分购买
-     */
-    public static final byte ACCESS_MODE_SCORE = 1;
-    /**
-     * 获取方式，2直接领取
-     */
-    public static final byte ACCESS_MODE_FREE = 2;
+
 
     private static final String LANGUAGE_TYPE_EXCEL= "excel";
 
@@ -155,7 +150,7 @@ public class CouponPackService extends ShopBaseService {
         if (isNotEmpty(param.getPackName())) {
             select.where(COUPON_PACK.PACK_NAME.contains(param.getPackName()));
         }
-        if(param.getAccessMode() != null && param.getAccessMode() >= ACCESS_MODE_CASH) {
+        if(param.getAccessMode() != null && param.getAccessMode() >= CouponPackConstant.ACCESS_MODE_CASH) {
             /** 领取方式过滤*/
             select.where(COUPON_PACK.ACCESS_MODE.eq(param.getAccessMode()));
         }
@@ -313,7 +308,7 @@ public class CouponPackService extends ShopBaseService {
         if(param.getEndTime() != null){
             select.where(VIRTUAL_ORDER.CREATE_TIME.le(param.getEndTime()));
         }
-        if(param.getAccessMode() != null && param.getAccessMode() >= ACCESS_MODE_CASH){
+        if(param.getAccessMode() != null && param.getAccessMode() >= CouponPackConstant.ACCESS_MODE_CASH){
             select.where(VIRTUAL_ORDER.ACCESS_MODE.eq(param.getAccessMode()));
         }
     }
@@ -349,7 +344,7 @@ public class CouponPackService extends ShopBaseService {
 
         List<CouponPackVoucherVo> packList = couponPackVoucherService.getCouponPackVoucherList(packId);
         packList.forEach(p->{
-            p.setGrantCount(couponService.getUserCouponCountByPackId(packId,userId,p.getVoucherId()));
+            p.setGrantCount(couponService.getUserCouponCountByPackId(packId,userId,p.getVoucherId(),null));
         });
         vo.setPackList(packList);
         vo.setBuyCount(couponPackOrderService.getUserCouponPackBuyCount(packId,userId));
@@ -368,7 +363,7 @@ public class CouponPackService extends ShopBaseService {
         }
 
         //直接领取
-        if(couponPackRecord.getAccessMode().equals(ACCESS_MODE_FREE)){
+        if(couponPackRecord.getAccessMode().equals(CouponPackConstant.ACCESS_MODE_FREE)){
             CouponPackOrderParam orderParam = new CouponPackOrderParam();
             orderParam.setPackId(packId);
             orderParam.setOrderAmount(BigDecimal.ZERO);
@@ -400,7 +395,7 @@ public class CouponPackService extends ShopBaseService {
         if(couponPackRecord.getLimitGetTimes() > 0 && couponPackRecord.getLimitGetTimes() <= couponPackOrderService.getUserCouponPackBuyCount(couponPackRecord.getId(),userId)){
             return (byte)4;
         }
-        if(couponPackRecord.getAccessMode().equals(ACCESS_MODE_SCORE) && (memberService.score.getUserScore(userId) < couponPackRecord.getAccessCost().intValue())){
+        if(couponPackRecord.getAccessMode().equals(CouponPackConstant.ACCESS_MODE_SCORE) && (memberService.score.getUserScore(userId) < couponPackRecord.getAccessCost().intValue())){
             return (byte)5;
         }
         return (byte)0;
@@ -425,8 +420,8 @@ public class CouponPackService extends ShopBaseService {
         }
         vo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         vo.setScoreProportion(memberService.score.scoreCfgService.getScoreProportion());
-        vo.setIsShowserviceTerms(shopCommonConfigService.getServiceTerms());
-        if(vo.getIsShowserviceTerms() == 1){
+        vo.setIsShowServiceTerms(shopCommonConfigService.getServiceTerms());
+        if(vo.getIsShowServiceTerms() == 1){
             vo.setServiceChoose(tradeService.getServiceChoose());
             vo.setServiceName(tradeService.getServiceName());
             vo.setServiceDocument(tradeService.getServiceDocument());
@@ -445,8 +440,9 @@ public class CouponPackService extends ShopBaseService {
         vo.setPackInfo(couponPackRecord.into(CouponPackActBaseVo.class));
         List<CouponPackVoucherVo> packList = couponPackVoucherService.getCouponPackVoucherList(param.getPackId());
         vo.setOrderGoods(packList);
-        if(couponPackRecord.getAccessMode().equals(ACCESS_MODE_SCORE)){
-            vo.setOrderAmount(couponPackRecord.getAccessCost().divide(BigDecimal.valueOf(vo.getScoreProportion()),0,BigDecimal.ROUND_FLOOR));
+        if(couponPackRecord.getAccessMode().equals(CouponPackConstant.ACCESS_MODE_SCORE)){
+            //vo.setOrderAmount(couponPackRecord.getAccessCost().divide(BigDecimal.valueOf(vo.getScoreProportion()),0,BigDecimal.ROUND_FLOOR));
+            vo.setOrderAmount(BigDecimal.ZERO);
             vo.setMoneyPaid(BigDecimal.ZERO);
         }else {
             vo.setOrderAmount(couponPackRecord.getAccessCost());
@@ -474,6 +470,93 @@ public class CouponPackService extends ShopBaseService {
         }
 
         return vo;
+    }
+
+    /**
+     * 发放优惠券
+     * @param orderList
+     */
+    public void sendCouponPack(List<VirtualOrderRecord> orderList){
+        orderList.forEach(order->{
+            List<CouponPackVoucherBo> couponList = couponPackVoucherService.getCouponPackVoucherList(order.getVirtualGoodsId(),order.getUserId(),order.getOrderSn());
+            int finishCount = 0;
+            for(CouponPackVoucherBo coupon : couponList){
+                if(coupon.getLastSendTime() != null && DateUtil.TimestampIsNowDay(coupon.getLastSendTime())){
+                    // 说明今天已发送过，校验重复发送
+                    continue;
+                }
+                if(coupon.getGrantCouponNumber() >= coupon.getTotalAmount()){
+                    //这种券发放完成
+                    finishCount++;
+                    continue;
+                }
+
+                //这一轮需要发出去的优惠券数量
+                int sentNum=0;
+                if(coupon.getLastSendTime() == null && coupon.getGrantCouponNumber() <= 0 && coupon.getImmediatelyGrantAmount() > 0){
+                    //立即发放
+                    sentNum = coupon.getImmediatelyGrantAmount();
+                }else{
+                    if(coupon.getImmediatelyGrantAmount() < coupon.getTotalAmount()){
+                        Timestamp nextTime = null;
+                        if(DateUtil.TimestampIsSameDay(coupon.getLastSendTime(),order.getPayTime())){
+                            //立即发放之后的第一次周期发放
+                            Calendar cal = Calendar.getInstance();
+                            switch (coupon.getTimingUnit()){
+                                case CouponPackConstant.TIMING_UNIT_DAY:
+                                    nextTime = DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.DAYS);
+                                    break;
+                                case CouponPackConstant.TIMING_UNIT_WEEK:
+                                    cal.setTime(DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.WEEKS));
+                                    cal.setFirstDayOfWeek(Calendar.MONDAY);
+                                    cal.add(Calendar.DATE, cal.getFirstDayOfWeek() - coupon.getTimingTime());
+                                    nextTime = new Timestamp(cal.getTime().getTime());
+                                    break;
+                                case CouponPackConstant.TIMING_UNIT_MONTH:
+                                    cal.setTime(DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.MONTHS));
+                                    cal.set(Calendar.DATE,coupon.getTimingTime());
+                                    nextTime = new Timestamp(cal.getTime().getTime());
+                                    break;
+                                default:
+                            }
+                        }else{
+                            //不是第一次周期发放
+                            switch (coupon.getTimingUnit()){
+                                case CouponPackConstant.TIMING_UNIT_DAY:
+                                    nextTime = DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.DAYS);
+                                    break;
+                                case CouponPackConstant.TIMING_UNIT_WEEK:
+                                    nextTime = DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.WEEKS);
+                                    break;
+                                case CouponPackConstant.TIMING_UNIT_MONTH:
+                                    nextTime = DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.MONTHS);
+                                    break;
+                                default:
+                            }
+                        }
+                        if(DateUtil.TimestampIsNowDay(nextTime)){
+                            sentNum = (coupon.getGrantCouponNumber() + coupon.getTimingAmount()) > coupon.getTotalAmount() ? coupon.getTotalAmount() - coupon.getGrantCouponNumber() : coupon.getTimingAmount();
+                        }
+                    }
+                }
+
+                //发放优惠券
+                List<Integer> userIds = new ArrayList<>();
+                userIds.add(order.getUserId());
+                String [] couponArray = {String.valueOf(coupon.getVoucherId())};
+                for(int i=0;i<sentNum;i++){
+                    CouponGiveQueueParam newParam = new CouponGiveQueueParam(
+                        getShopId(),userIds , order.getVirtualGoodsId(),couponArray , BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_COUPON_PACK);
+                    saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+                }
+            }
+            if(finishCount == couponList.size()){
+                //说明每种优惠券都发完了
+                couponPackOrderService.updateStillSendFlag(order.getOrderSn(),CouponPackConstant.STILL_SEND_FLAG_FINISH);
+            }
+        });
+
+
     }
 
 

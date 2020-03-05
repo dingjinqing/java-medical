@@ -143,32 +143,40 @@
         <span><em style="color: red;">*</em>{{$t('allGoodsLabel.labelStyle')}}:</span>
         <div style="margin-top: 5px;display: flex;justify-content: space-around;">
           <div style="flex-grow: 1;text-align: center;">
-            <div>图片1</div>
+            <div class="imgWrap" @click="currentData.listPattern=1">
+              <img :src="$imageHost+'/image/admin/new_label_2.jpg'">
+            </div>
             <el-radio
               v-model="currentData.listPattern"
               :label="1"
-            >{{""}}</el-radio>
+            >样式1</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
-            <div>图片2</div>
+            <div class="imgWrap" @click="currentData.listPattern=2">
+              <img :src="$imageHost+'/image/admin/new_label_3.jpg'">
+            </div>
             <el-radio
               v-model="currentData.listPattern"
               :label="2"
-            >{{""}}</el-radio>
+            >样式2</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
-            <div>图片3</div>
+            <div class="imgWrap" @click="currentData.listPattern=3">
+              <img :src="$imageHost+'/image/admin/new_label_1.jpg'">
+            </div>
             <el-radio
               v-model="currentData.listPattern"
               :label="3"
-            >{{""}}</el-radio>
+            >样式3</el-radio>
           </div>
           <div style="flex-grow: 1;text-align: center;">
-            <div>图片4</div>
+            <div class="imgWrap" @click="currentData.listPattern=4">
+              <img :src="$imageHost+'/image/admin/new_label_4.jpg'">
+            </div>
             <el-radio
               v-model="currentData.listPattern"
               :label="4"
-            >{{""}}</el-radio>
+            >样式4</el-radio>
           </div>
         </div>
       </div>
@@ -288,6 +296,12 @@ export default {
 .contentBody {
   background: #fff;
   padding: 10px;
+}
+.imgWrap{
+  cursor: pointer;
+}
+.imgWrap img{
+  width: 85%;
 }
 /deep/.tableClass th {
   background-color: #f5f5f5;

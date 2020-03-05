@@ -122,5 +122,15 @@ public class FormConstant {
      */
     public static final String COUPON_ID = "coupon_id";
 
+    public static final String FORM_CHAR = "Form";
+    public static final String FORM_TEXT = "表单";
+
+    /**
+     * 表单配置项元素
+     */
+    public static final String BG_IMG = "bg_img";
+    public static final String PAGE_NAME = "page_name";
+    public static final String FORM_DEFAULT_BG_IMG = "image/admin/pictorial/form_bg.png";
+
 }
 

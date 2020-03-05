@@ -124,8 +124,8 @@
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 export default {
   components: {
-    ImageDialog: () => import('@/components/admin/imageDalog'),
-    SelectLinks: () => import('@/components/admin/selectLinks')
+    ImageDialog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
+    SelectLinks: () => import('@/components/admin/selectLinks')// 选择链接弹窗
   },
   mixins: [decMixins],
   props: {

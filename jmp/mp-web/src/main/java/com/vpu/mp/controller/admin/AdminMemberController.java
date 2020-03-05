@@ -221,9 +221,9 @@ public class AdminMemberController extends AdminBaseController{
 	 * 	获取用户导出配置信息
 	 */
 	@PostMapping("/export/cfg")
-	public JsonResult getUserExportCfg() {
+	public JsonResult getUserExportCfg(@RequestBody MemberPageListParam param) {
 		logger().info("获取用户导出配置信息");
-		return success(shop().member.userExpSvc.getExportCfg());
+		return success(shop().member.userExpSvc.getExportCfg(param));
 	}
 	
 }

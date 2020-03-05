@@ -51,12 +51,12 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     actCode = options.actCode;
-    // if (options.launch_user_id && options.launch_user_id != "") {
-    //   launch_user_id = options.launch_user_id
-    // } else {
-    //   launch_user_id = ''
-    // }
-    launch_user_id = util.getCache('user_id');
+    if (options.launch_user_id && options.launch_user_id != "") {
+      launch_user_id = options.launch_user_id
+    } else {
+      // launch_user_id = ''
+      launch_user_id = util.getCache('user_id');
+    }
     if (options.launch_id && options.launch_id != "") {
       launch_id = options.launch_id;
     } else {
@@ -70,8 +70,8 @@ global.wxPage({
   // 发起助力
   shareGoods: function (e) {
     var that = this;
-    var form_id = e.detail.formId;
-    var open_id = util.getCache("openid");
+    // var form_id = e.detail.formId;
+    // var open_id = util.getCache("openid");
     // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
     if (promote_info.promoteStatus == -1) {
       launchAct(that);
@@ -162,36 +162,36 @@ global.wxPage({
   // 好友点击助力
   friend_help: function (e) {
     var that = this;
-    if (util.getCache('nickName') == '' && promote_info.promote_condition == 1) {
+    if (util.getCache('nickName') == '' && promote_info.promoteCondition == 1) {
       that.setData({
         has_user: 0
       })
       return false;
     }
-    util.api('/api/wxapp/friend/promote', function (res) {
-      if (res.error == 0) {
-        var add_promote_value = res.content.promote_value;
-        var modal_can_share = res.content.canShare;
-        if (promote_info.canPromote == 0 && promote_info.canShare == 0) {
-          that.setData({
-            promote_fail: 1,
-            is_shares: 0,
-            add_promote_value: add_promote_value,
-            modal_can_share: modal_can_share
-          })
-        } else {
-          that.setData({
-            promote_ok: 1,
-            add_promote_value: add_promote_value,
-            modal_can_share: modal_can_share
-          })
-        }
+    // util.api('/api/wxapp/friend/promote', function (res) {
+    //   if (res.error == 0) {
+    //     var add_promote_value = res.content.promote_value;
+    //     var modal_can_share = res.content.canShare;
+    //     if (promote_info.canPromote == 0 && promote_info.canShare == 0) {
+    //       that.setData({
+    //         promote_fail: 1,
+    //         is_shares: 0,
+    //         add_promote_value: add_promote_value,
+    //         modal_can_share: modal_can_share
+    //       })
+    //     } else {
+    //       that.setData({
+    //         promote_ok: 1,
+    //         add_promote_value: add_promote_value,
+    //         modal_can_share: modal_can_share
+    //       })
+    //     }
 
-      } else {
-        util.showModal('提示', res.message);
-        return false
-      }
-    }, { actCode: actCode, launch_id: launch_id, launch_user_id: launch_user_id })
+    //   } else {
+    //     util.showModal('提示', res.message);
+    //     return false
+    //   }
+    // }, { actCode: actCode, launch_id: launch_id, launch_user_id: launch_user_id })
   },
   // 放弃分享
   forgive_share: function (e) {
@@ -307,7 +307,7 @@ global.wxPage({
         var user_name = e.detail.userInfo.nickName;
         util.setCache("nickName", user_name);
         util.setCache("avatarUrl", user_avatar);
-        if (promote_info.promote_condition == 1 && promote_info.launchFlag == 2 && promote_info.promote_status == 0) {
+        if (promote_info.promoteCondition == 1 && promote_info.launchFlag == 2 && promote_info.promote_status == 0) {
           that.setData({
             has_user: 1
           })
@@ -327,7 +327,7 @@ global.wxPage({
             //   username: user_name,
             //   user_avatar: user_avatar
             // });
-            if (promote_info.promote_condition == 1) {
+            if (promote_info.promoteCondition == 1) {
               that.setData({
                 has_user: 1
               })
@@ -456,8 +456,23 @@ function launchAct(that) {
   util.api("/api/wxapp/promote/launch", function (res) {
     if (res.error == 0) {
       launch_id = res.content.launchId;
+      launch_user_id = res.content.launchUserId;
     } else {
-      util.showModal('提示', res.message);
+      if (res.message == 1) {
+        util.showModal('提示', '活动已停用或删除');
+      } else if(res.message == 2) {
+        util.showModal('提示', '活动库存不足');
+      } else if (res.message == 3) {
+        util.showModal('提示', '活动商品库存不足');
+      } else if (res.message == 4) {
+        util.showModal('提示', '活动未开始');
+      } else if (res.message == 5) {
+        util.showModal('提示', '活动已结束');
+      } else if (res.message == 6) {
+        util.showModal('提示', '您已发起快邀请好友助力吧');
+      } else if (res.message == 7) {
+        util.showModal('提示', '数据入库失败');
+      }
       return false
     }
   }, { actCode: actCode, userId: launch_user_id });

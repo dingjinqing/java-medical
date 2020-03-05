@@ -109,14 +109,17 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         goodsDetailMpBo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideoImg(),false));
 
         // 处理运费信息
+        log.debug("小程序-商品详情-处理运费信息");
         Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
         BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
         goodsDetailMpBo.setDeliverPrice(deliverPrice);
 
         // 判断是否已收藏商品
+        log.debug("小程序-商品详情-判断是否已收藏商品");
         boolean collectedGoods = tailProcessorDao.isCollectedGoods(param.getUserId(), param.getGoodsId());
         goodsDetailMpBo.setIsCollected(collectedGoods);
         //服务承诺
+        log.debug("小程序-商品详情-服务承诺");
         PledgeBo pledgeList = tailProcessorDao.getPledgeList();
         goodsDetailMpBo.setPledgeSwitch(Integer.parseInt(pledgeList.getPledgeSwitch()));
         goodsDetailMpBo.setPledgeList(pledgeList.getPledgeList());

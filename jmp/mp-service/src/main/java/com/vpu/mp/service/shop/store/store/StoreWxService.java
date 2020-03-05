@@ -491,6 +491,7 @@ public class StoreWxService extends ShopBaseService {
                     setOrderStatus(PAY_SUCCESS);
                     setOrderStatusName(PAY_SUCCESS_NAME);
                 }});
+                storeOrderService.storePay2SendScore(storeOrderTran.getStoreOrder());
             }
             if (Objects.isNull(webPayVo.get())) {
                 webPayVo.set(new WebPayVo() {{
@@ -500,10 +501,7 @@ public class StoreWxService extends ShopBaseService {
                 webPayVo.get().setOrderSn(orderSn.get());
             }
         });
-        // TODO 支付完成送积分; 门店买单支付是否返送积分开关 on 1
-//        if (BYTE_ONE.equals(scoreCfgService.getStoreScore())) {
-//            storeOrderService.sendScoreAfterPayDone(storeOrderTran.getStoreOrder());
-//        }
         return webPayVo.get();
     }
+
 }

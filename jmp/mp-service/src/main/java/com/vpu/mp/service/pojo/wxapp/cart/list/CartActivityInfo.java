@@ -114,7 +114,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     @Data
     public static class PurchasePrice{
-
+        /**
+         * 当前活动信息
+         */
+        private String condition;
         /**
          * 当前规则
          */
@@ -130,6 +133,7 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     @Data
     public static class PurchasePriceRule{
+        private String name;
         /**满金额数*/
         private BigDecimal fullPrice;
         /**加价金额数*/

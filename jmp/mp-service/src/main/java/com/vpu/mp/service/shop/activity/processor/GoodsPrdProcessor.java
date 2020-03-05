@@ -61,6 +61,8 @@ public class GoodsPrdProcessor implements Processor,ActivityGoodsListProcessor,G
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
+        log.debug("小程序-商品详情-商品规格processor,规格信息：");
+        log.debug(goodsDetailMpBo.getProducts()==null?"无规格信息":goodsDetailMpBo.getProducts().toString());
         if (!goodsDetailMpBo.getIsDisposedByEs()) {
             List<GoodsSpecProductRecord> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
             List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());

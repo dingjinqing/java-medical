@@ -2,9 +2,7 @@ package com.vpu.mp.service.shop.market.form;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.shop.tables.*;
-import com.vpu.mp.db.shop.tables.records.FormPageRecord;
-import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
-import com.vpu.mp.db.shop.tables.records.FormSubmitListRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -14,19 +12,20 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.image.postertraits.PictorialService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record6;
-import org.jooq.Record7;
+import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +35,7 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static com.vpu.mp.db.shop.tables.Code.CODE;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.*;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
@@ -52,6 +52,8 @@ public class FormStatisticsService extends ShopBaseService {
     QrCodeService qrCodeService;
     @Autowired
     CouponGiveService couponGiveService;
+    @Autowired
+    PictorialService pictorialService;
     /**
      * FORM_PAGE表单删除状态值，删除状态页面不展示
      */
@@ -76,10 +78,10 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 分页结果集
      */
     public PageResult<FormInfoVo> selectFormInfo(FormSearchParam param) {
-        SelectConditionStep<Record7<String, Timestamp, Integer, Byte, Byte, Timestamp, Timestamp>> conditionStep = db()
-            .select(fp.PAGE_NAME, fp.CREATE_TIME, fp.SUBMIT_NUM, fp.STATE.as("status")
+        SelectConditionStep<Record8<Integer, String, Timestamp, Integer, Byte, Byte, Timestamp, Timestamp>> conditionStep = db()
+            .select(fp.PAGE_ID, fp.PAGE_NAME, fp.CREATE_TIME, fp.SUBMIT_NUM, fp.STATE.as("status")
                 , fp.IS_FOREVER_VALID.as("validityPeriod"), fp.START_TIME, fp.END_TIME)
-            .from(fp).where(DSL.trueCondition());
+            .from(fp).where(trueCondition());
         if (param.getStatus() != null) {
             conditionStep = conditionStep.and(fp.STATE.eq(param.getStatus()));
         }
@@ -93,7 +95,7 @@ public class FormStatisticsService extends ShopBaseService {
             conditionStep = conditionStep.and(fp.CREATE_TIME.lessOrEqual(new Timestamp(param.getEndTime().getTime())));
         }
         conditionStep = conditionStep.and(fp.STATE.notEqual(FP_DEL_STATUS));
-        return getPageResult(conditionStep, param.getCurrentPage(), param.getPageRows(), FormInfoVo.class);
+        return getPageResult(conditionStep.orderBy(fp.CREATE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), FormInfoVo.class);
     }
 
     /**
@@ -153,7 +155,69 @@ public class FormStatisticsService extends ShopBaseService {
         vo.setImageUrl(imageUrl);
         vo.setPagePath(QrCodeTypeEnum.FORM.getPathUrl(pathParam));
         return vo;
+    }
 
+    public void getFormPictorialCode(int pageId) {
+        CodeRecord record = db().select().from(CODE)
+            .where(CODE.TYPE.eq((short) 100))
+            .and(CODE.PARAM_ID.eq(String.valueOf(pageId)))
+            .fetchOneInto(CODE);
+
+        generateFormPictorial(pageId);
+    }
+
+    public void generateFormPictorial(int pageId) {
+        // 获取表单信息
+        FormPageRecord record = getFormRecord(pageId);
+        String pageName = record.getPageName();
+        String bgImg = getValueFromFormCfgByKey(record.getFormCfg(), BG_IMG);
+        bgImg = StringUtils.isBlank(bgImg) ? FORM_DEFAULT_BG_IMG : bgImg;
+
+        // 判断是否需要重新生成表单海报
+        Map<String, String> rule = new HashMap<>(2);
+        rule.put(PAGE_NAME, pageName);
+        rule.put(BG_IMG, bgImg);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialFromDb(INTEGER_ZERO, pageId, (byte) 4);
+        if (pictorialService.isNeedNewPictorial(Util.toJson(rule), pictorialRecord)) {
+            log.debug("不需要重新生成表单海报，直接返回db中海报路径");
+//           return [
+//           'is_edit' => 0,
+//               'path' => $pictorial->path,
+//            ];
+        }
+
+    }
+
+    // 从表单配置json串中获取元素value值
+    private String getValueFromFormCfgByKey(String cfg, String key) {
+        if (StringUtils.isBlank(cfg)) {
+            log.info("表单配置信息为空");
+            return StringUtils.EMPTY;
+        }
+        try {
+            JsonNode node = MAPPER.readTree(cfg);
+            JsonNode value = node.get(key);
+            if (Objects.isNull(value)) {
+                log.info("表单配置信息中未找到{}元素", key);
+                return StringUtils.EMPTY;
+            }
+            return value.asText();
+        } catch (IOException e) {
+            log.debug("表单配置信息反序列化失败：{}", ExceptionUtils.getStackTrace(e));
+            return StringUtils.EMPTY;
+        }
+    }
+
+    /**
+     * Gets form record.获取表单记录
+     *
+     * @param pageId the page id
+     * @return the form record
+     */
+    public FormPageRecord getFormRecord(int pageId) {
+        FormPageRecord record = db().selectFrom(fp).where(fp.PAGE_ID.eq(pageId)).fetchOneInto(fp);
+        Assert.notNull(record, JsonResultCode.CODE_DATA_NOT_EXIST, Assert.join(FORM_CHAR, pageId));
+        return record;
     }
 
     /**

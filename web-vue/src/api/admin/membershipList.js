@@ -120,3 +120,22 @@ export function getAllIndustryRequest () {
     data: null
   })
 }
+
+// 获取会员导出信息
+export function getExportCfg (data) {
+  return service({
+    url: '/api/admin/member/export/cfg',
+    method: 'post',
+    data: data
+  })
+}
+
+// 会员导出
+export function exportCfg (data) {
+  return service({
+    url: '/api/admin/member/list/export/new',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}

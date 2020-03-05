@@ -60,12 +60,15 @@
         >
           <div
             class="choose-goods"
-            @click="callGoodsDialog()"
+            @click="callGoodsDialog(false)"
           >
             <img :src="$imageHost+'/image/admin/icon_jia.png'">
             <span>选择商品</span>
           </div>
-          <div class="already-choosed-goods">
+          <div
+            class="already-choosed-goods"
+            @click="callGoodsDialog(true)"
+          >
             <span v-if="ruleForm.exchangGoods.length">已选择商品：{{ruleForm.exchangGoods.length}}件</span>
             <span class="choose-tip">
               最多可选择20件
@@ -79,6 +82,7 @@
       @resultGoodsIds='getGoodsIdFromChoosingGoods'
       :tuneUpChooseGoods='chooseGoodsVisable'
       :chooseGoodsBack='ruleForm.exchangGoods'
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
     />
   </div>
 </template>
@@ -112,12 +116,14 @@ export default {
   },
   data () {
     return {
-      chooseGoodsVisable: false
+      chooseGoodsVisable: false,
+      isOnlyShowChooseGoods: false
     }
   },
   methods: {
-    callGoodsDialog () {
+    callGoodsDialog (only) {
       this.chooseGoodsVisable = !this.chooseGoodsVisable
+      this.isOnlyShowChooseGoods = only
     },
     getGoodsIdFromChoosingGoods (val) {
       console.log('选择适用商品id', val)

@@ -28,11 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
@@ -297,6 +293,8 @@ public class PaymentService extends ShopBaseService {
         // 完成支付
         storeOrder.finishPayCallback(orderInfo, paymentRecord);
         logger().info("门店买单订单统一支付回调SUCCESS完成！");
+        // 支付完送积分
+        storeOrder.storePay2SendScore(orderInfo);
     }
 
     /**

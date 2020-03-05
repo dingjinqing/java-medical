@@ -3,18 +3,16 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.market.fullcut.FullReductionGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.FullReductionGoodsCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.PurchasePriceCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PurchasePricePromotion;
 import com.vpu.mp.service.shop.activity.dao.PurchasePriceProcessorDao;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.Record;
-import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_RULE;
-import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
 
 /**
  * 加价购处理器
@@ -67,7 +64,7 @@ public class PurchasePriceProcessor implements Processor,GoodsDetailProcessor,Ac
         //缓存
         Map<Integer,Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>>> activityCacheMap =new HashMap<>();
         //活动记录
-        Map<Integer,Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> activityMap =new HashMap<>();
+        Map<Integer,PurchasePriceCartBo> activityMap =new HashMap<>();
         //商品活动信息
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> purchaseRulesMap = null;
@@ -95,6 +92,7 @@ public class PurchasePriceProcessor implements Processor,GoodsDetailProcessor,Ac
                         cartPurchasePriceRule.setPurchasePrice(rule.get(PURCHASE_PRICE_RULE.PURCHASE_PRICE));
                         purchasePrice.getPurchasePriceRule().add(cartPurchasePriceRule);
                     });
+                    //设置
                     cartActivityInfo.setPurchasePrice(purchasePrice);
                     goods.getCartActivityInfos().add(cartActivityInfo);
                     //当前商品活动
@@ -103,19 +101,83 @@ public class PurchasePriceProcessor implements Processor,GoodsDetailProcessor,Ac
                             goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
                             goods.setActivityId(cartActivityInfo.getActivityId());
                             //当前生效活动
-                            activityMap.put(key,purchaseRules);
+                            purchasePricePutMap(activityMap, goods, cartActivityInfo);
                         }
                     }
                 });
             }
         }
-        //活动配置
-        activityMap.forEach((k,rules)->{
-
-
-        });
+        //启用的活动配置
+        enabledActivity(activityMap);
         //国际化
+        activityToString(cartBo);
+        //加价购商品校验
+        //TODO 校验
+    }
 
+    /**
+     * 国际化
+     * @param cartBo
+     */
+    private void activityToString(WxAppCartBo cartBo) {
+        for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
+            goods.getCartActivityInfos().forEach(cartActivityInfo -> {
+                if (cartActivityInfo.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE)) {
+                    CartActivityInfo.PurchasePrice purchasePrice = cartActivityInfo.getPurchasePrice();
+                    CartActivityInfo.PurchasePriceRule enabledRule = purchasePrice.getRule();
+                    List<CartActivityInfo.PurchasePriceRule> purchasePriceRule = purchasePrice.getPurchasePriceRule();
+                    enabledRule.setName("满 "+" 加价"+"换购");
+                    purchasePriceRule.forEach(rule->{
+                        rule.setName("满 "+" 加价"+"换购");
+                    });
+                    purchasePrice.setCondition(purchasePrice.getRule().getName());
+                }
+            });
+        }
+    }
 
+    /**
+     * 启用的活动配置
+     * @param activityMap map
+     */
+    private void enabledActivity(Map<Integer, PurchasePriceCartBo> activityMap) {
+        //筛选活动
+        activityMap.forEach((k,purchasePriceCartBo)->{
+            log.info("购物车中的加价购活动id{}",k);
+            BigDecimal moneySums = purchasePriceCartBo.getMoney().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+            CartActivityInfo.PurchasePrice purchasePrice = purchasePriceCartBo.getPurchasePrice();
+            purchasePrice.getPurchasePriceRule().forEach(rule->{
+                if (moneySums.compareTo(rule.getFullPrice())>=0){
+                    if (purchasePrice.getRule()==null||purchasePrice.getRule().getFullPrice().compareTo(rule.getFullPrice())<0){
+                        purchasePrice.setRule(rule);
+                    }
+                }
+            });
+            //没有合适规则,取最小的值
+            if (purchasePrice.getRule()==null){
+                purchasePrice.getPurchasePriceRule().forEach(rule->{
+                    if (purchasePrice.getRule()==null||rule.getFullPrice().compareTo(purchasePrice.getRule().getFullPrice())<0){
+                        purchasePrice.setRule(rule);
+                    }
+                });
+            }
+            log.info("购物车中的满折满减活动id{},启用适合的规则为:满{},加{},",k,purchasePrice.getRule().getFullPrice().toString(),purchasePrice.getRule().getPurchasePrice());
+        });
+    }
+
+    /**
+     * 把活动记录下来
+     * @param activityMap  活动map
+     * @param goods 商品
+     * @param cartActivityInfo activityId
+     */
+    private void purchasePricePutMap(Map<Integer, PurchasePriceCartBo> activityMap, WxAppCartGoods goods, CartActivityInfo cartActivityInfo) {
+        PurchasePriceCartBo priceCartBo = activityMap.get(goods.getExtendId()) != null ? activityMap.get(cartActivityInfo.getActivityId()) : new PurchasePriceCartBo();
+        priceCartBo.getCartId().add(goods.getCartId());
+        priceCartBo.getProductId().add(goods.getProductId());
+        priceCartBo.getNum().add(goods.getCartNumber());
+        priceCartBo.getMoney().add(goods.getGoodsPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
+        priceCartBo.setPurchasePrice(cartActivityInfo.getPurchasePrice());
+        activityMap.put(cartActivityInfo.getActivityId(),priceCartBo);
     }
 }

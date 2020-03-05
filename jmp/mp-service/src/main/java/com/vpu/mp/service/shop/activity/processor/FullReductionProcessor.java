@@ -5,7 +5,6 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.market.fullcut.FullReductionGoodsBo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -13,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.FullReductionGoodsCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
@@ -239,7 +239,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
         List<ValidUserCardBean> validCardList = userCard.userCardDao.getValidCardList(cartBo.getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, UserCardDaoService.CARD_ONLINE);
         List<Integer> cardIds = validCardList.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
         //活动和商品信息
-        Map<Integer, List<FullReductionGoodsBo>> ruleCartIdMap = new HashMap<>();
+        Map<Integer, List<FullReductionGoodsCartBo>> ruleCartIdMap = new HashMap<>();
         Set<CartActivityInfo> cartActivityInfos = new HashSet<>();
         //获取商品可用的活动
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
@@ -272,12 +272,12 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
         //给商品分配规则
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getActivityType()!=null&&goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)&&goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
-                List<FullReductionGoodsBo> fullReductionGoodsBos = ruleCartIdMap.get(goods.getActivityId());
-                fullReductionGoodsBos.forEach(fullReductionGoodsBo -> {
-                    if (fullReductionGoodsBo.getProductId().equals(goods.getProductId())){
+                List<FullReductionGoodsCartBo> fullReductionGoodsBos = ruleCartIdMap.get(goods.getActivityId());
+                fullReductionGoodsBos.forEach(FullReductionGoodsCartBo -> {
+                    if (FullReductionGoodsCartBo.getProductId().equals(goods.getProductId())){
                         goods.getCartActivityInfos().forEach(cartActivityInfo -> {
                             if (cartActivityInfo.getActivityId().equals(goods.getActivityId())){
-                                cartActivityInfo.getFullReduction().setRule(fullReductionGoodsBo.getFullReductionRule());
+                                cartActivityInfo.getFullReduction().setRule(FullReductionGoodsCartBo.getFullReductionRule());
                             }
                         });
                     }
@@ -356,11 +356,11 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
      * @param ruleCartIdMap
      * @param cartActivityInfos
      */
-    private void fullReductionRuleOption(Map<Integer, List<FullReductionGoodsBo>> ruleCartIdMap, Set<CartActivityInfo> cartActivityInfos) {
+    private void fullReductionRuleOption(Map<Integer, List<FullReductionGoodsCartBo>> ruleCartIdMap, Set<CartActivityInfo> cartActivityInfos) {
         //判断商品参与活动信息
-        for (Map.Entry<Integer, List<FullReductionGoodsBo>> entry : ruleCartIdMap.entrySet()) {
+        for (Map.Entry<Integer, List<FullReductionGoodsCartBo>> entry : ruleCartIdMap.entrySet()) {
             Integer ruleId = entry.getKey();
-            List<FullReductionGoodsBo> fullReductionGoodsList = entry.getValue();
+            List<FullReductionGoodsCartBo> fullReductionGoodsList = entry.getValue();
             Optional<CartActivityInfo> rule = cartActivityInfos.stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(ruleId)).findFirst();
             if (rule.isPresent()) {
                 CartActivityInfo cartActivityInfo = rule.get();
@@ -376,7 +376,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                         CartActivityInfo.FullReductionRule first = fullReductionRuleList.stream().findFirst().get();
                         if (first.getAmount() != null && first.getAmount() > 0) {
                             //满件数
-                            int sum = fullReductionGoodsList.stream().mapToInt(FullReductionGoodsBo::getNum).sum();
+                            int sum = fullReductionGoodsList.stream().mapToInt(FullReductionGoodsCartBo::getNum).sum();
                             for (CartActivityInfo.FullReductionRule fullRule : fullReductionRuleList) {
                                 if (fullRule.getAmount() <= sum) {
                                     if (fullReductionRule.getAmount() < sum) {
@@ -389,7 +389,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                                 }
                             }
                         } else {//满金额
-                            BigDecimal moneySums = fullReductionGoodsList.stream().map(FullReductionGoodsBo::getMoney)
+                            BigDecimal moneySums = fullReductionGoodsList.stream().map(FullReductionGoodsCartBo::getMoney)
                                     .reduce(BigDecimal.ZERO, BigDecimal::add);
                             for (CartActivityInfo.FullReductionRule fullRule : fullReductionRuleList) {
                                 if (moneySums.compareTo(fullRule.getFullMoney()) >= 0) {
@@ -408,7 +408,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                         break;
                     default:
                 }
-                for (FullReductionGoodsBo goods : fullReductionGoodsList) {
+                for (FullReductionGoodsCartBo goods : fullReductionGoodsList) {
                     goods.setFullReductionRule(fullReductionRule);
                 }
             }
@@ -416,14 +416,14 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
 
     }
 
-    private void getFullReductionGoodsBo(Map<Integer, List<FullReductionGoodsBo>> ruleCartIdMap, WxAppCartGoods goods) {
-        List<FullReductionGoodsBo> fullGoods = ruleCartIdMap.get(goods.getExtendId()) != null ? ruleCartIdMap.get(goods.getExtendId()) : new ArrayList<>();
-        FullReductionGoodsBo fullReductionGoodsBo =new FullReductionGoodsBo();
-        fullReductionGoodsBo.setCartId(goods.getCartId());
-        fullReductionGoodsBo.setProductId(goods.getProductId());
-        fullReductionGoodsBo.setNum(goods.getCartNumber());
-        fullReductionGoodsBo.setMoney(goods.getGoodsPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
-        fullGoods.add(fullReductionGoodsBo);
+    private void getFullReductionGoodsBo(Map<Integer, List<FullReductionGoodsCartBo>> ruleCartIdMap, WxAppCartGoods goods) {
+        List<FullReductionGoodsCartBo> fullGoods = ruleCartIdMap.get(goods.getExtendId()) != null ? ruleCartIdMap.get(goods.getExtendId()) : new ArrayList<>();
+        FullReductionGoodsCartBo FullReductionGoodsCartBo =new FullReductionGoodsCartBo();
+        FullReductionGoodsCartBo.setCartId(goods.getCartId());
+        FullReductionGoodsCartBo.setProductId(goods.getProductId());
+        FullReductionGoodsCartBo.setNum(goods.getCartNumber());
+        FullReductionGoodsCartBo.setMoney(goods.getGoodsPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
+        fullGoods.add(FullReductionGoodsCartBo);
         ruleCartIdMap.put(goods.getExtendId(), fullGoods);
     }
 

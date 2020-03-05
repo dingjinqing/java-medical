@@ -265,5 +265,6 @@ export const en = {
   allowUseTime: 'Allow Time',
   timeTip: 'Must one',
   workDay: 'workDay',
-  breakDay: 'breakDay'
+  breakDay: 'breakDay',
+  shipTime: ['during', 'year', 'season', 'month', 'week', 'day']
 }

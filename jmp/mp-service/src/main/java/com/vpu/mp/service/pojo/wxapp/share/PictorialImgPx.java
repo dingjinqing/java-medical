@@ -21,7 +21,7 @@ public class PictorialImgPx {
     /**
      * 背景图内边距
      */
-    private Integer bgPadding = 20;
+    private Integer bgPadding = 10;
     private Color defaultFontColor = new Color(85, 85, 85);
     private Integer smallFontSize = 24;
     private Integer mediumFontSize = 30;
@@ -34,11 +34,12 @@ public class PictorialImgPx {
      * 用户头像直径
      */
     private Integer userHeaderDiameter = 96;
+
     /**
      * 用户名开始x,y坐标
      */
     private Integer userNameX = bgPadding + userHeaderDiameter + 10;
-    private Integer userNameY = bgPadding;
+    private Integer userNameY = bgPadding + userHeaderDiameter / 5;
 
     /**
      * 商品shareDoc内容
@@ -49,9 +50,9 @@ public class PictorialImgPx {
      * 商品宽高,位置x,y
      */
     private Integer goodsWidth = bgWidth - 2 * bgPadding;
-    private Integer goodsHeight = bgWidth - 2 * bgPadding;
+    private Integer goodsHeight = bgWidth - 2 * bgPadding-70;
     private Integer goodsStartX = bgPadding;
-    private Integer goodsStartY = bgPadding+headerHeight;
+    private Integer goodsStartY = bgPadding + headerHeight;
     /**
      * 底部高度
      */
@@ -64,7 +65,7 @@ public class PictorialImgPx {
     /**
      * 底部开始Y
      */
-    private Integer bottomStartY =headerHeight+goodsHeight+bgPadding;
+    private Integer bottomStartY = headerHeight + goodsHeight + bgPadding;
     private Color goodsNameColor = new Color(52, 52, 52);
 
     /**
@@ -75,13 +76,15 @@ public class PictorialImgPx {
      * 二维码X
      */
     private Integer qrCodeStartX = bgWidth - (bgPadding + qrCodeWidth);
-    /**商品名称开始Y*/
-    private Integer goodsNameStartY = bottomStartY+10;
+    /**
+     * 商品名称开始Y
+     */
+    private Integer goodsNameStartY = bottomStartY + 10;
 
     /**
      * 底部商品价格开始y,需要根据商品名称行数计算得到
      */
-    private Integer priceY = goodsNameStartY+20;
+    private Integer priceY = goodsNameStartY + 20;
     private Color realPriceColor = new Color(255, 102, 102);
     /**
      * 底部划线价，线的Y
@@ -94,31 +97,52 @@ public class PictorialImgPx {
      * 区域内部填充颜色
      */
     Color customerRectFillColor = new Color(255, 115, 76, 140);
+
     /**
-     * 自定义内容区域
+     * 自定义内容区域,背景边框位置和大小
      */
-    private Integer customerRectHeight = 80;
+    private Integer customerRectHeight = 60;
     private Integer customerRectWidth = goodsWidth;
     private Integer customerRectStartX = bgPadding;
     private Integer customerRectStartY = bgPadding + headerHeight + goodsHeight - customerRectHeight;
-
     /**
-     * 自定内容文字位置x
+     * 自定内容图标宽高和位置
      */
-    private Integer customerTextStartX = customerRectStartX + 20;
-    private Integer customerTextStartY = customerRectStartY + 10;
-    private Integer customerSecondTextStartY = customerTextStartY+10;
-    private Color customerTextFontColor = new Color(255,255,255);
+    private Integer customerIconWidth =40;
+    private Integer customerIconHeight = 30;
+    private Integer customerIconStartX = customerRectStartX+20;
+    private Integer customerIconStartY = customerRectStartY +20;
 
-    public PictorialImgPx(){}
+    private Integer customerTextPadding = 5;
+    private Integer customerTextStartY = customerRectStartY + 5;
+    private Integer customerTextStartX = customerRectStartX+20;
+    /**
+     * @param hasCustomerIcon 是否会有自定义的icon图标
+     * @return 自定义内容文字开始x坐标
+     */
+    public Integer getCustomerTextStartX(boolean hasCustomerIcon) {
+        if (hasCustomerIcon) {
+            return customerIconStartX + customerIconWidth + customerTextPadding;
+        } else {
+            return customerTextStartX;
+        }
+    }
+    private Integer customerSecondTextStartY = customerTextStartY +12;
+    private Color customerTextFontColor = new Color(255, 255, 255);
 
-    public Integer getSmallFontAscent(BufferedImage bufferedImage){
-        return ImageUtil.getTextAscent(bufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN, smallFontSize));
+
+    public PictorialImgPx() {
     }
-    public Integer getMediumFontAscent(BufferedImage bufferedImage){
-        return ImageUtil.getTextAscent(bufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN, mediumFontSize));
+
+    public Integer getSmallFontAscent(BufferedImage bufferedImage) {
+        return ImageUtil.getTextAscent(bufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, smallFontSize));
     }
-    public Integer getLargeFontAscent(BufferedImage bufferedImage){
-        return ImageUtil.getTextAscent(bufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN, largeFontSize));
+
+    public Integer getMediumFontAscent(BufferedImage bufferedImage) {
+        return ImageUtil.getTextAscent(bufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, mediumFontSize));
+    }
+
+    public Integer getLargeFontAscent(BufferedImage bufferedImage) {
+        return ImageUtil.getTextAscent(bufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, largeFontSize));
     }
 }

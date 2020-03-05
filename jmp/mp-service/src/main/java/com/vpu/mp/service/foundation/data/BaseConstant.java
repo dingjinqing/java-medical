@@ -72,6 +72,8 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 23;
     /** 我的奖品 */
     public final static byte ACTIVITY_TYPE_MY_PRIZE = 24;
+    /** 加价购商品*/
+    public final static byte ACTIVITY_TYPE_PURCHASE_GOODS = 97;
     /** 限时降价和等级会员价共存 */
     public final static Byte ACTIVITY_TYPE_GRADE_REDUCE_PRICE = 98;
     /** 代付订单 */
@@ -179,6 +181,63 @@ public final  class  BaseConstant {
      * 9定向发券
      */
     public final static Byte GET_SOURCE_GIVE =9;
+    /**
+     * 10激活发券
+     */
+    public final static Byte GET_SOURCE_ACTIVATION =10;
+    /**
+     * 11好友帮助砍价发券
+     */
+    public final static Byte GET_SOURCE_BARGAIN_CUT =11;
+    /**
+     * 12砍价失败激励
+     */
+    public final static Byte GET_SOURCE_BARGAIN_FAILED =12;
+    /**
+     * 13拼团失败激励
+     */
+    public final static Byte GET_SOURCE_GROUP_BUY_FAILED =13;
+    /**
+     * 14拼团抽奖失败激励
+     */
+    public final static Byte GET_SOURCE_GROUP_DRAW_FAILED =14;
+    /**
+     * 15优惠券礼包
+     */
+    public final static Byte GET_SOURCE_COUPON_PACK =15;
+    /**
+     * 16好友助力成功奖励
+     */
+    public final static Byte GET_SOURCE_PROMOTE_SUCCESS =16;
+    /**
+     * 17好友助力失败奖励
+     */
+    public final static Byte GET_SOURCE_PROMOTE_FAILED =17;
+    /**
+     * 18测评奖励
+     */
+    public final static Byte GET_SOURCE_ASSESS =18;
+    /**
+     * 19开通会员卡
+     */
+    public final static Byte GET_SOURCE_MEMBER_CARD =19;
+    /**
+     * 20评价有礼送券
+     */
+    public final static Byte GET_SOURCE_COMMENT_AWARD =20;
+    /**
+     * 21分享有礼送券
+     */
+    public final static Byte GET_SOURCE_SHARE_AWARD =21;
+    /**
+     * 22分销送券
+     */
+    public final static Byte GET_SOURCE_DISTRIBUTION =22;
+    /**
+     * 23收藏有礼送券
+     */
+    public final static Byte GET_SOURCE_COLLECT =23;
+
 
     //accessMode
     /**

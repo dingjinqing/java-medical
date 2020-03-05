@@ -2,9 +2,12 @@ package com.vpu.mp.service.shop.market.couponpack;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackVoucherBo;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackVoucherVo;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import jodd.util.StringUtil;
 import org.jooq.Record;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,9 @@ import static org.jooq.impl.DSL.sum;
  **/
 @Service
 public class CouponPackVoucherService extends ShopBaseService {
+
+    @Autowired
+    private CouponService couponService;
 
     /**
      * 获得礼包优惠券种类数
@@ -63,5 +69,21 @@ public class CouponPackVoucherService extends ShopBaseService {
             }
         });
         return packList;
+    }
+
+    /**
+     * 按订单发放优惠券时，礼包下的优惠券
+     * @param packId
+     * @param userId
+     * @param orderSn
+     * @return
+     */
+    public List<CouponPackVoucherBo> getCouponPackVoucherList(Integer packId, Integer userId, String orderSn){
+        List<CouponPackVoucherBo> list = db().selectFrom(COUPON_PACK_VOUCHER).where(COUPON_PACK_VOUCHER.ACT_ID.eq(packId)).fetchInto(CouponPackVoucherBo.class);
+        list.forEach(coupon->{
+            coupon.setGrantCouponNumber(couponService.getUserCouponCountByPackId(packId,userId,coupon.getVoucherId(),orderSn));
+            coupon.setLastSendTime(couponService.getLastCouponPackVoucherSendTime(packId,userId,coupon.getVoucherId(),orderSn));
+        });
+        return list;
     }
 }
