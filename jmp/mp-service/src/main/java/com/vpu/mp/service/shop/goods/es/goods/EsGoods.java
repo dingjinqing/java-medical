@@ -334,4 +334,10 @@ public class EsGoods  {
      */
     @EsFiled(name=EsSearchName.DEFAULT_PRD,type = EsFiledTypeConstant.BOOL,doc_values = false)
     private Boolean defPrd;
+
+    /**
+     * 是否分销改价
+     */
+    @EsFiled(name=EsSearchName.CAN_REBATE,type = EsFiledTypeConstant.BYTE,doc_values = false)
+    private Byte canRebate;
 }

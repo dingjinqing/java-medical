@@ -73,7 +73,8 @@ public class EsBaseSearchService extends ShopBaseService {
         FREIGHT_TEMPLATE_ID,
         PRD_JSON,
         BASE_SALE,
-        DEFAULT_PRD
+        DEFAULT_PRD,
+        CAN_REBATE
     };
 
 
@@ -304,7 +305,7 @@ public class EsBaseSearchService extends ShopBaseService {
         QueryBuilder queryBuilder = QueryBuilders.termQuery("_id",shopId.toString()+goodsId);
         SearchSourceBuilder sourceBuilder = SearchSourceBuilder.searchSource()
             .query(queryBuilder)
-            .fetchSource(new String[]{},null);
+            .fetchSource(GOODS_SEARCH_STR,null);
         List<EsGoods> list = searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_INDEX_NAME));
         return list.size()>0?list.get(0):null;
     }
