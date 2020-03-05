@@ -42,6 +42,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.comparator.Comparators;
 
@@ -589,6 +590,17 @@ public class StoreOrderService extends ShopBaseService {
         }
     }
 
+    /**
+     * Store pay 2 send score.支付完成送积分; 门店买单支付是否返送积分开关 on 1
+     *
+     * @param orderInfo the order info
+     */
+    @Async
+    public void storePay2SendScore(StoreOrderRecord orderInfo) {
+        if (BYTE_ONE.equals(scoreCfgService.getStoreScore())) {
+            sendScoreAfterPayDone(orderInfo);
+        }
+    }
 
     /**
      * Finish pay callback.
