@@ -72,7 +72,12 @@ global.wxPage({
   /**
    * 评价
    */
-  click_to_detail () { },
+  click_to_detail () {
+    console.log('查看全部')
+    util.navigateTo({
+      url: '/pages1/appointcomment/appointcomment?serviceId=' + this.data.serviceId
+    })
+  },
   clickComment (e) {
     console.log(e)
     let url = e.currentTarget.dataset.src
