@@ -35,10 +35,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author 李晓冰
  * @date 2019年07月19日
  */
-/**
- * @author Q10Viking
- *
- */
 @Slf4j
 public class ExcelWriter extends AbstractExcelDisposer {
     private Workbook workbook;
@@ -175,7 +171,12 @@ public class ExcelWriter extends AbstractExcelDisposer {
     private Map<String, Class> getDynamicColumnMap(Object obj, Field field) throws Exception {
         field.setAccessible(true);
         Object val = field.get(obj);
+        System.out.println("val: "+ val);
+        System.out.println("obj: "+val);
+        System.out.println("val instanceof Map "+(val instanceof Map));
+        System.out.println(val.getClass().getCanonicalName());
         if (!(val instanceof Map)) {
+        	System.out.println("动态字段类型错误，仅支持Map类型");
             throw new Exception("动态字段类型错误，仅支持Map类型");
         }
         Map map = (Map) val;
