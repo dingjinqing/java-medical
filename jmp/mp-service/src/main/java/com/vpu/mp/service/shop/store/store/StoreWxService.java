@@ -39,7 +39,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -492,7 +491,7 @@ public class StoreWxService extends ShopBaseService {
                     setOrderStatus(PAY_SUCCESS);
                     setOrderStatusName(PAY_SUCCESS_NAME);
                 }});
-                storePay2SendScore(storeOrderTran.getStoreOrder());
+                storeOrderService.storePay2SendScore(storeOrderTran.getStoreOrder());
             }
             if (Objects.isNull(webPayVo.get())) {
                 webPayVo.set(new WebPayVo() {{
@@ -505,15 +504,4 @@ public class StoreWxService extends ShopBaseService {
         return webPayVo.get();
     }
 
-    /**
-     * Store pay 2 send score.支付完成送积分; 门店买单支付是否返送积分开关 on 1
-     *
-     * @param orderInfo the order info
-     */
-    @Async
-    public void storePay2SendScore(StoreOrderRecord orderInfo) {
-        if (BYTE_ONE.equals(scoreCfgService.getStoreScore())) {
-            storeOrderService.sendScoreAfterPayDone(orderInfo);
-        }
-    }
 }

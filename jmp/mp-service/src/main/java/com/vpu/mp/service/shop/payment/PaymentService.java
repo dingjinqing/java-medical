@@ -74,9 +74,6 @@ public class PaymentService extends ShopBaseService {
     @Autowired
     public ServiceOrderService serviceOrderService;
 
-    /*@Autowired
-    public StoreWxService storeWxService;*/
-
     @Autowired
     private StoreOrderService storeOrder;
 
@@ -296,8 +293,8 @@ public class PaymentService extends ShopBaseService {
         // 完成支付
         storeOrder.finishPayCallback(orderInfo, paymentRecord);
         logger().info("门店买单订单统一支付回调SUCCESS完成！");
-        /*// 支付完送积分
-        storeWxService.storePay2SendScore(orderInfo);*/
+        // 支付完送积分
+        storeOrder.storePay2SendScore(orderInfo);
     }
 
     /**
