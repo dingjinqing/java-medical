@@ -31,8 +31,10 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 import static com.vpu.mp.db.shop.Tables.PICTORIAL;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * @author zhaojianqiang
@@ -259,6 +261,35 @@ public class PictorialService extends ShopBaseService {
         }
     }
 
+    /**
+     * Gets pictorial from db.从库中获取海报信息
+     *
+     * @param userId the user id
+     * @param id     the id
+     * @param action the action
+     * @return the pictorial from db
+     */
+    public PictorialRecord getPictorialFromDb(int userId, int id, byte action) {
+        return db().selectFrom(PICTORIAL)
+            .where(PICTORIAL.USER_ID.eq(userId))
+            .and(PICTORIAL.IDENTITY_ID.eq(id))
+            .and(PICTORIAL.ACTION.eq(action))
+            .and(PICTORIAL.DEL_FLAG.eq(BYTE_ZERO))
+            .fetchOneInto(PICTORIAL);
+    }
+
+
+    /**
+     * Is need new pictorial boolean.是否需要创建新海报
+     *
+     * @param rule   the rule
+     * @param record the record
+     * @return the boolean
+     */
+    public boolean isNeedNewPictorial(String rule, PictorialRecord record) {
+        return !Objects.isNull(record) && rule.equals(record.getRule());
+    }
+
 
     /**
      * 根据过了条件查询指定的记录
@@ -300,4 +331,37 @@ public class PictorialService extends ShopBaseService {
     public void updatePictorialDao(PictorialRecord record) {
         db().executeUpdate(record);
     }
+
+    /**
+     * 生成表单海报背景图
+     *
+     * @param userInfo  用户信息
+     * @param shop      店铺配置
+     * @param qrCodeImg 二维码
+     * @param goodsImg  商品图片
+     * @param shareDoc  海报分享文案
+     * @param goodsName 商品名称
+     * @param realPrice 商品原件
+     * @param linePrice 商品划线价
+     * @param imgPx     图片规格信息
+     * @return 通过图片
+     */
+    BufferedImage createFormPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx, boolean needSelfCustomerRect) {
+        //设置背景图
+        BufferedImage bgBufferedImage = new BufferedImage(imgPx.getBgWidth(), imgPx.getBgHeight(), BufferedImage.TYPE_USHORT_555_RGB);
+        ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), null, Color.WHITE);
+
+        // 设置用户头像
+        BufferedImage userAvatarImage = ImageUtil.makeRound(userInfo.getUserAvatarImage(), imgPx.getUserHeaderDiameter());
+        ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getBgPadding(), imgPx.getBgPadding());
+
+        // 设置二维码
+        qrCodeImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeImg);
+        ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getBottomStartY());
+
+        // 设置指纹
+
+        return bgBufferedImage;
+    }
+
 }
