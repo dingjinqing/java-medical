@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.db.shop.tables.records.IntegralMallDefineRecord;
 import com.vpu.mp.db.shop.tables.records.IntegralMallProductRecord;
+import com.vpu.mp.db.shop.tables.records.IntegralMallRecordRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -15,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.integral.IntegralMallMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.integral.IntegralMallPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.ScoreService;
@@ -27,8 +30,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -194,16 +199,93 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         //禁用货到付款、积分支付
         param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
         param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        //初始化输入积分
+        param.setScoreDiscount(0);
         //计算价格
         Map<Integer, IntegralConvertProductVo> productMap = activityInfo.getProductVo().stream().collect(Collectors.toMap(IntegralConvertProductVo::getScore, Function.identity()));
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             IntegralConvertProductVo prd = productMap.get(goods.getProductId());
+            goods.setGoodsPrice(prd.getMoney());
             //实际价格 = 兑换价格 + 积分(积分换算成对应金额)
             goods.setProductPrice(
                 BigDecimalUtil.add(
                     prd.getMoney(),
                     BigDecimalUtil.multiply(new BigDecimal(prd.getScore()), new BigDecimal(scoreCfgService.getScoreProportion()))));
-
+            goods.setGoodsScore(prd.getScore());
+            //后台设置此次需要的积分
+            param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore());
         }
+    }
+
+    /**
+     * 库存更新
+     * @param activityId 活动id
+     * @param updateParam k:prdId;v:num
+     */
+    public void updateStockAndSales(Integer activityId, Map<Integer, Integer> updateParam) throws MpException {
+        logger().info("积分兑换更新活动库存start");
+        Map<Integer, IntegralMallProductRecord> prds = db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(activityId).and(imp.PRODUCT_ID.in(updateParam.values()))).fetchMap(imp.PRODUCT_ID);
+        List<IntegralMallProductRecord> executeParam = new ArrayList<>(prds.size());
+        for (Map.Entry<Integer, Integer> entry : updateParam.entrySet()) {
+            IntegralMallProductRecord prd = prds.get(entry.getKey());
+            if(prd == null) {
+                if(entry.getValue() < 0) {
+                    continue;
+                }else {
+                    logger().error("updateStockAndSales.积分兑换下单,商品不存在，id:{}", entry.getKey());
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, entry.getKey().toString());
+                }
+            }
+            if (entry.getValue() > 0 && prd.getStock() < entry.getValue()) {
+                logger().error("updateStockAndSales.积分兑换下单,库存不足，id:{}", entry.getKey());
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, null);
+            }
+            logger().info("{}积分兑换下单更新活动库存,prdId:{},num:{}", entry.getValue() > 0 ? "下单" : "退款", entry.getKey(), entry.getValue());
+            prd.setStock((short) (prd.getStock() - entry.getValue()));
+            executeParam.add(prd);
+        }
+        db().batchUpdate(executeParam).execute();
+        logger().info("积分兑换更新活动库存end");
+    }
+
+    /**
+     * 积分兑换增加兑换记录
+     * @param order 订单
+     * @param updateParam k:prdId;v:OrderGoodsBo
+     */
+    public void addRecords(OrderInfoRecord order, Map<Integer, OrderGoodsBo> updateParam) {
+        logger().info("积分兑换增加记录start");
+        List<IntegralMallRecordRecord> executeParam = new ArrayList<>(updateParam.size());
+        for (Map.Entry<Integer, OrderGoodsBo> entry : updateParam.entrySet()) {
+            IntegralMallRecordRecord record = db().newRecord(imr);
+            record.setOrderSn(order.getOrderSn());
+            record.setIntegralMallDefineId(order.getActivityId());
+            record.setProductId(entry.getKey());
+            //商品id
+            record.setGoodsId(entry.getValue().getGoodsId());
+            //积分
+            record.setScore(entry.getValue().getGoodsScore());
+            //金额
+            record.setMoney(entry.getValue().getGoodsPrice());
+            record.setNumber(entry.getValue().getGoodsNumber().shortValue());
+            record.setUserId(order.getUserId());
+            executeParam.add(record);
+        }
+        db().batchInsert(executeParam).execute();
+        logger().info("积分兑换增加记录end");
+    }
+
+    /**
+     * 删除记录
+     * @param activityId 活动id
+     * @param updateParam prdId
+     */
+    public void removeRecords(Integer activityId, Set<Integer> updateParam) {
+        logger().info("积分兑换删除记录start");
+        if(activityId == null || CollectionUtils.isEmpty(updateParam)) {
+            return;
+        }
+        int execute = db().update(imr).set(imr.DEL_FLAG, DelFlag.DISABLE_VALUE).where(imr.INTEGRAL_MALL_DEFINE_ID.eq(activityId).and(imr.PRODUCT_ID.in(updateParam))).execute();
+        logger().info("积分兑换删除记录end,受影响行数：{}", execute);
     }
 }

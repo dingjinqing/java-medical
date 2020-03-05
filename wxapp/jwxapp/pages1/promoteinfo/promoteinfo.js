@@ -51,12 +51,13 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     actCode = options.actCode;
-    if (options.launch_user_id && options.launch_user_id != "") {
-      launch_user_id = options.launch_user_id
-    } else {
-      // launch_user_id = ''
-      launch_user_id = util.getCache('user_id');
-    }
+    // if (options.launch_user_id && options.launch_user_id != "") {
+    //   launch_user_id = options.launch_user_id
+    // } else {
+    //   // launch_user_id = ''
+    //   launch_user_id = util.getCache('user_id');
+    // }
+    launch_user_id = util.getCache('user_id');
     if (options.launch_id && options.launch_id != "") {
       launch_id = options.launch_id;
     } else {

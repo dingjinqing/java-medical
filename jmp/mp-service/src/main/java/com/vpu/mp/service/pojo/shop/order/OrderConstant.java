@@ -111,7 +111,7 @@ public class OrderConstant {
     public final static Byte MP_PAY_CODE_COD = 1;
 
     /**小程序支付方式编码->string*/
-    public final static String[] MP_PAY_CODE_TO_STRING ={PAY_CODE_WX_PAY , PAY_CODE_COD};
+    public final static String[] MP_PAY_CODE_TO_STRING ={PAY_CODE_WX_PAY , PAY_CODE_COD, PAY_CODE_SCORE_PAY};
 
 	/**
 	 *	 配送方式
