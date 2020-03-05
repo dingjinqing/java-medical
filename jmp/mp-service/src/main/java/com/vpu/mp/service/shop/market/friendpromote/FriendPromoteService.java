@@ -681,6 +681,15 @@ public class FriendPromoteService extends ShopBaseService {
             .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchOneInto(GoodsInfo.class);
+        String goodsImage = db().select(GOODS.GOODS_IMG)
+            .from(GOODS)
+            .leftJoin(GOODS_SPEC_PRODUCT)
+            .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
+            .fetchOneInto(String.class);
+        if(goodsInfo.getGoodsImg()==null){
+            goodsInfo.setGoodsImg(goodsImage);
+        }
         //图片地址添加域名
         String goodsImg = imageService.getImgFullUrl(goodsInfo.getGoodsImg());
         goodsInfo.setGoodsImg(goodsImg);
