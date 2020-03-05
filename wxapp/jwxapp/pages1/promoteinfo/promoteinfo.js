@@ -162,36 +162,36 @@ global.wxPage({
   // 好友点击助力
   friend_help: function (e) {
     var that = this;
-    if (util.getCache('nickName') == '' && promote_info.promote_condition == 1) {
+    if (util.getCache('nickName') == '' && promote_info.promoteCondition == 1) {
       that.setData({
         has_user: 0
       })
       return false;
     }
-    util.api('/api/wxapp/friend/promote', function (res) {
-      if (res.error == 0) {
-        var add_promote_value = res.content.promote_value;
-        var modal_can_share = res.content.canShare;
-        if (promote_info.canPromote == 0 && promote_info.canShare == 0) {
-          that.setData({
-            promote_fail: 1,
-            is_shares: 0,
-            add_promote_value: add_promote_value,
-            modal_can_share: modal_can_share
-          })
-        } else {
-          that.setData({
-            promote_ok: 1,
-            add_promote_value: add_promote_value,
-            modal_can_share: modal_can_share
-          })
-        }
+    // util.api('/api/wxapp/friend/promote', function (res) {
+    //   if (res.error == 0) {
+    //     var add_promote_value = res.content.promote_value;
+    //     var modal_can_share = res.content.canShare;
+    //     if (promote_info.canPromote == 0 && promote_info.canShare == 0) {
+    //       that.setData({
+    //         promote_fail: 1,
+    //         is_shares: 0,
+    //         add_promote_value: add_promote_value,
+    //         modal_can_share: modal_can_share
+    //       })
+    //     } else {
+    //       that.setData({
+    //         promote_ok: 1,
+    //         add_promote_value: add_promote_value,
+    //         modal_can_share: modal_can_share
+    //       })
+    //     }
 
-      } else {
-        util.showModal('提示', res.message);
-        return false
-      }
-    }, { actCode: actCode, launch_id: launch_id, launch_user_id: launch_user_id })
+    //   } else {
+    //     util.showModal('提示', res.message);
+    //     return false
+    //   }
+    // }, { actCode: actCode, launch_id: launch_id, launch_user_id: launch_user_id })
   },
   // 放弃分享
   forgive_share: function (e) {
@@ -307,7 +307,7 @@ global.wxPage({
         var user_name = e.detail.userInfo.nickName;
         util.setCache("nickName", user_name);
         util.setCache("avatarUrl", user_avatar);
-        if (promote_info.promote_condition == 1 && promote_info.launchFlag == 2 && promote_info.promote_status == 0) {
+        if (promote_info.promoteCondition == 1 && promote_info.launchFlag == 2 && promote_info.promote_status == 0) {
           that.setData({
             has_user: 1
           })
@@ -327,7 +327,7 @@ global.wxPage({
             //   username: user_name,
             //   user_avatar: user_avatar
             // });
-            if (promote_info.promote_condition == 1) {
+            if (promote_info.promoteCondition == 1) {
               that.setData({
                 has_user: 1
               })
