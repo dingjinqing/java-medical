@@ -20,7 +20,7 @@
                     </el-select> -->
                     <span>享受</span>
                     <el-form :model="$data" style="display: inline-block">
-                      <el-form-item prop="shipNum" :rules="shipRule.shipNum">
+                      <el-form-item prop="shipNum" :rules="shipNumRule">
                           <el-input v-model="$data.shipNum" size="small" style="width: 80px;"></el-input>
                       </el-form-item>
                     </el-form>
@@ -106,15 +106,13 @@ export default {
       shipTimeOptVal: [1, 2, 3, 4, 5, 6],
       // 校验规则
       shipNum: null,
-      shipRule: {
-        shipNum: [
-          {
-            required: true,
-            message: '请输入有效值',
-            trigger: 'blur'
-          }
-        ]
-      }
+      shipNumRule: [
+        {
+          required: true,
+          message: '请输入有效值'
+          // trigger: 'blur'
+        }
+      ]
 
     }
   },
