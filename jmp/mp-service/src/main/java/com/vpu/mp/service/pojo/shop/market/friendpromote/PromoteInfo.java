@@ -64,7 +64,7 @@ public class PromoteInfo {
     /** 活动结束时间 */
     private Timestamp endTime;
     /** 剩余秒数 */
-    private Integer surplusSecond;
+    private Long surplusSecond;
     /** 助力总值 */
     private Integer hasPromoteValue;
     /** 发起id */

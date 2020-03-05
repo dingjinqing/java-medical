@@ -1038,22 +1038,22 @@ public class FriendPromoteService extends ShopBaseService {
         long secEndTime = promoteInfo.getEndTime().getTime();
         //如果助力进度是完成待领取
         if (promoteInfo.getPromoteStatus()==1){
-            Integer sec = promoteDurationSec(promoteInfo.getLaunchLimitUnit(),promoteInfo.getLaunchLimitDuration());
-            Integer surplusSecond = (int)launchInfo.getCreateTime().getTime()+sec*1000-(int)DateUtil.getLocalDateTime().getTime();
+            Long sec = promoteDurationSec(promoteInfo.getLaunchLimitUnit(),promoteInfo.getLaunchLimitDuration());
+            Long surplusSecond = launchInfo.getCreateTime().getTime()+sec*1000-DateUtil.getLocalDateTime().getTime();
             promoteInfo.setSurplusSecond(surplusSecond>0?surplusSecond/1000:0);
         }
         //活动进行中 助力未开始
         else if (promoteInfo.getPromoteStatus()==0&&promoteInfo.getActStatus()==1){
-            long secDeadTime = 24*60*60;
+            long secDeadTime = 24*60*60*1000;
             long secLaunchTime = launchInfo.getLaunchTime().getTime();
             if (secEndTime<secDeadTime+secLaunchTime){
-                promoteInfo.setSurplusSecond(((int)secEndTime-(int)DateUtil.getLocalDateTime().getTime())/1000);
+                promoteInfo.setSurplusSecond((secEndTime-DateUtil.getLocalDateTime().getTime())/1000);
             }else {
-                promoteInfo.setSurplusSecond(((int)(secDeadTime+secLaunchTime)-(int)DateUtil.getLocalDateTime().getTime())/1000);
+                promoteInfo.setSurplusSecond((secDeadTime+secLaunchTime-DateUtil.getLocalDateTime().getTime())/1000);
             }
         }
         else {
-            promoteInfo.setSurplusSecond(promoteInfo.getActStatus()==1?((int)secEndTime-(int)DateUtil.getLocalDateTime().getTime())/1000:0);
+            promoteInfo.setSurplusSecond(promoteInfo.getActStatus()==1?(secEndTime-DateUtil.getLocalDateTime().getTime())/1000:0);
         }
     }
 
@@ -1063,7 +1063,7 @@ public class FriendPromoteService extends ShopBaseService {
      * @param duration 持续时长
      * @return second
      */
-    public Integer promoteDurationSec(Byte unit,Integer duration){
+    public Long promoteDurationSec(Byte unit,Integer duration){
         Integer sec ;
         switch (unit){
             //小时
@@ -1082,7 +1082,7 @@ public class FriendPromoteService extends ShopBaseService {
                 sec = 0;
                 break;
         }
-        return sec;
+        return sec.longValue();
     }
 
     /**
@@ -1130,6 +1130,8 @@ public class FriendPromoteService extends ShopBaseService {
                 GoodsInfo goodsInfo = getGoodsInfo(item.getFpRewardContent().getGoodsIds());
                 goodsInfo.setMarketPrice(item.getRewardType()==ONE?item.getFpRewardContent().getMarketPrice():BigDecimal.ZERO);
                 goodsInfo.setMarketStore(item.getFpRewardContent().getMarketStore());
+                logger().info("当前活动id："+item.getId());
+                logger().info("其他活动商品信息："+goodsInfo);
                 //设置库存
                 goodsInfo.setMarketStore(goodsInfo.getGoodsStore()>goodsInfo.getMarketStore()?goodsInfo.getMarketStore():goodsInfo.getGoodsStore());
                 goodsInfo.setMarketStore(goodsInfo.getMarketStore()>receiveNum?goodsInfo.getMarketStore()-receiveNum:0);
@@ -1200,6 +1202,37 @@ public class FriendPromoteService extends ShopBaseService {
         }
         //活动状态：0未开始，1进行中，2已结束
         promoteInfo.setActStatus(getActStatus(param.getActCode()));
+        //需要被助力申请信息
+        FriendPromoteLaunchRecord launchInfo = getLaunchInfo(param.getLaunchId(),null,null);
+        if (launchInfo==null){
+            //返回参数错误
+            return;
+        }
+        Integer launchUserId =launchInfo.getUserId();
+        //设置助力进度：-1未发起，0助力中，1助力完成待领取，2助力完成已领取，3助力未领取失效，4助力未完成失败
+        promoteInfo.setPromoteStatus(launchInfo!=null?launchInfo.getPromoteStatus():-1);
+        //设置已被助力总次数
+        promoteInfo.setHasPromoteTimes(0);
+        promoteInfo.setHasPromoteTimes(getHasPromoteTimes(launchInfo.getId(),null,null,null));
+        //是否可以继续助力
+        CanPromote canPromote = canPromote(promoteInfo,promoteInfo.getHasPromoteTimes(),param.getUserId(),param.getLaunchId());
+        if (canPromote!=null&&canPromote.getCode()==0){
+            //返回canPromote.getMsg()
+            return;
+        }
+        //助力总值
+        Integer hasPromoteValue = hasPromoteValue(param.getLaunchId());
+        //获取每次助力值
+    }
+
+    /**
+     * 获取每次助力值
+     * @param promoteInfo 助力信息
+     * @param hasPromoteTimes 已助力次数
+     * @param hasPromoteValue 已获得的助力值
+     */
+    public void perPromoteValue(PromoteInfo promoteInfo,Integer hasPromoteTimes,Integer hasPromoteValue){
+
     }
 
 }

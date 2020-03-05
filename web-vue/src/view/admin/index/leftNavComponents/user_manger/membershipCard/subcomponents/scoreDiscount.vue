@@ -13,7 +13,10 @@
         class="discountItem first"
       >
         <div class="discountDiv equity">
-          <el-checkbox v-model="ruleForm.powerDiscount" @change="checkForPowerDiscount">
+          <el-checkbox
+            v-model="ruleForm.powerDiscount"
+            @change="checkForPowerDiscount"
+          >
             {{ $t('memberCard.memberDiscount') }}
           </el-checkbox>
           <el-input-number
@@ -51,15 +54,18 @@
             v-for="(item,index) in noneBlockDiscArr"
             :key="index"
             class="noneBlockList"
-            @click="handleToAddGoods(index)"
           >
-            <div class="noneBlockLeft">
+            <div
+              class="noneBlockLeft"
+              @click="handleToAddGoods(index, false)"
+            >
               <img :src="loadAddSymbol()">
               {{item.name}}
             </div>
             <div
               v-if="item.num"
               class="noneBlockRight"
+              @click="handleToAddGoods(index, true)"
             >
               {{ item.info }}：{{item.num}}{{ item.unit  }}
             </div>
@@ -73,6 +79,7 @@
       @resultGoodsIds='initGoodsId'
       :tuneUpChooseGoods='goodsDialogVisiable'
       :chooseGoodsBack='ruleForm.choosedGoodsId'
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
     ></ChoosingGoods>
 
     <!--选择商家,平台分类弹窗-->
@@ -200,7 +207,8 @@ export default {
         discount: [
           { validator: validateDiscount, required: true, trigger: 'blur' }
         ]
-      }
+      },
+      isOnlyShowChooseGoods: false
     }
   },
   created () {
@@ -233,12 +241,12 @@ export default {
     loadAddSymbol () {
       return this.$imageHost + '/image/admin/icon_jia.png'
     },
-    handleToAddGoods (type) {
+    handleToAddGoods (type, only) {
       console.log(type, typeof type)
       switch (type) {
         case this.goodsType:
           console.log('添加商品')
-          this.showAddGoodsDialog()
+          this.showAddGoodsDialog(only)
           break
         case this.storeType:
           console.log('添加商家')
@@ -254,8 +262,9 @@ export default {
           break
       }
     },
-    showAddGoodsDialog () {
+    showAddGoodsDialog (only) {
       this.goodsDialogVisiable = !this.goodsDialogVisiable
+      this.isOnlyShowChooseGoods = only
     },
     showAddStoreDialog () {
       this.currentClassType = this.storeType
@@ -320,7 +329,6 @@ export default {
           width: 100%;
         }
       }
-
     }
     .equity {
       span {

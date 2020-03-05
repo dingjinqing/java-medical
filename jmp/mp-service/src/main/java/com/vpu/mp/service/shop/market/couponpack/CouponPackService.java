@@ -420,8 +420,8 @@ public class CouponPackService extends ShopBaseService {
         }
         vo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         vo.setScoreProportion(memberService.score.scoreCfgService.getScoreProportion());
-        vo.setIsShowserviceTerms(shopCommonConfigService.getServiceTerms());
-        if(vo.getIsShowserviceTerms() == 1){
+        vo.setIsShowServiceTerms(shopCommonConfigService.getServiceTerms());
+        if(vo.getIsShowServiceTerms() == 1){
             vo.setServiceChoose(tradeService.getServiceChoose());
             vo.setServiceName(tradeService.getServiceName());
             vo.setServiceDocument(tradeService.getServiceDocument());
@@ -441,7 +441,8 @@ public class CouponPackService extends ShopBaseService {
         List<CouponPackVoucherVo> packList = couponPackVoucherService.getCouponPackVoucherList(param.getPackId());
         vo.setOrderGoods(packList);
         if(couponPackRecord.getAccessMode().equals(CouponPackConstant.ACCESS_MODE_SCORE)){
-            vo.setOrderAmount(couponPackRecord.getAccessCost().divide(BigDecimal.valueOf(vo.getScoreProportion()),0,BigDecimal.ROUND_FLOOR));
+            //vo.setOrderAmount(couponPackRecord.getAccessCost().divide(BigDecimal.valueOf(vo.getScoreProportion()),0,BigDecimal.ROUND_FLOOR));
+            vo.setOrderAmount(BigDecimal.ZERO);
             vo.setMoneyPaid(BigDecimal.ZERO);
         }else {
             vo.setOrderAmount(couponPackRecord.getAccessCost());
