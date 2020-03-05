@@ -546,7 +546,8 @@ public class CouponPackService extends ShopBaseService {
                 String [] couponArray = {String.valueOf(coupon.getVoucherId())};
                 for(int i=0;i<sentNum;i++){
                     CouponGiveQueueParam newParam = new CouponGiveQueueParam(
-                        getShopId(),userIds , order.getVirtualGoodsId(),couponArray , BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_COUPON_PACK);
+                        getShopId(),userIds , order.getVirtualGoodsId(),couponArray , BaseConstant.ACCESS_MODE_COUPON_PACK, BaseConstant.GET_SOURCE_COUPON_PACK);
+                    newParam.setAccessOrderSn(order.getOrderSn());
                     saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
                 }
             }
