@@ -232,13 +232,10 @@ public class PreSalePictorialService extends ShopBaseService {
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,true);
 
         //定金膨胀文字
-        String groupDrawText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_SHARE_INFO, "messages");
-        int rectWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getCustomerTextStartX(), imgPx.getCustomerSecondTextStartY(), groupDrawText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor(), null, imgPx.getCustomerTextFontColor());
-
+        String preSaleText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_SHARE_INFO, "messages");
         // 定金：33.55
-        String depositPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_DEPOSIT, "messages")+param.getDepositPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        int depositPriceTextStartX = imgPx.getCustomerTextStartX()+rectWidth+10;
-        ImageUtil.addFont(bgBufferedImage,depositPriceText,ImageUtil.SourceHanSansCN(Font.PLAIN,imgPx.getLargeFontSize()),depositPriceTextStartX,imgPx.getCustomerTextStartY(),imgPx.getCustomerTextFontColor(),false);
+        String depositPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PRESALE_DEPOSIT, null,"messages",param.getDepositPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,preSaleText,depositPriceText,null,true,imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);

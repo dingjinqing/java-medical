@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -217,26 +216,21 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         // 拼装背景图
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx, false);
 
+        BufferedImage iconImage;
         // 拼装价值限时降价图片和商品价格
         try (InputStream firstSpecialIconStream = Util.loadFile(FIRST_SPECIAL_BG_IMG)) {
-            BufferedImage reduceIconBufferImg = ImageIO.read(firstSpecialIconStream);
-            ImageUtil.addTwoImage(bgBufferedImage, reduceIconBufferImg, imgPx.getBgPadding(), imgPx.getPriceY());
-
-            int realPriceStartX = imgPx.getBgPadding() + reduceIconBufferImg.getWidth() + 20;
-            int realPriceHeight = imgPx.getLargeFontAscent(bgBufferedImage);
-            String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferedImage,realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - realPriceHeight / 4, imgPx.getRealPriceColor(), false);
-            int realPriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()),realPriceText);
-
-            int linePriceStartX = realPriceStartX+realPriceTextWidth+20;
-            String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFontWithLine(bgBufferedImage,linePriceStartX,imgPx.getPriceY(),linePriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()),imgPx.getLinePriceColor());
-
+             iconImage = ImageIO.read(firstSpecialIconStream);
         } catch (IOException e) {
             pictorialLog("pictorial", "装载首单特惠图标失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return;
         }
+
+        String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        // 自定义区域添加内容
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,iconImage,realPriceText,linePriceText,true,imgPx);
+
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
