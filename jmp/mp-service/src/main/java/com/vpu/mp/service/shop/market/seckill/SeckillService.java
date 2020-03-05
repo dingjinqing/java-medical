@@ -297,7 +297,7 @@ public class SeckillService extends ShopBaseService{
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
             .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
-            .groupBy(SEC_KILL_DEFINE.GOODS_ID)
+            .groupBy(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)
             .fetchMap(SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
     }
 
