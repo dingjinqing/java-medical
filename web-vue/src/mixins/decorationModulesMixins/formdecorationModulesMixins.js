@@ -133,6 +133,53 @@ export default {
             'rich_text': ''
           }
           break
+        case 13: // 图片广告模块
+          obj = {
+            'module_name': 'm_image_small',
+            'title': '',
+            'title_link': '',
+            'img_url': '',
+            'is_preview': '0'
+          }
+          break
+        case 14: // 文本模块
+          obj = {
+            'module_name': 'm_text',
+            'title': '',
+            'fonts_size': '2',
+            'fonts_color': '#333333',
+            'bgs_color': '#ffffff',
+            'show_pos': '1',
+            'title_link': ''
+          }
+          break
+        case 15: // 辅助线模块
+          obj = {
+            'module_name': 'm_dashed_line'
+          }
+          break
+        case 16: // 空白模块
+          obj = {
+            'module_name': 'm_blank',
+            'blank_height': 10
+          }
+          break
+        case 17: // 电话模块
+          obj = {
+            'module_name': 'm_phone',
+            'title': 'zzzzz',
+            'show_type': '0',
+            'sps_icon': '',
+            'align_type': '0',
+            'color': '#000000',
+            'background_color': '#ffffff'
+          }
+          break
+        case 18: // 公众号模块
+          obj = {
+            'module_name': 'm_official_accounts'
+          }
+          break
       }
       console.log(obj)
       return obj

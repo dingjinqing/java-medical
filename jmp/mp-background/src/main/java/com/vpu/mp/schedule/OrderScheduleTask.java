@@ -132,4 +132,16 @@ public class OrderScheduleTask {
             saas.getShopApp(shop.getShopId()).shopTaskService.prizeTaskService.closePrizeGoods();
         });
     }
+
+    /**
+     * 优惠券礼包订单自动发券
+     * 每一天执行一次
+     */
+    @Scheduled(cron = "0 01 01 * * ?")
+    public void monitorCouponPackOrders() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)->{
+            saas.getShopApp(r.getShopId()).shopTaskService.couponPackTaskService.monitorCouponPackOrders();
+        });
+    }
 }

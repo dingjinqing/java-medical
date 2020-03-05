@@ -97,7 +97,7 @@ public class BargainTaskService extends ShopBaseService {
                 couponBargainRecords.forEach((bargainId,recordList) -> {
                     //发放优惠券
                     CouponGiveQueueParam newParam = new CouponGiveQueueParam(
-                        getShopId(), recordList.stream().map(Record4::value2).collect(toList()), bargainId, recordList.get(0).value4().split(","), BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
+                        getShopId(), recordList.stream().map(Record4::value2).collect(toList()), bargainId, recordList.get(0).value4().split(","), BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_BARGAIN_FAILED);
                     //队列异步发放
                     saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
                 });

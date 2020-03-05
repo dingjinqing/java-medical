@@ -22,17 +22,14 @@ import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
+import com.vpu.mp.service.shop.store.store.StoreWxService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
@@ -77,6 +74,9 @@ public class PaymentService extends ShopBaseService {
      */
     @Autowired
     public ServiceOrderService serviceOrderService;
+
+    @Autowired
+    public StoreWxService storeWxService;
 
     @Autowired
     private StoreOrderService storeOrder;
@@ -297,6 +297,8 @@ public class PaymentService extends ShopBaseService {
         // 完成支付
         storeOrder.finishPayCallback(orderInfo, paymentRecord);
         logger().info("门店买单订单统一支付回调SUCCESS完成！");
+        // 支付完送积分
+        storeWxService.storePay2SendScore(orderInfo);
     }
 
     /**

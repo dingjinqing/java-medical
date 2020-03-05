@@ -303,5 +303,6 @@ export const cn = {
   allowUseTime: '允许适用时间',
   timeTip: '至少选择一项使用时间',
   workDay: '工作日',
-  breakDay: '双休日'
+  breakDay: '双休日',
+  shipTime: ['会员卡有效期内', '每年', '每季', '每月', '每周', '每日']
 }

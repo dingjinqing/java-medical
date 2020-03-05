@@ -9,8 +9,21 @@
       :class="activeBorder?'activeBorder':'noBoderColor'"
     >
       <!--模块编辑区-->
-      <div class="richText">
-        <div v-html="modulesShowData.rich_text?modulesShowData.rich_text:$t('textModule.richText')">
+      <div class="officialAccount">
+        <p>{{$t('shopNotices.weiboOperation')}}</p>
+        <div class="content">
+          <div class="left">
+            <div class="headPortrait">
+              <img :src="$imageHost+'/image/admin/head_icon.png'">
+            </div>
+            <div class="tips">
+              <span style="color:#000;font-size:14px">{{$t('shopNotices.weiboService')}}</span>
+              <span style="color:#979797;font-size:12px">{{$t('shopNotices.officialAccount')}}slogen</span>
+            </div>
+          </div>
+          <div class="right">
+            {{$t('shopNotices.follow')}}
+          </div>
         </div>
       </div>
       <!--模块编辑区结束-->
@@ -155,16 +168,42 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/style/admin/formdecorationModules.scss"; // 模块公共
-
-.richText {
-  padding: 10px;
-  word-break: break-all;
-  white-space: nowrap;
-  overflow-x: hidden;
-
-  div {
-    width: 300px;
-    overflow: hidden;
+.officialAccount {
+  height: 80px;
+  padding: 5px;
+  p {
+    font-size: 13px;
+    color: #cdcdcd;
+  }
+  .content {
+    display: flex;
+    justify-content: space-between;
+    .left {
+      display: flex;
+      .headPortrait {
+        margin: 10px 5px 0 0;
+        img {
+          border-radius: 50%;
+        }
+      }
+      .tips {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 34px;
+        margin-top: 14px;
+      }
+    }
+    .right {
+      border: 1px solid #38b641;
+      float: right;
+      padding: 0 8px;
+      margin-top: 30px;
+      border-radius: 4px;
+      color: #38b641;
+      height: 20px;
+      line-height: 20px;
+    }
   }
 }
 </style>

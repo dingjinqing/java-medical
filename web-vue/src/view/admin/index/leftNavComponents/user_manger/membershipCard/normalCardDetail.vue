@@ -36,6 +36,10 @@
             @input="initCardCouponCfgData"
             ref="cardCouponCfgData"
           ></cardCouponCfg>
+          <!-- 包邮 -->
+          <!-- <cardFreeshipCfg v-bind.sync="freeship">
+
+          </cardFreeshipCfg> -->
           <cardEffectTime
             :val="cardEffectTime"
             @input="initCardEffectTimeData"
@@ -114,6 +118,9 @@ export default {
     ),
     cardActiveCfg: () => import(
       './subcomponents/cardActiveCfg'
+    ),
+    cardFreeshipCfg: () => import(
+      './subcomponents/cardFreeshipCfg'
     )
   },
   computed: {
@@ -244,6 +251,11 @@ export default {
         cardEffectTime: cardEffectTimeTmp,
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
+      },
+      // 包邮信息
+      freeship: {
+        num: 0,
+        type: 3
       }
     }
   },

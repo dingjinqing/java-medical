@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class GoodsLabelPageListVo extends GoodsLabelBase{
+    private Short listPattern;
     private Integer goodsNum;
     private Timestamp updateTime;
 }

@@ -200,6 +200,7 @@ export default {
     padding-left: 100px;
     .coupon-info {
       color: #9d9d9d;
+      margin-left: 25px;
     }
     .coupon-error-tip{
       color: #F56C6C;

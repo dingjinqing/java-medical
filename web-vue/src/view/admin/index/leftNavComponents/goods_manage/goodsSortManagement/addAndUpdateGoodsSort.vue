@@ -222,7 +222,7 @@ export default {
       goodsSortDataFirst: {
         sortId: null,
         sortName: null,
-        first: null,
+        first: 1,
         firstBind: null,
         imgLink: null,
         sortImg: null,
@@ -232,7 +232,7 @@ export default {
         firstSortId: null,
         sortId: null,
         sortName: null,
-        first: null,
+        first: 1,
         firstBind: null,
         sortImg: null,
         sortImgObj: null
@@ -371,7 +371,7 @@ export default {
         formData.sortName = this.goodsSortDataFirst.sortName
         formData.level = this.level
         formData.parentId = 0
-        formData.first = this.goodsSortDataFirst.first || 0
+        formData.first = this.goodsSortDataFirst.first || 1
         formData.sortImg = this.goodsSortDataFirst.sortImgObj === null ? null : this.goodsSortDataFirst.sortImgObj.imgPath
         formData.imgLink = this.goodsSortDataFirst.imgLink
       } else {
@@ -382,7 +382,7 @@ export default {
         }
         formData.sortName = this.goodsSortDataSecond.sortName
         formData.level = this.level
-        formData.first = this.goodsSortDataSecond.first || 0
+        formData.first = this.goodsSortDataSecond.first || 1
         formData.sortImg = this.goodsSortDataSecond.sortImgObj === null ? null : this.goodsSortDataSecond.sortImgObj.imgPath
       }
       return formData

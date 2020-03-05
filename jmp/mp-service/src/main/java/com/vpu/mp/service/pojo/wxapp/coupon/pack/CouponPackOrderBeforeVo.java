@@ -76,7 +76,7 @@ public class CouponPackOrderBeforeVo {
     private String memberCardNo;
 
     /**服务条款_展示开关*/
-    private Byte isShowserviceTerms;
+    private Byte isShowServiceTerms;
     /**服务条款_首次是否默认勾选*/
     private Byte serviceChoose;
     /**服务条款_服务条款名称*/
