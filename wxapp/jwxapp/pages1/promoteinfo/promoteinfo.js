@@ -51,12 +51,12 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     actCode = options.actCode;
-    // if (options.launch_user_id && options.launch_user_id != "") {
-    //   launch_user_id = options.launch_user_id
-    // } else {
-    //   launch_user_id = ''
-    // }
-    launch_user_id = util.getCache('user_id');
+    if (options.launch_user_id && options.launch_user_id != "") {
+      launch_user_id = options.launch_user_id
+    } else {
+      // launch_user_id = ''
+      launch_user_id = util.getCache('user_id');
+    }
     if (options.launch_id && options.launch_id != "") {
       launch_id = options.launch_id;
     } else {
@@ -456,8 +456,23 @@ function launchAct(that) {
   util.api("/api/wxapp/promote/launch", function (res) {
     if (res.error == 0) {
       launch_id = res.content.launchId;
+      launch_user_id = res.content.launchUserId;
     } else {
-      util.showModal('提示', res.message);
+      if (res.message == 1) {
+        util.showModal('提示', '活动已停用或删除');
+      } else if(res.message == 2) {
+        util.showModal('提示', '活动库存不足');
+      } else if (res.message == 3) {
+        util.showModal('提示', '活动商品库存不足');
+      } else if (res.message == 4) {
+        util.showModal('提示', '活动未开始');
+      } else if (res.message == 5) {
+        util.showModal('提示', '活动已结束');
+      } else if (res.message == 6) {
+        util.showModal('提示', '您已发起快邀请好友助力吧');
+      } else if (res.message == 7) {
+        util.showModal('提示', '数据入库失败');
+      }
       return false
     }
   }, { actCode: actCode, userId: launch_user_id });
