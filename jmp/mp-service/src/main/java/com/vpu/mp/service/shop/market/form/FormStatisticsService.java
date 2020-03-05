@@ -24,9 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record6;
-import org.jooq.Record7;
+import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,10 +78,10 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 分页结果集
      */
     public PageResult<FormInfoVo> selectFormInfo(FormSearchParam param) {
-        SelectConditionStep<Record7<String, Timestamp, Integer, Byte, Byte, Timestamp, Timestamp>> conditionStep = db()
-            .select(fp.PAGE_NAME, fp.CREATE_TIME, fp.SUBMIT_NUM, fp.STATE.as("status")
+        SelectConditionStep<Record8<Integer, String, Timestamp, Integer, Byte, Byte, Timestamp, Timestamp>> conditionStep = db()
+            .select(fp.PAGE_ID, fp.PAGE_NAME, fp.CREATE_TIME, fp.SUBMIT_NUM, fp.STATE.as("status")
                 , fp.IS_FOREVER_VALID.as("validityPeriod"), fp.START_TIME, fp.END_TIME)
-            .from(fp).where(DSL.trueCondition());
+            .from(fp).where(trueCondition());
         if (param.getStatus() != null) {
             conditionStep = conditionStep.and(fp.STATE.eq(param.getStatus()));
         }
@@ -96,7 +95,7 @@ public class FormStatisticsService extends ShopBaseService {
             conditionStep = conditionStep.and(fp.CREATE_TIME.lessOrEqual(new Timestamp(param.getEndTime().getTime())));
         }
         conditionStep = conditionStep.and(fp.STATE.notEqual(FP_DEL_STATUS));
-        return getPageResult(conditionStep, param.getCurrentPage(), param.getPageRows(), FormInfoVo.class);
+        return getPageResult(conditionStep.orderBy(fp.CREATE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), FormInfoVo.class);
     }
 
     /**
