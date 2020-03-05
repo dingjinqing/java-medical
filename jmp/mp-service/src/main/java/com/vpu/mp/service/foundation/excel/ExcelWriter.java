@@ -170,19 +170,21 @@ public class ExcelWriter extends AbstractExcelDisposer {
      */
     private Map<String, Class> getDynamicColumnMap(Object obj, Field field) throws Exception {
         log.info("-------进入方法-------");
-        System.out.println(obj);
+        log.info(""+obj);
     	field.setAccessible(true);
         log.info("--------是否执行---------");
         Object val = field.get(obj);
-        System.out.println("val: "+ val);
-        System.out.println("obj: "+val);
-        System.out.println("val instanceof Map "+(val instanceof Map));
-        System.out.println(val.getClass().getCanonicalName());
+        log.info("val: "+ val);
+        log.info("obj: "+val);
+        log.info("val instanceof Map "+(val instanceof Map));
+        log.info(val.getClass().getCanonicalName());
         if (!(val instanceof Map)) {
-        	System.out.println("动态字段类型错误，仅支持Map类型");
+        	log.info("动态字段类型错误，仅支持Map类型");
             throw new Exception("动态字段类型错误，仅支持Map类型");
         }
         Map map = (Map) val;
+        log.info("Map:"+map);
+        log.info("Map:"+map.size());
         Map<String, Class> returnMap = new LinkedHashMap<>(map.size());
         for (Object o : map.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
@@ -220,7 +222,7 @@ public class ExcelWriter extends AbstractExcelDisposer {
         Map<String, Class> dynamicColumnMap = null;
         try {
         	log.info("-----------开始处理动态字段---------------");
-        	System.out.println("size: "+dataArray.size()+" val "+val);
+        	log.info("size: "+dataArray.size()+" val "+val);
             dynamicColumnMap = getDynamicColumnMap(val, dynamicField);
         } catch (Exception e) {
             log.debug("excel导出动态列头-动态内容字段读取异常：" + e.getMessage());
