@@ -1130,6 +1130,8 @@ public class FriendPromoteService extends ShopBaseService {
                 GoodsInfo goodsInfo = getGoodsInfo(item.getFpRewardContent().getGoodsIds());
                 goodsInfo.setMarketPrice(item.getRewardType()==ONE?item.getFpRewardContent().getMarketPrice():BigDecimal.ZERO);
                 goodsInfo.setMarketStore(item.getFpRewardContent().getMarketStore());
+                logger().info("当前活动id："+item.getId());
+                logger().info("其他活动商品信息："+goodsInfo);
                 //设置库存
                 goodsInfo.setMarketStore(goodsInfo.getGoodsStore()>goodsInfo.getMarketStore()?goodsInfo.getMarketStore():goodsInfo.getGoodsStore());
                 goodsInfo.setMarketStore(goodsInfo.getMarketStore()>receiveNum?goodsInfo.getMarketStore()-receiveNum:0);
@@ -1221,6 +1223,16 @@ public class FriendPromoteService extends ShopBaseService {
         //助力总值
         Integer hasPromoteValue = hasPromoteValue(param.getLaunchId());
         //获取每次助力值
+    }
+
+    /**
+     * 获取每次助力值
+     * @param promoteInfo 助力信息
+     * @param hasPromoteTimes 已助力次数
+     * @param hasPromoteValue 已获得的助力值
+     */
+    public void perPromoteValue(PromoteInfo promoteInfo,Integer hasPromoteTimes,Integer hasPromoteValue){
+
     }
 
 }
