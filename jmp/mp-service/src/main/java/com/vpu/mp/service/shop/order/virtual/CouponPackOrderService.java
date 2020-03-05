@@ -214,7 +214,7 @@ public class CouponPackOrderService extends VirtualOrderService {
      * @param userId
      * @return
      */
-    public String createOrder(CouponPackOrderParam param,Integer userId,String clientIp){
+    public WebPayVo createOrder(CouponPackOrderParam param,Integer userId,String clientIp){
         //用户的余额和积分
         UserRecord user = memberService.getUserRecordById(userId);
         if(param.getAccountDiscount() != null && param.getAccountDiscount().compareTo(user.getAccount()) > 0){
@@ -258,12 +258,13 @@ public class CouponPackOrderService extends VirtualOrderService {
         insertVirtualOrderRecord.setGoodsType(GOODS_TYPE_COUPON_PACK);
         insertVirtualOrderRecord.setAccessMode(couponPackRecord.getAccessMode());
 
+
         insertVirtualOrderRecord.insert();
         if(moneyPaid.compareTo(BigDecimal.ZERO) <= 0){
             this.finishPayCallback(insertVirtualOrderRecord,null);
+            return null;
         }else{
             AtomicReference<WebPayVo> webPayVo = new AtomicReference<>();
-
             //微信支付接口
             try {
                 webPayVo.set(mpPaymentService.wxUnitOrder(clientIp, couponPackRecord.getPackName(), orderSn, moneyPaid.multiply(BigDecimal.valueOf(100)), user.getWxOpenid()));
@@ -278,9 +279,9 @@ public class CouponPackOrderService extends VirtualOrderService {
             // 更新记录微信预支付id：prepayid
             this.updatePrepayId(orderSn,webPayVo.get().getResult().getPrepayId());
 
-
+            return webPayVo.get();
         }
-        return insertVirtualOrderRecord.getOrderSn();
+
     }
 
     /**
